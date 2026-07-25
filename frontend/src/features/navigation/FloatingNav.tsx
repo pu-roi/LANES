@@ -20,7 +20,7 @@ export default function FloatingNav() {
   return (
     <header className="fixed top-4 z-50 hidden sm:flex justify-center pointer-events-none pb-4 w-full select-none">
       <nav className="pointer-events-auto flex items-center gap-1 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-gray-200 px-2 py-1.5 w-max max-w-[calc(100vw-2rem)] transition-all duration-500 ease-in-out">
-        <Link href="/" className="flex items-center pl-3 pr-2 hidden sm:flex transition-opacity hover:opacity-80 shrink-0" title="Go to Landing Page">
+        <Link href="/" className="flex items-center pl-3 pr-2 hidden sm:flex transition-opacity hover:opacity-80 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 rounded-full" title="Go to Landing Page">
           <Logo size="xs" textClassName="mt-0.5 hidden md:block shrink-0" />
         </Link>
         <span className="w-px h-5 bg-gray-200 hidden sm:block mr-2 shrink-0" />
@@ -31,7 +31,7 @@ export default function FloatingNav() {
               key={href}
               href={href}
               className={cn(
-                "group relative flex items-center justify-center shrink-0",
+                "group relative flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1",
                 isMapPage ? "rounded-xl px-3 py-1.5 gap-0" : "rounded-full px-3 py-1.5 gap-0 md:gap-2",
                 isActive
                   ? "text-white bg-blue-600"

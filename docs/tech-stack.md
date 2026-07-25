@@ -28,6 +28,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Open-source, WebGL-accelerated interactive 2D map renderer used to display vector basemaps, dynamic alternative routing polylines, and spatial flood avoidance zones.  
 * **Map Base Tiles:** **OpenStreetMap Tiles & Photon API**  
   * *Role:* Rendering completely free street-level basemap imagery and providing rate-limited geocoding autocomplete features with zero commercial licensing caps.
+* **Weather Data & Iconography:** **Open-Meteo API & Meteocons**
+  * *Role:* Open-Meteo provides hyper-local, free weather forecasting data without API keys, while Meteocons (Fill SVGs) are served locally to provide a highly granular, premium visual representation of weather states.
 * **Geographic Demographics:** **PSGC API (Gitlab Pages)**
   * *Role:* Providing a unified and accurate list of Philippine Provinces, Cities/Municipalities, and Barangays for user registration and demographic validation.
 

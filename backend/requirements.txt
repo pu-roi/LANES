@@ -24,3 +24,8 @@ alembic==1.18.5
 cloudinary==1.36.0
 passlib[bcrypt]==1.7.4
 websockets==12.0
+openmeteo-requests
+requests-cache
+retry-requests
+numpy
+pandas

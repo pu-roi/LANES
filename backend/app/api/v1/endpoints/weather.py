@@ -1,18 +1,90 @@
 # Triggers uvicorn reload
 from typing import Any, Optional, List
 from fastapi import APIRouter, HTTPException, Query
-import httpx
 from datetime import datetime, timedelta, timezone
-
-from app.core.config import settings
+import openmeteo_requests
+import requests_cache
+import pandas as pd
+from retry_requests import retry
 
 router = APIRouter()
 
-# Simple in-memory cache to aggressively protect free tier limits
-# Cache key: "lat,lon" -> Value: {"data": dict, "expires_at": datetime}
-weather_cache: dict[str, Any] = {}
-forecast_cache: dict[str, Any] = {}
-CACHE_DURATION_MINUTES = 15
+# Setup the Open-Meteo API client with cache and retry on error
+cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
+retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+openmeteo = openmeteo_requests.Client(session = retry_session)
+
+def _map_wmo_to_meteocons_icon(wmo_code: int, is_day: bool = True) -> str:
+    """
+    Maps WMO weather codes to Meteocons SVG filenames.
+    """
+    time_suffix = "day" if is_day else "night"
+    
+    mapping = {
+        0: f"clear-{time_suffix}",
+        1: f"partly-cloudy-{time_suffix}",
+        2: f"partly-cloudy-{time_suffix}",
+        3: f"partly-cloudy-{time_suffix}",
+        45: "fog",
+        48: "fog",
+        51: f"partly-cloudy-{time_suffix}-drizzle",
+        53: f"partly-cloudy-{time_suffix}-drizzle",
+        55: f"partly-cloudy-{time_suffix}-drizzle",
+        56: f"partly-cloudy-{time_suffix}-sleet",
+        57: f"partly-cloudy-{time_suffix}-sleet",
+        61: f"partly-cloudy-{time_suffix}-rain",
+        63: f"partly-cloudy-{time_suffix}-rain",
+        65: f"partly-cloudy-{time_suffix}-rain",
+        66: f"partly-cloudy-{time_suffix}-sleet",
+        67: f"partly-cloudy-{time_suffix}-sleet",
+        71: f"partly-cloudy-{time_suffix}-snow",
+        73: f"partly-cloudy-{time_suffix}-snow",
+        75: f"partly-cloudy-{time_suffix}-snow",
+        77: f"partly-cloudy-{time_suffix}-snow",
+        80: f"partly-cloudy-{time_suffix}-rain",
+        81: f"partly-cloudy-{time_suffix}-rain",
+        82: f"partly-cloudy-{time_suffix}-rain",
+        85: f"partly-cloudy-{time_suffix}-snow",
+        86: f"partly-cloudy-{time_suffix}-snow",
+        95: f"thunderstorms-{time_suffix}",
+        96: f"thunderstorms-{time_suffix}-rain",
+        99: f"thunderstorms-{time_suffix}-rain",
+    }
+    return mapping.get(wmo_code, "not-available")
+
+def _map_wmo_to_condition(wmo_code: int) -> str:
+    mapping = {
+        0: "Clear",
+        1: "Mainly Clear",
+        2: "Partly Cloudy",
+        3: "Cloudy",
+        45: "Fog",
+        48: "Rime Fog",
+        51: "Light Drizzle",
+        53: "Drizzle",
+        55: "Heavy Drizzle",
+        56: "Freezing Drizzle",
+        57: "Heavy Freezing Drizzle",
+        61: "Light Rain",
+        63: "Rain",
+        65: "Heavy Rain",
+        66: "Freezing Rain",
+        67: "Heavy Freezing Rain",
+        71: "Light Snow",
+        73: "Snow",
+        75: "Heavy Snow",
+        77: "Snow Grains",
+        80: "Light Showers",
+        81: "Showers",
+        82: "Heavy Showers",
+        85: "Snow Showers",
+        86: "Heavy Snow Showers",
+        95: "Thunderstorm",
+        96: "Thunderstorm with Hail",
+        99: "Thunderstorm with Heavy Hail",
+    }
+    return mapping.get(wmo_code, "Unknown")
+
 
 @router.get("/current")
 async def get_current_weather(
@@ -20,121 +92,165 @@ async def get_current_weather(
     lon: float = Query(121.0594, description="Longitude, defaults to Pasig City"),
 ) -> Any:
     """
-    Fetch current weather from OpenWeatherMap API.
-    Caches results to prevent hitting free tier rate limits.
+    Fetch current weather from Open-Meteo API using the forecast for the current hour
+    to ensure the current weather perfectly matches the first hour of the forecast chart.
     """
-    if not settings.OPENWEATHERMAP_API_KEY:
-        return {
-            "temp": 30.5,
-            "feels_like": 35.0,
-            "condition": "Cloudy",
-            "icon": "04d",
-            "location": "Pasig"
-        }
-        
-    cache_key = f"{round(lat, 2)},{round(lon, 2)}"
-    
-    cached = weather_cache.get(cache_key)
-    if cached and datetime.now(timezone.utc) < cached["expires_at"]:
-        return cached["data"]
-        
-    url = "https://api.openweathermap.org/data/2.5/weather"
+    url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "lat": lat,
-        "lon": lon,
-        "appid": settings.OPENWEATHERMAP_API_KEY.strip('"\''),
-        "units": "metric"
+        "latitude": lat,
+        "longitude": lon,
+        "hourly": ["temperature_2m", "apparent_temperature", "weather_code", "is_day", "precipitation", "showers", "wind_speed_10m", "relative_humidity_2m", "wind_direction_10m"],
+        "forecast_hours": 2
     }
     
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(url, params=params, timeout=10.0)
-            response.raise_for_status()
-            data = response.json()
-            
-            parsed_data = {
-                "temp": round(data["main"]["temp"], 1),
-                "feels_like": round(data["main"]["feels_like"], 1),
-                "condition": data["weather"][0]["main"],
-                "icon": data["weather"][0]["icon"],
-                "location": data["name"]
-            }
-            
-            weather_cache[cache_key] = {
-                "data": parsed_data,
-                "expires_at": datetime.now(timezone.utc) + timedelta(minutes=CACHE_DURATION_MINUTES)
-            }
-            
-            return parsed_data
-            
-        except httpx.HTTPError:
-            return {
-                "temp": "--",
-                "feels_like": "--",
-                "condition": "Unavailable",
-                "icon": "03d",
-                "location": "Unknown"
-            }
+    try:
+        responses = openmeteo.weather_api(url, params=params)
+        response = responses[0]
+        
+        hourly = response.Hourly()
+        hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
+        hourly_apparent_temperature = hourly.Variables(1).ValuesAsNumpy()
+        hourly_weather_code = hourly.Variables(2).ValuesAsNumpy()
+        hourly_is_day = hourly.Variables(3).ValuesAsNumpy()
+        hourly_precipitation = hourly.Variables(4).ValuesAsNumpy()
+        hourly_showers = hourly.Variables(5).ValuesAsNumpy()
+        hourly_wind_speed = hourly.Variables(6).ValuesAsNumpy()
+        hourly_humidity = hourly.Variables(7).ValuesAsNumpy()
+        hourly_wind_direction = hourly.Variables(8).ValuesAsNumpy()
 
+        hourly_data = {"date": pd.date_range(
+            start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
+            end = pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
+            freq = pd.Timedelta(seconds = hourly.Interval()),
+            inclusive = "left"
+        )}
+        
+        hourly_data["temperature_2m"] = hourly_temperature_2m
+        hourly_data["apparent_temperature"] = hourly_apparent_temperature
+        hourly_data["weather_code"] = hourly_weather_code
+        hourly_data["is_day"] = hourly_is_day
+        hourly_data["precipitation"] = hourly_precipitation
+        hourly_data["showers"] = hourly_showers
+        hourly_data["wind_speed"] = hourly_wind_speed
+        hourly_data["wind_direction"] = hourly_wind_direction
+        hourly_data["humidity"] = hourly_humidity
+
+        df = pd.DataFrame(data = hourly_data)
+        
+        # Filter to include the current hour
+        current_time = pd.Timestamp.now(tz='UTC').floor('h')
+        df = df[df['date'] >= current_time].head(1)
+        
+        if df.empty:
+            raise Exception("No current hour data found")
+            
+        row = df.iloc[0]
+        weather_code = int(row["weather_code"])
+        is_day = bool(row["is_day"])
+        
+        parsed_data = {
+            "temp": round(float(row["temperature_2m"]), 1),
+            "feels_like": round(float(row["apparent_temperature"]), 1),
+            "condition": _map_wmo_to_condition(weather_code),
+            "icon": _map_wmo_to_meteocons_icon(weather_code, is_day),
+            "precip_mm": round(float(row["precipitation"]), 2),
+            "showers_mm": round(float(row["showers"]), 2),
+            "wind_kmh": round(float(row["wind_speed"]), 1),
+            "wind_dir": int(row["wind_direction"]),
+            "humidity_pct": int(row["humidity"]),
+            "location": "Pasig City" # Fallback since Open-Meteo doesn't return geocoding data in weather endpoint
+        }
+        return parsed_data
+        
+    except Exception as e:
+        import traceback
+        return {
+            "temp": "--",
+            "feels_like": "--",
+            "condition": "Unavailable",
+            "icon": "not-available",
+            "location": str(e)
+        }
 
 @router.get("/forecast")
 async def get_forecast(
     lat: float = Query(14.5731, description="Latitude, defaults to Pasig City"),
     lon: float = Query(121.0594, description="Longitude, defaults to Pasig City"),
-    count: int = Query(8, description="Number of 3-hour slots to return (max 40)"),
+    count: int = Query(24, description="Number of hourly slots to return (max 72)"),
 ) -> Any:
     """
-    Fetch 3-hour forecast from OpenWeatherMap API (free tier).
-    Returns the next N 3-hour forecast slots with temperature,
+    Fetch hourly forecast from Open-Meteo API.
+    Returns the next N hourly forecast slots with temperature,
     rain probability, weather condition, and icons.
     """
-    if not settings.OPENWEATHERMAP_API_KEY:
-        # Fallback mock data for development
-        return {"forecast": [], "location": "Pasig"}
-
-    cache_key = f"fc_{round(lat, 2)},{round(lon, 2)}_{count}"
-
-    cached = forecast_cache.get(cache_key)
-    if cached and datetime.now(timezone.utc) < cached["expires_at"]:
-        return cached["data"]
-
-    url = "https://api.openweathermap.org/data/2.5/forecast"
+    url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "lat": lat,
-        "lon": lon,
-        "appid": settings.OPENWEATHERMAP_API_KEY.strip('"\''),
-        "units": "metric",
-        "cnt": min(count, 40),
+        "latitude": lat,
+        "longitude": lon,
+        "hourly": ["temperature_2m", "precipitation_probability", "weather_code", "is_day", "precipitation", "showers", "wind_speed_10m", "relative_humidity_2m", "wind_direction_10m"],
+        "forecast_hours": count + 1 # Add 1 because we might skip the current hour if it's already past
     }
 
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(url, params=params, timeout=10.0)
-            response.raise_for_status()
-            data = response.json()
+    try:
+        responses = openmeteo.weather_api(url, params=params)
+        response = responses[0]
+        
+        hourly = response.Hourly()
+        hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
+        hourly_precipitation_probability = hourly.Variables(1).ValuesAsNumpy()
+        hourly_weather_code = hourly.Variables(2).ValuesAsNumpy()
+        hourly_is_day = hourly.Variables(3).ValuesAsNumpy()
+        hourly_precipitation = hourly.Variables(4).ValuesAsNumpy()
+        hourly_showers = hourly.Variables(5).ValuesAsNumpy()
+        hourly_wind_speed = hourly.Variables(6).ValuesAsNumpy()
+        hourly_humidity = hourly.Variables(7).ValuesAsNumpy()
+        hourly_wind_direction = hourly.Variables(8).ValuesAsNumpy()
 
-            slots: List[dict[str, Any]] = []
-            for item in data.get("list", []):
-                slots.append({
-                    "dt": item["dt"],
-                    "time": item["dt_txt"],
-                    "temp": round(item["main"]["temp"], 1),
-                    "pop": round(item.get("pop", 0) * 100),  # percentage
-                    "condition": item["weather"][0]["main"],
-                    "icon": item["weather"][0]["icon"],
-                })
+        hourly_data = {"date": pd.date_range(
+            start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
+            end = pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
+            freq = pd.Timedelta(seconds = hourly.Interval()),
+            inclusive = "left"
+        )}
+        
+        hourly_data["temperature_2m"] = hourly_temperature_2m
+        hourly_data["precipitation_probability"] = hourly_precipitation_probability
+        hourly_data["weather_code"] = hourly_weather_code
+        hourly_data["is_day"] = hourly_is_day
+        hourly_data["precipitation"] = hourly_precipitation
+        hourly_data["showers"] = hourly_showers
+        hourly_data["wind_speed"] = hourly_wind_speed
+        hourly_data["wind_direction"] = hourly_wind_direction
+        hourly_data["humidity"] = hourly_humidity
 
-            parsed_data = {
-                "forecast": slots,
-                "location": data.get("city", {}).get("name", "Unknown")
-            }
+        df = pd.DataFrame(data = hourly_data)
+        
+        # Filter to include the current hour and future times
+        current_time = pd.Timestamp.now(tz='UTC').floor('h')
+        df = df[df['date'] >= current_time].head(count)
+        
+        slots: List[dict[str, Any]] = []
+        for index, row in df.iterrows():
+            weather_code = int(row["weather_code"])
+            is_day = bool(row["is_day"])
+            slots.append({
+                "dt": int(row["date"].timestamp()),
+                "time": row["date"].strftime('%Y-%m-%d %H:%M:%S'),
+                "temp": round(row["temperature_2m"], 1),
+                "pop": int(row["precipitation_probability"]), # percentage
+                "condition": _map_wmo_to_condition(weather_code),
+                "icon": _map_wmo_to_meteocons_icon(weather_code, is_day),
+                "precip_mm": round(row["precipitation"], 2),
+                "showers_mm": round(row["showers"], 2),
+                "wind_kmh": round(row["wind_speed"], 1),
+                "wind_dir": int(row["wind_direction"]),
+                "humidity_pct": int(row["humidity"])
+            })
+            
+        return {
+            "forecast": slots,
+            "location": "Pasig City"
+        }
 
-            forecast_cache[cache_key] = {
-                "data": parsed_data,
-                "expires_at": datetime.now(timezone.utc) + timedelta(minutes=CACHE_DURATION_MINUTES),
-            }
-
-            return parsed_data
-
-        except httpx.HTTPError:
-            return {"forecast": [], "location": "Unknown"}
+    except Exception as e:
+        return {"forecast": [], "location": "Unknown"}

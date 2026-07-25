@@ -97,11 +97,16 @@ export function RightSidebar() {
                 <p className="text-xs text-blue-700 mt-1">
                   {weather.location} • {weather.temp}°C
                 </p>
+                {(weather.precip_mm !== undefined) && (
+                  <p className="text-[10px] font-semibold text-blue-800 mt-1.5 bg-blue-200/50 inline-block px-1.5 py-0.5 rounded border border-blue-300/50">
+                    🌧️ {weather.precip_mm} mm/h
+                  </p>
+                )}
               </div>
-              <img
-                src={`https://openweathermap.org/img/wn/${weather.icon}.png`}
+              <img 
+                src={`/meteocons/${weather.icon}.svg`}
                 alt={weather.condition}
-                className="w-10 h-10 object-contain drop-shadow-sm"
+                className="w-16 h-16 drop-shadow-sm"
               />
             </div>
           ) : (

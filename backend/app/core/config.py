@@ -22,8 +22,7 @@ class Settings(BaseSettings):
     BREVO_SMTP_PORT: int = 587
     BREVO_SMTP_KEY: str = ""
 
-    # OpenWeatherMap
-    OPENWEATHERMAP_API_KEY: str = ""
+
 
     # Security
     SECRET_KEY: str = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"

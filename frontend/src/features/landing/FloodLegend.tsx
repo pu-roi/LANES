@@ -13,51 +13,51 @@ export function FloodLegend() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
-        {/* White */}
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col justify-center">
+        {/* Low Severity */}
+        <div className="bg-[#fbfcdd]/50 border border-[#d8ed34]/50 rounded-xl p-4 flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-3.5 h-3.5 rounded-full border border-gray-300 bg-white shrink-0 shadow-sm"></div>
-            <span className="font-semibold text-gray-900 text-sm">White</span>
-            <span className="text-xs text-gray-700 font-medium ml-auto px-2 py-0.5 bg-gray-100 rounded-md">Ankle Deep</span>
+            <div className="w-3.5 h-3.5 rounded-full bg-[#d8ed34] shrink-0 shadow-sm border border-[#c2d62f]"></div>
+            <span className="font-semibold text-lime-900 text-sm">Low (Yellow-Green)</span>
+            <span className="text-[10px] text-lime-900 font-bold ml-auto px-2 py-0.5 bg-[#d8ed34]/30 rounded-md">Gutter to Half-Knee</span>
           </div>
-          <p className="text-xs text-gray-600 leading-snug">
-            Passable by all vehicles, motorcycles, and pedestrians.
+          <p className="text-xs text-lime-900/90 leading-snug">
+            8 - 10 inches. Passable by all vehicles, motorcycles, and pedestrians.
           </p>
         </div>
 
-        {/* Yellow */}
-        <div className="bg-yellow-50/50 border border-yellow-200/60 rounded-xl p-4 flex flex-col justify-center">
+        {/* Medium Severity */}
+        <div className="bg-amber-50/50 border border-amber-300/60 rounded-xl p-4 flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-3.5 h-3.5 rounded-full bg-yellow-400 shrink-0 shadow-sm"></div>
-            <span className="font-semibold text-yellow-900 text-sm">Yellow</span>
-            <span className="text-xs text-yellow-900 font-medium ml-auto px-2 py-0.5 bg-yellow-100 rounded-md">Knee Deep</span>
+            <div className="w-3.5 h-3.5 rounded-full bg-amber-400 shrink-0 shadow-sm border border-amber-500"></div>
+            <span className="font-semibold text-amber-900 text-sm">Medium (Amber)</span>
+            <span className="text-[10px] text-amber-900 font-bold ml-auto px-2 py-0.5 bg-amber-200/60 rounded-md">Half-Tire to Knee</span>
           </div>
-          <p className="text-xs text-yellow-900/90 leading-snug">
-            Passable by 4-Wheel High Clearance (SUVs) & Low Clearance (Sedans).
+          <p className="text-xs text-amber-900/90 leading-snug">
+            13 - 19 inches. Passable by 4-Wheel High Clearance (SUVs) & Low Clearance (Sedans).
           </p>
         </div>
 
-        {/* Orange */}
-        <div className="bg-orange-50/50 border border-orange-200/60 rounded-xl p-4 flex flex-col justify-center">
+        {/* High Severity */}
+        <div className="bg-orange-50/50 border border-orange-300/60 rounded-xl p-4 flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-3.5 h-3.5 rounded-full bg-orange-500 shrink-0 shadow-sm"></div>
-            <span className="font-semibold text-orange-900 text-sm">Orange</span>
-            <span className="text-xs text-orange-900 font-medium ml-auto px-2 py-0.5 bg-orange-100 rounded-md">Waist to Chest</span>
+            <div className="w-3.5 h-3.5 rounded-full bg-orange-500 shrink-0 shadow-sm border border-orange-600"></div>
+            <span className="font-semibold text-orange-900 text-sm">High (Orange)</span>
+            <span className="text-[10px] text-orange-900 font-bold ml-auto px-2 py-0.5 bg-orange-200/60 rounded-md">Tires to Chest</span>
           </div>
           <p className="text-xs text-orange-900/90 leading-snug">
-            Only passable by 4-Wheel High Clearance (SUVs, Pickups).
+            26 - 45 inches. Only passable by 4-Wheel High Clearance (SUVs, Pickups).
           </p>
         </div>
 
-        {/* Red */}
-        <div className="bg-red-50/50 border border-red-200/60 rounded-xl p-4 flex flex-col justify-center">
+        {/* Extreme Severity */}
+        <div className="bg-red-50/50 border border-red-300/60 rounded-xl p-4 flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-3.5 h-3.5 rounded-full bg-red-600 shrink-0 shadow-sm"></div>
-            <span className="font-semibold text-red-900 text-sm">Red</span>
-            <span className="text-xs text-red-700 font-medium ml-auto px-2 py-0.5 bg-red-100 rounded-md">Neck Deep</span>
+            <div className="w-3.5 h-3.5 rounded-full bg-red-600 shrink-0 shadow-sm border border-red-700"></div>
+            <span className="font-semibold text-red-900 text-sm">Extreme (Red)</span>
+            <span className="text-[10px] text-red-900 font-bold ml-auto px-2 py-0.5 bg-red-200/60 rounded-md">Neck & Above</span>
           </div>
-          <p className="text-xs text-red-800/80 leading-snug">
-            Impassable for all standard vehicles. Seek alternative routes.
+          <p className="text-xs text-red-900/90 leading-snug">
+            Danger. Impassable for all standard vehicles. Seek alternative routes.
           </p>
         </div>
       </div>

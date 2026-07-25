@@ -59,21 +59,27 @@ const SEVERITY_COLORS = {
   },
 };
 
+const SEVERITY_DOT_COLORS = {
+  low: "bg-[#d8ed34]", // 80% yellow, 20% green
+  medium: "bg-amber-400",
+  high: "bg-orange-500",
+  extreme: "bg-red-600",
+};
+
 const VISUAL_OPTIONS: {
   id: ReportVisualOption;
   severity: Severity;
-  emoji: string;
   label: string;
   description: string;
 }[] = [
-  { id: "gutter", severity: "low", emoji: "🟢", label: "Gutter", description: "8 inches" },
-  { id: "half-knee", severity: "low", emoji: "🟢", label: "Half-Knee", description: "10 inches" },
-  { id: "half-tire", severity: "medium", emoji: "🟨", label: "Half-Tire", description: "13 inches" },
-  { id: "knee", severity: "medium", emoji: "🟨", label: "Knee", description: "19 inches" },
-  { id: "tires", severity: "high", emoji: "🟧", label: "Tires", description: "26 inches" },
-  { id: "waist", severity: "high", emoji: "🟧", label: "Waist", description: "37 inches" },
-  { id: "chest", severity: "high", emoji: "🟧", label: "Chest", description: "45 inches" },
-  { id: "neck", severity: "extreme", emoji: "🟥", label: "Neck & Above", description: "Danger" },
+  { id: "gutter", severity: "low", label: "Gutter", description: "8 inches" },
+  { id: "half-knee", severity: "low", label: "Half-Knee", description: "10 inches" },
+  { id: "half-tire", severity: "medium", label: "Half-Tire", description: "13 inches" },
+  { id: "knee", severity: "medium", label: "Knee", description: "19 inches" },
+  { id: "tires", severity: "high", label: "Tires", description: "26 inches" },
+  { id: "waist", severity: "high", label: "Waist", description: "37 inches" },
+  { id: "chest", severity: "high", label: "Chest", description: "45 inches" },
+  { id: "neck", severity: "extreme", label: "Neck & Above", description: "Danger" },
 ];
 
 
@@ -505,7 +511,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
                       visualOption === opt.id ? colors.active : colors.pill
                     )}
                   >
-                    <span className="text-base">{opt.emoji}</span>
+                    <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10", SEVERITY_DOT_COLORS[opt.severity])}></div>
                     <span>{opt.label}</span>
                     <span className="font-normal text-[10px] opacity-75">{opt.description}</span>
                   </button>

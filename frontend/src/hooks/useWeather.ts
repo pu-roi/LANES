@@ -7,6 +7,8 @@ export interface WeatherData {
   condition: string;
   icon: string;
   location: string;
+  precip_mm?: number;
+  showers_mm?: number;
 }
 
 export function useWeather() {
@@ -15,7 +17,7 @@ export function useWeather() {
     queryFn: async () => {
       // 1. Check if we have a valid cache in localStorage (prevents API call on hard reload)
       if (typeof window !== 'undefined') {
-        const cached = localStorage.getItem('lanes_weather_cache');
+        const cached = localStorage.getItem('lanes_weather_cache_v3');
         if (cached) {
           try {
             const { data, timestamp } = JSON.parse(cached);
@@ -32,9 +34,9 @@ export function useWeather() {
       // 2. Fetch fresh data from API
       const data = await apiClient.get<WeatherData>("/weather/current");
       
-      // 3. Save to localStorage
+      // 3. Cache the successful result
       if (typeof window !== 'undefined') {
-        localStorage.setItem('lanes_weather_cache', JSON.stringify({
+        localStorage.setItem('lanes_weather_cache_v3', JSON.stringify({
           data,
           timestamp: Date.now()
         }));

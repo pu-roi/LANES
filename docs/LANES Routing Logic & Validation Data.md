@@ -24,10 +24,10 @@ The routing engine utilizes these standardized thresholds to determine Passabili
 
 ### **LANES Severity Mapping**
 
-* ⚪ **White Zone (Ankle-Deep):** ![][image1] (Ankle to Gutter)  
-* 🟡 **Yellow Zone (Knee-Deep):** ![][image2] (Knee level)  
-* 🟠 **Orange Zone (Waist-to-Chest):** ![][image3] (Waist to Chest level)  
-* 🔴 **Red Zone (Neck & Above):** ![][image4] (Neck to Head level)
+* 🟩 **Yellow-Green Zone (Ankle-Deep):** ![][image1] (Ankle to Gutter)  
+* 🟨 **Yellow Zone (Knee-Deep):** ![][image2] (Knee level)  
+* 🟧 **Orange Zone (Waist-to-Chest):** ![][image3] (Waist to Chest level)  
+* 🟥 **Red Zone (Neck & Above):** ![][image4] (Neck to Head level)
 
 ## **2\. Vehicle Profile Matrix & Justification**
 
@@ -35,28 +35,28 @@ The routing engine dictates whether a path segment is marked as **Passable**, **
 
 ### **🚶‍♂️ A. Pedestrian Profile**
 
-* **White (Ankle):** Passable.  
+* **Yellow-Green (Ankle):** Passable.  
 * **Yellow (Knee):** Passable (Highly Penalized). While physically possible to walk, the Department of Health (DOH) strictly advises against wading in knee-deep water due to urban leptospirosis risks.  
 * **Orange (Waist/Chest):** **Impassable**. At this depth, open manholes are invisible, and urban currents can sweep individuals away.  
 * **Red (Neck+):** **Impassable**.
 
 ### **🏍️ B. 2-Wheels Profile (Motorcycles/Scooters)**
 
-* **White (Ankle):** Passable.  
+* **Yellow-Green (Ankle):** Passable.  
 * **Yellow (Knee):** **Impassable**. The standard commuter scooters in the Philippines (e.g., Honda Click, Yamaha Mio) have exhaust pipes and air intakes located below ![][image5]. Knee-deep water (![][image6]) will cause immediate engine hydro-locking.  
 * **Orange (Waist/Chest):** **Impassable**.  
 * **Red (Neck+):** **Impassable**.
 
 ### **🚗 C. 4-Wheel Low Clearance (Sedans / Hatchbacks)**
 
-* **White (Ankle):** Passable. Most sedans (e.g., Toyota Vios) have a ground clearance of ![][image7] to ![][image8]. Gutter-deep water is safe if traversed slowly.  
+* **Yellow-Green (Ankle):** Passable. Most sedans (e.g., Toyota Vios) have a ground clearance of ![][image7] to ![][image8]. Gutter-deep water is safe if traversed slowly.  
 * **Yellow (Knee):** **Impassable**. At ![][image6], water enters the cabin seals, floods the exhaust, and begins to lift the vehicle, causing a loss of tire traction.  
 * **Orange (Waist/Chest):** **Impassable**.  
 * **Red (Neck+):** **Impassable**.
 
 ### **🚙 D. 4-Wheel High Clearance (SUVs / Pickup Trucks)**
 
-* **White (Ankle):** Passable.  
+* **Yellow-Green (Ankle):** Passable.  
 * **Yellow (Knee):** **Passable (Penalized to 85% Safety)**. Standard mid-size SUVs in the Philippines (e.g., Isuzu mu-X, Toyota Fortuner) have an engineered water-wading depth of ![][image9] to ![][image10].  
 * **Orange (Waist/Chest):** **Passable (Penalized to 35% Safety)**. While an SUV's ![][image10] wading limit can physically clear a standard knee-to-lower-waist flood, the route is mathematically penalized to 35% safety. This enforces a "defensive routing" logic to protect drivers from hidden underwater road hazards (open manholes, debris), ensuring the app prioritizes completely dry detours first before using Orange zones as a last resort.
 * **Red (Neck+):** **Impassable**. Waist-level water (![][image11]) exceeds the factory ![][image10] wading limit. The engine will ingest water and stall.
@@ -65,7 +65,7 @@ The routing engine dictates whether a path segment is marked as **Passable**, **
 
 *How the backend algorithm maps the PostGIS intersections before sending data to the Valhalla Routing Engine:*
 
-| Vehicle Profile | White (Ankle) | Yellow (Knee) | Orange (Waist/Chest) | Red (Neck+) |
+| Vehicle Profile | Yellow-Green (Ankle) | Yellow (Knee) | Orange (Waist/Chest) | Red (Neck+) |
 | :---- | :---- | :---- | :---- | :---- |
 | **Pedestrian** | Traverse | Traverse (Penalized) | **Avoid (Blocked)** | **Avoid (Blocked)** |
 | **2-Wheels** | Traverse | **Avoid (Blocked)** | **Avoid (Blocked)** | **Avoid (Blocked)** |
