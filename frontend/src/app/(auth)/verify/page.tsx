@@ -2,31 +2,35 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { authClient } from "@/features/auth/api/authClient";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/shared/ui/Toast";
+import { Button } from "@/shared/ui/Button";
+import { useQueryClient } from "@tanstack/react-query";
 
 function VerifyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
+  const queryClient = useQueryClient();
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [resendMessage, setResendMessage] = useState("");
+  const { success } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setResendMessage("");
 
     try {
       const result = await authClient.verifyOtp(email, otp) as any;
-      // Store token
-      localStorage.setItem("token", result.access_token);
+      // Store token with correct key for useAuth
+      localStorage.setItem("lanes_token", result.access_token);
+      await queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+      success("Verification Successful", "Your email has been verified. You are now logged in!");
       router.push("/");
     } catch (err: any) {
       console.error(err);
@@ -39,10 +43,9 @@ function VerifyContent() {
   const handleResend = async () => {
     setLoading(true);
     setError("");
-    setResendMessage("");
     try {
       await authClient.resendOtp(email);
-      setResendMessage("A new code has been sent to your email.");
+      success("OTP Sent", "A new code has been sent to your email.");
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to resend code.");
     } finally {
@@ -92,20 +95,14 @@ function VerifyContent() {
           </div>
         )}
 
-        {resendMessage && (
-          <div className="p-3 bg-green-500/20 border border-green-500/50 rounded-xl text-green-500 text-sm">
-            {resendMessage}
-          </div>
-        )}
-
-        <motion.button
+        <Button
           type="submit"
+          size="lg"
           disabled={loading || otp.length !== 6}
-          whileTap={{ scale: 0.95 }}
-          className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold shadow-lg shadow-primary/25 disabled:opacity-50"
+          className="w-full text-lg rounded-xl shadow-lg shadow-blue-500/25"
         >
           {loading ? "Verifying..." : "Verify & Continue"}
-        </motion.button>
+        </Button>
       </form>
 
       <div className="mt-8 text-center">
@@ -127,7 +124,7 @@ function VerifyContent() {
 
 export default function VerifyPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="w-full">
       <Suspense fallback={<div className="p-10 text-center">Loading...</div>}>
         <VerifyContent />
       </Suspense>

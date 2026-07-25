@@ -38,13 +38,16 @@
 - **User Registry & System Rules**
   - **User Metrics**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
   - **Rule-Based Expiration**: Admin configurable manual presets for flood expiration (e.g. 4 hours, 12 hours).
+- **Open-Meteo Integrations (Future Work)**
+  - **Global Flood API (GloFAS)**: Integrate `river_discharge` variables to predict river overflow and automatically mark nearby areas as high risk.
+  - **Historical Weather API**: Correlate past typhoons and known flood occurrences to train an ML model for predictive flood mapping.
 
 ## Capstone Roadmap (1-2 Month Execution Plan)
 
 > **Implementation Strategy:** We will execute this roadmap in 5 distinct phases, starting with high-visibility features (Home Page) and ending with complex logic (Admin Charts & Trust Scores).
 
 ### Phase 1: Home Page & Onboarding (🟢 COMPLETED)
-- [x] **Dynamic Weather Widget**: Integrate OpenWeatherMap API (reads from user profile location, defaults to Pasig).
+- [x] **Dynamic Weather Widget**: Integrate Open-Meteo API with Meteocons (reads from user profile location, defaults to Pasig).
 - [x] **Daily Stats**: Show the number of *verified* flood reports for the current day.
 - [x] **Site Visitors**: Display a metric for total active/historical site visitors.
 - [x] **Flood Status Legend**: Add a clear breakdown of White, Yellow, Orange, and Red on the home page.
@@ -57,6 +60,7 @@
   - *Pedestrian* (Walking)
 - [x] **Route Metrics**: Display "Safety %" and "Flood Risk" directly on alternative route banners.
 - [x] **Flood Timelines**: Show when a flood was reported and approved directly on the map popup.
+- [ ] **Weather & Chart Legend**: Add a sleek UI guide/legend near the forecast chart to explain what the weather icons, rain percentages, and volume numbers mean to everyday users.
 
 ### Phase 3: Community Feed & Notifications (🟢 COMPLETED)
 - [x] **Report Hazard Button**: Jump straight to the Flood Report Panel.

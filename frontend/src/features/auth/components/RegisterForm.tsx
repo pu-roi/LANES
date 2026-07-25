@@ -288,15 +288,23 @@ export function RegisterForm() {
       try {
         const parsed = JSON.parse(err.message);
         if (parsed.code === "UNVERIFIED_ACCOUNT") {
-          showError("Account Unverified", "This account exists but is unverified. Redirecting to verification...");
-          const resendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-          fetch(`${resendUrl}/auth/resend-otp`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: parsed.email })
-          }).catch(() => {});
-          router.push(`/verify?email=${encodeURIComponent(parsed.email)}`);
-          return;
+          // If they are using the exact same email, redirect them back to OTP
+          if (parsed.email === formData.user.email) {
+            showError("Account Unverified", "You already started registering. Redirecting to verification...");
+            const resendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+            fetch(`${resendUrl}/auth/resend-otp`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: parsed.email })
+            }).catch(() => {});
+            router.push(`/verify?email=${encodeURIComponent(parsed.email)}`);
+            return;
+          } else {
+            // They changed the email but kept the same username.
+            // Let them know the username is locked.
+            showError("Username Unavailable", "This username is currently pending verification with a different email address. Please choose a different username, or wait 10 minutes for the pending registration to expire.");
+            return;
+          }
         }
       } catch (e) {}
       showError("Registration Failed", err.message || "An error occurred during registration.");

@@ -41,14 +41,22 @@ export function WeatherWidget() {
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <img
-          src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-          alt={weather.condition}
-          className="w-14 h-14 object-contain drop-shadow-md -my-2 opacity-90"
-        />
+        <div className="w-20 h-20 flex items-center justify-center bg-blue-900 rounded-2xl border border-blue-800 shadow-inner">
+          <img
+            src={`/meteocons/${weather.icon}.svg`}
+            alt={weather.condition}
+            className="w-20 h-20 object-contain drop-shadow-md opacity-100 scale-110"
+          />
+        </div>
         <div className="text-left">
           <span className="text-3xl font-bold text-white tracking-tight">{weather.temp}°C</span>
-          <p className="text-sm text-blue-100 mt-0.5">Feels like {weather.feels_like}°C</p>
+          <p className="text-sm font-semibold text-white mt-0.5">{weather.condition}</p>
+          <p className="text-xs text-blue-100 mt-0.5">Feels like {weather.feels_like}°C</p>
+          {(weather.precip_mm !== undefined) && (
+            <p className="text-xs text-blue-200 mt-1 bg-blue-900/50 inline-block px-2 py-0.5 rounded-md border border-blue-400/20 shadow-sm">
+              🌧️ {weather.precip_mm} mm/h
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -58,6 +58,9 @@ lanes-documentation.md
 # Large data files
 data/
 *.mbtiles
+*.sqlite
+*.sqlite3
+*.db
 
 # Node and Next.js
 node_modules/

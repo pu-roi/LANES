@@ -278,7 +278,7 @@ export default function LandingView() {
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Weather Forecast</h2>
             <p className="text-gray-500 mt-1 text-sm">
-              24-hour localized forecast with rain probability.
+              12-hour localized forecast with rain probability.
             </p>
           </div>
           <div className="w-full">

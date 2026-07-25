@@ -3,17 +3,10 @@ import base64
 from pathlib import Path
 from app.core.config import settings
 
-def get_logo_base64() -> str:
-    try:
-        current_dir = Path(__file__).parent
-        logo_path = current_dir.parent.parent.parent / "frontend" / "public" / "lanes-logo" / "lanes-wbg.png"
-        if logo_path.exists():
-            with open(logo_path, "rb") as f:
-                encoded = base64.b64encode(f.read()).decode("utf-8")
-                return f"data:image/png;base64,{encoded}"
-    except Exception as e:
-        print(f"Error loading logo: {e}")
-    return ""
+def get_logo_url() -> str:
+    # Use the Cloudinary hosted public URL so email clients like Gmail do not block the image
+    return "https://res.cloudinary.com/r8dbejb2/image/upload/v1784998835/lanes_logo_email.png"
+
 
 async def send_otp_email_async(to_email: str, otp_code: str) -> bool:
     """
@@ -30,22 +23,48 @@ async def send_otp_email_async(to_email: str, otp_code: str) -> bool:
         "content-type": "application/json"
     }
     
-    logo_src = get_logo_base64()
-    logo_html = f"<div style='text-align: center; margin-bottom: 20px;'><img src='{logo_src}' alt='LANES Logo' style='max-width: 200px;'/></div>" if logo_src else ""
+    logo_src = get_logo_url()
 
     html_content = f"""
+    <!DOCTYPE html>
     <html>
-      <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 20px;">
-        {logo_html}
-        <h2 style="color: #1e3a8a; text-align: center;">LANES Registration</h2>
-        <p>Hello,</p>
-        <p>Your email verification code is:</p>
-        <div style="text-align: center; margin: 30px 0;">
-          <strong style="font-size: 32px; letter-spacing: 5px; color: #2563eb; background-color: #eff6ff; padding: 15px 30px; border-radius: 8px;">{otp_code}</strong>
-        </div>
-        <p>This code will expire in 10 minutes. Please do not share it with anyone.</p>
-        <p>Stay safe,<br><strong>The LANES Team</strong></p>
-      </body>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body style="font-family: 'Inter', Helvetica, Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px 0;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; margin: auto;">
+            <tr>
+                <td style="padding: 40px 40px 20px 40px; text-align: center; background-color: #ffffff;">
+                    <img src="{logo_src}" alt="LANES Logo" style="max-width: 140px; margin-bottom: 10px;"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 0 40px 30px 40px;">
+                    <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; margin: 0 0 20px 0; text-align: center;">Verify your email address</h1>
+                    <p style="color: #475569; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0; text-align: center;">
+                        Welcome to LANES! Please enter the code below to verify your email address and complete your registration.
+                    </p>
+                    
+                    <div style="background-color: #f1f5f9; border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 30px;">
+                        <span style="font-family: monospace; font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #2563eb;">{otp_code}</span>
+                    </div>
+                    
+                    <p style="color: #64748b; font-size: 14px; line-height: 1.5; margin: 0 0 30px 0; text-align: center;">
+                        This code will expire in <strong>10 minutes</strong>.<br>If you didn't request this email, you can safely ignore it.
+                    </p>
+                    
+                    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 0 0 30px 0;">
+                    
+                    <p style="color: #94a3b8; font-size: 13px; margin: 0; text-align: center;">
+                        Stay safe on the road,<br><strong>The LANES Team</strong>
+                    </p>
+                </td>
+            </tr>
+        </table>
+        <p style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 20px;">
+            &copy; 2026 LANES. All rights reserved.
+        </p>
+    </body>
     </html>
     """
 
