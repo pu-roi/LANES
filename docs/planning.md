@@ -16,50 +16,28 @@
 | 6 | RBAC & Admin Dashboard | Completed | 3NF DB Normalization, Roles CRUD, User Management, Audit Trails, Data Mgmt & System Settings |
 | 7 | Real-Time Operations | Completed | WebSocket broadcasting, Live active zones, Real-time admin dashboard invalidations |
 | 8 | Community Feed & Moderation | Completed | Feed layout, Upvotes/Downvotes, Post archiving, Soft deletes, Map coordinate rendering |
+| 9 | Spatial Analytics & Heatmap | Completed | Global Heatmap, Top Barangays stats, Dedicated Analytics Pages for Commuters and Admins |
 
 ## Active Sprint (Next Feature)
 
-**Goal:** Global Heatmap & Spatial Analytics (Public & Admin)
+**Goal:** Comments Section for community feed
 
-- [x] Implement Photon API Reverse Geocoding on backend to extract and save 'barangay' for approved reports.
-- [x] Create `/api/v1/analytics/heatmap` endpoint returning weighted GeoJSON.
-- [x] Create `/api/v1/analytics/stats` endpoint returning Top Barangays and Top Locations.
-- [x] Build `/analytics` page for public commuters with MapLibre Heatmap layer and responsive side panel.
-- [x] Build `/admin/analytics` page with distraction-free layout and data tables for DRRMO exports.
-
-**Design Decisions:**
-- Reverse geocoding via Photon is used to resolve barangays dynamically without storing heavy shapefiles.
-- A dedicated `/analytics` route is used for commuters instead of cluttering the live global map, while keeping `GlobalMap.tsx` active in the background.
+- [ ] Implement Comments Section for community feed
 
 ## Recently Completed
 
-- [x] Fixed Navigation Bar scroll jump bug by decoupling positioning from framer-motion layout
-- [x] Re-implemented smooth navbar expansion/shrinking with choreographed two-speed CSS transitions (500ms layout, 300ms color fades)
-- [x] Fixed site visitor counter double-incrementing on refresh by migrating to robust localStorage and preventing React StrictMode race conditions
-- [x] Validated Weather API 15-minute server-side caching to prevent rate-limiting on refresh
-- [x] Migrated pathfinding engine to Valhalla for intelligent dynamic flood avoidance
-- [x] Multi-Route Alternatives with clickable route selection and map ETA banners
-- [x] Top Reporters leaderboard (live data, `GET /feed/leaderboard`)
-- [x] Fix PostItem UI layout (large bottom padding issue)
-- [x] Fix WebSocket connection errors on local network (proxy bypass issue)
-- [x] Fix Share button crashing on local IP due to insecure context (added fallback)
-- [x] Fix View on Map button for LineString geometries
-- [x] Add placeholder alert for Reply/Comment button
-- [x] Add explicit error handling for Upvote/Downvote mutation
-- [x] Restructured Flood Report Survey with 3NF database normalization (Checkbox UI and Inline Panel integration)
-- [x] Implemented custom animated and static Wave Dividers on the Landing Page for immersive UI flow
-- [x] Refined UX/UI on "Use Current Location" button to maximize visibility
-- [x] Implemented advanced location tagging view inside post composer with smooth sliding transitions
-- [x] Integrated Photon Autocomplete suggestions and browser geolocation reverse-geocoding in post location selector
-- [x] Moved map post location selection banner to bottom of the viewport (`bottom-28`) to avoid top navbar overlapping
-- [x] Wired Photo and Video quick action shortcut buttons next to feed input trigger to launch system file chooser directly
-- [x] Fixed React Strict Mode double-mount bug causing early preview object URL revocation
-- [x] Added "Create Post" quick media action buttons (Photo & Video) next to the feed composer input trigger
+- [x] Implement Photon API Reverse Geocoding on backend to extract and save 'barangay' for approved reports
+- [x] Create `/api/v1/analytics/heatmap` and `/api/v1/analytics/stats` endpoints
+- [x] Build `/analytics` (public) and `/admin/analytics` pages with MapLibre Heatmap layer and data tables
+- [x] Design Decision: Reverse geocoding via Photon is used to resolve barangays dynamically without storing heavy shapefiles
+
 
 ## Backlog
 
-- Implement Comments Section for reports
 - Add authenticated routing for local networks
+- **User Registry & System Rules**
+  - **User Metrics**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
+  - **Rule-Based Expiration**: Admin configurable manual presets for flood expiration (e.g. 4 hours, 12 hours).
 
 ## Capstone Roadmap (1-2 Month Execution Plan)
 
@@ -80,7 +58,7 @@
 - [x] **Route Metrics**: Display "Safety %" and "Flood Risk" directly on alternative route banners.
 - [x] **Flood Timelines**: Show when a flood was reported and approved directly on the map popup.
 
-### Phase 3: Community Feed & Notifications
+### Phase 3: Community Feed & Notifications (🟢 COMPLETED)
 - [x] **Report Hazard Button**: Jump straight to the Flood Report Panel.
 - [x] **Create Post Button**: Allows users to post text/photos to the community feed with an optional location tag.
 - [x] **In-App Notification Center**: Global Bell Icon for comments, likes, and critical system alerts pinned to the top.
@@ -92,19 +70,15 @@
   - Line Chart: Reports over time (Dynamic: Last 7 Days, Month, Year).
   - Bar Graph: Top 5 Most Flooded Barangays.
 
-### Phase 5: User Registry & System Rules
-- [ ] **User Metrics**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
-- [ ] **Rule-Based Expiration**: Admin configurable manual presets for flood expiration (e.g. 4 hours, 12 hours).
-
-### 6. Defense Talking Points (Future ML Architecture)
+### 5. Defense Talking Points (Future ML Architecture)
 - **Supervised Learning**: If DRMMO provides historical flood data (rainfall + expiration times), we can immediately train an ML model (using Python/scikit-learn) to predict future expirations.
 - **Online Learning ("Self-Learning")**: Without initial DRMMO data, the system relies on Rule-Based Expiration for immediate accuracy. However, the architecture is designed to continuously collect live data. Once enough floods are naturally recorded over time, the system can seamlessly transition to Online Machine Learning to predict expiration times automatically.
 
-### 7. Defense Talking Points: Defining "Real-Time" without Hardware Sensors
+### 6. Defense Talking Points: Defining "Real-Time" without Hardware Sensors
 - **WebSocket-Driven Real-Time Broadcast**: The platform implements **instantaneous communication latency**. Within milliseconds of an admin approving a report (or a user submitting a post), WebSocket connections broadcast the updated routing barriers and active zones to all connected commuter clients globally. The *propagation of routing data* is true real-time.
 - **Plug-and-Play IoT Sensor Hooks (MQTT/REST Webhooks)**: The database layer utilizes standard PostGIS geometry points and polygons. The architecture is explicitly designed to ingest coordinates. In the future, telemetry devices (e.g., ultrasonic water-level sensors installed on bridges or lamp posts) can write data directly to the `/api/v1/reports` endpoint via secure webhook keys, bypassing human input entirely.
 
-### 8. Future Architecture: Duplicate Resolution & Auto-Approval
+### 7. Future Architecture: Duplicate Resolution & Auto-Approval
 - **Spatial Deduplication & Bounding Polygon Merging (Admin Panel)**:
   - If multiple users report the same street with overlapping boundaries or conflicting depths, the admin panel will flag them as **"Potential Overlaps"** (using PostGIS `ST_Intersects` or `ST_DWithin` queries).
   - Admins can select duplicate reports and click **"Merge & Resolve"** to compute a unified boundary (`ST_Union`) or upgrade the severity scale based on the most recent/authoritative user input.

@@ -11,7 +11,7 @@ import { searchLocations, getCurrentLocation } from '@/features/geocoding/geocod
 import type { LocationSuggestion } from '@/features/geocoding/types';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-
+import { get, set, del } from 'idb-keyval';
 const slideVariants = {
   enter: (direction: 'forward' | 'backward') => ({
     x: direction === 'forward' ? '100%' : '-100%',
@@ -44,6 +44,29 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
   const [selectedFiles, setSelectedFiles] = useState<{ file: File; preview: string }[]>([]);
   const [locationTag, setLocationTag] = useState('');
   const objectUrlsRef = React.useRef<string[]>([]);
+  const [showDraftConfirm, setShowDraftConfirm] = useState(false);
+
+  const handleCloseRequest = () => {
+    if (content.trim() || selectedFiles.length > 0 || locationTag.trim()) {
+      setShowDraftConfirm(true);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleSaveDraftAndClose = async () => {
+    sessionStorage.setItem('lanes_draft_post', content);
+    if (selectedFiles.length > 0) {
+      await set('lanes_draft_files', selectedFiles.map(f => f.file));
+    }
+    onClose();
+  };
+
+  const handleDiscardAndClose = async () => {
+    sessionStorage.removeItem('lanes_draft_post');
+    await del('lanes_draft_files');
+    onClose();
+  };
 
   // Safely initialize selectedFiles from initialFiles on mount/prop change
   useEffect(() => {
@@ -125,6 +148,18 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
         '', 
         window.location.pathname + (params.toString() ? '?' + params.toString() : '')
       );
+      
+      // Restore files from IndexedDB
+      get('lanes_draft_files').then(files => {
+        if (files && files.length > 0) {
+          const mapped = files.map((file: File) => ({
+            file,
+            preview: URL.createObjectURL(file)
+          }));
+          setSelectedFiles(prev => [...prev, ...mapped]);
+          del('lanes_draft_files');
+        }
+      });
     } else {
       if (typeof window !== 'undefined') {
         const draft = sessionStorage.getItem('lanes_draft_post');
@@ -139,8 +174,11 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
     };
   }, [searchParams]);
 
-  const handleChooseOnMap = () => {
+  const handleChooseOnMap = async () => {
     sessionStorage.setItem('lanes_draft_post', content);
+    if (selectedFiles.length > 0) {
+      await set('lanes_draft_files', selectedFiles.map(f => f.file));
+    }
     router.push('/map?action=pickPostLocation');
   };
 
@@ -314,7 +352,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
     }
 
     return (
-      <div className="relative mt-2 rounded-xl overflow-hidden border border-gray-200">
+      <div className="relative mt-2 rounded-xl overflow-hidden border border-gray-200 shrink-0">
         {gridContent}
       </div>
     );
@@ -325,7 +363,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] relative">
         {/* Auth Prompt Overlay */}
         {showAuthPrompt && (
-          <div className="absolute inset-0 z-50 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in">
+          <div className="absolute inset-0 z-[70] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in">
             <button 
               onClick={() => setShowAuthPrompt(false)}
               className="absolute top-4 right-4 p-2 bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-gray-700 rounded-full transition-colors"
@@ -336,6 +374,40 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
               <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">Login Required</h3>
               <p className="text-gray-600 mb-6 text-center text-sm">Sign in to share your post and photos with the community.</p>
               <LoginForm />
+            </div>
+          </div>
+        )}
+
+        {/* Draft Confirmation Overlay */}
+        {showDraftConfirm && (
+          <div className="absolute inset-0 z-[80] bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center p-6 animate-in fade-in">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Save as draft?</h3>
+                <p className="text-sm text-gray-600">You have unsaved changes. Would you like to save this post as a draft or discard it completely?</p>
+              </div>
+              <div className="flex items-center justify-between p-4 bg-gray-50">
+                <button 
+                  onClick={() => setShowDraftConfirm(false)}
+                  className="px-4 py-2 bg-transparent hover:bg-gray-200 text-gray-600 font-medium rounded-lg transition-colors"
+                >
+                  Keep Editing
+                </button>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={handleDiscardAndClose}
+                    className="px-4 py-2 bg-white hover:bg-red-50 text-red-600 border border-gray-200 hover:border-red-200 font-medium rounded-lg transition-colors"
+                  >
+                    Discard Post
+                  </button>
+                  <button 
+                    onClick={handleSaveDraftAndClose}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm"
+                  >
+                    Save Draft
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -361,7 +433,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
           )}
           <button 
             type="button"
-            onClick={onClose}
+            onClick={handleCloseRequest}
             className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-gray-700 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
@@ -369,7 +441,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
         </div>
 
         {/* Content */}
-        <div className="flex-1 relative overflow-hidden min-h-[350px]">
+        <div className="flex-auto relative overflow-hidden flex flex-col min-h-[350px]">
           <AnimatePresence initial={false} custom={direction} mode="wait">
             {viewMode === 'location' ? (
               <motion.div
@@ -380,7 +452,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="absolute inset-0 p-5 flex flex-col min-h-0 bg-white"
+                className="w-full flex-auto p-5 flex flex-col min-h-0 bg-white"
               >
                 {/* Location Input */}
                 <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all duration-200 shrink-0">
@@ -479,39 +551,43 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="absolute inset-0 flex flex-col min-h-0 bg-white"
+                className="w-full flex-auto flex flex-col min-h-0 bg-white"
               >
-                <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-y-auto min-h-0">
-                  <div className="p-4 flex-1 flex flex-col justify-between">
-                    <div>
+                <form onSubmit={handleSubmit} className="flex-auto flex flex-col overflow-y-auto min-h-0">
+                  <div className="p-4 flex-auto flex flex-col justify-between">
+                    <div className="flex flex-col">
                       <textarea
-                        className="w-full text-gray-800 text-lg border-none focus:outline-none focus:ring-0 focus:border-transparent resize-none min-h-[120px] placeholder-gray-400 bg-transparent"
+                        className="w-full text-gray-800 text-lg border-none focus:outline-none focus:ring-0 focus:border-transparent resize-none min-h-[60px] overflow-hidden placeholder-gray-400 bg-transparent"
                         placeholder="What's happening in your area?"
                         value={content}
-                        onChange={(e) => setContent(e.target.value)}
+                        onChange={(e) => {
+                          setContent(e.target.value);
+                          e.target.style.height = 'auto';
+                          e.target.style.height = e.target.scrollHeight + 'px';
+                        }}
                         disabled={createMutation.isPending}
                         autoFocus
                       ></textarea>
 
+                      {/* Location Tag Chip */}
+                      {locationTag && (
+                        <div className="mt-2 mb-1 flex items-center justify-between bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 animate-in fade-in slide-in-from-top-1 duration-200 shrink-0">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <MapPin className="w-4 h-4 text-red-500 shrink-0" />
+                            <span className="text-xs font-semibold text-blue-800 truncate">{locationTag}</span>
+                          </div>
+                          <button 
+                            type="button" 
+                            onClick={() => setLocationTag('')}
+                            className="p-1 text-blue-400 hover:text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+
                       {renderGridPreview()}
                     </div>
-
-                    {/* Location Tag Chip */}
-                    {locationTag && (
-                      <div className="mt-4 flex items-center justify-between bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <MapPin className="w-4 h-4 text-red-500 shrink-0" />
-                          <span className="text-xs font-semibold text-blue-800 truncate">{locationTag}</span>
-                        </div>
-                        <button 
-                          type="button" 
-                          onClick={() => setLocationTag('')}
-                          className="p-1 text-blue-400 hover:text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    )}
                   </div>
 
                   {/* Footer Actions */}
