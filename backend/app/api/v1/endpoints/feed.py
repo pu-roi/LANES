@@ -13,7 +13,7 @@ from app.models.interaction import InteractionType
 
 router = APIRouter()
 
-@router.get("/", response_model=CommunityPostPaginatedResponse)
+@router.get("", response_model=CommunityPostPaginatedResponse)
 def get_feed(
     lat: Optional[float] = Query(None, description="User's latitude"),
     lng: Optional[float] = Query(None, description="User's longitude"),

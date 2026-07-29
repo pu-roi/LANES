@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getFeed, votePost, FeedPost } from './feedApi';
-import { LeftSidebar } from './LeftSidebar';
-import { RightSidebar } from './RightSidebar';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
 import { Loader2, Filter, Image as ImageIcon, Video, MapPin } from 'lucide-react';
@@ -64,8 +62,12 @@ export function FeedPage() {
       // Invalidate feed to refresh votes
       queryClient.invalidateQueries({ queryKey: ['feed'] });
     },
-    onError: (error) => {
-      showError('Failed to vote', error.message);
+    onError: (err: any) => {
+      if (err.status === 401) {
+        showError('Login Required', 'Please log in first to interact with posts!');
+      } else {
+        showError('Failed to vote', err.message);
+      }
     }
   });
 
@@ -81,20 +83,8 @@ export function FeedPage() {
   };
 
   return (
-    <div className="bg-transparent text-gray-900 flex flex-col items-center w-full mt-2 relative">
-      {/* 3-Column Layout Wrapper */}
-      <div className="flex w-full px-2 lg:px-4 xl:px-8 pt-2 max-w-[1600px]">
-        
-        {/* Left Navigation */}
-        <LeftSidebar />
-
-        {/* Center & Right Wrapper */}
-        <div className="flex-1 flex justify-center min-w-0 px-4 lg:px-8 gap-6">
-          
-          {/* Main Feed */}
-          <main className="w-full max-w-[720px] bg-transparent relative">
-          
-          {/* Header with Tabs */}
+    <>
+      {/* Header with Tabs */}
           <div className="bg-transparent border-b border-gray-200 px-4 pt-2 pb-0 flex flex-col justify-end mb-2">
             <h1 className="text-xl font-extrabold tracking-tight mb-2 px-2">Community Feed</h1>
             
@@ -212,14 +202,6 @@ export function FeedPage() {
             ))}
           </div>
 
-          </main>
-
-          {/* Right Auxiliary Panel (Pulled in) */}
-          <RightSidebar />
-        </div>
-        
-      </div>
-
       {isCreateModalOpen && (
         <CreatePostModal 
           onClose={() => {
@@ -229,6 +211,6 @@ export function FeedPage() {
           initialFiles={preselectedFiles}
         />
       )}
-    </div>
+    </>
   );
 }

@@ -23,7 +23,11 @@ def upload_image(file: UploadFile) -> Optional[str]:
         response = cloudinary.uploader.upload(
             file.file,
             folder="lanes_flood_reports",
-            resource_type="auto"
+            resource_type="auto",
+            transformation=[
+                {"width": 1200, "crop": "limit"},
+                {"fetch_format": "auto", "quality": "auto"}
+            ]
         )
         # return the secure URL with f_auto and q_auto
         # Cloudinary URLs look like: https://res.cloudinary.com/demo/image/upload/v12345/folder/file.jpg

@@ -10,7 +10,7 @@ from app.crud import notification as crud_notification
 
 router = APIRouter()
 
-@router.get("/", response_model=NotificationPaginatedResponse)
+@router.get("", response_model=NotificationPaginatedResponse)
 def get_notifications(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
