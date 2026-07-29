@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { MapPin, ArrowUpCircle, ArrowDownCircle, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon } from 'lucide-react';
+import { MapPin, ArrowUpCircle, ArrowDownCircle, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { FeedPost } from './feedApi';
 import { useToast } from '@/shared/ui';
 
@@ -8,10 +9,14 @@ interface PostItemProps {
   post: FeedPost;
   onVote: (reportId: number, type: 'upvote' | 'downvote') => void;
   onViewMap?: (lat: number, lng: number) => void;
+  isExpanded?: boolean;
+  initialMediaIndex?: number;
 }
 
-export function PostItem({ post, onVote, onViewMap }: PostItemProps) {
+export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0 }: PostItemProps) {
+  const router = useRouter();
   const { info, success, error: showError } = useToast();
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(initialMediaIndex);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -145,18 +150,64 @@ export function PostItem({ post, onVote, onViewMap }: PostItemProps) {
           {post.content}
         </p>
 
-        {/* Media array rendering */}
+        {/* Media rendering */}
         {(() => {
           if (!post.media_urls || post.media_urls.length === 0) return null;
 
           const count = post.media_urls.length;
+
+          // Expanded view (Carousel)
+          if (isExpanded) {
+            const url = post.media_urls[currentMediaIndex];
+            const isVideo = url.match(/\.(mp4|webm|mov|ogg)$/i) || url.includes('/video/upload/');
+            
+            return (
+              <div className="mt-4 relative rounded-xl overflow-hidden bg-black flex items-center justify-center min-h-[300px] max-h-[600px]">
+                {isVideo ? (
+                  <video src={url} controls autoPlay className="max-w-full max-h-[600px] object-contain" />
+                ) : (
+                  <img src={url} alt={`Media ${currentMediaIndex + 1}`} className="max-w-full max-h-[600px] object-contain" />
+                )}
+                
+                {count > 1 && (
+                  <>
+                    <button 
+                      onClick={(e) => { e.preventDefault(); setCurrentMediaIndex((prev) => (prev > 0 ? prev - 1 : count - 1)); }}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full transition-colors backdrop-blur-sm"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button 
+                      onClick={(e) => { e.preventDefault(); setCurrentMediaIndex((prev) => (prev < count - 1 ? prev + 1 : 0)); }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full transition-colors backdrop-blur-sm"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                    <div className="absolute bottom-3 left-1/2 -translate-y-1/2 bg-black/50 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">
+                      {currentMediaIndex + 1} / {count}
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          }
+
+          // Feed List view (Grid)
           let gridContent = null;
 
           const renderCell = (index: number, extraClass: string = "", overlayIndex?: number) => {
             const url = post.media_urls![index];
             const isVideo = url.match(/\.(mp4|webm|mov|ogg)$/i) || url.includes('/video/upload/');
             return (
-              <div key={index} className={`relative w-full h-full overflow-hidden ${extraClass}`}>
+              <div 
+                key={index} 
+                className={`relative w-full h-full overflow-hidden ${!isExpanded ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''} ${extraClass}`}
+                onClick={() => {
+                  if (!isExpanded) {
+                    router.push(`/feed/${post.id}?media=${index}`);
+                  }
+                }}
+              >
                 {isVideo ? (
                   <video src={url} controls className="w-full h-full object-cover bg-black" />
                 ) : (
@@ -261,7 +312,13 @@ export function PostItem({ post, onVote, onViewMap }: PostItemProps) {
           </div>
 
           <button 
-            onClick={() => info("Comments section is coming soon!")}
+            onClick={() => {
+              if (isExpanded) {
+                // Already expanded, maybe focus the input
+              } else {
+                router.push(`/feed/${post.id}`);
+              }
+            }}
             className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
           >
             <MessageSquare className="w-4 h-4" />

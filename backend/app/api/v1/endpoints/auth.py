@@ -25,6 +25,9 @@ def login_access_token(
     client_ip = request.client.host if request.client else None
     user = crud.get_user_by_username(db, username=form_data.username)
     if not user:
+        user = crud.get_user_by_email(db, email=form_data.username)
+        
+    if not user:
         crud.create_audit_log(
             db,
             audit_in=schemas.AuditLogCreate(

@@ -7,7 +7,7 @@ from app.models.otp import OTPVerification
 from app.models.report import FloodReport, FloodAvoidanceZone, FloodReportLocation, FloodReportSurvey
 from app.models.audit import AuditLog
 from app.models.setting import SystemSetting
-from app.models.interaction import PostInteraction
+from app.models.interaction import PostInteraction, CommentInteraction
 from app.models.comment import Comment
 from app.models.post import CommunityPost
 from app.models.notification import Notification

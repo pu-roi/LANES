@@ -40,7 +40,15 @@ export interface CommentResponse {
   id: number;
   content: string;
   created_at: string;
+  edited_at?: string | null;
   author_name: string;
+  parent_id?: number | null;
+  upvotes: number;
+  downvotes: number;
+  user_interaction?: 'upvote' | 'downvote' | null;
+  is_deleted?: boolean;
+  is_pinned?: boolean;
+  pinned_by?: string | null;
 }
 
 export interface TopReporter {
@@ -72,7 +80,7 @@ export const getFeed = async (
     searchParams.append('lng', lng.toString());
   }
   
-  return apiClient.get<FeedResponse>(`/feed/?${searchParams.toString()}`);
+  return apiClient.get<FeedResponse>(`/feed?${searchParams.toString()}`);
 };
 
 export const votePost = async (postId: number, interactionType: 'upvote' | 'downvote') => {
@@ -82,12 +90,39 @@ export const votePost = async (postId: number, interactionType: 'upvote' | 'down
   });
 };
 
+export const getPost = async (postId: number): Promise<FeedPost> => {
+  return apiClient.get<FeedPost>(`/posts/${postId}`);
+};
+
 export const getComments = async (postId: number): Promise<CommentResponse[]> => {
   return apiClient.get<CommentResponse[]>(`/posts/${postId}/comments`);
 };
 
-export const postComment = async (postId: number, content: string): Promise<CommentResponse> => {
-  return apiClient.post<CommentResponse>(`/posts/${postId}/comments`, { content });
+export const postComment = async (postId: number, content: string, parent_id?: number): Promise<CommentResponse> => {
+  return apiClient.post<CommentResponse>(`/posts/${postId}/comments`, { content, parent_id });
+};
+
+export const deleteComment = async (commentId: number): Promise<void> => {
+  await apiClient.delete(`/posts/comments/${commentId}`);
+};
+
+export const editComment = async (commentId: number, content: string): Promise<CommentResponse> => {
+  return apiClient.patch<CommentResponse>(`/posts/comments/${commentId}`, { content });
+};
+
+export const pinComment = async (commentId: number): Promise<{ is_pinned: boolean; pinned_by: string | null }> => {
+  return apiClient.post(`/posts/comments/${commentId}/pin`, {});
+};
+
+export const searchUsers = async (query: string): Promise<string[]> => {
+  const result = await apiClient.get<{ usernames: string[] }>(`/users/search?q=${encodeURIComponent(query)}`);
+  return result.usernames;
+};
+
+export const voteComment = async (commentId: number, interactionType: 'upvote' | 'downvote') => {
+  return apiClient.post(`/posts/comments/${commentId}/vote`, {
+    type: interactionType,
+  });
 };
 
 export const getTopReporters = async (limit: number = 5): Promise<TopReportersResponse> => {

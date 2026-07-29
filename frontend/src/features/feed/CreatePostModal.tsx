@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import { X, Image as ImageIcon, Video, Send, Loader2, MapPin, Crosshair, ChevronLeft } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import imageCompression from 'browser-image-compression';
 import { createPost } from './feedApi';
 import { useToast } from '@/shared/ui';
 import LoginForm from '@/features/auth/LoginForm';
@@ -44,6 +45,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
   const [selectedFiles, setSelectedFiles] = useState<{ file: File; preview: string }[]>([]);
   const [locationTag, setLocationTag] = useState('');
   const objectUrlsRef = React.useRef<string[]>([]);
+  const hasRestoredRef = React.useRef(false);
   const [showDraftConfirm, setShowDraftConfirm] = useState(false);
 
   const handleCloseRequest = () => {
@@ -148,8 +150,18 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
         '', 
         window.location.pathname + (params.toString() ? '?' + params.toString() : '')
       );
-      
-      // Restore files from IndexedDB
+    }
+    
+    if (typeof window !== 'undefined') {
+      const draft = sessionStorage.getItem('lanes_draft_post');
+      if (draft && !content) {
+        setContent(draft);
+      }
+    }
+    
+    // Always restore files from IndexedDB
+    if (!hasRestoredRef.current) {
+      hasRestoredRef.current = true;
       get('lanes_draft_files').then(files => {
         if (files && files.length > 0) {
           const mapped = files.map((file: File) => ({
@@ -159,14 +171,9 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
           setSelectedFiles(prev => [...prev, ...mapped]);
           del('lanes_draft_files');
         }
+      }).catch(err => {
+        console.error("Failed to restore files from IndexedDB", err);
       });
-    } else {
-      if (typeof window !== 'undefined') {
-        const draft = sessionStorage.getItem('lanes_draft_post');
-        if (draft && !content) {
-          setContent(draft);
-        }
-      }
     }
     
     return () => {
@@ -205,11 +212,26 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const newFiles = Array.from(e.target.files).map(file => ({
-        file,
-        preview: URL.createObjectURL(file)
-      }));
-      setSelectedFiles(prev => [...prev, ...newFiles]);
+      const MAX_FILE_SIZE_MB = 20;
+      const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+      
+      const files = Array.from(e.target.files);
+      const validFiles: { file: File; preview: string }[] = [];
+      
+      for (const file of files) {
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          showError(`File "${file.name}" is too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`);
+          continue;
+        }
+        validFiles.push({
+          file,
+          preview: URL.createObjectURL(file)
+        });
+      }
+      
+      if (validFiles.length > 0) {
+        setSelectedFiles(prev => [...prev, ...validFiles]);
+      }
     }
   };
 
@@ -224,9 +246,33 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      // Compress images before sending
+      const compressedImages = await Promise.all(
+        selectedFiles.map(async (f) => {
+          if (!f.file.type.startsWith('image/')) return f.file;
+          
+          try {
+            const options = {
+              maxSizeMB: 1,
+              maxWidthOrHeight: 1200,
+              useWebWorker: true,
+              fileType: 'image/webp'
+            };
+            const compressedBlob = await imageCompression(f.file, options);
+            return new File([compressedBlob], f.file.name.replace(/\.[^/.]+$/, "") + ".webp", {
+              type: 'image/webp',
+              lastModified: Date.now(),
+            });
+          } catch (error) {
+            console.error("Compression failed for", f.file.name, error);
+            return f.file; // fallback to original
+          }
+        })
+      );
+
       return createPost({ 
         content, 
-        images: selectedFiles.map(f => f.file),
+        images: compressedImages,
         location_tag: locationTag.trim() || undefined
       });
     },

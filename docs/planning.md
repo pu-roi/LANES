@@ -22,7 +22,7 @@
 
 **Goal:** Comments Section for community feed
 
-- [ ] Implement Comments Section for community feed
+- [ ] Implement Comments Section for community feed (Threaded quote replies, mention parsing, pin/edit, dynamic focus-within input forms)
 
 ## Recently Completed
 

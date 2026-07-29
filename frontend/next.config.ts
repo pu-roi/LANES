@@ -4,7 +4,7 @@ import os from "os";
 
 const getLocalIPs = () => {
   const interfaces = os.networkInterfaces();
-  const ips = ['localhost', '127.0.0.1'];
+  const ips = ['localhost', '127.0.0.1', 'juiciness-cosmetics-routing.ngrok-free.dev'];
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name] || []) {
       if (iface.family === 'IPv4' && !iface.internal) {

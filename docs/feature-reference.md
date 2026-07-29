@@ -181,18 +181,19 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 10. Cloudinary Photo Evidence Upload
-*   **Purpose:** Allows commuters to submit visual proof of flood hazards to assist admin validation and provide objective severity data.
-*   **What it does:** Uploads a user-provided image alongside the text report, securely hosts it, and displays it in the moderation dashboard.
+### 10. Cloudinary Photo Evidence Upload & Edge Compression
+*   **Purpose:** Allows commuters to submit visual proof of flood hazards and community posts, while minimizing server memory overhead and saving mobile bandwidth.
+*   **What it does:** Uploads user-provided media alongside the text report, securely hosts it, and displays it in the feed. Large files are aggressively optimized.
 *   **How it works:**
-    1. The frontend collects the image file and submits it via `multipart/form-data`.
-    2. The FastAPI backend streams the file to **Cloudinary** via their Python SDK.
-    3. Cloudinary resizes the image (max width 1024px) and converts it to WebP format for high compression and rapid delivery.
-    4. The resulting CDN URL is saved as `image_url` in the PostgreSQL database.
-*   **Access & Roles:** Public users can upload; administrators can view.
+    1. The frontend uses `browser-image-compression` to resize images (max 1200px) and converts them to `WebP` before network transmission, vastly reducing mobile data costs.
+    2. A strict 20MB payload limit is enforced on the frontend UI and the FastAPI backend (via `Content-Length` interception) to prevent malicious massive uploads.
+    3. The FastAPI backend streams the file to **Cloudinary** via their Python SDK.
+    4. Cloudinary automatically transcodes the delivery format (`f_auto`) and quality (`q_auto`), serving optimal formats like AV1 or WebP based on the viewer's browser.
+    5. The resulting CDN URL is saved as `image_url` or `media_urls` in the PostgreSQL database.
+*   **Access & Roles:** Public users can upload; administrators and peers can view.
 *   **Related Components:**
-    *   **Frontend:** [FloodReportPanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (upload UI), [ReportsPage.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/admin/ReportsPage.tsx) (thumbnail view).
-    *   **Backend:** [cloudinary_service.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/services/cloudinary_service.py), [reports.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/reports.py).
+    *   **Frontend:** [FloodReportPanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [CreatePostModal.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/feed/CreatePostModal.tsx).
+    *   **Backend:** [cloudinary_service.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/services/cloudinary_service.py), [reports.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/reports.py), [posts.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/posts.py).
 
 ---
 
@@ -211,15 +212,29 @@ This document serves as the central technical reference for all currently implem
 
 ### 12. Community Feed & Social Validation
 *   **Purpose:** Provides commuters with localized, real-time crowdsourced updates, general disaster discussion, and enables peer validation of flood reports.
-*   **What it does:** Displays a 3-column feed containing both shared `FloodReport`s and general `CommunityPost`s with a "Nearby" (distance-based) and "Recent" (time-based) tab. Allows users to upvote or downvote posts and receive in-app notifications.
+*   **What it does:** Displays a 3-column feed containing shared `FloodReport`s and general `CommunityPost`s. Enables highly interactive community discussions via a rich, threaded comments section supporting quote replies, user mentions, upvote/downvote sorting, auto-collapsing low-score replies, and admin pinning.
 *   **How it works:**
     1. Fetches feed items using PostGIS `<->` operators for distance-based sorting or chronological ordering.
-    2. Renders `CommunityPost` items. If a post has an attached `flood_report_id`, it renders with interactive map contexts and severity badges.
-    3. Users interact via upvote/downvote and comments, which updates the `post_interactions` and `comments` tables.
-    4. Interaction events trigger a real-time `Notification` stored in the database for the post author, accessible via the global Bell icon.
-*   **Access & Roles:** Public users.
+    2. Users interact via upvote/downvote and comments, which updates the `post_interactions` and `comments` tables.
+    3. The Comment Engine structures threads recursively in the backend, supporting infinite nesting via adjacency lists (`parent_comment_id`).
+    4. The frontend utilizes React `useRef` based focus-within compound input forms to safely manage complex multi-input layouts without triggering React re-renders or cursor jumping.
+    5. Interaction events (Likes, Mentions, Replies) trigger real-time `Notification` rows stored in the database for the post author, accessible via the global Bell icon.
+*   **Access & Roles:** Public users can post and reply. Admins and Authors can Pin comments.
 *   **Related Components:**
     *   **Frontend:** `src/features/feed/` (Feed components, PostCard, tabs), `src/features/notifications/` (NotificationDropdown), `src/app/(feed)/feed/page.tsx`.
+
+---
+
+### 13. Persistent Post Drafting (IndexedDB)
+*   **Purpose:** Prevents accidental data loss when users navigate away from the post creation modal or lose connection.
+*   **What it does:** Seamlessly saves typed text and massive binary file selections in the browser's persistent storage, restoring them when the user returns.
+*   **How it works:**
+    1. Text content is saved to `sessionStorage`.
+    2. Large binary blobs (images/videos) exceed `sessionStorage` space quotas, so they are serialized into the browser's native **IndexedDB** using `idb-keyval`.
+    3. When the `CreatePostModal` mounts, a StrictMode-safe `useEffect` hook reconstructs the binary blobs back into JavaScript `File` objects and generates new `URL.createObjectURL` previews.
+*   **Access & Roles:** Public commuters.
+*   **Related Components:**
+    *   **Frontend:** [CreatePostModal.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/feed/CreatePostModal.tsx) (Draft logic, IDB restoration).
 
 ---
 

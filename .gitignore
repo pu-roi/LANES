@@ -53,7 +53,7 @@ ehthumbs.db
 Thumbs.db
 
 # Documentation
-lanes-documentation.md
+docs/others/
 
 # Large data files
 data/

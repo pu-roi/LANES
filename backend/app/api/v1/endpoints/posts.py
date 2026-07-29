@@ -16,13 +16,14 @@ from app.models.notification import NotificationType
 
 router = APIRouter()
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Form, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Query, Form, UploadFile, File, Request
 from app.services.cloudinary_service import upload_image
 
 from typing import List
 
 @router.post("", response_model=CommunityPostResponse)
 def create_post(
+    request: Request,
     content: str = Form(...),
     location_tag: Optional[str] = Form(None),
     images: List[UploadFile] = File([]),
@@ -30,6 +31,16 @@ def create_post(
     current_user: User = Depends(get_current_user)
 ):
     """Create a standalone community post with multiple images."""
+    
+    # Payload size check (20MB limit)
+    content_length = request.headers.get('content-length')
+    if content_length:
+        try:
+            if int(content_length) > 20 * 1024 * 1024:
+                raise HTTPException(status_code=413, detail="Payload too large. Maximum size is 20MB.")
+        except ValueError:
+            pass
+
     media_urls = []
     
     # Filter out empty files (FastAPI sometimes sends empty UploadFile objects when no file is selected)
@@ -62,6 +73,19 @@ def create_post(
         "report": None
     }
 
+
+@router.get("/{post_id}", response_model=CommunityPostResponse)
+def get_post(
+    post_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional)
+):
+    from app.crud import feed as crud_feed
+    user_id = current_user.id if current_user else None
+    post_data = crud_feed.get_feed_post(db, post_id, user_id=user_id)
+    if not post_data:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post_data
 
 @router.get("/", response_model=CommunityPostPaginatedResponse)
 def get_posts(

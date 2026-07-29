@@ -26,7 +26,8 @@ export function ForecastChart() {
   useEffect(() => {
     async function fetchForecast() {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/weather/forecast?count=12");
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+        const res = await fetch(`${baseUrl}/weather/forecast?count=12`);
           if (res.ok) {
           const data = await res.json();
           setForecast(data.forecast || []);
