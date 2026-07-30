@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Bell, Check, Info, MapPin, X } from 'lucide-react';
 import { getNotifications, markAsRead, markAllAsRead, Notification } from './notificationsApi';
 import { useAuth } from '@/hooks/useAuth';
+import { cn } from '@/lib/utils';
 
 export function NotificationBell() {
   const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
@@ -61,12 +62,22 @@ export function NotificationBell() {
     }
   };
 
-  if (pathname.startsWith('/admin')) {
+  // Hide on map page or admin pages
+  if (pathname === '/map' || pathname.startsWith('/admin')) {
     return null;
   }
 
+  // Hide on post detail page on mobile
+  const isPostDetail = /^\/feed\/\d+$/.test(pathname);
+
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div 
+      className={cn(
+        "fixed right-6 z-50",
+        isPostDetail ? "hidden sm:block" : "block",
+        "bottom-[calc(var(--bottom-nav-height)+1rem)] sm:bottom-6"
+      )}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative bg-white p-3 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] ring-4 ring-blue-400/30 border border-blue-200 hover:bg-blue-50 hover:shadow-[0_0_30px_rgba(59,130,246,0.7)] hover:ring-blue-400/50 transition-all duration-300 focus:outline-none"

@@ -263,16 +263,28 @@ export function PostDetailPage({ postId }: { postId: number }) {
   // ── render ─────────────────────────────────────────────────────────
   return (
     <PostContext.Provider value={contextValue}>
-      <div className="flex flex-col gap-4 mb-20">
+      <div className="flex flex-col gap-0 sm:gap-4 mb-20">
+      {/* Sticky Header for Mobile */}
+      <div className="sticky sm:hidden top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-200 py-3 px-4 flex justify-between items-center">
+        <h2 className="font-bold text-gray-900">Post Details</h2>
+        <button
+          onClick={() => router.push('/feed')}
+          className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Desktop Back Button */}
       <button
         onClick={() => router.push('/feed')}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors self-start bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100"
+        className="hidden sm:flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors self-start bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Feed
       </button>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white sm:rounded-xl sm:shadow-sm sm:border border-gray-100 border-y sm:border-y-0 overflow-hidden">
         <PostItem
           post={post}
           onVote={handleVote}
@@ -282,7 +294,7 @@ export function PostDetailPage({ postId }: { postId: number }) {
         />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-4 sm:p-6">
+      <div className="bg-white sm:rounded-xl sm:shadow-sm sm:border border-gray-100 overflow-hidden p-4 sm:p-6 mt-1 sm:mt-0">
         {/* Header + Sort Toggle */}
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -307,15 +319,94 @@ export function PostDetailPage({ postId }: { postId: number }) {
           )}
         </div>
 
-        {/* Main comment input */}
-        <div className="mb-8">
+        {/* Main comment input - Fixed to bottom on mobile */}
+        <div className="fixed sm:hidden bottom-[calc(var(--bottom-nav-height))] left-0 right-0 z-40 bg-white border-t border-gray-200 p-3 mb-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          <div className="max-w-[720px] mx-auto">
+            {replyingTo && (
+              <div className="flex items-center justify-between bg-blue-50 px-3 py-2 rounded-t-xl border border-blue-100 border-b-0 mb-0 text-xs font-medium text-blue-700">
+                <span>Replying to @{replyingTo.author}...</span>
+                <button onClick={() => { setReplyingTo(null); setReplyText(''); }} className="text-gray-500 hover:text-gray-700 p-1">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+            <div className="flex gap-3 items-start">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (replyingTo) {
+                    handleReplySubmit(e, replyingTo.id);
+                  } else {
+                    handleCommentSubmit(e);
+                  }
+                }} 
+                className={`flex-1 relative bg-gray-50 border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all flex flex-row items-end p-1.5 gap-2 ${replyingTo ? 'rounded-b-xl rounded-t-none border-t-0' : 'rounded-2xl'}`}
+              >
+                <div className="flex-1 relative w-full">
+                  <textarea
+                    value={replyingTo ? replyText : commentText}
+                    onChange={e => {
+                      if (replyingTo) {
+                        setReplyText(e.target.value);
+                        handleMentionInput(e.target.value, 'reply');
+                      } else {
+                        setCommentText(e.target.value);
+                        handleMentionInput(e.target.value, 'main');
+                      }
+                      // Auto-resize
+                      e.target.style.height = '';
+                      if (e.target.value) {
+                        e.target.style.height = e.target.scrollHeight + 'px';
+                      }
+                    }}
+                    placeholder={replyingTo ? `Write a reply...` : "Write a comment..."}
+                    className="w-full h-[34px] bg-transparent py-1.5 pl-3 text-sm focus:outline-none resize-none overflow-y-auto max-h-[120px]"
+                    disabled={commentMutation.isPending}
+                    maxLength={MAX_CHARS}
+                    rows={1}
+                  />
+                  {/* Mention dropdown */}
+                  {(activeMentionInput === 'main' || activeMentionInput === 'reply') && mentionResults.length > 0 && (
+                    <div className="absolute bottom-full mb-2 left-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 min-w-[160px]">
+                      {mentionResults.map(u => (
+                        <button
+                          key={u}
+                          type="button"
+                          onClick={() => insertMention(u, activeMentionInput)}
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 text-gray-800 first:rounded-t-xl last:rounded-b-xl"
+                        >
+                          @{u}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex items-center gap-2 mb-0.5 pr-1 self-end">
+                  <button
+                    type="submit"
+                    disabled={
+                      (replyingTo ? (!replyText.trim() || replyText.length > MAX_CHARS) : (!commentText.trim() || commentText.length > MAX_CHARS)) || commentMutation.isPending
+                    }
+                    className="w-8 h-8 shrink-0 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center transition-colors active:scale-95"
+                  >
+                    {commentMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 -ml-0.5" />}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Main comment input - Desktop */}
+        <div className="mb-8 hidden sm:block">
           <div className="flex gap-3 items-start">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200 mt-0.5">
-              <span className="font-bold text-blue-700 text-xs sm:text-sm">Me</span>
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200 mt-0.5">
+              <span className="font-bold text-blue-700 text-sm">Me</span>
             </div>
             <form 
               onSubmit={handleCommentSubmit} 
-              className="flex-1 relative bg-gray-50 border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent rounded-2xl transition-all flex flex-col sm:flex-row items-end p-1.5 gap-2"
+              className="flex-1 relative bg-gray-50 border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent rounded-2xl transition-all flex flex-row items-end p-1.5 gap-2"
             >
               <div className="flex-1 relative w-full">
                 <textarea
@@ -324,19 +415,13 @@ export function PostDetailPage({ postId }: { postId: number }) {
                     setCommentText(e.target.value);
                     handleMentionInput(e.target.value, 'main');
                     // Auto-resize
-                    e.target.style.height = 'auto';
-                    e.target.style.height = e.target.scrollHeight + 'px';
-                  }}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      if (commentText.trim() && !commentMutation.isPending && commentText.length <= MAX_CHARS) {
-                        commentMutation.mutate({ content: commentText });
-                      }
+                    e.target.style.height = '';
+                    if (e.target.value) {
+                      e.target.style.height = e.target.scrollHeight + 'px';
                     }
                   }}
-                  placeholder="Write a comment... (Enter to post, Shift+Enter for new line)"
-                  className="w-full bg-transparent py-1.5 pl-3 text-sm focus:outline-none resize-none overflow-hidden min-h-[36px] max-h-[200px]"
+                  placeholder="Write a comment..."
+                  className="w-full h-[34px] bg-transparent py-1.5 pl-3 text-sm focus:outline-none resize-none overflow-y-auto max-h-[200px]"
                   disabled={commentMutation.isPending}
                   maxLength={MAX_CHARS}
                   rows={1}
@@ -632,8 +717,7 @@ export function PostDetailPage({ postId }: { postId: number }) {
                       {/* Reply */}
                       <button
                         onClick={() => {
-                          const quoted = `> ${comment.content.slice(0, 80)}${comment.content.length > 80 ? '…' : ''}\n\n`;
-                          setReplyText(quoted);
+                          setReplyText('');
                           setReplyingTo({ id: comment.id, author: comment.author_name, content: comment.content });
                         }}
                         className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-gray-800 transition-colors"
@@ -690,9 +774,9 @@ export function PostDetailPage({ postId }: { postId: number }) {
                   </div>
                 )}
 
-                {/* Inline Reply Form */}
+                {/* Desktop Inline Reply Form */}
                 {replyingTo?.id === comment.id && (
-                  <div className="mt-3 pr-4">
+                  <div className="hidden sm:block mt-3 pr-4">
                     {/* Quote preview */}
                     {replyText.startsWith('> ') && (
                       <div className="border-l-2 border-gray-300 pl-2 mb-2">
