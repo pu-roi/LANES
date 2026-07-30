@@ -1,219 +1,42 @@
-# LANES Development Engine: Agent Roles & Collaboration Protocol
+# LANES: AI Vibe Coding Protocol & Global Rules
 
-This document establishes the collaborative framework for the development of **LANES (Localised Alternative Navigation for Environs under Submersion)**. It defines the responsibilities, operational boundaries, and iterative development loop between the Human Developer and the AI Code Agent, as well as the coding standards enforced across the repository.
+This document defines the core operational boundaries, architecture, and required rules for any AI agent interacting with the LANES repository.
 
-> [!IMPORTANT]
-> The AI Agent MUST read and understand [`DESIGN.md`](file:///e:/Files/Documents/GitHub/LANES/DESIGN.md) before implementing or proposing any code changes to ensure alignment with the system architecture.
-
-```mermaid
-graph TD
-    A[Vibe Coder: Architectural Director] -- Directs Milestones & Traces --> B[AI Code Agent: Syntax & Logic Engine]
-    B -- Generates Validated Code & Solutions --> C[Local Workspace: e:\Files\Documents\GitHub\LANES]
-    C -- Runs & Validates Output --> A
-```
+> [!CAUTION]
+> **CRITICAL RULE**: You MUST use your file-reading tool to read [`DESIGN.md`](file:///d:/Documents/Github/LANES/DESIGN.md) before writing or modifying any code to ensure you follow the established architecture.
 
 ---
 
-## 1. The Collaboration Concept: Inside-Out Vibe Coding Loop
-
-Development is driven by a tight, iterative loop:
-* **Engineering Strategy and Quality Control** are directed by the human developer, focusing on UX validation, high-level structural decisions, and operational flow.
-* **Implementation Details** (syntax, parsing, DB models, API constraints, and typing) are automated by the AI Code Agent, ensuring clean, production-ready, and defensively coded configurations.
-
----
-
-## 2. Team Member Definitions
-
-### 🛠️ Member A: The Vibe Coder (Human Developer)
-* **Role:** Architectural Director, Principal Validator, & Product Owner.
-* **Operational Scope:**
-  * Directs high-level milestones, feature integration orders, and research guidelines.
-  * Manages local terminal execution environment, server lifecycles (`uvicorn`, `npm run dev`), and Docker instances.
-  * Reviews system interactions, maps, UI responsiveness, and tests edge-case behaviors via browser clients.
-* **Style:** High-level prompting, system steering, and verification via visual mapping and API dashboards.
-
-### 🤖 Member B: The AI Code Agent (Gemini Core Engine)
-* **Role:** Chief Software Engineer, Syntax Specialist, & Security Auditor.
-* **Operational Scope:**
-  * Writes production-ready code (Next.js/TypeScript frontend, FastAPI/Python backend, SQLAlchemy ORM, and PostGIS queries).
-  * Designs schemas, ensures database normalization (up to 3NF), and constructs secure role permissions.
-  * Implements defensive error boundaries (e.g. database-offline fail-safes).
-  * Researches errors, analyzes logs, and generates exact code diffs.
-* **Style:** Technically exhaustive, defensively written, typed schemas, and structured scannability.
+## 1. Project Knowledge (The Stack)
+- **Frontend**: React 18, Next.js (App Router), Tailwind CSS, MapLibre GL JS, Lucide React.
+- **Backend**: Python, FastAPI, SQLAlchemy (GeoAlchemy2), spaCy NLP.
+- **Database**: PostgreSQL with PostGIS extension.
+- **Routing**: Valhalla Engine.
 
 ---
 
-## 3. Operational Iteration Protocol
+## 2. Global Boundaries & Vibe Coding Rules
 
-The development workflow operates under a strict four-step loop:
+### ✅ Always Do:
+- **Keep logic on the server**: All data manipulation, pricing, permissions, and database queries must occur in the FastAPI backend, NEVER in the Next.js frontend.
+- **Use specific skills**: If your task matches a skill in `.agents/skills/`, you MUST read and follow that skill's instructions.
+- **Surface Errors to the User**: Do not swallow errors (e.g., `catch (err) { console.error(err) }` without updating UI state). Ensure the user is notified if a request fails.
+- **Verify Sessions**: Ensure backend FastAPI endpoints have proper dependency injection checks for authentication and role validation.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor VC as Vibe Coder (Human)
-    actor AI as AI Code Agent (Gemini)
-    
-    VC->>AI: 1. Direction: Presents milestone goals or debug log traces
-    Note over AI: Analyzes boundaries, models, & files
-    AI->>VC: 2. Analysis: Delivers proposed changes and implementation details
-    VC->>VC: 3. Execution: Deploys code changes & launches local servers
-    VC->>AI: 4. Validation: Submits terminal outputs & logs for joint verification
-```
-
-1. **Direction:** The Vibe Coder sets the focus area (e.g. "Migrate to Google Maps API") and provides any necessary environmental context or logs.
-2. **Analysis:** The AI Agent inspects the current repository state, maps the flow, and provides the exact file modifications required.
-3. **Execution:** The Vibe Coder updates the workspace files and runs the relevant servers (`uvicorn` backend, Next.js frontend, Postgres DB).
-4. **Validation:** The Vibe Coder inspects the results (via browser maps, console logs, or Swagger docs) and shares feedback to verify correctness before closing the milestone.
+### 🚫 Never Do:
+- **Never commit secrets**: Do not hardcode API keys, Stripe tokens, or DB URLs (`http://localhost`, `postgres://`) in the source code.
+- **Never perform direct DB queries from the frontend**: The frontend must only interact with the FastAPI endpoints via standard HTTP requests.
+- **Never alter database schemas without asking**: Always confirm with the human developer before modifying SQLAlchemy models or Alembic migrations.
 
 ---
 
-## 4. Engineering Principles
+## 3. Git Push Protocol
 
-The AI Agent must:
-* **Prefer maintainability over cleverness.** Avoid unnecessarily complex code structures when simple ones will suffice.
-* **Follow SOLID principles** for object-oriented design and component structure.
-* **Follow DRY (Don't Repeat Yourself) principles** to minimize redundant implementations.
-* **Follow KISS (Keep It Simple, Stupid) principles** to keep interfaces and logic straightforward.
-* **Prefer explicit code over implicit behavior** (e.g. use clean typing, schema definitions, and comments).
-* **Favor readability over micro-optimizations** unless a specific bottleneck is identified.
-* **Minimize technical debt** by writing clean, modular code.
-* **Generate production-ready code** including appropriate error boundaries, type checks, and docstrings.
+When the human developer says **"push"** (or similar phrases like "save my work", "push to main"), you MUST execute the following 4 steps automatically without asking for further input:
 
----
+1. **Stage all changes:** `git add -A`
+2. **Synthesize the commit message:** Review the conversation and create a message following Conventional Commits (e.g., `feat(map): added heatmap layer`). Write a bulleted body explaining the *what* and *why*.
+3. **Commit:** `git commit -m "<summary line>" -m "<bulleted body>"`
+4. **Push:** `git push origin <branch>`
 
-## 5. Repository Inspection Rules
-
-Before proposing any code changes:
-1. **Read all related files** fully to capture all dependencies and structures.
-2. **Understand existing architecture** and design patterns in place.
-3. **Follow existing naming conventions** (e.g., camelCase vs snake_case, directories, databases).
-4. **Preserve current patterns** (e.g., matching the style of existing API routers or components).
-5. **Minimize modifications** to avoid introducing unrelated issues.
-6. **Never rewrite functioning modules** unless explicitly requested by the Vibe Coder.
-
----
-
-## 6. Design & Coding Standards Authority
-
-* [`DESIGN.md`](file:///e:/Files/Documents/GitHub/LANES/DESIGN.md) is the architectural source of truth.
-* This `AGENTS.md` document is the single source of truth for coding standards, rules, and collaborative procedures.
-
-The AI Agent must:
-* **Follow all architecture decisions** defined in `DESIGN.md`.
-* **Adhere strictly to all syntactic, database, language, and API standards** defined in Section 9 (Coding Standards) of this document.
-* **Never introduce technologies** not defined in `DESIGN.md` without explicit approval.
-* **Never alter database architecture** (schemas, fields, relations) without approval.
-* **Never replace mapping, NLP, or routing technologies** without approval.
-
----
-
-## 7. Response Format
-
-For every implementation request, the AI Agent must provide:
-1. **Problem Analysis:** A clear diagnosis of the goal or issue.
-2. **Root Cause:** Explanation of why the bug occurs or why the feature requires specific alterations (if debugging).
-3. **Proposed Solution:** Architectural breakdown of how the changes will be executed.
-4. **Files Affected:** Clickable list of files to modify or create.
-5. **Code Changes:** Explicit diff blocks or new code structures.
-6. **Risks:** Potential breaking changes, security vulnerabilities, or performance costs.
-7. **Validation Steps:** Step-by-step instructions to verify the changes manually or through tests.
-
----
-
-## 8. GIS Development Rules
-
-The AI Agent must:
-* **Validate SRIDs** before performing any spatial queries or operations (default is `SRID 4326` for GPS coordinates).
-* **Use PostGIS-native spatial functions** (e.g. `ST_Intersects`, `ST_Buffer`, `ST_DWithin`) directly to leverage Postgres geometry index performance.
-* **Prefer indexed spatial queries** by ensuring geometry columns are indexed using spatial index trees (GIST).
-* **Avoid coordinate assumptions** (specifically ensuring proper mapping between longitude/latitude `[lng, lat]` GeoJSON arrays and latitude/longitude `[lat, lng]` map API formats).
-* **Preserve route calculation accuracy** by checking full line vectors rather than single points for route hazards.
-* **Consider flood avoidance zones as critical routing constraints** that force route deflections.
-
----
-
-## 9. Appendix: Coding Standards & Conventions
-
-All developers and AI Code Agents must write code adhering strictly to the following syntactic constraints.
-
-### A. Frontend Development (Next.js & React)
-* **TypeScript Only:** Plain JavaScript (`.js`, `.jsx`) is strictly prohibited. All UI components and utilities must be written in TypeScript (`.ts`, `.tsx`).
-* **Strict Type Safety:** The use of the `any` type is banned. Every variable, component prop, hook, and function parameter must be explicitly typed.
-  * *Bad:* `const handleRoute = (data: any) => {}`
-  * *Good:* `const handleRoute = (data: RouteResponse) => {}`
-* **Feature-Based Architecture:** The frontend is organized by feature domain, not by file type. The `src/` directory follows this structure:
-  * `app/` — Next.js App Router page files only. Each page file imports its feature component and renders it. No business logic lives here.
-  * `features/` — One subdirectory per feature domain (e.g. `admin/`, `map/`, `routing/`, `auth/`). Each domain owns its components, API calls, types, and state hooks.
-  * `shared/ui/` — Reusable, domain-agnostic UI primitives only (e.g. `Button`, `Card`, `Modal`, `Input`). These must have no dependency on any specific feature.
-  * `hooks/` — Shared React custom hooks used across multiple features.
-  * `lib/` — Shared utilities and the central `apiClient.ts`.
-  * `styles/` — Global CSS and Tailwind base styles.
-* **Component Types:** Prefer functional components with standard React hooks (`useState`, `useEffect`, `useRef`).
-* **Tailwind Utility Classes:** Use Tailwind CSS utility classes for styling. Avoid inline styles (`style={{...}}`) unless dealing with dynamic heights or custom CSS parameters (like map tiles).
-* **Responsive Design:** Viewports must follow mobile-first responsive grid layouts using Tailwind breakpoints (e.g. `md:flex-row`, `sm:grid-cols-2`).
-* **Iconography Standard:** Use the `lucide-react` library for all interface icons to ensure layout symmetry and visual uniformity.
-
-### B. Backend Development (FastAPI & Python)
-* **Type Hints Required:** Every function signature must contain explicit type hints for both input arguments and return types.
-  * *Bad:* `def get_safe_route(start, end):`
-  * *Good:* `def get_safe_route(start: List[float], end: List[float]) -> Dict[str, Any]:`
-* **Docstrings:** Every module, class, and function must have descriptive Google-style docstrings explaining parameters, logic, and return types.
-* **Pydantic Validation:** All request payloads, response schemas, and external API configurations must use **Pydantic v2** models to validate schema structure, types, and constraints.
-* **Database Models:** Keep database models (`app.models`) cleanly mapped to Pydantic schemas (`app.schemas`) using `ConfigDict(from_attributes=True)`.
-* **Domain-Based Architecture:** The backend follows a domain-based organizational pattern. Business logic is separated by domain into dedicated service modules inside `app/services/` (e.g. `routing.py`, `admin_service.py`). Each domain's route handler in `app/api/` must remain thin — receiving the request and delegating computation to the matching service module. Database queries belong in `app/crud/` and must not be embedded directly inside route handlers or service logic.
-
-### C. Database Management (PostgreSQL & PostGIS)
-* **Alembic Migrations Only:** All schema adjustments, database migrations, and table modifications must be executed via Alembic migrations. Direct schema modifications (`CREATE TABLE`, `ALTER TABLE`) performed raw in the DBMS console are forbidden.
-* **Migration Integrity:** Ensure migrations are reversible (having an explicit `upgrade()` and `downgrade()` pipeline).
-* **Strict SRID Enforcement:** Always set and validate spatial coordinate reference systems using `SRID 4326` (GPS longitude/latitude decimal degrees).
-* **Indexed Math:** Ensure all queries checking polygon overlaps or line crossings use GIST indexes and native spatial triggers (e.g. `func.ST_Intersects`).
-
-### D. API Design & Routing
-* **RESTful Naming Conventions:** Endpoints must use resource-based, lowercase nouns. Use proper HTTP request verbs (`GET` for retrieval, `POST` for creation, `PUT` / `PATCH` for updates, `DELETE` for removal).
-  * *Bad:* `/api/v1/getSafeRoute`
-  * *Good:* `POST /api/v1/reports/route`
-* **HTTP Exceptions:** Never let raw errors propagate to the client. Wrap exceptions inside FastAPI's `HTTPException` with clear statuses (e.g. `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`).
-* **Structured Payload:** Standardize validation failure bodies so the frontend client can parse error arrays consistently.
-
----
-
-## 10. Git Push Protocol
-
-When the Vibe Coder says **"push to [branch]"** (e.g. "push to main", "push to dev"), the AI Agent must execute the following steps **automatically and in full**, without asking for further input:
-
-### Step 1 — Stage all changes
-```powershell
-git add -A
-```
-
-### Step 2 — Synthesise the commit message from the conversation
-The AI Agent must review the current conversation and produce:
-* **Summary line** (`<type>(<scope>): <short imperative description>`) — max 72 characters, using [Conventional Commits](https://www.conventionalcommits.org/) types: `feat`, `fix`, `refactor`, `style`, `chore`, `docs`, `test`.
-* **Body** — a bullet-point description of every meaningful change made during the session, written in plain English. Each bullet covers *what* changed and *why*.
-
-Format:
-```
-<type>(<scope>): <summary>
-
-- <change 1 description>
-- <change 2 description>
-- ...
-```
-
-### Step 3 — Commit with the generated message
-```powershell
-git commit -m "<summary line>" -m "<body as newline-separated bullets>"
-```
-
-### Step 4 — Push to the specified branch
-```powershell
-git push origin <branch>
-```
-
-### Rules
-* **Never ask the Vibe Coder to write the commit message** — the AI Agent is responsible for synthesising it from the conversation.
-* **Always include a body.** A summary-only commit is not acceptable.
-* **Scope** should reflect the primary domain touched (e.g. `map`, `routing`, `admin`, `db`, `auth`).
-* If multiple domains were touched, list them comma-separated: `fix(map,routing):`.
-* If the push fails (e.g. non-fast-forward), report the exact git error and suggest the correct resolution (e.g. `git pull --rebase origin <branch>`) — do not force-push without explicit approval.
-
+If the push fails (e.g., non-fast-forward), report the git error and suggest the correct resolution (e.g., `git pull --rebase`). Do not force-push without explicit approval.
