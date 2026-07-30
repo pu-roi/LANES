@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, Users } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
+import { useToast } from "@/shared/ui";
 
 interface PublicStats {
   daily_verified_reports: number;
@@ -10,6 +11,7 @@ interface PublicStats {
 }
 
 export function HomeStats() {
+  const toast = useToast();
   const [stats, setStats] = useState<PublicStats>({ daily_verified_reports: 0, total_visitors: 0 });
   const [loading, setLoading] = useState(true);
 
@@ -25,8 +27,8 @@ export function HomeStats() {
 
         const data = await apiClient.get<PublicStats>(`/public/stats?increment=${shouldIncrement}`);
         setStats(data);
-      } catch (err) {
-        console.error("Failed to fetch public stats:", err);
+      } catch (err: any) {
+        toast.error("Stats Error", err.message || "Failed to fetch public stats");
       } finally {
         setLoading(false);
       }

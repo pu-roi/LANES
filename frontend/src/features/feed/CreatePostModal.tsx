@@ -122,8 +122,8 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       try {
         const results = await searchLocations(locationTag);
         setSuggestions(results);
-      } catch (err) {
-        console.error(err);
+      } catch (err: any) {
+        showError("Search Error", err.message || "Failed to search locations");
       } finally {
         setIsSearching(false);
       }
@@ -171,8 +171,8 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
           setSelectedFiles(prev => [...prev, ...mapped]);
           del('lanes_draft_files');
         }
-      }).catch(err => {
-        console.error("Failed to restore files from IndexedDB", err);
+      }).catch((err: any) => {
+        showError("Draft Error", "Failed to restore files from IndexedDB: " + err.message);
       });
     }
     
@@ -263,8 +263,8 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
               type: 'image/webp',
               lastModified: Date.now(),
             });
-          } catch (error) {
-            console.error("Compression failed for", f.file.name, error);
+          } catch (error: any) {
+            showError("Compression Failed", `Failed to compress ${f.file.name}: ${error.message}`);
             return f.file; // fallback to original
           }
         })

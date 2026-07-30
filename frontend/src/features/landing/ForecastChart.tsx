@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { MapPin } from "lucide-react";
+import { useToast } from "@/shared/ui";
 
 interface ForecastSlot {
   dt: number;
@@ -18,6 +19,7 @@ interface ForecastSlot {
 }
 
 export function ForecastChart() {
+  const toast = useToast();
   const [forecast, setForecast] = useState<ForecastSlot[]>([]);
   const [location, setLocation] = useState<string>("Pasig");
   const [loading, setLoading] = useState(true);
@@ -33,8 +35,8 @@ export function ForecastChart() {
           setForecast(data.forecast || []);
           setLocation(data.location || "Pasig");
         }
-      } catch (err) {
-        console.error("Failed to fetch forecast:", err);
+      } catch (err: any) {
+        toast.error("Forecast Error", err.message || "Failed to fetch weather forecast");
       } finally {
         setLoading(false);
       }

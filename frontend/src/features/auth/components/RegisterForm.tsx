@@ -69,8 +69,8 @@ export function RegisterForm() {
     if (draft) {
       try {
         setFormData(JSON.parse(draft));
-      } catch (err) {
-        console.error("Failed to parse draft", err);
+      } catch (err: any) {
+        showError("Draft Error", "Failed to load saved registration draft.");
       }
     }
   }, []);
@@ -102,8 +102,8 @@ export function RegisterForm() {
         });
         
         setProvinces(mappedProvinces.sort((a: any, b: any) => a.name.localeCompare(b.name)));
-      } catch (err) {
-        console.error("Failed to fetch provinces", err);
+      } catch (err: any) {
+        showError("Location Error", "Failed to fetch provinces. Please check your connection.");
       }
     }
     fetchProvinces();
@@ -132,8 +132,8 @@ export function RegisterForm() {
         };
 
         setCities(data.map((c: any) => ({ code: c.code, name: normalizeCityName(c.name) })));
-      } catch (err) {
-        console.error("Failed to fetch cities", err);
+      } catch (err: any) {
+        showError("Location Error", "Failed to fetch cities. Please check your connection.");
       }
     }
     fetchCities();
@@ -151,8 +151,8 @@ export function RegisterForm() {
         const res = await fetch(url);
         const data = await res.json();
         setBarangays(data.map((b: any) => ({ code: b.code, name: b.name })));
-      } catch (err) {
-        console.error("Failed to fetch barangays", err);
+      } catch (err: any) {
+        showError("Location Error", "Failed to fetch barangays. Please check your connection.");
       }
     }
     fetchBarangays();

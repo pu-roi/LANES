@@ -5,5 +5,6 @@
 
 ## Active Sprint: Progressive Web App (PWA) & UI Fixes
 
-- [ ] Fix identified UI issues across the application
+- [ ] Fix identified UI issues across the application (Surface swallowed errors)
 - [ ] Ensure full PWA functionality and installability
+- [ ] Implement Skeleton Loading Screens (Next.js Suspense & Tailwind pulse)
