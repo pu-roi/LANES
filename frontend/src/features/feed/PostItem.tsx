@@ -57,7 +57,6 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
         showError("Share API is not supported on this device/network.");
       }
     } catch (err) {
-      console.error("Failed to share:", err);
       showError("Failed to share link");
     }
   };

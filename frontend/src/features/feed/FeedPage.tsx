@@ -38,7 +38,6 @@ export function FeedPage() {
             setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
           },
           (err) => {
-            console.error("Location error:", err);
             showError("Location Unavailable", "Please enable location permissions to use the Nearby feed.");
             setTab('recent');
           }
