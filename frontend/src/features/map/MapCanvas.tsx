@@ -518,6 +518,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
+    if (!map.style) return;
 
     // ── Cleanup: remove all previous route layers, sources, and ETA markers ──
     altMarkerRefs.current.forEach((m) => m.remove());
@@ -772,6 +773,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current || !activeZonesData) return;
     const map = mapRef.current;
+    if (!map.style) return;
 
     // Remove existing sources/layers if they exist
     if (map.getLayer("active-zones-layer")) map.removeLayer("active-zones-layer");
@@ -975,6 +977,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
+    if (!map.style) return;
 
     // Remove existing preview source/layers if they exist
     if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
@@ -1008,6 +1011,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
+    if (!map.style) return;
     
     if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
     if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
