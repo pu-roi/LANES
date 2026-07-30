@@ -20,11 +20,21 @@
 
 ## Active Sprint (Next Feature)
 
-**Goal:** Comments Section for community feed
+**Goal:** Update Documentation (`AGENTS.md` and `DESIGN.md`)
 
-- [x] Implement Comments Section for community feed (Threaded quote replies, mention parsing, pin/edit, dynamic focus-within input forms)
+- [x] Review and update `AGENTS.md` with latest patterns
+- [x] Review and update `DESIGN.md` to reflect current architecture
+
+## Next Up
+
+**Goal:** Progressive Web App (PWA) & UI Fixes
+
+- [ ] Fix identified UI issues across the application
+- [ ] Ensure full PWA functionality and installability
 
 ## Recently Completed
+
+- [x] Implement Comments Section for community feed (Threaded quote replies, mention parsing, pin/edit, dynamic focus-within input forms)
 
 - [x] Implement Photon API Reverse Geocoding on backend to extract and save 'barangay' for approved reports
 - [x] Create `/api/v1/analytics/heatmap` and `/api/v1/analytics/stats` endpoints
