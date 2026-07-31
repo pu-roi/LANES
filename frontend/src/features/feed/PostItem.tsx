@@ -455,7 +455,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                   minScale={1}
                   maxScale={4}
                   centerOnInit
-                  onTransformed={(ref) => setZoomScale(ref.state.scale)}
+                  onTransform={(ref) => setZoomScale(ref.state.scale)}
                 >
                   {({ zoomIn, zoomOut, resetTransform }) => (
                     <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }} contentStyle={{ width: "100%", height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
