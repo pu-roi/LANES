@@ -551,14 +551,33 @@ export function PostDetailPage({ postId }: { postId: number }) {
         {/* Connector lines for child comments */}
         {!isRoot && (
           <>
+            {/* Curved branch connecting to this child */}
             <div
-              className="absolute bg-gray-200"
-              style={{ left: '-21px', top: 0, bottom: isLast ? 'auto' : 0, height: isLast ? '20px' : 'auto', width: '2px', zIndex: 0 }}
+              className="absolute border-gray-200"
+              style={{
+                left: '-21px',
+                top: 0,
+                height: '12px',
+                width: '21px',
+                borderBottomWidth: '2px',
+                borderLeftWidth: '2px',
+                borderBottomLeftRadius: '12px',
+                zIndex: 0
+              }}
             />
-            <div
-              className="absolute bg-gray-200"
-              style={{ left: '-21px', top: '19px', width: '33px', height: '2px', zIndex: 0 }}
-            />
+            {/* Straight vertical stem continuing down */}
+            {!isLast && (
+              <div
+                className="absolute bg-gray-200"
+                style={{
+                  left: '-21px',
+                  top: 0,
+                  bottom: 0,
+                  width: '2px',
+                  zIndex: 0
+                }}
+              />
+            )}
           </>
         )}
 
@@ -583,7 +602,7 @@ export function PostDetailPage({ postId }: { postId: number }) {
                 </div>
                 {comment.replies.length > 0 && (
                   <div
-                    className="w-[2px] bg-gray-200 flex-1 mt-1 relative hover:bg-gray-400 transition-colors cursor-pointer group rounded-full"
+                    className="w-[2px] bg-gray-200 flex-1 relative hover:bg-gray-400 transition-colors cursor-pointer group"
                     onClick={() => setIsCollapsed(true)}
                     title="Collapse thread"
                   >
@@ -867,8 +886,10 @@ export function PostDetailPage({ postId }: { postId: number }) {
           <div className="pl-8 flex flex-col">
             {depth >= MAX_DEPTH ? (
               <div className="relative pt-2 pb-2 flex items-center">
-                <div className="absolute bg-gray-200" style={{ left: '-21px', top: 0, height: '16px', width: '2px' }} />
-                <div className="absolute bg-gray-200" style={{ left: '-21px', top: '15px', width: '17px', height: '2px' }} />
+                <div
+                  className="absolute border-gray-200"
+                  style={{ left: '-21px', top: 0, height: '12px', width: '21px', borderBottomWidth: '2px', borderLeftWidth: '2px', borderBottomLeftRadius: '12px' }}
+                />
                 <button
                   onClick={() => setIsolatedThreadId(comment.id)}
                   className="text-left text-xs font-semibold text-blue-500 hover:underline flex items-center gap-1"
@@ -893,8 +914,10 @@ export function PostDetailPage({ postId }: { postId: number }) {
                 })}
                 {!showAllReplies && comment.replies.length > MAX_REPLIES && (
                   <div className="relative pt-2 pb-2 flex items-center">
-                    <div className="absolute bg-gray-200" style={{ left: '-21px', top: 0, height: '16px', width: '2px' }} />
-                    <div className="absolute bg-gray-200" style={{ left: '-21px', top: '15px', width: '17px', height: '2px' }} />
+                    <div
+                      className="absolute border-gray-200"
+                      style={{ left: '-21px', top: 0, height: '12px', width: '21px', borderBottomWidth: '2px', borderLeftWidth: '2px', borderBottomLeftRadius: '12px' }}
+                    />
                     <button
                       onClick={() => setShowAllReplies(true)}
                       className="text-left text-xs font-semibold text-blue-500 hover:underline"

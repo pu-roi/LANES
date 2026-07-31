@@ -320,11 +320,10 @@ def calculate_flood_safe_route(
 
     # 6. Attempt 1: Avoid EVERYTHING (Blocked + Penalized)
     # This gives a 100% safe route if available.
-    if all_to_avoid:
-        data = request_valhalla_route(start, end, avoid_polygons=all_to_avoid, vehicle_profile=vehicle_profile)
-        if data:
-            res = build_response(data, is_blocked=False, detour_label="Safe Detour", safety_score=100.0, flood_risk="none", direct_primary=direct_primary)
-            if res: return res
+    data = request_valhalla_route(start, end, avoid_polygons=all_to_avoid, vehicle_profile=vehicle_profile)
+    if data:
+        res = build_response(data, is_blocked=False, detour_label="Safe Detour", safety_score=100.0, flood_risk="none", direct_primary=direct_primary)
+        if res: return res
 
     # 7. Attempt 2: Avoid only BLOCKED (traverse Penalized)
     if penalized:
