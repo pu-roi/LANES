@@ -437,3 +437,7 @@ export function useMapContext(): MapContextValue {
   }
   return context;
 }
+
+export function useOptionalMapContext(): MapContextValue | null {
+  return useContext(MapContext);
+}

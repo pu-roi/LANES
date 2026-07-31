@@ -20,19 +20,21 @@
 
 ## Active Sprint (Next Feature)
 
-**Goal:** Update Documentation (`AGENTS.md` and `DESIGN.md`)
+**Goal:** Weather & Chart Legend (Phase 2)
 
-- [x] Review and update `AGENTS.md` with latest patterns
-- [x] Review and update `DESIGN.md` to reflect current architecture
+- [ ] Add a sleek UI guide/legend near the forecast chart to explain what the weather icons, rain percentages, and volume numbers mean to everyday users.
 
 ## Next Up
 
-**Goal:** Progressive Web App (PWA) & UI Fixes
+**Goal:** Admin Metrics & Trust Score Logic
 
-- [ ] Fix identified UI issues across the application
-- [ ] Ensure full PWA functionality and installability
+- [ ] Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
+- [ ] Admin configurable manual presets for flood expiration.
 
 ## Recently Completed
+
+- [x] **Progressive Web App (PWA) & UI Fixes** (Installability banner, offline fallback, comment UI overhaul, safe area paddings)
+- [x] **Documentation Update**: `AGENTS.md` and `DESIGN.md` updated with latest architecture.
 
 - [x] Implement Comments Section for community feed (Threaded quote replies, mention parsing, pin/edit, dynamic focus-within input forms)
 

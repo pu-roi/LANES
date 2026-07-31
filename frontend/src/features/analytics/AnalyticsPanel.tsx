@@ -5,7 +5,7 @@ import { apiClient } from "@/lib/apiClient";
 import { Loader2, TrendingUp, MapPin, AlertCircle } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Panel } from "@/shared/ui/Panel";
-import { useMapContext } from "@/features/map/MapContext";
+import { useOptionalMapContext } from "@/features/map/MapContext";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -25,7 +25,11 @@ export function AnalyticsPanel() {
   const pathname = usePathname();
   const isAdmin = pathname === "/admin/analytics";
   
-  const { isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, setIsAnalyticsCollapsed } = useMapContext();
+  const mapContext = useOptionalMapContext();
+  const isAnalyticsOpen = mapContext?.isAnalyticsOpen ?? true;
+  const isAnalyticsCollapsed = mapContext?.isAnalyticsCollapsed ?? false;
+  const setIsAnalyticsOpen = mapContext?.setIsAnalyticsOpen ?? (() => {});
+  const setIsAnalyticsCollapsed = mapContext?.setIsAnalyticsCollapsed ?? (() => {});
   
   const { data, isLoading } = useQuery({
     queryKey: ["analyticsStats"],

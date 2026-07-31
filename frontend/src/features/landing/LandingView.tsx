@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, ArrowRight, MousePointerClick, TrendingUp } from "lucide-react";
+import { MapPin, ArrowRight, MousePointerClick, TrendingUp, Download } from "lucide-react";
+
+import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/Card";
 import { Button } from "@/shared/ui/Button";
@@ -17,6 +19,7 @@ import { FloodLegend } from "./FloodLegend";
 
 export default function LandingView() {
   const router = useRouter();
+  const { isInstallable, triggerInstall } = useInstallPrompt();
 
   const [locationLabel, setLocationLabel] = useState("");
   const [typedText, setTypedText] = useState("");
@@ -111,29 +114,39 @@ export default function LandingView() {
               <p className="text-base text-gray-600 max-w-lg leading-relaxed">
                 LANES helps commuters and drivers find safe, flood-free
                 routes in real-time. Provide your location to view the safest
-                path to your destination.
+                path to your destination.{" "}
+                <a
+                  href="/about"
+                  className="text-blue-600 font-semibold hover:underline inline-flex items-center whitespace-nowrap"
+                  aria-label="Learn more about LANES"
+                >
+                  {typedText}
+                  <ArrowRight className="inline-block w-3.5 h-3.5 ml-1" />
+                </a>
               </p>
 
               <div className="flex flex-col gap-3 pt-2 w-full lg:max-w-md items-center lg:items-start">
                 <a
-                  href="/about"
-                  className="text-blue-600 font-semibold hover:underline flex items-center h-8"
-                  aria-label="Learn more about LANES"
+                  href="#flood-legend-section"
+                  onClick={scrollToLegend}
+                  className="text-slate-500 font-medium hover:text-blue-600 hover:underline flex items-center transition-colors"
+                  aria-label="View Vehicle Clearance Rules"
                 >
-                  {typedText}
-                  <ArrowRight className="inline-block w-4 h-4 ml-1" />
+                  <MousePointerClick className="inline-block w-4 h-4 mr-2" />
+                  View Vehicle Clearance Rules
                 </a>
                 
-                  <a
-                    href="#flood-legend-section"
-                    onClick={scrollToLegend}
-                    className="relative inline-flex items-center justify-center h-10 px-6 mt-2 font-medium text-blue-700 bg-white border border-blue-200 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.2)] transition-all duration-300 hover:text-blue-800 hover:border-blue-400 hover:shadow-[0_0_25px_rgba(59,130,246,0.5)] group"
-                  >
-                    {/* Continuous radar-like expanding ring for mobile visibility */}
-                    <div className="absolute inset-0 rounded-full border-2 border-blue-400 animate-ping opacity-30 pointer-events-none"></div>
-                    <MousePointerClick className="relative w-4 h-4 mr-2 text-blue-600 group-hover:scale-110 transition-transform" />
-                    <span className="relative">View Vehicle Profiles</span>
-                  </a>
+                {isInstallable && (
+                  <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full justify-center lg:justify-start">
+                    <button
+                      onClick={triggerInstall}
+                      className="relative inline-flex items-center justify-center h-11 px-8 font-bold text-white bg-blue-600 border border-blue-600 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300 hover:bg-blue-700 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] group"
+                    >
+                      <Download className="relative w-5 h-5 mr-2 text-white group-hover:translate-y-0.5 transition-transform" />
+                      <span className="relative">Download LANES App</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
