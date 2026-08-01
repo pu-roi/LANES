@@ -43,6 +43,30 @@
                 "isDefault": true
             },
             "problemMatcher": []
+        },
+        {
+            "label": "LANES: Frontend (Production)",
+            "type": "shell",
+            "command": "npm run build && npm start",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "presentation": {
+                "group": "lanes-dev",
+                "panel": "shared"
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Start LANES Production Server",
+            "dependsOn": [
+                "LANES: Backend",
+                "LANES: Frontend (Production)"
+            ],
+            "dependsOrder": "parallel",
+            "group": "build",
+            "problemMatcher": []
         }
     ]
 }
