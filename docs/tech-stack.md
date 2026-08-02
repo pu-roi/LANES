@@ -30,6 +30,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Rendering completely free street-level basemap imagery and providing rate-limited geocoding autocomplete features with zero commercial licensing caps.
 * **Weather Data & Iconography:** **Open-Meteo API & Meteocons**
   * *Role:* Open-Meteo provides hyper-local, free weather forecasting data without API keys, while Meteocons (Fill SVGs) are served locally to provide a highly granular, premium visual representation of weather states.
+* **AI Weather Insights:** **OpenRouter API**
+  * *Role:* Integrates free LLMs (e.g., openai/gpt-oss-20b) to dynamically interpret and explain complex weather probability and volume metrics into layperson terminology.
 * **Geographic Demographics:** **PSGC API (Gitlab Pages)**
   * *Role:* Providing a unified and accurate list of Philippine Provinces, Cities/Municipalities, and Barangays for user registration and demographic validation.
 

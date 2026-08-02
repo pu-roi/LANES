@@ -67,6 +67,22 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
+### 3. Dynamic AI Weather Insights
+*   **Purpose:** Helps everyday users understand raw meteorological data (PoP%, mm/h) by converting it into simple, educational interpretations.
+*   **What it does:** Provides a completely automated, on-demand AI explanation of the next 4 hours of weather data via a dedicated modal on the homepage.
+*   **How it works:**
+    1. The frontend parses the 12-hour forecast array from Open-Meteo.
+    2. The user clicks "Generate AI Insights" in the Weather Modal.
+    3. The backend compiles the first 4 hours of data into a highly constrained system prompt, commanding the AI to act as a "teacher."
+    4. The server securely calls the **OpenRouter API** (`openrouter/free` model routing) to avoid costs while maintaining dynamic NLP generation.
+    5. The AI returns a strict JSON object containing short interpretations of both Storm Risk and Environmental Conditions, which is rendered dynamically in the UI.
+*   **Access & Roles:** Public users.
+*   **Related Components:**
+    *   **Frontend:** [WeatherInsightsModal.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/landing/WeatherInsightsModal.tsx).
+    *   **Backend:** [weather.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/weather.py) (`POST /api/v1/weather/insights`).
+
+---
+
 ### 3. Height-Aware Rerouting (Dynamic Vehicle Profiles)
 *   **Purpose:** Customizes detour calculations based on vehicle clearance constraints (e.g., Pedestrian, Motorcycle, Sedan, SUV).
 *   **What it does:** Allows commuters to select their vehicle profile and intelligently decides which flood polygons to avoid. High-clearance vehicles (SUVs) can safely cross knee-deep water (Yellow/Orange) but incur a 35% safety penalty to account for hidden hazards, while low-clearance vehicles (Sedans) are completely blocked.
