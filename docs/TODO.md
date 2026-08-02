@@ -5,5 +5,5 @@
 
 ## Active Sprint: Weather & Chart Legend (Phase 2)
 
-- [ ] Design and implement a UI guide/legend for the forecast chart
-- [ ] Explain weather icons (rain probability, volume numbers) to everyday users
+- [x] Design and implement a UI guide/legend for the forecast chart
+- [x] Explain weather icons (rain probability, volume numbers) to everyday users

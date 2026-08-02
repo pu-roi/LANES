@@ -6,8 +6,29 @@ import openmeteo_requests
 import requests_cache
 import pandas as pd
 from retry_requests import retry
+import httpx
+import os
+import json
+from pydantic import BaseModel
 
 router = APIRouter()
+
+class ForecastSlot(BaseModel):
+    dt: int
+    time: str
+    temp: float
+    pop: int
+    condition: str
+    icon: str
+    precip_mm: Optional[float] = 0.0
+    showers_mm: Optional[float] = 0.0
+    wind_kmh: Optional[float] = 0.0
+    wind_dir: Optional[int] = 0
+    humidity_pct: Optional[int] = 0
+
+class WeatherInsightsRequest(BaseModel):
+    forecast: List[ForecastSlot]
+    location: str
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
@@ -254,3 +275,80 @@ async def get_forecast(
 
     except Exception as e:
         return {"forecast": [], "location": "Unknown"}
+
+@router.post("/insights")
+async def get_weather_insights(request: WeatherInsightsRequest):
+    """
+    Generate dynamic weather insights using OpenRouter's free models.
+    """
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    api_key = os.environ.get("OPENROUTER_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="OpenRouter API key is not configured")
+
+    # Limit to the first 4 slots for immediate insights
+    forecast_subset = request.forecast[:4]
+    
+    forecast_data_str = json.dumps([s.dict() for s in forecast_subset], indent=2)
+
+    system_prompt = (
+        "You are an expert meteorologist and teacher. Your job is to look at the next 4 hours of weather data and explain to the user exactly what the numbers mean so they can understand the chart.\n\n"
+        "Meteorology Rules:\n"
+        "1. For Storm Risk, mention the exact PoP (%) and Volume (mm/h) from the data, and explain what they mean. (e.g., 'The chart shows a 40% chance of rain, meaning a 4 in 10 chance rain falls exactly here. The 1.5 mm/h volume indicates it would only be a light drizzle.').\n"
+        "2. For Environment, mention the Temp, Humidity, and Wind, and explain how they combine to feel. (e.g., 'With 95% humidity, the 25°C temperature will feel much warmer and stickier.').\n"
+        "3. Explicitly mention you are analyzing the next 4 hours.\n\n"
+        "Strict Output Constraints (JSON FORMAT):\n"
+        "You must respond with a JSON object containing exactly two keys:\n"
+        "- \"storm_risk\": A 2-sentence explanation teaching the user what the current Rain % and mm/h numbers mean.\n"
+        "- \"environment\": A 2-sentence explanation teaching the user what the current Temp, Humidity, and Wind numbers mean.\n"
+        "Return ONLY valid JSON."
+    )
+
+    user_prompt = f"Location: {request.location}\nHere is the upcoming weather data:\n{forecast_data_str}\n\nPlease generate the JSON summary."
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "HTTP-Referer": "http://localhost:3000", # Required by OpenRouter
+        "X-Title": "LANES Weather", # Required by OpenRouter
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "model": "openrouter/free",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "response_format": {"type": "json_object"}
+    }
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=20.0)
+            response.raise_for_status()
+            data = response.json()
+            
+            message_content = data["choices"][0]["message"]["content"]
+            model_used = data.get("model", "openrouter/free")
+            
+            try:
+                # Some free models might wrap in markdown ```json even when requested not to
+                clean_content = message_content.replace('```json', '').replace('```', '').strip()
+                parsed_json = json.loads(clean_content)
+            except json.JSONDecodeError:
+                # Fallback if the model failed to output valid JSON
+                parsed_json = {
+                    "storm_risk": "Could not generate storm risk insights at this time.",
+                    "environment": "Could not generate environmental insights at this time."
+                }
+                
+            return {
+                "insights": parsed_json,
+                "model": model_used
+            }
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=e.response.status_code, detail=f"OpenRouter API error: {e.response.text}")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")

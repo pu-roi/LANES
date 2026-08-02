@@ -5,18 +5,24 @@ import { CheckCircle2, XCircle, Info, X } from "lucide-react";
 
 export type ToastType = "success" | "error" | "info";
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 export interface ToastMessage {
   id: string;
   title: string;
   message?: string;
   type: ToastType;
+  action?: ToastAction;
 }
 
 interface ToastContextType {
-  showToast: (title: string, message?: string, type?: ToastType) => void;
-  success: (title: string, message?: string) => void;
-  error: (title: string, message?: string) => void;
-  info: (title: string, message?: string) => void;
+  showToast: (title: string, message?: string, type?: ToastType, action?: ToastAction) => void;
+  success: (title: string, message?: string, action?: ToastAction) => void;
+  error: (title: string, message?: string, action?: ToastAction) => void;
+  info: (title: string, message?: string, action?: ToastAction) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -36,19 +42,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const showToast = useCallback((title: string, message?: string, type: ToastType = "info") => {
+  const showToast = useCallback((title: string, message?: string, type: ToastType = "info", action?: ToastAction) => {
     const id = Math.random().toString(36).substring(2, 9);
-    setToasts((prev) => [...prev, { id, title, message, type }]);
+    setToasts((prev) => [...prev, { id, title, message, type, action }]);
 
-    // Auto dismiss after 4 seconds
+    // Auto dismiss after 5 seconds if there's an action, else 4
     setTimeout(() => {
       removeToast(id);
-    }, 4000);
+    }, action ? 5000 : 4000);
   }, [removeToast]);
 
-  const success = useCallback((title: string, message?: string) => showToast(title, message, "success"), [showToast]);
-  const error = useCallback((title: string, message?: string) => showToast(title, message, "error"), [showToast]);
-  const info = useCallback((title: string, message?: string) => showToast(title, message, "info"), [showToast]);
+  const success = useCallback((title: string, message?: string, action?: ToastAction) => showToast(title, message, "success", action), [showToast]);
+  const error = useCallback((title: string, message?: string, action?: ToastAction) => showToast(title, message, "error", action), [showToast]);
+  const info = useCallback((title: string, message?: string, action?: ToastAction) => showToast(title, message, "info", action), [showToast]);
 
   const [mounted, setMounted] = useState(false);
 
@@ -85,6 +91,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               <p className="text-sm font-semibold text-gray-900">{toast.title}</p>
               {toast.message && (
                 <p className="text-sm text-gray-500 mt-0.5 leading-snug">{toast.message}</p>
+              )}
+              {toast.action && (
+                <button
+                  onClick={() => {
+                    toast.action!.onClick();
+                    removeToast(toast.id);
+                  }}
+                  className="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 focus:outline-none"
+                >
+                  {toast.action.label}
+                </button>
               )}
             </div>
             

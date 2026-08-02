@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, Sparkles } from "lucide-react";
 import { useToast } from "@/shared/ui";
+import { WeatherInsightsModal } from "./WeatherInsightsModal";
 
 interface ForecastSlot {
   dt: number;
@@ -24,6 +25,7 @@ export function ForecastChart() {
   const [location, setLocation] = useState<string>("Pasig");
   const [loading, setLoading] = useState(true);
   const [hoveredEnvIndex, setHoveredEnvIndex] = useState<number | null>(null);
+  const [isInsightsOpen, setIsInsightsOpen] = useState(false);
 
   useEffect(() => {
     async function fetchForecast() {
@@ -115,13 +117,22 @@ export function ForecastChart() {
 
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full overflow-hidden">
-      <div className="flex items-center gap-3 mb-6">
-        <h3 className="text-sm font-semibold text-gray-800">12-Hour Detailed Forecast</h3>
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-100">
-          <MapPin className="w-3.5 h-3.5 text-blue-500" />
-          <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">{location}</span>
+    <div className="relative bg-white rounded-2xl border border-gray-100 shadow-sm p-6 w-full">
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-3">
+          <h3 className="text-sm font-semibold text-gray-800">12-Hour Detailed Forecast</h3>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-100">
+            <MapPin className="w-3.5 h-3.5 text-blue-500" />
+            <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">{location}</span>
+          </div>
         </div>
+        <button
+          onClick={() => setIsInsightsOpen(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm text-sm font-semibold text-gray-700"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+          <span>Insights</span>
+        </button>
       </div>
       
       <div className="overflow-x-auto pb-4 custom-scrollbar">
@@ -282,6 +293,13 @@ export function ForecastChart() {
 
         </div>
       </div>
+
+      <WeatherInsightsModal
+        isOpen={isInsightsOpen}
+        onClose={() => setIsInsightsOpen(false)}
+        forecast={forecast}
+        location={location}
+      />
     </div>
   );
 }

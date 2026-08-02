@@ -12,12 +12,13 @@ import { Loader2, ArrowLeft, Send, ArrowUp, ArrowDown, MessageSquare, X, Pin, Fl
 import { useToast } from '@/shared/ui';
 import { formatCommentTime } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
+import { ConfirmDialog } from '@/shared/ui';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface CommentNode extends CommentResponse {
   replies: CommentNode[];
 }
 
-const MAX_DEPTH = 4;
 const MAX_REPLIES = 3;
 const MAX_CHARS = 250;
 const ROOT_PAGE_SIZE = 10;
@@ -31,6 +32,9 @@ export function PostDetailPage({ postId }: { postId: number }) {
   const queryClient = useQueryClient();
   const { error: showError, success, info } = useToast();
   const { user } = useAuth();
+  
+  const isMobile = useMediaQuery("(max-width: 640px)");
+  const maxDepth = isMobile ? 2 : 4;
 
   // ── comment input state ────────────────────────────────────────────
   const [commentText, setCommentText] = useState('');
@@ -45,6 +49,11 @@ export function PostDetailPage({ postId }: { postId: number }) {
   // ── edit state ─────────────────────────────────────────────────────
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editText, setEditText] = useState('');
+
+  // ── delete state ───────────────────────────────────────────────────
+  const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+  const [hiddenComments, setHiddenComments] = useState<Set<number>>(new Set());
+  const pendingDeleteTimeouts = useRef<Record<number, NodeJS.Timeout>>({});
 
   // ── mention state ──────────────────────────────────────────────────
   const [mentionResults, setMentionResults] = useState<string[]>([]);
@@ -146,7 +155,6 @@ export function PostDetailPage({ postId }: { postId: number }) {
   const deleteCommentMutation = useMutation({
     mutationFn: (commentId: number) => deleteComment(commentId),
     onSuccess: () => {
-      success('Comment deleted');
       queryClient.invalidateQueries({ queryKey: ['comments', postId] });
     },
     onError: (err: any) => showError('Failed to delete comment', err?.response?.data?.detail || err?.message)
@@ -227,7 +235,8 @@ export function PostDetailPage({ postId }: { postId: number }) {
     handleReplySubmit,
     commentMutation, editCommentMutation, deleteCommentMutation, commentVoteMutation, pinCommentMutation,
     activeMentionInput, setActiveMentionInput, mentionResults, setMentionResults,
-    insertMention, handleMentionInput, setIsolatedThreadId, info, canPin
+    insertMention, handleMentionInput, setIsolatedThreadId, info, canPin,
+    hiddenComments, setCommentToDelete, maxDepth
   };
 
   // ── loading / error states ─────────────────────────────────────────
@@ -501,6 +510,47 @@ export function PostDetailPage({ postId }: { postId: number }) {
         </div>
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={commentToDelete !== null}
+        title="Delete Comment"
+        message="Are you sure you want to delete this comment?"
+        confirmLabel="Delete"
+        variant="destructive"
+        onConfirm={() => {
+          if (commentToDelete !== null) {
+            const id = commentToDelete;
+            setHiddenComments(prev => new Set(prev).add(id));
+            setCommentToDelete(null);
+
+            const timeoutId = setTimeout(() => {
+              deleteCommentMutation.mutate(id);
+              setHiddenComments(prev => {
+                const next = new Set(prev);
+                next.delete(id);
+                return next;
+              });
+              delete pendingDeleteTimeouts.current[id];
+            }, 5000);
+            
+            pendingDeleteTimeouts.current[id] = timeoutId;
+
+            success('Comment deleted', 'Your comment will be removed.', {
+              label: 'Undo',
+              onClick: () => {
+                clearTimeout(timeoutId);
+                delete pendingDeleteTimeouts.current[id];
+                setHiddenComments(prev => {
+                  const next = new Set(prev);
+                  next.delete(id);
+                  return next;
+                });
+                info('Comment restored', 'Your comment was not deleted.');
+              }
+            });
+          }
+        }}
+        onCancel={() => setCommentToDelete(null)}
+      />
     </PostContext.Provider>
   );
 }
@@ -517,7 +567,10 @@ export function PostDetailPage({ postId }: { postId: number }) {
     depth?: number;
   }) => {
     const ctx = useContext(PostContext);
-    const { user, replyingTo, setReplyingTo, replyText, setReplyText, editingCommentId, setEditingCommentId, editText, setEditText, handleReplySubmit, handleEditSubmit, commentMutation, editCommentMutation, deleteCommentMutation, commentVoteMutation, pinCommentMutation, activeMentionInput, mentionResults, setMentionResults, insertMention, handleMentionInput, setIsolatedThreadId, info, canPin } = ctx;
+    const { user, replyingTo, setReplyingTo, replyText, setReplyText, editingCommentId, setEditingCommentId, editText, setEditText, handleReplySubmit, handleEditSubmit, commentMutation, editCommentMutation, deleteCommentMutation, commentVoteMutation, pinCommentMutation, activeMentionInput, mentionResults, setMentionResults, insertMention, handleMentionInput, setIsolatedThreadId, info, canPin, hiddenComments, setCommentToDelete, maxDepth } = ctx;
+    
+    if (hiddenComments.has(comment.id)) return null;
+
     const netScore = comment.upvotes - comment.downvotes;
     const defaultCollapsed = netScore <= AUTO_COLLAPSE_THRESHOLD;
     const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
@@ -777,12 +830,7 @@ export function PostDetailPage({ postId }: { postId: number }) {
                             Edit
                           </button>
                           <button
-                            onClick={() => {
-                              if (window.confirm('Are you sure you want to delete this comment?')) {
-                                deleteCommentMutation.mutate(comment.id);
-                              }
-                            }}
-                            disabled={deleteCommentMutation.isPending}
+                            onClick={() => setCommentToDelete(comment.id)}
                             className="text-xs font-medium text-gray-400 hover:text-red-500 transition-colors"
                           >
                             Delete
@@ -884,7 +932,7 @@ export function PostDetailPage({ postId }: { postId: number }) {
         {/* Nested replies */}
         {!isCollapsed && comment.replies.length > 0 && (
           <div className="pl-8 flex flex-col">
-            {depth >= MAX_DEPTH ? (
+            {depth >= maxDepth ? (
               <div className="relative pt-2 pb-2 flex items-center">
                 <div
                   className="absolute border-gray-200"
