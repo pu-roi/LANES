@@ -6,20 +6,38 @@
 
 ## Active Sprint (Next Feature)
 
-**Goal:** Admin Metrics & Trust Score Logic
+*(None currently active)*
 
-- [ ] Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
-- [ ] Admin configurable manual presets for flood expiration.
+## Future Roadmap (Phases)
 
-## Backlog
+### Phase 1: Community Moderation & System Rules
+> **Focus:** Establishing user trust, automated rules, and managing active flood data without ML.
+- **User Metrics & Trust Score**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
+  - *Implementation:* Add `reports_submitted`, `accuracy_rate`, `trust_score` columns to `profile.py`.
+  - *Logic:* Trust score starts at 50. +5 for every approved report (cap 100), -10 for rejected (min 0). Accuracy = Approved / (Approved + Rejected).
+- **Rule-Based Flood Expiration**: 
+  - *Implementation:* Backend sets `expires_at` in `FloodAvoidanceZone` based on severity when an admin approves a report.
+  - *Crowd-Sourced Extension:* Add "Flood Subsiding" / "Still Flooded" buttons on the map for users to reduce or extend expiration time.
+- **Trust-Based Auto-Approval Engine**: 
+  - Allow high-trust users (>90 score) to bypass the admin moderation queue.
+  - *Crowd Consensus:* Auto-approve a flood if 3 independent users report it in the same radius within a short timeframe.
+- **Duplicate Resolution (Admin Panel)**: 
+  - Add admin tools to merge overlapping flood polygons using PostGIS `ST_Intersects` and `ST_Union`.
 
-- Add authenticated routing for local networks
-- **User Registry & System Rules**
-  - **User Metrics**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
-  - **Rule-Based Expiration**: Admin configurable manual presets for flood expiration (e.g. 4 hours, 12 hours).
-- **Open-Meteo Integrations (Future Work)**
-  - **Global Flood API (GloFAS)**: Integrate `river_discharge` variables to predict river overflow and automatically mark nearby areas as high risk.
-  - **Historical Weather API**: Correlate past typhoons and known flood occurrences to train an ML model for predictive flood mapping.
+### Phase 2: Security & Local Networks
+> **Focus:** Securing the application for production and local network deployments.
+- **Authenticated Routing**: Add authentication layers for routing requests on local networks.
+- **Optimize Real-Time WebSocket Broadcast**: Ensure sub-second latency for routing barrier updates across all connected clients.
+
+### Phase 3: External Integrations & IoT
+> **Focus:** Connecting LANES to external data sources and physical hardware.
+- **Open-Meteo GloFAS Integration**: Integrate `river_discharge` variables to predict river overflow and automatically mark nearby areas as high risk.
+- **IoT Sensor Webhooks**: Create dedicated `/api/v1/reports` webhooks to ingest raw coordinate data from physical ultrasonic water-level sensors on bridges.
+
+### Phase 4: Machine Learning (Long-Term)
+> **Focus:** Moving from rule-based to predictive AI architectures.
+- **Historical Weather Correlation**: Use Open-Meteo historical APIs to correlate past typhoons with flood occurrences to build a training dataset.
+- **Predictive Expiration Models**: Transition from Rule-Based Expiration to an ML model (Python/scikit-learn) trained on historical DRMMO data to predict exact expiration times based on rainfall and terrain.
 
 ## Defense Talking Points
 
