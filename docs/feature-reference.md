@@ -127,18 +127,18 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 5. Real-Time Event Signaling (WebSockets Integration)
+### 5. Real-Time Event Signaling (Server-Sent Events)
 *   **Purpose:** Ensures instant, reactive visual updates across commuter and admin maps without forcing manual browser refreshes.
 *   **What it does:** Signals active database events (approvals, deactivations, database cleans) from the backend directly to active frontend sessions.
 *   **How it works:**
-    1. The React app opens a native `WebSocket` connection to the FastAPI server at `/api/v1/ws`.
-    2. The backend maintains an active connection manager mapping open client sockets.
+    1. The React app connects to a native `EventSource` on the FastAPI server at `/api/v1/sse/stream`.
+    2. The backend maintains an active connection manager mapping open client streams.
     3. When an admin approves a report or deactivates a zone, the server broadcasts an event (e.g. `report_approved`).
     4. The frontend intercepts the payload and automatically invalidates the React Query cache, triggering a silent background refetch of map layers.
 *   **Access & Roles:** Public clients and administrative dashboards.
 *   **Related Components:**
-    *   **Frontend:** [useWebSocket.ts](file:///e:/Files/Documents/GitHub/LANES/frontend/src/hooks/useWebSocket.ts), `providers.tsx`.
-    *   **Backend:** [websocket.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/websocket.py), `app.core.websocket`.
+    *   **Frontend:** [useSSE.ts](file:///e:/Files/Documents/GitHub/LANES/frontend/src/hooks/useSSE.ts), `providers.tsx`.
+    *   **Backend:** [sse.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/sse.py), `app.core.sse`.
 
 ---
 

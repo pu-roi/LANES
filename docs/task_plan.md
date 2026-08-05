@@ -10,7 +10,14 @@
 
 ## Future Roadmap (Phases)
 
-### Phase 1: Community Moderation & System Rules
+### Phase 1: Security & Local Networks (🟢 COMPLETED)
+> **Focus:** Securing the application for production and local network deployments.
+- [x] **Local Network Routing**: Hardened backend CORS regex to local IPs and dynamic NEXT_PUBLIC_API_URL routing.
+- [x] **Rate Limiting**: Integrated `slowapi` to protect authentication and OTP endpoints.
+- [x] **SSE Migration (Future-Proofing)**: Replaced WebSockets with Server-Sent Events (SSE) to ensure stability for future Android APKs (WebView limits) and preserve device battery.
+- [x] **Route Guards**: Implemented strict frontend route wrappers restricting unauthenticated users from private admin/profile pages.
+
+### Phase 2: Community Moderation & System Rules
 > **Focus:** Establishing user trust, automated rules, and managing active flood data without ML.
 - **User Metrics & Trust Score**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
   - *Implementation:* Add `reports_submitted`, `accuracy_rate`, `trust_score` columns to `profile.py`.
@@ -23,11 +30,6 @@
   - *Crowd Consensus:* Auto-approve a flood if 3 independent users report it in the same radius within a short timeframe.
 - **Duplicate Resolution (Admin Panel)**: 
   - Add admin tools to merge overlapping flood polygons using PostGIS `ST_Intersects` and `ST_Union`.
-
-### Phase 2: Security & Local Networks
-> **Focus:** Securing the application for production and local network deployments.
-- **Authenticated Routing**: Add authentication layers for routing requests on local networks.
-- **Optimize Real-Time WebSocket Broadcast**: Ensure sub-second latency for routing barrier updates across all connected clients.
 
 ### Phase 3: External Integrations & IoT
 > **Focus:** Connecting LANES to external data sources and physical hardware.
@@ -46,7 +48,7 @@
 - **Online Learning ("Self-Learning")**: Without initial DRMMO data, the system relies on Rule-Based Expiration for immediate accuracy. However, the architecture is designed to continuously collect live data. Once enough floods are naturally recorded over time, the system can seamlessly transition to Online Machine Learning to predict expiration times automatically.
 
 ### 2. Defining "Real-Time" without Hardware Sensors
-- **WebSocket-Driven Real-Time Broadcast**: The platform implements **instantaneous communication latency**. Within milliseconds of an admin approving a report (or a user submitting a post), WebSocket connections broadcast the updated routing barriers and active zones to all connected commuter clients globally. The *propagation of routing data* is true real-time.
+- **SSE-Driven Real-Time Broadcast**: The platform implements **instantaneous communication latency**. Within milliseconds of an admin approving a report (or a user submitting a post), Server-Sent Event (SSE) connections broadcast the updated routing barriers and active zones to all connected commuter clients globally. The *propagation of routing data* is true real-time.
 - **Plug-and-Play IoT Sensor Hooks (MQTT/REST Webhooks)**: The database layer utilizes standard PostGIS geometry points and polygons. The architecture is explicitly designed to ingest coordinates. In the future, telemetry devices (e.g., ultrasonic water-level sensors installed on bridges or lamp posts) can write data directly to the `/api/v1/reports` endpoint via secure webhook keys, bypassing human input entirely.
 
 ### 3. Future Architecture: Duplicate Resolution & Auto-Approval

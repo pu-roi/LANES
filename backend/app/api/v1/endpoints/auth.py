@@ -10,10 +10,13 @@ from app.core import security
 from app.core.config import settings
 from app.core.database import get_db
 
+from app.core.limiter import limiter
+
 router = APIRouter()
 
 
 @router.post("/login/access-token", response_model=schemas.Token)
+@limiter.limit("5/minute")
 def login_access_token(
     request: Request,
     db: Session = Depends(get_db),
@@ -121,8 +124,10 @@ from app.crud.user import create_user_with_profile
 from app.crud import otp as crud_otp
 
 @router.post("/register", response_model=schemas.UserResponse)
+@limiter.limit("3/minute")
 async def register(
     request: RegistrationRequest,
+    http_request: Request,
     db: Session = Depends(get_db)
 ) -> Any:
     """
@@ -175,8 +180,10 @@ async def register(
     return new_user
 
 @router.post("/verify-otp")
+@limiter.limit("5/minute")
 def verify_otp(
     request: OTPVerificationRequest,
+    http_request: Request,
     db: Session = Depends(get_db)
 ) -> Any:
     """
@@ -206,8 +213,10 @@ def verify_otp(
 
 
 @router.post("/resend-otp")
+@limiter.limit("2/minute")
 async def resend_otp(
     request: OTPResendRequest,
+    http_request: Request,
     db: Session = Depends(get_db)
 ) -> Any:
     """

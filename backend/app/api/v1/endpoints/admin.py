@@ -130,7 +130,7 @@ async def approve_report(
     )
 
     # Broadcast real-time signal
-    from app.core.websocket import manager
+    from app.core.sse import manager
     await manager.broadcast({
         "event": "report_approved",
         "data": {"report_id": report.id}
@@ -169,7 +169,7 @@ async def reject_report(
     )
 
     # Broadcast real-time signal
-    from app.core.websocket import manager
+    from app.core.sse import manager
     await manager.broadcast({
         "event": "report_rejected",
         "data": {"report_id": report_id}
@@ -310,7 +310,7 @@ async def deactivate_zone(
     )
 
     # Broadcast real-time signal
-    from app.core.websocket import manager
+    from app.core.sse import manager
     await manager.broadcast({
         "event": "zone_deactivated",
         "data": {"zone_id": zone_id}
@@ -349,7 +349,7 @@ async def update_zone(
     )
 
     # Broadcast real-time signal
-    from app.core.websocket import manager
+    from app.core.sse import manager
     await manager.broadcast({
         "event": "zone_updated",
         "data": {
@@ -388,7 +388,7 @@ async def deactivate_zones_bulk(
     )
 
     # Broadcast real-time signal
-    from app.core.websocket import manager
+    from app.core.sse import manager
     await manager.broadcast({
         "event": "zone_deactivated",
         "data": {"zone_ids": payload.zone_ids}

@@ -16,8 +16,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Utility-first CSS framework for rapidly building premium, highly responsive, and dynamic user interfaces without writing custom CSS.
 * **State Management & Fetching:** **TanStack React Query**  
   * *Role:* Asynchronous state management, caching, background synchronization, and automatic revalidation (configured with staleTime: 0 for instant revalidation on mount/navigation).
-* **Real-time Event Signaling:** **WebSockets (Native Client)**  
-  * *Role:* Maintaining a persistent connection to the backend to receive instant cache invalidation signals and trigger reactive refetching.
+* **Real-time Event Signaling:** **Server-Sent Events (SSE)**  
+  * *Role:* Maintaining a unidirectional persistent connection to the backend to receive instant cache invalidation signals and trigger reactive refetching. More mobile-friendly than WebSockets.
 * **Animations & Micro-interactions:** **Framer Motion**  
   * *Role:* Providing fluid, dynamic micro-animations (like expanding panels, fading modals, and dropdown transitions) to create a premium, responsive feel.
 * **UI Utility Libraries:** **Lucide React, React Hot Toast, & React Day Picker**
@@ -39,8 +39,10 @@ This document serves as the official technical stack reference for the LANES pla
 
 * **Programming Language:** **Python 3.11+**  
   * *Role:* Handling data collection scripts, natural language parsing, database queries, and routing logic under a unified, high-performance execution environment.  
-* **Web Framework & Real-time Server:** **FastAPI (with Uvicorn & WebSockets)**  
-  * *Role:* Serving as the asynchronous web server handling high-throughput client API requests, managing database transactions, hosting WebSocket connections, and broadcasting data modification events.
+* **Web Framework & Real-time Server:** **FastAPI (with Uvicorn & sse-starlette)**  
+  * *Role:* Serving as the asynchronous web server handling high-throughput client API requests, managing database transactions, and broadcasting data modification events via SSE.
+* **Rate Limiting & Security:** **slowapi**
+  * *Role:* Preventing brute-force attacks and DDoS by applying strict rate limits on authentication and OTP verification endpoints.
 * **Authentication Stack:** **JWT, python-jose, & bcrypt**  
   * *Role:* Securing API endpoints via JSON Web Tokens, cryptographically signing tokens, and securely hashing user passwords for role-based access control.
 * **Transactional Email & OTP:** **Brevo REST API & httpx**
