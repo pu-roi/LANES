@@ -28,6 +28,7 @@ export function Logo({ size = "md", theme = "light", className, textClassName }:
         alt="LANES Logo" 
         width={currentSize.img} 
         height={currentSize.img} 
+        priority
         className={cn(
           "object-contain drop-shadow-sm", 
           theme === "dark" && "brightness-0 invert drop-shadow-md"

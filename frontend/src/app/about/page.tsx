@@ -32,13 +32,15 @@ export default function AboutPage() {
 
         {/* Hero Section */}
         <div className="text-center space-y-4 flex flex-col items-center">
-          <Image 
-            src="/lanes-logo/lanes-logo.svg" 
-            alt="LANES Logo" 
-            width={80} 
-            height={80} 
-            className="w-20 h-20 mb-2 drop-shadow-sm"
-          />
+          <div className="relative w-32 h-32 mx-auto mb-6">
+            <Image
+              src="/lanes-logo/lanes-logo.svg" 
+              alt="LANES Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
           <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight sm:text-5xl">
             About <span className="text-blue-600">LANES</span>
           </h1>

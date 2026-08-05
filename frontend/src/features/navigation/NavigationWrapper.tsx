@@ -5,12 +5,14 @@ import FloatingNav from "./FloatingNav";
 import MobileNav from "./MobileNav";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function NavigationWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isLoading, isAuthenticated } = useAuth();
+
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   // Route Guards
   useEffect(() => {
@@ -20,11 +22,19 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
     const isPrivateRoute = ["/profile", "/report", "/feed/create"].some((route) => pathname.startsWith(route));
 
     if ((isAdminRoute || isPrivateRoute) && !isAuthenticated) {
+      setIsRedirecting(true);
       router.replace("/login");
     } else if (isAdminRoute && user && user.role?.name === "Commuter") {
+      setIsRedirecting(true);
       router.replace("/");
+    } else {
+      setIsRedirecting(false);
     }
   }, [pathname, isAuthenticated, isLoading, user, router]);
+
+  if (isRedirecting || (isLoading && (pathname.startsWith("/admin") || ["/profile", "/report", "/feed/create"].some((route) => pathname.startsWith(route))))) {
+    return null;
+  }
 
   // Hide the global navigation bars on the Admin pages
   if (pathname.startsWith("/admin")) {

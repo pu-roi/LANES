@@ -365,19 +365,11 @@ export default function DashboardPage() {
                             strokeWidth="15"
                             strokeDasharray="314.16"
                             strokeDashoffset={slice.strokeOffset}
-                            className="cursor-pointer transition-all duration-300 hover:stroke-[18]"
+                            className="transition-all duration-300"
                             style={{
                               transformOrigin: "60px 60px",
                               transform: `rotate(${slice.strokeRotation}deg)`
                             }}
-                            onMouseEnter={() => {
-                              setHoveredSlice({
-                                severity: slice.label,
-                                count: slice.count,
-                                percentage: Math.round(slice.percentage)
-                              });
-                            }}
-                            onMouseLeave={() => setHoveredSlice(null)}
                           />
                         ))
                       )}
@@ -403,13 +395,7 @@ export default function DashboardPage() {
               );
             })()}
 
-            {/* Slice Hover Tooltip */}
-            {hoveredSlice && (
-              <div className="bg-slate-900 border border-slate-800 text-white rounded-lg p-2 text-center text-xs shadow-xl">
-                <span className="font-semibold block">{hoveredSlice.severity} Alerts</span>
-                <span className="font-extrabold text-blue-400 text-sm">{hoveredSlice.count} ({hoveredSlice.percentage}%)</span>
-              </div>
-            )}
+
           </div>
 
           {/* Top barangays (Horizontal Bar Graph) */}

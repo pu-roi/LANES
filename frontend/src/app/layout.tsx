@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 import NavigationWrapper from "@/features/navigation/NavigationWrapper";
-import Providers from "./providers";
+import { QueryProvider, AppProviders } from "./providers";
 import OfflineBanner from "@/features/offline/OfflineBanner";
 import { NotificationBell } from "@/features/notifications/NotificationBell";
 
@@ -50,12 +50,14 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning className="min-h-screen flex flex-col font-sans bg-gray-50 text-slate-900">
         <OfflineBanner />
-        <NavigationWrapper>
-          <Providers>
-            {children}
-            <NotificationBell />
-          </Providers>
-        </NavigationWrapper>
+        <QueryProvider>
+          <NavigationWrapper>
+            <AppProviders>
+              {children}
+              <NotificationBell />
+            </AppProviders>
+          </NavigationWrapper>
+        </QueryProvider>
       </body>
     </html>
   );
