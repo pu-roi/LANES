@@ -6,30 +6,21 @@
 
 ## Active Sprint (Next Feature)
 
-*(None currently active)*
-
-## Future Roadmap (Phases)
-
-### Phase 1: Security & Local Networks (🟢 COMPLETED)
-> **Focus:** Securing the application for production and local network deployments.
-- [x] **Local Network Routing**: Hardened backend CORS regex to local IPs and dynamic NEXT_PUBLIC_API_URL routing.
-- [x] **Rate Limiting**: Integrated `slowapi` to protect authentication and OTP endpoints.
-- [x] **SSE Migration (Future-Proofing)**: Replaced WebSockets with Server-Sent Events (SSE) to ensure stability for future Android APKs (WebView limits) and preserve device battery.
-- [x] **Route Guards**: Implemented strict frontend route wrappers restricting unauthenticated users from private admin/profile pages.
-
 ### Phase 2: Community Moderation & System Rules
 > **Focus:** Establishing user trust, automated rules, and managing active flood data without ML.
-- **User Metrics & Trust Score**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
+- [ ] **User Metrics & Trust Score**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
   - *Implementation:* Add `reports_submitted`, `accuracy_rate`, `trust_score` columns to `profile.py`.
   - *Logic:* Trust score starts at 50. +5 for every approved report (cap 100), -10 for rejected (min 0). Accuracy = Approved / (Approved + Rejected).
-- **Rule-Based Flood Expiration**: 
+- [ ] **Rule-Based Flood Expiration**: 
   - *Implementation:* Backend sets `expires_at` in `FloodAvoidanceZone` based on severity when an admin approves a report.
   - *Crowd-Sourced Extension:* Add "Flood Subsiding" / "Still Flooded" buttons on the map for users to reduce or extend expiration time.
-- **Trust-Based Auto-Approval Engine**: 
+- [ ] **Trust-Based Auto-Approval Engine**: 
   - Allow high-trust users (>90 score) to bypass the admin moderation queue.
   - *Crowd Consensus:* Auto-approve a flood if 3 independent users report it in the same radius within a short timeframe.
-- **Duplicate Resolution (Admin Panel)**: 
+- [ ] **Duplicate Resolution (Admin Panel)**: 
   - Add admin tools to merge overlapping flood polygons using PostGIS `ST_Intersects` and `ST_Union`.
+
+## Future Roadmap (Phases)
 
 ### Phase 3: External Integrations & IoT
 > **Focus:** Connecting LANES to external data sources and physical hardware.

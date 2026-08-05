@@ -161,5 +161,9 @@ class FloodAvoidanceZone(Base):
         return self.report.severity.value if self.report and hasattr(self.report.severity, 'value') else "medium"
 
     @property
+    def depth(self) -> Optional[str]:
+        return self.report.depth if self.report else None
+
+    @property
     def report_geometry(self) -> Any:
         return self.report.geometry if self.report else None

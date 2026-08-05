@@ -350,7 +350,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
         formData.append("image", imageFile);
       }
 
-      await apiClient.post<{ id: number }>("/reports/", formData);
+      await apiClient.post<{ id: number }>("/reports", formData);
 
       // Reset form
       setFloodStart(null);

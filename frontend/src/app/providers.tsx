@@ -11,16 +11,15 @@ function AppHooks() {
   return null;
 }
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export function QueryProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Default settings for LANES
-            staleTime: 0, // Data is immediately considered stale so it refetches in the background on mount/navigation
-            refetchOnWindowFocus: true, // Auto-refetch when user switches back to the app
-            retry: 3, // Retry failed requests 3 times (good for bad network areas)
+            staleTime: 0,
+            refetchOnWindowFocus: true,
+            retry: 3,
           },
         },
       })
@@ -28,11 +27,19 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+}
+
+export function AppProviders({ children }: { children: React.ReactNode }) {
+  return (
+    <>
       <AppHooks />
       <ToastProvider>
         <GlobalMap />
         {children}
       </ToastProvider>
-    </QueryClientProvider>
+    </>
   );
 }

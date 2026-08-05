@@ -58,3 +58,8 @@
 - [x] Build /analytics (public) and /admin/analytics pages with MapLibre Heatmap layer and data tables
 - [x] Design Decision: Reverse geocoding via Photon is used to resolve barangays dynamically without storing heavy shapefiles
 - [x] **Security & Local Networks**: Refactored real-time updates from WebSockets to SSE, applied `slowapi` rate limiting, restricted CORS, and implemented frontend route guards for future APK compatibility.
+- [x] **UI/UX Refinements**: 
+  - Extracted Login to a standalone page to prepare for future profile customization UI.
+  - Fixed map white screen issue occurring after user logout.
+  - Removed hover effects from Admin Dashboard severity charts for cleaner UX.
+- [x] **Data Integrity**: Ensured specific flood depth strings (e.g., "Half-Knee") are successfully passed from the frontend and explicitly saved into the PostgreSQL `FloodReport` and `FloodAvoidanceZone` records.

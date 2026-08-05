@@ -30,6 +30,9 @@ export function useAuth() {
       });
 
       if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error("Too many requests. Please wait a minute before trying again.");
+        }
         const errorData = await response.json().catch(() => null);
         if (errorData?.detail?.code === "UNVERIFIED_ACCOUNT") {
           throw new Error(JSON.stringify(errorData.detail));
