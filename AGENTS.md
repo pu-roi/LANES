@@ -22,6 +22,7 @@ This document defines the core operational boundaries, architecture, and require
 - **Use specific skills**: If your task matches a skill in `.agents/skills/`, you MUST read and follow that skill's instructions.
 - **Surface Errors to the User**: Do not swallow errors (e.g., `catch (err) { console.error(err) }` without updating UI state). Ensure the user is notified if a request fails.
 - **Verify Sessions**: Ensure backend FastAPI endpoints have proper dependency injection checks for authentication and role validation.
+- **Future-Proof for Mobile (APK)**: Keep the architecture compatible with a future Android `.apk` wrapper (e.g., Capacitor). Prefer Server-Sent Events (SSE) over WebSockets for battery/connection stability. Use `localStorage` for JWTs instead of `HttpOnly` cookies to avoid WebView cross-origin auth issues.
 
 ### 🚫 Never Do:
 - **Never commit secrets**: Do not hardcode API keys, Stripe tokens, or DB URLs (`http://localhost`, `postgres://`) in the source code.

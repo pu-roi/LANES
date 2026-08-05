@@ -4,10 +4,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { ToastProvider } from "@/shared/ui";
 import GlobalMap from "@/features/map/GlobalMap";
-import { useWebSocket } from "@/hooks/useWebSocket";
+import { useSSE } from "@/hooks/useSSE";
 
-function WebSocketInitializer() {
-  useWebSocket();
+function AppHooks() {
+  useSSE();
   return null;
 }
 
@@ -28,7 +28,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <WebSocketInitializer />
+      <AppHooks />
       <ToastProvider>
         <GlobalMap />
         {children}

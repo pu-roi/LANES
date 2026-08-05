@@ -23,7 +23,8 @@ python-multipart
 alembic==1.18.5
 cloudinary==1.36.0
 passlib[bcrypt]==1.7.4
-websockets==12.0
+slowapi
+sse-starlette
 openmeteo-requests
 requests-cache
 retry-requests

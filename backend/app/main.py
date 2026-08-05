@@ -4,9 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, JSONResponse
 from fastapi.exceptions import ResponseValidationError
 from sqlalchemy import text
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.database import engine, Base
+from app.core.limiter import limiter
 from app import models
 
 
@@ -63,6 +66,8 @@ app = FastAPI(
     version=settings.API_VERSION,
     lifespan=lifespan,
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.exception_handler(ResponseValidationError)
 async def validation_exception_handler(request: Request, exc: ResponseValidationError):
@@ -78,7 +83,7 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
 
 
 # Define allowed origins for CORS.
-# Allows local Next.js development server to make requests to this backend.
+# Allows local Next.js development server and LAN mobile devices
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -87,7 +92,7 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex=r"^https?://.*",
+    allow_origin_regex=r"^https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
