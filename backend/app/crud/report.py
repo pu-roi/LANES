@@ -13,6 +13,13 @@ def get_flood_reports(db: Session, skip: int = 0, limit: int = 100) -> List[mode
     return db.query(models.FloodReport).offset(skip).limit(limit).all()
 
 
+def get_flood_reports_by_user(db: Session, user_id: int, skip: int = 0, limit: int = 100) -> List[models.FloodReport]:
+    return db.query(models.FloodReport).filter(
+        models.FloodReport.user_id == user_id,
+        models.FloodReport.deleted_at.is_(None)
+    ).order_by(models.FloodReport.created_at.desc()).offset(skip).limit(limit).all()
+
+
 def get_pending_flood_reports(db: Session, skip: int = 0, limit: int = 100) -> List[models.FloodReport]:
     return db.query(models.FloodReport).filter(
         models.FloodReport.status == "pending",

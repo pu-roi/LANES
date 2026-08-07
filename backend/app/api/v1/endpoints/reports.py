@@ -65,6 +65,23 @@ async def create_report(
     )
 
 
+@router.get("/me", response_model=List[schemas.FloodReportResponse])
+def read_my_reports(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """
+    Retrieve flood reports submitted by the current user.
+    """
+    try:
+        return crud.get_flood_reports_by_user(db=db, user_id=current_user.id, skip=skip, limit=limit)
+    except Exception as e:
+        print(f"Warning: Database is offline ({e}). Returning empty list for reports.")
+        return []
+
+
 @router.get("", response_model=List[schemas.FloodReportResponse])
 def read_reports(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """

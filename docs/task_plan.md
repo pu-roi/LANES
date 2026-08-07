@@ -8,9 +8,6 @@
 
 ### Phase 2: Community Moderation & System Rules
 > **Focus:** Establishing user trust, automated rules, and managing active flood data without ML.
-- [ ] **User Metrics & Trust Score**: Track "Reports Submitted", "Accuracy Rate", and "Trust Score".
-  - *Implementation:* Add `reports_submitted`, `accuracy_rate`, `trust_score` columns to `profile.py`.
-  - *Logic:* Trust score starts at 50. +5 for every approved report (cap 100), -10 for rejected (min 0). Accuracy = Approved / (Approved + Rejected).
 - [ ] **Rule-Based Flood Expiration**: 
   - *Implementation:* Backend sets `expires_at` in `FloodAvoidanceZone` based on severity when an admin approves a report.
   - *Crowd-Sourced Extension:* Add "Flood Subsiding" / "Still Flooded" buttons on the map for users to reduce or extend expiration time.

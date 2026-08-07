@@ -20,7 +20,7 @@ def get_feed(
     radius: Optional[float] = Query(5000, description="Radius in meters for nearby filtering"),
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
-    tab: str = Query("recent", regex="^(recent|nearby)$"),
+    tab: str = Query("recent", pattern="^(recent|nearby)$"),
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_current_user_optional)
 ):

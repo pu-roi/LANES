@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/shared/ui/Logo";
-import { Home, Map as MapIcon, User, Newspaper } from "lucide-react";
+import { Home, Map as MapIcon, User, Newspaper, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const NAV_ITEMS = [
   { href: "/", label: "Home", icon: Home },
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
 
 export default function FloatingNav() {
   const pathname = usePathname();
+  const { logout } = useAuth();
   const isMapPage = pathname === "/map";
 
   return (
@@ -64,6 +66,30 @@ export default function FloatingNav() {
             </Link>
           );
         })}
+
+        {/* Separator and Log Out button (Only on Profile page) */}
+        {pathname.startsWith("/profile") && (
+          <>
+            <span className="w-px h-5 bg-gray-200 hidden sm:block ml-2 shrink-0" />
+            <button
+              onClick={logout}
+              className={cn(
+                "group relative flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 rounded-full px-3 py-1.5 gap-0 md:gap-2 text-gray-600 hover:bg-red-50 hover:text-red-600"
+              )}
+            >
+              <LogOut className="shrink-0 transition-colors duration-300 ease-in-out h-5 w-5" />
+              <span 
+                className="overflow-hidden whitespace-nowrap text-sm font-medium max-w-0 opacity-0 md:max-w-[100px] md:opacity-100"
+                style={{ transition: 'max-width 500ms ease-in-out, opacity 300ms ease-in-out' }}
+              >
+                Log Out
+              </span>
+              <span className="md:hidden absolute top-full mt-2 whitespace-nowrap rounded-md bg-gray-900 px-2.5 py-1 text-xs font-medium text-white shadow-md transition-all duration-300 ease-out pointer-events-none opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0">
+                Log Out
+              </span>
+            </button>
+          </>
+        )}
       </nav>
     </header>
   );

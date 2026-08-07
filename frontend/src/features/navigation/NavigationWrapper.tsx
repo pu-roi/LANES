@@ -60,7 +60,7 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
       )}
       <main className={cn(
         "flex-1 flex flex-col w-full min-w-0 relative z-0",
-        !isMapPage && "sm:pt-[70px]" // Safe zone padding
+        (!isMapPage && !pathname.startsWith('/profile')) && "sm:pt-[70px]" // Safe zone padding
       )}>
         {children}
       </main>

@@ -17,10 +17,13 @@ def get_feed_posts(
     radius: Optional[float] = None,
     skip: int = 0,
     limit: int = 20,
-    tab: str = "recent"
+    tab: str = "recent",
+    author_id: Optional[int] = None
 ):
     # Base query for community posts
     base_query = db.query(CommunityPost).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id)
+    if author_id:
+        base_query = base_query.filter(CommunityPost.user_id == author_id)
 
     # Subqueries for upvotes and downvotes
     upvotes_query = db.query(
