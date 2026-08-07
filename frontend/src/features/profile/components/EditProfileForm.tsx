@@ -247,7 +247,7 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">M.I. (Optional)</label>
+            <label className="text-sm font-medium text-slate-700">M.I. <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
             <input 
               type="text" maxLength={2}
               value={formData.profile.middle_initial}
@@ -256,7 +256,7 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Suffix (Optional)</label>
+            <label className="text-sm font-medium text-slate-700">Suffix <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
             <input 
               type="text"
               list="profile-suffix-options"
@@ -273,7 +273,7 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
             </datalist>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Contact Number (Optional)</label>
+            <label className="text-sm font-medium text-slate-700">Contact Number <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
             <input 
               type="tel" 
               value={formData.profile.contact_number}
@@ -332,7 +332,7 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
               </button>
             </div>
             <div className="w-full sm:w-1/3 space-y-2">
-              <label className="text-sm font-medium text-slate-700">Postal Code (Optional)</label>
+              <label className="text-sm font-medium text-slate-700">Postal Code <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
               <input 
                 type="text" 
                 value={formData.address.postal_code}
@@ -344,7 +344,7 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="w-full sm:w-1/3 space-y-2">
-              <label className="text-sm font-medium text-slate-700">House No. (Optional)</label>
+              <label className="text-sm font-medium text-slate-700">House No. <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
               <input 
                 type="text" 
                 value={formData.address.house_number}
@@ -354,7 +354,7 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
               />
             </div>
             <div className="flex-1 space-y-2">
-              <label className="text-sm font-medium text-slate-700">Street (Optional)</label>
+              <label className="text-sm font-medium text-slate-700">Street <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
               <input 
                 type="text" 
                 value={formData.address.street}
