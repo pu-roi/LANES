@@ -15,12 +15,16 @@ class UserCreate(UserBase):
     is_active: bool = True
 
 
+from typing import Optional
+from app.schemas.profile import ProfileResponse
+
 class UserResponse(UserBase):
     id: int
     role_id: int
     is_active: bool
     created_at: datetime
     role: RoleResponse
+    profile: Optional[ProfileResponse] = None
 
     model_config = ConfigDict(from_attributes=True)
 

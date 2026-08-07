@@ -74,6 +74,23 @@ def create_post(
     }
 
 
+@router.get("/me", response_model=CommunityPostPaginatedResponse)
+def get_my_posts(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Retrieve community posts authored by the current user."""
+    from app.crud import feed as crud_feed
+    return crud_feed.get_feed_posts(
+        db=db,
+        user_id=current_user.id,
+        skip=skip,
+        limit=limit,
+        author_id=current_user.id
+    )
+
 @router.get("/{post_id}", response_model=CommunityPostResponse)
 def get_post(
     post_id: int,

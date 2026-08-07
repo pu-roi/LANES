@@ -21,12 +21,15 @@ async def sse_stream(request: Request):
                 if await request.is_disconnected():
                     break
                 
-                # Wait for next event
-                data = await q.get()
-                yield {"data": data}
+                # Wait for next event with a timeout to check disconnects
+                try:
+                    data = await asyncio.wait_for(q.get(), timeout=1.0)
+                    yield {"data": data}
+                except asyncio.TimeoutError:
+                    continue
         except asyncio.CancelledError:
-            pass
+            raise
         finally:
             manager.unsubscribe(q)
 
-    return EventSourceResponse(event_generator())
+    return EventSourceResponse(event_generator(), ping=5)

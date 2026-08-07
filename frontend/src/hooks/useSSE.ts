@@ -9,8 +9,10 @@ const getSseUrl = (): string => {
     return `${apiEnv}/sse/stream`;
   }
   
-  if (window.location.port === "3000") {
-    return `http://${window.location.hostname}:8000/api/v1/sse/stream`;
+  // In local development, bypass the Next.js proxy which often buffers SSE.
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.')) {
+    const host = window.location.hostname === 'localhost' ? '127.0.0.1' : window.location.hostname;
+    return `http://${host}:8000/api/v1/sse/stream`;
   }
   
   return `/api/v1/sse/stream`;
@@ -25,7 +27,7 @@ export function useSSE() {
     const sseUrl = getSseUrl();
     console.log(`Connecting to SSE at: ${sseUrl}`);
     
-    const eventSource = new EventSource(sseUrl);
+    const eventSource = new EventSource(sseUrl, { withCredentials: true });
 
     eventSource.onopen = () => {
       console.log("SSE connected successfully");
