@@ -11,6 +11,7 @@
 - [ ] **Rule-Based Flood Expiration**: 
   - *Implementation:* Backend sets `expires_at` in `FloodAvoidanceZone` based on severity when an admin approves a report.
   - *Crowd-Sourced Extension:* Add "Flood Subsiding" / "Still Flooded" buttons on the map for users to reduce or extend expiration time.
+
 - [ ] **Trust-Based Auto-Approval Engine**: 
   - Allow high-trust users (>90 score) to bypass the admin moderation queue.
   - *Crowd Consensus:* Auto-approve a flood if 3 independent users report it in the same radius within a short timeframe.
