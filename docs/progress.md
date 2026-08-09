@@ -145,6 +145,12 @@
   - Decoupled OTP validation from account creation using new `/api/v1/auth/request-signup-otp` and `/verify-signup-otp` backend endpoints.
   - Seamless automatic login upon successful registration; removed the standalone `/verify` page completely.
   - Added modern "Sign in with Google" UI buttons to the Login and Registration forms.
+- [x] **Profile & Feed UI/UX Polish**:
+  - Implemented seamless 3-column "Feed Morph" mode for viewing posts inside the Profile page without route switching.
+  - Added sticky frosted-glass "Back to Feed" / "Close" buttons for deep comment scrolling.
+  - Dynamically hide the mobile notification bell when reading full posts.
+  - Fixed full-width cover photo container layout on Profile page.
+  - Updated design guidelines to formally ban "Box-in-a-Box Syndrome" for flatter, breathable UI.
 
 ## Backlog / Upcoming
 - [ ] **Saved Places Feature**: Allow users to save frequently visited locations (Home, Work, etc.) for quick access in the Route Planner and Community Feed panels.
