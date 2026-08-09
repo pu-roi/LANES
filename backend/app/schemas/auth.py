@@ -30,3 +30,6 @@ class OTPVerificationRequest(BaseModel):
 
 class OTPResendRequest(BaseModel):
     email: EmailStr
+
+class SignupOTPRequest(BaseModel):
+    email: EmailStr

@@ -26,7 +26,7 @@ const AUTO_COLLAPSE_THRESHOLD = -2;
 
 const PostContext = createContext<any>(null);
 
-export function PostDetailPage({ postId }: { postId: number }) {
+export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: () => void }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -254,10 +254,10 @@ export function PostDetailPage({ postId }: { postId: number }) {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center text-red-500">
         <p>Post not found or failed to load.</p>
         <button
-          onClick={() => router.push('/feed')}
+          onClick={() => { if (onBack) onBack(); else router.push('/feed'); }}
           className="mt-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-medium transition-colors"
         >
-          Return to Feed
+          Return
         </button>
       </div>
     );
@@ -277,7 +277,7 @@ export function PostDetailPage({ postId }: { postId: number }) {
       <div className="sticky sm:hidden top-0 z-20 bg-white/80 backdrop-blur-md border-b border-gray-200 py-3 px-4 flex justify-between items-center">
         <h2 className="font-bold text-gray-900">Post Details</h2>
         <button
-          onClick={() => router.push('/feed')}
+          onClick={() => { if (onBack) onBack(); else router.push('/feed'); }}
           className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
         >
           <X className="w-5 h-5" />
@@ -285,13 +285,15 @@ export function PostDetailPage({ postId }: { postId: number }) {
       </div>
 
       {/* Desktop Back Button */}
-      <button
-        onClick={() => router.push('/feed')}
-        className="hidden sm:flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium text-sm transition-colors self-start bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back to Feed
-      </button>
+      <div className="hidden sm:flex sticky top-[80px] z-30 py-2 -mt-2 mb-2">
+        <button
+          onClick={() => { if (onBack) onBack(); else router.push('/feed'); }}
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium text-sm transition-colors self-start bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-gray-200"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {onBack ? 'Close' : 'Back to Feed'}
+        </button>
+      </div>
 
       <div className="bg-white sm:rounded-xl sm:shadow-sm sm:border border-gray-100 border-y sm:border-y-0 overflow-hidden">
         <PostItem

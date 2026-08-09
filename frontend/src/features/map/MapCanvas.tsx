@@ -914,7 +914,7 @@ export default function MapCanvas() {
     };
 
     const handleMouseEnter = () => { map.getCanvas().style.cursor = "pointer"; };
-    const handleMouseLeave = () => { map.getCanvas().style.cursor = ""; };
+    const handleMouseLeave = () => { map.getCanvas().style.cursor = isPickingRef.current ? "crosshair" : ""; };
 
     map.on("click", "active-zones-layer", handlePopup);
     map.on("click", "active-zones-road-layer", handlePopup);

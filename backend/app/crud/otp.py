@@ -48,3 +48,14 @@ def mark_otp_verified(db: Session, otp_id: int) -> OTPVerification:
 def delete_otp(db: Session, email: str) -> None:
     db.query(OTPVerification).filter(OTPVerification.email == email).delete()
     db.commit()
+
+
+def is_email_verified(db: Session, email: str) -> bool:
+    """Checks if the email has a verified OTP within the last 30 minutes."""
+    cutoff = datetime.utcnow() - timedelta(minutes=30)
+    otp = db.query(OTPVerification).filter(
+        OTPVerification.email == email,
+        OTPVerification.is_verified == True,
+        OTPVerification.created_at >= cutoff
+    ).order_by(OTPVerification.created_at.desc()).first()
+    return otp is not None

@@ -11,14 +11,15 @@ import { useToast } from "@/shared/ui/Toast";
 import { PasswordStrength } from "@/shared/ui/PasswordStrength";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 
 // Metro Manila constant
 const METRO_MANILA_CODE = "130000000";
 
 const steps = [
-  { id: 1, name: "Personal Info" },
-  { id: 2, name: "Address" },
-  { id: 3, name: "Account Details" }
+  { id: 1, name: "Account Setup" },
+  { id: 2, name: "Personal Info" },
+  { id: 3, name: "Address" }
 ];
 
 export function RegisterForm() {
@@ -27,6 +28,11 @@ export function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
+  const [setupPhase, setSetupPhase] = useState<"email" | "otp" | "password">("email");
+  const [otpCode, setOtpCode] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const { info } = useToast();
+  const [otpLoading, setOtpLoading] = useState(false);
   
   const passwordReqRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -39,6 +45,57 @@ export function RegisterForm() {
   const [barangays, setBarangays] = useState<LocationItem[]>([]);
 
   const [selectedProvinceCode, setSelectedProvinceCode] = useState("");
+
+  const handleRequestOTP = async () => {
+    if (!formData.user.email) {
+      showError("Validation Error", "Email address is required.");
+      return;
+    }
+    setOtpLoading(true);
+    try {
+      const resUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      const res = await fetch(`${resUrl}/auth/request-signup-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.user.email })
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Failed to send OTP");
+      }
+      setSetupPhase("otp");
+      info("OTP Sent", "Check your email for the verification code.");
+    } catch (err: any) {
+      showError("Error", err.message);
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    if (!otpCode) {
+      showError("Validation Error", "OTP is required.");
+      return;
+    }
+    setOtpLoading(true);
+    try {
+      const resUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      const res = await fetch(`${resUrl}/auth/verify-signup-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.user.email, otp_code: otpCode })
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Invalid OTP");
+      }
+      setSetupPhase("password");
+    } catch (err: any) {
+      showError("Error", err.message);
+    } finally {
+      setOtpLoading(false);
+    }
+  };
   const [selectedCityCode, setSelectedCityCode] = useState("");
 
   const [formData, setFormData] = useState({
@@ -206,6 +263,33 @@ export function RegisterForm() {
 
   const validateStep = () => {
     if (currentStep === 1) {
+      if (setupPhase !== "password") return false;
+      if (!formData.user.username) {
+        showError("Validation Error", "Username is required.");
+        return false;
+      }
+      if (!formData.user.password) {
+        showError("Validation Error", "Password is required.");
+        return false;
+      }
+      if (formData.user.password !== confirmPassword) {
+        showError("Validation Error", "Passwords do not match.");
+        return false;
+      }
+      const pwd = formData.user.password;
+      if (pwd.length < 6) {
+        showError("Validation Error", "Password must be at least 6 characters long.");
+        return false;
+      }
+      if (/\s/.test(pwd)) {
+        showError("Validation Error", "Password must not contain spaces.");
+        return false;
+      }
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s])/.test(pwd)) {
+        showError("Validation Error", "Password must contain an uppercase letter, a lowercase letter, a number, and a special character.");
+        return false;
+      }
+    } else if (currentStep === 2) {
       if (!formData.profile.first_name) {
         showError("Validation Error", "First name is required.");
         return false;
@@ -222,7 +306,7 @@ export function RegisterForm() {
         showError("Validation Error", "Contact number must be exactly 11 digits.");
         return false;
       }
-    } else if (currentStep === 2) {
+    } else if (currentStep === 3) {
       if (!formData.address.province) {
         showError("Validation Error", "Province / Region is required.");
         return false;
@@ -233,32 +317,6 @@ export function RegisterForm() {
       }
       if (!formData.address.barangay) {
         showError("Validation Error", "Barangay is required.");
-        return false;
-      }
-    } else if (currentStep === 3) {
-      if (!formData.user.username) {
-        showError("Validation Error", "Username is required.");
-        return false;
-      }
-      if (!formData.user.email) {
-        showError("Validation Error", "Email address is required.");
-        return false;
-      }
-      if (!formData.user.password) {
-        showError("Validation Error", "Password is required.");
-        return false;
-      }
-      const pwd = formData.user.password;
-      if (pwd.length < 6) {
-        showError("Validation Error", "Password must be at least 6 characters long.");
-        return false;
-      }
-      if (/\s/.test(pwd)) {
-        showError("Validation Error", "Password must not contain spaces.");
-        return false;
-      }
-      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s])/.test(pwd)) {
-        showError("Validation Error", "Password must contain an uppercase letter, a lowercase letter, a number, and a special character.");
         return false;
       }
     }
@@ -282,31 +340,27 @@ export function RegisterForm() {
     try {
       await authClient.register(formData);
       sessionStorage.removeItem("lanes_registration_draft");
-      router.push(`/verify?email=${encodeURIComponent(formData.user.email)}`);
+      
+      // Auto login
+      const loginData = new URLSearchParams();
+      loginData.append("username", formData.user.email);
+      loginData.append("password", formData.user.password);
+      
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      const loginRes = await fetch(`${baseUrl}/auth/login/access-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: loginData.toString()
+      });
+      if (loginRes.ok) {
+        const d = await loginRes.json();
+        localStorage.setItem("lanes_access_token", d.access_token);
+        // Force reload to get auth state
+        window.location.href = "/map";
+      } else {
+        router.push("/login");
+      }
     } catch (err: any) {
-      console.error(err);
-      try {
-        const parsed = JSON.parse(err.message);
-        if (parsed.code === "UNVERIFIED_ACCOUNT") {
-          // If they are using the exact same email, redirect them back to OTP
-          if (parsed.email === formData.user.email) {
-            showError("Account Unverified", "You already started registering. Redirecting to verification...");
-            const resendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-            fetch(`${resendUrl}/auth/resend-otp`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: parsed.email })
-            }).catch(() => {});
-            router.push(`/verify?email=${encodeURIComponent(parsed.email)}`);
-            return;
-          } else {
-            // They changed the email but kept the same username.
-            // Let them know the username is locked.
-            showError("Username Unavailable", "This username is currently pending verification with a different email address. Please choose a different username, or wait 10 minutes for the pending registration to expire.");
-            return;
-          }
-        }
-      } catch (e) {}
       showError("Registration Failed", err.message || "An error occurred during registration.");
     } finally {
       setLoading(false);
@@ -395,6 +449,115 @@ export function RegisterForm() {
                   transition={{ duration: 0.3 }}
                   className="space-y-4"
                 >
+                  {setupPhase === "email" && (
+                    <div className="space-y-4">
+                      <Input 
+                        label="Email Address"
+                        type="email" 
+                        placeholder="juan@example.com" 
+                        required
+                        value={formData.user.email} 
+                        onChange={e => handleChange("user", "email", e.target.value)}
+                      />
+                      <div className="relative flex items-center py-2">
+                        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+                        <span className="flex-shrink-0 mx-4 text-white/80 lg:text-slate-400 text-sm font-medium">or</span>
+                        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => info("Under Development", "Google Sign-Up is currently under development.")}
+                        className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 lg:border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                      >
+                        <FcGoogle className="w-5 h-5" />
+                        Sign up with Google
+                      </button>
+                    </div>
+                  )}
+
+                  {setupPhase === "otp" && (
+                    <div className="space-y-4">
+                      <p className="text-sm text-slate-600 mb-2">We sent a verification code to <strong>{formData.user.email}</strong>.</p>
+                      <Input 
+                        label="6-Digit OTP Code"
+                        type="text" 
+                        placeholder="123456" 
+                        maxLength={6}
+                        required
+                        value={otpCode} 
+                        onChange={e => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                      />
+                      <button type="button" onClick={() => setSetupPhase("email")} className="text-sm text-blue-600 font-medium hover:underline">Change Email</button>
+                    </div>
+                  )}
+
+                  {setupPhase === "password" && (
+                    <div className="space-y-4">
+                      <Input 
+                        label="Username"
+                        labelClassName="text-white lg:text-gray-700" 
+                        placeholder="juandelacruz" 
+                        required
+                        value={formData.user.username} 
+                        onChange={e => handleChange("user", "username", e.target.value)}
+                      />
+                      <div>
+                        <Input 
+                          label="Password"
+                          labelClassName="text-white lg:text-gray-700"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••" 
+                          required
+                          value={formData.user.password} 
+                          onChange={e => handleChange("user", "password", e.target.value)}
+                          onFocus={() => {
+                            if (scrollContainerRef.current) {
+                              setTimeout(() => {
+                                scrollContainerRef.current?.scrollTo({
+                                  top: scrollContainerRef.current.scrollHeight,
+                                  behavior: "smooth"
+                                });
+                              }, 50);
+                            }
+                          }}
+                          rightIcon={
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(prev => !prev)}
+                              className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                              tabIndex={-1}
+                            >
+                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          }
+                        />
+                        <div ref={passwordReqRef}>
+                          <PasswordStrength password={formData.user.password} />
+                        </div>
+                      </div>
+                      <Input 
+                        label="Confirm Password"
+                        labelClassName="text-white lg:text-gray-700"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••" 
+                        required
+                        value={confirmPassword} 
+                        onChange={e => setConfirmPassword(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {currentStep === 2 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-4"
+                >
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex-1">
                       <Input 
@@ -470,9 +633,9 @@ export function RegisterForm() {
                 </motion.div>
               )}
 
-              {currentStep === 2 && (
+              {currentStep === 3 && (
                 <motion.div
-                  key="step2"
+                  key="step3"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
@@ -555,70 +718,6 @@ export function RegisterForm() {
                   </div>
                 </motion.div>
               )}
-
-              {currentStep === 3 && (
-                <motion.div
-                  key="step3"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-4"
-                >
-                  <Input 
-                    label="Username"
-                    labelClassName="text-white lg:text-gray-700" 
-                    placeholder="juandelacruz" 
-                    required
-                    value={formData.user.username} 
-                    onChange={e => handleChange("user", "username", e.target.value)}
-                  />
-                  <Input 
-                    label="Email Address"
-                    type="email" 
-                    placeholder="juan@example.com" 
-                    required
-                    value={formData.user.email} 
-                    onChange={e => handleChange("user", "email", e.target.value)}
-                  />
-                  <div>
-                    <Input 
-                      label="Password"
-                      labelClassName="text-white lg:text-gray-700"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••" 
-                      required
-                      value={formData.user.password} 
-                      onChange={e => handleChange("user", "password", e.target.value)}
-                      onFocus={() => {
-                        // Small fallback scroll for when users tap the input again and keyboard appears
-                        if (scrollContainerRef.current) {
-                          setTimeout(() => {
-                            scrollContainerRef.current?.scrollTo({
-                              top: scrollContainerRef.current.scrollHeight,
-                              behavior: "smooth"
-                            });
-                          }, 50);
-                        }
-                      }}
-                      rightIcon={
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(prev => !prev)}
-                          className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
-                          tabIndex={-1}
-                          aria-label={showPassword ? "Hide password" : "Show password"}
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      }
-                    />
-                    <div ref={passwordReqRef}>
-                      <PasswordStrength password={formData.user.password} />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
             </AnimatePresence>
             </div>
 
@@ -637,13 +736,30 @@ export function RegisterForm() {
                 <div></div> // Empty div for flex spacing
               )}
 
-              {currentStep < 3 ? (
+              {currentStep === 1 ? (
+                setupPhase === "email" ? (
+                  <Button type="button" onClick={handleRequestOTP} disabled={otpLoading} className="pl-6 pr-4 py-2">
+                    {otpLoading ? "Sending..." : "Send OTP"}
+                    <ChevronRight className="w-4 h-4 ml-2 inline" />
+                  </Button>
+                ) : setupPhase === "otp" ? (
+                  <Button type="button" onClick={handleVerifyOTP} disabled={otpLoading} className="pl-6 pr-4 py-2">
+                    {otpLoading ? "Verifying..." : "Verify OTP"}
+                    <ChevronRight className="w-4 h-4 ml-2 inline" />
+                  </Button>
+                ) : (
+                  <Button type="button" onClick={nextStep} className="pl-6 pr-4 py-2">
+                    Next Step
+                    <ChevronRight className="w-4 h-4 ml-2 inline" />
+                  </Button>
+                )
+              ) : currentStep < 3 ? (
                 <Button type="button" onClick={nextStep} className="pl-6 pr-4 py-2">
                   Next Step
                   <ChevronRight className="w-4 h-4 ml-2 inline" />
                 </Button>
               ) : (
-              <Button type="button" onClick={handleCreate} disabled={loading} className="px-6 py-2">
+                <Button type="button" onClick={handleCreate} disabled={loading} className="px-6 py-2">
                   {loading ? "Registering..." : "Create Account"}
                 </Button>
               )}

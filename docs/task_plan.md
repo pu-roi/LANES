@@ -4,6 +4,11 @@
 
 ---
 
+## Backlog
+
+- [x] **Profile Page Community Post Navigation Fix**: When opening a community post from within the Profile Page tab, it incorrectly navigates away to the main Community Feed page. Update it so that posts open locally within the profile page context (via a slide-over modal, dialog, or embedded view) to maintain user context.
+- [ ] **Saved Places Feature**: Integrate "Saved Places" (Home/Work) with map picking functionality, allowing users to save custom locations to their profile.
+
 ## Active Sprint (Next Feature)
 
 ### Phase 2: Community Moderation & System Rules

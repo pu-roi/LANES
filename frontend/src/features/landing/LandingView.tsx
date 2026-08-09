@@ -138,13 +138,14 @@ export default function LandingView() {
                 
                 {isInstallable && (
                   <div className="flex flex-col sm:flex-row gap-3 mt-4 w-full justify-center lg:justify-start">
-                    <button
+                    <Button
+                      size="lg"
                       onClick={triggerInstall}
-                      className="relative inline-flex items-center justify-center h-11 px-8 font-bold text-white bg-blue-600 border border-blue-600 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300 hover:bg-blue-700 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] group"
+                      className="relative rounded-full shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] group"
                     >
-                      <Download className="relative w-5 h-5 mr-2 text-white group-hover:translate-y-0.5 transition-transform" />
-                      <span className="relative">Download LANES App</span>
-                    </button>
+                      <Download className="relative w-5 h-5 mr-2 group-hover:translate-y-0.5 transition-transform" />
+                      <span className="relative font-bold">Download LANES App</span>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -164,8 +165,8 @@ export default function LandingView() {
 
                       <Button
                         type="button"
-                        variant="secondary"
-                        className="w-full justify-center bg-blue-100 text-blue-800 hover:bg-blue-200 py-5 rounded-xl border border-blue-300 font-bold shadow-sm transition-all"
+                        size="lg"
+                        className="w-full rounded-xl bg-blue-100 text-blue-800 hover:bg-blue-200 border border-blue-300 font-bold shadow-sm"
                         onClick={handleUseCurrentLocation}
                         disabled={isLoading}
                       >
@@ -234,7 +235,8 @@ export default function LandingView() {
 
                     <Button
                       type="submit"
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-xl text-base mt-2 shadow-sm"
+                      size="lg"
+                      className="w-full rounded-xl mt-2 shadow-sm font-bold"
                     >
                       Go to Map <ArrowRight className="inline-block w-4 h-4 ml-2" />
                     </Button>
@@ -242,7 +244,8 @@ export default function LandingView() {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full bg-white hover:bg-blue-50 text-blue-600 border border-blue-200 py-5 rounded-xl text-base shadow-sm font-semibold mt-3 transition-colors"
+                      size="lg"
+                      className="w-full bg-white hover:bg-blue-50 text-blue-600 border border-blue-200 rounded-xl shadow-sm font-bold mt-3"
                       onClick={() => router.push("/analytics")}
                     >
                       <TrendingUp className="inline-block w-5 h-5 mr-2" />
