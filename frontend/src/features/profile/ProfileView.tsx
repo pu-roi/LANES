@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
 import { 
@@ -11,6 +11,11 @@ import {
 } from "lucide-react";
 import { ColorPicker } from "@/shared/ui/ColorPicker";
 import { EditProfileForm } from "./components/EditProfileForm";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { votePost, FeedPost } from "../feed/feedApi";
+import { PostItem } from "../feed/PostItem";
+import { useToast } from "@/shared/ui";
 
 export default function ProfileView() {
   const { user, isLoading: authLoading } = useAuth();
@@ -25,6 +30,55 @@ export default function ProfileView() {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showSettingsColorPicker, setShowSettingsColorPicker] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [sidebarTop, setSidebarTop] = useState("1.5rem");
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (sidebarRef.current) {
+        const height = sidebarRef.current.offsetHeight;
+        // Find the scrolling container (the flex-1 overflow-y-auto div)
+        const scrollContainer = sidebarRef.current.closest('.overflow-y-auto');
+        const containerHeight = scrollContainer ? scrollContainer.clientHeight : window.innerHeight;
+        
+        if (height > containerHeight - 48) { // 48px is roughly 3rem buffer
+          setSidebarTop(`${containerHeight - height - 24}px`);
+        } else {
+          setSidebarTop("6rem"); // 96px, safely below the 70px nav bar
+        }
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [user, myReports, myPosts]); // Re-calculate if content changes
+
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { error: showError } = useToast();
+
+  const voteMutation = useMutation({
+    mutationFn: ({ postId, type }: { postId: number, type: 'upvote' | 'downvote' }) => votePost(postId, type),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-posts'] });
+    },
+    onError: (err: any) => {
+      if (err.status === 401) {
+        showError('Login Required', 'Please log in first to interact with posts!');
+      } else {
+        showError('Failed to vote', err.message);
+      }
+    }
+  });
+
+  const handleVote = (postId: number, type: 'upvote' | 'downvote') => {
+    voteMutation.mutate({ postId, type });
+  };
+
+  const handleViewMap = (lat: number, lng: number) => {
+    router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`);
+  };
 
   if (authLoading) {
     return (
@@ -88,7 +142,7 @@ export default function ProfileView() {
   };
 
   return (
-    <div className="flex-1 bg-slate-50 overflow-y-auto">
+    <div className="flex-1 bg-slate-50">
       {/* Header / Cover */}
       <div 
         className="h-64 w-full relative transition-colors duration-500" 
@@ -164,7 +218,7 @@ export default function ProfileView() {
           
           {/* Left Column: Details & Metrics */}
           <div className="lg:col-span-1">
-            <div className="space-y-6 sticky top-6">
+            <div ref={sidebarRef} className="space-y-6 sticky" style={{ top: sidebarTop, transition: 'top 0.2s ease-out' }}>
               
               {/* Trust Score & Accuracy */}
               <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
@@ -262,30 +316,39 @@ export default function ProfileView() {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Tabs Navigation */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-2 flex overflow-x-auto">
+            <div className="flex border-b border-slate-200 mb-6 overflow-x-auto">
               <button
                 onClick={() => { setActiveTab("reports"); setIsEditingProfile(false); }}
-                className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
-                  activeTab === "reports" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:bg-slate-50"
+                className={`relative flex-1 min-w-[140px] flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors hover:text-blue-600 ${
+                  activeTab === "reports" ? "text-blue-600" : "text-slate-500"
                 }`}
               >
                 <AlertTriangle className="w-4 h-4" /> Hazard Reports
+                {activeTab === "reports" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"></div>
+                )}
               </button>
               <button
                 onClick={() => { setActiveTab("posts"); setIsEditingProfile(false); }}
-                className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
-                  activeTab === "posts" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:bg-slate-50"
+                className={`relative flex-1 min-w-[140px] flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors hover:text-blue-600 ${
+                  activeTab === "posts" ? "text-blue-600" : "text-slate-500"
                 }`}
               >
                 <MessageSquare className="w-4 h-4" /> Community Posts
+                {activeTab === "posts" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"></div>
+                )}
               </button>
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`flex-1 min-w-[120px] flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
-                  activeTab === "settings" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:bg-slate-50"
+                className={`relative flex-1 min-w-[140px] flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors hover:text-blue-600 ${
+                  activeTab === "settings" ? "text-blue-600" : "text-slate-500"
                 }`}
               >
                 <Settings className="w-4 h-4" /> Settings
+                {activeTab === "settings" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"></div>
+                )}
               </button>
             </div>
 
@@ -335,16 +398,13 @@ export default function ProfileView() {
                     <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 text-slate-400 animate-spin" /></div>
                   ) : myPosts?.posts?.length > 0 ? (
                     <div className="space-y-4">
-                      {myPosts.posts.map((post: any) => (
-                        <div key={post.id} className="p-4 rounded-xl border border-slate-100 hover:border-blue-100 hover:bg-blue-50/50 transition-colors">
-                          <p className="text-slate-700">{post.content}</p>
-                          <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                            <span>{formatDate(post.created_at)}</span>
-                            <div className="flex gap-4">
-                              <span>↑ {post.upvotes}</span>
-                              <span>💬 {post.comment_count}</span>
-                            </div>
-                          </div>
+                      {myPosts.posts.map((post: FeedPost) => (
+                        <div key={post.id} className="border border-slate-100 rounded-xl overflow-hidden hover:border-blue-100 transition-colors">
+                          <PostItem 
+                            post={post} 
+                            onVote={handleVote}
+                            onViewMap={handleViewMap} 
+                          />
                         </div>
                       ))}
                     </div>
