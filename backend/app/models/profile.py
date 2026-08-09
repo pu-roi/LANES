@@ -24,6 +24,7 @@ class Profile(Base):
     # UI Preferences & Privacy
     cover_color: Mapped[str] = mapped_column(String(20), default="#3B82F6")
     is_public: Mapped[bool] = mapped_column(Boolean, default=True)
+    display_full_name: Mapped[bool] = mapped_column(Boolean, default=True)
     
     # Community Trust Metrics
     trust_score: Mapped[int] = mapped_column(Integer, default=50)

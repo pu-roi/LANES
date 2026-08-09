@@ -7,9 +7,12 @@ import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/shared/ui/Toast";
+import { FcGoogle } from "react-icons/fc";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { info } = useToast();
   const { login, isLoggingIn } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -114,6 +117,24 @@ export default function LoginForm() {
           )}
         </Button>
       </div>
+      
+      <div className="relative flex items-center py-2">
+        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+        <span className="flex-shrink-0 mx-4 text-white/80 lg:text-slate-400 text-sm font-medium">or</span>
+        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+      </div>
+
+      <div>
+        <button
+          type="button"
+          onClick={() => info("Under Development", "Google Sign-In is currently under development.")}
+          className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 lg:border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+        >
+          <FcGoogle className="w-5 h-5" />
+          Sign in with Google
+        </button>
+      </div>
+
       <div className="text-center pt-2">
         <p className="text-sm text-blue-100 lg:text-gray-600">
           Don't have an account?{" "}

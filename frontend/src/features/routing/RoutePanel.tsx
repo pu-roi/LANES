@@ -76,6 +76,37 @@ function DesktopPointSelector({
   const colors = POINT_COLORS[point];
   const Icon = point === "start" ? CircleDot : Flag;
 
+  const renderTopOptions = () => (
+    <>
+      <li>
+        <button
+          type="button"
+          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={onActivate}
+        >
+          <div className="bg-blue-100 p-1.5 rounded-full shrink-0">
+            <Crosshair className="h-4 w-4 text-blue-700" />
+          </div>
+          <span className="flex flex-col justify-center h-7 font-semibold text-blue-700">Choose on Map</span>
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
+          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100 mb-1"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={onUseCurrent}
+        >
+          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
+            <MapPin className="h-4 w-4 text-gray-700" />
+          </div>
+          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
+        </button>
+      </li>
+    </>
+  );
+
   return (
     <div
       className={cn(
@@ -108,33 +139,7 @@ function DesktopPointSelector({
         </div>
       </div>
 
-      <div className="px-3 pb-1.5 flex gap-2">
-        <button
-          type="button"
-          onClick={onActivate}
-          title={isActive ? "Click anywhere on the map to set location" : "Pick point from map"}
-          className={cn(
-            "flex-1 flex items-center justify-center gap-1.5 rounded-md border py-1.5 text-xs font-medium transition-all",
-            isActive
-              ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-          )}
-        >
-          <Crosshair className="h-3.5 w-3.5" />
-          {isActive ? "Click on map" : "Pick on map"}
-        </button>
-        <button
-          type="button"
-          onClick={onUseCurrent}
-          title="Use current GPS location"
-          className="flex-1 flex items-center justify-center gap-1.5 rounded-md border border-dashed border-gray-300 py-1.5 text-xs font-medium text-gray-500 hover:text-blue-600 hover:border-blue-300 bg-white hover:bg-blue-50 transition-all"
-        >
-          <MapPin className="h-3.5 w-3.5" />
-          Current
-        </button>
-      </div>
-
-      <div className="px-3 pb-2.5">
+      <div className="px-3 pb-2.5 mt-1">
         <LocationAutocomplete
           value={label}
           onChange={onLabelChange}
@@ -142,6 +147,7 @@ function DesktopPointSelector({
           onClear={onClear}
           placeholder={placeholder}
           className="[&_input]:h-9"
+          renderTopOptions={renderTopOptions()}
         />
       </div>
     </div>
@@ -196,13 +202,8 @@ export default function RoutePanel() {
   }, []);
 
   const handlePickOnMapToggle = (target: ActivePoint) => {
-    if (activePoint === target) {
-      setActivePoint(null);
-      setIsPickingOnMap(false);
-    } else {
-      setActivePoint(target);
-      setIsPickingOnMap(true);
-    }
+    setActivePoint(target);
+    setIsPickingOnMap(true);
   };
 
   const confirmMapLocation = () => {

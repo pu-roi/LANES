@@ -348,7 +348,13 @@ async def get_weather_insights(request: WeatherInsightsRequest):
                 "insights": parsed_json,
                 "model": model_used
             }
+        except httpx.TimeoutException:
+            raise HTTPException(status_code=504, detail="The AI service is currently overloaded and took too long to respond. Please try again in a moment.")
         except httpx.HTTPStatusError as e:
             raise HTTPException(status_code=e.response.status_code, detail=f"OpenRouter API error: {e.response.text}")
+        except httpx.RequestError as e:
+            raise HTTPException(status_code=502, detail=f"Failed to connect to the AI service: {type(e).__name__}")
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail=f"Internal error: {type(e).__name__} - {str(e)}")

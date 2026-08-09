@@ -118,10 +118,49 @@ def test_token(current_user: models.User = Depends(deps.get_current_user)) -> An
     return current_user
 
 
-from app.schemas.auth import RegistrationRequest, OTPVerificationRequest, OTPResendRequest
+from app.schemas.auth import RegistrationRequest, OTPVerificationRequest, OTPResendRequest, SignupOTPRequest
 from app.services.auth_service import generate_and_send_otp, validate_otp
 from app.crud.user import create_user_with_profile
 from app.crud import otp as crud_otp
+
+@router.post("/request-signup-otp")
+@limiter.limit("3/minute")
+async def request_signup_otp(
+    request: SignupOTPRequest,
+    http_request: Request,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Sends an OTP to the given email for signup verification.
+    """
+    existing_email = crud.get_user_by_email(db, email=request.email)
+    if existing_email:
+        if existing_email.is_active:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        # If unverified, we can still allow them to re-verify or it might be abandoned
+        # For simplicity, if it's inactive, they can still request an OTP.
+
+    await generate_and_send_otp(db, email=request.email)
+    return {"msg": "OTP sent successfully"}
+
+
+@router.post("/verify-signup-otp")
+@limiter.limit("5/minute")
+def verify_signup_otp(
+    request: OTPVerificationRequest,
+    http_request: Request,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Verifies the OTP code for signup.
+    """
+    is_valid = validate_otp(db, email=request.email, plain_otp=request.otp_code)
+    
+    if not is_valid:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+        
+    return {"msg": "Email verified successfully"}
+
 
 @router.post("/register", response_model=schemas.UserResponse)
 @limiter.limit("3/minute")
@@ -131,29 +170,21 @@ async def register(
     db: Session = Depends(get_db)
 ) -> Any:
     """
-    Registers a new user, creates profile and address, and sends OTP.
+    Registers a new user, creates profile and address. Requires email to be pre-verified.
     """
     existing_username = crud.get_user_by_username(db, username=request.user.username)
     if existing_username:
-        if not existing_username.is_active:
-            if datetime.utcnow() > existing_username.created_at + timedelta(minutes=10):
-                crud.hard_delete_user(db, existing_username.id)
-            else:
-                raise HTTPException(status_code=400, detail={"code": "UNVERIFIED_ACCOUNT", "email": existing_username.email})
-        else:
-            raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(status_code=400, detail="Username already registered")
         
     existing_email = crud.get_user_by_email(db, email=request.user.email)
     if existing_email:
-        if not existing_email.is_active:
-            if datetime.utcnow() > existing_email.created_at + timedelta(minutes=10):
-                crud.hard_delete_user(db, existing_email.id)
-            else:
-                raise HTTPException(status_code=400, detail={"code": "UNVERIFIED_ACCOUNT", "email": existing_email.email})
-        else:
-            raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(status_code=400, detail="Email already registered")
 
-    request.user.is_active = False
+    # Verify that the email was actually OTP verified recently
+    if not crud_otp.is_email_verified(db, request.user.email):
+        raise HTTPException(status_code=403, detail="Email not verified or verification expired")
+
+    request.user.is_active = True
     
     try:
         new_user = create_user_with_profile(
@@ -170,12 +201,8 @@ async def register(
     db.refresh(new_user)
     _ = new_user.role  # Force-load lazy relationship within the session
 
-    try:
-        await generate_and_send_otp(db, email=new_user.email)
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"OTP generation failed: {str(e)}")
+    # Delete the OTP record so it can't be reused for another account creation
+    crud_otp.delete_otp(db, request.user.email)
 
     return new_user
 

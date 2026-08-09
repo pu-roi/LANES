@@ -9,19 +9,22 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-open-sans);
+  --font-mono: var(--font-roboto-mono);
   
-  /* Fluid Typography Scale (from typography.tokens.ts) */
-  /* Max sizes match standard Tailwind defaults; Min sizes scale down for mobile */
-  --text-xs: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem); /* Max: 12px */
-  --text-sm: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);   /* Max: 14px */
-  --text-base: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);     /* Max: 16px */
-  --text-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);       /* Max: 18px */
-  --text-xl: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);   /* Max: 20px */
-  --text-2xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);      /* Max: 24px */
-  --text-3xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);    /* Max: 30px */
-  --text-4xl: clamp(1.875rem, 1.65rem + 1.125vw, 2.25rem);  /* Max: 36px */
+  /* Fluid Typography Scale */
+  /* Base text remains static to prevent unreadable text on mobile and iOS input zoom bugs */
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  
+  /* Headings scale down on smaller screens to prevent layout breaks */
+  --text-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);       /* 16px -> 18px */
+  --text-xl: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);   /* 18px -> 20px */
+  --text-2xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);      /* 20px -> 24px */
+  --text-3xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);    /* 24px -> 30px */
+  --text-4xl: clamp(1.75rem, 1.5rem + 1.25vw, 2.25rem);     /* 28px -> 36px */
+  --text-5xl: clamp(2rem, 1.75rem + 1.5vw, 3rem);           /* 32px -> 48px */
 }
 
 body {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 import NavigationWrapper from "@/features/navigation/NavigationWrapper";
@@ -7,13 +7,13 @@ import { QueryProvider, AppProviders } from "./providers";
 import OfflineBanner from "@/features/offline/OfflineBanner";
 import { NotificationBell } from "@/features/notifications/NotificationBell";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
 });
 
@@ -41,7 +41,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${openSans.variable} ${robotoMono.variable} antialiased`}
     >
       <head>
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />

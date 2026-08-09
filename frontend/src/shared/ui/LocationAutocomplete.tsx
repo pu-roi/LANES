@@ -196,7 +196,14 @@ export function LocationAutocomplete({
       </div>
 
       {isOpen && (suggestions.length > 0 || renderTopOptions) && (
-        <ul className="absolute z-50 mt-1 w-full max-h-56 overflow-auto rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg">
+        <ul 
+          className="absolute z-50 mt-1 w-full max-h-56 overflow-auto rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg"
+          onClick={(e) => {
+            if ((e.target as HTMLElement).closest("button")) {
+              setIsOpen(false);
+            }
+          }}
+        >
           {renderTopOptions}
           {suggestions.map((suggestion, index) => (
             <li key={suggestion.id}>

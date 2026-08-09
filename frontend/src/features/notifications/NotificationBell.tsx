@@ -72,6 +72,7 @@ export function NotificationBell() {
 
   return (
     <div 
+      id="notification-bell"
       className={cn(
         "fixed right-6 z-50",
         isPostDetail ? "hidden sm:block" : "block",

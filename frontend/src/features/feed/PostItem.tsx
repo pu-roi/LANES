@@ -13,9 +13,10 @@ interface PostItemProps {
   onViewMap?: (lat: number, lng: number) => void;
   isExpanded?: boolean;
   initialMediaIndex?: number;
+  onPostClick?: (postId: number, initialMediaIndex?: number) => void;
 }
 
-export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0 }: PostItemProps) {
+export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick }: PostItemProps) {
   const router = useRouter();
   const { info, success, error: showError } = useToast();
   const [currentMediaIndex, setCurrentMediaIndex] = useState(initialMediaIndex);
@@ -269,7 +270,11 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!isExpanded) {
-                    router.push(`/feed/${post.id}?media=${index}`);
+                    if (onPostClick) {
+                      onPostClick(post.id, index);
+                    } else {
+                      router.push(`/feed/${post.id}?media=${index}`);
+                    }
                   } else {
                     setCurrentMediaIndex(index);
                     setIsFullscreenMediaOpen(true);
@@ -384,7 +389,11 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               if (isExpanded) {
                 // Already expanded, maybe focus the input
               } else {
-                router.push(`/feed/${post.id}`);
+                if (onPostClick) {
+                  onPostClick(post.id);
+                } else {
+                  router.push(`/feed/${post.id}`);
+                }
               }
             }}
             className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
