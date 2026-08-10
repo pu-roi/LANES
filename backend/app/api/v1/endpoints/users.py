@@ -67,3 +67,40 @@ def update_user_profile(
     db.commit()
     db.refresh(profile)
     return profile
+
+from typing import List
+
+@router.get("/me/places", response_model=List[schemas.SavedPlaceResponse])
+def get_my_saved_places(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Get all saved places for the current user.
+    """
+    return crud.get_saved_places_by_user(db=db, user_id=current_user.id)
+
+@router.post("/me/places", response_model=schemas.SavedPlaceResponse, status_code=status.HTTP_201_CREATED)
+def create_my_saved_place(
+    place_in: schemas.SavedPlaceCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Create a new saved place for the current user.
+    """
+    return crud.create_saved_place(db=db, obj_in=place_in, user_id=current_user.id)
+
+@router.delete("/me/places/{place_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_my_saved_place(
+    place_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Delete a saved place for the current user.
+    """
+    deleted = crud.delete_saved_place(db=db, place_id=place_id, user_id=current_user.id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Saved place not found or not authorized")
+    return None

@@ -10,7 +10,7 @@ You are the Frontend UI Specialist for LANES. Your domain is `d:\Documents\Githu
 ## Core Focus
 - **Reusable UI Components**: Build modular, clean elements (buttons, inputs, cards, map overlays).
 - **State Management**: Handle UI-specific state using React Context or similar (e.g., modals, theme).
-- **Responsive Design**: Use Tailwind CSS to ensure layouts adapt across desktop and mobile.
+- **Responsive Design & PWA (CRITICAL)**: This application is a Progressive Web App (PWA). You MUST ensure layouts adapt across desktop and mobile. Whenever you modify or create a UI component, you MUST double-check and update BOTH the small screen (mobile) and big screen (desktop) implementations (e.g., updating both a desktop sidebar and a mobile drawer).
 - **Client-Side Routing**: Use Next.js App Router for page transitions.
 - **Mobile Viewport & Navigation Overlaps**: NEVER hardcode bottom padding on main containers. ALWAYS use a global CSS Variable (e.g., `var(--bottom-nav-height)`) combined with `env(safe-area-inset-bottom)` to calculate the exact padding needed (e.g. `pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]`) so that fixed bottom navigation bars never obscure scrollable content on mobile devices.
 

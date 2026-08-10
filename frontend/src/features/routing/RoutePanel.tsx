@@ -17,8 +17,10 @@ import {
   X,
   Car,
   Bike,
-  PersonStanding
+  PersonStanding,
+  Home, Briefcase, GraduationCap, Building, Coffee, Heart, Star
 } from "lucide-react";
+import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { Panel } from "@/shared/ui/Panel";
 import { CardContent } from "@/shared/ui/Card";
 import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
@@ -182,6 +184,8 @@ export default function RoutePanel() {
     setVehicleProfile,
     isAnalyticsOpen,
     isReportPanelOpen,
+    isSavePlacePanelOpen,
+    savedPlaces,
   } = useMapContext();
 
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
@@ -275,32 +279,33 @@ export default function RoutePanel() {
     { id: "walk", icon: PersonStanding, label: "Walk" },
   ];
 
+  const iconMap: Record<string, any> = { Home, Briefcase, GraduationCap, Building, Coffee, Heart, Star, MapPin };
+
+  const handleSelectSavedPlace = (place: any) => {
+    const coords: [number, number] = [place.longitude, place.latitude];
+    const label = place.name;
+    if (activePoint === "start" || (!activePoint && !start)) {
+      setStart(coords, label);
+      setStartInput(label);
+      setActivePoint("end");
+    } else {
+      setEnd(coords, label);
+      setEndInput(label);
+      setActivePoint(null);
+    }
+  };
+
   if (isMobile) {
     if (isPickingOnMap && (activePoint === "start" || activePoint === "end")) {
       return (
-        <div className="absolute inset-0 pointer-events-none z-40 flex flex-col justify-between">
-          <div className="p-4 pointer-events-auto">
-            <button
-              onClick={() => {
-                setIsPickingOnMap(false);
-                if (!start && !end) setActivePoint(null);
-              }}
-              className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-md text-gray-900 hover:bg-gray-100 border border-gray-300"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-          
-          <div className="p-4 pointer-events-auto flex justify-center pb-24">
-            <button
-              onClick={confirmMapLocation}
-              className="flex items-center justify-center gap-2 bg-blue-600 text-white rounded-full px-6 py-3 shadow-lg font-bold text-base border border-blue-500 hover:bg-blue-700 transition-all min-w-[200px]"
-            >
-              <Check className="w-5 h-5" />
-              Set {activePoint === "start" ? "Start" : "Destination"}
-            </button>
-          </div>
-        </div>
+        <MapPickerMobileOverlay 
+          onCancel={() => {
+            setIsPickingOnMap(false);
+            if (!start && !end) setActivePoint(null);
+          }}
+          onConfirm={confirmMapLocation}
+          confirmText={`Set ${activePoint === "start" ? "Start" : "Destination"}`}
+        />
       );
     }
     
@@ -308,7 +313,7 @@ export default function RoutePanel() {
       return null;
     }
 
-    if (isMobile && (isReportPanelOpen || isAnalyticsOpen) && activePoint !== "start" && activePoint !== "end") {
+    if (isMobile && (isReportPanelOpen || isAnalyticsOpen || isSavePlacePanelOpen || (isPickingOnMap && activePoint !== "start" && activePoint !== "end")) && activePoint !== "start" && activePoint !== "end") {
       return null;
     }
 
@@ -401,6 +406,25 @@ export default function RoutePanel() {
               ) : null}
             </div>
           </div>
+
+          {/* Saved Places Chips (Mobile) */}
+          {savedPlaces && savedPlaces.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar border-b border-gray-100">
+              {savedPlaces.map(place => {
+                const Icon = iconMap[place.icon] || MapPin;
+                return (
+                  <button
+                    key={place.id}
+                    onClick={() => handleSelectSavedPlace(place)}
+                    className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-semibold hover:bg-blue-100 active:scale-95 transition-all"
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {place.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
           
           {/* Mobile Vehicle Profile Selector */}
           <div className="flex border-t border-gray-100 overflow-x-auto">
@@ -625,6 +649,25 @@ export default function RoutePanel() {
           onUseCurrent={() => handleUseCurrentLocation("end")}
           onClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); }}
         />
+
+        {/* Saved Places Chips (Desktop) */}
+        {savedPlaces && savedPlaces.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-1 -mb-1">
+            {savedPlaces.map(place => {
+              const Icon = iconMap[place.icon] || MapPin;
+              return (
+                <button
+                  key={place.id}
+                  onClick={() => handleSelectSavedPlace(place)}
+                  className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 px-2.5 py-1 rounded-full whitespace-nowrap text-xs font-semibold hover:bg-blue-100 active:scale-95 transition-all"
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {place.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Desktop Vehicle Profile Selector */}
         <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-200">

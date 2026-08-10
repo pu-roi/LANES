@@ -55,6 +55,8 @@ interface PanelProps {
   hideCollapseIcon?: boolean;
   /** Whether to show a close (X) button on desktop. */
   showDesktopClose?: boolean;
+  /** Optional class name for the panel body container */
+  bodyClassName?: string;
 }
 
 /**
@@ -81,6 +83,7 @@ export function Panel({
   children,
   hideCollapseIcon = false,
   showDesktopClose = false,
+  bodyClassName,
 }: PanelProps) {
   const dragControls = useDragControls();
   const dragStartPos = useRef({ x: 0, y: 0 });
@@ -226,7 +229,7 @@ export function Panel({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="px-4 pb-0 overflow-y-auto max-h-[60vh]"
+                  className={cn("px-4 pb-0 overflow-y-auto max-h-[60vh]", bodyClassName)}
                 >
                   {children}
                 </motion.div>

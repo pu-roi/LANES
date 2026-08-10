@@ -17,8 +17,11 @@ import {
   User,
 } from "lucide-react";
 import Link from "next/link";
-import { Panel } from "@/shared/ui/Panel";
+import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
+import { Select } from "@/shared/ui/Select";
+import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
+import { Panel } from "@/shared/ui/Panel";
 import { useToast } from "@/shared/ui";
 import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
 import { cn } from "@/lib/utils";
@@ -384,28 +387,14 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
   // ── Mobile map-pick overlay ────────────────────────────────────────────────
   if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
     return (
-      <div className="absolute inset-0 pointer-events-none z-40 flex flex-col justify-between">
-        <div className="p-4 pointer-events-auto">
-          <button
-            onClick={() => {
-              setIsPickingOnMap(false);
-              if (!floodStart && !floodEnd) setActivePoint(null);
-            }}
-            className="flex items-center justify-center w-12 h-12 bg-white rounded-full shadow-md text-gray-900 hover:bg-gray-100 border border-gray-300"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="p-4 pointer-events-auto flex justify-center pb-24">
-          <button
-            onClick={confirmMapLocation}
-            className="flex items-center justify-center gap-2 bg-orange-500 text-white rounded-full px-6 py-3 shadow-lg font-bold text-base border border-orange-400 hover:bg-orange-600 transition-all min-w-[200px]"
-          >
-            <Check className="w-5 h-5" />
-            Set {activePoint === "flood_start" ? "Flood Start" : "Flood End"}
-          </button>
-        </div>
-      </div>
+      <MapPickerMobileOverlay 
+        onCancel={() => {
+          setIsPickingOnMap(false);
+          if (!floodStart && !floodEnd) setActivePoint(null);
+        }}
+        onConfirm={confirmMapLocation}
+        confirmText={`Set ${activePoint === "flood_start" ? "Flood Start" : "Flood End"}`}
+      />
     );
   }
 

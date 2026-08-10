@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect, forwardRef } from "react";
+import React, { useState, useRef, useEffect, forwardRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -24,13 +25,36 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
   ({ options, value, onChange, label, error, placeholder, className = "" }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
 
     const selectedOption = options.find((opt) => opt.value === value);
+
+    const updateRect = useCallback(() => {
+      if (containerRef.current) {
+        setDropdownRect(containerRef.current.getBoundingClientRect());
+      }
+    }, []);
+
+    useEffect(() => {
+      if (isOpen) {
+        updateRect();
+        window.addEventListener("scroll", updateRect, true); // capture phase to handle inner scrolls
+        window.addEventListener("resize", updateRect);
+        return () => {
+          window.removeEventListener("scroll", updateRect, true);
+          window.removeEventListener("resize", updateRect);
+        };
+      }
+    }, [isOpen, updateRect]);
 
     // Handle click outside to close
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
-        if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        if (
+          containerRef.current && 
+          !containerRef.current.contains(event.target as Node) &&
+          !(event.target as HTMLElement).closest('[data-portal="select-dropdown"]')
+        ) {
           setIsOpen(false);
         }
       };
@@ -72,13 +96,19 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           </button>
           
           <AnimatePresence>
-            {isOpen && (
+            {isOpen && typeof document !== "undefined" && createPortal(
               <motion.div
+                data-portal="select-dropdown"
                 initial={{ opacity: 0, y: -10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
-                className="absolute z-50 mt-1 w-full rounded-lg border border-gray-100 bg-white shadow-xl overflow-hidden py-1"
+                className="fixed z-[9999] mt-1 rounded-lg border border-gray-100 bg-white shadow-xl overflow-hidden py-1"
+                style={{
+                  top: dropdownRect ? dropdownRect.bottom : 0,
+                  left: dropdownRect ? dropdownRect.left : 0,
+                  width: dropdownRect ? dropdownRect.width : 0,
+                }}
               >
                 <div className="max-h-60 overflow-y-auto overflow-x-hidden scrollbar-thin">
                   {options.map((option) => (
@@ -98,7 +128,8 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                     </button>
                   ))}
                 </div>
-              </motion.div>
+              </motion.div>,
+              document.body
             )}
           </AnimatePresence>
         </div>
