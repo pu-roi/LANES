@@ -16,3 +16,4 @@ from app.crud.report import (
 from app.crud.post import create_community_post, get_post, get_posts, delete_post
 from app.crud.notification import create_notification, get_notifications, get_unread_count, mark_as_read, mark_all_as_read
 from app.crud.audit import create_audit_log, get_audit_logs
+from app.crud.saved_place import get_saved_places_by_user, create_saved_place, delete_saved_place

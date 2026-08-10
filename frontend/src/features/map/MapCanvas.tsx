@@ -11,6 +11,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { createRoot, type Root } from "react-dom/client";
 
 const ROUTE_SOURCE_ID = "route-line";
 const ROUTE_LAYER_ID = "route-line-layer";
@@ -177,6 +178,10 @@ export default function MapCanvas() {
   const endMarkerRef = useRef<Marker | null>(null);
   const floodStartMarkerRef = useRef<Marker | null>(null);
   const floodEndMarkerRef = useRef<Marker | null>(null);
+  
+  // Ref for saved places markers and their react roots for cleanup
+  const savedPlacesMarkersRef = useRef<{ marker: Marker, root: Root }[]>([]);
+
   // Refs for alternative route layers and ETA markers — cleaned up on each route update
   const altMarkerRefs = useRef<maplibregl.Marker[]>([]);
   const altLayerIds = useRef<string[]>([]);
@@ -225,7 +230,8 @@ export default function MapCanvas() {
     setSelectedRouteIndex,
     setPointFromMap, activePoint, setActivePoint, isPickingOnMap,
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
-    isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed
+    isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
+    savePlaceIcon
   } = useMapContext();
 
   const isDesktopAnalytics = pathname === "/admin/analytics";
@@ -453,6 +459,11 @@ export default function MapCanvas() {
       endMarkerRef.current = null;
       floodStartMarkerRef.current = null;
       floodEndMarkerRef.current = null;
+      savedPlacesMarkersRef.current.forEach(({ marker, root }) => {
+        marker.remove();
+        setTimeout(() => root.unmount(), 0);
+      });
+      savedPlacesMarkersRef.current = [];
       mapInstance.remove();
       mapRef.current = null;
       setIsLoaded(false);
@@ -514,6 +525,51 @@ export default function MapCanvas() {
         .addTo(map);
     }
   }, [floodEnd, isLoaded]);
+
+  // Render Saved Places
+  useEffect(() => {
+    if (!isLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+
+    // Cleanup existing saved places
+    savedPlacesMarkersRef.current.forEach(({ marker, root }) => {
+      marker.remove();
+      setTimeout(() => root.unmount(), 0);
+    });
+    savedPlacesMarkersRef.current = [];
+
+    savedPlaces.forEach((place) => {
+      const el = document.createElement("div");
+      el.className = "cursor-pointer";
+      
+      const root = createRoot(el);
+      const iconText = place.icon || "📍";
+      
+      root.render(
+        <div 
+          className="flex flex-col items-center group transform transition-transform hover:scale-110 active:scale-95"
+          onClick={(e) => {
+            e.stopPropagation();
+            // What to do when a saved place is clicked? Maybe pre-fill route or open a small popup
+            // For now, let's just log or set as start/end if route panel is open
+          }}
+        >
+          <div className="bg-blue-600 w-8 h-8 flex items-center justify-center rounded-full text-white shadow-lg border-2 border-white relative z-10 text-sm">
+            {iconText}
+          </div>
+          <div className="bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded shadow-sm text-xs font-semibold text-slate-700 mt-1 pointer-events-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            {place.name}
+          </div>
+        </div>
+      );
+
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([place.longitude, place.latitude])
+        .addTo(map);
+
+      savedPlacesMarkersRef.current.push({ marker, root });
+    });
+  }, [savedPlaces, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
@@ -1069,13 +1125,19 @@ export default function MapCanvas() {
       {/* Center Pin Overlay (for touch device panning) */}
       {isTouchDevice && isPickingOnMap && activePoint && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full mt-[1.5px] pointer-events-none z-10 drop-shadow-md">
-          <svg width="32" height="32" viewBox="0 0 24 24" className="animate-bounce">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" 
-              fill={activePoint === "start" ? "#16a34a" : activePoint === "flood_start" ? "#f97316" : activePoint === "flood_end" ? "#991b1b" : "#dc2626"} 
-              stroke={activePoint === "start" ? "#16a34a" : activePoint === "flood_start" ? "#f97316" : activePoint === "flood_end" ? "#991b1b" : "#dc2626"} 
-              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="12" cy="10" r="3" fill="white" />
-          </svg>
+          {activePoint === "save_place_location" && savePlaceIcon ? (
+            <div className="flex items-center justify-center animate-bounce text-4xl drop-shadow-md pb-2">
+              {savePlaceIcon}
+            </div>
+          ) : (
+            <svg width="32" height="32" viewBox="0 0 24 24" className="animate-bounce">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" 
+                fill={activePoint === "start" ? "#16a34a" : activePoint === "flood_start" ? "#f97316" : activePoint === "flood_end" ? "#991b1b" : "#dc2626"} 
+                stroke={activePoint === "start" ? "#16a34a" : activePoint === "flood_start" ? "#f97316" : activePoint === "flood_end" ? "#991b1b" : "#dc2626"} 
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="10" r="3" fill="white" />
+            </svg>
+          )}
           <div className="absolute top-full left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-1 bg-black/25 rounded-full blur-[1px]"></div>
         </div>
       )}

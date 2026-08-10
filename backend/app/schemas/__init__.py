@@ -11,6 +11,8 @@ from app.schemas.route import RouteRequest, RouteResponse, LineStringGeometry, R
 from app.schemas.common import PointGeometry, PolygonGeometry
 from app.schemas.auth import Token, TokenPayload
 from app.schemas.audit import AuditLogCreate, AuditLogResponse, AuditLogsPaginatedResponse
+from app.schemas.post import CommunityPostBase, CommunityPostCreate, CommunityPostResponse, CommunityPostPaginatedResponse, CommentBase, CommentCreate, CommentResponse
+from app.schemas.saved_place import SavedPlaceBase, SavedPlaceCreate, SavedPlaceUpdate, SavedPlaceResponse
 from app.schemas.role import RoleBase, RoleCreate, RoleUpdate, RoleResponse
 
 from app.schemas.data import BackupFile, RestoreRequest, CleanupRequest, ExportResponse

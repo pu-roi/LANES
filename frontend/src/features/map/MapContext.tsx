@@ -18,8 +18,8 @@ import {
   type MultiRouteResponse,
 } from "@/features/routing/routingApi";
 
-export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | null;
-export type ActivePanel = "route" | "flood" | null;
+export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
+export type ActivePanel = "route" | "flood" | "save_place" | null;
 
 export interface MapPoint {
   coords: [number, number];
@@ -53,9 +53,11 @@ interface MapContextValue {
   routeError: string | null;
   isPickingOnMap: boolean;
   isReportPanelOpen: boolean;
+  isSavePlacePanelOpen: boolean;
   hasBottomOffset: boolean;
   setIsPickingOnMap: (value: boolean) => void;
   setIsReportPanelOpen: (value: boolean) => void;
+  setIsSavePlacePanelOpen: (value: boolean) => void;
   setActivePoint: (point: ActivePoint) => void;
   setActivePanel: (panel: ActivePanel) => void;
   setIsAnalyticsOpen: (open: boolean) => void;
@@ -76,6 +78,13 @@ interface MapContextValue {
   resetAll: () => void;
   vehicleProfile: "light" | "heavy" | "motorcycle" | "walk";
   setVehicleProfile: (profile: "light" | "heavy" | "motorcycle" | "walk") => void;
+
+  savedPlaces: any[];
+  setSavedPlaces: (places: any[]) => void;
+  draftSavePlaceCoords: {coords: [number, number], label: string} | null;
+  setDraftSavePlaceCoords: (data: {coords: [number, number], label: string} | null) => void;
+  savePlaceIcon: string;
+  setSavePlaceIcon: (icon: string) => void;
 }
 
 const MapContext = createContext<MapContextValue | null>(null);
@@ -90,6 +99,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const locationParam = searchParams.get("location");
   const typeParam = searchParams.get("type") as ActivePoint | null;
   const labelParam = searchParams.get("label");
+  const panelParam = searchParams.get("panel");
 
   const [start, setStartState] = useState<MapPoint | null>(null);
   const [end, setEndState] = useState<MapPoint | null>(null);
@@ -106,8 +116,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [routeError, setRouteError] = useState<string | null>(null);
   const [isPickingOnMap, setIsPickingOnMap] = useState(false);
   const [isReportPanelOpen, setIsReportPanelOpen] = useState(false);
+  const [isSavePlacePanelOpen, setIsSavePlacePanelOpen] = useState(false);
+  const [savedPlaces, setSavedPlaces] = useState<any[]>([]);
+  const [draftSavePlaceCoords, setDraftSavePlaceCoords] = useState<{coords: [number, number], label: string} | null>(null);
+  const [savePlaceIcon, setSavePlaceIcon] = useState<string>("🏠");
 
-  const hasBottomOffset = isReportPanelOpen && !isPickingOnMap;
+  const hasBottomOffset = false;
 
   const [floodStart, setFloodStartState] = useState<MapPoint | null>(null);
   const [floodEnd, setFloodEndState] = useState<MapPoint | null>(null);
@@ -147,6 +161,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setActivePoint("end");
     }
   }, [locationParam, typeParam, labelParam]);
+
+  useEffect(() => {
+    if (panelParam === "saveplace") {
+      setIsSavePlacePanelOpen(true);
+    }
+  }, [panelParam]);
 
   const setActivePanel = useCallback((panel: ActivePanel) => {
     setActivePanelState(panel);
@@ -257,6 +277,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
           .catch(() => {
             router.push(`/feed?openPostModal=true&location_tag=${encodeURIComponent(coordsLabel(coords))}`);
           });
+      } else if (activePoint === "save_place_location") {
+        setDraftSavePlaceCoords({ coords, label: coordsLabel(coords) });
+        setActivePoint(null);
+        setIsPickingOnMap(false);
       }
     },
     [activePoint, setStart, setEnd, setFloodStart, setFloodEnd, router]
@@ -360,12 +384,20 @@ export function MapProvider({ children }: { children: ReactNode }) {
       routeError,
       isPickingOnMap,
       isReportPanelOpen,
+      isSavePlacePanelOpen,
       hasBottomOffset,
       floodStart,
       floodEnd,
       floodPreviewGeometry,
+      savedPlaces,
+      draftSavePlaceCoords,
+      savePlaceIcon,
+      setSavePlaceIcon,
       setIsPickingOnMap,
       setIsReportPanelOpen,
+      setIsSavePlacePanelOpen,
+      setSavedPlaces,
+      setDraftSavePlaceCoords,
       setActivePoint,
       setActivePanel,
       setIsAnalyticsOpen,
@@ -401,12 +433,20 @@ export function MapProvider({ children }: { children: ReactNode }) {
       routeError,
       isPickingOnMap,
       isReportPanelOpen,
+      isSavePlacePanelOpen,
       hasBottomOffset,
       floodStart,
       floodEnd,
       floodPreviewGeometry,
+      savedPlaces,
+      draftSavePlaceCoords,
+      savePlaceIcon,
+      setSavePlaceIcon,
       setIsPickingOnMap,
       setIsReportPanelOpen,
+      setIsSavePlacePanelOpen,
+      setSavedPlaces,
+      setDraftSavePlaceCoords,
       setActivePoint,
       setActivePanel,
       setIsAnalyticsOpen,

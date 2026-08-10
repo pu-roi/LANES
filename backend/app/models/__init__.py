@@ -11,6 +11,7 @@ from app.models.interaction import PostInteraction, CommentInteraction
 from app.models.comment import Comment
 from app.models.post import CommunityPost
 from app.models.notification import Notification
+from app.models.saved_place import SavedPlace
 
 # Route domain currently has no models (mostly algorithmic), adding comment per user request
 # from app.models.route import ...

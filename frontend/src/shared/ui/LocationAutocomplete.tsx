@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { MapPin, Loader2, X } from "lucide-react";
 import { Input } from "./Input";
 import { cn } from "@/lib/utils";
@@ -59,6 +60,25 @@ export function LocationAutocomplete({
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
+
+  const updateRect = useCallback(() => {
+    if (containerRef.current) {
+      setDropdownRect(containerRef.current.getBoundingClientRect());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      updateRect();
+      window.addEventListener("scroll", updateRect, true); // capture phase to handle inner scrolls
+      window.addEventListener("resize", updateRect);
+      return () => {
+        window.removeEventListener("scroll", updateRect, true);
+        window.removeEventListener("resize", updateRect);
+      };
+    }
+  }, [isOpen, updateRect]);
 
   const fetchSuggestions = useCallback(async (query: string) => {
     const parsedCoords = tryParseCoordinates(query);
@@ -127,7 +147,11 @@ export function LocationAutocomplete({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current && 
+        !containerRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest('[data-portal="location-autocomplete"]')
+      ) {
         setIsOpen(false);
       }
     };
@@ -195,9 +219,16 @@ export function LocationAutocomplete({
         ) : null}
       </div>
 
-      {isOpen && (suggestions.length > 0 || renderTopOptions) && (
+      {isOpen && (suggestions.length > 0 || renderTopOptions) && typeof document !== "undefined" && createPortal(
         <ul 
-          className="absolute z-50 mt-1 w-full max-h-56 overflow-auto rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg"
+          data-portal="location-autocomplete"
+          className="fixed z-[9999] mt-1 overflow-auto rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg"
+          style={{
+            top: dropdownRect ? dropdownRect.bottom : 0,
+            left: dropdownRect ? dropdownRect.left : 0,
+            width: dropdownRect ? dropdownRect.width : 0,
+            maxHeight: "14rem"
+          }}
           onClick={(e) => {
             if ((e.target as HTMLElement).closest("button")) {
               setIsOpen(false);
@@ -224,7 +255,8 @@ export function LocationAutocomplete({
               </button>
             </li>
           ))}
-        </ul>
+        </ul>,
+        document.body
       )}
     </div>
   );

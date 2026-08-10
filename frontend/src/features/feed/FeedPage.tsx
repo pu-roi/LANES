@@ -6,8 +6,9 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { getFeed, votePost, FeedPost } from './feedApi';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
-import { Loader2, Filter, Image as ImageIcon, Video, MapPin, Menu, X, Map, Rss, MessageSquarePlus, Settings, TrendingUp, Flame, Heart, Phone } from 'lucide-react';
+import { Loader2, Filter, Image as ImageIcon, Video, MapPin, Menu, X, Map, Rss, MessageSquarePlus, Settings, TrendingUp, Flame, Heart, Phone, Plus } from 'lucide-react';
 import { useToast } from '@/shared/ui';
+import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,6 +25,11 @@ export function FeedPage() {
   const [preselectedFiles, setPreselectedFiles] = useState<File[]>([]);
   const photoInputRef = React.useRef<HTMLInputElement>(null);
   const videoInputRef = React.useRef<HTMLInputElement>(null);
+
+  const { data: savedPlaces, isLoading: savedPlacesLoading } = useQuery({
+    queryKey: ['saved-places'],
+    queryFn: savedPlacesApi.getSavedPlaces,
+  });
 
   // Auto-open modal if user just logged in from a draft redirect
   useEffect(() => {
@@ -341,14 +347,43 @@ export function FeedPage() {
                   <Heart className="w-3.5 h-3.5" />
                   Saved Places
                 </h3>
-                <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center gap-3">
-                  <MapPin className="w-4 h-4 text-blue-500" />
-                  <span>Home</span>
-                </div>
-                <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center gap-3">
-                  <MapPin className="w-4 h-4 text-purple-500" />
-                  <span>Office</span>
-                </div>
+                
+                {savedPlacesLoading ? (
+                  <div className="px-3 py-2 animate-pulse flex flex-col gap-2">
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                ) : savedPlaces && savedPlaces.length > 0 ? (
+                  savedPlaces.map((place) => (
+                    <div
+                      key={place.id}
+                      onClick={() => {
+                        closeMenu();
+                        router.push(`/map?location=${place.longitude},${place.latitude}&label=${encodeURIComponent(place.name)}`);
+                      }}
+                      className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center gap-3"
+                    >
+                      <div className="w-6 h-6 flex items-center justify-center bg-blue-100 rounded-full text-xs">
+                        {place.icon || "📍"}
+                      </div>
+                      <span className="truncate">{place.name}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-3 py-2 text-sm text-gray-500">
+                    <p className="mb-2">No saved places yet.</p>
+                    <button
+                      onClick={() => {
+                        closeMenu();
+                        router.push('/map?panel=saveplace');
+                      }}
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-xs px-2 py-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors w-full justify-center"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add a Place
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Emergency Hotlines */}

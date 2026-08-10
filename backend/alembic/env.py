@@ -16,7 +16,7 @@ if config.config_file_name is not None:
 
 from app.core.config import settings
 from app.core.database import Base
-from app.models import User, FloodReport, FloodAvoidanceZone, FloodReportLocation, AuditLog
+from app.models import User, FloodReport, FloodAvoidanceZone, FloodReportLocation, AuditLog, SavedPlace
 
 target_metadata = Base.metadata
 

@@ -13,6 +13,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/shared/ui";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
+import { SavePlacePanel } from "@/features/places/SavePlacePanel";
 
 const MapCanvas = dynamic(() => import("./MapCanvas"), { ssr: false });
 
@@ -68,7 +69,10 @@ function MapLayout() {
     setIsAnalyticsOpen,
     setIsPickingOnMap,
     activePoint,
-    setActivePoint
+    setActivePoint,
+    setSavedPlaces,
+    isSavePlacePanelOpen,
+    setIsSavePlacePanelOpen
   } = useMapContext();
 
   const searchParams = useSearchParams();
@@ -78,6 +82,14 @@ function MapLayout() {
       setIsAnalyticsOpen(true);
     }
   }, [pathname, setIsAnalyticsOpen]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      import("@/features/profile/savedPlacesApi").then(({ savedPlacesApi }) => {
+        savedPlacesApi.getSavedPlaces().then(setSavedPlaces).catch(console.error);
+      });
+    }
+  }, [isAuthenticated, setSavedPlaces]);
 
   // -- Event Handlers --
   // Automatically open the report panel if navigated with ?action=report
@@ -91,8 +103,8 @@ function MapLayout() {
     }
   }, [searchParams, setIsReportPanelOpen, setActivePanel, setIsPickingOnMap, setActivePoint]);
 
-  // The panel is expanded when it is both open and actively selected, or when Analytics is open.
-  const isPanelExpanded = (isReportPanelOpen && activePanel === "flood") || isAnalyticsOpen;
+  // The panel is expanded when it is both open and actively selected, or when Analytics is open, or when SavePlace is open.
+  const isPanelExpanded = (isReportPanelOpen && activePanel === "flood") || isAnalyticsOpen || isSavePlacePanelOpen;
   
   const pillBottomClass = hasBottomOffset 
     ? "bottom-[calc(64px+env(safe-area-inset-bottom)+160px)]" 
@@ -105,6 +117,16 @@ function MapLayout() {
     }
     setIsReportPanelOpen(true);
     setActivePanel("flood");
+    setIsMenuOpen(false);
+  };
+
+  const handleSelectSavePlace = () => {
+    if (!isAuthenticated) {
+      error("Login Required", "You must be logged in to save a place.");
+      return;
+    }
+    setIsSavePlacePanelOpen(true);
+    setActivePanel("save_place");
     setIsMenuOpen(false);
   };
 
@@ -129,23 +151,53 @@ function MapLayout() {
         )}
       </AnimatePresence>
 
-      {/* -- 2. Action Pill -------------------------------------------------- */}
+      {/* -- Desktop/Tablet Permanent Action Pills --------------------------- */}
+      {!isMobile && (
+        <div className="fixed bottom-6 left-6 z-[40] flex flex-col gap-3">
+          <button
+            onClick={handleSelectSavePlace}
+            className="flex items-center justify-center w-12 h-12 bg-white text-slate-800 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 active:scale-95 transition-transform"
+            title="Save Place"
+          >
+            <MapPin className="w-5 h-5 text-blue-600" />
+          </button>
+        </div>
+      )}
+
+      {/* -- 2. Mobile Action Pills ------------------------------------------ */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.button
-            key="fab-action-pill"
-            variants={actionPillVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={handleSelectFloodReport}
-            className={`fixed ${pillBottomClass} left-4 z-[46] flex items-center gap-3 bg-white text-slate-800 font-semibold pl-3 pr-5 py-2.5 rounded-full shadow-2xl border border-gray-200/60 hover:bg-gray-50 active:scale-95 cursor-pointer select-none`}
-          >
-            <div className="bg-orange-100 p-2 rounded-full text-orange-600 shrink-0">
-              <AlertTriangle className="w-4 h-4" />
-            </div>
-            <span className="text-sm tracking-tight">Flood Report</span>
-          </motion.button>
+          <div className={`fixed ${pillBottomClass} left-4 z-[46] flex flex-col gap-3`}>
+            <motion.button
+              key="fab-action-pill-flood"
+              variants={actionPillVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={handleSelectFloodReport}
+              className="flex items-center gap-3 bg-white text-slate-800 font-semibold pl-3 pr-5 py-2.5 rounded-full shadow-2xl border border-gray-200/60 hover:bg-gray-50 active:scale-95 cursor-pointer select-none"
+            >
+              <div className="bg-orange-100 p-2 rounded-full text-orange-600 shrink-0">
+                <AlertTriangle className="w-4 h-4" />
+              </div>
+              <span className="text-sm tracking-tight">Flood Report</span>
+            </motion.button>
+
+            <motion.button
+              key="fab-action-pill-save"
+              variants={actionPillVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={handleSelectSavePlace}
+              className="flex items-center gap-3 bg-white text-slate-800 font-semibold pl-3 pr-5 py-2.5 rounded-full shadow-2xl border border-gray-200/60 hover:bg-gray-50 active:scale-95 cursor-pointer select-none"
+            >
+              <div className="bg-blue-100 p-2 rounded-full text-blue-600 shrink-0">
+                <MapPin className="w-4 h-4" />
+              </div>
+              <span className="text-sm tracking-tight">Save Place</span>
+            </motion.button>
+          </div>
         )}
       </AnimatePresence>
 
@@ -156,7 +208,7 @@ function MapLayout() {
           isPanelExpanded={isPanelExpanded}
           onClick={() => {
             if (!isMenuOpen && !isAuthenticated) {
-              error("Login Required", "You must be logged in to report a flood.");
+              error("Login Required", "You must be logged in to use map actions.");
               return;
             }
             setIsMenuOpen((prev) => !prev);
@@ -175,10 +227,11 @@ function MapLayout() {
             onClose={() => setIsReportPanelOpen(false)}
           />
           <RoutePanel />
+          <SavePlacePanel />
         </>
       )}
 
-      {activePoint === "post_location" && (
+      {activePoint === "post_location" && !isMobile && (
         <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-50 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl px-6 py-4 flex items-center gap-4 border border-gray-200 pointer-events-auto w-[90%] sm:w-auto">
           <MapPin className="w-5 h-5 text-red-500 animate-bounce" />
           <div className="text-sm font-semibold text-gray-800">
@@ -190,6 +243,26 @@ function MapLayout() {
               setActivePoint(null);
               setIsPickingOnMap(false);
               router.push("/feed?openPostModal=true");
+            }}
+            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-bold transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
+      {activePoint === "save_place_location" && !isMobile && (
+        <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-50 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl px-6 py-4 flex items-center gap-4 border border-gray-200 pointer-events-auto w-[90%] sm:w-auto">
+          <MapPin className="w-5 h-5 text-blue-500 animate-bounce" />
+          <div className="text-sm font-semibold text-gray-800">
+            Click on the map to select location
+          </div>
+          <button 
+            type="button"
+            onClick={() => {
+              setActivePoint(null);
+              setIsPickingOnMap(false);
+              setIsSavePlacePanelOpen(true);
             }}
             className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-bold transition-colors"
           >
