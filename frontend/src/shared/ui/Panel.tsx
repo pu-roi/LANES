@@ -1,12 +1,13 @@
 "use client";
 
-import { type ReactNode, useRef } from "react";
+import { type ReactNode, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/Card";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useSidebarStore } from "@/shared/stores/sidebarStore";
+import { useMapContext } from "@/features/map/MapContext";
 
 interface PanelProps {
   /** Text shown in the card header. */
@@ -57,6 +58,10 @@ interface PanelProps {
   showDesktopClose?: boolean;
   /** Optional class name for the panel body container */
   bodyClassName?: string;
+  /** Optional ID for dynamic z-indexing (stacking). */
+  panelId?: string;
+  /** Delay in seconds before the panel slides in (useful for sequencing). */
+  entranceDelay?: number;
 }
 
 /**
@@ -84,6 +89,8 @@ export function Panel({
   hideCollapseIcon = false,
   showDesktopClose = false,
   bodyClassName,
+  panelId,
+  entranceDelay = 0,
 }: PanelProps) {
   const dragControls = useDragControls();
   const dragStartPos = useRef({ x: 0, y: 0 });
@@ -92,6 +99,17 @@ export function Panel({
   const isSidebarExpanded = useSidebarStore((state) => state.isSidebarExpanded);
   const isAdmin = pathname?.startsWith("/admin");
   const isRight = anchor === "right";
+
+  const mapContext = useMapContext();
+  const bringPanelToFront = mapContext?.bringPanelToFront;
+  const panelZIndices = mapContext?.panelZIndices || {};
+
+  // Bring to front on mount/open
+  useEffect(() => {
+    if (panelId && bringPanelToFront && isOpen) {
+      bringPanelToFront(panelId);
+    }
+  }, [panelId, bringPanelToFront, isOpen]);
 
   // Calculate actual left offset for left-anchored panels
   const sidebarOffset = isAdmin ? (isSidebarExpanded ? 224 : 56) : 0;
@@ -141,7 +159,10 @@ export function Panel({
             {!hideCollapseIcon && (
               <button
                 type="button"
-                onClick={onCollapseToggle}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCollapseToggle();
+                }}
                 className="p-1 hover:bg-gray-100 rounded-md transition-colors"
                 title={isCollapsed ? "Expand panel" : "Collapse panel"}
               >
@@ -254,19 +275,27 @@ export function Panel({
       animate={{
         x: isRight ? -targetX : targetX,
       }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={{ type: "tween", ease: "easeInOut", duration: 0.3 }}
       className={cn(
-        "absolute top-0 z-40",
+        "absolute top-0",
+        !panelId && "z-40",
         isRight ? "right-0" : "left-0"
       )}
+      style={panelId ? { zIndex: panelZIndices[panelId] || 40 } : undefined}
+      onPointerDownCapture={() => {
+        if (panelId && bringPanelToFront) {
+          bringPanelToFront(panelId);
+        }
+      }}
     >
       <motion.div
         initial={{ x: isRight ? 100 : -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: isRight ? 100 : -100, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        transition={{ type: "tween", ease: "easeInOut", duration: 0.3, delay: entranceDelay }}
+        className="w-[340px] shadow-2xl rounded-2xl overflow-hidden border border-gray-100/50 relative bg-white/95 backdrop-blur-xl pointer-events-auto"
       >
-        <Card className="w-[340px] rounded-xl border border-gray-200 shadow-xl bg-white flex flex-col max-h-[calc(100vh-7.5rem)] overflow-hidden">
+        <Card className="border-0 shadow-none bg-transparent flex flex-col max-h-[calc(100vh-7.5rem)] overflow-hidden">
           {/* Desktop header */}
           <CardHeader 
             className="pb-3 pt-4 rounded-t-xl cursor-move touch-none select-none transition-colors hover:bg-gray-50/50"
@@ -279,11 +308,11 @@ export function Panel({
             <AnimatePresence>
               {isCollapsed && collapsedSummary && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="pt-2 overflow-hidden"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ type: "tween", ease: "easeInOut", duration: 0.25 }}
+                  className="overflow-hidden bg-white/50 backdrop-blur-sm"
                 >
                   {collapsedSummary}
                 </motion.div>

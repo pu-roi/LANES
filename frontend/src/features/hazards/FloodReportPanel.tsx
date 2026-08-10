@@ -779,6 +779,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
       anchor="right"
       initialPosition={{ x: 16, y: 80 }}
       headerActions={clearButton}
+      panelId="flood_report"
     >
       {formBody}
     </Panel>

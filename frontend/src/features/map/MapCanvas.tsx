@@ -105,13 +105,15 @@ class TopViewControlV3 {
   }
 }
 
-class AnalyticsControl {
+class ActionGroupControl {
   private _map: maplibregl.Map | undefined;
   private _container: HTMLDivElement | undefined;
-  private _onToggle: () => void;
+  private _onSavePlace: () => void;
+  private _onAnalytics: () => void;
 
-  constructor(onToggle: () => void) {
-    this._onToggle = onToggle;
+  constructor(onSavePlace: () => void, onAnalytics: () => void) {
+    this._onSavePlace = onSavePlace;
+    this._onAnalytics = onAnalytics;
   }
 
   onAdd(map: maplibregl.Map) {
@@ -119,49 +121,67 @@ class AnalyticsControl {
     this._container = document.createElement("div");
     this._container.className = "maplibregl-ctrl";
     
-    const button = document.createElement("button");
-    button.type = "button";
-    button.title = "View Flood Analytics";
-    
-    // Large, prominent squircle design
-    button.style.cssText = `
+    // Group container
+    this._container.style.cssText = `
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
+      flex-direction: column;
       background-color: white;
-      color: #2563eb;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-bottom: 12px;
+      overflow: hidden;
     `;
     
-    button.onmouseenter = () => {
-      button.style.backgroundColor = "#f8fafc";
-      button.style.transform = "scale(1.05)";
+    const createButton = (iconSvg: string, color: string, title: string, onClick: () => void, extraClass: string) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.title = title;
+      btn.className = extraClass; // Tailwind classes for display logic
+      
+      btn.style.cssText = `
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        background-color: transparent;
+        color: ${color};
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0;
+      `;
+      
+      btn.onmouseenter = () => {
+        btn.style.backgroundColor = "#f8fafc";
+      };
+      btn.onmouseleave = () => {
+        btn.style.backgroundColor = "transparent";
+      };
+      
+      btn.innerHTML = iconSvg;
+      btn.onclick = onClick;
+      return btn;
     };
-    button.onmouseleave = () => {
-      button.style.backgroundColor = "white";
-      button.style.transform = "scale(1)";
-    };
-    button.onmousedown = () => {
-      button.style.transform = "scale(0.95)";
-    };
-    button.onmouseup = () => {
-      button.style.transform = "scale(1.05)";
-    };
+
+    const saveBtn = createButton(
+      `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
+      "#10b981",
+      "Save a Place",
+      this._onSavePlace,
+      "hidden md:flex border-b border-gray-200" // Hide on mobile, show bottom border
+    );
+
+    const analyticsBtn = createButton(
+      `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`,
+      "#2563eb",
+      "View Flood Analytics",
+      this._onAnalytics,
+      "flex"
+    );
+
+    this._container.appendChild(saveBtn);
+    this._container.appendChild(analyticsBtn);
     
-    button.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
-    
-    button.onclick = () => {
-      this._onToggle();
-    };
-    
-    this._container.appendChild(button);
     return this._container;
   }
 
@@ -231,7 +251,7 @@ export default function MapCanvas() {
     setPointFromMap, activePoint, setActivePoint, isPickingOnMap,
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
-    savePlaceIcon
+    savePlaceIcon, setIsSavePlacePanelOpen
   } = useMapContext();
 
   const isDesktopAnalytics = pathname === "/admin/analytics";
@@ -353,7 +373,10 @@ export default function MapCanvas() {
     );
 
     mapInstance.addControl(
-      new AnalyticsControl(() => setIsAnalyticsOpen(true)),
+      new ActionGroupControl(
+        () => setIsSavePlacePanelOpen(true),
+        () => setIsAnalyticsOpen(true)
+      ),
       "bottom-right"
     );
 
