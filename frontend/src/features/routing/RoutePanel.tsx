@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CircleDot,
@@ -190,11 +190,38 @@ export default function RoutePanel() {
 
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const isDesktop = !isMobile;
-  const isRight = isAnalyticsOpen && isDesktop;
+  const isRight = (isAnalyticsOpen || isSavePlacePanelOpen) && isDesktop;
   const isCollapsed = activePanel !== "route";
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+
+  const [actualIsRight, setActualIsRight] = useState(isRight);
+
+  // Auto-collapse Route Planner when a left-side panel opens (pushes it to the right).
+  // Uses a ref to only fire once when isRight transitions false→true,
+  // so the user can still manually expand it afterward.
+  const prevIsRight = useRef(isRight);
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isRight && !prevIsRight.current) {
+      // 1. Collapse first (takes 250ms)
+      setActivePanel(null);
+      // 2. Move exactly after collapse
+      timer = setTimeout(() => setActualIsRight(true), 250);
+    } else if (!isRight && prevIsRight.current) {
+      // 1. Move first (takes 300ms)
+      setActualIsRight(false);
+      // 2. Expand exactly after move (if no other panel is active)
+      timer = setTimeout(() => {
+        if (!isAnalyticsOpen && !isSavePlacePanelOpen) {
+          setActivePanel("route");
+        }
+      }, 300);
+    }
+    prevIsRight.current = isRight;
+    return () => clearTimeout(timer);
+  }, [isRight, setActivePanel, isAnalyticsOpen, isSavePlacePanelOpen]);
 
   useEffect(() => {
     const handleCenterChange = (e: Event) => {
@@ -599,17 +626,18 @@ export default function RoutePanel() {
     <>
       <LoadingOverlay isVisible={isRouting} message="Calculating safe route..." />
       <Panel
-        key={isAnalyticsOpen ? "analytics-mode" : "default-mode"}
+        key={actualIsRight ? "right-mode" : "default-mode"}
         title="Route Planner"
         icon={<Navigation className="h-4 w-4 text-blue-600" />}
         iconBgClassName="bg-blue-100"
         isCollapsed={isCollapsed}
         onCollapseToggle={() => setActivePanel(isCollapsed ? "route" : null)}
         isMobile={false}
-        anchor={isAnalyticsOpen ? "right" : "left"}
-        initialPosition={{ x: isAnalyticsOpen ? 372 : 16, y: 80 }}
+        anchor={actualIsRight ? "right" : "left"}
+        initialPosition={{ x: actualIsRight ? 372 : 16, y: 80 }}
         headerActions={clearButton}
         collapsedSummary={collapsedSummary}
+        panelId="route"
       >
         <DesktopPointSelector
           point="start"

@@ -7,7 +7,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Panel } from "@/shared/ui/Panel";
 import { useOptionalMapContext } from "@/features/map/MapContext";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface StatItem {
   barangay?: string;
@@ -22,6 +22,7 @@ interface AnalyticsStats {
 
 export function AnalyticsPanel() {
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const isDesktop = !isMobile;
   const pathname = usePathname();
   const isAdmin = pathname === "/admin/analytics";
   
@@ -30,7 +31,38 @@ export function AnalyticsPanel() {
   const isAnalyticsCollapsed = mapContext?.isAnalyticsCollapsed ?? false;
   const setIsAnalyticsOpen = mapContext?.setIsAnalyticsOpen ?? (() => {});
   const setIsAnalyticsCollapsed = mapContext?.setIsAnalyticsCollapsed ?? (() => {});
-  
+  const isSavePlacePanelOpen = mapContext?.isSavePlacePanelOpen ?? false;
+
+  const lastOpenedLeftPanel = mapContext?.lastOpenedLeftPanel;
+
+  // When Save Place opens while Analytics is already open (and is the newer panel), dodge right and auto-collapse.
+  // Uses a ref so it only fires once on the false->true transition;
+  // user can still manually expand Analytics afterward.
+  const isDodgingSavePlace = isSavePlacePanelOpen && lastOpenedLeftPanel === "save_place" && isDesktop && !isAdmin;
+  const prevIsDodging = useRef(isDodgingSavePlace);
+  const [actualDodging, setActualDodging] = useState(isDodgingSavePlace);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isDodgingSavePlace && !prevIsDodging.current) {
+      // 1. Collapse first (takes 250ms)
+      setIsAnalyticsCollapsed(true);
+      // 2. Move exactly after collapse finishes
+      timer = setTimeout(() => setActualDodging(true), 250);
+    } else if (!isDodgingSavePlace && prevIsDodging.current) {
+      // 1. Move first (takes 300ms)
+      setActualDodging(false);
+      // 2. Expand exactly after move finishes
+      timer = setTimeout(() => setIsAnalyticsCollapsed(false), 300);
+    }
+    prevIsDodging.current = isDodgingSavePlace;
+    return () => clearTimeout(timer);
+  }, [isDodgingSavePlace, setIsAnalyticsCollapsed]);
+
+  // If Analytics just opened and is forcing Save Place to dodge, wait 250ms for Save Place to collapse before sliding in.
+  const isForcingSavePlaceToDodge = isSavePlacePanelOpen && lastOpenedLeftPanel === "analytics" && isDesktop && !isAdmin;
+  const entranceDelay = isForcingSavePlaceToDodge ? 0.25 : 0;
+
   const { data, isLoading } = useQuery({
     queryKey: ["analyticsStats"],
     queryFn: () => apiClient.get<AnalyticsStats>("/analytics/stats"),
@@ -51,7 +83,9 @@ export function AnalyticsPanel() {
       hideCollapseIcon={isAdmin}
       showDesktopClose={true}
       anchor="left"
-      initialPosition={{ x: 16, y: 80 }}
+      initialPosition={{ x: actualDodging ? 360 : 16, y: 80 }}
+      panelId="analytics"
+      entranceDelay={entranceDelay}
     >
       <div className="flex-1 space-y-8 no-scrollbar pb-6">
         {isLoading ? (
@@ -60,13 +94,11 @@ export function AnalyticsPanel() {
           </div>
         ) : (
           <>
-            {/* Top Barangays Section */}
             <section>
               <h3 className="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-orange-500" />
                 Most Flooded Barangays
               </h3>
-              
               {data?.top_barangays.length === 0 ? (
                 <p className="text-sm text-slate-500 italic">No flood data available.</p>
               ) : (
@@ -85,14 +117,11 @@ export function AnalyticsPanel() {
                 </ul>
               )}
             </section>
-
-            {/* Top Locations Section */}
             <section>
               <h3 className="text-sm font-semibold text-slate-800 mb-4 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-orange-500" />
                 Frequent Flood Locations
               </h3>
-              
               {data?.top_locations.length === 0 ? (
                 <p className="text-sm text-slate-500 italic">No location data available.</p>
               ) : (

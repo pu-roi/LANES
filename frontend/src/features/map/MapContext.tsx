@@ -33,6 +33,7 @@ interface MapContextValue {
   activePanel: ActivePanel;
   isAnalyticsOpen: boolean;
   isAnalyticsCollapsed: boolean;
+  lastOpenedLeftPanel: "analytics" | "save_place" | null;
 
   // --- Multi-route state ---
   allRoutes: RouteOption[] | null;
@@ -85,6 +86,9 @@ interface MapContextValue {
   setDraftSavePlaceCoords: (data: {coords: [number, number], label: string} | null) => void;
   savePlaceIcon: string;
   setSavePlaceIcon: (icon: string) => void;
+
+  panelZIndices: Record<string, number>;
+  bringPanelToFront: (panelId: string) => void;
 }
 
 const MapContext = createContext<MapContextValue | null>(null);
@@ -107,6 +111,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [activePanel, setActivePanelState] = useState<ActivePanel>("route");
   const [isAnalyticsOpen, setIsAnalyticsOpenState] = useState(false);
   const [isAnalyticsCollapsed, setIsAnalyticsCollapsedState] = useState(false);
+  const [lastOpenedLeftPanel, setLastOpenedLeftPanel] = useState<"analytics" | "save_place" | null>(null);
 
   // Multi-route state
   const [allRoutes, setAllRoutes] = useState<RouteOption[] | null>(null);
@@ -116,7 +121,15 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [routeError, setRouteError] = useState<string | null>(null);
   const [isPickingOnMap, setIsPickingOnMap] = useState(false);
   const [isReportPanelOpen, setIsReportPanelOpen] = useState(false);
-  const [isSavePlacePanelOpen, setIsSavePlacePanelOpen] = useState(false);
+  const [isSavePlacePanelOpen, setIsSavePlacePanelOpenState] = useState(false);
+
+  const setIsSavePlacePanelOpen = useCallback((open: boolean) => {
+    setIsSavePlacePanelOpenState(open);
+    if (open) {
+      setLastOpenedLeftPanel("save_place");
+    }
+  }, []);
+  
   const [savedPlaces, setSavedPlaces] = useState<any[]>([]);
   const [draftSavePlaceCoords, setDraftSavePlaceCoords] = useState<{coords: [number, number], label: string} | null>(null);
   const [savePlaceIcon, setSavePlaceIcon] = useState<string>("🏠");
@@ -128,6 +141,16 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [floodPreviewGeometry, setFloodPreviewGeometry] = useState<RouteGeometry | null>(null);
 
   const [vehicleProfile, setVehicleProfile] = useState<"light" | "heavy" | "motorcycle" | "walk">("light");
+
+  const [panelZIndices, setPanelZIndices] = useState<Record<string, number>>({});
+  const [highestZIndex, setHighestZIndex] = useState(40);
+  const bringPanelToFront = useCallback((panelId: string) => {
+    setHighestZIndex((prev) => {
+      const next = prev + 1;
+      setPanelZIndices((zMap) => ({ ...zMap, [panelId]: next }));
+      return next;
+    });
+  }, []);
 
   // Derived: currently active route option
   const selectedRoute: RouteOption | null = allRoutes?.[selectedRouteIndex] ?? null;
@@ -174,11 +197,33 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   const setIsAnalyticsOpen = useCallback((open: boolean) => {
     setIsAnalyticsOpenState(open);
-    if (!open) {
+    if (open) {
+      setLastOpenedLeftPanel("analytics");
+      setIsAnalyticsCollapsedState(false);
+    } else {
       setIsAnalyticsCollapsedState(false);
     }
   }, []);
 
+  // When a panel closes, shift focus to the other one if it's open
+  useEffect(() => {
+    if (!isAnalyticsOpen && isSavePlacePanelOpen) {
+      setLastOpenedLeftPanel("save_place");
+    }
+  }, [isAnalyticsOpen, isSavePlacePanelOpen]);
+
+  useEffect(() => {
+    if (!isSavePlacePanelOpen && isAnalyticsOpen) {
+      setLastOpenedLeftPanel("analytics");
+    }
+  }, [isAnalyticsOpen, isSavePlacePanelOpen]);
+
+  // When both left panels are closed, expand Route Planner
+  useEffect(() => {
+    if (!isAnalyticsOpen && !isSavePlacePanelOpen) {
+      setActivePanelState("route");
+    }
+  }, [isAnalyticsOpen, isSavePlacePanelOpen]);
   const setIsAnalyticsCollapsed = useCallback((collapsed: boolean) => {
     setIsAnalyticsCollapsedState(collapsed);
   }, []);
@@ -374,6 +419,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       activePanel,
       isAnalyticsOpen,
       isAnalyticsCollapsed,
+      lastOpenedLeftPanel,
       allRoutes,
       selectedRouteIndex,
       selectedRoute,
@@ -423,6 +469,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       activePanel,
       isAnalyticsOpen,
       isAnalyticsCollapsed,
+      lastOpenedLeftPanel,
       allRoutes,
       selectedRouteIndex,
       selectedRoute,

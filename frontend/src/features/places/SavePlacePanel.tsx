@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Panel } from "@/shared/ui/Panel";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
@@ -48,7 +48,9 @@ export function SavePlacePanel() {
     draftSavePlaceCoords,
     setDraftSavePlaceCoords,
     savePlaceIcon: icon,
-    setSavePlaceIcon: setIcon
+    setSavePlaceIcon: setIcon,
+    isAnalyticsOpen,
+    lastOpenedLeftPanel,
   } = useMapContext();
 
   const [name, setName] = useState("");
@@ -57,9 +59,45 @@ export function SavePlacePanel() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
+
+  // Reset to expanded when opened
+  useEffect(() => {
+    if (isSavePlacePanelOpen) {
+      setIsPanelCollapsed(false);
+    }
+  }, [isSavePlacePanelOpen]);
+
+  // When Analytics is open (and is the newer panel), dodge right (same pattern as RoutePanel dodges for Analytics/SavePlace)
+  const isDesktop = !useMediaQuery("(max-width: 640px), (pointer: coarse)");
+  const isMobile = !isDesktop;
+  const isDodgingAnalytics = isSavePlacePanelOpen && isAnalyticsOpen && lastOpenedLeftPanel === "analytics" && isDesktop;
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+
+  const [actualDodging, setActualDodging] = useState(isDodgingAnalytics);
+
+  // Auto-collapse when Analytics opens (fires once on transition, user can re-expand after)
+  const prevIsDodging = useRef(isDodgingAnalytics);
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isDodgingAnalytics && !prevIsDodging.current) {
+      // 1. Collapse first (takes 250ms)
+      setIsPanelCollapsed(true);
+      // 2. Move exactly after collapse finishes
+      timer = setTimeout(() => setActualDodging(true), 250);
+    } else if (!isDodgingAnalytics && prevIsDodging.current) {
+      // 1. Move first (takes 300ms)
+      setActualDodging(false);
+      // 2. Expand exactly after move finishes
+      timer = setTimeout(() => setIsPanelCollapsed(false), 300);
+    }
+    prevIsDodging.current = isDodgingAnalytics;
+    return () => clearTimeout(timer);
+  }, [isDodgingAnalytics]);
+
+  // If Save Place just opened and is forcing Analytics to dodge, wait 250ms for Analytics to collapse before sliding in.
+  const isForcingAnalyticsToDodge = isAnalyticsOpen && lastOpenedLeftPanel === "save_place" && isDesktop;
+  const entranceDelay = isForcingAnalyticsToDodge ? 0.25 : 0;
 
   useEffect(() => {
     const handleCenterChange = (e: Event) => {
@@ -188,14 +226,19 @@ export function SavePlacePanel() {
   return (
     <Panel
       title="Save Place"
-      icon={<MapPin className="h-4 w-4 text-blue-600" />}
-      iconBgClassName="bg-blue-100"
+      icon={<MapPin className="h-4 w-4 text-emerald-600" />}
+      iconBgClassName="bg-emerald-100"
       isOpen={isSavePlacePanelOpen}
       onClose={() => setIsSavePlacePanelOpen(false)}
-      isCollapsed={!isSavePlacePanelOpen}
-      onCollapseToggle={() => setIsSavePlacePanelOpen(!isSavePlacePanelOpen)}
-      isMobile={window.innerWidth < 640} // Simple check for TS
+      isCollapsed={isPanelCollapsed}
+      onCollapseToggle={() => setIsPanelCollapsed(!isPanelCollapsed)}
+      isMobile={isMobile}
       bodyClassName="!max-h-[60vh] min-h-[45vh] pb-0 flex flex-col"
+      anchor="left"
+      initialPosition={{ x: actualDodging ? 360 : 16, y: 80 }}
+      showDesktopClose={true}
+      panelId="save_place"
+      entranceDelay={entranceDelay}
     >
       <div className="flex flex-col gap-4 p-1 flex-1">
         {error && (
@@ -215,7 +258,7 @@ export function SavePlacePanel() {
 
         <div>
           <label className="text-sm font-medium text-slate-700 block mb-1">Icon</label>
-          <div className="flex gap-2 flex-wrap">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(2.5rem,1fr))] gap-2 place-items-center">
             {ICON_OPTIONS.map((opt) => {
               const isSelected = icon === opt.value;
               return (

@@ -85,6 +85,9 @@
   - Dynamically hide the mobile notification bell when reading full posts.
   - Fixed full-width cover photo container layout on Profile page.
   - Updated design guidelines to formally ban "Box-in-a-Box Syndrome" for flatter, breathable UI.
+- [x] **Dynamic Panel Stacking & Smooth Animations**:
+  - Implemented dynamic global Z-indexing engine in `MapContext` allowing windows to pop to the front on-click or on-open (similar to OS windows/browser tabs).
+  - Perfected panel dodging choreography: Swapped bouncy spring physics for predictable ease-in-out tween animations. Panels now smoothly collapse (250ms), slide (300ms), and enter with synchronized delays to prevent overlapping or jittering.
+  - Fixed Save Place icon selector layout using smart CSS Grid to ensure perfectly distributed rows without trailing white space.
 
 ## Backlog / Upcoming
-- [ ] **Saved Places Feature**: Allow users to save frequently visited locations (Home, Work, etc.) for quick access in the Route Planner and Community Feed panels.
