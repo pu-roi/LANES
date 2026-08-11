@@ -166,6 +166,8 @@ export default function BaseMap({
       if (onMapLoad) {
         onMapLoad(mapInstance);
       }
+    });
+
     return () => {
       clearTimeout(fallbackTimeout);
       mapInstance.remove();
