@@ -797,13 +797,6 @@ export default function MapCanvas() {
         </div>
       )}
 
-      <LoadingOverlay
-        isVisible={!isLoaded}
-        message="Initializing 3D Map Engine..."
-        variant="absolute"
-        zIndex={20}
-      />
-
       {/* Center Pin Overlay (for touch device panning) */}
       {isTouchDevice && isPickingOnMap && activePoint && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full mt-[1.5px] pointer-events-none z-10 drop-shadow-md">
