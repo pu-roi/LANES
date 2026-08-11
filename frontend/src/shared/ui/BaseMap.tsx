@@ -201,7 +201,7 @@ export default function BaseMap({
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full" />
 
       {usingFallback && (
-        <div className="absolute top-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-30 bg-amber-500/95 text-white text-xs md:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-sm animate-pulse max-w-md pointer-events-auto border border-amber-400/20 font-medium">
+        <div className="absolute top-20 md:top-24 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-30 bg-amber-500/95 text-white text-xs md:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-sm animate-pulse max-w-md pointer-events-auto border border-amber-400/20 font-medium">
           <span>⚠️ MapTiler tiles offline. Switched to OpenStreetMap fallback. Retrying automatically...</span>
         </div>
       )}
