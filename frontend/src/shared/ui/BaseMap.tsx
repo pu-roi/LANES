@@ -166,8 +166,6 @@ export default function BaseMap({
       if (onMapLoad) {
         onMapLoad(mapInstance);
       }
-    });
-
     return () => {
       clearTimeout(fallbackTimeout);
       mapInstance.remove();
@@ -176,9 +174,35 @@ export default function BaseMap({
     };
   }, [mapStyle]);
 
+  const MAPTILER_STYLE_URL = "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU";
+
+  // Auto-retry MapTiler when using fallback
+  useEffect(() => {
+    if (!usingFallback) return;
+    const interval = setInterval(() => {
+      fetch(MAPTILER_STYLE_URL, { method: "HEAD" })
+        .then((res) => {
+          if (res.ok) {
+            console.log("MapTiler connectivity restored. Switching back from OSM fallback.");
+            setUsingFallback(false);
+            setMapStyle(MAPTILER_STYLE_URL);
+          }
+        })
+        .catch(() => {});
+    }, 15000); // Check every 15s
+
+    return () => clearInterval(interval);
+  }, [usingFallback]);
+
   return (
     <div className={className}>
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full" />
+
+      {usingFallback && (
+        <div className="absolute top-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-30 bg-amber-500/95 text-white text-xs md:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-sm animate-pulse max-w-md pointer-events-auto border border-amber-400/20 font-medium">
+          <span>⚠️ MapTiler tiles offline. Switched to OpenStreetMap fallback. Retrying automatically...</span>
+        </div>
+      )}
 
       {!isLoaded && (
         <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm flex items-center justify-center z-10">
