@@ -12,6 +12,9 @@ import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { createRoot, type Root } from "react-dom/client";
+import BaseMap from "@/shared/ui/BaseMap";
+import { useCityBoundaries } from "./hooks/useCityBoundaries";
+import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
 
 const ROUTE_SOURCE_ID = "route-line";
 const ROUTE_LAYER_ID = "route-line-layer";
@@ -67,43 +70,7 @@ const isPointInPolygon = (point: [number, number], polygon: any): boolean => {
   return inside;
 };
 
-class TopViewControlV3 {
-  private _map: maplibregl.Map | undefined;
-  private _container: HTMLDivElement | undefined;
-  private _button: HTMLButtonElement | undefined;
-
-  onAdd(map: maplibregl.Map) {
-    this._map = map;
-    this._container = document.createElement("div");
-    this._container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-    
-    this._button = document.createElement("button");
-    this._button.type = "button";
-    this._button.title = "Reset to Top View";
-    this._button.className = "maplibregl-ctrl-icon"; 
-    
-    this._button.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: auto;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>`;
-    
-    this._button.onclick = () => {
-      if (this._map) {
-        this._map.easeTo({ 
-          pitch: 0, 
-          bearing: this._map.getBearing(), 
-          duration: 600 
-        });
-      }
-    };
-    
-    this._container.appendChild(this._button);
-    return this._container;
-  }
-
-  onRemove() {
-    this._button?.parentNode?.removeChild(this._button);
-    this._container?.parentNode?.removeChild(this._container);
-    this._map = undefined;
-  }
-}
+// ActionGroupControl definition remains for commuter-specific UI
 
 class ActionGroupControl {
   private _map: maplibregl.Map | undefined;
@@ -168,7 +135,7 @@ class ActionGroupControl {
       "#10b981",
       "Save a Place",
       this._onSavePlace,
-      "hidden md:flex border-b border-gray-200" // Hide on mobile, show bottom border
+      "save-place-btn hidden md:flex border-b border-gray-200"
     );
 
     const analyticsBtn = createButton(
@@ -215,8 +182,12 @@ export default function MapCanvas() {
   const { data: activeZonesData } = useQuery({
     queryKey: ["activeZones"],
     queryFn: () => apiClient.get<any[]>("/reports/active-zones"),
-    refetchInterval: 15000, // 15s background polling fallback
+    refetchInterval: 15000,
   });
+
+  // Hooks for modular map layers
+  useCityBoundaries(mapRef.current, isLoaded);
+  useFloodZonesLayer(mapRef.current, isLoaded, activeZonesData);
 
   // Auto-retry MapTiler when using fallback
   useEffect(() => {
@@ -321,177 +292,6 @@ export default function MapCanvas() {
       mapRef.current.getCanvas().style.cursor = isPickingOnMap ? "crosshair" : "";
     }
   }, [isPickingOnMap, isLoaded]);
-
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
-
-    let fallbackTimeout: NodeJS.Timeout;
-    let didFail = false;
-
-    const handleFailure = (reason: string) => {
-      if (didFail || usingFallback) return;
-      didFail = true;
-      console.warn(`Map load failed (${reason}). Switching to OpenStreetMap fallback.`);
-      setUsingFallback(true);
-      setMapStyle(OSM_FALLBACK_STYLE);
-    };
-
-    // If style hasn't loaded successfully in 8 seconds, fall back
-    fallbackTimeout = setTimeout(() => {
-      if (!isLoaded) {
-        handleFailure("Timeout waiting for style to load");
-      }
-    }, 8000);
-
-    const mapInstance = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: mapStyle,
-      center: CONSTANTS.DEFAULT_CENTER,
-      zoom: 16.5, // Initial zoom level (street level)
-      maxZoom: 20, // Allow zooming in close to buildings
-      pitch: 0, // Default to top view
-      maxPitch: 70, // Capped at 70 (only achievable when zoomed in)
-      bearing: -17.6, // Slightly rotate the camera for a dynamic perspective
-      maxBounds: [
-        [110.0, 0.0], // Expanded Southwest coordinates to add panning padding
-        [132.0, 26.0] // Expanded Northeast coordinates to add panning padding
-      ],
-    });
-
-    mapInstance.addControl(
-      new TopViewControlV3(),
-      "bottom-right"
-    );
-
-    mapInstance.addControl(
-      new maplibregl.NavigationControl({ 
-        showCompass: true, 
-        showZoom: true,
-        visualizePitch: false 
-      }),
-      "bottom-right"
-    );
-
-    mapInstance.addControl(
-      new ActionGroupControl(
-        () => setIsSavePlacePanelOpen(true),
-        () => setIsAnalyticsOpen(true)
-      ),
-      "bottom-right"
-    );
-
-    mapInstance.on("error", (e) => {
-      const errMsg = (e.message || (e.error && e.error.message) || "").toLowerCase();
-      // Check if it's a style-related load failure (fatal)
-      const isStyleError = errMsg.includes("style") || 
-                           errMsg.includes("fetch") || 
-                           errMsg.includes("failed to fetch") || 
-                           errMsg.includes("ajax");
-      if (isStyleError && !isLoaded) {
-        handleFailure(errMsg || "MapLibre AJAX or source loading error");
-      }
-    });
-
-    // Suppress missing image warnings from MapTiler styles by providing a transparent 1x1 pixel
-    mapInstance.on("styleimagemissing", (e) => {
-      const id = e.id;
-      const canvas = document.createElement("canvas");
-      canvas.width = 1;
-      canvas.height = 1;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const imageData = ctx.getImageData(0, 0, 1, 1);
-        mapInstance.addImage(id, imageData);
-      }
-    });
-
-    mapInstance.on("load", () => {
-      clearTimeout(fallbackTimeout);
-      mapRef.current = mapInstance;
-
-      // 1. Add Philippines Border Line
-      mapInstance.addSource("philippines-boundary", {
-        type: "geojson",
-        data: "/philippines-boundary.geojson"
-      });
-
-      mapInstance.addLayer({
-        id: "philippines-boundary-line",
-        type: "line",
-        source: "philippines-boundary",
-        paint: {
-          "line-color": "#10b981", // Emerald green color
-          "line-width": 3,
-          "line-opacity": 0.5,
-        }
-      });
-
-      // 2. Add Pasig City Dark Mask (Shade everything outside Pasig)
-      mapInstance.addSource("pasig-mask", {
-        type: "geojson",
-        data: "/pasig-mask.geojson"
-      });
-
-      mapInstance.addLayer({
-        id: "pasig-mask-fill",
-        type: "fill",
-        source: "pasig-mask",
-        paint: {
-          "fill-color": "#000000",
-          "fill-opacity": 0.35 // Darken outside by 35%
-        }
-      });
-
-      // 3. Add Pasig City Boundary Line
-      mapInstance.addSource("pasig-boundary", {
-        type: "geojson",
-        data: "/pasig-boundary.geojson"
-      });
-
-      mapInstance.addLayer({
-        id: "pasig-boundary-line",
-        type: "line",
-        source: "pasig-boundary",
-        paint: {
-          "line-color": "#3b82f6", // Blue color
-          "line-width": 4,
-          "line-opacity": 0.8, // Slightly higher opacity to pop against the mask
-          "line-dasharray": [2, 2]
-        }
-      });
-
-      setIsLoaded(true);
-    });
-
-    mapInstance.on("click", (event: MapMouseEvent) => {
-      setPointFromMapRef.current([event.lngLat.lng, event.lngLat.lat]);
-    });
-
-    mapInstance.on("moveend", () => {
-      const center = mapInstance.getCenter();
-      window.dispatchEvent(new CustomEvent("map-center-changed", { detail: [center.lng, center.lat] }));
-    });
-
-    return () => {
-      clearTimeout(fallbackTimeout);
-      startMarkerRef.current?.remove();
-      endMarkerRef.current?.remove();
-      floodStartMarkerRef.current?.remove();
-      floodEndMarkerRef.current?.remove();
-      startMarkerRef.current = null;
-      endMarkerRef.current = null;
-      floodStartMarkerRef.current = null;
-      floodEndMarkerRef.current = null;
-      savedPlacesMarkersRef.current.forEach(({ marker, root }) => {
-        marker.remove();
-        setTimeout(() => root.unmount(), 0);
-      });
-      savedPlacesMarkersRef.current = [];
-      mapInstance.remove();
-      mapRef.current = null;
-      setIsLoaded(false);
-    };
-  }, [mapStyle]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
@@ -848,169 +648,7 @@ export default function MapCanvas() {
   }, [allRoutes, selectedRouteIndex, activeZonesData, isLoaded]);
 
 
-  // Render active flood avoidance zone polygons on the commuter map reactively
-  useEffect(() => {
-    if (!isLoaded || !mapRef.current || !activeZonesData) return;
-    const map = mapRef.current;
-    if (!map.style) return;
-
-    // Remove existing sources/layers if they exist
-    if (map.getLayer("active-zones-layer")) map.removeLayer("active-zones-layer");
-    if (map.getLayer("active-zones-outline")) map.removeLayer("active-zones-outline");
-    if (map.getLayer("active-zones-road-layer")) map.removeLayer("active-zones-road-layer");
-    if (map.getSource("active-zones-source")) map.removeSource("active-zones-source");
-
-    const features: any[] = [];
-    activeZonesData.forEach((zone: any) => {
-      const severity = zone.severity || "medium";
-      const color = SEVERITY_COLORS[severity] || "#f59e0b";
-      const isRoadBased = zone.report_geometry && zone.report_geometry.type === "LineString";
-
-      if (isRoadBased) {
-        // Add LineString feature for highlighted road segment
-        features.push({
-          type: "Feature",
-          properties: {
-            id: zone.id,
-            report_id: zone.report_id,
-            severity: severity.toUpperCase(),
-            color: color,
-            is_road_line: true,
-            is_road_based: true,
-            created_at: zone.created_at,
-            expires_at: zone.expires_at
-          },
-          geometry: zone.report_geometry
-        });
-      }
-
-      // Add Polygon feature (avoidance zone buffer)
-      features.push({
-        type: "Feature",
-        properties: {
-          id: zone.id,
-          report_id: zone.report_id,
-          severity: severity.toUpperCase(),
-          color: color,
-          is_road_line: false,
-          is_road_based: isRoadBased,
-          created_at: zone.created_at,
-          expires_at: zone.expires_at
-        },
-        geometry: zone.geometry
-      });
-    });
-
-    map.addSource("active-zones-source", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: features
-      }
-    });
-
-    // 1. Polygon Fill Layer (only for point-based/non-road-based zones)
-    map.addLayer({
-      id: "active-zones-layer",
-      type: "fill",
-      source: "active-zones-source",
-      paint: {
-        "fill-color": ["get", "color"],
-        "fill-opacity": 0.4,
-      },
-      filter: ["all", ["==", ["geometry-type"], "Polygon"], ["==", ["get", "is_road_based"], false]]
-    });
-
-    // 2. Polygon Outline Layer (only for point-based/non-road-based zones)
-    map.addLayer({
-      id: "active-zones-outline",
-      type: "line",
-      source: "active-zones-source",
-      paint: {
-        "line-color": ["get", "color"],
-        "line-width": 2
-      },
-      filter: ["all", ["==", ["geometry-type"], "Polygon"], ["==", ["get", "is_road_based"], false]]
-    });
-
-    // 3. Highlighted Road Line Layer (only for road segment LineStrings)
-    // Set width to 10 and opacity to 0.45 to form a soft background glow around the street
-    map.addLayer({
-      id: "active-zones-road-layer",
-      type: "line",
-      source: "active-zones-source",
-      layout: {
-        "line-join": "round",
-        "line-cap": "round"
-      },
-      paint: {
-        "line-color": ["get", "color"],
-        "line-width": 22,
-        "line-opacity": 0.6
-      },
-      filter: ["==", ["geometry-type"], "LineString"]
-    }, map.getLayer(ROUTE_LAYER_ID) ? ROUTE_LAYER_ID : undefined);
-
-    // 4. Click Popups for Commuters (Flood Timelines)
-    const handlePopup = (e: any) => {
-      if (!e.features || e.features.length === 0) return;
-      const properties = e.features[0].properties;
-      if (!properties) return;
-
-      // Format date for better readability (e.g. "Aug 15, 2:30 PM")
-      let reportedText = properties.created_at;
-      try {
-        if (reportedText) {
-          const d = new Date(reportedText);
-          if (!isNaN(d.getTime())) {
-            reportedText = d.toLocaleString('en-US', { 
-              month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' 
-            });
-          }
-        }
-      } catch (err) {}
-
-      new maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
-        .setLngLat(e.lngLat)
-        .setHTML(`
-          <div style="font-family: inherit; padding: 4px; color: #1e293b; min-width: 180px;">
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${properties.color};"></span>
-              <strong style="font-size: 14px; text-transform: capitalize;">${properties.severity} Risk</strong>
-            </div>
-            <div style="font-size: 12px; margin-bottom: 4px;">
-              <span style="color: #64748b; font-weight: 500;">Reported:</span>
-              <span style="font-weight: 600; margin-left: 4px;">${reportedText || 'Unknown'}</span>
-            </div>
-            ${properties.expires_at ? `
-            <div style="font-size: 11px; margin-top: 6px; color: #ef4444; font-weight: 500;">
-              Active Zone
-            </div>
-            ` : ''}
-          </div>
-        `)
-        .addTo(map);
-    };
-
-    const handleMouseEnter = () => { map.getCanvas().style.cursor = "pointer"; };
-    const handleMouseLeave = () => { map.getCanvas().style.cursor = isPickingRef.current ? "crosshair" : ""; };
-
-    map.on("click", "active-zones-layer", handlePopup);
-    map.on("click", "active-zones-road-layer", handlePopup);
-    map.on("mouseenter", "active-zones-layer", handleMouseEnter);
-    map.on("mouseleave", "active-zones-layer", handleMouseLeave);
-    map.on("mouseenter", "active-zones-road-layer", handleMouseEnter);
-    map.on("mouseleave", "active-zones-road-layer", handleMouseLeave);
-
-    return () => {
-      map.off("click", "active-zones-layer", handlePopup);
-      map.off("click", "active-zones-road-layer", handlePopup);
-      map.off("mouseenter", "active-zones-layer", handleMouseEnter);
-      map.off("mouseleave", "active-zones-layer", handleMouseLeave);
-      map.off("mouseenter", "active-zones-road-layer", handleMouseEnter);
-      map.off("mouseleave", "active-zones-road-layer", handleMouseLeave);
-    };
-  }, [isLoaded, activeZonesData]);
+  // Active flood avoidance zones are handled by useFloodZonesLayer hook above
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current || !start) return;
@@ -1129,8 +767,29 @@ export default function MapCanvas() {
   }, [heatmapData, isLoaded, pathname, isAnalyticsOpen, isAnalyticsCollapsed]);
 
   return (
-    <div className={`relative w-full h-full ${hasBottomOffset ? "flood-panel-open" : ""}`}>
-      <div ref={mapContainerRef} className="absolute inset-0 w-full h-full bg-neutral-200" />
+    <BaseMap
+      onMapInit={(map) => {
+        mapRef.current = map;
+        map.addControl(
+          new ActionGroupControl(
+            () => setIsSavePlacePanelOpen(true),
+            () => setIsAnalyticsOpen(true)
+          ),
+          "bottom-right"
+        );
+        map.on("click", (event: MapMouseEvent) => {
+          setPointFromMapRef.current([event.lngLat.lng, event.lngLat.lat]);
+        });
+        map.on("moveend", () => {
+          const center = map.getCenter();
+          window.dispatchEvent(new CustomEvent("map-center-changed", { detail: [center.lng, center.lat] }));
+        });
+      }}
+      onMapLoad={() => {
+        setIsLoaded(true);
+      }}
+      className={`relative w-full h-full ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}
+    >
 
       {usingFallback && (
         <div className="absolute top-20 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-30 bg-amber-500/95 text-white text-xs md:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-sm animate-pulse max-w-md pointer-events-auto border border-amber-400/20 font-medium">
@@ -1227,7 +886,10 @@ export default function MapCanvas() {
           height: 22px !important;
           opacity: 0.8;
         }
+        .hide-save-place .save-place-btn {
+          display: none !important;
+        }
       `}</style>
-    </div>
+    </BaseMap>
   );
 }

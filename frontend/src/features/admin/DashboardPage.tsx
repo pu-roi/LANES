@@ -104,7 +104,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12">
+    <div className="w-full max-w-[1600px] mx-auto space-y-8 pb-12">
       {/* Welcome Banner */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">LANES Overview</h1>

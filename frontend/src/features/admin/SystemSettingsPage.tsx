@@ -59,7 +59,7 @@ export default function SystemSettingsPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12">
+    <div className="w-full max-w-[1600px] mx-auto space-y-8 pb-12">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">System Settings</h1>
         <p className="text-gray-500 mt-1">Configure global platform behavior and automated thresholds.</p>

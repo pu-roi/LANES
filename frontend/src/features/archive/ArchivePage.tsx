@@ -77,12 +77,14 @@ export default function ArchivePage() {
       key: 'id',
       title: 'User ID',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (user) => <span className="font-mono text-xs font-semibold">#{user.id}</span>
     },
     {
       key: 'username',
       title: 'Username',
       sortable: true,
+      className: 'w-[200px]',
       render: (user) => <span className="font-semibold text-gray-800">{user.username}</span>
     },
     {
@@ -95,6 +97,7 @@ export default function ArchivePage() {
       key: 'role',
       title: 'Role',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (user) => (
         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
           {user.role?.name || "Unknown"}
@@ -105,6 +108,7 @@ export default function ArchivePage() {
       key: 'deleted_at',
       title: 'Deleted At',
       sortable: false,
+      className: 'whitespace-nowrap text-center',
       render: (user) => <span className="text-xs text-red-600 font-semibold">Deleted Record</span> // To be improved if deleted_at is added to UserRecord
     }
   ];
@@ -114,12 +118,14 @@ export default function ArchivePage() {
       key: 'id',
       title: 'Report ID',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (report) => <span className="font-mono text-xs font-semibold">#{report.id}</span>
     },
     {
       key: 'severity',
       title: 'Severity',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (report) => (
         <span className="uppercase text-xs font-bold text-gray-500">
           {report.severity}
@@ -140,12 +146,13 @@ export default function ArchivePage() {
       key: 'deleted_at',
       title: 'Deleted At',
       sortable: false,
+      className: 'whitespace-nowrap text-center',
       render: (report) => <span className="text-xs text-red-600 font-semibold">Deleted Record</span>
     }
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 text-gray-900">
+    <div className="w-full max-w-[1600px] mx-auto space-y-6 text-gray-900">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

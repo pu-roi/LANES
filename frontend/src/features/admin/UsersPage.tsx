@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUsers, updateUserStatus, deleteUser, UserRecord } from "./adminApi";
+import { getUsers, updateUserStatus, deleteUser, UserRecord, createAdminUser, updateUserRole, getRoles, RoleRecord } from "./adminApi";
 import { Button } from "@/shared/ui/Button";
 import { Modal } from "@/shared/ui/Modal";
 import { Input } from "@/shared/ui/Input";
@@ -19,7 +19,9 @@ import {
   Shield,
   RefreshCw,
   Info,
-  AlertTriangle
+  AlertTriangle,
+  Plus,
+  Edit2
 } from "lucide-react";
 
 const LIMIT = 10;
@@ -36,6 +38,20 @@ export default function UsersPage() {
   // Delete modals
   const [deleteId, setDeleteId] = useState<number | null>(null);
   
+  // Roles Query
+  const { data: rolesData } = useQuery({
+    queryKey: ["adminRoles"],
+    queryFn: getRoles,
+  });
+
+  // Create User State
+  const [showCreateUser, setShowCreateUser] = useState(false);
+  const [createUserForm, setCreateUserForm] = useState({ username: "", email: "", password: "", role_id: 4 });
+
+  // Edit Role State
+  const [editRoleUser, setEditRoleUser] = useState<UserRecord | null>(null);
+  const [editRoleSelected, setEditRoleSelected] = useState<number>(4);
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { data, isLoading, refetch, isPlaceholderData } = useQuery({
@@ -72,6 +88,32 @@ export default function UsersPage() {
     }
   });
 
+  const createUserMutation = useMutation({
+    mutationFn: (data: any) => createAdminUser(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
+      setShowCreateUser(false);
+      setCreateUserForm({ username: "", email: "", password: "", role_id: 4 });
+      setErrorMessage(null);
+    },
+    onError: (err: any) => {
+      setErrorMessage(err.message || "Failed to create user");
+    }
+  });
+
+  const updateRoleMutation = useMutation({
+    mutationFn: ({ id, role_id }: { id: number, role_id: number }) => updateUserRole(id, role_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+      setEditRoleUser(null);
+      setErrorMessage(null);
+    },
+    onError: (err: any) => {
+      setErrorMessage(err.message || "Failed to update user role");
+    }
+  });
+
   const users = data?.users || [];
   const total = data?.total || 0;
   const totalPages = Math.ceil(total / LIMIT);
@@ -91,12 +133,14 @@ export default function UsersPage() {
       key: 'id',
       title: 'User ID',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (user) => <span className="font-mono text-xs font-semibold">#{user.id}</span>
     },
     {
       key: 'username',
       title: 'Username',
       sortable: true,
+      className: 'whitespace-nowrap',
       render: (user) => <span className="font-semibold text-gray-800">{user.username}</span>
     },
     {
@@ -109,6 +153,7 @@ export default function UsersPage() {
       key: 'role',
       title: 'Role',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       sortFn: (a, b) => (a.role?.name || "Admin").localeCompare(b.role?.name || "Admin"),
       render: (user) => (
         user.role?.name !== "Commuter" ? (
@@ -127,12 +172,14 @@ export default function UsersPage() {
       key: 'created_at',
       title: 'Created At',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (user) => <span className="text-xs">{new Date(user.created_at).toLocaleString()}</span>
     },
     {
       key: 'is_active',
       title: 'Status',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (user) => (
         user.is_active ? (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
@@ -149,9 +196,19 @@ export default function UsersPage() {
       key: 'actions',
       title: 'Actions',
       sortable: false,
+      className: 'whitespace-nowrap text-center',
       render: (user) => (
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <TableActionGroup>
+            <TableActionButton
+              actionVariant="edit"
+              onClick={() => {
+                setEditRoleSelected(user.role_id);
+                setEditRoleUser(user);
+              }}
+            >
+              Change Role
+            </TableActionButton>
             <TableActionButton
               actionVariant={user.is_active ? "disable" : "enable"}
               onClick={() => setStatusUser(user)}
@@ -171,7 +228,7 @@ export default function UsersPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 text-gray-900">
+    <div className="w-full max-w-[1600px] mx-auto space-y-6 text-gray-900">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -180,14 +237,23 @@ export default function UsersPage() {
             Manage user accounts, roles, access statuses, and permissions.
           </p>
         </div>
-        <Button
-          onClick={() => refetch()}
-          variant="outline"
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setShowCreateUser(true)}
+            className="flex items-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Plus className="w-4 h-4" />
+            Create User
+          </Button>
+          <Button
+            onClick={() => refetch()}
+            variant="outline"
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Error Alert Banner */}
@@ -350,6 +416,93 @@ export default function UsersPage() {
               className="bg-red-600 hover:bg-red-700 text-white"
             >
               {removeUserMutation.isPending ? "Deleting..." : "Permanently Delete"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Create User Modal */}
+      <Modal
+        isOpen={showCreateUser}
+        onClose={() => setShowCreateUser(false)}
+        title="Create New User"
+      >
+        <form 
+          onSubmit={(e) => {
+            e.preventDefault();
+            createUserMutation.mutate(createUserForm);
+          }}
+          className="space-y-4"
+        >
+          <Input
+            label="Username"
+            value={createUserForm.username}
+            onChange={(e) => setCreateUserForm({ ...createUserForm, username: e.target.value })}
+            required
+            className="bg-white text-gray-900"
+            labelClassName="text-gray-900"
+          />
+          <Input
+            label="Email"
+            type="email"
+            value={createUserForm.email}
+            onChange={(e) => setCreateUserForm({ ...createUserForm, email: e.target.value })}
+            required
+            className="bg-white text-gray-900"
+            labelClassName="text-gray-900"
+          />
+          <Input
+            label="Password"
+            type="password"
+            value={createUserForm.password}
+            onChange={(e) => setCreateUserForm({ ...createUserForm, password: e.target.value })}
+            required
+            className="bg-white text-gray-900"
+            labelClassName="text-gray-900"
+          />
+          <div className="space-y-1.5">
+            <label className="block text-sm font-semibold text-gray-900">Role</label>
+            <Select
+              options={rolesData?.map(role => ({ label: role.name, value: role.id })) || []}
+              value={createUserForm.role_id}
+              onChange={(e) => setCreateUserForm({ ...createUserForm, role_id: Number(e.target.value) })}
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button type="button" variant="outline" onClick={() => setShowCreateUser(false)} className="text-gray-600">Cancel</Button>
+            <Button type="submit" disabled={createUserMutation.isPending} className="bg-blue-600 hover:bg-blue-700 text-white">
+              {createUserMutation.isPending ? "Creating..." : "Create User"}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Edit Role Modal */}
+      <Modal
+        isOpen={editRoleUser !== null}
+        onClose={() => setEditRoleUser(null)}
+        title="Change User Role"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            Select a new role for <strong>{editRoleUser?.username}</strong>.
+          </p>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-semibold text-gray-900">Role</label>
+            <Select
+              options={rolesData?.map(role => ({ label: role.name, value: role.id })) || []}
+              value={editRoleSelected}
+              onChange={(e) => setEditRoleSelected(Number(e.target.value))}
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" onClick={() => setEditRoleUser(null)} className="text-gray-600">Cancel</Button>
+            <Button 
+              onClick={() => editRoleUser && updateRoleMutation.mutate({ id: editRoleUser.id, role_id: editRoleSelected })}
+              disabled={updateRoleMutation.isPending}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {updateRoleMutation.isPending ? "Updating..." : "Save Role"}
             </Button>
           </div>
         </div>

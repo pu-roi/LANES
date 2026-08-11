@@ -95,8 +95,9 @@ export default function AuditTrailPage() {
       key: 'created_at',
       title: 'Timestamp',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (log) => (
-        <div className="flex items-center gap-2 whitespace-nowrap">
+        <div className="flex justify-center items-center gap-2 whitespace-nowrap">
           <Calendar className="w-4 h-4 text-gray-400" />
           <span className="text-sm font-medium text-gray-700">
             {new Date(log.created_at).toLocaleString()}
@@ -108,6 +109,7 @@ export default function AuditTrailPage() {
       key: 'operator',
       title: 'Operator',
       sortable: true,
+      className: 'whitespace-nowrap',
       sortFn: (a, b) => {
         const aName = a.admin?.username || "";
         const bName = b.admin?.username || "";
@@ -130,6 +132,7 @@ export default function AuditTrailPage() {
       key: 'source_module',
       title: 'Source Module',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       sortFn: (a, b) => {
         const aModule = ACTION_BADGES[a.action_type]?.module || "System Component";
         const bModule = ACTION_BADGES[b.action_type]?.module || "System Component";
@@ -148,6 +151,7 @@ export default function AuditTrailPage() {
       key: 'action_type',
       title: 'Action Type',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (log) => {
         const badge = ACTION_BADGES[log.action_type] || {
           bg: "bg-gray-50 border-gray-200",
@@ -165,6 +169,7 @@ export default function AuditTrailPage() {
       key: 'target',
       title: 'Target',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       sortFn: (a, b) => (a.target_table || "").localeCompare(b.target_table || ""),
       render: (log) => (
         <div className="whitespace-nowrap">
@@ -183,10 +188,11 @@ export default function AuditTrailPage() {
       key: 'ip_address',
       title: 'IP Address',
       sortable: true,
+      className: 'whitespace-nowrap text-center',
       render: (log) => (
         <div className="whitespace-nowrap">
           {log.ip_address ? (
-            <div className="flex items-center gap-1.5 text-sm text-gray-600 font-medium">
+            <div className="flex items-center justify-center gap-1.5 text-sm text-gray-600 font-medium">
               <Globe className="w-3.5 h-3.5 text-gray-400" />
               {log.ip_address}
             </div>
@@ -200,8 +206,9 @@ export default function AuditTrailPage() {
       key: 'details',
       title: 'Details',
       sortable: false,
+      className: 'whitespace-nowrap text-center',
       render: (log) => (
-        <div className="flex justify-end whitespace-nowrap">
+        <div className="flex justify-center whitespace-nowrap">
           <Button
             onClick={() => setInspectLog(log)}
             variant="outline"
@@ -217,7 +224,7 @@ export default function AuditTrailPage() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 text-gray-900">
+    <div className="w-full max-w-[1600px] mx-auto space-y-6 text-gray-900">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>

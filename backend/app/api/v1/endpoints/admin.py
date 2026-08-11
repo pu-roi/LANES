@@ -466,6 +466,89 @@ def update_admin_user_status(
     return updated_user
 
 
+@router.post("/users", response_model=schemas.UserResponse, status_code=201)
+def create_admin_user(
+    payload: schemas.UserCreate,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Create a new user (usually a sub-admin/moderator) with a specific role.
+    Requires admin privileges.
+    """
+    user = crud.get_user_by_email(db, email=payload.email)
+    if user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    user = crud.get_user_by_username(db, username=payload.username)
+    if user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+
+    # Set is_active to True to skip OTP
+    payload.is_active = True
+    new_user = crud.create_user(db=db, user=payload)
+    
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="CREATE_USER",
+            target_table="users",
+            target_id=new_user.id,
+            metadata_json={
+                "target_username": new_user.username,
+                "role_id": new_user.role_id
+            },
+            ip_address=client_ip
+        )
+    )
+    return new_user
+
+
+@router.patch("/users/{user_id}/role", response_model=schemas.UserResponse)
+def update_admin_user_role(
+    user_id: int,
+    payload: schemas.UserRoleUpdateRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Update a user's role.
+    Requires admin privileges.
+    """
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot change your own role")
+    
+    user = crud.get_user(db, user_id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    old_role_id = user.role_id
+    updated_user = crud.update_user_role(db=db, user_id=user_id, role_id=payload.role_id)
+    
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="UPDATE_USER_ROLE",
+            target_table="users",
+            target_id=user_id,
+            metadata_json={
+                "target_user_id": user_id,
+                "target_username": user.username,
+                "old_role_id": old_role_id,
+                "new_role_id": payload.role_id
+            },
+            ip_address=client_ip
+        )
+    )
+    return updated_user
+
+
 @router.delete("/users/{user_id}")
 def delete_admin_user(
     user_id: int,

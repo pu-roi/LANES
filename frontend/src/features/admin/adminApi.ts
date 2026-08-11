@@ -167,6 +167,18 @@ export async function updateUserStatus(userId: number, isActive: boolean): Promi
   });
 }
 
+export async function updateUserRole(userId: number, roleId: number): Promise<UserRecord> {
+  return apiClient.request<UserRecord>(`/admin/users/${userId}/role`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ role_id: roleId }),
+  });
+}
+
+export async function createAdminUser(data: any): Promise<UserRecord> {
+  return apiClient.post<UserRecord>("/admin/users", data);
+}
+
 export async function deleteUser(userId: number): Promise<{ message: string }> {
   return apiClient.request<{ message: string }>(`/admin/users/${userId}`, { method: "DELETE" });
 }

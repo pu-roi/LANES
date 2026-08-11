@@ -117,6 +117,15 @@ def delete_user(db: Session, user_id: int) -> bool:
     return False
 
 
+def update_user_role(db: Session, user_id: int, role_id: int) -> Optional[models.User]:
+    user = get_user(db, user_id)
+    if user:
+        user.role_id = role_id
+        db.commit()
+        db.refresh(user)
+    return user
+
+
 def hard_delete_user(db: Session, user_id: int) -> bool:
     """
     Physically removes a user from the database. 

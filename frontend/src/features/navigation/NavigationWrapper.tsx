@@ -20,25 +20,47 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
 
     const isAdminRoute = pathname.startsWith("/admin");
     const isPrivateRoute = ["/profile", "/report", "/feed/create"].some((route) => pathname.startsWith(route));
+    const isPublicRoute = !isAdminRoute && !pathname.startsWith("/login") && !pathname.startsWith("/register") && !pathname.startsWith("/verify");
 
-    if ((isAdminRoute || isPrivateRoute) && !isAuthenticated) {
-      setIsRedirecting(true);
-      router.replace("/login");
-    } else if (isAdminRoute && user && user.role?.name === "Commuter") {
-      setIsRedirecting(true);
-      router.replace("/");
+    if (!isAuthenticated) {
+      if (isAdminRoute || isPrivateRoute) {
+        setIsRedirecting(true);
+        router.replace("/login");
+      } else {
+        setIsRedirecting(false);
+      }
     } else {
-      setIsRedirecting(false);
+      // Authenticated user checks
+      const u = user as any;
+      if (isAdminRoute && u?.role?.name === "Commuter") {
+        setIsRedirecting(true);
+        router.replace("/");
+      } else if (isPublicRoute && u?.role?.name === "Super Admin") {
+        setIsRedirecting(true);
+        router.replace("/admin/dashboard");
+      } else {
+        setIsRedirecting(false);
+      }
     }
   }, [pathname, isAuthenticated, isLoading, user, router]);
 
-  if (isRedirecting || (isLoading && (pathname.startsWith("/admin") || ["/profile", "/report", "/feed/create"].some((route) => pathname.startsWith(route))))) {
-    return null;
-  }
+  const isProtected = pathname.startsWith("/admin") || ["/profile", "/report", "/feed/create"].some((route) => pathname.startsWith(route));
+  const showLoader = isRedirecting || (isLoading && isProtected);
+
+  const loaderOverlay = showLoader ? (
+    <div className="fixed inset-0 z-[9999] bg-gray-50 flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  ) : null;
 
   // Hide the global navigation bars on the Admin pages
   if (pathname.startsWith("/admin")) {
-    return <>{children}</>;
+    return (
+      <>
+        {loaderOverlay}
+        {children}
+      </>
+    );
   }
 
   const isMapPage = pathname === "/map";
@@ -53,6 +75,7 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
         !isMapPage && "pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]"
       )}
     >
+      {loaderOverlay}
       <FloatingNav />
       {/* Background Mask for FloatingNav to hide scrolling content - ONLY on Feed Page */}
       {isFeedPage && (

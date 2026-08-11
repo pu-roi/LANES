@@ -13,6 +13,8 @@ export interface Column<T> {
   render?: (row: T) => React.ReactNode;
   // Optional custom sort function
   sortFn?: (a: T, b: T) => number;
+  // Optional tailwind classes for sizing/alignment
+  className?: string;
 }
 
 export interface DataTableProps<T> {
@@ -95,10 +97,10 @@ export function DataTable<T>({
               {columns.map((col) => (
                 <th 
                   key={col.key} 
-                  className={`px-4 py-3.5 font-semibold ${col.sortable ? 'cursor-pointer hover:bg-gray-100 transition-colors group select-none' : ''}`}
+                  className={`px-4 py-3.5 font-semibold ${col.className || ''} ${col.sortable ? 'cursor-pointer hover:bg-gray-100 transition-colors group select-none' : ''}`}
                   onClick={() => col.sortable ? handleSort(col.key) : undefined}
                 >
-                  <div className="flex items-center gap-1.5">
+                  <div className={`flex items-center gap-1.5 ${col.className?.includes('text-center') ? 'justify-center' : col.className?.includes('text-right') ? 'justify-end' : ''}`}>
                     {col.title}
                     {col.sortable && (
                       <span className="inline-flex flex-col text-gray-400 group-hover:text-gray-600">
@@ -127,7 +129,7 @@ export function DataTable<T>({
               sortedData.map((row) => (
                 <tr key={keyExtractor(row)} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
                   {columns.map((col) => (
-                    <td key={col.key} className="px-4 py-3 align-middle text-gray-700">
+                    <td key={col.key} className={`px-4 py-3 align-middle text-gray-700 ${col.className || ''}`}>
                       {col.render ? col.render(row) : (row as any)[col.key]}
                     </td>
                   ))}

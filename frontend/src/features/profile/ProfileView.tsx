@@ -273,9 +273,9 @@ export default function ProfileView() {
       <h3 className="text-base font-bold text-slate-900 mb-4 hidden lg:block">My Hazard Reports</h3>
       {isLoadingReports ? (
         <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 text-slate-400 animate-spin" /></div>
-      ) : myReports?.length > 0 ? (
+      ) : (myReports as any[])?.length > 0 ? (
         <div className="space-y-4">
-          {myReports.map((report: any) => (
+          {(myReports as any[]).map((report: any) => (
             <div key={report.id} className="p-4 rounded-xl border border-slate-100 hover:border-blue-100 hover:bg-blue-50/50 transition-colors">
               <div className="flex justify-between items-start mb-2">
                 <span className="text-sm font-medium bg-white px-2 py-1 border border-slate-200 rounded-md shadow-sm text-slate-700">
@@ -309,9 +309,9 @@ export default function ProfileView() {
       <h3 className="text-base font-bold text-slate-900 mb-2 px-6 pt-6 hidden lg:block">My Community Posts</h3>
       {isLoadingPosts ? (
         <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 text-slate-400 animate-spin" /></div>
-      ) : myPosts?.posts?.length > 0 ? (
+      ) : (myPosts as any)?.posts?.length > 0 ? (
         <div className="flex flex-col">
-          {myPosts.posts.map((post: FeedPost) => (
+          {(myPosts as any).posts.map((post: FeedPost) => (
             <PostItem 
               key={post.id}
               post={post} 
