@@ -95,16 +95,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             />
           </button>
           
-          <AnimatePresence>
-            {isOpen && typeof document !== "undefined" && createPortal(
-              <motion.div
+          {isOpen && typeof document !== "undefined" && createPortal(
+              <div
                 data-portal="select-dropdown"
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
-                className="fixed z-[9999] mt-1 rounded-lg border border-gray-100 bg-white shadow-xl overflow-hidden py-1"
+                className="fixed mt-1 rounded-lg border border-gray-100 bg-white shadow-xl overflow-hidden py-1"
                 style={{
+                  zIndex: 99999,
                   top: dropdownRect ? dropdownRect.bottom : 0,
                   left: dropdownRect ? dropdownRect.left : 0,
                   width: dropdownRect ? dropdownRect.width : 0,
@@ -128,10 +124,9 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
                     </button>
                   ))}
                 </div>
-              </motion.div>,
+              </div>,
               document.body
             )}
-          </AnimatePresence>
         </div>
 
         {error && (

@@ -1,4 +1,5 @@
 "use client";
+// Forced cache refresh
 
 import {
   createContext,
@@ -461,6 +462,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       resetAll,
       vehicleProfile,
       setVehicleProfile,
+      panelZIndices,
+      bringPanelToFront,
     }),
     [
       start,
@@ -511,6 +514,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       resetAll,
       vehicleProfile,
       setVehicleProfile,
+      panelZIndices,
+      bringPanelToFront,
     ]
   );
 

@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/Card";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useSidebarStore } from "@/shared/stores/sidebarStore";
-import { useMapContext } from "@/features/map/MapContext";
+import { useOptionalMapContext } from "@/features/map/MapContext";
 
 interface PanelProps {
   /** Text shown in the card header. */
@@ -100,7 +100,7 @@ export function Panel({
   const isAdmin = pathname?.startsWith("/admin");
   const isRight = anchor === "right";
 
-  const mapContext = useMapContext();
+  const mapContext = useOptionalMapContext();
   const bringPanelToFront = mapContext?.bringPanelToFront;
   const panelZIndices = mapContext?.panelZIndices || {};
 

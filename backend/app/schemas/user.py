@@ -36,3 +36,6 @@ class UsersPaginatedResponse(BaseModel):
 
 class UserStatusUpdateRequest(BaseModel):
     is_active: bool
+
+class UserRoleUpdateRequest(BaseModel):
+    role_id: int

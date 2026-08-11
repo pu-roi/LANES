@@ -78,7 +78,7 @@ function MapLayout() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (pathname === "/admin/analytics") {
+    if (pathname === "/analytics" || pathname === "/admin/analytics") {
       setIsAnalyticsOpen(true);
     }
   }, [pathname, setIsAnalyticsOpen]);
@@ -152,7 +152,7 @@ function MapLayout() {
       </AnimatePresence>
 
       {/* -- Desktop/Tablet Permanent Action Pills --------------------------- */}
-      {!isMobile && (
+      {!isMobile && !pathname.startsWith('/admin') && pathname !== '/analytics' && (
         <div className="fixed bottom-6 left-6 z-[40] flex flex-col gap-3">
           <button
             onClick={handleSelectSavePlace}
@@ -202,7 +202,7 @@ function MapLayout() {
       </AnimatePresence>
 
       {/* -- 3. FAB Button --------------------------------------------------- */}
-      {isMobile && !isPickingOnMap && (
+      {isMobile && !isPickingOnMap && !pathname.startsWith('/admin') && pathname !== '/analytics' && (
         <ReportFab
           isMenuOpen={isMenuOpen}
           isPanelExpanded={isPanelExpanded}
@@ -220,7 +220,7 @@ function MapLayout() {
       <AnimatePresence>
         {isAnalyticsOpen && <AnalyticsPanel />}
       </AnimatePresence>
-      {pathname !== "/admin/analytics" && (
+      {!pathname.startsWith('/admin') && pathname !== "/analytics" && (
         <>
           <FloodReportPanel
             isOpen={isMobile ? isReportPanelOpen : true}
@@ -278,6 +278,13 @@ function MapLayout() {
 
 export default function GlobalMap() {
   const pathname = usePathname();
+
+  // Completely unmount the commuter map when in the admin panel to save memory
+  // EXCEPT for admin analytics which relies on the map.
+  if (pathname.startsWith('/admin') && pathname !== '/admin/analytics') {
+    return null;
+  }
+
   const isMapVisible = pathname === "/map" || pathname === "/analytics" || pathname === "/admin/analytics";
 
   return (

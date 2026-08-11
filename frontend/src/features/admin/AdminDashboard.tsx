@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full max-w-[1600px] mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Pending Moderation</h1>
         <p className="text-gray-600 mt-1">Review and approve extracted flood reports to automatically generate avoidance zones.</p>

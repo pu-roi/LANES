@@ -39,8 +39,11 @@ export default function LoginForm() {
       
       if (profileResponse.ok) {
         const profile = await profileResponse.json();
-        if (profile.role?.name !== "Commuter") {
+        if (profile.role?.name === "Super Admin") {
           router.push("/admin/dashboard");
+          return;
+        } else if (profile.role?.name !== "Commuter") {
+          router.push("/");
           return;
         }
       }

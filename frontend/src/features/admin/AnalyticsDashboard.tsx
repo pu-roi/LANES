@@ -53,7 +53,7 @@ export default function AnalyticsDashboard() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="w-full max-w-[1600px] mx-auto space-y-8">
       <div className="fixed top-6 right-6 z-[60]">
         <Button 
           onClick={handleExport} 

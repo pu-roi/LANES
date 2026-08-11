@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -18,10 +18,15 @@ export default function LoginPage() {
         sessionStorage.removeItem('lanes_post_intent');
         router.push('/feed?openPostModal=true');
       } else {
-        router.push('/map');
+        const u = user as any;
+        if (u?.role?.name === 'Super Admin' || u?.role?.name === 'Moderator' || u?.role?.name === 'DRRM Officer') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/map');
+        }
       }
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, router, user]);
 
   if (isLoading || isAuthenticated) {
     return (
