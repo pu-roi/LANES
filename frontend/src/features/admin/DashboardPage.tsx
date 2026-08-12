@@ -150,9 +150,9 @@ export default function DashboardPage() {
 
       {/* Charts Grid */}
       {chartsData && (
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {/* Reports Timeline (Line Chart) */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm md:col-span-2 space-y-4 relative">
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4 relative flex flex-col justify-between md:col-span-2 lg:col-span-1">
             <div className="flex justify-between items-center">
               <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-blue-600" />
@@ -312,7 +312,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Severity Distribution (Pie / Donut Chart) */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4 md:col-span-1 lg:col-span-1">
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
               <PieChart className="w-4 h-4 text-blue-600" />
               Severity Breakdown
@@ -394,12 +394,10 @@ export default function DashboardPage() {
                 </div>
               );
             })()}
-
-
           </div>
 
           {/* Top barangays (Horizontal Bar Graph) */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4 md:col-span-3">
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4 md:col-span-1 lg:col-span-1">
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
               <BarChart4 className="w-4 h-4 text-blue-600" />
               Top 5 Most Flooded Barangays
