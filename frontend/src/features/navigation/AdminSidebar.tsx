@@ -25,9 +25,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/shared/ui/Button";
 
 const navItems = [
-  { name: "Dashboard",      href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Live Map & Zones", href: "/admin/map",       icon: Map },
-  { name: "Reports",        href: "/admin/reports",   icon: FileText },
+  { name: "Dashboard",          href: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Spatial Operations", href: "/admin/map",       icon: Map },
+  { name: "Reports",            href: "/admin/reports",   icon: FileText },
   { name: "User Registry",  href: "/admin/users",     icon: Users },
   { name: "Roles",          href: "/admin/roles",     icon: ShieldCheck },
   { name: "Audit Trail",    href: "/admin/audit",     icon: ClipboardList },
