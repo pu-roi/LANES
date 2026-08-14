@@ -4,17 +4,22 @@ import { motion } from "framer-motion";
 import { Logo } from "@/shared/ui/Logo";
 import LoginForm from "@/features/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      if (typeof window !== 'undefined' && sessionStorage.getItem('lanes_post_intent')) {
+      const redirectUrl = searchParams.get('redirect');
+      
+      if (redirectUrl && redirectUrl.startsWith('/')) {
+        router.push(redirectUrl);
+      } else if (typeof window !== 'undefined' && sessionStorage.getItem('lanes_post_intent')) {
         sessionStorage.removeItem('lanes_post_intent');
         router.push('/feed?openPostModal=true');
       } else {
@@ -26,7 +31,7 @@ export default function LoginPage() {
         }
       }
     }
-  }, [isAuthenticated, isLoading, router, user]);
+  }, [isAuthenticated, isLoading, router, user, searchParams]);
 
   if (isLoading || isAuthenticated) {
     return (

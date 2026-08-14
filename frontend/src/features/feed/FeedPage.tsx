@@ -11,6 +11,7 @@ import { useToast } from '@/shared/ui';
 import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/hooks/useAuth';
 
 export function FeedPage() {
   const queryClient = useQueryClient();
@@ -26,9 +27,12 @@ export function FeedPage() {
   const photoInputRef = React.useRef<HTMLInputElement>(null);
   const videoInputRef = React.useRef<HTMLInputElement>(null);
 
+  const { isAuthenticated } = useAuth();
+
   const { data: savedPlaces, isLoading: savedPlacesLoading } = useQuery({
-    queryKey: ['saved-places'],
+    queryKey: ['saved-places', isAuthenticated],
     queryFn: savedPlacesApi.getSavedPlaces,
+    enabled: isAuthenticated,
   });
 
   // Auto-open modal if user just logged in from a draft redirect

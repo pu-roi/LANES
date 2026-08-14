@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "@/shared/ui/Logo";
-import { Home, Map as MapIcon, User, Newspaper, LogOut, ShieldCheck } from "lucide-react";
+import { Home, Map as MapIcon, User, Newspaper, LogOut, ShieldCheck, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
 
 export default function FloatingNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const isMapPage = pathname === "/map";
   
@@ -29,12 +30,17 @@ export default function FloatingNav() {
           <Logo size="xs" textClassName="mt-0.5 hidden md:block shrink-0" />
         </Link>
         <span className="w-px h-5 bg-gray-200 hidden sm:block mr-2 shrink-0" />
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+        {NAV_ITEMS.map((item) => {
+          const isProfileItem = item.href === "/profile";
+          const actualHref = isProfileItem && !user ? `/login?redirect=${encodeURIComponent(pathname)}` : item.href;
+          const actualLabel = isProfileItem && !user ? "Sign In" : item.label;
+          const Icon = isProfileItem && !user ? LogIn : item.icon;
+          
+          const isActive = pathname.startsWith(item.href) && (item.href !== "/" || pathname === "/");
           return (
             <Link
-              key={href}
-              href={href}
+              key={item.href}
+              href={actualHref}
               className={cn(
                 "group relative flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1",
                 isMapPage ? "rounded-xl px-3 py-1.5 gap-0" : "rounded-full px-3 py-1.5 gap-0 md:gap-2",
@@ -54,7 +60,7 @@ export default function FloatingNav() {
                 )}
                 style={{ transition: 'max-width 500ms ease-in-out, opacity 300ms ease-in-out' }}
               >
-                {label}
+                {actualLabel}
               </span>
 
               {/* Tooltip for condensed mode */}
@@ -64,7 +70,7 @@ export default function FloatingNav() {
                   ? "opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0"
                   : "md:hidden opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0"
               )}>
-                {label}
+                {actualLabel}
               </span>
             </Link>
           );
@@ -109,12 +115,15 @@ export default function FloatingNav() {
           </>
         )}
 
-        {/* Separator and Log Out button (Only on Profile page) */}
-        {pathname.startsWith("/profile") && (
+        {/* Separator and Log Out button (Always visible when logged in) */}
+        {user && (
           <>
             <span className="w-px h-5 bg-gray-200 hidden sm:block ml-2 shrink-0" />
             <button
-              onClick={logout}
+              onClick={() => {
+                logout();
+                router.push("/feed");
+              }}
               className={cn(
                 "group relative flex items-center justify-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1 rounded-full px-3 py-1.5 gap-0 md:gap-2 text-gray-600 hover:bg-red-50 hover:text-red-600"
               )}

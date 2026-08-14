@@ -118,11 +118,6 @@ export default function BaseMap({
       bearing: 0,
     });
 
-    if (onMapInit) {
-      onMapInit(mapInstance);
-    }
-
-    mapInstance.addControl(new TopViewControlV3(), "bottom-right");
     mapInstance.addControl(
       new maplibregl.NavigationControl({
         showCompass: true,
@@ -131,6 +126,11 @@ export default function BaseMap({
       }),
       "bottom-right"
     );
+    mapInstance.addControl(new TopViewControlV3(), "bottom-right");
+
+    if (onMapInit) {
+      onMapInit(mapInstance);
+    }
 
     mapInstance.on("error", (e) => {
       const errMsg = (e.message || (e.error && e.error.message) || "").toLowerCase();
