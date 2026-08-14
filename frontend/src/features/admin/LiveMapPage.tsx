@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Map } from "maplibre-gl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
@@ -13,8 +13,76 @@ import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
 import { 
   Loader2, Map as MapIcon, Trash2, ShieldAlert, Layers, 
-  RefreshCw, Info, AlertTriangle, CheckCircle, Check, Clock 
+  RefreshCw, Info, AlertTriangle, CheckCircle, Check, Clock, X, TrendingUp, Download
 } from "lucide-react";
+import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
+import maplibregl from "maplibre-gl";
+
+class AnalyticsControl {
+  private _map: maplibregl.Map | undefined;
+  private _container: HTMLDivElement | undefined;
+  private _onClick: () => void;
+  private _isActive: boolean;
+
+  constructor(onClick: () => void, isActive: boolean) {
+    this._onClick = onClick;
+    this._isActive = isActive;
+  }
+
+  updateState(isActive: boolean) {
+    this._isActive = isActive;
+    if (this._container) {
+      const btn = this._container.querySelector('button');
+      if (btn) {
+        btn.style.backgroundColor = this._isActive ? "#eff6ff" : "transparent";
+      }
+    }
+  }
+
+  onAdd(map: maplibregl.Map) {
+    this._map = map;
+    this._container = document.createElement("div");
+    this._container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.title = "Toggle Analytics";
+    
+    btn.style.cssText = `
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background-color: ${this._isActive ? "#eff6ff" : "transparent"};
+      color: #2563eb;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0;
+      display: flex;
+    `;
+    
+    btn.onmouseenter = () => {
+      btn.style.backgroundColor = this._isActive ? "#dbeafe" : "#f8fafc";
+    };
+    btn.onmouseleave = () => {
+      btn.style.backgroundColor = this._isActive ? "#eff6ff" : "transparent";
+    };
+    
+    btn.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`;
+    btn.onclick = this._onClick;
+    
+    this._container.appendChild(btn);
+    return this._container;
+  }
+
+  onRemove() {
+    if (this._container && this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container);
+    }
+    this._map = undefined;
+  }
+}
 
 const LIMIT = 10;
 
@@ -24,6 +92,8 @@ export default function LiveMapPage() {
   // Map State
   const [mapInstance, setMapInstance] = useState<Map | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  const [analyticsControl, setAnalyticsControl] = useState<AnalyticsControl | null>(null);
 
   // List State
   const [page, setPage] = useState(1);
@@ -42,6 +112,88 @@ export default function LiveMapPage() {
   // Modular Map Layers
   useCityBoundaries(mapInstance, isLoaded);
   useFloodZonesLayer(mapInstance, isLoaded, mapZones);
+
+  // Heatmap Data for Analytics
+  const { data: heatmapData } = useQuery({
+    queryKey: ["analytics", "heatmap"],
+    queryFn: () => apiClient.get<any>("/analytics/heatmap"),
+    enabled: isAnalyticsOpen,
+  });
+
+  // Stats Data for CSV Export
+  const { data: statsData, isLoading: isStatsLoading } = useQuery({
+    queryKey: ["analyticsStats"],
+    queryFn: () => apiClient.get<any>("/analytics/stats"),
+    enabled: isAnalyticsOpen,
+  });
+
+  const handleExportCSV = () => {
+    if (!statsData) return;
+    let csv = "Type,Name,Alert Count\n";
+    statsData.top_barangays?.forEach((b: any) => {
+      csv += `Barangay,${b.barangay || "Unknown"},${b.count}\n`;
+    });
+    statsData.top_locations?.forEach((l: any) => {
+      csv += `Location,${l.location || "Unknown"},${l.count}\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("hidden", "");
+    a.setAttribute("href", url);
+    a.setAttribute("download", "lanes_analytics_export.csv");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  // Heatmap Layer Logic
+  useEffect(() => {
+    if (!isLoaded || !mapInstance) return;
+    const map = mapInstance;
+    if (!map.style) return;
+    
+    if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
+    if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
+
+    if (!isAnalyticsOpen || !heatmapData || !heatmapData.features || heatmapData.features.length === 0) return;
+
+    map.addSource("heatmap-source", {
+      type: "geojson",
+      data: heatmapData
+    });
+
+    map.addLayer({
+      id: "heatmap-layer",
+      type: "heatmap",
+      source: "heatmap-source",
+      maxzoom: 15,
+      paint: {
+        "heatmap-weight": ["get", "weight"],
+        "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 15, 3],
+        "heatmap-color": [
+          "interpolate",
+          ["linear"],
+          ["heatmap-density"],
+          0, "rgba(0, 0, 255, 0)",
+          0.2, "royalblue",
+          0.4, "cyan",
+          0.6, "lime",
+          0.8, "yellow",
+          1, "red"
+        ],
+        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 2, 15, 20],
+        "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 15, 0]
+      }
+    });
+  }, [heatmapData, isLoaded, isAnalyticsOpen, mapInstance]);
+
+  // Update control state when isAnalyticsOpen changes
+  useEffect(() => {
+    if (analyticsControl) {
+      analyticsControl.updateState(isAnalyticsOpen);
+    }
+  }, [isAnalyticsOpen, analyticsControl]);
 
   const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
     queryKey: ["adminZones", page, activeOnly],
@@ -112,11 +264,10 @@ export default function LiveMapPage() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col md:flex-row gap-6">
-      {/* LEFT PANEL: Active Zones Table */}
-      <div className="w-full md:w-[480px] flex flex-col bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden shrink-0 h-[50vh] md:h-[calc(100vh-6rem)]">
-        {/* Header */}
-        <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
+    <div className="flex flex-col md:flex-row gap-6 h-full">
+      {/* LEFT PANEL: Zones List */}
+      <div className="w-full md:w-[400px] xl:w-[450px] shrink-0 flex flex-col bg-white border border-gray-200 rounded-xl shadow-sm h-[50vh] md:h-[calc(100vh-6rem)] overflow-hidden">
+        <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
           <div>
             <h1 className="text-lg font-bold text-gray-900 flex items-center gap-2">
               <ShieldAlert className="w-5 h-5 text-amber-500" /> Detour & Flood Zones
@@ -244,6 +395,11 @@ export default function LiveMapPage() {
       {/* RIGHT PANEL: Map View */}
       <div className="flex-1 relative rounded-xl overflow-hidden border border-gray-200 shadow-sm h-[50vh] md:h-[calc(100vh-6rem)] bg-slate-100">
         <BaseMap 
+          actionControls={(map) => {
+            const control = new AnalyticsControl(() => setIsAnalyticsOpen(prev => !prev), isAnalyticsOpen);
+            map.addControl(control, "bottom-right");
+            setAnalyticsControl(control);
+          }}
           onMapInit={(map) => {
             setMapInstance(map);
           }}
@@ -251,6 +407,26 @@ export default function LiveMapPage() {
             setIsLoaded(true);
           }}
         >
+          {/* Floating Analytics Panel (Over Map) */}
+          {isAnalyticsOpen && (
+            <>
+              <AnalyticsPanel
+                isOpen={isAnalyticsOpen}
+                onClose={() => setIsAnalyticsOpen(false)}
+              />
+              {/* Export Button (Top Right of Map) */}
+              <div className="absolute top-4 right-4 z-20 pointer-events-auto">
+                <Button 
+                  onClick={handleExportCSV} 
+                  disabled={isStatsLoading || !statsData}
+                  className="flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-md hover:shadow-lg transition-all text-xs font-semibold py-2 px-3.5 h-auto rounded-xl"
+                >
+                  <Download className="w-4 h-4 text-blue-600" />
+                  Export to CSV
+                </Button>
+              </div>
+            </>
+          )}
           {/* Bulk Actions Float (Over Map) */}
           {selectedIds.length > 0 && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white py-3 px-6 rounded-2xl flex items-center gap-6 shadow-xl border border-slate-800 backdrop-blur-sm z-30 animate-fade-in pointer-events-auto">

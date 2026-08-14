@@ -20,24 +20,26 @@ interface AnalyticsStats {
   top_locations: StatItem[];
 }
 
-export function AnalyticsPanel() {
+interface AnalyticsPanelProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function AnalyticsPanel({ isOpen: propIsOpen, onClose: propOnClose }: AnalyticsPanelProps = {}) {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isDesktop = !isMobile;
   const pathname = usePathname();
-  const isAdmin = pathname === "/admin/analytics";
+  const isAdmin = pathname.startsWith("/admin");
   
   const mapContext = useOptionalMapContext();
-  const isAnalyticsOpen = mapContext?.isAnalyticsOpen ?? true;
+  const isAnalyticsOpen = propIsOpen !== undefined ? propIsOpen : (mapContext?.isAnalyticsOpen ?? true);
   const isAnalyticsCollapsed = mapContext?.isAnalyticsCollapsed ?? false;
-  const setIsAnalyticsOpen = mapContext?.setIsAnalyticsOpen ?? (() => {});
+  const setIsAnalyticsOpen = propOnClose !== undefined ? (open: boolean) => { if (!open) propOnClose(); } : (mapContext?.setIsAnalyticsOpen ?? (() => {}));
   const setIsAnalyticsCollapsed = mapContext?.setIsAnalyticsCollapsed ?? (() => {});
   const isSavePlacePanelOpen = mapContext?.isSavePlacePanelOpen ?? false;
 
   const lastOpenedLeftPanel = mapContext?.lastOpenedLeftPanel;
 
-  // When Save Place opens while Analytics is already open (and is the newer panel), dodge right and auto-collapse.
-  // Uses a ref so it only fires once on the false->true transition;
-  // user can still manually expand Analytics afterward.
   const isDodgingSavePlace = isSavePlacePanelOpen && lastOpenedLeftPanel === "save_place" && isDesktop && !isAdmin;
   const prevIsDodging = useRef(isDodgingSavePlace);
   const [actualDodging, setActualDodging] = useState(isDodgingSavePlace);
@@ -45,21 +47,16 @@ export function AnalyticsPanel() {
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isDodgingSavePlace && !prevIsDodging.current) {
-      // 1. Collapse first (takes 250ms)
       setIsAnalyticsCollapsed(true);
-      // 2. Move exactly after collapse finishes
       timer = setTimeout(() => setActualDodging(true), 250);
     } else if (!isDodgingSavePlace && prevIsDodging.current) {
-      // 1. Move first (takes 300ms)
       setActualDodging(false);
-      // 2. Expand exactly after move finishes
       timer = setTimeout(() => setIsAnalyticsCollapsed(false), 300);
     }
     prevIsDodging.current = isDodgingSavePlace;
     return () => clearTimeout(timer);
   }, [isDodgingSavePlace, setIsAnalyticsCollapsed]);
 
-  // If Analytics just opened and is forcing Save Place to dodge, wait 250ms for Save Place to collapse before sliding in.
   const isForcingSavePlaceToDodge = isSavePlacePanelOpen && lastOpenedLeftPanel === "analytics" && isDesktop && !isAdmin;
   const entranceDelay = isForcingSavePlaceToDodge ? 0.25 : 0;
 

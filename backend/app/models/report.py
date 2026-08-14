@@ -167,3 +167,31 @@ class FloodAvoidanceZone(Base):
     @property
     def report_geometry(self) -> Any:
         return self.report.geometry if self.report else None
+
+    @property
+    def report_text(self) -> Optional[str]:
+        return self.report.raw_text if self.report else None
+
+    @property
+    def reporter_name(self) -> str:
+        if self.report and self.report.user:
+            return self.report.user.full_name or self.report.user.username or "Anonymous"
+        return "System"
+
+    @property
+    def reporter_role(self) -> Optional[str]:
+        if self.report and self.report.user and hasattr(self.report.user, 'role') and self.report.user.role:
+            return self.report.user.role.name
+        return None
+
+    @property
+    def passable_vehicles(self) -> Optional[str]:
+        if self.report and self.report.survey:
+            return self.report.survey.passable_vehicles
+        return None
+
+    @property
+    def hidden_hazards(self) -> Optional[str]:
+        if self.report and self.report.survey and hasattr(self.report.survey.hidden_hazards, 'value'):
+            return self.report.survey.hidden_hazards.value
+        return None

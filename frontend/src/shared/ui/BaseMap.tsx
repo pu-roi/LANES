@@ -73,6 +73,7 @@ interface BaseMapProps {
   children?: React.ReactNode;
   center?: [number, number];
   zoom?: number;
+  actionControls?: (map: Map) => void;
 }
 
 export default function BaseMap({
@@ -82,6 +83,7 @@ export default function BaseMap({
   children,
   center = DEFAULT_CENTER,
   zoom = 13.5,
+  actionControls,
 }: BaseMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
@@ -118,6 +120,7 @@ export default function BaseMap({
       bearing: 0,
     });
 
+    mapInstance.addControl(new TopViewControlV3(), "bottom-right");
     mapInstance.addControl(
       new maplibregl.NavigationControl({
         showCompass: true,
@@ -126,7 +129,10 @@ export default function BaseMap({
       }),
       "bottom-right"
     );
-    mapInstance.addControl(new TopViewControlV3(), "bottom-right");
+
+    if (actionControls) {
+      actionControls(mapInstance);
+    }
 
     if (onMapInit) {
       onMapInit(mapInstance);

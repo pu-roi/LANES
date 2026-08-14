@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import maplibregl, { Map } from "maplibre-gl";
+import { createRoot, type Root } from "react-dom/client";
+import { FloodZonePopup } from "../components/FloodZonePopup";
 
 const SEVERITY_COLORS: Record<string, string> = {
   low: "#84cc16",     // Lime (Yellow-Green) - Gutter & Half-Knee
@@ -8,7 +10,8 @@ const SEVERITY_COLORS: Record<string, string> = {
   extreme: "#ef4444", // Red - Chest & Neck
 };
 
-export function useFloodZonesLayer(map: Map | null, isLoaded: boolean, activeZonesData?: any[]) {
+export function useFloodZonesLayer(map: Map | null, isLoaded: boolean, activeZonesData?: any[], isTouchDevice: boolean = false) {
+  const activePopupRef = useRef<{ popup: maplibregl.Popup, root: Root } | null>(null);
   useEffect(() => {
     if (!map || !isLoaded || !activeZonesData) return;
     if (!map.style) return;
@@ -104,74 +107,82 @@ export function useFloodZonesLayer(map: Map | null, isLoaded: boolean, activeZon
       filter: ["==", ["geometry-type"], "LineString"],
     });
 
-    // 4. Click Popups for Flood Info
-    const handlePopup = (e: any) => {
+    // 4. Popups for Flood Info
+    const handlePopupOpen = (e: any) => {
       if (!e.features || e.features.length === 0) return;
       const properties = e.features[0].properties;
       if (!properties) return;
 
-      let reportedText = properties.created_at;
-      try {
-        if (reportedText) {
-          const d = new Date(reportedText);
-          if (!isNaN(d.getTime())) {
-            reportedText = d.toLocaleString("en-US", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-            });
-          }
-        }
-      } catch (err) {}
+      // Close existing popup if any
+      if (activePopupRef.current) {
+        activePopupRef.current.popup.remove();
+        // The root unmount is handled by the close event listener below
+      }
 
-      new maplibregl.Popup({ closeButton: true, maxWidth: "280px" })
+      const popupContainer = document.createElement("div");
+      const root = createRoot(popupContainer);
+      
+      const popup = new maplibregl.Popup({ 
+        closeButton: false, 
+        closeOnClick: true,
+        maxWidth: "340px",
+        className: "flood-zone-popup"
+      })
         .setLngLat(e.lngLat)
-        .setHTML(`
-          <div style="font-family: inherit; padding: 4px; color: #1e293b; min-width: 180px;">
-            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${properties.color};"></span>
-              <strong style="font-size: 14px; text-transform: capitalize;">${properties.severity} Risk</strong>
-            </div>
-            <div style="font-size: 12px; margin-bottom: 4px;">
-              <span style="color: #64748b; font-weight: 500;">Reported:</span>
-              <span style="font-weight: 600; margin-left: 4px;">${reportedText || "Unknown"}</span>
-            </div>
-            ${
-              properties.expires_at
-                ? `
-            <div style="font-size: 11px; margin-top: 6px; color: #ef4444; font-weight: 500;">
-              Active Zone
-            </div>
-            `
-                : ""
-            }
-          </div>
-        `)
+        .setDOMContent(popupContainer)
         .addTo(map);
+
+      root.render(React.createElement(FloodZonePopup, { properties }));
+
+      popup.on("close", () => {
+        setTimeout(() => root.unmount(), 0);
+        if (activePopupRef.current?.popup === popup) {
+          activePopupRef.current = null;
+        }
+      });
+
+      activePopupRef.current = { popup, root };
     };
 
-    const handleMouseEnter = () => {
+    const handleMouseEnter = (e: any) => {
       map.getCanvas().style.cursor = "pointer";
+      if (!isTouchDevice) {
+        handlePopupOpen(e);
+      }
     };
+    
     const handleMouseLeave = () => {
       map.getCanvas().style.cursor = "";
+      if (!isTouchDevice && activePopupRef.current) {
+        activePopupRef.current.popup.remove();
+      }
     };
 
-    map.on("click", "active-zones-layer", handlePopup);
-    map.on("click", "active-zones-road-layer", handlePopup);
+    const handleMouseClick = (e: any) => {
+      if (isTouchDevice) {
+        handlePopupOpen(e);
+      }
+    };
+
     map.on("mouseenter", "active-zones-layer", handleMouseEnter);
     map.on("mouseleave", "active-zones-layer", handleMouseLeave);
+    map.on("click", "active-zones-layer", handleMouseClick);
+
     map.on("mouseenter", "active-zones-road-layer", handleMouseEnter);
     map.on("mouseleave", "active-zones-road-layer", handleMouseLeave);
+    map.on("click", "active-zones-road-layer", handleMouseClick);
 
     return () => {
-      map.off("click", "active-zones-layer", handlePopup);
-      map.off("click", "active-zones-road-layer", handlePopup);
+      if (activePopupRef.current) {
+        activePopupRef.current.popup.remove();
+      }
       map.off("mouseenter", "active-zones-layer", handleMouseEnter);
       map.off("mouseleave", "active-zones-layer", handleMouseLeave);
+      map.off("click", "active-zones-layer", handleMouseClick);
+      
       map.off("mouseenter", "active-zones-road-layer", handleMouseEnter);
       map.off("mouseleave", "active-zones-road-layer", handleMouseLeave);
+      map.off("click", "active-zones-road-layer", handleMouseClick);
     };
-  }, [map, isLoaded, activeZonesData]);
+  }, [map, isLoaded, activeZonesData, isTouchDevice]);
 }

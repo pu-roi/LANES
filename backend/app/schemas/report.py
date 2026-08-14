@@ -101,9 +101,13 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     report_text: Optional[str] = None
     report_source: Optional[str] = None
     reporter_name: Optional[str] = None
+    reporter_role: Optional[str] = None
     reporter_trust_score: Optional[float] = None
     reporter_reports_submitted: Optional[int] = None
     reporter_reports_verified: Optional[int] = None
+    
+    passable_vehicles: Optional[str] = None
+    hidden_hazards: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
