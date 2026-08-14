@@ -26,7 +26,6 @@ import { Button } from "@/shared/ui/Button";
 
 const navItems = [
   { name: "Dashboard",      href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Analytics",      href: "/admin/analytics", icon: TrendingUp },
   { name: "Live Map & Zones", href: "/admin/map",       icon: Map },
   { name: "Reports",        href: "/admin/reports",   icon: FileText },
   { name: "User Registry",  href: "/admin/users",     icon: Users },
@@ -53,12 +52,13 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside 
-      onMouseEnter={() => setIsSidebarExpanded(true)}
-      onMouseLeave={() => setIsSidebarExpanded(false)}
-      className="group flex flex-col h-full bg-white border-r border-gray-200 
-                 w-14 hover:w-56 transition-all duration-150 ease-in-out shrink-0 z-20 shadow-sm select-none"
-    >
+    <div className="relative w-14 shrink-0 h-full z-30 select-none">
+      <aside 
+        onMouseEnter={() => setIsSidebarExpanded(true)}
+        onMouseLeave={() => setIsSidebarExpanded(false)}
+        className="group absolute top-0 left-0 flex flex-col h-full bg-white border-r border-gray-200 
+                   w-14 hover:w-56 transition-all duration-150 ease-in-out shadow-md overflow-hidden"
+      >
       {/* Brand Header */}
       <div className="h-[92px] py-4 flex flex-col items-center justify-between border-b border-gray-200 overflow-hidden shrink-0 w-full">
         {/* Logo Row */}
@@ -177,5 +177,6 @@ export default function AdminSidebar() {
         )}
       </AnimatePresence>
     </aside>
+  </div>
   );
 }

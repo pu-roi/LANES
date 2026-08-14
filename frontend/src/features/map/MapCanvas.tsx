@@ -188,9 +188,11 @@ export default function MapCanvas() {
     refetchInterval: 15000,
   });
 
+  const isTouchDevice = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+
   // Hooks for modular map layers
   useCityBoundaries(mapRef.current, isLoaded);
-  useFloodZonesLayer(mapRef.current, isLoaded, activeZonesData);
+  useFloodZonesLayer(mapRef.current, isLoaded, activeZonesData, isTouchDevice);
 
   // Auto-retry MapTiler when using fallback
   useEffect(() => {
@@ -212,7 +214,6 @@ export default function MapCanvas() {
     return () => clearInterval(retryInterval);
   }, [usingFallback]);
 
-  const isTouchDevice = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const isTouchDeviceRef = useRef(isTouchDevice);
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -796,8 +797,7 @@ export default function MapCanvas() {
 
   return (
     <BaseMap
-      onMapInit={(map) => {
-        mapRef.current = map;
+      actionControls={(map) => {
         map.addControl(
           new ActionGroupControl(
             () => setIsSavePlacePanelOpen(true),
@@ -805,6 +805,9 @@ export default function MapCanvas() {
           ),
           "bottom-right"
         );
+      }}
+      onMapInit={(map) => {
+        mapRef.current = map;
         map.on("click", (event: MapMouseEvent) => {
           setPointFromMapRef.current([event.lngLat.lng, event.lngLat.lat]);
         });

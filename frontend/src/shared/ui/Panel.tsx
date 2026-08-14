@@ -111,9 +111,8 @@ export function Panel({
     }
   }, [panelId, bringPanelToFront, isOpen]);
 
-  // Calculate actual left offset for left-anchored panels
-  const sidebarOffset = isAdmin ? (isSidebarExpanded ? 224 : 56) : 0;
-  const targetX = isRight ? initialPosition.x : initialPosition.x + sidebarOffset;
+  // Left-anchored panels remain stationary regardless of sidebar expansion
+  const targetX = initialPosition.x;
 
   const handlePointerDown = (e: React.PointerEvent) => {
     dragStartPos.current = { x: e.clientX, y: e.clientY };
