@@ -53,8 +53,8 @@ export function useAuth() {
   // 3. Logout function
   const logout = () => {
     localStorage.removeItem("lanes_token");
-    // Clear user from cache
-    queryClient.setQueryData(['auth-user'], null);
+    // Clear user and all other queries from cache
+    queryClient.clear();
   };
 
   return {

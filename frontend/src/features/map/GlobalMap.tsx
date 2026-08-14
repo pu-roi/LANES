@@ -111,20 +111,12 @@ function MapLayout() {
     : "bottom-[calc(64px+env(safe-area-inset-bottom)+88px)]";
 
   const handleSelectFloodReport = () => {
-    if (!isAuthenticated) {
-      error("Login Required", "You must be logged in to report a flood.");
-      return;
-    }
     setIsReportPanelOpen(true);
     setActivePanel("flood");
     setIsMenuOpen(false);
   };
 
   const handleSelectSavePlace = () => {
-    if (!isAuthenticated) {
-      error("Login Required", "You must be logged in to save a place.");
-      return;
-    }
     setIsSavePlacePanelOpen(true);
     setActivePanel("save_place");
     setIsMenuOpen(false);
@@ -151,18 +143,6 @@ function MapLayout() {
         )}
       </AnimatePresence>
 
-      {/* -- Desktop/Tablet Permanent Action Pills --------------------------- */}
-      {!isMobile && !pathname.startsWith('/admin') && pathname !== '/analytics' && (
-        <div className="fixed bottom-6 left-6 z-[40] flex flex-col gap-3">
-          <button
-            onClick={handleSelectSavePlace}
-            className="flex items-center justify-center w-12 h-12 bg-white text-slate-800 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 active:scale-95 transition-transform"
-            title="Save Place"
-          >
-            <MapPin className="w-5 h-5 text-blue-600" />
-          </button>
-        </div>
-      )}
 
       {/* -- 2. Mobile Action Pills ------------------------------------------ */}
       <AnimatePresence>
@@ -206,13 +186,7 @@ function MapLayout() {
         <ReportFab
           isMenuOpen={isMenuOpen}
           isPanelExpanded={isPanelExpanded}
-          onClick={() => {
-            if (!isMenuOpen && !isAuthenticated) {
-              error("Login Required", "You must be logged in to use map actions.");
-              return;
-            }
-            setIsMenuOpen((prev) => !prev);
-          }}
+          onClick={() => setIsMenuOpen((prev) => !prev)}
         />
       )}
 
@@ -243,26 +217,6 @@ function MapLayout() {
               setActivePoint(null);
               setIsPickingOnMap(false);
               router.push("/feed?openPostModal=true");
-            }}
-            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-bold transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      )}
-
-      {activePoint === "save_place_location" && !isMobile && (
-        <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-50 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl px-6 py-4 flex items-center gap-4 border border-gray-200 pointer-events-auto w-[90%] sm:w-auto">
-          <MapPin className="w-5 h-5 text-blue-500 animate-bounce" />
-          <div className="text-sm font-semibold text-gray-800">
-            Click on the map to select location
-          </div>
-          <button 
-            type="button"
-            onClick={() => {
-              setActivePoint(null);
-              setIsPickingOnMap(false);
-              setIsSavePlacePanelOpen(true);
             }}
             className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-bold transition-colors"
           >

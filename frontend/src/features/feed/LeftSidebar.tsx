@@ -7,13 +7,18 @@ import { Map, Rss, MessageSquarePlus, Settings, TrendingUp, MapPin, Phone, Flame
 import { useQuery } from '@tanstack/react-query';
 import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
+
 export function LeftSidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const { isAuthenticated } = useAuth();
+
   const { data: savedPlaces, isLoading } = useQuery({
-    queryKey: ['saved-places'],
+    queryKey: ['saved-places', isAuthenticated],
     queryFn: savedPlacesApi.getSavedPlaces,
+    enabled: isAuthenticated,
   });
   const navItems = [
     { name: 'Community Feed', href: '/feed', icon: Rss },

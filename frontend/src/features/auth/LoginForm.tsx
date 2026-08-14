@@ -80,7 +80,7 @@ export default function LoginForm() {
         label="Email or Username"
         labelClassName="text-white lg:text-gray-700"
         type="text"
-        placeholder="admin"
+        placeholder="Enter your email or username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required

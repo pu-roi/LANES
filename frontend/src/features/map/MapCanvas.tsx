@@ -16,6 +16,9 @@ import BaseMap from "@/shared/ui/BaseMap";
 import { useCityBoundaries } from "./hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
 
+let hasZoomedToPasigForAnalytics = false;
+let hasZoomedToPasigForMap = false;
+
 const ROUTE_SOURCE_ID = "route-line";
 const ROUTE_LAYER_ID = "route-line-layer";
 
@@ -237,6 +240,31 @@ export default function MapCanvas() {
   useEffect(() => {
     isTouchDeviceRef.current = isTouchDevice;
   }, [isTouchDevice]);
+
+  // Zoom to Pasig City bounds once when visiting analytics or map
+  useEffect(() => {
+    if (!isLoaded || !mapRef.current) return;
+    
+    const isAnalyticsPage = pathname.includes("analytics");
+    const isMapPage = pathname === "/map";
+    
+    let shouldZoom = false;
+    
+    if (isAnalyticsPage && !hasZoomedToPasigForAnalytics) {
+      hasZoomedToPasigForAnalytics = true;
+      shouldZoom = true;
+    } else if (isMapPage && !hasZoomedToPasigForMap) {
+      hasZoomedToPasigForMap = true;
+      shouldZoom = true;
+    }
+
+    if (shouldZoom) {
+      mapRef.current.fitBounds([
+        [121.0544, 14.5422], // Southwest (Approx Pasig City SW)
+        [121.1077, 14.6186]  // Northeast (Approx Pasig City NE)
+      ], { padding: 120, duration: 1000 });
+    }
+  }, [pathname, isLoaded]);
 
   // Listen for lat/lng in URL to fly to location
   useEffect(() => {

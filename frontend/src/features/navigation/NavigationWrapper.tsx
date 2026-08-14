@@ -25,7 +25,9 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
     if (!isAuthenticated) {
       if (isAdminRoute || isPrivateRoute) {
         setIsRedirecting(true);
-        router.replace("/login");
+        const searchParams = new URLSearchParams();
+        searchParams.set("redirect", pathname);
+        router.replace(`/login?${searchParams.toString()}`);
       } else {
         setIsRedirecting(false);
       }
