@@ -75,24 +75,24 @@ export default function RegisterPage() {
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-20 flex-1 flex flex-col items-center p-6 lg:p-12 overflow-y-auto lg:ml-[45%]"
+        className="relative z-20 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-12 min-h-screen overflow-y-auto lg:ml-[45%] pb-[calc(var(--bottom-nav-height,1rem)+env(safe-area-inset-bottom,1rem))]"
       >
-        <div className="w-full flex flex-col items-center my-auto">
+        <div className="w-full flex flex-col items-center my-auto py-6 sm:py-8">
           {/* Mobile Header (Hidden on Desktop) */}
-          <Logo size="lg" theme="dark" className="lg:hidden w-full justify-center max-w-xl mb-8" />
+          <Logo size="lg" theme="dark" className="lg:hidden w-full justify-center max-w-xl mb-6" />
 
           {/* Form Container */}
           {/* We use a negative left margin on desktop to pull the form slightly left to balance the slanted space */}
           <div className="w-full max-w-xl lg:ml-[-10%] z-10 relative">
             {/* Form Header */}
-            <div className="text-center lg:text-left space-y-2 mb-8 pl-2">
-              <h2 className="text-3xl font-extrabold text-white lg:text-slate-900 tracking-tight drop-shadow-md lg:drop-shadow-none">Create an account</h2>
-              <p className="text-blue-100 lg:text-slate-500 font-medium">Join LANES as a citizen to get started.</p>
+            <div className="text-center lg:text-left space-y-1 sm:space-y-2 mb-6 sm:mb-8 pl-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white lg:text-slate-900 tracking-tight drop-shadow-md lg:drop-shadow-none">Create an account</h2>
+              <p className="text-sm sm:text-base text-blue-100 lg:text-slate-500 font-medium">Join LANES as a citizen to get started.</p>
             </div>
 
             <RegisterForm />
 
-            <div className="text-center pt-8 pb-4">
+            <div className="text-center pt-6 sm:pt-8 pb-4">
               <p className="text-sm text-blue-100 lg:text-slate-600">
                 Already have an account?{" "}
                 <Link href="/profile" className="text-white lg:text-blue-600 font-bold lg:font-medium hover:text-blue-200 lg:hover:text-blue-700 hover:underline transition-colors">

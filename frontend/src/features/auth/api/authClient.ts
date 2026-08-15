@@ -6,7 +6,7 @@ export interface ProfileCreate {
   middle_initial?: string;
   suffix?: string;
   contact_number?: string;
-  age?: number;
+  birthdate?: string;
 }
 
 export interface AddressCreate {
@@ -15,7 +15,7 @@ export interface AddressCreate {
   barangay: string;
   city_municipality: string;
   province: string;
-  postal_code: string;
+  postal_code?: string;
   country?: string;
 }
 

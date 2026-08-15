@@ -124,74 +124,92 @@ from app.crud.user import create_user_with_profile
 from app.crud import otp as crud_otp
 
 @router.post("/request-signup-otp")
-@limiter.limit("3/minute")
+@limiter.limit("5/minute")
 async def request_signup_otp(
-    request: SignupOTPRequest,
-    http_request: Request,
+    request: Request,
+    payload: SignupOTPRequest,
     db: Session = Depends(get_db)
 ) -> Any:
     """
     Sends an OTP to the given email for signup verification.
+    Enforces progressive cooldown tiers (1m, 3m, 5m).
     """
-    existing_email = crud.get_user_by_email(db, email=request.email)
+    existing_email = crud.get_user_by_email(db, email=payload.email)
     if existing_email:
         if existing_email.is_active:
             raise HTTPException(status_code=400, detail="Email already registered")
-        # If unverified, we can still allow them to re-verify or it might be abandoned
-        # For simplicity, if it's inactive, they can still request an OTP.
 
-    await generate_and_send_otp(db, email=request.email)
-    return {"msg": "OTP sent successfully"}
+    sent, err, cooldown_seconds = await generate_and_send_otp(db, email=payload.email)
+    if not sent:
+        # If the failure is due to cooldown or lockout
+        if "Please wait" in err:
+            raise HTTPException(
+                status_code=429, 
+                detail=err,
+                headers={"Retry-After": str(cooldown_seconds)}
+            )
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Email delivery failed: {err or 'Please check Brevo configuration'}"
+        )
+    return {
+        "msg": "OTP sent successfully",
+        "cooldown_seconds": cooldown_seconds
+    }
 
 
 @router.post("/verify-signup-otp")
-@limiter.limit("5/minute")
+@limiter.limit("10/minute")
 def verify_signup_otp(
-    request: OTPVerificationRequest,
-    http_request: Request,
+    request: Request,
+    payload: OTPVerificationRequest,
     db: Session = Depends(get_db)
 ) -> Any:
     """
-    Verifies the OTP code for signup.
+    Verifies the OTP code for signup with attempt throttling and sliding grace window.
     """
-    is_valid = validate_otp(db, email=request.email, plain_otp=request.otp_code)
+    result = validate_otp(db, email=payload.email, plain_otp=payload.otp_code)
     
-    if not is_valid:
-        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
-        
-    return {"msg": "Email verified successfully"}
+    if result["status"] == "SUCCESS":
+        return {"msg": result["message"]}
+    elif result["status"] == "LOCKED":
+        raise HTTPException(status_code=429, detail=result["message"])
+    elif result["status"] == "EXPIRED":
+        raise HTTPException(status_code=410, detail=result["message"])
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
 
 
 @router.post("/register", response_model=schemas.UserResponse)
 @limiter.limit("3/minute")
 async def register(
-    request: RegistrationRequest,
-    http_request: Request,
+    request: Request,
+    payload: RegistrationRequest,
     db: Session = Depends(get_db)
 ) -> Any:
     """
     Registers a new user, creates profile and address. Requires email to be pre-verified.
     """
-    existing_username = crud.get_user_by_username(db, username=request.user.username)
+    existing_username = crud.get_user_by_username(db, username=payload.user.username)
     if existing_username:
         raise HTTPException(status_code=400, detail="Username already registered")
         
-    existing_email = crud.get_user_by_email(db, email=request.user.email)
+    existing_email = crud.get_user_by_email(db, email=payload.user.email)
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     # Verify that the email was actually OTP verified recently
-    if not crud_otp.is_email_verified(db, request.user.email):
+    if not crud_otp.is_email_verified(db, payload.user.email):
         raise HTTPException(status_code=403, detail="Email not verified or verification expired")
 
-    request.user.is_active = True
+    payload.user.is_active = True
     
     try:
         new_user = create_user_with_profile(
             db, 
-            user_data=request.user, 
-            profile_data=request.profile, 
-            address_data=request.address
+            user_data=payload.user, 
+            profile_data=payload.profile, 
+            address_data=payload.address
         )
     except Exception as e:
         db.rollback()
@@ -202,28 +220,28 @@ async def register(
     _ = new_user.role  # Force-load lazy relationship within the session
 
     # Delete the OTP record so it can't be reused for another account creation
-    crud_otp.delete_otp(db, request.user.email)
+    crud_otp.delete_otp(db, payload.user.email)
 
     return new_user
 
 @router.post("/verify-otp")
 @limiter.limit("5/minute")
 def verify_otp(
-    request: OTPVerificationRequest,
-    http_request: Request,
+    request: Request,
+    payload: OTPVerificationRequest,
     db: Session = Depends(get_db)
 ) -> Any:
     """
     Verifies the OTP code. Activates user and returns JWT token if successful.
     """
-    user = crud.get_user_by_email(db, email=request.email)
+    user = crud.get_user_by_email(db, email=payload.email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
         
     if user.is_active:
         raise HTTPException(status_code=400, detail="User is already verified")
         
-    is_valid = validate_otp(db, email=request.email, plain_otp=request.otp_code)
+    is_valid = validate_otp(db, email=payload.email, plain_otp=payload.otp_code)
     
     if not is_valid:
         raise HTTPException(status_code=400, detail="Invalid or expired OTP")
@@ -242,19 +260,19 @@ def verify_otp(
 @router.post("/resend-otp")
 @limiter.limit("2/minute")
 async def resend_otp(
-    request: OTPResendRequest,
-    http_request: Request,
+    request: Request,
+    payload: OTPResendRequest,
     db: Session = Depends(get_db)
 ) -> Any:
     """
     Resends an OTP to the given email if the user exists and is not active.
     """
-    user = crud.get_user_by_email(db, email=request.email)
+    user = crud.get_user_by_email(db, email=payload.email)
     if not user:
         return {"msg": "If the email is registered, an OTP has been sent."}
         
     if user.is_active:
         return {"msg": "User is already verified"}
         
-    await generate_and_send_otp(db, email=request.email)
+    await generate_and_send_otp(db, email=payload.email)
     return {"msg": "OTP resent successfully"}
