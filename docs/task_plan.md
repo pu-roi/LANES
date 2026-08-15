@@ -6,21 +6,43 @@
 
 ## Backlog
 
+*(Currently empty — all immediate priorities are organized into phases below.)*
+
 ## Active Sprint (Next Feature)
+
+### Phase 1: Audit Trail Synchronization & Full Coverage
+> **Focus:** Ensure all state-altering administrative, security, and data operations across backend and frontend are comprehensively logged and observable in the admin UI.
+- [ ] **Backend — Role Management Auditing ([roles.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/roles.py))**:
+  - Add `create_audit_log` call to `POST /api/v1/roles` (`CREATE_ROLE`) logging `role_name` and initial `permissions`.
+  - Add `create_audit_log` call to `PUT /api/v1/roles/{role_id}` (`UPDATE_ROLE`) logging previous vs. new permissions and name.
+  - Add `create_audit_log` call to `DELETE /api/v1/roles/{role_id}` (`DELETE_ROLE`) capturing target role ID and name.
+  - Add `create_audit_log` call to `POST /api/v1/roles/{role_id}/clone` (`CLONE_ROLE`) capturing source role ID and cloned role name.
+  - Pass `Request` object into each endpoint function to extract `client_ip` via `request.client.host`.
+- [ ] **Backend — Archive & Soft-Delete Auditing**:
+  - Dispatch explicit audit events (`ARCHIVE_REPORT`, `RESTORE_REPORT`, `ARCHIVE_ZONE`, `RESTORE_ZONE`) when flood reports or zones are archived/soft-deleted or restored.
+- [ ] **Frontend — Badge & Filter Synchronization ([AuditTrailPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/AuditTrailPage.tsx))**:
+  - Update `ACTION_BADGES` mapping with styling and human-readable labels for:
+    - `UPDATE_ZONE` ("Active Zones Map")
+    - `CREATE_USER` ("Users Management")
+    - `UPDATE_USER_ROLE` ("Users Management")
+    - `CREATE_ROLE`, `UPDATE_ROLE`, `DELETE_ROLE`, `CLONE_ROLE` ("Roles & Permissions")
+    - `EXPORT_DATA` ("Data Management")
+    - `UPDATE_SETTINGS` ("System Settings")
+    - `ARCHIVE_REPORT`, `RESTORE_REPORT`, `ARCHIVE_ZONE`, `RESTORE_ZONE` ("Archive")
+  - Update the `Filter Activity` `<Select />` options list to include these actions so admins can easily filter the log table.
+
+## Future Roadmap (Phases)
 
 ### Phase 2: Community Moderation & System Rules
 > **Focus:** Establishing user trust, automated rules, and managing active flood data without ML.
 - [ ] **Rule-Based Flood Expiration**: 
   - *Implementation:* Backend sets `expires_at` in `FloodAvoidanceZone` based on severity when an admin approves a report.
   - *Crowd-Sourced Extension:* Add "Flood Subsiding" / "Still Flooded" buttons on the map for users to reduce or extend expiration time.
-
 - [ ] **Trust-Based Auto-Approval Engine**: 
   - Allow high-trust users (>90 score) to bypass the admin moderation queue.
   - *Crowd Consensus:* Auto-approve a flood if 3 independent users report it in the same radius within a short timeframe.
 - [ ] **Duplicate Resolution (Admin Panel)**: 
   - Add admin tools to merge overlapping flood polygons using PostGIS `ST_Intersects` and `ST_Union`.
-
-## Future Roadmap (Phases)
 
 ### Phase 3: External Integrations & IoT
 > **Focus:** Connecting LANES to external data sources and physical hardware.
