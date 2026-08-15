@@ -35,19 +35,20 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 2. Citizen Account Registration & Onboarding
-*   **Purpose:** Allows users to create a verified account for accurate reporting, profile management, and personalization while keeping bad actors out.
-*   **What it does:** Provides a multi-step registration wizard encompassing personal information, demographic geography via PSGC API, complex password requirements, and One-Time Password (OTP) email verification.
+### 3. Identity-First Citizen Onboarding & Zero-Click OTP Verification
+*   **Purpose:** Provides a seamless, identity-first registration wizard with secure email validation, spam resistance, network-latency resilience, and instant verification.
+*   **What it does:** Breaks registration into an Identity-First sequence (`Email -> OTP -> Account Credentials -> Personal Profile -> Demographic Address`). Delivers zero-click automatic verification as soon as 6 digits are entered, while managing progressive resend cooldowns and sliding grace windows.
 *   **How it works:**
-    1. The frontend guides users through a modern 3-step React wizard (`Personal Info`, `Address`, `Account Details`).
-    2. Real-time geographical lookup is performed using the public PSGC API, allowing accurate Province -> City -> Barangay filtering.
-    3. The backend validates and serializes complex data payloads, separating profile relationships (e.g. `birthdate`) using Pydantic models.
-    4. Upon database insertion, an OTP is generated via a native `bcrypt` hashing process and dispatched via the Brevo SMTP API (`httpx`) to the user's email.
-    5. The user's account remains `is_active=False` until the OTP is successfully validated.
+    1. **Identity-First Stage:** User submits their email address first. The backend verifies uniqueness and dispatches a 6-digit OTP via the Brevo REST API using a crisp, zero-attachment CDN brand seal.
+    2. **Progressive Rate Limiting & Cooldowns:** Enforces progressive resend cooldown tiers (**1 minute** -> **3 minutes** -> **5 minutes**) to prevent gateway spamming while providing ample time to check inbox/spam folders.
+    3. **Sliding Grace Window for Network Latency:** Retains up to **3 unexpired active codes** (5-minute lifetime) per session. If a delayed email arrives after a resend, entering the older code still succeeds. All codes are purged immediately upon verification.
+    4. **Zero-Click Verification & Attempt Throttling:** 6 distinct pin boxes auto-advance, handle paste events, and automatically fire verification when the 6th digit is entered. Wrong attempts auto-clear and refocus with remaining attempt warnings; exceeding 5 failed attempts locks verification for 5 minutes.
+    5. **Demographic & Address Profile:** Upon verification, the user sets their username/password, completes their profile, and selects Province -> City -> Barangay using live PSGC API data.
+    6. **Seamless Auto-Login:** Successfully creating the account automatically logs the user in and redirects to the landing page with zero manual login redirects.
 *   **Access & Roles:** Public users.
 *   **Related Components:**
-    *   **Frontend:** [RegisterForm.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/auth/components/RegisterForm.tsx), [DatePicker.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/shared/ui/DatePicker.tsx).
-    *   **Backend:** [auth.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/auth.py), [auth_service.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/services/auth_service.py).
+    *   **Frontend:** [RegisterForm.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/auth/components/RegisterForm.tsx), [DatePicker.tsx](file:///d:/Documents/Github/LANES/frontend/src/shared/ui/DatePicker.tsx), [LocationPickerModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/auth/components/LocationPickerModal.tsx).
+    *   **Backend:** [auth.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/auth.py), [auth_service.py](file:///d:/Documents/Github/LANES/backend/app/services/auth_service.py), [crud/otp.py](file:///d:/Documents/Github/LANES/backend/app/crud/otp.py), [email_service.py](file:///d:/Documents/Github/LANES/backend/app/services/email_service.py).
 
 ---
 

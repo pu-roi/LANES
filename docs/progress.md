@@ -108,5 +108,14 @@
   - Stacked bottom-right map controls in exact order: Analytics (top), Navigation/Zoom (middle), Top View (bottom).
   - Refactored AdminSidebar to expand as an overlay drawer so map canvases and floating panels remain completely stationary during navigation.
 
+- [x] **OTP Verification Lifecycle, Progressive Cooldown & Zero-Click UX**:
+  - Implemented progressive cooldown tiers for OTP requests (1 min -> 3 mins -> 5 mins) to prevent gateway abuse while allowing enough time to check spam folders.
+  - Implemented sliding grace window retaining up to 3 unexpired active codes for delayed network/mobile deliveries.
+  - Added attempt throttling (up to 5 incorrect guesses) with a 5-minute brute-force lockout.
+  - Upgraded frontend to zero-click automatic verification upon entering/pasting the 6th digit, with automatic input clearing on error.
+  - Redesigned OTP view with 6 interactive pin boxes, inline verification indicator, and clean bottom navigation actions (Change Email & Resend Code).
+  - Integrated official LANES CDN brand header into Brevo transactional email templates without downloadable attachments.
+  - Created automated Pytest suite in `backend/tests/test_otp_lifecycle.py` verifying cooldowns, grace periods, and lockout rules.
+
 ## Backlog / Upcoming
 

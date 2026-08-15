@@ -31,11 +31,27 @@ export function RegisterForm() {
   const [setupPhase, setSetupPhase] = useState<"email" | "otp" | "password">("email");
   const [otpCode, setOtpCode] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { info } = useToast();
+  const { info, success, warning } = useToast();
   const [otpLoading, setOtpLoading] = useState(false);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
   
   const passwordReqRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Progressive cooldown interval ticker
+  useEffect(() => {
+    if (cooldownSeconds <= 0) return;
+    const interval = setInterval(() => {
+      setCooldownSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [cooldownSeconds]);
+
+  const formatCooldown = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return m > 0 ? `${m}:${s.toString().padStart(2, "0")}` : `${s}s`;
+  };
 
   const [activePicker, setActivePicker] = useState<"province" | "city" | "barangay" | null>(null);
 
@@ -51,6 +67,10 @@ export function RegisterForm() {
       showError("Validation Error", "Email address is required.");
       return;
     }
+    if (cooldownSeconds > 0) {
+      warning("Please Wait", `Please wait ${formatCooldown(cooldownSeconds)} before requesting another code. Check your spam folder.`);
+      return;
+    }
     setOtpLoading(true);
     try {
       const resUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
@@ -60,21 +80,37 @@ export function RegisterForm() {
         body: JSON.stringify({ email: formData.user.email })
       });
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.detail || "Failed to send OTP");
+        let errMessage = "Failed to send OTP";
+        try {
+          const errData = await res.json();
+          errMessage = errData.detail || errMessage;
+        } catch {
+          const text = await res.text().catch(() => "");
+          if (text) errMessage = text;
+        }
+        if (res.status === 429) {
+          warning("Cooldown Active", errMessage);
+        } else {
+          showError("Delivery Failed", errMessage);
+        }
+        return;
       }
+      const data = await res.json().catch(() => ({}));
+      const nextCooldown = data.cooldown_seconds || 60;
+      setCooldownSeconds(nextCooldown);
       setSetupPhase("otp");
-      info("OTP Sent", "Check your email for the verification code.");
+      success("Code Sent", "A fresh 6-digit verification code was sent to your email. Check your spam folder if delayed.");
     } catch (err: any) {
-      showError("Error", err.message);
+      showError("Connection Error", err.message || "Failed to reach server. Please check your connection.");
     } finally {
       setOtpLoading(false);
     }
   };
 
-  const handleVerifyOTP = async () => {
-    if (!otpCode) {
-      showError("Validation Error", "OTP is required.");
+  const handleVerifyOTP = async (codeToVerify?: string) => {
+    const code = codeToVerify || otpCode;
+    if (!code || code.length < 6) {
+      showError("Validation Error", "Please enter the complete 6-digit OTP code.");
       return;
     }
     setOtpLoading(true);
@@ -83,15 +119,40 @@ export function RegisterForm() {
       const res = await fetch(`${resUrl}/auth/verify-signup-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.user.email, otp_code: otpCode })
+        body: JSON.stringify({ email: formData.user.email, otp_code: code })
       });
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.detail || "Invalid OTP");
+        let errMessage = "Invalid OTP";
+        try {
+          const errData = await res.json();
+          errMessage = errData.detail || errMessage;
+        } catch {
+          const text = await res.text().catch(() => "");
+          if (text) errMessage = text;
+        }
+        // Auto-clear the boxes on failed attempt and focus the first box
+        setOtpCode("");
+        setTimeout(() => {
+          document.getElementById("otp-digit-0")?.focus();
+        }, 100);
+
+        if (res.status === 410) {
+          showError("Code Expired", errMessage);
+        } else if (res.status === 429) {
+          showError("Verification Locked", errMessage);
+        } else {
+          showError("Incorrect Code", errMessage);
+        }
+        return;
       }
+      success("Email Verified", "Email verified successfully! Let's complete your profile.");
       setSetupPhase("password");
     } catch (err: any) {
-      showError("Error", err.message);
+      setOtpCode("");
+      setTimeout(() => {
+        document.getElementById("otp-digit-0")?.focus();
+      }, 100);
+      showError("Error", err.message || "An unexpected error occurred during verification.");
     } finally {
       setOtpLoading(false);
     }
@@ -108,7 +169,7 @@ export function RegisterForm() {
 
   // Immediately scroll down when the password requirements show up
   useEffect(() => {
-    if (currentStep === 3 && showPasswordReqs && scrollContainerRef.current) {
+    if (currentStep === 1 && setupPhase === "password" && showPasswordReqs && scrollContainerRef.current) {
       requestAnimationFrame(() => {
         if (scrollContainerRef.current) {
           scrollContainerRef.current.scrollTo({
@@ -118,7 +179,7 @@ export function RegisterForm() {
         }
       });
     }
-  }, [showPasswordReqs, currentStep]);
+  }, [showPasswordReqs, currentStep, setupPhase]);
 
   // Load draft from session storage on mount
   useEffect(() => {
@@ -354,7 +415,7 @@ export function RegisterForm() {
       });
       if (loginRes.ok) {
         const d = await loginRes.json();
-        localStorage.setItem("lanes_access_token", d.access_token);
+        localStorage.setItem("lanes_token", d.access_token);
         // Force reload to get auth state
         window.location.href = "/map";
       } else {
@@ -423,10 +484,10 @@ export function RegisterForm() {
         </div>
 
         {/* Form Body */}
-        <div className="p-8 pt-10">
+        <div className="p-6 sm:p-8 pt-8 sm:pt-10">
           <form 
             onSubmit={(e) => e.preventDefault()}
-            className="relative flex flex-col h-auto min-h-[320px] sm:h-[320px]"
+            className="relative flex flex-col w-full"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'BUTTON') {
                 e.preventDefault();
@@ -438,7 +499,7 @@ export function RegisterForm() {
               }
             }}
           >
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden p-1 -m-1">
+            <div ref={scrollContainerRef} className="w-full">
               <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <motion.div
@@ -476,18 +537,75 @@ export function RegisterForm() {
                   )}
 
                   {setupPhase === "otp" && (
-                    <div className="space-y-4">
-                      <p className="text-sm text-slate-600 mb-2">We sent a verification code to <strong>{formData.user.email}</strong>.</p>
-                      <Input 
-                        label="6-Digit OTP Code"
-                        type="text" 
-                        placeholder="123456" 
-                        maxLength={6}
-                        required
-                        value={otpCode} 
-                        onChange={e => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                      />
-                      <button type="button" onClick={() => setSetupPhase("email")} className="text-sm text-blue-600 font-medium hover:underline">Change Email</button>
+                    <div className="space-y-6 pt-1">
+                      <div className="text-center space-y-1">
+                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600 mb-2 ring-8 ring-blue-50/50">
+                          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-white lg:text-slate-900">Check your inbox</h3>
+                        <p className="text-sm text-blue-100 lg:text-slate-500">
+                          We sent a 6-digit verification code to<br />
+                          <span className="font-semibold text-white lg:text-slate-900 break-all">{formData.user.email}</span>
+                        </p>
+                      </div>
+
+                      {/* 6-box Digit Inputs */}
+                      <div className="flex justify-center items-center gap-2 sm:gap-3 py-4">
+                        {[0, 1, 2, 3, 4, 5].map((index) => {
+                          const digit = otpCode[index] || "";
+                          return (
+                            <input
+                              key={index}
+                              id={`otp-digit-${index}`}
+                              type="text"
+                              inputMode="numeric"
+                              maxLength={1}
+                              value={digit}
+                              disabled={otpLoading}
+                              autoFocus={index === 0}
+                              onChange={(e) => {
+                                const val = e.target.value.replace(/\D/g, "");
+                                const newOtp = otpCode.split("");
+                                newOtp[index] = val;
+                                const joined = newOtp.join("").slice(0, 6);
+                                setOtpCode(joined);
+                                if (val && index < 5) {
+                                  const nextInput = document.getElementById(`otp-digit-${index + 1}`);
+                                  nextInput?.focus();
+                                }
+                                // Auto-trigger verification when 6 digits are complete!
+                                if (joined.length === 6) {
+                                  handleVerifyOTP(joined);
+                                }
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Backspace" && !digit && index > 0) {
+                                  const prevInput = document.getElementById(`otp-digit-${index - 1}`);
+                                  prevInput?.focus();
+                                }
+                              }}
+                              onPaste={(e) => {
+                                e.preventDefault();
+                                const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+                                setOtpCode(pasted);
+                                if (pasted.length === 6) {
+                                  handleVerifyOTP(pasted);
+                                } else if (pasted.length > 0) {
+                                  const targetIdx = Math.min(pasted.length, 5);
+                                  document.getElementById(`otp-digit-${targetIdx}`)?.focus();
+                                }
+                              }}
+                              className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-xl border transition-all duration-200 outline-none select-none ${
+                                digit
+                                  ? "border-blue-600 bg-white text-blue-600 shadow-sm ring-2 ring-blue-100"
+                                  : "border-slate-200 bg-slate-50/80 text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                              } ${otpLoading ? "opacity-60 cursor-wait" : ""}`}
+                            />
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
 
@@ -723,45 +841,79 @@ export function RegisterForm() {
 
             {/* Bottom Navigation */}
             <div className="mt-4 flex items-center justify-between pt-6 border-t border-slate-100 shrink-0">
-              {currentStep > 1 ? (
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  className="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  Back
-                </button>
+              {currentStep === 1 && setupPhase === "otp" ? (
+                <>
+                  <button 
+                    type="button" 
+                    onClick={() => setSetupPhase("email")} 
+                    className="flex items-center text-sm font-semibold text-blue-200 lg:text-blue-600 hover:text-white lg:hover:text-blue-800 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Change Email
+                  </button>
+                  <div className="flex items-center gap-3">
+                    {otpLoading ? (
+                      <span className="flex items-center gap-2 text-xs sm:text-sm text-blue-600 font-semibold">
+                        <svg className="animate-spin h-4 w-4 text-blue-600" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Verifying...
+                      </span>
+                    ) : (
+                      <button 
+                        type="button" 
+                        onClick={handleRequestOTP}
+                        disabled={otpLoading || cooldownSeconds > 0}
+                        className={`text-xs sm:text-sm font-semibold transition-colors px-3 py-1.5 rounded-lg border ${
+                          cooldownSeconds > 0
+                            ? "border-slate-200/50 bg-slate-100/50 text-slate-400 cursor-not-allowed"
+                            : "border-slate-200 lg:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm"
+                        }`}
+                      >
+                        {cooldownSeconds > 0 ? `Resend (${formatCooldown(cooldownSeconds)})` : "Resend Code"}
+                      </button>
+                    )}
+                  </div>
+                </>
               ) : (
-                <div></div> // Empty div for flex spacing
-              )}
+                <>
+                  {currentStep > 1 ? (
+                    <button
+                      type="button"
+                      onClick={prevStep}
+                      className="flex items-center text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                    >
+                      <ChevronLeft className="w-4 h-4 mr-1" />
+                      Back
+                    </button>
+                  ) : (
+                    <div></div>
+                  )}
 
-              {currentStep === 1 ? (
-                setupPhase === "email" ? (
-                  <Button type="button" onClick={handleRequestOTP} disabled={otpLoading} className="pl-6 pr-4 py-2">
-                    {otpLoading ? "Sending..." : "Send OTP"}
-                    <ChevronRight className="w-4 h-4 ml-2 inline" />
-                  </Button>
-                ) : setupPhase === "otp" ? (
-                  <Button type="button" onClick={handleVerifyOTP} disabled={otpLoading} className="pl-6 pr-4 py-2">
-                    {otpLoading ? "Verifying..." : "Verify OTP"}
-                    <ChevronRight className="w-4 h-4 ml-2 inline" />
-                  </Button>
-                ) : (
-                  <Button type="button" onClick={nextStep} className="pl-6 pr-4 py-2">
-                    Next Step
-                    <ChevronRight className="w-4 h-4 ml-2 inline" />
-                  </Button>
-                )
-              ) : currentStep < 3 ? (
-                <Button type="button" onClick={nextStep} className="pl-6 pr-4 py-2">
-                  Next Step
-                  <ChevronRight className="w-4 h-4 ml-2 inline" />
-                </Button>
-              ) : (
-                <Button type="button" onClick={handleCreate} disabled={loading} className="px-6 py-2">
-                  {loading ? "Registering..." : "Create Account"}
-                </Button>
+                  {currentStep === 1 ? (
+                    setupPhase === "email" ? (
+                      <Button type="button" onClick={handleRequestOTP} disabled={otpLoading} className="pl-6 pr-4 py-2">
+                        {otpLoading ? "Sending..." : "Send OTP"}
+                        <ChevronRight className="w-4 h-4 ml-2 inline" />
+                      </Button>
+                    ) : (
+                      <Button type="button" onClick={nextStep} className="pl-6 pr-4 py-2">
+                        Next Step
+                        <ChevronRight className="w-4 h-4 ml-2 inline" />
+                      </Button>
+                    )
+                  ) : currentStep < 3 ? (
+                    <Button type="button" onClick={nextStep} className="pl-6 pr-4 py-2">
+                      Next Step
+                      <ChevronRight className="w-4 h-4 ml-2 inline" />
+                    </Button>
+                  ) : (
+                    <Button type="button" onClick={handleCreate} disabled={loading} className="px-6 py-2">
+                      {loading ? "Registering..." : "Create Account"}
+                    </Button>
+                  )}
+                </>
               )}
             </div>
           </form>

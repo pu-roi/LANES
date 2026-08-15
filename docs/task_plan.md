@@ -31,18 +31,38 @@
     - `ARCHIVE_REPORT`, `RESTORE_REPORT`, `ARCHIVE_ZONE`, `RESTORE_ZONE` ("Archive")
   - Update the `Filter Activity` `<Select />` options list to include these actions so admins can easily filter the log table.
 
-## Future Roadmap (Phases)
+### Phase 2: Spatial Moderation & Deduplication
+> **Focus:** Handling duplicate/overlapping reports, Parent/Child zone relationships, trust score distribution, and unified Map+Feed moderation UI.
 
-### Phase 2: Community Moderation & System Rules
-> **Focus:** Establishing user trust, automated rules, and managing active flood data without ML.
-- [ ] **Rule-Based Flood Expiration**: 
-  - *Implementation:* Backend sets `expires_at` in `FloodAvoidanceZone` based on severity when an admin approves a report.
-  - *Crowd-Sourced Extension:* Add "Flood Subsiding" / "Still Flooded" buttons on the map for users to reduce or extend expiration time.
-- [ ] **Trust-Based Auto-Approval Engine**: 
-  - Allow high-trust users (>90 score) to bypass the admin moderation queue.
-  - *Crowd Consensus:* Auto-approve a flood if 3 independent users report it in the same radius within a short timeframe.
-- [ ] **Duplicate Resolution (Admin Panel)**: 
-  - Add admin tools to merge overlapping flood polygons using PostGIS `ST_Intersects` and `ST_Union`.
+- [ ] **1. Database Schema Updates (Backend)**:
+  - **Modify `backend/app/models/report.py`**:
+    - Remove the rigid 1:1 `report_id` constraint from the `FloodAvoidanceZone` model.
+    - Add `zone_id` (ForeignKey) to `FloodReport` to establish a 1:N relationship (One Zone has Multiple Reports).
+    - Add `curated_by_admin_id` to `FloodAvoidanceZone` to track if an admin modified the spatial boundary.
+  - Generate and apply Alembic migration for these relational changes.
+- [ ] **2. Trust Score & Zone Creation Logic (Backend)**:
+  - **Modify `backend/app/crud/report.py` & `crud/zone.py`**:
+    - Remove the logic that auto-generates a zone *before* admin intervention.
+    - Implement a unified function for Trust Score credit: When a `FloodAvoidanceZone` is activated/approved, iterate through all its linked `FloodReport`s, mark them as `approved`, and increment `reports_verified` for each unique `user_id`.
+    - Ensure reporters retain credit even if `curated_by_admin_id` is set.
+- [ ] **3. Moderation API Endpoints (Backend)**:
+  - **Modify `backend/app/api/v1/endpoints/admin.py`**:
+    - Update `POST /reports/{id}/approve` endpoint to accept a `zone_action` payload (`action: "CREATE_NEW"` or `action: "MERGE"`, plus the geometry polygon data).
+    - Implement PostGIS `ST_DWithin` spatial query to fetch "Nearby Active Zones" relative to a pending report's coordinates, returning suggestions to the frontend.
+- [ ] **4. Community Post Consolidation**:
+  - Update community feed logic: Keep Community Posts separate! If 3 users report the same incident, they get merged into 1 Avoidance Zone, but their 3 individual public posts will still appear independently in the community feed to prevent losing user social engagement.
+- [ ] **5. Spatial Moderation Dashboard (Frontend)**:
+  - **Modify `frontend/src/features/admin/ReportsPage.tsx`**:
+    - Refactor into a **Split-Screen Layout**: Scrollable list of pending reports (left) and an interactive MapLibre GL map (right).
+    - Map Interactions: Clicking a pending report on the left flies the map to the coordinates. The map must highlight any existing active Avoidance Zones nearby.
+    - Add polygon drawing tools (e.g., `@mapbox/mapbox-gl-draw`) allowing the admin to adjust or redraw the flood boundary based on the report.
+    - Add map overlay buttons: `Approve as New Zone`, `Merge into Nearby Zone`, and `Reject`.
+  - **Modify `frontend/src/features/admin/adminApi.ts`**: Update TypeScript interfaces to reflect the 1:N zone-to-reports relationships and new merging API payloads.
+- [ ] **6. Testing & Verification**:
+  - Create `pytest backend/tests/test_spatial_merging.py` to assert that merging 3 distinct user reports into 1 zone correctly awards Trust Scores to all 3 users.
+  - Update `test_admin_api.py` to test the `zone_action` payloads and 1:N schema constraints.
+
+## Future Roadmap (Phases)
 
 ### Phase 3: External Integrations & IoT
 > **Focus:** Connecting LANES to external data sources and physical hardware.
