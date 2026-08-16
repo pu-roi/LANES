@@ -31,7 +31,7 @@ export function RegisterForm() {
   const [setupPhase, setSetupPhase] = useState<"email" | "otp" | "password">("email");
   const [otpCode, setOtpCode] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { info, success, warning } = useToast();
+  const { info, success } = useToast();
   const [otpLoading, setOtpLoading] = useState(false);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   
@@ -68,7 +68,7 @@ export function RegisterForm() {
       return;
     }
     if (cooldownSeconds > 0) {
-      warning("Please Wait", `Please wait ${formatCooldown(cooldownSeconds)} before requesting another code. Check your spam folder.`);
+      info("Please Wait", `Please wait ${formatCooldown(cooldownSeconds)} before requesting another code. Check your spam folder.`);
       return;
     }
     setOtpLoading(true);
@@ -89,7 +89,7 @@ export function RegisterForm() {
           if (text) errMessage = text;
         }
         if (res.status === 429) {
-          warning("Cooldown Active", errMessage);
+          info("Cooldown Active", errMessage);
         } else {
           showError("Delivery Failed", errMessage);
         }

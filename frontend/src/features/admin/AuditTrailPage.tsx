@@ -37,6 +37,20 @@ const ACTION_BADGES: Record<string, { bg: string; text: string; label: string; m
   DELETE_BACKUP: { bg: "bg-red-50 border-red-200", text: "text-red-700", label: "Delete Backup", module: "Data Management" },
   RESTORE_BACKUP: { bg: "bg-indigo-50 border-indigo-200", text: "text-indigo-700", label: "Restore Backup", module: "Data Management" },
   CLEANUP_DATABASE: { bg: "bg-purple-50 border-purple-200", text: "text-purple-700", label: "Clear Data", module: "Data Management" },
+  CLEANUP_DATA: { bg: "bg-purple-50 border-purple-200", text: "text-purple-700", label: "Clear Data", module: "Data Management" },
+  UPDATE_ZONE: { bg: "bg-amber-50 border-amber-200", text: "text-amber-700", label: "Update Zone", module: "Active Zones Map" },
+  CREATE_USER: { bg: "bg-teal-50 border-teal-200", text: "text-teal-700", label: "Create User", module: "Users Management" },
+  UPDATE_USER_ROLE: { bg: "bg-indigo-50 border-indigo-200", text: "text-indigo-700", label: "Update Role", module: "Users Management" },
+  CREATE_ROLE: { bg: "bg-emerald-50 border-emerald-200", text: "text-emerald-700", label: "Create Role", module: "Roles & Permissions" },
+  UPDATE_ROLE: { bg: "bg-blue-50 border-blue-200", text: "text-blue-700", label: "Update Role", module: "Roles & Permissions" },
+  DELETE_ROLE: { bg: "bg-rose-50 border-rose-200", text: "text-rose-700", label: "Delete Role", module: "Roles & Permissions" },
+  CLONE_ROLE: { bg: "bg-purple-50 border-purple-200", text: "text-purple-700", label: "Clone Role", module: "Roles & Permissions" },
+  EXPORT_DATA: { bg: "bg-cyan-50 border-cyan-200", text: "text-cyan-700", label: "Export Data", module: "Data Management" },
+  UPDATE_SETTINGS: { bg: "bg-slate-50 border-slate-200", text: "text-slate-700", label: "Update Settings", module: "System Settings" },
+  ARCHIVE_REPORT: { bg: "bg-amber-50 border-amber-200", text: "text-amber-700", label: "Archive Report", module: "Archive" },
+  RESTORE_REPORT: { bg: "bg-blue-50 border-blue-200", text: "text-blue-700", label: "Restore Report", module: "Archive" },
+  ARCHIVE_ZONE: { bg: "bg-orange-50 border-orange-200", text: "text-orange-700", label: "Archive Zone", module: "Archive" },
+  RESTORE_ZONE: { bg: "bg-emerald-50 border-emerald-200", text: "text-emerald-700", label: "Restore Zone", module: "Archive" },
 };
 
 export default function AuditTrailPage() {
@@ -273,7 +287,19 @@ export default function AuditTrailPage() {
               { label: "Deactivate Zone", value: "DEACTIVATE_ZONE" },
               { label: "Bulk Deactivate", value: "DEACTIVATE_ZONES_BULK" },
               { label: "Update User Status", value: "UPDATE_USER_STATUS" },
-              { label: "Delete User", value: "DELETE_USER" }
+              { label: "Create User", value: "CREATE_USER" },
+              { label: "Update User Role", value: "UPDATE_USER_ROLE" },
+              { label: "Delete User", value: "DELETE_USER" },
+              { label: "Create Role", value: "CREATE_ROLE" },
+              { label: "Update Role", value: "UPDATE_ROLE" },
+              { label: "Delete Role", value: "DELETE_ROLE" },
+              { label: "Clone Role", value: "CLONE_ROLE" },
+              { label: "Export Data", value: "EXPORT_DATA" },
+              { label: "Update Settings", value: "UPDATE_SETTINGS" },
+              { label: "Archive Report", value: "ARCHIVE_REPORT" },
+              { label: "Restore Report", value: "RESTORE_REPORT" },
+              { label: "Archive Zone", value: "ARCHIVE_ZONE" },
+              { label: "Restore Zone", value: "RESTORE_ZONE" }
             ]}
           />
         </div>

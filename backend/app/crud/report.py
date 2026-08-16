@@ -36,6 +36,26 @@ def update_flood_report_status(db: Session, report_id: int, status: str) -> Opti
     return report
 
 
+def archive_flood_report(db: Session, report_id: int) -> Optional[models.FloodReport]:
+    from datetime import datetime
+    # Use direct query to include already deleted items if necessary, or just rely on get which filters by deleted_at is None
+    report = db.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
+    if report and report.deleted_at is None:
+        report.deleted_at = datetime.utcnow()
+        db.commit()
+        db.refresh(report)
+    return report
+
+
+def restore_flood_report(db: Session, report_id: int) -> Optional[models.FloodReport]:
+    report = db.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
+    if report and report.deleted_at is not None:
+        report.deleted_at = None
+        db.commit()
+        db.refresh(report)
+    return report
+
+
 def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> models.FloodReport:
     geometry_clause = None
     if report.geometry:

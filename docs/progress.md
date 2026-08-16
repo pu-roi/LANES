@@ -20,13 +20,27 @@
 
 ## Capstone Roadmap - Delivered Phases
 
-### Phase 1: Home Page & Onboarding (🟢 COMPLETED)
+### Phase 1: Audit Trail Synchronization & Full Coverage (🟢 COMPLETED)
+- [x] **Backend — Role Management Auditing**:
+  - Add `create_audit_log` call to `POST /api/v1/roles` (`CREATE_ROLE`) logging `role_name` and initial `permissions`.
+  - Add `create_audit_log` call to `PUT /api/v1/roles/{role_id}` (`UPDATE_ROLE`) logging previous vs. new permissions and name.
+  - Add `create_audit_log` call to `DELETE /api/v1/roles/{role_id}` (`DELETE_ROLE`) capturing target role ID and name.
+  - Add `create_audit_log` call to `POST /api/v1/roles/{role_id}/clone` (`CLONE_ROLE`) capturing source role ID and cloned role name.
+  - Pass `Request` object into each endpoint function to extract `client_ip` via `request.client.host`.
+- [x] **Backend — Archive & Soft-Delete Auditing**:
+  - Dispatch explicit audit events (`ARCHIVE_REPORT`, `RESTORE_REPORT`, `ARCHIVE_ZONE`, `RESTORE_ZONE`) when flood reports or zones are archived/soft-deleted or restored.
+- [x] **Frontend — Badge & Filter Synchronization**:
+  - Update `ACTION_BADGES` mapping with styling and human-readable labels for:
+    - `UPDATE_ZONE`, `CREATE_USER`, `UPDATE_USER_ROLE`, `CREATE_ROLE`, `UPDATE_ROLE`, `DELETE_ROLE`, `CLONE_ROLE`, `EXPORT_DATA`, `UPDATE_SETTINGS`, `ARCHIVE_REPORT`, `RESTORE_REPORT`, `ARCHIVE_ZONE`, `RESTORE_ZONE`
+  - Update the `Filter Activity` `<Select />` options list to include these actions so admins can easily filter the log table.
+
+### Capstone Phase 1: Home Page & Onboarding (🟢 COMPLETED)
 - [x] **Dynamic Weather Widget**: Integrate Open-Meteo API with Meteocons (reads from user profile location, defaults to Pasig).
 - [x] **Daily Stats**: Show the number of *verified* flood reports for the current day.
 - [x] **Site Visitors**: Display a metric for total active/historical site visitors.
 - [x] **Flood Status Legend**: Add a clear breakdown of White, Yellow, Orange, and Red on the home page.
 
-### Phase 2: Map & Routing Engine (🟢 COMPLETED)
+### Capstone Phase 2: Map & Routing Engine (🟢 COMPLETED)
 - [x] **Vehicle Profiles**: Implement clearance-based routing labels:
   - *4-Wheel High Clearance* (SUVs, Pickups)
   - *4-Wheel Low Clearance* (Sedans, Hatchbacks)
@@ -37,12 +51,12 @@
 - [x] **Weather & Chart Legend**: Add a sleek UI guide/legend near the forecast chart to explain what the weather icons, rain percentages, and volume numbers mean to everyday users.
 - [x] **AI Weather Insights**: Integrate OpenRouter API (`openrouter/free`) into the backend to dynamically generate educational, conversational interpretations of raw weather forecast data.
 
-### Phase 3: Community Feed & Notifications (🟢 COMPLETED)
+### Capstone Phase 3: Community Feed & Notifications (🟢 COMPLETED)
 - [x] **Report Hazard Button**: Jump straight to the Flood Report Panel.
 - [x] **Create Post Button**: Allows users to post text/photos to the community feed with an optional location tag.
 - [x] **In-App Notification Center**: Global Bell Icon for comments, likes, and critical system alerts pinned to the top.
 
-### Phase 4: Admin Panel & Report Moderation (🟢 COMPLETED)
+### Capstone Phase 4: Admin Panel & Report Moderation (🟢 COMPLETED)
 - [x] **Active Zones Full View**: Show timeline, reporter details, and actions (View, Edit, Deactivate, Archive).
 - [x] **Admin Dashboard Charts**: 
   - Pie Chart: Flood Severity Distribution.
