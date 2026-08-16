@@ -10,27 +10,6 @@
 
 ## Active Sprint (Next Feature)
 
-### Phase 1: Audit Trail Synchronization & Full Coverage
-> **Focus:** Ensure all state-altering administrative, security, and data operations across backend and frontend are comprehensively logged and observable in the admin UI.
-- [ ] **Backend — Role Management Auditing ([roles.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/roles.py))**:
-  - Add `create_audit_log` call to `POST /api/v1/roles` (`CREATE_ROLE`) logging `role_name` and initial `permissions`.
-  - Add `create_audit_log` call to `PUT /api/v1/roles/{role_id}` (`UPDATE_ROLE`) logging previous vs. new permissions and name.
-  - Add `create_audit_log` call to `DELETE /api/v1/roles/{role_id}` (`DELETE_ROLE`) capturing target role ID and name.
-  - Add `create_audit_log` call to `POST /api/v1/roles/{role_id}/clone` (`CLONE_ROLE`) capturing source role ID and cloned role name.
-  - Pass `Request` object into each endpoint function to extract `client_ip` via `request.client.host`.
-- [ ] **Backend — Archive & Soft-Delete Auditing**:
-  - Dispatch explicit audit events (`ARCHIVE_REPORT`, `RESTORE_REPORT`, `ARCHIVE_ZONE`, `RESTORE_ZONE`) when flood reports or zones are archived/soft-deleted or restored.
-- [ ] **Frontend — Badge & Filter Synchronization ([AuditTrailPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/AuditTrailPage.tsx))**:
-  - Update `ACTION_BADGES` mapping with styling and human-readable labels for:
-    - `UPDATE_ZONE` ("Active Zones Map")
-    - `CREATE_USER` ("Users Management")
-    - `UPDATE_USER_ROLE` ("Users Management")
-    - `CREATE_ROLE`, `UPDATE_ROLE`, `DELETE_ROLE`, `CLONE_ROLE` ("Roles & Permissions")
-    - `EXPORT_DATA` ("Data Management")
-    - `UPDATE_SETTINGS` ("System Settings")
-    - `ARCHIVE_REPORT`, `RESTORE_REPORT`, `ARCHIVE_ZONE`, `RESTORE_ZONE` ("Archive")
-  - Update the `Filter Activity` `<Select />` options list to include these actions so admins can easily filter the log table.
-
 ### Phase 2: Spatial Moderation & Deduplication
 > **Focus:** Handling duplicate/overlapping reports, Parent/Child zone relationships, trust score distribution, and unified Map+Feed moderation UI.
 

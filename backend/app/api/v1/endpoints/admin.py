@@ -178,6 +178,82 @@ async def reject_report(
     return updated_report
 
 
+@router.patch("/reports/{report_id}/archive", response_model=schemas.FloodReportResponse)
+async def archive_report(
+    report_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Archive (soft-delete) a flood report. 
+    Requires admin privileges.
+    """
+    report = crud.archive_flood_report(db, report_id=report_id)
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="ARCHIVE_REPORT",
+            target_table="flood_reports",
+            target_id=report_id,
+            metadata_json={"report_id": report_id},
+            ip_address=client_ip
+        )
+    )
+
+    # Broadcast real-time signal
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "report_archived",
+        "data": {"report_id": report_id}
+    })
+
+    return report
+
+
+@router.patch("/reports/{report_id}/restore", response_model=schemas.FloodReportResponse)
+async def restore_report(
+    report_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Restore an archived flood report. 
+    Requires admin privileges.
+    """
+    report = crud.restore_flood_report(db, report_id=report_id)
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found or not archived")
+    
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="RESTORE_REPORT",
+            target_table="flood_reports",
+            target_id=report_id,
+            metadata_json={"report_id": report_id},
+            ip_address=client_ip
+        )
+    )
+
+    # Broadcast real-time signal
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "report_restored",
+        "data": {"report_id": report_id}
+    })
+
+    return report
+
+
 @router.get("/reports/all", response_model=schemas.FloodReportsPaginatedResponse)
 def get_all_reports(
     db: Session = Depends(get_db),
@@ -336,14 +412,23 @@ async def update_zone(
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
 
     client_ip = request.client.host if request.client else None
+    
+    # Check if this is technically a restore or archive action based on payload
+    if payload.is_active is True and not getattr(zone, '_was_active_before', False):
+        action_type = "RESTORE_ZONE"
+    elif payload.is_active is False and getattr(zone, '_was_active_before', True):
+        action_type = "ARCHIVE_ZONE"
+    else:
+        action_type = "UPDATE_ZONE"
+
     crud.create_audit_log(
         db,
         audit_in=schemas.AuditLogCreate(
             admin_id=current_user.id,
-            action_type="UPDATE_ZONE",
+            action_type=action_type,
             target_table="flood_avoidance_zones",
             target_id=zone_id,
-            metadata_json={"zone_id": zone_id, "expires_at": payload.expires_at.isoformat() if payload.expires_at else None},
+            metadata_json={"zone_id": zone_id, "expires_at": payload.expires_at.isoformat() if payload.expires_at else None, "is_active": payload.is_active},
             ip_address=client_ip
         )
     )
@@ -357,6 +442,82 @@ async def update_zone(
             "is_active": zone.is_active,
             "expires_at": zone.expires_at.isoformat() if zone.expires_at else None
         }
+    })
+
+    return zone
+
+
+@router.patch("/zones/{zone_id}/archive", response_model=schemas.FloodAvoidanceZoneResponse)
+async def archive_zone(
+    zone_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Archive (soft-delete / deactivate) a flood avoidance zone.
+    Requires admin privileges.
+    """
+    zone = crud.deactivate_flood_avoidance_zone(db=db, zone_id=zone_id)
+    if not zone:
+        raise HTTPException(status_code=404, detail="Avoidance zone not found")
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="ARCHIVE_ZONE",
+            target_table="flood_avoidance_zones",
+            target_id=zone_id,
+            metadata_json={"zone_id": zone_id},
+            ip_address=client_ip
+        )
+    )
+
+    # Broadcast real-time signal
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "zone_archived",
+        "data": {"zone_id": zone_id}
+    })
+
+    return zone
+
+
+@router.patch("/zones/{zone_id}/restore", response_model=schemas.FloodAvoidanceZoneResponse)
+async def restore_zone(
+    zone_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Restore an archived (deactivated) flood avoidance zone.
+    Requires admin privileges.
+    """
+    zone = crud.update_flood_avoidance_zone(db=db, zone_id=zone_id, update_data=schemas.AvoidanceZoneUpdateRequest(is_active=True))
+    if not zone:
+        raise HTTPException(status_code=404, detail="Avoidance zone not found")
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="RESTORE_ZONE",
+            target_table="flood_avoidance_zones",
+            target_id=zone_id,
+            metadata_json={"zone_id": zone_id},
+            ip_address=client_ip
+        )
+    )
+
+    # Broadcast real-time signal
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "zone_restored",
+        "data": {"zone_id": zone_id}
     })
 
     return zone
