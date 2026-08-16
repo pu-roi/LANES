@@ -9,8 +9,7 @@ import {
   FloodReport,
   ReportGeometry
 } from "./adminApi";
-import { Button } from "@/shared/ui/Button";
-import { Select, Pagination, Input } from "@/shared/ui";
+import { useToast, Button, Input, Select, Pagination, Tabs } from "@/shared/ui";
 import { 
   Loader2, 
   CheckCircle, 
@@ -179,23 +178,18 @@ export default function ReportsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
-        <div className="flex space-x-8">
-          {["all", "pending", "approved", "rejected"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => handleTabChange(tab)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm capitalize transition-colors ${
-                status === tab
-                  ? "border-blue-600 text-blue-600 font-semibold"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-            >
-              {tab} Reports
-            </button>
-          ))}
-        </div>
-      </div>
+      <Tabs
+        tabs={[
+          { id: "all", label: "All Reports" },
+          { id: "pending", label: "Pending" },
+          { id: "approved", label: "Approved" },
+          { id: "rejected", label: "Rejected" },
+        ]}
+        activeTab={status}
+        onChange={handleTabChange}
+        variant="underline"
+        layoutId="admin-reports-tab-indicator"
+      />
 
       {/* Filters Toolbar */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-gray-200 shadow-sm">

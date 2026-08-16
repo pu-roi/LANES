@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import AdminSidebar from "@/features/navigation/AdminSidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -18,11 +19,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!isMounted) return null; // Prevent hydration errors
 
+  const isMapPage = pathname === "/admin/map";
+
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-slate-100 overflow-hidden">
       <AdminSidebar />
       {/* Main Content Area */}
-      <main className="flex-1 h-full overflow-y-auto p-8">
+      <main className={`flex-1 h-full overflow-hidden ${isMapPage ? "p-0" : "p-6 overflow-y-auto"}`}>
         {children}
       </main>
     </div>

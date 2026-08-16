@@ -21,8 +21,31 @@ export interface FloodReport {
   geometry: ReportGeometry | null;
   image_url?: string;
   status: "pending" | "approved" | "rejected";
+  zone_id?: number | null;
+  barangay?: string | null;
+  human_readable_location?: string | null;
+  user_id?: number | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ApproveReportPayload {
+  action?: "CREATE_NEW" | "MERGE";
+  target_zone_id?: number;
+  custom_geometry?: PolygonGeometry;
+  buffer_radius?: number;
+  severity?: string;
+  depth?: string;
+}
+
+export interface NearbyZone {
+  id: number;
+  severity: string;
+  depth?: string | null;
+  distance_meters: number;
+  created_at: string;
+  geometry: PolygonGeometry;
+  report_count: number;
 }
 
 export interface PaginatedReportsResponse {
@@ -78,12 +101,20 @@ export async function getReports(options: GetReportsOptions): Promise<PaginatedR
   return apiClient.get<PaginatedReportsResponse>(`/admin/reports/all?${params.toString()}`);
 }
 
-export async function approveReport(reportId: number): Promise<FloodReport> {
-  return apiClient.post<FloodReport>(`/admin/reports/${reportId}/approve`, {});
+export async function approveReport(reportId: number, payload?: ApproveReportPayload): Promise<FloodReport> {
+  return apiClient.post<FloodReport>(`/admin/reports/${reportId}/approve`, payload || { action: "CREATE_NEW" });
 }
 
 export async function rejectReport(reportId: number): Promise<FloodReport> {
   return apiClient.post<FloodReport>(`/admin/reports/${reportId}/reject`, {});
+}
+
+export async function getNearbyZones(reportId: number, maxDistanceMeters: number = 400): Promise<NearbyZone[]> {
+  return apiClient.get<NearbyZone[]>(`/admin/zones/nearby?report_id=${reportId}&max_distance_meters=${maxDistanceMeters}`);
+}
+
+export async function getPendingReports(): Promise<FloodReport[]> {
+  return apiClient.get<FloodReport[]>("/admin/reports/pending");
 }
 
 export interface PolygonGeometry {

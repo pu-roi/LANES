@@ -4,15 +4,31 @@ import type { Map } from "maplibre-gl";
 export function useCityBoundaries(map: Map | null, isLoaded: boolean) {
   useEffect(() => {
     if (!map || !isLoaded) return;
-    if (!map.style) return;
-
-    // 1. Add Philippines Border Line
-    if (!map.getSource("philippines-boundary")) {
-      map.addSource("philippines-boundary", {
-        type: "geojson",
-        data: "/philippines-boundary.geojson",
-      });
+    if (!map.isStyleLoaded()) {
+      const handleStyleData = () => {
+        if (map.isStyleLoaded()) {
+          map.off("styledata", handleStyleData);
+          initBoundaries();
+        }
+      };
+      map.on("styledata", handleStyleData);
+      return () => {
+        map.off("styledata", handleStyleData);
+      };
     }
+
+    initBoundaries();
+
+    function initBoundaries() {
+      if (!map || !map.isStyleLoaded()) return;
+
+      // 1. Add Philippines Border Line
+      if (!map.getSource("philippines-boundary")) {
+        map.addSource("philippines-boundary", {
+          type: "geojson",
+          data: "/philippines-boundary.geojson",
+        });
+      }
 
     if (!map.getLayer("philippines-boundary-line")) {
       map.addLayer({
@@ -68,5 +84,6 @@ export function useCityBoundaries(map: Map | null, isLoaded: boolean) {
         },
       });
     }
+  }
   }, [map, isLoaded]);
 }

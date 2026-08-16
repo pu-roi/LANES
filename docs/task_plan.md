@@ -13,33 +13,34 @@
 ### Phase 2: Spatial Moderation & Deduplication
 > **Focus:** Handling duplicate/overlapping reports, Parent/Child zone relationships, trust score distribution, and unified Map+Feed moderation UI.
 
-- [ ] **1. Database Schema Updates (Backend)**:
+- [x] **1. Database Schema Updates (Backend)**:
   - **Modify `backend/app/models/report.py`**:
     - Remove the rigid 1:1 `report_id` constraint from the `FloodAvoidanceZone` model.
     - Add `zone_id` (ForeignKey) to `FloodReport` to establish a 1:N relationship (One Zone has Multiple Reports).
     - Add `curated_by_admin_id` to `FloodAvoidanceZone` to track if an admin modified the spatial boundary.
-  - Generate and apply Alembic migration for these relational changes.
-- [ ] **2. Trust Score & Zone Creation Logic (Backend)**:
+  - Generate and apply Alembic migration for these relational changes (`e89a3df04c63_phase2_spatial_dedup_1_to_n.py`).
+- [x] **2. Trust Score & Zone Creation Logic (Backend)**:
   - **Modify `backend/app/crud/report.py` & `crud/zone.py`**:
     - Remove the logic that auto-generates a zone *before* admin intervention.
     - Implement a unified function for Trust Score credit: When a `FloodAvoidanceZone` is activated/approved, iterate through all its linked `FloodReport`s, mark them as `approved`, and increment `reports_verified` for each unique `user_id`.
     - Ensure reporters retain credit even if `curated_by_admin_id` is set.
-- [ ] **3. Moderation API Endpoints (Backend)**:
+- [x] **3. Moderation API Endpoints (Backend)**:
   - **Modify `backend/app/api/v1/endpoints/admin.py`**:
-    - Update `POST /reports/{id}/approve` endpoint to accept a `zone_action` payload (`action: "CREATE_NEW"` or `action: "MERGE"`, plus the geometry polygon data).
-    - Implement PostGIS `ST_DWithin` spatial query to fetch "Nearby Active Zones" relative to a pending report's coordinates, returning suggestions to the frontend.
-- [ ] **4. Community Post Consolidation**:
-  - Update community feed logic: Keep Community Posts separate! If 3 users report the same incident, they get merged into 1 Avoidance Zone, but their 3 individual public posts will still appear independently in the community feed to prevent losing user social engagement.
-- [ ] **5. Spatial Moderation Dashboard (Frontend)**:
-  - **Modify `frontend/src/features/admin/ReportsPage.tsx`**:
-    - Refactor into a **Split-Screen Layout**: Scrollable list of pending reports (left) and an interactive MapLibre GL map (right).
-    - Map Interactions: Clicking a pending report on the left flies the map to the coordinates. The map must highlight any existing active Avoidance Zones nearby.
-    - Add polygon drawing tools (e.g., `@mapbox/mapbox-gl-draw`) allowing the admin to adjust or redraw the flood boundary based on the report.
-    - Add map overlay buttons: `Approve as New Zone`, `Merge into Nearby Zone`, and `Reject`.
-  - **Modify `frontend/src/features/admin/adminApi.ts`**: Update TypeScript interfaces to reflect the 1:N zone-to-reports relationships and new merging API payloads.
-- [ ] **6. Testing & Verification**:
-  - Create `pytest backend/tests/test_spatial_merging.py` to assert that merging 3 distinct user reports into 1 zone correctly awards Trust Scores to all 3 users.
-  - Update `test_admin_api.py` to test the `zone_action` payloads and 1:N schema constraints.
+    - Update `POST /reports/{id}/approve` endpoint to accept an `ApproveReportRequest` payload (`action: "CREATE_NEW"` or `action: "MERGE"`, plus the custom geometry polygon/buffer data).
+    - Implement PostGIS `ST_DWithin` spatial query to fetch "Nearby Active Zones" relative to a pending report's coordinates (`GET /api/v1/admin/zones/nearby`).
+    - Implement `GET /api/v1/admin/reports/by-location` to group overlapping pending reports.
+- [x] **4. Community Post Consolidation**:
+  - Keep Community Posts separate: if 3 users report the same incident, they get merged into 1 Avoidance Zone while their 3 individual public posts remain independent in the feed.
+- [x] **5. Spatial Moderation Dashboard & Fluid Layout (Frontend)**:
+  - Refactor into a full-bleed edge-to-edge layout: Pending Reports & Active Zones sidebar (left) and interactive MapLibre GL map (right).
+  - Mode Switcher using standardized `Tabs.tsx` (`variant="segmented"`).
+  - Map Viewport Auto-fit to Pasig City (`[121.0515, 14.5338]` to `[121.1112, 14.6235]`) with `localStorage` position persistence.
+  - Map Layers: Confirmed active zones render full polygons + glow lines; pending reports render transparent dashed buffer outlines on selection.
+- [ ] **6. Interactive Dual-Layer Drawing & Geometry Editor (Sub-Phase 2.4)**:
+  - Interactive polygon and line drawing tools (`@mapbox/mapbox-gl-draw` or custom handles) allowing admins to reshape or draw customized inundation detour zones.
+  - Multi-merge UI modal to batch merge overlapping pending reports with one click.
+- [x] **7. Testing & Verification**:
+  - Created and passed `pytest backend/tests/test_spatial_merging.py` (100% passing) verifying 1:N schema linking and multi-user trust score crediting.
 
 ## Future Roadmap (Phases)
 

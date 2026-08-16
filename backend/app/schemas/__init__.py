@@ -5,7 +5,7 @@ from app.schemas.report import (
     FloodAvoidanceZoneBase, FloodAvoidanceZoneCreate, FloodAvoidanceZoneResponse,
     FloodReportsPaginatedResponse, AdminDashboardStats,
     FloodAvoidanceZonesPaginatedResponse, AvoidanceZoneDeactivateBulkRequest,
-    AvoidanceZoneUpdateRequest
+    AvoidanceZoneUpdateRequest, ApproveReportRequest, NearbyZoneResponse
 )
 from app.schemas.route import RouteRequest, RouteResponse, LineStringGeometry, RouteOption, MultiRouteResponse
 from app.schemas.common import PointGeometry, PolygonGeometry

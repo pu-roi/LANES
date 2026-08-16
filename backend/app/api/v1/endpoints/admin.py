@@ -1,6 +1,8 @@
 from typing import List, Any, Optional
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from app import crud, models, schemas
 from app.api import deps
@@ -27,41 +29,48 @@ def get_pending_reports(
 async def approve_report(
     report_id: int,
     request: Request,
+    body: Optional[schemas.ApproveReportRequest] = None,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> Any:
     """
-    Approve a flood report. Automatically generates a FloodAvoidanceZone if the report has coordinates.
+    Approve a flood report.
+    Supports either creating a new FloodAvoidanceZone (with auto-generated or custom geometry)
+    or merging into an existing active zone.
+    Awards Trust Score credit to the reporter.
     Requires admin privileges.
     """
     report = crud.get_flood_report(db, report_id=report_id)
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    if report.status == "approved":
-        raise HTTPException(status_code=400, detail="Report is already approved")
     
-    report = crud.update_flood_report_status(db, report_id=report_id, status="approved")
+    # 1. Update report status and timestamp
+    report.status = models.ReportStatus.APPROVED
+    report.approved_at = datetime.utcnow()
+    
+    # Override severity / depth if curated by admin
+    if body:
+        if body.severity:
+            report.severity = body.severity
+        if body.depth:
+            report.depth = body.depth
 
-    # Reverse geocode using Photon API to get the barangay
-    response_report = schemas.FloodReportResponse.model_validate(report)
-    if response_report.geometry and not report.barangay:
-        import httpx
-        
-        coords = response_report.geometry.coordinates
-        lon, lat = None, None
-        if response_report.geometry.type == "Point":
-            lon, lat = coords[0], coords[1]
-        elif response_report.geometry.type == "LineString":
-            lon, lat = coords[0][0], coords[0][1]
-            
-        if lon is not None and lat is not None:
-            url = f"https://photon.komoot.io/reverse?lon={lon}&lat={lat}"
-            try:
-                async with httpx.AsyncClient() as client:
-                    resp = await client.get(url, timeout=5.0)
-                    if resp.status_code == 200:
-                        data = resp.json()
-                        features = data.get("features", [])
+    db.commit()
+    db.refresh(report)
+
+    # 2. Reverse Geocoding via Photon if barangay is missing
+    if not report.barangay and report.geometry is not None:
+        try:
+            pt_json = db.query(func.ST_AsGeoJSON(func.ST_StartPoint(report.geometry) if func.ST_GeometryType(report.geometry) == 'ST_LineString' else report.geometry)).scalar()
+            if pt_json:
+                import json
+                pt_data = json.loads(pt_json)
+                lon, lat = pt_data["coordinates"][0], pt_data["coordinates"][1]
+                import httpx
+                async with httpx.AsyncClient(timeout=3.0) as client:
+                    res = await client.get(f"https://photon.komoot.io/reverse?lat={lat}&lon={lon}")
+                    if res.status_code == 200:
+                        features = res.json().get("features", [])
                         if features:
                             props = features[0].get("properties", {})
                             barangay = props.get("district") or props.get("locality") or props.get("city")
@@ -69,39 +78,66 @@ async def approve_report(
                                 report.barangay = barangay
                                 db.commit()
                                 db.refresh(report)
-                                response_report = schemas.FloodReportResponse.model_validate(report)
-            except Exception as e:
-                print(f"Photon reverse geocode failed: {e}")
+        except Exception as e:
+            print(f"Photon reverse geocode failed: {e}")
 
-    # If the report has geometry, create an avoidance zone (simple 200m bounding box buffer)
-    # The geometry field on the response schema will have the PointGeometry parsed from EWKB
-    response_report = schemas.FloodReportResponse.model_validate(report)
-    if response_report.geometry:
-        from sqlalchemy import func
-        import json
+    # 3. Spatial Moderation Action (CREATE_NEW vs MERGE)
+    action = body.action if body else "CREATE_NEW"
+    target_zone = None
 
-        is_linestring = response_report.geometry.type == "LineString"
-        buffer_radius = 0.00015 if is_linestring else 0.0005
-
-        # Query PostGIS to calculate the buffer polygon
-        buffered_geojson_str = db.query(
-            func.ST_AsGeoJSON(func.ST_Buffer(report.geometry, buffer_radius))
-        ).scalar()
-
-        if buffered_geojson_str:
-            polygon_data = json.loads(buffered_geojson_str)
-            polygon = schemas.PolygonGeometry(
-                type="Polygon",
-                coordinates=polygon_data["coordinates"]
-            )
+    if action == "MERGE" and body and body.target_zone_id:
+        # Merge report into existing active zone
+        target_zone = db.query(models.FloodAvoidanceZone).filter(
+            models.FloodAvoidanceZone.id == body.target_zone_id
+        ).first()
+        if target_zone:
+            report.zone_id = target_zone.id
+            if body.custom_geometry:
+                geojson_str = body.custom_geometry.model_dump_json()
+                target_zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
+                target_zone.curated_by_admin_id = current_user.id
+            db.commit()
+            db.refresh(target_zone)
+    else:
+        # Action is CREATE_NEW
+        if body and body.custom_geometry:
+            # Use admin hand-drawn or adjusted polygon
             zone_in = schemas.FloodAvoidanceZoneCreate(
                 report_id=report.id,
-                geometry=polygon,
+                geometry=body.custom_geometry,
+                curated_by_admin_id=current_user.id,
                 is_active=True
             )
-            crud.create_flood_avoidance_zone(db, zone=zone_in)
-            
-    # [Phase 3] Auto-create CommunityPost if the report is public
+            target_zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
+        elif report.geometry is not None:
+            # Auto-calculate buffer polygon via PostGIS
+            geom_type = db.query(func.ST_GeometryType(report.geometry)).scalar()
+            is_linestring = geom_type == "ST_LineString"
+            buffer_radius = body.buffer_radius if (body and body.buffer_radius) else (0.00015 if is_linestring else 0.0005)
+
+            buffered_geojson_str = db.query(
+                func.ST_AsGeoJSON(func.ST_Buffer(report.geometry, buffer_radius))
+            ).scalar()
+
+            if buffered_geojson_str:
+                import json
+                polygon_data = json.loads(buffered_geojson_str)
+                polygon = schemas.PolygonGeometry(
+                    type="Polygon",
+                    coordinates=polygon_data["coordinates"]
+                )
+                zone_in = schemas.FloodAvoidanceZoneCreate(
+                    report_id=report.id,
+                    geometry=polygon,
+                    is_active=True
+                )
+                target_zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
+
+    # 4. Award Trust Score & Verification credit to reporter
+    if report.user_id:
+        crud.credit_user_verified_report(db, user_id=report.user_id)
+
+    # 5. [Phase 3] Auto-create CommunityPost if the report is public
     if report.is_public and report.user_id:
         post_in = schemas.CommunityPostCreate(
             flood_report_id=report.id,
@@ -110,6 +146,7 @@ async def approve_report(
         )
         crud.create_community_post(db=db, post_in=post_in, user_id=report.user_id)
 
+    # 6. Audit Trail Logging
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
         db,
@@ -120,23 +157,61 @@ async def approve_report(
             target_id=report.id,
             metadata_json={
                 "report_id": report.id,
-                "severity": report.severity,
-                "detour_generated": {
-                    "has_geometry": bool(response_report.geometry)
-                }
+                "action": action,
+                "zone_id": report.zone_id,
+                "severity": str(report.severity)
             },
             ip_address=client_ip
         )
     )
 
-    # Broadcast real-time signal
+    # 7. Broadcast real-time signal via SSE
     from app.core.sse import manager
     await manager.broadcast({
         "event": "report_approved",
-        "data": {"report_id": report.id}
+        "data": {
+            "report_id": report.id,
+            "zone_id": report.zone_id,
+            "action": action
+        }
     })
 
     return report
+
+
+@router.get("/zones/nearby", response_model=List[schemas.NearbyZoneResponse])
+def get_nearby_zones(
+    report_id: int,
+    max_distance_meters: float = 400.0,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Find active avoidance zones within proximity of a specific pending flood report.
+    Returns calculated geodesic distance in meters for frontend merge recommendations.
+    Requires admin privileges.
+    """
+    nearby_data = crud.get_nearby_active_avoidance_zones(
+        db=db,
+        report_id=report_id,
+        max_distance_meters=max_distance_meters
+    )
+    
+    response = []
+    for item in nearby_data:
+        zone = item["zone"]
+        dist = item["distance_meters"]
+        zone_response = schemas.FloodAvoidanceZoneResponse.model_validate(zone)
+        response.append(schemas.NearbyZoneResponse(
+            id=zone.id,
+            severity=zone.severity,
+            depth=zone.depth,
+            distance_meters=dist,
+            created_at=zone.created_at,
+            geometry=zone_response.geometry,
+            report_count=len(zone.reports)
+        ))
+    return response
 
 
 @router.post("/reports/{report_id}/reject", response_model=schemas.FloodReportResponse)

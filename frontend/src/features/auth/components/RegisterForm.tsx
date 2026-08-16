@@ -22,7 +22,7 @@ const steps = [
   { id: 3, name: "Address" }
 ];
 
-export function RegisterForm() {
+export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
   const router = useRouter();
   const { error: showError } = useToast();
   const [loading, setLoading] = useState(false);
@@ -416,8 +416,9 @@ export function RegisterForm() {
       if (loginRes.ok) {
         const d = await loginRes.json();
         localStorage.setItem("lanes_token", d.access_token);
-        // Force reload to get auth state
-        window.location.href = "/map";
+        // Redirect to the originally intended page, or fall back to /map
+        const destination = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/map';
+        window.location.href = destination;
       } else {
         router.push("/login");
       }

@@ -63,6 +63,26 @@
   - Line Chart: Reports over time (Dynamic: Last 7 Days, Month, Year).
   - Bar Graph: Top 5 Most Flooded Barangays.
 
+### Phase 2: Spatial Moderation, 1:N Deduplication & Fluid Spatial Hub (🟢 SUB-PHASES 2.1–2.3 DELIVERED)
+- [x] **Backend — 1:N Relational Schema Migration**:
+  - Inverted the foreign key constraint by moving `zone_id` onto `FloodReport` (`ondelete="SET NULL"`) and adding `curated_by_admin_id` to `FloodAvoidanceZone`.
+  - Executed Alembic migration `e89a3df04c63_phase2_spatial_dedup_1_to_n.py`.
+- [x] **Backend — Spatial Moderation & Proximity Lookup**:
+  - Implemented `POST /api/v1/admin/reports/{id}/approve` supporting both `"CREATE_NEW"` and `"MERGE"` zone actions with automatic PostGIS buffer geometry calculation.
+  - Implemented `GET /api/v1/admin/zones/nearby` with PostGIS `ST_DWithin` and `ST_Distance` returning nearby active zones within 500m.
+  - Implemented `GET /api/v1/admin/reports/by-location` to group overlapping pending reports by street.
+- [x] **Backend — Communal Trust Score Crediting**:
+  - Updated approval & merge logic to iterate through all linked reports to award verified trust scores (`+5`) and increment `reports_verified` for every unique contributor.
+  - Passed automated test suite `backend/tests/test_spatial_merging.py` (100% passing).
+- [x] **Frontend — Shared Fluid UI Design System**:
+  - Created standardized animated `Tabs.tsx` with `segmented`, `underline`, and `pills` variants and hidden overflow wrappers to eliminate horizontal scrollbar flicker.
+  - Standardized tab design across Profile, Live Map, Reports, User Registry, and Archive pages.
+- [x] **Frontend — Edge-to-Edge Spatial Workspace & Viewport Persistence**:
+  - Refactored `AdminLayout.tsx` and `LiveMapPage.tsx` to remove outer margins/padding (`p-0` on `/admin/map`) for a full-bleed interactive map canvas adhering to Anti Box-in-a-Box rules.
+  - Implemented whole-Pasig-City bounding box auto-fitting (`[121.0515, 14.5338]` to `[121.1112, 14.6235]`) on first visit.
+  - Implemented persistent camera viewport tracking via `localStorage` restoring exact pan/zoom coordinates across admin page navigation.
+  - Guarded MapLibre layer hooks against async style switching and OSM fallback loading.
+
 ## Recently Completed
 - [x] **Saved Places Feature**: Integrated "Saved Places" with map picking, saved places feed integration, mobile drawer support, custom emoji saving, and database persistence.
 - [x] **Progressive Web App (PWA) & UI Fixes** (Installability banner, offline fallback, comment UI overhaul, safe area paddings)

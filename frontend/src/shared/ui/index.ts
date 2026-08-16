@@ -19,3 +19,4 @@ export * from './Pagination';
 export * from './PasswordStrength';
 export * from './Logo';
 export * from './Skeleton';
+export * from './Tabs';
