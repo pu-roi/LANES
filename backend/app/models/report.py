@@ -195,3 +195,21 @@ class FloodAvoidanceZone(Base):
         if self.report and self.report.survey and hasattr(self.report.survey.hidden_hazards, 'value'):
             return self.report.survey.hidden_hazards.value
         return None
+
+    @property
+    def reporter_trust_score(self) -> Optional[float]:
+        if self.report and self.report.user and self.report.user.profile:
+            return float(self.report.user.profile.trust_score)
+        return 100.0
+
+    @property
+    def reporter_reports_submitted(self) -> Optional[int]:
+        if self.report and self.report.user and self.report.user.profile:
+            return self.report.user.profile.reports_submitted
+        return 0
+
+    @property
+    def reporter_reports_verified(self) -> Optional[int]:
+        if self.report and self.report.user and self.report.user.profile:
+            return self.report.user.profile.reports_approved
+        return 0

@@ -326,34 +326,6 @@ def get_all_zones(
         active_only=active_only
     )
     
-    # Populate future-proofed reporter details and trust metrics
-    for zone in zones:
-        if zone.report:
-            zone.report_text = zone.report.raw_text
-            zone.report_source = zone.report.source.value if hasattr(zone.report.source, 'value') else str(zone.report.source)
-            zone.depth = zone.report.depth
-            if zone.report.user:
-                zone.reporter_name = zone.report.user.username
-                user_id = zone.report.user_id
-                reports_submitted = db.query(models.FloodReport).filter(
-                    models.FloodReport.user_id == user_id,
-                    models.FloodReport.deleted_at.is_(None)
-                ).count()
-                reports_verified = db.query(models.FloodReport).filter(
-                    models.FloodReport.user_id == user_id,
-                    models.FloodReport.status == "approved",
-                    models.FloodReport.deleted_at.is_(None)
-                ).count()
-                zone.reporter_reports_submitted = reports_submitted
-                zone.reporter_reports_verified = reports_verified
-                zone.reporter_trust_score = round((reports_verified / reports_submitted) * 100.0, 1) if reports_submitted > 0 else 100.0
-            else:
-                # Default for automated/social scraper reports
-                zone.reporter_name = "System Parser"
-                zone.reporter_trust_score = 100.0
-                zone.reporter_reports_submitted = 0
-                zone.reporter_reports_verified = 0
-                
     return {"zones": zones, "total": total}
 
 

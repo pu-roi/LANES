@@ -429,15 +429,25 @@ export default function LiveMapPage() {
           )}
           {/* Bulk Actions Float (Over Map) */}
           {selectedIds.length > 0 && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white py-3 px-6 rounded-2xl flex items-center gap-6 shadow-xl border border-slate-800 backdrop-blur-sm z-30 animate-fade-in pointer-events-auto">
-              <span className="text-sm font-semibold">
-                Selected <span className="text-blue-400 font-extrabold">{selectedIds.length}</span> zones
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/95 text-slate-800 py-2.5 px-5 rounded-2xl flex items-center gap-5 shadow-2xl border border-slate-200/80 backdrop-blur-md z-30 animate-fade-in pointer-events-auto">
+              <span className="text-xs font-semibold text-slate-700">
+                Selected <span className="text-blue-600 font-bold">{selectedIds.length}</span> {selectedIds.length === 1 ? "zone" : "zones"}
               </span>
-              <div className="flex gap-2">
-                <Button onClick={() => setConfirmBulk(true)} className="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-1.5 h-8">
-                  <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Deactivate Selected
+              <div className="flex items-center gap-2">
+                <Button 
+                  onClick={() => setConfirmBulk(true)} 
+                  variant="danger" 
+                  size="sm" 
+                  className="rounded-xl font-medium gap-1.5 shadow-sm"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Deactivate Selected
                 </Button>
-                <Button onClick={() => setSelectedIds([])} variant="outline" className="text-slate-300 border-slate-700 hover:bg-slate-800 text-xs font-semibold px-3 h-8">
+                <Button 
+                  onClick={() => setSelectedIds([])} 
+                  variant="outline" 
+                  size="sm" 
+                  className="rounded-xl font-medium"
+                >
                   Cancel
                 </Button>
               </div>
@@ -454,9 +464,15 @@ export default function LiveMapPage() {
             <p>Deactivating this detour zone will remove the routing block. All route calculations will pass through this coordinate area.</p>
           </div>
           <p>Are you sure you want to deactivate detour zone <strong>#{confirmId}</strong>?</p>
-          <div className="flex justify-end gap-3 pt-2">
-            <Button variant="outline" onClick={() => setConfirmId(null)}>Cancel</Button>
-            <Button onClick={() => confirmId && deactivateSingleMutation.mutate(confirmId)} disabled={deactivateSingleMutation.isPending} className="bg-red-600 text-white">
+          <div className="flex justify-end gap-2.5 pt-2">
+            <Button variant="outline" size="sm" onClick={() => setConfirmId(null)} className="rounded-xl">Cancel</Button>
+            <Button 
+              variant="danger" 
+              size="sm"
+              onClick={() => confirmId && deactivateSingleMutation.mutate(confirmId)} 
+              disabled={deactivateSingleMutation.isPending} 
+              className="rounded-xl"
+            >
               {deactivateSingleMutation.isPending ? "Deactivating..." : "Deactivate Zone"}
             </Button>
           </div>
@@ -470,9 +486,15 @@ export default function LiveMapPage() {
             <p>Deactivating multiple detour zones simultaneously will lift all routing blocks for the selected areas.</p>
           </div>
           <p>Are you sure you want to deactivate <strong>{selectedIds.length}</strong> selected detour zones?</p>
-          <div className="flex justify-end gap-3 pt-2">
-            <Button variant="outline" onClick={() => setConfirmBulk(false)}>Cancel</Button>
-            <Button onClick={() => deactivateBulkMutation.mutate(selectedIds)} disabled={deactivateBulkMutation.isPending} className="bg-red-600 text-white">
+          <div className="flex justify-end gap-2.5 pt-2">
+            <Button variant="outline" size="sm" onClick={() => setConfirmBulk(false)} className="rounded-xl">Cancel</Button>
+            <Button 
+              variant="danger" 
+              size="sm"
+              onClick={() => deactivateBulkMutation.mutate(selectedIds)} 
+              disabled={deactivateBulkMutation.isPending} 
+              className="rounded-xl"
+            >
               {deactivateBulkMutation.isPending ? "Deactivating..." : "Deactivate Selected"}
             </Button>
           </div>
