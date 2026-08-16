@@ -4,7 +4,7 @@ from app.models.user import User
 from app.models.profile import Profile
 from app.models.address import Address
 from app.models.otp import OTPVerification
-from app.models.report import FloodReport, FloodAvoidanceZone, FloodReportLocation, FloodReportSurvey
+from app.models.report import FloodReport, FloodAvoidanceZone, FloodReportLocation, FloodReportSurvey, ReportSource, ReportSeverity, ReportStatus
 from app.models.audit import AuditLog
 from app.models.setting import SystemSetting
 from app.models.interaction import PostInteraction, CommentInteraction

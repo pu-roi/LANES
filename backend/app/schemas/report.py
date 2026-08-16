@@ -51,6 +51,7 @@ class FloodReportResponse(FloodReportBase):
     created_at: datetime
     updated_at: datetime
     approved_at: Optional[datetime] = None
+    zone_id: Optional[int] = None
     survey: Optional[SurveyDataResponse] = None
 
     model_config = ConfigDict(from_attributes=True)
@@ -85,13 +86,15 @@ class FloodAvoidanceZoneBase(BaseModel):
 
 
 class FloodAvoidanceZoneCreate(FloodAvoidanceZoneBase):
-    report_id: int
+    report_id: Optional[int] = None
     geometry: PolygonGeometry
+    curated_by_admin_id: Optional[int] = None
 
 
 class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     id: int
-    report_id: int
+    report_id: Optional[int] = None
+    curated_by_admin_id: Optional[int] = None
     geometry: PolygonGeometry
     severity: str
     depth: Optional[str] = None

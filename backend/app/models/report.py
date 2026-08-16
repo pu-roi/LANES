@@ -56,10 +56,17 @@ class FloodReport(Base):
     status: Mapped[ReportStatus] = mapped_column(Enum(ReportStatus, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]), default=ReportStatus.PENDING)
     image_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     
-    # [NEW] Fields for Community Feed
+    # [NEW] Fields for Community Feed & 1:N Spatial Moderation
     human_readable_location: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     barangay: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)
+    
+    # 1:N Spatial Dedup: Multiple FloodReports can link to 1 FloodAvoidanceZone
+    zone_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("flood_avoidance_zones.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
     
     # PostGIS Geometry column for generic geometry (Point or LineString) (SRID 4326 = WGS 84 coordinate system)
     geometry: Mapped[Any] = mapped_column(
@@ -73,10 +80,10 @@ class FloodReport(Base):
     approved_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     # Relationships
-    avoidance_zones: Mapped[List["FloodAvoidanceZone"]] = relationship(
+    avoidance_zone: Mapped[Optional["FloodAvoidanceZone"]] = relationship(
         "FloodAvoidanceZone",
-        back_populates="report",
-        cascade="all, delete-orphan"
+        back_populates="reports",
+        foreign_keys=[zone_id]
     )
     locations: Mapped[List["FloodReportLocation"]] = relationship(
         "FloodReportLocation",
@@ -137,11 +144,16 @@ class FloodReportSurvey(Base):
 class FloodAvoidanceZone(Base):
     """
     FloodAvoidanceZone model representing generated detour areas around flooded coordinates.
+    1:N relationship: One FloodAvoidanceZone links to multiple FloodReports.
     """
     __tablename__ = "flood_avoidance_zones"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    report_id: Mapped[int] = mapped_column(ForeignKey("flood_reports.id", ondelete="CASCADE"), index=True)
+    curated_by_admin_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
     
     # PostGIS Geometry column for polygonal boundaries representing avoidance buffer areas
     geometry: Mapped[Any] = mapped_column(
@@ -154,62 +166,85 @@ class FloodAvoidanceZone(Base):
     expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     # Relationships
-    report: Mapped["FloodReport"] = relationship("FloodReport", back_populates="avoidance_zones")
+    reports: Mapped[List["FloodReport"]] = relationship("FloodReport", back_populates="avoidance_zone")
+    curated_by_admin: Mapped[Optional["User"]] = relationship("User", foreign_keys=[curated_by_admin_id])
+
+    @property
+    def primary_report(self) -> Optional["FloodReport"]:
+        return self.reports[0] if self.reports else None
+
+    @property
+    def report_id(self) -> Optional[int]:
+        return self.primary_report.id if self.primary_report else None
 
     @property
     def severity(self) -> str:
-        return self.report.severity.value if self.report and hasattr(self.report.severity, 'value') else "medium"
+        if self.reports:
+            # Highest severity takes precedence if multiple reports are merged
+            severities = [r.severity for r in self.reports]
+            if ReportSeverity.EXTREME in severities:
+                return "extreme"
+            if ReportSeverity.HIGH in severities:
+                return "high"
+            if ReportSeverity.MEDIUM in severities:
+                return "medium"
+            if ReportSeverity.LOW in severities:
+                return "low"
+        return "medium"
 
     @property
     def depth(self) -> Optional[str]:
-        return self.report.depth if self.report else None
+        return self.primary_report.depth if self.primary_report else None
 
     @property
     def report_geometry(self) -> Any:
-        return self.report.geometry if self.report else None
+        return self.primary_report.geometry if self.primary_report else None
 
     @property
     def report_text(self) -> Optional[str]:
-        return self.report.raw_text if self.report else None
+        return self.primary_report.raw_text if self.primary_report else None
 
     @property
     def reporter_name(self) -> str:
-        if self.report and self.report.user:
-            return self.report.user.full_name or self.report.user.username or "Anonymous"
+        if self.primary_report and self.primary_report.user:
+            user = self.primary_report.user
+            if user.profile and (user.profile.first_name or user.profile.last_name):
+                return f"{user.profile.first_name or ''} {user.profile.last_name or ''}".strip()
+            return user.username or "Anonymous"
         return "System"
 
     @property
     def reporter_role(self) -> Optional[str]:
-        if self.report and self.report.user and hasattr(self.report.user, 'role') and self.report.user.role:
-            return self.report.user.role.name
+        if self.primary_report and self.primary_report.user and hasattr(self.primary_report.user, 'role') and self.primary_report.user.role:
+            return self.primary_report.user.role.name
         return None
 
     @property
     def passable_vehicles(self) -> Optional[str]:
-        if self.report and self.report.survey:
-            return self.report.survey.passable_vehicles
+        if self.primary_report and self.primary_report.survey:
+            return self.primary_report.survey.passable_vehicles
         return None
 
     @property
     def hidden_hazards(self) -> Optional[str]:
-        if self.report and self.report.survey and hasattr(self.report.survey.hidden_hazards, 'value'):
-            return self.report.survey.hidden_hazards.value
+        if self.primary_report and self.primary_report.survey and hasattr(self.primary_report.survey.hidden_hazards, 'value'):
+            return self.primary_report.survey.hidden_hazards.value
         return None
 
     @property
     def reporter_trust_score(self) -> Optional[float]:
-        if self.report and self.report.user and self.report.user.profile:
-            return float(self.report.user.profile.trust_score)
+        if self.primary_report and self.primary_report.user and self.primary_report.user.profile:
+            return float(self.primary_report.user.profile.trust_score)
         return 100.0
 
     @property
     def reporter_reports_submitted(self) -> Optional[int]:
-        if self.report and self.report.user and self.report.user.profile:
-            return self.report.user.profile.reports_submitted
+        if self.primary_report and self.primary_report.user and self.primary_report.user.profile:
+            return self.primary_report.user.profile.reports_submitted
         return 0
 
     @property
     def reporter_reports_verified(self) -> Optional[int]:
-        if self.report and self.report.user and self.report.user.profile:
-            return self.report.user.profile.reports_approved
+        if self.primary_report and self.primary_report.user and self.primary_report.user.profile:
+            return self.primary_report.user.profile.reports_approved
         return 0

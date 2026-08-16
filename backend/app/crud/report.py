@@ -1,4 +1,5 @@
 from typing import List, Optional
+from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
@@ -108,14 +109,24 @@ def create_flood_avoidance_zone(db: Session, zone: schemas.FloodAvoidanceZoneCre
     geometry_clause = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
 
     db_zone = models.FloodAvoidanceZone(
-        report_id=zone.report_id,
         geometry=geometry_clause,
         is_active=zone.is_active,
-        expires_at=zone.expires_at
+        expires_at=zone.expires_at,
+        curated_by_admin_id=zone.curated_by_admin_id
     )
     db.add(db_zone)
     db.commit()
     db.refresh(db_zone)
+
+    if zone.report_id:
+        db_report = db.query(models.FloodReport).filter(models.FloodReport.id == zone.report_id).first()
+        if db_report:
+            db_report.zone_id = db_zone.id
+            db_report.status = models.ReportStatus.APPROVED
+            db_report.approved_at = datetime.utcnow()
+            db.commit()
+            db.refresh(db_zone)
+
     return db_zone
 
 
