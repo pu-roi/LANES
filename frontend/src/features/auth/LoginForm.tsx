@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
@@ -12,6 +12,8 @@ import { FcGoogle } from "react-icons/fc";
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
   const { info } = useToast();
   const { login, isLoggingIn } = useAuth();
   const [username, setUsername] = useState("");
@@ -141,7 +143,10 @@ export default function LoginForm() {
       <div className="text-center pt-2">
         <p className="text-sm text-blue-100 lg:text-gray-600">
           Don't have an account?{" "}
-          <Link href="/register" className="text-white lg:text-blue-600 font-bold lg:font-medium hover:text-blue-200 lg:hover:text-blue-500 hover:underline transition-colors">
+          <Link
+            href={redirectTo ? `/register?redirect=${encodeURIComponent(redirectTo)}` : "/register"}
+            className="text-white lg:text-blue-600 font-bold lg:font-medium hover:text-blue-200 lg:hover:text-blue-500 hover:underline transition-colors"
+          >
             Sign up
           </Link>
         </p>

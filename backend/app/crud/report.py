@@ -28,10 +28,44 @@ def get_pending_flood_reports(db: Session, skip: int = 0, limit: int = 100) -> L
     ).offset(skip).limit(limit).all()
 
 
+def credit_user_verified_report(db: Session, user_id: int) -> None:
+    """
+    Increments reports_approved and recalculates accuracy_rate and trust_score for a user.
+    Rule: +5 Trust Score (capped at 100).
+    """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user and user.profile:
+        user.profile.reports_approved += 1
+        # Calculate new trust score (+5 per approved report, capped at 100)
+        user.profile.trust_score = min(100, user.profile.trust_score + 5)
+        # Recalculate accuracy rate
+        total_graded = user.profile.reports_approved + user.profile.reports_rejected
+        if total_graded > 0:
+            user.profile.accuracy_rate = round((user.profile.reports_approved / total_graded) * 100.0, 1)
+        db.commit()
+
+
+def penalize_user_rejected_report(db: Session, user_id: int) -> None:
+    """
+    Increments reports_rejected and recalculates accuracy_rate and trust_score for a user.
+    Rule: -10 Trust Score (minimum 0).
+    """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user and user.profile:
+        user.profile.reports_rejected += 1
+        user.profile.trust_score = max(0, user.profile.trust_score - 10)
+        total_graded = user.profile.reports_approved + user.profile.reports_rejected
+        if total_graded > 0:
+            user.profile.accuracy_rate = round((user.profile.reports_approved / total_graded) * 100.0, 1)
+        db.commit()
+
+
 def update_flood_report_status(db: Session, report_id: int, status: str) -> Optional[models.FloodReport]:
     report = get_flood_report(db, report_id)
     if report:
         report.status = status
+        if status == "rejected" and report.user_id:
+            penalize_user_rejected_report(db, report.user_id)
         db.commit()
         db.refresh(report)
     return report
@@ -101,6 +135,47 @@ def get_active_avoidance_zones(db: Session) -> List[models.FloodAvoidanceZone]:
         models.FloodAvoidanceZone.is_active == True,
         (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
     ).all()
+
+
+def get_nearby_active_avoidance_zones(
+    db: Session,
+    report_id: int,
+    max_distance_meters: float = 300.0
+) -> List[dict]:
+    """
+    Finds active avoidance zones that are within max_distance_meters of a given flood report's geometry.
+    Uses PostGIS ST_Distance with spheroid projection.
+    """
+    target_report = get_flood_report(db, report_id)
+    if not target_report or target_report.geometry is None:
+        return []
+
+    # Query active zones and compute geodesic distance
+    distance_expr = func.ST_Distance(
+        func.ST_Transform(models.FloodAvoidanceZone.geometry, 3857),
+        func.ST_Transform(target_report.geometry, 3857)
+    )
+
+    results = db.query(
+        models.FloodAvoidanceZone,
+        distance_expr.label("distance_meters")
+    ).filter(
+        models.FloodAvoidanceZone.is_active == True,
+        (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now()),
+        func.ST_DWithin(
+            func.ST_Transform(models.FloodAvoidanceZone.geometry, 3857),
+            func.ST_Transform(target_report.geometry, 3857),
+            max_distance_meters
+        )
+    ).order_by("distance_meters").all()
+
+    nearby = []
+    for zone, dist in results:
+        nearby.append({
+            "zone": zone,
+            "distance_meters": round(float(dist), 1)
+        })
+    return nearby
 
 
 def create_flood_avoidance_zone(db: Session, zone: schemas.FloodAvoidanceZoneCreate) -> models.FloodAvoidanceZone:

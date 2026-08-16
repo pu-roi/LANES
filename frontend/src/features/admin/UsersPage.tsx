@@ -6,7 +6,7 @@ import { getUsers, updateUserStatus, deleteUser, UserRecord, createAdminUser, up
 import { Button } from "@/shared/ui/Button";
 import { Modal } from "@/shared/ui/Modal";
 import { Input } from "@/shared/ui/Input";
-import { Select, TableActionGroup, TableActionButton, Pagination, DataTable, Column } from "@/shared/ui";
+import { useToast, Select, Pagination, TableActionGroup, TableActionButton, Tabs, DataTable, Column } from "@/shared/ui";
 import {
   Loader2,
   Users,
@@ -274,28 +274,18 @@ export default function UsersPage() {
       )}
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
-        <div className="flex space-x-8">
-          {[
-            { id: "all", label: "All Accounts" },
-            { id: "Commuter", label: "Citizens" },
-            { id: "Sub-Administrator", label: "Sub-Administrators" },
-            { id: "Super-Administrator", label: "Super-Administrators" }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleRoleTabChange(tab.id)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                role === tab.id
-                  ? "border-blue-600 text-blue-600 font-semibold"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <Tabs
+        tabs={[
+          { id: "all", label: "All Accounts" },
+          { id: "Commuter", label: "Citizens" },
+          { id: "Sub-Administrator", label: "Sub-Administrators" },
+          { id: "Super-Administrator", label: "Super-Administrators" }
+        ]}
+        activeTab={role}
+        onChange={handleRoleTabChange}
+        variant="underline"
+        layoutId="admin-users-tab-indicator"
+      />
 
       {/* Filter Toolbar */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-gray-200 shadow-sm">

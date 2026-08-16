@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getReports, getUsers, FloodReport, UserRecord } from "@/features/admin/adminApi";
-import { Button } from "@/shared/ui/Button";
+import { Button, Tabs } from "@/shared/ui";
 import { Input } from "@/shared/ui/Input";
 import { DataTable, Column } from "@/shared/ui";
 import {
@@ -175,32 +175,16 @@ export default function ArchivePage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
-        <div className="flex space-x-8">
-          <button
-            onClick={() => handleTabChange("users")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
-              activeTab === "users"
-                ? "border-blue-600 text-blue-600 font-semibold"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            Archived Users
-          </button>
-          <button
-            onClick={() => handleTabChange("reports")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
-              activeTab === "reports"
-                ? "border-blue-600 text-blue-600 font-semibold"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            Archived Reports
-          </button>
-        </div>
-      </div>
+      <Tabs<"users" | "reports">
+        tabs={[
+          { id: "users", label: "Archived Users", icon: Users },
+          { id: "reports", label: "Archived Reports", icon: FileText }
+        ]}
+        activeTab={activeTab}
+        onChange={handleTabChange}
+        variant="underline"
+        layoutId="archive-tab-indicator"
+      />
 
       {/* Filter Toolbar */}
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-xl border border-gray-200 shadow-sm">

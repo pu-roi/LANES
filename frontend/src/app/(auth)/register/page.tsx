@@ -4,8 +4,11 @@ import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Logo } from "@/shared/ui/Logo";
+import { useSearchParams } from "next/navigation";
 
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || undefined;
   return (
     <div className="relative flex-1 w-full overflow-hidden bg-slate-50 flex flex-col lg:flex-row">
       
@@ -90,7 +93,7 @@ export default function RegisterPage() {
               <p className="text-sm sm:text-base text-blue-100 lg:text-slate-500 font-medium">Join LANES as a citizen to get started.</p>
             </div>
 
-            <RegisterForm />
+            <RegisterForm redirectTo={redirectTo} />
 
             <div className="text-center pt-6 sm:pt-8 pb-4">
               <p className="text-sm text-blue-100 lg:text-slate-600">

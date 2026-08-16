@@ -19,7 +19,7 @@ import { PostItem } from "../feed/PostItem";
 import { PostDetailPage } from "../feed/PostDetailPage";
 import { LeftSidebar } from "../feed/LeftSidebar";
 import { RightSidebar } from "../feed/RightSidebar";
-import { useToast, Button } from "@/shared/ui";
+import { useToast, Button, Tabs, TabContentPanel } from "@/shared/ui";
 
 export default function ProfileView() {
   const { user, isLoading: authLoading, logout } = useAuth();
@@ -537,65 +537,33 @@ export default function ProfileView() {
 
           {/* Right Column: Tabs */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Desktop Tabs Navigation (No 'Stats' tab needed here) */}
-            <div className="flex border-b border-slate-200 mb-6 overflow-x-auto hide-scrollbar">
-              <button
-                onClick={() => handleTabChange("posts")}
-                className={`relative flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-medium transition-colors hover:text-blue-600 ${
-                  activeTab === "posts" ? "text-blue-600" : "text-slate-500"
-                }`}
-              >
-                <MessageSquare className="w-4 h-4" /> Community Posts
-                {activeTab === "posts" && (
-                  <motion.div layoutId="desktop-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
-                )}
-              </button>
-              <button
-                onClick={() => handleTabChange("reports")}
-                className={`relative flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-medium transition-colors hover:text-blue-600 ${
-                  activeTab === "reports" ? "text-blue-600" : "text-slate-500"
-                }`}
-              >
-                <AlertTriangle className="w-4 h-4" /> Hazard Reports
-                {activeTab === "reports" && (
-                  <motion.div layoutId="desktop-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
-                )}
-              </button>
-              <button
-                onClick={() => handleTabChange("settings")}
-                className={`relative flex-1 min-w-[140px] flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-medium transition-colors hover:text-blue-600 ${
-                  activeTab === "settings" ? "text-blue-600" : "text-slate-500"
-                }`}
-              >
-                <Settings className="w-4 h-4" /> Settings
-                {activeTab === "settings" && (
-                  <motion.div layoutId="desktop-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
-                )}
-              </button>
-            </div>
+            {/* Desktop Tabs Navigation */}
+            <Tabs<"posts" | "reports" | "settings">
+              tabs={[
+                { id: "posts", label: "Community Posts", icon: MessageSquare },
+                { id: "reports", label: "Hazard Reports", icon: AlertTriangle },
+                { id: "settings", label: "Settings", icon: Settings },
+              ]}
+              activeTab={activeTab === "stats" ? "posts" : activeTab}
+              onChange={(tab) => handleTabChange(tab)}
+              variant="underline"
+              layoutId="profile-desktop-tab-indicator"
+              fullWidth
+              className="mb-6"
+            />
 
             {/* Tab Content */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 min-h-[400px] overflow-hidden">
-              <AnimatePresence mode="wait" custom={tabDirection}>
-                <motion.div
-                  key={activeTab}
-                  custom={tabDirection}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.2 }}
-                >
-                  {(activeTab === "stats") && (
-                    <div className="p-6 text-center text-slate-500">
-                      Stats are visible in the left sidebar on large screens.
-                    </div>
-                  )}
-                  {activeTab === "reports" && renderReports()}
-                  {activeTab === "posts" && renderPosts()}
-                  {activeTab === "settings" && renderSettings()}
-                </motion.div>
-              </AnimatePresence>
+              <TabContentPanel tabKey={activeTab} direction={tabDirection}>
+                {activeTab === "stats" && (
+                  <div className="p-6 text-center text-slate-500">
+                    Stats are visible in the left sidebar on large screens.
+                  </div>
+                )}
+                {activeTab === "reports" && renderReports()}
+                {activeTab === "posts" && renderPosts()}
+                {activeTab === "settings" && renderSettings()}
+              </TabContentPanel>
             </div>
           </div>
         </div>
@@ -604,96 +572,51 @@ export default function ProfileView() {
         <div className="block lg:hidden w-full px-4 sm:px-0">
           
           {/* Mobile Horizontal Tabs Navigation */}
-          <div className="flex border-b border-slate-200 mb-4 w-full">
-            <button
-              onClick={() => handleTabChange("stats")}
-              className={`relative flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 text-xs font-medium transition-colors hover:text-blue-600 ${
-                activeTab === "stats" ? "text-blue-600" : "text-slate-500"
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4" /> <span className="hidden min-[375px]:inline">Stats</span>
-              {activeTab === "stats" && (
-                <motion.div layoutId="mobile-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
-              )}
-            </button>
-            <button
-              onClick={() => handleTabChange("posts")}
-              className={`relative flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 text-xs font-medium transition-colors hover:text-blue-600 ${
-                activeTab === "posts" ? "text-blue-600" : "text-slate-500"
-              }`}
-            >
-              <MessageSquare className="w-4 h-4" /> <span className="hidden min-[375px]:inline">Posts</span>
-              {activeTab === "posts" && (
-                <motion.div layoutId="mobile-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
-              )}
-            </button>
-            <button
-              onClick={() => handleTabChange("reports")}
-              className={`relative flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 text-xs font-medium transition-colors hover:text-blue-600 ${
-                activeTab === "reports" ? "text-blue-600" : "text-slate-500"
-              }`}
-            >
-              <AlertTriangle className="w-4 h-4" /> <span className="hidden min-[375px]:inline">Reports</span>
-              {activeTab === "reports" && (
-                <motion.div layoutId="mobile-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
-              )}
-            </button>
-            <button
-              onClick={() => handleTabChange("settings")}
-              className={`relative flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 text-xs font-medium transition-colors hover:text-blue-600 ${
-                activeTab === "settings" ? "text-blue-600" : "text-slate-500"
-              }`}
-            >
-              <Settings className="w-4 h-4" /> <span className="hidden min-[375px]:inline">Settings</span>
-              {activeTab === "settings" && (
-                <motion.div layoutId="mobile-tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
-              )}
-            </button>
-          </div>
+          <Tabs<"stats" | "posts" | "reports" | "settings">
+            tabs={[
+              { id: "stats", label: "Stats", icon: ShieldCheck, hideLabelOnMobile: true },
+              { id: "posts", label: "Posts", icon: MessageSquare, hideLabelOnMobile: true },
+              { id: "reports", label: "Reports", icon: AlertTriangle, hideLabelOnMobile: true },
+              { id: "settings", label: "Settings", icon: Settings, hideLabelOnMobile: true },
+            ]}
+            activeTab={activeTab}
+            onChange={(tab) => handleTabChange(tab)}
+            variant="underline"
+            layoutId="profile-mobile-tab-indicator"
+            fullWidth
+            className="mb-4 w-full"
+          />
 
           {/* Mobile Tab Content */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 min-h-[50vh] p-4 sm:p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-hidden">
-            <AnimatePresence mode="wait" custom={tabDirection}>
-              <motion.div
-                key={activeTab}
-                custom={tabDirection}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.2 }}
-              >
-                {activeTab === "stats" && (
-                  <div className="mt-2">
-                    <h3 className="text-base font-bold text-slate-900 mb-6 px-2">My Overview</h3>
-                    <div>
-                      {renderStats()}
-                    </div>
+            <TabContentPanel tabKey={activeTab} direction={tabDirection}>
+              {activeTab === "stats" && (
+                <div className="mt-2">
+                  <h3 className="text-base font-bold text-slate-900 mb-6 px-2">My Overview</h3>
+                  <div>
+                    {renderStats()}
                   </div>
-                )}
-                {activeTab === "reports" && (
-                  <div className="mt-2">
-                    <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Hazard Reports</h3>
-                    {/* Re-use renderReports but we might need to hide duplicate titles. 
-                        Since we added `hidden lg:block` to the title in renderReports(), 
-                        this mobile-specific title works perfectly! */}
-                    {renderReports()}
-                  </div>
-                )}
-                {activeTab === "posts" && (
-                  <div className="mt-2">
-                    <h3 className="text-base font-bold text-slate-900 mb-2 px-2 pt-2">Community Posts</h3>
-                    {renderPosts()}
-                  </div>
-                )}
-                {activeTab === "settings" && (
-                  <div className="mt-2">
-                    <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Settings</h3>
-                    {renderSettings()}
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+                </div>
+              )}
+              {activeTab === "reports" && (
+                <div className="mt-2">
+                  <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Hazard Reports</h3>
+                  {renderReports()}
+                </div>
+              )}
+              {activeTab === "posts" && (
+                <div className="mt-2">
+                  <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Community Posts</h3>
+                  {renderPosts()}
+                </div>
+              )}
+              {activeTab === "settings" && (
+                <div className="mt-2">
+                  <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Account Settings</h3>
+                  {renderSettings()}
+                </div>
+              )}
+            </TabContentPanel>
           </div>
         </div>
       </div>

@@ -163,6 +163,25 @@ class AdminDashboardStats(BaseModel):
     database_status: str
 
 
+class ApproveReportRequest(BaseModel):
+    action: str = "CREATE_NEW"  # "CREATE_NEW" or "MERGE"
+    target_zone_id: Optional[int] = None
+    custom_geometry: Optional[PolygonGeometry] = None
+    buffer_radius: Optional[float] = None
+    severity: Optional[str] = None
+    depth: Optional[str] = None
+
+
+class NearbyZoneResponse(BaseModel):
+    id: int
+    severity: str
+    depth: Optional[str] = None
+    distance_meters: float
+    created_at: datetime
+    geometry: PolygonGeometry
+    report_count: int = 1
+
+
 class FloodAvoidanceZonesPaginatedResponse(BaseModel):
     zones: list[FloodAvoidanceZoneResponse]
     total: int

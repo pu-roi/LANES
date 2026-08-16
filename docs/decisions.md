@@ -56,3 +56,31 @@ Originally, MapLibre instances were independently constructed in `MapCanvas.tsx`
 1. **Imperative Hook Pattern (Standard React MapLibre Architecture):** Raw MapLibre GL JS operates imperatively on a canvas. Creating a bare `<BaseMap>` that handles canvas mounting, tile style fallbacks (MapTiler -> OpenStreetMap), `TopViewControlV3`, and native navigation controls allows any page to instantiate a styled map effortlessly.
 2. **Pluggable Layer Hooks:** By extracting spatial datasets into custom hooks (e.g., `useCityBoundaries(map, isLoaded)` and `useFloodZonesLayer(map, isLoaded, activeZones)`), any future page can compose any combination of map layers (e.g., map with floods but no borders, or map with borders but no floods) in a single line of code without duplicating initialization logic.
 3. **Unified Flood Polygons & Severity Color Scale:** Removed the restriction hiding road-based flood polygons so both admins and commuters see exact spatial flood hazard boundaries. Standardized the 4-tier color scale (`low`: Lime `#84cc16`, `medium`: Amber `#eab308`, `high`: Orange `#f97316`, `extreme`: Red `#ef4444`).
+
+---
+
+## 5. 1:N Spatial Relational Deduplication & Trust Score Pooling
+**Date:** August 2026
+**Decision:** Transition from 1:1 `report_id` on `FloodAvoidanceZone` to 1:N `zone_id` foreign key on `FloodReport` with communal trust score crediting.
+
+**Context:**
+During monsoon events, multiple commuters frequently submit independent reports for the same flooded street. Originally, each avoidance zone strictly required a unique `report_id`, creating duplicate conflicting avoidance barriers for the Valhalla routing engine and blocking administrators from merging identical submissions.
+
+**Reasoning & Architecture:**
+1. **Relational Inversion (1:N Migration):** Moved the foreign key to `FloodReport.zone_id` referencing `FloodAvoidanceZone.id` (`ondelete="SET NULL"`). This allows a single physical avoidance barrier to encapsulate $N$ crowdsourced reports.
+2. **Fair Trust Score Pooling:** Merging or approving a zone iterates across all linked reports to award verified trust points (`+5`) and increment `reports_verified` for every unique contributor, ensuring crowdsourced contributions are recognized without polluting the map.
+3. **Proximity Search via PostGIS:** Utilizes `ST_DWithin` on the backend (`/api/v1/admin/zones/nearby`) to automatically detect existing active zones within 200–500m of incoming reports.
+
+---
+
+## 6. Shared Fluid UI Design System & Anti Box-in-a-Box Standard
+**Date:** August 2026
+**Decision:** Standardize multi-variant animated Tabs (`shared/ui/Tabs.tsx`) and full-bleed edge-to-edge spatial dashboards.
+
+**Context:**
+Different admin and profile pages used isolated tab implementations, leading to visual inconsistencies, frame nesting ("container inside container" syndrome), and horizontal scrollbar flicker during framer-motion transitions.
+
+**Reasoning & Architecture:**
+1. **Consolidated Tab Component (`Tabs.tsx`):** Implemented a shared component supporting `segmented`, `underline`, and `pills` variants with direction-aware sliding indicators and hidden overflow wrappers (`[scrollbar-width:none]`).
+2. **Full-Bleed Spatial Workspaces:** Refactored `AdminLayout` to conditionally strip outer padding (`p-0` on `/admin/map`) while preserving padding on data tables, maximizing screen real estate for map operations.
+3. **Viewport Auto-Fit & Persistence:** Integrated automatic Pasig City bounding box fitting (`[121.0515, 14.5338]` to `[121.1112, 14.6235]`) on first load, coupled with `localStorage` camera state tracking to persist user zoom/pan coordinates across navigation.
