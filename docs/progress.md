@@ -63,7 +63,7 @@
   - Line Chart: Reports over time (Dynamic: Last 7 Days, Month, Year).
   - Bar Graph: Top 5 Most Flooded Barangays.
 
-### Phase 2: Spatial Moderation, 1:N Deduplication & Fluid Spatial Hub (🟢 SUB-PHASES 2.1–2.3 DELIVERED)
+### Phase 2: Spatial Moderation, 1:N Deduplication & Fluid Spatial Hub (🟢 COMPLETED)
 - [x] **Backend — 1:N Relational Schema Migration**:
   - Inverted the foreign key constraint by moving `zone_id` onto `FloodReport` (`ondelete="SET NULL"`) and adding `curated_by_admin_id` to `FloodAvoidanceZone`.
   - Executed Alembic migration `e89a3df04c63_phase2_spatial_dedup_1_to_n.py`.
@@ -74,6 +74,8 @@
 - [x] **Backend — Communal Trust Score Crediting**:
   - Updated approval & merge logic to iterate through all linked reports to award verified trust scores (`+5`) and increment `reports_verified` for every unique contributor.
   - Passed automated test suite `backend/tests/test_spatial_merging.py` (100% passing).
+- [x] **Backend & Frontend — Multi-Reporter Contributor Serialization**:
+  - Added `contributors` list to `FloodAvoidanceZoneResponse` and `ZoneContributorResponse` schema serializing each merged contributor's name, role, trust score, raw text, timestamp, and original PostGIS geometry.
 - [x] **Frontend — Shared Fluid UI Design System**:
   - Created standardized animated `Tabs.tsx` with `segmented`, `underline`, and `pills` variants and hidden overflow wrappers to eliminate horizontal scrollbar flicker.
   - Standardized tab design across Profile, Live Map, Reports, User Registry, and Archive pages.
@@ -82,8 +84,19 @@
   - Implemented whole-Pasig-City bounding box auto-fitting (`[121.0515, 14.5338]` to `[121.1112, 14.6235]`) on first visit.
   - Implemented persistent camera viewport tracking via `localStorage` restoring exact pan/zoom coordinates across admin page navigation.
   - Guarded MapLibre layer hooks against async style switching and OSM fallback loading.
+- [x] **Frontend — Shared Map Styling Architecture & Strict Zoom Thresholds**:
+  - Created centralized tokens in `mapStyles.ts` and `mapGeoUtils.ts`.
+  - Zoom $\le 14$: Crisp city-overview circle map pins with darker contrast borders.
+  - Zoom $> 14$: Street-level transparent avoidance buffer auras and solid natural-color road lines with zero outline borders.
+  - Added live compact `ZoomLevelControl` indicator in `BaseMap.tsx`.
+- [x] **Frontend — Multi-Reporter Contributor Accordion & Single-Report Map Focus**:
+  - Interactive inline drawer in `ActiveZonesPanel.tsx` with distinct user cards, avatar initials, primary/merged badges, and hover animations.
+  - Clicking any contributor temporarily hides the merged parent avoidance zone and dynamically displays ONLY that contributor's original individual report geometry on the map.
+  - Synchronized smooth 45° angled 3D camera transitions (`zoom: 16`, `pitch: 45`, `duration: 1500ms`) across sidebar and map clicks.
 
 ## Recently Completed
+- [x] **MapLibre Rendering Stability**: Refactored `useFloodZonesLayer` to use `.setData()` and bypass strict `isStyleLoaded` checks, fixing the silent deadlock where layers wouldn't render during vector tile downloads.
+- [x] **Spatial Operations Selection Fix**: Ensured clicking the main active zone wrapper card correctly un-sets any focused `selectedContributorId`, returning the map view to the primary merged polygon.
 - [x] **Saved Places Feature**: Integrated "Saved Places" with map picking, saved places feed integration, mobile drawer support, custom emoji saving, and database persistence.
 - [x] **Progressive Web App (PWA) & UI Fixes** (Installability banner, offline fallback, comment UI overhaul, safe area paddings)
 - [x] **Documentation Update**: AGENTS.md and DESIGN.md updated with latest architecture.

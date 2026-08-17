@@ -815,3 +815,75 @@ def get_audit_trail(
         admin_id=admin_id,
     )
     return {"logs": logs, "total": total}
+
+
+@router.post("/zones/{zone_id}/merge-pending", response_model=schemas.MergePendingReportsResponse)
+async def merge_pending_into_zone(
+    zone_id: int,
+    payload: schemas.MergePendingReportsRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Batch-approve a list of pending flood reports and merge them all into an
+    existing active avoidance zone. Credits +5 trust score to each reporter.
+    Requires admin privileges.
+    """
+    target_zone = db.query(models.FloodAvoidanceZone).filter(
+        models.FloodAvoidanceZone.id == zone_id
+    ).first()
+    if not target_zone:
+        raise HTTPException(status_code=404, detail="Target avoidance zone not found")
+
+    merged_count = 0
+    for report_id in payload.report_ids:
+        report = crud.get_flood_report(db, report_id=report_id)
+        if not report or report.status != models.ReportStatus.PENDING:
+            continue
+
+        # Approve and link report to zone
+        report.status = models.ReportStatus.APPROVED
+        report.approved_at = datetime.utcnow()
+        report.zone_id = target_zone.id
+        db.commit()
+        db.refresh(report)
+
+        # Award trust score to the reporter
+        if report.user_id:
+            crud.credit_user_verified_report(db, user_id=report.user_id)
+
+        merged_count += 1
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="BATCH_MERGE_REPORTS",
+            target_table="flood_avoidance_zones",
+            target_id=zone_id,
+            metadata_json={
+                "zone_id": zone_id,
+                "report_ids": payload.report_ids,
+                "merged_count": merged_count,
+            },
+            ip_address=client_ip,
+        ),
+    )
+
+    # Broadcast real-time signal
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "reports_batch_merged",
+        "data": {
+            "zone_id": zone_id,
+            "merged_count": merged_count,
+        }
+    })
+
+    return schemas.MergePendingReportsResponse(
+        message=f"Successfully merged {merged_count} report(s) into Zone #{zone_id}",
+        merged_count=merged_count,
+        zone_id=zone_id,
+    )

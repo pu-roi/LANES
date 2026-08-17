@@ -53,6 +53,10 @@ class FloodReportResponse(FloodReportBase):
     approved_at: Optional[datetime] = None
     zone_id: Optional[int] = None
     survey: Optional[SurveyDataResponse] = None
+    reporter_name: Optional[str] = "System"
+    reporter_username: Optional[str] = None
+    reporter_role: Optional[str] = None
+    reporter_trust_score: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -91,6 +95,42 @@ class FloodAvoidanceZoneCreate(FloodAvoidanceZoneBase):
     curated_by_admin_id: Optional[int] = None
 
 
+class ZoneContributorResponse(BaseModel):
+    report_id: int
+    reporter_name: str
+    reporter_username: Optional[str] = None
+    reporter_role: Optional[str] = None
+    reporter_trust_score: float = 100.0
+    raw_text: str
+    severity: str
+    depth: Optional[str] = None
+    created_at: datetime
+    is_primary: bool = False
+    geometry: Optional[Union[PointGeometry, LineStringGeometry]] = None
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("geometry", mode="before")
+    @classmethod
+    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry]]:
+        if isinstance(v, WKBElement):
+            try:
+                data = bytes.fromhex(v.desc) if isinstance(v.desc, str) else bytes(v.data)
+                byte_order = '<' if data[0] == 1 else '>'
+                geom_type = struct.unpack(f"{byte_order}I", data[1:5])[0]
+                pure_geom_type = geom_type & 0x0fffffff
+                
+                if pure_geom_type == 1:  # Point
+                    coords = parse_ewkb_point(data)
+                    return PointGeometry(type="Point", coordinates=coords)
+                elif pure_geom_type == 2:  # LineString
+                    coords = parse_ewkb_linestring(data)
+                    return LineStringGeometry(type="LineString", coordinates=coords)
+            except Exception as e:
+                print(f"Warning: Failed parsing contributor geometry EWKB: {e}")
+                return None
+        return v
+
+
 class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     id: int
     report_id: Optional[int] = None
@@ -111,6 +151,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     
     passable_vehicles: Optional[str] = None
     hidden_hazards: Optional[str] = None
+    contributors: list[ZoneContributorResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -194,3 +235,13 @@ class AvoidanceZoneDeactivateBulkRequest(BaseModel):
 class AvoidanceZoneUpdateRequest(BaseModel):
     expires_at: Optional[datetime] = None
     is_active: Optional[bool] = None
+
+
+class MergePendingReportsRequest(BaseModel):
+    report_ids: list[int]
+
+
+class MergePendingReportsResponse(BaseModel):
+    message: str
+    merged_count: int
+    zone_id: int

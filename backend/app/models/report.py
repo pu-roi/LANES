@@ -107,6 +107,30 @@ class FloodReport(Base):
         uselist=False
     )
 
+    @property
+    def reporter_name(self) -> str:
+        if self.user:
+            if self.user.profile and (self.user.profile.first_name or self.user.profile.last_name):
+                return f"{self.user.profile.first_name or ''} {self.user.profile.last_name or ''}".strip()
+            return self.user.username or "Anonymous"
+        return "System"
+
+    @property
+    def reporter_username(self) -> Optional[str]:
+        return self.user.username if self.user else None
+
+    @property
+    def reporter_role(self) -> Optional[str]:
+        if self.user and hasattr(self.user, 'role') and self.user.role:
+            return self.user.role.name
+        return None
+
+    @property
+    def reporter_trust_score(self) -> Optional[float]:
+        if self.user and self.user.profile:
+            return float(self.user.profile.trust_score)
+        return 100.0
+
 
 class FloodReportLocation(Base):
     """
@@ -248,3 +272,45 @@ class FloodAvoidanceZone(Base):
         if self.primary_report and self.primary_report.user and self.primary_report.user.profile:
             return self.primary_report.user.profile.reports_approved
         return 0
+
+    @property
+    def contributors(self) -> List[dict]:
+        """
+        Returns structured list of all contributors whose reports are linked to this avoidance zone.
+        """
+        contribs = []
+        if not self.reports:
+            return contribs
+
+        for idx, r in enumerate(self.reports):
+            name = "Anonymous"
+            username = None
+            trust_score = 100.0
+            role = None
+
+            if r.user:
+                username = r.user.username
+                if r.user.profile and (r.user.profile.first_name or r.user.profile.last_name):
+                    name = f"{r.user.profile.first_name or ''} {r.user.profile.last_name or ''}".strip()
+                elif r.user.username:
+                    name = r.user.username
+
+                if r.user.profile:
+                    trust_score = float(r.user.profile.trust_score)
+                if hasattr(r.user, 'role') and r.user.role:
+                    role = r.user.role.name
+
+            contribs.append({
+                "report_id": r.id,
+                "reporter_name": name,
+                "reporter_username": username,
+                "reporter_role": role,
+                "reporter_trust_score": trust_score,
+                "raw_text": r.raw_text,
+                "severity": r.severity.value if hasattr(r.severity, 'value') else str(r.severity),
+                "depth": r.depth,
+                "created_at": r.created_at,
+                "is_primary": idx == 0,
+                "geometry": r.geometry,
+            })
+        return contribs

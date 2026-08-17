@@ -44,6 +44,62 @@ export class TopViewControlV3 {
   }
 }
 
+export class ZoomLevelControl {
+  private _map: maplibregl.Map | undefined;
+  private _container: HTMLDivElement | undefined;
+  private _textSpan: HTMLSpanElement | undefined;
+
+  onAdd(map: maplibregl.Map) {
+    this._map = map;
+    this._container = document.createElement("div");
+    this._container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    this._container.style.cssText = `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 26px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color: #334155;
+      background: #ffffff;
+      user-select: none;
+      cursor: default;
+      box-sizing: border-box;
+      border-radius: 8px;
+    `;
+
+    this._textSpan = document.createElement("span");
+    this._textSpan.style.cssText = `
+      letter-spacing: -0.5px;
+    `;
+    this._updateText();
+    this._container.appendChild(this._textSpan);
+
+    this._map.on("zoom", this._onZoom);
+    return this._container;
+  }
+
+  private _onZoom = () => {
+    this._updateText();
+  };
+
+  private _updateText() {
+    if (this._map && this._textSpan) {
+      const z = this._map.getZoom();
+      this._textSpan.textContent = `Z: ${z.toFixed(1)}`;
+      this._textSpan.title = z > 14 ? "Street Level (Lines/Polygons Active)" : "City View (Circle Pins Active)";
+    }
+  }
+
+  onRemove() {
+    this._map?.off("zoom", this._onZoom);
+    this._container?.parentNode?.removeChild(this._container);
+    this._map = undefined;
+  }
+}
+
 const DEFAULT_CENTER: [number, number] = [121.0772, 14.562];
 const OSM_FALLBACK_STYLE = {
   version: 8,
@@ -121,6 +177,7 @@ export default function BaseMap({
     });
 
     mapInstance.addControl(new TopViewControlV3(), "bottom-right");
+    mapInstance.addControl(new ZoomLevelControl(), "bottom-right");
     mapInstance.addControl(
       new maplibregl.NavigationControl({
         showCompass: true,

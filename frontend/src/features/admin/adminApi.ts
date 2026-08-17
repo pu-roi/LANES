@@ -12,6 +12,16 @@ export interface LineStringGeometry {
 
 export type ReportGeometry = PointGeometry | LineStringGeometry;
 
+/** Geometry drawn by admin in ZoneGeometryEditor */
+export type DrawnGeometry = PolygonGeometry | LineStringGeometry;
+
+export interface ReportSurvey {
+  id?: number;
+  report_id?: number;
+  passable_vehicles?: string | null;
+  hidden_hazards?: "yes" | "no" | "unsure" | string;
+}
+
 export interface FloodReport {
   id: number;
   source: string;
@@ -27,6 +37,12 @@ export interface FloodReport {
   user_id?: number | null;
   created_at: string;
   updated_at: string;
+  approved_at?: string | null;
+  survey?: ReportSurvey | null;
+  reporter_name?: string | null;
+  reporter_username?: string | null;
+  reporter_role?: string | null;
+  reporter_trust_score?: number | null;
 }
 
 export interface ApproveReportPayload {
@@ -117,9 +133,36 @@ export async function getPendingReports(): Promise<FloodReport[]> {
   return apiClient.get<FloodReport[]>("/admin/reports/pending");
 }
 
+/**
+ * Fetches other pending reports that share the same street/location segment as
+ * the given report, suitable for batch street merge.
+ */
+export async function getReportsByLocation(reportId: number): Promise<FloodReport[]> {
+  try {
+    return apiClient.get<FloodReport[]>(`/admin/reports/by-location?report_id=${reportId}`);
+  } catch {
+    // Endpoint may not yet exist; return empty array gracefully
+    return [];
+  }
+}
+
 export interface PolygonGeometry {
   type: "Polygon";
   coordinates: [number, number][][];
+}
+
+export interface ZoneContributor {
+  report_id: number;
+  reporter_name: string;
+  reporter_username?: string;
+  reporter_role?: string;
+  reporter_trust_score: number;
+  raw_text: string;
+  severity: string;
+  depth?: string;
+  created_at: string;
+  is_primary: boolean;
+  geometry?: ReportGeometry | null;
 }
 
 export interface AvoidanceZone {
@@ -137,6 +180,7 @@ export interface AvoidanceZone {
   reporter_trust_score?: number;
   reporter_reports_submitted?: number;
   reporter_reports_verified?: number;
+  contributors?: ZoneContributor[];
 }
 
 export interface PaginatedZonesResponse {
@@ -347,4 +391,24 @@ export async function updateZoneExpiration(zoneId: number, expiresAt: string | n
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ expires_at: expiresAt }),
   });
+}
+
+export interface MergePendingResponse {
+  message: string;
+  merged_count: number;
+  zone_id: number;
+}
+
+/**
+ * Batch-approve a list of pending reports and merge them all into an existing zone.
+ * Each reporter is credited +5 Trust Score.
+ */
+export async function mergePendingIntoZone(
+  zoneId: number,
+  reportIds: number[]
+): Promise<MergePendingResponse> {
+  return apiClient.post<MergePendingResponse>(
+    `/admin/zones/${zoneId}/merge-pending`,
+    { report_ids: reportIds }
+  );
 }

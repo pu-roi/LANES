@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Map } from "maplibre-gl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
@@ -15,6 +16,8 @@ import { Pagination, Tabs } from "@/shared/ui";
 import BaseMap from "@/shared/ui/BaseMap";
 import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
+import { usePendingReportsLayer } from "@/features/map/hooks/usePendingReportsLayer";
+import { computeCenterCoordinate } from "@/features/map/mapGeoUtils";
 import { 
   Loader2, Trash2, ShieldAlert, 
   RefreshCw, Info, AlertTriangle, CheckCircle, Clock, 
@@ -22,6 +25,8 @@ import {
   MapPin, UserCheck, Shield
 } from "lucide-react";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
+import { PendingReportsPanel } from "./components/PendingReportsPanel";
+import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import maplibregl from "maplibre-gl";
 
 class AnalyticsControl {
@@ -101,6 +106,7 @@ const PASIG_BOUNDS: [[number, number], [number, number]] = [
 const VIEW_STORAGE_KEY = "lanes_admin_map_viewport";
 
 export default function LiveMapPage() {
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   
   // Tab State: 'pending' (Tab 1) | 'zones' (Tab 2)
@@ -108,6 +114,7 @@ export default function LiveMapPage() {
   
   // Pending Moderation State
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
+  const [isolatedReportId, setIsolatedReportId] = useState<number | null>(null);
   const [targetZoneId, setTargetZoneId] = useState<number | null>(null);
   const [mergeModalOpen, setMergeModalOpen] = useState(false);
 
@@ -121,6 +128,8 @@ export default function LiveMapPage() {
   const [page, setPage] = useState(1);
   const [activeOnly, setActiveOnly] = useState(true);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
+  const [selectedContributorId, setSelectedContributorId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
 
@@ -137,6 +146,32 @@ export default function LiveMapPage() {
     refetchInterval: 10000,
   });
 
+  // Read focus_report_id from URL query parameters (when redirected from Reports Page)
+  useEffect(() => {
+    const focusId = searchParams.get("focus_report_id");
+    if (focusId && pendingReports && pendingReports.length > 0) {
+      const idNum = Number(focusId);
+      const target = pendingReports.find((r) => r.id === idNum);
+      if (target) {
+        setActiveTab("pending");
+        setSelectedReportId(idNum);
+        setIsolatedReportId(idNum);
+
+        if (mapInstance && isLoaded && target.geometry) {
+          const center = computeCenterCoordinate(target.geometry, null);
+          if (center) {
+            mapInstance.flyTo({
+              center: center as [number, number],
+              zoom: 16,
+              pitch: 45,
+              duration: 1500,
+            });
+          }
+        }
+      }
+    }
+  }, [searchParams, pendingReports, mapInstance, isLoaded]);
+
   const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
     queryKey: ["adminZones", page, activeOnly],
     queryFn: () => getZones(page, LIMIT, activeOnly),
@@ -145,6 +180,22 @@ export default function LiveMapPage() {
   });
 
   const selectedReport = pendingReports?.find((r) => r.id === selectedReportId) || null;
+
+  // Sub-Phase 2.4: Batch candidates — other pending reports on the same barangay/location or identical geometry
+  const batchCandidates: FloodReport[] = (pendingReports || []).filter(
+    (r: FloodReport) => {
+      if (r.id === selectedReportId) return false;
+      if (selectedReport?.barangay && r.barangay === selectedReport.barangay) return true;
+      // Fallback for missing barangay: match identical geometries (useful for testing duplicates)
+      if (r.geometry && selectedReport?.geometry && JSON.stringify(r.geometry) === JSON.stringify(selectedReport.geometry)) return true;
+      return false;
+    }
+  );
+
+  // If a report is selected, only show the selected report and its batch candidates (preserving original order)
+  const filteredPendingReports = selectedReportId 
+    ? (pendingReports || []).filter(r => r.id === selectedReportId || batchCandidates.some(b => b.id === r.id))
+    : (pendingReports || []);
 
   // Nearby Zones Query for the selected pending report
   const { data: nearbyZones, isLoading: nearbyLoading } = useQuery({
@@ -155,31 +206,36 @@ export default function LiveMapPage() {
 
   // Modular Map Layers
   useCityBoundaries(mapInstance, isLoaded);
-  useFloodZonesLayer(mapInstance, isLoaded, mapZones);
+  useFloodZonesLayer(
+    mapInstance,
+    isLoaded,
+    mapZones,
+    false,
+    activeTab,
+    selectedZoneId,
+    setSelectedZoneId,
+    selectedContributorId,
+    setSelectedContributorId
+  );
+  usePendingReportsLayer(
+    mapInstance, 
+    isLoaded, 
+    filteredPendingReports, 
+    activeTab, 
+    (id) => {
+      setSelectedReportId(id);
+      // Reset isolated mode if user clicks away
+      if (id === null) setIsolatedReportId(null);
+    }, 
+    selectedReportId,
+    isolatedReportId
+  );
 
-  // Restore previous camera position or fit to Pasig City bounds on first visit
+  // Fit to Pasig City bounds on first visit (mimicking PublicMapPage)
   useEffect(() => {
     if (!mapInstance || !isLoaded) return;
-
-    try {
-      const savedViewStr = localStorage.getItem(VIEW_STORAGE_KEY);
-      if (savedViewStr) {
-        const saved = JSON.parse(savedViewStr);
-        if (saved.center && saved.zoom) {
-          mapInstance.jumpTo({
-            center: saved.center,
-            zoom: saved.zoom,
-            pitch: saved.pitch || 0,
-            bearing: saved.bearing || 0,
-          });
-          return;
-        }
-      }
-    } catch (e) {
-      console.warn("Failed to restore saved map viewport:", e);
-    }
-
-    // Default: Fit Pasig City completely within viewport
+    
+    // Always fit bounds on initial load of the map page
     mapInstance.fitBounds(PASIG_BOUNDS, {
       padding: { top: 40, bottom: 40, left: 40, right: 40 },
       duration: 1000,
@@ -271,61 +327,18 @@ export default function LiveMapPage() {
     });
   }, [heatmapData, isLoaded, isAnalyticsOpen, mapInstance]);
 
-  // Selected Pending Report Preview Layer on Map (Transparent Buffer Only, No Pins/Solid Lines)
+  // Fly to selected report when clicked in the list
   useEffect(() => {
-    if (!mapInstance || !isLoaded || !mapInstance.style) return;
-
-    // Clean up existing preview layers
-    if (mapInstance.getLayer("pending-preview-layer")) mapInstance.removeLayer("pending-preview-layer");
-    if (mapInstance.getLayer("pending-preview-outline")) mapInstance.removeLayer("pending-preview-outline");
-    if (mapInstance.getSource("pending-preview-source")) mapInstance.removeSource("pending-preview-source");
-
-    if (!selectedReport || !selectedReport.geometry || activeTab !== "pending") return;
+    if (!mapInstance || !isLoaded || !selectedReport || !selectedReport.geometry || activeTab !== "pending") return;
 
     const isLine = selectedReport.geometry.type === "LineString";
     
-    // Create preview buffer geometry approximation or bounding box
-    let feature: any = null;
     if (isLine) {
       const coords = selectedReport.geometry.coordinates;
-      // Fly to start coord
       mapInstance.flyTo({ center: coords[0] as [number, number], zoom: 16, duration: 1200 });
-      feature = {
-        type: "Feature",
-        geometry: selectedReport.geometry,
-        properties: { severity: selectedReport.severity }
-      };
     } else if (selectedReport.geometry.type === "Point") {
       const coords = selectedReport.geometry.coordinates;
       mapInstance.flyTo({ center: coords as [number, number], zoom: 16, duration: 1200 });
-      feature = {
-        type: "Feature",
-        geometry: selectedReport.geometry,
-        properties: { severity: selectedReport.severity }
-      };
-    }
-
-    if (feature) {
-      mapInstance.addSource("pending-preview-source", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [feature]
-        }
-      });
-
-      // Semi-transparent dashed outline
-      mapInstance.addLayer({
-        id: "pending-preview-outline",
-        type: "line",
-        source: "pending-preview-source",
-        paint: {
-          "line-color": "#f59e0b",
-          "line-width": 18,
-          "line-opacity": 0.35,
-          "line-dasharray": [2, 1]
-        }
-      });
     }
   }, [selectedReport, activeTab, isLoaded, mapInstance]);
 
@@ -396,20 +409,6 @@ export default function LiveMapPage() {
     document.body.removeChild(a);
   };
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      const activeIdsInPage = zones.filter((z: AvoidanceZone) => z.is_active).map((z: AvoidanceZone) => z.id);
-      setSelectedIds(activeIdsInPage);
-    } else {
-      setSelectedIds([]);
-    }
-  };
-
-  const handleSelectRow = (id: number, checked: boolean) => {
-    if (checked) setSelectedIds((prev) => [...prev, id]);
-    else setSelectedIds((prev) => prev.filter((item) => item !== id));
-  };
-
   const flyToZone = (zone: AvoidanceZone) => {
     if (!mapInstance || !zone.geometry || !zone.geometry.coordinates) return;
     try {
@@ -474,227 +473,41 @@ export default function LiveMapPage() {
 
         {/* TAB 1: PENDING REPORTS (MODERATION QUEUE) */}
         {activeTab === "pending" && (
-          <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
-            {pendingLoading ? (
-              <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2">
-                <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                <span className="text-xs font-medium">Checking moderation queue...</span>
-              </div>
-            ) : !pendingReports || pendingReports.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2 p-6 text-center">
-                <CheckCircle className="w-8 h-8 text-emerald-500" />
-                <span className="text-sm font-semibold text-gray-700">Queue is Clear</span>
-                <p className="text-xs text-gray-400">No unapproved flood reports require moderation.</p>
-              </div>
-            ) : (
-              pendingReports.map((report: FloodReport) => {
-                const isSelected = selectedReportId === report.id;
-                const hasNearby = isSelected && nearbyZones && nearbyZones.length > 0;
-
-                return (
-                  <div
-                    key={report.id}
-                    onClick={() => setSelectedReportId(report.id)}
-                    className={`p-4 transition-all cursor-pointer hover:bg-slate-50/80 ${
-                      isSelected ? "bg-blue-50/50 ring-2 ring-blue-500/20" : ""
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-gray-900">Report #{report.id}</span>
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide ${
-                          report.severity === "high" || report.severity === "extreme"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-amber-100 text-amber-700"
-                        }`}>
-                          {report.severity}
-                        </span>
-                        {report.depth && (
-                          <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-medium">
-                            {report.depth}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[11px] text-gray-400 font-medium">
-                        {new Date(report.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-700 font-medium line-clamp-2 mb-2">
-                      "{report.raw_text}"
-                    </p>
-
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
-                      <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                      <span className="truncate">{report.barangay ? `Brgy. ${report.barangay}, Pasig` : "Pasig City"}</span>
-                    </div>
-
-                    {/* Nearby Zone Alert Badge */}
-                    {hasNearby && (
-                      <div className="mb-3 p-2.5 bg-amber-50 border border-amber-200/70 rounded-xl flex items-center justify-between text-xs text-amber-800 animate-fade-in">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-                          <span>Nearby Active Zone ({nearbyZones[0].distance_meters}m away)</span>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setTargetZoneId(nearbyZones[0].id);
-                            setMergeModalOpen(true);
-                          }}
-                          className="h-6 text-[11px] px-2 border-amber-300 bg-white hover:bg-amber-100 text-amber-900"
-                        >
-                          <Merge className="w-3 h-3 mr-1" /> Merge
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* Quick Moderation Actions */}
-                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => rejectMutation.mutate(report.id)}
-                        disabled={rejectMutation.isPending}
-                        className="h-7 text-xs px-2.5 text-gray-600 hover:bg-gray-100 rounded-lg"
-                      >
-                        <X className="w-3.5 h-3.5 mr-1 text-red-500" /> Reject
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="primary"
-                        onClick={() => approveMutation.mutate({ id: report.id, payload: { action: "CREATE_NEW" } })}
-                        disabled={approveMutation.isPending}
-                        className="h-7 text-xs px-3 rounded-lg shadow-sm"
-                      >
-                        <Check className="w-3.5 h-3.5 mr-1" /> Approve as New Zone
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+          <PendingReportsPanel 
+            pendingLoading={pendingLoading}
+            pendingReports={pendingReports}
+            filteredPendingReports={filteredPendingReports}
+            selectedReportId={selectedReportId}
+            setSelectedReportId={setSelectedReportId}
+            batchCandidates={batchCandidates}
+            nearbyZones={nearbyZones}
+            setTargetZoneId={setTargetZoneId}
+            setMergeModalOpen={setMergeModalOpen}
+            rejectMutation={rejectMutation}
+            approveMutation={approveMutation}
+          />
         )}
 
         {/* TAB 2: ACTIVE ZONES (DETOURS & OPERATIONS) */}
         {activeTab === "zones" && (
-          <>
-            {/* Filter Toolbar */}
-            <div className="p-3 border-b border-gray-100 flex items-center justify-between bg-white gap-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="selectAll"
-                  checked={selectedIds.length > 0 && selectedIds.length === zones.filter((z: AvoidanceZone) => z.is_active).length}
-                  onChange={handleSelectAll}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-                />
-                <label htmlFor="selectAll" className="text-xs font-semibold text-gray-700 cursor-pointer">
-                  Select All Active
-                </label>
-              </div>
-
-              <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-xs">
-                <button
-                  onClick={() => { setActiveOnly(true); setPage(1); }}
-                  className={`px-3 py-1 rounded-md font-medium transition-all ${activeOnly ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
-                >
-                  Active Only
-                </button>
-                <button
-                  onClick={() => { setActiveOnly(false); setPage(1); }}
-                  className={`px-3 py-1 rounded-md font-medium transition-all ${!activeOnly ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
-                >
-                  All History
-                </button>
-              </div>
-            </div>
-
-            {/* Zones List Content */}
-            <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
-              {listLoading && !isPlaceholderData ? (
-                <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2">
-                  <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                  <span className="text-xs font-medium">Loading zones...</span>
-                </div>
-              ) : zones.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2 p-6 text-center">
-                  <CheckCircle className="w-8 h-8 text-emerald-500/50" />
-                  <span className="text-sm font-semibold text-gray-700">No Detour Zones Found</span>
-                  <p className="text-xs text-gray-400">All roads in Pasig City are currently open and clear of reported flood hazards.</p>
-                </div>
-              ) : (
-                zones.map((zone: AvoidanceZone) => (
-                  <div
-                    key={zone.id}
-                    onClick={() => flyToZone(zone)}
-                    className={`p-4 transition-colors cursor-pointer hover:bg-slate-50/80 ${selectedIds.includes(zone.id) ? "bg-blue-50/40" : ""}`}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div className="flex items-center gap-3">
-                        {zone.is_active && (
-                          <input
-                            type="checkbox"
-                            checked={selectedIds.includes(zone.id)}
-                            onChange={(e) => handleSelectRow(zone.id, e.target.checked)}
-                            onClick={(e) => e.stopPropagation()}
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer mt-0.5"
-                          />
-                        )}
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm text-gray-900">Zone #{zone.id}</span>
-                            {zone.is_active ? (
-                              <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[10px] font-bold tracking-wide uppercase">Active</span>
-                            ) : (
-                              <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-500 text-[10px] font-bold tracking-wide uppercase">Inactive</span>
-                            )}
-                          </div>
-                          {zone.report_id && (
-                            <p className="text-xs text-gray-500 mt-0.5 font-medium">Primary Report #{zone.report_id}</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5 text-xs text-gray-600 pl-7 mb-3">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-gray-400" />
-                        Created: {new Date(zone.created_at).toLocaleDateString()} {new Date(zone.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                      </div>
-                      {zone.reporter_name && (
-                        <div className="flex items-center gap-1.5 text-slate-500">
-                          <UserCheck className="w-3.5 h-3.5 text-blue-500" />
-                          <span>Reported by <strong>{zone.reporter_name}</strong></span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
-                      {zone.is_active && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setConfirmId(zone.id)}
-                          className="h-7 text-xs px-3 border-red-200 text-red-600 hover:bg-red-50"
-                        >
-                          Deactivate
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* Pagination */}
-            <div className="p-3 border-t border-gray-200 bg-white">
-              <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
-            </div>
-          </>
+          <ActiveZonesPanel 
+            activeOnly={activeOnly}
+            setActiveOnly={setActiveOnly}
+            page={page}
+            setPage={setPage}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+            selectedZoneId={selectedZoneId}
+            setSelectedZoneId={setSelectedZoneId}
+            selectedContributorId={selectedContributorId}
+            setSelectedContributorId={setSelectedContributorId}
+            zones={zones}
+            listLoading={listLoading}
+            isPlaceholderData={isPlaceholderData}
+            totalPages={totalPages}
+            flyToZone={flyToZone}
+            setConfirmId={setConfirmId}
+          />
         )}
       </div>
 
@@ -709,7 +522,8 @@ export default function LiveMapPage() {
           onMapInit={(map) => {
             setMapInstance(map);
           }}
-          onMapLoad={() => {
+          onMapLoad={(map) => {
+            setMapInstance(map);
             setIsLoaded(true);
           }}
         >

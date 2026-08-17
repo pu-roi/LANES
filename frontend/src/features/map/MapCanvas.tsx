@@ -163,6 +163,7 @@ class ActionGroupControl {
 
 export default function MapCanvas() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const [mapInstance, setMapInstance] = useState<Map | null>(null);
   const mapRef = useRef<Map | null>(null);
   const startMarkerRef = useRef<Marker | null>(null);
   const endMarkerRef = useRef<Marker | null>(null);
@@ -190,9 +191,9 @@ export default function MapCanvas() {
 
   const isTouchDevice = useMediaQuery("(max-width: 640px), (pointer: coarse)");
 
-  // Hooks for modular map layers
-  useCityBoundaries(mapRef.current, isLoaded);
-  useFloodZonesLayer(mapRef.current, isLoaded, activeZonesData, isTouchDevice);
+  // Hooks for modular map layers (reactive on mapInstance state!)
+  useCityBoundaries(mapInstance, isLoaded);
+  useFloodZonesLayer(mapInstance, isLoaded, activeZonesData, isTouchDevice);
 
   // Auto-retry MapTiler when using fallback
   useEffect(() => {
@@ -305,6 +306,15 @@ export default function MapCanvas() {
         setTimeout(() => {
           marker.remove();
         }, 3000);
+
+        // Clean up URL query parameters so on page refresh it doesn't re-trigger
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete("lat");
+          url.searchParams.delete("lng");
+          url.searchParams.delete("zoom");
+          window.history.replaceState({}, "", url.pathname);
+        } catch (e) {}
       }
     }
   }, [searchParams, isLoaded]);
@@ -807,6 +817,7 @@ export default function MapCanvas() {
         );
       }}
       onMapInit={(map) => {
+        setMapInstance(map);
         mapRef.current = map;
         map.on("click", (event: MapMouseEvent) => {
           setPointFromMapRef.current([event.lngLat.lng, event.lngLat.lat]);
@@ -816,7 +827,8 @@ export default function MapCanvas() {
           window.dispatchEvent(new CustomEvent("map-center-changed", { detail: [center.lng, center.lat] }));
         });
       }}
-      onMapLoad={() => {
+      onMapLoad={(map) => {
+        setMapInstance(map);
         setIsLoaded(true);
       }}
       className={`relative w-full h-full ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}

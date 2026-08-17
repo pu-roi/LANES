@@ -125,3 +125,81 @@ def test_spatial_moderation_merging_and_trust_scores():
 
     finally:
         db.close()
+
+
+def test_batch_merge_pending_endpoint():
+    db: Session = SessionLocal()
+    try:
+        # Create test commuter
+        user_c = db.query(models.User).filter(models.User.username == "commuter_c").first()
+        if not user_c:
+            user_c = models.User(username="commuter_c", email="commuter_c@lanes.ph", hashed_password="pw", role_id=1, is_active=True)
+            db.add(user_c)
+            db.commit()
+            db.refresh(user_c)
+            profile_c = models.Profile(user_id=user_c.id, first_name="Commuter", last_name="C", trust_score=50)
+            db.add(profile_c)
+            db.commit()
+
+        # Create active avoidance zone
+        zone_poly = "SRID=4326;POLYGON((121.07 14.58, 121.08 14.58, 121.08 14.59, 121.07 14.59, 121.07 14.58))"
+        target_zone = models.FloodAvoidanceZone(
+            geometry=WKTElement(zone_poly, srid=4326),
+            is_active=True,
+        )
+        db.add(target_zone)
+        db.commit()
+        db.refresh(target_zone)
+
+        # Create 2 pending flood reports
+        point_wkt = "SRID=4326;POINT(121.075 14.585)"
+        rep_a = models.FloodReport(
+            user_id=user_c.id,
+            raw_text="Batch report 1",
+            source=models.ReportSource.USER_REPORT,
+            severity=models.ReportSeverity.HIGH,
+            depth="Waist",
+            status=models.ReportStatus.PENDING,
+            geometry=WKTElement(point_wkt, srid=4326)
+        )
+        rep_b = models.FloodReport(
+            user_id=user_c.id,
+            raw_text="Batch report 2",
+            source=models.ReportSource.USER_REPORT,
+            severity=models.ReportSeverity.HIGH,
+            depth="Waist",
+            status=models.ReportStatus.PENDING,
+            geometry=WKTElement(point_wkt, srid=4326)
+        )
+        db.add_all([rep_a, rep_b])
+        db.commit()
+        db.refresh(rep_a)
+        db.refresh(rep_b)
+
+        # Call the batch merge endpoint
+        resp = client.post(
+            f"/api/v1/admin/zones/{target_zone.id}/merge-pending",
+            json={"report_ids": [rep_a.id, rep_b.id]}
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["merged_count"] == 2
+        assert data["zone_id"] == target_zone.id
+
+        # Verify DB state
+        db.refresh(rep_a)
+        db.refresh(rep_b)
+        assert rep_a.status == models.ReportStatus.APPROVED
+        assert rep_a.zone_id == target_zone.id
+        assert rep_b.status == models.ReportStatus.APPROVED
+        assert rep_b.zone_id == target_zone.id
+
+        # Clean up
+        db.delete(rep_a)
+        db.delete(rep_b)
+        db.delete(target_zone)
+        db.delete(user_c.profile)
+        db.delete(user_c)
+        db.commit()
+    finally:
+        db.close()

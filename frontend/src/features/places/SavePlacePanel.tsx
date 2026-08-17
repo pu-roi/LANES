@@ -123,7 +123,7 @@ export function SavePlacePanel() {
     }
   }, [draftSavePlaceCoords, setDraftSavePlaceCoords, setIsSavePlacePanelOpen]);
 
-  if (!isSavePlacePanelOpen && !isPickingOnMap) return null;
+  if (!isSavePlacePanelOpen && !(isPickingOnMap && activePoint === "save_place_location")) return null;
 
   if (isMobile && isPickingOnMap && activePoint === "save_place_location") {
     return (
