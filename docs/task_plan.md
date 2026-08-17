@@ -35,11 +35,17 @@
   - Refactor into a full-bleed edge-to-edge layout: Pending Reports & Active Zones sidebar (left) and interactive MapLibre GL map (right).
   - Mode Switcher using standardized `Tabs.tsx` (`variant="segmented"`).
   - Map Viewport Auto-fit to Pasig City (`[121.0515, 14.5338]` to `[121.1112, 14.6235]`) with `localStorage` position persistence.
-  - Map Layers: Confirmed active zones render full polygons + glow lines; pending reports render transparent dashed buffer outlines on selection.
-- [ ] **6. Interactive Dual-Layer Drawing & Geometry Editor (Sub-Phase 2.4)**:
-  - Interactive polygon and line drawing tools (`@mapbox/mapbox-gl-draw` or custom handles) allowing admins to reshape or draw customized inundation detour zones.
-  - Multi-merge UI modal to batch merge overlapping pending reports with one click.
-- [x] **7. Testing & Verification**:
+  - Standardized Shared Map Style Architecture (`mapStyles.ts` and `mapGeoUtils.ts`) with strict zoom-level separation:
+    - Zoom $\le 14$: Crisp city-overview circle map pins with darker contrast severity borders.
+    - Zoom $> 14$: Street-level transparent avoidance buffer auras and solid natural-color road lines (no outline borders).
+- [x] **6. Multi-Reporter Contributor Accordion & Single-Report Map Focus**:
+  - **Backend Contributor Serialization**: Added `contributors` property to `FloodAvoidanceZone` and `ZoneContributorResponse` schema returning each linked report's reporter details, trust score, raw text, timestamp, and individual PostGIS geometry.
+  - **Expandable Contributor Drawer**: Clean inline accordion in `ActiveZonesPanel.tsx` showing distinct contributor cards with avatars, primary vs. merged badges, and trust indicators.
+  - **Dynamic Single-Report Map Inspection**: Clicking any contributor in the expanded list temporarily hides the combined merged avoidance zone and displays ONLY that contributor's original individual report geometry on the map with smooth camera focusing.
+- [x] **7. Multi-Merge UI Modal & Duplicate Street Resolution**:
+  - `MergeReportsModal.tsx` multi-step wizard allowing admins to approve new zones, merge into existing nearby zones, or batch-merge duplicate pending reports on the same street.
+  - Duplicate pending report detection banner in `PendingReportsPanel.tsx` with inline candidate previews.
+- [x] **8. Testing & Verification**:
   - Created and passed `pytest backend/tests/test_spatial_merging.py` (100% passing) verifying 1:N schema linking and multi-user trust score crediting.
 
 ## Future Roadmap (Phases)

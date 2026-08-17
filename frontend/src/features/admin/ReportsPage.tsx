@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
   getReports, 
@@ -10,6 +11,7 @@ import {
   ReportGeometry
 } from "./adminApi";
 import { useToast, Button, Input, Select, Pagination, Tabs } from "@/shared/ui";
+import { ReportDetailsModal } from "./components/ReportDetailsModal";
 import { 
   Loader2, 
   CheckCircle, 
@@ -22,19 +24,28 @@ import {
   TrendingDown,
   TrendingUp,
   AlertOctagon,
-  RefreshCw
+  RefreshCw,
+  Eye,
+  Map as MapIcon,
+  X
 } from "lucide-react";
 
 const LIMIT = 8;
 
 export default function ReportsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const { success, error } = useToast();
+
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<string>("all");
   const [severity, setSeverity] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedReport, setSelectedReport] = useState<FloodReport | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   /**
    * Returns a human-readable coordinate label for a report geometry.
@@ -57,21 +68,52 @@ export default function ReportsPage() {
     refetchInterval: 15000, // 15s background polling fallback
   });
 
+  // Auto-open modal if report_id is provided in URL search parameters
+  useEffect(() => {
+    const reportIdParam = searchParams.get("report_id");
+    if (reportIdParam && data?.reports) {
+      const target = data.reports.find((r) => r.id === Number(reportIdParam));
+      if (target) {
+        setSelectedReport(target);
+        setIsDetailsModalOpen(true);
+      }
+    }
+  }, [searchParams, data?.reports]);
+
   const approveMutation = useMutation({
     mutationFn: (id: number) => approveReport(id),
     onSuccess: () => {
+      success("Report approved successfully");
       queryClient.invalidateQueries({ queryKey: ["adminReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
+      setIsDetailsModalOpen(false);
     },
+    onError: (err: any) => {
+      error("Approval Failed", err.message || "Failed to approve report");
+    }
   });
 
   const rejectMutation = useMutation({
     mutationFn: (id: number) => rejectReport(id),
     onSuccess: () => {
+      success("Report rejected");
       queryClient.invalidateQueries({ queryKey: ["adminReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
+      setIsDetailsModalOpen(false);
     },
+    onError: (err: any) => {
+      error("Rejection Failed", err.message || "Failed to reject report");
+    }
   });
+
+  const handleViewOnMap = (report: FloodReport) => {
+    router.push(`/admin/map?focus_report_id=${report.id}`);
+  };
+
+  const handleOpenDetails = (report: FloodReport) => {
+    setSelectedReport(report);
+    setIsDetailsModalOpen(true);
+  };
 
   const handleTabChange = (newStatus: string) => {
     setStatus(newStatus);
@@ -269,7 +311,8 @@ export default function ReportsPage() {
           {reports.map((report: FloodReport) => (
             <div 
               key={report.id} 
-              className={`bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row transition-opacity duration-150 ${
+              onClick={() => handleOpenDetails(report)}
+              className={`bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row transition-all duration-150 cursor-pointer hover:border-blue-300 hover:shadow-md ${
                 isPlaceholderData ? "opacity-60" : "opacity-100"
               }`}
             >
@@ -278,7 +321,10 @@ export default function ReportsPage() {
                 {report.image_url && (
                   <div 
                     className="shrink-0 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
-                    onClick={() => setSelectedImage(report.image_url || null)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedImage(report.image_url || null);
+                    }}
                   >
                     <img 
                       src={report.image_url} 
@@ -292,6 +338,7 @@ export default function ReportsPage() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm text-gray-900">Report #{report.id}</span>
                         <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200 uppercase tracking-wider">
                           {report.source}
                         </span>
@@ -307,11 +354,11 @@ export default function ReportsPage() {
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-3 pt-2">
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
                     {getSeverityBadge(report.severity)}
                     {report.depth && (
                       <div className="flex items-center text-xs font-medium text-gray-700 bg-gray-100 border border-gray-200 px-2.5 py-1 rounded-full">
-                        Depth: {report.depth}
+                        Depth: {report.depth.replace(/_/g, ' ')}
                       </div>
                     )}
                     {report.geometry ? (
@@ -324,40 +371,69 @@ export default function ReportsPage() {
                         No coordinates mapped
                       </div>
                     )}
+                    {report.reporter_name && (
+                      <div className="text-xs text-gray-500 font-medium">
+                        By <span className="font-semibold text-gray-800">{report.reporter_name}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Moderate Actions Pane */}
-              {report.status === "pending" && (
-                <div className="bg-gray-50/50 border-t md:border-t-0 md:border-l border-gray-200 p-6 flex flex-row md:flex-col items-center justify-center gap-3 md:w-48">
-                  <Button 
-                    onClick={() => approveMutation.mutate(report.id)}
-                    disabled={approveMutation.isPending}
-                    className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-sm font-semibold py-2"
-                  >
-                    {approveMutation.isPending ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <CheckCircle className="w-4 h-4" />
-                    )}
-                    Approve
-                  </Button>
-                  <Button 
-                    onClick={() => rejectMutation.mutate(report.id)}
-                    disabled={rejectMutation.isPending}
-                    variant="outline"
-                    className="w-full flex items-center justify-center gap-2 text-rose-600 border-rose-200 hover:bg-rose-50 hover:border-rose-300 text-sm font-semibold py-2"
-                  >
-                    {rejectMutation.isPending ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <XCircle className="w-4 h-4" />
-                    )}
-                    Reject
-                  </Button>
-                </div>
-              )}
+              {/* Action Column */}
+              <div className="bg-gray-50/70 border-t md:border-t-0 md:border-l border-gray-200 p-5 flex flex-row md:flex-col items-center justify-center gap-2.5 md:w-52">
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewOnMap(report);
+                  }}
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-1.5 text-blue-600 border-blue-200 hover:bg-blue-50 text-xs font-semibold py-2"
+                >
+                  <MapIcon className="w-3.5 h-3.5" />
+                  View on Map
+                </Button>
+
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenDetails(report);
+                  }}
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-1.5 text-gray-700 border-gray-300 hover:bg-gray-100 text-xs font-semibold py-2"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  Details
+                </Button>
+
+                {report.status === "pending" && (
+                  <div className="w-full flex gap-2 pt-1 border-t border-gray-200">
+                    <Button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        approveMutation.mutate(report.id);
+                      }}
+                      disabled={approveMutation.isPending}
+                      className="flex-1 flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-xs font-semibold py-1.5 px-2"
+                    >
+                      {approveMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
+                      Approve
+                    </Button>
+                    <Button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        rejectMutation.mutate(report.id);
+                      }}
+                      disabled={rejectMutation.isPending}
+                      variant="outline"
+                      className="flex-1 flex items-center justify-center gap-1 text-rose-600 border-rose-200 hover:bg-rose-50 text-xs font-semibold py-1.5 px-2"
+                    >
+                      {rejectMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
+                      Reject
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -369,23 +445,36 @@ export default function ReportsPage() {
         onPageChange={setPage} 
       />
 
+      {/* Rich Report Details Modal */}
+      <ReportDetailsModal
+        report={selectedReport}
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        onViewOnMap={handleViewOnMap}
+        onApprove={(id) => approveMutation.mutate(id)}
+        onReject={(id) => rejectMutation.mutate(id)}
+        isApproveLoading={approveMutation.isPending}
+        isRejectLoading={rejectMutation.isPending}
+        onOpenImage={(url) => setSelectedImage(url)}
+      />
+
       {/* Lightbox Modal */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in"
           onClick={() => setSelectedImage(null)}
         >
           <div className="relative max-w-4xl w-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <button 
-              className="absolute -top-10 right-0 md:-right-10 text-white hover:text-gray-300 bg-black/50 p-2 rounded-full transition-colors"
+              className="absolute -top-12 right-0 text-white hover:text-gray-300 bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
               onClick={() => setSelectedImage(null)}
             >
-              <XCircle className="w-8 h-8" />
+              <X className="w-6 h-6" />
             </button>
             <img 
               src={selectedImage} 
               alt="Expanded flood evidence" 
-              className="max-h-[85vh] object-contain rounded-xl shadow-2xl"
+              className="max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10"
             />
           </div>
         </div>

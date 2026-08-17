@@ -202,13 +202,13 @@ export default function ProfileView() {
             <div className="flex justify-between items-end mb-2">
               <span className="text-sm font-medium text-slate-600">Accuracy Rate</span>
               <span className="text-xl font-bold text-emerald-600">
-                {profile.accuracy_rate ? (profile.accuracy_rate * 100).toFixed(0) : 0}%
+                {profile.accuracy_rate ? Number(profile.accuracy_rate).toFixed(0) : 0}%
               </span>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-2">
               <div 
                 className="bg-emerald-500 h-2 rounded-full" 
-                style={{ width: `${(profile.accuracy_rate || 0) * 100}%` }}
+                style={{ width: `${Math.min(Math.max(profile.accuracy_rate || 0, 0), 100)}%` }}
               ></div>
             </div>
           </div>

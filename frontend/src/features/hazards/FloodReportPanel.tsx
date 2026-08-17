@@ -766,6 +766,22 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
     </form>
   );
 
+  if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
+    return (
+      <MapPickerMobileOverlay 
+        onCancel={() => {
+          setIsPickingOnMap(false);
+          setActivePoint(null);
+        }}
+        onConfirm={confirmMapLocation}
+        confirmText={`Set ${activePoint === "flood_start" ? "Flood Start" : "Flood End"}`}
+      />
+    );
+  }
+
+  // Hide the panel body on mobile while picking if we were just returning null
+  if (isMobile && isPickingOnMap) return null;
+
   return (
     <Panel
       title="Report Flood"

@@ -6,7 +6,10 @@ import { motion } from "framer-motion";
 import { Logo } from "@/shared/ui/Logo";
 import { useSearchParams } from "next/navigation";
 
-export default function RegisterPage() {
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
+
+function RegisterPageContent() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || undefined;
   return (
@@ -108,5 +111,19 @@ export default function RegisterPage() {
       </motion.div>
 
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex-1 bg-gray-50 flex items-center justify-center p-4 min-h-screen">
+          <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+        </div>
+      }
+    >
+      <RegisterPageContent />
+    </Suspense>
   );
 }
