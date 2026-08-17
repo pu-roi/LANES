@@ -95,6 +95,7 @@
   - Synchronized smooth 45° angled 3D camera transitions (`zoom: 16`, `pitch: 45`, `duration: 1500ms`) across sidebar and map clicks.
 
 ## Recently Completed
+- [x] **Reports Page & Spatial Operations Integration**: Fully integrated the Reports Page with the Live Map. Added master-detail rich view for reports (including images/videos) and bidirectional "View on Map" / "Info" linking.
 - [x] **MapLibre Rendering Stability**: Refactored `useFloodZonesLayer` to use `.setData()` and bypass strict `isStyleLoaded` checks, fixing the silent deadlock where layers wouldn't render during vector tile downloads.
 - [x] **Spatial Operations Selection Fix**: Ensured clicking the main active zone wrapper card correctly un-sets any focused `selectedContributorId`, returning the map view to the primary merged polygon.
 - [x] **Saved Places Feature**: Integrated "Saved Places" with map picking, saved places feed integration, mobile drawer support, custom emoji saving, and database persistence.
