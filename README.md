@@ -27,9 +27,19 @@ Developed in partial fulfillment of the requirements for the degree of **Bachelo
 ## 🚀 Local Development Setup
 
 ### Prerequisites
+* **Git** (For cloning the repository)
 * **Node.js** (v18 or higher)
 * **Python** (v3.11 or v3.12)
-* **Docker Desktop** (For running the local PostGIS spatial database).
+* **Docker Desktop** (For running the local PostGIS spatial database and Valhalla routing engine).
+
+---
+
+### 0. Clone the Repository
+Open your terminal and run:
+```bash
+git clone https://github.com/roicambe/LANES.git
+cd LANES
+```
 
 ---
 
@@ -62,18 +72,20 @@ docker-compose up -d
 2. Set up and activate the virtual environment:
    ```bash
    # On Windows
-   py -3.12 -m venv venv
+   python -m venv venv
    .\venv\Scripts\Activate.ps1
 
    # On Mac/Linux
-   python3.12 -m venv venv
+   python3 -m venv venv
    source venv/bin/activate
    ```
 3. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-4. Ensure you have your `.env` file set up (copy from `.env.example`).
+4. Copy the environment variables:
+   * Copy `.env.example` and rename it to `.env`.
+   * Update any values if necessary (the defaults usually work for local dev).
 5. Run the database migrations to build the tables (Ensure Docker is running first):
    ```bash
    alembic upgrade head
@@ -92,7 +104,10 @@ docker-compose up -d
    ```bash
    cd frontend
    ```
-2. Install dependencies (if you haven't yet) and start the dev server:
+2. Set up the frontend environment variables:
+   * Create a new file named `.env.local` inside the `frontend` directory.
+   * Add the following line to it: `NEXT_PUBLIC_API_URL=/api/v1`
+3. Install dependencies and start the dev server:
    ```bash
    npm install
    npm run dev
