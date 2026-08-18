@@ -25,16 +25,19 @@ async def create_report(
     is_public: bool = Form(False),
     geometry: str = Form(None),
     survey_data: str = Form(None),
-    image: UploadFile = File(None),
+    media: List[UploadFile] = File([]),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
     """
     Submit a new flood report (raw Taglish text and optional coordinates/image).
     """
-    image_url = None
-    if image:
-        image_url = upload_image(image)
+    media_urls = []
+    for file in media:
+        if file and file.filename:
+            url = upload_image(file)
+            if url:
+                media_urls.append(url)
 
     geom_obj = None
     if geometry:
@@ -59,7 +62,7 @@ async def create_report(
         human_readable_location=human_readable_location,
         is_public=is_public,
         geometry=geom_obj,
-        image_url=image_url,
+        media_urls=media_urls,
         user_id=current_user.id,
         survey_data=survey_obj
     )

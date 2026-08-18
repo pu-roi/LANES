@@ -31,7 +31,7 @@ interface ReportDetailsModalProps {
   onReject?: (reportId: number) => void;
   isApproveLoading?: boolean;
   isRejectLoading?: boolean;
-  onOpenImage?: (url: string) => void;
+  onOpenMedia?: (urls: string[], initialIndex: number) => void;
 }
 
 export const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
@@ -43,7 +43,7 @@ export const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   onReject,
   isApproveLoading = false,
   isRejectLoading = false,
-  onOpenImage,
+  onOpenMedia,
 }) => {
   if (!isOpen || !report) return null;
 
@@ -219,8 +219,20 @@ export const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
                   Landmark: {report.human_readable_location}
                 </div>
               )}
-              <div className="text-xs font-mono text-slate-500 bg-white p-2 rounded-lg border border-slate-200 inline-block">
-                {formatCoordinates()}
+              <div className="flex items-center justify-between gap-3 pt-1">
+                <div className="text-xs font-mono text-slate-500 bg-white p-2 rounded-lg border border-slate-200 inline-block truncate">
+                  {formatCoordinates()}
+                </div>
+                <button 
+                  onClick={() => {
+                    onClose();
+                    onViewOnMap(report);
+                  }}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg border border-blue-100 shrink-0"
+                >
+                  <MapIcon className="w-3.5 h-3.5" />
+                  View on Map
+                </button>
               </div>
             </div>
           </div>
@@ -264,22 +276,31 @@ export const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
           </div>
 
           {/* Attached Evidence Media */}
-          {report.image_url && (
+          {report.media_urls && report.media_urls.length > 0 && (
             <div className="space-y-2">
-              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Attached Flood Evidence</div>
-              <div 
-                onClick={() => onOpenImage && onOpenImage(report.image_url!)}
-                className="relative rounded-xl overflow-hidden border border-slate-200 cursor-pointer group bg-slate-950/5 max-h-64 flex items-center justify-center"
-              >
-                <img 
-                  src={report.image_url} 
-                  alt="Flood report evidence" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 max-h-64"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1.5 backdrop-blur-xs">
-                  <ExternalLink className="w-4 h-4" />
-                  Click for Fullscreen High-Res
-                </div>
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Attached Flood Evidence ({report.media_urls.length})</div>
+              <div className="grid grid-cols-2 gap-2">
+                {report.media_urls.map((url, idx) => (
+                  <div 
+                    key={idx}
+                    onClick={() => onOpenMedia && onOpenMedia(report.media_urls, idx)}
+                    className="relative rounded-xl overflow-hidden border border-slate-200 cursor-pointer group bg-slate-950/5 max-h-48 flex items-center justify-center"
+                  >
+                    {url.match(/\.(mp4|webm|mov|ogg)$/i) || url.includes('/video/upload/') ? (
+                      <video src={url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 max-h-48" />
+                    ) : (
+                      <img 
+                        src={url} 
+                        alt={`Evidence ${idx + 1}`} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 max-h-48"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-semibold gap-1.5 backdrop-blur-xs">
+                      <ExternalLink className="w-4 h-4" />
+                      View
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

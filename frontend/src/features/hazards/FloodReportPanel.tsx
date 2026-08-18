@@ -241,7 +241,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
   const [hiddenHazards, setHiddenHazards] = useState<"yes" | "no" | "unsure" | "">("");
   const [showSurvey, setShowSurvey] = useState(false);
   const [description, setDescription] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [isPublic, setIsPublic] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const isCollapsed = activePanel !== "flood";
@@ -354,8 +354,10 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
           hidden_hazards: hiddenHazards,
         })
       );
-      if (imageFile) {
-        formData.append("image", imageFile);
+      if (mediaFiles.length > 0) {
+        mediaFiles.forEach((file) => {
+          formData.append("media", file);
+        });
       }
 
       await apiClient.post<{ id: number }>("/reports", formData);
@@ -369,7 +371,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
       setPassableVehicles([]);
       setHiddenHazards("");
       setDescription("");
-      setImageFile(null);
+      setMediaFiles([]);
       setIsPublic(false);
       setStep(1);
       success("Report Submitted", "Flood report submitted successfully. It is now pending admin review.");
@@ -403,7 +405,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
     ? (floodStart || floodEnd) 
     : showSurvey
       ? (passableVehicles.length > 0 || hiddenHazards !== "")
-      : (description.trim() !== "" || imageFile !== null || visualOption !== "gutter" || isPublic || passableVehicles.length > 0 || hiddenHazards !== "");
+      : (description.trim() !== "" || mediaFiles.length > 0 || visualOption !== "gutter" || isPublic || passableVehicles.length > 0 || hiddenHazards !== "");
 
   const clearButton =
     showClear ? (
@@ -426,7 +428,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
               setPassableVehicles([]);
               setHiddenHazards("");
               setDescription("");
-              setImageFile(null);
+              setMediaFiles([]);
               setIsPublic(false);
             }
           }
@@ -565,41 +567,48 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
             </button>
           </div>
 
-          {/* Image Upload */}
+          {/* Media Upload */}
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-800 block mb-1.5">
-              Photo <span className="text-gray-400 font-normal ml-1">(Optional)</span>
+            <label className="text-sm font-semibold text-gray-800 flex items-center justify-between mb-1.5">
+              <span>Photos & Videos <span className="text-gray-400 font-normal ml-1">(Optional)</span></span>
             </label>
-            {imageFile ? (
-              <div className="relative rounded-md border border-gray-200 bg-gray-50 p-2 flex items-center justify-between">
-                <span className="text-xs text-gray-600 truncate max-w-[200px]">{imageFile.name}</span>
-                <button 
-                  type="button" 
-                  onClick={() => setImageFile(null)}
-                  className="p-1 hover:bg-gray-200 rounded-full text-gray-500 transition-colors"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
+            
+            {mediaFiles.length > 0 && (
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                {mediaFiles.map((file, idx) => (
+                  <div key={idx} className="relative rounded-md border border-gray-200 bg-gray-50 p-2 flex items-center justify-between group">
+                    <span className="text-xs text-gray-600 truncate max-w-[120px]">{file.name}</span>
+                    <button 
+                      type="button" 
+                      onClick={() => setMediaFiles(prev => prev.filter((_, i) => i !== idx))}
+                      className="p-1 hover:bg-gray-200 rounded-full text-gray-500 transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
               </div>
-            ) : (
-              <label className="flex items-center justify-center w-full rounded-md border border-dashed border-gray-300 px-3 py-4 bg-gray-50 hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer select-none text-sm text-gray-500">
-                <div className="flex flex-col items-center gap-1">
-                  <ImagePlus className="w-5 h-5 text-gray-400 mb-1" />
-                  <span className="font-medium text-gray-600">Click to upload an image</span>
-                  <span className="text-[10px] text-gray-400">JPEG, PNG up to 5MB</span>
-                </div>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  className="hidden" 
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      setImageFile(e.target.files[0]);
-                    }
-                  }}
-                />
-              </label>
             )}
+            
+            <label className="flex items-center justify-center w-full rounded-md border border-dashed border-gray-300 px-3 py-4 bg-gray-50 hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer select-none text-sm text-gray-500">
+              <div className="flex flex-col items-center gap-1">
+                <ImagePlus className="w-5 h-5 text-gray-400 mb-1" />
+                <span className="font-medium text-gray-600">Click to upload media</span>
+                <span className="text-[10px] text-gray-400">JPEG, PNG, MP4 up to 10MB</span>
+              </div>
+              <input 
+                type="file" 
+                multiple
+                accept="image/*,video/*" 
+                className="hidden" 
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setMediaFiles(prev => [...prev, ...Array.from(e.target.files!)]);
+                  }
+                  e.target.value = ''; // Reset to allow selecting the same file again
+                }}
+              />
+            </label>
           </div>
 
           {/* Description */}
