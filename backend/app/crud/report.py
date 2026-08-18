@@ -107,7 +107,7 @@ def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> model
         human_readable_location=report.human_readable_location,
         is_public=report.is_public,
         user_id=report.user_id,
-        image_url=report.image_url
+        media_urls=report.media_urls
     )
     db.add(db_report)
     db.commit()
@@ -213,7 +213,10 @@ def get_all_flood_reports_filtered(
     severity: Optional[str] = None,
     search: Optional[str] = None,
     sort_by: str = "newest",
-    archived: bool = False
+    archived: bool = False,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    barangays: Optional[List[str]] = None
 ) -> tuple[List[models.FloodReport], int]:
     """
     Retrieve all flood reports matching filter criteria, with pagination and search.
@@ -230,6 +233,14 @@ def get_all_flood_reports_filtered(
         query = query.filter(models.FloodReport.severity == severity)
     if search:
         query = query.filter(models.FloodReport.raw_text.ilike(f"%{search}%"))
+
+    if date_from:
+        query = query.filter(models.FloodReport.created_at >= date_from)
+    if date_to:
+        query = query.filter(models.FloodReport.created_at <= date_to)
+
+    if barangays and len(barangays) > 0:
+        query = query.filter(models.FloodReport.barangay.in_(barangays))
 
     if sort_by == "oldest":
         query = query.order_by(models.FloodReport.created_at.asc())

@@ -23,12 +23,14 @@ export function usePendingReportsLayer(
     if (!map || !isLoaded) return;
 
     const setupLayers = () => {
-      if (!map.isStyleLoaded()) return;
+      const sourceId = "all-pending-reports-source";
+      const existingSource = map.getSource(sourceId) as maplibregl.GeoJSONSource;
 
       if (activeTab !== "pending" || !pendingReports || pendingReports.length === 0) {
         // Hide pending reports if we are not on the pending moderation tab
-        const existingSource = map.getSource("all-pending-reports-source") as maplibregl.GeoJSONSource;
-        if (existingSource) existingSource.setData({ type: "FeatureCollection", features: [] });
+        if (existingSource) {
+          existingSource.setData({ type: "FeatureCollection", features: [] });
+        }
         return;
       }
 
@@ -78,113 +80,109 @@ export function usePendingReportsLayer(
         return 0;
       });
 
-      // Remove existing sources/layers if they exist
-      const layersToRemove = [
-        "all-pending-reports-circle-layer",
-        "all-pending-reports-line-layer",
-        "all-pending-reports-point-layer",
-      ];
-      layersToRemove.forEach((l) => {
-        if (map.getLayer(l)) map.removeLayer(l);
-      });
-      if (map.getSource("all-pending-reports-source")) {
-        map.removeSource("all-pending-reports-source");
-      }
-
-      // Add source
-      map.addSource("all-pending-reports-source", {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: features,
-        },
-      });
-
-      // Layer 1: Zoomed-out Circle Map Pins (City View: Zoom <= 14)
-      map.addLayer({
-        id: "all-pending-reports-circle-layer",
-        type: "circle",
-        source: "all-pending-reports-source",
-        maxzoom: ZOOM_THRESHOLDS.PIN_MAX_ZOOM,
-        filter: ["==", ["get", "is_zoomed_out_point"], true],
-        paint: PIN_CIRCLE_PAINT,
-      });
-
-      // Layer 2: Zoomed-in Pure Transparent Road Auras (Street View: Zoom > 14)
-      map.addLayer({
-        id: "all-pending-reports-line-layer",
-        type: "line",
-        source: "all-pending-reports-source",
-        minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
-        filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "LineString"]],
-        layout: {
-          "line-cap": "round",
-          "line-join": "round",
-        },
-        paint: PENDING_REPORT_ROAD_AURA_PAINT,
-      });
-
-      // Layer 3: Zoomed-in Pure Transparent Point Auras (Street View: Zoom > 14)
-      map.addLayer({
-        id: "all-pending-reports-point-layer",
-        type: "circle",
-        source: "all-pending-reports-source",
-        minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
-        filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "Point"]],
-        paint: PENDING_REPORT_POINT_AURA_PAINT,
-      });
-
-      // Interactivity
-      const handleLayerClick = (e: any) => {
-        if (!e.features || e.features.length === 0) return;
-        const feature = e.features[0];
-        const id = feature.properties.id;
-        setSelectedReportId(id === selectedReportId ? null : id);
-
-        // Center, angle, and zoom into the clicked report (matching sidebar flyTo parameters)
-        if (e.lngLat) {
-          map.flyTo({
-            center: [e.lngLat.lng, e.lngLat.lat],
-            zoom: 16,
-            pitch: 45,
-            duration: 1500,
-          });
-        }
+      const featureCollection: GeoJSON.FeatureCollection = {
+        type: "FeatureCollection",
+        features: features,
       };
 
-      const changeCursorToMap = () => (map.getCanvas().style.cursor = "pointer");
-      const resetCursor = () => (map.getCanvas().style.cursor = "");
-
-      const layers = [
-        "all-pending-reports-circle-layer",
-        "all-pending-reports-line-layer",
-        "all-pending-reports-point-layer",
-      ];
-
-      layers.forEach((layer) => {
-        map.on("click", layer, handleLayerClick);
-        map.on("mouseenter", layer, changeCursorToMap);
-        map.on("mouseleave", layer, resetCursor);
-      });
-    };
-
-    const trySetup = () => {
-      if (map.isStyleLoaded()) {
-        setupLayers();
+      if (existingSource) {
+        existingSource.setData(featureCollection);
       } else {
-        let attempts = 0;
-        const interval = setInterval(() => {
-          attempts++;
-          if (map.isStyleLoaded()) {
-            clearInterval(interval);
-            setupLayers();
-          } else if (attempts > 15) {
-            clearInterval(interval);
-          }
-        }, 100);
+        if (!map.getStyle()) return;
+        map.addSource(sourceId, {
+          type: "geojson",
+          data: featureCollection,
+        });
+      }
+
+      // Layer 1: Zoomed-out Circle Map Pins (City View: Zoom <= 14)
+      if (!map.getLayer("all-pending-reports-circle-layer")) {
+        map.addLayer({
+          id: "all-pending-reports-circle-layer",
+          type: "circle",
+          source: sourceId,
+          maxzoom: ZOOM_THRESHOLDS.PIN_MAX_ZOOM,
+          filter: ["==", ["get", "is_zoomed_out_point"], true],
+          paint: PIN_CIRCLE_PAINT,
+        });
+      }
+
+      // Layer 2: Zoomed-in Pure Transparent Road Auras (Street View: Zoom > 14)
+      if (!map.getLayer("all-pending-reports-line-layer")) {
+        map.addLayer({
+          id: "all-pending-reports-line-layer",
+          type: "line",
+          source: sourceId,
+          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
+          filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "LineString"]],
+          layout: {
+            "line-cap": "round",
+            "line-join": "round",
+          },
+          paint: PENDING_REPORT_ROAD_AURA_PAINT,
+        });
+      }
+
+      // Layer 3: Zoomed-in Pure Transparent Point Auras (Street View: Zoom > 14)
+      if (!map.getLayer("all-pending-reports-point-layer")) {
+        map.addLayer({
+          id: "all-pending-reports-point-layer",
+          type: "circle",
+          source: sourceId,
+          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
+          filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "Point"]],
+          paint: PENDING_REPORT_POINT_AURA_PAINT,
+        });
       }
     };
 
-    trySetup();
-  }, [map, isLoaded, pendingReports, activeTab, selectedReportId]);
+    setupLayers();
+
+    const handleMapStyleData = () => {
+      setupLayers();
+    };
+    map.on("styledata", handleMapStyleData);
+
+    // Interactivity
+    const handleLayerClick = (e: any) => {
+      if (!e.features || e.features.length === 0) return;
+      const feature = e.features[0];
+      const id = feature.properties.id;
+      setSelectedReportId(id === selectedReportId ? null : id);
+
+      // Center, angle, and zoom into the clicked report (matching sidebar flyTo parameters)
+      if (e.lngLat) {
+        map.flyTo({
+          center: [e.lngLat.lng, e.lngLat.lat],
+          zoom: 16,
+          pitch: 45,
+          duration: 1500,
+        });
+      }
+    };
+
+    const changeCursorToMap = () => (map.getCanvas().style.cursor = "pointer");
+    const resetCursor = () => (map.getCanvas().style.cursor = "");
+
+    const layers = [
+      "all-pending-reports-circle-layer",
+      "all-pending-reports-line-layer",
+      "all-pending-reports-point-layer",
+    ];
+
+    layers.forEach((layer) => {
+      map.on("click", layer, handleLayerClick);
+      map.on("mouseenter", layer, changeCursorToMap);
+      map.on("mouseleave", layer, resetCursor);
+    });
+
+    return () => {
+      map.off("styledata", handleMapStyleData);
+      layers.forEach((layer) => {
+        map.off("click", layer, handleLayerClick);
+        map.off("mouseenter", layer, changeCursorToMap);
+        map.off("mouseleave", layer, resetCursor);
+      });
+    };
+  }, [map, isLoaded, pendingReports, activeTab, selectedReportId, isolatedReportId]);
 }

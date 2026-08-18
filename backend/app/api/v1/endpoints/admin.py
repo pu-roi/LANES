@@ -340,6 +340,9 @@ def get_all_reports(
     search: Optional[str] = None,
     sort_by: str = "newest",
     archived: bool = False,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    barangays: Optional[str] = None,
 ) -> Any:
     """
     Retrieve all flood reports with pagination, filtering, and search.
@@ -353,7 +356,10 @@ def get_all_reports(
         severity=severity,
         search=search,
         sort_by=sort_by,
-        archived=archived
+        archived=archived,
+        date_from=date_from,
+        date_to=date_to,
+        barangays=barangays.split(",") if barangays else None
     )
     return {"reports": reports, "total": total}
 

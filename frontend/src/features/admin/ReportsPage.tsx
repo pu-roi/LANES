@@ -10,7 +10,7 @@ import {
   FloodReport,
   ReportGeometry
 } from "./adminApi";
-import { useToast, Button, Input, Select, Pagination, Tabs, MediaViewer } from "@/shared/ui";
+import { useToast, Button, Input, Select, Pagination, Tabs, MediaViewer, MultiSelect, DatePicker } from "@/shared/ui";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
 import { 
   Loader2, 
@@ -43,9 +43,118 @@ export default function ReportsPage() {
   const [severity, setSeverity] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [timeRange, setTimeRange] = useState("all");
+  const [customDateFrom, setCustomDateFrom] = useState("");
+  const [customDateTo, setCustomDateTo] = useState("");
+  const [selectedRegions, setSelectedRegions] = useState<(string | number)[]>([]);
+  const [selectedCities, setSelectedCities] = useState<(string | number)[]>([]);
+  const [selectedBarangays, setSelectedBarangays] = useState<(string | number)[]>([]);
+
+  // 1. Fetch Regions
+  const { data: regionsData } = useQuery({
+    queryKey: ["psgc-regions"],
+    queryFn: async () => {
+      const res = await fetch("https://psgc.gitlab.io/api/regions/");
+      if (!res.ok) return [];
+      return res.json();
+    },
+    staleTime: Infinity, // PSGC data rarely changes
+  });
+  
+  const regionOptions = (regionsData || [])
+    .map((r: any) => ({ label: r.name, value: r.code, isPinned: r.code === "130000000" }))
+    .sort((a: any, b: any) => {
+      if (a.value === "130000000") return -1;
+      if (b.value === "130000000") return 1;
+      return a.label.localeCompare(b.label);
+    });
+
+  // 2. Fetch Cities for selected regions
+  const { data: citiesData } = useQuery({
+    queryKey: ["psgc-cities", selectedRegions],
+    queryFn: async () => {
+      if (selectedRegions.length === 0) return [];
+      const promises = selectedRegions.map(code => 
+        fetch(`https://psgc.gitlab.io/api/regions/${code}/cities-municipalities/`).then(res => res.ok ? res.json() : [])
+      );
+      const results = await Promise.all(promises);
+      return results.flat();
+    },
+    enabled: selectedRegions.length > 0,
+    staleTime: Infinity,
+  });
+  
+  const cityOptions = (citiesData || [])
+    .map((c: any) => ({ label: c.name, value: c.code, isPinned: c.code === "137403000" }))
+    .sort((a: any, b: any) => {
+      if (a.value === "137403000") return -1;
+      if (b.value === "137403000") return 1;
+      return a.label.localeCompare(b.label);
+    });
+
+  // 3. Fetch Barangays for selected cities
+  const { data: barangaysData } = useQuery({
+    queryKey: ["psgc-barangays", selectedCities],
+    queryFn: async () => {
+      if (selectedCities.length === 0) return [];
+      const promises = selectedCities.map(code => 
+        fetch(`https://psgc.gitlab.io/api/cities-municipalities/${code}/barangays/`).then(res => res.ok ? res.json() : [])
+      );
+      const results = await Promise.all(promises);
+      return results.flat();
+    },
+    enabled: selectedCities.length > 0,
+    staleTime: Infinity,
+  });
+  
+  const barangayOptions = (barangaysData || [])
+    .map((b: any) => ({ label: b.name, value: b.code }))
+    .sort((a: any, b: any) => a.label.localeCompare(b.label));
+
+  const handleRegionChange = (values: (string | number)[]) => {
+    setSelectedRegions(values);
+    // Clearing a region means we must filter out selected cities that belong to removed regions
+    // We can just clear the city/barangay selection if a region is deselected to keep it simple, 
+    // or wait for the new citiesData to arrive. Resetting is safest:
+    setSelectedCities([]);
+    setSelectedBarangays([]);
+  };
+
+  const handleCityChange = (values: (string | number)[]) => {
+    setSelectedCities(values);
+    setSelectedBarangays([]);
+  };
+
   const [selectedMedia, setSelectedMedia] = useState<{ urls: string[], index: number } | null>(null);
   const [selectedReport, setSelectedReport] = useState<FloodReport | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+  const getDateRange = () => {
+    const now = new Date();
+    let from: string | undefined = undefined;
+    let to: string | undefined = undefined;
+    switch (timeRange) {
+      case "today":
+        from = new Date(now.setHours(0, 0, 0, 0)).toISOString();
+        break;
+      case "last7days":
+        from = new Date(now.setDate(now.getDate() - 7)).toISOString();
+        break;
+      case "last30days":
+        from = new Date(now.setDate(now.getDate() - 30)).toISOString();
+        break;
+      case "thisYear":
+        from = new Date(now.getFullYear(), 0, 1).toISOString();
+        break;
+      case "custom":
+        from = customDateFrom ? new Date(customDateFrom).toISOString() : undefined;
+        to = customDateTo ? new Date(`${customDateTo}T23:59:59.999Z`).toISOString() : undefined;
+        break;
+    }
+    return { from, to };
+  };
+
+  const { from: computedDateFrom, to: computedDateTo } = getDateRange();
 
   /**
    * Returns a human-readable coordinate label for a report geometry.
@@ -61,9 +170,21 @@ export default function ReportsPage() {
     return `~${mid[1].toFixed(5)}, ${mid[0].toFixed(5)}`;
   };
 
+  // Convert selected barangay PSGC codes back to their names for the backend
+  const computedBarangaysToFetch = selectedBarangays.length > 0 
+    ? selectedBarangays.map(code => barangayOptions.find(o => o.value === code)?.label).filter(Boolean) as string[]
+    : selectedCities.length > 0 
+      ? barangayOptions.map(o => o.label)
+      : [];
+
   const { data, isLoading, isPlaceholderData, refetch } = useQuery({
-    queryKey: ["adminReports", page, status, severity, search, sortBy],
-    queryFn: () => getReports({ page, limit: LIMIT, status, severity, search, sortBy }),
+    queryKey: ["adminReports", page, status, severity, search, sortBy, timeRange, customDateFrom, customDateTo, computedBarangaysToFetch],
+    queryFn: () => getReports({ 
+      page, limit: LIMIT, status, severity, search, sortBy,
+      date_from: computedDateFrom,
+      date_to: computedDateTo,
+      barangays: computedBarangaysToFetch as string[]
+    }),
     placeholderData: (prev) => prev,
     refetchInterval: 15000, // 15s background polling fallback
   });
@@ -263,6 +384,67 @@ export default function ReportsPage() {
               ]}
             />
           </div>
+
+          {/* Location Filters */}
+          <div className="flex items-center gap-2">
+            <MultiSelect
+              value={selectedRegions}
+              onChange={handleRegionChange}
+              options={regionOptions}
+              placeholder="Region"
+              className="w-40"
+            />
+            <MultiSelect
+              value={selectedCities}
+              onChange={handleCityChange}
+              options={cityOptions}
+              placeholder="City"
+              className="w-40"
+              disabled={selectedRegions.length === 0}
+            />
+            <MultiSelect
+              value={selectedBarangays}
+              onChange={setSelectedBarangays}
+              options={barangayOptions}
+              placeholder="Barangay"
+              className="w-40"
+              disabled={selectedCities.length === 0}
+            />
+          </div>
+
+          {/* Time Range Filter */}
+          <div className="flex items-center gap-2">
+            <Select
+              value={timeRange}
+              onChange={(e) => setTimeRange(String(e.target.value))}
+              className="w-40"
+              options={[
+                { label: "All Time", value: "all" },
+                { label: "Today", value: "today" },
+                { label: "Last 7 Days", value: "last7days" },
+                { label: "Last 30 Days", value: "last30days" },
+                { label: "This Year", value: "thisYear" },
+                { label: "Custom...", value: "custom" }
+              ]}
+            />
+          </div>
+          
+          {/* Custom Date Pickers */}
+          {timeRange === "custom" && (
+            <div className="flex items-center gap-2">
+              <DatePicker 
+                value={customDateFrom} 
+                onChange={(e) => setCustomDateFrom(e.target.value)} 
+                className="w-32"
+              />
+              <span className="text-sm text-gray-500">to</span>
+              <DatePicker 
+                value={customDateTo} 
+                onChange={(e) => setCustomDateTo(e.target.value)} 
+                className="w-32"
+              />
+            </div>
+          )}
 
           {/* Sort Toggles */}
           <div className="border-l border-gray-200 pl-3 flex gap-1">
