@@ -43,7 +43,7 @@ export function WeatherWidget() {
       <div className="flex items-center gap-3">
         <div className="w-20 h-20 flex items-center justify-center bg-blue-900 rounded-2xl border border-blue-800 shadow-inner">
           <img
-            src={`/meteocons/${weather.icon}.svg`}
+            src={`https://cdn.jsdelivr.net/npm/@meteocons/svg@0.1.0/fill/${weather.icon}.svg`}
             alt={weather.condition}
             className="w-20 h-20 object-contain drop-shadow-md opacity-100 scale-110"
           />

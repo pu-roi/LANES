@@ -104,7 +104,7 @@ export function RightSidebar() {
                 )}
               </div>
               <img 
-                src={`/meteocons/${weather.icon}.svg`}
+                src={`https://cdn.jsdelivr.net/npm/@meteocons/svg@0.1.0/fill/${weather.icon}.svg`}
                 alt={weather.condition}
                 className="w-16 h-16 drop-shadow-sm"
               />
