@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { createRoot, type Root } from "react-dom/client";
 import BaseMap from "@/shared/ui/BaseMap";
+import { getFloodsOffline } from "@/lib/offline/storage";
 import { useCityBoundaries } from "./hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
 
@@ -185,7 +186,14 @@ export default function MapCanvas() {
 
   const { data: activeZonesData } = useQuery({
     queryKey: ["activeZones"],
-    queryFn: () => apiClient.get<any[]>("/reports/active-zones"),
+    queryFn: async () => {
+      try {
+        return await apiClient.get<any[]>("/reports/active-zones");
+      } catch (err) {
+        console.warn("API unreachable, falling back to offline flood cache.");
+        return await getFloodsOffline();
+      }
+    },
     refetchInterval: 15000,
   });
 

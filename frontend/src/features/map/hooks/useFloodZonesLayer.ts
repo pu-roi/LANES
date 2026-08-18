@@ -227,11 +227,19 @@ export function useFloodZonesLayer(
 
     // Popups and Interactivity
     const closeTimeoutRef = { current: null as any };
+    const openTimeoutRef = { current: null as any };
 
     const clearCloseTimeout = () => {
       if (closeTimeoutRef.current) {
         clearTimeout(closeTimeoutRef.current);
         closeTimeoutRef.current = null;
+      }
+    };
+
+    const clearOpenTimeout = () => {
+      if (openTimeoutRef.current) {
+        clearTimeout(openTimeoutRef.current);
+        openTimeoutRef.current = null;
       }
     };
 
@@ -349,13 +357,17 @@ export function useFloodZonesLayer(
     const handleMouseEnter = (e: any) => {
       map.getCanvas().style.cursor = "pointer";
       if (!isTouchDevice) {
-        handlePopupOpen(e);
+        clearOpenTimeout();
+        openTimeoutRef.current = setTimeout(() => {
+          handlePopupOpen(e);
+        }, 400); // 400ms delay before showing popup
       }
     };
 
     const handleMouseLeave = () => {
       map.getCanvas().style.cursor = "";
       if (!isTouchDevice) {
+        clearOpenTimeout(); // Clear open timeout if user leaves early
         scheduleClose();
       }
     };

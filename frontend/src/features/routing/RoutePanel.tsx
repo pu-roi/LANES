@@ -588,7 +588,8 @@ export default function RoutePanel() {
   const clearButton =
     start || end ? (
       <button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           resetAll();
           setStartInput("");
           setEndInput("");

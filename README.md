@@ -44,23 +44,34 @@ cd LANES
 ---
 
 ### 1. Map Data & Routing Engine Setup (One-time only)
-LANES uses a local Valhalla engine to calculate dynamic flood-adaptive routes. You need to download the map data and compile the routing graph first.
-1. Open a PowerShell terminal at the root of the project.
-2. Run the automated setup script to download the Philippines OpenStreetMap data and build the Valhalla routing graph:
+LANES has migrated to a dual-engine routing architecture. For the online backend, we use a self-hosted **GraphHopper** engine to calculate dynamic flood-adaptive routes. You need to download the map data and the engine first.
+1. Make sure you have **Java 8 or higher** installed.
+2. Open a PowerShell terminal at the root of the project.
+3. Create a folder for the routing data and download the files:
    ```powershell
-   .\setup_valhalla.ps1
+   New-Item -ItemType Directory -Force -Path graphhopper_data
+   cd graphhopper_data
+   Invoke-WebRequest -Uri "https://github.com/graphhopper/graphhopper/releases/download/9.1/graphhopper-web-9.1.jar" -OutFile "graphhopper-web.jar"
+   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/graphhopper/graphhopper/9.1/config-example.yml" -OutFile "config.yml"
+   Invoke-WebRequest -Uri "https://download.geofabrik.de/asia/philippines-latest.osm.pbf" -OutFile "philippines.osm.pbf"
    ```
-   *(Note: This downloads ~200MB of data and may take a few minutes. Wait for it to say "Valhalla Graph successfully built!" before proceeding).*
 
 ---
 
-### 2. Start Background Services (Database & Router)
-Spin up the pre-configured PostgreSQL + PostGIS database and the local Valhalla routing engine using Docker:
+### 2. Start Background Services (Database & GraphHopper)
+First, spin up the pre-configured PostgreSQL + PostGIS database using Docker:
 ```bash
 docker-compose up -d
 ```
-*This starts the database on port `5432` and the Valhalla engine on port `8002`.*
 *(Note: Docker Desktop must be open and running).*
+
+Next, start the GraphHopper routing engine (open a dedicated terminal):
+```powershell
+cd graphhopper_data
+java -D"dw.graphhopper.datareader.file=philippines.osm.pbf" -jar graphhopper-web.jar server config.yml
+```
+*The database will run on port `5432` and GraphHopper will bind to `http://localhost:8989`.*
+*(Note: The very first time you run GraphHopper, it will take a few minutes to process the map data and build the graph. Wait until it completes before testing).*
 
 ---
 
@@ -116,8 +127,33 @@ docker-compose up -d
 
 ---
 
-### 📅 Your Daily Workflow
-Since Step 1 is a one-time setup, your daily development routine is just:
+## 4. Map Routing Engines (GraphHopper & Valhalla)
+
+LANES uses a dual-engine architecture:
+- **GraphHopper**: Used for fast, online routing with dynamic flood avoidance (Custom Models).
+- **Valhalla WebAssembly (WASM)**: Runs completely offline inside the browser as a PWA, providing disconnected intelligent routing.
+
+### Setting up GraphHopper (Online)
+1. Download a `.osm.pbf` file (e.g., `philippines.osm.pbf`) from Geofabrik.
+2. Place it in the `graphhopper_data` folder.
+3. Start GraphHopper with the configuration provided in the repository:
+   ```bash
+   cd graphhopper_data
+   java -D"dw.graphhopper.datareader.file=philippines.osm.pbf" -jar graphhopper-web.jar server config.yml
+   ```
+
+### Setting up Valhalla (Offline PWA)
+Valhalla requires the map data to be pre-compiled into a `.tar` file so it can be mounted into the browser's Emscripten Origin Private File System (OPFS).
+1. Ensure Docker Desktop is installed and running.
+2. Create a `valhalla_data` folder and place the same `philippines.osm.pbf` inside it.
+3. Open a terminal in the `valhalla_data` directory and run the official Docker container:
+   ```bash
+   docker run -d --name valhalla_builder -v "${PWD}:/custom_files" ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+   ```
+4. Wait for the container to finish building. It will automatically detect the `.pbf` file and generate a `valhalla_tiles.tar` file.
+5. Move the generated `valhalla_tiles.tar` file into `backend/data/valhalla/`. The FastAPI backend will serve this as a static file to the Next.js frontend, which will cache it in IndexedDB for offline use!
+
+## 5. Development Workflow
 1. Turn on background services: `docker-compose up -d`
 2. Start the backend: `cd backend` -> Activate `venv` -> `uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`
 3. Start the frontend: `cd frontend` -> `npm run dev`
@@ -125,9 +161,9 @@ Since Step 1 is a one-time setup, your daily development routine is just:
 ---
 
 ## 🛠️ Troubleshooting & Fallback
-* **setup_valhalla.ps1 Connection Timeout:** If the script fails to download the map data (e.g., `Connection timed out`), it is likely being blocked by your firewall or network proxy. Try temporarily disabling your firewall, disconnecting from a VPN, or using a different network. Alternatively, you can download the file manually from [https://download.geofabrik.de/asia/philippines-latest.osm.pbf](https://download.geofabrik.de/asia/philippines-latest.osm.pbf), place the `.pbf` file inside the `data/valhalla/custom_files/` directory, and run the script again.
+* **GraphHopper Download Timeout:** If the `Invoke-WebRequest` fails to download the map data (e.g., `Connection timed out`), it is likely being blocked by your firewall or network proxy. You can manually download the `.pbf` file from [https://download.geofabrik.de/asia/philippines-latest.osm.pbf](https://download.geofabrik.de/asia/philippines-latest.osm.pbf) and place it in the `graphhopper_data` folder.
 * **TypeError: Failed to fetch (Frontend):** Check that the backend server is running at `http://localhost:8000`.
-* **Database Connection Warnings:** If PostgreSQL is offline, the backend logs a startup warning and operates in fallback mode, letting you test routing options using Valhalla without crashing the server.
+* **Database Connection Warnings:** If PostgreSQL is offline, the backend logs a startup warning and operates in fallback mode, letting you test routing options using GraphHopper without crashing the server.
 * **Resetting the Database:** If you need to clear all dummy data (reports, zones, logs) but keep the default `admin` user intact, open a PowerShell terminal in the `backend` folder and run:
   ```powershell
   $env:PYTHONPATH="."; .\venv\Scripts\python.exe scripts\clear_db.py

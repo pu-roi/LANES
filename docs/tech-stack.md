@@ -65,10 +65,12 @@ This document serves as the official technical stack reference for the LANES pla
 
 ### **4\. Pathfinding Engine (Routing Graph Optimization)**
 
-* **Engine Core:** **Valhalla**  
-  * *Role:* Handling high-performance routing calculations natively supporting dynamic polygon avoidance. Replaced OSRM to enable true intelligent detouring around real-time flood polygons while strictly respecting OpenStreetMap traffic laws like one-way streets. Run locally in Docker.
+* **Online Routing Engine:** **GraphHopper**  
+  * *Role:* Handling high-performance online routing calculations. Natively supports dynamic polygon avoidance via custom_models to generate multiple unique detours around real-time flood polygons while strictly respecting OpenStreetMap traffic laws. Run locally in Docker.
+* **Offline Routing Engine (PWA):** **Valhalla WebAssembly (WASM)**  
+  * *Role:* Provides true disconnected intelligent routing inside the browser. A custom Web Worker dynamically mounts .tar map graphs to the Emscripten filesystem, utilizing Valhalla's native xclude_polygons parameter to detour around synchronized active floods without an internet connection.
 * **Source Graph Data:** **OpenStreetMap Data**  
-  * *Role:* Providing the raw baseline network structure (nodes and edges representing physical streets) utilized by the routing engine.
+  * *Role:* Providing the raw baseline network structure (nodes and edges representing physical streets) utilized by both routing engines.
 
 ### **5\. Evaluation & Testing Tier (Quality Assurance)**
 

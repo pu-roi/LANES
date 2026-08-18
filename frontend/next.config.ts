@@ -27,20 +27,31 @@ const withPWA = withPWAInit({
         urlPattern: /^https:\/\/[a-z]\.tile\.openstreetmap\.org\/.*/i,
         handler: "StaleWhileRevalidate",
         options: {
-          cacheName: "map-tiles",
+          cacheName: "osm-map-tiles",
           expiration: {
-            maxEntries: 250, // Cache recent tiles without blowing up storage
+            maxEntries: 1500, // Generous tile cache for offline exploration
             maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
           },
         },
       },
       {
-        urlPattern: /^https:\/\/basemaps\.cartocdn\.com\/.*/i, // Common fallback
+        urlPattern: /^https:\/\/api\.maptiler\.com\/tiles\/.*/i,
+        handler: "StaleWhileRevalidate",
+        options: {
+          cacheName: "maptiler-tiles",
+          expiration: {
+            maxEntries: 1500,
+            maxAgeSeconds: 30 * 24 * 60 * 60,
+          },
+        },
+      },
+      {
+        urlPattern: /^https:\/\/basemaps\.cartocdn\.com\/.*/i,
         handler: "StaleWhileRevalidate",
         options: {
           cacheName: "carto-tiles",
           expiration: {
-            maxEntries: 250,
+            maxEntries: 500,
             maxAgeSeconds: 30 * 24 * 60 * 60,
           },
         },
@@ -58,18 +69,6 @@ const nextConfig: NextConfig = {
       {
         source: '/api/v1/:path*',
         destination: `${process.env.BACKEND_URL || 'http://127.0.0.1:8000'}/api/v1/:path*`,
-      },
-    ];
-  },
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, proxy-revalidate' },
-          { key: 'Pragma', value: 'no-cache' },
-          { key: 'Expires', value: '0' },
-        ],
       },
     ];
   },

@@ -326,6 +326,50 @@ export default function LandingView() {
         </div>
       </section>
 
+      {/* ── SECTION 5: Offline Mode Requirements ───────────────────────── */}
+      <section className="w-full bg-slate-50 py-12 border-t border-slate-200" id="offline-requirements-section">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Offline Mode Requirements</h2>
+            <p className="text-gray-500 mt-1 text-sm">
+              LANES provides a highly resilient offline routing engine when you lose cellular connection during severe storms. Because this runs entirely on your device, minimum hardware requirements apply.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="bg-white border-slate-200 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-bold text-gray-800">Storage Space</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-extrabold text-blue-600 mb-2">~100 MB</p>
+                <p className="text-sm text-gray-600">Required for the offline map vector tiles and 50km localized routing graphs (Metro Manila).</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-slate-200 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-bold text-gray-800">Memory (RAM)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-extrabold text-blue-600 mb-2">4GB+</p>
+                <p className="text-sm text-gray-600">Required to reliably execute the WebAssembly routing engine without crashing the browser.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white border-slate-200 shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-bold text-gray-800">Browser Support</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xl font-bold text-gray-800 mb-2">Chrome / Safari</p>
+                <p className="text-sm text-gray-600">Must support modern WebAssembly (WASM), IndexedDB, and Service Workers.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="bg-white border-t border-gray-100 py-10 mt-auto">
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">

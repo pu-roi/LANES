@@ -74,3 +74,10 @@ node_modules/
 .mcp.json
 opencode.json
 mcporter.json
+graphhopper_data/graph-cache/
+*.osm.pbf
+valhalla_data/valhalla_tiles.tar
+valhalla_data/
+graphhopper_data/
+backend/.env
+frontend/.env.local

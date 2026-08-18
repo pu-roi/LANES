@@ -157,14 +157,15 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 7. Offline Resiliency & PWA Capabilities
-*   **Purpose:** Ensures mobility tool usability when mobile cellular networks degrade during severe weather.
-*   **What it does:** Caches static assets, intercepts network failures, and alerts commuters when they go offline.
-*   **How it works:**
-    1. Operates as a Progressive Web App using `@ducanh2912/next-pwa` service workers.
-    2. Caches maps, styles, and dashboard templates locally in browser storage.
-    3. Uses `idb-keyval` (IndexedDB utility) to store basic state configuration variables.
-    4. Triggers an offline banner warning when the browser's `navigator.onLine` state toggles off.
+### 7. Offline Resiliency & True Offline Routing (PWA)
+  *   **Purpose:** Ensures mobility tool usability and intelligent flood detouring when mobile networks fail during severe typhoons.
+  *   **What it does:** Runs a full routing engine client-side, caching map graphs, assets, and active flood polygons locally.
+  *   **How it works:**
+      1. Operates as a Progressive Web App using `@ducanh2912/next-pwa` service workers.
+      2. Caches Valhalla `.tar` routing graphs and offline vector tiles into IndexedDB and the Origin Private File System (OPFS).
+      3. Uses a background Web Worker (`valhallaCore.ts`) to execute the Valhalla WebAssembly binary off the main thread, dynamically mounting the Emscripten filesystem to the `.tar` tile data.
+      4. Listens to Server-Sent Events (SSE) while online to instantly cache active `FloodAvoidanceZone` geometries to IndexedDB.
+      5. Automatically falls back to offline routing when `navigator.onLine` toggles off, computing detours using the locally cached polygons.
 *   **Access & Roles:** Public commuters.
 *   **Related Components:**
     *   **Frontend:** [OfflineBanner.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/offline/OfflineBanner.tsx), `frontend/package.json`.

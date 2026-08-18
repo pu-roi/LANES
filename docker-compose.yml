@@ -12,14 +12,6 @@ services:
     volumes:
       - lanes_db_data:/var/lib/postgresql/data
 
-  valhalla:
-    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
-    container_name: lanes_valhalla
-    restart: always
-    ports:
-      - "8002:8002"
-    volumes:
-      - ./data/valhalla/custom_files:/custom_files
 
 volumes:
   lanes_db_data:

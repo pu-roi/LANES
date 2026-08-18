@@ -5,6 +5,10 @@ import maplibregl from "maplibre-gl";
 import type { Map } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Loader2 } from "lucide-react";
+import { registerOfflineProtocol } from "@/lib/offline/map-pmtiles";
+import { preloadOfflineEngine } from "@/features/routing/routingApi";
+
+registerOfflineProtocol();
 
 export class TopViewControlV3 {
   private _map: maplibregl.Map | undefined;
@@ -106,7 +110,11 @@ const OSM_FALLBACK_STYLE = {
   sources: {
     osm: {
       type: "raster",
-      tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+      tiles: [
+        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      ],
       tileSize: 256,
       attribution: "&copy; OpenStreetMap contributors",
     },
@@ -121,6 +129,12 @@ const OSM_FALLBACK_STYLE = {
     },
   ],
 };
+
+// Standard nationwide freedom when online; dynamic bounds only active when offline
+const PHILIPPINES_WIDE_BOUNDS: [[number, number], [number, number]] = [
+  [116.0, 4.5],   // Southwest Philippines
+  [127.0, 21.5],  // Northeast Philippines
+];
 
 interface BaseMapProps {
   onMapInit?: (map: Map) => void;
@@ -150,6 +164,10 @@ export default function BaseMap({
   const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
+    preloadOfflineEngine();
+  }, []);
+
+  useEffect(() => {
     if (!mapContainerRef.current) return;
 
     let fallbackTimeout: NodeJS.Timeout;
@@ -166,12 +184,30 @@ export default function BaseMap({
       if (!isLoaded) handleFailure("Timeout waiting for style to load");
     }, 8000);
 
+    const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+
+    // Retrieve last explored boundary from localStorage if offline
+    let dynamicBounds: [[number, number], [number, number]] = PHILIPPINES_WIDE_BOUNDS;
+    if (isOffline && typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("lanes_explored_bounds");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length === 2) {
+            dynamicBounds = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+
     const mapInstance = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: mapStyle,
+      style: isOffline ? OSM_FALLBACK_STYLE : mapStyle,
       center: center,
       zoom: zoom,
-      maxZoom: 20,
+      minZoom: isOffline ? 11.5 : 5.0, // Only clamp zoom-out when offline so you don't zoom into grey void
+      maxZoom: 20.0,
+      maxBounds: isOffline ? dynamicBounds : PHILIPPINES_WIDE_BOUNDS,
       pitch: 0,
       bearing: 0,
     });
@@ -197,6 +233,10 @@ export default function BaseMap({
 
     mapInstance.on("error", (e) => {
       const errMsg = (e.message || (e.error && e.error.message) || "").toLowerCase();
+      // If offline, individual missing tiles should be silently ignored (not trigger a style reset)
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        return;
+      }
       const isStyleError =
         errMsg.includes("style") ||
         errMsg.includes("fetch") ||
@@ -231,6 +271,38 @@ export default function BaseMap({
       }
     });
 
+    // Continuously update the explored boundary in localStorage while online
+    mapInstance.on("moveend", () => {
+      if (typeof navigator !== "undefined" && navigator.onLine) {
+        try {
+          const currentBounds = mapInstance.getBounds();
+          const sw = currentBounds.getSouthWest();
+          const ne = currentBounds.getNorthEast();
+
+          let minLng = sw.lng;
+          let minLat = sw.lat;
+          let maxLng = ne.lng;
+          let maxLat = ne.lat;
+
+          const prev = localStorage.getItem("lanes_explored_bounds");
+          if (prev) {
+            const [pSW, pNE] = JSON.parse(prev);
+            minLng = Math.min(minLng, pSW[0]);
+            minLat = Math.min(minLat, pSW[1]);
+            maxLng = Math.max(maxLng, pNE[0]);
+            maxLat = Math.max(maxLat, pNE[1]);
+          }
+
+          // Expand padding slightly (+0.01 deg) so edge tiles feel natural
+          const expanded: [[number, number], [number, number]] = [
+            [minLng - 0.01, minLat - 0.01],
+            [maxLng + 0.01, maxLat + 0.01]
+          ];
+          localStorage.setItem("lanes_explored_bounds", JSON.stringify(expanded));
+        } catch (e) {}
+      }
+    });
+
     return () => {
       clearTimeout(fallbackTimeout);
       mapInstance.remove();
@@ -241,10 +313,13 @@ export default function BaseMap({
 
   const MAPTILER_STYLE_URL = "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU";
 
-  // Auto-retry MapTiler when using fallback
+  // Auto-retry MapTiler ONLY when browser is online
   useEffect(() => {
     if (!usingFallback) return;
     const interval = setInterval(() => {
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        return; // Do not reload or spam network while user is offline
+      }
       fetch(MAPTILER_STYLE_URL, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
@@ -260,8 +335,8 @@ export default function BaseMap({
   }, [usingFallback]);
 
   return (
-    <div className={className}>
-      <div ref={mapContainerRef} className="absolute inset-0 w-full h-full" />
+    <div className={`${className} bg-[#f2efe9]`}>
+      <div ref={mapContainerRef} className="absolute inset-0 w-full h-full bg-[#f2efe9]" />
 
       {usingFallback && (
         <div className="absolute top-20 md:top-24 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-30 bg-amber-500/95 text-white text-xs md:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-sm animate-pulse max-w-md pointer-events-auto border border-amber-400/20 font-medium">

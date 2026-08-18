@@ -1,7 +1,10 @@
 // Base fetch or axios interceptor for API calls to FastAPI
 // Using standard Fetch API as a placeholder
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const envApiUrl = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = (envApiUrl && !envApiUrl.startsWith("encrypted:")) 
+  ? envApiUrl 
+  : "http://localhost:8000/api/v1";
 
 export const apiClient = {
   get: async (endpoint: string) => {

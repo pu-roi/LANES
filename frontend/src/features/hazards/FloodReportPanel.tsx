@@ -412,6 +412,7 @@ export function FloodReportPanel({ isOpen, onClose }: FloodReportPanelProps) {
       <button
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           if (step === 1) {
             setFloodStart(null);
             setFloodEnd(null);
