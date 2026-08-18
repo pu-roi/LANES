@@ -165,5 +165,20 @@
   - Integrated official LANES CDN brand header into Brevo transactional email templates without downloadable attachments.
   - Created automated Pytest suite in `backend/tests/test_otp_lifecycle.py` verifying cooldowns, grace periods, and lockout rules.
 
+### Capstone Phase 5: Dual-Engine Routing & Offline Architecture (🟢 COMPLETED)
+- [x] **Backend GraphHopper Integration (Online State)**:
+  - Created `backend/app/services/graphhopper_service.py` to interface with the self-hosted GraphHopper instance.
+  - Implemented Multi-Profile Routing: Query GraphHopper with multiple `custom_models` (e.g., "Main Roads", "Allow Alleys") to generate diverse recommendations.
+  - Injected active PostGIS flood polygons into the `areas` object of the `custom_model` payload with `multiply_by: 0.0` priority.
+  - Refactored `/reports/route` to replace Valhalla usage with `graphhopper_service.py`.
+- [x] **Frontend PWA Offline Architecture & Valhalla WASM**:
+  - Designed a Custom Valhalla Core routing engine (`valhallaCore.ts`) to execute the Valhalla WebAssembly binary off the main thread.
+  - Re-implemented the Emscripten filesystem API (`FS.mount`) from scratch inside the worker to mount `.tar` map graph tiles securely in memory/OPFS.
+  - Implemented `frontend/src/lib/offline/storage.ts` using IndexedDB to store localized routing graphs and synchronized flood polygons.
+  - Dynamically bypassed the Valhalla JS wrapper to send custom JSON payloads with `exclude_polygons` explicitly.
+- [x] **Data Synchronization & IndexedDB Storage**:
+  - **Live Sync:** Implemented Server-Sent Events (SSE) listener in `sync.py` to stream `FloodAvoidanceZone` polygons into IndexedDB while the app is open.
+  - Fixed Pydantic validation errors enabling real-time polygonal broadcasts instead of raw LineStrings.
+
 ## Backlog / Upcoming
 

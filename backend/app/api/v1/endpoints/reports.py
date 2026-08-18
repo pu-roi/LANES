@@ -124,16 +124,16 @@ def create_avoidance_zone(zone: schemas.FloodAvoidanceZoneCreate, db: Session = 
     return crud.create_flood_avoidance_zone(db=db, zone=zone)
 
 
-from app.services.routing import calculate_flood_safe_route
+from app.services.graphhopper_service import calculate_flood_safe_route
 
 @router.post("/route", response_model=schemas.MultiRouteResponse)
-def get_safe_route(payload: schemas.RouteRequest, db: Session = Depends(get_db)):
+async def get_safe_route(payload: schemas.RouteRequest, db: Session = Depends(get_db)):
     """
     Calculates up to 3 route candidates between start and end coordinates.
     Each candidate is annotated with flood zone intersection status and
     a recommended_index pointing to the safest available option.
     """
-    return calculate_flood_safe_route(
+    return await calculate_flood_safe_route(
         db=db,
         start=payload.start,
         end=payload.end,

@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     # Valhalla Server URL (defaults to local docker container)
     VALHALLA_URL: str = "http://localhost:8002"
 
+    # GraphHopper Server URL (defaults to local docker container)
+    GRAPHHOPPER_URL: str = "http://localhost:8989"
+
     # Cloudinary
     CLOUDINARY_CLOUD_NAME: str = ""
     CLOUDINARY_API_KEY: str = ""

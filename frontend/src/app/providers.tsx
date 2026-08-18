@@ -5,9 +5,11 @@ import { useState } from "react";
 import { ToastProvider } from "@/shared/ui";
 import GlobalMap from "@/features/map/GlobalMap";
 import { useSSE } from "@/hooks/useSSE";
+import { useLiveSync } from "@/hooks/useLiveSync";
 
 function AppHooks() {
   useSSE();
+  useLiveSync();
   return null;
 }
 

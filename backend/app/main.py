@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, JSONResponse
 from fastapi.exceptions import ResponseValidationError
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -96,12 +97,18 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Length", "Content-Range", "Accept-Ranges"],
 )
 
 from app.api.v1.api import api_router
 
 # Include routing endpoints coordinator
 app.include_router(api_router, prefix="/api/v1")
+
+# Mount static files (e.g., for serving offline Map data like valhalla .tar files)
+import os
+os.makedirs("data", exist_ok=True)
+app.mount("/static", StaticFiles(directory="data"), name="static")
 
 
 

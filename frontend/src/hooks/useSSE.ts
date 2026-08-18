@@ -57,7 +57,8 @@ export function useSSE() {
     };
 
     eventSource.onerror = (err) => {
-      console.error("SSE encountered an error, EventSource will automatically attempt to reconnect:", err);
+      // EventSource automatically reconnects when the connection is dropped or backend restarts.
+      console.warn("SSE connection state changed, attempting automatic reconnect...", err);
     };
 
     return () => {

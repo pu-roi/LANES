@@ -30,3 +30,4 @@ requests-cache
 retry-requests
 numpy
 pandas
+sse-starlette==2.1.0

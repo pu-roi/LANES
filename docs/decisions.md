@@ -2,6 +2,20 @@
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
+## 1. Dual-Engine Routing (GraphHopper Online + Valhalla WASM Offline)
+**Date:** August 2026
+**Decision:** Transition from purely Valhalla to a dual-engine architecture using GraphHopper for online routing and a custom Valhalla WebAssembly build for offline routing.
+
+**Context:**
+LANES requires real-time flood detouring and multiple route recommendations for commuters. While Valhalla is excellent, generating distinct alternative routes around blockages natively proved challenging due to its aggressive optimizations. For offline resilience during typhoons, we needed an engine capable of running completely client-side in the browser.
+
+**Reasoning for the Switch:**
+1. **Online Flexibility (GraphHopper):** GraphHopper's `custom_models` allow us to seamlessly inject active `FloodAvoidanceZone` polygons into the routing graph on-the-fly via the API, applying a `multiply_by: 0.0` priority. It natively supports creating diverse alternative routes (e.g., "Main Roads Only" vs. "Alleys") by sending parallel requests with different models, solving the multi-route requirement.
+2. **Offline Resilience (Valhalla WASM):** Valhalla's map tiles (`.tar`) are highly compressed and structured sequentially, making them perfect for offline browser storage. We successfully compiled Valhalla into WebAssembly (`valhalla-wasm`) and bypassed the restrictive official JS wrapper. By injecting a custom `valhallaCore.ts` engine, we manually bound Emscripten's virtual filesystem (`FS.mount`) to the `valhalla_tiles.tar` file stored in IndexedDB.
+3. **SSE Synchronization:** To support offline detours, `sync.py` uses Server-Sent Events (SSE) to broadcast strictly `FloodAvoidanceZone` geometries to the browser's IndexedDB. When offline, `valhallaCore.ts` dynamically reconstructs 3D GeoJSON arrays and feeds them directly into Valhalla's `exclude_polygons` parameter, achieving true disconnected intelligent routing.
+
+---
+
 ## 1. Real-time Signaling: WebSockets vs. Server-Sent Events (SSE)
 **Date:** August 2026
 **Decision:** Migrate from WebSockets to Server-Sent Events (SSE).

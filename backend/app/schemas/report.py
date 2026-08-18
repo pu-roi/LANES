@@ -37,7 +37,7 @@ class FloodReportBase(BaseModel):
 
 
 class FloodReportCreate(FloodReportBase):
-    geometry: Optional[Union[PointGeometry, LineStringGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
     media_urls: list[str] = []
     user_id: Optional[int] = None
     survey_data: Optional[SurveyData] = None
@@ -51,7 +51,7 @@ class FloodReportCreate(FloodReportBase):
 class FloodReportResponse(FloodReportBase):
     id: int
     status: ReportStatus
-    geometry: Optional[Union[PointGeometry, LineStringGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
     media_urls: list[str] = []
     created_at: datetime
     updated_at: datetime
@@ -116,7 +116,7 @@ class ZoneContributorResponse(BaseModel):
     depth: Optional[str] = None
     created_at: datetime
     is_primary: bool = False
-    geometry: Optional[Union[PointGeometry, LineStringGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
     model_config = ConfigDict(from_attributes=True)
 
     @field_validator("geometry", mode="before")
@@ -148,7 +148,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     geometry: PolygonGeometry
     severity: str
     depth: Optional[str] = None
-    report_geometry: Optional[Union[PointGeometry, LineStringGeometry]] = None
+    report_geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
     created_at: datetime
     
     report_text: Optional[str] = None
