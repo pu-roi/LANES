@@ -35,8 +35,8 @@ export function useFloodZonesLayer(
       const sourceId = "active-zones-source";
       const existingSource = map.getSource(sourceId) as maplibregl.GeoJSONSource;
 
-      if (!activeZonesData || activeZonesData.length === 0) {
-        console.log("[useFloodZonesLayer] Cleared active zones because activeZonesData is empty");
+      if (!activeZonesData || activeZonesData.length === 0 || activeTab !== "zones") {
+        console.log("[useFloodZonesLayer] Cleared active zones because activeZonesData is empty or activeTab is not 'zones'");
         if (existingSource) {
           existingSource.setData({ type: "FeatureCollection", features: [] });
         }

@@ -86,6 +86,9 @@ export interface GetReportsOptions {
   search?: string;
   sortBy?: string;
   archived?: boolean;
+  date_from?: string;
+  date_to?: string;
+  barangays?: string[];
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {
@@ -112,6 +115,15 @@ export async function getReports(options: GetReportsOptions): Promise<PaginatedR
   }
   if (options.archived) {
     params.append("archived", "true");
+  }
+  if (options.date_from) {
+    params.append("date_from", options.date_from);
+  }
+  if (options.date_to) {
+    params.append("date_to", options.date_to);
+  }
+  if (options.barangays && options.barangays.length > 0) {
+    params.append("barangays", options.barangays.join(","));
   }
 
   return apiClient.get<PaginatedReportsResponse>(`/admin/reports/all?${params.toString()}`);
