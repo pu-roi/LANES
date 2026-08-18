@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Any
 from sqlalchemy import String, Integer, Boolean, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import JSONB
 from geoalchemy2 import Geometry
 
 from app.core.database import Base
@@ -54,7 +55,7 @@ class FloodReport(Base):
     severity: Mapped[ReportSeverity] = mapped_column(Enum(ReportSeverity, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]))
     depth: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     status: Mapped[ReportStatus] = mapped_column(Enum(ReportStatus, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]), default=ReportStatus.PENDING)
-    image_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    media_urls: Mapped[Optional[List[str]]] = mapped_column(JSONB, nullable=True)
     
     # [NEW] Fields for Community Feed & 1:N Spatial Moderation
     human_readable_location: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)

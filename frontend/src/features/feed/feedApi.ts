@@ -21,7 +21,7 @@ export interface FeedPost {
     source: string;
     severity: 'low' | 'medium' | 'high' | 'extreme';
     status: string;
-    image_url?: string;
+    media_urls?: string[];
     human_readable_location?: string;
     geometry?: {
       type: 'Point' | 'LineString';

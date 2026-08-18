@@ -29,7 +29,7 @@ export interface FloodReport {
   severity: "low" | "medium" | "high" | "extreme";
   depth?: string;
   geometry: ReportGeometry | null;
-  image_url?: string;
+  media_urls?: string[];
   status: "pending" | "approved" | "rejected";
   zone_id?: number | null;
   barangay?: string | null;

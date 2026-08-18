@@ -38,16 +38,21 @@ class FloodReportBase(BaseModel):
 
 class FloodReportCreate(FloodReportBase):
     geometry: Optional[Union[PointGeometry, LineStringGeometry]] = None
-    image_url: Optional[str] = None
+    media_urls: list[str] = []
     user_id: Optional[int] = None
     survey_data: Optional[SurveyData] = None
+
+    @field_validator("media_urls", mode="before")
+    @classmethod
+    def validate_media_urls(cls, v: Any) -> list[str]:
+        return v if v is not None else []
 
 
 class FloodReportResponse(FloodReportBase):
     id: int
     status: ReportStatus
     geometry: Optional[Union[PointGeometry, LineStringGeometry]] = None
-    image_url: Optional[str] = None
+    media_urls: list[str] = []
     created_at: datetime
     updated_at: datetime
     approved_at: Optional[datetime] = None
@@ -59,6 +64,11 @@ class FloodReportResponse(FloodReportBase):
     reporter_trust_score: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("media_urls", mode="before")
+    @classmethod
+    def validate_media_urls(cls, v: Any) -> list[str]:
+        return v if v is not None else []
 
     @field_validator("geometry", mode="before")
     @classmethod

@@ -112,10 +112,14 @@ def get_posts(
     current_user: Optional[User] = Depends(get_current_user_optional)
 ):
     """Retrieve all posts for the community feed."""
-    # Note: crud_post.get_posts should probably compute upvotes, comments, etc.
-    # For now, let's keep it simple.
-    posts = crud_post.get_posts(db=db, skip=skip, limit=limit)
-    return {"posts": posts, "total": len(posts), "has_more": False}
+    from app.crud import feed as crud_feed
+    user_id = current_user.id if current_user else None
+    return crud_feed.get_feed_posts(
+        db=db,
+        user_id=user_id,
+        skip=skip,
+        limit=limit
+    )
 
 
 @router.post("/{post_id}/vote", response_model=Optional[PostInteraction])

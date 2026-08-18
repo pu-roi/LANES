@@ -7,9 +7,15 @@ export interface FloodReport {
   source: string;
   severity: "low" | "medium" | "high" | "extreme";
   status: "Pending" | "Approved" | "Rejected";
+  human_readable_location?: string;
+  barangay?: string;
+  is_public: boolean;
+  geometry: any;
+  media_urls: string[];
   location_confidence: number;
   severity_confidence: number;
   created_at: string;
+  updated_at: string;
 }
 
 export interface RouteResponse {

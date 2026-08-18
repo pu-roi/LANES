@@ -10,7 +10,7 @@ import {
   FloodReport,
   ReportGeometry
 } from "./adminApi";
-import { useToast, Button, Input, Select, Pagination, Tabs } from "@/shared/ui";
+import { useToast, Button, Input, Select, Pagination, Tabs, MediaViewer } from "@/shared/ui";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
 import { 
   Loader2, 
@@ -43,7 +43,7 @@ export default function ReportsPage() {
   const [severity, setSeverity] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<{ urls: string[], index: number } | null>(null);
   const [selectedReport, setSelectedReport] = useState<FloodReport | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
@@ -318,19 +318,28 @@ export default function ReportsPage() {
             >
               <div className="p-6 flex-1 flex flex-col sm:flex-row gap-6">
                 {/* Optional Image Thumbnail */}
-                {report.image_url && (
+                {report.media_urls && report.media_urls.length > 0 && (
                   <div 
-                    className="shrink-0 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
+                    className="shrink-0 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity relative"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedImage(report.image_url || null);
+                      setSelectedMedia({ urls: report.media_urls, index: 0 });
                     }}
                   >
-                    <img 
-                      src={report.image_url} 
-                      alt="Flood evidence" 
-                      className="w-full sm:w-32 h-32 object-cover"
-                    />
+                    {report.media_urls[0].match(/\.(mp4|webm|mov|ogg)$/i) || report.media_urls[0].includes('/video/upload/') ? (
+                      <video src={report.media_urls[0]} className="w-full sm:w-32 h-32 object-cover" />
+                    ) : (
+                      <img 
+                        src={report.media_urls[0]} 
+                        alt="Flood evidence" 
+                        className="w-full sm:w-32 h-32 object-cover"
+                      />
+                    )}
+                    {report.media_urls.length > 1 && (
+                      <div className="absolute top-2 right-2 bg-black/60 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md backdrop-blur-md">
+                        +{report.media_urls.length - 1}
+                      </div>
+                    )}
                   </div>
                 )}
                 
@@ -455,30 +464,16 @@ export default function ReportsPage() {
         onReject={(id) => rejectMutation.mutate(id)}
         isApproveLoading={approveMutation.isPending}
         isRejectLoading={rejectMutation.isPending}
-        onOpenImage={(url) => setSelectedImage(url)}
+        onOpenMedia={(urls, idx) => setSelectedMedia({ urls, index: idx })}
       />
 
       {/* Lightbox Modal */}
-      {selectedImage && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div className="relative max-w-4xl w-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-            <button 
-              className="absolute -top-12 right-0 text-white hover:text-gray-300 bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
-              onClick={() => setSelectedImage(null)}
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <img 
-              src={selectedImage} 
-              alt="Expanded flood evidence" 
-              className="max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/10"
-            />
-          </div>
-        </div>
-      )}
+      <MediaViewer 
+        mediaUrls={selectedMedia ? selectedMedia.urls : []}
+        initialIndex={selectedMedia ? selectedMedia.index : 0}
+        isOpen={!!selectedMedia}
+        onClose={() => setSelectedMedia(null)}
+      />
     </div>
   );
 }

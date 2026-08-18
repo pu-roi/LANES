@@ -15,7 +15,7 @@ async def process_new_report(
     depth: str = None,
     human_readable_location: str = None,
     geometry: dict = None,
-    image_url: str = None,
+    media_urls: list[str] = None,
     user_id: int = None,
     survey_data: dict = None
 ):
@@ -44,7 +44,7 @@ async def process_new_report(
         human_readable_location=human_readable_location,
         is_public=is_public,
         geometry=geometry,
-        image_url=image_url,
+        media_urls=media_urls or [],
         user_id=user_id,
         survey_data=survey_data
     )

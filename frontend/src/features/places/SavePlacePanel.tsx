@@ -234,7 +234,13 @@ export function SavePlacePanel() {
       icon={<MapPin className="h-4 w-4 text-emerald-600" />}
       iconBgClassName="bg-emerald-100"
       isOpen={isSavePlacePanelOpen}
-      onClose={() => setIsSavePlacePanelOpen(false)}
+      onClose={() => {
+        setIsSavePlacePanelOpen(false);
+        if (isPickingOnMap && activePoint === "save_place_location") {
+          setIsPickingOnMap(false);
+          setActivePoint(null);
+        }
+      }}
       isCollapsed={isPanelCollapsed}
       onCollapseToggle={() => setIsPanelCollapsed(!isPanelCollapsed)}
       isMobile={isMobile}
