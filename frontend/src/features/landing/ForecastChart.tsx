@@ -168,7 +168,7 @@ export function ForecastChart() {
                   const displayHour = hour % 12 === 0 ? 12 : hour % 12;
                   return (
                     <g key={i}>
-                      <image href={`/meteocons/${p.icon}.svg`} x={p.x - 24} y={0} width="48" height="48" />
+                      <image href={`https://cdn.jsdelivr.net/npm/@meteocons/svg@0.1.0/fill/${p.icon}.svg`} x={p.x - 24} y={0} width="48" height="48" />
                       <circle cx={p.x} cy={p.y1} r="4" fill="#ffffff" stroke="#3b82f6" strokeWidth="2" />
                       <text x={p.x} y={p.y1 - 12} textAnchor="middle" fill="#2563eb" fontSize="11" fontWeight="800">{p.pop}%</text>
                       
