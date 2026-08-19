@@ -65,12 +65,14 @@ This document serves as the official technical stack reference for the LANES pla
 
 ### **4\. Pathfinding Engine (Routing Graph Optimization)**
 
-* **Online Routing Engine:** **GraphHopper**  
-  * *Role:* Handling high-performance online routing calculations. Natively supports dynamic polygon avoidance via custom_models to generate multiple unique detours around real-time flood polygons while strictly respecting OpenStreetMap traffic laws. Run locally in Docker.
+* **Online Primary Routing Engine:** **Valhalla (Docker / HTTP API)**  
+  * *Role:* High-performance self-hosted routing engine running via Docker (`ghcr.io/gis-ops/docker-valhalla`). Natively supports dynamic polygon avoidance via `exclude_polygons`, multiple route alternatives (`alternates=2`), and clearance vehicle profiles (High Clearance, Low Clearance, Motorcycle, Walk).
+* **Online Cloud Routing Engine:** **OpenRouteService (ORS API)**  
+  * *Role:* Cloud-hosted secondary routing engine used as an alternative routing provider for dynamic comparison, fallback resilience, and user-switchable routing in the UI.
 * **Offline Routing Engine (PWA):** **Valhalla WebAssembly (WASM)**  
-  * *Role:* Provides true disconnected intelligent routing inside the browser. A custom Web Worker dynamically mounts .tar map graphs to the Emscripten filesystem, utilizing Valhalla's native xclude_polygons parameter to detour around synchronized active floods without an internet connection.
-* **Source Graph Data:** **OpenStreetMap Data**  
-  * *Role:* Providing the raw baseline network structure (nodes and edges representing physical streets) utilized by both routing engines.
+  * *Role:* Provides true disconnected intelligent routing inside the browser. A custom Web Worker dynamically mounts .tar map graphs to the Emscripten filesystem, utilizing Valhalla's native `exclude_polygons` parameter to detour around synchronized active floods without an internet connection.
+* **Source Graph Data:** **OpenStreetMap (OSM) Data**  
+  * *Role:* Providing the raw baseline road network structure (nodes and edges representing physical streets) utilized across the routing engines.
 
 ### **5\. Evaluation & Testing Tier (Quality Assurance)**
 

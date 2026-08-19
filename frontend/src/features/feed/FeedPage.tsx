@@ -7,7 +7,7 @@ import { getFeed, votePost, FeedPost } from './feedApi';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
 import { Loader2, Filter, Image as ImageIcon, Video, MapPin, Menu, X, Map, Rss, MessageSquarePlus, Settings, TrendingUp, Flame, Heart, Phone, Plus } from 'lucide-react';
-import { useToast } from '@/shared/ui';
+import { useToast, Button } from '@/shared/ui';
 import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -170,10 +170,10 @@ export function FeedPage() {
                 </button>
               </div>
 
-              <button className="pb-2.5 text-gray-500 hover:text-blue-600 transition-colors flex items-center gap-1.5 text-sm font-medium">
-                <Filter className="w-4 h-4" />
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600">
+                <Filter className="w-4 h-4 mr-1.5" />
                 Filters
-              </button>
+              </Button>
             </div>
           </div>
 

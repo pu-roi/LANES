@@ -9,7 +9,7 @@ import {
 } from './feedApi';
 import { PostItem } from './PostItem';
 import { Loader2, ArrowLeft, Send, ArrowUp, ArrowDown, MessageSquare, X, Pin, Flag } from 'lucide-react';
-import { useToast } from '@/shared/ui';
+import { useToast, Button } from '@/shared/ui';
 import { formatCommentTime } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { ConfirmDialog } from '@/shared/ui';
@@ -336,9 +336,9 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
             {replyingTo && (
               <div className="flex items-center justify-between bg-blue-50 px-3 py-2 rounded-t-xl border border-blue-100 border-b-0 mb-0 text-xs font-medium text-blue-700">
                 <span>Replying to @{replyingTo.author}...</span>
-                <button onClick={() => { setReplyingTo(null); setReplyText(''); }} className="text-gray-500 hover:text-gray-700 p-1">
+                <Button variant="ghost" size="sm" className="px-2" onClick={() => { setReplyingTo(null); setReplyText(''); }}>
                   <X className="w-3.5 h-3.5" />
-                </button>
+                </Button>
               </div>
             )}
             <div className="flex gap-3 items-start">

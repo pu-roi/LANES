@@ -100,7 +100,7 @@ export default function LandingView() {
       <div className="flex flex-col min-h-[100svh] w-full">
         
         {/* ── SECTION 1: Hero & Journey ─────────────────────────────────────────────── */}
-        <section className="relative w-full flex-grow flex flex-col justify-center pt-6 pb-[100px] overflow-hidden bg-transparent">
+        <section className="relative w-full flex-grow flex flex-col justify-center pt-6 pb-[calc(var(--bottom-nav-height,64px)+env(safe-area-inset-bottom))] overflow-hidden bg-transparent">
           
 
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">

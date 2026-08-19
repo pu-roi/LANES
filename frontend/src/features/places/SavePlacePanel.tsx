@@ -14,6 +14,7 @@ import { savedPlacesApi } from "@/features/profile/savedPlacesApi";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/shared/ui/Toast";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const ICON_OPTIONS = [
@@ -103,6 +104,11 @@ export function SavePlacePanel() {
   // If Save Place just opened and is forcing Analytics to dodge, wait 250ms for Analytics to collapse before sliding in.
   const isForcingAnalyticsToDodge = isAnalyticsOpen && lastOpenedLeftPanel === "save_place" && isDesktop;
   const entranceDelay = isForcingAnalyticsToDodge ? 0.25 : 0;
+
+  const pathname = usePathname();
+  const isRoutingPage = pathname === "/map";
+  const baseX = isRoutingPage ? 416 : 16;
+  const initialX = actualDodging ? baseX + 344 : baseX;
 
   useEffect(() => {
     const handleCenterChange = (e: Event) => {
@@ -246,7 +252,7 @@ export function SavePlacePanel() {
       isMobile={isMobile}
       bodyClassName="!max-h-[60vh] min-h-[45vh] pb-0 flex flex-col"
       anchor="left"
-      initialPosition={{ x: actualDodging ? 360 : 16, y: 80 }}
+      initialPosition={{ x: initialX, y: 80 }}
       showDesktopClose={true}
       panelId="save_place"
       entranceDelay={entranceDelay}
@@ -305,7 +311,7 @@ export function SavePlacePanel() {
                   <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
                   <span className="text-sm text-slate-700 truncate">{address || `${coords[1].toFixed(5)}, ${coords[0].toFixed(5)}`}</span>
                 </div>
-                <button onClick={() => { setCoords(null); setAddress(""); }} className="text-xs text-red-500 font-medium px-2 py-1 hover:bg-red-50 rounded">Clear</button>
+                <Button variant="ghost" size="sm" onClick={() => { setCoords(null); setAddress(""); }} className="text-xs text-red-500 font-medium px-2 py-1 hover:bg-red-50 hover:text-red-600 rounded">Clear</Button>
               </div>
             ) : (
               <div className="w-full rounded-lg transition-all bg-gray-50 border border-gray-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 focus-within:bg-white shadow-sm relative z-10">

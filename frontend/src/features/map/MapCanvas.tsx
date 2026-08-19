@@ -694,8 +694,81 @@ export default function MapCanvas() {
 
   }, [allRoutes, selectedRouteIndex, activeZonesData, isLoaded]);
 
+  // ── Step highlight: driven by route-step-hover / route-step-click / route-step-clear events ──
+  useEffect(() => {
+    if (!isLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+
+    const HIGHLIGHT_SOURCE = "step-highlight-source";
+    const HIGHLIGHT_LAYER  = "step-highlight-layer";
+    const HIGHLIGHT_GLOW   = "step-highlight-glow";
+
+    const clearHighlight = () => {
+      if (!map.style) return;
+      if (map.getLayer(HIGHLIGHT_LAYER)) map.removeLayer(HIGHLIGHT_LAYER);
+      if (map.getLayer(HIGHLIGHT_GLOW))  map.removeLayer(HIGHLIGHT_GLOW);
+      if (map.getSource(HIGHLIGHT_SOURCE)) map.removeSource(HIGHLIGHT_SOURCE);
+    };
+
+    const drawHighlight = (segment: [number, number][]) => {
+      if (!map.style || segment.length < 2) return;
+      clearHighlight();
+      map.addSource(HIGHLIGHT_SOURCE, {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          properties: {},
+          geometry: { type: "LineString", coordinates: segment },
+        },
+      });
+      // Outer glow
+      map.addLayer({
+        id: HIGHLIGHT_GLOW,
+        type: "line",
+        source: HIGHLIGHT_SOURCE,
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: { "line-color": "#38bdf8", "line-width": 14, "line-opacity": 0.25, "line-blur": 4 },
+      });
+      // Inner highlight line
+      map.addLayer({
+        id: HIGHLIGHT_LAYER,
+        type: "line",
+        source: HIGHLIGHT_SOURCE,
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: { "line-color": "#0ea5e9", "line-width": 5, "line-opacity": 0.95 },
+      });
+    };
+
+    const onHover = (e: Event) => {
+      const { segment } = (e as CustomEvent).detail;
+      drawHighlight(segment);
+    };
+
+    const onClick = (e: Event) => {
+      const { segment } = (e as CustomEvent).detail;
+      drawHighlight(segment);
+      // Fly to segment midpoint
+      const mid = segment[Math.floor(segment.length / 2)];
+      if (mid) {
+        map.flyTo({ center: [mid[0], mid[1]], zoom: Math.max(map.getZoom(), 16), duration: 500 });
+      }
+    };
+
+    const onClear = () => clearHighlight();
+
+    window.addEventListener("route-step-hover", onHover);
+    window.addEventListener("route-step-click", onClick);
+    window.addEventListener("route-step-clear", onClear);
+    return () => {
+      window.removeEventListener("route-step-hover", onHover);
+      window.removeEventListener("route-step-click", onClick);
+      window.removeEventListener("route-step-clear", onClear);
+      clearHighlight();
+    };
+  }, [isLoaded]);
 
   // Active flood avoidance zones are handled by useFloodZonesLayer hook above
+
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current || !start) return;
@@ -839,7 +912,7 @@ export default function MapCanvas() {
         setMapInstance(map);
         setIsLoaded(true);
       }}
-      className={`relative w-full h-full ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}
+      className={`relative h-full ${pathname === "/map" ? "w-full md:ml-[400px] md:w-[calc(100%-400px)]" : "w-full"} ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}
     >
 
       {usingFallback && (

@@ -505,7 +505,9 @@ export default function ReportsPage() {
                     className="shrink-0 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity relative"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedMedia({ urls: report.media_urls, index: 0 });
+                      if (report.media_urls) {
+                        setSelectedMedia({ urls: report.media_urls, index: 0 });
+                      }
                     }}
                   >
                     {report.media_urls[0].match(/\.(mp4|webm|mov|ogg)$/i) || report.media_urls[0].includes('/video/upload/') ? (

@@ -50,3 +50,30 @@ async def process_new_report(
     )
     
     return create_flood_report(db=db, report=report_create)
+
+import json
+from sqlalchemy import func
+from app.models.report import FloodReport, FloodAvoidanceZone
+
+def get_active_floods(db: Session):
+    zones = db.query(
+        func.ST_AsGeoJSON(FloodAvoidanceZone.geometry).label("geojson"),
+        FloodReport.severity,
+        FloodAvoidanceZone.id,
+    ).join(
+        FloodReport, FloodAvoidanceZone.id == FloodReport.zone_id
+    ).filter(
+        FloodAvoidanceZone.is_active == True,
+        (FloodAvoidanceZone.expires_at == None) | (FloodAvoidanceZone.expires_at > func.now())
+    ).all()
+    
+    data = []
+    for z in zones:
+        geom = json.loads(z.geojson) if z.geojson else None
+        data.append({
+            "id": z.id,
+            "status": "active",
+            "severity": z.severity.value if hasattr(z.severity, "value") else z.severity,
+            "polygon": geom
+        })
+    return data

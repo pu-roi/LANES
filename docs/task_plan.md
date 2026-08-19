@@ -6,7 +6,7 @@
 
 ## Backlog
 
-*(Currently empty — all immediate priorities are organized into phases below.)*
+- [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
 

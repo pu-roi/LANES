@@ -24,7 +24,10 @@ export default function FloatingNav() {
   const showAdminButton = u && u.role?.name !== "Commuter" && u.role?.name !== "Super Admin";
 
   return (
-    <header className="fixed top-4 z-50 hidden sm:flex justify-center pointer-events-none pb-4 w-full select-none">
+    <header className={cn(
+      "fixed top-4 z-50 hidden sm:flex justify-center pointer-events-none pb-4 select-none",
+      isMapPage ? "md:ml-[400px] md:w-[calc(100%-400px)] w-full" : "w-full"
+    )}>
       <nav className="pointer-events-auto flex items-center gap-1 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-gray-200 px-2 py-1.5 w-max max-w-[calc(100vw-2rem)] transition-all duration-500 ease-in-out">
         <Link href="/" className="flex items-center pl-3 pr-2 hidden sm:flex transition-opacity hover:opacity-80 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 rounded-full" title="Go to Landing Page">
           <Logo size="xs" textClassName="mt-0.5 hidden md:block shrink-0" />

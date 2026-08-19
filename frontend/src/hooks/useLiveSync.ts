@@ -12,7 +12,7 @@ export function useLiveSync() {
 
     // Connect to the FastAPI SSE endpoint
     // In production, this should point to your real backend domain
-    const sseUrl = 'http://localhost:8000/api/v1/sync/stream';
+    const sseUrl = (process.env.NEXT_PUBLIC_API_URL || '/api/v1') + '/sync/stream';
     const source = new EventSource(sseUrl);
     eventSourceRef.current = source;
 

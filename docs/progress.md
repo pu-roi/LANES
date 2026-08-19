@@ -165,20 +165,24 @@
   - Integrated official LANES CDN brand header into Brevo transactional email templates without downloadable attachments.
   - Created automated Pytest suite in `backend/tests/test_otp_lifecycle.py` verifying cooldowns, grace periods, and lockout rules.
 
-### Capstone Phase 5: Dual-Engine Routing & Offline Architecture (🟢 COMPLETED)
-- [x] **Backend GraphHopper Integration (Online State)**:
-  - Created `backend/app/services/graphhopper_service.py` to interface with the self-hosted GraphHopper instance.
-  - Implemented Multi-Profile Routing: Query GraphHopper with multiple `custom_models` (e.g., "Main Roads", "Allow Alleys") to generate diverse recommendations.
-  - Injected active PostGIS flood polygons into the `areas` object of the `custom_model` payload with `multiply_by: 0.0` priority.
-  - Refactored `/reports/route` to replace Valhalla usage with `graphhopper_service.py`.
-- [x] **Frontend PWA Offline Architecture & Valhalla WASM**:
-  - Designed a Custom Valhalla Core routing engine (`valhallaCore.ts`) to execute the Valhalla WebAssembly binary off the main thread.
-  - Re-implemented the Emscripten filesystem API (`FS.mount`) from scratch inside the worker to mount `.tar` map graph tiles securely in memory/OPFS.
-  - Implemented `frontend/src/lib/offline/storage.ts` using IndexedDB to store localized routing graphs and synchronized flood polygons.
-  - Dynamically bypassed the Valhalla JS wrapper to send custom JSON payloads with `exclude_polygons` explicitly.
+### Capstone Phase 5: Multi-Engine Routing & Offline Architecture (🟢 COMPLETED)
+- [x] **Triple-Path Routing Engine Architecture**:
+  - **Valhalla HTTP (Online Primary)**: Integrated self-hosted Valhalla engine (`valhalla_service.py`) supporting dynamic `exclude_polygons` flood avoidance, multi-profile clearance routing (High Clearance, Low Clearance, Motorcycle, Walk), and multiple route alternatives (`alternates=2`).
+  - **OpenRouteService (Online Secondary/Cloud)**: Integrated OpenRouteService API (`ors_service.py`) with geojson parsing and polygon-avoidance fallback for on-demand cloud routing.
+  - **Valhalla WASM (Offline Client-Side)**: Custom Valhalla Core routing engine (`valhallaCore.ts`) executing WebAssembly worker off the main thread with IndexedDB tile mounting for 100% offline routing during severe connectivity loss.
+- [x] **Fixed Left Sidebar Route Planner**:
+  - Converted floating route window into a permanent 340px fixed left sidebar adhering to "Anti Box-in-a-Box" design principles.
+  - Added dynamic routing engine switcher (`Valhalla` vs `OpenRouteService`).
+  - Integrated `OfflineManager` directly into the sidebar footer.
+  - Converted route calculation loading state to an inline non-blocking spinner (`variant="inline"`).
+- [x] **Turn-by-Turn Navigation & Map Interactive Highlighting**:
+  - Rendered step-by-step navigation instructions with directional maneuver icons, road names, and per-step distances.
+  - Implemented interactive segment hover highlighting: hovering over any instruction highlights that road segment on the MapLibre canvas with a vibrant cyan glow.
+  - Implemented click-to-focus: clicking a step smoothly flies the map camera to that maneuver segment midpoint.
 - [x] **Data Synchronization & IndexedDB Storage**:
-  - **Live Sync:** Implemented Server-Sent Events (SSE) listener in `sync.py` to stream `FloodAvoidanceZone` polygons into IndexedDB while the app is open.
-  - Fixed Pydantic validation errors enabling real-time polygonal broadcasts instead of raw LineStrings.
+  - **Live Sync:** Server-Sent Events (SSE) listener in `sync.py` to stream `FloodAvoidanceZone` polygons into IndexedDB while the app is open.
+  - Fixed polygon schema serialization for real-time broadcasts.
 
 ## Backlog / Upcoming
+- [ ] (All currently planned routing and UI sprint items completed)
 

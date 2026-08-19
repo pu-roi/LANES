@@ -81,6 +81,9 @@ interface MapContextValue {
   vehicleProfile: "light" | "heavy" | "motorcycle" | "walk";
   setVehicleProfile: (profile: "light" | "heavy" | "motorcycle" | "walk") => void;
 
+  routingEngine: "valhalla" | "ors";
+  setRoutingEngine: (engine: "valhalla" | "ors") => void;
+
   savedPlaces: any[];
   setSavedPlaces: (places: any[]) => void;
   draftSavePlaceCoords: {coords: [number, number], label: string} | null;
@@ -142,6 +145,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [floodPreviewGeometry, setFloodPreviewGeometry] = useState<RouteGeometry | null>(null);
 
   const [vehicleProfile, setVehicleProfile] = useState<"light" | "heavy" | "motorcycle" | "walk">("light");
+  const [routingEngine, setRoutingEngine] = useState<"valhalla" | "ors">("ors");
 
   const [panelZIndices, setPanelZIndices] = useState<Record<string, number>>({});
   const [highestZIndex, setHighestZIndex] = useState(40);
@@ -356,7 +360,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setRouteError(null);
 
       try {
-        const result: MultiRouteResponse = await getRoute(start.coords, end.coords, false, vehicleProfile);
+        const result: MultiRouteResponse = await getRoute(start.coords, end.coords, false, vehicleProfile, routingEngine);
         if (cancelled) return;
 
         setAllRoutes(result.routes);
@@ -463,6 +467,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       resetAll,
       vehicleProfile,
       setVehicleProfile,
+      routingEngine,
+      setRoutingEngine,
       panelZIndices,
       bringPanelToFront,
     }),
@@ -515,6 +521,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       resetAll,
       vehicleProfile,
       setVehicleProfile,
+      routingEngine,
+      setRoutingEngine,
       panelZIndices,
       bringPanelToFront,
     ]

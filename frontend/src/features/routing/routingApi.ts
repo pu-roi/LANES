@@ -1,4 +1,4 @@
-import { apiClient } from "@/shared/api";
+import { apiClient } from "@/lib/apiClient";
 
 let valhallaWorker: Worker | null = null;
 
@@ -65,6 +65,7 @@ export interface RouteOption {
   is_truncated: boolean;
   safety_score: number;
   flood_risk: string;
+  instructions?: any[];
 }
 
 export interface MultiRouteResponse {
@@ -91,9 +92,10 @@ export async function getRoute(
   start: [number, number],
   end: [number, number],
   ignoreFloods: boolean = false,
-  vehicleProfile: "light" | "heavy" | "motorcycle" | "walk" = "light"
+  vehicleProfile: "light" | "heavy" | "motorcycle" | "walk" = "light",
+  engine: "valhalla" | "ors" = "valhalla"
 ): Promise<MultiRouteResponse> {
-  // If we are completely offline, fall back to the Valhalla WASM Web Worker
+  // If we are offline, automatically fallback to the local WASM engine
   if (typeof window !== "undefined" && !navigator.onLine) {
     let excludePolygons: [number, number][][] = [];
     
@@ -184,7 +186,8 @@ export async function getRoute(
               blocked: false,
               is_truncated: false,
               safety_score: 1.0,
-              flood_risk: "None"
+              flood_risk: "None",
+              instructions: result.instructions || []
             };
 
             resolve({
@@ -208,11 +211,12 @@ export async function getRoute(
     });
   }
 
-  // Standard Online Mode using FastAPI & GraphHopper
+  // Cloud Mode using OpenRouteService via backend
   return apiClient.post<MultiRouteResponse>("/reports/route", {
     start,
     end,
     ignore_floods: ignoreFloods,
-    vehicle_profile: vehicleProfile
+    vehicle_profile: vehicleProfile,
+    engine: engine
   });
 }
