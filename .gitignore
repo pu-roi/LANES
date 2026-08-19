@@ -30,6 +30,8 @@ env.bak/
 venv.bak/
 
 # Environment Variables / Secrets (Encrypted .env files are safe to commit with dotenvx)
+# NOTE: backend/.env is excluded because it may be in decrypted state
+backend/.env
 .env.development.local
 .env.test.local
 .env.production.local

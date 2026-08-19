@@ -261,6 +261,8 @@ export function Panel({
     );
   }
 
+  if (!isOpen) return null;
+
   return (
     <motion.div
       drag
