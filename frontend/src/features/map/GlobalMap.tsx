@@ -195,6 +195,9 @@ function MapLayout() {
       <AnimatePresence>
         {isAnalyticsOpen && <AnalyticsPanel />}
       </AnimatePresence>
+      <AnimatePresence>
+        {isSavePlacePanelOpen && <SavePlacePanel />}
+      </AnimatePresence>
       {!pathname.startsWith('/admin') && pathname !== "/analytics" && (
         <>
           <FloodReportPanel
@@ -202,7 +205,6 @@ function MapLayout() {
             onClose={() => setIsReportPanelOpen(false)}
           />
           <RoutePanel />
-          <SavePlacePanel />
         </>
       )}
 

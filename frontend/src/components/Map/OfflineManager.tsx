@@ -67,14 +67,14 @@ export const OfflineManager: React.FC = () => {
   };
 
   return (
-    <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-sm border border-gray-200 p-4 w-full">
-      <div className="flex items-center gap-3 mb-2">
-        <div className={`p-2 rounded-full ${isAvailable ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
-          {isAvailable ? <CheckCircle size={20} /> : <WifiOff size={20} />}
+    <div className="w-full">
+      <div className="flex items-center gap-3">
+        <div className={`p-2 rounded-full shrink-0 ${isAvailable ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+          {isAvailable ? <CheckCircle size={18} /> : <WifiOff size={18} />}
         </div>
-        <div>
-          <h3 className="font-semibold text-gray-800 text-sm">Offline Routing</h3>
-          <p className="text-xs text-gray-500">
+        <div className="min-w-0 flex-1">
+          <h3 className="font-semibold text-gray-800 text-xs leading-tight">Offline Routing</h3>
+          <p className="text-[11px] text-gray-500 truncate">
             {isAvailable ? 'Ready for offline use' : 'Download required (~580MB)'}
           </p>
         </div>
@@ -83,27 +83,27 @@ export const OfflineManager: React.FC = () => {
       {!isAvailable && !isDownloading && (
         <button
           onClick={handleDownload}
-          className="w-full mt-3 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors"
+          className="w-full mt-2.5 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-1.5 px-3 rounded-lg text-xs font-semibold transition-colors shadow-sm"
         >
-          <CloudDownload size={16} />
+          <CloudDownload size={14} />
           Download Map Data
         </button>
       )}
 
       {isDownloading && (
-        <div className="mt-3">
-          <div className="flex justify-between text-xs text-gray-700 mb-1 font-medium">
+        <div className="mt-2.5">
+          <div className="flex justify-between text-[11px] text-gray-700 mb-1 font-medium">
             <span>{downloadStats ? downloadStats.eta : "Calculating time..."}</span>
             <span>{progress}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
             <div 
-              className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+              className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" 
               style={{ width: `${progress}%` }}
             />
           </div>
           {downloadStats && (
-            <div className="flex justify-between text-[11px] text-gray-500 mt-1.5">
+            <div className="flex justify-between text-[10px] text-gray-400 mt-1">
               <span>Speed: {downloadStats.speed}</span>
               <span>Est. time remaining</span>
             </div>

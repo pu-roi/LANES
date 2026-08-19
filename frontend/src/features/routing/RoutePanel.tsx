@@ -279,8 +279,8 @@ export default function RoutePanel() {
       <>
         {/* Mobile Top Search Bar */}
         <div className="absolute top-4 left-4 right-4 z-40 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-visible transition-all">
-          <div className="flex p-3 pr-2">
-            <div className="flex flex-col items-center justify-start gap-1 w-6 mt-3 relative z-10">
+          <div className="flex items-center p-3 pr-2">
+            <div className="flex flex-col items-center justify-center gap-1 w-6 relative z-10">
               <CircleDot className="w-4 h-4 text-green-600 shrink-0 bg-white" />
               <div className="w-[3px] h-6 bg-gray-200 border-l border-dashed border-gray-300" />
               <MapPin className="w-5 h-5 text-red-500 shrink-0 bg-white" />
@@ -317,9 +317,9 @@ export default function RoutePanel() {
               </div>
             </div>
 
-            <div className="w-10 flex flex-col items-center justify-center relative z-10 pl-1">
+            <div className="w-10 flex items-center justify-center relative z-10 pl-1">
               {(start || end) ? (
-                <button onClick={handleSwap} className="p-2 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors">
+                <button onClick={handleSwap} className="p-2 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors" title="Swap start and destination">
                   <ArrowDownUp className="w-5 h-5" />
                 </button>
               ) : null}
@@ -550,9 +550,9 @@ export default function RoutePanel() {
           </div>
 
           {/* Location Inputs (Timeline Style) */}
-          <div className="flex items-start">
+          <div className="flex items-center">
             {/* Left Icons */}
-            <div className="flex flex-col items-center justify-start gap-1 w-5 mt-3 mr-2 relative z-10 shrink-0">
+            <div className="flex flex-col items-center justify-center gap-1 w-5 mr-2 relative z-10 shrink-0">
               <CircleDot className="w-3.5 h-3.5 text-green-600 shrink-0 bg-white" />
               <div className="w-[2px] h-5 bg-gray-200 border-l border-dashed border-gray-300" />
               <MapPin className="w-4 h-4 text-red-500 shrink-0 bg-white" />
@@ -591,9 +591,9 @@ export default function RoutePanel() {
             </div>
 
             {/* Swap Button */}
-            <div className="w-8 flex flex-col items-center justify-center shrink-0 pl-1 mt-1">
+            <div className="w-8 flex items-center justify-center self-center shrink-0 pl-1">
               {(start || end) ? (
-                <button onClick={handleSwap} className="p-1.5 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors">
+                <button onClick={handleSwap} className="p-1.5 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors" title="Swap start and destination">
                   <ArrowDownUp className="w-4 h-4" />
                 </button>
               ) : null}
@@ -747,7 +747,7 @@ export default function RoutePanel() {
         </div>
 
         {/* ── FOOTER: Offline Manager ── */}
-        <div className="p-3 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+        <div className="p-3 border-t border-gray-100 flex-shrink-0">
           <OfflineManager />
         </div>
       </div>

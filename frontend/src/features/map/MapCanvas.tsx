@@ -912,7 +912,7 @@ export default function MapCanvas() {
         setMapInstance(map);
         setIsLoaded(true);
       }}
-      className={`relative h-full ${pathname === "/map" ? "w-full md:ml-[400px] md:w-[calc(100%-400px)]" : "w-full"} ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}
+      className={`relative h-full ${pathname === "/map" ? "w-full md:ml-[340px] md:w-[calc(100%-340px)]" : "w-full"} ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}
     >
 
       {usingFallback && (
