@@ -170,6 +170,7 @@ export default function MapCanvas() {
   const endMarkerRef = useRef<Marker | null>(null);
   const floodStartMarkerRef = useRef<Marker | null>(null);
   const floodEndMarkerRef = useRef<Marker | null>(null);
+  const draftPlaceMarkerRef = useRef<Marker | null>(null);
   
   // Ref for saved places markers and their react roots for cleanup
   const savedPlacesMarkersRef = useRef<{ marker: Marker, root: Root }[]>([]);
@@ -235,7 +236,7 @@ export default function MapCanvas() {
     setPointFromMap, activePoint, setActivePoint, isPickingOnMap,
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
-    savePlaceIcon, setIsSavePlacePanelOpen
+    savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen
   } = useMapContext();
 
   const isDesktopAnalytics = pathname === "/admin/analytics";
@@ -396,6 +397,24 @@ export default function MapCanvas() {
     }
   }, [floodEnd, isLoaded]);
 
+  useEffect(() => {
+    if (!isLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+
+    draftPlaceMarkerRef.current?.remove();
+    draftPlaceMarkerRef.current = null;
+
+    if (draftSavePlaceCoords?.coords) {
+      const el = document.createElement("div");
+      el.className = "text-2xl select-none pointer-events-none drop-shadow-md flex items-center justify-center";
+      el.textContent = savePlaceIcon || "🏠";
+
+      draftPlaceMarkerRef.current = new maplibregl.Marker({ element: el, anchor: "center" })
+        .setLngLat(draftSavePlaceCoords.coords)
+        .addTo(map);
+    }
+  }, [draftSavePlaceCoords, savePlaceIcon, isLoaded]);
+
   // Render Saved Places
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
@@ -417,23 +436,21 @@ export default function MapCanvas() {
       
       root.render(
         <div 
-          className="flex flex-col items-center group transform transition-transform hover:scale-110 active:scale-95"
+          className="flex flex-col items-center group"
           onClick={(e) => {
             e.stopPropagation();
-            // What to do when a saved place is clicked? Maybe pre-fill route or open a small popup
-            // For now, let's just log or set as start/end if route panel is open
           }}
         >
-          <div className="bg-blue-600 w-8 h-8 flex items-center justify-center rounded-full text-white shadow-lg border-2 border-white relative z-10 text-sm">
+          <div className="text-2xl drop-shadow-md select-none flex items-center justify-center">
             {iconText}
           </div>
-          <div className="bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded shadow-sm text-xs font-semibold text-slate-700 mt-1 pointer-events-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded shadow-sm text-xs font-semibold text-slate-700 mt-0.5 pointer-events-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
             {place.name}
           </div>
         </div>
       );
 
-      const marker = new maplibregl.Marker({ element: el })
+      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
         .setLngLat([place.longitude, place.latitude])
         .addTo(map);
 

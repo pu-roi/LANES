@@ -61,7 +61,7 @@ export function AnalyticsPanel({ isOpen: propIsOpen, onClose: propOnClose }: Ana
   const entranceDelay = isForcingSavePlaceToDodge ? 0.25 : 0;
 
   const isRoutingPage = pathname === "/map";
-  const baseX = isRoutingPage ? 416 : 16;
+  const baseX = isRoutingPage ? 356 : 16;
   const initialX = actualDodging ? baseX + 344 : baseX;
 
   const { data, isLoading } = useQuery({

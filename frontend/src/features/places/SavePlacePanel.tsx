@@ -5,17 +5,19 @@ import { Panel } from "@/shared/ui/Panel";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Select } from "@/shared/ui/Select";
-import { MapPin, Home, Briefcase, GraduationCap, Building, Star, Coffee, Heart, Crosshair, User } from "lucide-react";
+import { MapPin, Home, Briefcase, GraduationCap, Building, Star, Coffee, Heart, Crosshair, User, Trash2, Plus, Navigation } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { useMapContext } from "@/features/map/MapContext";
 import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
-import { savedPlacesApi } from "@/features/profile/savedPlacesApi";
+import { savedPlacesApi, SavedPlace } from "@/features/profile/savedPlacesApi";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/shared/ui/Toast";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+
+const MAX_SAVED_PLACES = 10;
 
 const ICON_OPTIONS = [
   { value: "🏠", label: "Home" },
@@ -60,11 +62,13 @@ export function SavePlacePanel() {
   const { isAuthenticated } = useAuth();
   const { error: showError, success } = useToast();
 
+  const [activeTab, setActiveTab] = useState<"add" | "list">("add");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [coords, setCoords] = useState<[number, number] | null>(null);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
 
   // Reset to expanded when opened
@@ -107,7 +111,7 @@ export function SavePlacePanel() {
 
   const pathname = usePathname();
   const isRoutingPage = pathname === "/map";
-  const baseX = isRoutingPage ? 416 : 16;
+  const baseX = isRoutingPage ? 356 : 16;
   const initialX = actualDodging ? baseX + 344 : baseX;
 
   useEffect(() => {
@@ -124,10 +128,10 @@ export function SavePlacePanel() {
     if (draftSavePlaceCoords) {
       setCoords(draftSavePlaceCoords.coords);
       setAddress(draftSavePlaceCoords.label);
-      setDraftSavePlaceCoords(null);
       setIsSavePlacePanelOpen(true);
+      setActiveTab("add");
     }
-  }, [draftSavePlaceCoords, setDraftSavePlaceCoords, setIsSavePlacePanelOpen]);
+  }, [draftSavePlaceCoords, setIsSavePlacePanelOpen]);
 
   if (!isSavePlacePanelOpen && !(isPickingOnMap && activePoint === "save_place_location")) return null;
 
@@ -157,6 +161,10 @@ export function SavePlacePanel() {
   if (isPickingOnMap && isMobile) return null;
 
   const handleSave = async () => {
+    if (savedPlaces.length >= MAX_SAVED_PLACES) {
+      showError("Limit Reached", `You can only save up to ${MAX_SAVED_PLACES} places. Please delete one to add a new place.`);
+      return;
+    }
     if (!name.trim()) {
       showError("Validation Error", "Please enter a name for this place.");
       return;
@@ -177,18 +185,46 @@ export function SavePlacePanel() {
         longitude: coords[0]
       });
       setSavedPlaces([newPlace, ...savedPlaces]);
-      setIsSavePlacePanelOpen(false);
       // Reset
       setName("");
-      setIcon("Home");
+      setIcon("🏠");
       setAddress("");
       setCoords(null);
+      setDraftSavePlaceCoords(null);
+      setActiveTab("list");
       success("Success", "Place saved successfully");
     } catch (err: any) {
       showError("Failed to save", err.response?.data?.detail || "Failed to save place");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleDelete = async (placeId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDeletingId(placeId);
+    try {
+      await savedPlacesApi.deleteSavedPlace(placeId);
+      setSavedPlaces(savedPlaces.filter((p: SavedPlace) => p.id !== placeId));
+      success("Deleted", "Saved place removed");
+    } catch (err: any) {
+      showError("Error", err.response?.data?.detail || "Failed to delete saved place");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleSelectPlace = (place: SavedPlace) => {
+    // Center map on location if event exists
+    window.dispatchEvent(
+      new CustomEvent("fly-to-location", {
+        detail: {
+          latitude: place.latitude,
+          longitude: place.longitude,
+          zoom: 15,
+        },
+      })
+    );
   };
 
   const renderTopOptions = () => (
@@ -234,14 +270,17 @@ export function SavePlacePanel() {
     </>
   );
 
+  const isLimitReached = savedPlaces.length >= MAX_SAVED_PLACES;
+
   return (
     <Panel
-      title="Save Place"
+      title="Saved Places"
       icon={<MapPin className="h-4 w-4 text-emerald-600" />}
       iconBgClassName="bg-emerald-100"
       isOpen={isSavePlacePanelOpen}
       onClose={() => {
         setIsSavePlacePanelOpen(false);
+        setDraftSavePlaceCoords(null);
         if (isPickingOnMap && activePoint === "save_place_location") {
           setIsPickingOnMap(false);
           setActivePoint(null);
@@ -271,74 +310,184 @@ export function SavePlacePanel() {
           </Link>
         </div>
       ) : (
-        <div className="flex flex-col gap-4 p-1 flex-1">
-          <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">Name</label>
-            <Input 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              placeholder="e.g. Home, Work, Gym" 
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">Icon</label>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(2.5rem,1fr))] gap-2 place-items-center">
-              {ICON_OPTIONS.map((opt) => {
-                const isSelected = icon === opt.value;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setIcon(opt.value)}
-                    className={`p-2 rounded-xl transition-colors flex items-center justify-center text-xl ${
-                      isSelected ? 'bg-blue-600 shadow-md ring-2 ring-blue-200' : 'bg-slate-100 hover:bg-slate-200'
-                    }`}
-                    title={opt.label}
-                  >
-                    <span className="w-5 h-5 flex items-center justify-center drop-shadow-sm">{opt.value}</span>
-                  </button>
-                );
-              })}
+        <div className="flex flex-col h-full flex-1">
+          {/* Tabs Navigation */}
+          <div className="flex items-center justify-between border-b border-slate-100 px-2 py-2 mb-3 bg-slate-50/50 rounded-xl">
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={() => setActiveTab("add")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === "add"
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add Place
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("list")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  activeTab === "list"
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                My Places ({savedPlaces.length}/{MAX_SAVED_PLACES})
+              </button>
             </div>
+            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
+              isLimitReached ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"
+            }`}>
+              {savedPlaces.length}/{MAX_SAVED_PLACES}
+            </span>
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-700 block mb-1">Location</label>
-            {coords ? (
-              <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
-                <div className="flex items-center gap-2 overflow-hidden">
-                  <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span className="text-sm text-slate-700 truncate">{address || `${coords[1].toFixed(5)}, ${coords[0].toFixed(5)}`}</span>
+          {activeTab === "add" ? (
+            <div className="flex flex-col gap-4 p-1 flex-1 overflow-y-auto">
+              {isLimitReached && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs flex flex-col gap-1">
+                  <p className="font-semibold">Maximum limit reached ({MAX_SAVED_PLACES}/{MAX_SAVED_PLACES})</p>
+                  <p>Please remove a saved place from "My Places" tab before adding a new one.</p>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => { setCoords(null); setAddress(""); }} className="text-xs text-red-500 font-medium px-2 py-1 hover:bg-red-50 hover:text-red-600 rounded">Clear</Button>
-              </div>
-            ) : (
-              <div className="w-full rounded-lg transition-all bg-gray-50 border border-gray-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 focus-within:bg-white shadow-sm relative z-10">
-                <LocationAutocomplete 
-                  placeholder="Search address..."
-                  value={address}
-                  onChange={setAddress}
-                  onSelect={(s) => {
-                    setCoords([s.lng, s.lat]);
-                    setAddress(s.label || "");
-                  }}
-                  className="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-                  renderTopOptions={renderTopOptions()}
+              )}
+
+              <div>
+                <label className="text-sm font-medium text-slate-700 block mb-1">Name</label>
+                <Input 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} 
+                  placeholder="e.g. Home, Work, Gym" 
+                  disabled={isLimitReached}
                 />
               </div>
-            )}
-          </div>
 
-          <div className="mt-auto sticky bottom-0 bg-white pt-2 pb-6 z-20 border-t border-transparent">
-            <Button 
-              className="w-full" 
-              onClick={handleSave} 
-              disabled={isSubmitting || !name || !coords}
-            >
-              {isSubmitting ? "Saving..." : "Save Place"}
-            </Button>
-          </div>
+              <div>
+                <label className="text-sm font-medium text-slate-700 block mb-1">Icon</label>
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(2.5rem,1fr))] gap-2 place-items-center">
+                  {ICON_OPTIONS.map((opt) => {
+                    const isSelected = icon === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setIcon(opt.value)}
+                        disabled={isLimitReached}
+                        className={`p-2 rounded-xl transition-colors flex items-center justify-center text-xl ${
+                          isSelected ? 'bg-blue-600 shadow-md ring-2 ring-blue-200' : 'bg-slate-100 hover:bg-slate-200'
+                        } ${isLimitReached ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        title={opt.label}
+                      >
+                        <span className="w-5 h-5 flex items-center justify-center drop-shadow-sm">{opt.value}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-slate-700 block mb-1">Location</label>
+                {coords ? (
+                  <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span className="text-sm text-slate-700 truncate">{address || `${coords[1].toFixed(5)}, ${coords[0].toFixed(5)}`}</span>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => { 
+                        setCoords(null); 
+                        setAddress(""); 
+                        setDraftSavePlaceCoords(null);
+                      }} 
+                      className="text-xs text-red-500 font-medium px-2 py-1 hover:bg-red-50 hover:text-red-600 rounded"
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="w-full rounded-lg transition-all bg-gray-50 border border-gray-200 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 focus-within:bg-white shadow-sm relative z-10">
+                    <LocationAutocomplete 
+                      placeholder="Search address..."
+                      value={address}
+                      onChange={setAddress}
+                      onSelect={(s) => {
+                        setCoords([s.lng, s.lat]);
+                        setAddress(s.label || "");
+                      }}
+                      className="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
+                      renderTopOptions={!isLimitReached ? renderTopOptions() : undefined}
+                      disabled={isLimitReached}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-auto sticky bottom-0 bg-white pt-2 pb-6 z-20 border-t border-transparent">
+                <Button 
+                  className="w-full" 
+                  onClick={handleSave} 
+                  disabled={isSubmitting || !name || !coords || isLimitReached}
+                >
+                  {isSubmitting ? "Saving..." : isLimitReached ? `Limit Reached (${MAX_SAVED_PLACES}/${MAX_SAVED_PLACES})` : "Save Place"}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            /* My Places List View */
+            <div className="flex flex-col gap-2 p-1 flex-1 overflow-y-auto">
+              {savedPlaces.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400">
+                  <MapPin className="w-10 h-10 stroke-1 mb-2 text-slate-300" />
+                  <p className="text-sm font-medium text-slate-600">No saved places yet</p>
+                  <p className="text-xs text-slate-400 mt-1 mb-4">Save your favorite destinations for fast routing.</p>
+                  <Button size="sm" variant="secondary" onClick={() => setActiveTab("add")}>
+                    Add your first place
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {savedPlaces.map((place: SavedPlace) => (
+                    <div
+                      key={place.id}
+                      onClick={() => handleSelectPlace(place)}
+                      className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/50 border border-slate-100 hover:border-blue-100 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3 min-w-0 pr-2">
+                        <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-lg shrink-0 border border-slate-100">
+                          {place.icon || "📍"}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-700">
+                            {place.name}
+                          </h4>
+                          <p className="text-xs text-slate-500 truncate">
+                            {place.address || `${place.latitude.toFixed(4)}, ${place.longitude.toFixed(4)}`}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={(e) => handleDelete(place.id, e)}
+                          disabled={deletingId === place.id}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete place"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </Panel>
