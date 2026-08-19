@@ -7,6 +7,7 @@ import { Bell, Check, Info, MapPin, X } from 'lucide-react';
 import { getNotifications, markAsRead, markAllAsRead, Notification } from './notificationsApi';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import { Button } from '@/shared/ui/Button';
 
 export function NotificationBell() {
   const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
@@ -98,16 +99,18 @@ export function NotificationBell() {
             <h3 className="font-bold text-gray-900">Notifications</h3>
             <div className="flex gap-3">
               {unreadCount > 0 && (
-                <button 
+                <Button 
+                  variant="ghost"
+                  size="sm"
                   onClick={handleMarkAllRead}
                   className="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors"
                 >
                   Mark all as read
-                </button>
+                </Button>
               )}
-              <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)} className="h-8 w-8 px-2 text-slate-500">
                 <X size={16} />
-              </button>
+              </Button>
             </div>
           </div>
 

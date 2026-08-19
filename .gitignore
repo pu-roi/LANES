@@ -36,6 +36,9 @@ venv.bak/
 .env.keys
 .env*.keys
 .env.local.keys
+*.keys
+**/.env.keys
+**/.env*.keys
 
 # IDEs and Editors
 .idea/
@@ -79,5 +82,3 @@ graphhopper_data/graph-cache/
 valhalla_data/valhalla_tiles.tar
 valhalla_data/
 graphhopper_data/
-backend/.env
-frontend/.env.local

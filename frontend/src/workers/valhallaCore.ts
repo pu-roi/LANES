@@ -1,6 +1,10 @@
+// @ts-ignore
 import type { RoutingRequest, RoutingResponse, TileSourceFactory } from 'valhalla-wasm/dist/types.js';
 
-export interface CustomRoutingRequest extends RoutingRequest {
+export interface CustomRoutingRequest extends Partial<RoutingRequest> {
+  start: [number, number];
+  end: [number, number];
+  regions: string[];
   exclude_polygons?: [number, number][][];
 }
 

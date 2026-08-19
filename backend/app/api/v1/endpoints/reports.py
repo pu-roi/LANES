@@ -43,15 +43,15 @@ async def create_report(
     if geometry:
         try:
             geom_obj = json.loads(geometry)
-        except Exception:
-            pass
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid geometry JSON: {e}")
 
     survey_obj = None
     if survey_data:
         try:
             survey_obj = json.loads(survey_data)
-        except Exception:
-            pass
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid survey_data JSON: {e}")
 
     return await process_new_report(
         db=db,
@@ -81,8 +81,7 @@ def read_my_reports(
     try:
         return crud.get_flood_reports_by_user(db=db, user_id=current_user.id, skip=skip, limit=limit)
     except Exception as e:
-        print(f"Warning: Database is offline ({e}). Returning empty list for reports.")
-        return []
+        raise HTTPException(status_code=500, detail=f"Database is offline: {e}")
 
 
 @router.get("", response_model=List[schemas.FloodReportResponse])
@@ -93,8 +92,7 @@ def read_reports(skip: int = 0, limit: int = 100, db: Session = Depends(get_db))
     try:
         return crud.get_flood_reports(db=db, skip=skip, limit=limit)
     except Exception as e:
-        print(f"Warning: Database is offline ({e}). Returning empty list for reports.")
-        return []
+        raise HTTPException(status_code=500, detail=f"Database is offline: {e}")
 
 
 @router.get("/active-zones", response_model=List[schemas.FloodAvoidanceZoneResponse])
@@ -105,8 +103,7 @@ def read_active_avoidance_zones(db: Session = Depends(get_db)):
     try:
         return crud.get_active_avoidance_zones(db=db)
     except Exception as e:
-        print(f"Warning: Database is offline ({e}). Returning empty list for active zones.")
-        return []
+        raise HTTPException(status_code=500, detail=f"Database is offline: {e}")
 
 
 @router.post("/avoidance-zones", response_model=schemas.FloodAvoidanceZoneResponse, status_code=status.HTTP_201_CREATED)
@@ -124,15 +121,25 @@ def create_avoidance_zone(zone: schemas.FloodAvoidanceZoneCreate, db: Session = 
     return crud.create_flood_avoidance_zone(db=db, zone=zone)
 
 
-from app.services.graphhopper_service import calculate_flood_safe_route
+from app.services.ors_service import calculate_flood_safe_route
 
 @router.post("/route", response_model=schemas.MultiRouteResponse)
 async def get_safe_route(payload: schemas.RouteRequest, db: Session = Depends(get_db)):
     """
-    Calculates up to 3 route candidates between start and end coordinates.
+    Calculates route candidates between start and end coordinates using OpenRouteService.
     Each candidate is annotated with flood zone intersection status and
     a recommended_index pointing to the safest available option.
     """
+    if payload.engine == "valhalla":
+        from app.services.valhalla_service import calculate_flood_safe_route as valhalla_route
+        return valhalla_route(
+            db=db,
+            start=payload.start,
+            end=payload.end,
+            ignore_floods=payload.ignore_floods,
+            vehicle_profile=payload.vehicle_profile
+        )
+        
     return await calculate_flood_safe_route(
         db=db,
         start=payload.start,

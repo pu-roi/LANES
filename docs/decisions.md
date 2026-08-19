@@ -2,21 +2,40 @@
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
-## 1. Dual-Engine Routing (GraphHopper Online + Valhalla WASM Offline)
+---
+
+## 1. Routing Engine Architecture: Valhalla (Online HTTP) + OpenRouteService (Cloud) + Valhalla WASM (Offline)
 **Date:** August 2026
-**Decision:** Transition from purely Valhalla to a dual-engine architecture using GraphHopper for online routing and a custom Valhalla WebAssembly build for offline routing.
+**Decision:** Settle on a triple-path routing architecture — Valhalla HTTP for online routing, OpenRouteService as a cloud fallback, and Valhalla WebAssembly for offline resilience. GraphHopper was evaluated and dropped.
 
 **Context:**
-LANES requires real-time flood detouring and multiple route recommendations for commuters. While Valhalla is excellent, generating distinct alternative routes around blockages natively proved challenging due to its aggressive optimizations. For offline resilience during typhoons, we needed an engine capable of running completely client-side in the browser.
+LANES requires real-time flood detouring and multiple route recommendations for commuters. The routing engine has gone through several iterations:
+- **Phase 1:** Valhalla (self-hosted Docker) — worked but had challenges generating diverse alternatives around flood polygons.
+- **Phase 2:** GraphHopper (self-hosted JAR) — integrated for its `custom_models` API allowing polygon injection. Later removed due to self-hosting complexity and the requirement for Java on the deployment machine.
+- **Phase 3 (Current):** Return to Valhalla for online routing via its HTTP API, with **OpenRouteService** (ORS) as a cloud-hosted secondary engine, and Valhalla **WebAssembly** for fully offline client-side routing.
 
-**Reasoning for the Switch:**
-1. **Online Flexibility (GraphHopper):** GraphHopper's `custom_models` allow us to seamlessly inject active `FloodAvoidanceZone` polygons into the routing graph on-the-fly via the API, applying a `multiply_by: 0.0` priority. It natively supports creating diverse alternative routes (e.g., "Main Roads Only" vs. "Alleys") by sending parallel requests with different models, solving the multi-route requirement.
-2. **Offline Resilience (Valhalla WASM):** Valhalla's map tiles (`.tar`) are highly compressed and structured sequentially, making them perfect for offline browser storage. We successfully compiled Valhalla into WebAssembly (`valhalla-wasm`) and bypassed the restrictive official JS wrapper. By injecting a custom `valhallaCore.ts` engine, we manually bound Emscripten's virtual filesystem (`FS.mount`) to the `valhalla_tiles.tar` file stored in IndexedDB.
-3. **SSE Synchronization:** To support offline detours, `sync.py` uses Server-Sent Events (SSE) to broadcast strictly `FloodAvoidanceZone` geometries to the browser's IndexedDB. When offline, `valhallaCore.ts` dynamically reconstructs 3D GeoJSON arrays and feeds them directly into Valhalla's `exclude_polygons` parameter, achieving true disconnected intelligent routing.
+**Final Routing Decision:**
+
+| Engine | Mode | Use Case |
+|---|---|---|
+| Valhalla HTTP | Online (primary) | Flood-aware multi-route routing via self-hosted Docker container |
+| OpenRouteService | Online (secondary) | Cloud backup; user can switch in UI; used when Valhalla returns poor routes |
+| Valhalla WASM | Offline | Runs entirely in the browser; activated automatically when `navigator.onLine === false` |
+
+**Reasoning:**
+1. **Valhalla (Online):** Natively supports `exclude_polygons` for flood avoidance, multiple alternatives (`alternates=2`), and vehicle profiles (`auto`, `motorcycle`, `pedestrian`). The Docker container (`ghcr.io/gis-ops/docker-valhalla`) can be run locally or on a server.
+2. **OpenRouteService (Cloud):** Free tier supports Philippines data. Uses `/directions/{profile}/geojson` endpoint with Accept `application/geo+json`. ORS gives users an independent routing opinion, useful when Valhalla produces questionable detours.
+3. **Valhalla WASM (Offline):** Map tiles (`.tar`) are highly compressed and mountable via Emscripten's virtual filesystem (OPFS/IndexedDB). By injecting a custom `valhallaCore.ts` engine, we bypass the restrictive official JS wrapper and feed custom `exclude_polygons` from IndexedDB-cached flood zones.
+4. **GraphHopper Removal:** GraphHopper required a self-hosted Java JAR and had no practical advantage over Valhalla+ORS. Removed to simplify the deployment stack.
+
+**UI Implementation:**
+- The route planner sidebar has an engine toggle: **Valhalla | OpenRouteService**
+- When offline, the app silently falls back to WASM regardless of the toggle selection
+- An `OfflineManager` in the sidebar footer shows download status and triggers tile caching
 
 ---
 
-## 1. Real-time Signaling: WebSockets vs. Server-Sent Events (SSE)
+## 2. Real-time Signaling: WebSockets vs. Server-Sent Events (SSE)
 **Date:** August 2026
 **Decision:** Migrate from WebSockets to Server-Sent Events (SSE).
 
@@ -31,7 +50,7 @@ The LANES platform needs to broadcast real-time updates when a flood report is a
 
 ---
 
-## 2. Authentication: JWT Tokens in LocalStorage vs. HttpOnly Cookies
+## 3. Authentication: JWT Tokens in LocalStorage vs. HttpOnly Cookies
 **Date:** August 2026
 **Decision:** Retain standard JWT Bearer Tokens (stored in `localStorage`) instead of migrating to `HttpOnly` secure cookies.
 
@@ -39,14 +58,14 @@ The LANES platform needs to broadcast real-time updates when a flood report is a
 For web applications, `HttpOnly` cookies are considered the gold standard for preventing Cross-Site Scripting (XSS) attacks. We initially planned to migrate to `HttpOnly` cookies for maximum security.
 
 **Reasoning for the Switch:**
-1. **The Native APK Goal:** The ultimate goal for LANES is to be downloadable from the Google Play Store as an Android `.apk`. 
+1. **The Native APK Goal:** The ultimate goal for LANES is to be downloadable from the Google Play Store as an Android `.apk`.
 2. **WebView Limitations:** When a PWA is wrapped into a native app, it runs inside a mobile WebView. WebViews and native iOS/Android environments have extremely strict, sometimes unpredictable rules regarding cross-origin cookies to prevent user tracking. Relying on `HttpOnly` cookies often causes broken authentication flows on mobile devices.
-3. **Mobile Security Context:** Native mobile apps are fundamentally less vulnerable to XSS than standard web browsers because they don't execute arbitrary third-party scripts. 
+3. **Mobile Security Context:** Native mobile apps are fundamentally less vulnerable to XSS than standard web browsers because they don't execute arbitrary third-party scripts.
 4. **Future-Proofing:** By using standard JWT tokens, the backend API remains completely decoupled. When we compile the APK, we simply swap `localStorage.setItem('token')` to a native secure storage plugin (e.g., Capacitor Secure Storage or iOS Keychain), and the backend won't need a single line of code changed.
 
 ---
 
-## 3. Local Network Configuration (CORS & Proxying)
+## 4. Local Network Configuration (CORS & Proxying)
 **Date:** August 2026
 **Decision:** Restrict backend CORS to specific Local Area Network (LAN) IP ranges and utilize Next.js rewrites for proxying.
 
@@ -55,11 +74,11 @@ To test the app across multiple smartphones on the same WiFi network, hardcoding
 
 **Reasoning:**
 1. **Dynamic Backend URL:** The Next.js frontend `next.config.ts` was updated to read `process.env.BACKEND_URL`, defaulting to `127.0.0.1`. By setting `NEXT_PUBLIC_API_URL` to the host computer's IPv4 address, mobile devices can reach the backend.
-2. **CORS Hardening:** The previous wildcard (`*`) CORS setting was highly insecure. It was replaced with a regex `^https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000$` that strictly allows local WiFi connections (e.g., `192.168.x.x`), preventing unauthorized external domains from accessing the API while still allowing local mobile testing.
+2. **CORS Hardening:** The previous wildcard (`*`) CORS setting was highly insecure. It was replaced with a regex `^https?://(192\\.168\\.\\d+\\.\\d+|10\\.\\d+\\.\\d+\\.\\d+):3000$` that strictly allows local WiFi connections (e.g., `192.168.x.x`), preventing unauthorized external domains from accessing the API while still allowing local mobile testing.
 
 ---
 
-## 4. Modular Map Architecture: Imperative Hook Pattern & BaseMap
+## 5. Modular Map Architecture: Imperative Hook Pattern & BaseMap
 **Date:** August 2026
 **Decision:** Decouple MapLibre initialization from feature layers using a pure `<BaseMap>` component and modular React hooks (`useCityBoundaries`, `useFloodZonesLayer`).
 
@@ -67,13 +86,13 @@ To test the app across multiple smartphones on the same WiFi network, hardcoding
 Originally, MapLibre instances were independently constructed in `MapCanvas.tsx` (commuter map) and `LiveMapPage.tsx` (admin live map). This led to duplicated map control styling, boundary fetching logic, and inconsistent layer behaviors between commuter and admin views. Furthermore, road-based flood reports had their geometric polygons hidden (`is_road_based == false`), showing only street line glows, which prevented admins and commuters from seeing exact flood boundaries.
 
 **Reasoning for the Switch:**
-1. **Imperative Hook Pattern (Standard React MapLibre Architecture):** Raw MapLibre GL JS operates imperatively on a canvas. Creating a bare `<BaseMap>` that handles canvas mounting, tile style fallbacks (MapTiler -> OpenStreetMap), `TopViewControlV3`, and native navigation controls allows any page to instantiate a styled map effortlessly.
-2. **Pluggable Layer Hooks:** By extracting spatial datasets into custom hooks (e.g., `useCityBoundaries(map, isLoaded)` and `useFloodZonesLayer(map, isLoaded, activeZones)`), any future page can compose any combination of map layers (e.g., map with floods but no borders, or map with borders but no floods) in a single line of code without duplicating initialization logic.
+1. **Imperative Hook Pattern (Standard React MapLibre Architecture):** Raw MapLibre GL JS operates imperatively on a canvas. Creating a bare `<BaseMap>` that handles canvas mounting, tile style fallbacks (MapTiler → OpenStreetMap), `TopViewControlV3`, and native navigation controls allows any page to instantiate a styled map effortlessly.
+2. **Pluggable Layer Hooks:** By extracting spatial datasets into custom hooks (e.g., `useCityBoundaries(map, isLoaded)` and `useFloodZonesLayer(map, isLoaded, activeZones)`), any future page can compose any combination of map layers in a single line of code without duplicating initialization logic.
 3. **Unified Flood Polygons & Severity Color Scale:** Removed the restriction hiding road-based flood polygons so both admins and commuters see exact spatial flood hazard boundaries. Standardized the 4-tier color scale (`low`: Lime `#84cc16`, `medium`: Amber `#eab308`, `high`: Orange `#f97316`, `extreme`: Red `#ef4444`).
 
 ---
 
-## 5. 1:N Spatial Relational Deduplication & Trust Score Pooling
+## 6. 1:N Spatial Relational Deduplication & Trust Score Pooling
 **Date:** August 2026
 **Decision:** Transition from 1:1 `report_id` on `FloodAvoidanceZone` to 1:N `zone_id` foreign key on `FloodReport` with communal trust score crediting.
 
@@ -87,7 +106,7 @@ During monsoon events, multiple commuters frequently submit independent reports 
 
 ---
 
-## 6. Shared Fluid UI Design System & Anti Box-in-a-Box Standard
+## 7. Shared Fluid UI Design System & Anti Box-in-a-Box Standard
 **Date:** August 2026
 **Decision:** Standardize multi-variant animated Tabs (`shared/ui/Tabs.tsx`) and full-bleed edge-to-edge spatial dashboards.
 
@@ -101,101 +120,7 @@ Different admin and profile pages used isolated tab implementations, leading to 
 
 ---
 
-## 7. Unified Map Layer Zoom Hierarchy & Multi-Reporter Spatial Inspection
-**Date:** August 2026
-**Decision:** Standardize zoom thresholds ($Z \le 14$ vs. $Z > 14$) with shared tokens in `mapStyles.ts` and implement inline contributor inspection without blocking modals.
-
-**Context:**
-# LANES: Architecture & Design Decisions
-
-This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
-
-## 1. Real-time Signaling: WebSockets vs. Server-Sent Events (SSE)
-**Date:** August 2026
-**Decision:** Migrate from WebSockets to Server-Sent Events (SSE).
-
-**Context:**
-The LANES platform needs to broadcast real-time updates when a flood report is approved, a detour zone is created, or a user interacts with a community post. Initially, WebSockets were considered because they provide two-way real-time communication.
-
-**Reasoning for the Switch:**
-1. **Unidirectional Flow:** The real-time requirement for LANES is strictly "Server-to-Client" (broadcasting map updates or notifications). Clients do not need a persistent pipe to send data back; they use standard secure HTTP POST requests for actions (like posting a report or comment).
-2. **Built-in Reconnection:** SSE operates over standard HTTP and natively handles automatic browser reconnections if a user's mobile connection drops. WebSockets require complex manual heartbeat and reconnection logic.
-3. **Mobile & APK Compatibility:** Because the Next.js frontend will eventually be wrapped into an Android `.apk` (via Capacitor or Trusted Web Activity), SSE is significantly more battery-efficient and less prone to dropping on mobile networks.
-4. **Simplicity:** SSE allows us to use `EventSource` on the frontend and a simple async queue on the FastAPI backend without dealing with bidirectional socket states.
-
----
-
-## 2. Authentication: JWT Tokens in LocalStorage vs. HttpOnly Cookies
-**Date:** August 2026
-**Decision:** Retain standard JWT Bearer Tokens (stored in `localStorage`) instead of migrating to `HttpOnly` secure cookies.
-
-**Context:**
-For web applications, `HttpOnly` cookies are considered the gold standard for preventing Cross-Site Scripting (XSS) attacks. We initially planned to migrate to `HttpOnly` cookies for maximum security.
-
-**Reasoning for the Switch:**
-1. **The Native APK Goal:** The ultimate goal for LANES is to be downloadable from the Google Play Store as an Android `.apk`. 
-2. **WebView Limitations:** When a PWA is wrapped into a native app, it runs inside a mobile WebView. WebViews and native iOS/Android environments have extremely strict, sometimes unpredictable rules regarding cross-origin cookies to prevent user tracking. Relying on `HttpOnly` cookies often causes broken authentication flows on mobile devices.
-3. **Mobile Security Context:** Native mobile apps are fundamentally less vulnerable to XSS than standard web browsers because they don't execute arbitrary third-party scripts. 
-4. **Future-Proofing:** By using standard JWT tokens, the backend API remains completely decoupled. When we compile the APK, we simply swap `localStorage.setItem('token')` to a native secure storage plugin (e.g., Capacitor Secure Storage or iOS Keychain), and the backend won't need a single line of code changed.
-
----
-
-## 3. Local Network Configuration (CORS & Proxying)
-**Date:** August 2026
-**Decision:** Restrict backend CORS to specific Local Area Network (LAN) IP ranges and utilize Next.js rewrites for proxying.
-
-**Context:**
-To test the app across multiple smartphones on the same WiFi network, hardcoding `localhost` causes connection failures on mobile devices (since `localhost` on a phone points to the phone itself, not the dev laptop).
-
-**Reasoning:**
-1. **Dynamic Backend URL:** The Next.js frontend `next.config.ts` was updated to read `process.env.BACKEND_URL`, defaulting to `127.0.0.1`. By setting `NEXT_PUBLIC_API_URL` to the host computer's IPv4 address, mobile devices can reach the backend.
-2. **CORS Hardening:** The previous wildcard (`*`) CORS setting was highly insecure. It was replaced with a regex `^https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000$` that strictly allows local WiFi connections (e.g., `192.168.x.x`), preventing unauthorized external domains from accessing the API while still allowing local mobile testing.
-
----
-
-## 4. Modular Map Architecture: Imperative Hook Pattern & BaseMap
-**Date:** August 2026
-**Decision:** Decouple MapLibre initialization from feature layers using a pure `<BaseMap>` component and modular React hooks (`useCityBoundaries`, `useFloodZonesLayer`).
-
-**Context:**
-Originally, MapLibre instances were independently constructed in `MapCanvas.tsx` (commuter map) and `LiveMapPage.tsx` (admin live map). This led to duplicated map control styling, boundary fetching logic, and inconsistent layer behaviors between commuter and admin views. Furthermore, road-based flood reports had their geometric polygons hidden (`is_road_based == false`), showing only street line glows, which prevented admins and commuters from seeing exact flood boundaries.
-
-**Reasoning for the Switch:**
-1. **Imperative Hook Pattern (Standard React MapLibre Architecture):** Raw MapLibre GL JS operates imperatively on a canvas. Creating a bare `<BaseMap>` that handles canvas mounting, tile style fallbacks (MapTiler -> OpenStreetMap), `TopViewControlV3`, and native navigation controls allows any page to instantiate a styled map effortlessly.
-2. **Pluggable Layer Hooks:** By extracting spatial datasets into custom hooks (e.g., `useCityBoundaries(map, isLoaded)` and `useFloodZonesLayer(map, isLoaded, activeZones)`), any future page can compose any combination of map layers (e.g., map with floods but no borders, or map with borders but no floods) in a single line of code without duplicating initialization logic.
-3. **Unified Flood Polygons & Severity Color Scale:** Removed the restriction hiding road-based flood polygons so both admins and commuters see exact spatial flood hazard boundaries. Standardized the 4-tier color scale (`low`: Lime `#84cc16`, `medium`: Amber `#eab308`, `high`: Orange `#f97316`, `extreme`: Red `#ef4444`).
-
----
-
-## 5. 1:N Spatial Relational Deduplication & Trust Score Pooling
-**Date:** August 2026
-**Decision:** Transition from 1:1 `report_id` on `FloodAvoidanceZone` to 1:N `zone_id` foreign key on `FloodReport` with communal trust score crediting.
-
-**Context:**
-During monsoon events, multiple commuters frequently submit independent reports for the same flooded street. Originally, each avoidance zone strictly required a unique `report_id`, creating duplicate conflicting avoidance barriers for the Valhalla routing engine and blocking administrators from merging identical submissions.
-
-**Reasoning & Architecture:**
-1. **Relational Inversion (1:N Migration):** Moved the foreign key to `FloodReport.zone_id` referencing `FloodAvoidanceZone.id` (`ondelete="SET NULL"`). This allows a single physical avoidance barrier to encapsulate $N$ crowdsourced reports.
-2. **Fair Trust Score Pooling:** Merging or approving a zone iterates across all linked reports to award verified trust points (`+5`) and increment `reports_verified` for every unique contributor, ensuring crowdsourced contributions are recognized without polluting the map.
-3. **Proximity Search via PostGIS:** Utilizes `ST_DWithin` on the backend (`/api/v1/admin/zones/nearby`) to automatically detect existing active zones within 200–500m of incoming reports.
-
----
-
-## 6. Shared Fluid UI Design System & Anti Box-in-a-Box Standard
-**Date:** August 2026
-**Decision:** Standardize multi-variant animated Tabs (`shared/ui/Tabs.tsx`) and full-bleed edge-to-edge spatial dashboards.
-
-**Context:**
-Different admin and profile pages used isolated tab implementations, leading to visual inconsistencies, frame nesting ("container inside container" syndrome), and horizontal scrollbar flicker during framer-motion transitions.
-
-**Reasoning & Architecture:**
-1. **Consolidated Tab Component (`Tabs.tsx`):** Implemented a shared component supporting `segmented`, `underline`, and `pills` variants with direction-aware sliding indicators and hidden overflow wrappers (`[scrollbar-width:none]`).
-2. **Full-Bleed Spatial Workspaces:** Refactored `AdminLayout` to conditionally strip outer padding (`p-0` on `/admin/map`) while preserving padding on data tables, maximizing screen real estate for map operations.
-3. **Viewport Auto-Fit & Persistence:** Integrated automatic Pasig City bounding box fitting (`[121.0515, 14.5338]` to `[121.1112, 14.6235]`) on first load, coupled with `localStorage` camera state tracking to persist user zoom/pan coordinates across navigation.
-
----
-
-## 7. Unified Map Layer Zoom Hierarchy & Multi-Reporter Spatial Inspection
+## 8. Unified Map Layer Zoom Hierarchy & Multi-Reporter Spatial Inspection
 **Date:** August 2026
 **Decision:** Standardize zoom thresholds ($Z \le 14$ vs. $Z > 14$) with shared tokens in `mapStyles.ts` and implement inline contributor inspection without blocking modals.
 
@@ -204,16 +129,14 @@ City overview views and street-level views previously had conflicting layer styl
 
 **Reasoning & Architecture:**
 1. **Strict Zoom Separation ($Z=14$ Cutoff)**:
-   - **City Overview ($Z \le 14$)**: Uses solid filled circle pins with darker contrast borders matching the severity level (Olive for Lime, Dark Amber for Yellow, Rust for Orange, Maroon for Red) for optimal visibility against white basemap tiles.
-   - **Street Level ($Z > 14$)**: Completely eliminates all outline borders. Avoidance zones render as pure transparent $50\text{m}$ buffer auras with bold solid road centerlines. Pending reports render as pure transparent glowing auras.
-2. **Inline Contributor Accordion vs. Modal**:
-   - Instead of interrupting the admin with screen-blocking dialogs, merged zones feature an inline animated drawer (`ActiveZonesPanel.tsx`) showing each contributor's avatar, timestamp, trust score, and quote.
-3. **Dynamic Single-Report Map Focus**:
-   - Clicking an individual contributor temporarily isolates their exact original report geometry on the map while hiding the merged avoidance zone, allowing fine-grained spatial verification.
+   - **City Overview ($Z \le 14$)**: Uses solid filled circle pins with darker contrast borders matching the severity level for optimal visibility against white basemap tiles.
+   - **Street Level ($Z > 14$)**: Eliminates all outline borders. Avoidance zones render as pure transparent $50\text{m}$ buffer auras with bold solid road centerlines.
+2. **Inline Contributor Accordion vs. Modal**: Instead of interrupting the admin with screen-blocking dialogs, merged zones feature an inline animated drawer showing each contributor's avatar, timestamp, trust score, and quote.
+3. **Dynamic Single-Report Map Focus**: Clicking an individual contributor temporarily isolates their exact original report geometry on the map while hiding the merged avoidance zone, allowing fine-grained spatial verification.
 
 ---
 
-## 8. Admin Navigation Refactoring
+## 9. Admin Navigation Refactoring
 **Date:** August 2026
 **Decision:** Decompose `AdminNav.tsx` into modular configuration and layout components.
 
@@ -226,7 +149,7 @@ The admin interface originally contained a large, monolithic `AdminNav.tsx` file
 
 ---
 
-## 9. MapLibre Dynamic Layer Updating: Avoid `isStyleLoaded()` Strict Checks
+## 10. MapLibre Dynamic Layer Updating: Avoid `isStyleLoaded()` Strict Checks
 **Date:** August 2026
 **Decision:** Remove strict `map.isStyleLoaded()` checks when dynamically updating vector layers (GeoJSON) and utilize `setData()` rather than tearing down and rebuilding layers.
 
@@ -234,6 +157,23 @@ The admin interface originally contained a large, monolithic `AdminNav.tsx` file
 When active flood zones were added to the map using `useFloodZonesLayer.ts`, the zones often completely failed to render on initial page load, failing silently without errors.
 
 **Reasoning:**
-1. **The "Silent Deadlock":** MapLibre's `isStyleLoaded()` method is extremely strict. While intuitively it seems to mean "is the base map ready", it actually means "is the map 100% idle with no pending vector tile downloads". When the map loads, it immediately begins fetching background street tiles. If a React hook checks `isStyleLoaded()` during this time, it returns `false`, causing the hook to abort silently. Waiting for a `styledata` event is ineffective because `styledata` only fires when the JSON style itself changes, not when tiles finish downloading.
+1. **The "Silent Deadlock":** MapLibre's `isStyleLoaded()` method is extremely strict. While intuitively it seems to mean "is the base map ready", it actually means "is the map 100% idle with no pending vector tile downloads". If a React hook checks `isStyleLoaded()` during tile fetching, it returns `false` and aborts silently.
 2. **The Failsafe `getStyle()`:** MapLibre is perfectly capable of parsing and queuing custom sources/layers even while background tiles download. Removing `isStyleLoaded()` and simply verifying `map.getStyle()` exists prevents the deadlock.
 3. **`setData()` Optimization:** Repeatedly calling `removeLayer` and `removeSource` on every React re-render can cause visual flickering and MapLibre race conditions. Using `.setData()` on the existing GeoJSON source is the native, performant way to push data updates into MapLibre.
+
+---
+
+## 11. Route Panel UI: Fixed Sidebar, Scrollable, Turn-by-Turn
+**Date:** August 2026
+**Decision:** Convert the floating/draggable route planner panel into a permanent fixed left sidebar with inline loading, scrollable results, and a Turn-by-Turn step list with map segment highlighting.
+
+**Context:**
+The original floating route panel was movable and closable, causing UX confusion. Users couldn't see step-by-step directions, and the full-screen loading overlay blocked the map during route calculation.
+
+**Reasoning:**
+1. **Fixed Sidebar:** The route panel is now a permanent `fixed top-0 left-0 bottom-0` sidebar (`340px` wide) — always visible, never closable, similar to Google Maps / OSM web. The map canvas starts at `340px` from the left.
+2. **Inline Loading:** Replaced the full-screen frosted-glass overlay with a compact `LoadingOverlay variant="inline"` inside the panel so the map remains visible while calculating.
+3. **Scrollable Results:** The header (inputs, engine toggle, vehicle profiles) and footer (Offline Manager) are fixed. The results section (`flex-1 overflow-y-auto`) scrolls independently.
+4. **Compact Route Cards:** Route alternatives are rendered as slim horizontal strips (label + flood icon + ETA + km) rather than large bordered cards — reducing vertical space by ~50% per route option.
+5. **Turn-by-Turn with Hover Highlight:** Each `instruction` from the route response is listed below the route cards. Hovering a step fires a `route-step-hover` DOM event; `MapCanvas` draws a `step-highlight-layer` (cyan glow + line) on the corresponding coordinate slice. Clicking a step also flies the map to that segment's midpoint.
+6. **Segment Coordinate Extraction:** ORS steps use `way_points: [startIdx, endIdx]`; Valhalla uses `begin_shape_index`/`end_shape_index`. Both formats are handled to slice `geometry.coordinates` for the highlight.

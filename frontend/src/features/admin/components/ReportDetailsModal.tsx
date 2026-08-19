@@ -283,7 +283,7 @@ export const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
                 {report.media_urls.map((url, idx) => (
                   <div 
                     key={idx}
-                    onClick={() => onOpenMedia && onOpenMedia(report.media_urls, idx)}
+                    onClick={() => onOpenMedia && report.media_urls && onOpenMedia(report.media_urls, idx)}
                     className="relative rounded-xl overflow-hidden border border-slate-200 cursor-pointer group bg-slate-950/5 max-h-48 flex items-center justify-center"
                   >
                     {url.match(/\.(mp4|webm|mov|ogg)$/i) || url.includes('/video/upload/') ? (

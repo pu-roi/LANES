@@ -194,7 +194,7 @@ export default function BaseMap({
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length === 2) {
-            dynamicBounds = parsed;
+            dynamicBounds = parsed as [[number, number], [number, number]];
           }
         }
       } catch (e) {}

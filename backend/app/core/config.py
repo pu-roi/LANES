@@ -9,11 +9,9 @@ class Settings(BaseSettings):
     # Defaults to PostgreSQL with psycopg (v3) driver
     DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@localhost:5432/lanes"
 
-    # Valhalla Server URL (defaults to local docker container)
-    VALHALLA_URL: str = "http://localhost:8002"
-
-    # GraphHopper Server URL (defaults to local docker container)
-    GRAPHHOPPER_URL: str = "http://localhost:8989"
+    # OpenRouteService API Configuration
+    ORS_URL: str = "https://api.openrouteservice.org/v2"
+    ORS_API_KEY: str = ""
 
     # Cloudinary
     CLOUDINARY_CLOUD_NAME: str = ""
@@ -25,7 +23,11 @@ class Settings(BaseSettings):
     BREVO_SMTP_PORT: int = 587
     BREVO_SMTP_KEY: str = ""
 
-
+    # Valhalla Engine
+    VALHALLA_URL: str = "http://localhost:8002"
+    
+    # Valhalla
+    VALHALLA_DATA_DIR: str = "./valhalla_data"
 
     # Security
     SECRET_KEY: str = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"

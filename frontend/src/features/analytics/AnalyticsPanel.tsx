@@ -60,6 +60,10 @@ export function AnalyticsPanel({ isOpen: propIsOpen, onClose: propOnClose }: Ana
   const isForcingSavePlaceToDodge = isSavePlacePanelOpen && lastOpenedLeftPanel === "analytics" && isDesktop && !isAdmin;
   const entranceDelay = isForcingSavePlaceToDodge ? 0.25 : 0;
 
+  const isRoutingPage = pathname === "/map";
+  const baseX = isRoutingPage ? 416 : 16;
+  const initialX = actualDodging ? baseX + 344 : baseX;
+
   const { data, isLoading } = useQuery({
     queryKey: ["analyticsStats"],
     queryFn: () => apiClient.get<AnalyticsStats>("/analytics/stats"),
@@ -80,7 +84,7 @@ export function AnalyticsPanel({ isOpen: propIsOpen, onClose: propOnClose }: Ana
       hideCollapseIcon={isAdmin}
       showDesktopClose={true}
       anchor="left"
-      initialPosition={{ x: actualDodging ? 360 : 16, y: 80 }}
+      initialPosition={{ x: initialX, y: 80 }}
       panelId="analytics"
       entranceDelay={entranceDelay}
     >

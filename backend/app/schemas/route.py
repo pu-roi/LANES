@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 from pydantic import BaseModel, Field
 
 
@@ -16,6 +16,7 @@ class RouteRequest(BaseModel):
     end: List[float] = Field(..., min_length=2, max_length=2, description="End coordinates [lng, lat]")
     ignore_floods: bool = Field(False, description="Bypass flood avoidance checks and return the raw shortest path")
     vehicle_profile: str = Field("light", description="Vehicle profile: light, heavy, motorcycle, walk")
+    engine: str = Field("ors", description="Routing Engine to use")
 
 
 class RouteOption(BaseModel):
@@ -44,6 +45,7 @@ class RouteOption(BaseModel):
     is_truncated: bool = False
     safety_score: float = 100.0
     flood_risk: str = "none"
+    instructions: List[Any] = []
 
 
 class MultiRouteResponse(BaseModel):

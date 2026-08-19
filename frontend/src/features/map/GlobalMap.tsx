@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/shared/ui";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { SavePlacePanel } from "@/features/places/SavePlacePanel";
-import { OfflineManager } from "@/components/Map/OfflineManager";
+
 
 const MapCanvas = dynamic(() => import("./MapCanvas"), { ssr: false });
 
@@ -203,7 +203,6 @@ function MapLayout() {
           />
           <RoutePanel />
           <SavePlacePanel />
-          <OfflineManager />
         </>
       )}
 

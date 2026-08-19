@@ -24,7 +24,7 @@ export const OfflineManager: React.FC = () => {
     const startTime = Date.now();
     
     // In production, this URL will point to our backend's static directory
-    const url = 'http://localhost:8000/static/valhalla/valhalla_tiles.tar';
+    const url = (process.env.NEXT_PUBLIC_API_URL || '/api/v1').replace('/api/v1', '') + '/static/valhalla/valhalla_tiles.tar';
     
     const success = await downloadRoutingTiles(
       url,
@@ -67,7 +67,7 @@ export const OfflineManager: React.FC = () => {
   };
 
   return (
-    <div className="absolute top-4 right-4 z-50 bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-gray-200 p-4 w-80">
+    <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-sm border border-gray-200 p-4 w-full">
       <div className="flex items-center gap-3 mb-2">
         <div className={`p-2 rounded-full ${isAvailable ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
           {isAvailable ? <CheckCircle size={20} /> : <WifiOff size={20} />}
