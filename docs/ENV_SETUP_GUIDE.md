@@ -1,90 +1,84 @@
-# 🔐 Environment Variables & Decryption Setup Guide
+# 🔐 Environment Variables & Setup Guide
 
-The `.env` and `.env.local` files in this repository are encrypted using [dotenvx](https://dotenvx.com/) so we can safely track them in Git without exposing secrets or API keys.
+The `.env` (backend) and `.env.local` (frontend) files in this repository are securely encrypted using [dotenvx](https://dotenvx.com/).
 
-Follow this quick guide to decrypt your environment files locally.
+With this setup, **you never have to manually decrypt `.env` files into plain text on disk**. The application automatically decrypts and injects the secrets into memory when you run the development servers.
 
 ---
 
-## Prerequisites
+## 🔑 Prerequisites (One-Time Setup)
 
-1. Ask the project lead/admin for the **two private keys**:
-   - Backend Private Key (`DOTENV_PRIVATE_KEY`)
-   - Frontend Private Key (`DOTENV_PRIVATE_KEY_LOCAL`)
+Ask the project lead/admin for the **two private keys**:
+1. **Backend Private Key** (`DOTENV_PRIVATE_KEY`)
+2. **Frontend Private Key** (`DOTENV_PRIVATE_KEY_LOCAL`)
 
 ---
 
 ## 🛠️ Step-by-Step Setup
 
-### Step 1: Pull the Latest Code
-Make sure you have the latest encrypted files and code:
-```bash
-git pull origin roi-branch
-# or if merged to main:
-git pull origin main
-```
+### Step 1: Set up Backend `.env.keys`
 
----
-
-### Step 2: Set up Backend Keys & Decrypt
-
-1. Go to the `backend` folder:
-   ```bash
-   cd backend
-   ```
-2. Create a file named `.env.keys` inside `backend/`:
+1. Inside the `backend/` folder, create a file named `.env.keys`:
    ```env
    #/------------------!DOTENV_PRIVATE_KEYS!-------------------/
    DOTENV_PRIVATE_KEY=<PASTE_BACKEND_PRIVATE_KEY_HERE>
    ```
-3. Decrypt the `.env` file:
-   ```bash
-   npx @dotenvx/dotenvx decrypt
-   ```
-   > ✅ Output: `◈ decrypted (.env)`
 
----
+### Step 2: Set up Frontend `.env.keys`
 
-### Step 3: Set up Frontend Keys & Decrypt
-
-1. Go to the `frontend` folder:
-   ```bash
-   cd ../frontend
-   ```
-2. Create a file named `.env.keys` inside `frontend/`:
+1. Inside the `frontend/` folder, create a file named `.env.keys`:
    ```env
    #/------------------!DOTENV_PRIVATE_KEYS!-------------------/
    DOTENV_PRIVATE_KEY_LOCAL=<PASTE_FRONTEND_PRIVATE_KEY_HERE>
    ```
-3. Decrypt the `.env.local` file:
-   ```bash
-   npx @dotenvx/dotenvx decrypt -f .env.local
-   ```
-   > ✅ Output: `◈ decrypted (.env.local)`
 
 ---
 
-## ⚡ Daily Development
+## ⚡ Daily Development (Just Run It!)
 
-Once decrypted, you can run the backend and frontend normally:
+Whenever you pull code or work on the project, you don't need to decrypt anything. Just start the apps normally:
 
+### Frontend
 ```bash
-# Backend (from /backend directory)
-.\venv\Scripts\uvicorn.exe app.main:app --reload
-
-# Frontend (from /frontend directory)
+cd frontend
 npm run dev
+```
+> `npm run dev` uses `dotenvx run -f .env.local -- next dev` to seamlessly inject your secrets directly into memory.
+
+### Backend
+```bash
+cd backend
+# Run with dotenvx injection:
+npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\uvicorn.exe app.main:app --reload
 ```
 
 ---
 
-## ⚠️ Important Rules
-- **NEVER** commit `.env.keys` to GitHub. (It is already added to `.gitignore`).
-- If you add or modify secrets in `.env` or `.env.local`, remember to re-encrypt before pushing:
-  ```bash
-  # In backend
-  npx @dotenvx/dotenvx encrypt
+## ✏️ Modifying or Adding New Secrets
 
-  # In frontend
-  npx @dotenvx/dotenvx encrypt -f .env.local
-  ```
+If you ever need to add or edit an environment variable:
+
+1. **Decrypt temporarily**:
+   ```bash
+   # In frontend:
+   npx @dotenvx/dotenvx decrypt -f .env.local
+
+   # In backend:
+   npx @dotenvx/dotenvx decrypt -f .env
+   ```
+2. **Edit your values** in the file.
+3. **Re-encrypt before committing**:
+   ```bash
+   # In frontend:
+   npx @dotenvx/dotenvx encrypt -f .env.local
+
+   # In backend:
+   npx @dotenvx/dotenvx encrypt -f .env
+   ```
+4. Commit and push the encrypted file safely to Git!
+
+---
+
+## ⚠️ Important Security Rules
+- **NEVER** commit `.env.keys` to GitHub. (It is strictly ignored by `.gitignore`).
+- **NEVER** commit unencrypted `.env` or `.env.local` files with raw production secrets.

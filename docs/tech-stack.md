@@ -76,5 +76,7 @@ This document serves as the official technical stack reference for the LANES pla
 
 ### **5\. Evaluation & Testing Tier (Quality Assurance)**
 
-* **Verification Libraries:** **scikit-learn & seqeval**  
+* **Backend Integration Testing:** **pytest**
+  * *Role:* Executing automated backend tests for API endpoints and business logic. Used to verify quota enforcement rules (e.g., 10-place saved places limit), CRUD operations, and edge case handling across FastAPI routes.
+* **NLP Verification Libraries:** **scikit-learn & seqeval**
   * *Role:* Running isolated validation scripts to compute linguistic extraction performance metrics (precision, recall, and F1-scores) for the custom NLP model.

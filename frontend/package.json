@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0",
-    "build": "next build --webpack",
-    "start": "next start -H 0.0.0.0",
+    "dev": "dotenvx run -f .env.local -- next dev -H 0.0.0.0",
+    "build": "dotenvx run -f .env.local -- next build --webpack",
+    "start": "dotenvx run -f .env.local -- next start -H 0.0.0.0",
     "lint": "eslint"
   },
   "dependencies": {
@@ -36,6 +36,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^2.21.0",
     "@tailwindcss/postcss": "^4",
     "@types/mapbox__mapbox-gl-draw": "^1.4.9",
     "@types/node": "^20",

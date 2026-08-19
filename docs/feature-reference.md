@@ -16,8 +16,8 @@ This document serves as the central technical reference for all currently implem
     4. Automatically scores the parsing reliability with two metrics: `location_confidence` and `severity_confidence`.
 *   **Access & Roles:** Public users can submit reports; DRRM officers review and validate the outputs.
 *   **Related Components:**
-    *   **Frontend:** [FloodReportPanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (for manual text submission and incident reporting).
-    *   **Backend:** [reports.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/reports.py) endpoint (`POST /api/v1/reports`), `app.services.spacy` pipelines.
+    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (for manual text submission and incident reporting).
+    *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) endpoint (`POST /api/v1/reports`), `app.services.spacy` pipelines.
 
 ---
 
@@ -30,8 +30,8 @@ This document serves as the central technical reference for all currently implem
     3. The backend maps the survey to a dedicated `flood_report_surveys` table holding a strict foreign key to the root report, ensuring full Third Normal Form (3NF) relational integrity.
 *   **Access & Roles:** Public users can submit surveys; DRRM officers review them.
 *   **Related Components:**
-    *   **Frontend:** [FloodReportPanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (survey state & UI).
-    *   **Backend:** [report.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/models/report.py) (SQLAlchemy schemas), `POST /api/v1/reports` endpoint.
+    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (survey state & UI).
+    *   **Backend:** [report.py](file:///d:/Documents/Github/LANES/backend/app/models/report.py) (SQLAlchemy schemas), `POST /api/v1/reports` endpoint.
 
 ---
 
@@ -52,7 +52,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 2. Flood-Adaptive Route Calculation & Rerouting
+### 4. Flood-Adaptive Route Calculation & Rerouting
 *   **Purpose:** Ensures commuter safety by dynamically routing vehicles around active flood hazards.
 *   **What it does:** Calculates optimal navigation paths between origin and destination coordinates, ensuring that any road segments intersecting active flood zones are bypassed.
 *   **How it works:**
@@ -63,12 +63,12 @@ This document serves as the central technical reference for all currently implem
     5. The commuter can toggle "Ignore Floods" to compare the safe path against the default flooded route.
 *   **Access & Roles:** Open to all public commuters.
 *   **Related Components:**
-    *   **Frontend:** [RoutePanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/routing/RoutePanel.tsx) (input panels, turn-by-turn lists, flood toggle), [MapCanvas.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/map/MapCanvas.tsx).
-    *   **Backend:** [reports.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/reports.py) router (`POST /api/v1/reports/route`), [routing.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/services/routing.py) service (`calculate_flood_safe_route`).
+    *   **Frontend:** [RoutePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/routing/RoutePanel.tsx) (input panels, turn-by-turn lists, flood toggle), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx).
+    *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) router (`POST /api/v1/reports/route`), [routing.py](file:///d:/Documents/Github/LANES/backend/app/services/routing.py) service (`calculate_flood_safe_route`).
 
 ---
 
-### 3. Dynamic AI Weather Insights
+### 5. Dynamic AI Weather Insights
 *   **Purpose:** Helps everyday users understand raw meteorological data (PoP%, mm/h) by converting it into simple, educational interpretations.
 *   **What it does:** Provides a completely automated, on-demand AI explanation of the next 4 hours of weather data via a dedicated modal on the homepage.
 *   **How it works:**
@@ -84,7 +84,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 3. Height-Aware Rerouting (Dynamic Vehicle Profiles)
+### 6. Height-Aware Rerouting (Dynamic Vehicle Profiles)
 *   **Purpose:** Customizes detour calculations based on vehicle clearance constraints (e.g., Pedestrian, Motorcycle, Sedan, SUV).
 *   **What it does:** Allows commuters to select their vehicle profile and intelligently decides which flood polygons to avoid. High-clearance vehicles (SUVs) can safely cross knee-deep water (Yellow/Orange) but incur a 35% safety penalty to account for hidden hazards, while low-clearance vehicles (Sedans) are completely blocked.
 *   **How it works:**
@@ -93,12 +93,12 @@ This document serves as the central technical reference for all currently implem
     3. The 8 MMDA visual severity options (Gutter, Half-Knee, Tire, etc.) are mapped to exact routing logic penalties.
 *   **Access & Roles:** Open to all public commuters.
 *   **Related Components:**
-    *   **Frontend:** [RoutePanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/routing/RoutePanel.tsx), [routingOptions.ts](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/routing/routingOptions.ts).
-    *   **Backend:** [reports.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/reports.py) router, [routing.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/services/routing.py) service (`calculate_flood_safe_route`).
+    *   **Frontend:** [RoutePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/routing/RoutePanel.tsx), [routingOptions.ts](file:///d:/Documents/Github/LANES/frontend/src/features/routing/routingOptions.ts).
+    *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) router, [routing.py](file:///d:/Documents/Github/LANES/backend/app/services/routing.py) service (`calculate_flood_safe_route`).
 
 ---
 
-### 4. Queue-Based Admin Moderation & Approval Workflow
+### 7. Queue-Based Admin Moderation & Approval Workflow
 *   **Purpose:** Implements a "human-in-the-loop" validation workflow to prevent automated NLP ingestion errors or mapping hallucinations from misdirecting drivers.
 *   **What it does:** Queues all raw NLP-parsed flood reports into a staging feed, allowing authorized local disaster risk managers to inspect, adjust, approve, or discard reports before public broadcast.
 *   **How it works:**
@@ -114,7 +114,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 4. Interactive Spatial Map Visualization (WebGL Tiles & Autocomplete)
+### 8. Interactive Spatial Map Visualization (WebGL Tiles & Autocomplete)
 *   **Purpose:** Renders real-time hazard layers, detour vectors, and geocoding on a performant mobile canvas.
 *   **What it does:** Displays an interactive street map overlaying color-coded pins (White, Yellow, Orange, Red) for flood heights, outlines avoidance zone shapes, and handles address geocoding search.
 *   **How it works:**
@@ -128,7 +128,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 5. Real-Time Event Signaling (Server-Sent Events)
+### 9. Real-Time Event Signaling (Server-Sent Events)
 *   **Purpose:** Ensures instant, reactive visual updates across commuter and admin maps without forcing manual browser refreshes.
 *   **What it does:** Signals active database events (approvals, deactivations, database cleans) from the backend directly to active frontend sessions.
 *   **How it works:**
@@ -143,7 +143,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 6. Role-Based Access Control (RBAC) & JWT Security
+### 10. Role-Based Access Control (RBAC) & JWT Security
 *   **Purpose:** Secures sensitive admin interfaces, settings, and database endpoints from public modifications.
 *   **What it does:** Separates authorization levels between `commuters` and `admin` / `drrm` profiles, enforcing login parameters and auditing.
 *   **How it works:**
@@ -157,7 +157,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 7. Offline Resiliency & True Offline Routing (PWA)
+### 11. Offline Resiliency & True Offline Routing (PWA)
   *   **Purpose:** Ensures mobility tool usability and intelligent flood detouring when mobile networks fail during severe typhoons.
   *   **What it does:** Runs a full routing engine client-side, caching map graphs, assets, and active flood polygons locally.
   *   **How it works:**
@@ -172,7 +172,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 8. System Audit Logging & Trail
+### 12. System Audit Logging & Trail
 *   **Purpose:** Maintains organizational transparency and logs all administrative updates to prevent accidental or malicious map changes.
 *   **What it does:** Logs admin actions (report approval, rejection, user deletion, backups, data clears, configurations) to a central ledger.
 *   **How it works:**
@@ -185,7 +185,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 9. Database Backup, Exports & Cleanup Management
+### 13. Database Backup, Exports & Cleanup Management
 *   **Purpose:** Protects database integrity, enables archival, and exports research data.
 *   **What it does:** Creates and restores SQL dumps of the PostgreSQL/PostGIS database, exports reports/avoidance zones as CSV or JSON, and implements records cleaning.
 *   **How it works:**
@@ -199,7 +199,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 10. Cloudinary Photo Evidence Upload & Edge Compression
+### 14. Cloudinary Photo Evidence Upload & Edge Compression
 *   **Purpose:** Allows commuters to submit visual proof of flood hazards and community posts, while minimizing server memory overhead and saving mobile bandwidth.
 *   **What it does:** Uploads user-provided media alongside the text report, securely hosts it, and displays it in the feed. Large files are aggressively optimized.
 *   **How it works:**
@@ -210,12 +210,12 @@ This document serves as the central technical reference for all currently implem
     5. The resulting CDN URL is saved as `image_url` or `media_urls` in the PostgreSQL database.
 *   **Access & Roles:** Public users can upload; administrators and peers can view.
 *   **Related Components:**
-    *   **Frontend:** [FloodReportPanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [CreatePostModal.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/feed/CreatePostModal.tsx).
-    *   **Backend:** [cloudinary_service.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/services/cloudinary_service.py), [reports.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/reports.py), [posts.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/posts.py).
+    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [CreatePostModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/CreatePostModal.tsx).
+    *   **Backend:** [cloudinary_service.py](file:///d:/Documents/Github/LANES/backend/app/services/cloudinary_service.py), [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py), [posts.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/posts.py).
 
 ---
 
-### 11. Archive Center (Soft Deletes)
+### 15. Archive Center (Soft Deletes)
 *   **Purpose:** Centralizes the management of suspended user accounts, rejected flood reports, and deactivated zones without destroying relational data integrity.
 *   **What it does:** Uses `deleted_at` timestamps to hide records from active queries while retaining them for historical analytics and administrative audit trails.
 *   **How it works:**
@@ -228,7 +228,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 12. Community Feed & Social Validation
+### 16. Community Feed & Social Validation
 *   **Purpose:** Provides commuters with localized, real-time crowdsourced updates, general disaster discussion, and enables peer validation of flood reports.
 *   **What it does:** Displays a 3-column feed containing shared `FloodReport`s and general `CommunityPost`s. Enables highly interactive community discussions via a rich, threaded comments section supporting quote replies, user mentions, upvote/downvote sorting, auto-collapsing low-score replies, and admin pinning.
 *   **How it works:**
@@ -243,7 +243,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 13. Persistent Post Drafting (IndexedDB)
+### 17. Persistent Post Drafting (IndexedDB)
 *   **Purpose:** Prevents accidental data loss when users navigate away from the post creation modal or lose connection.
 *   **What it does:** Seamlessly saves typed text and massive binary file selections in the browser's persistent storage, restoring them when the user returns.
 *   **How it works:**
@@ -252,7 +252,25 @@ This document serves as the central technical reference for all currently implem
     3. When the `CreatePostModal` mounts, a StrictMode-safe `useEffect` hook reconstructs the binary blobs back into JavaScript `File` objects and generates new `URL.createObjectURL` previews.
 *   **Access & Roles:** Public commuters.
 *   **Related Components:**
-    *   **Frontend:** [CreatePostModal.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/feed/CreatePostModal.tsx) (Draft logic, IDB restoration).
+    *   **Frontend:** [CreatePostModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/CreatePostModal.tsx) (Draft logic, IDB restoration).
+
+---
+
+---
+
+### 18. Saved Places (Personalized Location Bookmarks)
+*   **Purpose:** Allows authenticated commuters to bookmark up to 10 frequently visited locations on the map for quick re-use as route origins or destinations.
+*   **What it does:** Provides a full CRUD management interface for personalized saved places, each with a custom emoji icon, label, and geographic coordinates. Displays all saved places as icon markers directly on the map.
+*   **How it works:**
+    1. The user opens the **Save Place Panel** from the map interface and switches between two tabs: **Add Place** and **My Places (X/10)**.
+    2. To pick a location, the user taps "Choose on Map", which activates a crosshair pin-drop mode on the `MapCanvas`. The chosen coordinates are reflected back to the panel.
+    3. The backend enforces a hard limit of **10 saved places** per user. Attempting to create an 11th place returns an `HTTP 400` error with a human-readable message.
+    4. Saved places are fetched and displayed in a list under the **My Places** tab, showing the icon, name, and address. Each entry has a **Delete** button to free a quota slot.
+    5. All saved places are rendered on the `MapCanvas` as plain emoji icon markers (no circles or animations) centered directly over their stored coordinates. Hovering reveals the place name label.
+*   **Access & Roles:** Authenticated users only.
+*   **Related Components:**
+    *   **Frontend:** [SavePlacePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/places/SavePlacePanel.tsx), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [MapContext.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx).
+    *   **Backend:** [saved_places.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/saved_places.py) (`GET/POST/DELETE /api/v1/saved-places`), [crud/saved_place.py](file:///d:/Documents/Github/LANES/backend/app/crud/saved_place.py) (`MAX_SAVED_PLACES = 10`).
 
 ---
 
@@ -292,7 +310,7 @@ This document serves as the central technical reference for all currently implem
     *   Commuters tap a microphone button, record a Taglish description (e.g., *"Baha rito sa San Joaquin, lagpas bewang na"*), and submit.
     *   The system transcribes the speech and pipes the raw text into spaCy.
 *   **How it will integrate:**
-    *   Integrate browser MediaRecorder APIs in [FloodReportPanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/hazards/FloodReportPanel.tsx).
+    *   Integrate browser MediaRecorder APIs in [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx).
     *   Create a backend utility using a bilingual transcription framework (e.g., OpenAI Whisper).
 *   **Dependencies:** Speech-to-Text model pipeline, micro-permissions access in browser clients.
 
@@ -304,7 +322,7 @@ This document serves as the central technical reference for all currently implem
 *   **Expected functionality:**
     *   The PWA speaks directions aloud (e.g., *"In 200 meters, turn left to bypass the flooded street ahead"*).
 *   **How it will integrate:**
-    *   Hook into the HTML5 **Web Speech API (`SpeechSynthesis`)** inside [RoutePanel.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/routing/RoutePanel.tsx).
+    *   Hook into the HTML5 **Web Speech API (`SpeechSynthesis`)** inside [RoutePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/routing/RoutePanel.tsx).
     *   Trigger directions audio prompts based on geolocation tracking updates relative to the Valhalla path coordinate array.
 *   **Dependencies:** Secure HTTPS deployment (for geolocation sensor permissions).
 
