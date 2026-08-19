@@ -33,13 +33,6 @@ function LoginPageContent() {
     }
   }, [isAuthenticated, isLoading, router, user, searchParams]);
 
-  if (isLoading || isAuthenticated) {
-    return (
-      <div className="flex-1 bg-gray-50 flex items-center justify-center p-4">
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="relative flex-1 w-full h-[100dvh] overflow-hidden bg-slate-50 flex flex-col lg:flex-row">
