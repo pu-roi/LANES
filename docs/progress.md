@@ -183,6 +183,12 @@
   - **Live Sync:** Server-Sent Events (SSE) listener in `sync.py` to stream `FloodAvoidanceZone` polygons into IndexedDB while the app is open.
   - Fixed polygon schema serialization for real-time broadcasts.
 
+- [x] **3D Map Terrain & Seamless Zoom Visibility**:
+  - Integrated AWS `terrarium-dem` S3 raster tiles for 3D elevation meshes in MapLibre GL JS v5.
+  - Implemented `MapStylePickerControl` allowing commuters to swap between 5 dynamic vector basemap styles (Streets, Dark, Roads, Satellite, OSM).
+  - Fixed polygon disappearance during perspective tilting by removing layer-level `minzoom`/`maxzoom` culling and replacing it with shader-level zoom-based opacity step expressions (`["step", ["zoom"]]`). Geometries remain stable across extreme pitch and zoom angles.
+  - Upgraded Map Canvas UI with a new Toggle3DControl and ZoomLevelControl (with Pitch/P telemetry).
+
 ## Backlog / Upcoming
 - [ ] (All currently planned routing and UI sprint items completed)
 

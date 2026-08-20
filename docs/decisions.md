@@ -177,3 +177,18 @@ The original floating route panel was movable and closable, causing UX confusion
 4. **Compact Route Cards:** Route alternatives are rendered as slim horizontal strips (label + flood icon + ETA + km) rather than large bordered cards — reducing vertical space by ~50% per route option.
 5. **Turn-by-Turn with Hover Highlight:** Each `instruction` from the route response is listed below the route cards. Hovering a step fires a `route-step-hover` DOM event; `MapCanvas` draws a `step-highlight-layer` (cyan glow + line) on the corresponding coordinate slice. Clicking a step also flies the map to that segment's midpoint.
 6. **Segment Coordinate Extraction:** ORS steps use `way_points: [startIdx, endIdx]`; Valhalla uses `begin_shape_index`/`end_shape_index`. Both formats are handled to slice `geometry.coordinates` for the highlight.
+
+---
+
+## 12. 3D Map Terrain & Perspective Zoom Visibility (MapLibre GL JS v5)
+**Date:** August 2026
+**Decision:** Remove layer-level `minzoom`/`maxzoom` filters on active zone vector layers and replace them with Zoom-based opacity step expressions (`["step", ["zoom"]]`). Add 3D Terrain via AWS Terrarium DEM tiles.
+
+**Context:**
+When tilting the map to a 45-80° pitch, the effective zoom level becomes distorted by perspective (objects near the camera fall into a higher zoom bracket than objects near the horizon). Strict `minzoom` cutoffs caused geometries at the top/bottom of the screen to prematurely disappear, leading to flickering and broken UX during pitch interactions.
+
+**Reasoning:**
+1. **Shader-Level Control:** By removing `minzoom` and `maxzoom` from the `useFloodZonesLayer` logic, geometries are always sent to the WebGL rendering pipeline regardless of pitch angle frustum clipping.
+2. **Opacity Steps:** We control the visibility natively using step expressions for opacity in `mapStyles.ts`. The `["zoom"]` expression evaluates against the global camera state rather than the distorted tile depth, guaranteeing a seamless transition between City View (Pins) and Street View (Polygons).
+3. **Terrain Integration:** 3D terrain elevation is supplied via `terrarium-dem` AWS S3 tiles, providing a realistic 3D mesh draped with raster/vector basemaps (e.g. OpenStreetMap).
+4. **Style Swapping:** A unified `MapStylePickerControl` was introduced to let users swap between 5 styles (Streets, Dark, Roads, Satellite, OSM). The `setTerrain()` method wipes layers in MapLibre v5, so custom layers are guarded via `if (!m.getLayer(...))` inside `style.load` event listeners to ensure they persist across style and 3D/2D swaps.

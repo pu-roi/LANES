@@ -101,7 +101,6 @@ export function usePendingReportsLayer(
           id: "all-pending-reports-circle-layer",
           type: "circle",
           source: sourceId,
-          maxzoom: ZOOM_THRESHOLDS.PIN_MAX_ZOOM,
           filter: ["==", ["get", "is_zoomed_out_point"], true],
           paint: PIN_CIRCLE_PAINT,
         });
@@ -113,7 +112,6 @@ export function usePendingReportsLayer(
           id: "all-pending-reports-line-layer",
           type: "line",
           source: sourceId,
-          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
           filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "LineString"]],
           layout: {
             "line-cap": "round",
@@ -129,7 +127,6 @@ export function usePendingReportsLayer(
           id: "all-pending-reports-point-layer",
           type: "circle",
           source: sourceId,
-          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
           filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "Point"]],
           paint: PENDING_REPORT_POINT_AURA_PAINT,
         });
