@@ -118,10 +118,10 @@ This document serves as the central technical reference for all currently implem
 *   **Purpose:** Renders real-time hazard layers, detour vectors, and geocoding on a performant mobile canvas.
 *   **What it does:** Displays an interactive street map overlaying color-coded pins (White, Yellow, Orange, Red) for flood heights, outlines avoidance zone shapes, and handles address geocoding search.
 *   **How it works:**
-    1. Utilizes **MapLibre GL JS** to render vector maps on the client side using WebGL.
-    2. Feeds OpenStreetMap tiles for zero-cost, self-hosted base imagery.
+    1. Utilizes **MapLibre GL JS v5** to render vector maps on the client side using WebGL, fully supporting 3D Terrain (`setTerrain`) via AWS Terrarium DEM tiles and a custom `atmosphere` sky layer.
+    2. Feeds MapTiler and OpenStreetMap tiles for dynamic base imagery, controllable via a floating `MapStylePickerControl` with 5 selectable modes (Streets, Dark, Roads, Satellite, OpenStreetMap) and a `Toggle3DControl` to disable building extrusions in 2D mode.
     3. Integrates the **Komoot Photon API** (`photon.komoot.io`) for geocoding search, localized and scored specifically for Pasig City bounds to provide relevant location autocomplete results.
-    4. Renders geo-coordinates as visual icons and polygon vectors in real time.
+    4. Renders geo-coordinates as visual icons and polygon vectors in real time, employing zoom-based shader opacity step expressions (rather than layer culling) to guarantee seamless visibility during extreme 3D pitch angles.
 *   **Access & Roles:** Public commuters and system administrators.
 *   **Related Components:**
     *   **Frontend:** [MapCanvas.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/map/MapCanvas.tsx), [MapContext.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/map/MapContext.tsx), [geocodingApi.ts](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/geocoding/geocodingApi.ts).

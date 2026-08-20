@@ -59,12 +59,14 @@ export class ZoomLevelControl {
     this._container.className = "maplibregl-ctrl maplibregl-ctrl-group";
     this._container.style.cssText = `
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 48px;
-      height: 26px;
-      font-size: 11px;
+      padding: 4px 2px;
+      font-size: 10px;
       font-weight: 700;
+      line-height: 1.2;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       color: #334155;
       background: #ffffff;
@@ -77,28 +79,341 @@ export class ZoomLevelControl {
     this._textSpan = document.createElement("span");
     this._textSpan.style.cssText = `
       letter-spacing: -0.5px;
+      text-align: center;
     `;
     this._updateText();
     this._container.appendChild(this._textSpan);
 
-    this._map.on("zoom", this._onZoom);
+    this._map.on("zoom", this._onUpdate);
+    this._map.on("pitch", this._onUpdate);
+    this._map.on("rotate", this._onUpdate);
     return this._container;
   }
 
-  private _onZoom = () => {
+  private _onUpdate = () => {
     this._updateText();
   };
 
   private _updateText() {
     if (this._map && this._textSpan) {
       const z = this._map.getZoom();
-      this._textSpan.textContent = `Z: ${z.toFixed(1)}`;
-      this._textSpan.title = z > 14 ? "Street Level (Lines/Polygons Active)" : "City View (Circle Pins Active)";
+      const p = this._map.getPitch();
+      this._textSpan.innerHTML = `<div>Z: ${z.toFixed(1)}</div><div class="text-[9px] text-slate-500 font-semibold mt-0.5">P: ${Math.round(p)}°</div>`;
+      this._textSpan.title = `Zoom: ${z.toFixed(2)}, Pitch: ${p.toFixed(1)}° | ${z >= 14 ? "Street Level (Lines/Polygons Active)" : "City View (Circle Pins Active)"}`;
     }
   }
 
   onRemove() {
-    this._map?.off("zoom", this._onZoom);
+    this._map?.off("zoom", this._onUpdate);
+    this._map?.off("pitch", this._onUpdate);
+    this._map?.off("rotate", this._onUpdate);
+    this._container?.parentNode?.removeChild(this._container);
+    this._map = undefined;
+  }
+}
+
+// ── Map Style Definitions ─────────────────────────────────────────────────────
+const MAPTILER_KEY = "BHhRqsneD3M4HnOd57WU";
+
+// OpenStreetMap raster style — used as the OSM option in the picker.
+// Defined here (above MAP_STYLES) so it can be referenced in the array.
+const OSM_PICKER_STYLE = {
+  version: 8,
+  sources: {
+    osm: {
+      type: "raster",
+      tiles: [
+        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      ],
+      tileSize: 256,
+      attribution: "&copy; OpenStreetMap contributors",
+    },
+  },
+  layers: [{ id: "osm-layer", type: "raster", source: "osm", minzoom: 0, maxzoom: 19 }],
+};
+
+export const MAP_STYLES: { id: string; label: string; emoji: string; url: string | object }[] = [
+  {
+    id: "streets-v2",
+    label: "Streets",
+    emoji: "\uD83C\uDFD9",
+    url: `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_KEY}`,
+  },
+  {
+    id: "streets-v2-dark",
+    label: "Dark",
+    emoji: "\uD83C\uDF11",
+    url: `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_KEY}`,
+  },
+  {
+    // bright-v2 uses high-contrast road colours:
+    // motorways = orange, primary = yellow, secondary = white, residential = light-grey.
+    // Ideal for differentiating expressways, highways, city roads, and streets at a glance.
+    id: "bright-v2",
+    label: "Roads",
+    emoji: "\uD83D\uDEE3",
+    url: `https://api.maptiler.com/maps/bright-v2/style.json?key=${MAPTILER_KEY}`,
+  },
+  {
+    id: "satellite",
+    label: "Satellite",
+    emoji: "\uD83D\uDEF0",
+    url: `https://api.maptiler.com/maps/satellite/style.json?key=${MAPTILER_KEY}`,
+  },
+  {
+    // Raw OpenStreetMap raster tiles — no API key required, no terrain support.
+    id: "openstreetmap",
+    label: "OpenStreetMap",
+    emoji: "\uD83D\uDDFA",
+    url: OSM_PICKER_STYLE,
+  },
+];
+
+// ── MapStylePickerControl ─────────────────────────────────────────────────────
+// A 🎨 button that opens a floating panel to switch between map styles.
+export class MapStylePickerControl {
+  private _map: maplibregl.Map | undefined;
+  private _container: HTMLDivElement | undefined;
+  private _panel: HTMLDivElement | undefined;
+  private _isOpen: boolean = false;
+  private _activeStyleId: string = "streets-v2";
+
+  onAdd(map: maplibregl.Map) {
+    this._map = map;
+
+    // Outer control wrapper
+    this._container = document.createElement("div");
+    this._container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    this._container.style.cssText = `position: relative; overflow: visible !important;`;
+
+    // Toggle button
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.title = "Change Map Style";
+    btn.className = "maplibregl-ctrl-icon";
+    btn.style.cssText = `
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none; cursor: pointer;
+      font-size: 20px; transition: background-color 0.2s;
+    `;
+    btn.innerHTML = `<span style="font-size:18px;line-height:1;">🎨</span>`;
+    btn.onmouseenter = () => { btn.style.backgroundColor = "#f8fafc"; };
+    btn.onmouseleave = () => { btn.style.backgroundColor = "transparent"; };
+    btn.onclick = (e) => { e.stopPropagation(); this._togglePanel(); };
+
+    // Floating style picker panel
+    this._panel = document.createElement("div");
+    this._panel.style.cssText = `
+      display: none;
+      position: absolute;
+      bottom: 54px;
+      right: 0;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
+      padding: 8px;
+      min-width: 140px;
+      z-index: 9999;
+      border: 1px solid #e5e7eb;
+    `;
+
+    MAP_STYLES.forEach((style) => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.style.cssText = `
+        display: flex; align-items: center; gap: 8px;
+        width: 100%; padding: 8px 10px;
+        background: transparent; border: none; border-radius: 8px;
+        cursor: pointer; font-size: 13px; font-weight: 500;
+        color: #1e293b; text-align: left;
+        transition: background-color 0.15s;
+        white-space: nowrap;
+      `;
+      item.innerHTML = `<span style="font-size:16px;">${style.emoji}</span><span>${style.label}</span>`;
+
+      const updateActive = () => {
+        item.style.backgroundColor = this._activeStyleId === style.id ? "#eff6ff" : "transparent";
+        (item.querySelector("span:last-child") as HTMLElement).style.color =
+          this._activeStyleId === style.id ? "#2563eb" : "#1e293b";
+        (item.querySelector("span:last-child") as HTMLElement).style.fontWeight =
+          this._activeStyleId === style.id ? "700" : "500";
+      };
+      updateActive();
+
+      item.onmouseenter = () => {
+        if (this._activeStyleId !== style.id) item.style.backgroundColor = "#f8fafc";
+      };
+      item.onmouseleave = () => { updateActive(); };
+      item.onclick = (e) => {
+        e.stopPropagation();
+        this._activeStyleId = style.id;
+        this._map?.setStyle(style.url as any);
+        // Refresh all item active states
+        this._panel?.querySelectorAll("button").forEach((btn, i) => {
+          const s = MAP_STYLES[i];
+          const lbl = btn.querySelector("span:last-child") as HTMLElement;
+          if (s) {
+            btn.style.backgroundColor = this._activeStyleId === s.id ? "#eff6ff" : "transparent";
+            if (lbl) {
+              lbl.style.color = this._activeStyleId === s.id ? "#2563eb" : "#1e293b";
+              lbl.style.fontWeight = this._activeStyleId === s.id ? "700" : "500";
+            }
+          }
+        });
+        this._closePanel();
+      };
+
+      this._panel!.appendChild(item);
+    });
+
+    this._container.appendChild(btn);
+    this._container.appendChild(this._panel);
+
+    // Close panel when clicking anywhere on the map
+    map.on("click", () => this._closePanel());
+
+    return this._container;
+  }
+
+  private _togglePanel() {
+    this._isOpen ? this._closePanel() : this._openPanel();
+  }
+
+  private _openPanel() {
+    if (!this._panel) return;
+    this._isOpen = true;
+    this._panel.style.display = "block";
+    // Animate in
+    this._panel.style.opacity = "0";
+    this._panel.style.transform = "translateY(8px)";
+    this._panel.style.transition = "opacity 0.18s ease, transform 0.18s ease";
+    requestAnimationFrame(() => {
+      if (this._panel) {
+        this._panel.style.opacity = "1";
+        this._panel.style.transform = "translateY(0)";
+      }
+    });
+  }
+
+  private _closePanel() {
+    if (!this._panel) return;
+    this._isOpen = false;
+    this._panel.style.display = "none";
+  }
+
+  onRemove() {
+    this._container?.parentNode?.removeChild(this._container);
+    this._map = undefined;
+  }
+}
+
+// ── Toggle3DControl ──────────────────────────────────────────────────────────
+// A custom map control that switches between flat (2D) and terrain (3D) mode.
+export class Toggle3DControl {
+  private _map: maplibregl.Map | undefined;
+  private _container: HTMLDivElement | undefined;
+  private _button: HTMLButtonElement | undefined;
+  private _is3D: boolean = true; // default: start in 3D mode
+
+  private static readonly DEM_SOURCE_ID = "terrarium-dem";
+  private static readonly TARGET_PITCH_3D = 45;
+  private static readonly EXAGGERATION = 1.5;
+
+  onAdd(map: maplibregl.Map) {
+    this._map = map;
+    this._container = document.createElement("div");
+    this._container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+
+    this._button = document.createElement("button");
+    this._button.type = "button";
+    this._button.className = "maplibregl-ctrl-icon";
+    this._button.style.cssText = `
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background-color 0.2s;
+    `;
+    this._button.onmouseenter = () => {
+      if (this._button) this._button.style.backgroundColor = "#f8fafc";
+    };
+    this._button.onmouseleave = () => {
+      if (this._button) this._button.style.backgroundColor = "transparent";
+    };
+    this._updateButton();
+    this._button.onclick = () => this._toggle();
+
+    this._container.appendChild(this._button);
+    return this._container;
+  }
+
+  private _updateButton() {
+    if (!this._button) return;
+    if (this._is3D) {
+      this._button.title = "Switch to 2D (Flat) View";
+      this._button.innerHTML = `<span style="font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;">🗺</span>`;
+    } else {
+      this._button.title = "Switch to 3D Terrain View";
+      this._button.innerHTML = `<span style="font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;">🏔</span>`;
+    }
+  }
+
+  // Helper: get all fill-extrusion layer IDs from the current style (3D buildings)
+  private _getExtrusionLayerIds(map: maplibregl.Map): string[] {
+    try {
+      return (map.getStyle()?.layers ?? [])
+        .filter((l: any) => l.type === "fill-extrusion")
+        .map((l: any) => l.id);
+    } catch {
+      return [];
+    }
+  }
+
+  private _toggle() {
+    if (!this._map) return;
+    this._is3D = !this._is3D;
+    const map = this._map;
+
+    if (this._is3D) {
+      // Re-enable terrain
+      if (!map.getSource(Toggle3DControl.DEM_SOURCE_ID)) {
+        map.addSource(Toggle3DControl.DEM_SOURCE_ID, {
+          type: "raster-dem",
+          tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+          tileSize: 256,
+          encoding: "terrarium",
+          maxzoom: 15,
+          attribution: "Elevation tiles &copy; Mapzen, &copy; USGS",
+        });
+      }
+      map.setTerrain({ source: Toggle3DControl.DEM_SOURCE_ID, exaggeration: Toggle3DControl.EXAGGERATION });
+      map.easeTo({ pitch: Toggle3DControl.TARGET_PITCH_3D, duration: 700 });
+      // Restore 3D buildings
+      this._getExtrusionLayerIds(map).forEach((id) => {
+        try { map.setLayoutProperty(id, "visibility", "visible"); } catch {}
+      });
+    } else {
+      // Disable terrain and flatten the map
+      map.setTerrain(null);
+      map.easeTo({ pitch: 0, duration: 700 });
+      // Hide 3D building extrusions for a clean flat look
+      this._getExtrusionLayerIds(map).forEach((id) => {
+        try { map.setLayoutProperty(id, "visibility", "none"); } catch {}
+      });
+    }
+
+    this._updateButton();
+  }
+
+  onRemove() {
     this._container?.parentNode?.removeChild(this._container);
     this._map = undefined;
   }
@@ -207,8 +522,11 @@ export default function BaseMap({
       zoom: zoom,
       minZoom: isOffline ? 11.5 : 5.0, // Only clamp zoom-out when offline so you don't zoom into grey void
       maxZoom: 20.0,
+      maxPitch: 70,
       maxBounds: isOffline ? dynamicBounds : PHILIPPINES_WIDE_BOUNDS,
-      pitch: 0,
+      // Start tilted at 45° (online only) so users immediately experience 3D terrain.
+      // Offline mode stays flat (pitch 0) for better performance on low-end devices.
+      pitch: isOffline ? 0 : 45,
       bearing: 0,
     });
 
@@ -218,10 +536,16 @@ export default function BaseMap({
       new maplibregl.NavigationControl({
         showCompass: true,
         showZoom: true,
-        visualizePitch: false,
+        visualizePitch: true, // Show pitch arc on the compass when map is tilted
       }),
       "bottom-right"
     );
+
+    // Add the 3D / 2D terrain toggle button (only when online; offline has no elevation data)
+    if (!isOffline) {
+      mapInstance.addControl(new Toggle3DControl(), "bottom-right");
+      mapInstance.addControl(new MapStylePickerControl(), "bottom-right");
+    }
 
     if (actionControls) {
       actionControls(mapInstance);
@@ -259,12 +583,63 @@ export default function BaseMap({
       }
     });
 
+    // ── Terrain helpers ──────────────────────────────────────────────────────
+    // MapLibre GL JS v5 internally re-triggers a 'style.load' event when
+    // setTerrain() is called — this wipes all custom sources/layers added after
+    // the initial 'load'. We solve this by re-applying terrain inside a
+    // persistent 'style.load' listener, so it survives every style reload.
+    const applyTerrain = (m: maplibregl.Map) => {
+      if (isOffline) return; // No elevation data available offline
+      try {
+        if (!m.getSource("terrarium-dem")) {
+          m.addSource("terrarium-dem", {
+            type: "raster-dem",
+            tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+            tileSize: 256,
+            encoding: "terrarium",
+            maxzoom: 15,
+            attribution: "Elevation tiles &copy; Mapzen, &copy; USGS",
+          });
+        }
+        // setTerrain will itself cause another style.load in v5 — the guard
+        // above (getSource check) prevents an infinite add-source loop.
+        m.setTerrain({ source: "terrarium-dem", exaggeration: 1.5 });
+
+        if (!m.getLayer("sky")) {
+          m.addLayer({
+            id: "sky",
+            type: "sky",
+            paint: {
+              "sky-type": "atmosphere",
+              "sky-atmosphere-sun": [0.0, 90.0],
+              "sky-atmosphere-sun-intensity": 15,
+              "sky-atmosphere-color": "rgba(135, 206, 235, 1.0)",
+              "sky-horizon-blend": 0.4,
+            },
+          } as any); // 'sky' layer type not yet in this version's maplibre-gl typedefs
+        }
+      } catch (err) {
+        // Guard: if the map has already been removed, swallow the error silently
+        console.warn("[Terrain] applyTerrain error:", err);
+      }
+    };
+
+    // Re-apply terrain every time the style (re-)loads so it survives hot-swaps
+    // between MapTiler ↔ OSM fallback and the internal reload triggered by setTerrain itself.
+    mapInstance.on("style.load", () => {
+      applyTerrain(mapInstance);
+    });
+
     mapInstance.on("load", () => {
       clearTimeout(fallbackTimeout);
       mapRef.current = mapInstance;
       setIsLoaded(true);
 
       setTimeout(() => mapInstance.resize(), 100);
+
+      // Initial terrain application — the 'style.load' listener above will
+      // handle all subsequent reloads automatically.
+      applyTerrain(mapInstance);
 
       if (onMapLoad) {
         onMapLoad(mapInstance);

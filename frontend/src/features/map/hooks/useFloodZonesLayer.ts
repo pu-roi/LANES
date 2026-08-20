@@ -183,7 +183,6 @@ export function useFloodZonesLayer(
           id: "active-zones-layer",
           type: "fill",
           source: sourceId,
-          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
           paint: ACTIVE_ZONE_POLYGON_FILL_PAINT,
           filter: ["==", ["geometry-type"], "Polygon"],
         });
@@ -195,7 +194,6 @@ export function useFloodZonesLayer(
           id: "active-zones-road-core-layer",
           type: "line",
           source: sourceId,
-          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
           layout: {
             "line-join": "round",
             "line-cap": "round",
@@ -211,7 +209,6 @@ export function useFloodZonesLayer(
           id: "active-zones-circle-layer",
           type: "circle",
           source: sourceId,
-          maxzoom: ZOOM_THRESHOLDS.PIN_MAX_ZOOM,
           paint: PIN_CIRCLE_PAINT,
           filter: ["==", ["get", "is_zoomed_out_point"], true],
         });
@@ -220,10 +217,12 @@ export function useFloodZonesLayer(
 
     setupLayers();
 
+    // MapLibre GL JS v5 fires 'style.load' (not just 'styledata') after setTerrain()
+    // wipes custom layers. Listening here ensures flood zones are always re-applied.
     const handleMapStyleData = () => {
       setupLayers();
     };
-    map.on("styledata", handleMapStyleData);
+    map.on("style.load", handleMapStyleData);
 
     // Popups and Interactivity
     const closeTimeoutRef = { current: null as any };
@@ -272,10 +271,16 @@ export function useFloodZonesLayer(
 
       // Determine smart anchor placement based on screen position
       let smartAnchor: maplibregl.PositionAnchor = "bottom";
-      const projectedPoint = map.project(e.lngLat);
+      let projectedPoint: { x: number; y: number } = { x: 0, y: 0 };
+      try {
+        projectedPoint = map.project(e.lngLat);
+      } catch (err) {
+        projectedPoint = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      }
+
       const mapCanvas = map.getCanvas();
-      const width = mapCanvas.clientWidth;
-      const height = mapCanvas.clientHeight;
+      const width = mapCanvas.clientWidth || window.innerWidth;
+      const height = mapCanvas.clientHeight || window.innerHeight;
 
       const { x, y } = projectedPoint;
 
@@ -333,7 +338,7 @@ export function useFloodZonesLayer(
             panX = rect.right - (window.innerWidth - padding);
           }
 
-          if (panX !== 0 || panY !== 0) {
+          if ((panX !== 0 || panY !== 0) && map.getPitch() < 75) {
             map.panBy([panX, panY], { duration: 250 });
           }
         }, 60);
@@ -407,7 +412,7 @@ export function useFloodZonesLayer(
     });
 
     return () => {
-      map.off("styledata", handleMapStyleData);
+      map.off("style.load", handleMapStyleData);
       if (activePopupRef.current) {
         activePopupRef.current.popup.remove();
       }

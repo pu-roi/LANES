@@ -26,8 +26,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Enabling Progressive Web App functionality and IndexedDB caching for offline resilience during poor network conditions.
 * **Geospatial Render Canvas:** **MapLibre GL JS**  
   * *Role:* Open-source, WebGL-accelerated interactive 2D map renderer used to display vector basemaps, dynamic alternative routing polylines, and spatial flood avoidance zones.  
-* **Map Base Tiles:** **OpenStreetMap Tiles & Photon API**  
-  * *Role:* Rendering completely free street-level basemap imagery and providing rate-limited geocoding autocomplete features with zero commercial licensing caps.
+* **Map Base Tiles & 3D Terrain:** **MapTiler, OpenStreetMap, & AWS Terrarium DEM**  
+  * *Role:* Rendering dynamic vector basemap styles (Streets, Dark, Roads, Satellite, OSM) via a custom `MapStylePickerControl`. Integrates AWS `terrarium-dem` S3 raster tiles to provide realistic 3D elevation meshes draped underneath the street vectors.
 * **Weather Data & Iconography:** **Open-Meteo API & Meteocons**
   * *Role:* Open-Meteo provides hyper-local, free weather forecasting data without API keys, while Meteocons (Fill SVGs) are served locally to provide a highly granular, premium visual representation of weather states.
 * **AI Weather Insights:** **OpenRouter API**

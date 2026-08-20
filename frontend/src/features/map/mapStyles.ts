@@ -35,8 +35,18 @@ export const PIN_CIRCLE_PAINT: any = {
     18, 16
   ],
   "circle-color": ["get", "color"],
-  "circle-opacity": 0.85,
-  "circle-stroke-width": 2,
+  "circle-opacity": [
+    "step", ["zoom"],
+    0.85, // below zoom 14 -> 0.85
+    14,   // at and above zoom 14 -> 0
+    0
+  ],
+  "circle-stroke-width": [
+    "step", ["zoom"],
+    2,    // below zoom 14 -> 2
+    14,   // at and above zoom 14 -> 0
+    0
+  ],
   "circle-stroke-color": ["get", "border_color"],
 };
 
@@ -45,7 +55,12 @@ export const PIN_CIRCLE_PAINT: any = {
 // 1. Transparent Avoidance Buffer Aura (the 50m PostGIS buffer polygon)
 export const ACTIVE_ZONE_POLYGON_FILL_PAINT: any = {
   "fill-color": ["get", "color"],
-  "fill-opacity": ["case", ["==", ["get", "is_selected"], true], 0.45, 0.25],
+  "fill-opacity": [
+    "step", ["zoom"],
+    0,    // below zoom 14 -> 0
+    14,   // at and above zoom 14 -> default opacity
+    ["case", ["==", ["get", "is_selected"], true], 0.45, 0.25]
+  ],
 };
 
 // 2. Solid Inner Core Line (the street centerline - bold and clear)
@@ -57,7 +72,12 @@ export const ACTIVE_ZONE_ROAD_CORE_PAINT: any = {
     17, ["case", ["==", ["get", "is_selected"], true], 18, 14],
     20, ["case", ["==", ["get", "is_selected"], true], 24, 18]
   ],
-  "line-opacity": 0.95,
+  "line-opacity": [
+    "step", ["zoom"],
+    0,    // below zoom 14 -> 0
+    14,   // at and above zoom 14 -> 0.95
+    0.95
+  ],
 };
 
 // 6. Pending Reports: Detailed Street-Level Paint (Zoom > 14)
@@ -65,7 +85,12 @@ export const ACTIVE_ZONE_ROAD_CORE_PAINT: any = {
 export const PENDING_REPORT_ROAD_AURA_PAINT: any = {
   "line-color": ["get", "color"],
   "line-width": ["case", ["==", ["get", "is_selected"], true], 32, 24],
-  "line-opacity": ["case", ["==", ["get", "is_selected"], true], 0.6, 0.35],
+  "line-opacity": [
+    "step", ["zoom"],
+    0,    // below zoom 14 -> 0
+    14,   // at and above zoom 14 -> default opacity
+    ["case", ["==", ["get", "is_selected"], true], 0.6, 0.35]
+  ],
 };
 
 export const PENDING_REPORT_POINT_AURA_PAINT: any = {
@@ -75,7 +100,12 @@ export const PENDING_REPORT_POINT_AURA_PAINT: any = {
     18, ["case", ["==", ["get", "is_selected"], true], 38, 30]
   ],
   "circle-color": ["get", "color"],
-  "circle-opacity": ["case", ["==", ["get", "is_selected"], true], 0.55, 0.35],
+  "circle-opacity": [
+    "step", ["zoom"],
+    0,    // below zoom 14 -> 0
+    14,   // at and above zoom 14 -> default opacity
+    ["case", ["==", ["get", "is_selected"], true], 0.55, 0.35]
+  ],
   "circle-stroke-width": 0,
 };
 
