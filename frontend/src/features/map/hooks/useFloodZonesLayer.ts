@@ -10,7 +10,7 @@ import {
   ACTIVE_ZONE_POLYGON_FILL_PAINT,
   ACTIVE_ZONE_ROAD_CORE_PAINT,
 } from "../mapStyles";
-import { computeCenterCoordinate } from "../mapGeoUtils";
+import { computeCenterCoordinate, flyToCoordinates } from "../mapGeoUtils";
 
 export function useFloodZonesLayer(
   map: Map | null,
@@ -380,21 +380,17 @@ export function useFloodZonesLayer(
     const handleZoneClick = (e: any) => {
       if (!e.features || e.features.length === 0) return;
       const id = e.features[0].properties.id;
+      const isSelecting = selectedZoneId !== Number(id);
       if (setSelectedZoneId && id) {
-        setSelectedZoneId(selectedZoneId === Number(id) ? null : Number(id));
+        setSelectedZoneId(isSelecting ? Number(id) : null);
       }
 
-      // Center, angle, and zoom into the clicked active zone (matching sidebar flyTo parameters)
-      if (e.lngLat) {
-        map.flyTo({
-          center: [e.lngLat.lng, e.lngLat.lat],
-          zoom: 16,
-          pitch: 45,
-          duration: 1500,
-        });
+      // Center, angle, and zoom into the clicked active zone ONLY on select
+      if (isSelecting && e.lngLat) {
+        flyToCoordinates(map, [e.lngLat.lng, e.lngLat.lat], { zoom: 16, pitch: 45, duration: 1500 });
       }
 
-      if (isTouchDevice) {
+      if (isTouchDevice && isSelecting) {
         handlePopupOpen(e);
       }
     };

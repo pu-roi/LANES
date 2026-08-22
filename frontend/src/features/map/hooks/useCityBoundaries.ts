@@ -9,7 +9,7 @@ export function useCityBoundaries(map: Map | null, isLoaded: boolean) {
     // Called both on first load and on every subsequent style.load (MapLibre v5
     // re-triggers style.load when setTerrain() is called, wiping custom layers).
     function initBoundaries() {
-      if (!map || !map.isStyleLoaded()) return;
+      if (!map || !map.getStyle()) return;
 
       // 1. Philippines Border Line
       if (!map.getSource("philippines-boundary")) {
@@ -82,22 +82,7 @@ export function useCityBoundaries(map: Map | null, isLoaded: boolean) {
     map.on("style.load", handleStyleLoad);
 
     // ── Initial application ───────────────────────────────────────────────────
-    if (map.isStyleLoaded()) {
-      initBoundaries();
-    } else {
-      // If style hasn't finished loading yet, wait for styledata then init once
-      const handleStyleData = () => {
-        if (map.isStyleLoaded()) {
-          map.off("styledata", handleStyleData);
-          initBoundaries();
-        }
-      };
-      map.on("styledata", handleStyleData);
-      return () => {
-        map.off("styledata", handleStyleData);
-        map.off("style.load", handleStyleLoad);
-      };
-    }
+    initBoundaries();
 
     return () => {
       map.off("style.load", handleStyleLoad);

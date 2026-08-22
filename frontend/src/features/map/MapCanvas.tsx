@@ -293,6 +293,7 @@ export default function MapCanvas() {
         mapRef.current.flyTo({
           center: [lng, lat],
           zoom,
+          pitch: 45,
           duration: 1000
         });
 

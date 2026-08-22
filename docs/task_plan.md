@@ -10,6 +10,33 @@
 
 ## Active Sprint (Next Feature)
 
+### Official Flood Zones (DRRMO) Moderation
+> **Focus:** Separating user-submitted flood reports from official DRRMO map data to ensure data integrity and streamline moderation via the Spatial Operations page.
+
+#### Phase 1: Backend Data Integrity & API Layer
+- [ ] Modify `FloodAvoidanceZone` model (add `severity_override`, `depth_override`, `admin_notes`)
+- [ ] Create Pydantic schemas for Zone Overrides
+- [ ] Update `admin.py` endpoints (`approve_report`, `PUT /zones/{id}`, `POST /zones`)
+- [ ] Run Alembic migrations
+
+#### Phase 2: Frontend Architecture Cleanup
+- [ ] Delete `frontend/src/app/admin/reports` completely
+- [ ] Remove Reports link from sidebar layout
+- [ ] Consolidate historical reports viewing into the Archive Center
+
+#### Phase 3: Spatial Operations — Moderation Sidebar
+- [ ] Add explicit Checkboxes to `PendingReportsPanel.tsx` for batch merging
+- [ ] Implement strict Duplicate Hard Blocker (warning modal) for approvals
+- [ ] Add Troll Filtration (sort by Trust Score, filter by Severity) to sidebar
+- [ ] Port the `ReportDetailsModal` into the Map view to prevent redirects
+
+#### Phase 4: Spatial Operations — DRRMO Zone Overrides (Map)
+- [ ] Add "Edit Map Info" button to active zones in `ActiveZonesPanel.tsx`
+- [ ] Build "+ Create Official Zone" map interaction in `LiveMapPage.tsx`
+- [ ] Wire up real-time SSE broadcasts for zone updates
+
+## Future Roadmap (Phases)
+
 ### Phase 4: External Integrations & IoT
 > **Focus:** Connecting LANES to external data sources and physical hardware.
 - [ ] **Open-Meteo GloFAS Integration**: Integrate `river_discharge` variables to predict river overflow and automatically mark nearby areas as high risk.

@@ -189,6 +189,14 @@
   - Fixed polygon disappearance during perspective tilting by removing layer-level `minzoom`/`maxzoom` culling and replacing it with shader-level zoom-based opacity step expressions (`["step", ["zoom"]]`). Geometries remain stable across extreme pitch and zoom angles.
   - Upgraded Map Canvas UI with a new Toggle3DControl and ZoomLevelControl (with Pitch/P telemetry).
 
+- [x] **Spatial Operations Persistence, Map Controls Uniformity & Centralized Camera Engine**:
+  - **Persistent Layout in Admin Panel (`AdminLayout.tsx`)**: Mounted `<LiveMapPage />` persistently inside `AdminLayout` with zero unmount overhead, eliminating map reloads, tile re-downloads, and spinners when toggling between Reports, Dashboard, and Live Map.
+  - **Unified Geometry Centroid & Camera Utilities (`mapGeoUtils.ts`)**: Built `flyToFeature()` and `flyToCoordinates()` with automatic midpoint calculation for Points, LineStrings, and Polygon buffers, enforcing a consistent 45° inspection angle, zoom 16, and 1400ms duration across Reports Moderation, Live Map URL queries, and direct map clicks.
+  - **Deselection Camera Guards**: Guarded `ActiveZonesPanel.tsx`, `usePendingReportsLayer.ts`, and `useFloodZonesLayer.ts` so `flyTo` transitions only trigger upon item selection, preventing unwanted zooming/panning when deselecting.
+  - **Pasig Boundary & Mask Fix**: Restored boundary and dark mask rendering in `useCityBoundaries.ts` by handling asynchronous MapLibre v5 style swaps during terrain initialization.
+  - **Standardized Severity Badges**: Unified 4-tier color coding across all admin moderation cards, modals, and dropdowns (`low`: Lime `#84cc16`, `medium`: Amber `#eab308`, `high`: Orange `#f97316`, `extreme`: Red `#ef4444`).
+  - **Default Global Map Top-Down Orientation**: Configured default `pitch: 0` for initial map instantiations.
+
 ## Backlog / Upcoming
 - [ ] (All currently planned routing and UI sprint items completed)
 

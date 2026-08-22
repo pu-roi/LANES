@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams, usePathname } from "next/navigation";
 import type { Map } from "maplibre-gl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
@@ -17,7 +17,7 @@ import BaseMap from "@/shared/ui/BaseMap";
 import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
 import { usePendingReportsLayer } from "@/features/map/hooks/usePendingReportsLayer";
-import { computeCenterCoordinate } from "@/features/map/mapGeoUtils";
+import { computeCenterCoordinate, flyToFeature, flyToCoordinates } from "@/features/map/mapGeoUtils";
 import { 
   Loader2, Trash2, ShieldAlert, 
   RefreshCw, Info, AlertTriangle, CheckCircle, Clock, 
@@ -146,31 +146,71 @@ export default function LiveMapPage() {
     refetchInterval: 10000,
   });
 
-  // Read focus_report_id from URL query parameters (when redirected from Reports Page)
-  useEffect(() => {
-    const focusId = searchParams.get("focus_report_id");
-    if (focusId && pendingReports && pendingReports.length > 0) {
-      const idNum = Number(focusId);
-      const target = pendingReports.find((r) => r.id === idNum);
-      if (target) {
-        setActiveTab("pending");
-        setSelectedReportId(idNum);
-        setIsolatedReportId(idNum);
+  // Track last focused query to avoid duplicate re-flying
+  const lastFocusedParamRef = useRef<string | null>(null);
 
-        if (mapInstance && isLoaded && target.geometry) {
-          const center = computeCenterCoordinate(target.geometry, null);
-          if (center) {
-            mapInstance.flyTo({
-              center: center as [number, number],
-              zoom: 16,
-              pitch: 45,
-              duration: 1500,
-            });
+  // Read focus_report_id and coordinate params from URL query parameters (when redirected from Reports Page)
+  useEffect(() => {
+    if (!mapInstance || !isLoaded) return;
+
+    const focusId = searchParams.get("focus_report_id");
+    const tabParam = searchParams.get("tab");
+    const latStr = searchParams.get("lat");
+    const lngStr = searchParams.get("lng");
+    const zoomStr = searchParams.get("zoom");
+
+    const queryKey = `${focusId}_${tabParam}_${latStr}_${lngStr}`;
+    if (!focusId && !latStr && !lngStr) return;
+
+    if (tabParam === "zones" || tabParam === "pending") {
+      setActiveTab(tabParam);
+    }
+
+    if (lastFocusedParamRef.current === queryKey) return;
+    lastFocusedParamRef.current = queryKey;
+
+    const executeFocus = () => {
+      // 1. Direct coordinates passed from Reports Page
+      if (latStr && lngStr) {
+        const lat = parseFloat(latStr);
+        const lng = parseFloat(lngStr);
+        const zoom = zoomStr ? parseFloat(zoomStr) : 16;
+        if (!isNaN(lat) && !isNaN(lng)) {
+          flyToCoordinates(mapInstance, [lng, lat], { zoom, pitch: 45, duration: 1500 });
+        }
+      }
+
+      // 2. Select report / zone in state
+      if (focusId) {
+        const idNum = Number(focusId);
+        const targetPending = pendingReports?.find((r) => r.id === idNum);
+        if (targetPending) {
+          setActiveTab("pending");
+          setSelectedReportId(idNum);
+          setIsolatedReportId(idNum);
+
+          if (targetPending.geometry && (!latStr || !lngStr)) {
+            flyToFeature(mapInstance, targetPending.geometry, null, { zoom: 16, pitch: 45, duration: 1500 });
+          }
+        } else {
+          const targetZone = (mapZones || []).find(
+            (z: any) => z.report_id === idNum || (z.contributors || []).some((c: any) => c.report_id === idNum)
+          );
+          if (targetZone) {
+            setActiveTab("zones");
+            setSelectedZoneId(targetZone.id);
+            if (targetZone.geometry && (!latStr || !lngStr)) {
+              flyToFeature(mapInstance, targetZone.geometry, targetZone.report_geometry, { zoom: 16, pitch: 45, duration: 1500 });
+            }
           }
         }
       }
-    }
-  }, [searchParams, pendingReports, mapInstance, isLoaded]);
+    };
+
+    // Small delay ensures MapLibre terrain and canvas resizing are settled
+    const timer = setTimeout(executeFocus, 250);
+    return () => clearTimeout(timer);
+  }, [searchParams, pendingReports, mapZones, mapInstance, isLoaded]);
 
   const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
     queryKey: ["adminZones", page, activeOnly],
@@ -231,16 +271,33 @@ export default function LiveMapPage() {
     isolatedReportId
   );
 
-  // Fit to Pasig City bounds on first visit (mimicking PublicMapPage)
+  const pathname = usePathname();
+
+  // Resize map canvas whenever returning to the spatial operations tab
+  useEffect(() => {
+    if (mapInstance && isLoaded && pathname === "/admin/map") {
+      setTimeout(() => {
+        mapInstance.resize();
+      }, 50);
+    }
+  }, [pathname, mapInstance, isLoaded]);
+
+  // Fit to Pasig City bounds on first visit ONLY IF no focus query or coordinates present
   useEffect(() => {
     if (!mapInstance || !isLoaded) return;
     
-    // Always fit bounds on initial load of the map page
+    const focusId = searchParams.get("focus_report_id");
+    const latStr = searchParams.get("lat");
+    const lngStr = searchParams.get("lng");
+    
+    // If arriving with specific report or coordinates, skip default fitBounds
+    if (focusId || (latStr && lngStr)) return;
+
     mapInstance.fitBounds(PASIG_BOUNDS, {
       padding: { top: 40, bottom: 40, left: 40, right: 40 },
       duration: 1000,
     });
-  }, [mapInstance, isLoaded]);
+  }, [mapInstance, isLoaded, searchParams]);
 
   // Save camera movements to localStorage
   useEffect(() => {
@@ -330,16 +387,7 @@ export default function LiveMapPage() {
   // Fly to selected report when clicked in the list
   useEffect(() => {
     if (!mapInstance || !isLoaded || !selectedReport || !selectedReport.geometry || activeTab !== "pending") return;
-
-    const isLine = selectedReport.geometry.type === "LineString";
-    
-    if (isLine) {
-      const coords = selectedReport.geometry.coordinates;
-      mapInstance.flyTo({ center: coords[0] as [number, number], zoom: 16, duration: 1200 });
-    } else if (selectedReport.geometry.type === "Point") {
-      const coords = selectedReport.geometry.coordinates;
-      mapInstance.flyTo({ center: coords as [number, number], zoom: 16, duration: 1200 });
-    }
+    flyToFeature(mapInstance, selectedReport.geometry, null, { zoom: 16, pitch: 45, duration: 1200 });
   }, [selectedReport, activeTab, isLoaded, mapInstance]);
 
   // Mutations
@@ -410,20 +458,9 @@ export default function LiveMapPage() {
   };
 
   const flyToZone = (zone: AvoidanceZone) => {
-    if (!mapInstance || !zone.geometry || !zone.geometry.coordinates) return;
+    if (!mapInstance || !zone.geometry) return;
     try {
-      const rings = zone.geometry.coordinates[0];
-      if (!rings || rings.length === 0) return;
-      let sumLng = 0; let sumLat = 0;
-      rings.forEach(coord => { sumLng += coord[0]; sumLat += coord[1]; });
-      const center: [number, number] = [sumLng / rings.length, sumLat / rings.length];
-      
-      mapInstance.flyTo({
-        center,
-        zoom: 16,
-        pitch: 45,
-        duration: 1500
-      });
+      flyToFeature(mapInstance, zone.geometry, zone.report_geometry, { zoom: 16, pitch: 45, duration: 1500 });
     } catch (err) {
       console.error("Failed to fly to zone:", err);
     }

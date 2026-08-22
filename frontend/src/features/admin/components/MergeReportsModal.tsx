@@ -334,10 +334,14 @@ export function MergeReportsModal({
                 <div className="flex items-center gap-2">
                   <Shield className="w-3.5 h-3.5 text-emerald-500" />
                   <span className="text-xs font-bold text-slate-800">Zone #{zone.id}</span>
-                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase ${
-                    zone.severity === "high" || zone.severity === "extreme"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-amber-100 text-amber-700"
+                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase border ${
+                    zone.severity?.toLowerCase() === "low"
+                      ? "bg-lime-100 text-lime-800 border-lime-300"
+                      : zone.severity?.toLowerCase() === "medium"
+                      ? "bg-amber-100 text-amber-800 border-amber-300"
+                      : zone.severity?.toLowerCase() === "high"
+                      ? "bg-orange-100 text-orange-800 border-orange-300"
+                      : "bg-red-100 text-red-700 border-red-300"
                   }`}>
                     {zone.severity}
                   </span>
@@ -401,10 +405,14 @@ export function MergeReportsModal({
             <span className="text-xs font-bold text-slate-800">Report #{report.id}</span>
             <span className="ml-2 text-[10px] text-blue-600 font-medium">(this report)</span>
           </div>
-          <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase ${
-            report.severity === "high" || report.severity === "extreme"
-              ? "bg-red-100 text-red-700"
-              : "bg-amber-100 text-amber-700"
+          <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase border ${
+            report.severity?.toLowerCase() === "low"
+              ? "bg-lime-100 text-lime-800 border-lime-300"
+              : report.severity?.toLowerCase() === "medium"
+              ? "bg-amber-100 text-amber-800 border-amber-300"
+              : report.severity?.toLowerCase() === "high"
+              ? "bg-orange-100 text-orange-800 border-orange-300"
+              : "bg-red-100 text-red-700 border-red-300"
           }`}>
             {report.severity}
           </span>
@@ -418,10 +426,14 @@ export function MergeReportsModal({
             <div className="flex-1 min-w-0">
               <span className="text-xs font-bold text-slate-800">Report #{r.id}</span>
             </div>
-            <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase ${
-              r.severity === "high" || r.severity === "extreme"
-                ? "bg-red-100 text-red-700"
-                : "bg-amber-100 text-amber-700"
+            <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase border ${
+              r.severity?.toLowerCase() === "low"
+                ? "bg-lime-100 text-lime-800 border-lime-300"
+                : r.severity?.toLowerCase() === "medium"
+                ? "bg-amber-100 text-amber-800 border-amber-300"
+                : r.severity?.toLowerCase() === "high"
+                ? "bg-orange-100 text-orange-800 border-orange-300"
+                : "bg-red-100 text-red-700 border-red-300"
             }`}>
               {r.severity}
             </span>

@@ -22,20 +22,30 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   const [isFullscreenMediaOpen, setIsFullscreenMediaOpen] = useState(false);
 
   const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'extreme': return 'bg-red-100 text-red-800 border-red-200';
-      case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      default: return 'bg-slate-100 text-slate-800 border-slate-200';
+    switch (severity?.toLowerCase()) {
+      case "extreme":
+        return "bg-red-100 text-red-800 border-red-300";
+      case "high":
+        return "bg-orange-100 text-orange-800 border-orange-300";
+      case "medium":
+        return "bg-amber-100 text-amber-800 border-amber-300";
+      case "low":
+      default:
+        return "bg-lime-100 text-lime-800 border-lime-300";
     }
   };
 
   const getSeverityLabel = (severity: string) => {
-    switch (severity) {
-      case 'extreme': return 'Extreme Severity';
-      case 'high': return 'High Severity';
-      case 'medium': return 'Moderate Severity';
-      default: return 'Low Severity';
+    switch (severity?.toLowerCase()) {
+      case "extreme":
+        return "Extreme (Impassable)";
+      case "high":
+        return "High (Hazardous)";
+      case "medium":
+        return "Medium (Warning)";
+      case "low":
+      default:
+        return "Low (Passable)";
     }
   };
 

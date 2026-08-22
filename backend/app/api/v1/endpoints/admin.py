@@ -142,7 +142,8 @@ async def approve_report(
         post_in = schemas.CommunityPostCreate(
             flood_report_id=report.id,
             content=report.raw_text,
-            media_urls=[report.image_url] if report.image_url else None
+            media_urls=report.media_urls if report.media_urls else None,
+            location_tag=report.barangay or report.human_readable_location or None
         )
         crud.create_community_post(db=db, post_in=post_in, user_id=report.user_id)
 

@@ -98,7 +98,7 @@ export class ZoomLevelControl {
     if (this._map && this._textSpan) {
       const z = this._map.getZoom();
       const p = this._map.getPitch();
-      this._textSpan.innerHTML = `<div>Z: ${z.toFixed(1)}</div><div class="text-[9px] text-slate-500 font-semibold mt-0.5">P: ${Math.round(p)}°</div>`;
+      this._textSpan.innerHTML = `<div>Z: ${z.toFixed(1)}</div><div class="mt-0.5">P: ${Math.round(p)}°</div>`;
       this._textSpan.title = `Zoom: ${z.toFixed(2)}, Pitch: ${p.toFixed(1)}° | ${z >= 14 ? "Street Level (Lines/Polygons Active)" : "City View (Circle Pins Active)"}`;
     }
   }
@@ -524,9 +524,8 @@ export default function BaseMap({
       maxZoom: 20.0,
       maxPitch: 70,
       maxBounds: isOffline ? dynamicBounds : PHILIPPINES_WIDE_BOUNDS,
-      // Start tilted at 45° (online only) so users immediately experience 3D terrain.
-      // Offline mode stays flat (pitch 0) for better performance on low-end devices.
-      pitch: isOffline ? 0 : 45,
+      // Start flat (pitch 0) by default per user request
+      pitch: 0,
       bearing: 0,
     });
 

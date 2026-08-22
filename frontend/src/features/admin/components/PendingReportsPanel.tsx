@@ -76,10 +76,14 @@ export function PendingReportsPanel({
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm text-gray-900">Report #{report.id}</span>
-                <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide ${
-                  report.severity === "high" || report.severity === "extreme"
-                    ? "bg-red-100 text-red-700"
-                    : "bg-amber-100 text-amber-700"
+                <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide border ${
+                  report.severity?.toLowerCase() === "low"
+                    ? "bg-lime-100 text-lime-800 border-lime-300"
+                    : report.severity?.toLowerCase() === "medium"
+                    ? "bg-amber-100 text-amber-800 border-amber-300"
+                    : report.severity?.toLowerCase() === "high"
+                    ? "bg-orange-100 text-orange-800 border-orange-300"
+                    : "bg-red-100 text-red-800 border-red-300 animate-pulse"
                 }`}>
                   {report.severity}
                 </span>

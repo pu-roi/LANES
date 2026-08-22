@@ -8,7 +8,7 @@ import {
   PENDING_REPORT_ROAD_AURA_PAINT,
   PENDING_REPORT_POINT_AURA_PAINT,
 } from "../mapStyles";
-import { computeCenterCoordinate } from "../mapGeoUtils";
+import { computeCenterCoordinate, flyToCoordinates } from "../mapGeoUtils";
 
 export function usePendingReportsLayer(
   map: Map | null,
@@ -145,16 +145,12 @@ export function usePendingReportsLayer(
       if (!e.features || e.features.length === 0) return;
       const feature = e.features[0];
       const id = feature.properties.id;
-      setSelectedReportId(id === selectedReportId ? null : id);
+      const isSelecting = id !== selectedReportId;
+      setSelectedReportId(isSelecting ? id : null);
 
-      // Center, angle, and zoom into the clicked report (matching sidebar flyTo parameters)
-      if (e.lngLat) {
-        map.flyTo({
-          center: [e.lngLat.lng, e.lngLat.lat],
-          zoom: 16,
-          pitch: 45,
-          duration: 1500,
-        });
+      // Center, angle, and zoom into the clicked report ONLY on select
+      if (isSelecting && e.lngLat) {
+        flyToCoordinates(map, [e.lngLat.lng, e.lngLat.lat], { zoom: 16, pitch: 45, duration: 1500 });
       }
     };
 

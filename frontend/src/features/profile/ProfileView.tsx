@@ -278,7 +278,15 @@ export default function ProfileView() {
           {(myReports as any[]).map((report: any) => (
             <div key={report.id} className="p-4 rounded-xl border border-slate-100 hover:border-blue-100 hover:bg-blue-50/50 transition-colors">
               <div className="flex justify-between items-start mb-2">
-                <span className="text-sm font-medium bg-white px-2 py-1 border border-slate-200 rounded-md shadow-sm text-slate-700">
+                <span className={`text-xs font-bold px-2 py-0.5 border rounded-md uppercase tracking-wide ${
+                  report.severity?.toLowerCase() === "extreme"
+                    ? "bg-red-100 text-red-800 border-red-300"
+                    : report.severity?.toLowerCase() === "high"
+                    ? "bg-orange-100 text-orange-800 border-orange-300"
+                    : report.severity?.toLowerCase() === "medium"
+                    ? "bg-amber-100 text-amber-800 border-amber-300"
+                    : "bg-lime-100 text-lime-800 border-lime-300"
+                }`}>
                   {report.severity.toUpperCase()}
                 </span>
                 <span className="text-xs text-slate-500">{formatDate(report.created_at)}</span>

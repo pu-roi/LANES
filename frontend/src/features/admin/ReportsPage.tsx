@@ -12,6 +12,7 @@ import {
 } from "./adminApi";
 import { useToast, Button, Input, Select, Pagination, Tabs, MediaViewer, MultiSelect, DatePicker } from "@/shared/ui";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
+import { computeCenterCoordinate } from "@/features/map/mapGeoUtils";
 import { 
   Loader2, 
   CheckCircle, 
@@ -228,7 +229,19 @@ export default function ReportsPage() {
   });
 
   const handleViewOnMap = (report: FloodReport) => {
-    router.push(`/admin/map?focus_report_id=${report.id}`);
+    let url = `/admin/map?focus_report_id=${report.id}`;
+    if (report.status === "approved") {
+      url += `&tab=zones`;
+    } else if (report.status === "pending") {
+      url += `&tab=pending`;
+    }
+    if (report.geometry) {
+      const center = computeCenterCoordinate(report.geometry, null);
+      if (center) {
+        url += `&lng=${center[0]}&lat=${center[1]}&zoom=16`;
+      }
+    }
+    router.push(url);
   };
 
   const handleOpenDetails = (report: FloodReport) => {
@@ -261,29 +274,29 @@ export default function ReportsPage() {
   const totalPages = Math.ceil(total / LIMIT);
 
   const getSeverityBadge = (sev: string) => {
-    switch (sev) {
+    switch ((sev || "").toLowerCase()) {
       case "low":
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200">
-            Passable (White)
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-lime-100 text-lime-800 border border-lime-300">
+            Passable (Low)
           </span>
         );
       case "medium":
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-200">
-            Warning (Yellow)
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+            Warning (Medium)
           </span>
         );
       case "high":
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-200">
-            Hazardous (Orange)
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-300">
+            Hazardous (High)
           </span>
         );
       case "extreme":
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-200 animate-pulse">
-            Impassable (Red)
+          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 border border-red-300 animate-pulse">
+            Impassable (Extreme)
           </span>
         );
       default:
@@ -377,10 +390,10 @@ export default function ReportsPage() {
               className="w-48"
               options={[
                 { label: "All Severities", value: "all" },
-                { label: "Passable (White)", value: "low" },
-                { label: "Warning (Yellow)", value: "medium" },
-                { label: "Hazardous (Orange)", value: "high" },
-                { label: "Impassable (Red)", value: "extreme" }
+                { label: "Low (Passable)", value: "low" },
+                { label: "Medium (Warning)", value: "medium" },
+                { label: "High (Hazardous)", value: "high" },
+                { label: "Extreme (Impassable)", value: "extreme" }
               ]}
             />
           </div>

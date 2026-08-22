@@ -139,9 +139,14 @@ export function ActiveZonesPanel({
               <div
                 key={zone.id}
                 onClick={() => {
-                  setSelectedZoneId(isSelected ? null : zone.id);
-                  if (setSelectedContributorId) setSelectedContributorId(null);
-                  flyToZone(zone);
+                  if (isSelected) {
+                    setSelectedZoneId(null);
+                    if (setSelectedContributorId) setSelectedContributorId(null);
+                  } else {
+                    setSelectedZoneId(zone.id);
+                    if (setSelectedContributorId) setSelectedContributorId(null);
+                    flyToZone(zone);
+                  }
                 }}
                 className={`p-4 transition-all cursor-pointer hover:bg-slate-50/80 ${
                   isSelected ? "bg-blue-50/80 ring-2 ring-blue-500/30" : selectedIds.includes(zone.id) ? "bg-blue-50/40" : ""
@@ -166,10 +171,14 @@ export function ActiveZonesPanel({
                         ) : (
                           <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-500 text-[10px] font-bold tracking-wide uppercase">Inactive</span>
                         )}
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
-                          zone.severity === "high" || zone.severity === "extreme"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-amber-100 text-amber-700"
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border ${
+                          zone.severity?.toLowerCase() === "low"
+                            ? "bg-lime-100 text-lime-800 border-lime-300"
+                            : zone.severity?.toLowerCase() === "medium"
+                            ? "bg-amber-100 text-amber-800 border-amber-300"
+                            : zone.severity?.toLowerCase() === "high"
+                            ? "bg-orange-100 text-orange-800 border-orange-300"
+                            : "bg-red-100 text-red-800 border-red-300 animate-pulse"
                         }`}>
                           {zone.severity}
                         </span>

@@ -1,5 +1,4 @@
-import LiveMapPage from "@/features/admin/LiveMapPage";
-
 export default function Page() {
-  return <LiveMapPage />;
+  // LiveMapPage is persistently mounted in AdminLayout so the map never unmounts or reloads across admin pages.
+  return null;
 }

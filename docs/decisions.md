@@ -192,3 +192,18 @@ When tilting the map to a 45-80° pitch, the effective zoom level becomes distor
 2. **Opacity Steps:** We control the visibility natively using step expressions for opacity in `mapStyles.ts`. The `["zoom"]` expression evaluates against the global camera state rather than the distorted tile depth, guaranteeing a seamless transition between City View (Pins) and Street View (Polygons).
 3. **Terrain Integration:** 3D terrain elevation is supplied via `terrarium-dem` AWS S3 tiles, providing a realistic 3D mesh draped with raster/vector basemaps (e.g. OpenStreetMap).
 4. **Style Swapping:** A unified `MapStylePickerControl` was introduced to let users swap between 5 styles (Streets, Dark, Roads, Satellite, OSM). The `setTerrain()` method wipes layers in MapLibre v5, so custom layers are guarded via `if (!m.getLayer(...))` inside `style.load` event listeners to ensure they persist across style and 3D/2D swaps.
+
+---
+
+## 13. Persistent Admin Map Layout & Centralized Camera Transition Engine
+**Date:** August 2026
+**Decision:** Mount `<LiveMapPage />` persistently in `AdminLayout.tsx` and centralize camera transition helpers (`flyToFeature`, `flyToCoordinates`) in `mapGeoUtils.ts`.
+
+**Context:**
+1. In the admin interface, navigating between `/admin/reports` and `/admin/map` was unmounting the MapLibre canvas on every route change, causing tile re-downloads, loading spinners, and resetting the administrator's camera view.
+2. Clicking "View on Map" from the Reports page or selecting items in the Live Map sidebar had inconsistent zoom levels, differing pitch perspectives, and lacked unified coordinate extraction for complex geometries.
+
+**Reasoning:**
+1. **Zero-Latency Admin Navigation:** By mounting `<LiveMapPage />` directly inside `AdminLayout.tsx` (using CSS visibility toggling) and returning `null` from `admin/map/page.tsx`, the map instance is preserved in memory across all admin route changes. Returning to `/admin/map` is instantaneous (0ms load time) with no tile fetching or terrain reloads.
+2. **Centralized Camera Physics:** `flyToFeature()` in `mapGeoUtils.ts` automatically extracts midpoints and centroids across Points, LineStrings, and Polygon avoidance zones, standardizing on a uniform 45-degree angle, zoom level 16, and 1400ms duration for all flood inspection workflows.
+3. **Selection State Guards:** Camera movements are strictly guarded to only execute when selecting an item, preventing unwanted camera jarring when deselecting.
