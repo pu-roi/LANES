@@ -47,13 +47,6 @@ async def approve_report(
     # 1. Update report status and timestamp
     report.status = models.ReportStatus.APPROVED
     report.approved_at = datetime.utcnow()
-    
-    # Override severity / depth if curated by admin
-    if body:
-        if body.severity:
-            report.severity = body.severity
-        if body.depth:
-            report.depth = body.depth
 
     db.commit()
     db.refresh(report)
@@ -96,6 +89,12 @@ async def approve_report(
                 geojson_str = body.custom_geometry.model_dump_json()
                 target_zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
                 target_zone.curated_by_admin_id = current_user.id
+            if body.severity:
+                target_zone.severity_override = body.severity
+            if body.depth:
+                target_zone.depth_override = body.depth
+            if body.admin_notes:
+                target_zone.admin_notes = body.admin_notes
             db.commit()
             db.refresh(target_zone)
     else:
@@ -109,6 +108,14 @@ async def approve_report(
                 is_active=True
             )
             target_zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
+            if body.severity:
+                target_zone.severity_override = body.severity
+            if body.depth:
+                target_zone.depth_override = body.depth
+            if body.admin_notes:
+                target_zone.admin_notes = body.admin_notes
+            db.commit()
+            db.refresh(target_zone)
         elif report.geometry is not None:
             # Auto-calculate buffer polygon via PostGIS
             geom_type = db.query(func.ST_GeometryType(report.geometry)).scalar()
@@ -132,6 +139,14 @@ async def approve_report(
                     is_active=True
                 )
                 target_zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
+                if body and body.severity:
+                    target_zone.severity_override = body.severity
+                if body and body.depth:
+                    target_zone.depth_override = body.depth
+                if body and body.admin_notes:
+                    target_zone.admin_notes = body.admin_notes
+                db.commit()
+                db.refresh(target_zone)
 
     # 4. Award Trust Score & Verification credit to reporter
     if report.user_id:
@@ -894,3 +909,97 @@ async def merge_pending_into_zone(
         merged_count=merged_count,
         zone_id=zone_id,
     )
+
+
+@router.post("/zones", response_model=schemas.FloodAvoidanceZoneResponse)
+async def create_official_zone(
+    request: Request,
+    body: schemas.FloodAvoidanceZoneCreateOfficial,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Create a new official DRRMO flood avoidance zone without a user report.
+    """
+    zone_in = schemas.FloodAvoidanceZoneCreate(
+        geometry=body.geometry,
+        curated_by_admin_id=current_user.id,
+        is_active=body.is_active
+    )
+    zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
+    
+    zone.severity_override = body.severity_override
+    zone.depth_override = body.depth_override
+    zone.admin_notes = body.admin_notes
+    db.commit()
+    db.refresh(zone)
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="CREATE_OFFICIAL_ZONE",
+            target_table="flood_avoidance_zones",
+            target_id=zone.id,
+            metadata_json={"zone_id": zone.id},
+            ip_address=client_ip
+        )
+    )
+
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "zone_created",
+        "data": {"zone_id": zone.id}
+    })
+
+    return zone
+
+
+@router.put("/zones/{zone_id}", response_model=schemas.FloodAvoidanceZoneResponse)
+async def update_zone(
+    zone_id: int,
+    request: Request,
+    body: schemas.FloodAvoidanceZoneUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Update an existing flood avoidance zone's overrides (DRRMO Edit Map Info).
+    """
+    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if not zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+        
+    if body.severity_override is not None:
+        zone.severity_override = body.severity_override
+    if body.depth_override is not None:
+        zone.depth_override = body.depth_override
+    if body.admin_notes is not None:
+        zone.admin_notes = body.admin_notes
+    if body.is_active is not None:
+        zone.is_active = body.is_active
+
+    db.commit()
+    db.refresh(zone)
+    
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="UPDATE_ZONE",
+            target_table="flood_avoidance_zones",
+            target_id=zone.id,
+            metadata_json={"zone_id": zone.id},
+            ip_address=client_ip
+        )
+    )
+    
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "zone_updated",
+        "data": {"zone_id": zone.id}
+    })
+    
+    return zone

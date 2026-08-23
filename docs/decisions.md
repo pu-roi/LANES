@@ -207,3 +207,20 @@ When tilting the map to a 45-80° pitch, the effective zoom level becomes distor
 1. **Zero-Latency Admin Navigation:** By mounting `<LiveMapPage />` directly inside `AdminLayout.tsx` (using CSS visibility toggling) and returning `null` from `admin/map/page.tsx`, the map instance is preserved in memory across all admin route changes. Returning to `/admin/map` is instantaneous (0ms load time) with no tile fetching or terrain reloads.
 2. **Centralized Camera Physics:** `flyToFeature()` in `mapGeoUtils.ts` automatically extracts midpoints and centroids across Points, LineStrings, and Polygon avoidance zones, standardizing on a uniform 45-degree angle, zoom level 16, and 1400ms duration for all flood inspection workflows.
 3. **Selection State Guards:** Camera movements are strictly guarded to only execute when selecting an item, preventing unwanted camera jarring when deselecting.
+
+---
+
+## 3. Moderation UI & Spatial Operations Consolidation
+**Date:** August 2026
+**Decision:** Drop standalone tabular 'Reports' pages in favor of integrating moderation directly into the Spatial Operations Map via overlay panels.
+
+**Context:**
+Initially, flood reports were moderated via a traditional data-table view in the admin panel. However, flood reports are inherently spatial—approving or rejecting a report requires visualizing its location relative to existing floods and active detours.
+
+**Reasoning:**
+1. **Context Switching:** Forcing admins to jump between a tabular list and a map to verify coordinates was inefficient.
+2. **Duplicate Prevention:** By moderating on the map (via `PendingReportsPanel`), admins can visually identify clusters of duplicate reports and use batch operations to merge them instantly.
+3. **Unified UI:** The `FloodReportPanel` originally built for public users was seamlessly adapted for Admins to create 'Official DRRMO Zones' directly on the map, removing the need for a separate admin-only creation form.
+
+**Implementation:**
+The entire moderation workflow now lives inside `LiveMapPage.tsx`, acting as the 'Smart Controller' that passes data down to specific sidebar panels (Active Zones, Pending Reports) and overlays (FloodReportPanel for creation, ReportDetailsModal for moderation).

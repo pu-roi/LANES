@@ -71,7 +71,7 @@ export default function DashboardPage() {
       description: "Needs admin review",
       icon: AlertTriangle,
       color: "amber",
-      href: "/admin/reports",
+      href: "/admin/map?tab=pending",
       actionText: "Review queue"
     },
     {
@@ -80,7 +80,7 @@ export default function DashboardPage() {
       description: "Avoidance zones active",
       icon: Map,
       color: "blue",
-      href: "/admin/zones",
+      href: "/admin/map?tab=zones",
       actionText: "Manage zones"
     },
     {
@@ -89,7 +89,7 @@ export default function DashboardPage() {
       description: "Routes adjusted today",
       icon: CalendarCheck,
       color: "emerald",
-      href: "/admin/reports",
+      href: "/admin/map?tab=pending",
       actionText: "View approved"
     },
     {
@@ -504,7 +504,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Link 
-              href="/admin/map"
+              href="/admin/map?tab=zones"
               className="p-4 border border-gray-100 hover:border-blue-100 hover:bg-blue-50/20 rounded-xl flex items-start gap-4 transition-all duration-200 group"
             >
               <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600">
@@ -521,7 +521,7 @@ export default function DashboardPage() {
             </Link>
 
             <Link 
-              href="/admin/reports"
+              href="/admin/map?tab=pending"
               className="p-4 border border-gray-100 hover:border-amber-100 hover:bg-amber-50/20 rounded-xl flex items-start gap-4 transition-all duration-200 group"
             >
               <div className="p-2.5 bg-amber-50 rounded-xl text-amber-600">

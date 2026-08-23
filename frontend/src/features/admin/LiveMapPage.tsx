@@ -8,6 +8,7 @@ import { apiClient } from "@/lib/apiClient";
 import { 
   getZones, deactivateZone, deactivateZonesBulk, AvoidanceZone,
   getPendingReports, approveReport, rejectReport, getNearbyZones,
+  createOfficialZone,
   FloodReport, NearbyZone
 } from "./adminApi";
 import { Button } from "@/shared/ui/Button";
@@ -27,10 +28,15 @@ import {
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { PendingReportsPanel } from "./components/PendingReportsPanel";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
+import { ReportDetailsModal } from "./components/ReportDetailsModal";
+import { CreateOfficialZonePanel } from "./components/CreateOfficialZonePanel";
+import { MapProvider } from "@/features/map/MapContext";
 import maplibregl from "maplibre-gl";
 
 class AnalyticsControl {
   private _map: maplibregl.Map | undefined;
+
+  
   private _container: HTMLDivElement | undefined;
   private _onClick: () => void;
   private _isActive: boolean;
@@ -131,6 +137,8 @@ export default function LiveMapPage() {
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
   const [selectedContributorId, setSelectedContributorId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
+  const [batchSelectedIds, setBatchSelectedIds] = useState<number[]>([]);
+  const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
 
   // Queries
@@ -433,6 +441,21 @@ export default function LiveMapPage() {
     },
   });
 
+  const createOfficialZoneMutation = useMutation({
+    mutationFn: createOfficialZone,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminActiveZones"] });
+      queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
+      refetchMap();
+    }
+  });
+
+  const handleAdminSubmitZone = async (formData: FormData) => {
+    // The panel gives us multipart form data (with media etc)
+    // We send this exact form data to the admin zones endpoint.
+    await createOfficialZoneMutation.mutateAsync(formData);
+  };
+
   const zones = listData?.zones || [];
   const total = listData?.total || 0;
   const totalPages = Math.ceil(total / LIMIT);
@@ -516,7 +539,10 @@ export default function LiveMapPage() {
             filteredPendingReports={filteredPendingReports}
             selectedReportId={selectedReportId}
             setSelectedReportId={setSelectedReportId}
+            onInfoClick={(r) => setInfoModalReport(r)}
             batchCandidates={batchCandidates}
+            batchSelectedIds={batchSelectedIds}
+            setBatchSelectedIds={setBatchSelectedIds}
             nearbyZones={nearbyZones}
             setTargetZoneId={setTargetZoneId}
             setMergeModalOpen={setMergeModalOpen}
@@ -683,6 +709,18 @@ export default function LiveMapPage() {
           </div>
         </div>
       </Modal>
+
+      {/* Admin Mode - Create Official Zone Panel overlay */}
+      {isLoaded && mapInstance && (
+        <MapProvider>
+          <CreateOfficialZonePanel 
+            isOpen={true} 
+            onClose={() => {}} 
+            isAdminMode={true}
+            onAdminSubmit={handleAdminSubmitZone}
+          />
+        </MapProvider>
+      )}
     </div>
   );
 }

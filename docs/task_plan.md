@@ -14,25 +14,29 @@
 > **Focus:** Separating user-submitted flood reports from official DRRMO map data to ensure data integrity and streamline moderation via the Spatial Operations page.
 
 #### Phase 1: Backend Data Integrity & API Layer
-- [ ] Modify `FloodAvoidanceZone` model (add `severity_override`, `depth_override`, `admin_notes`)
-- [ ] Create Pydantic schemas for Zone Overrides
-- [ ] Update `admin.py` endpoints (`approve_report`, `PUT /zones/{id}`, `POST /zones`)
-- [ ] Run Alembic migrations
+- [x] Modify `FloodAvoidanceZone` model (add `severity_override`, `depth_override`, `admin_notes`)
+- [x] Create Pydantic schemas for Zone Overrides
+- [x] Update `admin.py` endpoints (`approve_report`, `PUT /zones/{id}`, `POST /zones`)
+- [x] Run Alembic migrations
 
 #### Phase 2: Frontend Architecture Cleanup
-- [ ] Delete `frontend/src/app/admin/reports` completely
-- [ ] Remove Reports link from sidebar layout
-- [ ] Consolidate historical reports viewing into the Archive Center
+- [x] Delete `frontend/src/app/admin/reports` completely
+- [x] Remove Reports link from sidebar layout
+- [x] Consolidate historical reports viewing into the Archive Center
 
 #### Phase 3: Spatial Operations — Moderation Sidebar
-- [ ] Add explicit Checkboxes to `PendingReportsPanel.tsx` for batch merging
-- [ ] Implement strict Duplicate Hard Blocker (warning modal) for approvals
-- [ ] Add Troll Filtration (sort by Trust Score, filter by Severity) to sidebar
-- [ ] Port the `ReportDetailsModal` into the Map view to prevent redirects
+- [x] Add explicit Checkboxes to `PendingReportsPanel.tsx` for batch merging
+- [x] Implement strict Duplicate Hard Blocker (warning modal) for approvals
+- [x] Add Troll Filtration (sort by Trust Score, filter by Severity) to sidebar
+- [x] Port the `ReportDetailsModal` into the Map view to prevent redirects
 
 #### Phase 4: Spatial Operations — DRRMO Zone Overrides (Map)
-- [ ] Add "Edit Map Info" button to active zones in `ActiveZonesPanel.tsx`
-- [ ] Build "+ Create Official Zone" map interaction in `LiveMapPage.tsx`
+- [x] Add `createOfficialZone` to `adminApi.ts`
+- [x] Adapt `FloodReportPanel.tsx` with `isAdminMode` & `onAdminSubmit` props
+- [x] Integrate adapted `FloodReportPanel` into `LiveMapPage.tsx`
+- [x] Refine "Create Official Zone" map interaction in `LiveMapPage.tsx`
+- [ ] Fix "Create Official Zone" Panel logic (currently not fully functional/identical to public flow)
+- [ ] Polygon Map Picking (custom shapes) for Admin Official Zones
 - [ ] Wire up real-time SSE broadcasts for zone updates
 
 ## Future Roadmap (Phases)

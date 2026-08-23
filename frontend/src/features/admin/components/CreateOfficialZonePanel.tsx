@@ -216,7 +216,7 @@ function PointSelector({
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit }: FloodReportPanelProps) {
+export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit }: FloodReportPanelProps) {
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const { user, isAuthenticated } = useAuth();
 

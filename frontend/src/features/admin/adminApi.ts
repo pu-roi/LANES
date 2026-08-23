@@ -141,6 +141,10 @@ export async function getNearbyZones(reportId: number, maxDistanceMeters: number
   return apiClient.get<NearbyZone[]>(`/admin/zones/nearby?report_id=${reportId}&max_distance_meters=${maxDistanceMeters}`);
 }
 
+export async function createOfficialZone(payload: any): Promise<AvoidanceZone> {
+  return apiClient.post<AvoidanceZone>("/admin/zones", payload);
+}
+
 export async function getPendingReports(): Promise<FloodReport[]> {
   return apiClient.get<FloodReport[]>("/admin/reports/pending");
 }

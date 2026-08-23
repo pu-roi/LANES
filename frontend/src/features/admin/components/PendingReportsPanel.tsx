@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Loader2, CheckCircle, MapPin, AlertTriangle, Merge, X, Check, Info, ExternalLink } from "lucide-react";
 import { Button } from "@/shared/ui/Button";
+import { Select } from "@/shared/ui/Select";
 import type { FloodReport, NearbyZone } from "../adminApi";
 import { UseMutationResult } from "@tanstack/react-query";
 
@@ -11,7 +12,10 @@ interface PendingReportsPanelProps {
   filteredPendingReports: FloodReport[];
   selectedReportId: number | null;
   setSelectedReportId: (id: number | null) => void;
+  onInfoClick: (report: FloodReport) => void;
   batchCandidates: FloodReport[];
+  batchSelectedIds: number[];
+  setBatchSelectedIds: (ids: number[]) => void;
   nearbyZones: NearbyZone[] | undefined;
   setTargetZoneId: (id: number | null) => void;
   setMergeModalOpen: (open: boolean) => void;
@@ -25,7 +29,10 @@ export function PendingReportsPanel({
   filteredPendingReports,
   selectedReportId,
   setSelectedReportId,
+  onInfoClick,
   batchCandidates,
+  batchSelectedIds,
+  setBatchSelectedIds,
   nearbyZones,
   setTargetZoneId,
   setMergeModalOpen,
@@ -33,9 +40,21 @@ export function PendingReportsPanel({
   approveMutation,
 }: PendingReportsPanelProps) {
 
+  const [filterSeverity, setFilterSeverity] = React.useState<string>("all");
+  const [minTrustScore, setMinTrustScore] = React.useState<number>(0);
+
   // If there is a selected report, check if it has batch candidates (duplicates).
   // If it does, we MUST enforce merging before approving.
   const hasDuplicatesToMerge = selectedReportId !== null && batchCandidates.length > 0;
+
+  const toggleBatchSelection = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    if (batchSelectedIds.includes(id)) {
+      setBatchSelectedIds(batchSelectedIds.filter(i => i !== id));
+    } else {
+      setBatchSelectedIds([...batchSelectedIds, id]);
+    }
+  };
 
   if (pendingLoading) {
     return (
@@ -56,9 +75,47 @@ export function PendingReportsPanel({
     );
   }
 
+  // Apply Troll Filters
+  const displayedReports = filteredPendingReports.filter(r => {
+    if (filterSeverity !== "all" && r.severity?.toLowerCase() !== filterSeverity) return false;
+    // (In the future, r.user.trust_score should be passed. For now, assume a mock trust score or ignore)
+    return true; 
+  });
+
   return (
-    <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
-      {filteredPendingReports.map((report: FloodReport) => {
+    <div className="flex-1 overflow-hidden flex flex-col">
+      {/* Troll Filtration Controls */}
+      <div className="p-3 bg-white border-b border-gray-100 flex gap-2 shrink-0">
+        <div className="flex-1">
+          <Select 
+            value={filterSeverity} 
+            onChange={(e) => setFilterSeverity(e.target.value as string)}
+            options={[
+              { label: "All Severities", value: "all" },
+              { label: "Extreme", value: "extreme" },
+              { label: "High", value: "high" },
+              { label: "Medium", value: "medium" },
+              { label: "Low", value: "low" }
+            ]}
+          />
+        </div>
+        <div className="flex-1">
+          <Select 
+            value={minTrustScore} 
+            onChange={(e) => setMinTrustScore(Number(e.target.value))}
+            options={[
+              { label: "Any Trust Score", value: 0 },
+              { label: "Trusted (\u003E 50)", value: 50 },
+              { label: "Verified (\u003E 80)", value: 80 }
+            ]}
+          />
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
+        {displayedReports.length === 0 ? (
+          <div className="p-6 text-center text-gray-400 text-xs">No reports match the current filters.</div>
+        ) : displayedReports.map((report: FloodReport) => {
         const isSelected = selectedReportId === report.id;
         const hasNearby = isSelected && nearbyZones && nearbyZones.length > 0;
         
@@ -75,6 +132,17 @@ export function PendingReportsPanel({
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
+                {/* Batch Merge Checkbox */}
+                {(selectedReportId === null || report.id !== selectedReportId) && (
+                  <input 
+                    type="checkbox" 
+                    checked={batchSelectedIds.includes(report.id)}
+                    onChange={(e) => toggleBatchSelection(e as any, report.id)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  />
+                )}
+                
                 <span className="font-bold text-sm text-gray-900">Report #{report.id}</span>
                 <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wide border ${
                   report.severity?.toLowerCase() === "low"
@@ -97,15 +165,15 @@ export function PendingReportsPanel({
                 <span className="text-[11px] text-gray-400 font-medium">
                   {new Date(report.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </span>
-                <Link
-                  href={`/admin/reports?report_id=${report.id}`}
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onInfoClick(report); }}
                   className="flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 rounded-md transition-colors shadow-xs"
                   title="View full report moderation details"
                 >
                   <Info className="w-3 h-3" />
                   <span>Info</span>
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -215,6 +283,7 @@ export function PendingReportsPanel({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

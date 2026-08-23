@@ -104,6 +104,19 @@ class FloodAvoidanceZoneCreate(FloodAvoidanceZoneBase):
     geometry: PolygonGeometry
     curated_by_admin_id: Optional[int] = None
 
+class FloodAvoidanceZoneUpdate(BaseModel):
+    severity_override: Optional[ReportSeverity] = None
+    depth_override: Optional[str] = None
+    admin_notes: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class FloodAvoidanceZoneCreateOfficial(BaseModel):
+    geometry: PolygonGeometry
+    severity_override: ReportSeverity
+    depth_override: Optional[str] = None
+    admin_notes: Optional[str] = None
+    is_active: bool = True
+
 
 class ZoneContributorResponse(BaseModel):
     report_id: int
@@ -145,6 +158,9 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     id: int
     report_id: Optional[int] = None
     curated_by_admin_id: Optional[int] = None
+    severity_override: Optional[ReportSeverity] = None
+    depth_override: Optional[str] = None
+    admin_notes: Optional[str] = None
     geometry: PolygonGeometry
     severity: str
     depth: Optional[str] = None
@@ -221,6 +237,7 @@ class ApproveReportRequest(BaseModel):
     buffer_radius: Optional[float] = None
     severity: Optional[str] = None
     depth: Optional[str] = None
+    admin_notes: Optional[str] = None
 
 
 class NearbyZoneResponse(BaseModel):

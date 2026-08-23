@@ -190,6 +190,11 @@ class FloodAvoidanceZone(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
+    # Admin Overrides for Official DRRMO Zone Data
+    severity_override: Mapped[Optional[ReportSeverity]] = mapped_column(Enum(ReportSeverity, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]), nullable=True)
+    depth_override: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    admin_notes: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
+
     # Relationships
     reports: Mapped[List["FloodReport"]] = relationship("FloodReport", back_populates="avoidance_zone")
     curated_by_admin: Mapped[Optional["User"]] = relationship("User", foreign_keys=[curated_by_admin_id])
@@ -204,6 +209,8 @@ class FloodAvoidanceZone(Base):
 
     @property
     def severity(self) -> str:
+        if self.severity_override:
+            return self.severity_override.value if hasattr(self.severity_override, "value") else str(self.severity_override)
         if self.reports:
             # Highest severity takes precedence if multiple reports are merged
             severities = [r.severity for r in self.reports]
@@ -219,6 +226,8 @@ class FloodAvoidanceZone(Base):
 
     @property
     def depth(self) -> Optional[str]:
+        if self.depth_override:
+            return self.depth_override
         return self.primary_report.depth if self.primary_report else None
 
     @property
@@ -227,6 +236,8 @@ class FloodAvoidanceZone(Base):
 
     @property
     def report_text(self) -> Optional[str]:
+        if self.admin_notes:
+            return self.admin_notes
         return self.primary_report.raw_text if self.primary_report else None
 
     @property

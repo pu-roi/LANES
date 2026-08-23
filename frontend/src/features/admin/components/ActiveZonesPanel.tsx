@@ -22,6 +22,7 @@ interface ActiveZonesPanelProps {
   totalPages: number;
   flyToZone: (zone: AvoidanceZone) => void;
   setConfirmId: (id: number | null) => void;
+  onCreateOfficialZone?: () => void;
 }
 
 export function ActiveZonesPanel({
@@ -41,6 +42,7 @@ export function ActiveZonesPanel({
   totalPages,
   flyToZone,
   setConfirmId,
+  onCreateOfficialZone,
 }: ActiveZonesPanelProps) {
   const [expandedZoneIds, setExpandedZoneIds] = useState<number[]>([]);
 
@@ -99,7 +101,7 @@ export function ActiveZonesPanel({
           </label>
         </div>
 
-        <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-xs">
+        <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-xs ml-auto">
           <button
             onClick={() => { setActiveOnly(true); setPage(1); }}
             className={`px-3 py-1 rounded-md font-medium transition-all ${activeOnly ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}

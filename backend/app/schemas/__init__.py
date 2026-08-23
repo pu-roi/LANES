@@ -3,6 +3,7 @@ from app.schemas.user import UserBase, UserCreate, UserResponse, UsersPaginatedR
 from app.schemas.report import (
     FloodReportBase, FloodReportCreate, FloodReportResponse,
     FloodAvoidanceZoneBase, FloodAvoidanceZoneCreate, FloodAvoidanceZoneResponse,
+    FloodAvoidanceZoneCreateOfficial, FloodAvoidanceZoneUpdate,
     FloodReportsPaginatedResponse, AdminDashboardStats,
     FloodAvoidanceZonesPaginatedResponse, AvoidanceZoneDeactivateBulkRequest,
     AvoidanceZoneUpdateRequest, ApproveReportRequest, NearbyZoneResponse,
