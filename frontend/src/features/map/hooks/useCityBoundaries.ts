@@ -80,12 +80,14 @@ export function useCityBoundaries(map: Map | null, isLoaded: boolean) {
       initBoundaries();
     };
     map.on("style.load", handleStyleLoad);
+    map.on("styledata", handleStyleLoad);
 
     // ── Initial application ───────────────────────────────────────────────────
     initBoundaries();
 
     return () => {
       map.off("style.load", handleStyleLoad);
+      map.off("styledata", handleStyleLoad);
     };
   }, [map, isLoaded]);
 }
