@@ -9,6 +9,7 @@ import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/Card";
 import { Button } from "@/shared/ui/Button";
 import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
+import { Footer } from "@/shared/ui/Footer";
 
 import type { LocationSuggestion } from "@/features/geocoding/types";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
@@ -304,7 +305,7 @@ export default function LandingView() {
       </section>
 
       {/* ── SECTION 4: Flood Severity Legend ───────────────────────── */}
-      <section className="relative w-full overflow-hidden bg-transparent pt-24 pb-12 flex-grow" id="flood-legend-section">
+      <section className="relative w-full overflow-hidden bg-transparent pt-24 pb-24 flex-grow" id="flood-legend-section">
         {/* Static Wave Divider */}
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none text-white z-20">
           <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="relative block w-full h-[100px] fill-current">
@@ -312,7 +313,6 @@ export default function LandingView() {
           </svg>
         </div>
         
-
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Vehicle Clearance Rules</h2>
@@ -324,10 +324,17 @@ export default function LandingView() {
             <FloodLegend />
           </div>
         </div>
+
+        {/* Static Wave Divider for Section 5 */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none text-white z-20 translate-y-[1px]">
+          <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="relative block w-full h-[100px] fill-current">
+            <path d="M0,30 C150,60 450,0 600,30 C750,60 1050,0 1200,30 C1350,60 1650,0 1800,30 C1950,60 2250,0 2400,30 V60 H0 Z"></path>
+          </svg>
+        </div>
       </section>
 
       {/* ── SECTION 5: Offline Mode Requirements ───────────────────────── */}
-      <section className="w-full bg-slate-50 py-12 border-t border-slate-200" id="offline-requirements-section">
+      <section className="relative w-full bg-white pb-12 pt-4" id="offline-requirements-section">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Offline Mode Requirements</h2>
@@ -371,15 +378,7 @@ export default function LandingView() {
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────── */}
-      <footer className="bg-white border-t border-gray-100 py-10 mt-auto">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
-          <p className="font-medium">&copy; {new Date().getFullYear()} LANES Project. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-blue-600 transition-colors font-medium">Privacy Policy</a>
-            <a href="#" className="hover:text-blue-600 transition-colors font-medium">Terms of Service</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
