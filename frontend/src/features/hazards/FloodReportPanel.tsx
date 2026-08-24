@@ -456,7 +456,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       <p className="text-sm text-gray-500">
         You need to be logged in to report a flood and help the community.
       </p>
-      <Link href="/profile" className="w-full mt-4">
+      <Link href="/login?redirect=%2Fmap%3Faction%3Dreport" className="w-full mt-4">
         <Button className="w-full">Go to Login</Button>
       </Link>
     </div>

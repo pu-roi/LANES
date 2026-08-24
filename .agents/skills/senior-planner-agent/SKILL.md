@@ -29,20 +29,29 @@ Whenever features are implemented, modified, or refactored, you are responsible 
 
 Whenever reviewing code changes, finishing a task, or requested to update documents, follow these principles:
 
-1. **Dual-File Sprint Tracking**:
-   - When a task or milestone is completed, check it off in [`docs/task_plan.md`](file:///d:/Documents/Github/LANES/docs/task_plan.md) and record the delivered work in [`docs/progress.md`](file:///d:/Documents/Github/LANES/docs/progress.md).
-   - Move backlog items into active sprint sections when work commences.
+1. **Mandatory File Timestamping**:
+   - Every time you modify one of the 7 core documents, update the single global timestamp block located directly beneath the main `# Title` of that file to reflect the latest overall modification. Use the format: `> **Last Updated:** [Month DD, YYYY, H:MM AM/PM]`. 
 
-2. **System & Feature Synchronization**:
+2. **Task-Level Author Attribution (Historical Record)**:
+   - To maintain a clear record of who built what, **you must append the author's username to any new tasks, milestones, or architecture decisions they add.**
+   - Example: `- [x] Implemented multi-engine routing (@chris)`
+   - *Note:* Do not retroactively add authors to old tasks if they were all done by the original author (Roi Cambe). Only tag new additions to preserve the historical audit trail.
+
+3. **Dual-File Sprint Tracking & Top-Down Progress**:
+   - When a task or milestone is completed, check it off in [`docs/task_plan.md`](file:///d:/Documents/Github/LANES/docs/task_plan.md).
+   - Record the delivered work in [`docs/progress.md`](file:///d:/Documents/Github/LANES/docs/progress.md).
+   - **CRITICAL ORDERING RULE**: `docs/progress.md` is strictly maintained in **reverse chronological order (newest to oldest)**. When you add a new milestone to the table, insert it at the top. When you add a new Capstone Phase, insert it above all older phases. 
+
+3. **System & Feature Synchronization**:
    - If UI components, pages, or routes are modified or created, update [`docs/others/system-documentation.md`](file:///d:/Documents/Github/LANES/docs/others/system-documentation.md) and [`docs/feature-reference.md`](file:///d:/Documents/Github/LANES/docs/feature-reference.md).
    - If backend endpoints, services, or APIs change, update the corresponding sections in [`docs/others/system-documentation.md`](file:///d:/Documents/Github/LANES/docs/others/system-documentation.md) and [`docs/feature-reference.md`](file:///d:/Documents/Github/LANES/docs/feature-reference.md).
 
-3. **Tech Stack & Architectural Shift Auditing**:
-   - If new libraries or tools are introduced (e.g., packages in `package.json` or `pyproject.toml`/`requirements.txt`), document them in [`docs/tech-stack.md`](file:///d:/Documents/Github/LANES/docs/tech-stack.md).
-   - **Architectural Decision Filter (Strict)**: Update [`docs/decisions.md`](file:///d:/Documents/Github/LANES/docs/decisions.md) **ONLY for major architectural pivots, high-level paradigm shifts, or fundamental technical decisions** (e.g., swapping routing engines, changing real-time protocol from WebSockets to SSE, auth security redesigns). **NEVER** add routine sprint progress, bug fixes, or minor code refactors here.
+4. **Tech Stack & Architectural Shift Auditing**:
+   - If new libraries or tools are introduced, document them in [`docs/tech-stack.md`](file:///d:/Documents/Github/LANES/docs/tech-stack.md).
+   - **Architectural Decision Filter (Strict)**: Update [`docs/decisions.md`](file:///d:/Documents/Github/LANES/docs/decisions.md) **ONLY for major architectural pivots, high-level paradigm shifts, or fundamental technical decisions**. **NEVER** add routine sprint progress, bug fixes, or minor code refactors here.
 
-4. **Schema & Spatial Auditing**:
-   - If SQLAlchemy models or Alembic migrations are introduced or altered, audit [`docs/others/database-design-plan.md`](file:///d:/Documents/Github/LANES/docs/others/database-design-plan.md) to reflect updated table columns, indexes, foreign keys, or 3NF structures.
+5. **Schema & Spatial Auditing**:
+   - If SQLAlchemy models or migrations are introduced or altered, audit [`docs/others/database-design-plan.md`](file:///d:/Documents/Github/LANES/docs/others/database-design-plan.md) to reflect updated table columns, indexes, foreign keys, or 3NF structures.
 
 ---
 

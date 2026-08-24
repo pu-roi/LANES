@@ -1,5 +1,7 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
+> **Last Updated:** August 24, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
 
 ### **Focus: Web Application (Responsive Desktop & Mobile Browser Layouts)**

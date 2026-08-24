@@ -101,7 +101,7 @@ function RegisterPageContent() {
             <div className="text-center pt-6 sm:pt-8 pb-4">
               <p className="text-sm text-blue-100 lg:text-slate-600">
                 Already have an account?{" "}
-                <Link href="/profile" className="text-white lg:text-blue-600 font-bold lg:font-medium hover:text-blue-200 lg:hover:text-blue-700 hover:underline transition-colors">
+                <Link href={redirectTo ? `/login?redirect=${encodeURIComponent(redirectTo)}` : "/login"} className="text-white lg:text-blue-600 font-bold lg:font-medium hover:text-blue-200 lg:hover:text-blue-700 hover:underline transition-colors">
                   Log in
                 </Link>
               </p>

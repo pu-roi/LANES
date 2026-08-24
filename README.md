@@ -73,16 +73,16 @@ docker-compose up -d
    ```bash
    pip install -r requirements.txt
    ```
-4. Copy the environment variables:
-   * Copy `.env.example` and rename it to `.env`.
-   * Update values if necessary (e.g., `ORS_API_KEY`, `OPENWEATHERMAP_API_KEY`).
+4. Set up Environment Variables:
+   * We use **dotenvx** for encrypted secrets.
+   * Please follow the [Environment Setup Guide](file:///d:/Documents/Github/LANES/docs/ENV_SETUP_GUIDE.md) to get the decryption keys.
 5. Run the database migrations to build the tables:
    ```bash
    alembic upgrade head
    ```
-6. Start the development server:
+6. Start the development server (with dotenvx injection):
    ```bash
-   uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+   npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\uvicorn.exe app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
    *The backend server runs at `http://localhost:8000` (and is accessible via your network IP).*
 
@@ -94,10 +94,7 @@ docker-compose up -d
    cd frontend
    ```
 2. Set up the frontend environment variables:
-   * Create `.env.local` inside `frontend/` with:
-     ```env
-     NEXT_PUBLIC_API_URL=/api/v1
-     ```
+   * Follow the [Environment Setup Guide](file:///d:/Documents/Github/LANES/docs/ENV_SETUP_GUIDE.md) to add your `.env.keys` file. You do NOT need to manually create `.env.local` anymore.
 3. Install dependencies and start the dev server:
    ```bash
    npm install
