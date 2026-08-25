@@ -637,6 +637,19 @@ export default function LiveMapPage() {
             </div>
           )}
         </BaseMap>
+
+        {/* Admin Mode - Create Official Zone Panel overlay */}
+        {isLoaded && mapInstance && (
+          <MapProvider>
+            <CreateOfficialZonePanel 
+              isOpen={true} 
+              onClose={() => {}} 
+              isAdminMode={true}
+              onAdminSubmit={handleAdminSubmitZone}
+              mapInstance={mapInstance}
+            />
+          </MapProvider>
+        )}
       </div>
 
       {/* Confirmation Modal for Single Deactivation */}
@@ -709,18 +722,6 @@ export default function LiveMapPage() {
           </div>
         </div>
       </Modal>
-
-      {/* Admin Mode - Create Official Zone Panel overlay */}
-      {isLoaded && mapInstance && (
-        <MapProvider>
-          <CreateOfficialZonePanel 
-            isOpen={true} 
-            onClose={() => {}} 
-            isAdminMode={true}
-            onAdminSubmit={handleAdminSubmitZone}
-          />
-        </MapProvider>
-      )}
     </div>
   );
 }

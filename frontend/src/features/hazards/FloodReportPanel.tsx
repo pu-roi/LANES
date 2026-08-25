@@ -89,130 +89,6 @@ const VISUAL_OPTIONS: {
 ];
 
 
-// ── Point selector sub-component ─────────────────────────────────────────────
-
-const POINT_COLORS = {
-  start: {
-    accent: "border-orange-200",
-    stripe: "from-orange-500 to-amber-400",
-    bg: "bg-orange-50",
-    text: "text-orange-700",
-    icon: "text-orange-500",
-    label: "Flood Start",
-  },
-  end: {
-    accent: "border-red-200",
-    stripe: "from-red-500 to-rose-400",
-    bg: "bg-red-50",
-    text: "text-red-700",
-    icon: "text-red-600",
-    label: "Flood End",
-  },
-} as const;
-
-function PointSelector({
-  point,
-  label,
-  isActive,
-  isSet,
-  onActivate,
-  onLabelChange,
-  onSelect,
-  onUseCurrent,
-  onClear,
-}: {
-  point: "start" | "end";
-  label: string;
-  isActive: boolean;
-  isSet: boolean;
-  onActivate: () => void;
-  onLabelChange: (value: string) => void;
-  onSelect: (suggestion: LocationSuggestion) => void;
-  onUseCurrent: () => void;
-  onClear: () => void;
-}) {
-  const colors = POINT_COLORS[point];
-  const Icon = point === "start" ? CircleDot : Flag;
-
-  const renderTopOptions = () => (
-    <>
-      <li>
-        <button
-          type="button"
-          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={onActivate}
-        >
-          <div className="bg-orange-100 p-1.5 rounded-full shrink-0">
-            <Crosshair className="h-4 w-4 text-orange-700" />
-          </div>
-          <span className="flex flex-col justify-center h-7 font-semibold text-orange-700">Choose on Map</span>
-        </button>
-      </li>
-      <li>
-        <button
-          type="button"
-          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100 mb-1"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={onUseCurrent}
-        >
-          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
-            <MapPin className="h-4 w-4 text-gray-700" />
-          </div>
-          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
-        </button>
-      </li>
-    </>
-  );
-
-  return (
-    <div
-      className={cn(
-        "rounded-xl border bg-white transition-all",
-        isActive
-          ? "shadow-md border-orange-200 ring-1 ring-orange-100"
-          : colors.accent
-      )}
-    >
-      {/* Top accent stripe */}
-      <div
-        className={cn(
-          "h-[3px] w-full bg-gradient-to-r rounded-t-xl",
-          isActive ? "from-orange-500 to-amber-400" : colors.stripe
-        )}
-      />
-
-      {/* Row label */}
-      <div className="flex items-center justify-between px-3 pt-2 pb-1">
-        <div className="flex items-center gap-1.5">
-          <Icon className={cn("h-4 w-4", colors.icon)} />
-          <span className={cn("text-xs font-semibold uppercase tracking-wide", colors.text)}>
-            {colors.label}
-          </span>
-          {isSet && (
-            <span className="flex items-center gap-0.5 text-[10px] font-medium text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full">
-              <Check className="h-3 w-3" />
-              Set
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Autocomplete search */}
-      <div className="px-3 pb-2.5 mt-1">
-        <LocationAutocomplete
-          value={label}
-          onChange={onLabelChange}
-          onSelect={onSelect}
-          onClear={onClear}
-          placeholder={point === "start" ? "e.g. Ortigas Ave, Pasig" : "e.g. C. Raymundo Ave"}
-          className="[&_input]:h-9"
-          renderTopOptions={renderTopOptions()}
-        />
-      </div>
-    </div>
-  );
-}
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
@@ -273,13 +149,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   }, [floodEnd?.label]);
 
   const handlePickOnMap = (target: "flood_start" | "flood_end") => {
-    if (activePoint === target) {
-      setActivePoint(null);
-      setIsPickingOnMap(false);
-    } else {
-      setActivePoint(target);
-      setIsPickingOnMap(true);
-    }
+    setActivePoint(target);
+    setIsPickingOnMap(true);
   };
 
   const confirmMapLocation = useCallback(() => {
@@ -482,37 +353,112 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       )}
       {step === 1 && (
         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-          {/* Point selectors */}
-          <PointSelector
-            point="start"
-            label={startInput}
-            isActive={activePoint === "flood_start"}
-            isSet={!!floodStart}
-            onActivate={() => handlePickOnMap("flood_start")}
-            onLabelChange={(val) => { setStartInput(val); setFloodStartLabel(val); }}
-            onSelect={(s) => {
-              setFloodStart([s.lng, s.lat], s.label);
-              setStartInput(s.label);
-              setActivePoint("flood_end");
-            }}
-            onUseCurrent={() => handleUseCurrent("start")}
-            onClear={() => { setFloodStart(null); setStartInput(""); setFloodStartLabel(""); }}
-          />
+          {/* Location Inputs (Timeline Style) */}
+          <div className="flex items-center mb-2">
+            {/* Left Icons */}
+            <div className="flex flex-col items-center justify-center gap-1 w-5 mr-2 relative z-10 shrink-0">
+              <CircleDot className="w-3.5 h-3.5 text-green-600 shrink-0 bg-white" />
+              <div className="w-[2px] h-5 bg-gray-200 border-l border-dashed border-gray-300" />
+              <MapPin className="w-4 h-4 text-red-500 shrink-0 bg-white" />
+            </div>
 
-          <PointSelector
-            point="end"
-            label={endInput}
-            isActive={activePoint === "flood_end"}
-            isSet={!!floodEnd}
-            onActivate={() => handlePickOnMap("flood_end")}
-            onLabelChange={(val) => { setEndInput(val); setFloodEndLabel(val); }}
-            onSelect={(s) => {
-              setFloodEnd([s.lng, s.lat], s.label);
-              setEndInput(s.label);
-            }}
-            onUseCurrent={() => handleUseCurrent("end")}
-            onClear={() => { setFloodEnd(null); setEndInput(""); setFloodEndLabel(""); }}
-          />
+            {/* Inputs */}
+            <div className="flex-1 flex flex-col gap-1.5 relative z-20 min-w-0">
+              <div
+                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "flood_start" ? "border-orange-400 ring-2 ring-orange-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
+                onClick={() => setActivePoint("flood_start")}
+              >
+                <LocationAutocomplete
+                  value={startInput}
+                  onChange={(val) => { setStartInput(val); setFloodStartLabel(val); }}
+                  onSelect={(s) => {
+                    setFloodStart([s.lng, s.lat], s.label);
+                    setStartInput(s.label);
+                    setActivePoint("flood_end");
+                  }}
+                  onClear={() => { setFloodStart(null); setStartInput(""); setFloodStartLabel(""); }}
+                  placeholder="e.g. Ortigas Ave, Pasig (Start)"
+                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
+                  renderTopOptions={
+                    <>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handlePickOnMap("flood_start")}
+                        >
+                          <div className="bg-orange-100 p-1.5 rounded-full shrink-0">
+                            <Crosshair className="h-4 w-4 text-orange-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-orange-700">Choose on Map</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100 mb-1"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleUseCurrent("start")}
+                        >
+                          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
+                            <MapPin className="h-4 w-4 text-gray-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
+                        </button>
+                      </li>
+                    </>
+                  }
+                />
+              </div>
+              <div
+                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "flood_end" ? "border-red-400 ring-2 ring-red-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
+                onClick={() => setActivePoint("flood_end")}
+              >
+                <LocationAutocomplete
+                  value={endInput}
+                  onChange={(val) => { setEndInput(val); setFloodEndLabel(val); }}
+                  onSelect={(s) => {
+                    setFloodEnd([s.lng, s.lat], s.label);
+                    setEndInput(s.label);
+                  }}
+                  onClear={() => { setFloodEnd(null); setEndInput(""); setFloodEndLabel(""); }}
+                  placeholder="e.g. C. Raymundo Ave (End)"
+                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
+                  renderTopOptions={
+                    <>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-red-50 transition-colors border-b border-gray-100"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handlePickOnMap("flood_end")}
+                        >
+                          <div className="bg-red-100 p-1.5 rounded-full shrink-0">
+                            <Crosshair className="h-4 w-4 text-red-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-red-700">Choose on Map</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-red-50 transition-colors border-b border-gray-100 mb-1"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleUseCurrent("end")}
+                        >
+                          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
+                            <MapPin className="h-4 w-4 text-gray-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
+                        </button>
+                      </li>
+                    </>
+                  }
+                />
+              </div>
+            </div>
+          </div>
 
           {/* Severity selector */}
           <div className="space-y-1">

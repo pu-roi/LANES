@@ -1006,6 +1006,7 @@ export default function MapCanvas() {
           align-items: center !important;
           justify-content: center !important;
           margin: 0 !important;
+          cursor: pointer !important;
         }
         .maplibregl-ctrl-group > button + button {
           border-top: 1px solid #e5e7eb !important;

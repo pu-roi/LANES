@@ -34,7 +34,7 @@ graph LR
 
 ### Constraints:
 - **Frontend (`/frontend`)**: Next.js + MapLibre + Tailwind. Purely a stateless presentation shell. **No business logic or direct DB access allowed.**
-- **Backend (`/backend`)**: Python + FastAPI + PostGIS. Handles all tokenization, geocoding, and route calculation.
+- **Backend (`/backend`)**: Python + FastAPI + PostGIS. Handles all tokenization, geocoding, and route calculation. **MUST follow a strict Service-Based (Layered/N-Tier) architecture** separating `api/`, `services/`, and `crud/` layers to allow shared spatial utilities across endpoints.
 
 ---
 
@@ -120,7 +120,7 @@ flowchart TD
 ### UI Constraints (Frontend):
 - **Tailwind Only**: Use Tailwind utility classes for all styling. Avoid inline styles.
 - **Illustrated Minimalism**: The map is the primary UI. Avoid heavy animations or visual noise that blocks spatial data.
-- **Component Separation**: Follow standard React feature-domain structure.
+- **Component Separation (Feature-Based Architecture)**: The frontend MUST follow a strict Feature-Based Architecture (Domain-driven structure). Group all domain-specific logic, components, state, and API hooks inside `src/features/` (e.g., `src/features/map`, `src/features/auth`) rather than purely by technical file type. Global shared resources remain in top-level `components/` or `hooks/`.
 
 ### Security Constraints (Backend):
 - **JWT Auth Flow**: All protected resources must enforce `Depends(get_current_user)` checks in FastAPI.

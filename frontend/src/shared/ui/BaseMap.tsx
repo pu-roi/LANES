@@ -531,14 +531,24 @@ export default function BaseMap({
 
     mapInstance.addControl(new TopViewControlV3(), "bottom-right");
     mapInstance.addControl(new ZoomLevelControl(), "bottom-right");
-    mapInstance.addControl(
-      new maplibregl.NavigationControl({
-        showCompass: true,
-        showZoom: true,
-        visualizePitch: true, // Show pitch arc on the compass when map is tilted
-      }),
-      "bottom-right"
-    );
+    const navControl = new maplibregl.NavigationControl({
+      showCompass: true,
+      showZoom: true,
+      visualizePitch: true, // Show pitch arc on the compass when map is tilted
+    });
+    mapInstance.addControl(navControl, "bottom-right");
+
+    // Hijack compass click to ONLY reset bearing, not pitch (we have TopViewControlV3 for pitch)
+    setTimeout(() => {
+      const compassBtn = mapInstance.getContainer().querySelector('.maplibregl-ctrl-compass');
+      if (compassBtn) {
+        compassBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          mapInstance.easeTo({ bearing: 0, pitch: mapInstance.getPitch(), duration: 800 });
+        }, true);
+      }
+    }, 100);
 
     // Add the 3D / 2D terrain toggle button (only when online; offline has no elevation data)
     if (!isOffline) {
@@ -753,6 +763,7 @@ export default function BaseMap({
           border: none !important;
           border-radius: 0 !important;
           box-shadow: none !important;
+          cursor: pointer !important;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
           display: flex !important;
           align-items: center !important;

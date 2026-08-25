@@ -113,8 +113,8 @@ export default function RoutePanel() {
         setEnd(mapCenter, label);
         setEndInput(label);
         setActivePoint(null);
+        setIsPickingOnMap(false);
       }
-      setIsPickingOnMap(false);
     }
   };
 

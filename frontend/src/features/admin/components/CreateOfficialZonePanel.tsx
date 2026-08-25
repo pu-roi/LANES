@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import {
   CircleDot,
   Flag,
@@ -16,6 +18,10 @@ import {
   ArrowLeft,
   User,
   ShieldCheck,
+  Route,
+  Hexagon,
+  Square,
+  Circle
 } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/shared/ui/Input";
@@ -41,6 +47,7 @@ interface FloodReportPanelProps {
   onClose: () => void;
   isAdminMode?: boolean;
   onAdminSubmit?: (formData: FormData) => Promise<void>;
+  mapInstance?: any; // any to avoid maplibre-gl typing errors if not imported yet
 }
 
 type Severity = "low" | "medium" | "high" | "extreme";
@@ -89,134 +96,10 @@ const VISUAL_OPTIONS: {
 ];
 
 
-// ── Point selector sub-component ─────────────────────────────────────────────
-
-const POINT_COLORS = {
-  start: {
-    accent: "border-orange-200",
-    stripe: "from-orange-500 to-amber-400",
-    bg: "bg-orange-50",
-    text: "text-orange-700",
-    icon: "text-orange-500",
-    label: "Flood Start",
-  },
-  end: {
-    accent: "border-red-200",
-    stripe: "from-red-500 to-rose-400",
-    bg: "bg-red-50",
-    text: "text-red-700",
-    icon: "text-red-600",
-    label: "Flood End",
-  },
-} as const;
-
-function PointSelector({
-  point,
-  label,
-  isActive,
-  isSet,
-  onActivate,
-  onLabelChange,
-  onSelect,
-  onUseCurrent,
-  onClear,
-}: {
-  point: "start" | "end";
-  label: string;
-  isActive: boolean;
-  isSet: boolean;
-  onActivate: () => void;
-  onLabelChange: (value: string) => void;
-  onSelect: (suggestion: LocationSuggestion) => void;
-  onUseCurrent: () => void;
-  onClear: () => void;
-}) {
-  const colors = POINT_COLORS[point];
-  const Icon = point === "start" ? CircleDot : Flag;
-
-  const renderTopOptions = () => (
-    <>
-      <li>
-        <button
-          type="button"
-          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={onActivate}
-        >
-          <div className="bg-orange-100 p-1.5 rounded-full shrink-0">
-            <Crosshair className="h-4 w-4 text-orange-700" />
-          </div>
-          <span className="flex flex-col justify-center h-7 font-semibold text-orange-700">Choose on Map</span>
-        </button>
-      </li>
-      <li>
-        <button
-          type="button"
-          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100 mb-1"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={onUseCurrent}
-        >
-          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
-            <MapPin className="h-4 w-4 text-gray-700" />
-          </div>
-          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
-        </button>
-      </li>
-    </>
-  );
-
-  return (
-    <div
-      className={cn(
-        "rounded-xl border bg-white transition-all",
-        isActive
-          ? "shadow-md border-orange-200 ring-1 ring-orange-100"
-          : colors.accent
-      )}
-    >
-      {/* Top accent stripe */}
-      <div
-        className={cn(
-          "h-[3px] w-full bg-gradient-to-r rounded-t-xl",
-          isActive ? "from-orange-500 to-amber-400" : colors.stripe
-        )}
-      />
-
-      {/* Row label */}
-      <div className="flex items-center justify-between px-3 pt-2 pb-1">
-        <div className="flex items-center gap-1.5">
-          <Icon className={cn("h-4 w-4", colors.icon)} />
-          <span className={cn("text-xs font-semibold uppercase tracking-wide", colors.text)}>
-            {colors.label}
-          </span>
-          {isSet && (
-            <span className="flex items-center gap-0.5 text-[10px] font-medium text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full">
-              <Check className="h-3 w-3" />
-              Set
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Autocomplete search */}
-      <div className="px-3 pb-2.5 mt-1">
-        <LocationAutocomplete
-          value={label}
-          onChange={onLabelChange}
-          onSelect={onSelect}
-          onClear={onClear}
-          placeholder={point === "start" ? "e.g. Ortigas Ave, Pasig" : "e.g. C. Raymundo Ave"}
-          className="[&_input]:h-9"
-          renderTopOptions={renderTopOptions()}
-        />
-      </div>
-    </div>
-  );
-}
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit }: FloodReportPanelProps) {
+export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit, mapInstance }: FloodReportPanelProps) {
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const { user, isAuthenticated } = useAuth();
 
@@ -253,6 +136,66 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { success, error } = useToast();
 
+  // Drawing state
+  type GeometryMode = "line" | "polygon" | "rectangle" | "circle";
+  const [geometryMode, setGeometryMode] = useState<GeometryMode>("polygon");
+  const [drawInstance, setDrawInstance] = useState<any>(null);
+  const [drawnGeometry, setDrawnGeometry] = useState<any>(null);
+  const [isDrawingMode, setIsDrawingMode] = useState(false);
+
+  // Initialize MapboxDraw
+  useEffect(() => {
+    if (!mapInstance) return;
+
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true
+      },
+      // defaultMode: 'draw_polygon'
+    });
+    
+    mapInstance.addControl(draw);
+    setDrawInstance(draw);
+
+    return () => {
+      if (mapInstance.hasControl(draw)) {
+        mapInstance.removeControl(draw);
+      }
+    };
+  }, [mapInstance]);
+
+  // Hook up MapboxDraw events
+  useEffect(() => {
+    if (!mapInstance || !drawInstance) return;
+
+    const updateGeometry = (e: any) => {
+      const data = drawInstance.getAll();
+      if (data.features.length > 0) {
+        setDrawnGeometry(data.features.geometry ? data.features.geometry : data.features[0].geometry);
+      } else {
+        setDrawnGeometry(null);
+      }
+    };
+
+    const handleModeChange = (e: any) => {
+      setIsDrawingMode(e.mode === 'draw_polygon' || e.mode === 'draw_line_string');
+    };
+
+    mapInstance.on('draw.create', updateGeometry);
+    mapInstance.on('draw.update', updateGeometry);
+    mapInstance.on('draw.delete', updateGeometry);
+    mapInstance.on('draw.modechange', handleModeChange);
+
+    return () => {
+      mapInstance.off('draw.create', updateGeometry);
+      mapInstance.off('draw.update', updateGeometry);
+      mapInstance.off('draw.delete', updateGeometry);
+      mapInstance.off('draw.modechange', handleModeChange);
+    };
+  }, [mapInstance, drawInstance]);
+
   // ── Map-pick: listen to the shared map-center-changed event ────────────────
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
 
@@ -273,13 +216,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   }, [floodEnd?.label]);
 
   const handlePickOnMap = (target: "flood_start" | "flood_end") => {
-    if (activePoint === target) {
-      setActivePoint(null);
-      setIsPickingOnMap(false);
-    } else {
-      setActivePoint(target);
-      setIsPickingOnMap(true);
-    }
+    setActivePoint(target);
+    setIsPickingOnMap(true);
   };
 
   const confirmMapLocation = useCallback(() => {
@@ -320,10 +258,16 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!floodStart || !floodEnd) {
+    if (geometryMode === "line" && (!floodStart || !floodEnd)) {
       error("Missing Information", "Please set both the Flood Start and Flood End locations.");
       return;
     }
+    
+    if (geometryMode !== "line" && !drawnGeometry) {
+      error("Missing Information", `Please draw the ${geometryMode} on the map.`);
+      return;
+    }
+
     if (!passableVehicles.length || !hiddenHazards) {
       error("Missing Information", "Please complete the Community Survey before submitting.");
       return;
@@ -331,44 +275,61 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
 
     setIsSubmitting(true);
     try {
-      // 1. Get the actual road geometry between the two points, ignoring any existing active floods
-      const routeResult = await getRoute(floodStart.coords, floodEnd.coords, true);
-      const roadGeometry = routeResult.routes[0]?.geometry;
+      let finalGeometry = null;
+
+      if (geometryMode === "line" && floodStart && floodEnd) {
+        // 1. Get the actual road geometry between the two points, ignoring any existing active floods
+        const routeResult = await getRoute(floodStart.coords, floodEnd.coords, true);
+        finalGeometry = routeResult.routes[0]?.geometry;
+      } else {
+        // For polygon/rectangle/circle, we already have the geometry from Mapbox GL Draw
+        finalGeometry = drawnGeometry;
+      }
 
       // 2. Map visual option to backend severity
       const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
       const severity = selectedOption ? selectedOption.severity : "low";
       const depth = selectedOption ? selectedOption.label : null;
 
-      // 3. Submit as multipart/form-data
-      const formData = new FormData();
-      formData.append("raw_text", description.trim());
-      formData.append("source", "direct_user");
-      formData.append("severity", severity);
-      if (depth) {
-        formData.append("depth", depth);
-      }
-      formData.append("is_public", isPublic.toString());
-      formData.append("geometry", JSON.stringify(roadGeometry));
-      formData.append(
-        "survey_data",
-        JSON.stringify({
-          passable_vehicles: passableVehicles.length > 0 ? passableVehicles.join(", ") : null,
-          hidden_hazards: hiddenHazards,
-        })
-      );
-      if (mediaFiles.length > 0) {
-        mediaFiles.forEach((file) => {
-          formData.append("media", file);
-        });
-      }
-
       if (isAdminMode && onAdminSubmit) {
-        await onAdminSubmit(formData);
+        // 3a. Submit Admin Payload (JSON)
+        const payload = {
+          geometry: finalGeometry,
+          severity_override: severity,
+          depth_override: depth,
+          admin_notes: description.trim() || undefined,
+          is_active: isPublic
+        };
+        await onAdminSubmit(payload as any);
       } else {
-        await apiClient.post<{ id: number }>("/reports", formData);
+        // 3b. Submit Normal Report (FormData)
+        const formData = new FormData();
+        formData.append("raw_text", description.trim());
+        formData.append("source", "direct_user");
+        formData.append("severity", severity);
+        if (depth) {
+          formData.append("depth", depth);
+        }
+        formData.append("is_public", isPublic.toString());
+        formData.append("geometry", JSON.stringify(finalGeometry));
+        formData.append(
+          "survey_data",
+          JSON.stringify({
+            passable_vehicles: passableVehicles.length > 0 ? passableVehicles.join(", ") : null,
+            hidden_hazards: hiddenHazards,
+          })
+        );
+        if (mediaFiles.length > 0) {
+          mediaFiles.forEach((file) => {
+            formData.append("media", file);
+          });
+        }
+        if (onSubmit) {
+          await onSubmit(formData);
+        } else {
+          await apiClient.post<{ id: number }>("/reports", formData);
+        }
       }
-
       // Reset form
       setFloodStart(null);
       setFloodEnd(null);
@@ -390,7 +351,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   };
 
   const isSurveyComplete = passableVehicles.length > 0 && hiddenHazards !== null;
-  const canSubmit = !!floodStart && !!floodEnd && description.trim().length > 0 && isSurveyComplete && !isSubmitting;
+  const hasGeometry = geometryMode === "line" ? (!!floodStart && !!floodEnd) : !!drawnGeometry;
+  const canSubmit = hasGeometry && description.trim().length > 0 && isSurveyComplete && !isSubmitting;
 
   // ── Mobile map-pick overlay ────────────────────────────────────────────────
   if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
@@ -408,7 +370,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
 
   // ── Shared form body ───────────────────────────────────────────────────────
   const showClear = step === 1 
-    ? (floodStart || floodEnd) 
+    ? (geometryMode === "line" ? (floodStart || floodEnd) : drawnGeometry) 
     : showSurvey
       ? (passableVehicles.length > 0 || hiddenHazards !== null)
       : (description.trim() !== "" || mediaFiles.length > 0 || visualOption !== "gutter" || isPublic || passableVehicles.length > 0 || hiddenHazards !== null);
@@ -420,12 +382,15 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
           e.preventDefault();
           e.stopPropagation();
           if (step === 1) {
-            setFloodStart(null);
-            setFloodEnd(null);
-            setStartInput("");
-            setEndInput("");
-            setFloodStartLabel("");
-            setFloodEndLabel("");
+            if (geometryMode === "line") {
+              setFloodStart(null);
+              setFloodEnd(null);
+              setStartInput("");
+              setEndInput("");
+            } else {
+              if (drawInstance) drawInstance.deleteAll();
+              setDrawnGeometry(null);
+            }
           } else {
             if (showSurvey) {
               setPassableVehicles([]);
@@ -461,7 +426,26 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       </Link>
     </div>
   ) : (
-    <form onSubmit={handleSubmit} className="flex flex-col">
+    <>
+      {/* Floating Map Banner */}
+      {isDrawingMode && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 bg-white/95 text-slate-800 py-3 px-6 rounded-full shadow-2xl border border-slate-200/80 backdrop-blur-md z-[9999] animate-fade-in pointer-events-auto flex items-center gap-3">
+          <Crosshair className="w-5 h-5 text-blue-600 animate-pulse" />
+          <span className="text-sm font-semibold text-slate-700">
+            Click on the map to draw. Double-click to finish.
+          </span>
+          <button 
+            onClick={() => {
+              if (drawInstance) drawInstance.changeMode('simple_select');
+            }} 
+            className="ml-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full p-1.5 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-col">
       {isAdminMode && (
         <div className="flex items-center gap-3 px-1 mb-4 mt-2 border-b border-gray-100 pb-3">
           <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-sm ring-1 ring-blue-100/50 uppercase">
@@ -482,38 +466,200 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       )}
       {step === 1 && (
         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-          {/* Point selectors */}
-          <PointSelector
-            point="start"
-            label={startInput}
-            isActive={activePoint === "flood_start"}
-            isSet={!!floodStart}
-            onActivate={() => handlePickOnMap("flood_start")}
-            onLabelChange={(val) => { setStartInput(val); setFloodStartLabel(val); }}
-            onSelect={(s) => {
-              setFloodStart([s.lng, s.lat], s.label);
-              setStartInput(s.label);
-              setActivePoint("flood_end");
-            }}
-            onUseCurrent={() => handleUseCurrent("start")}
-            onClear={() => { setFloodStart(null); setStartInput(""); setFloodStartLabel(""); }}
-          />
+          
+          {/* Geometry Selector */}
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            <button
+              type="button"
+              onClick={() => setGeometryMode("line")}
+              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "line" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+            >
+              <Route className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Line</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setGeometryMode("polygon")}
+              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "polygon" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+            >
+              <Hexagon className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Polygon</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setGeometryMode("rectangle")}
+              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "rectangle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+            >
+              <Square className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Rectangle</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setGeometryMode("circle")}
+              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "circle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+            >
+              <Circle className="w-5 h-5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Circle</span>
+            </button>
+          </div>
 
-          <PointSelector
-            point="end"
-            label={endInput}
-            isActive={activePoint === "flood_end"}
-            isSet={!!floodEnd}
-            onActivate={() => handlePickOnMap("flood_end")}
-            onLabelChange={(val) => { setEndInput(val); setFloodEndLabel(val); }}
-            onSelect={(s) => {
-              setFloodEnd([s.lng, s.lat], s.label);
-              setEndInput(s.label);
-            }}
-            onUseCurrent={() => handleUseCurrent("end")}
-            onClear={() => { setFloodEnd(null); setEndInput(""); setFloodEndLabel(""); }}
-          />
+          {geometryMode === "line" ? (
+            /* Location Inputs (Timeline Style) */
+            <div className="flex items-center mb-2">
+              {/* Left Icons */}
+              <div className="flex flex-col items-center justify-center gap-1 w-5 mr-2 relative z-10 shrink-0">
+                <CircleDot className="w-3.5 h-3.5 text-green-600 shrink-0 bg-white" />
+                <div className="w-[2px] h-5 bg-gray-200 border-l border-dashed border-gray-300" />
+                <MapPin className="w-4 h-4 text-red-500 shrink-0 bg-white" />
+              </div>
 
+            {/* Inputs */}
+            <div className="flex-1 flex flex-col gap-1.5 relative z-20 min-w-0">
+              <div
+                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "flood_start" ? "border-orange-400 ring-2 ring-orange-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
+                onClick={() => setActivePoint("flood_start")}
+              >
+                <LocationAutocomplete
+                  value={startInput}
+                  onChange={(val) => { setStartInput(val); setFloodStartLabel(val); }}
+                  onSelect={(s) => {
+                    setFloodStart([s.lng, s.lat], s.label);
+                    setStartInput(s.label);
+                    setActivePoint("flood_end");
+                  }}
+                  onClear={() => { setFloodStart(null); setStartInput(""); setFloodStartLabel(""); }}
+                  placeholder="e.g. Ortigas Ave, Pasig (Start)"
+                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
+                  renderTopOptions={
+                    <>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handlePickOnMap("flood_start")}
+                        >
+                          <div className="bg-orange-100 p-1.5 rounded-full shrink-0">
+                            <Crosshair className="h-4 w-4 text-orange-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-orange-700">Choose on Map</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100 mb-1"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleUseCurrent("start")}
+                        >
+                          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
+                            <MapPin className="h-4 w-4 text-gray-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
+                        </button>
+                      </li>
+                    </>
+                  }
+                />
+              </div>
+              <div
+                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "flood_end" ? "border-red-400 ring-2 ring-red-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
+                onClick={() => setActivePoint("flood_end")}
+              >
+                <LocationAutocomplete
+                  value={endInput}
+                  onChange={(val) => { setEndInput(val); setFloodEndLabel(val); }}
+                  onSelect={(s) => {
+                    setFloodEnd([s.lng, s.lat], s.label);
+                    setEndInput(s.label);
+                  }}
+                  onClear={() => { setFloodEnd(null); setEndInput(""); setFloodEndLabel(""); }}
+                  placeholder="e.g. C. Raymundo Ave (End)"
+                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
+                  renderTopOptions={
+                    <>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-red-50 transition-colors border-b border-gray-100"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handlePickOnMap("flood_end")}
+                        >
+                          <div className="bg-red-100 p-1.5 rounded-full shrink-0">
+                            <Crosshair className="h-4 w-4 text-red-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-red-700">Choose on Map</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-red-50 transition-colors border-b border-gray-100 mb-1"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleUseCurrent("end")}
+                        >
+                          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
+                            <MapPin className="h-4 w-4 text-gray-700" />
+                          </div>
+                          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
+                        </button>
+                      </li>
+                    </>
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          ) : (
+            <>
+              {drawnGeometry ? (
+                <div className="flex flex-col items-center justify-center py-6 text-center bg-green-50 rounded-xl border border-green-200">
+                  <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
+                  <h3 className="text-sm font-semibold text-green-800 mb-1">Shape Captured</h3>
+                  <p className="text-xs text-green-600 px-4">
+                    Your {geometryMode} area has been successfully drawn. You can drag the handles on the map to adjust it.
+                  </p>
+                  <div className="flex gap-2 mt-4">
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      size="sm" 
+                      className="rounded-xl font-medium border-green-300 text-green-700 hover:bg-green-100" 
+                      onClick={() => {
+                        if (drawInstance) {
+                          drawInstance.deleteAll();
+                          setDrawnGeometry(null);
+                        }
+                      }}
+                    >
+                      Clear Shape
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-8 text-center bg-gray-50 rounded-xl border border-gray-100 border-dashed">
+                  <Crosshair className="w-8 h-8 text-gray-400 mb-2" />
+                  <h3 className="text-sm font-semibold text-gray-700 mb-1">Draw on Map</h3>
+                  <p className="text-xs text-gray-500 px-4">
+                    Use the tools on the map to draw your {geometryMode}.
+                  </p>
+                  <Button 
+                    type="button"
+                    variant="outline" 
+                    size="sm" 
+                    className="mt-4 rounded-xl font-medium" 
+                    onClick={() => {
+                      if (drawInstance && geometryMode === "polygon") {
+                        drawInstance.changeMode('draw_polygon');
+                      }
+                    }}
+                  >
+                    Start Drawing
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
           {/* Severity selector */}
           <div className="space-y-1">
             <label className="text-sm font-semibold text-gray-800 block mb-1.5">
@@ -798,6 +944,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
         </div>
       )}
     </form>
+    </>
   );
 
   if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
@@ -814,19 +961,26 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   }
 
   // Hide the panel body on mobile while picking if we were just returning null
+  // We don't return null for isDrawingMode because we need the floating banner (which is inside formBody) to render.
   if (isMobile && isPickingOnMap) return null;
+
+  const effectivelyCollapsed = isCollapsed || isDrawingMode;
 
   return (
     <Panel
       title={isAdminMode ? "Create Official Zone" : "Report Flood"}
       icon={isAdminMode ? <ShieldCheck className="h-4 w-4 text-blue-600" /> : <Navigation2 className="h-4 w-4 text-orange-600 rotate-180" />}
       iconBgClassName={isAdminMode ? "bg-blue-100" : "bg-orange-100"}
-      isCollapsed={isCollapsed}
-      onCollapseToggle={() => setActivePanel(isCollapsed ? "flood" : null)}
+      isCollapsed={effectivelyCollapsed}
+      onCollapseToggle={() => {
+        if (!isDrawingMode) {
+          setActivePanel(effectivelyCollapsed ? "flood" : null);
+        }
+      }}
       isMobile={isMobile}
       isOpen={isOpen}
       onClose={onClose}
-      anchor="right"
+      anchor="left"
       initialPosition={{ x: 16, y: 80 }}
       headerActions={clearButton}
       panelId="flood_report"
