@@ -324,8 +324,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
             formData.append("media", file);
           });
         }
-        if (onSubmit) {
-          await onSubmit(formData);
+        if (isAdminMode && onAdminSubmit) {
+          await onAdminSubmit(formData);
         } else {
           await apiClient.post<{ id: number }>("/reports", formData);
         }

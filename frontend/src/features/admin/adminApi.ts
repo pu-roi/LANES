@@ -196,6 +196,7 @@ export interface AvoidanceZone {
   reporter_trust_score?: number;
   reporter_reports_submitted?: number;
   reporter_reports_verified?: number;
+  report_geometry?: ReportGeometry | null;
   contributors?: ZoneContributor[];
 }
 

@@ -57,7 +57,11 @@ ehthumbs.db
 Thumbs.db
 
 # Documentation
-docs/others/
+docs/others/*
+!docs/others/system-documentation.md
+!docs/others/Routing Engine Research.md
+!docs/others/LANES Routing Logic & Validation Data.md
+!docs/others/database-design-plan.md
 
 # Large data files
 data/

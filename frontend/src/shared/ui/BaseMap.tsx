@@ -316,7 +316,8 @@ export class Toggle3DControl {
   private _map: maplibregl.Map | undefined;
   private _container: HTMLDivElement | undefined;
   private _button: HTMLButtonElement | undefined;
-  private _is3D: boolean = true; // default: start in 3D mode
+  private _is3D: boolean = false; // default: start in 2D (flat) mode
+  private _onStyleLoad: (() => void) | undefined;
 
   private static readonly DEM_SOURCE_ID = "terrarium-dem";
   private static readonly TARGET_PITCH_3D = 45;
@@ -352,6 +353,21 @@ export class Toggle3DControl {
     this._button.onclick = () => this._toggle();
 
     this._container.appendChild(this._button);
+
+    this._onStyleLoad = () => {
+      if (this._is3D) {
+        this._enable3D(false);
+      } else {
+        this._disable3D(false);
+      }
+    };
+    map.on("style.load", this._onStyleLoad);
+
+    // Ensure initial 2D state (flat view, no 3D extrusions)
+    if (!this._is3D) {
+      this._disable3D(false);
+    }
+
     return this._container;
   }
 
@@ -377,13 +393,10 @@ export class Toggle3DControl {
     }
   }
 
-  private _toggle() {
+  private _enable3D(animate: boolean = true) {
     if (!this._map) return;
-    this._is3D = !this._is3D;
     const map = this._map;
-
-    if (this._is3D) {
-      // Re-enable terrain
+    try {
       if (!map.getSource(Toggle3DControl.DEM_SOURCE_ID)) {
         map.addSource(Toggle3DControl.DEM_SOURCE_ID, {
           type: "raster-dem",
@@ -395,25 +408,66 @@ export class Toggle3DControl {
         });
       }
       map.setTerrain({ source: Toggle3DControl.DEM_SOURCE_ID, exaggeration: Toggle3DControl.EXAGGERATION });
-      map.easeTo({ pitch: Toggle3DControl.TARGET_PITCH_3D, duration: 700 });
+      if (animate) {
+        map.easeTo({ pitch: Toggle3DControl.TARGET_PITCH_3D, duration: 700 });
+      }
       // Restore 3D buildings
       this._getExtrusionLayerIds(map).forEach((id) => {
         try { map.setLayoutProperty(id, "visibility", "visible"); } catch {}
       });
-    } else {
-      // Disable terrain and flatten the map
+      if (!map.getLayer("sky")) {
+        map.addLayer({
+          id: "sky",
+          type: "sky",
+          paint: {
+            "sky-type": "atmosphere",
+            "sky-atmosphere-sun": [0.0, 90.0],
+            "sky-atmosphere-sun-intensity": 15,
+            "sky-atmosphere-color": "rgba(135, 206, 235, 1.0)",
+            "sky-horizon-blend": 0.4,
+          },
+        } as any);
+      }
+    } catch (err) {
+      console.warn("[Toggle3DControl] _enable3D error:", err);
+    }
+  }
+
+  private _disable3D(animate: boolean = true) {
+    if (!this._map) return;
+    const map = this._map;
+    try {
       map.setTerrain(null);
-      map.easeTo({ pitch: 0, duration: 700 });
+      if (animate) {
+        map.easeTo({ pitch: 0, duration: 700 });
+      }
       // Hide 3D building extrusions for a clean flat look
       this._getExtrusionLayerIds(map).forEach((id) => {
         try { map.setLayoutProperty(id, "visibility", "none"); } catch {}
       });
+      if (map.getLayer("sky")) {
+        try { map.removeLayer("sky"); } catch {}
+      }
+    } catch (err) {
+      console.warn("[Toggle3DControl] _disable3D error:", err);
     }
+  }
 
+  private _toggle() {
+    if (!this._map) return;
+    this._is3D = !this._is3D;
+    if (this._is3D) {
+      this._enable3D(true);
+    } else {
+      this._disable3D(true);
+    }
     this._updateButton();
   }
 
   onRemove() {
+    if (this._onStyleLoad && this._map) {
+      this._map.off("style.load", this._onStyleLoad);
+    }
     this._container?.parentNode?.removeChild(this._container);
     this._map = undefined;
   }
@@ -592,63 +646,12 @@ export default function BaseMap({
       }
     });
 
-    // ── Terrain helpers ──────────────────────────────────────────────────────
-    // MapLibre GL JS v5 internally re-triggers a 'style.load' event when
-    // setTerrain() is called — this wipes all custom sources/layers added after
-    // the initial 'load'. We solve this by re-applying terrain inside a
-    // persistent 'style.load' listener, so it survives every style reload.
-    const applyTerrain = (m: maplibregl.Map) => {
-      if (isOffline) return; // No elevation data available offline
-      try {
-        if (!m.getSource("terrarium-dem")) {
-          m.addSource("terrarium-dem", {
-            type: "raster-dem",
-            tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
-            tileSize: 256,
-            encoding: "terrarium",
-            maxzoom: 15,
-            attribution: "Elevation tiles &copy; Mapzen, &copy; USGS",
-          });
-        }
-        // setTerrain will itself cause another style.load in v5 — the guard
-        // above (getSource check) prevents an infinite add-source loop.
-        m.setTerrain({ source: "terrarium-dem", exaggeration: 1.5 });
-
-        if (!m.getLayer("sky")) {
-          m.addLayer({
-            id: "sky",
-            type: "sky",
-            paint: {
-              "sky-type": "atmosphere",
-              "sky-atmosphere-sun": [0.0, 90.0],
-              "sky-atmosphere-sun-intensity": 15,
-              "sky-atmosphere-color": "rgba(135, 206, 235, 1.0)",
-              "sky-horizon-blend": 0.4,
-            },
-          } as any); // 'sky' layer type not yet in this version's maplibre-gl typedefs
-        }
-      } catch (err) {
-        // Guard: if the map has already been removed, swallow the error silently
-        console.warn("[Terrain] applyTerrain error:", err);
-      }
-    };
-
-    // Re-apply terrain every time the style (re-)loads so it survives hot-swaps
-    // between MapTiler ↔ OSM fallback and the internal reload triggered by setTerrain itself.
-    mapInstance.on("style.load", () => {
-      applyTerrain(mapInstance);
-    });
-
     mapInstance.on("load", () => {
       clearTimeout(fallbackTimeout);
       mapRef.current = mapInstance;
       setIsLoaded(true);
 
       setTimeout(() => mapInstance.resize(), 100);
-
-      // Initial terrain application — the 'style.load' listener above will
-      // handle all subsequent reloads automatically.
-      applyTerrain(mapInstance);
 
       if (onMapLoad) {
         onMapLoad(mapInstance);
