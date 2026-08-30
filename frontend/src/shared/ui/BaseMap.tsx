@@ -396,6 +396,10 @@ export class Toggle3DControl {
   private _enable3D(animate: boolean = true) {
     if (!this._map) return;
     const map = this._map;
+    if (!map.isStyleLoaded()) {
+      map.once("styledata", () => this._enable3D(animate));
+      return;
+    }
     try {
       if (!map.getSource(Toggle3DControl.DEM_SOURCE_ID)) {
         map.addSource(Toggle3DControl.DEM_SOURCE_ID, {
@@ -436,6 +440,10 @@ export class Toggle3DControl {
   private _disable3D(animate: boolean = true) {
     if (!this._map) return;
     const map = this._map;
+    if (!map.isStyleLoaded()) {
+      // Map is not ready yet; on first load in 2D mode, we don't need to do anything as terrain is null by default
+      return;
+    }
     try {
       map.setTerrain(null);
       if (animate) {

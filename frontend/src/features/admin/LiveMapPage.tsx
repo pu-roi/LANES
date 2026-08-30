@@ -576,71 +576,71 @@ export default function LiveMapPage() {
 
       {/* RIGHT PANEL: Live Map View */}
       <div className="flex-1 relative h-[50vh] md:h-full bg-slate-100 overflow-hidden">
-        <BaseMap 
-          actionControls={(map) => {
-            const control = new AnalyticsControl(() => setIsAnalyticsOpen(prev => !prev), isAnalyticsOpen);
-            map.addControl(control, "bottom-right");
-            setAnalyticsControl(control);
-          }}
-          onMapInit={(map) => {
-            setMapInstance(map);
-          }}
-          onMapLoad={(map) => {
-            setMapInstance(map);
-            setIsLoaded(true);
-          }}
-        >
-          {/* Floating Analytics Panel */}
-          {isAnalyticsOpen && (
-            <>
-              <AnalyticsPanel
-                isOpen={isAnalyticsOpen}
-                onClose={() => setIsAnalyticsOpen(false)}
-              />
-              <div className="absolute top-4 right-4 z-20 pointer-events-auto">
-                <Button 
-                  onClick={handleExportCSV} 
-                  disabled={isStatsLoading || !statsData}
-                  className="flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-md text-xs font-semibold py-2 px-3.5 h-auto rounded-xl"
-                >
-                  <Download className="w-4 h-4 text-blue-600" />
-                  Export to CSV
-                </Button>
-              </div>
-            </>
-          )}
+        <MapProvider>
+          <BaseMap 
+            actionControls={(map) => {
+              const control = new AnalyticsControl(() => setIsAnalyticsOpen(prev => !prev), isAnalyticsOpen);
+              map.addControl(control, "bottom-right");
+              setAnalyticsControl(control);
+            }}
+            onMapInit={(map) => {
+              setMapInstance(map);
+            }}
+            onMapLoad={(map) => {
+              setMapInstance(map);
+              setIsLoaded(true);
+            }}
+          >
+            {/* Floating Analytics Panel */}
+            {isAnalyticsOpen && (
+              <>
+                <AnalyticsPanel
+                  isOpen={isAnalyticsOpen}
+                  onClose={() => setIsAnalyticsOpen(false)}
+                />
+                <div className="absolute top-4 right-4 z-20 pointer-events-auto">
+                  <Button 
+                    onClick={handleExportCSV} 
+                    disabled={isStatsLoading || !statsData}
+                    className="flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-md text-xs font-semibold py-2 px-3.5 h-auto rounded-xl"
+                  >
+                    <Download className="w-4 h-4 text-blue-600" />
+                    Export to CSV
+                  </Button>
+                </div>
+              </>
+            )}
 
-          {/* Bulk Actions Float (Over Map) */}
-          {selectedIds.length > 0 && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/95 text-slate-800 py-2.5 px-5 rounded-2xl flex items-center gap-5 shadow-2xl border border-slate-200/80 backdrop-blur-md z-30 animate-fade-in pointer-events-auto">
-              <span className="text-xs font-semibold text-slate-700">
-                Selected <span className="text-blue-600 font-bold">{selectedIds.length}</span> {selectedIds.length === 1 ? "zone" : "zones"}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button 
-                  onClick={() => setConfirmBulk(true)} 
-                  variant="danger" 
-                  size="sm" 
-                  className="rounded-xl font-medium gap-1.5 shadow-sm"
-                >
-                  <Trash2 className="w-3.5 h-3.5" /> Deactivate Selected
-                </Button>
-                <Button 
-                  onClick={() => setSelectedIds([])} 
-                  variant="outline" 
-                  size="sm" 
-                  className="rounded-xl font-medium"
-                >
-                  Cancel
-                </Button>
+            {/* Bulk Actions Float (Over Map) */}
+            {selectedIds.length > 0 && (
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/95 text-slate-800 py-2.5 px-5 rounded-2xl flex items-center gap-5 shadow-2xl border border-slate-200/80 backdrop-blur-md z-30 animate-fade-in pointer-events-auto">
+                <span className="text-xs font-semibold text-slate-700">
+                  Selected <span className="text-blue-600 font-bold">{selectedIds.length}</span> {selectedIds.length === 1 ? "zone" : "zones"}
+                </span>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    onClick={() => setConfirmBulk(true)} 
+                    variant="danger" 
+                    size="sm" 
+                    className="rounded-xl font-medium gap-1.5 shadow-sm"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Deactivate Selected
+                  </Button>
+                  <Button 
+                    onClick={() => setSelectedIds([])} 
+                    variant="outline" 
+                    size="sm" 
+                    className="rounded-xl font-medium"
+                  >
+                    Cancel
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
-        </BaseMap>
+            )}
+          </BaseMap>
 
-        {/* Admin Mode - Create Official Zone Panel overlay */}
-        {isLoaded && mapInstance && (
-          <MapProvider>
+          {/* Admin Mode - Create Official Zone Panel overlay */}
+          {isLoaded && mapInstance && (
             <CreateOfficialZonePanel 
               isOpen={true} 
               onClose={() => {}} 
@@ -648,8 +648,8 @@ export default function LiveMapPage() {
               onAdminSubmit={handleAdminSubmitZone}
               mapInstance={mapInstance}
             />
-          </MapProvider>
-        )}
+          )}
+        </MapProvider>
       </div>
 
       {/* Confirmation Modal for Single Deactivation */}

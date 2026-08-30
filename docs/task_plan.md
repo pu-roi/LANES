@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** August 24, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -36,8 +36,8 @@
 - [x] Adapt `FloodReportPanel.tsx` with `isAdminMode` & `onAdminSubmit` props
 - [x] Integrate adapted `FloodReportPanel` into `LiveMapPage.tsx`
 - [x] Refine "Create Official Zone" map interaction in `LiveMapPage.tsx`
-- [ ] Fix "Create Official Zone" Panel logic (currently not fully functional/identical to public flow)
-- [ ] Polygon Map Picking (custom shapes) for Admin Official Zones
+- [x] Fix "Create Official Zone" Panel logic (identical to public Line flow with Start/End pin markers & road segment preview line)
+- [x] Integrate **Terra Draw** (`terra-draw`) for native Polygon, Freehand, Rectangle, and Circle drawing for Admin Official Zones
 - [ ] Wire up real-time SSE broadcasts for zone updates
 
 ## Future Roadmap (Phases)

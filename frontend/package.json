@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "dotenvx run -f .env.local -- next dev -H 0.0.0.0",
+    "dev": "dotenvx run -f .env.local -- next dev --webpack -H 0.0.0.0",
     "build": "dotenvx run -f .env.local -- next build --webpack",
     "start": "dotenvx run -f .env.local -- next start -H 0.0.0.0",
     "lint": "eslint"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
-    "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@meteocons/lottie": "^0.1.0",
     "@meteocons/svg": "^0.1.0",
     "@meteocons/svg-static": "^0.1.0",
@@ -32,13 +31,14 @@
     "react-imask": "^7.6.1",
     "react-zoom-pan-pinch": "^4.0.3",
     "tailwind-merge": "^3.6.0",
+    "terra-draw": "^1.32.3",
+    "terra-draw-maplibre-gl-adapter": "^1.4.1",
     "valhalla-wasm": "^0.1.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^2.21.0",
     "@tailwindcss/postcss": "^4",
-    "@types/mapbox__mapbox-gl-draw": "^1.4.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

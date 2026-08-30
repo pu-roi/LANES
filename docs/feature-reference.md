@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** August 24, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -258,9 +258,23 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
+### 18. Official DRRMO Zone Creation & Interactive Terra Draw Vector Engine
+*   **Purpose:** Empowers disaster management officials to declare official flood avoidance zones, custom detour boundaries, or road closures directly onto the interactive map.
+*   **What it does:** Provides an administrative creation panel featuring 5 vector geometry modes: **Line** (road-snapping timeline segment), **Polygon**, **Freehand** (smooth sketch tool), **Rectangle**, and **Circle**. Captures geometries and submits them directly into the PostGIS routing avoidance layer.
+*   **How it works:**
+    1. Integrates **Terra Draw** (`terra-draw` & `terra-draw-maplibre-gl-adapter`) directly onto the MapLibre GL JS WebGL canvas.
+    2. Uses React `useRef` lifecycle guards to maintain instance persistence and prevent ghost collision errors during fast unmounts.
+    3. For Line mode: leverages `MapContext` shared coordinates to provide click-to-pick with Orange (`#f97316`) Start and Dark Red (`#991b1b`) End pins, rendering a real-time dashed road segment preview layer.
+    4. For Shape modes: renders a responsive bottom-centered instruction pill directly over the map canvas and snapshots GeoJSON geometries on `change` events.
+    5. Dispatches payload via `POST /api/v1/zones` (or `POST /api/v1/reports` in admin mode) to immediately persist avoidance zones into PostgreSQL/PostGIS.
+*   **Access & Roles:** Restricted to `admin` / `drrm` roles.
+*   **Related Components:**
+    *   **Frontend:** [CreateOfficialZonePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/CreateOfficialZonePanel.tsx), [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx).
+    *   **Backend:** [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py), [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py).
+
 ---
 
-### 18. Saved Places (Personalized Location Bookmarks)
+### 19. Saved Places (Personalized Location Bookmarks)
 *   **Purpose:** Allows authenticated commuters to bookmark up to 10 frequently visited locations on the map for quick re-use as route origins or destinations.
 *   **What it does:** Provides a full CRUD management interface for personalized saved places, each with a custom emoji icon, label, and geographic coordinates. Displays all saved places as icon markers directly on the map.
 *   **How it works:**

@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** August 24, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
 
@@ -28,6 +28,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Enabling Progressive Web App functionality and IndexedDB caching for offline resilience during poor network conditions.
 * **Geospatial Render Canvas:** **MapLibre GL JS**  
   * *Role:* Open-source, WebGL-accelerated interactive 2D map renderer used to display vector basemaps, dynamic alternative routing polylines, and spatial flood avoidance zones.  
+* **Interactive Map Drawing Engine:** **Terra Draw (`terra-draw` & `terra-draw-maplibre-gl-adapter`)**  
+  * *Role:* Modern, framework-agnostic interactive vector drawing engine integrated into the Admin Map. Supports native Polygons, Freehand sketches, Rectangles, and Circles for defining official DRRMO detour zones without legacy Node.js dependencies.
 * **Map Base Tiles & 3D Terrain:** **MapTiler, OpenStreetMap, & AWS Terrarium DEM**  
   * *Role:* Rendering dynamic vector basemap styles (Streets, Dark, Roads, Satellite, OSM) via a custom `MapStylePickerControl`. Integrates AWS `terrarium-dem` S3 raster tiles to provide realistic 3D elevation meshes draped underneath the street vectors.
 * **Weather Data & Iconography:** **Open-Meteo API & Meteocons**

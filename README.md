@@ -26,7 +26,46 @@ Developed in partial fulfillment of the requirements for the degree of **Bachelo
 
 ---
 
-## 🚀 Local Development Setup
+---
+
+## 🔄 Daily Workflow: Pulling Updates (`git pull`)
+
+Whenever you or your groupmates pull new changes from `main`, execute these exact commands according to the folder specified:
+
+### 1. Root Directory: `LANES/`
+```bash
+# 📍 In the ROOT folder:
+git pull origin main
+```
+
+### 2. Backend Directory: `LANES/backend/`
+```bash
+# 📍 Navigate to backend:
+cd backend
+
+# Activate virtual environment (Windows):
+.\venv\Scripts\Activate.ps1
+# (Or on Mac/Linux: source venv/bin/activate)
+
+# Install any new python packages:
+pip install -r requirements.txt
+
+# Apply new database schema migrations:
+alembic upgrade head
+```
+
+### 3. Frontend Directory: `LANES/frontend/`
+```bash
+# 📍 Navigate to frontend:
+cd ../frontend
+
+# Install any newly added npm packages (e.g. terra-draw):
+npm install
+```
+
+---
+
+## 🚀 First-Time Local Development Setup
 
 ### Prerequisites
 * **Git** (For cloning the repository)
@@ -36,8 +75,8 @@ Developed in partial fulfillment of the requirements for the degree of **Bachelo
 
 ---
 
-### 0. Clone the Repository
-Open your terminal and run:
+### Step 0: Clone the Repository
+📂 **Where to run:** Anywhere on your system (e.g., your projects folder)
 ```bash
 git clone https://github.com/roicambe/LANES.git
 cd LANES
@@ -45,8 +84,10 @@ cd LANES
 
 ---
 
-### 1. Start Background Services (PostGIS Database & Valhalla)
-Spin up the pre-configured PostgreSQL + PostGIS database using Docker:
+### Step 1: Start Background Services (Database & Valhalla)
+📂 **Directory:** `LANES/` *(Root Folder)*
+
+Spin up the pre-configured PostgreSQL + PostGIS database and Valhalla engine using Docker:
 ```bash
 docker-compose up -d
 ```
@@ -54,53 +95,66 @@ docker-compose up -d
 
 ---
 
-### 2. Backend Setup & Run (FastAPI)
-1. Open a new terminal and navigate to the `backend` folder:
+### Step 2: Backend Setup & Run (FastAPI)
+📂 **Directory:** `LANES/backend/`
+
+1. Open a new terminal and navigate to the backend folder:
    ```bash
    cd backend
    ```
-2. Set up and activate the virtual environment:
+2. Set up and activate your Python virtual environment:
    ```bash
-   # On Windows
+   # On Windows (PowerShell):
    python -m venv venv
    .\venv\Scripts\Activate.ps1
 
-   # On Mac/Linux
+   # On Mac/Linux:
    python3 -m venv venv
    source venv/bin/activate
    ```
-3. Install dependencies:
+3. Install backend packages:
    ```bash
    pip install -r requirements.txt
    ```
 4. Set up Environment Variables:
    * We use **dotenvx** for encrypted secrets.
    * Please follow the [Environment Setup Guide](file:///d:/Documents/Github/LANES/docs/ENV_SETUP_GUIDE.md) to get the decryption keys.
-5. Run the database migrations to build the tables:
+5. Apply database schema migrations:
    ```bash
    alembic upgrade head
    ```
-6. Start the development server (with dotenvx injection):
+6. Start the backend development server:
    ```bash
+   # Windows:
    npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\uvicorn.exe app.main:app --host 0.0.0.0 --port 8000 --reload
+
+   # Mac/Linux:
+   npx @dotenvx/dotenvx run -f .env -- uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
-   *The backend server runs at `http://localhost:8000` (and is accessible via your network IP).*
+   *The backend server will run at `http://localhost:8000`.*
 
 ---
 
-### 3. Frontend Setup & Run (Next.js)
-1. Open a third terminal window and navigate to the `frontend` folder:
+### Step 3: Frontend Setup & Run (Next.js)
+📂 **Directory:** `LANES/frontend/`
+
+1. Open a separate terminal window and navigate to the frontend folder:
    ```bash
    cd frontend
    ```
 2. Set up the frontend environment variables:
-   * Follow the [Environment Setup Guide](file:///d:/Documents/Github/LANES/docs/ENV_SETUP_GUIDE.md) to add your `.env.keys` file. You do NOT need to manually create `.env.local` anymore.
+   * Follow the [Environment Setup Guide](file:///d:/Documents/Github/LANES/docs/ENV_SETUP_GUIDE.md) to add your `.env.keys` file. You do NOT need to manually create `.env.local`.
 3. Install dependencies and start the dev server:
    ```bash
    npm install
    npm run dev
    ```
-   *The interactive dashboard will be available at `http://localhost:3000`.*
+   *The web application will be live at `http://localhost:3000`.*
+
+---
+
+### ⚡ Shortcut: Running via VS Code (Windows)
+If you are using VS Code, you can press **`Ctrl + Shift + B`** (or go to `Terminal` -> `Run Build Task...` -> `Start LANES Dev Server`). This automatically starts both the backend and frontend simultaneously in split terminals!
 
 ---
 

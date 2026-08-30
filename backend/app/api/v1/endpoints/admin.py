@@ -928,6 +928,7 @@ async def create_official_zone(
     )
     zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
     
+    zone.name = body.name
     zone.severity_override = body.severity_override
     zone.depth_override = body.depth_override
     zone.admin_notes = body.admin_notes
@@ -971,6 +972,8 @@ async def update_zone(
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
         
+    if body.name is not None:
+        zone.name = body.name
     if body.severity_override is not None:
         zone.severity_override = body.severity_override
     if body.depth_override is not None:

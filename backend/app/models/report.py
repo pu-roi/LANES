@@ -191,6 +191,7 @@ class FloodAvoidanceZone(Base):
     expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     # Admin Overrides for Official DRRMO Zone Data
+    name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     severity_override: Mapped[Optional[ReportSeverity]] = mapped_column(Enum(ReportSeverity, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]), nullable=True)
     depth_override: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     admin_notes: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)

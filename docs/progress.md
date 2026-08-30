@@ -1,11 +1,11 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** August 24, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
-## Completed Milestones (31+ Commits Integrated)
+## Completed Milestones (32+ Commits Integrated)
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
@@ -18,9 +18,23 @@
 | 7 | Real-Time Operations | In Progress | Server-Sent Events (SSE) broadcasting, Live active zones, Real-time admin dashboard invalidations |
 | 8 | Community Feed & Moderation | Completed | Feed layout, Upvotes/Downvotes, Post archiving, Soft deletes, Map coordinate rendering |
 | 9 | Spatial Analytics & Heatmap | Completed | Global Heatmap, Top Barangays stats, Dedicated Analytics Pages for Commuters and Admins |
-| 10| Official Flood Zones (DRRMO) Moderation | In Progress | Admin panel restructuring, backend Zone Override schemas, bulk merging operations, troll filtration, DRRMO Official Zone mapping |
+| 10| Official Flood Zones (DRRMO) Moderation | Completed | Admin panel restructuring, backend Zone Override schemas, bulk merging operations, troll filtration, DRRMO Official Zone mapping with Terra Draw |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 6: Official DRRMO Zone Creation & Terra Draw Vector Engine (🟢 COMPLETED)
+- [x] **Migration from `mapbox-gl-draw` to `terra-draw`**:
+  - Completely purged legacy `mapbox-gl-draw` and unmaintained circle/rectangle plugins.
+  - Eliminated all Next.js Node.js module mocks (`fs`, `os`, `path` browser fallbacks in Webpack & `package.json`).
+  - Integrated `terra-draw` alongside `terra-draw-maplibre-gl-adapter` for clean WebGL drawing without unmount leaks or React Strict Mode crashes.
+- [x] **Interactive Multi-Geometry Drawing Toolbar**:
+  - Implemented 5 shape modes in `CreateOfficialZonePanel.tsx`: **Line** (road segment), **Polygon**, **Freehand** (smooth pencil sketch), **Rectangle**, and **Circle**.
+  - Defaulted to non-drawing `Line` mode to prevent unintentional map drawing triggers upon opening or expanding the panel.
+  - Positioned floating drawing instructions as a sleek, bottom-centered overlay directly over the map canvas.
+- [x] **Line Mode Alignment & Map Pin Synchronization**:
+  - Unified Line selection with `FloodReportPanel.tsx` using Orange (`#f97316`) Start and Dark Red (`#991b1b`) End pins.
+  - Enabled direct click-to-pick on the map canvas with crosshair cursor feedback and automatic step advancement.
+  - Added live dashed road segment preview layer (`#f97316`) rendered along computed Valhalla road geometry.
 
 ### Capstone Phase 5: Multi-Engine Routing & Offline Architecture (🟢 COMPLETED)
 - [x] **Triple-Path Routing Engine Architecture**:

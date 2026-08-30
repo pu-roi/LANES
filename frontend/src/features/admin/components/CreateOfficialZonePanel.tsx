@@ -1,8 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  TerraDraw,
+  TerraDrawPolygonMode,
+  TerraDrawRectangleMode,
+  TerraDrawCircleMode,
+  TerraDrawFreehandMode
+} from "terra-draw";
+import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter";
+import maplibregl from "maplibre-gl";
 import {
   CircleDot,
   Flag,
@@ -21,7 +28,8 @@ import {
   Route,
   Hexagon,
   Square,
-  Circle
+  Circle,
+  Pencil
 } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/shared/ui/Input";
@@ -129,6 +137,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   const [description, setDescription] = useState("");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [isPublic, setIsPublic] = useState(false);
+  const [zoneName, setZoneName] = useState("");
+  const [zoneStatus, setZoneStatus] = useState<"active" | "scheduled">("active");
   const [step, setStep] = useState<1 | 2>(1);
   const isCollapsed = activePanel !== "flood";
 
@@ -136,65 +146,106 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { success, error } = useToast();
 
-  // Drawing state
-  type GeometryMode = "line" | "polygon" | "rectangle" | "circle";
-  const [geometryMode, setGeometryMode] = useState<GeometryMode>("polygon");
+  // Drawing state - default to "line" (standard road segment mode)
+  type GeometryMode = "line" | "polygon" | "freehand" | "rectangle" | "circle";
+  const [geometryMode, setGeometryMode] = useState<GeometryMode>("line");
   const [drawInstance, setDrawInstance] = useState<any>(null);
   const [drawnGeometry, setDrawnGeometry] = useState<any>(null);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
 
-  // Initialize MapboxDraw
+  // Initialize Terra Draw
+  const drawRef = useRef<TerraDraw | null>(null);
+
   useEffect(() => {
     if (!mapInstance) return;
-
-    const draw = new MapboxDraw({
-      displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        trash: true
-      },
-      // defaultMode: 'draw_polygon'
-    });
     
-    mapInstance.addControl(draw);
-    setDrawInstance(draw);
+    // Only initialize once
+    if (drawRef.current) return;
+
+    const initDraw = () => {
+      // Create adapter and draw instance
+      const adapter = new TerraDrawMapLibreGLAdapter({ map: mapInstance });
+      
+      const draw = new TerraDraw({
+        adapter,
+        modes: [
+          new TerraDrawPolygonMode(),
+          new TerraDrawFreehandMode(),
+          new TerraDrawRectangleMode(),
+          new TerraDrawCircleMode()
+        ]
+      });
+      
+      draw.start();
+      drawRef.current = draw;
+      setDrawInstance(draw);
+
+      // Listen for drawing changes
+      draw.on('change', () => {
+        const snapshot = draw.getSnapshot();
+        if (snapshot.length > 0) {
+          // TerraDraw returns an array of GeoJSON features
+          setDrawnGeometry(snapshot[0].geometry);
+        } else {
+          setDrawnGeometry(null);
+        }
+      });
+    };
+
+    if (mapInstance.isStyleLoaded()) {
+      initDraw();
+    } else {
+      mapInstance.once('styledata', initDraw);
+    }
 
     return () => {
-      if (mapInstance.hasControl(draw)) {
-        mapInstance.removeControl(draw);
+      // Cleanup
+      if (drawRef.current) {
+        try {
+          if (drawRef.current.enabled) {
+            drawRef.current.stop();
+          }
+        } catch (e) {
+          console.warn("TerraDraw stop warning:", e);
+        }
+        drawRef.current = null;
+        setDrawInstance(null);
       }
     };
   }, [mapInstance]);
 
-  // Hook up MapboxDraw events
+  // Mode switching - controlled explicitly by the user's selected mode and open state
   useEffect(() => {
-    if (!mapInstance || !drawInstance) return;
-
-    const updateGeometry = (e: any) => {
-      const data = drawInstance.getAll();
-      if (data.features.length > 0) {
-        setDrawnGeometry(data.features.geometry ? data.features.geometry : data.features[0].geometry);
-      } else {
-        setDrawnGeometry(null);
-      }
-    };
-
-    const handleModeChange = (e: any) => {
-      setIsDrawingMode(e.mode === 'draw_polygon' || e.mode === 'draw_line_string');
-    };
-
-    mapInstance.on('draw.create', updateGeometry);
-    mapInstance.on('draw.update', updateGeometry);
-    mapInstance.on('draw.delete', updateGeometry);
-    mapInstance.on('draw.modechange', handleModeChange);
-
-    return () => {
-      mapInstance.off('draw.create', updateGeometry);
-      mapInstance.off('draw.update', updateGeometry);
-      mapInstance.off('draw.delete', updateGeometry);
-      mapInstance.off('draw.modechange', handleModeChange);
-    };
-  }, [mapInstance, drawInstance]);
+    if (!drawRef.current) return;
+    
+    // If the panel is closed or we are in "line" mode, do not activate map drawing
+    if (isCollapsed || geometryMode === "line") {
+      try {
+        if (drawRef.current.getMode() !== "static") {
+          drawRef.current.setMode("static");
+        }
+      } catch {}
+      setIsDrawingMode(false);
+      return;
+    }
+    
+    if (geometryMode === "polygon") {
+      drawRef.current.setMode("polygon");
+      setIsDrawingMode(true);
+    } else if (geometryMode === "freehand") {
+      drawRef.current.setMode("freehand");
+      setIsDrawingMode(true);
+    } else if (geometryMode === "rectangle") {
+      drawRef.current.setMode("rectangle");
+      setIsDrawingMode(true);
+    } else if (geometryMode === "circle") {
+      drawRef.current.setMode("circle");
+      setIsDrawingMode(true);
+    } else {
+      drawRef.current.setMode("static");
+      setIsDrawingMode(false);
+    }
+  }, [geometryMode, isCollapsed, drawInstance]);
 
   // ── Map-pick: listen to the shared map-center-changed event ────────────────
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -220,6 +271,108 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     setIsPickingOnMap(true);
   };
 
+  // Direct map click to select point when picking on map is active
+  useEffect(() => {
+    if (!mapInstance || !isPickingOnMap || !activePoint) return;
+
+    const handleMapClick = (e: any) => {
+      const coords: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+      const label = `${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
+      
+      if (activePoint === "flood_start") {
+        setFloodStart(coords, label);
+        setStartInput(label);
+        setActivePoint("flood_end");
+      } else if (activePoint === "flood_end") {
+        setFloodEnd(coords, label);
+        setEndInput(label);
+        setActivePoint(null);
+        setIsPickingOnMap(false);
+      }
+    };
+
+    mapInstance.on("click", handleMapClick);
+    mapInstance.getCanvas().style.cursor = "crosshair";
+
+    return () => {
+      mapInstance.off("click", handleMapClick);
+      mapInstance.getCanvas().style.cursor = "";
+    };
+  }, [mapInstance, isPickingOnMap, activePoint, setFloodStart, setFloodEnd, setActivePoint, setIsPickingOnMap]);
+
+  // Markers for floodStart and floodEnd matching user-side FloodReportPanel
+  const startMarkerRef = useRef<any>(null);
+  const endMarkerRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!mapInstance) return;
+
+    startMarkerRef.current?.remove();
+    startMarkerRef.current = null;
+
+    if (floodStart) {
+      startMarkerRef.current = new maplibregl.Marker({ color: "#f97316" })
+        .setLngLat(floodStart.coords)
+        .addTo(mapInstance);
+    }
+  }, [mapInstance, floodStart]);
+
+  useEffect(() => {
+    if (!mapInstance) return;
+
+    endMarkerRef.current?.remove();
+    endMarkerRef.current = null;
+
+    if (floodEnd) {
+      endMarkerRef.current = new maplibregl.Marker({ color: "#991b1b" })
+        .setLngLat(floodEnd.coords)
+        .addTo(mapInstance);
+    }
+  }, [mapInstance, floodEnd]);
+
+  // Draw the preview of the blocked road segment line (matching MapCanvas)
+  const { floodPreviewGeometry } = useMapContext();
+  useEffect(() => {
+    if (!mapInstance || !mapInstance.isStyleLoaded()) return;
+
+    const PREVIEW_SOURCE = "admin-flood-preview-source";
+    const PREVIEW_LAYER = "admin-flood-preview-layer";
+
+    if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
+    if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
+
+    if (!floodPreviewGeometry || geometryMode !== "line") return;
+
+    mapInstance.addSource(PREVIEW_SOURCE, {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        properties: {},
+        geometry: floodPreviewGeometry,
+      },
+    });
+
+    mapInstance.addLayer({
+      id: PREVIEW_LAYER,
+      type: "line",
+      source: PREVIEW_SOURCE,
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: {
+        "line-color": "#f97316",
+        "line-width": 6,
+        "line-dasharray": [2, 2],
+        "line-opacity": 0.85,
+      },
+    });
+
+    return () => {
+      try {
+        if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
+        if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
+      } catch {}
+    };
+  }, [mapInstance, floodPreviewGeometry, geometryMode]);
+
   const confirmMapLocation = useCallback(() => {
     if (!activePoint || !mapCenter) return;
     const label = `${mapCenter[0].toFixed(5)}, ${mapCenter[1].toFixed(5)}`;
@@ -232,9 +385,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       setEndInput(label);
       setActivePoint(null);
       setIsPickingOnMap(false);
-      setActivePanel(null);
     }
-  }, [activePoint, mapCenter, setFloodStart, setFloodEnd, setActivePoint, setIsPickingOnMap, setActivePanel]);
+  }, [activePoint, mapCenter, setFloodStart, setFloodEnd, setActivePoint, setIsPickingOnMap]);
 
   // ── Current location helper ────────────────────────────────────────────────
   const handleUseCurrent = async (target: "start" | "end") => {
@@ -294,11 +446,12 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       if (isAdminMode && onAdminSubmit) {
         // 3a. Submit Admin Payload (JSON)
         const payload = {
+          name: zoneName.trim() || undefined,
           geometry: finalGeometry,
           severity_override: severity,
           depth_override: depth,
           admin_notes: description.trim() || undefined,
-          is_active: isPublic
+          is_active: zoneStatus === "active"
         };
         await onAdminSubmit(payload as any);
       } else {
@@ -338,6 +491,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       setPassableVehicles([]);
       setHiddenHazards(null);
       setMediaFiles([]);
+      setZoneName("");
+      setZoneStatus("active");
       setShowSurvey(false);
       
       success(isAdminMode ? "Zone Created" : "Report Submitted", isAdminMode ? "Official zone is now active." : "Thank you! Your report is now in review.");
@@ -352,7 +507,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
 
   const isSurveyComplete = passableVehicles.length > 0 && hiddenHazards !== null;
   const hasGeometry = geometryMode === "line" ? (!!floodStart && !!floodEnd) : !!drawnGeometry;
-  const canSubmit = hasGeometry && description.trim().length > 0 && isSurveyComplete && !isSubmitting;
+  const canSubmit = hasGeometry && description.trim().length > 0 && isSurveyComplete && !isSubmitting && (!isAdminMode || zoneName.trim().length > 0);
 
   // ── Mobile map-pick overlay ────────────────────────────────────────────────
   if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
@@ -388,7 +543,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               setStartInput("");
               setEndInput("");
             } else {
-              if (drawInstance) drawInstance.deleteAll();
+              if (drawRef.current) drawRef.current.clear();
               setDrawnGeometry(null);
             }
           } else {
@@ -399,9 +554,10 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               setVisualOption("gutter");
               setPassableVehicles([]);
               setHiddenHazards(null);
-              setDescription("");
               setMediaFiles([]);
               setIsPublic(false);
+              setZoneName("");
+              setZoneStatus("active");
             }
           }
         }}
@@ -427,24 +583,6 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     </div>
   ) : (
     <>
-      {/* Floating Map Banner */}
-      {isDrawingMode && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 bg-white/95 text-slate-800 py-3 px-6 rounded-full shadow-2xl border border-slate-200/80 backdrop-blur-md z-[9999] animate-fade-in pointer-events-auto flex items-center gap-3">
-          <Crosshair className="w-5 h-5 text-blue-600 animate-pulse" />
-          <span className="text-sm font-semibold text-slate-700">
-            Click on the map to draw. Double-click to finish.
-          </span>
-          <button 
-            onClick={() => {
-              if (drawInstance) drawInstance.changeMode('simple_select');
-            }} 
-            className="ml-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full p-1.5 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
-
       <form onSubmit={handleSubmit} className="flex flex-col">
       {isAdminMode && (
         <div className="flex items-center gap-3 px-1 mb-4 mt-2 border-b border-gray-100 pb-3">
@@ -468,38 +606,81 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
           
           {/* Geometry Selector */}
-          <div className="grid grid-cols-4 gap-2 mb-4">
+          <div className="grid grid-cols-5 gap-1.5 mb-4">
             <button
               type="button"
-              onClick={() => setGeometryMode("line")}
-              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "line" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+              onClick={() => {
+                setGeometryMode("line");
+                if (drawRef.current) {
+                  drawRef.current.clear();
+                  drawRef.current.setMode("static");
+                }
+                setDrawnGeometry(null);
+              }}
+              className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "line" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
-              <Route className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Line</span>
+              <Route className="w-4 h-4" />
+              <span className="text-[9px] font-bold uppercase tracking-wider">Line</span>
             </button>
             <button
               type="button"
-              onClick={() => setGeometryMode("polygon")}
-              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "polygon" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+              onClick={() => {
+                setGeometryMode("polygon");
+                if (drawRef.current) {
+                  drawRef.current.clear();
+                  drawRef.current.setMode("polygon");
+                }
+                setDrawnGeometry(null);
+              }}
+              className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "polygon" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
-              <Hexagon className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Polygon</span>
+              <Hexagon className="w-4 h-4" />
+              <span className="text-[9px] font-bold uppercase tracking-wider">Polygon</span>
             </button>
             <button
               type="button"
-              onClick={() => setGeometryMode("rectangle")}
-              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "rectangle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+              onClick={() => {
+                setGeometryMode("freehand");
+                if (drawRef.current) {
+                  drawRef.current.clear();
+                  drawRef.current.setMode("freehand");
+                }
+                setDrawnGeometry(null);
+              }}
+              className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "freehand" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
-              <Square className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Rectangle</span>
+              <Pencil className="w-4 h-4" />
+              <span className="text-[9px] font-bold uppercase tracking-wider">Freehand</span>
             </button>
             <button
               type="button"
-              onClick={() => setGeometryMode("circle")}
-              className={cn("flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all", geometryMode === "circle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+              onClick={() => {
+                setGeometryMode("rectangle");
+                if (drawRef.current) {
+                  drawRef.current.clear();
+                  drawRef.current.setMode("rectangle");
+                }
+                setDrawnGeometry(null);
+              }}
+              className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "rectangle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
-              <Circle className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">Circle</span>
+              <Square className="w-4 h-4" />
+              <span className="text-[9px] font-bold uppercase tracking-wider">Rect</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setGeometryMode("circle");
+                if (drawRef.current) {
+                  drawRef.current.clear();
+                  drawRef.current.setMode("circle");
+                }
+                setDrawnGeometry(null);
+              }}
+              className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "circle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
+            >
+              <Circle className="w-4 h-4" />
+              <span className="text-[9px] font-bold uppercase tracking-wider">Circle</span>
             </button>
           </div>
 
@@ -626,9 +807,10 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
                       size="sm" 
                       className="rounded-xl font-medium border-green-300 text-green-700 hover:bg-green-100" 
                       onClick={() => {
-                        if (drawInstance) {
-                          drawInstance.deleteAll();
+                        if (drawRef.current) {
+                          drawRef.current.clear();
                           setDrawnGeometry(null);
+                          setGeometryMode("polygon"); // Reset to default mode or static
                         }
                       }}
                     >
@@ -649,8 +831,10 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
                     size="sm" 
                     className="mt-4 rounded-xl font-medium" 
                     onClick={() => {
-                      if (drawInstance && geometryMode === "polygon") {
-                        drawInstance.changeMode('draw_polygon');
+                      if (drawRef.current) {
+                        drawRef.current.clear();
+                        drawRef.current.setMode(geometryMode);
+                        setIsDrawingMode(true);
                       }
                     }}
                   >
@@ -738,6 +922,56 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
             </button>
           </div>
 
+          {isAdminMode && (
+            <>
+              {/* Zone Name */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800 block mb-1.5">
+                  Zone Name <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  placeholder="e.g. C. Raymundo Deep Flood"
+                  value={zoneName}
+                  onChange={(e) => setZoneName(e.target.value)}
+                  className="w-full bg-white"
+                />
+              </div>
+
+              {/* Status */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-gray-800 block mb-1.5">
+                  Status <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setZoneStatus("active")}
+                    className={cn(
+                      "rounded-md border py-2 text-sm font-medium transition-colors",
+                      zoneStatus === "active"
+                        ? "bg-green-50 border-green-300 text-green-700"
+                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                    )}
+                  >
+                    Active Now
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setZoneStatus("scheduled")}
+                    className={cn(
+                      "rounded-md border py-2 text-sm font-medium transition-colors",
+                      zoneStatus === "scheduled"
+                        ? "bg-blue-50 border-blue-300 text-blue-700"
+                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                    )}
+                  >
+                    Scheduled
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+
           {/* Media Upload */}
           <div className="space-y-1.5">
             <label className="text-sm font-semibold text-gray-800 flex items-center justify-between mb-1.5">
@@ -796,8 +1030,9 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
             />
           </div>
 
-          {/* Community Feed Sharing */}
-          <div className="space-y-2 pt-2 border-t border-gray-100">
+          {/* Community Feed Sharing - Only for normal users */}
+          {!isAdminMode && (
+            <div className="space-y-2 pt-2 border-t border-gray-100">
             <label className="flex items-start gap-2 cursor-pointer group">
               <div className="flex h-5 items-center">
                 <input
@@ -821,6 +1056,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               </div>
             )}
           </div>
+          )}
 
           <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 border-t border-gray-100 mt-auto flex gap-2">
             <Button
@@ -964,28 +1200,62 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   // We don't return null for isDrawingMode because we need the floating banner (which is inside formBody) to render.
   if (isMobile && isPickingOnMap) return null;
 
-  const effectivelyCollapsed = isCollapsed || isDrawingMode;
-
   return (
-    <Panel
-      title={isAdminMode ? "Create Official Zone" : "Report Flood"}
-      icon={isAdminMode ? <ShieldCheck className="h-4 w-4 text-blue-600" /> : <Navigation2 className="h-4 w-4 text-orange-600 rotate-180" />}
-      iconBgClassName={isAdminMode ? "bg-blue-100" : "bg-orange-100"}
-      isCollapsed={effectivelyCollapsed}
-      onCollapseToggle={() => {
-        if (!isDrawingMode) {
-          setActivePanel(effectivelyCollapsed ? "flood" : null);
-        }
-      }}
-      isMobile={isMobile}
-      isOpen={isOpen}
-      onClose={onClose}
-      anchor="left"
-      initialPosition={{ x: 16, y: 80 }}
-      headerActions={clearButton}
-      panelId="flood_report"
-    >
-      {formBody}
-    </Panel>
+    <>
+      {/* Floating Map Instructions Banner rendered in bottom center of the map container */}
+      {isDrawingMode && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <div className="flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border border-gray-200/90 text-gray-800 ring-1 ring-black/5">
+            <div className="bg-blue-50 p-1.5 rounded-full text-blue-600 flex items-center justify-center">
+              <Crosshair className="w-4 h-4 animate-pulse" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-gray-900 capitalize">
+                Drawing {geometryMode}
+              </span>
+              <span className="text-[11px] text-gray-500 font-medium">
+                {geometryMode === "freehand"
+                  ? "Click & drag on the map to draw"
+                  : geometryMode === "circle"
+                  ? "Click center & drag radius to draw"
+                  : "Click on map to place points. Double-click to finish."}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (drawRef.current) {
+                  drawRef.current.setMode("static");
+                  setIsDrawingMode(false);
+                }
+              }}
+              className="ml-2 p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+              title="Cancel drawing"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      <Panel
+        title={isAdminMode ? "Create Official Zone" : "Report Flood"}
+        icon={isAdminMode ? <ShieldCheck className="h-4 w-4 text-blue-600" /> : <Navigation2 className="h-4 w-4 text-orange-600 rotate-180" />}
+        iconBgClassName={isAdminMode ? "bg-blue-100" : "bg-orange-100"}
+        isCollapsed={isCollapsed}
+        onCollapseToggle={() => {
+          setActivePanel(isCollapsed ? "flood" : null);
+        }}
+        isMobile={isMobile}
+        isOpen={isOpen}
+        onClose={onClose}
+        anchor="left"
+        initialPosition={{ x: 16, y: 80 }}
+        headerActions={clearButton}
+        panelId="flood_report"
+      >
+        {formBody}
+      </Panel>
+    </>
   );
 }

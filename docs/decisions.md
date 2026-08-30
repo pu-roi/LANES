@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** August 24, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -197,7 +197,7 @@ When tilting the map to a 45-80° pitch, the effective zoom level becomes distor
 
 ---
 
-## 13. Persistent Admin Map Layout & Centralized Camera Transition Engine
+## 14. Persistent Admin Map Layout & Centralized Camera Transition Engine
 **Date:** August 2026
 **Decision:** Mount `<LiveMapPage />` persistently in `AdminLayout.tsx` and centralize camera transition helpers (`flyToFeature`, `flyToCoordinates`) in `mapGeoUtils.ts`.
 
@@ -226,3 +226,21 @@ Initially, flood reports were moderated via a traditional data-table view in the
 
 **Implementation:**
 The entire moderation workflow now lives inside `LiveMapPage.tsx`, acting as the 'Smart Controller' that passes data down to specific sidebar panels (Active Zones, Pending Reports) and overlays (FloodReportPanel for creation, ReportDetailsModal for moderation).
+
+---
+
+## 15. Geospatial Drawing Engine: `mapbox-gl-draw` vs. `terra-draw`
+**Date:** August 2026
+**Decision:** Completely remove `mapbox-gl-draw` (and unmaintained circle/rectangle plugins) and migrate to **Terra Draw** (`terra-draw` + `terra-draw-maplibre-gl-adapter`) for interactive map boundary drawing in the Admin Panel.
+
+**Context:**
+The DRRMO Admin panel requires interactive map tools to define custom detour geometries (Polygons, Freehand sketches, Rectangles, and Circles) when creating official zones:
+- Initially, `mapbox-gl-draw` along with community extensions (`mapbox-gl-draw-circle`, `mapbox-gl-draw-rectangle-mode`) was integrated.
+- However, `mapbox-gl-draw` relied on legacy Node.js build dependencies (such as `jsonlint-lines` requiring `fs`, `os`, `path`), which caused constant build/bundler failures in Next.js Turbopack and required fragile webpack mock fallbacks.
+- Furthermore, rapid mounting and unmounting during React 18 development (Strict Mode) triggered fatal crashes (`Uncaught Error: Source "mapbox-gl-draw-cold" already exists`) because `mapbox-gl-draw` failed to cleanly synchronously detach WebGL layers/sources from the MapLibre canvas.
+
+**Reasoning for the Migration to Terra Draw:**
+1. **Modern Bundler & Framework Compatibility:** Terra Draw is modern, lightweight, fully TypeScript-typed, and framework-agnostic. It carries zero legacy Node.js dependencies (`fs`), eliminating all Webpack and `package.json` mock hacks in Next.js.
+2. **Native Multi-Shape Capabilities:** Terra Draw provides first-party modes for `Polygon`, `Freehand`, `Rectangle`, and `Circle` out of the box, removing the need for fragile third-party wrapper plugins.
+3. **Official MapLibre GL JS Adapter:** Uses `terra-draw-maplibre-gl-adapter` to attach directly to MapLibre instances cleanly, avoiding DOM control collision and unmount leaks in React 18.
+4. **Interactive Freehand Support:** Natively supports smooth freehand drawing (`TerraDrawFreehandMode`), allowing operators to sketch organic flood extents directly on the map.
