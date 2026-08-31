@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** August 31, 2026, 10:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -69,6 +69,10 @@
   - **Default Global Map Top-Down Orientation**: Configured default `pitch: 0` for initial map instantiations.
 
 ## Recently Completed
+- [x] **UI/UX & Scrolling Polish**:
+  - Global Lenis smooth scrolling optimization (resolved transition glitches, ensured universal coverage across About, Profile, Feed, and Landing).
+  - Refined mobile glassmorphism and reduced opacity on Login/Registration cards.
+  - Adjusted landing page typography and responsive text scaling for improved legibility.
 - [x] **Reports Page & Spatial Operations Integration**: Fully integrated the Reports Page with the Live Map. Added master-detail rich view for reports (including images/videos) and bidirectional "View on Map" / "Info" linking.
 - [x] **MapLibre Rendering Stability**: Refactored `useFloodZonesLayer` to use `.setData()` and bypass strict `isStyleLoaded` checks, fixing the silent deadlock where layers wouldn't render during vector tile downloads.
 - [x] **Spatial Operations Selection Fix**: Ensured clicking the main active zone wrapper card correctly un-sets any focused `selectedContributorId`, returning the map view to the primary merged polygon.
