@@ -216,7 +216,7 @@ export default function MapCanvas() {
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
     savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen,
-    floodIsBidirectional
+    floodIsBidirectional, floodOppositeGeometry
   } = useMapContext();
 
   const isDesktopAnalytics = pathname === "/admin/analytics";
@@ -816,11 +816,13 @@ export default function MapCanvas() {
 
     // Remove existing preview source/layers if they exist
     if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
-    if (map.getLayer("flood-preview-layer-reverse")) map.removeLayer("flood-preview-layer-reverse");
+    if (map.getLayer("flood-preview-layer-opposite")) map.removeLayer("flood-preview-layer-opposite");
     if (map.getSource("flood-preview-source")) map.removeSource("flood-preview-source");
+    if (map.getSource("flood-preview-source-opposite")) map.removeSource("flood-preview-source-opposite");
 
     if (!floodPreviewGeometry) return;
 
+    // Original road line
     map.addSource("flood-preview-source", {
       type: "geojson",
       data: {
@@ -843,22 +845,31 @@ export default function MapCanvas() {
       },
     });
 
-    if (floodIsBidirectional) {
+    // Opposite carriageway line — rendered only when the backend found a real parallel road
+    if (floodIsBidirectional && floodOppositeGeometry) {
+      map.addSource("flood-preview-source-opposite", {
+        type: "geojson",
+        data: {
+          type: "Feature",
+          properties: {},
+          geometry: floodOppositeGeometry,
+        },
+      });
+
       map.addLayer({
-        id: "flood-preview-layer-reverse",
+        id: "flood-preview-layer-opposite",
         type: "line",
-        source: "flood-preview-source",
+        source: "flood-preview-source-opposite",
         layout: { "line-join": "round", "line-cap": "round" },
         paint: {
-          "line-color": "#f97316", // Orange preview color matching markers
+          "line-color": "#fb923c", // Slightly lighter orange to distinguish
           "line-width": 6,
           "line-dasharray": [2, 2],
           "line-opacity": 0.85,
-          "line-offset": -8, // Offset to the left to simulate the opposite carriageway
         },
       });
     }
-  }, [floodPreviewGeometry, floodIsBidirectional, isLoaded]);
+  }, [floodPreviewGeometry, floodOppositeGeometry, floodIsBidirectional, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;

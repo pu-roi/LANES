@@ -1,9 +1,13 @@
 import json
+import logging
+import math
 from typing import Any, Dict, List, Optional, Tuple
 import httpx
 from fastapi import HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 from app import models
 from app.models.report import ReportSeverity
@@ -356,3 +360,137 @@ def calculate_flood_safe_route(
     # If we reach this point, it means no safe detours exist. 
     # Since we explicitly discard 0% safe direct routes, we have no valid routes to show.
     return {"routes": [], "recommended_index": -1}
+
+
+def _shift_coords_perpendicular(coords: List[List[float]], offset_meters: float) -> List[List[float]]:
+    """
+    Shifts a list of [lng, lat] coordinates by `offset_meters` in the perpendicular
+    (left-hand side) direction relative to the line's travel direction.
+    Positive offset = left of travel direction (oncoming traffic lane in right-hand traffic).
+    Uses a simple flat-earth approximation which is accurate enough for short road segments.
+    """
+    if len(coords) < 2:
+        return coords
+
+    shifted = []
+    for i, pt in enumerate(coords):
+        # Use neighboring points to compute bearing at each vertex
+        if i == 0:
+            p1, p2 = coords[0], coords[1]
+        elif i == len(coords) - 1:
+            p1, p2 = coords[-2], coords[-1]
+        else:
+            p1, p2 = coords[i - 1], coords[i + 1]
+
+        # Bearing of the segment (in radians)
+        dx = p2[0] - p1[0]
+        dy = p2[1] - p1[1]
+        bearing = math.atan2(dx, dy)
+
+        # Perpendicular to the left is bearing - 90 degrees
+        perp_bearing = bearing - math.pi / 2
+
+        # Convert offset_meters to degrees (approx: 1 degree ≈ 111,000m)
+        # Latitude offset is straightforward; longitude is scaled by cos(lat)
+        lat_rad = math.radians(pt[1])
+        delta_lat = (offset_meters / 111000.0) * math.cos(perp_bearing)
+        delta_lng = (offset_meters / (111000.0 * math.cos(lat_rad))) * math.sin(perp_bearing)
+
+        shifted.append([pt[0] + delta_lng, pt[1] + delta_lat])
+
+    return shifted
+
+
+def find_opposite_carriageway(
+    route_coords: List[List[float]],
+    original_road_name: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    Hybrid Strategy: Given the [lng, lat] coordinates of a road segment, attempts to
+    find and return the geometry of the parallel, opposite-direction carriageway.
+
+    Algorithm:
+    1. Shifts all coordinates ~15m to the left (perpendicular hint away from original road).
+    2. Reverses the order (so map-matching sees the opposite travel direction).
+    3. Calls Valhalla /trace_attributes to snap to the nearest matching road.
+    4. Validates the matched road name against `original_road_name` to avoid false positives.
+    5. Returns a GeoJSON LineString of the opposite carriageway, or None if not found.
+    """
+    if not route_coords or len(route_coords) < 2:
+        return None
+
+    # Step 1: Apply 15m perpendicular left-hand offset as a "hint"
+    shifted = _shift_coords_perpendicular(route_coords, offset_meters=15.0)
+
+    # Step 2: Reverse the coordinate order so map-matching sees the opposite direction
+    reversed_shifted = list(reversed(shifted))
+
+    # Step 3: Call Valhalla /trace_attributes (Map Matching — no U-turns, pure shape snap)
+    shape = [{"lat": c[1], "lon": c[0]} for c in reversed_shifted]
+    body = {
+        "shape": shape,
+        "costing": "auto",
+        "shape_match": "map_snap",
+        "filters": {
+            "attributes": ["edge.names", "edge.length", "shape"],
+            "action": "include"
+        }
+    }
+
+    url = f"{settings.VALHALLA_URL}/trace_attributes"
+    try:
+        response = httpx.post(url, json=body, timeout=10.0)
+        if response.status_code != 200:
+            logger.warning(f"[find_opposite_carriageway] Valhalla trace_attributes failed: {response.text}")
+            return None
+
+        data = response.json()
+    except httpx.RequestError as e:
+        logger.warning(f"[find_opposite_carriageway] Valhalla unreachable: {e}")
+        return None
+
+    # Step 4: Validate — check that matched road has the same name as the original
+    matched_edges = data.get("edges", [])
+    matched_names = set()
+    for edge in matched_edges:
+        for name in edge.get("names", []):
+            matched_names.add(name.strip().lower())
+
+    if original_road_name:
+        original_normalized = original_road_name.strip().lower()
+        # Allow if any matched edge shares the same name
+        name_match = any(
+            original_normalized in n or n in original_normalized
+            for n in matched_names
+        )
+        # If the road has a name AND the matched road has a completely different name, reject it
+        if matched_names and not name_match:
+            logger.info(
+                f"[find_opposite_carriageway] Name mismatch. Original: '{original_road_name}', "
+                f"Matched: {matched_names}. Likely a different road — aborting."
+            )
+            return None
+
+    # Step 5: Decode the matched shape from the response
+    matched_shape_str = data.get("shape")
+    if not matched_shape_str:
+        return None
+
+    # The matched shape is returned reversed (we fed in a reversed trace), so re-reverse it
+    matched_coords = decode_polyline6(matched_shape_str)
+    # Re-reverse so the geometry flows in the same spatial direction as the original line
+    matched_coords = list(reversed(matched_coords))
+
+    if len(matched_coords) < 2:
+        return None
+
+    logger.info(
+        f"[find_opposite_carriageway] Successfully matched opposite carriageway "
+        f"with {len(matched_coords)} points. Road names: {matched_names}"
+    )
+
+    return {
+        "type": "LineString",
+        "coordinates": matched_coords
+    }
+

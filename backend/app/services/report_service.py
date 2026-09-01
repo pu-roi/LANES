@@ -23,6 +23,10 @@ async def process_new_report(
     """
     Business logic for processing a new flood report.
     Handles reverse geocoding to find a human_readable_location.
+    When is_bidirectional=True and a LineString geometry is provided, this function
+    uses the Hybrid Strategy (map-matching) to find the actual opposite carriageway
+    and combines both lines into a GeometryCollection so the admin approval buffer
+    accurately covers both sides of a divided road.
     """
     # If no NLP match is found, fallback to reverse geocoding
     if not human_readable_location and geometry and geometry.get("type") == "Point":
@@ -36,6 +40,38 @@ async def process_new_report(
                     human_readable_location = location
         except Exception as e:
             logger.error(f"Failed to reverse geocode report location: {e}")
+
+    # Hybrid Strategy: find the real opposite carriageway for bidirectional LineString reports
+    if is_bidirectional and geometry and geometry.get("type") == "LineString":
+        try:
+            from app.services.valhalla_service import find_opposite_carriageway
+            original_coords = geometry.get("coordinates", [])
+            # Extract road name from human_readable_location as a validation hint
+            road_name_hint = human_readable_location
+
+            opposite_geom = find_opposite_carriageway(
+                route_coords=original_coords,
+                original_road_name=road_name_hint
+            )
+
+            if opposite_geom:
+                # Combine the original line and the opposite-carriageway line into a
+                # GeometryCollection so ST_Buffer in the approval step wraps both roads.
+                geometry = {
+                    "type": "GeometryCollection",
+                    "geometries": [geometry, opposite_geom]
+                }
+                logger.info(
+                    "[process_new_report] Bidirectional: successfully combined original + "
+                    "opposite carriageway into GeometryCollection."
+                )
+            else:
+                logger.info(
+                    "[process_new_report] Bidirectional: could not find a valid opposite "
+                    "carriageway (likely a true one-way road). Storing original line only."
+                )
+        except Exception as e:
+            logger.error(f"[process_new_report] Hybrid Strategy failed: {e}. Falling back to original geometry.")
 
     report_create = FloodReportCreate(
         raw_text=raw_text,
@@ -52,6 +88,7 @@ async def process_new_report(
     )
     
     return create_flood_report(db=db, report=report_create)
+
 
 import json
 from sqlalchemy import func

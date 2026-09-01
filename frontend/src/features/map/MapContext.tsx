@@ -19,6 +19,7 @@ import {
   type MultiRouteResponse,
 } from "@/features/routing/routingApi";
 import { getBearing } from "@/lib/utils";
+import { apiClient } from "@/lib/apiClient";
 
 export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
 export type ActivePanel = "route" | "flood" | "save_place" | null;
@@ -73,6 +74,7 @@ interface MapContextValue {
   floodStart: MapPoint | null;
   floodEnd: MapPoint | null;
   floodPreviewGeometry: RouteGeometry | null;
+  floodOppositeGeometry: RouteGeometry | null;
   setFloodStart: (coords: [number, number] | null, label?: string) => void;
   setFloodEnd: (coords: [number, number] | null, label?: string) => void;
   setFloodStartLabel: (label: string) => void;
@@ -146,6 +148,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [floodStart, setFloodStartState] = useState<MapPoint | null>(null);
   const [floodEnd, setFloodEndState] = useState<MapPoint | null>(null);
   const [floodPreviewGeometry, setFloodPreviewGeometry] = useState<RouteGeometry | null>(null);
+  const [floodOppositeGeometry, setFloodOppositeGeometry] = useState<RouteGeometry | null>(null);
   const [floodIsBidirectional, setFloodIsBidirectional] = useState(true);
 
   const [vehicleProfile, setVehicleProfile] = useState<"light" | "heavy" | "motorcycle" | "walk">("light");
@@ -396,6 +399,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!floodStart || !floodEnd) {
       setFloodPreviewGeometry(null);
+      setFloodOppositeGeometry(null);
       return;
     }
 
@@ -406,17 +410,37 @@ export function MapProvider({ children }: { children: ReactNode }) {
         const routeAB = await getRoute(floodStart.coords, floodEnd.coords, true);
         if (cancelled) return;
         
-        const distanceAB = routeAB.routes[0]?.distance || 1;
-        let finalGeometry = routeAB.routes[0]?.geometry ?? null;
-
-        // Bidirectional offset is now handled purely visually in MapCanvas.tsx using line-offset.
+        const originalGeometry = routeAB.routes[0]?.geometry ?? null;
 
         if (!cancelled) {
-          setFloodPreviewGeometry(finalGeometry);
+          setFloodPreviewGeometry(originalGeometry);
+        }
+
+        // If bidirectional is enabled, call the backend to find the real opposite carriageway
+        if (floodIsBidirectional && originalGeometry?.coordinates?.length >= 2) {
+          try {
+            const preview = await apiClient.post<{
+              original: RouteGeometry;
+              opposite: RouteGeometry | null;
+              is_divided: boolean;
+            }>("/reports/preview-bidirectional", {
+              coordinates: originalGeometry.coordinates,
+              road_name: null,
+            });
+
+            if (!cancelled) {
+              setFloodOppositeGeometry(preview.opposite ?? null);
+            }
+          } catch {
+            if (!cancelled) setFloodOppositeGeometry(null);
+          }
+        } else {
+          if (!cancelled) setFloodOppositeGeometry(null);
         }
       } catch {
         if (!cancelled) {
           setFloodPreviewGeometry(null);
+          setFloodOppositeGeometry(null);
         }
       }
     };
@@ -427,6 +451,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       cancelled = true;
     };
   }, [floodStart, floodEnd, floodIsBidirectional]);
+
 
   const value = useMemo<MapContextValue>(
     () => ({
@@ -452,6 +477,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodStart,
       floodEnd,
       floodPreviewGeometry,
+      floodOppositeGeometry,
       floodIsBidirectional,
       setFloodIsBidirectional,
       savedPlaces,
@@ -508,6 +534,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodStart,
       floodEnd,
       floodPreviewGeometry,
+      floodOppositeGeometry,
       floodIsBidirectional,
       setFloodIsBidirectional,
       savedPlaces,

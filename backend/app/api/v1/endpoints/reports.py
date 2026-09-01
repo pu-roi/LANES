@@ -151,3 +151,41 @@ async def get_safe_route(payload: schemas.RouteRequest, db: Session = Depends(ge
         vehicle_profile=payload.vehicle_profile
     )
 
+
+from pydantic import BaseModel as PydanticBaseModel
+from typing import Optional as TypingOptional
+
+class BidirectionalPreviewRequest(PydanticBaseModel):
+    coordinates: list  # List of [lng, lat] points forming the original road segment
+    road_name: TypingOptional[str] = None  # Optional road name for validation
+
+class BidirectionalPreviewResponse(PydanticBaseModel):
+    original: dict       # GeoJSON LineString of the original road
+    opposite: TypingOptional[dict] = None  # GeoJSON LineString of opposite carriageway (None if one-way)
+    is_divided: bool     # True if a valid opposite carriageway was found
+
+@router.post("/preview-bidirectional", response_model=BidirectionalPreviewResponse)
+def preview_bidirectional(payload: BidirectionalPreviewRequest):
+    """
+    Given a list of coordinates forming a road segment, uses the Hybrid Strategy
+    (perpendicular offset + Valhalla map-matching + name validation) to detect and
+    return the actual opposite carriageway geometry for preview before submission.
+    Returns `is_divided=False` and `opposite=None` for true one-way streets.
+    """
+    from app.services.valhalla_service import find_opposite_carriageway
+
+    original_geom = {
+        "type": "LineString",
+        "coordinates": payload.coordinates
+    }
+
+    opposite_geom = find_opposite_carriageway(
+        route_coords=payload.coordinates,
+        original_road_name=payload.road_name
+    )
+
+    return BidirectionalPreviewResponse(
+        original=original_geom,
+        opposite=opposite_geom,
+        is_divided=opposite_geom is not None
+    )

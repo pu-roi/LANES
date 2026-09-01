@@ -120,15 +120,37 @@ async def approve_report(
             # Auto-calculate buffer polygon via PostGIS
             geom_type = db.query(func.ST_GeometryType(report.geometry)).scalar()
             is_linestring = geom_type == "ST_LineString"
-            
-            # If the user reported this as affecting both sides of a divided road, increase the buffer
-            # to engulf both the forward and reverse carriageways (approx 30+ meters).
-            default_buffer = 0.0003 if (is_linestring and getattr(report, 'is_bidirectional', False)) else (0.00015 if is_linestring else 0.0005)
-            buffer_radius = body.buffer_radius if (body and body.buffer_radius) else default_buffer
+            is_collection = geom_type == "ST_GeometryCollection"
 
-            buffered_geojson_str = db.query(
-                func.ST_AsGeoJSON(func.ST_Buffer(report.geometry, buffer_radius))
-            ).scalar()
+            # For bidirectional reports stored as a GeometryCollection (original + opposite line),
+            # we collect both lines and buffer together so the resulting polygon accurately wraps
+            # both carriageways instead of just inflating one line.
+            if is_collection:
+                # Use a tighter per-line buffer since both roads are already included in the collection
+                buffer_radius = body.buffer_radius if (body and body.buffer_radius) else 0.00015
+                buffered_geojson_str = db.query(
+                    func.ST_AsGeoJSON(
+                        func.ST_ConvexHull(
+                            func.ST_Collect(
+                                func.ST_Buffer(
+                                    func.ST_GeometryN(report.geometry, 1),  # Original line
+                                    buffer_radius
+                                ),
+                                func.ST_Buffer(
+                                    func.ST_GeometryN(report.geometry, 2),  # Opposite line
+                                    buffer_radius
+                                )
+                            )
+                        )
+                    )
+                ).scalar()
+            else:
+                # Fallback: single LineString or Point — use original logic
+                default_buffer = 0.00015 if is_linestring else 0.0005
+                buffer_radius = body.buffer_radius if (body and body.buffer_radius) else default_buffer
+                buffered_geojson_str = db.query(
+                    func.ST_AsGeoJSON(func.ST_Buffer(report.geometry, buffer_radius))
+                ).scalar()
 
             if buffered_geojson_str:
                 import json

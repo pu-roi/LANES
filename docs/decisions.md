@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 2, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -244,3 +244,56 @@ The DRRMO Admin panel requires interactive map tools to define custom detour geo
 2. **Native Multi-Shape Capabilities:** Terra Draw provides first-party modes for `Polygon`, `Freehand`, `Rectangle`, and `Circle` out of the box, removing the need for fragile third-party wrapper plugins.
 3. **Official MapLibre GL JS Adapter:** Uses `terra-draw-maplibre-gl-adapter` to attach directly to MapLibre instances cleanly, avoiding DOM control collision and unmount leaks in React 18.
 4. **Interactive Freehand Support:** Natively supports smooth freehand drawing (`TerraDrawFreehandMode`), allowing operators to sketch organic flood extents directly on the map.
+
+---
+
+## 16. Bidirectional Flood Report: Hybrid Carriageway Detection Strategy
+**Date:** September 2, 2026
+**Decision:** Replace the naive CSS `line-offset` visual hack for "Affects both sides of the road" with an intelligent **Hybrid Carriageway Detection Strategy** combining Valhalla Map Matching, perpendicular geometric hinting, and PostGIS `GeometryCollection` storage.
+
+**Context:**
+When a user submits a flood report and checks "Affects both sides of the road (2-way)", the system needs to show and buffer both carriageways of the affected road. The challenge is that roads in the Philippines vary significantly:
+- **Narrow two-way roads**: Both directions share the same centerline in OSM.
+- **Wide undivided roads**: Two-way, one centerline, wide lanes.
+- **Divided dual carriageways** (e.g., C-5, NLEX, EDSA): Mapped in OSM as **two completely separate one-way roads** with a physical median between them.
+
+The original approach was a CSS `line-offset: -8px` visual trick — drawing the same MapLibre line shifted slightly left. This failed fundamentally:
+1. It is purely cosmetic — the flood zone buffer in PostGIS still only covered one road.
+2. On wide divided roads, the offset line landed in the median or on the wrong road entirely.
+3. Mathematical parallel offsets do not account for variable road widths or OSM's dual-way modeling.
+
+**Rejected Approaches:**
+- **Standard reverse routing (`/route` A→B reversed to B→A):** The Valhalla routing engine is traffic-law-aware. If the road is one-way, it will hunt for U-turns or legal crossing points, producing massive detours instead of a parallel line. ❌
+- **Fixed geometric offset only:** A fixed 15m offset works on some roads but fails on roads narrower than 5m (lands in buildings) or wider than 40m (lands in the median). ❌
+
+**The Hybrid Strategy (Selected):**
+The final decision combines three techniques into a single pipeline:
+
+| Step | Technique | Purpose |
+|---|---|---|
+| 1 | **Perpendicular Geometric Offset** | Shift all coordinates ~15m to the left as a spatial "hint" to push the search away from the original road |
+| 2 | **Coordinate Reversal** | Reverse the order of shifted coordinates so map-matching sees traffic flowing in the opposite direction |
+| 3 | **Valhalla Map Matching** (`/trace_attributes`) | Snap the shifted+reversed shape to the nearest road. Unlike routing, map-matching **never invents U-turns** — it strictly follows the provided shape and snaps to the nearest legal road edge |
+| 4 | **Road Name Validation** | Compare matched edge names from Valhalla against the original road name. If names are entirely different, abort — it's a different road, not the opposite carriageway |
+
+**Why Map Matching avoids U-turns:**
+The standard `/route` API is path-finding (must obey traffic laws between two points). The `/trace_attributes` Map Matching API is shape-fitting (finds the road beneath a shape, regardless of legal drivability). Feeding it a reversed shape causes it to snap directly to the opposite-flowing lane without needing any legal U-turn maneuver.
+
+**PostGIS Storage:**
+When an opposite carriageway is successfully found, the backend stores **both** LineStrings as a single `GeometryCollection` in the `flood_reports.geometry` column. During admin approval, the buffer query is updated:
+- **Single road (LineString):** `ST_Buffer(geometry, 0.00015)` — standard single-line buffer.
+- **Dual carriageway (GeometryCollection):** `ST_ConvexHull(ST_Collect(ST_Buffer(line1), ST_Buffer(line2)))` — wraps both buffered lines into one convex hull polygon that accurately covers both carriageways.
+
+**Frontend Preview:**
+A new `POST /api/v1/reports/preview-bidirectional` endpoint was added. When "Affects both sides" is toggled, the frontend calls this endpoint and renders **two separate MapLibre source/layer pairs** (`flood-preview-source` + `flood-preview-source-opposite`) — displaying the actual opposite road line on the map before submission, not a fake visual offset.
+
+**Fallback Behavior:**
+- If no opposite carriageway is found (true one-way street, dead-end, or unmapped road), the system silently stores only the original LineString. No error is shown to the user; the flood zone simply covers the one road that was plotted.
+
+**Files Modified:**
+- [`backend/app/services/valhalla_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py) — `find_opposite_carriageway()` + `_shift_coords_perpendicular()`
+- [`backend/app/services/report_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py) — GeometryCollection construction on bidirectional reports
+- [`backend/app/api/v1/endpoints/reports.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) — `POST /reports/preview-bidirectional` endpoint
+- [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — `ST_ConvexHull(ST_Collect(...))` dual-buffer approval logic
+- [`frontend/src/features/map/MapContext.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx) — `floodOppositeGeometry` state + `/preview-bidirectional` API call
+- [`frontend/src/features/map/MapCanvas.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx) — Dual-source real line rendering replacing CSS offset hack

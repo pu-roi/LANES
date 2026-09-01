@@ -1,11 +1,11 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** August 31, 2026, 10:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 2, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
-## Completed Milestones (32+ Commits Integrated)
+## Completed Milestones (33+ Commits Integrated)
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
@@ -19,10 +19,34 @@
 | 8 | Community Feed & Moderation | Completed | Feed layout, Upvotes/Downvotes, Post archiving, Soft deletes, Map coordinate rendering |
 | 9 | Spatial Analytics & Heatmap | Completed | Global Heatmap, Top Barangays stats, Dedicated Analytics Pages for Commuters and Admins |
 | 10| Official Flood Zones (DRRMO) Moderation | Completed | Admin panel restructuring, backend Zone Override schemas, bulk merging operations, troll filtration, DRRMO Official Zone mapping with Terra Draw |
+| 11| Intelligent Bidirectional Flood Reporting | Completed | Hybrid Carriageway Detection Strategy, Valhalla Map Matching for opposite-side road detection, GeometryCollection PostGIS storage, dual-buffer approval |
 
 ## Capstone Roadmap - Delivered Phases
 
+### Capstone Phase 7: Intelligent Bidirectional Flood Reporting — Hybrid Carriageway Detection (🟢 COMPLETED)
+- [x] **Replaced CSS `line-offset` hack with real opposite-carriageway detection** (@roicambe):
+  - Identified root cause: `line-offset: -8px` was purely cosmetic and placed the second line in the median of wide divided roads, not on the actual opposite carriageway.
+  - Evaluated and rejected standard reverse routing (`/route` B→A) due to U-turn loop problem — the Valhalla engine generates legal driving routes, not parallel lines.
+  - Evaluated and rejected fixed geometric offsets — variable road widths (3m narrow streets vs. 30m expressways) make any single offset value unreliable.
+- [x] **Implemented Hybrid Carriageway Detection Strategy** (`valhalla_service.py`):
+  - `_shift_coords_perpendicular()`: Shifts all route coordinates ~15m to the left using flat-earth perpendicular math (accurate for short road segments in SRID 4326).
+  - `find_opposite_carriageway()`: Reverses the shifted coordinate order and calls Valhalla's `/trace_attributes` (Map Matching API). Unlike the routing API, map matching is shape-fitting — it snaps a shape to the nearest road without inventing U-turns.
+  - Road name validation: cross-checks matched edge names from Valhalla against the original road to prevent false snapping to unrelated nearby roads.
+- [x] **PostGIS GeometryCollection Storage** (`report_service.py`, `admin.py`):
+  - Bidirectional reports now store `{ type: "GeometryCollection", geometries: [original_line, opposite_line] }` in `flood_reports.geometry`.
+  - Admin approval updated to use `ST_ConvexHull(ST_Collect(ST_Buffer(line1), ST_Buffer(line2)))` — creating one accurate polygon that wraps both carriageways.
+- [x] **New `POST /reports/preview-bidirectional` endpoint** (`reports.py`):
+  - Accepts the original route coordinates and returns both `original` and `opposite` GeoJSON LineStrings.
+  - Returns `is_divided: true/false` to indicate whether a valid opposite carriageway was detected.
+- [x] **Frontend real-time dual-line preview** (`MapContext.tsx`, `MapCanvas.tsx`):
+  - Added `floodOppositeGeometry` state to `MapContext`.
+  - When "Affects both sides" is active, calls `/preview-bidirectional` and renders two separate MapLibre source/layer pairs — one for each real road.
+  - Graceful fallback: if no opposite carriageway is detected (true one-way roads), only the original line is shown.
+- [x] **Map auto-recovery crash fix** (`useFloodZonesLayer.ts`):
+  - Added `!map.getStyle()` safety guard to prevent `Cannot read properties of undefined (reading 'getSource')` crash during MapLibre style auto-recovery.
+
 ### Capstone Phase 6: Official DRRMO Zone Creation & Terra Draw Vector Engine (🟢 COMPLETED)
+
 - [x] **Migration from `mapbox-gl-draw` to `terra-draw`**:
   - Completely purged legacy `mapbox-gl-draw` and unmaintained circle/rectangle plugins.
   - Eliminated all Next.js Node.js module mocks (`fs`, `os`, `path` browser fallbacks in Webpack & `package.json`).
