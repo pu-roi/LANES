@@ -183,7 +183,6 @@ export default function MapCanvas() {
   const [mapStyle, setMapStyle] = useState<any>(
     "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU"
   );
-  const [usingFallback, setUsingFallback] = useState(false);
 
   const { data: activeZonesData } = useQuery({
     queryKey: ["activeZones"],
@@ -204,26 +203,6 @@ export default function MapCanvas() {
   useCityBoundaries(mapInstance, isLoaded);
   useFloodZonesLayer(mapInstance, isLoaded, activeZonesData, isTouchDevice);
 
-  // Auto-retry MapTiler when using fallback
-  useEffect(() => {
-    if (!usingFallback) return;
-
-    const retryInterval = setInterval(async () => {
-      try {
-        const response = await fetch("https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU", { method: 'GET' });
-        if (response.ok) {
-          // MapTiler is back online!
-          setUsingFallback(false);
-          setMapStyle("https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU");
-        }
-      } catch (e) {
-        // Still blocked/offline, do nothing and let interval continue
-      }
-    }, 15000); // Check every 15 seconds
-
-    return () => clearInterval(retryInterval);
-  }, [usingFallback]);
-
   const isTouchDeviceRef = useRef(isTouchDevice);
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -236,7 +215,8 @@ export default function MapCanvas() {
     setPointFromMap, activePoint, setActivePoint, isPickingOnMap,
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
-    savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen
+    savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen,
+    floodIsBidirectional
   } = useMapContext();
 
   const isDesktopAnalytics = pathname === "/admin/analytics";
@@ -836,6 +816,7 @@ export default function MapCanvas() {
 
     // Remove existing preview source/layers if they exist
     if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
+    if (map.getLayer("flood-preview-layer-reverse")) map.removeLayer("flood-preview-layer-reverse");
     if (map.getSource("flood-preview-source")) map.removeSource("flood-preview-source");
 
     if (!floodPreviewGeometry) return;
@@ -861,7 +842,23 @@ export default function MapCanvas() {
         "line-opacity": 0.85,
       },
     });
-  }, [floodPreviewGeometry, isLoaded]);
+
+    if (floodIsBidirectional) {
+      map.addLayer({
+        id: "flood-preview-layer-reverse",
+        type: "line",
+        source: "flood-preview-source",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: {
+          "line-color": "#f97316", // Orange preview color matching markers
+          "line-width": 6,
+          "line-dasharray": [2, 2],
+          "line-opacity": 0.85,
+          "line-offset": -8, // Offset to the left to simulate the opposite carriageway
+        },
+      });
+    }
+  }, [floodPreviewGeometry, floodIsBidirectional, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
@@ -932,12 +929,6 @@ export default function MapCanvas() {
       }}
       className={`relative h-full ${pathname === "/map" ? "w-full md:ml-[340px] md:w-[calc(100%-340px)]" : "w-full"} ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}
     >
-
-      {usingFallback && (
-        <div className="absolute top-20 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-30 bg-amber-500/95 text-white text-xs md:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-sm animate-pulse max-w-md pointer-events-auto border border-amber-400/20 font-medium">
-          <span>⚠️ MapTiler tiles blocked or offline. Switched to OpenStreetMap fallback. Retrying automatically...</span>
-        </div>
-      )}
 
       {/* Center Pin Overlay (for touch device panning) */}
       {isTouchDevice && isPickingOnMap && activePoint && (

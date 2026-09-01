@@ -17,6 +17,7 @@ class RouteRequest(BaseModel):
     ignore_floods: bool = Field(False, description="Bypass flood avoidance checks and return the raw shortest path")
     vehicle_profile: str = Field("light", description="Vehicle profile: light, heavy, motorcycle, walk")
     engine: str = Field("ors", description="Routing Engine to use")
+    heading: int = Field(None, description="Optional heading in degrees (0-360) to force snapping to a specific lane direction")
 
 
 class RouteOption(BaseModel):

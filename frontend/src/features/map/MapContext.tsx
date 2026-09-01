@@ -18,6 +18,7 @@ import {
   type RouteOption,
   type MultiRouteResponse,
 } from "@/features/routing/routingApi";
+import { getBearing } from "@/lib/utils";
 
 export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
 export type ActivePanel = "route" | "flood" | "save_place" | null;
@@ -76,6 +77,8 @@ interface MapContextValue {
   setFloodEnd: (coords: [number, number] | null, label?: string) => void;
   setFloodStartLabel: (label: string) => void;
   setFloodEndLabel: (label: string) => void;
+  floodIsBidirectional: boolean;
+  setFloodIsBidirectional: (isBi: boolean) => void;
   clearRoute: () => void;
   resetAll: () => void;
   vehicleProfile: "light" | "heavy" | "motorcycle" | "walk";
@@ -143,6 +146,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [floodStart, setFloodStartState] = useState<MapPoint | null>(null);
   const [floodEnd, setFloodEndState] = useState<MapPoint | null>(null);
   const [floodPreviewGeometry, setFloodPreviewGeometry] = useState<RouteGeometry | null>(null);
+  const [floodIsBidirectional, setFloodIsBidirectional] = useState(true);
 
   const [vehicleProfile, setVehicleProfile] = useState<"light" | "heavy" | "motorcycle" | "walk">("light");
   const [routingEngine, setRoutingEngine] = useState<"valhalla" | "ors">("ors");
@@ -399,10 +403,17 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
     const fetchFloodPreview = async () => {
       try {
-        const result = await getRoute(floodStart.coords, floodEnd.coords, true);
+        const routeAB = await getRoute(floodStart.coords, floodEnd.coords, true);
         if (cancelled) return;
-        // ignore_floods returns a single route at index 0
-        setFloodPreviewGeometry(result.routes[0]?.geometry ?? null);
+        
+        const distanceAB = routeAB.routes[0]?.distance || 1;
+        let finalGeometry = routeAB.routes[0]?.geometry ?? null;
+
+        // Bidirectional offset is now handled purely visually in MapCanvas.tsx using line-offset.
+
+        if (!cancelled) {
+          setFloodPreviewGeometry(finalGeometry);
+        }
       } catch {
         if (!cancelled) {
           setFloodPreviewGeometry(null);
@@ -415,7 +426,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [floodStart, floodEnd]);
+  }, [floodStart, floodEnd, floodIsBidirectional]);
 
   const value = useMemo<MapContextValue>(
     () => ({
@@ -441,6 +452,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodStart,
       floodEnd,
       floodPreviewGeometry,
+      floodIsBidirectional,
+      setFloodIsBidirectional,
       savedPlaces,
       draftSavePlaceCoords,
       savePlaceIcon,
@@ -495,6 +508,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodStart,
       floodEnd,
       floodPreviewGeometry,
+      floodIsBidirectional,
+      setFloodIsBidirectional,
       savedPlaces,
       draftSavePlaceCoords,
       savePlaceIcon,
@@ -514,6 +529,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setEndLabel,
       setFloodStart,
       setFloodEnd,
+      floodIsBidirectional,
       setFloodStartLabel,
       setFloodEndLabel,
       setPointFromMap,

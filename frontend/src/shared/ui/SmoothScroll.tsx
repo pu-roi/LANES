@@ -13,21 +13,42 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1.1,
-      touchMultiplier: 1.5,
-      autoRaf: true,
-    });
+    const shouldDisable =
+      pathname === "/map" ||
+      pathname.startsWith("/feed") ||
+      pathname.startsWith("/profile");
 
-    lenisRef.current = lenis;
+    if (shouldDisable) {
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
+      }
+      
+      // Safety cleanup to ensure native scrolling works when Lenis is disabled
+      document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-scrolling', 'lenis-stopped');
+      document.documentElement.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('height');
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('height');
+      return;
+    }
 
-    // Handle in-page anchor clicks with smooth Lenis animation
+    if (!lenisRef.current) {
+      const lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 1.1,
+        touchMultiplier: 1.5,
+        autoRaf: true,
+      });
+      lenisRef.current = lenis;
+    }
+
     const handleAnchorClick = (e: MouseEvent) => {
+      if (!lenisRef.current) return;
       const target = (e.target as HTMLElement).closest("a");
       if (
         target &&
@@ -36,7 +57,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
         target.pathname === window.location.pathname
       ) {
         e.preventDefault();
-        lenis.scrollTo(target.hash, { offset: -20, duration: 1.1 });
+        lenisRef.current.scrollTo(target.hash, { offset: -20, duration: 1.1 });
       }
     };
 
@@ -44,21 +65,17 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
 
     return () => {
       document.removeEventListener("click", handleAnchorClick);
-      lenis.destroy();
-      lenisRef.current = null;
     };
-  }, []); // Empty dependency array: initialize only once!
+  }, [pathname]);
 
   useEffect(() => {
-    // Disable smooth wheel on map page to preserve Canvas / WebGL interaction integrity
-    if (lenisRef.current) {
-      if (pathname === "/map") {
-        lenisRef.current.stop();
-      } else {
-        lenisRef.current.start();
+    return () => {
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
       }
-    }
-  }, [pathname]);
+    };
+  }, []);
 
   return <>{children}</>;
 }

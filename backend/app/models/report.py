@@ -61,6 +61,7 @@ class FloodReport(Base):
     human_readable_location: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     barangay: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_bidirectional: Mapped[bool] = mapped_column(Boolean, default=False)
     
     # 1:N Spatial Dedup: Multiple FloodReports can link to 1 FloodAvoidanceZone
     zone_id: Mapped[Optional[int]] = mapped_column(

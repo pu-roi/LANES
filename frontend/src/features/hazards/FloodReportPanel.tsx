@@ -25,7 +25,7 @@ import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { Panel } from "@/shared/ui/Panel";
 import { useToast } from "@/shared/ui";
 import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
-import { cn } from "@/lib/utils";
+import { cn, getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
@@ -110,6 +110,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setFloodEndLabel,
     activePanel,
     setActivePanel,
+    floodIsBidirectional: isBidirectional,
+    setFloodIsBidirectional: setIsBidirectional,
   } = useMapContext();
 
   // Form state
@@ -203,8 +205,18 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setIsSubmitting(true);
     try {
       // 1. Get the actual road geometry between the two points, ignoring any existing active floods
-      const routeResult = await getRoute(floodStart.coords, floodEnd.coords, true);
-      const roadGeometry = routeResult.routes[0]?.geometry;
+      const routeAB = await getRoute(floodStart.coords, floodEnd.coords, true);
+      const roadGeometryAB = routeAB.routes[0]?.geometry;
+      const distanceAB = routeAB.routes[0]?.distance || 1;
+      
+      let finalGeometry = roadGeometryAB;
+      let isBi = false;
+
+      // If bidirectional is checked, we just pass the flag to the backend.
+      // The backend will create a wider avoidance zone, and MapCanvas will visually offset it.
+      if (isBidirectional) {
+          isBi = true;
+      }
 
       // 2. Map visual option to backend severity
       const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
@@ -220,7 +232,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         formData.append("depth", depth);
       }
       formData.append("is_public", isPublic.toString());
-      formData.append("geometry", JSON.stringify(roadGeometry));
+      formData.append("is_bidirectional", isBi.toString());
+      formData.append("geometry", JSON.stringify(finalGeometry));
       formData.append(
         "survey_data",
         JSON.stringify({
@@ -249,6 +262,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       setHiddenHazards(null);
       setMediaFiles([]);
       setShowSurvey(false);
+      setIsBidirectional(true);
       
       success(isAdminMode ? "Zone Created" : "Report Submitted", isAdminMode ? "Official zone is now active." : "Thank you! Your report is now in review.");
       if (onClose) onClose();
@@ -458,6 +472,26 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                 />
               </div>
             </div>
+          </div>
+          
+          {/* Bidirectional Toggle */}
+          <div className="flex items-start gap-2 mb-4 px-1 group cursor-pointer" onClick={() => setIsBidirectional(!isBidirectional)}>
+             <div className="flex h-5 items-center mt-0.5">
+                <input
+                  type="checkbox"
+                  checked={isBidirectional}
+                  onChange={(e) => { e.stopPropagation(); setIsBidirectional(e.target.checked); }}
+                  className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600 focus:ring-2 pointer-events-auto cursor-pointer"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[13px] font-semibold text-gray-800 group-hover:text-gray-900 transition-colors">
+                  Affects both sides of the road (2-way)
+                </span>
+                <span className="text-[11px] text-gray-500 leading-tight pr-4">
+                  Keep checked if the flood blocks traffic in both directions. The system will automatically verify 1-way streets.
+                </span>
+              </div>
           </div>
 
           {/* Severity selector */}

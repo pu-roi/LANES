@@ -7,10 +7,12 @@ from geoalchemy2.elements import WKBElement
 from app.schemas.common import (
     PointGeometry,
     LineStringGeometry,
+    MultiLineStringGeometry,
     PolygonGeometry,
     MultiPolygonGeometry,
     parse_ewkb_point,
     parse_ewkb_linestring,
+    parse_ewkb_multilinestring,
     parse_ewkb_polygon,
 )
 
@@ -35,10 +37,11 @@ class FloodReportBase(BaseModel):
     human_readable_location: Optional[str] = None
     barangay: Optional[str] = None
     is_public: bool = False
+    is_bidirectional: bool = False
 
 
 class FloodReportCreate(FloodReportBase):
-    geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     media_urls: list[str] = []
     user_id: Optional[int] = None
     survey_data: Optional[SurveyData] = None
@@ -52,7 +55,7 @@ class FloodReportCreate(FloodReportBase):
 class FloodReportResponse(FloodReportBase):
     id: int
     status: ReportStatus
-    geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     media_urls: list[str] = []
     created_at: datetime
     updated_at: datetime
@@ -73,7 +76,7 @@ class FloodReportResponse(FloodReportBase):
 
     @field_validator("geometry", mode="before")
     @classmethod
-    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry]]:
+    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry]]:
         if isinstance(v, WKBElement):
             try:
                 # Use raw bytes data from descriptor or data field
@@ -88,6 +91,9 @@ class FloodReportResponse(FloodReportBase):
                 elif pure_geom_type == 2:  # LineString
                     coords = parse_ewkb_linestring(data)
                     return LineStringGeometry(type="LineString", coordinates=coords)
+                elif pure_geom_type == 5:  # MultiLineString
+                    coords = parse_ewkb_multilinestring(data)
+                    return MultiLineStringGeometry(type="MultiLineString", coordinates=coords)
             except Exception as e:
                 # Log parser error and return None
                 print(f"Warning: Failed parsing EWKB in validator: {e}")
@@ -132,12 +138,12 @@ class ZoneContributorResponse(BaseModel):
     depth: Optional[str] = None
     created_at: datetime
     is_primary: bool = False
-    geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     model_config = ConfigDict(from_attributes=True)
 
     @field_validator("geometry", mode="before")
     @classmethod
-    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry]]:
+    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry]]:
         if isinstance(v, WKBElement):
             try:
                 data = bytes.fromhex(v.desc) if isinstance(v.desc, str) else bytes(v.data)
@@ -151,6 +157,9 @@ class ZoneContributorResponse(BaseModel):
                 elif pure_geom_type == 2:  # LineString
                     coords = parse_ewkb_linestring(data)
                     return LineStringGeometry(type="LineString", coordinates=coords)
+                elif pure_geom_type == 5:  # MultiLineString
+                    coords = parse_ewkb_multilinestring(data)
+                    return MultiLineStringGeometry(type="MultiLineString", coordinates=coords)
             except Exception as e:
                 print(f"Warning: Failed parsing contributor geometry EWKB: {e}")
                 return None
@@ -168,7 +177,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     geometry: PolygonGeometry
     severity: str
     depth: Optional[str] = None
-    report_geometry: Optional[Union[PointGeometry, LineStringGeometry, PolygonGeometry]] = None
+    report_geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     created_at: datetime
     
     report_text: Optional[str] = None
@@ -200,7 +209,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
 
     @field_validator("report_geometry", mode="before")
     @classmethod
-    def convert_report_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry]]:
+    def convert_report_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry]]:
         if isinstance(v, WKBElement):
             try:
                 data = bytes.fromhex(v.desc) if isinstance(v.desc, str) else bytes(v.data)
@@ -214,6 +223,9 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
                 elif pure_geom_type == 2:  # LineString
                     coords = parse_ewkb_linestring(data)
                     return LineStringGeometry(type="LineString", coordinates=coords)
+                elif pure_geom_type == 5:  # MultiLineString
+                    coords = parse_ewkb_multilinestring(data)
+                    return MultiLineStringGeometry(type="MultiLineString", coordinates=coords)
             except Exception as e:
                 print(f"Warning: Failed parsing report_geometry EWKB: {e}")
                 return None

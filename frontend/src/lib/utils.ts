@@ -46,3 +46,22 @@ export function formatCommentTime(dateStr: string): string {
     ...(sameYear ? {} : { year: "numeric" }),
   });
 }
+
+/**
+ * Calculates the bearing between two points [lng, lat] in degrees.
+ * Returns a value between 0 and 360.
+ */
+export function getBearing(start: [number, number], end: [number, number]): number {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const toDeg = (rad: number) => (rad * 180) / Math.PI;
+
+  const lon1 = toRad(start[0]);
+  const lat1 = toRad(start[1]);
+  const lon2 = toRad(end[0]);
+  const lat2 = toRad(end[1]);
+
+  const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+  const brng = toDeg(Math.atan2(y, x));
+  return Math.round((brng + 360) % 360);
+}

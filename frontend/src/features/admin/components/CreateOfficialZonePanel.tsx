@@ -41,7 +41,7 @@ import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { Panel } from "@/shared/ui/Panel";
 import { useToast } from "@/shared/ui";
 import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
-import { cn } from "@/lib/utils";
+import { cn, getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
@@ -155,6 +155,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     setFloodEndLabel,
     activePanel,
     setActivePanel,
+    floodIsBidirectional: isBidirectional,
+    setFloodIsBidirectional: setIsBidirectional,
   } = useMapContext();
 
   // Form state
@@ -533,13 +535,37 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     setIsSubmitting(true);
     try {
       let finalGeometry = null;
+      let isBi = false;
 
       if (drawnFeatures.length > 0) {
         finalGeometry = drawnGeometry;
       } else if (floodStart && floodEnd) {
         // 1. Get the actual road geometry between the two points, ignoring any existing active floods
-        const routeResult = await getRoute(floodStart.coords, floodEnd.coords, true);
-        finalGeometry = routeResult.routes[0]?.geometry;
+        const routeAB = await getRoute(floodStart.coords, floodEnd.coords, true);
+        const roadGeometryAB = routeAB.routes[0]?.geometry;
+        const distanceAB = routeAB.routes[0]?.distance || 1;
+        
+        finalGeometry = roadGeometryAB;
+        isBi = false;
+
+        // If bidirectional is checked, unconditionally merge B -> A geometry
+        if (isBidirectional) {
+            const bearingBA = getBearing(floodEnd.coords, floodStart.coords);
+            const routeBA = await getRoute(floodEnd.coords, floodStart.coords, true, "light", "valhalla", bearingBA);
+            const roadGeometryBA = routeBA.routes[0]?.geometry;
+            const distanceBA = routeBA.routes[0]?.distance || 0;
+
+            if (roadGeometryBA && distanceBA <= distanceAB * 1.5 + 100) {
+                finalGeometry = {
+                    type: "MultiLineString",
+                    coordinates: [
+                        roadGeometryAB.coordinates,
+                        roadGeometryBA.coordinates
+                    ]
+                };
+                isBi = true; // Confirmed bidirectional
+            }
+        }
       }
 
       // 2. Map visual option to backend severity
@@ -568,6 +594,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
           formData.append("depth", depth);
         }
         formData.append("is_public", isPublic.toString());
+        formData.append("is_bidirectional", isBi.toString());
         formData.append("geometry", JSON.stringify(finalGeometry));
         formData.append(
           "survey_data",
@@ -598,6 +625,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       setZoneName("");
       setZoneStatus("active");
       setShowSurvey(false);
+      setIsBidirectional(true);
       
       success(isAdminMode ? "Zone Created" : "Report Submitted", isAdminMode ? "Official zone is now active." : "Thank you! Your report is now in review.");
       if (onClose) onClose();
@@ -779,7 +807,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
           </div>
 
           {geometryMode === "line" ? (
-            /* Location Inputs (Timeline Style) */
+            <>
+            {/* Location Inputs (Timeline Style) */}
             <div className="flex items-center mb-2">
               {/* Left Icons */}
               <div className="flex flex-col items-center justify-center gap-1 w-5 mr-2 relative z-10 shrink-0">
@@ -885,6 +914,27 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               </div>
             </div>
           </div>
+          
+          {/* Bidirectional Toggle for Line Mode */}
+          <div className="flex items-start gap-2 mb-4 px-1 group cursor-pointer" onClick={() => setIsBidirectional(!isBidirectional)}>
+             <div className="flex h-5 items-center mt-0.5">
+                <input
+                  type="checkbox"
+                  checked={isBidirectional}
+                  onChange={(e) => { e.stopPropagation(); setIsBidirectional(e.target.checked); }}
+                  className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600 focus:ring-2 pointer-events-auto cursor-pointer"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[13px] font-semibold text-gray-800 group-hover:text-gray-900 transition-colors">
+                  Affects both sides of the road (2-way)
+                </span>
+                <span className="text-[11px] text-gray-500 leading-tight pr-4">
+                  Keep checked if the flood blocks traffic in both directions. The system will automatically verify 1-way streets.
+                </span>
+              </div>
+          </div>
+          </>
           ) : (
             <div className="flex flex-col items-center justify-center py-5 text-center bg-slate-50 rounded-xl border border-slate-200 border-dashed">
               <Crosshair className="w-6 h-6 text-slate-400 mb-1.5" />

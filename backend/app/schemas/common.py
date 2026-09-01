@@ -74,6 +74,37 @@ def parse_ewkb_linestring(data: bytes) -> List[List[float]]:
     return points
 
 
+def parse_ewkb_multilinestring(data: bytes) -> List[List[List[float]]]:
+    """
+    Parses a PostGIS EWKB (Extended Well-Known Binary) MultiLineString into a list of LineStrings.
+    """
+    byte_order = '<' if data[0] == 1 else '>'
+    geom_type = struct.unpack(f"{byte_order}I", data[1:5])[0]
+    
+    offset = 5
+    # If EWKB has SRID flag (0x20000000)
+    if geom_type & 0x20000000:
+        offset += 4
+        
+    num_lines = struct.unpack(f"{byte_order}I", data[offset:offset+4])[0]
+    offset += 4
+    
+    lines = []
+    for _ in range(num_lines):
+        # Skip the byte order (1 byte) and geometry type (4 bytes) of each LineString
+        offset += 5
+        num_points = struct.unpack(f"{byte_order}I", data[offset:offset+4])[0]
+        offset += 4
+        
+        points = []
+        for _ in range(num_points):
+            x, y = struct.unpack(f"{byte_order}dd", data[offset:offset+16])
+            offset += 16
+            points.append([x, y])
+        lines.append(points)
+    return lines
+
+
 # ==========================================
 # 2. GeoJSON Pydantic Helper Schemas
 # ==========================================
@@ -92,6 +123,14 @@ class LineStringGeometry(BaseModel):
     """
     type: str = "LineString"
     coordinates: List[List[float]]  # Points -> [longitude, latitude]
+
+
+class MultiLineStringGeometry(BaseModel):
+    """
+    GeoJSON MultiLineString geometry.
+    """
+    type: str = "MultiLineString"
+    coordinates: List[List[List[float]]]  # Lines -> Points -> [longitude, latitude]
 
 
 class PolygonGeometry(BaseModel):

@@ -93,7 +93,8 @@ export async function getRoute(
   end: [number, number],
   ignoreFloods: boolean = false,
   vehicleProfile: "light" | "heavy" | "motorcycle" | "walk" = "light",
-  engine: "valhalla" | "ors" = "valhalla"
+  engine: "valhalla" | "ors" = "valhalla",
+  heading?: number
 ): Promise<MultiRouteResponse> {
   // If we are offline, automatically fallback to the local WASM engine
   if (typeof window !== "undefined" && !navigator.onLine) {
@@ -217,6 +218,7 @@ export async function getRoute(
     end,
     ignore_floods: ignoreFloods,
     vehicle_profile: vehicleProfile,
-    engine: engine
+    engine: engine,
+    heading: heading
   });
 }

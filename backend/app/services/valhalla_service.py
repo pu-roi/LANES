@@ -83,7 +83,7 @@ def get_active_flood_polygons(db: Session) -> Tuple[List[List[List[float]]], Lis
                 
     return red_polygons, orange_polygons, yellow_polygons
 
-def request_valhalla_route(start: List[float], end: List[float], avoid_polygons: Optional[List[List[List[float]]]] = None, vehicle_profile: str = "light") -> Optional[Dict[str, Any]]:
+def request_valhalla_route(start: List[float], end: List[float], avoid_polygons: Optional[List[List[List[float]]]] = None, vehicle_profile: str = "light", heading: Optional[int] = None) -> Optional[Dict[str, Any]]:
     """Queries the Valhalla server for routes between start and end coordinates, optionally avoiding polygons."""
     
     # Map our vehicle profiles to Valhalla's native costing models
@@ -93,11 +93,15 @@ def request_valhalla_route(start: List[float], end: List[float], avoid_polygons:
     elif vehicle_profile == "walk":
         costing = "pedestrian"
         
+    start_loc = {"lat": start[1], "lon": start[0]}
+    end_loc = {"lat": end[1], "lon": end[0]}
+    
+    if heading is not None:
+        start_loc["heading"] = heading
+        end_loc["heading"] = heading
+        
     body: Dict[str, Any] = {
-        "locations": [
-            {"lat": start[1], "lon": start[0]},
-            {"lat": end[1], "lon": end[0]}
-        ],
+        "locations": [start_loc, end_loc],
         "costing": costing,
         "alternates": 2,
         "units": "kilometers"
@@ -187,13 +191,14 @@ def calculate_flood_safe_route(
     start: List[float],
     end: List[float],
     ignore_floods: bool = False,
-    vehicle_profile: str = "light"
+    vehicle_profile: str = "light",
+    heading: Optional[int] = None
 ) -> Dict[str, Any]:
     """Queries Valhalla to find a route, intelligently falling back on flood avoidance rules based on vehicle profile."""
     
     # 1. Fast path: completely ignore all floods
     if ignore_floods:
-        data = request_valhalla_route(start, end, vehicle_profile=vehicle_profile)
+        data = request_valhalla_route(start, end, vehicle_profile=vehicle_profile, heading=heading)
         if not data:
             raise HTTPException(status_code=404, detail="No route options found by the pathfinding engine.")
         candidates = process_valhalla_response(data, avoided_floods=False, blocked=False, safety_score=100.0, flood_risk="none")
@@ -279,7 +284,7 @@ def calculate_flood_safe_route(
     # To accurately show the direct route they would take if they didn't detour, we ask Valhalla to avoid ONLY Red.
     direct_primary = None
     if orange or yellow:
-        data_direct = request_valhalla_route(start, end, avoid_polygons=red, vehicle_profile=vehicle_profile)
+        data_direct = request_valhalla_route(start, end, avoid_polygons=red, vehicle_profile=vehicle_profile, heading=heading)
         if data_direct:
             # Did this direct route pass through Blocked or Penalized zones?
             # We assume if Orange/Yellow exist, it hit the worst available.
@@ -320,14 +325,14 @@ def calculate_flood_safe_route(
 
     # 6. Attempt 1: Avoid EVERYTHING (Blocked + Penalized)
     # This gives a 100% safe route if available.
-    data = request_valhalla_route(start, end, avoid_polygons=all_to_avoid, vehicle_profile=vehicle_profile)
+    data = request_valhalla_route(start, end, avoid_polygons=all_to_avoid, vehicle_profile=vehicle_profile, heading=heading)
     if data:
         res = build_response(data, is_blocked=False, detour_label="Safe Detour", safety_score=100.0, flood_risk="none", direct_primary=direct_primary)
         if res: return res
 
     # 7. Attempt 2: Avoid only BLOCKED (traverse Penalized)
     if penalized:
-        data = request_valhalla_route(start, end, avoid_polygons=blocked, vehicle_profile=vehicle_profile)
+        data = request_valhalla_route(start, end, avoid_polygons=blocked, vehicle_profile=vehicle_profile, heading=heading)
         if data:
             # We traversed penalized. Assume worst penalized.
             worst_safety = 100.0

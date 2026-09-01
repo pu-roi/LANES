@@ -5,6 +5,7 @@ import maplibregl from "maplibre-gl";
 import type { Map } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Loader2 } from "lucide-react";
+import { LoadingOverlay } from "./LoadingOverlay";
 import { registerOfflineProtocol } from "@/lib/offline/map-pmtiles";
 import { preloadOfflineEngine } from "@/features/routing/routingApi";
 
@@ -535,25 +536,68 @@ export default function BaseMap({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [mapStyle, setMapStyle] = useState<any>(
-    "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU"
-  );
-  const [usingFallback, setUsingFallback] = useState(false);
+  const [mapStyle, setMapStyle] = useState<any>(null); // Start null to indicate "checking"
+  const [retryCount, setRetryCount] = useState(0);
+  const [isRecovering, setIsRecovering] = useState(false);
+  const [isCheckingNetwork, setIsCheckingNetwork] = useState(true);
+
+  const MAPTILER_STYLE_URL = "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU";
+
+  // ── Pre-flight Network Check ──
+  useEffect(() => {
+    const checkNetwork = async () => {
+      const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+      if (isOffline) {
+        setMapStyle(OSM_FALLBACK_STYLE);
+        setIsCheckingNetwork(false);
+        return;
+      }
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // Fast 2s ping
+
+        const res = await fetch(MAPTILER_STYLE_URL, { 
+          method: "HEAD", 
+          signal: controller.signal 
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          setMapStyle(MAPTILER_STYLE_URL);
+        } else {
+          setMapStyle(OSM_FALLBACK_STYLE);
+        }
+      } catch (err) {
+        setMapStyle(OSM_FALLBACK_STYLE);
+      } finally {
+        setIsCheckingNetwork(false);
+      }
+    };
+    checkNetwork();
+  }, []);
 
   useEffect(() => {
     preloadOfflineEngine();
   }, []);
 
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    if (!mapContainerRef.current || !mapStyle) return;
 
     let fallbackTimeout: NodeJS.Timeout;
 
     const handleFailure = (reason: string) => {
-      if (!usingFallback) {
-        console.warn(`Map load failed (${reason}). Switching to OpenStreetMap fallback.`);
-        setUsingFallback(true);
+      if (mapStyle === OSM_FALLBACK_STYLE) return; // Already on fallback
+
+      if (retryCount < 2) {
+        console.warn(`Map load failed (${reason}). Attempting auto-recovery (Attempt ${retryCount + 1})...`);
+        setIsRecovering(true);
+        // Small delay before destroying and recreating map to give network a breather
+        setTimeout(() => setRetryCount((prev) => prev + 1), 800);
+      } else {
+        console.warn(`Map auto-recovery failed after retries. Silently switching to OpenStreetMap fallback.`);
         setMapStyle(OSM_FALLBACK_STYLE);
+        setIsRecovering(false);
       }
     };
 
@@ -658,6 +702,11 @@ export default function BaseMap({
       clearTimeout(fallbackTimeout);
       mapRef.current = mapInstance;
       setIsLoaded(true);
+      setIsRecovering(false);
+
+      if (mapStyle !== OSM_FALLBACK_STYLE) {
+        setRetryCount(0); // Reset retries on successful primary load
+      }
 
       setTimeout(() => mapInstance.resize(), 100);
 
@@ -704,13 +753,11 @@ export default function BaseMap({
       mapRef.current = null;
       setIsLoaded(false);
     };
-  }, [mapStyle]);
-
-  const MAPTILER_STYLE_URL = "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU";
+  }, [mapStyle, retryCount]);
 
   // Auto-retry MapTiler ONLY when browser is online
   useEffect(() => {
-    if (!usingFallback) return;
+    if (mapStyle !== OSM_FALLBACK_STYLE) return;
     const interval = setInterval(() => {
       if (typeof navigator !== "undefined" && !navigator.onLine) {
         return; // Do not reload or spam network while user is offline
@@ -719,7 +766,7 @@ export default function BaseMap({
         .then((res) => {
           if (res.ok) {
             console.log("MapTiler connectivity restored. Switching back from OSM fallback.");
-            setUsingFallback(false);
+            setRetryCount(0);
             setMapStyle(MAPTILER_STYLE_URL);
           }
         })
@@ -727,23 +774,21 @@ export default function BaseMap({
     }, 15000); // Check every 15s
 
     return () => clearInterval(interval);
-  }, [usingFallback]);
+  }, [mapStyle]);
+
+  const showLoader = isCheckingNetwork || isRecovering || !isLoaded;
 
   return (
     <div className={`${className} bg-[#f2efe9]`}>
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full bg-[#f2efe9]" />
 
-      {usingFallback && (
-        <div className="absolute top-20 md:top-24 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-30 bg-amber-500/95 text-white text-xs md:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-sm animate-pulse max-w-md pointer-events-auto border border-amber-400/20 font-medium">
-          <span>⚠️ MapTiler tiles offline. Switched to OpenStreetMap fallback. Retrying automatically...</span>
-        </div>
-      )}
-
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm flex items-center justify-center z-10">
+      {showLoader && (
+        <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm flex items-center justify-center z-40">
           <div className="bg-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3">
             <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
-            <span className="font-semibold text-sm text-slate-700">Loading Map...</span>
+            <span className="font-semibold text-sm text-slate-700">
+              {isCheckingNetwork || isRecovering ? "Optimizing Map Connection..." : "Loading Map..."}
+            </span>
           </div>
         </div>
       )}

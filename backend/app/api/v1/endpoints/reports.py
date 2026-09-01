@@ -23,6 +23,7 @@ async def create_report(
     depth: str = Form(None),
     human_readable_location: str = Form(None),
     is_public: bool = Form(False),
+    is_bidirectional: bool = Form(False),
     geometry: str = Form(None),
     survey_data: str = Form(None),
     media: List[UploadFile] = File([]),
@@ -61,6 +62,7 @@ async def create_report(
         depth=depth,
         human_readable_location=human_readable_location,
         is_public=is_public,
+        is_bidirectional=is_bidirectional,
         geometry=geom_obj,
         media_urls=media_urls,
         user_id=current_user.id,
@@ -137,7 +139,8 @@ async def get_safe_route(payload: schemas.RouteRequest, db: Session = Depends(ge
             start=payload.start,
             end=payload.end,
             ignore_floods=payload.ignore_floods,
-            vehicle_profile=payload.vehicle_profile
+            vehicle_profile=payload.vehicle_profile,
+            heading=payload.heading
         )
         
     return await calculate_flood_safe_route(

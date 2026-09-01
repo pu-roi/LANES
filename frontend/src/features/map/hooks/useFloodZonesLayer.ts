@@ -31,6 +31,7 @@ export function useFloodZonesLayer(
 
     const setupLayers = () => {
       console.log("[useFloodZonesLayer] setupLayers triggered", { activeZonesDataLength: activeZonesData?.length, activeTab });
+      if (!map.getStyle()) return;
 
       const sourceId = "active-zones-source";
       const existingSource = map.getSource(sourceId) as maplibregl.GeoJSONSource;

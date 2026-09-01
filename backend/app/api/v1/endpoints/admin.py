@@ -120,7 +120,11 @@ async def approve_report(
             # Auto-calculate buffer polygon via PostGIS
             geom_type = db.query(func.ST_GeometryType(report.geometry)).scalar()
             is_linestring = geom_type == "ST_LineString"
-            buffer_radius = body.buffer_radius if (body and body.buffer_radius) else (0.00015 if is_linestring else 0.0005)
+            
+            # If the user reported this as affecting both sides of a divided road, increase the buffer
+            # to engulf both the forward and reverse carriageways (approx 30+ meters).
+            default_buffer = 0.0003 if (is_linestring and getattr(report, 'is_bidirectional', False)) else (0.00015 if is_linestring else 0.0005)
+            buffer_radius = body.buffer_radius if (body and body.buffer_radius) else default_buffer
 
             buffered_geojson_str = db.query(
                 func.ST_AsGeoJSON(func.ST_Buffer(report.geometry, buffer_radius))
