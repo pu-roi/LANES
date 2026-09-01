@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-import { ToastProvider } from "@/shared/ui";
+import { ToastProvider, SmoothScroll } from "@/shared/ui";
 import GlobalMap from "@/features/map/GlobalMap";
 import { useSSE } from "@/hooks/useSSE";
 import { useLiveSync } from "@/hooks/useLiveSync";
@@ -39,8 +39,10 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     <>
       <AppHooks />
       <ToastProvider>
-        <GlobalMap />
-        {children}
+        <SmoothScroll>
+          <GlobalMap />
+          {children}
+        </SmoothScroll>
       </ToastProvider>
     </>
   );

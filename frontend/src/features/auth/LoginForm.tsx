@@ -80,7 +80,7 @@ export default function LoginForm() {
       )}
       <Input
         label="Email or Username"
-        labelClassName="text-white lg:text-gray-700"
+        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
         type="text"
         placeholder="Enter your email or username"
         value={username}
@@ -89,7 +89,7 @@ export default function LoginForm() {
       />
       <Input
         label="Password"
-        labelClassName="text-white lg:text-gray-700"
+        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
         type={showPassword ? "text" : "password"}
         placeholder="••••••••"
         value={password}
@@ -108,7 +108,7 @@ export default function LoginForm() {
         }
       />
       <div className="flex justify-end mt-1">
-        <a href="#" className="text-sm text-white lg:text-blue-600 font-bold lg:font-medium hover:text-blue-200 lg:hover:text-blue-500 hover:underline transition-colors">Forgot password?</a>
+        <a href="#" className="text-sm text-blue-200 lg:text-blue-600 font-medium hover:text-white lg:hover:text-blue-500 hover:underline transition-colors">Forgot password?</a>
       </div>
       <div className="pt-2">
         <Button type="submit" className="w-full" disabled={isLoggingIn}>
@@ -124,16 +124,16 @@ export default function LoginForm() {
       </div>
       
       <div className="relative flex items-center py-2">
-        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+        <div className="flex-grow border-t border-white/20 lg:border-slate-200"></div>
         <span className="flex-shrink-0 mx-4 text-white/80 lg:text-slate-400 text-sm font-medium">or</span>
-        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+        <div className="flex-grow border-t border-white/20 lg:border-slate-200"></div>
       </div>
 
       <div>
         <button
           type="button"
           onClick={() => info("Under Development", "Google Sign-In is currently under development.")}
-          className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 lg:border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         >
           <FcGoogle className="w-5 h-5" />
           Sign in with Google
@@ -141,11 +141,11 @@ export default function LoginForm() {
       </div>
 
       <div className="text-center pt-2">
-        <p className="text-sm text-blue-100 lg:text-gray-600">
+        <p className="text-sm text-blue-100 lg:text-slate-600">
           Don't have an account?{" "}
           <Link
             href={redirectTo ? `/register?redirect=${encodeURIComponent(redirectTo)}` : "/register"}
-            className="text-white lg:text-blue-600 font-bold lg:font-medium hover:text-blue-200 lg:hover:text-blue-500 hover:underline transition-colors"
+            className="text-white lg:text-blue-600 font-bold lg:font-semibold hover:text-blue-200 lg:hover:text-blue-700 hover:underline transition-colors"
           >
             Sign up
           </Link>

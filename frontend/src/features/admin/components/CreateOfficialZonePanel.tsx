@@ -29,7 +29,9 @@ import {
   Hexagon,
   Square,
   Circle,
-  Pencil
+  Pencil,
+  Trash2,
+  Plus
 } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/shared/ui/Input";
@@ -47,6 +49,7 @@ import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import type { LocationSuggestion } from "@/features/geocoding/types";
 import { useMapContext, type ActivePoint } from "@/features/map/MapContext";
 import { getRoute } from "@/features/routing/routingApi";
+import { SEVERITY_COLORS as MAP_SEVERITY_COLORS, SEVERITY_BORDER_COLORS } from "@/features/map/mapStyles";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -103,6 +106,33 @@ const VISUAL_OPTIONS: {
   { id: "neck", severity: "extreme", label: "Neck & Above", description: "Danger" },
 ];
 
+const getTerraDrawActiveZoneStyles = (severity: Severity) => {
+  const fillColor = (MAP_SEVERITY_COLORS[severity] || "#84cc16") as `#${string}`;
+  const outlineColor = (SEVERITY_BORDER_COLORS[severity] || "#4d7c0f") as `#${string}`;
+  return {
+    fillColor,
+    fillOpacity: 0.25,
+    outlineColor,
+    outlineWidth: 2.5,
+    outlineOpacity: 0.85,
+    closingPointColor: outlineColor,
+    closingPointWidth: 8,
+    closingPointOutlineColor: "#ffffff",
+    closingPointOutlineWidth: 2,
+    closingPointOpacity: 1,
+    snappingPointColor: outlineColor,
+    snappingPointWidth: 8,
+    snappingPointOutlineColor: "#ffffff",
+    snappingPointOutlineWidth: 2,
+    snappingPointOpacity: 1,
+    coordinatePointColor: outlineColor,
+    coordinatePointWidth: 6,
+    coordinatePointOutlineColor: "#ffffff",
+    coordinatePointOutlineWidth: 2,
+    coordinatePointOpacity: 1,
+  };
+};
+
 
 
 // ── Main component ─────────────────────────────────────────────────────────────
@@ -151,6 +181,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   const [geometryMode, setGeometryMode] = useState<GeometryMode>("line");
   const [drawInstance, setDrawInstance] = useState<any>(null);
   const [drawnGeometry, setDrawnGeometry] = useState<any>(null);
+  const [drawnFeatures, setDrawnFeatures] = useState<any[]>([]);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
 
   // Initialize Terra Draw
@@ -166,13 +197,17 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       // Create adapter and draw instance
       const adapter = new TerraDrawMapLibreGLAdapter({ map: mapInstance });
       
+      const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
+      const initialSeverity: Severity = selectedOption ? selectedOption.severity : "low";
+      const initialStyles = getTerraDrawActiveZoneStyles(initialSeverity);
+
       const draw = new TerraDraw({
         adapter,
         modes: [
-          new TerraDrawPolygonMode(),
-          new TerraDrawFreehandMode(),
-          new TerraDrawRectangleMode(),
-          new TerraDrawCircleMode()
+          new TerraDrawPolygonMode({ pointerDistance: 45, styles: initialStyles as any }),
+          new TerraDrawFreehandMode({ pointerDistance: 45, styles: initialStyles as any }),
+          new TerraDrawRectangleMode({ pointerDistance: 45, styles: initialStyles as any }),
+          new TerraDrawCircleMode({ pointerDistance: 45, styles: initialStyles as any })
         ]
       });
       
@@ -183,9 +218,17 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       // Listen for drawing changes
       draw.on('change', () => {
         const snapshot = draw.getSnapshot();
-        if (snapshot.length > 0) {
-          // TerraDraw returns an array of GeoJSON features
+        setDrawnFeatures(snapshot);
+        if (snapshot.length === 1) {
           setDrawnGeometry(snapshot[0].geometry);
+        } else if (snapshot.length > 1) {
+          const multiPolyCoords = snapshot
+            .map((f: any) => f.geometry?.coordinates)
+            .filter(Boolean);
+          setDrawnGeometry({
+            type: "MultiPolygon",
+            coordinates: multiPolyCoords,
+          });
         } else {
           setDrawnGeometry(null);
         }
@@ -246,6 +289,71 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       setIsDrawingMode(false);
     }
   }, [geometryMode, isCollapsed, drawInstance]);
+
+  // Dynamically update Terra Draw styling when the selected severity / visual option changes
+  const selectedVisualOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
+  const currentSeverity: Severity = selectedVisualOption ? selectedVisualOption.severity : "low";
+
+  useEffect(() => {
+    if (!drawRef.current || !drawRef.current.enabled) return;
+
+    const styles = getTerraDrawActiveZoneStyles(currentSeverity);
+    try {
+      drawRef.current.updateModeOptions("polygon", { styles: styles as any });
+      drawRef.current.updateModeOptions("freehand", { styles: styles as any });
+      drawRef.current.updateModeOptions("rectangle", { styles: styles as any });
+      drawRef.current.updateModeOptions("circle", { styles: styles as any });
+    } catch (err) {
+      console.warn("Error updating TerraDraw styles:", err);
+    }
+  }, [currentSeverity, drawInstance]);
+
+  const handleRemoveFeature = (id: string | number) => {
+    if (!drawRef.current) return;
+    try {
+      drawRef.current.removeFeatures([id]);
+      const updated = drawRef.current.getSnapshot();
+      setDrawnFeatures(updated);
+      if (updated.length === 1) {
+        setDrawnGeometry(updated[0].geometry);
+      } else if (updated.length > 1) {
+        const multiPolyCoords = updated
+          .map((f: any) => f.geometry?.coordinates)
+          .filter(Boolean);
+        setDrawnGeometry({
+          type: "MultiPolygon",
+          coordinates: multiPolyCoords,
+        });
+      } else {
+        setDrawnGeometry(null);
+      }
+    } catch (err) {
+      console.warn("Failed to remove feature:", err);
+    }
+  };
+
+  const handleRemoveRoadSegment = () => {
+    setFloodStart(null);
+    setFloodEnd(null);
+    setStartInput("");
+    setEndInput("");
+  };
+
+  const handleClearAllFeatures = () => {
+    if (drawRef.current) {
+      try {
+        drawRef.current.clear();
+      } catch (err) {
+        console.warn("Failed to clear features:", err);
+      }
+    }
+    setDrawnFeatures([]);
+    setDrawnGeometry(null);
+    setFloodStart(null);
+    setFloodEnd(null);
+    setStartInput("");
+    setEndInput("");
+  };
 
   // ── Map-pick: listen to the shared map-center-changed event ────────────────
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -341,7 +449,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
     if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
 
-    if (!floodPreviewGeometry || geometryMode !== "line") return;
+    if (!floodPreviewGeometry) return;
 
     mapInstance.addSource(PREVIEW_SOURCE, {
       type: "geojson",
@@ -352,13 +460,15 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       },
     });
 
+    const activeColor = MAP_SEVERITY_COLORS[currentSeverity] || "#84cc16";
+
     mapInstance.addLayer({
       id: PREVIEW_LAYER,
       type: "line",
       source: PREVIEW_SOURCE,
       layout: { "line-join": "round", "line-cap": "round" },
       paint: {
-        "line-color": "#f97316",
+        "line-color": activeColor,
         "line-width": 6,
         "line-dasharray": [2, 2],
         "line-opacity": 0.85,
@@ -371,7 +481,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
         if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
       } catch {}
     };
-  }, [mapInstance, floodPreviewGeometry, geometryMode]);
+  }, [mapInstance, floodPreviewGeometry, geometryMode, currentSeverity]);
 
   const confirmMapLocation = useCallback(() => {
     if (!activePoint || !mapCenter) return;
@@ -410,13 +520,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (geometryMode === "line" && (!floodStart || !floodEnd)) {
-      error("Missing Information", "Please set both the Flood Start and Flood End locations.");
-      return;
-    }
-    
-    if (geometryMode !== "line" && !drawnGeometry) {
-      error("Missing Information", `Please draw the ${geometryMode} on the map.`);
+    if (!((floodStart && floodEnd) || drawnFeatures.length > 0)) {
+      error("Missing Information", "Please define a road segment or draw at least one shape on the map.");
       return;
     }
 
@@ -429,13 +534,12 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     try {
       let finalGeometry = null;
 
-      if (geometryMode === "line" && floodStart && floodEnd) {
+      if (drawnFeatures.length > 0) {
+        finalGeometry = drawnGeometry;
+      } else if (floodStart && floodEnd) {
         // 1. Get the actual road geometry between the two points, ignoring any existing active floods
         const routeResult = await getRoute(floodStart.coords, floodEnd.coords, true);
         finalGeometry = routeResult.routes[0]?.geometry;
-      } else {
-        // For polygon/rectangle/circle, we already have the geometry from Mapbox GL Draw
-        finalGeometry = drawnGeometry;
       }
 
       // 2. Map visual option to backend severity
@@ -612,10 +716,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               onClick={() => {
                 setGeometryMode("line");
                 if (drawRef.current) {
-                  drawRef.current.clear();
                   drawRef.current.setMode("static");
                 }
-                setDrawnGeometry(null);
               }}
               className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "line" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
@@ -627,10 +729,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               onClick={() => {
                 setGeometryMode("polygon");
                 if (drawRef.current) {
-                  drawRef.current.clear();
                   drawRef.current.setMode("polygon");
                 }
-                setDrawnGeometry(null);
               }}
               className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "polygon" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
@@ -642,10 +742,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               onClick={() => {
                 setGeometryMode("freehand");
                 if (drawRef.current) {
-                  drawRef.current.clear();
                   drawRef.current.setMode("freehand");
                 }
-                setDrawnGeometry(null);
               }}
               className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "freehand" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
@@ -657,10 +755,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               onClick={() => {
                 setGeometryMode("rectangle");
                 if (drawRef.current) {
-                  drawRef.current.clear();
                   drawRef.current.setMode("rectangle");
                 }
-                setDrawnGeometry(null);
               }}
               className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "rectangle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
@@ -672,10 +768,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
               onClick={() => {
                 setGeometryMode("circle");
                 if (drawRef.current) {
-                  drawRef.current.clear();
                   drawRef.current.setMode("circle");
                 }
-                setDrawnGeometry(null);
               }}
               className={cn("flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all", geometryMode === "circle" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-gray-100 bg-white hover:bg-gray-50 text-gray-500")}
             >
@@ -792,57 +886,105 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
             </div>
           </div>
           ) : (
-            <>
-              {drawnGeometry ? (
-                <div className="flex flex-col items-center justify-center py-6 text-center bg-green-50 rounded-xl border border-green-200">
-                  <CheckCircle className="w-8 h-8 text-green-500 mb-2" />
-                  <h3 className="text-sm font-semibold text-green-800 mb-1">Shape Captured</h3>
-                  <p className="text-xs text-green-600 px-4">
-                    Your {geometryMode} area has been successfully drawn. You can drag the handles on the map to adjust it.
-                  </p>
-                  <div className="flex gap-2 mt-4">
-                    <Button 
+            <div className="flex flex-col items-center justify-center py-5 text-center bg-slate-50 rounded-xl border border-slate-200 border-dashed">
+              <Crosshair className="w-6 h-6 text-slate-400 mb-1.5" />
+              <h3 className="text-xs font-bold text-slate-700 mb-0.5">Draw on Map ({geometryMode})</h3>
+              <p className="text-[11px] text-slate-500 px-4 max-w-xs">
+                Click points on the map to draw your {geometryMode}. You can combine multiple shapes & road segments in this single zone.
+              </p>
+            </div>
+          )}
+
+          {/* Unified Shapes in this Zone Manager Card */}
+          {(drawnFeatures.length > 0 || (floodStart && floodEnd)) && (
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                  <span className="text-xs font-bold text-slate-800">
+                    Shapes in this Zone ({drawnFeatures.length + (floodStart && floodEnd ? 1 : 0)})
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleClearAllFeatures}
+                  className="text-[11px] font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-md transition-colors"
+                >
+                  Clear All
+                </button>
+              </div>
+
+              {/* List of shapes & road segment */}
+              <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                {/* 1. Road Segment (if defined) */}
+                {floodStart && floodEnd && (
+                  <div className="flex items-center justify-between bg-white border border-slate-200/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 shadow-2xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="w-4 h-4 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 shrink-0">
+                        1
+                      </span>
+                      <Route className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                      <span className="font-medium text-[11px] truncate">
+                        Road Segment: {startInput || "Start"} ➔ {endInput || "End"}
+                      </span>
+                    </div>
+                    <button
                       type="button"
-                      variant="outline" 
-                      size="sm" 
-                      className="rounded-xl font-medium border-green-300 text-green-700 hover:bg-green-100" 
-                      onClick={() => {
-                        if (drawRef.current) {
-                          drawRef.current.clear();
-                          setDrawnGeometry(null);
-                          setGeometryMode("polygon"); // Reset to default mode or static
-                        }
-                      }}
+                      onClick={handleRemoveRoadSegment}
+                      className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors shrink-0 ml-2"
+                      title="Remove road segment"
                     >
-                      Clear Shape
-                    </Button>
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-8 text-center bg-gray-50 rounded-xl border border-gray-100 border-dashed">
-                  <Crosshair className="w-8 h-8 text-gray-400 mb-2" />
-                  <h3 className="text-sm font-semibold text-gray-700 mb-1">Draw on Map</h3>
-                  <p className="text-xs text-gray-500 px-4">
-                    Use the tools on the map to draw your {geometryMode}.
-                  </p>
-                  <Button 
-                    type="button"
-                    variant="outline" 
-                    size="sm" 
-                    className="mt-4 rounded-xl font-medium" 
-                    onClick={() => {
-                      if (drawRef.current) {
-                        drawRef.current.clear();
-                        drawRef.current.setMode(geometryMode);
-                        setIsDrawingMode(true);
-                      }
-                    }}
-                  >
-                    Start Drawing
-                  </Button>
-                </div>
-              )}
-            </>
+                )}
+
+                {/* 2. Drawn Shapes */}
+                {drawnFeatures.map((feature, idx) => {
+                  const mode = feature.properties?.mode || "polygon";
+                  const itemIndex = (floodStart && floodEnd ? 1 : 0) + idx + 1;
+                  return (
+                    <div
+                      key={feature.id || idx}
+                      className="flex items-center justify-between bg-white border border-slate-200/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 shadow-2xs"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-4 h-4 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 shrink-0">
+                          {itemIndex}
+                        </span>
+                        {mode === "rectangle" ? (
+                          <Square className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                        ) : mode === "circle" ? (
+                          <Circle className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                        ) : mode === "freehand" ? (
+                          <Pencil className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        ) : (
+                          <Hexagon className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        )}
+                        <span className="font-medium capitalize text-[11px] truncate">
+                          {mode === "rectangle" ? "Rectangle / Square" : mode === "circle" ? "Circle" : mode === "freehand" ? "Freehand Shape" : "Custom Polygon"}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFeature(feature.id)}
+                        className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors shrink-0 ml-2"
+                        title="Remove this shape"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Helper hint */}
+              <div className="pt-2 border-t border-slate-200/70 text-center">
+                <p className="text-[11px] text-slate-500">
+                  💡 Select any tool above (<span className="font-semibold text-slate-700">Line, Polygon, Rect, Circle, Freehand</span>) to add more segments or shapes.
+                </p>
+              </div>
+            </div>
           )}
           {/* Severity selector */}
           <div className="space-y-1">
@@ -885,12 +1027,12 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
             </p>
           </div>
 
-          <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 border-t border-gray-100 mt-auto">
+          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
             <Button
               type="button"
-              disabled={!floodStart || !floodEnd}
+              disabled={!((floodStart && floodEnd) || drawnFeatures.length > 0)}
               onClick={() => setStep(2)}
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold shadow-sm"
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold shadow-sm h-10 rounded-xl"
             >
               Next Step
             </Button>
@@ -1058,19 +1200,19 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
           </div>
           )}
 
-          <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 border-t border-gray-100 mt-auto flex gap-2">
+          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto flex gap-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
             <Button
               type="button"
               variant="outline"
               onClick={() => setStep(1)}
-              className="flex-1"
+              className="flex-1 h-10 rounded-xl font-medium"
             >
               Back
             </Button>
             <Button
               type="submit"
               disabled={!canSubmit}
-              className="flex-[2] bg-orange-500 hover:bg-orange-600 focus:ring-orange-400 text-white font-semibold shadow-sm"
+              className="flex-[2] bg-orange-500 hover:bg-orange-600 focus:ring-orange-400 text-white font-semibold shadow-sm h-10 rounded-xl"
             >
               {isSubmitting ? (
                 <>
@@ -1172,8 +1314,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
             </div>
           </div>
           
-          <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 border-t border-gray-100 mt-auto">
-            <Button type="button" onClick={() => setShowSurvey(false)} className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold">
+          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
+            <Button type="button" onClick={() => setShowSurvey(false)} className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold h-10 rounded-xl">
               Done & Return
             </Button>
           </div>

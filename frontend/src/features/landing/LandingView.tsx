@@ -101,7 +101,7 @@ export default function LandingView() {
       <div className="flex flex-col min-h-[100svh] w-full">
         
         {/* ── SECTION 1: Hero & Journey ─────────────────────────────────────────────── */}
-        <section className="relative w-full flex-grow flex flex-col justify-center pt-6 pb-[calc(var(--bottom-nav-height,64px)+env(safe-area-inset-bottom))] overflow-hidden bg-transparent">
+        <section className="relative w-full flex-grow flex flex-col justify-center pt-10 sm:pt-16 pb-32 sm:pb-40 lg:pt-6 lg:pb-[calc(var(--bottom-nav-height,64px)+env(safe-area-inset-bottom))] overflow-hidden bg-transparent">
           
 
           <div className="relative z-10 max-w-7xl w-full mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
@@ -267,7 +267,7 @@ export default function LandingView() {
         </section>
 
         {/* ── SECTION 2: Weather & Stats Bar ─────────────────────────────────────────────── */}
-        <section className="w-full bg-blue-600 py-6 relative z-20 shrink-0">
+        <section className="w-full bg-blue-600 py-14 sm:py-16 lg:py-6 relative z-20 shrink-0">
           <div className="max-w-6xl mx-auto px-6">
             <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 lg:gap-16">
               <div className="flex-1 max-w-sm mx-auto md:ml-auto md:mr-0 w-full">
@@ -305,7 +305,7 @@ export default function LandingView() {
       </section>
 
       {/* ── SECTION 4: Flood Severity Legend ───────────────────────── */}
-      <section className="relative w-full overflow-hidden bg-transparent pt-24 pb-24 flex-grow" id="flood-legend-section">
+      <section className="relative w-full overflow-hidden bg-transparent pt-24 pb-24 flex-grow scroll-mt-16" id="flood-legend-section">
         {/* Static Wave Divider */}
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none text-white z-20">
           <svg viewBox="0 0 1200 60" preserveAspectRatio="none" className="relative block w-full h-[100px] fill-current">
@@ -334,7 +334,7 @@ export default function LandingView() {
       </section>
 
       {/* ── SECTION 5: Offline Mode Requirements ───────────────────────── */}
-      <section className="relative w-full bg-white pb-12 pt-4" id="offline-requirements-section">
+      <section className="relative w-full bg-white pb-12 pt-4 scroll-mt-16" id="offline-requirements-section">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Offline Mode Requirements</h2>

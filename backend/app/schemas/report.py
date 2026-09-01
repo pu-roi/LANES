@@ -8,6 +8,7 @@ from app.schemas.common import (
     PointGeometry,
     LineStringGeometry,
     PolygonGeometry,
+    MultiPolygonGeometry,
     parse_ewkb_point,
     parse_ewkb_linestring,
     parse_ewkb_polygon,
@@ -101,7 +102,7 @@ class FloodAvoidanceZoneBase(BaseModel):
 
 class FloodAvoidanceZoneCreate(FloodAvoidanceZoneBase):
     report_id: Optional[int] = None
-    geometry: PolygonGeometry
+    geometry: Union[PolygonGeometry, MultiPolygonGeometry]
     curated_by_admin_id: Optional[int] = None
 
 class FloodAvoidanceZoneUpdate(BaseModel):
@@ -113,7 +114,7 @@ class FloodAvoidanceZoneUpdate(BaseModel):
 
 class FloodAvoidanceZoneCreateOfficial(BaseModel):
     name: str
-    geometry: PolygonGeometry
+    geometry: Union[PolygonGeometry, MultiPolygonGeometry]
     severity_override: ReportSeverity
     depth_override: Optional[str] = None
     admin_notes: Optional[str] = None

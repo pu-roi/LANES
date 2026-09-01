@@ -501,12 +501,12 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             </p>
           </div>
 
-          <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 border-t border-gray-100 mt-auto">
+          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
             <Button
               type="button"
               disabled={!floodStart || !floodEnd}
               onClick={() => setStep(2)}
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold shadow-sm"
+              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold shadow-sm h-10 rounded-xl"
             >
               Next Step
             </Button>
@@ -622,19 +622,19 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             )}
           </div>
 
-          <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 border-t border-gray-100 mt-auto flex gap-2">
+          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto flex gap-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
             <Button
               type="button"
               variant="outline"
               onClick={() => setStep(1)}
-              className="flex-1"
+              className="flex-1 h-10 rounded-xl font-medium"
             >
               Back
             </Button>
             <Button
               type="submit"
               disabled={!canSubmit}
-              className="flex-[2] bg-orange-500 hover:bg-orange-600 focus:ring-orange-400 text-white font-semibold shadow-sm"
+              className="flex-[2] bg-orange-500 hover:bg-orange-600 focus:ring-orange-400 text-white font-semibold shadow-sm h-10 rounded-xl"
             >
               {isSubmitting ? (
                 <>
@@ -736,8 +736,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             </div>
           </div>
           
-          <div className="sticky bottom-0 left-0 right-0 bg-white pt-3 pb-4 border-t border-gray-100 mt-auto">
-            <Button type="button" onClick={() => setShowSurvey(false)} className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold">
+          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
+            <Button type="button" onClick={() => setShowSurvey(false)} className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold h-10 rounded-xl">
               Done & Return
             </Button>
           </div>

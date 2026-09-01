@@ -450,15 +450,15 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
 
   return (
     <>
-      <div className="w-full max-w-xl mx-auto bg-white/20 backdrop-blur-2xl lg:bg-white rounded-2xl shadow-2xl lg:shadow-[0_8px_40px_rgba(59,130,246,0.15)] lg:border lg:border-slate-200/80 border border-white/40 border-t-4 border-t-blue-600 lg:ring-1 lg:ring-blue-100/50">
+      <div className="w-full max-w-xl mx-auto bg-white/10 backdrop-blur-sm lg:bg-white rounded-2xl shadow-2xl lg:shadow-[0_8px_40px_rgba(59,130,246,0.15)] border border-white/20 lg:border-slate-200/80 border-t-4 border-t-blue-600 lg:ring-1 lg:ring-blue-100/50">
         {/* Stepper Header */}
-        <div className="bg-transparent lg:bg-slate-50 px-8 py-6 border-b border-slate-200/50 lg:border-slate-100 rounded-t-2xl select-none">
-          <h2 className="text-xl font-bold text-white lg:text-slate-900 mb-6 text-center">Create your Citizen Account</h2>
-          <div className="flex items-center justify-between relative">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[2px] bg-slate-200 z-0"></div>
+        <div className="bg-transparent lg:bg-slate-50 px-6 sm:px-8 pt-6 pb-8 border-b border-white/10 lg:border-slate-100 rounded-t-2xl select-none">
+          <h2 className="text-xl font-bold text-white lg:text-slate-900 mb-6 text-center drop-shadow-md lg:drop-shadow-none">Create your Citizen Account</h2>
+          <div className="flex items-center justify-between relative px-2">
+            <div className="absolute left-2 right-2 top-4 -translate-y-1/2 h-[2px] bg-white/20 lg:bg-slate-200 z-0"></div>
             <div 
-              className="absolute left-0 top-1/2 -translate-y-1/2 h-[2px] bg-blue-600 z-0 transition-all duration-500"
-              style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
+              className="absolute left-2 top-4 -translate-y-1/2 h-[2px] bg-blue-500 lg:bg-blue-600 z-0 transition-all duration-500"
+              style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 96}%` }}
             ></div>
             
             {steps.map((step) => (
@@ -466,16 +466,16 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                 <div 
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300 ${
                     currentStep > step.id 
-                      ? "bg-blue-600 text-white" 
+                      ? "bg-blue-600 text-white shadow-sm" 
                       : currentStep === step.id 
-                        ? "bg-blue-600 text-white ring-4 ring-blue-100" 
-                        : "bg-white border-2 border-slate-200 text-slate-400"
+                        ? "bg-blue-600 text-white ring-4 ring-blue-500/30 lg:ring-blue-100 shadow-md" 
+                        : "bg-white/15 border border-white/30 text-white/70 lg:bg-white lg:border-2 lg:border-slate-200 lg:text-slate-400"
                   }`}
                 >
                   {currentStep > step.id ? <Check className="w-4 h-4" /> : step.id}
                 </div>
-                <span className={`absolute top-10 text-xs font-medium whitespace-nowrap transition-colors duration-300 ${
-                  currentStep >= step.id ? "text-white lg:text-slate-900" : "text-white/50 lg:text-slate-400"
+                <span className={`absolute top-9 text-[11px] sm:text-xs font-medium whitespace-nowrap transition-colors duration-300 ${
+                  currentStep >= step.id ? "text-white lg:text-slate-900 font-semibold drop-shadow-sm" : "text-white/60 lg:text-slate-400"
                 }`}>
                   {step.name}
                 </span>
@@ -515,6 +515,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="space-y-4">
                       <Input 
                         label="Email Address"
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         type="email" 
                         placeholder="juan@example.com" 
                         required
@@ -522,14 +523,14 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                         onChange={e => handleChange("user", "email", e.target.value)}
                       />
                       <div className="relative flex items-center py-2">
-                        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+                        <div className="flex-grow border-t border-white/20 lg:border-slate-200"></div>
                         <span className="flex-shrink-0 mx-4 text-white/80 lg:text-slate-400 text-sm font-medium">or</span>
-                        <div className="flex-grow border-t border-slate-200 lg:border-slate-200 border-white/30"></div>
+                        <div className="flex-grow border-t border-white/20 lg:border-slate-200"></div>
                       </div>
                       <button
                         type="button"
                         onClick={() => info("Under Development", "Google Sign-Up is currently under development.")}
-                        className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-200 lg:border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                        className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                       >
                         <FcGoogle className="w-5 h-5" />
                         Sign up with Google
@@ -545,7 +546,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
                         </div>
-                        <h3 className="text-lg font-bold text-white lg:text-slate-900">Check your inbox</h3>
+                        <h3 className="text-lg font-bold text-white lg:text-slate-900 drop-shadow-sm">Check your inbox</h3>
                         <p className="text-sm text-blue-100 lg:text-slate-500">
                           We sent a 6-digit verification code to<br />
                           <span className="font-semibold text-white lg:text-slate-900 break-all">{formData.user.email}</span>
@@ -614,7 +615,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="space-y-4">
                       <Input 
                         label="Username"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="juandelacruz" 
                         required
                         value={formData.user.username} 
@@ -623,7 +624,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                       <div>
                         <Input 
                           label="Password"
-                          labelClassName="text-white lg:text-gray-700"
+                          labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••" 
                           required
@@ -656,7 +657,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                       </div>
                       <Input 
                         label="Confirm Password"
-                        labelClassName="text-white lg:text-gray-700"
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••" 
                         required
@@ -681,7 +682,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="flex-1">
                       <Input 
                         label="First Name"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="Juan" 
                         required
                         value={formData.profile.first_name} 
@@ -691,7 +692,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="flex-1">
                       <Input 
                         label="Last Name"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="Dela Cruz" 
                         required
                         value={formData.profile.last_name} 
@@ -703,7 +704,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="flex-1">
                       <Input 
                         label="M.I. (Optional)"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="A" 
                         maxLength={2}
                         value={formData.profile.middle_initial} 
@@ -713,7 +714,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="flex-1">
                       <Input 
                         label="Suffix (Optional)"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="Jr."
                         list="suffix-options"
                         value={formData.profile.suffix} 
@@ -732,7 +733,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="flex-1">
                       <Input 
                         label="Contact Number (Optional)"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="09123456789"
                         value={formData.profile.contact_number} 
                         onChange={e => handleChange("profile", "contact_number", e.target.value)}
@@ -741,7 +742,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="w-full sm:w-40">
                       <DatePicker 
                         label="Birthdate"
-                        labelClassName="text-white lg:text-gray-700"
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         required
                         value={formData.profile.birthdate} 
                         onChange={e => handleChange("profile", "birthdate", e.target.value)}
@@ -763,7 +764,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                 >
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex-1 space-y-1">
-                      <label className="block text-sm font-medium text-white lg:text-slate-700">
+                      <label className="block text-sm font-semibold text-white lg:text-slate-700 drop-shadow-sm">
                         Province / Region <span className="text-red-500 ml-1">*</span>
                       </label>
                       <button 
@@ -776,7 +777,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     </div>
 
                     <div className="flex-1 space-y-1">
-                      <label className="block text-sm font-medium text-white lg:text-slate-700">
+                      <label className="block text-sm font-semibold text-white lg:text-slate-700 drop-shadow-sm">
                         City / Municipality <span className="text-red-500 ml-1">*</span>
                       </label>
                       <button 
@@ -792,7 +793,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
 
                   <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
                     <div className="flex-1 space-y-1">
-                      <label className="block text-sm font-medium text-white lg:text-slate-700">
+                      <label className="block text-sm font-semibold text-white lg:text-slate-700 drop-shadow-sm">
                         Barangay <span className="text-red-500 ml-1">*</span>
                       </label>
                       <button 
@@ -807,7 +808,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="w-full sm:w-1/3">
                       <Input 
                         label="Postal Code (Optional)"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="1210" 
                         value={formData.address.postal_code} 
                         onChange={e => handleChange("address", "postal_code", e.target.value)}
@@ -819,7 +820,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="w-full sm:w-1/3">
                       <Input 
                         label="House No. (Optional)"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="123"
                         value={formData.address.house_number} 
                         onChange={e => handleChange("address", "house_number", e.target.value)}
@@ -828,7 +829,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     <div className="flex-1">
                       <Input 
                         label="Street (Optional)"
-                        labelClassName="text-white lg:text-gray-700" 
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="Main St"
                         value={formData.address.street} 
                         onChange={e => handleChange("address", "street", e.target.value)}
@@ -847,7 +848,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                   <button 
                     type="button" 
                     onClick={() => setSetupPhase("email")} 
-                    className="flex items-center text-sm font-semibold text-blue-200 lg:text-blue-600 hover:text-white lg:hover:text-blue-800 transition-colors"
+                    className="flex items-center text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4 mr-1" />
                     Change Email
@@ -869,7 +870,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                         className={`text-xs sm:text-sm font-semibold transition-colors px-3 py-1.5 rounded-lg border ${
                           cooldownSeconds > 0
                             ? "border-slate-200/50 bg-slate-100/50 text-slate-400 cursor-not-allowed"
-                            : "border-slate-200 lg:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm"
+                            : "border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm"
                         }`}
                       >
                         {cooldownSeconds > 0 ? `Resend (${formatCooldown(cooldownSeconds)})` : "Resend Code"}

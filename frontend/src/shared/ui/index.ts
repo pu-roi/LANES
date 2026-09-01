@@ -19,3 +19,4 @@ export * from "./Skeleton";
 export * from "./MultiSelect";
 export * from "./Tabs";
 export * from "./MediaViewer";
+export * from "./SmoothScroll";

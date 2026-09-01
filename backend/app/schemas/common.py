@@ -100,3 +100,11 @@ class PolygonGeometry(BaseModel):
     """
     type: str = "Polygon"
     coordinates: List[List[List[float]]]  # Rings -> Points -> [longitude, latitude]
+
+
+class MultiPolygonGeometry(BaseModel):
+    """
+    GeoJSON MultiPolygon geometry.
+    """
+    type: str = "MultiPolygon"
+    coordinates: List[List[List[List[float]]]]  # Polygons -> Rings -> Points -> [longitude, latitude]
