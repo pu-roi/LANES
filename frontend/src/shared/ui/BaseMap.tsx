@@ -379,11 +379,11 @@ export class Toggle3DControl {
     }
   }
 
-  // Helper: get all fill-extrusion layer IDs from the current style (3D buildings)
-  private _getExtrusionLayerIds(map: maplibregl.Map): string[] {
+  // Helper: get all building layer IDs from the current style (both 3D and 2D footprint blocks)
+  private _getBuildingLayerIds(map: maplibregl.Map): string[] {
     try {
       return (map.getStyle()?.layers ?? [])
-        .filter((l: any) => l.type === "fill-extrusion")
+        .filter((l: any) => l.type === "fill-extrusion" || l.id.toLowerCase().includes("building"))
         .map((l: any) => l.id);
     } catch {
       return [];
@@ -406,7 +406,7 @@ export class Toggle3DControl {
           });
           this._map.setTerrain({ source: Toggle3DControl.DEM_SOURCE_ID, exaggeration: Toggle3DControl.EXAGGERATION });
         }
-        this._getExtrusionLayerIds(this._map).forEach((id) => {
+        this._getBuildingLayerIds(this._map).forEach((id) => {
           try { this._map!.setLayoutProperty(id, "visibility", "visible"); } catch {}
         });
       } else {
@@ -414,7 +414,7 @@ export class Toggle3DControl {
         if (this._map.getTerrain()) {
           this._map.setTerrain(null);
         }
-        this._getExtrusionLayerIds(this._map).forEach((id) => {
+        this._getBuildingLayerIds(this._map).forEach((id) => {
           try { this._map!.setLayoutProperty(id, "visibility", "none"); } catch {}
         });
       }
