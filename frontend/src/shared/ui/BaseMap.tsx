@@ -391,7 +391,7 @@ export class Toggle3DControl {
   }
 
   private _enforceState() {
-    if (!this._map || !this._map.isStyleLoaded()) return;
+    if (!this._map || !this._map.getStyle()) return;
     try {
       if (this._is3D) {
         // Only add terrain if it doesn't exist
@@ -452,9 +452,11 @@ export class Toggle3DControl {
     if (animate && this._map.isStyleLoaded()) {
       this._map.easeTo({ pitch: 0, duration: 700 });
     }
-    if (this._map.getLayer("sky")) {
-      try { this._map.removeLayer("sky"); } catch {}
-    }
+    try {
+      if (this._map.getStyle() && this._map.getLayer("sky")) {
+        this._map.removeLayer("sky");
+      }
+    } catch {}
   }
 
   private _toggle() {
