@@ -112,7 +112,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setActivePanel,
     floodIsBidirectional: isBidirectional,
     setFloodIsBidirectional: setIsBidirectional,
-    draftReports,
+    draftReports = [],
     setDraftReports,
     floodPreviewGeometry,
     floodOppositeGeometry

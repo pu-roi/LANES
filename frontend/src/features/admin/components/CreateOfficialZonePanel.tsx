@@ -157,7 +157,7 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     setActivePanel,
     floodIsBidirectional: isBidirectional,
     setFloodIsBidirectional: setIsBidirectional,
-    draftReports,
+    draftReports = [],
     setDraftReports,
     floodPreviewGeometry,
     floodOppositeGeometry
