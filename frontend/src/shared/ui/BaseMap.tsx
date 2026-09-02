@@ -356,13 +356,9 @@ export class Toggle3DControl {
     this._container.appendChild(this._button);
 
     this._onStyleLoad = () => {
-      if (this._is3D) {
-        this._enable3D(false);
-      } else {
-        this._disable3D(false);
-      }
+      this._enforceState();
     };
-    map.on("style.load", this._onStyleLoad);
+    map.on("styledata", this._onStyleLoad);
 
     // Ensure initial 2D state (flat view, no 3D extrusions)
     if (!this._is3D) {
@@ -394,34 +390,48 @@ export class Toggle3DControl {
     }
   }
 
-  private _enable3D(animate: boolean = true) {
-    if (!this._map) return;
-    const map = this._map;
-    if (!map.isStyleLoaded()) {
-      map.once("styledata", () => this._enable3D(animate));
-      return;
-    }
+  private _enforceState() {
+    if (!this._map || !this._map.isStyleLoaded()) return;
     try {
-      if (!map.getSource(Toggle3DControl.DEM_SOURCE_ID)) {
-        map.addSource(Toggle3DControl.DEM_SOURCE_ID, {
-          type: "raster-dem",
-          tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
-          tileSize: 256,
-          encoding: "terrarium",
-          maxzoom: 15,
-          attribution: "Elevation tiles &copy; Mapzen, &copy; USGS",
+      if (this._is3D) {
+        // Only add terrain if it doesn't exist
+        if (!this._map.getSource(Toggle3DControl.DEM_SOURCE_ID)) {
+          this._map.addSource(Toggle3DControl.DEM_SOURCE_ID, {
+            type: "raster-dem",
+            tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+            tileSize: 256,
+            encoding: "terrarium",
+            maxzoom: 15,
+            attribution: "Elevation tiles &copy; Mapzen, &copy; USGS",
+          });
+          this._map.setTerrain({ source: Toggle3DControl.DEM_SOURCE_ID, exaggeration: Toggle3DControl.EXAGGERATION });
+        }
+        this._getExtrusionLayerIds(this._map).forEach((id) => {
+          try { this._map!.setLayoutProperty(id, "visibility", "visible"); } catch {}
+        });
+      } else {
+        // Enforce 2D: ensure terrain is null and extrusions are hidden
+        if (this._map.getTerrain()) {
+          this._map.setTerrain(null);
+        }
+        this._getExtrusionLayerIds(this._map).forEach((id) => {
+          try { this._map!.setLayoutProperty(id, "visibility", "none"); } catch {}
         });
       }
-      map.setTerrain({ source: Toggle3DControl.DEM_SOURCE_ID, exaggeration: Toggle3DControl.EXAGGERATION });
-      if (animate) {
-        map.easeTo({ pitch: Toggle3DControl.TARGET_PITCH_3D, duration: 700 });
-      }
-      // Restore 3D buildings
-      this._getExtrusionLayerIds(map).forEach((id) => {
-        try { map.setLayoutProperty(id, "visibility", "visible"); } catch {}
-      });
-      if (!map.getLayer("sky")) {
-        map.addLayer({
+    } catch (err) {
+      console.warn("[Toggle3DControl] _enforceState error:", err);
+    }
+  }
+
+  private _enable3D(animate: boolean = true) {
+    if (!this._map) return;
+    this._enforceState();
+    if (animate && this._map.isStyleLoaded()) {
+      this._map.easeTo({ pitch: Toggle3DControl.TARGET_PITCH_3D, duration: 700 });
+    }
+    if (!this._map.getLayer("sky")) {
+      try {
+        this._map.addLayer({
           id: "sky",
           type: "sky",
           paint: {
@@ -432,33 +442,18 @@ export class Toggle3DControl {
             "sky-horizon-blend": 0.4,
           },
         } as any);
-      }
-    } catch (err) {
-      console.warn("[Toggle3DControl] _enable3D error:", err);
+      } catch {}
     }
   }
 
   private _disable3D(animate: boolean = true) {
     if (!this._map) return;
-    const map = this._map;
-    if (!map.isStyleLoaded()) {
-      map.once("styledata", () => this._disable3D(animate));
-      return;
+    this._enforceState();
+    if (animate && this._map.isStyleLoaded()) {
+      this._map.easeTo({ pitch: 0, duration: 700 });
     }
-    try {
-      map.setTerrain(null);
-      if (animate) {
-        map.easeTo({ pitch: 0, duration: 700 });
-      }
-      // Hide 3D building extrusions for a clean flat look
-      this._getExtrusionLayerIds(map).forEach((id) => {
-        try { map.setLayoutProperty(id, "visibility", "none"); } catch {}
-      });
-      if (map.getLayer("sky")) {
-        try { map.removeLayer("sky"); } catch {}
-      }
-    } catch (err) {
-      console.warn("[Toggle3DControl] _disable3D error:", err);
+    if (this._map.getLayer("sky")) {
+      try { this._map.removeLayer("sky"); } catch {}
     }
   }
 
@@ -475,7 +470,7 @@ export class Toggle3DControl {
 
   onRemove() {
     if (this._onStyleLoad && this._map) {
-      this._map.off("style.load", this._onStyleLoad);
+      this._map.off("styledata", this._onStyleLoad);
     }
     this._container?.parentNode?.removeChild(this._container);
     this._map = undefined;
