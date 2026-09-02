@@ -45,6 +45,19 @@
 - [x] **Map auto-recovery crash fix** (`useFloodZonesLayer.ts`):
   - Added `!map.getStyle()` safety guard to prevent `Cannot read properties of undefined (reading 'getSource')` crash during MapLibre style auto-recovery.
 
+### Capstone Phase 8: Multi-Report "Draft Cart" Batch Submission (🟢 COMPLETED)
+- [x] **Client-Side Draft Cart Implementation** (@roicambe):
+  - Created `DraftReport` interface and `draftReports` global state in `MapContext.tsx`.
+  - Updated `MapCanvas.tsx` to reactively render drafted reports as dashed purple (`#8b5cf6`) dashed lines alongside active lines.
+- [x] **FloodReportPanel UI Overhaul (Commuters)**:
+  - Added a "Draft Cart" list visualizing drafted street names and severities with a "Remove" button.
+  - Implemented an "Add Another Road" secondary action button that stashes the current form into `draftReports` and resets the panel for the next road.
+  - Refactored `handleSubmit` to iterate over `draftReports` with `Promise.all` and concurrently submit all reports, circumventing the need for a complex bulk backend endpoint.
+- [x] **CreateOfficialZonePanel Overhaul (Admins)**:
+  - Mirrored the draft cart UI logic for DRRMO Admins.
+  - Extended the logic to support both `Line` (routed) and `Polygon` (drawn via TerraDraw) modes simultaneously in the same draft payload.
+  - Added TerraDraw `drawRef.current.clear()` auto-reset upon stashing a draft.
+
 ### Capstone Phase 6: Official DRRMO Zone Creation & Terra Draw Vector Engine (🟢 COMPLETED)
 
 - [x] **Migration from `mapbox-gl-draw` to `terra-draw`**:

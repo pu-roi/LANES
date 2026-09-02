@@ -112,6 +112,10 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setActivePanel,
     floodIsBidirectional: isBidirectional,
     setFloodIsBidirectional: setIsBidirectional,
+    draftReports,
+    setDraftReports,
+    floodPreviewGeometry,
+    floodOppositeGeometry
   } = useMapContext();
 
   // Form state
@@ -188,94 +192,165 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       error("Location Error", message);
     }
   };
+  // ── Draft & Submit ─────────────────────────────────────────────────────────
 
-  // ── Submit ─────────────────────────────────────────────────────────────────
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!floodStart || !floodEnd) {
-      error("Missing Information", "Please set both the Flood Start and Flood End locations.");
+  const handleDraftRoad = () => {
+    if (!floodStart || !floodEnd || !floodPreviewGeometry) return;
+    if (!passableVehicles.length || !hiddenHazards) {
+      error("Missing Information", "Please complete the Community Survey before drafting.");
       return;
     }
-    if (!passableVehicles.length || !hiddenHazards) {
-      error("Missing Information", "Please complete the Community Survey before submitting.");
+
+    const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
+    const severity = selectedOption ? selectedOption.severity : "low";
+    const depth = selectedOption ? selectedOption.label : "";
+
+    const newDraft = {
+      id: Math.random().toString(36).substring(7),
+      geometry: floodPreviewGeometry,
+      oppositeGeometry: floodOppositeGeometry,
+      isBidirectional,
+      severity,
+      depth,
+      description,
+      mediaFiles: [...mediaFiles],
+      startLabel: startInput,
+      endLabel: endInput,
+      roadName: null,
+    };
+
+    setDraftReports((prev) => [...prev, newDraft]);
+
+    // Reset current form for next draft
+    setFloodStart(null);
+    setFloodEnd(null);
+    setStartInput("");
+    setEndInput("");
+    setDescription("");
+    setVisualOption(null);
+    setPassableVehicles([]);
+    setHiddenHazards(null);
+    setMediaFiles([]);
+    setShowSurvey(false);
+    setIsBidirectional(false);
+    setStep(1);
+
+    success("Road Saved", "Road added to your draft list. You can add another or submit all.");
+  };
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    // Determine what to submit (all drafts + current form if valid)
+    const formsToSubmit: FormData[] = [];
+
+    // Helper to create FormData
+    const createFormData = (data: any) => {
+      const fd = new FormData();
+      fd.append("raw_text", data.description.trim());
+      fd.append("source", "direct_user");
+      fd.append("severity", data.severity);
+      if (data.depth) fd.append("depth", data.depth);
+      fd.append("is_public", data.isPublic.toString());
+      fd.append("is_bidirectional", data.isBidirectional.toString());
+      fd.append("geometry", JSON.stringify(data.geometry));
+      fd.append(
+        "survey_data",
+        JSON.stringify({
+          passable_vehicles: data.passableVehicles,
+          hidden_hazards: data.hiddenHazards,
+        })
+      );
+      if (data.mediaFiles && data.mediaFiles.length > 0) {
+        data.mediaFiles.forEach((file: File) => {
+          fd.append("media", file);
+        });
+      }
+      return fd;
+    };
+
+    // 1. Pack drafts
+    draftReports.forEach((draft) => {
+      formsToSubmit.push(
+        createFormData({
+          description: draft.description,
+          severity: draft.severity,
+          depth: draft.depth,
+          isPublic: isPublic, // Shared across batch
+          isBidirectional: draft.isBidirectional,
+          geometry: draft.geometry,
+          passableVehicles: null, // Let's just pass null for drafts for now
+          hiddenHazards: "unsure",
+          mediaFiles: draft.mediaFiles,
+        })
+      );
+    });
+
+    // 2. Pack current form if filled
+    const isCurrentFormFilled = !!floodStart && !!floodEnd && description.trim().length > 0 && passableVehicles.length > 0 && hiddenHazards !== null && floodPreviewGeometry;
+    
+    if (isCurrentFormFilled) {
+      const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
+      formsToSubmit.push(
+        createFormData({
+          description: description,
+          severity: selectedOption ? selectedOption.severity : "low",
+          depth: selectedOption ? selectedOption.label : "",
+          isPublic: isPublic,
+          isBidirectional: isBidirectional,
+          geometry: floodPreviewGeometry,
+          passableVehicles: passableVehicles.join(", "),
+          hiddenHazards: hiddenHazards,
+          mediaFiles: mediaFiles,
+        })
+      );
+    }
+
+    if (formsToSubmit.length === 0) {
+      error("Empty", "No valid reports to submit.");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      // 1. Get the actual road geometry between the two points, ignoring any existing active floods
-      const routeAB = await getRoute(floodStart.coords, floodEnd.coords, true);
-      const roadGeometryAB = routeAB.routes[0]?.geometry;
-      const distanceAB = routeAB.routes[0]?.distance || 1;
-      
-      let finalGeometry = roadGeometryAB;
-      let isBi = false;
-
-      // If bidirectional is checked, we just pass the flag to the backend.
-      // The backend will create a wider avoidance zone, and MapCanvas will visually offset it.
-      if (isBidirectional) {
-          isBi = true;
-      }
-
-      // 2. Map visual option to backend severity
-      const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
-      const severity = selectedOption ? selectedOption.severity : "low";
-      const depth = selectedOption ? selectedOption.label : null;
-
-      // 3. Submit as multipart/form-data
-      const formData = new FormData();
-      formData.append("raw_text", description.trim());
-      formData.append("source", "direct_user");
-      formData.append("severity", severity);
-      if (depth) {
-        formData.append("depth", depth);
-      }
-      formData.append("is_public", isPublic.toString());
-      formData.append("is_bidirectional", isBi.toString());
-      formData.append("geometry", JSON.stringify(finalGeometry));
-      formData.append(
-        "survey_data",
-        JSON.stringify({
-          passable_vehicles: passableVehicles.length > 0 ? passableVehicles.join(", ") : null,
-          hidden_hazards: hiddenHazards,
-        })
-      );
-      if (mediaFiles.length > 0) {
-        mediaFiles.forEach((file) => {
-          formData.append("media", file);
-        });
-      }
-
       if (isAdminMode && onAdminSubmit) {
-        await onAdminSubmit(formData);
+        for (const fd of formsToSubmit) {
+           await onAdminSubmit(fd);
+        }
       } else {
-        await apiClient.post<{ id: number }>("/reports", formData);
+        await Promise.all(
+          formsToSubmit.map((fd) => apiClient.post<{ id: number }>("/reports", fd))
+        );
       }
 
-      // Reset form
+      // Reset everything
+      setDraftReports([]);
       setFloodStart(null);
       setFloodEnd(null);
+      setStartInput("");
+      setEndInput("");
       setDescription("");
       setVisualOption(null);
       setPassableVehicles([]);
       setHiddenHazards(null);
       setMediaFiles([]);
       setShowSurvey(false);
-      setIsBidirectional(true);
+      setIsBidirectional(false);
+      setStep(1);
       
-      success(isAdminMode ? "Zone Created" : "Report Submitted", isAdminMode ? "Official zone is now active." : "Thank you! Your report is now in review.");
+      success(isAdminMode ? "Zones Created" : "Reports Submitted", isAdminMode ? "Official zones are now active." : "Thank you! Your reports are now in review.");
       if (onClose) onClose();
     } catch (err: unknown) {
-      console.error("Error submitting flood report:", err);
-      error("Submission Failed", "Failed to submit the report. Please try again.");
+      console.error("Error submitting flood reports:", err);
+      error("Submission Failed", "Failed to submit some reports. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const isSurveyComplete = passableVehicles.length > 0 && hiddenHazards !== null;
-  const canSubmit = !!floodStart && !!floodEnd && description.trim().length > 0 && isSurveyComplete && !isSubmitting;
+  const canSubmitCurrent = !!floodStart && !!floodEnd && description.trim().length > 0 && isSurveyComplete;
+  const canSubmitAny = (draftReports.length > 0) || canSubmitCurrent;
 
   // ── Mobile map-pick overlay ────────────────────────────────────────────────
   if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
@@ -367,6 +442,28 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       )}
       {step === 1 && (
         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+          {draftReports.length > 0 && (
+            <div className="mb-4 bg-purple-50 rounded-xl p-3 border border-purple-100">
+              <h4 className="text-[11px] uppercase tracking-wider font-bold text-purple-800 mb-2">Drafted Roads ({draftReports.length})</h4>
+              <div className="space-y-1.5 max-h-[120px] overflow-y-auto pr-1">
+                {draftReports.map((draft, idx) => (
+                  <div key={draft.id} className="bg-white rounded-lg p-2 border border-purple-100/50 shadow-sm flex items-center justify-between text-xs">
+                    <div className="truncate flex-1 min-w-0 pr-2">
+                       <span className="font-semibold text-gray-800 truncate block">{draft.startLabel || "Unknown Road"}</span>
+                       <span className="text-gray-500 text-[10px] truncate block">{draft.severity.toUpperCase()} • {draft.depth}</span>
+                    </div>
+                    <button 
+                      type="button" 
+                      onClick={() => setDraftReports(prev => prev.filter(r => r.id !== draft.id))}
+                      className="text-gray-400 hover:text-red-500 shrink-0 p-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {/* Location Inputs (Timeline Style) */}
           <div className="flex items-center mb-2">
             {/* Left Icons */}
@@ -656,29 +753,43 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             )}
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto flex gap-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
+          <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto flex flex-col gap-2 z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
             <Button
               type="button"
               variant="outline"
-              onClick={() => setStep(1)}
-              className="flex-1 h-10 rounded-xl font-medium"
+              disabled={!canSubmitCurrent || isSubmitting}
+              onClick={handleDraftRoad}
+              className="w-full h-10 rounded-xl font-medium border-orange-200 text-orange-700 hover:bg-orange-50"
             >
-              Back
+              Add Another Road to Report
             </Button>
-            <Button
-              type="submit"
-              disabled={!canSubmit}
-              className="flex-[2] bg-orange-500 hover:bg-orange-600 focus:ring-orange-400 text-white font-semibold shadow-sm h-10 rounded-xl"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                "Submit Report"
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setStep(1)}
+                className="flex-[1] h-10 rounded-xl font-medium"
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                disabled={!canSubmitAny}
+                className="flex-[2] bg-orange-500 hover:bg-orange-600 focus:ring-orange-400 text-white font-semibold shadow-sm h-10 rounded-xl"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    Submit All ({draftReports.length + (canSubmitCurrent ? 1 : 0)})
+                    <CheckCircle className="w-4 h-4 ml-1.5" />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       )}

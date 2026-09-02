@@ -298,3 +298,25 @@ A new `POST /api/v1/reports/preview-bidirectional` endpoint was added. When "Aff
 - [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — `ST_ConvexHull(ST_Collect(...))` dual-buffer approval logic
 - [`frontend/src/features/map/MapContext.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx) — `floodOppositeGeometry` state + `/preview-bidirectional` API call
 - [`frontend/src/features/map/MapCanvas.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx) — Dual-source real line rendering replacing CSS offset hack
+
+---
+
+## 17. Multi-Report "Draft Cart" Architecture vs. Backend Bulk Endpoint
+**Date:** September 3, 2026
+**Decision:** Implement a client-side "Draft Cart" array holding `DraftReport` objects in `MapContext.tsx`, combined with an iterative `Promise.all` sequence on submit, instead of rewriting the backend REST API to support bulk JSON arrays.
+
+**Context:**
+Users frequently encounter multiple flooded streets connected to one another (e.g., crossing a neighborhood block). The previous workflow forced the user to complete the report form, submit it, close the panel, and restart the entire reporting flow for the next street.
+We needed a way to submit multiple disconnected or connected reports in one go, including the ability to draft mixed geometries (routed lines and drawn TerraDraw polygons).
+
+**Reasoning:**
+1. **Preserving the Endpoint Structure:** The FastAPI backend endpoints (`/reports` for public users via `FormData` and `/admin/zones` for admins via JSON) were highly optimized for single-entity submission, validation, and notification broadcasts. Rewriting them to accept heterogeneous arrays (mixed `FormData` for files and JSON for geometry) would cause significant regression risks and drastically increase endpoint complexity.
+2. **Client-Side Drafting:** By lifting a `draftReports` array state up to `MapContext.tsx`, the MapCanvas can reactively render pending drafts as dashed purple lines (`#8b5cf6`), allowing users to visualize what they are about to submit.
+3. **Promise.all Iteration:** The `handleSubmit` logic in both `FloodReportPanel.tsx` and `CreateOfficialZonePanel.tsx` loops over `draftReports` (plus the currently filled form, if any) and dispatches individual, concurrent API requests. This achieves the user's goal of "batch reporting" without requiring any backend schema changes.
+4. **Community Feed Separation:** By sending them as individual reports, the system automatically generates separate posts in the Community Feed. This was explicitly chosen because a single massive "combo post" containing 5 random disconnected streets would be unreadable on the feed map.
+
+**Files Modified:**
+- [`frontend/src/features/map/MapContext.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx) — Added `DraftReport` type and `draftReports` state.
+- [`frontend/src/features/map/MapCanvas.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx) — Added `draft-reports-source` and `draft-reports-layer` rendering logic.
+- [`frontend/src/features/hazards/FloodReportPanel.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) — Refactored to include "Add Another Road" button, Draft Cart list view, and looping submit loop.
+- [`frontend/src/features/admin/components/CreateOfficialZonePanel.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/CreateOfficialZonePanel.tsx) — Cloned the Draft Cart logic, extending it to support TerraDraw drawn features alongside routed lines.

@@ -216,7 +216,8 @@ export default function MapCanvas() {
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
     savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen,
-    floodIsBidirectional, floodOppositeGeometry
+    floodIsBidirectional, floodOppositeGeometry,
+    draftReports
   } = useMapContext();
 
   const isDesktopAnalytics = pathname === "/admin/analytics";
@@ -870,6 +871,55 @@ export default function MapCanvas() {
       });
     }
   }, [floodPreviewGeometry, floodOppositeGeometry, floodIsBidirectional, isLoaded]);
+
+  // Render drafted reports (Cart)
+  useEffect(() => {
+    if (!isLoaded || !mapRef.current) return;
+    const map = mapRef.current;
+    if (!map.style) return;
+
+    if (map.getLayer("draft-reports-layer")) map.removeLayer("draft-reports-layer");
+    if (map.getSource("draft-reports-source")) map.removeSource("draft-reports-source");
+
+    if (!draftReports || draftReports.length === 0) return;
+
+    const features: any[] = [];
+    draftReports.forEach((draft) => {
+      features.push({
+        type: "Feature",
+        properties: { severity: draft.severity },
+        geometry: draft.geometry,
+      });
+      if (draft.isBidirectional && draft.oppositeGeometry) {
+        features.push({
+          type: "Feature",
+          properties: { severity: draft.severity },
+          geometry: draft.oppositeGeometry,
+        });
+      }
+    });
+
+    map.addSource("draft-reports-source", {
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features,
+      },
+    });
+
+    map.addLayer({
+      id: "draft-reports-layer",
+      type: "line",
+      source: "draft-reports-source",
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: {
+        "line-color": "#8b5cf6", // Purple to distinguish drafts
+        "line-width": 6,
+        "line-dasharray": [2, 2],
+        "line-opacity": 0.8,
+      },
+    });
+  }, [draftReports, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;

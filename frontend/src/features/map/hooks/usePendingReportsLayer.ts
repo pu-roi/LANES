@@ -23,6 +23,8 @@ export function usePendingReportsLayer(
     if (!map || !isLoaded) return;
 
     const setupLayers = () => {
+      if (!map.getStyle()) return;
+
       const sourceId = "all-pending-reports-source";
       const existingSource = map.getSource(sourceId) as maplibregl.GeoJSONSource;
 

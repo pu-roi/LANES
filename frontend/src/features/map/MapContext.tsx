@@ -30,6 +30,20 @@ export interface MapPoint {
   label: string;
 }
 
+export interface DraftReport {
+  id: string;
+  geometry: RouteGeometry;
+  oppositeGeometry: RouteGeometry | null;
+  isBidirectional: boolean;
+  severity: string;
+  depth: string;
+  description: string;
+  mediaFiles: File[];
+  startLabel: string;
+  endLabel: string;
+  roadName: string | null;
+}
+
 interface MapContextValue {
   start: MapPoint | null;
   end: MapPoint | null;
@@ -86,6 +100,9 @@ interface MapContextValue {
   resetAll: () => void;
   vehicleProfile: "light" | "heavy" | "motorcycle" | "walk";
   setVehicleProfile: (profile: "light" | "heavy" | "motorcycle" | "walk") => void;
+
+  draftReports: DraftReport[];
+  setDraftReports: React.Dispatch<React.SetStateAction<DraftReport[]>>;
 
   routingEngine: "valhalla" | "ors";
   setRoutingEngine: (engine: "valhalla" | "ors") => void;
@@ -150,7 +167,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [floodEnd, setFloodEndState] = useState<MapPoint | null>(null);
   const [floodPreviewGeometry, setFloodPreviewGeometry] = useState<RouteGeometry | null>(null);
   const [floodOppositeGeometry, setFloodOppositeGeometry] = useState<RouteGeometry | null>(null);
-  const [floodIsBidirectional, setFloodIsBidirectional] = useState(true);
+  const [floodIsBidirectional, setFloodIsBidirectional] = useState(false);
+  const [draftReports, setDraftReports] = useState<DraftReport[]>([]);
 
   const [vehicleProfile, setVehicleProfile] = useState<"light" | "heavy" | "motorcycle" | "walk">("light");
   const [routingEngine, setRoutingEngine] = useState<"valhalla" | "ors">("ors");
