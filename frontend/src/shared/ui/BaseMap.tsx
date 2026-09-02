@@ -442,7 +442,7 @@ export class Toggle3DControl {
     if (!this._map) return;
     const map = this._map;
     if (!map.isStyleLoaded()) {
-      // Map is not ready yet; on first load in 2D mode, we don't need to do anything as terrain is null by default
+      map.once("styledata", () => this._disable3D(animate));
       return;
     }
     try {

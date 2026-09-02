@@ -184,7 +184,7 @@ export default function LiveMapPage() {
         const lng = parseFloat(lngStr);
         const zoom = zoomStr ? parseFloat(zoomStr) : 16;
         if (!isNaN(lat) && !isNaN(lng)) {
-          flyToCoordinates(mapInstance, [lng, lat], { zoom, pitch: 45, duration: 1500 });
+          flyToCoordinates(mapInstance, [lng, lat], { zoom, pitch: mapInstance.getPitch(), duration: 1500 });
         }
       }
 
@@ -198,7 +198,7 @@ export default function LiveMapPage() {
           setIsolatedReportId(idNum);
 
           if (targetPending.geometry && (!latStr || !lngStr)) {
-            flyToFeature(mapInstance, targetPending.geometry, null, { zoom: 16, pitch: 45, duration: 1500 });
+            flyToFeature(mapInstance, targetPending.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
           }
         } else {
           const targetZone = (mapZones || []).find(
@@ -208,7 +208,7 @@ export default function LiveMapPage() {
             setActiveTab("zones");
             setSelectedZoneId(targetZone.id);
             if (targetZone.geometry && (!latStr || !lngStr)) {
-              flyToFeature(mapInstance, targetZone.geometry, targetZone.report_geometry, { zoom: 16, pitch: 45, duration: 1500 });
+              flyToFeature(mapInstance, targetZone.geometry, targetZone.report_geometry, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
             }
           }
         }
@@ -395,7 +395,7 @@ export default function LiveMapPage() {
   // Fly to selected report when clicked in the list
   useEffect(() => {
     if (!mapInstance || !isLoaded || !selectedReport || !selectedReport.geometry || activeTab !== "pending") return;
-    flyToFeature(mapInstance, selectedReport.geometry, null, { zoom: 16, pitch: 45, duration: 1200 });
+    flyToFeature(mapInstance, selectedReport.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1200 });
   }, [selectedReport, activeTab, isLoaded, mapInstance]);
 
   // Mutations
@@ -483,7 +483,7 @@ export default function LiveMapPage() {
   const flyToZone = (zone: AvoidanceZone) => {
     if (!mapInstance || !zone.geometry) return;
     try {
-      flyToFeature(mapInstance, zone.geometry, zone.report_geometry, { zoom: 16, pitch: 45, duration: 1500 });
+      flyToFeature(mapInstance, zone.geometry, zone.report_geometry, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
     } catch (err) {
       console.error("Failed to fly to zone:", err);
     }

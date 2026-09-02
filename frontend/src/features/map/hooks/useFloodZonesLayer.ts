@@ -388,7 +388,7 @@ export function useFloodZonesLayer(
 
       // Center, angle, and zoom into the clicked active zone ONLY on select
       if (isSelecting && e.lngLat) {
-        flyToCoordinates(map, [e.lngLat.lng, e.lngLat.lat], { zoom: 16, pitch: 45, duration: 1500 });
+        flyToCoordinates(map, [e.lngLat.lng, e.lngLat.lat], { zoom: 16, pitch: map.getPitch(), duration: 1500 });
       }
 
       if (isTouchDevice && isSelecting) {

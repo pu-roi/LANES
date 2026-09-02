@@ -274,7 +274,7 @@ export default function MapCanvas() {
         mapRef.current.flyTo({
           center: [lng, lat],
           zoom,
-          pitch: 45,
+          pitch: mapRef.current.getPitch(),
           duration: 1000
         });
 

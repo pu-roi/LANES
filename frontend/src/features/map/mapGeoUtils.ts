@@ -81,7 +81,7 @@ export function flyToFeature(
   map.flyTo({
     center,
     zoom: options?.zoom ?? 16,
-    pitch: options?.pitch ?? 45,
+    pitch: options?.pitch ?? (typeof map.getPitch === "function" ? map.getPitch() : 0),
     bearing: options?.bearing ?? (typeof map.getBearing === "function" ? map.getBearing() : 0),
     duration: options?.duration ?? 1400,
     essential: true,
@@ -103,7 +103,7 @@ export function flyToCoordinates(
   map.flyTo({
     center: coords,
     zoom: options?.zoom ?? 16,
-    pitch: options?.pitch ?? 45,
+    pitch: options?.pitch ?? (typeof map.getPitch === "function" ? map.getPitch() : 0),
     bearing: options?.bearing ?? (typeof map.getBearing === "function" ? map.getBearing() : 0),
     duration: options?.duration ?? 1400,
     essential: true,
