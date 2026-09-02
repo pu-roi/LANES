@@ -452,7 +452,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
               setFloodOppositeGeometry(preview.opposite ?? null);
               
               if (preview.road_type === "NARROW_TWO_WAY") {
-                toast.info("This is a standard two-way road. A single boundary is sufficient.");
+                toast("This is a standard two-way road. A single boundary is sufficient.", { icon: "ℹ️" });
               } else if (preview.road_type === "TRUE_ONE_WAY") {
                 toast.error("This is a one-way street. Two-way mapping cannot be applied.");
               }
