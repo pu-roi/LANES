@@ -49,12 +49,12 @@ async def process_new_report(
             # Extract road name from human_readable_location as a validation hint
             road_name_hint = human_readable_location
 
-            opposite_geom = find_opposite_carriageway(
+            road_type, opposite_geom = find_opposite_carriageway(
                 route_coords=original_coords,
                 original_road_name=road_name_hint
             )
 
-            if opposite_geom:
+            if opposite_geom and road_type == "DIVIDED_CARRIAGEWAY":
                 # Combine the original line and the opposite-carriageway line into a
                 # GeometryCollection so ST_Buffer in the approval step wraps both roads.
                 geometry = {
@@ -67,8 +67,8 @@ async def process_new_report(
                 )
             else:
                 logger.info(
-                    "[process_new_report] Bidirectional: could not find a valid opposite "
-                    "carriageway (likely a true one-way road). Storing original line only."
+                    f"[process_new_report] Bidirectional ignored. Classification: {road_type}. "
+                    "Storing original line only."
                 )
         except Exception as e:
             logger.error(f"[process_new_report] Hybrid Strategy failed: {e}. Falling back to original geometry.")

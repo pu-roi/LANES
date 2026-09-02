@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 2, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 3, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -266,15 +266,16 @@ The original approach was a CSS `line-offset: -8px` visual trick — drawing the
 - **Standard reverse routing (`/route` A→B reversed to B→A):** The Valhalla routing engine is traffic-law-aware. If the road is one-way, it will hunt for U-turns or legal crossing points, producing massive detours instead of a parallel line. ❌
 - **Fixed geometric offset only:** A fixed 15m offset works on some roads but fails on roads narrower than 5m (lands in buildings) or wider than 40m (lands in the median). ❌
 
-**The Hybrid Strategy (Selected):**
-The final decision combines three techniques into a single pipeline:
+**The Traversability-Aware Hybrid Strategy (Selected):**
+The final decision combines Valhalla's Traversability metrics with a dynamic geometric search loop:
 
 | Step | Technique | Purpose |
 |---|---|---|
-| 1 | **Perpendicular Geometric Offset** | Shift all coordinates ~15m to the left as a spatial "hint" to push the search away from the original road |
-| 2 | **Coordinate Reversal** | Reverse the order of shifted coordinates so map-matching sees traffic flowing in the opposite direction |
-| 3 | **Valhalla Map Matching** (`/trace_attributes`) | Snap the shifted+reversed shape to the nearest road. Unlike routing, map-matching **never invents U-turns** — it strictly follows the provided shape and snaps to the nearest legal road edge |
-| 4 | **Road Name Validation** | Compare matched edge names from Valhalla against the original road name. If names are entirely different, abort — it's a different road, not the opposite carriageway |
+| 1 | **Traversability Inspection** (`/trace_attributes`) | Determines if the plotted road is one-way (`forward`) or a standard two-way street (`both`). If `both`, the system classifies it as a `NARROW_TWO_WAY` and aborts searching, as one line is sufficient. |
+| 2 | **Dynamic Offset Search** | For one-way roads (or divided highways), the system attempts to find the opposite lane by shifting coordinates perpendicularly to the left in increasing increments: **5m, 10m, 15m, 20m, 30m**. |
+| 3 | **Coordinate Reversal** | For each offset iteration, the order of shifted coordinates is reversed so map-matching sees traffic flowing in the opposite direction. |
+| 4 | **Valhalla Map Matching** | Snaps the shifted+reversed shape to the nearest road. Because map-matching strictly follows the shape instead of routing laws, it never invents U-turns. |
+| 5 | **Backend Name Validation** | Extracts the original road name from the *initial* trace (bypassing the need for frontend reverse-geocoding). Compares matched edge names against this extracted name. If names mismatch (e.g., snapped to a neighboring side-street or unnamed alley), it continues the loop. If names match, it accepts the `DIVIDED_CARRIAGEWAY`. |
 
 **Why Map Matching avoids U-turns:**
 The standard `/route` API is path-finding (must obey traffic laws between two points). The `/trace_attributes` Map Matching API is shape-fitting (finds the road beneath a shape, regardless of legal drivability). Feeding it a reversed shape causes it to snap directly to the opposite-flowing lane without needing any legal U-turn maneuver.

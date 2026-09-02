@@ -404,93 +404,120 @@ def _shift_coords_perpendicular(coords: List[List[float]], offset_meters: float)
 def find_opposite_carriageway(
     route_coords: List[List[float]],
     original_road_name: Optional[str] = None
-) -> Optional[Dict[str, Any]]:
+) -> Tuple[str, Optional[Dict[str, Any]]]:
     """
-    Hybrid Strategy: Given the [lng, lat] coordinates of a road segment, attempts to
-    find and return the geometry of the parallel, opposite-direction carriageway.
-
-    Algorithm:
-    1. Shifts all coordinates ~15m to the left (perpendicular hint away from original road).
-    2. Reverses the order (so map-matching sees the opposite travel direction).
-    3. Calls Valhalla /trace_attributes to snap to the nearest matching road.
-    4. Validates the matched road name against `original_road_name` to avoid false positives.
-    5. Returns a GeoJSON LineString of the opposite carriageway, or None if not found.
+    Traversability-Aware Hybrid Strategy: 
+    Returns a tuple of (road_type_enum, opposite_geometry).
     """
     if not route_coords or len(route_coords) < 2:
-        return None
+        return "UNMAPPED", None
 
-    # Step 1: Apply 15m perpendicular left-hand offset as a "hint"
-    shifted = _shift_coords_perpendicular(route_coords, offset_meters=15.0)
-
-    # Step 2: Reverse the coordinate order so map-matching sees the opposite direction
-    reversed_shifted = list(reversed(shifted))
-
-    # Step 3: Call Valhalla /trace_attributes (Map Matching — no U-turns, pure shape snap)
-    shape = [{"lat": c[1], "lon": c[0]} for c in reversed_shifted]
-    body = {
-        "shape": shape,
-        "costing": "auto",
-        "shape_match": "map_snap",
-        "filters": {
-            "attributes": ["edge.names", "edge.length", "shape"],
-            "action": "include"
-        }
-    }
-
+    # Step 1: Trace original road to determine traversability
+    original_shape = [{"lat": c[1], "lon": c[0]} for c in route_coords]
     url = f"{settings.VALHALLA_URL}/trace_attributes"
-    try:
-        response = httpx.post(url, json=body, timeout=10.0)
-        if response.status_code != 200:
-            logger.warning(f"[find_opposite_carriageway] Valhalla trace_attributes failed: {response.text}")
-            return None
-
-        data = response.json()
-    except httpx.RequestError as e:
-        logger.warning(f"[find_opposite_carriageway] Valhalla unreachable: {e}")
+    
+    def do_trace(shape: List[Dict[str, float]]) -> Optional[Dict[str, Any]]:
+        body = {
+            "shape": shape,
+            "costing": "auto",
+            "shape_match": "map_snap",
+            "filters": {
+                "attributes": ["edge.names", "edge.traversability", "edge.road_class", "shape"],
+                "action": "include"
+            }
+        }
+        try:
+            res = httpx.post(url, json=body, timeout=10.0)
+            if res.status_code == 200:
+                return res.json()
+        except Exception as e:
+            logger.warning(f"[find_opposite_carriageway] Trace error: {e}")
         return None
 
-    # Step 4: Validate — check that matched road has the same name as the original
-    matched_edges = data.get("edges", [])
-    matched_names = set()
-    for edge in matched_edges:
-        for name in edge.get("names", []):
-            matched_names.add(name.strip().lower())
+    orig_trace = do_trace(original_shape)
+    if not orig_trace or not orig_trace.get("edges"):
+        return "UNMAPPED", None
 
+    edges = orig_trace.get("edges", [])
+    
+    # Extract original names from trace
+    original_names = set()
     if original_road_name:
-        original_normalized = original_road_name.strip().lower()
-        # Allow if any matched edge shares the same name
-        name_match = any(
-            original_normalized in n or n in original_normalized
-            for n in matched_names
-        )
-        # If the road has a name AND the matched road has a completely different name, reject it
-        if matched_names and not name_match:
-            logger.info(
-                f"[find_opposite_carriageway] Name mismatch. Original: '{original_road_name}', "
-                f"Matched: {matched_names}. Likely a different road — aborting."
-            )
-            return None
+        original_names.add(original_road_name.strip().lower())
+        
+    for e in edges:
+        for n in e.get("names", []):
+            if n.strip():
+                original_names.add(n.strip().lower())
+    
+    # Determine majority traversability
+    trav_counts = {"both": 0, "forward": 0, "backward": 0}
+    for e in edges:
+        t = e.get("traversability")
+        if t in trav_counts:
+            trav_counts[t] += 1
+            
+    # Default to forward if unknown
+    majority_trav = max(trav_counts, key=trav_counts.get) if any(trav_counts.values()) else "forward"
 
-    # Step 5: Decode the matched shape from the response
-    matched_shape_str = data.get("shape")
-    if not matched_shape_str:
-        return None
+    # Step 2: The Decision Tree
+    if majority_trav == "both":
+        logger.info("[find_opposite_carriageway] Classified as NARROW_TWO_WAY")
+        return "NARROW_TWO_WAY", None
 
-    # The matched shape is returned reversed (we fed in a reversed trace), so re-reverse it
-    matched_coords = decode_polyline6(matched_shape_str)
-    # Re-reverse so the geometry flows in the same spatial direction as the original line
-    matched_coords = list(reversed(matched_coords))
+    # Step 3: Dynamic Offset Search for one-way/divided candidates
+    logger.info("[find_opposite_carriageway] Classified as ONE_WAY_CANDIDATE, starting Dynamic Offset Search")
+    
+    offsets = [5.0, 10.0, 15.0, 20.0, 30.0]
+    
+    for offset in offsets:
+        shifted = _shift_coords_perpendicular(route_coords, offset_meters=offset)
+        reversed_shifted = list(reversed(shifted))
+        shape = [{"lat": c[1], "lon": c[0]} for c in reversed_shifted]
+        
+        opp_trace = do_trace(shape)
+        if not opp_trace:
+            continue
+            
+        matched_edges = opp_trace.get("edges", [])
+        matched_names = set()
+        for edge in matched_edges:
+            for name in edge.get("names", []):
+                matched_names.add(name.strip().lower())
+                
+        # Step 4: Validate name matches
+        if original_names:
+            name_match = False
+            for orig_name in original_names:
+                for match_name in matched_names:
+                    if orig_name in match_name or match_name in orig_name:
+                        name_match = True
+                        break
+                if name_match:
+                    break
+                    
+            if matched_names and not name_match:
+                # Snapped to a completely different named road, reject
+                continue
+            
+            if not matched_names and len(original_names) > 0:
+                # Snapped to an unnamed alley/parking lot, but original road had a name, reject
+                continue
+                
+        # If we got here, we found a valid opposite carriageway!
+        matched_shape_str = opp_trace.get("shape")
+        if matched_shape_str:
+            matched_coords = decode_polyline6(matched_shape_str)
+            matched_coords = list(reversed(matched_coords))
+            
+            if len(matched_coords) >= 2:
+                logger.info(f"[find_opposite_carriageway] Found DIVIDED_CARRIAGEWAY opposite lane at {offset}m")
+                return "DIVIDED_CARRIAGEWAY", {
+                    "type": "LineString",
+                    "coordinates": matched_coords
+                }
 
-    if len(matched_coords) < 2:
-        return None
-
-    logger.info(
-        f"[find_opposite_carriageway] Successfully matched opposite carriageway "
-        f"with {len(matched_coords)} points. Road names: {matched_names}"
-    )
-
-    return {
-        "type": "LineString",
-        "coordinates": matched_coords
-    }
+    # Loop finished, no valid opposite lane found
+    logger.info("[find_opposite_carriageway] Dynamic search failed. Classified as TRUE_ONE_WAY")
+    return "TRUE_ONE_WAY", None
 

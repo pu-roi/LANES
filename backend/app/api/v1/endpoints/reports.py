@@ -163,14 +163,14 @@ class BidirectionalPreviewResponse(PydanticBaseModel):
     original: dict       # GeoJSON LineString of the original road
     opposite: TypingOptional[dict] = None  # GeoJSON LineString of opposite carriageway (None if one-way)
     is_divided: bool     # True if a valid opposite carriageway was found
+    road_type: str       # NARROW_TWO_WAY, DIVIDED_CARRIAGEWAY, TRUE_ONE_WAY, UNMAPPED
 
 @router.post("/preview-bidirectional", response_model=BidirectionalPreviewResponse)
 def preview_bidirectional(payload: BidirectionalPreviewRequest):
     """
-    Given a list of coordinates forming a road segment, uses the Hybrid Strategy
-    (perpendicular offset + Valhalla map-matching + name validation) to detect and
-    return the actual opposite carriageway geometry for preview before submission.
-    Returns `is_divided=False` and `opposite=None` for true one-way streets.
+    Given a list of coordinates forming a road segment, uses the Traversability-Aware
+    Hybrid Strategy (perpendicular dynamic offset + Valhalla map-matching + name validation)
+    to detect and return the actual opposite carriageway geometry for preview before submission.
     """
     from app.services.valhalla_service import find_opposite_carriageway
 
@@ -179,7 +179,7 @@ def preview_bidirectional(payload: BidirectionalPreviewRequest):
         "coordinates": payload.coordinates
     }
 
-    opposite_geom = find_opposite_carriageway(
+    road_type, opposite_geom = find_opposite_carriageway(
         route_coords=payload.coordinates,
         original_road_name=payload.road_name
     )
@@ -187,5 +187,6 @@ def preview_bidirectional(payload: BidirectionalPreviewRequest):
     return BidirectionalPreviewResponse(
         original=original_geom,
         opposite=opposite_geom,
-        is_divided=opposite_geom is not None
+        is_divided=opposite_geom is not None,
+        road_type=road_type
     )

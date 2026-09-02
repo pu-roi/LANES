@@ -20,6 +20,7 @@ import {
 } from "@/features/routing/routingApi";
 import { getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
+import toast from "react-hot-toast";
 
 export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
 export type ActivePanel = "route" | "flood" | "save_place" | null;
@@ -423,6 +424,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
               original: RouteGeometry;
               opposite: RouteGeometry | null;
               is_divided: boolean;
+              road_type: string;
             }>("/reports/preview-bidirectional", {
               coordinates: originalGeometry.coordinates,
               road_name: null,
@@ -430,6 +432,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
             if (!cancelled) {
               setFloodOppositeGeometry(preview.opposite ?? null);
+              
+              if (preview.road_type === "NARROW_TWO_WAY") {
+                toast.info("This is a standard two-way road. A single boundary is sufficient.");
+              } else if (preview.road_type === "TRUE_ONE_WAY") {
+                toast.error("This is a one-way street. Two-way mapping cannot be applied.");
+              }
             }
           } catch {
             if (!cancelled) setFloodOppositeGeometry(null);

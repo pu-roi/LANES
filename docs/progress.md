@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 2, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 3, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -28,20 +28,20 @@
   - Identified root cause: `line-offset: -8px` was purely cosmetic and placed the second line in the median of wide divided roads, not on the actual opposite carriageway.
   - Evaluated and rejected standard reverse routing (`/route` B→A) due to U-turn loop problem — the Valhalla engine generates legal driving routes, not parallel lines.
   - Evaluated and rejected fixed geometric offsets — variable road widths (3m narrow streets vs. 30m expressways) make any single offset value unreliable.
-- [x] **Implemented Hybrid Carriageway Detection Strategy** (`valhalla_service.py`):
-  - `_shift_coords_perpendicular()`: Shifts all route coordinates ~15m to the left using flat-earth perpendicular math (accurate for short road segments in SRID 4326).
-  - `find_opposite_carriageway()`: Reverses the shifted coordinate order and calls Valhalla's `/trace_attributes` (Map Matching API). Unlike the routing API, map matching is shape-fitting — it snaps a shape to the nearest road without inventing U-turns.
-  - Road name validation: cross-checks matched edge names from Valhalla against the original road to prevent false snapping to unrelated nearby roads.
+- [x] **Implemented Traversability-Aware Hybrid Detection Strategy** (`valhalla_service.py`):
+  - **Traversability Inspection:** First traces the original coordinates via Valhalla `/trace_attributes` to check the `traversability` metric. Instantly classifies as `NARROW_TWO_WAY` if `both` is returned, aborting the search to save processing.
+  - **Dynamic Offset Search:** If the road is `forward` (one-way or divided), it shifts coordinates perpendicularly to the left using a dynamic loop of increasing offsets: **5m, 10m, 15m, 20m, 30m**.
+  - **Map Matching & Validation:** Reverses the shifted coordinates and snaps to the nearest road. Strictly compares matched edge names against the original road name to prevent false snapping to neighboring side-streets.
+  - **Backend Name Extraction Fix:** Modified the validation to extract the original road name natively from the first Valhalla trace (bypassing the frontend which sends `null`). This fixed a critical bypass bug where the offset logic snapped to unnamed parking lots (Caruncho Ave) or completely different streets (C Santos St) because the firewall was unintentionally disabled.
 - [x] **PostGIS GeometryCollection Storage** (`report_service.py`, `admin.py`):
   - Bidirectional reports now store `{ type: "GeometryCollection", geometries: [original_line, opposite_line] }` in `flood_reports.geometry`.
   - Admin approval updated to use `ST_ConvexHull(ST_Collect(ST_Buffer(line1), ST_Buffer(line2)))` — creating one accurate polygon that wraps both carriageways.
 - [x] **New `POST /reports/preview-bidirectional` endpoint** (`reports.py`):
   - Accepts the original route coordinates and returns both `original` and `opposite` GeoJSON LineStrings.
-  - Returns `is_divided: true/false` to indicate whether a valid opposite carriageway was detected.
-- [x] **Frontend real-time dual-line preview** (`MapContext.tsx`, `MapCanvas.tsx`):
+  - Returns a strict `road_type` classification (`NARROW_TWO_WAY`, `DIVIDED_CARRIAGEWAY`, `TRUE_ONE_WAY`, `UNMAPPED`).
+- [x] **Frontend real-time dual-line preview & Toasts** (`MapContext.tsx`, `MapCanvas.tsx`):
   - Added `floodOppositeGeometry` state to `MapContext`.
-  - When "Affects both sides" is active, calls `/preview-bidirectional` and renders two separate MapLibre source/layer pairs — one for each real road.
-  - Graceful fallback: if no opposite carriageway is detected (true one-way roads), only the original line is shown.
+  - Parses `road_type` from the API. If `NARROW_TWO_WAY` or `TRUE_ONE_WAY` is returned despite the user checking "Affects both sides", the UI dispatches an informational toast and cancels the second line drawing.
 - [x] **Map auto-recovery crash fix** (`useFloodZonesLayer.ts`):
   - Added `!map.getStyle()` safety guard to prevent `Cannot read properties of undefined (reading 'getSource')` crash during MapLibre style auto-recovery.
 
