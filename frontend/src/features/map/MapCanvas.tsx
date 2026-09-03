@@ -237,17 +237,24 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     
+    const savedViewport = typeof window !== "undefined" ? localStorage.getItem("lanes_map_viewport") : null;
     const isAnalyticsPage = pathname.includes("analytics");
     const isMapPage = pathname === "/map";
     
     let shouldZoom = false;
     
-    if (isAnalyticsPage && !hasZoomedToPasigForAnalytics) {
+    if (!savedViewport) {
+      if (isAnalyticsPage && !hasZoomedToPasigForAnalytics) {
+        hasZoomedToPasigForAnalytics = true;
+        shouldZoom = true;
+      } else if (isMapPage && !hasZoomedToPasigForMap) {
+        hasZoomedToPasigForMap = true;
+        shouldZoom = true;
+      }
+    } else {
+      // If we have a saved viewport, never auto-zoom on load
       hasZoomedToPasigForAnalytics = true;
-      shouldZoom = true;
-    } else if (isMapPage && !hasZoomedToPasigForMap) {
       hasZoomedToPasigForMap = true;
-      shouldZoom = true;
     }
 
     if (shouldZoom) {
@@ -443,7 +450,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style) return;
+    if (!map.style || !map.isStyleLoaded()) return;
 
     // ── Cleanup: remove all previous route layers, sources, and ETA markers ──
     altMarkerRefs.current.forEach((m) => m.remove());
@@ -703,14 +710,14 @@ export default function MapCanvas() {
     const HIGHLIGHT_GLOW   = "step-highlight-glow";
 
     const clearHighlight = () => {
-      if (!map.style) return;
+      if (!map.style || !map.isStyleLoaded()) return;
       if (map.getLayer(HIGHLIGHT_LAYER)) map.removeLayer(HIGHLIGHT_LAYER);
       if (map.getLayer(HIGHLIGHT_GLOW))  map.removeLayer(HIGHLIGHT_GLOW);
       if (map.getSource(HIGHLIGHT_SOURCE)) map.removeSource(HIGHLIGHT_SOURCE);
     };
 
     const drawHighlight = (segment: [number, number][]) => {
-      if (!map.style || segment.length < 2) return;
+      if (!map.style || !map.isStyleLoaded() || segment.length < 2) return;
       clearHighlight();
       map.addSource(HIGHLIGHT_SOURCE, {
         type: "geojson",
@@ -813,7 +820,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style) return;
+    if (!map.style || !map.isStyleLoaded()) return;
 
     // Remove existing preview source/layers if they exist
     if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
@@ -876,7 +883,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style) return;
+    if (!map.style || !map.isStyleLoaded()) return;
 
     if (map.getLayer("draft-reports-layer")) map.removeLayer("draft-reports-layer");
     if (map.getSource("draft-reports-source")) map.removeSource("draft-reports-source");
@@ -924,7 +931,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style) return;
+    if (!map.style || !map.isStyleLoaded()) return;
     
     if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
     if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");

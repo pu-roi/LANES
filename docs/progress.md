@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 3, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 4, 2026, 12:22 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -22,6 +22,13 @@
 | 11| Intelligent Bidirectional Flood Reporting | Completed | Hybrid Carriageway Detection Strategy, Valhalla Map Matching for opposite-side road detection, GeometryCollection PostGIS storage, dual-buffer approval |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 9: State Persistence & Resilient Offline Hydration (🟢 COMPLETED)
+- [x] **Map Viewport Persistence** (@roicambe): Saved map center, zoom, pitch, and bearing to `localStorage` via `moveend` event listeners in `BaseMap.tsx` so users on poor connections recover their exact view on refresh.
+- [x] **Draft Cart IndexedDB Hydration** (@roicambe): Integrated `idb-keyval` to safely persist drafted photo/video binaries and JSON draft arrays across hard browser reloads.
+- [x] **Form Auto-Hydration** (@roicambe): Added robust `localStorage` sync to `FloodReportPanel.tsx` and `CreateOfficialZonePanel.tsx` to restore active form input text, checkboxes, and wizard steps automatically.
+- [x] **Panel Memory & Collision Logic** (@roicambe): Saved `activePanel`, `isAnalyticsOpen`, and `lastOpenedLeftPanel` states to ensure stacked left-side panels (Analytics & Saved Places) remember their z-index and expansion states upon reload.
+- [x] **MapLibre Auto-Recovery & Hot Reload Fixes** (@roicambe): Guarded layer mounting with `!map.isStyleLoaded()` to prevent MapLibre crash loops and fixed Fast Refresh dependency errors.
 
 ### Capstone Phase 7: Intelligent Bidirectional Flood Reporting — Hybrid Carriageway Detection (🟢 COMPLETED)
 - [x] **Replaced CSS `line-offset` hack with real opposite-carriageway detection** (@roicambe):

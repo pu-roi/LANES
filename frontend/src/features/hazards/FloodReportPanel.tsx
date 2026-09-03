@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   CircleDot,
   Flag,
@@ -16,7 +16,10 @@ import {
   ArrowLeft,
   User,
   ShieldCheck,
+  Pencil,
+  Trash2,
 } from "lucide-react";
+import { get, set } from "idb-keyval";
 import Link from "next/link";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
@@ -129,11 +132,67 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [isPublic, setIsPublic] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
+  const [isViewingDrafts, setIsViewingDrafts] = useState(false);
+  const [editingDraft, setEditingDraft] = useState<DraftReport | null>(null);
   const isCollapsed = activePanel !== "flood";
 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { success, error } = useToast();
+
+  // Hydration logic
+  const hasHydratedForm = useRef(false);
+
+  useEffect(() => {
+    const loadFormState = async () => {
+      try {
+        const savedTextState = localStorage.getItem("lanes_active_flood_form_text");
+        if (savedTextState) {
+          const parsed = JSON.parse(savedTextState);
+          if (parsed.description) setDescription(parsed.description);
+          if (parsed.visualOption) setVisualOption(parsed.visualOption);
+          if (parsed.passableVehicles) setPassableVehicles(parsed.passableVehicles);
+          if (parsed.hiddenHazards) setHiddenHazards(parsed.hiddenHazards);
+          if (parsed.isPublic !== undefined) setIsPublic(parsed.isPublic);
+          if (parsed.showSurvey !== undefined) setShowSurvey(parsed.showSurvey);
+          if (parsed.step) setStep(parsed.step);
+        }
+
+        const savedFiles = await get("lanes_active_flood_form_files");
+        if (savedFiles && Array.isArray(savedFiles)) {
+          setMediaFiles(savedFiles);
+        }
+      } catch (e) {
+        console.error("Failed to load active form state", e);
+      } finally {
+        hasHydratedForm.current = true;
+      }
+    };
+    loadFormState();
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedForm.current) return;
+    try {
+      const state = {
+        description,
+        visualOption,
+        passableVehicles,
+        hiddenHazards,
+        isPublic,
+        showSurvey,
+        step
+      };
+      localStorage.setItem("lanes_active_flood_form_text", JSON.stringify(state));
+    } catch (e) {}
+  }, [description, visualOption, passableVehicles, hiddenHazards, isPublic, showSurvey, step]);
+
+  useEffect(() => {
+    if (!hasHydratedForm.current) return;
+    try {
+      set("lanes_active_flood_form_files", mediaFiles).catch(console.error);
+    } catch (e) {}
+  }, [mediaFiles]);
 
   // ── Map-pick: listen to the shared map-center-changed event ────────────────
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -153,6 +212,25 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   useEffect(() => {
     if (floodEnd?.label) setEndInput(floodEnd.label);
   }, [floodEnd?.label]);
+
+  const clearForm = () => {
+    setFloodStart(null);
+    setFloodEnd(null);
+    setStartInput("");
+    setEndInput("");
+    setFloodStartLabel("");
+    setFloodEndLabel("");
+    setDescription("");
+    setVisualOption("gutter");
+    setPassableVehicles([]);
+    setHiddenHazards(null);
+    setMediaFiles([]);
+    setIsPublic(false);
+    setShowSurvey(false);
+    setIsBidirectional(false);
+    setStep(1);
+    setEditingDraft(null);
+  };
 
   const handlePickOnMap = (target: "flood_start" | "flood_end") => {
     setActivePoint(target);
@@ -217,23 +295,15 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       startLabel: startInput,
       endLabel: endInput,
       roadName: null,
+      startCoords: floodStart?.coords,
+      endCoords: floodEnd?.coords,
+      passableVehicles: [...passableVehicles],
+      hiddenHazards: hiddenHazards,
+      isPublic: isPublic,
     };
 
     setDraftReports((prev) => [...prev, newDraft]);
-
-    // Reset current form for next draft
-    setFloodStart(null);
-    setFloodEnd(null);
-    setStartInput("");
-    setEndInput("");
-    setDescription("");
-    setVisualOption(null);
-    setPassableVehicles([]);
-    setHiddenHazards(null);
-    setMediaFiles([]);
-    setShowSurvey(false);
-    setIsBidirectional(false);
-    setStep(1);
+    clearForm();
 
     success("Road Saved", "Road added to your draft list. You can add another or submit all.");
   };
@@ -325,18 +395,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
       // Reset everything
       setDraftReports([]);
-      setFloodStart(null);
-      setFloodEnd(null);
-      setStartInput("");
-      setEndInput("");
-      setDescription("");
-      setVisualOption(null);
-      setPassableVehicles([]);
-      setHiddenHazards(null);
-      setMediaFiles([]);
-      setShowSurvey(false);
-      setIsBidirectional(false);
-      setStep(1);
+      clearForm();
       
       success(isAdminMode ? "Zones Created" : "Reports Submitted", isAdminMode ? "Official zones are now active." : "Thank you! Your reports are now in review.");
       if (onClose) onClose();
@@ -374,7 +433,19 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       : (description.trim() !== "" || mediaFiles.length > 0 || visualOption !== "gutter" || isPublic || passableVehicles.length > 0 || hiddenHazards !== null);
 
   const clearButton =
-    showClear ? (
+    editingDraft && !isViewingDrafts ? (
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setDraftReports(prev => [...prev, editingDraft]);
+          clearForm();
+        }}
+        className="text-[11px] font-medium text-blue-600 hover:text-blue-800 transition-colors px-2 py-1 mr-1 underline"
+      >
+        Cancel Edit
+      </button>
+    ) : showClear ? (
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -440,31 +511,102 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
           </div>
         </div>
       )}
-      {step === 1 && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-          {draftReports.length > 0 && (
-            <div className="mb-4 bg-purple-50 rounded-xl p-3 border border-purple-100">
-              <h4 className="text-[11px] uppercase tracking-wider font-bold text-purple-800 mb-2">Drafted Roads ({draftReports.length})</h4>
-              <div className="space-y-1.5 max-h-[120px] overflow-y-auto pr-1">
-                {draftReports.map((draft, idx) => (
-                  <div key={draft.id} className="bg-white rounded-lg p-2 border border-purple-100/50 shadow-sm flex items-center justify-between text-xs">
-                    <div className="truncate flex-1 min-w-0 pr-2">
-                       <span className="font-semibold text-gray-800 truncate block">{draft.startLabel || "Unknown Road"}</span>
-                       <span className="text-gray-500 text-[10px] truncate block">{draft.severity.toUpperCase()} • {draft.depth}</span>
+
+      {!isViewingDrafts && draftReports.length > 0 && (
+        <div className="flex justify-between items-center mb-4 px-1">
+          <span className="text-sm font-semibold text-gray-800">You have {draftReports.length} saved draft(s)</span>
+          <button 
+            type="button" 
+            onClick={() => setIsViewingDrafts(true)}
+            className="text-xs font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1"
+          >
+            View Drafts
+          </button>
+        </div>
+      )}
+
+      {isViewingDrafts && (
+        <div className="flex flex-col flex-1 animate-in fade-in zoom-in-95 duration-200 min-h-[300px]">
+           <div className="flex items-center gap-2 mb-4">
+             <button type="button" onClick={() => setIsViewingDrafts(false)} className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 transition-colors">
+               <ArrowLeft className="w-4 h-4" />
+             </button>
+             <h3 className="font-bold text-gray-900 text-lg">Saved Drafts</h3>
+           </div>
+           
+           <div className="space-y-3 overflow-y-auto pr-1 flex-1 pb-20">
+              {draftReports.map((draft) => (
+                 <div key={draft.id} className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm relative group">
+                    <div className="absolute top-3 right-3 flex gap-1">
+                       <button 
+                         type="button" 
+                         onClick={() => {
+                            if (draft.startCoords) setFloodStart(draft.startCoords, draft.startLabel);
+                            if (draft.endCoords) setFloodEnd(draft.endCoords, draft.endLabel);
+                            setStartInput(draft.startLabel || "");
+                            setEndInput(draft.endLabel || "");
+                            setDescription(draft.description);
+                            const opt = VISUAL_OPTIONS.find(o => o.severity === draft.severity && o.label === draft.depth) || VISUAL_OPTIONS.find(o => o.severity === draft.severity);
+                            setVisualOption(opt ? opt.id : null);
+                            setIsBidirectional(draft.isBidirectional);
+                            setMediaFiles(draft.mediaFiles || []);
+                            setPassableVehicles(draft.passableVehicles || []);
+                            setHiddenHazards(draft.hiddenHazards || null);
+                            setIsPublic(draft.isPublic || false);
+                            
+                            setEditingDraft(draft);
+                            setDraftReports(prev => prev.filter(r => r.id !== draft.id));
+                            setIsViewingDrafts(false);
+                            setStep(2);
+                         }}
+                         className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
+                         title="Edit Draft"
+                       >
+                         <Pencil className="w-3.5 h-3.5" />
+                       </button>
+                       <button 
+                         type="button" 
+                         onClick={() => {
+                           const newDrafts = draftReports.filter(r => r.id !== draft.id);
+                           setDraftReports(newDrafts);
+                           if (newDrafts.length === 0) setIsViewingDrafts(false);
+                         }}
+                         className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                         title="Delete Draft"
+                       >
+                         <Trash2 className="w-3.5 h-3.5" />
+                       </button>
                     </div>
-                    <button 
-                      type="button" 
-                      onClick={() => setDraftReports(prev => prev.filter(r => r.id !== draft.id))}
-                      className="text-gray-400 hover:text-red-500 shrink-0 p-1"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {/* Location Inputs (Timeline Style) */}
+                    
+                    <h4 className="font-bold text-gray-800 text-sm pr-16 truncate">{draft.startLabel || "Unknown Road"}</h4>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">{draft.description || "No description provided."}</p>
+                    <div className="mt-3 flex items-center gap-2">
+                       <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase", SEVERITY_COLORS[draft.severity as Severity]?.pill)}>
+                         {draft.severity} • {draft.depth}
+                       </span>
+                    </div>
+                 </div>
+              ))}
+           </div>
+           
+           <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-gray-100 rounded-b-2xl shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+             <Button
+                type="submit"
+                disabled={draftReports.length === 0 || isSubmitting}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold h-10 rounded-xl"
+              >
+                {isSubmitting ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting...</>
+                ) : (
+                  <>Submit All {draftReports.length} Drafts <CheckCircle className="w-4 h-4 ml-1.5" /></>
+                )}
+              </Button>
+           </div>
+        </div>
+      )}
+
+      {!isViewingDrafts && step === 1 && (
+        <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
           <div className="flex items-center mb-2">
             {/* Left Icons */}
             <div className="flex flex-col items-center justify-center gap-1 w-5 mr-2 relative z-10 shrink-0">
@@ -645,7 +787,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         </div>
       )}
 
-      {step === 2 && !showSurvey && (
+      {!isViewingDrafts && step === 2 && !showSurvey && (
         <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
           {/* Survey link */}
           <div className="py-2 border-b border-gray-100 flex items-center justify-between">
@@ -761,7 +903,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
               onClick={handleDraftRoad}
               className="w-full h-10 rounded-xl font-medium border-orange-200 text-orange-700 hover:bg-orange-50"
             >
-              Add Another Road to Report
+              Save & Add Another Road
             </Button>
             <div className="flex gap-2">
               <Button
@@ -794,7 +936,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         </div>
       )}
 
-      {step === 2 && showSurvey && (
+      {!isViewingDrafts && step === 2 && showSurvey && (
         <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300 flex flex-col">
           {/* Survey Header */}
           <div className="flex items-center gap-2 pb-2 border-b border-gray-100">

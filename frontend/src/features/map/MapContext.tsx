@@ -21,6 +21,8 @@ import {
 import { getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import toast from "react-hot-toast";
+import { get, set } from 'idb-keyval';
+import { useRef } from "react";
 
 export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
 export type ActivePanel = "route" | "flood" | "save_place" | null;
@@ -42,6 +44,14 @@ export interface DraftReport {
   startLabel: string;
   endLabel: string;
   roadName: string | null;
+  startCoords?: [number, number];
+  endCoords?: [number, number];
+  drawnFeatures?: any[];
+  geometryMode?: "line" | "polygon" | "freehand" | "rectangle" | "circle";
+  zoneName?: string;
+  passableVehicles?: string[];
+  hiddenHazards?: "yes" | "no" | "unsure" | null;
+  isPublic?: boolean;
 }
 
 interface MapContextValue {
@@ -183,6 +193,56 @@ export function MapProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // Hydration ref
+  const hasHydrated = useRef(false);
+
+  // Load state on mount
+  useEffect(() => {
+    const loadState = async () => {
+      try {
+        const savedPanels = localStorage.getItem("lanes_panels_state");
+        if (savedPanels) {
+          const parsed = JSON.parse(savedPanels);
+          if (parsed.activePanel) setActivePanelState(parsed.activePanel);
+          if (parsed.isAnalyticsOpen !== undefined) setIsAnalyticsOpenState(parsed.isAnalyticsOpen);
+          if (parsed.isSavePlacePanelOpen !== undefined) setIsSavePlacePanelOpenState(parsed.isSavePlacePanelOpen);
+          if (parsed.lastOpenedLeftPanel !== undefined) setLastOpenedLeftPanel(parsed.lastOpenedLeftPanel);
+        }
+        
+        const drafts = await get("lanes_map_drafts");
+        if (drafts) {
+          setDraftReports(drafts);
+        }
+      } catch (e) {
+        console.error("Failed to load map context state", e);
+      } finally {
+        hasHydrated.current = true;
+      }
+    };
+    loadState();
+  }, []);
+
+  // Save state on change
+  useEffect(() => {
+    if (!hasHydrated.current) return;
+    try {
+      const panelsState = {
+        activePanel,
+        isAnalyticsOpen,
+        isSavePlacePanelOpen,
+        lastOpenedLeftPanel,
+      };
+      localStorage.setItem("lanes_panels_state", JSON.stringify(panelsState));
+    } catch (e) {}
+  }, [activePanel, isAnalyticsOpen, isSavePlacePanelOpen, lastOpenedLeftPanel]);
+
+  useEffect(() => {
+    if (!hasHydrated.current) return;
+    try {
+      set("lanes_map_drafts", draftReports).catch(console.error);
+    } catch (e) {}
+  }, [draftReports]);
+
   // Derived: currently active route option
   const selectedRoute: RouteOption | null = allRoutes?.[selectedRouteIndex] ?? null;
 
@@ -237,13 +297,16 @@ export function MapProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // When a panel closes, shift focus to the other one if it's open
+  const isInitialMountPanels = useRef(true);
   useEffect(() => {
+    if (isInitialMountPanels.current) return;
     if (!isAnalyticsOpen && isSavePlacePanelOpen) {
       setLastOpenedLeftPanel("save_place");
     }
   }, [isAnalyticsOpen, isSavePlacePanelOpen]);
 
   useEffect(() => {
+    if (isInitialMountPanels.current) return;
     if (!isSavePlacePanelOpen && isAnalyticsOpen) {
       setLastOpenedLeftPanel("analytics");
     }
@@ -251,8 +314,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   // When both left panels are closed, expand Route Planner
   useEffect(() => {
+    if (isInitialMountPanels.current) {
+      isInitialMountPanels.current = false;
+      return;
+    }
     if (!isAnalyticsOpen && !isSavePlacePanelOpen) {
-      setActivePanelState("route");
+      setActivePanelState((prev) => prev === "flood" ? "flood" : "route");
     }
   }, [isAnalyticsOpen, isSavePlacePanelOpen]);
   const setIsAnalyticsCollapsed = useCallback((collapsed: boolean) => {

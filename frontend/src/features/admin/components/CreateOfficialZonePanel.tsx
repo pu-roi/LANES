@@ -33,6 +33,7 @@ import {
   Trash2,
   Plus
 } from "lucide-react";
+import { get, set } from "idb-keyval";
 import Link from "next/link";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
@@ -181,6 +182,64 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { success, error } = useToast();
+
+  // Hydration logic
+  const hasHydratedForm = useRef(false);
+
+  useEffect(() => {
+    const loadFormState = async () => {
+      try {
+        const savedTextState = localStorage.getItem("lanes_admin_flood_form_text");
+        if (savedTextState) {
+          const parsed = JSON.parse(savedTextState);
+          if (parsed.zoneName) setZoneName(parsed.zoneName);
+          if (parsed.zoneStatus) setZoneStatus(parsed.zoneStatus);
+          if (parsed.description) setDescription(parsed.description);
+          if (parsed.visualOption) setVisualOption(parsed.visualOption);
+          if (parsed.passableVehicles) setPassableVehicles(parsed.passableVehicles);
+          if (parsed.hiddenHazards) setHiddenHazards(parsed.hiddenHazards);
+          if (parsed.isPublic !== undefined) setIsPublic(parsed.isPublic);
+          if (parsed.showSurvey !== undefined) setShowSurvey(parsed.showSurvey);
+          if (parsed.step) setStep(parsed.step);
+        }
+
+        const savedFiles = await get("lanes_admin_flood_form_files");
+        if (savedFiles && Array.isArray(savedFiles)) {
+          setMediaFiles(savedFiles);
+        }
+      } catch (e) {
+        console.error("Failed to load active form state", e);
+      } finally {
+        hasHydratedForm.current = true;
+      }
+    };
+    loadFormState();
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedForm.current) return;
+    try {
+      const state = {
+        zoneName,
+        zoneStatus,
+        description,
+        visualOption,
+        passableVehicles,
+        hiddenHazards,
+        isPublic,
+        showSurvey,
+        step
+      };
+      localStorage.setItem("lanes_admin_flood_form_text", JSON.stringify(state));
+    } catch (e) {}
+  }, [zoneName, zoneStatus, description, visualOption, passableVehicles, hiddenHazards, isPublic, showSurvey, step]);
+
+  useEffect(() => {
+    if (!hasHydratedForm.current) return;
+    try {
+      set("lanes_admin_flood_form_files", mediaFiles).catch(console.error);
+    } catch (e) {}
+  }, [mediaFiles]);
 
   // Drawing state - default to "line" (standard road segment mode)
   type GeometryMode = "line" | "polygon" | "freehand" | "rectangle" | "circle";

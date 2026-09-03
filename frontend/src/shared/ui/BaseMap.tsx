@@ -618,18 +618,47 @@ export default function BaseMap({
       } catch (e) {}
     }
 
+    let initialCenter = center;
+    let initialZoom = zoom;
+    let initialPitch = 0;
+    let initialBearing = 0;
+
+    if (typeof window !== "undefined") {
+      try {
+        const savedViewport = localStorage.getItem("lanes_map_viewport");
+        if (savedViewport) {
+          const parsed = JSON.parse(savedViewport);
+          if (parsed.center) initialCenter = parsed.center;
+          if (parsed.zoom !== undefined) initialZoom = parsed.zoom;
+          if (parsed.pitch !== undefined) initialPitch = parsed.pitch;
+          if (parsed.bearing !== undefined) initialBearing = parsed.bearing;
+        }
+      } catch (e) {}
+    }
+
     const mapInstance = new maplibregl.Map({
       container: mapContainerRef.current,
       style: isOffline ? OSM_FALLBACK_STYLE : mapStyle,
-      center: center,
-      zoom: zoom,
+      center: initialCenter,
+      zoom: initialZoom,
       minZoom: isOffline ? 11.5 : 5.0, // Only clamp zoom-out when offline so you don't zoom into grey void
       maxZoom: 20.0,
       maxPitch: 70,
       maxBounds: isOffline ? dynamicBounds : PHILIPPINES_WIDE_BOUNDS,
-      // Start flat (pitch 0) by default per user request
-      pitch: 0,
-      bearing: 0,
+      pitch: initialPitch,
+      bearing: initialBearing,
+    });
+
+    mapInstance.on('moveend', () => {
+      try {
+        const viewport = {
+          center: mapInstance.getCenter().toArray(),
+          zoom: mapInstance.getZoom(),
+          pitch: mapInstance.getPitch(),
+          bearing: mapInstance.getBearing()
+        };
+        localStorage.setItem("lanes_map_viewport", JSON.stringify(viewport));
+      } catch (e) {}
     });
 
     mapInstance.addControl(new TopViewControlV3(), "bottom-right");
