@@ -64,7 +64,12 @@ export function useFloodZonesLayer(
           const contribSeverity = (activeContributor.severity || severity).toLowerCase();
           const contribColor = SEVERITY_COLORS[contribSeverity] || color;
           const contribBorder = SEVERITY_BORDER_COLORS[contribSeverity] || borderColor;
-          const isLine = activeContributor.geometry.type === "LineString";
+
+          let contribGeom = activeContributor.geometry;
+          if (typeof contribGeom === "string") {
+            try { contribGeom = JSON.parse(contribGeom); } catch (e) {}
+          }
+          const isLine = contribGeom && (contribGeom.type === "LineString" || contribGeom.type === "MultiLineString");
 
           const contribProps = {
             id: zone.id,
@@ -82,19 +87,19 @@ export function useFloodZonesLayer(
             features.push({
               type: "Feature",
               properties: { ...contribProps, is_zoomed_out_point: false, is_road_line: true },
-              geometry: activeContributor.geometry,
+              geometry: contribGeom,
             });
-          } else if (activeContributor.geometry.type === "Point") {
+          } else if (contribGeom && contribGeom.type === "Point") {
             features.push({
               type: "Feature",
               properties: { ...contribProps, is_zoomed_out_point: true, is_road_line: false },
-              geometry: activeContributor.geometry,
+              geometry: contribGeom,
             });
           }
           
           const centerCoord = computeCenterCoordinate(
-            activeContributor.geometry.type === "Point" ? activeContributor.geometry : null, 
-            activeContributor.geometry.type === "LineString" ? activeContributor.geometry : null
+            contribGeom && contribGeom.type === "Point" ? contribGeom : null, 
+            isLine ? contribGeom : null
           );
           if (centerCoord) {
             features.push({
@@ -107,7 +112,21 @@ export function useFloodZonesLayer(
         }
 
         // Standard Avoidance Zone rendering
-        const isRoadBased = zone.report_geometry && zone.report_geometry.type === "LineString";
+        let repGeom = zone.report_geometry;
+        if (typeof repGeom === "string") {
+          try { repGeom = JSON.parse(repGeom); } catch (e) {}
+        }
+        let zoneGeom = zone.geometry;
+        if (typeof zoneGeom === "string") {
+          try { zoneGeom = JSON.parse(zoneGeom); } catch (e) {}
+        }
+
+        // Defensive fallback: if zone.report_geometry is missing but zone.geometry is linear
+        if (!repGeom && zoneGeom && (zoneGeom.type === "LineString" || zoneGeom.type === "MultiLineString")) {
+          repGeom = zoneGeom;
+        }
+
+        const isRoadBased = !!(repGeom && (repGeom.type === "LineString" || repGeom.type === "MultiLineString"));
         const commonProps = {
           id: zone.id,
           report_id: zone.report_id,
@@ -127,26 +146,26 @@ export function useFloodZonesLayer(
           contributors_json: JSON.stringify(zone.contributors || []),
         };
 
-        // 1. Zoomed-in Road Solid Core feature
-        if (isRoadBased && zone.report_geometry) {
+        // 1. Zoomed-in Road Solid Core feature (Street Level: Zoom > 14)
+        if (isRoadBased && repGeom) {
           features.push({
             type: "Feature",
             properties: { ...commonProps, is_zoomed_out_point: false, is_road_line: true },
-            geometry: zone.report_geometry,
+            geometry: repGeom,
           });
         }
 
-        // 2. Zoomed-in Avoidance Buffer Polygon
-        if (zone.geometry) {
+        // 2. Zoomed-in Avoidance Buffer Polygon (Street Level: Zoom > 14)
+        if (zoneGeom) {
           features.push({
             type: "Feature",
             properties: { ...commonProps, is_zoomed_out_point: false, is_road_line: false },
-            geometry: zone.geometry,
+            geometry: zoneGeom,
           });
         }
 
-        // 3. Zoomed-out Center Coordinate Point
-        const centerCoord = computeCenterCoordinate(zone.geometry, zone.report_geometry);
+        // 3. Zoomed-out Center Coordinate Point (City Level: Zoom <= 14)
+        const centerCoord = computeCenterCoordinate(zoneGeom, repGeom);
         if (centerCoord) {
           features.push({
             type: "Feature",
