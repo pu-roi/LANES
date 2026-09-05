@@ -6,12 +6,13 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { getFeed, votePost, FeedPost } from './feedApi';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
-import { Loader2, Filter, Image as ImageIcon, Video, MapPin, Menu, X, Map, Rss, MessageSquarePlus, Settings, TrendingUp, Flame, Heart, Phone, Plus } from 'lucide-react';
+import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, Settings, TrendingUp, Flame, Heart, Plus } from 'lucide-react';
 import { useToast, Button } from '@/shared/ui';
 import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
+import { EmergencyHotlinesCard } from './components/EmergencyHotlinesCard';
 
 export function FeedPage() {
   const queryClient = useQueryClient();
@@ -390,21 +391,7 @@ export function FeedPage() {
                 )}
               </div>
 
-              {/* Emergency Hotlines */}
-              <div className="space-y-1">
-                <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <Phone className="w-3.5 h-3.5" />
-                  Emergency
-                </h3>
-                <div className="px-3 py-2.5 text-sm text-red-700 bg-red-50 hover:bg-red-100 border border-red-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center">
-                  <span className="font-semibold">NDRRMC</span>
-                  <span className="text-xs font-mono">911</span>
-                </div>
-                <div className="px-3 py-2.5 mt-2 text-sm text-red-700 bg-red-50 hover:bg-red-100 border border-red-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center">
-                  <span className="font-semibold">Red Cross</span>
-                  <span className="text-xs font-mono">143</span>
-                </div>
-              </div>
+              <EmergencyHotlinesCard />
             </div>
 
             <div className="p-4 border-t border-gray-100 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] md:pb-4">

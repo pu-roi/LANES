@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 5, 2026, 11:57 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -47,6 +47,11 @@
 - [x] Redesign `FloodZonePopup` with dedicated timestamp row and vehicle passability chips (@roicambe)
 - [x] Resolve `ReportDetailsModal` coordinate parsing crash for non-Point geometries (@roicambe)
 - [x] Scope Lenis smooth scrolling exclusively to Landing and About views (@roicambe)
+
+### Phase 6: Community Feed Emergency Hotline Directory
+- [x] Add cached national hotline scraping service and public `/api/v1/hotlines/` endpoints (@roicambe)
+- [x] Add Pasig city and barangay hotline parsing through `/api/v1/hotlines/full` (@roicambe)
+- [x] Replace static feed emergency contacts with responsive hotline cards and lazy directory modal (@roicambe)
 
 ## Future Roadmap (Phases)
 

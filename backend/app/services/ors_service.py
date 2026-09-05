@@ -99,7 +99,12 @@ async def calculate_flood_safe_route(
         "instructions": True,
         "geometry": True,
         "units": "m",
-        "preference": "fastest"
+        "preference": "fastest",
+        "alternative_routes": {
+            "target_count": 3,
+            "weight_factor": 1.5,
+            "share_factor": 0.5
+        }
     }
 
     payload_with_avoid = base_payload.copy()

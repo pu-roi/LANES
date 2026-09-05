@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 5, 2026, 11:57 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -124,12 +124,14 @@ These files are **always present** regardless of which page you are on.
 | `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Left panel (desktop only). Shows the logged-in user's avatar, display name, trust score badge, and quick stats (reports submitted, accuracy rate). Also has a "Create Post" shortcut button. |
 | `RightSidebar.tsx` | `src/features/feed/RightSidebar.tsx` — Right panel (desktop only). Shows community highlights: top contributors, recent active flood zones, and trending location tags. |
 | `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached images, flood severity badge (if linked to a report), upvote/downvote buttons with counts, and comment count. Clicking the post body navigates to the full post detail page. |
+| `EmergencyHotlinesCard.tsx` | `src/features/feed/components/EmergencyHotlinesCard.tsx` — API-backed priority emergency contacts with expandable numbers, direct `tel:` links, loading/unavailable states, and a full-directory trigger. Rendered in the feed sidebar layout. |
 
 ### Hidden Until Interaction
 
 | File | How to Trigger It | What It Shows |
 |------|-------------------|--------------|
 | `CreatePostModal.tsx` | `src/features/feed/CreatePostModal.tsx` — Click **"Create Post"** or the **"+"** floating button | Full-screen modal with a rich text area, drag-and-drop image upload, optional location tag, and a flood report linking selector. Submits to `POST /api/v1/feed/posts`. |
+| `EmergencyDirectoryModal.tsx` | `src/features/feed/components/EmergencyDirectoryModal.tsx` — Click **"View All Hotlines"** | Lazily loaded national, Pasig city, and Pasig barangay hotline directory with tabbed sections, search, and phone links. |
 
 ### Backend Calls from This Page
 
@@ -138,6 +140,8 @@ These files are **always present** regardless of which page you are on.
 | `GET /api/v1/feed/posts?page=&limit=` | Paginated list of community posts |
 | `POST /api/v1/feed/posts` | Create a new community post |
 | `POST /api/v1/feed/posts/{id}/interact` | Upvote or downvote a post |
+| `GET /api/v1/hotlines/` | Loads cached national emergency hotlines for the sidebar card |
+| `GET /api/v1/hotlines/full` | Lazily loads national, Pasig city, and Pasig barangay hotlines for the directory modal |
 
 ---
 
@@ -309,6 +313,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `analytics.py` | `/analytics` | Public |
 | `sse.py` | `/sse` | Authenticated users (EventSource) |
 | `sync.py` | `/sync` | Authenticated users (offline support) |
+| `hotlines.py` | `/hotlines` | Public |
 | `admin.py` | `/admin` | Staff roles only (non-Commuter) |
 | `roles.py` | `/roles` | Staff roles only |
 | `data.py` | `/data` | Staff roles only |
@@ -324,6 +329,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |
 | **Weather Proxy** | Fetches data from the OpenWeatherMap API, transforms and caches the response, and serves it to the frontend |
 | **SSE Broadcaster** | Pushes real-time notification events to connected authenticated clients via Server-Sent Events, avoiding battery-draining WebSocket connections |
+| **Hotline Aggregator** | Fetches and parses national and Pasig emergency contact pages, normalizes phone numbers for `tel:` links, and caches results for one hour |
 
 ---
 
@@ -656,4 +662,3 @@ otp_verifications  (standalone, keyed by email)
 visitor_counts     (singleton table)
 system_settings    (key-value store)
 ```
-
