@@ -29,6 +29,13 @@ export function computeCenterCoordinate(
     return [Number(mid[0]), Number(mid[1])];
   }
 
+  // 2b. If report geometry is a MultiLineString, return the middle vertex of the first line
+  if (rg && rg.type === "MultiLineString" && Array.isArray(rg.coordinates) && rg.coordinates[0]?.length > 0) {
+    const coords = rg.coordinates[0];
+    const mid = coords[Math.floor(coords.length / 2)];
+    return [Number(mid[0]), Number(mid[1])];
+  }
+
   // 3. If primary geometry is a Point
   if (g && g.type === "Point" && Array.isArray(g.coordinates)) {
     return [Number(g.coordinates[0]), Number(g.coordinates[1])];
@@ -37,6 +44,13 @@ export function computeCenterCoordinate(
   // 4. If primary geometry is a LineString
   if (g && g.type === "LineString" && Array.isArray(g.coordinates) && g.coordinates.length > 0) {
     const coords = g.coordinates;
+    const mid = coords[Math.floor(coords.length / 2)];
+    return [Number(mid[0]), Number(mid[1])];
+  }
+
+  // 4b. If primary geometry is a MultiLineString
+  if (g && g.type === "MultiLineString" && Array.isArray(g.coordinates) && g.coordinates[0]?.length > 0) {
+    const coords = g.coordinates[0];
     const mid = coords[Math.floor(coords.length / 2)];
     return [Number(mid[0]), Number(mid[1])];
   }

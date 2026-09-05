@@ -181,7 +181,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [draftReports, setDraftReports] = useState<DraftReport[]>([]);
 
   const [vehicleProfile, setVehicleProfile] = useState<"light" | "heavy" | "motorcycle" | "walk">("light");
-  const [routingEngine, setRoutingEngine] = useState<"valhalla" | "ors">("ors");
+  const [routingEngine, setRoutingEngine] = useState<"valhalla" | "ors">("valhalla");
 
   const [panelZIndices, setPanelZIndices] = useState<Record<string, number>>({});
   const [highestZIndex, setHighestZIndex] = useState(40);
@@ -207,6 +207,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
           if (parsed.isAnalyticsOpen !== undefined) setIsAnalyticsOpenState(parsed.isAnalyticsOpen);
           if (parsed.isSavePlacePanelOpen !== undefined) setIsSavePlacePanelOpenState(parsed.isSavePlacePanelOpen);
           if (parsed.lastOpenedLeftPanel !== undefined) setLastOpenedLeftPanel(parsed.lastOpenedLeftPanel);
+          if (parsed.routingEngine) setRoutingEngine(parsed.routingEngine);
         }
         
         const drafts = await get("lanes_map_drafts");
@@ -231,10 +232,11 @@ export function MapProvider({ children }: { children: ReactNode }) {
         isAnalyticsOpen,
         isSavePlacePanelOpen,
         lastOpenedLeftPanel,
+        routingEngine,
       };
       localStorage.setItem("lanes_panels_state", JSON.stringify(panelsState));
     } catch (e) {}
-  }, [activePanel, isAnalyticsOpen, isSavePlacePanelOpen, lastOpenedLeftPanel]);
+  }, [activePanel, isAnalyticsOpen, isSavePlacePanelOpen, lastOpenedLeftPanel, routingEngine]);
 
   useEffect(() => {
     if (!hasHydrated.current) return;

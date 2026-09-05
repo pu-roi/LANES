@@ -830,13 +830,27 @@ export default function MapCanvas() {
 
     if (!floodPreviewGeometry) return;
 
-    // Original road line
+    const features: any[] = [
+      {
+        type: "Feature",
+        properties: { is_opposite: false },
+        geometry: floodPreviewGeometry,
+      },
+    ];
+
+    if (floodIsBidirectional && floodOppositeGeometry) {
+      features.push({
+        type: "Feature",
+        properties: { is_opposite: true },
+        geometry: floodOppositeGeometry,
+      });
+    }
+
     map.addSource("flood-preview-source", {
       type: "geojson",
       data: {
-        type: "Feature",
-        properties: {},
-        geometry: floodPreviewGeometry,
+        type: "FeatureCollection",
+        features,
       },
     });
 
@@ -846,37 +860,17 @@ export default function MapCanvas() {
       source: "flood-preview-source",
       layout: { "line-join": "round", "line-cap": "round" },
       paint: {
-        "line-color": "#f97316", // Orange preview color matching markers
+        "line-color": [
+          "case",
+          ["==", ["get", "is_opposite"], true],
+          "#fb923c", // Distinct orange tint for opposite carriageway
+          "#f97316", // Primary road segment
+        ],
         "line-width": 6,
-        "line-dasharray": [2, 2], // Dashed line for visual distinction
+        "line-dasharray": [2, 2],
         "line-opacity": 0.85,
       },
     });
-
-    // Opposite carriageway line — rendered only when the backend found a real parallel road
-    if (floodIsBidirectional && floodOppositeGeometry) {
-      map.addSource("flood-preview-source-opposite", {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          properties: {},
-          geometry: floodOppositeGeometry,
-        },
-      });
-
-      map.addLayer({
-        id: "flood-preview-layer-opposite",
-        type: "line",
-        source: "flood-preview-source-opposite",
-        layout: { "line-join": "round", "line-cap": "round" },
-        paint: {
-          "line-color": "#fb923c", // Slightly lighter orange to distinguish
-          "line-width": 6,
-          "line-dasharray": [2, 2],
-          "line-opacity": 0.85,
-        },
-      });
-    }
   }, [floodPreviewGeometry, floodOppositeGeometry, floodIsBidirectional, isLoaded]);
 
   // Render drafted reports (Cart)

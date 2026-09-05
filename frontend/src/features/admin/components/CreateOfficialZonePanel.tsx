@@ -310,11 +310,11 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
       // Cleanup
       if (drawRef.current) {
         try {
-          if (drawRef.current.enabled) {
+          if (drawRef.current.enabled && mapInstance?.getStyle()) {
             drawRef.current.stop();
           }
-        } catch (e) {
-          console.warn("TerraDraw stop warning:", e);
+        } catch {
+          // Map style was reloaded or destroyed before stop
         }
         drawRef.current = null;
         setDrawInstance(null);

@@ -722,6 +722,33 @@ export default function LiveMapPage() {
           </div>
         </div>
       </Modal>
+
+      {/* Report Details Modal (Triggered by Info button) */}
+      <ReportDetailsModal
+        report={infoModalReport}
+        isOpen={infoModalReport !== null}
+        onClose={() => setInfoModalReport(null)}
+        onViewOnMap={(report) => {
+          setActiveTab("pending");
+          setSelectedReportId(report.id);
+          if (mapInstance && report.geometry) {
+            flyToFeature(mapInstance, report.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1200 });
+          }
+        }}
+        onApprove={(id) => {
+          approveMutation.mutate({ id, payload: { action: "ISOLATE" } });
+          setInfoModalReport(null);
+        }}
+        onReject={(id) => {
+          rejectMutation.mutate(id);
+          setInfoModalReport(null);
+        }}
+        isApproveLoading={approveMutation.isPending}
+        isRejectLoading={rejectMutation.isPending}
+        onOpenMedia={(urls, idx) => {
+          if (urls[idx]) window.open(urls[idx], "_blank");
+        }}
+      />
     </div>
   );
 }

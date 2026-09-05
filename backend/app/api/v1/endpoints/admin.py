@@ -120,7 +120,7 @@ async def approve_report(
             # Auto-calculate buffer polygon via PostGIS
             geom_type = db.query(func.ST_GeometryType(report.geometry)).scalar()
             is_linestring = geom_type == "ST_LineString"
-            is_collection = geom_type == "ST_GeometryCollection"
+            is_collection = geom_type in ["ST_GeometryCollection", "ST_MultiLineString"]
 
             # For bidirectional reports stored as a GeometryCollection (original + opposite line),
             # we collect both lines and buffer together so the resulting polygon accurately wraps

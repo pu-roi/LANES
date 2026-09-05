@@ -1,5 +1,5 @@
 import struct
-from typing import List
+from typing import List, Any
 from pydantic import BaseModel
 
 # ==========================================
@@ -147,3 +147,11 @@ class MultiPolygonGeometry(BaseModel):
     """
     type: str = "MultiPolygon"
     coordinates: List[List[List[List[float]]]]  # Polygons -> Rings -> Points -> [longitude, latitude]
+
+
+class GeometryCollectionGeometry(BaseModel):
+    """
+    GeoJSON GeometryCollection geometry.
+    """
+    type: str = "GeometryCollection"
+    geometries: List[Any]

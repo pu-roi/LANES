@@ -38,7 +38,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Other Admin Sub-Pages (Dashboard, Reports, Settings, Users, etc.) */}
         {!isMapPage && (
-          <div className="relative z-10 h-full w-full p-6 overflow-y-auto bg-slate-100">
+          <div 
+            data-lenis-prevent="true"
+            className="relative z-10 h-full w-full p-6 overflow-y-auto bg-slate-100"
+          >
             {children}
           </div>
         )}

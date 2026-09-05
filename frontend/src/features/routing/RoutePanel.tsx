@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Car,
+  Truck,
   Bike,
   PersonStanding,
   Home, Briefcase, GraduationCap, Building, Coffee, Heart, Star,
@@ -169,7 +170,7 @@ export default function RoutePanel() {
   };
 
   const PROFILE_OPTIONS: Array<{ id: "light" | "heavy" | "motorcycle" | "walk", icon: any, label: string }> = [
-    { id: "heavy", icon: Car, label: "High Cl." },
+    { id: "heavy", icon: Truck, label: "High Cl." },
     { id: "light", icon: Car, label: "Low Cl." },
     { id: "motorcycle", icon: Bike, label: "Moto" },
     { id: "walk", icon: PersonStanding, label: "Walk" },

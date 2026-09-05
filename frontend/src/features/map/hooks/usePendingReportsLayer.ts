@@ -1,5 +1,7 @@
-import { useEffect } from "react";
-import type { Map } from "maplibre-gl";
+import React, { useEffect, useRef } from "react";
+import maplibregl, { Map } from "maplibre-gl";
+import { createRoot, type Root } from "react-dom/client";
+import { FloodZonePopup } from "../components/FloodZonePopup";
 import {
   SEVERITY_COLORS,
   SEVERITY_BORDER_COLORS,
@@ -19,8 +21,38 @@ export function usePendingReportsLayer(
   selectedReportId: number | null,
   isolatedReportId?: number | null
 ) {
+  const activePopupRef = useRef<{ popup: maplibregl.Popup; root: Root; reportId?: number } | null>(null);
+  const openTimeoutRef = useRef<any>(null);
+  const closeTimeoutRef = useRef<any>(null);
+  const pendingHoverIdRef = useRef<number | null>(null);
+
   useEffect(() => {
     if (!map || !isLoaded) return;
+
+    const clearCloseTimeout = () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = null;
+      }
+    };
+
+    const clearOpenTimeout = () => {
+      if (openTimeoutRef.current) {
+        clearTimeout(openTimeoutRef.current);
+        openTimeoutRef.current = null;
+      }
+      pendingHoverIdRef.current = null;
+    };
+
+    const scheduleClose = () => {
+      clearCloseTimeout();
+      closeTimeoutRef.current = setTimeout(() => {
+        if (activePopupRef.current) {
+          activePopupRef.current.popup.remove();
+          activePopupRef.current = null;
+        }
+      }, 150);
+    };
 
     const setupLayers = () => {
       if (!map.getStyle()) return;
@@ -52,9 +84,18 @@ export function usePendingReportsLayer(
 
         const commonProps = {
           id: report.id,
+          severity: severity.toUpperCase(),
           color,
           border_color: borderColor,
           is_selected: isSelected,
+          created_at: report.created_at,
+          report_text: report.raw_text,
+          reporter_name: report.reporter_name || "Verified Citizen",
+          reporter_role: report.reporter_role || "Citizen",
+          depth: report.depth,
+          passable_vehicles: report.survey?.passable_vehicles,
+          hidden_hazards: report.survey?.hidden_hazards,
+          is_pending: true,
         };
 
         // 1. Zoomed-in detailed geometry (Pure transparent aura only, no solid core)
@@ -114,7 +155,11 @@ export function usePendingReportsLayer(
           id: "all-pending-reports-line-layer",
           type: "line",
           source: sourceId,
-          filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "LineString"]],
+          filter: [
+            "all",
+            ["!=", ["get", "is_zoomed_out_point"], true],
+            ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
+          ],
           layout: {
             "line-cap": "round",
             "line-join": "round",
@@ -123,13 +168,40 @@ export function usePendingReportsLayer(
         });
       }
 
-      // Layer 3: Zoomed-in Pure Transparent Point Auras (Street View: Zoom > 14)
+      // Layer 3: Zoomed-in Pure Transparent Polygon Auras (Street View: Zoom > 14)
+      if (!map.getLayer("all-pending-reports-polygon-layer")) {
+        map.addLayer({
+          id: "all-pending-reports-polygon-layer",
+          type: "fill",
+          source: sourceId,
+          filter: [
+            "all",
+            ["!=", ["get", "is_zoomed_out_point"], true],
+            ["in", ["geometry-type"], ["literal", ["Polygon", "MultiPolygon"]]],
+          ],
+          paint: {
+            "fill-color": ["get", "color"],
+            "fill-opacity": [
+              "step", ["zoom"],
+              0,
+              14,
+              ["case", ["==", ["get", "is_selected"], true], 0.55, 0.35],
+            ],
+          },
+        });
+      }
+
+      // Layer 4: Zoomed-in Pure Transparent Point Auras (Street View: Zoom > 14)
       if (!map.getLayer("all-pending-reports-point-layer")) {
         map.addLayer({
           id: "all-pending-reports-point-layer",
           type: "circle",
           source: sourceId,
-          filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "Point"]],
+          filter: [
+            "all",
+            ["!=", ["get", "is_zoomed_out_point"], true],
+            ["in", ["geometry-type"], ["literal", ["Point", "MultiPoint"]]],
+          ],
           paint: PENDING_REPORT_POINT_AURA_PAINT,
         });
       }
@@ -141,6 +213,139 @@ export function usePendingReportsLayer(
       setupLayers();
     };
     map.on("styledata", handleMapStyleData);
+
+    const handlePopupOpen = (properties: any, lngLat: { lng: number; lat: number }) => {
+      if (!properties) return;
+
+      clearCloseTimeout();
+
+      // If active popup is already showing this exact report, don't recreate
+      if (activePopupRef.current && activePopupRef.current.reportId === Number(properties.id)) {
+        return;
+      }
+
+      if (activePopupRef.current) {
+        activePopupRef.current.popup.remove();
+        activePopupRef.current = null;
+      }
+
+      const popupContainer = document.createElement("div");
+      popupContainer.className = "flood-zone-popup-root";
+      
+      popupContainer.addEventListener("mouseenter", clearCloseTimeout);
+      popupContainer.addEventListener("mouseleave", scheduleClose);
+
+      let smartAnchor: maplibregl.PositionAnchor = "bottom";
+      try {
+        const pt = map.project(lngLat);
+        const mapCanvas = map.getCanvas();
+        const width = mapCanvas.clientWidth || window.innerWidth;
+        const height = mapCanvas.clientHeight || window.innerHeight;
+
+        const spaceAbove = pt.y;
+        const spaceBelow = height - pt.y;
+        const spaceLeft = pt.x;
+        const spaceRight = width - pt.x;
+
+        // The popup is ~350px tall and 340px wide.
+        // Accounting for top app bars (~60px), we need at least 420px above to safely anchor "bottom".
+        const canFitAbove = spaceAbove >= 420;
+        const canFitBelow = spaceBelow >= 380;
+        const isNearLeft = spaceLeft < 190;
+        const isNearRight = spaceRight < 190;
+
+        if (canFitAbove) {
+          if (isNearLeft) smartAnchor = "bottom-left";
+          else if (isNearRight) smartAnchor = "bottom-right";
+          else smartAnchor = "bottom";
+        } else if (canFitBelow) {
+          if (isNearLeft) smartAnchor = "top-left";
+          else if (isNearRight) smartAnchor = "top-right";
+          else smartAnchor = "top";
+        } else {
+          // If vertical space is constrained, place to the side with more horizontal room
+          if (spaceRight >= spaceLeft) {
+            smartAnchor = "left";
+          } else {
+            smartAnchor = "right";
+          }
+        }
+      } catch (err) {
+        smartAnchor = "bottom";
+      }
+
+      const root = createRoot(popupContainer);
+
+      const popup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        maxWidth: "360px",
+        offset: 14,
+        anchor: smartAnchor,
+        className: "flood-zone-popup",
+      })
+        .setLngLat(lngLat)
+        .setDOMContent(popupContainer)
+        .addTo(map);
+
+      // Colorize the popup tip to match the header when anchored at the top
+      const tip = popup.getElement()?.querySelector(".maplibregl-popup-tip") as HTMLElement;
+      if (tip) {
+        if (smartAnchor.startsWith("top")) {
+          tip.style.borderBottomColor = properties.color || "#eab308";
+        } else if (smartAnchor.startsWith("bottom")) {
+          tip.style.borderTopColor = "#f9fafb";
+        }
+      }
+
+      root.render(React.createElement(FloodZonePopup, { properties }));
+
+      popup.on("close", () => {
+        setTimeout(() => root.unmount(), 0);
+        if (activePopupRef.current?.popup === popup) {
+          activePopupRef.current = null;
+        }
+      });
+
+      activePopupRef.current = { popup, root, reportId: Number(properties.id) };
+    };
+
+    const handleMouseEnterOrMove = (e: any) => {
+      map.getCanvas().style.cursor = "pointer";
+      if (!e.features || e.features.length === 0) return;
+      const feature = e.features[0];
+      const properties = feature.properties;
+      const id = Number(properties?.id);
+      if (!id) return;
+
+      clearCloseTimeout();
+
+      // If popup is already active for this exact report, don't recreate
+      if (activePopupRef.current && activePopupRef.current.reportId === id) {
+        return;
+      }
+
+      // If already counting down for this exact report, let the timer run (do not reset!)
+      if (pendingHoverIdRef.current === id) {
+        return;
+      }
+
+      // Start 400ms hover dwell countdown for this report
+      clearOpenTimeout();
+      pendingHoverIdRef.current = id;
+      const targetLngLat = { lng: e.lngLat.lng, lat: e.lngLat.lat };
+
+      openTimeoutRef.current = setTimeout(() => {
+        handlePopupOpen(properties, targetLngLat);
+        pendingHoverIdRef.current = null;
+      }, 400);
+    };
+
+    const handleMouseLeave = () => {
+      map.getCanvas().style.cursor = "";
+      clearOpenTimeout();
+      scheduleClose();
+    };
 
     // Interactivity
     const handleLayerClick = (e: any) => {
@@ -156,27 +361,33 @@ export function usePendingReportsLayer(
       }
     };
 
-    const changeCursorToMap = () => (map.getCanvas().style.cursor = "pointer");
-    const resetCursor = () => (map.getCanvas().style.cursor = "");
-
     const layers = [
       "all-pending-reports-circle-layer",
       "all-pending-reports-line-layer",
+      "all-pending-reports-polygon-layer",
       "all-pending-reports-point-layer",
     ];
 
     layers.forEach((layer) => {
       map.on("click", layer, handleLayerClick);
-      map.on("mouseenter", layer, changeCursorToMap);
-      map.on("mouseleave", layer, resetCursor);
+      map.on("mouseenter", layer, handleMouseEnterOrMove);
+      map.on("mousemove", layer, handleMouseEnterOrMove);
+      map.on("mouseleave", layer, handleMouseLeave);
     });
 
     return () => {
       map.off("styledata", handleMapStyleData);
+      clearOpenTimeout();
+      clearCloseTimeout();
+      if (activePopupRef.current) {
+        activePopupRef.current.popup.remove();
+        activePopupRef.current = null;
+      }
       layers.forEach((layer) => {
         map.off("click", layer, handleLayerClick);
-        map.off("mouseenter", layer, changeCursorToMap);
-        map.off("mouseleave", layer, resetCursor);
+        map.off("mouseenter", layer, handleMouseEnterOrMove);
+        map.off("mousemove", layer, handleMouseEnterOrMove);
+        map.off("mouseleave", layer, handleMouseLeave);
       });
     };
   }, [map, isLoaded, pendingReports, activeTab, selectedReportId, isolatedReportId]);

@@ -1,11 +1,11 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 4, 2026, 12:22 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 5, 2026, 11:57 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
-## Completed Milestones (33+ Commits Integrated)
+## Completed Milestones (34+ Commits Integrated)
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
@@ -20,8 +20,30 @@
 | 9 | Spatial Analytics & Heatmap | Completed | Global Heatmap, Top Barangays stats, Dedicated Analytics Pages for Commuters and Admins |
 | 10| Official Flood Zones (DRRMO) Moderation | Completed | Admin panel restructuring, backend Zone Override schemas, bulk merging operations, troll filtration, DRRMO Official Zone mapping with Terra Draw |
 | 11| Intelligent Bidirectional Flood Reporting | Completed | Hybrid Carriageway Detection Strategy, Valhalla Map Matching for opposite-side road detection, GeometryCollection PostGIS storage, dual-buffer approval |
+| 12| Spatial Operations & Map Hover Badge Engine | Completed | Multi-geometry layers (MultiLineString/Polygon), 400ms hover dwell timer, smart collision-free positioning, two-row FloodZonePopup, Lenis scroll scoping |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 10: Spatial Operations Live Map & Hover Interaction Engine (🟢 COMPLETED)
+- [x] **Multi-Geometry Layer Normalization** (@roicambe):
+  - Fixed layer geometry filtering in `usePendingReportsLayer.ts` and `useFloodZonesLayer.ts` to support `MultiLineString` and `Polygon`/`MultiPolygon` (matching PostGIS bidirectional and merged hazard geometries).
+  - Added dedicated `all-pending-reports-polygon-layer` with opacity steps matching design system standards.
+- [x] **Zero-Flicker 400ms Hover Dwell Timer** (@roicambe):
+  - Implemented `pendingHoverIdRef` to prevent mouse movements from resetting the dwell countdown while hovering within the same zone.
+  - Eliminated map auto-panning (`map.panBy`) on hover to guarantee stationary, reliable inspection without cursor disengagement.
+- [x] **Ceiling Collision & Smart Anchor Positioning** (@roicambe):
+  - Added a 420px vertical clearance threshold to prevent badges from clipping into top navigation bars.
+  - Implemented automatic anchor flipping to `top` (rendering downwards into open map space) when hovering near the upper viewport, and dynamic tip tinting to match the header severity color.
+- [x] **Two-Row FloodZonePopup & Vehicle Chips** (@roicambe):
+  - Redesigned `FloodZonePopup.tsx` with a clean two-row header: Severity + Status Badge on Row 1, full-width `Reported [Date]` on Row 2.
+  - Rendered `passable_vehicles` as independent rounded badge chips rather than comma-delimited strings with awkward line wraps.
+  - Removed container borders and set `background: transparent` on MapLibre popup content in `globals.css` to eliminate subpixel white hairlines.
+- [x] **Report Details Modal Coordinate Safety** (@roicambe):
+  - Safeguarded `ReportDetailsModal.tsx` against MultiLineString and Polygon geometries, preventing `.toFixed` runtime crashes when clicking the "Info" button.
+- [x] **Lenis Smooth Scroll Scoping** (@roicambe):
+  - Restricted Lenis smooth scrolling exclusively to Landing and About views, restoring native performant scrolling across the Admin Dashboard, Auth forms, and User Profile.
+- [x] **MMDA Vehicle Passability Technical Audit** (@roicambe):
+  - Authoritative reference document created in `docs/others/vehicle-passability.md` mapping the 8 MMDA flood gauge levels to PostGIS severity zones and routing vehicle profiles.
 
 ### Capstone Phase 9: State Persistence & Resilient Offline Hydration (🟢 COMPLETED)
 - [x] **Map Viewport Persistence** (@roicambe): Saved map center, zoom, pitch, and bearing to `localStorage` via `moveend` event listeners in `BaseMap.tsx` so users on poor connections recover their exact view on refresh.

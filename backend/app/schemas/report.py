@@ -10,6 +10,7 @@ from app.schemas.common import (
     MultiLineStringGeometry,
     PolygonGeometry,
     MultiPolygonGeometry,
+    GeometryCollectionGeometry,
     parse_ewkb_point,
     parse_ewkb_linestring,
     parse_ewkb_multilinestring,
@@ -41,7 +42,7 @@ class FloodReportBase(BaseModel):
 
 
 class FloodReportCreate(FloodReportBase):
-    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry, GeometryCollectionGeometry]] = None
     media_urls: list[str] = []
     user_id: Optional[int] = None
     survey_data: Optional[SurveyData] = None
@@ -55,7 +56,7 @@ class FloodReportCreate(FloodReportBase):
 class FloodReportResponse(FloodReportBase):
     id: int
     status: ReportStatus
-    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry, GeometryCollectionGeometry]] = None
     media_urls: list[str] = []
     created_at: datetime
     updated_at: datetime
@@ -91,6 +92,9 @@ class FloodReportResponse(FloodReportBase):
                 elif pure_geom_type == 2:  # LineString
                     coords = parse_ewkb_linestring(data)
                     return LineStringGeometry(type="LineString", coordinates=coords)
+                elif pure_geom_type == 3:  # Polygon
+                    coords = parse_ewkb_polygon(data)
+                    return PolygonGeometry(type="Polygon", coordinates=coords)
                 elif pure_geom_type == 5:  # MultiLineString
                     coords = parse_ewkb_multilinestring(data)
                     return MultiLineStringGeometry(type="MultiLineString", coordinates=coords)
@@ -98,6 +102,7 @@ class FloodReportResponse(FloodReportBase):
                 # Log parser error and return None
                 print(f"Warning: Failed parsing EWKB in validator: {e}")
                 return None
+            return None
         return v
 
 

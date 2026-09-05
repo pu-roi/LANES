@@ -13,15 +13,10 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    const shouldDisable =
-      pathname === "/map" ||
-      pathname.startsWith("/feed") ||
-      pathname.startsWith("/profile") ||
-      pathname.startsWith("/register") ||
-      pathname.startsWith("/login") ||
-      pathname.startsWith("/auth");
+    // Only enable smooth scrolling on the Landing page ("/") and About page
+    const isLandingOrAbout = pathname === "/" || pathname === "/about";
 
-    if (shouldDisable) {
+    if (!isLandingOrAbout) {
       if (lenisRef.current) {
         lenisRef.current.destroy();
         lenisRef.current = null;
@@ -77,6 +72,11 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
         lenisRef.current.destroy();
         lenisRef.current = null;
       }
+      document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-scrolling', 'lenis-stopped');
+      document.documentElement.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('height');
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('height');
     };
   }, []);
 

@@ -176,7 +176,6 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
         if (scrollContainerRef.current) {
           scrollContainerRef.current.scrollTo({
             top: scrollContainerRef.current.scrollHeight,
-            behavior: "smooth"
           });
         }
       });
@@ -672,7 +671,6 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                               setTimeout(() => {
                                 scrollContainerRef.current?.scrollTo({
                                   top: scrollContainerRef.current.scrollHeight,
-                                  behavior: "smooth"
                                 });
                               }, 50);
                             }
