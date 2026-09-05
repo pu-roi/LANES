@@ -301,14 +301,15 @@ export function useFloodZonesLayer(
       const spaceLeft = x;
       const spaceRight = width - x;
 
-      // The popup is ~350px tall and 340px wide.
-      // Accounting for top app bars (~60px), we need at least 420px above to safely anchor "bottom".
-      const canFitAbove = spaceAbove >= 420;
-      const canFitBelow = spaceBelow >= 380;
+      // Floating nav bar sits at top (Y: 0 to ~100px) and popup is ~360px tall + 14px offset.
+      // To safely place the popup above without colliding with the top navigation,
+      // we need at least 500px of clearance above AND more space above than below.
+      const canSafelyFitAbove = spaceAbove >= 500 && spaceAbove >= spaceBelow;
+      const canFitBelow = spaceBelow >= 360;
       const isNearLeft = spaceLeft < 190;
       const isNearRight = spaceRight < 190;
 
-      if (canFitAbove) {
+      if (canSafelyFitAbove) {
         if (isNearLeft) smartAnchor = "bottom-left";
         else if (isNearRight) smartAnchor = "bottom-right";
         else smartAnchor = "bottom";
