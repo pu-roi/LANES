@@ -15,6 +15,35 @@ interface PostItemProps {
   onPostClick?: (postId: number, initialMediaIndex?: number) => void;
 }
 
+const getGeometryCenter = (geomType: string, coords: any): [number, number] | null => {
+  if (geomType === 'Point') return coords as [number, number];
+  
+  const flattenCoords = (arr: any[]): [number, number][] => {
+    if (arr.length > 0 && typeof arr[0] === 'number') {
+      return [arr as [number, number]];
+    }
+    let result: [number, number][] = [];
+    for (const item of arr) {
+      result = result.concat(flattenCoords(item));
+    }
+    return result;
+  };
+  
+  const flatCoords = flattenCoords(coords);
+  if (flatCoords.length === 0) return null;
+  
+  let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity;
+  for (const [lng, lat] of flatCoords) {
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+  }
+  
+  return [(minLng + maxLng) / 2, (minLat + maxLat) / 2];
+};
+
+
 export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick }: PostItemProps) {
   const router = useRouter();
   const { info, success, error: showError } = useToast();
@@ -135,15 +164,17 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
           {post.report?.human_readable_location && onViewMap && (
             <button 
               onClick={() => {
-                if (post.report?.geometry?.type === 'Point') {
-                  const [lng, lat] = post.report.geometry.coordinates as number[];
-                  onViewMap(lat, lng);
-                } else if (post.report?.geometry?.type === 'LineString') {
-                  const coords = post.report.geometry.coordinates as number[][];
-                  if (coords.length > 0) {
-                    const [lng, lat] = coords[0];
-                    onViewMap(lat, lng);
+                const geomType = post.report?.geometry?.type;
+                const coords = post.report?.geometry?.coordinates;
+                if (!geomType || !coords) return;
+                
+                try {
+                  const center = getGeometryCenter(geomType, coords);
+                  if (center) {
+                    onViewMap(center[1], center[0]);
                   }
+                } catch (e) {
+                  console.error("Failed to calculate geometry center", e);
                 }
               }}
               className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 transition-colors max-w-[220px] sm:max-w-[300px]"
@@ -361,15 +392,17 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
         {post.report?.geometry && onViewMap && (
           <button 
             onClick={() => {
-              if (post.report?.geometry?.type === 'Point') {
-                const [lng, lat] = post.report.geometry.coordinates as number[];
-                onViewMap(lat, lng);
-              } else if (post.report?.geometry?.type === 'LineString') {
-                const coords = post.report.geometry.coordinates as number[][];
-                if (coords.length > 0) {
-                  const [lng, lat] = coords[0];
-                  onViewMap(lat, lng);
+              const geomType = post.report?.geometry?.type;
+              const coords = post.report?.geometry?.coordinates;
+              if (!geomType || !coords) return;
+              
+              try {
+                const center = getGeometryCenter(geomType, coords);
+                if (center) {
+                  onViewMap(center[1], center[0]);
                 }
+              } catch (e) {
+                console.error("Failed to calculate geometry center", e);
               }
             }}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-sm font-medium transition-colors border border-blue-100"

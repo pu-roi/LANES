@@ -3,11 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Map, Rss, MessageSquarePlus, Settings, TrendingUp, MapPin, Phone, Flame, Heart, Plus } from 'lucide-react';
+import { Map, Rss, MessageSquarePlus, TrendingUp, Flame, Heart, Plus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import { EmergencyHotlinesCard } from './components/EmergencyHotlinesCard';
 
 export function LeftSidebar() {
   const pathname = usePathname();
@@ -27,7 +28,7 @@ export function LeftSidebar() {
   ];
 
   return (
-    <aside className="w-64 flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] bg-transparent overflow-y-auto hidden md:flex px-4 border-r border-gray-200">
+    <aside className="w-64 flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] bg-transparent overflow-y-auto hidden md:flex px-4 border-r border-gray-200 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       <div className="flex-1 py-6 space-y-6">
         {/* Navigation */}
         <div className="space-y-1">
@@ -113,31 +114,7 @@ export function LeftSidebar() {
           )}
         </div>
 
-        {/* Emergency Hotlines */}
-        <div className="space-y-1">
-          <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-            <Phone className="w-3.5 h-3.5" />
-            Emergency
-          </h3>
-          <div className="px-3 py-2.5 text-sm text-red-700 bg-red-50 hover:bg-red-100 border border-red-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center">
-            <span className="font-semibold">NDRRMC</span>
-            <span className="text-xs font-mono">911</span>
-          </div>
-          <div className="px-3 py-2.5 mt-2 text-sm text-red-700 bg-red-50 hover:bg-red-100 border border-red-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center">
-            <span className="font-semibold">Red Cross</span>
-            <span className="text-xs font-mono">143</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="py-6 border-t border-gray-100">
-        <Link
-          href="/settings"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors font-medium text-sm text-gray-700 hover:bg-gray-100"
-        >
-          <Settings className="w-5 h-5 text-gray-500" />
-          Settings
-        </Link>
+        <EmergencyHotlinesCard />
       </div>
     </aside>
   );

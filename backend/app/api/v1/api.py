@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import users, reports, auth, admin, roles, data, settings, sse, feed, comments, weather, public, posts, notifications, analytics, sync
+from app.api.v1.endpoints import users, reports, auth, admin, roles, data, settings, sse, feed, comments, weather, public, posts, notifications, analytics, sync, hotlines
 
 api_router = APIRouter()
 
@@ -21,3 +21,4 @@ api_router.include_router(public.router, prefix="/public", tags=["public"])
 api_router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 api_router.include_router(sse.router, prefix="/sse", tags=["sse"])
 api_router.include_router(sync.router, prefix="/sync", tags=["sync"])
+api_router.include_router(hotlines.router, prefix="/hotlines", tags=["hotlines"])

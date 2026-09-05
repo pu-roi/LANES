@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -287,6 +287,21 @@ This document serves as the central technical reference for all currently implem
 *   **Related Components:**
     *   **Frontend:** [SavePlacePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/places/SavePlacePanel.tsx), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [MapContext.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx).
     *   **Backend:** [saved_places.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/saved_places.py) (`GET/POST/DELETE /api/v1/saved-places`), [crud/saved_place.py](file:///d:/Documents/Github/LANES/backend/app/crud/saved_place.py) (`MAX_SAVED_PLACES = 10`).
+
+---
+
+### 20. Emergency Hotline Directory
+*   **Purpose:** Gives commuters direct access to current national, Pasig city, and Pasig barangay emergency contact numbers from the community feed.
+*   **What it does:** Replaces static sidebar contacts with API-backed priority hotlines, expandable number lists, direct `tel:` links, and a full searchable directory modal.
+*   **How it works:**
+    1. The backend fetches and parses national contacts from `ehotlines.e.gov.ph` and Pasig contacts from the city government page.
+    2. National and Pasig results are cached server-side for one hour to reduce upstream requests while preserving a public API surface.
+    3. The feed renders priority contacts immediately through `GET /api/v1/hotlines/`; the full directory is fetched lazily from `GET /api/v1/hotlines/full` when opened.
+    4. The directory separates national, Pasig city, and barangay contacts and exposes phone numbers as mobile-friendly `tel:` links.
+*   **Access & Roles:** Public read-only access.
+*   **Related Components:**
+    *   **Frontend:** [EmergencyHotlinesCard.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/components/EmergencyHotlinesCard.tsx), [EmergencyDirectoryModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/components/EmergencyDirectoryModal.tsx), [useHotlines.ts](file:///d:/Documents/Github/LANES/frontend/src/features/feed/useHotlines.ts).
+    *   **Backend:** [hotlines.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/hotlines.py), [hotline_service.py](file:///d:/Documents/Github/LANES/backend/app/services/hotline_service.py).
 
 ---
 

@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 5, 2026, 11:57 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -21,8 +21,17 @@
 | 10| Official Flood Zones (DRRMO) Moderation | Completed | Admin panel restructuring, backend Zone Override schemas, bulk merging operations, troll filtration, DRRMO Official Zone mapping with Terra Draw |
 | 11| Intelligent Bidirectional Flood Reporting | Completed | Hybrid Carriageway Detection Strategy, Valhalla Map Matching for opposite-side road detection, GeometryCollection PostGIS storage, dual-buffer approval |
 | 12| Spatial Operations & Map Hover Badge Engine | Completed | Multi-geometry layers (MultiLineString/Polygon), 400ms hover dwell timer, smart collision-free positioning, two-row FloodZonePopup, Lenis scroll scoping |
+| 13| Community Feed Emergency Hotline Directory | Completed | Cached national hotline integration, Pasig city/barangay directory, responsive feed hotline card, lazy-loaded directory modal |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 11: Community Feed Emergency Hotline Directory (🟢 COMPLETED)
+- [x] **Cached Hotline Aggregation** (@roicambe):
+  - Added public `GET /api/v1/hotlines/` and `GET /api/v1/hotlines/full` endpoints.
+  - Scrapes national emergency contacts and Pasig government contacts with one-hour server-side TTL caching.
+- [x] **Feed Emergency Contact UX** (@roicambe):
+  - Replaced static emergency entries with API-backed priority hotline cards.
+  - Added expandable phone numbers, `tel:` links, loading/unavailable states, and a lazy-loaded national/Pasig/barangay directory modal.
 
 ### Capstone Phase 10: Spatial Operations Live Map & Hover Interaction Engine (🟢 COMPLETED)
 - [x] **Multi-Geometry Layer Normalization** (@roicambe):
