@@ -141,6 +141,19 @@ def process_valhalla_response(
     flood_risk: str = "none"
 ) -> List[Dict[str, Any]]:
     """Converts a Valhalla route response into our MultiRouteResponse candidate list."""
+    
+    def map_valhalla_type_to_ors(v_type: int) -> int:
+        if v_type in (1, 2, 3): return 11 # Depart
+        if v_type in (4, 5, 6): return 10 # Arrive
+        if v_type == 9: return 5 # Slight right
+        if v_type == 10: return 1 # Right
+        if v_type == 11: return 3 # Sharp right
+        if v_type in (12, 13): return 9 # U-turn
+        if v_type == 14: return 2 # Sharp left
+        if v_type == 15: return 0 # Left
+        if v_type == 16: return 4 # Slight left
+        if v_type in (26, 27): return 7 # Roundabout
+        return 6 # Straight (default)
     if not data or "trip" not in data:
         return []
         
@@ -160,6 +173,17 @@ def process_valhalla_response(
         shape_str = leg.get("shape", "")
         coords = decode_polyline6(shape_str) if shape_str else []
         
+        instructions = []
+        for maneuver in leg.get("maneuvers", []):
+            instructions.append({
+                "distance": maneuver.get("length", 0.0) * 1000, # Valhalla returns km, convert to meters
+                "duration": maneuver.get("time", 0.0),
+                "type": map_valhalla_type_to_ors(maneuver.get("type", 6)),
+                "instruction": maneuver.get("instruction", ""),
+                "name": maneuver.get("street_names", [""])[0] if maneuver.get("street_names") else "",
+                "way_points": [maneuver.get("begin_shape_index", 0), maneuver.get("end_shape_index", 0)]
+            })
+            
         label = ROUTE_LABELS[idx] if idx < len(ROUTE_LABELS) else f"Alternative {idx}"
         
         return {
@@ -175,7 +199,8 @@ def process_valhalla_response(
             "blocked": blocked,
             "is_truncated": False, # Valhalla generates native alternates, so we don't need distance heuristics
             "safety_score": safety_score,
-            "flood_risk": flood_risk
+            "flood_risk": flood_risk,
+            "instructions": instructions
         }
         
     primary = extract_route(data["trip"], 0)

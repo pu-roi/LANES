@@ -481,7 +481,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [start, end, clearRoute, vehicleProfile]);
+  }, [start, end, clearRoute, vehicleProfile, routingEngine]);
 
   // Flood segment preview (uses ignore_floods=true for a straight reference line)
   useEffect(() => {

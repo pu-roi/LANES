@@ -45,6 +45,7 @@ function getStepIcon(type: number) {
     case 5: return ArrowUpRight;     // Slight right
     case 6: return ArrowUp;          // Straight
     case 7: return ArrowLeft;        // Enter roundabout
+    case 9: return ArrowDownUp;      // U-turn
     case 10: return Flag;            // Arrive
     case 11: return Navigation;      // Depart
     default: return ArrowUp;
@@ -469,6 +470,63 @@ export default function RoutePanel() {
                         : "Clear path — no floods detected"}
                   </span>
                 </div>
+
+                {/* Mobile Turn-by-Turn Directions */}
+                {selectedRoute.instructions && selectedRoute.instructions.length > 0 && (
+                  <div className="mt-4 pb-2">
+                    <div className="flex items-center gap-2 mb-3 px-1">
+                      <Navigation className="w-4 h-4 text-gray-400" />
+                      <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Turn-by-Turn</span>
+                    </div>
+
+                    <div className="flex flex-col divide-y divide-gray-100 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                      {selectedRoute.instructions.map((step: any, idx: number) => {
+                        const StepIcon = getStepIcon(step.type ?? 6);
+                        const isHovered = hoveredStepIdx === idx;
+                        return (
+                          <button
+                            key={idx}
+                            className={cn(
+                              "flex items-center gap-3 px-3 py-3 text-left transition-colors w-full",
+                              isHovered ? "bg-blue-50" : "bg-white active:bg-gray-50"
+                            )}
+                            onMouseEnter={() => {
+                              setHoveredStepIdx(idx);
+                              fireStepHover(idx);
+                            }}
+                            onMouseLeave={() => {
+                              setHoveredStepIdx(null);
+                              fireStepHover(null);
+                            }}
+                            onClick={() => fireStepClick(idx)}
+                          >
+                            <div className={cn(
+                              "w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors",
+                              isHovered ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600"
+                            )}>
+                              <StepIcon className="w-4 h-4" />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <p className={cn("text-[13px] font-medium leading-snug truncate", isHovered ? "text-blue-700" : "text-gray-800")}>
+                                {step.instruction || step.name || "Continue"}
+                              </p>
+                              {step.name && step.name !== "-" && step.instruction && step.name !== step.instruction && (
+                                <p className="text-[11px] text-gray-400 truncate mt-0.5">{step.name}</p>
+                              )}
+                            </div>
+
+                            {(step.distance ?? 0) > 0 && (
+                              <span className="text-[11px] font-semibold text-gray-400 shrink-0">
+                                {formatStepDistance(step.distance)}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           )}
