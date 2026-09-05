@@ -6,6 +6,7 @@ import { authClient } from "../api/authClient";
 import { LocationPickerModal, LocationItem } from "./LocationPickerModal";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
+import { Select } from "@/shared/ui/Select";
 import { DatePicker } from "@/shared/ui/DatePicker";
 import { useToast } from "@/shared/ui/Toast";
 import { PasswordStrength } from "@/shared/ui/PasswordStrength";
@@ -28,6 +29,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [setupPhase, setSetupPhase] = useState<"email" | "otp" | "password">("email");
   const [otpCode, setOtpCode] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -181,23 +183,38 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
     }
   }, [showPasswordReqs, currentStep, setupPhase]);
 
-  // Load draft from session storage on mount
+  // Load draft from session storage on mount (never restore password for security & UX)
   useEffect(() => {
     const draft = sessionStorage.getItem("lanes_registration_draft");
     if (draft) {
       try {
-        setFormData(JSON.parse(draft));
+        const parsed = JSON.parse(draft);
+        setFormData({
+          ...parsed,
+          user: {
+            ...parsed.user,
+            password: "", // Always clear password on reload / mount
+          },
+        });
+        setConfirmPassword("");
       } catch (err: any) {
         showError("Draft Error", "Failed to load saved registration draft.");
       }
     }
   }, []);
 
-  // Save draft to session storage on change
+  // Save draft to session storage on change (exclude sensitive password fields)
   useEffect(() => {
     // Only save if there's actually some data
     if (formData.user.username || formData.profile.first_name || formData.address.province) {
-      sessionStorage.setItem("lanes_registration_draft", JSON.stringify(formData));
+      const sanitizedDraft = {
+        ...formData,
+        user: {
+          ...formData.user,
+          password: "", // Never store plain password in sessionStorage
+        },
+      };
+      sessionStorage.setItem("lanes_registration_draft", JSON.stringify(sanitizedDraft));
     }
   }, [formData]);
 
@@ -283,7 +300,20 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
       if (field === "first_name" || field === "last_name") {
         finalValue = value.replace(/(?:^|\s)[a-z]/g, (char: string) => char.toUpperCase());
       } else if (field === "middle_initial") {
-        finalValue = value.replace(/[^a-zA-Z]/g, "").charAt(0).toUpperCase();
+        const prevVal = formData.profile.middle_initial || "";
+        const rawLetters = value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 3);
+        const prevLetters = prevVal.replace(/[^a-zA-Z]/g, "").toUpperCase();
+
+        if (rawLetters.length < prevLetters.length) {
+          // User is deleting / backspacing: update directly with the remaining letters + dots
+          finalValue = rawLetters ? rawLetters.split("").map((c: string) => c + ".").join("") : "";
+        } else if (rawLetters.length > prevLetters.length) {
+          // User typed a new letter: append dot
+          finalValue = rawLetters.split("").map((c: string) => c + ".").join("");
+        } else {
+          // Same letter count, preserve current formatted value
+          finalValue = value ? value.toUpperCase().slice(0, 6) : "";
+        }
       } else if (field === "contact_number") {
         finalValue = value.replace(/\D/g, "").substring(0, 11);
       }
@@ -408,20 +438,26 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
       loginData.append("password", formData.user.password);
       
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-      const loginRes = await fetch(`${baseUrl}/auth/login/access-token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: loginData.toString()
-      });
-      if (loginRes.ok) {
-        const d = await loginRes.json();
-        localStorage.setItem("lanes_token", d.access_token);
-        // Redirect to the originally intended page, or fall back to /map
-        const destination = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/map';
-        window.location.href = destination;
-      } else {
-        router.push("/login");
+      try {
+        const loginRes = await fetch(`${baseUrl}/auth/login/access-token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: loginData.toString()
+        });
+        if (loginRes.ok) {
+          const d = await loginRes.json().catch(() => null);
+          if (d?.access_token) {
+            localStorage.setItem("lanes_token", d.access_token);
+            const destination = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/map';
+            window.location.href = destination;
+            return;
+          }
+        }
+      } catch (loginErr) {
+        console.warn("Auto-login failed after registration, redirecting to login page", loginErr);
       }
+      
+      router.push("/login");
     } catch (err: any) {
       showError("Registration Failed", err.message || "An error occurred during registration.");
     } finally {
@@ -452,8 +488,8 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
     <>
       <div className="w-full max-w-xl mx-auto bg-white/10 backdrop-blur-sm lg:bg-white rounded-2xl shadow-2xl lg:shadow-[0_8px_40px_rgba(59,130,246,0.15)] border border-white/20 lg:border-slate-200/80 border-t-4 border-t-blue-600 lg:ring-1 lg:ring-blue-100/50">
         {/* Stepper Header */}
-        <div className="bg-transparent lg:bg-slate-50 px-6 sm:px-8 pt-6 pb-8 border-b border-white/10 lg:border-slate-100 rounded-t-2xl select-none">
-          <h2 className="text-xl font-bold text-white lg:text-slate-900 mb-6 text-center drop-shadow-md lg:drop-shadow-none">Create your Citizen Account</h2>
+        <div className="bg-transparent lg:bg-slate-50 px-5 sm:px-6 pt-5 pb-7 border-b border-white/10 lg:border-slate-100 rounded-t-2xl select-none">
+          <h2 className="text-xl font-bold text-white lg:text-slate-900 mb-5 text-center drop-shadow-md lg:drop-shadow-none">Create your Citizen Account</h2>
           <div className="flex items-center justify-between relative px-2">
             <div className="absolute left-2 right-2 top-4 -translate-y-1/2 h-[2px] bg-white/20 lg:bg-slate-200 z-0"></div>
             <div 
@@ -485,7 +521,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
         </div>
 
         {/* Form Body */}
-        <div className="p-6 sm:p-8 pt-8 sm:pt-10">
+        <div className="p-5 sm:p-6 pt-5 sm:pt-6">
           <form 
             onSubmit={(e) => e.preventDefault()}
             className="relative flex flex-col w-full"
@@ -628,6 +664,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••" 
                           required
+                          autoComplete="new-password"
                           value={formData.user.password} 
                           onChange={e => handleChange("user", "password", e.target.value)}
                           onFocus={() => {
@@ -643,11 +680,18 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                           rightIcon={
                             <button
                               type="button"
-                              onClick={() => setShowPassword(prev => !prev)}
-                              className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                              onMouseDown={() => setShowPassword(true)}
+                              onMouseUp={() => setShowPassword(false)}
+                              onMouseLeave={() => setShowPassword(false)}
+                              onTouchStart={() => setShowPassword(true)}
+                              onTouchEnd={() => setShowPassword(false)}
+                              onTouchCancel={() => setShowPassword(false)}
+                              className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
                               tabIndex={-1}
+                              aria-label="Hold to view password"
+                              title="Hold to view password"
                             >
-                              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                              {showPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
                             </button>
                           }
                         />
@@ -658,11 +702,29 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                       <Input 
                         label="Confirm Password"
                         labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
-                        type={showPassword ? "text" : "password"}
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="••••••••" 
                         required
+                        autoComplete="new-password"
                         value={confirmPassword} 
                         onChange={e => setConfirmPassword(e.target.value)}
+                        rightIcon={
+                          <button
+                            type="button"
+                            onMouseDown={() => setShowConfirmPassword(true)}
+                            onMouseUp={() => setShowConfirmPassword(false)}
+                            onMouseLeave={() => setShowConfirmPassword(false)}
+                            onTouchStart={() => setShowConfirmPassword(true)}
+                            onTouchEnd={() => setShowConfirmPassword(false)}
+                            onTouchCancel={() => setShowConfirmPassword(false)}
+                            className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
+                            tabIndex={-1}
+                            aria-label="Hold to view confirm password"
+                            title="Hold to view confirm password"
+                          >
+                            {showConfirmPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
+                          </button>
+                        }
                       />
                     </div>
                   )}
@@ -705,28 +767,27 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                       <Input 
                         label="M.I. (Optional)"
                         labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
-                        placeholder="A" 
-                        maxLength={2}
+                        placeholder="D.C." 
+                        maxLength={5}
                         value={formData.profile.middle_initial} 
                         onChange={e => handleChange("profile", "middle_initial", e.target.value)}
                       />
                     </div>
                     <div className="flex-1">
-                      <Input 
+                      <Select 
                         label="Suffix (Optional)"
-                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
-                        placeholder="Jr."
-                        list="suffix-options"
-                        value={formData.profile.suffix} 
-                        onChange={e => handleChange("profile", "suffix", e.target.value)}
+                        placeholder="None"
+                        value={formData.profile.suffix || ""}
+                        onChange={(e) => handleChange("profile", "suffix", e.target.value)}
+                        options={[
+                          { label: "None", value: "" },
+                          { label: "Jr.", value: "Jr." },
+                          { label: "Sr.", value: "Sr." },
+                          { label: "II", value: "II" },
+                          { label: "III", value: "III" },
+                          { label: "IV", value: "IV" },
+                        ]}
                       />
-                      <datalist id="suffix-options">
-                        <option value="Jr." />
-                        <option value="Sr." />
-                        <option value="II" />
-                        <option value="III" />
-                        <option value="IV" />
-                      </datalist>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
@@ -842,7 +903,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
             </div>
 
             {/* Bottom Navigation */}
-            <div className="mt-4 flex items-center justify-between pt-6 border-t border-slate-100 shrink-0">
+            <div className="mt-3 flex items-center justify-between pt-4 border-t border-slate-100 shrink-0">
               {currentStep === 1 && setupPhase === "otp" ? (
                 <>
                   <button 

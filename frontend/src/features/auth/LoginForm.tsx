@@ -99,11 +99,18 @@ export default function LoginForm() {
         rightIcon={
           <button
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none"
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}
+            onTouchStart={() => setShowPassword(true)}
+            onTouchEnd={() => setShowPassword(false)}
+            onTouchCancel={() => setShowPassword(false)}
+            className="p-1 text-gray-400 hover:text-gray-600 focus:outline-none select-none cursor-pointer"
             tabIndex={-1}
+            aria-label="Hold to view password"
+            title="Hold to view password"
           >
-            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
           </button>
         }
       />

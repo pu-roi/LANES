@@ -34,7 +34,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import type { LocationSuggestion } from "@/features/geocoding/types";
-import { useMapContext, type ActivePoint } from "@/features/map/MapContext";
+import { useMapContext, type ActivePoint, type DraftReport } from "@/features/map/MapContext";
 import { getRoute } from "@/features/routing/routingApi";
 
 // ── Types ──────────────────────────────────────────────────────────────────────

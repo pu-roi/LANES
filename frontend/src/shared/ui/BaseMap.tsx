@@ -625,7 +625,7 @@ export default function BaseMap({
 
     if (typeof window !== "undefined") {
       try {
-        const savedViewport = localStorage.getItem("lanes_map_viewport");
+        const savedViewport = sessionStorage.getItem("lanes_map_viewport");
         if (savedViewport) {
           const parsed = JSON.parse(savedViewport);
           if (parsed.center) initialCenter = parsed.center;
@@ -657,7 +657,7 @@ export default function BaseMap({
           pitch: mapInstance.getPitch(),
           bearing: mapInstance.getBearing()
         };
-        localStorage.setItem("lanes_map_viewport", JSON.stringify(viewport));
+        sessionStorage.setItem("lanes_map_viewport", JSON.stringify(viewport));
       } catch (e) {}
     });
 

@@ -213,7 +213,9 @@ async def register(
         )
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail="Database transaction failed")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 
     # Eagerly load the role relationship so UserResponse serialization works
     db.refresh(new_user)

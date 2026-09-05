@@ -105,8 +105,14 @@ export function LocationPickerModal({
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden relative flex bg-white">
-          <div className="flex-1 overflow-y-auto pb-20 p-4 scroll-smooth">
+        <div className="flex-1 overflow-hidden relative flex bg-white" data-lenis-prevent>
+          <div 
+            className="flex-1 overflow-y-auto px-4 pt-0 pb-20 scroll-smooth overscroll-contain"
+            data-lenis-prevent
+            style={{ WebkitOverflowScrolling: "touch" }}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
             {filteredItems.length === 0 ? (
               <div className="text-center text-gray-500 py-10">
                 No locations found.
@@ -114,11 +120,13 @@ export function LocationPickerModal({
             ) : (
               <>
                 {pinnedItems.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-sm font-bold text-blue-600 mb-2 sticky top-0 bg-white py-1 z-10 flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      Pinned
-                    </h3>
+                  <div className="mb-6 scroll-mt-3">
+                    <div className="sticky -top-[1px] z-20 bg-white pt-3 pb-2 mb-1.5 border-b border-slate-100 flex items-center">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 font-bold text-xs">
+                        <MapPin className="w-3.5 h-3.5" />
+                        Pinned
+                      </span>
+                    </div>
                     <div className="flex flex-col">
                       {pinnedItems.map((item) => (
                         <button
@@ -134,16 +142,18 @@ export function LocationPickerModal({
                 )}
                 
                 {sortedLetters.map((letter) => (
-                  <div key={letter} id={`letter-${letter}`} className="mb-6">
-                    <h3 className="text-sm font-bold text-gray-500 mb-2 sticky top-0 bg-white py-1 z-10">
-                      {letter}
-                    </h3>
-                    <div className="flex flex-col">
+                  <div key={letter} id={`letter-${letter}`} className="mb-6 scroll-mt-3">
+                    <div className="sticky -top-[1px] z-20 bg-white pt-3 pb-2 mb-1.5 border-b border-slate-100 flex items-center">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-blue-50 text-blue-600 font-bold text-xs">
+                        {letter}
+                      </span>
+                    </div>
+                    <div className="flex flex-col space-y-0.5">
                       {groupedItems[letter].map((item) => (
                         <button
                           key={item.code}
                           onClick={() => onSelect(item)}
-                          className="text-left py-3 px-3 rounded-lg hover:bg-gray-50 transition-colors text-slate-900 font-medium"
+                          className="text-left py-2.5 px-3 rounded-lg hover:bg-slate-50 transition-colors text-slate-800 font-medium text-sm"
                         >
                           {item.name}
                         </button>

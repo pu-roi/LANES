@@ -222,13 +222,16 @@ export function LocationAutocomplete({
       {isOpen && (suggestions.length > 0 || renderTopOptions) && typeof document !== "undefined" && createPortal(
         <ul 
           data-portal="location-autocomplete"
-          className="fixed z-[9999] mt-1 overflow-auto rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg"
+          data-lenis-prevent
+          className="fixed z-40 mt-1 overflow-y-auto overscroll-contain rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg"
           style={{
             top: dropdownRect ? dropdownRect.bottom : 0,
             left: dropdownRect ? dropdownRect.left : 0,
             width: dropdownRect ? dropdownRect.width : 0,
             maxHeight: "14rem"
           }}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
           onClick={(e) => {
             if ((e.target as HTMLElement).closest("button")) {
               setIsOpen(false);

@@ -237,7 +237,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     
-    const savedViewport = typeof window !== "undefined" ? localStorage.getItem("lanes_map_viewport") : null;
+    const savedViewport = typeof window !== "undefined" ? sessionStorage.getItem("lanes_map_viewport") : null;
     const isAnalyticsPage = pathname.includes("analytics");
     const isMapPage = pathname === "/map";
     

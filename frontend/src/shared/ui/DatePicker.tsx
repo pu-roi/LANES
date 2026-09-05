@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, forwardRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { ChevronUp, ChevronDown, Calendar as CalendarIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface DatePickerProps {
@@ -19,6 +19,11 @@ export interface DatePickerProps {
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
+];
+
+const MONTH_ABBRS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
 // Custom date input — renders typed digits dark, placeholder chars light gray
@@ -75,8 +80,19 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
 
     const [currentMonth, setCurrentMonth] = useState(parsedDate ? parsedDate.getMonth() : today.getMonth());
     const [currentYear, setCurrentYear] = useState(parsedDate ? parsedDate.getFullYear() : today.getFullYear());
-    const [showMonthYearPicker, setShowMonthYearPicker] = useState(false);
+    const [viewMode, setViewMode] = useState<"days" | "years" | "months">("days");
     const [placement, setPlacement] = useState<"bottom" | "top">("bottom");
+    const yearListRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll to selected year when year view opens
+    useEffect(() => {
+      if (viewMode === "years" && yearListRef.current) {
+        const selectedBtn = yearListRef.current.querySelector('[data-selected-year="true"]') as HTMLElement | null;
+        if (selectedBtn) {
+          selectedBtn.scrollIntoView({ block: "center" });
+        }
+      }
+    }, [viewMode]);
 
     // Digit state — up to 8 numeric characters
     const [digits, setDigits] = useState<string>(() => {
@@ -196,9 +212,14 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
 
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
-        if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        const target = event.target as HTMLElement | null;
+        if (
+          containerRef.current &&
+          !containerRef.current.contains(target as Node) &&
+          !target?.closest('[data-portal="datepicker-popup"]')
+        ) {
           setIsOpen(false);
-          setShowMonthYearPicker(false);
+          setViewMode("days");
           setIsFocused(false);
         }
       };
@@ -210,12 +231,14 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       const newDate = new Date(Date.UTC(currentYear, currentMonth, day));
       const dateString = newDate.toISOString().split("T")[0];
       onChange({ target: { value: dateString } });
+      setViewMode("days");
       setIsOpen(false);
     };
 
     const handleClear = () => {
       onChange({ target: { value: "" } });
       setDigits("");
+      setViewMode("days");
       setIsOpen(false);
     };
 
@@ -225,6 +248,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       onChange({ target: { value: dateString } });
       setCurrentMonth(now.getMonth());
       setCurrentYear(now.getFullYear());
+      setViewMode("days");
       setIsOpen(false);
     };
 
@@ -247,7 +271,9 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       if (!disabled) {
         hiddenInputRef.current?.focus();
         setIsFocused(true);
-        setIsOpen(true);
+        if (!isOpen) {
+          setIsOpen(true);
+        }
       }
     };
 
@@ -323,7 +349,10 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
         {/* Calendar popup */}
         {isOpen && typeof document !== "undefined" && createPortal(
           <div 
-            className="fixed z-[9999] w-72 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden"
+            data-portal="datepicker-popup"
+            data-lenis-prevent
+            onMouseDown={(e) => e.stopPropagation()}
+            className="fixed z-[99999] w-72 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden"
             style={{
               top: placement === "bottom" && rect ? rect.bottom + 4 : undefined,
               bottom: placement === "top" && rect ? window.innerHeight - rect.top + 4 : undefined,
@@ -336,56 +365,98 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             <div className="flex items-center justify-between p-3 border-b border-gray-100">
               <button
                 type="button"
-                onClick={() => setShowMonthYearPicker(!showMonthYearPicker)}
-                className="font-semibold text-gray-800 hover:bg-gray-100 px-2 py-1 rounded-md transition-colors flex items-center gap-1"
+                onClick={() => setViewMode(prev => prev === "days" ? "years" : "days")}
+                className="font-semibold text-gray-800 hover:bg-gray-100 px-2 py-1 rounded-md transition-colors flex items-center gap-1.5"
               >
-                {MONTHS[currentMonth]} {currentYear}
-                <ChevronDown className="w-4 h-4" />
+                {viewMode === "years" ? (
+                  <span>Select Year</span>
+                ) : viewMode === "months" ? (
+                  <span>{currentYear} &bull; Select Month</span>
+                ) : (
+                  <>
+                    <span>{MONTHS[currentMonth]} {currentYear}</span>
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                  </>
+                )}
               </button>
 
-              <div className="flex items-center gap-1">
-                <button type="button" onClick={() => stepMonth(-1)} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-600 transition-colors">
-                  <ChevronUp className="w-4 h-4" />
-                </button>
-                <button type="button" onClick={() => stepMonth(1)} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-600 transition-colors">
-                  <ChevronDown className="w-4 h-4" />
-                </button>
-              </div>
+              {viewMode === "days" && (
+                <div className="flex items-center gap-1">
+                  <button 
+                    type="button" 
+                    onClick={() => stepMonth(-1)} 
+                    className="p-1.5 hover:bg-gray-100 rounded-md text-gray-600 transition-colors"
+                    aria-label="Previous Month"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => stepMonth(1)} 
+                    className="p-1.5 hover:bg-gray-100 rounded-md text-gray-600 transition-colors"
+                    aria-label="Next Month"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Quick Month/Year Picker */}
-            {showMonthYearPicker ? (
-              <div className="p-3 grid grid-cols-2 gap-4 h-[240px] overflow-y-auto">
-                <div className="flex flex-col space-y-1">
-                  <div className="text-xs font-semibold text-gray-500 uppercase mb-1">Month</div>
-                  {MONTHS.map((m, idx) => (
-                    <button
-                      key={m}
-                      onClick={() => { setCurrentMonth(idx); setShowMonthYearPicker(false); }}
-                      className={cn(
-                        "text-left px-3 py-1.5 rounded-md text-sm transition-colors",
-                        currentMonth === idx ? "bg-blue-600 text-white font-medium" : "hover:bg-gray-100 text-gray-700"
-                      )}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex flex-col space-y-1 overflow-y-auto h-full pr-1">
-                  <div className="text-xs font-semibold text-gray-500 uppercase mb-1 sticky top-0 bg-white">Year</div>
-                  {Array.from({ length: 100 }, (_, i) => today.getFullYear() - 50 + i).map(y => (
+            {/* View Modes */}
+            {viewMode === "years" ? (
+              /* Dedicated Year Grid (covers up to 125 years back to 1901) */
+              <div 
+                ref={yearListRef}
+                className="p-3 grid grid-cols-4 gap-2 h-[260px] overflow-y-auto"
+                style={{ scrollbarWidth: "thin" }}
+              >
+                {Array.from({ length: 126 }, (_, i) => today.getFullYear() - i).map(y => {
+                  const isSelectedYear = currentYear === y;
+                  return (
                     <button
                       key={y}
-                      onClick={() => { setCurrentYear(y); setShowMonthYearPicker(false); }}
+                      type="button"
+                      data-selected-year={isSelectedYear ? "true" : "false"}
+                      onClick={() => {
+                        setCurrentYear(y);
+                        setViewMode("months"); // Next step: pick the month for this year
+                      }}
                       className={cn(
-                        "text-left px-3 py-1.5 rounded-md text-sm transition-colors",
-                        currentYear === y ? "bg-blue-600 text-white font-medium" : "hover:bg-gray-100 text-gray-700"
+                        "py-2 rounded-lg text-sm font-medium transition-all text-center",
+                        isSelectedYear
+                          ? "bg-blue-600 text-white shadow-sm font-semibold ring-2 ring-blue-200"
+                          : "hover:bg-blue-50 text-gray-700 hover:text-blue-600"
                       )}
                     >
                       {y}
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
+              </div>
+            ) : viewMode === "months" ? (
+              /* Month Selector Grid: Jan, Feb, Mar, Apr, May, Jun, Jul, Aug... */
+              <div className="p-4 grid grid-cols-3 gap-2.5 h-[260px] flex items-center content-center">
+                {MONTH_ABBRS.map((abbr, idx) => {
+                  const isSelectedMonth = currentMonth === idx;
+                  return (
+                    <button
+                      key={abbr}
+                      type="button"
+                      onClick={() => {
+                        setCurrentMonth(idx);
+                        setViewMode("days"); // Return to original datepicker calendar grid!
+                      }}
+                      className={cn(
+                        "py-3 rounded-lg text-sm font-medium transition-all text-center",
+                        isSelectedMonth
+                          ? "bg-blue-600 text-white shadow-sm font-semibold ring-2 ring-blue-200"
+                          : "bg-slate-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 border border-slate-100"
+                      )}
+                    >
+                      {abbr}
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <>

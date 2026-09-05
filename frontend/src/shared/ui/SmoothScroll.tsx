@@ -16,7 +16,10 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     const shouldDisable =
       pathname === "/map" ||
       pathname.startsWith("/feed") ||
-      pathname.startsWith("/profile");
+      pathname.startsWith("/profile") ||
+      pathname.startsWith("/register") ||
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/auth");
 
     if (shouldDisable) {
       if (lenisRef.current) {

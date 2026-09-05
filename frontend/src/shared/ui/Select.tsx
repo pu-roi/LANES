@@ -87,7 +87,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
               ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100 ring-red-100" : ""}
             `}
           >
-            <span className={selectedOption ? "text-gray-900" : "text-gray-500"}>
+            <span className={selectedOption && selectedOption.value !== "" ? "text-gray-900 font-medium" : "text-gray-400"}>
               {selectedOption ? selectedOption.label : placeholder || "Select..."}
             </span>
             <ChevronDown 

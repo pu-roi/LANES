@@ -1,6 +1,7 @@
 from datetime import datetime, date
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional
+import re
 
 
 class ProfileBase(BaseModel):
@@ -10,6 +11,14 @@ class ProfileBase(BaseModel):
     suffix: Optional[str] = None
     contact_number: Optional[str] = None
     birthdate: Optional[date] = None
+
+    @field_validator("middle_initial", mode="before")
+    @classmethod
+    def normalize_middle_initial(cls, v):
+        if not v:
+            return None
+        letters = re.sub(r"[^a-zA-Z]", "", str(v)).upper()[:3]
+        return "".join(f"{char}." for char in letters) if letters else None
     avatar_url: Optional[str] = None
     cover_color: Optional[str] = "#3B82F6"
     is_public: Optional[bool] = True
@@ -32,6 +41,14 @@ class ProfileUpdate(BaseModel):
     last_name: Optional[str] = None
     middle_initial: Optional[str] = None
     suffix: Optional[str] = None
+
+    @field_validator("middle_initial", mode="before")
+    @classmethod
+    def normalize_middle_initial(cls, v):
+        if not v:
+            return None
+        letters = re.sub(r"[^a-zA-Z]", "", str(v)).upper()[:3]
+        return "".join(f"{char}." for char in letters) if letters else None
     contact_number: Optional[str] = None
     birthdate: Optional[date] = None
     avatar_url: Optional[str] = None

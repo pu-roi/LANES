@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { LocationPickerModal, LocationItem } from "@/features/auth/components/LocationPickerModal";
 import { DatePicker } from "@/shared/ui/DatePicker";
+import { Input } from "@/shared/ui/Input";
+import { Select } from "@/shared/ui/Select";
 import { CheckCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/shared/ui/Toast";
 
@@ -141,7 +143,20 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
       if (field === "first_name" || field === "last_name") {
         finalValue = value.replace(/(?:^|\s)[a-z]/g, (char: string) => char.toUpperCase());
       } else if (field === "middle_initial") {
-        finalValue = value.replace(/[^a-zA-Z]/g, "").charAt(0).toUpperCase();
+        const prevVal = formData.profile.middle_initial || "";
+        const rawLetters = value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 3);
+        const prevLetters = prevVal.replace(/[^a-zA-Z]/g, "").toUpperCase();
+
+        if (rawLetters.length < prevLetters.length) {
+          // User is deleting / backspacing: update directly with the remaining letters + dots
+          finalValue = rawLetters ? rawLetters.split("").map((c: string) => c + ".").join("") : "";
+        } else if (rawLetters.length > prevLetters.length) {
+          // User typed a new letter: append dot
+          finalValue = rawLetters.split("").map((c: string) => c + ".").join("");
+        } else {
+          // Same letter count, preserve current formatted value
+          finalValue = value ? value.toUpperCase().slice(0, 6) : "";
+        }
       } else if (field === "contact_number") {
         finalValue = value.replace(/\D/g, "").substring(0, 11);
       }
@@ -228,60 +243,50 @@ export function EditProfileForm({ initialProfile, isUpdating, onSubmit, onCancel
       <form onSubmit={handleSubmit} className="space-y-6">
         <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-2">Personal Information</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">First Name <span className="text-red-500">*</span></label>
-            <input 
-              type="text" required
-              value={formData.profile.first_name}
-              onChange={(e) => handleChange("profile", "first_name", e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Last Name <span className="text-red-500">*</span></label>
-            <input 
-              type="text" required
-              value={formData.profile.last_name}
-              onChange={(e) => handleChange("profile", "last_name", e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">M.I. <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
-            <input 
-              type="text" maxLength={2}
-              value={formData.profile.middle_initial}
-              onChange={(e) => handleChange("profile", "middle_initial", e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Suffix <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
-            <input 
-              type="text"
-              list="profile-suffix-options"
-              value={formData.profile.suffix}
-              onChange={(e) => handleChange("profile", "suffix", e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-            />
-            <datalist id="profile-suffix-options">
-              <option value="Jr." />
-              <option value="Sr." />
-              <option value="II" />
-              <option value="III" />
-              <option value="IV" />
-            </datalist>
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Contact Number <span className="text-gray-400 font-normal ml-1">(Optional)</span></label>
-            <input 
-              type="tel" 
-              value={formData.profile.contact_number}
-              onChange={(e) => handleChange("profile", "contact_number", e.target.value)}
-              placeholder="09123456789"
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-            />
-          </div>
+          <Input 
+            label="First Name"
+            labelClassName="text-slate-700 font-medium"
+            required
+            value={formData.profile.first_name}
+            onChange={(e) => handleChange("profile", "first_name", e.target.value)}
+          />
+          <Input 
+            label="Last Name"
+            labelClassName="text-slate-700 font-medium"
+            required
+            value={formData.profile.last_name}
+            onChange={(e) => handleChange("profile", "last_name", e.target.value)}
+          />
+          <Input 
+            label="M.I. (Optional)"
+            labelClassName="text-slate-700 font-medium"
+            placeholder="D.C."
+            maxLength={5}
+            value={formData.profile.middle_initial}
+            onChange={(e) => handleChange("profile", "middle_initial", e.target.value)}
+          />
+          <Select 
+            label="Suffix (Optional)"
+            placeholder="None"
+            value={formData.profile.suffix || ""}
+            onChange={(e) => handleChange("profile", "suffix", e.target.value)}
+            options={[
+              { label: "None", value: "" },
+              { label: "Jr.", value: "Jr." },
+              { label: "Sr.", value: "Sr." },
+              { label: "II", value: "II" },
+              { label: "III", value: "III" },
+              { label: "IV", value: "IV" },
+            ]}
+          />
+          <Input 
+            label="Contact Number (Optional)"
+            labelClassName="text-slate-700 font-medium"
+            type="tel"
+            placeholder="09123456789"
+            value={formData.profile.contact_number}
+            onChange={(e) => handleChange("profile", "contact_number", e.target.value)}
+          />
           <div className="w-full sm:mt-1">
             <DatePicker 
               label="Birthdate"
