@@ -230,6 +230,9 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setIsBidirectional(false);
     setStep(1);
     setEditingDraft(null);
+    try {
+      localStorage.removeItem("lanes_active_flood_form_text");
+    } catch (e) {}
   };
 
   const handlePickOnMap = (target: "flood_start" | "flood_end") => {
@@ -714,12 +717,12 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
           </div>
           
           {/* Bidirectional Toggle */}
-          <div className="flex items-start gap-2 mb-4 px-1 group cursor-pointer" onClick={() => setIsBidirectional(!isBidirectional)}>
+          <label className="flex items-start gap-2 mb-4 px-1 group cursor-pointer select-none">
              <div className="flex h-5 items-center mt-0.5">
                 <input
                   type="checkbox"
                   checked={isBidirectional}
-                  onChange={(e) => { e.stopPropagation(); setIsBidirectional(e.target.checked); }}
+                  onChange={(e) => setIsBidirectional(e.target.checked)}
                   className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600 focus:ring-2 pointer-events-auto cursor-pointer"
                 />
               </div>
@@ -731,7 +734,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                   Keep checked if the flood blocks traffic in both directions. The system will automatically verify 1-way streets.
                 </span>
               </div>
-          </div>
+          </label>
 
           {/* Severity selector */}
           <div className="space-y-1">

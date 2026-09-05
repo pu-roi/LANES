@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** August 31, 2026, 10:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 5, 2026, 11:57 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -256,7 +256,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 |-------|------|-------------|
 | `/admin` | `AdminDashboard.tsx` | Entry landing — shows role-based nav links and a summary stats row (total users, reports, active zones). |
 | `/admin/dashboard` | `DashboardPage.tsx` | Overview cards: total users, reports filed today, currently active flood zones. Recent activity feed and quick action shortcuts. |
-| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Moderation happens entirely here: features `PendingReportsPanel` for approving/rejecting user reports, `ActiveZonesPanel` for monitoring ongoing floods, and `CreateOfficialZonePanel` with **Terra Draw** (Polygon, Freehand, Rectangle, Circle, and Line modes) for manual DRRMO override polygon map picking. |
+| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Moderation happens entirely here: features `PendingReportsPanel` for approving/rejecting user reports, `ActiveZonesPanel` for monitoring ongoing floods, `ReportDetailsModal` for deep inspection of MultiLineString and Polygon geometries, `FloodZonePopup` hover badge engine with a 400ms non-resetting dwell timer and ceiling-collision prevention, and `CreateOfficialZonePanel` with **Terra Draw** (Polygon, Freehand, Rectangle, Circle, and Line modes) for manual DRRMO override polygon map picking. |
 | `/admin/users` | `UsersPage.tsx` | Searchable table of all registered users. Admin can filter by role, view trust scores, activate or deactivate accounts, and reassign roles. |
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |

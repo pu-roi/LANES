@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 4, 2026, 12:22 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 5, 2026, 11:57 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -39,6 +39,14 @@
 - [x] Fix "Create Official Zone" Panel logic (identical to public Line flow with Start/End pin markers & road segment preview line)
 - [x] Integrate **Terra Draw** (`terra-draw`) for native Polygon, Freehand, Rectangle, and Circle drawing for Admin Official Zones
 - [ ] Wire up real-time SSE broadcasts for zone updates
+
+#### Phase 5: Spatial Operations — Live Map & Hover Interaction Engine
+- [x] Fix layer geometry filters in `usePendingReportsLayer` & `useFloodZonesLayer` for `MultiLineString` & `Polygon` (@roicambe)
+- [x] Implement non-resetting 400ms hover dwell timer to eliminate sweeping triggers (@roicambe)
+- [x] Prevent ceiling clipping via dynamic 420px clearance anchor flipping & dynamic tip tinting (@roicambe)
+- [x] Redesign `FloodZonePopup` with dedicated timestamp row and vehicle passability chips (@roicambe)
+- [x] Resolve `ReportDetailsModal` coordinate parsing crash for non-Point geometries (@roicambe)
+- [x] Scope Lenis smooth scrolling exclusively to Landing and About views (@roicambe)
 
 ## Future Roadmap (Phases)
 

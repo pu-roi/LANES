@@ -76,14 +76,44 @@ export const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   };
 
   const formatCoordinates = () => {
-    if (!report.geometry) return "No coordinates mapped";
-    if (report.geometry.type === "Point") {
-      const [lng, lat] = report.geometry.coordinates;
-      return `${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E (Point)`;
+    if (!report.geometry || !report.geometry.coordinates) return "No coordinates mapped";
+    const { type, coordinates } = report.geometry;
+
+    if (type === "Point" && Array.isArray(coordinates) && typeof coordinates[0] === "number") {
+      const [lng, lat] = coordinates;
+      return `${Number(lat).toFixed(5)}° N, ${Number(lng).toFixed(5)}° E (Point)`;
     }
-    const coords = report.geometry.coordinates;
-    const mid = coords[Math.floor(coords.length / 2)];
-    return `~${mid[1].toFixed(5)}° N, ${mid[0].toFixed(5)}° E (${coords.length} vertices Road Line)`;
+
+    if (type === "LineString" && Array.isArray(coordinates) && coordinates.length > 0) {
+      const mid = coordinates[Math.floor(coordinates.length / 2)];
+      if (Array.isArray(mid) && typeof mid[0] === "number" && typeof mid[1] === "number") {
+        return `~${Number(mid[1]).toFixed(5)}° N, ${Number(mid[0]).toFixed(5)}° E (${coordinates.length} vertices Road Line)`;
+      }
+    }
+
+    if (type === "Polygon" && Array.isArray(coordinates) && coordinates.length > 0) {
+      const ring = coordinates[0];
+      if (Array.isArray(ring) && ring.length > 0) {
+        const mid = ring[Math.floor(ring.length / 2)];
+        if (Array.isArray(mid) && typeof mid[0] === "number" && typeof mid[1] === "number") {
+          return `~${Number(mid[1]).toFixed(5)}° N, ${Number(mid[0]).toFixed(5)}° E (${ring.length} vertices Polygon)`;
+        }
+      }
+      return "Polygon Zone";
+    }
+
+    if (type === "MultiLineString" && Array.isArray(coordinates) && coordinates.length > 0) {
+      const line = coordinates[0];
+      if (Array.isArray(line) && line.length > 0) {
+        const mid = line[Math.floor(line.length / 2)];
+        if (Array.isArray(mid) && typeof mid[0] === "number" && typeof mid[1] === "number") {
+          return `~${Number(mid[1]).toFixed(5)}° N, ${Number(mid[0]).toFixed(5)}° E (${coordinates.length} Road Segments)`;
+        }
+      }
+      return "MultiLine Road";
+    }
+
+    return "Mapped Coordinates";
   };
 
   const isOfficialReporter =

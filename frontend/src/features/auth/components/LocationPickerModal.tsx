@@ -57,7 +57,7 @@ export function LocationPickerModal({
   const scrollToLetter = (letter: string) => {
     const element = document.getElementById(`letter-${letter}`);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView();
     }
   };
 
@@ -107,7 +107,7 @@ export function LocationPickerModal({
 
         <div className="flex-1 overflow-hidden relative flex bg-white" data-lenis-prevent>
           <div 
-            className="flex-1 overflow-y-auto px-4 pt-0 pb-20 scroll-smooth overscroll-contain"
+            className="flex-1 overflow-y-auto px-4 pt-0 pb-20 overscroll-contain"
             data-lenis-prevent
             style={{ WebkitOverflowScrolling: "touch" }}
             onWheel={(e) => e.stopPropagation()}

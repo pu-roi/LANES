@@ -56,14 +56,16 @@ async def process_new_report(
 
             if opposite_geom and road_type == "DIVIDED_CARRIAGEWAY":
                 # Combine the original line and the opposite-carriageway line into a
-                # GeometryCollection so ST_Buffer in the approval step wraps both roads.
+                # MultiLineString so Pydantic, GeoJSON, MapLibre, and PostGIS cleanly handle both roads.
+                orig_coords = geometry.get("coordinates", [])
+                opp_coords = opposite_geom.get("coordinates", [])
                 geometry = {
-                    "type": "GeometryCollection",
-                    "geometries": [geometry, opposite_geom]
+                    "type": "MultiLineString",
+                    "coordinates": [orig_coords, opp_coords]
                 }
                 logger.info(
                     "[process_new_report] Bidirectional: successfully combined original + "
-                    "opposite carriageway into GeometryCollection."
+                    "opposite carriageway into MultiLineString."
                 )
             else:
                 logger.info(

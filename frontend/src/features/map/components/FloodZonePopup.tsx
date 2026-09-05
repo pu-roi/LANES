@@ -82,24 +82,41 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
     badgeColor = "bg-green-100 text-green-700 border-green-200";
   }
 
+  const vehicleList =
+    passable_vehicles && passable_vehicles !== "null"
+      ? passable_vehicles.split(",").map((v: string) => v.trim()).filter(Boolean)
+      : [];
+
   return (
-    <div className="flex flex-col min-w-[280px] max-w-[320px] font-sans bg-white shadow-xl rounded-xl overflow-hidden pointer-events-auto border border-slate-200/80">
+    <div className="flex flex-col w-full font-sans bg-white rounded-2xl overflow-hidden pointer-events-auto border-x border-b border-slate-200/80">
       {/* Header */}
       <div 
-        className="flex items-center justify-between px-4 py-3"
+        className="px-4 py-3 select-none flex flex-col gap-1.5 rounded-t-2xl"
         style={{ backgroundColor: color, color: "#ffffff" }}
       >
-        <div className="flex items-center gap-2">
-          <div
-            className="w-2.5 h-2.5 rounded-full bg-white shadow-sm animate-pulse"
-          />
-          <h3 className="text-base font-bold capitalize tracking-tight">
-            {severity} Risk
-          </h3>
+        {/* Top Row: Severity + Status Badge */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-white shadow-xs shrink-0 animate-pulse" />
+            <h3 className="text-base font-extrabold uppercase tracking-tight text-white leading-none">
+              {severity} Risk
+            </h3>
+          </div>
+          {properties.is_pending ? (
+            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-black/20 text-white tracking-wider backdrop-blur-xs shrink-0">
+              Pending
+            </span>
+          ) : (
+            <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-white/25 text-white tracking-wider backdrop-blur-xs shrink-0">
+              Active Zone
+            </span>
+          )}
         </div>
-        <div className="flex items-center text-xs font-medium bg-white/20 px-2 py-1 rounded-md backdrop-blur-sm">
-          <Clock className="w-3 h-3 mr-1 opacity-80" />
-          {reportedText}
+
+        {/* Bottom Row: Timestamp */}
+        <div className="flex items-center gap-1.5 text-xs text-white/95 font-medium tracking-wide">
+          <Clock className="w-3.5 h-3.5 opacity-85 shrink-0" />
+          <span>Reported {reportedText}</span>
         </div>
       </div>
 
@@ -136,14 +153,27 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
           </div>
 
           {/* Passable Vehicles */}
-          <div className="col-span-2 flex flex-col gap-0.5 mt-1">
+          <div className="col-span-2 flex flex-col gap-1 mt-0.5">
             <div className="flex items-center text-[10px] font-bold text-gray-400 uppercase tracking-wider">
               <Car className="w-3 h-3 mr-1" />
               Safe to pass for
             </div>
-            <div className="text-xs font-semibold text-gray-900">
-              {passable_vehicles && passable_vehicles !== "null" ? passable_vehicles.replace(/_/g, ' ') : "Not specified"}
-            </div>
+            {vehicleList.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5 mt-0.5">
+                {vehicleList.map((v: string, idx: number) => (
+                  <span 
+                    key={idx} 
+                    className="inline-flex items-center text-[11px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md border border-slate-200/60"
+                  >
+                    {v.replace(/_/g, ' ')}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="text-xs font-semibold text-gray-900">
+                Not specified
+              </div>
+            )}
           </div>
         </div>
       </div>

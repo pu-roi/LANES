@@ -10,7 +10,17 @@ export interface LineStringGeometry {
   coordinates: [number, number][];
 }
 
-export type ReportGeometry = PointGeometry | LineStringGeometry;
+export interface PolygonGeometry {
+  type: "Polygon";
+  coordinates: [number, number][][];
+}
+
+export interface MultiLineStringGeometry {
+  type: "MultiLineString";
+  coordinates: [number, number][][];
+}
+
+export type ReportGeometry = PointGeometry | LineStringGeometry | PolygonGeometry | MultiLineStringGeometry;
 
 /** Geometry drawn by admin in ZoneGeometryEditor */
 export type DrawnGeometry = PolygonGeometry | LineStringGeometry;

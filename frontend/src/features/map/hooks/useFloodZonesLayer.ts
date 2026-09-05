@@ -23,7 +23,7 @@ export function useFloodZonesLayer(
   selectedContributorId?: number | null,
   setSelectedContributorId?: (id: number | null) => void
 ) {
-  const activePopupRef = useRef<{ popup: maplibregl.Popup; root: Root } | null>(null);
+  const activePopupRef = useRef<{ popup: maplibregl.Popup; root: Root; zoneId?: number } | null>(null);
 
   useEffect(() => {
     console.log("[useFloodZonesLayer] hook execution started", { mapExists: !!map, isLoaded, activeZonesLength: activeZonesData?.length });
@@ -185,7 +185,7 @@ export function useFloodZonesLayer(
           type: "fill",
           source: sourceId,
           paint: ACTIVE_ZONE_POLYGON_FILL_PAINT,
-          filter: ["==", ["geometry-type"], "Polygon"],
+          filter: ["in", ["geometry-type"], ["literal", ["Polygon", "MultiPolygon"]]],
         });
       }
 
@@ -200,7 +200,11 @@ export function useFloodZonesLayer(
             "line-cap": "round",
           },
           paint: ACTIVE_ZONE_ROAD_CORE_PAINT,
-          filter: ["all", ["!=", ["get", "is_zoomed_out_point"], true], ["==", ["geometry-type"], "LineString"]],
+          filter: [
+            "all",
+            ["!=", ["get", "is_zoomed_out_point"], true],
+            ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
+          ],
         });
       }
 
@@ -228,6 +232,7 @@ export function useFloodZonesLayer(
     // Popups and Interactivity
     const closeTimeoutRef = { current: null as any };
     const openTimeoutRef = { current: null as any };
+    const pendingHoverIdRef = { current: null as number | null };
 
     const clearCloseTimeout = () => {
       if (closeTimeoutRef.current) {
@@ -241,6 +246,7 @@ export function useFloodZonesLayer(
         clearTimeout(openTimeoutRef.current);
         openTimeoutRef.current = null;
       }
+      pendingHoverIdRef.current = null;
     };
 
     const scheduleClose = () => {
@@ -248,19 +254,24 @@ export function useFloodZonesLayer(
       closeTimeoutRef.current = setTimeout(() => {
         if (!isTouchDevice && activePopupRef.current) {
           activePopupRef.current.popup.remove();
+          activePopupRef.current = null;
         }
-      }, 200); // 200ms grace period to allow cursor to bridge into the popup
+      }, 250); // 250ms grace period to allow cursor to bridge into the popup
     };
 
-    const handlePopupOpen = (e: any) => {
-      if (!e.features || e.features.length === 0) return;
-      const properties = e.features[0].properties;
+    const handlePopupOpen = (properties: any, lngLat: { lng: number; lat: number }) => {
       if (!properties) return;
 
       clearCloseTimeout();
 
+      // If popup is already active for this exact zone, keep it without flickering
+      if (activePopupRef.current && activePopupRef.current.zoneId === Number(properties.id)) {
+        return;
+      }
+
       if (activePopupRef.current) {
         activePopupRef.current.popup.remove();
+        activePopupRef.current = null;
       }
 
       const popupContainer = document.createElement("div");
@@ -274,7 +285,7 @@ export function useFloodZonesLayer(
       let smartAnchor: maplibregl.PositionAnchor = "bottom";
       let projectedPoint: { x: number; y: number } = { x: 0, y: 0 };
       try {
-        projectedPoint = map.project(e.lngLat);
+        projectedPoint = map.project(lngLat);
       } catch (err) {
         projectedPoint = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
       }
@@ -285,70 +296,60 @@ export function useFloodZonesLayer(
 
       const { x, y } = projectedPoint;
 
-      // Popup is approx 320px tall (or up to 450px when expanded)
-      const isNearTop = y < 380;
-      const isNearBottom = y > height - 200;
-      const isNearLeft = x < 200;
-      const isNearRight = x > width - 200;
+      const spaceAbove = y;
+      const spaceBelow = height - y;
+      const spaceLeft = x;
+      const spaceRight = width - x;
 
-      if (isNearTop && isNearLeft) smartAnchor = "top-left";
-      else if (isNearTop && isNearRight) smartAnchor = "top-right";
-      else if (isNearTop) smartAnchor = "top";
-      else if (isNearBottom && isNearLeft) smartAnchor = "bottom-left";
-      else if (isNearBottom && isNearRight) smartAnchor = "bottom-right";
-      else if (isNearBottom) smartAnchor = "bottom";
-      else if (isNearLeft) smartAnchor = "left";
-      else if (isNearRight) smartAnchor = "right";
-      else smartAnchor = "bottom";
+      // The popup is ~350px tall and 340px wide.
+      // Accounting for top app bars (~60px), we need at least 420px above to safely anchor "bottom".
+      const canFitAbove = spaceAbove >= 420;
+      const canFitBelow = spaceBelow >= 380;
+      const isNearLeft = spaceLeft < 190;
+      const isNearRight = spaceRight < 190;
+
+      if (canFitAbove) {
+        if (isNearLeft) smartAnchor = "bottom-left";
+        else if (isNearRight) smartAnchor = "bottom-right";
+        else smartAnchor = "bottom";
+      } else if (canFitBelow) {
+        if (isNearLeft) smartAnchor = "top-left";
+        else if (isNearRight) smartAnchor = "top-right";
+        else smartAnchor = "top";
+      } else {
+        // If vertical space is constrained, place to the side with more horizontal room
+        if (spaceRight >= spaceLeft) {
+          smartAnchor = "left";
+        } else {
+          smartAnchor = "right";
+        }
+      }
 
       const root = createRoot(popupContainer);
 
       const popup = new maplibregl.Popup({
         closeButton: false,
-        closeOnClick: true,
-        maxWidth: "320px",
+        closeOnClick: false,
+        maxWidth: "360px",
         offset: 14,
         anchor: smartAnchor,
         className: "flood-zone-popup",
       })
-        .setLngLat(e.lngLat)
+        .setLngLat(lngLat)
         .setDOMContent(popupContainer)
         .addTo(map);
 
-      // Auto-fit function to ensure popup never bleeds outside any side of the viewport
-      const fitPopupIntoView = () => {
-        setTimeout(() => {
-          if (!popup.isOpen()) return;
-          const el = popup.getElement();
-          if (!el) return;
-          const rect = el.getBoundingClientRect();
-          const padding = 16;
+      // Colorize the popup tip to match the header when anchored at the top
+      const tip = popup.getElement()?.querySelector(".maplibregl-popup-tip") as HTMLElement;
+      if (tip) {
+        if (smartAnchor.startsWith("top")) {
+          tip.style.borderBottomColor = properties.color || "#eab308";
+        } else if (smartAnchor.startsWith("bottom")) {
+          tip.style.borderTopColor = "#f9fafb";
+        }
+      }
 
-          let panX = 0;
-          let panY = 0;
-
-          if (rect.top < padding) {
-            panY = -(padding - rect.top);
-          } else if (rect.bottom > window.innerHeight - padding) {
-            panY = rect.bottom - (window.innerHeight - padding);
-          }
-
-          if (rect.left < padding) {
-            panX = -(padding - rect.left);
-          } else if (rect.right > window.innerWidth - padding) {
-            panX = rect.right - (window.innerWidth - padding);
-          }
-
-          if ((panX !== 0 || panY !== 0) && map.getPitch() < 75) {
-            map.panBy([panX, panY], { duration: 250 });
-          }
-        }, 60);
-      };
-
-      // Run on initial mount to guarantee visibility
-      fitPopupIntoView();
-
-      root.render(React.createElement(FloodZonePopup, { properties, onToggleExpand: fitPopupIntoView }));
+      root.render(React.createElement(FloodZonePopup, { properties }));
 
       popup.on("close", () => {
         setTimeout(() => root.unmount(), 0);
@@ -357,23 +358,45 @@ export function useFloodZonesLayer(
         }
       });
 
-      activePopupRef.current = { popup, root };
+      activePopupRef.current = { popup, root, zoneId: Number(properties.id) };
     };
 
-    const handleMouseEnter = (e: any) => {
+    const handleMouseEnterOrMove = (e: any) => {
       map.getCanvas().style.cursor = "pointer";
-      if (!isTouchDevice) {
-        clearOpenTimeout();
-        openTimeoutRef.current = setTimeout(() => {
-          handlePopupOpen(e);
-        }, 400); // 400ms delay before showing popup
+      if (isTouchDevice) return;
+      if (!e.features || e.features.length === 0) return;
+      const feature = e.features[0];
+      const properties = feature.properties;
+      const id = Number(properties?.id);
+      if (!id) return;
+
+      clearCloseTimeout();
+
+      // If popup is already active for this exact zone, keep it without flickering
+      if (activePopupRef.current && activePopupRef.current.zoneId === id) {
+        return;
       }
+
+      // If already counting down for this exact zone, let the timer run (do not reset!)
+      if (pendingHoverIdRef.current === id) {
+        return;
+      }
+
+      // Start 400ms hover dwell countdown for this zone
+      clearOpenTimeout();
+      pendingHoverIdRef.current = id;
+      const targetLngLat = { lng: e.lngLat.lng, lat: e.lngLat.lat };
+
+      openTimeoutRef.current = setTimeout(() => {
+        handlePopupOpen(properties, targetLngLat);
+        pendingHoverIdRef.current = null;
+      }, 400);
     };
 
     const handleMouseLeave = () => {
       map.getCanvas().style.cursor = "";
       if (!isTouchDevice) {
-        clearOpenTimeout(); // Clear open timeout if user leaves early
+        clearOpenTimeout();
         scheduleClose();
       }
     };
@@ -392,7 +415,7 @@ export function useFloodZonesLayer(
       }
 
       if (isTouchDevice && isSelecting) {
-        handlePopupOpen(e);
+        handlePopupOpen(e.features[0].properties, { lng: e.lngLat.lng, lat: e.lngLat.lat });
       }
     };
 
@@ -403,18 +426,23 @@ export function useFloodZonesLayer(
     ];
 
     activeLayers.forEach((layer) => {
-      map.on("mouseenter", layer, handleMouseEnter);
+      map.on("mouseenter", layer, handleMouseEnterOrMove);
+      map.on("mousemove", layer, handleMouseEnterOrMove);
       map.on("mouseleave", layer, handleMouseLeave);
       map.on("click", layer, handleZoneClick);
     });
 
     return () => {
       map.off("style.load", handleMapStyleData);
+      clearOpenTimeout();
+      clearCloseTimeout();
       if (activePopupRef.current) {
         activePopupRef.current.popup.remove();
+        activePopupRef.current = null;
       }
       activeLayers.forEach((layer) => {
-        map.off("mouseenter", layer, handleMouseEnter);
+        map.off("mouseenter", layer, handleMouseEnterOrMove);
+        map.off("mousemove", layer, handleMouseEnterOrMove);
         map.off("mouseleave", layer, handleMouseLeave);
         map.off("click", layer, handleZoneClick);
       });
