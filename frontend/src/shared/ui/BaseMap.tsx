@@ -820,7 +820,22 @@ export default function BaseMap({
       }
     });
 
+    // Observe container size changes (e.g. sidebar open/close, responsive breakpoint shifts, route transitions)
+    const container = mapContainerRef.current;
+    let resizeObserver: ResizeObserver | null = null;
+    if (container && typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        try {
+          if (mapInstance && typeof mapInstance.resize === "function") {
+            mapInstance.resize();
+          }
+        } catch (e) {}
+      });
+      resizeObserver.observe(container);
+    }
+
     return () => {
+      resizeObserver?.disconnect();
       clearTimeout(fallbackTimeout);
       mapInstance.remove();
       mapRef.current = null;

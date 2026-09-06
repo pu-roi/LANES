@@ -142,7 +142,7 @@ export function LeftSidebar() {
               {hiddenPlaces.length > 0 && (
                 <>
                   {isDropdownOpen && (
-                    <div className="space-y-1 max-h-48 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <div className="space-y-1">
                       {hiddenPlaces.map((place) => (
                         <div
                           key={place.id}

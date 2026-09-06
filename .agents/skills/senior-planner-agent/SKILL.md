@@ -18,7 +18,7 @@ Whenever features are implemented, modified, or refactored, you are responsible 
 | **Tech Stack** | [`docs/tech-stack.md`](file:///d:/Documents/Github/LANES/docs/tech-stack.md) | Libraries, frameworks, dependencies, external APIs, engines, or versions added/removed/updated. |
 | **Task Plan** | [`docs/task_plan.md`](file:///d:/Documents/Github/LANES/docs/task_plan.md) | Sprints, active backlog, milestone checkboxes, research notes, and known constraints. |
 | **Progress Tracker** | [`docs/progress.md`](file:///d:/Documents/Github/LANES/docs/progress.md) | Completed milestones, delivered features, chronological history, and phase delivery items. |
-| **Feature Reference** | [`docs/feature-reference.md`](file:///d:/Documents/Github/LANES/docs/feature-reference.md) | Deep technical breakdown of system features, underlying components, routers, and algorithms. |
+| **Feature Reference** | [`docs/feature-reference.md`](file:///d:/Documents/Github/LANES/docs/feature-reference.md) | **MAJOR/FLAGSHIP PLATFORM MODULES ONLY**: Deep technical breakdown of standalone macro-features, core domain engines, and primary platform pillars. **DO NOT** add entries for routine sub-features, minor UI tweaks, or component refinements. |
 | **Architectural Decisions** | [`docs/decisions.md`](file:///d:/Documents/Github/LANES/docs/decisions.md) | **MAJOR/CRITICAL SHIFTS ONLY**: High-impact architectural changes, core framework/engine replacements, security models, or fundamental paradigms. **DO NOT** update for minor changes or small progress. |
 | **System Documentation** | [`docs/others/system-documentation.md`](file:///d:/Documents/Github/LANES/docs/others/system-documentation.md) | Screen-by-screen breakdown, component locations, frontend route map, backend endpoints, and navigation layouts. |
 | **Database Design Plan** | [`docs/others/database-design-plan.md`](file:///d:/Documents/Github/LANES/docs/others/database-design-plan.md) | 3NF schemas, tables, relationships, spatial indexes, PostGIS functions, triggers, and migrations. |
@@ -42,15 +42,23 @@ Whenever reviewing code changes, finishing a task, or requested to update docume
    - Record the delivered work in [`docs/progress.md`](file:///d:/Documents/Github/LANES/docs/progress.md).
    - **CRITICAL ORDERING RULE**: `docs/progress.md` is strictly maintained in **reverse chronological order (newest to oldest)**. When you add a new milestone to the table, insert it at the top. When you add a new Capstone Phase, insert it above all older phases. 
 
-3. **System & Feature Synchronization**:
-   - If UI components, pages, or routes are modified or created, update [`docs/others/system-documentation.md`](file:///d:/Documents/Github/LANES/docs/others/system-documentation.md) and [`docs/feature-reference.md`](file:///d:/Documents/Github/LANES/docs/feature-reference.md).
-   - If backend endpoints, services, or APIs change, update the corresponding sections in [`docs/others/system-documentation.md`](file:///d:/Documents/Github/LANES/docs/others/system-documentation.md) and [`docs/feature-reference.md`](file:///d:/Documents/Github/LANES/docs/feature-reference.md).
+4. **Feature Reference Scope & Filter (STRICT — Flagship Platform Features Only)**:
+   - **DO NOT** create a new feature entry in [`docs/feature-reference.md`](file:///d:/Documents/Github/LANES/docs/feature-reference.md) for routine sprint tasks, bug fixes, small component tweaks, or minor enhancements.
+   - **What Qualifies as a Feature in `docs/feature-reference.md`**:
+     - Only **standalone, major functional capabilities / primary pillars of the system** (e.g., Bilingual Taglish NLP Ingestion, Offline WASM Routing, Dual-Carriageway Detection Engine, Terra Draw Map Drawing Engine, Identity-First Citizen Onboarding & Zero-Click OTP, Spatial Heatmap Analytics).
+   - **What DOES NOT Qualify (Never create new numbered sections for these)**:
+     - **Sub-features / Field additions**: If a change adds capability to an existing module (e.g., adding lat/lng coordinates to community posts belongs under Feature 16 *Community Feed*, NOT a new feature; camera fly-to on saved places belongs under Feature 19 *Saved Places*). Update the *existing* section instead.
+     - **UI enhancements & Micro-interactions**: Pulsing markers, hover animations, scrollbar styling, button alignment, modal transitions. (These belong in `docs/progress.md` and `docs/others/system-documentation.md`).
+     - **Routine refactors, bug fixes, or performance adjustments**.
 
-4. **Tech Stack & Architectural Shift Auditing**:
+5. **System Documentation Synchronization**:
+   - If UI components, pages, routes, or backend endpoints are modified, created, or refactored, update [`docs/others/system-documentation.md`](file:///d:/Documents/Github/LANES/docs/others/system-documentation.md) (screen breakdown, component list, route maps, API endpoints, and database table columns).
+
+6. **Tech Stack & Architectural Shift Auditing**:
    - If new libraries or tools are introduced, document them in [`docs/tech-stack.md`](file:///d:/Documents/Github/LANES/docs/tech-stack.md).
    - **Architectural Decision Filter (Strict)**: Update [`docs/decisions.md`](file:///d:/Documents/Github/LANES/docs/decisions.md) **ONLY for major architectural pivots, high-level paradigm shifts, or fundamental technical decisions**. **NEVER** add routine sprint progress, bug fixes, or minor code refactors here.
 
-5. **Schema & Spatial Auditing**:
+7. **Schema & Spatial Auditing**:
    - If SQLAlchemy models or migrations are introduced or altered, audit [`docs/others/database-design-plan.md`](file:///d:/Documents/Github/LANES/docs/others/database-design-plan.md) to reflect updated table columns, indexes, foreign keys, or 3NF structures.
 
 ---

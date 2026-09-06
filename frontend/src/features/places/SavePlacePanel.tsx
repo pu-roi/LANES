@@ -325,31 +325,31 @@ export function SavePlacePanel() {
       ) : (
         <div className="flex flex-col h-full flex-1">
           {/* Tabs Navigation */}
-          <div className="flex items-center justify-between border-b border-slate-100 px-2 py-2 mb-3 bg-slate-50/50 rounded-xl select-none">
-            <div className="flex gap-1 select-none">
+          <div className="flex items-center justify-between border-b border-slate-100 px-1.5 py-1.5 mb-3 bg-slate-50/50 rounded-xl select-none">
+            <div className="flex gap-1 select-none flex-1">
               <button
                 type="button"
                 onClick={() => setActiveTab("add")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
+                className={`flex items-center justify-center flex-1 gap-1.5 px-2 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
                   activeTab === "add"
                     ? "bg-white text-blue-600 shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <Plus className="w-3.5 h-3.5" />
-                Add Place
+                <Plus className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">Add Place</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("list")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
+                className={`flex items-center justify-center flex-1 gap-1.5 px-2 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
                   activeTab === "list"
                     ? "bg-white text-blue-600 shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <MapPin className="w-3.5 h-3.5" />
-                My Places ({savedPlaces.length}/{MAX_SAVED_PLACES})
+                <MapPin className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">My Places</span>
               </button>
             </div>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${

@@ -456,7 +456,11 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
         console.warn("Auto-login failed after registration, redirecting to login page", loginErr);
       }
       
-      router.push("/login");
+      if (redirectTo) {
+        router.push(`/login?redirect=${encodeURIComponent(redirectTo)}`);
+      } else {
+        router.push("/login");
+      }
     } catch (err: any) {
       showError("Registration Failed", err.message || "An error occurred during registration.");
     } finally {

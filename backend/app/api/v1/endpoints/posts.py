@@ -26,6 +26,8 @@ def create_post(
     request: Request,
     content: str = Form(...),
     location_tag: Optional[str] = Form(None),
+    location_lat: Optional[float] = Form(None),
+    location_lng: Optional[float] = Form(None),
     images: List[UploadFile] = File([]),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -54,7 +56,9 @@ def create_post(
     post_in = CommunityPostCreate(
         content=content,
         media_urls=media_urls if media_urls else None,
-        location_tag=location_tag
+        location_tag=location_tag,
+        location_lat=location_lat,
+        location_lng=location_lng
     )
     post = crud_post.create_community_post(db=db, post_in=post_in, user_id=current_user.id)
     

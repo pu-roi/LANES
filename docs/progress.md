@@ -1,11 +1,11 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
-## Completed Milestones (34+ Commits Integrated)
+## Completed Milestones (38+ Commits Integrated)
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
@@ -22,8 +22,37 @@
 | 11| Intelligent Bidirectional Flood Reporting | Completed | Hybrid Carriageway Detection Strategy, Valhalla Map Matching for opposite-side road detection, GeometryCollection PostGIS storage, dual-buffer approval |
 | 12| Spatial Operations & Map Hover Badge Engine | Completed | Multi-geometry layers (MultiLineString/Polygon), 400ms hover dwell timer, smart collision-free positioning, two-row FloodZonePopup, Lenis scroll scoping |
 | 13| Community Feed Emergency Hotline Directory | Completed | Cached national hotline integration, Pasig city/barangay directory, responsive feed hotline card, lazy-loaded directory modal |
+| 14| Saved Places Camera Sync & Navigation UX | Completed | Camera fly-to alignment (zoom 16, 1500ms duration), 3-second pulsing red indicator, saved places panel activation from feed, pin order fix, custom scrollbars |
+| 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 13: Community Post Geolocation & Seamless Map Fly-to View (🟢 COMPLETED)
+- [x] **PostGIS Coordinate Persistence** (@roicambe):
+  - Added nullable `location_lat` and `location_lng` (Float) columns to `community_posts` with Alembic migration `84c00c5d976b_add_lat_lng_to_community_posts.py`.
+  - Updated SQLAlchemy models, Pydantic schemas, and CRUD layers (`backend/app/crud/post.py`) to accurately ingest, store, and return geographic coordinates.
+- [x] **Clickable Location Pin Header Navigation** (@roicambe):
+  - Streamlined `PostItem.tsx` header location tags: made the red pin location tag directly clickable to trigger a camera fly-to on `/map`.
+  - Eliminated redundant blue location badges and duplicate "View on Map" buttons for non-flood community posts.
+- [x] **340px Sidebar Viewport Alignment & ResizeObserver Engine** (@roicambe):
+  - Added native `ResizeObserver` to `BaseMap.tsx` watching the map container to instantly synchronize MapLibre dimensions with layout mutations.
+  - Added layout reflow synchronization in `MapCanvas.tsx` to center coordinates precisely in the visible map area, resolving the 170px rightward offset caused by the fixed desktop routing panel.
+- [x] **Resilient Post Draft Hydration Across Auth Redirection** (@roicambe):
+  - Fixed post draft persistence in `CreatePostModal.tsx` so typed descriptions, attached media, and picked locations survive across login and signup redirects (`/auth/login?redirect=...`).
+  - Resolved draft auto-append and deletion bugs, and prevented default city bounds fit from competing with specific coordinate navigation.
+
+### Capstone Phase 12: Saved Places Camera Synchronization & Navigation UX (🟢 COMPLETED)
+- [x] **Camera Transition & Visual Indicator Synchronization** (@roicambe):
+  - Aligned saved place camera focus transitions to match hazard zones (zoom 16, 1500ms duration, easing curve).
+  - Wired `fly-to-location` custom events to `MapCanvas.tsx` with a high-visibility 3-second pulsing red circular marker.
+- [x] **Saved Places Panel Activation & Zero-Caret Fix** (@roicambe):
+  - Updated community feed saved place quick pills to open the Saved Places panel directly instead of erroneously setting origin routing pins.
+  - Eliminated browser text insertion carets on saved place clicks using `select-none` and `caret-transparent`.
+- [x] **Custom Scrollbar Styling & Pin Order Integrity** (@roicambe):
+  - Added custom slim scrollbar styles to `LeftSidebar.tsx` that smoothly appear on hover.
+  - Fixed a backend bug in `crud/saved_place.py` where `pin_order` was unintentionally overwritten during place metadata updates.
+- [x] **Secure Cross-Platform Environment Encryption** (@roicambe):
+  - Encrypted `backend/.env` with `@dotenvx/dotenvx` and consolidated pull workflow and encryption key setup instructions into `README.md`.
 
 ### Capstone Phase 11: Community Feed Emergency Hotline Directory (🟢 COMPLETED)
 - [x] **Cached Hotline Aggregation** (@roicambe):

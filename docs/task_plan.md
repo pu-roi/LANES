@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -52,6 +52,23 @@
 - [x] Add cached national hotline scraping service and public `/api/v1/hotlines/` endpoints (@roicambe)
 - [x] Add Pasig city and barangay hotline parsing through `/api/v1/hotlines/full` (@roicambe)
 - [x] Replace static feed emergency contacts with responsive hotline cards and lazy directory modal (@roicambe)
+
+### Phase 7: Saved Places Camera Synchronization & Navigation UX
+- [x] Align saved place fly-to transitions with hazard zones (zoom 16, 1500ms duration, easing) (@roicambe)
+- [x] Connect `fly-to-location` custom events to `MapCanvas.tsx` with 3s pulsing red ring indicator (@roicambe)
+- [x] Route feed saved place pills to open the Saved Places panel directly instead of routing origin pins (@roicambe)
+- [x] Eliminate browser text insertion carets on saved places with `select-none` and `caret-transparent` (@roicambe)
+- [x] Fix `pin_order` overwrite bug during place updates in `backend/app/crud/saved_place.py` (@roicambe)
+- [x] Add hover-triggered custom slim scrollbar styles to `LeftSidebar.tsx` (@roicambe)
+
+### Phase 8: Community Post Geolocation & Seamless Map Fly-to View
+- [x] Add `location_lat` and `location_lng` (Float) columns to `community_posts` with Alembic migration (@roicambe)
+- [x] Update backend schemas, models, and CRUD layers to persist and serve coordinates (@roicambe)
+- [x] Streamline `PostItem.tsx` header with clickable red pin location button flying to `/map` (@roicambe)
+- [x] Eliminate redundant blue location tags and duplicate bottom "View on Map" buttons (@roicambe)
+- [x] Implement container `ResizeObserver` in `BaseMap.tsx` to keep MapLibre dimensions synced (@roicambe)
+- [x] Fix MapLibre desktop centering offset by coordinating layout reflow and resize against 340px sidebar (@roicambe)
+- [x] Fix post draft auto-saving and coordinate preservation across login/signup redirects in `CreatePostModal.tsx` (@roicambe)
 
 ## Future Roadmap (Phases)
 

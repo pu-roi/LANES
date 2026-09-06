@@ -75,6 +75,7 @@ export interface FlyToFeatureOptions {
   pitch?: number;
   bearing?: number;
   duration?: number;
+  padding?: { top?: number; bottom?: number; left?: number; right?: number };
 }
 
 /**
@@ -99,6 +100,7 @@ export function flyToFeature(
     bearing: options?.bearing ?? (typeof map.getBearing === "function" ? map.getBearing() : 0),
     duration: options?.duration ?? 1400,
     essential: true,
+    ...(options?.padding ? { padding: options.padding } : {}),
   });
 
   return true;
@@ -121,5 +123,6 @@ export function flyToCoordinates(
     bearing: options?.bearing ?? (typeof map.getBearing === "function" ? map.getBearing() : 0),
     duration: options?.duration ?? 1400,
     essential: true,
+    ...(options?.padding ? { padding: options.padding } : {}),
   });
 }

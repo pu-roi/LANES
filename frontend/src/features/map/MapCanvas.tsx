@@ -238,6 +238,16 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     
+    // Ensure map is resized to the active route's container dimensions
+    mapRef.current.resize();
+
+    // If navigated with specific coordinates, skip default city bounds zoom
+    const hasTargetCoords = !!(searchParams.get("lat") && searchParams.get("lng"));
+    if (hasTargetCoords) {
+      hasZoomedToPasigForMap = true;
+      return;
+    }
+
     const savedViewport = typeof window !== "undefined" ? sessionStorage.getItem("lanes_map_viewport") : null;
     const isAnalyticsPage = pathname.includes("analytics");
     const isMapPage = pathname === "/map";
@@ -264,7 +274,7 @@ export default function MapCanvas() {
         [121.1077, 14.6186]  // Northeast (Approx Pasig City NE)
       ], { padding: 120, duration: 1000 });
     }
-  }, [pathname, isLoaded]);
+  }, [pathname, isLoaded, searchParams]);
 
   // Listen for lat/lng in URL to fly to location
   useEffect(() => {
@@ -278,32 +288,79 @@ export default function MapCanvas() {
       const lng = parseFloat(lngStr);
       const zoom = zoomStr ? parseFloat(zoomStr) : 16;
       
-      if (!isNaN(lat) && !isNaN(lng)) {
-        flyToCoordinates(mapRef.current, [lng, lat], {
-          zoom,
-          pitch: mapRef.current.getPitch(),
-          duration: 1500
-        });
+      if (!isNaN(lat) && !isNaN(lng)) {        
+        // Ensure map is resized to current layout
+        mapRef.current.resize();
 
-        // Create a custom pulsing marker element
-        const el = document.createElement('div');
-        el.className = 'relative flex items-center justify-center pointer-events-none';
-        el.innerHTML = `
-          <div class="absolute w-10 h-10 bg-red-500 rounded-full animate-ping opacity-60"></div>
-          <div class="relative flex items-center justify-center w-6 h-6 bg-red-500 rounded-full border-[3px] border-white shadow-lg">
-            <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
-          </div>
-        `;
+        // Delay flyTo slightly so layout reflow completes and MapLibre calculates the true visible viewport center
+        const timer = setTimeout(() => {
+          if (!mapRef.current) return;
+          mapRef.current.resize();
 
-        // Add a temporary pulsing red pin to highlight the specific location
-        const marker = new maplibregl.Marker({ element: el })
-          .setLngLat([lng, lat])
-          .addTo(mapRef.current);
+          flyToCoordinates(mapRef.current, [lng, lat], {
+            zoom,
+            pitch: mapRef.current.getPitch(),
+            bearing: mapRef.current.getBearing(),
+            duration: 1500
+          });
 
-        // Remove the pin after 3 seconds
-        setTimeout(() => {
-          marker.remove();
-        }, 3000);
+          // Create a pulsing marker element using inline styles (no Tailwind dependency)
+          const el = document.createElement('div');
+          el.style.cssText = 'position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px;pointer-events:none;';
+
+          // Pulsing outer ring
+          const ring = document.createElement('div');
+          ring.style.cssText = `
+            position:absolute;
+            width:40px;height:40px;
+            background:rgba(239,68,68,0.5);
+            border-radius:50%;
+            animation:pulse-ring 1.2s ease-out infinite;
+          `;
+
+          // Inner solid dot
+          const dot = document.createElement('div');
+          dot.style.cssText = `
+            position:relative;
+            width:18px;height:18px;
+            background:#ef4444;
+            border-radius:50%;
+            border:3px solid white;
+            box-shadow:0 2px 8px rgba(0,0,0,0.4);
+            display:flex;align-items:center;justify-content:center;
+            z-index:1;
+          `;
+          const center = document.createElement('div');
+          center.style.cssText = 'width:5px;height:5px;background:white;border-radius:50%;';
+          dot.appendChild(center);
+
+          el.appendChild(ring);
+          el.appendChild(dot);
+
+          // Inject keyframes once
+          if (!document.getElementById('pulse-ring-style')) {
+            const style = document.createElement('style');
+            style.id = 'pulse-ring-style';
+            style.textContent = `
+              @keyframes pulse-ring {
+                0%   { transform: scale(0.6); opacity: 0.8; }
+                80%  { transform: scale(1.8); opacity: 0; }
+                100% { transform: scale(1.8); opacity: 0; }
+              }
+            `;
+            document.head.appendChild(style);
+          }
+
+          // Add a temporary pulsing red pin to highlight the specific location
+          const marker = new maplibregl.Marker({ element: el, anchor: 'center' })
+            .setLngLat([lng, lat])
+            .addTo(mapRef.current);
+
+          // Remove the pin after 3 seconds
+          setTimeout(() => {
+            marker.remove();
+          }, 3000);
+        }, 50);
 
         // Clean up URL query parameters so on page refresh it doesn't re-trigger
         try {
@@ -313,6 +370,8 @@ export default function MapCanvas() {
           url.searchParams.delete("zoom");
           window.history.replaceState({}, "", url.pathname + (url.search ? url.search : ""));
         } catch (e) {}
+
+        return () => clearTimeout(timer);
       }
     }
   }, [searchParams, isLoaded]);
@@ -907,6 +966,15 @@ export default function MapCanvas() {
         "line-opacity": 0.85,
       },
     });
+
+    return () => {
+      try {
+        if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
+        if (map.getLayer("flood-preview-layer-opposite")) map.removeLayer("flood-preview-layer-opposite");
+        if (map.getSource("flood-preview-source")) map.removeSource("flood-preview-source");
+        if (map.getSource("flood-preview-source-opposite")) map.removeSource("flood-preview-source-opposite");
+      } catch {}
+    };
   }, [floodPreviewGeometry, floodOppositeGeometry, floodIsBidirectional, isLoaded]);
 
   // Render drafted reports (Cart)
@@ -956,6 +1024,13 @@ export default function MapCanvas() {
         "line-opacity": 0.8,
       },
     });
+
+    return () => {
+      try {
+        if (map.getLayer("draft-reports-layer")) map.removeLayer("draft-reports-layer");
+        if (map.getSource("draft-reports-source")) map.removeSource("draft-reports-source");
+      } catch {}
+    };
   }, [draftReports, isLoaded]);
 
   useEffect(() => {
