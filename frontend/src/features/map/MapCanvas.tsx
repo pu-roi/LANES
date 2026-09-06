@@ -16,6 +16,7 @@ import BaseMap from "@/shared/ui/BaseMap";
 import { getFloodsOffline } from "@/lib/offline/storage";
 import { useCityBoundaries } from "./hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
+import { flyToCoordinates } from "./mapGeoUtils";
 
 let hasZoomedToPasigForAnalytics = false;
 let hasZoomedToPasigForMap = false;
@@ -278,16 +279,15 @@ export default function MapCanvas() {
       const zoom = zoomStr ? parseFloat(zoomStr) : 16;
       
       if (!isNaN(lat) && !isNaN(lng)) {
-        mapRef.current.flyTo({
-          center: [lng, lat],
+        flyToCoordinates(mapRef.current, [lng, lat], {
           zoom,
           pitch: mapRef.current.getPitch(),
-          duration: 1000
+          duration: 1500
         });
 
         // Create a custom pulsing marker element
         const el = document.createElement('div');
-        el.className = 'relative flex items-center justify-center';
+        el.className = 'relative flex items-center justify-center pointer-events-none';
         el.innerHTML = `
           <div class="absolute w-10 h-10 bg-red-500 rounded-full animate-ping opacity-60"></div>
           <div class="relative flex items-center justify-center w-6 h-6 bg-red-500 rounded-full border-[3px] border-white shadow-lg">
@@ -311,7 +311,7 @@ export default function MapCanvas() {
           url.searchParams.delete("lat");
           url.searchParams.delete("lng");
           url.searchParams.delete("zoom");
-          window.history.replaceState({}, "", url.pathname);
+          window.history.replaceState({}, "", url.pathname + (url.search ? url.search : ""));
         } catch (e) {}
       }
     }
@@ -425,15 +425,22 @@ export default function MapCanvas() {
       
       root.render(
         <div 
-          className="flex flex-col items-center group"
+          className="flex flex-col items-center group select-none cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
+            if (mapRef.current) {
+              flyToCoordinates(mapRef.current, [place.longitude, place.latitude], {
+                zoom: 16,
+                pitch: mapRef.current.getPitch(),
+                duration: 1500,
+              });
+            }
           }}
         >
           <div className="text-2xl drop-shadow-md select-none flex items-center justify-center">
             {iconText}
           </div>
-          <div className="bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded shadow-sm text-xs font-semibold text-slate-700 mt-0.5 pointer-events-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded shadow-sm text-xs font-semibold text-slate-700 mt-0.5 pointer-events-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity select-none">
             {place.name}
           </div>
         </div>
@@ -762,13 +769,42 @@ export default function MapCanvas() {
 
     const onClear = () => clearHighlight();
 
+    const onFlyToLocation = (e: Event) => {
+      const { latitude, longitude, zoom, duration, pitch } = (e as CustomEvent).detail || {};
+      if (!map || latitude == null || longitude == null) return;
+      flyToCoordinates(map, [longitude, latitude], {
+        zoom: zoom ?? 16,
+        pitch: pitch ?? map.getPitch(),
+        duration: duration ?? 1500,
+      });
+
+      // Temporary pulsing red circle indicator
+      const el = document.createElement("div");
+      el.className = "relative flex items-center justify-center pointer-events-none";
+      el.innerHTML = `
+        <div class="absolute w-10 h-10 bg-red-500 rounded-full animate-ping opacity-60"></div>
+        <div class="relative flex items-center justify-center w-6 h-6 bg-red-500 rounded-full border-[3px] border-white shadow-lg">
+          <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+        </div>
+      `;
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat([longitude, latitude])
+        .addTo(map);
+
+      setTimeout(() => {
+        marker.remove();
+      }, 3000);
+    };
+
     window.addEventListener("route-step-hover", onHover);
     window.addEventListener("route-step-click", onClick);
     window.addEventListener("route-step-clear", onClear);
+    window.addEventListener("fly-to-location", onFlyToLocation);
     return () => {
       window.removeEventListener("route-step-hover", onHover);
       window.removeEventListener("route-step-click", onClick);
       window.removeEventListener("route-step-clear", onClear);
+      window.removeEventListener("fly-to-location", onFlyToLocation);
       clearHighlight();
     };
   }, [isLoaded]);

@@ -90,22 +90,22 @@ export function LeftSidebar() {
               <div
                 key={place.id}
                 onClick={() => {
-                  router.push(`/map?location=${place.longitude},${place.latitude}&label=${encodeURIComponent(place.name)}`);
+                  router.push(`/map?lat=${place.latitude}&lng=${place.longitude}&zoom=16&panel=saveplace&tab=list`);
                 }}
-                className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center gap-3"
+                className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center gap-3 select-none caret-transparent"
               >
-                <div className="w-6 h-6 flex items-center justify-center bg-blue-100 rounded-full text-xs">
+                <div className="w-6 h-6 flex items-center justify-center bg-blue-100 rounded-full text-xs select-none pointer-events-none">
                   {place.icon || "📍"}
                 </div>
-                <span className="truncate">{place.name}</span>
+                <span className="truncate select-none pointer-events-none">{place.name}</span>
               </div>
             ))
           ) : (
-            <div className="px-3 py-2 text-sm text-gray-500">
+            <div className="px-3 py-2 text-sm text-gray-500 select-none">
               <p className="mb-2">No saved places yet.</p>
               <button
-                onClick={() => router.push('/map?panel=saveplace')}
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-xs px-2 py-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors w-full justify-center"
+                onClick={() => router.push('/map?panel=saveplace&tab=add')}
+                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-xs px-2 py-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors w-full justify-center select-none"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add a Place
