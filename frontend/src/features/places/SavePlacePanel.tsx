@@ -14,7 +14,7 @@ import { savedPlacesApi, SavedPlace } from "@/features/profile/savedPlacesApi";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/shared/ui/Toast";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const MAX_SAVED_PLACES = 10;
@@ -70,6 +70,18 @@ export function SavePlacePanel() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
+
+  const searchParams = useSearchParams();
+
+  // Sync active tab with URL query param if present
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "list") {
+      setActiveTab("list");
+    } else if (tabParam === "add") {
+      setActiveTab("add");
+    }
+  }, [searchParams]);
 
   // Reset to expanded when opened
   useEffect(() => {
@@ -215,13 +227,14 @@ export function SavePlacePanel() {
   };
 
   const handleSelectPlace = (place: SavedPlace) => {
-    // Center map on location if event exists
+    // Center map on location with zoom 16 and smooth flight/panning (consistent with severity zones)
     window.dispatchEvent(
       new CustomEvent("fly-to-location", {
         detail: {
           latitude: place.latitude,
           longitude: place.longitude,
-          zoom: 15,
+          zoom: 16,
+          duration: 1500,
         },
       })
     );
@@ -312,12 +325,12 @@ export function SavePlacePanel() {
       ) : (
         <div className="flex flex-col h-full flex-1">
           {/* Tabs Navigation */}
-          <div className="flex items-center justify-between border-b border-slate-100 px-2 py-2 mb-3 bg-slate-50/50 rounded-xl">
-            <div className="flex gap-1">
+          <div className="flex items-center justify-between border-b border-slate-100 px-2 py-2 mb-3 bg-slate-50/50 rounded-xl select-none">
+            <div className="flex gap-1 select-none">
               <button
                 type="button"
                 onClick={() => setActiveTab("add")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
                   activeTab === "add"
                     ? "bg-white text-blue-600 shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
@@ -329,7 +342,7 @@ export function SavePlacePanel() {
               <button
                 type="button"
                 onClick={() => setActiveTab("list")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
                   activeTab === "list"
                     ? "bg-white text-blue-600 shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
@@ -439,9 +452,9 @@ export function SavePlacePanel() {
             </div>
           ) : (
             /* My Places List View */
-            <div className="flex flex-col gap-2 p-1 flex-1 overflow-y-auto">
+            <div className="flex flex-col gap-2 p-1 flex-1 overflow-y-auto select-none">
               {savedPlaces.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400">
+                <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400 select-none">
                   <MapPin className="w-10 h-10 stroke-1 mb-2 text-slate-300" />
                   <p className="text-sm font-medium text-slate-600">No saved places yet</p>
                   <p className="text-xs text-slate-400 mt-1 mb-4">Save your favorite destinations for fast routing.</p>
@@ -450,28 +463,34 @@ export function SavePlacePanel() {
                   </Button>
                 </div>
               ) : (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 select-none">
                   {savedPlaces.map((place: SavedPlace) => (
                     <div
                       key={place.id}
                       onClick={() => handleSelectPlace(place)}
-                      className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/50 border border-slate-100 hover:border-blue-100 transition-all cursor-pointer group"
+                      onMouseDown={(e) => {
+                        // Prevent browser text cursor / caret when clicking place card
+                        if ((e.target as HTMLElement).tagName !== "BUTTON" && !(e.target as HTMLElement).closest("button")) {
+                          e.preventDefault();
+                        }
+                      }}
+                      className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/50 border border-slate-100 hover:border-blue-100 transition-all cursor-pointer group select-none caret-transparent"
                     >
-                      <div className="flex items-center gap-3 min-w-0 pr-2">
-                        <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-lg shrink-0 border border-slate-100">
+                      <div className="flex items-center gap-3 min-w-0 pr-2 select-none pointer-events-none">
+                        <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-lg shrink-0 border border-slate-100 select-none">
                           {place.icon || "📍"}
                         </div>
-                        <div className="min-w-0">
-                          <h4 className="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-700">
+                        <div className="min-w-0 select-none">
+                          <h4 className="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-700 select-none">
                             {place.name}
                           </h4>
-                          <p className="text-xs text-slate-500 truncate">
+                          <p className="text-xs text-slate-500 truncate select-none">
                             {place.address || `${place.latitude.toFixed(4)}, ${place.longitude.toFixed(4)}`}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 shrink-0">
+                      <div className="flex items-center gap-1 shrink-0 select-none">
                         <button
                           type="button"
                           onClick={(e) => handleDelete(place.id, e)}

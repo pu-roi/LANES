@@ -30,36 +30,39 @@ Developed in partial fulfillment of the requirements for the degree of **Bachelo
 
 ## 🔄 Daily Workflow: Pulling Updates (`git pull`)
 
-Whenever you or your groupmates pull new changes from `main`, execute these exact commands according to the folder specified:
+Whenever you or your groupmates pull new changes from `main` or your feature branch, execute these exact commands in the specified folders:
 
 ### 1. Root Directory: `LANES/`
-```bash
+```powershell
 # 📍 In the ROOT folder:
 git pull origin main
 ```
+*(Or your current feature branch, e.g. `git pull origin roi-branch`)*
 
 ### 2. Backend Directory: `LANES/backend/`
-```bash
+Always navigate into `backend/` so your virtual environment and `.env` are detected:
+```powershell
 # 📍 Navigate to backend:
 cd backend
 
-# Activate virtual environment (Windows):
+# Activate virtual environment (Windows PowerShell):
 .\venv\Scripts\Activate.ps1
 # (Or on Mac/Linux: source venv/bin/activate)
 
-# Install any new python packages:
+# Install any newly added python packages:
 pip install -r requirements.txt
 
-# Apply new database schema migrations:
-alembic upgrade head
+# Apply new database schema migrations with dotenvx:
+npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\alembic.exe upgrade head
+# (Or on Mac/Linux: npx @dotenvx/dotenvx run -f .env -- alembic upgrade head)
 ```
 
 ### 3. Frontend Directory: `LANES/frontend/`
-```bash
+```powershell
 # 📍 Navigate to frontend:
 cd ../frontend
 
-# Install any newly added npm packages (e.g. terra-draw):
+# Install any newly added npm packages:
 npm install
 ```
 
@@ -69,87 +72,136 @@ npm install
 
 ### Prerequisites
 * **Git** (For cloning the repository)
-* **Node.js** (v18 or higher)
+* **Node.js** (v18 or higher) & **npm**
 * **Python** (v3.11 or v3.12)
-* **Docker Desktop** (For running the local PostGIS spatial database and Valhalla routing engine).
+* **Docker Desktop** (Must be running for the local PostGIS spatial database and Valhalla routing engine)
+* **Private Decryption Keys** (Ask the project lead/admin for the 2 keys: `DOTENV_PRIVATE_KEY` for backend and `DOTENV_PRIVATE_KEY_LOCAL` for frontend)
 
 ---
 
 ### Step 0: Clone the Repository
 📂 **Where to run:** Anywhere on your system (e.g., your projects folder)
-```bash
+```powershell
 git clone https://github.com/roicambe/LANES.git
 cd LANES
 ```
 
 ---
 
-### Step 1: Start Background Services (Database & Valhalla)
+### Step 1: Start Background Services (PostGIS & Valhalla)
 📂 **Directory:** `LANES/` *(Root Folder)*
 
-Spin up the pre-configured PostgreSQL + PostGIS database and Valhalla engine using Docker:
-```bash
+Spin up the pre-configured PostgreSQL + PostGIS database and Valhalla routing engine using Docker:
+```powershell
 docker-compose up -d
 ```
-*(Note: Docker Desktop must be open and running. The database runs on port `5432` and Valhalla binds to `http://localhost:8002`).*
+*(Note: Docker Desktop must be running. The database runs on port `5432` and Valhalla binds to `http://localhost:8002`).*
 
 ---
 
-### Step 2: Backend Setup & Run (FastAPI)
+### Step 2: Set up Decryption Keys (`.env.keys`)
+
+The repository uses **dotenvx** for encrypted secrets. You do **not** need to manually decrypt `.env` files into plaintext on disk; the applications inject secrets directly into memory.
+
+1. **Backend Key (`backend/.env.keys`)**:
+   Inside the `backend/` folder, create a file named `.env.keys`:
+   ```env
+   #/------------------!DOTENV_PRIVATE_KEYS!-------------------/
+   DOTENV_PRIVATE_KEY=<PASTE_BACKEND_PRIVATE_KEY_HERE>
+   ```
+
+2. **Frontend Key (`frontend/.env.keys`)**:
+   Inside the `frontend/` folder, create a file named `.env.keys`:
+   ```env
+   #/------------------!DOTENV_PRIVATE_KEYS!-------------------/
+   DOTENV_PRIVATE_KEY_LOCAL=<PASTE_FRONTEND_PRIVATE_KEY_HERE>
+   ```
+
+> [!CAUTION]
+> **NEVER commit `.env.keys` to GitHub.** Both are strictly ignored by `.gitignore`.
+
+---
+
+### Step 3: Backend Setup & Run (FastAPI)
 📂 **Directory:** `LANES/backend/`
 
-1. Open a new terminal and navigate to the backend folder:
-   ```bash
+1. Open a terminal and navigate to `backend`:
+   ```powershell
    cd backend
    ```
-2. Set up and activate your Python virtual environment:
-   ```bash
-   # On Windows (PowerShell):
+2. Create and activate your Python virtual environment:
+   ```powershell
+   # Windows (PowerShell):
    python -m venv venv
    .\venv\Scripts\Activate.ps1
 
-   # On Mac/Linux:
+   # Mac/Linux:
    python3 -m venv venv
    source venv/bin/activate
    ```
-3. Install backend packages:
-   ```bash
+3. Install dependencies:
+   ```powershell
    pip install -r requirements.txt
    ```
-4. Set up Environment Variables:
-   * We use **dotenvx** for encrypted secrets.
-   * Please follow the [Environment Setup Guide](file:///d:/Documents/Github/LANES/docs/ENV_SETUP_GUIDE.md) to get the decryption keys.
-5. Apply database schema migrations:
-   ```bash
-   alembic upgrade head
+4. Apply database schema migrations:
+   ```powershell
+   # Windows:
+   npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\alembic.exe upgrade head
+
+   # Mac/Linux:
+   npx @dotenvx/dotenvx run -f .env -- alembic upgrade head
    ```
-6. Start the backend development server:
-   ```bash
+5. Start the backend development server:
+   ```powershell
    # Windows:
    npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\uvicorn.exe app.main:app --host 0.0.0.0 --port 8000 --reload
 
    # Mac/Linux:
    npx @dotenvx/dotenvx run -f .env -- uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
-   *The backend server will run at `http://localhost:8000`.*
+   *The backend API will be available at `http://localhost:8000` (docs at `http://localhost:8000/docs`).*
 
 ---
 
-### Step 3: Frontend Setup & Run (Next.js)
+### Step 4: Frontend Setup & Run (Next.js)
 📂 **Directory:** `LANES/frontend/`
 
-1. Open a separate terminal window and navigate to the frontend folder:
-   ```bash
+1. Open a separate terminal window and navigate to `frontend`:
+   ```powershell
    cd frontend
    ```
-2. Set up the frontend environment variables:
-   * Follow the [Environment Setup Guide](file:///d:/Documents/Github/LANES/docs/ENV_SETUP_GUIDE.md) to add your `.env.keys` file. You do NOT need to manually create `.env.local`.
-3. Install dependencies and start the dev server:
-   ```bash
+2. Install npm dependencies:
+   ```powershell
    npm install
+   ```
+3. Start the Next.js development server:
+   ```powershell
    npm run dev
    ```
    *The web application will be live at `http://localhost:3000`.*
+
+---
+
+### ✏️ Editing or Adding Environment Secrets
+If you ever need to add or edit an environment variable:
+1. **Decrypt temporarily:**
+   ```powershell
+   # In frontend:
+   npx @dotenvx/dotenvx decrypt -f .env.local
+
+   # In backend:
+   npx @dotenvx/dotenvx decrypt -f .env
+   ```
+2. **Edit the values** in `backend/.env` or `frontend/.env.local`.
+3. **Re-encrypt before staging/committing:**
+   ```powershell
+   # In frontend:
+   npx @dotenvx/dotenvx encrypt -f .env.local
+
+   # In backend:
+   npx @dotenvx/dotenvx encrypt -f .env
+   ```
+4. Commit and push the encrypted file safely to Git.
 
 ---
 
