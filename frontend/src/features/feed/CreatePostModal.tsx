@@ -6,7 +6,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import imageCompression from 'browser-image-compression';
 import { createPost } from './feedApi';
 import { useToast } from '@/shared/ui';
-import LoginForm from '@/features/auth/LoginForm';
 import { useAuth } from '@/hooks/useAuth';
 import { searchLocations, getCurrentLocation } from '@/features/geocoding/geocodingApi';
 import type { LocationSuggestion } from '@/features/geocoding/types';
@@ -36,14 +35,34 @@ interface CreatePostModalProps {
 export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [content, setContent] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('lanes_draft_post') || '';
-    }
-    return '';
-  });
+  const [content, setContent] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<{ file: File; preview: string }[]>([]);
   const [locationTag, setLocationTag] = useState('');
+  const [locationLat, setLocationLat] = useState<number | null>(null);
+  const [locationLng, setLocationLng] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const draft = sessionStorage.getItem('lanes_draft_post');
+      if (draft) {
+        try {
+          if (draft.startsWith('{')) {
+            const parsed = JSON.parse(draft);
+            setContent(parsed.content || '');
+            setLocationTag(parsed.locationTag || '');
+            setLocationLat(parsed.locationLat || null);
+            setLocationLng(parsed.locationLng || null);
+          } else {
+            // Backwards compatibility with old raw string drafts
+            setContent(draft);
+          }
+        } catch (e) {
+          setContent(draft);
+        }
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once on mount
   const objectUrlsRef = React.useRef<string[]>([]);
   const hasRestoredRef = React.useRef(false);
   const [showDraftConfirm, setShowDraftConfirm] = useState(false);
@@ -57,7 +76,12 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
   };
 
   const handleSaveDraftAndClose = async () => {
-    sessionStorage.setItem('lanes_draft_post', content);
+    sessionStorage.setItem('lanes_draft_post', JSON.stringify({
+      content,
+      locationTag,
+      locationLat,
+      locationLng
+    }));
     if (selectedFiles.length > 0) {
       await set('lanes_draft_files', selectedFiles.map(f => f.file));
     }
@@ -137,26 +161,28 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
     
     // Check searchParams for location tag pre-fill
     const locTag = searchParams.get('location_tag');
+    const latStr = searchParams.get('lat');
+    const lngStr = searchParams.get('lng');
+    
     if (locTag) {
       setLocationTag(locTag);
+      if (latStr && lngStr) {
+        setLocationLat(parseFloat(latStr));
+        setLocationLng(parseFloat(lngStr));
+      }
       setShowLocationInput(true);
       
       // Clean up URL search params
       const params = new URLSearchParams(window.location.search);
       params.delete('location_tag');
+      params.delete('lat');
+      params.delete('lng');
       params.delete('openPostModal');
       window.history.replaceState(
         null, 
         '', 
         window.location.pathname + (params.toString() ? '?' + params.toString() : '')
       );
-    }
-    
-    if (typeof window !== 'undefined') {
-      const draft = sessionStorage.getItem('lanes_draft_post');
-      if (draft && !content) {
-        setContent(draft);
-      }
     }
     
     // Always restore files from IndexedDB
@@ -182,7 +208,12 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
   }, [searchParams]);
 
   const handleChooseOnMap = async () => {
-    sessionStorage.setItem('lanes_draft_post', content);
+    sessionStorage.setItem('lanes_draft_post', JSON.stringify({
+      content,
+      locationTag,
+      locationLat,
+      locationLng
+    }));
     if (selectedFiles.length > 0) {
       await set('lanes_draft_files', selectedFiles.map(f => f.file));
     }
@@ -204,6 +235,8 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
         resolvedLabel = parts.slice(0, 2).join(", ") || resolvedLabel;
       }
       setLocationTag(resolvedLabel);
+      setLocationLat(lat);
+      setLocationLng(lng);
       setIsFocused(false);
     } catch (err: any) {
       showError('Location Error', err.message || 'Could not fetch current location.');
@@ -273,13 +306,17 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       return createPost({ 
         content, 
         images: compressedImages,
-        location_tag: locationTag.trim() || undefined
+        location_tag: locationTag.trim() || undefined,
+        location_lat: locationLat !== null ? locationLat : undefined,
+        location_lng: locationLng !== null ? locationLng : undefined
       });
     },
     onSuccess: () => {
       success('Post created successfully!');
       sessionStorage.removeItem('lanes_draft_post');
       setLocationTag('');
+      setLocationLat(null);
+      setLocationLng(null);
       queryClient.invalidateQueries({ queryKey: ['feed'] });
       onClose();
     },
@@ -301,7 +338,12 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
     }
     
     if (!localStorage.getItem('lanes_token')) {
-      sessionStorage.setItem('lanes_draft_post', content);
+      sessionStorage.setItem('lanes_draft_post', JSON.stringify({
+        content,
+        locationTag,
+        locationLat,
+        locationLng
+      }));
       sessionStorage.setItem('lanes_post_intent', 'true');
       setShowAuthPrompt(true);
       return;
@@ -416,10 +458,27 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="w-full max-w-sm">
+            <div className="w-full max-w-sm flex flex-col items-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 mb-4">
+                <Send className="w-8 h-8 ml-1" />
+              </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2 text-center">Login Required</h3>
-              <p className="text-gray-600 mb-6 text-center text-sm">Sign in to share your post and photos with the community.</p>
-              <LoginForm />
+              <p className="text-gray-600 mb-6 text-center text-sm">Sign in to share your post and photos with the community. Your draft will be saved.</p>
+              
+              <div className="flex w-full gap-3">
+                <button 
+                  onClick={() => setShowAuthPrompt(false)}
+                  className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => router.push('/login?redirect=%2Ffeed%3FopenPostModal%3Dtrue')}
+                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Go to Login
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -514,7 +573,11 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
                   {locationTag && (
                     <button 
                       type="button" 
-                      onClick={() => setLocationTag('')}
+                      onClick={() => {
+                        setLocationTag('');
+                        setLocationLat(null);
+                        setLocationLng(null);
+                      }}
                       className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -573,6 +636,10 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
                           onClick={() => {
                             setDirection('backward');
                             setLocationTag(suggestion.label);
+                            if (suggestion.lat && suggestion.lng) {
+                              setLocationLat(suggestion.lat);
+                              setLocationLng(suggestion.lng);
+                            }
                             setViewMode('write');
                           }}
                           className="flex items-center gap-3 w-full px-4 py-3.5 text-left hover:bg-gray-50 transition-colors"
@@ -624,7 +691,11 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
                           </div>
                           <button 
                             type="button" 
-                            onClick={() => setLocationTag('')}
+                            onClick={() => {
+                              setLocationTag('');
+                              setLocationLat(null);
+                              setLocationLng(null);
+                            }}
                             className="p-1 text-blue-400 hover:text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
                           >
                             <X className="w-3.5 h-3.5" />

@@ -134,10 +134,33 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               {post.location_tag && (
                 <>
                   <span>•</span>
-                  <span className="flex items-center gap-1 font-semibold text-gray-600">
-                    <MapPin className="w-3 h-3 text-red-500" />
-                    {post.location_tag}
-                  </span>
+                  {onViewMap && (post.location_lat && post.location_lng || post.report?.geometry) ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (post.report?.geometry) {
+                          const geomType = post.report.geometry.type;
+                          const coords = post.report.geometry.coordinates;
+                          try {
+                            const center = getGeometryCenter(geomType, coords);
+                            if (center) onViewMap(center[1], center[0]);
+                          } catch (e) { console.error(e); }
+                        } else if (post.location_lat && post.location_lng) {
+                          onViewMap(post.location_lat, post.location_lng);
+                        }
+                      }}
+                      className="flex items-center gap-1 font-semibold text-gray-600 hover:text-blue-600 transition-colors group"
+                      title="View on Map"
+                    >
+                      <MapPin className="w-3 h-3 text-red-500 group-hover:text-blue-500 transition-colors" />
+                      <span className="group-hover:underline">{post.location_tag}</span>
+                    </button>
+                  ) : (
+                    <span className="flex items-center gap-1 font-semibold text-gray-600">
+                      <MapPin className="w-3 h-3 text-red-500" />
+                      {post.location_tag}
+                    </span>
+                  )}
                 </>
               )}
               {post.distance_meters !== undefined && post.distance_meters !== null && (
@@ -161,18 +184,16 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               {getSeverityLabel(post.report.severity)}
             </span>
           )}
-          {post.report?.human_readable_location && onViewMap && (
+          {/* Flood report location link (top-right) — only for flood reports with human_readable_location but no location_tag */}
+          {post.report?.human_readable_location && !post.location_tag && post.report?.geometry && onViewMap && (
             <button 
               onClick={() => {
                 const geomType = post.report?.geometry?.type;
                 const coords = post.report?.geometry?.coordinates;
                 if (!geomType || !coords) return;
-                
                 try {
                   const center = getGeometryCenter(geomType, coords);
-                  if (center) {
-                    onViewMap(center[1], center[0]);
-                  }
+                  if (center) onViewMap(center[1], center[0]);
                 } catch (e) {
                   console.error("Failed to calculate geometry center", e);
                 }
@@ -389,18 +410,16 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
           </button>
         </div>
 
+        {/* View on Map button — only shown for flood reports (regular post locations use the clickable red pin instead) */}
         {post.report?.geometry && onViewMap && (
           <button 
             onClick={() => {
               const geomType = post.report?.geometry?.type;
               const coords = post.report?.geometry?.coordinates;
               if (!geomType || !coords) return;
-              
               try {
                 const center = getGeometryCenter(geomType, coords);
-                if (center) {
-                  onViewMap(center[1], center[0]);
-                }
+                if (center) onViewMap(center[1], center[0]);
               } catch (e) {
                 console.error("Failed to calculate geometry center", e);
               }

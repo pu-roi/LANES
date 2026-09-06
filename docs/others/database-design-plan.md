@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** August 24, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -143,8 +143,26 @@ erDiagram
         int flood_report_id FK "Nullable reference to flood_reports"
         string content "Text content of the post"
         jsonb media_urls "Array of image/video URLs"
+        string location_tag "Display landmark or location name"
+        float location_lat "Latitude coordinate for map view"
+        float location_lng "Longitude coordinate for map view"
+        boolean is_pinned "Pin status toggle"
+        datetime pinned_at "Timestamp of pinning"
         datetime created_at "UTC creation timestamp"
         datetime updated_at "UTC update timestamp"
+    }
+
+    saved_places {
+        int id PK "Unique identifier"
+        int user_id FK "Cascade reference to users"
+        string name "Custom waypoint label"
+        string icon "Emoji representation"
+        string address "Human-readable address"
+        float latitude "Explicit WGS84 latitude"
+        float longitude "Explicit WGS84 longitude"
+        int pin_order "Custom ordering slot"
+        geometry geometry "Point (SRID 4326)"
+        datetime created_at "UTC timestamp"
     }
 
     notifications {
@@ -166,6 +184,7 @@ erDiagram
     users ||--o{ comments : "writes"
     users ||--o{ system_settings : "updates"
     users ||--o{ community_posts : "writes"
+    users ||--o{ saved_places : "bookmarks"
     users ||--o{ notifications : "receives"
     flood_reports ||--o{ flood_report_locations : "maps to"
     flood_reports ||--o{ flood_avoidance_zones : "generates"
@@ -347,7 +366,7 @@ erDiagram
 | `hidden_hazards` | `ENUM` | NOT NULL | Indicator of hidden hazards ('yes', 'no', 'unsure'). |
 
 ### Table N: `community_posts`
-**Description:** The core entity for the community feed. Represents standalone user posts or shared flood reports.
+**Description:** The core entity for the community feed. Represents standalone user posts or shared flood reports with optional tagged geolocation.
 
 | Attribute | Data Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
@@ -356,6 +375,11 @@ erDiagram
 | `flood_report_id` | `INTEGER` | Foreign Key (CASCADE), Nullable | If set, this post acts as a shared wrapper for a flood report. |
 | `content` | `TEXT` | NOT NULL | Text body of the post. |
 | `media_urls` | `JSONB` | Nullable | Array of image or video URLs. |
+| `location_tag` | `VARCHAR(255)` | Nullable | Geocoded landmark or user label. |
+| `location_lat` | `FLOAT` | Nullable | Latitude coordinate for map view/fly-to. |
+| `location_lng` | `FLOAT` | Nullable | Longitude coordinate for map view/fly-to. |
+| `is_pinned` | `BOOLEAN` | Default: FALSE | Pinned announcement flag. |
+| `pinned_at` | `TIMESTAMP` | Nullable | Timestamp of pinning. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Timestamp. |
 | `updated_at` | `TIMESTAMP` | Default: UTC Now | Last update timestamp. |
 
@@ -370,6 +394,22 @@ erDiagram
 | `message` | `VARCHAR(255)` | NOT NULL | Human-readable notification text. |
 | `payload` | `JSONB` | NOT NULL | Metadata for routing (e.g., `{"post_id": 12}`). |
 | `is_read` | `BOOLEAN` | Default: FALSE | Read status. |
+| `created_at` | `TIMESTAMP` | Default: UTC Now | Timestamp. |
+
+### Table P: `saved_places`
+**Description:** User-customized bookmarked waypoints with explicit coordinates and spatial geometry.
+
+| Attribute | Data Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | Primary Key | Saved place ID. |
+| `user_id` | `INTEGER` | Foreign Key (CASCADE), Index | Associated user. |
+| `name` | `VARCHAR(50)` | NOT NULL | Custom waypoint label. |
+| `icon` | `VARCHAR(50)` | NOT NULL | Emoji icon representation. |
+| `address` | `VARCHAR(255)` | Nullable | Street address or landmark. |
+| `latitude` | `FLOAT` | NOT NULL | Latitude (WGS84). |
+| `longitude` | `FLOAT` | NOT NULL | Longitude (WGS84). |
+| `pin_order` | `INTEGER` | Nullable | User's preferred pin ordering. |
+| `geometry` | `GEOMETRY(Point, 4326)` | Spatial Index (GIST) | PostGIS spatial geometry for proximity queries. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Timestamp. |
 
 ---

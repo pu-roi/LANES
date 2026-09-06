@@ -104,3 +104,18 @@ def delete_my_saved_place(
     if not deleted:
         raise HTTPException(status_code=404, detail="Saved place not found or not authorized")
     return None
+
+@router.patch("/me/places/{place_id}", response_model=schemas.SavedPlaceResponse)
+def update_my_saved_place(
+    place_id: int,
+    place_in: schemas.SavedPlaceUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Update a saved place (e.g., pinning) for the current user.
+    """
+    updated_place = crud.update_saved_place(db=db, place_id=place_id, user_id=current_user.id, obj_in=place_in)
+    if not updated_place:
+        raise HTTPException(status_code=404, detail="Saved place not found or not authorized")
+    return updated_place

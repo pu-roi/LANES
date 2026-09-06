@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -77,16 +77,16 @@ These files are **always present** regardless of which page you are on.
 
 ## 3. Map Page (/map)
 
-**Route file:** `src/app/map/page.tsx` — This page renders an empty `<main>` tag. The actual map is mounted by `GlobalMap` in `providers.tsx` and is always present on screen.
+**Route file:** `src/app/map/page.tsx` → renders `<MapPage />`
 
-### Always Visible on the Map
+### Always Visible on Load
 
 | File | What You See |
 |------|-------------|
-| `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The core MapLibre GL v5 map canvas. Renders 3D Terrain via AWS Terrarium DEM tiles, dynamic vector basemap styles via `MapStylePickerControl` (5 styles), flood avoidance zone polygons (controlled seamlessly via zoom-based opacity steps), user location marker, route polylines, and all map controls (ZoomLevelControl with Pitch telemetry, Toggle3DControl, compass, scale bar). On desktop, offset to the right of the 340px RoutePanel. |
+| `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and pulsing red focus markers. Includes container resize observer alignment for sidebar offsets and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
 | `BaseMap.tsx` | `src/shared/ui/BaseMap.tsx` — Low-level wrapper around MapLibre GL JS. Manages the map instance lifecycle and exposes an `onMapLoad` callback. |
-| `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The 340px-wide fixed sidebar on the left (desktop). Contains the engine switcher (Valhalla / OpenRouteService), vehicle profile selector (Car / Bike / Walk), start and destination location inputs with autocomplete, a swap/reverse button between the two inputs, and the calculated route results (distance, time, turn-by-turn steps). On mobile this becomes a bottom drawer. Always mounted on non-admin pages. |
-| `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The collapsible "Report Flood" panel. On desktop, always shown collapsed with a header. Expanding it reveals a form with severity selector, flood depth input, location picker, photo upload, and survey questions. On mobile, shown only when the user taps the Report Flood button. |
+| `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector, start/destination inputs, autocomplete dropdowns, alternative route cards, and turn-by-turn instruction list. |
+| `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The incident reporting panel (opens from FAB or top CTA). Step-by-step form for reporting floods with start/end pin dropping, severity selection, survey questions, and draft cart batch submission. |
 | `OfflineManager.tsx` | `src/components/Map/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
 | `MapPickerMobileOverlay.tsx` | `src/features/map/MapPickerMobileOverlay.tsx` — A translucent overlay with a centered crosshair that appears on mobile when the user taps a location input, letting them drag the map to pin a point. |
 
@@ -121,16 +121,16 @@ These files are **always present** regardless of which page you are on.
 | File | What You See |
 |------|-------------|
 | `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the scrollable list of `PostItem` cards. Left and right sidebars are pinned on desktop. Fetches paginated posts on load. |
-| `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Left panel (desktop only). Shows the logged-in user's avatar, display name, trust score badge, and quick stats (reports submitted, accuracy rate). Also has a "Create Post" shortcut button. |
+| `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Left panel (desktop only). Shows the logged-in user's avatar, display name, trust score badge, quick stats, saved places pills (which open the Saved Places panel), and a "Create Post" shortcut button. Features hover-activated custom slim scrollbar. |
 | `RightSidebar.tsx` | `src/features/feed/RightSidebar.tsx` — Right panel (desktop only). Shows community highlights: top contributors, recent active flood zones, and trending location tags. |
-| `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached images, flood severity badge (if linked to a report), upvote/downvote buttons with counts, and comment count. Clicking the post body navigates to the full post detail page. |
+| `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached images, flood severity badge (if linked to a report), upvote/downvote buttons with counts, and comment count. Features an interactive red pin location badge that flies the 3D map directly to the tagged coordinates with a pulsing indicator. |
 | `EmergencyHotlinesCard.tsx` | `src/features/feed/components/EmergencyHotlinesCard.tsx` — API-backed priority emergency contacts with expandable numbers, direct `tel:` links, loading/unavailable states, and a full-directory trigger. Rendered in the feed sidebar layout. |
 
 ### Hidden Until Interaction
 
 | File | How to Trigger It | What It Shows |
 |------|-------------------|--------------|
-| `CreatePostModal.tsx` | `src/features/feed/CreatePostModal.tsx` — Click **"Create Post"** or the **"+"** floating button | Full-screen modal with a rich text area, drag-and-drop image upload, optional location tag, and a flood report linking selector. Submits to `POST /api/v1/feed/posts`. |
+| `CreatePostModal.tsx` | `src/features/feed/CreatePostModal.tsx` — Click **"Create Post"** or the **"+"** floating button | Full-screen modal with rich text area, drag-and-drop image upload, address autocomplete or map crosshair location picking, coordinate persistence (`location_lat`, `location_lng`), and draft auto-saving that persists across auth redirects. Submits to `POST /api/v1/feed/posts`. |
 | `EmergencyDirectoryModal.tsx` | `src/features/feed/components/EmergencyDirectoryModal.tsx` — Click **"View All Hotlines"** | Lazily loaded national, Pasig city, and Pasig barangay hotline directory with tabbed sections, search, and phone links. |
 
 ### Backend Calls from This Page
@@ -513,6 +513,7 @@ Custom bookmarked map locations per user (Home, Work, School, etc.).
 | `address` | String(255), nullable | Human-readable address string |
 | `latitude` | Float | Latitude coordinate |
 | `longitude` | Float | Longitude coordinate |
+| `pin_order` | Integer, nullable | Custom order sequence for quick pills |
 | `geometry` | PostGIS POINT (SRID 4326) | Spatial point for future proximity search queries |
 | `created_at` | DateTime | When the place was bookmarked |
 
@@ -530,6 +531,10 @@ Posts in the community feed. Can be standalone or linked to a flood report.
 | `content` | Text | Post body text |
 | `media_urls` | JSONB, nullable | Array of attached image or video URLs |
 | `location_tag` | String(255), nullable | Optional location label displayed on the post |
+| `location_lat` | Float, nullable | Latitude coordinate for interactive map view / fly-to |
+| `location_lng` | Float, nullable | Longitude coordinate for interactive map view / fly-to |
+| `is_pinned` | Boolean | Pinned status flag |
+| `pinned_at` | DateTime, nullable | Timestamp of pinning |
 | `created_at` | DateTime | Post creation time |
 | `updated_at` | DateTime | Last edit time |
 

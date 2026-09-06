@@ -417,10 +417,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
                 .filter((value, index, self) => self.indexOf(value) === index);
               labelVal = parts.slice(0, 2).join(", ") || labelVal;
             }
-            router.push(`/feed?openPostModal=true&location_tag=${encodeURIComponent(labelVal)}`);
+            router.push(`/feed?openPostModal=true&location_tag=${encodeURIComponent(labelVal)}&lat=${coords[1]}&lng=${coords[0]}`);
           })
           .catch(() => {
-            router.push(`/feed?openPostModal=true&location_tag=${encodeURIComponent(coordsLabel(coords))}`);
+            router.push(`/feed?openPostModal=true&location_tag=${encodeURIComponent(coordsLabel(coords))}&lat=${coords[1]}&lng=${coords[0]}`);
           });
       } else if (activePoint === "save_place_location") {
         setDraftSavePlaceCoords({ coords, label: coordsLabel(coords) });

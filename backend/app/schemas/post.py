@@ -11,6 +11,8 @@ class CommunityPostBase(BaseModel):
     media_urls: Optional[List[str]] = None
     flood_report_id: Optional[int] = None
     location_tag: Optional[str] = None
+    location_lat: Optional[float] = None
+    location_lng: Optional[float] = None
 
 
 class CommunityPostCreate(CommunityPostBase):

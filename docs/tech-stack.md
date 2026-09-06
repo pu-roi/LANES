@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** August 31, 2026, 12:10 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
 
@@ -55,6 +55,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Managing direct upload, scaling (down to 1024px), and WebP format compression of user-submitted flood evidence photos to a dedicated cloud CDN, ensuring lightweight database records and fast frontend loading.
 * **NLP & Information Extraction:** **spaCy**  
   * *Role:* Managing the custom, locally executed Bilingual Named Entity Recognition (NER) pipeline to isolate street-level locations and severity parameters from Taglish text feeds.
+* **Encrypted Secrets & Environment Orchestration:** **@dotenvx/dotenvx**  
+  * *Role:* Cross-platform AES-256 encrypted environment variable management, enabling safe git repository synchronization without exposing raw API keys or database credentials.
 
 ### **3\. Spatial Database Tier (Persistence)**
 

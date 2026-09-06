@@ -8,6 +8,7 @@ class SavedPlaceBase(BaseModel):
     address: Optional[str] = Field(None, max_length=255, description="Human readable address")
     latitude: float = Field(..., description="Latitude of the location")
     longitude: float = Field(..., description="Longitude of the location")
+    pin_order: Optional[int] = Field(None, description="Rank order of pinned place (1, 2, or 3). None if not pinned")
 
 class SavedPlaceCreate(SavedPlaceBase):
     pass
@@ -18,6 +19,7 @@ class SavedPlaceUpdate(BaseModel):
     address: Optional[str] = Field(None, max_length=255)
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    pin_order: Optional[int] = None
 
 class SavedPlaceResponse(SavedPlaceBase):
     id: int

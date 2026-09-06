@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     
     # Brevo SMTP Configuration
     BREVO_SMTP_SERVER: str = "smtp-relay.brevo.com"
-    BREVO_SMTP_PORT: int = 587
+    BREVO_SMTP_PORT: int | str = 587
     BREVO_SMTP_KEY: str = ""
 
     # Valhalla Engine

@@ -5,7 +5,7 @@ import { Panel } from "@/shared/ui/Panel";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Select } from "@/shared/ui/Select";
-import { MapPin, Home, Briefcase, GraduationCap, Building, Star, Coffee, Heart, Crosshair, User, Trash2, Plus, Navigation } from "lucide-react";
+import { MapPin, Home, Briefcase, GraduationCap, Building, Star, Coffee, Heart, Crosshair, User, Trash2, Plus, Navigation, Pin, ChevronUp, ChevronDown } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { useMapContext } from "@/features/map/MapContext";
@@ -325,31 +325,31 @@ export function SavePlacePanel() {
       ) : (
         <div className="flex flex-col h-full flex-1">
           {/* Tabs Navigation */}
-          <div className="flex items-center justify-between border-b border-slate-100 px-2 py-2 mb-3 bg-slate-50/50 rounded-xl select-none">
-            <div className="flex gap-1 select-none">
+          <div className="flex items-center justify-between border-b border-slate-100 px-1.5 py-1.5 mb-3 bg-slate-50/50 rounded-xl select-none">
+            <div className="flex gap-1 select-none flex-1">
               <button
                 type="button"
                 onClick={() => setActiveTab("add")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
+                className={`flex items-center justify-center flex-1 gap-1.5 px-2 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
                   activeTab === "add"
                     ? "bg-white text-blue-600 shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <Plus className="w-3.5 h-3.5" />
-                Add Place
+                <Plus className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">Add Place</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("list")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
+                className={`flex items-center justify-center flex-1 gap-1.5 px-2 py-1.5 rounded-lg text-xs font-semibold transition-all select-none ${
                   activeTab === "list"
                     ? "bg-white text-blue-600 shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <MapPin className="w-3.5 h-3.5" />
-                My Places ({savedPlaces.length}/{MAX_SAVED_PLACES})
+                <MapPin className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">My Places</span>
               </button>
             </div>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
@@ -464,7 +464,12 @@ export function SavePlacePanel() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 select-none">
-                  {savedPlaces.map((place: SavedPlace) => (
+                  {[...savedPlaces].sort((a, b) => {
+                    const orderA = a.pin_order ?? 999;
+                    const orderB = b.pin_order ?? 999;
+                    if (orderA === orderB) return 0;
+                    return orderA - orderB;
+                  }).map((place: SavedPlace) => (
                     <div
                       key={place.id}
                       onClick={() => handleSelectPlace(place)}
@@ -474,14 +479,21 @@ export function SavePlacePanel() {
                           e.preventDefault();
                         }
                       }}
-                      className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50/50 border border-slate-100 hover:border-blue-100 transition-all cursor-pointer group select-none caret-transparent"
+                      className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer group select-none caret-transparent ${
+                        place.pin_order !== null ? 'bg-amber-50/30 border-amber-200 hover:bg-amber-50' : 'bg-slate-50 hover:bg-blue-50/50 border-slate-100 hover:border-blue-100'
+                      }`}
                     >
                       <div className="flex items-center gap-3 min-w-0 pr-2 select-none pointer-events-none">
-                        <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-lg shrink-0 border border-slate-100 select-none">
+                        <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-lg shrink-0 border border-slate-100 select-none relative">
                           {place.icon || "📍"}
+                          {place.pin_order !== null && (
+                            <div className="absolute -top-1.5 -right-1.5 bg-amber-100 rounded-full p-0.5 border border-amber-200">
+                              <Pin className="w-2.5 h-2.5 text-amber-600 fill-amber-600" />
+                            </div>
+                          )}
                         </div>
                         <div className="min-w-0 select-none">
-                          <h4 className="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-700 select-none">
+                          <h4 className="text-sm font-semibold text-slate-800 truncate group-hover:text-blue-700 select-none flex items-center gap-1.5">
                             {place.name}
                           </h4>
                           <p className="text-xs text-slate-500 truncate select-none">
@@ -491,6 +503,72 @@ export function SavePlacePanel() {
                       </div>
 
                       <div className="flex items-center gap-1 shrink-0 select-none">
+                        {/* Rank Control Buttons (Only if pinned) */}
+                        {place.pin_order !== null && (
+                          <div className="flex flex-col border-r border-amber-200 pr-1 mr-1">
+                            {place.pin_order > 1 && (
+                              <button
+                                type="button"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  try {
+                                    await savedPlacesApi.updateSavedPlace(place.id, { pin_order: place.pin_order! - 1 });
+                                    const freshPlaces = await savedPlacesApi.getSavedPlaces();
+                                    setSavedPlaces(freshPlaces);
+                                  } catch (err: any) {
+                                    showError("Error", err.response?.data?.detail || "Failed to reorder");
+                                  }
+                                }}
+                                className="text-amber-500 hover:text-amber-700 p-0.5"
+                                title="Move up"
+                              >
+                                <ChevronUp className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                            {place.pin_order < 3 && savedPlaces.some(p => p.pin_order === place.pin_order! + 1) && (
+                              <button
+                                type="button"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  try {
+                                    await savedPlacesApi.updateSavedPlace(place.id, { pin_order: place.pin_order! + 1 });
+                                    const freshPlaces = await savedPlacesApi.getSavedPlaces();
+                                    setSavedPlaces(freshPlaces);
+                                  } catch (err: any) {
+                                    showError("Error", err.response?.data?.detail || "Failed to reorder");
+                                  }
+                                }}
+                                className="text-amber-500 hover:text-amber-700 p-0.5"
+                                title="Move down"
+                              >
+                                <ChevronDown className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </div>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              const newOrder = place.pin_order !== null ? null : (savedPlaces.filter(p => p.pin_order !== null).length + 1);
+                              await savedPlacesApi.updateSavedPlace(place.id, { pin_order: newOrder });
+                              const freshPlaces = await savedPlacesApi.getSavedPlaces();
+                              setSavedPlaces(freshPlaces);
+                              if (newOrder !== null) success("Pinned", "Saved place pinned to top");
+                              else success("Unpinned", "Saved place unpinned");
+                            } catch (err: any) {
+                              showError("Error", err.response?.data?.detail || "Failed to update pin status");
+                            }
+                          }}
+                          className={`p-1.5 rounded-lg transition-colors ${
+                            place.pin_order !== null ? 'text-amber-500 hover:text-amber-600 hover:bg-amber-100' : 'text-slate-400 hover:text-amber-500 hover:bg-amber-50'
+                          }`}
+                          title={place.pin_order !== null ? "Unpin place" : "Pin place"}
+                        >
+                          <Pin className={`w-4 h-4 ${place.pin_order !== null ? 'fill-current' : ''}`} />
+                        </button>
                         <button
                           type="button"
                           onClick={(e) => handleDelete(place.id, e)}

@@ -5,6 +5,8 @@ export interface FeedPost {
   content: string;
   media_urls?: string[];
   location_tag?: string;
+  location_lat?: number;
+  location_lng?: number;
   created_at: string;
   
   upvotes: number;
@@ -133,6 +135,8 @@ export interface CreatePostRequest {
   content: string;
   images?: File[];
   location_tag?: string;
+  location_lat?: number;
+  location_lng?: number;
 }
 
 export const createPost = async (request: CreatePostRequest): Promise<FeedPost> => {
@@ -140,6 +144,12 @@ export const createPost = async (request: CreatePostRequest): Promise<FeedPost> 
   formData.append('content', request.content);
   if (request.location_tag) {
     formData.append('location_tag', request.location_tag);
+  }
+  if (request.location_lat !== undefined) {
+    formData.append('location_lat', request.location_lat.toString());
+  }
+  if (request.location_lng !== undefined) {
+    formData.append('location_lng', request.location_lng.toString());
   }
   if (request.images && request.images.length > 0) {
     request.images.forEach((image) => {

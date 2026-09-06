@@ -24,6 +24,8 @@ class CommunityPost(Base):
     content: Mapped[str] = mapped_column(Text)
     media_urls: Mapped[Optional[Any]] = mapped_column(JSONB, nullable=True)
     location_tag: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    location_lat: Mapped[Optional[float]] = mapped_column(nullable=True)
+    location_lng: Mapped[Optional[float]] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

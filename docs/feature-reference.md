@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 6, 2026, 2:32 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -81,8 +81,8 @@ This document serves as the central technical reference for all currently implem
     5. The AI returns a strict JSON object containing short interpretations of both Storm Risk and Environmental Conditions, which is rendered dynamically in the UI.
 *   **Access & Roles:** Public users.
 *   **Related Components:**
-    *   **Frontend:** [WeatherInsightsModal.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/landing/WeatherInsightsModal.tsx).
-    *   **Backend:** [weather.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/weather.py) (`POST /api/v1/weather/insights`).
+    *   **Frontend:** [WeatherInsightsModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/landing/WeatherInsightsModal.tsx).
+    *   **Backend:** [weather.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/weather.py) (`POST /api/v1/weather/insights`).
 
 ---
 
@@ -100,19 +100,19 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 7. Queue-Based Admin Moderation & Approval Workflow
+### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
 *   **Purpose:** Implements a "human-in-the-loop" validation workflow to prevent automated NLP ingestion errors or mapping hallucinations from misdirecting drivers.
-*   **What it does:** Queues all raw NLP-parsed flood reports into a staging feed, allowing authorized local disaster risk managers to inspect, adjust, approve, or discard reports before public broadcast.
+*   **What it does:** Queues all raw NLP-parsed flood reports into a staging feed on the live Spatial Operations map, allowing authorized DRRM officers to inspect, batch merge, adjust, approve, or discard reports before public broadcast.
 *   **How it works:**
     1. Newly parsed reports are inserted with a status of `pending`.
-    2. DRRM operators review the reports, verify the geolocations, and click "Approve".
-    3. Upon approval, PostGIS automatically calculates a spatial buffer (using `ST_Buffer` with a 50m to 200m radius depending on whether the asset is a Point or LineString) around the coordinate.
+    2. DRRM operators review pending reports in the map sidebar, filter trolls by trust score, inspect geolocations directly on the map, and click "Approve".
+    3. Upon approval, PostGIS automatically calculates a spatial buffer (using `ST_Buffer` with a 50m to 200m radius depending on geometry) around the coordinate.
     4. This buffer is saved to the `flood_avoidance_zones` table as an active polygon, which immediately updates Valhalla route requests.
     5. Discarded reports are marked as `rejected`.
 *   **Access & Roles:** Restricted to `admin` / `drrm` roles.
 *   **Related Components:**
-    *   **Frontend:** [ReportsPage.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/admin/ReportsPage.tsx) (interactive queue cards, map coordinates auditor).
-    *   **Backend:** [admin.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/admin.py) endpoints (`/reports/pending`, `/reports/{report_id}/approve`, `/reports/{report_id}/reject`).
+    *   **Frontend:** [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx) (Spatial Operations map), [PendingReportsPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/PendingReportsPanel.tsx), [ActiveZonesPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/ActiveZonesPanel.tsx).
+    *   **Backend:** [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) endpoints (`/reports/pending`, `/reports/{report_id}/approve`, `/reports/{report_id}/reject`).
 
 ---
 
@@ -126,7 +126,7 @@ This document serves as the central technical reference for all currently implem
     4. Renders geo-coordinates as visual icons and polygon vectors in real time, employing zoom-based shader opacity step expressions (rather than layer culling) to guarantee seamless visibility during extreme 3D pitch angles.
 *   **Access & Roles:** Public commuters and system administrators.
 *   **Related Components:**
-    *   **Frontend:** [MapCanvas.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/map/MapCanvas.tsx), [MapContext.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/map/MapContext.tsx), [geocodingApi.ts](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/geocoding/geocodingApi.ts).
+    *   **Frontend:** [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [MapContext.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx), [geocodingApi.ts](file:///d:/Documents/Github/LANES/frontend/src/features/geocoding/geocodingApi.ts).
 
 ---
 
@@ -140,8 +140,8 @@ This document serves as the central technical reference for all currently implem
     4. The frontend intercepts the payload and automatically invalidates the React Query cache, triggering a silent background refetch of map layers.
 *   **Access & Roles:** Public clients and administrative dashboards.
 *   **Related Components:**
-    *   **Frontend:** [useSSE.ts](file:///e:/Files/Documents/GitHub/LANES/frontend/src/hooks/useSSE.ts), `providers.tsx`.
-    *   **Backend:** [sse.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/sse.py), `app.core.sse`.
+    *   **Frontend:** [useSSE.ts](file:///d:/Documents/Github/LANES/frontend/src/hooks/useSSE.ts), `providers.tsx`.
+    *   **Backend:** [sse.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/sse.py), `app.core.sse`.
 
 ---
 
@@ -154,8 +154,8 @@ This document serves as the central technical reference for all currently implem
     3. FastAPI route handlers intercept calls using dependency injection (`get_current_active_admin`) to validate JWT signatures and enforce permissions.
 *   **Access & Roles:** Registration is open to all; admin pages require role-checks.
 *   **Related Components:**
-    *   **Frontend:** [LoginForm.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/auth/LoginForm.tsx), [SignupForm.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/auth/SignupForm.tsx).
-    *   **Backend:** [auth.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/auth.py), [users.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/users.py), [deps.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/deps.py).
+    *   **Frontend:** [LoginForm.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/auth/LoginForm.tsx), [SignupForm.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/auth/SignupForm.tsx).
+    *   **Backend:** [auth.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/auth.py), [users.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/users.py), [deps.py](file:///d:/Documents/Github/LANES/backend/app/api/deps.py).
 
 ---
 
@@ -170,7 +170,7 @@ This document serves as the central technical reference for all currently implem
       5. Automatically falls back to offline routing when `navigator.onLine` toggles off, computing detours using the locally cached polygons.
 *   **Access & Roles:** Public commuters.
 *   **Related Components:**
-    *   **Frontend:** [OfflineBanner.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/offline/OfflineBanner.tsx), `frontend/package.json`.
+    *   **Frontend:** [OfflineBanner.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/offline/OfflineBanner.tsx), `frontend/package.json`.
 
 ---
 
@@ -182,8 +182,8 @@ This document serves as the central technical reference for all currently implem
     2. Saves details including `admin_id`, `action_type`, `target_table`, `metadata_json` (containing changes details), `ip_address`, and a UTC timestamp.
 *   **Access & Roles:** Admins can view this ledger.
 *   **Related Components:**
-    *   **Frontend:** [AuditTrailPage.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/admin/AuditTrailPage.tsx).
-    *   **Backend:** [admin.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/admin.py) (`/audit-logs`), [audit.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/models/audit.py) schema & models.
+    *   **Frontend:** [AuditTrailPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/AuditTrailPage.tsx).
+    *   **Backend:** [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) (`/audit-logs`), [audit.py](file:///d:/Documents/Github/LANES/backend/app/models/audit.py) schema & models.
 
 ---
 
@@ -196,8 +196,8 @@ This document serves as the central technical reference for all currently implem
     3. Cleanup sweeps database tables, purging old flood incident logs and zones older than user-specified date ranges.
 *   **Access & Roles:** Limited to admins.
 *   **Related Components:**
-    *   **Frontend:** [DataManagementPage.tsx](file:///e:/Files/Documents/GitHub/LANES/frontend/src/features/admin/DataManagementPage.tsx).
-    *   **Backend:** [data.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/api/v1/endpoints/data.py), [data_service.py](file:///e:/Files/Documents/GitHub/LANES/backend/app/services/data_service.py).
+    *   **Frontend:** [DataManagementPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/DataManagementPage.tsx).
+    *   **Backend:** [data.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/data.py), [data_service.py](file:///d:/Documents/Github/LANES/backend/app/services/data_service.py).
 
 ---
 
@@ -239,26 +239,51 @@ This document serves as the central technical reference for all currently implem
     3. The Comment Engine structures threads recursively in the backend, supporting infinite nesting via adjacency lists (`parent_comment_id`).
     4. The frontend utilizes React `useRef` based focus-within compound input forms to safely manage complex multi-input layouts without triggering React re-renders or cursor jumping.
     5. Interaction events (Likes, Mentions, Replies) trigger real-time `Notification` rows stored in the database for the post author, accessible via the global Bell icon.
+    6. **Post Geolocation & Map Fly-to:** Community posts support tagged coordinates (`location_lat`, `location_lng`). When published, the header displays a clickable red pin badge that navigates directly to `/map`, uses container `ResizeObserver` alignment to center coordinates within the desktop visible area (compensating for the 340px routing panel), and focuses the camera with a 3-second pulsing red indicator.
+    7. **Persistent Post Drafting (IndexedDB):** Prevents accidental data loss when users navigate away from the post creation modal or lose connection. Text content is persisted in `sessionStorage`, while heavy media binary blobs (images/videos) are serialized into the browser's native **IndexedDB** via `idb-keyval`, reconstructing them safely back into JavaScript `File` objects and object URLs on remount.
 *   **Access & Roles:** Public users can post and reply. Admins and Authors can Pin comments.
 *   **Related Components:**
-    *   **Frontend:** `src/features/feed/` (Feed components, PostCard, tabs), `src/features/notifications/` (NotificationDropdown), `src/app/(feed)/feed/page.tsx`.
+    *   **Frontend:** `src/features/feed/` ([PostItem.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/PostItem.tsx), [CreatePostModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/CreatePostModal.tsx)), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [BaseMap.tsx](file:///d:/Documents/Github/LANES/frontend/src/shared/ui/BaseMap.tsx), `src/features/notifications/` (NotificationDropdown).
+    *   **Backend:** [posts.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/posts.py), [post.py](file:///d:/Documents/Github/LANES/backend/app/crud/post.py), [models/post.py](file:///d:/Documents/Github/LANES/backend/app/models/post.py).
 
 ---
 
-### 17. Persistent Post Drafting (IndexedDB)
-*   **Purpose:** Prevents accidental data loss when users navigate away from the post creation modal or lose connection.
-*   **What it does:** Seamlessly saves typed text and massive binary file selections in the browser's persistent storage, restoring them when the user returns.
+### 17. Intelligent Bidirectional Flood Reporting (Hybrid Carriageway Detection Strategy)
+*   **Purpose:** Accurately models road-segment submersion along divided boulevards, dual carriageways (e.g., C-5, Ortigas Ave, Shaw Blvd), and narrow two-way streets without erroneously blocking oncoming lanes or under-reporting flooded dual lanes.
+*   **What it does:** Dynamically inspects the OpenStreetMap/Valhalla road network graph at report creation. When a user reports a bidirectional flood on a divided carriageway, it identifies both opposing highway lines, validates street naming consistency to prevent false positives across unrelated alleys, and generates a unified multi-geometry avoidance zone.
 *   **How it works:**
-    1. Text content is saved to `sessionStorage`.
-    2. Large binary blobs (images/videos) exceed `sessionStorage` space quotas, so they are serialized into the browser's native **IndexedDB** using `idb-keyval`.
-    3. When the `CreatePostModal` mounts, a StrictMode-safe `useEffect` hook reconstructs the binary blobs back into JavaScript `File` objects and generates new `URL.createObjectURL` previews.
-*   **Access & Roles:** Public commuters.
+    1. **Pre-Submission Carriageway Detection:** The endpoint `POST /api/v1/reports/detect-carriageway` evaluates the user's drawn `LineString` segment against Valhalla's routing graph via `find_opposite_carriageway`.
+    2. **Road Classification Engine:** Classifies the street segment into one of four topology modes:
+       - `NARROW_TWO_WAY`: Single physical pavement with two-way traffic flow; standard directional buffering applies.
+       - `DIVIDED_CARRIAGEWAY`: Physically separated dual carriageways requiring paired opposite-lane discovery.
+       - `TRUE_ONE_WAY`: Confirmed single-direction street with no counterpart.
+       - `UNMAPPED`: Segment outside graph coverage.
+    3. **Dynamic Perpendicular Offset Probe:** For one-way candidates, executes a progressive orthogonal ray-cast search (stepping 5m, 10m, 15m, 20m, 25m, 30m) along the normal vector of the segment midpoint to locate the opposing directional edge.
+    4. **Name Validation Firewall:** Validates that the discovered opposite edge shares the exact normalized road name (or highway classification) with the source segment, strictly preventing accidental snapping to parallel access alleys or service roads.
+    5. **PostGIS Dual-Buffering:** In `report_service.py` and `admin.py`, creates buffered line geometries for both carriageways and merges them into a single avoidance polygon boundary (`ST_Multi` / `ST_Buffer`), guaranteeing Valhalla detour calculations route around both carriageways simultaneously.
+*   **Access & Roles:** Public users can report bidirectional hazards; DRRM officers inspect and confirm carriageway pairs during spatial moderation.
 *   **Related Components:**
-    *   **Frontend:** [CreatePostModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/CreatePostModal.tsx) (Draft logic, IDB restoration).
+    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [CreateOfficialZonePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/CreateOfficialZonePanel.tsx), [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx).
+    *   **Backend:** [valhalla_service.py](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py) (`find_opposite_carriageway`), [report_service.py](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py), [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) (`/detect-carriageway`), [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py).
 
 ---
 
-### 18. Official DRRMO Zone Creation & Interactive Terra Draw Vector Engine
+### 18. Spatial Analytics & Flood Risk Heatmap Engine
+*   **Purpose:** Aggregates historical and active flood reports into spatial density visualizations and risk rankings to guide municipal DRRM resource allocation and citizen route planning.
+*   **What it does:** Delivers commuter and administrative analytics dashboards visualizing flood incident concentration, recurrent submersion hotspots, top barangay hazard statistics, and temporal trend analyses across Pasig City.
+*   **How it works:**
+    1. **MapLibre WebGL Heatmap Shader:** Computes continuous Kernel Density Estimation (KDE) on client-side WebGL GPU shaders (`type: "heatmap"`), interpolating `heatmap-weight` from report severity and dynamically scaling `heatmap-radius` and `heatmap-color` across zoom levels (0 to 15).
+    2. **PostGIS Spatial Aggregations:** Backend runs optimized PostGIS spatial queries (`ST_Within`, `ST_Intersects`) aggregating historical incident reports grouped by Pasig barangay boundary polygons.
+    3. **Comparative Metric Cards:** Computes average severity indices, verification rates, and hourly incident frequency for DRRMO operational debriefs.
+    4. **Commuter & Admin Perspectives:** Commuters access localized hazard summaries on the map, while administrators access comprehensive spatial heatmaps and drill-down metrics in the dedicated Analytics portal.
+*   **Access & Roles:** Commuters (public summary); Administrators & DRRM officers (full spatial analytics dashboard).
+*   **Related Components:**
+    *   **Frontend:** [AnalyticsDashboard.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/AnalyticsDashboard.tsx), [AnalyticsPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/analytics/AnalyticsPanel.tsx), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx).
+    *   **Backend:** [analytics.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/analytics.py), [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py), [crud/report.py](file:///d:/Documents/Github/LANES/backend/app/crud/report.py).
+
+---
+
+### 19. Official DRRMO Zone Creation & Interactive Terra Draw Vector Engine
 *   **Purpose:** Empowers disaster management officials to declare official flood avoidance zones, custom detour boundaries, or road closures directly onto the interactive map.
 *   **What it does:** Provides an administrative creation panel featuring 5 vector geometry modes: **Line** (road-snapping timeline segment), **Polygon**, **Freehand** (smooth sketch tool), **Rectangle**, and **Circle**. Captures geometries and submits them directly into the PostGIS routing avoidance layer.
 *   **How it works:**
@@ -274,7 +299,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 19. Saved Places (Personalized Location Bookmarks)
+### 20. Saved Places (Personalized Location Bookmarks)
 *   **Purpose:** Allows authenticated commuters to bookmark up to 10 frequently visited locations on the map for quick re-use as route origins or destinations.
 *   **What it does:** Provides a full CRUD management interface for personalized saved places, each with a custom emoji icon, label, and geographic coordinates. Displays all saved places as icon markers directly on the map.
 *   **How it works:**
@@ -282,15 +307,16 @@ This document serves as the central technical reference for all currently implem
     2. To pick a location, the user taps "Choose on Map", which activates a crosshair pin-drop mode on the `MapCanvas`. The chosen coordinates are reflected back to the panel.
     3. The backend enforces a hard limit of **10 saved places** per user. Attempting to create an 11th place returns an `HTTP 400` error with a human-readable message.
     4. Saved places are fetched and displayed in a list under the **My Places** tab, showing the icon, name, and address. Each entry has a **Delete** button to free a quota slot.
-    5. All saved places are rendered on the `MapCanvas` as plain emoji icon markers (no circles or animations) centered directly over their stored coordinates. Hovering reveals the place name label.
+    5. All saved places are rendered on the `MapCanvas` as plain emoji icon markers centered directly over their stored coordinates. Hovering reveals the place name label.
+    6. **Camera Synchronization & Indicator:** Selecting a saved place smoothly centers the camera using standardized hazard zone transitions (zoom 16, 1500ms duration) with a 3-second pulsing red highlight ring. Saved place quick pills in the feed sidebar open the Saved Places panel directly without setting origin pins.
 *   **Access & Roles:** Authenticated users only.
 *   **Related Components:**
-    *   **Frontend:** [SavePlacePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/places/SavePlacePanel.tsx), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [MapContext.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx).
+    *   **Frontend:** [SavePlacePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/places/SavePlacePanel.tsx), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [MapContext.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx), [LeftSidebar.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/LeftSidebar.tsx).
     *   **Backend:** [saved_places.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/saved_places.py) (`GET/POST/DELETE /api/v1/saved-places`), [crud/saved_place.py](file:///d:/Documents/Github/LANES/backend/app/crud/saved_place.py) (`MAX_SAVED_PLACES = 10`).
 
 ---
 
-### 20. Emergency Hotline Directory
+### 21. Emergency Hotline Directory
 *   **Purpose:** Gives commuters direct access to current national, Pasig city, and Pasig barangay emergency contact numbers from the community feed.
 *   **What it does:** Replaces static sidebar contacts with API-backed priority hotlines, expandable number lists, direct `tel:` links, and a full searchable directory modal.
 *   **How it works:**
@@ -321,7 +347,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 3. Automated Social Media Scraper Service (X/Twitter and Facebook APIs)
+### 2. Automated Social Media Scraper Service (X/Twitter and Facebook APIs)
 *   **Purpose:** Dramatically speeds up data ingestion by eliminating reliance on manual reports.
 *   **Why it is needed:** During typhoons, emergency data updates are shared at high velocity across social media platforms like X (Twitter) and Facebook. An automated crawler will capture these inputs in real time.
 *   **Expected functionality:**
@@ -334,7 +360,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 4. Bilingual Speech-to-Text Voice Reporting
+### 3. Bilingual Speech-to-Text Voice Reporting
 *   **Purpose:** Enables motorists in transit to report active hazards hands-free.
 *   **Why it is needed:** Typist reporting is dangerous for active drivers. Letting users dictate short reports keeps eyes on the road during severe storms.
 *   **Expected functionality:**
@@ -347,7 +373,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 5. Turn-by-Turn Voice Navigation (Text-to-Speech)
+### 4. Turn-by-Turn Voice Navigation (Text-to-Speech)
 *   **Purpose:** Prevents driver distractions by dictating detour directions audibly.
 *   **Why it is needed:** Drivers cannot safely read map paths or turn-by-turn lists while navigating heavy rain and storm conditions.
 *   **Expected functionality:**
@@ -359,7 +385,7 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 6. IoT Telemetric Sensor Nodes Integration
+### 5. IoT Telemetric Sensor Nodes Integration
 *   **Purpose:** Automatically registers baseline hazard metrics at high-risk municipal points.
 *   **Why it is needed:** Certain low-lying streets (e.g., Pasig Mega Market perimeter) flood during every minor rainfall event. Real-time telemetry ensures instant database updates.
 *   **Expected functionality:**
