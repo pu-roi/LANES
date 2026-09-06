@@ -379,11 +379,22 @@ export class Toggle3DControl {
     }
   }
 
-  // Helper: get all building layer IDs from the current style (both 3D and 2D footprint blocks)
-  private _getBuildingLayerIds(map: maplibregl.Map): string[] {
+  // Helper: get 3D extruded building layer IDs from the current style
+  private _get3DBuildingLayerIds(map: maplibregl.Map): string[] {
     try {
       return (map.getStyle()?.layers ?? [])
-        .filter((l: any) => l.type === "fill-extrusion" || l.id.toLowerCase().includes("building"))
+        .filter((l: any) => l.type === "fill-extrusion" || (l.id.toLowerCase().includes("building") && (l.id.toLowerCase().includes("3d") || l.id.toLowerCase().includes("extrusion"))))
+        .map((l: any) => l.id);
+    } catch {
+      return [];
+    }
+  }
+
+  // Helper: get 2D flat building layer IDs from the current style
+  private _get2DBuildingLayerIds(map: maplibregl.Map): string[] {
+    try {
+      return (map.getStyle()?.layers ?? [])
+        .filter((l: any) => l.id.toLowerCase().includes("building") && l.type !== "fill-extrusion")
         .map((l: any) => l.id);
     } catch {
       return [];
@@ -406,16 +417,52 @@ export class Toggle3DControl {
           });
           this._map.setTerrain({ source: Toggle3DControl.DEM_SOURCE_ID, exaggeration: Toggle3DControl.EXAGGERATION });
         }
-        this._getBuildingLayerIds(this._map).forEach((id) => {
-          try { this._map!.setLayoutProperty(id, "visibility", "visible"); } catch {}
+        // In 3D mode, show 3D building extrusions and restore their heights
+        this._get3DBuildingLayerIds(this._map).forEach((id) => {
+          try {
+            this._map!.setLayoutProperty(id, "visibility", "visible");
+            this._map!.setPaintProperty(id, "fill-extrusion-height", { property: "render_height", type: "identity" });
+            this._map!.setPaintProperty(id, "fill-extrusion-base", { property: "render_min_height", type: "identity" });
+            this._map!.setPaintProperty(id, "fill-extrusion-opacity", 0.4);
+            this._map!.setPaintProperty(id, "fill-extrusion-color", "hsl(44,14%,79%)");
+          } catch {}
+        });
+
+        // Restore 2D building layer maxzooms to 15 (default MapTiler behavior)
+        this._get2DBuildingLayerIds(this._map).forEach((id) => {
+          try {
+            const styleLayer = this._map!.getStyle()?.layers.find(l => l.id === id);
+            const minZ = styleLayer?.minzoom ?? 13;
+            this._map!.setLayerZoomRange(id, minZ, 15);
+          } catch {}
         });
       } else {
-        // Enforce 2D: ensure terrain is null and extrusions are hidden
+        // In 2D mode: disable terrain and hide 3D building extrusions entirely
         if (this._map.getTerrain()) {
           this._map.setTerrain(null);
         }
-        this._getBuildingLayerIds(this._map).forEach((id) => {
-          try { this._map!.setLayoutProperty(id, "visibility", "none"); } catch {}
+
+        this._get3DBuildingLayerIds(this._map).forEach((id) => {
+          try {
+            this._map!.setLayoutProperty(id, "visibility", "none");
+          } catch {}
+        });
+
+        // The critical fix: The 2D 'Building' layer natively disappears at maxzoom 15 in MapTiler styles.
+        // We override this to maxzoom 24 so the crisp 2D building footprints remain visible at all zoom levels!
+        this._get2DBuildingLayerIds(this._map).forEach((id) => {
+          try {
+            const styleLayer = this._map!.getStyle()?.layers.find(l => l.id === id);
+            const minZ = styleLayer?.minzoom ?? 13;
+            this._map!.setLayerZoomRange(id, minZ, 24);
+            this._map!.setLayoutProperty(id, "visibility", "visible");
+            
+            if (styleLayer?.type === "fill") {
+              this._map!.setPaintProperty(id, "fill-opacity", 0.7);
+              this._map!.setPaintProperty(id, "fill-color", "#d1cbbf");
+              this._map!.setPaintProperty(id, "fill-outline-color", "#9e9787");
+            }
+          } catch {}
         });
       }
     } catch (err) {

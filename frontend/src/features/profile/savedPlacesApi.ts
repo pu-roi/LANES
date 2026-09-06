@@ -9,6 +9,7 @@ export interface SavedPlace {
     latitude: number;
     longitude: number;
     created_at: string;
+    pin_order: number | null;
 }
 
 export interface SavedPlaceCreate {
@@ -17,6 +18,16 @@ export interface SavedPlaceCreate {
     address?: string;
     latitude: number;
     longitude: number;
+    pin_order?: number | null;
+}
+
+export interface SavedPlaceUpdate {
+    name?: string;
+    icon?: string;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
+    pin_order?: number | null;
 }
 
 export const savedPlacesApi = {
@@ -27,6 +38,11 @@ export const savedPlacesApi = {
 
     createSavedPlace: async (data: SavedPlaceCreate): Promise<SavedPlace> => {
         const response = await apiClient.post<SavedPlace>('/users/me/places', data);
+        return response;
+    },
+
+    updateSavedPlace: async (id: number, data: SavedPlaceUpdate): Promise<SavedPlace> => {
+        const response = await apiClient.patch<SavedPlace>(`/users/me/places/${id}`, data);
         return response;
     },
 

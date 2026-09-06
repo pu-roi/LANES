@@ -88,6 +88,13 @@ export default function RoutePanel() {
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+
+  const sortedSavedPlaces = savedPlaces ? [...savedPlaces].sort((a, b) => {
+    const orderA = a.pin_order ?? 999;
+    const orderB = b.pin_order ?? 999;
+    if (orderA === orderB) return 0;
+    return orderA - orderB;
+  }) : [];
   const [hoveredStepIdx, setHoveredStepIdx] = useState<number | null>(null);
 
   useEffect(() => {
@@ -336,9 +343,9 @@ export default function RoutePanel() {
           )}
 
           {/* Saved Places */}
-          {savedPlaces && savedPlaces.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar border-b border-gray-100">
-              {savedPlaces.map(place => {
+          {sortedSavedPlaces && sortedSavedPlaces.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar hide-scrollbar mt-3">
+              {sortedSavedPlaces.map(place => {
                 const Icon = iconMap[place.icon] || MapPin;
                 return (
                   <button
@@ -660,9 +667,9 @@ export default function RoutePanel() {
           </div>
 
           {/* Saved Places Chips */}
-          {savedPlaces && savedPlaces.length > 0 && (
+          {sortedSavedPlaces && sortedSavedPlaces.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {savedPlaces.map(place => {
+              {sortedSavedPlaces.map(place => {
                 const Icon = iconMap[place.icon] || MapPin;
                 return (
                   <button

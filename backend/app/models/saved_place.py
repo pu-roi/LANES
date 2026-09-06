@@ -22,6 +22,8 @@ class SavedPlace(Base):
     latitude: Mapped[float] = mapped_column(Float)
     longitude: Mapped[float] = mapped_column(Float)
     
+    pin_order: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    
     # Spatial column for future proximity queries
     geometry = mapped_column(Geometry("POINT", srid=4326, spatial_index=True))
 
