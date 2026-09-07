@@ -3,7 +3,7 @@
 import { type ReactNode, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/Card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useSidebarStore } from "@/shared/stores/sidebarStore";

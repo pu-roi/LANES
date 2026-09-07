@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { Loader2, CheckCircle, MapPin, AlertTriangle, Merge, X, Check, Info, ExternalLink } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
-import { Select } from "@/shared/ui/Select";
+import { Button } from "@/shared/ui";
+import { Select } from "@/shared/ui";
 import type { FloodReport, NearbyZone } from "../adminApi";
 import { UseMutationResult } from "@tanstack/react-query";
 

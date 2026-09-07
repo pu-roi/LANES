@@ -10,7 +10,7 @@ import {
   XCircle, Loader2, Edit3, LogOut
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ColorPicker } from "@/shared/ui/ColorPicker";
+import { ColorPicker } from "@/shared/ui";
 import { EditProfileForm } from "./components/EditProfileForm";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";

@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAuditLogs, AuditLogRecord } from "./adminApi";
-import { Button } from "@/shared/ui/Button";
-import { Modal } from "@/shared/ui/Modal";
+import { Button } from "@/shared/ui";
+import { Modal } from "@/shared/ui";
 import { Select, Pagination, DataTable, Column } from "@/shared/ui";
 import {
   Loader2,

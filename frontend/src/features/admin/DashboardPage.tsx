@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardStats, getDashboardCharts } from "./adminApi";
-import { Card } from "@/shared/ui/Card";
+import { Card } from "@/shared/ui";
 import Link from "next/link";
 import { 
   Loader2, 

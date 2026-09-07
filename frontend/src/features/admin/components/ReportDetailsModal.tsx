@@ -20,7 +20,7 @@ import {
   FileText
 } from "lucide-react";
 import { FloodReport } from "../adminApi";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui";
 
 interface ReportDetailsModalProps {
   report: FloodReport | null;

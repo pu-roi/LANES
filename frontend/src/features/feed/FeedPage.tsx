@@ -8,7 +8,7 @@ import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
 import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, Settings, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
 import { useToast, Button } from '@/shared/ui';
-import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
+import { savedPlacesApi } from '@/features/places/savedPlacesApi';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';

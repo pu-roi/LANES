@@ -21,8 +21,8 @@ import {
   Plus, Merge, Layers, ChevronLeft, Check, Loader2,
   AlertTriangle, MapPin, Clock, ArrowRight, Shield,
 } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
-import { Modal } from "@/shared/ui/Modal";
+import { Button } from "@/shared/ui";
+import { Modal } from "@/shared/ui";
 import type { FloodReport, NearbyZone, DrawnGeometry } from "@/features/admin/adminApi";
 
 // ─── Types ────────────────────────────────────────────────────────────────────

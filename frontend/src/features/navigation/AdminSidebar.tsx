@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
-import { Logo } from "@/shared/ui/Logo";
+import { Logo } from "@/shared/ui";
 import {
   LayoutDashboard,
   Map,
@@ -22,7 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui";
 
 const navItems = [
   { name: "Dashboard",          href: "/admin/dashboard", icon: LayoutDashboard },

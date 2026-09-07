@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 2:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -83,11 +83,11 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and pulsing red focus markers. Includes container resize observer alignment for sidebar offsets and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
-| `BaseMap.tsx` | `src/shared/ui/BaseMap.tsx` — Low-level wrapper around MapLibre GL JS. Manages the map instance lifecycle and exposes an `onMapLoad` callback. |
-| `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector, start/destination inputs, autocomplete dropdowns, alternative route cards, and turn-by-turn instruction list. |
+| `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and pulsing red focus markers. Features resilient `map.getStyle()` layer mounting, `style.load` re-render listeners, auto camera `fitBounds` framing, container resize observer alignment for sidebar offsets, and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
+| `BaseMap.tsx` | `src/shared/ui/map/BaseMap.tsx` — Low-level wrapper around MapLibre GL JS. Manages the map instance lifecycle, resize observer, and exposes `onMapInit` and `onMapLoad` callbacks. |
+| `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector, start/destination inputs with focus guards and smart two-click "Choose on Map" advance, authenticated saved places chips with sequential recalculation, alternative route cards, and turn-by-turn instruction list. |
 | `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The incident reporting panel (opens from FAB or top CTA). Step-by-step form for reporting floods with start/end pin dropping, severity selection, survey questions, and draft cart batch submission. |
-| `OfflineManager.tsx` | `src/components/Map/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
+| `OfflineManager.tsx` | `src/features/offline/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
 | `MapPickerMobileOverlay.tsx` | `src/features/map/MapPickerMobileOverlay.tsx` — A translucent overlay with a centered crosshair that appears on mobile when the user taps a location input, letting them drag the map to pin a point. |
 
 ### Hidden Until Interaction (Map Panels)

@@ -7,7 +7,7 @@ import { Bell, Check, Info, MapPin, X } from 'lucide-react';
 import { getNotifications, markAsRead, markAllAsRead, Notification } from './notificationsApi';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { Button } from '@/shared/ui/Button';
+import { Button } from "@/shared/ui";
 
 export function NotificationBell() {
   const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();

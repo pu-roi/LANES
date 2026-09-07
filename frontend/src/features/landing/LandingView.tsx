@@ -6,10 +6,10 @@ import { MapPin, ArrowRight, MousePointerClick, TrendingUp, Download } from "luc
 
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
-import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
-import { Footer } from "@/shared/ui/Footer";
+import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui";
+import { Button } from "@/shared/ui";
+import { LocationAutocomplete } from "@/shared/ui";
+import { Footer } from "@/shared/ui";
 
 import type { LocationSuggestion } from "@/features/geocoding/types";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";

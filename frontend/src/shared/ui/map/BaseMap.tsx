@@ -5,7 +5,7 @@ import maplibregl from "maplibre-gl";
 import type { Map } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Loader2 } from "lucide-react";
-import { LoadingOverlay } from "./LoadingOverlay";
+import { LoadingOverlay } from "../feedback/LoadingOverlay";
 import { registerOfflineProtocol } from "@/lib/offline/map-pmtiles";
 import { preloadOfflineEngine } from "@/features/routing/routingApi";
 

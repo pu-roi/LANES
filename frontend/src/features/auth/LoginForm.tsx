@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui";
+import { Button } from "@/shared/ui";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/shared/ui/Toast";
+import { useToast } from "@/shared/ui";
 import { FcGoogle } from "react-icons/fc";
 
 export default function LoginForm() {

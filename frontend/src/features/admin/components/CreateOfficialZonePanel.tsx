@@ -35,13 +35,13 @@ import {
 } from "lucide-react";
 import { get, set } from "idb-keyval";
 import Link from "next/link";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
-import { Select } from "@/shared/ui/Select";
+import { Input } from "@/shared/ui";
+import { Button } from "@/shared/ui";
+import { Select } from "@/shared/ui";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
-import { Panel } from "@/shared/ui/Panel";
+import { Panel } from "@/shared/ui";
 import { useToast } from "@/shared/ui";
-import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
+import { LocationAutocomplete } from "@/shared/ui";
 import { cn, getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import { useMediaQuery } from "@/hooks/useMediaQuery";

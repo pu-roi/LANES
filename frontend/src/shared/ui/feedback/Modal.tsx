@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { type ReactNode, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface ModalProps {
   isOpen: boolean;

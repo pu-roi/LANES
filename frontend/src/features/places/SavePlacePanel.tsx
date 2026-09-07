@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Panel } from "@/shared/ui/Panel";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
-import { Select } from "@/shared/ui/Select";
+import { Panel } from "@/shared/ui";
+import { Input } from "@/shared/ui";
+import { Button } from "@/shared/ui";
+import { Select } from "@/shared/ui";
 import { MapPin, Home, Briefcase, GraduationCap, Building, Star, Coffee, Heart, Crosshair, User, Trash2, Plus, Navigation, Pin, ChevronUp, ChevronDown } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { useMapContext } from "@/features/map/MapContext";
-import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
-import { savedPlacesApi, SavedPlace } from "@/features/profile/savedPlacesApi";
+import { LocationAutocomplete } from "@/shared/ui";
+import { savedPlacesApi, SavedPlace } from "./savedPlacesApi";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/shared/ui/Toast";
+import { useToast } from "@/shared/ui";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 

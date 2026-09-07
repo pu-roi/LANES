@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getRoles, createRole, updateRole, deleteRole, cloneRole, RoleRecord, RoleCreate, RoleUpdate } from "./adminApi";
-import { Button } from "@/shared/ui/Button";
-import { Modal } from "@/shared/ui/Modal";
-import { Input } from "@/shared/ui/Input";
+import { Button } from "@/shared/ui";
+import { Modal } from "@/shared/ui";
+import { Input } from "@/shared/ui";
 import { Select } from "@/shared/ui";
 import { useToast } from "@/shared/ui";
 import {

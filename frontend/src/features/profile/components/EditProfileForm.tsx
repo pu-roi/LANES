@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { LocationPickerModal, LocationItem } from "@/features/auth/components/LocationPickerModal";
-import { DatePicker } from "@/shared/ui/DatePicker";
-import { Input } from "@/shared/ui/Input";
-import { Select } from "@/shared/ui/Select";
+import { DatePicker } from "@/shared/ui";
+import { Input } from "@/shared/ui";
+import { Select } from "@/shared/ui";
 import { CheckCircle, Loader2 } from "lucide-react";
-import { useToast } from "@/shared/ui/Toast";
+import { useToast } from "@/shared/ui";
 
 // Metro Manila constant
 const METRO_MANILA_CODE = "130000000";

@@ -3,7 +3,7 @@
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Logo } from "@/shared/ui/Logo";
+import { Logo } from "@/shared/ui";
 import { useSearchParams } from "next/navigation";
 
 import { Suspense } from "react";

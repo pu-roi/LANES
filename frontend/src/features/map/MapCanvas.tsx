@@ -12,7 +12,7 @@ import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { createRoot, type Root } from "react-dom/client";
-import BaseMap from "@/shared/ui/BaseMap";
+import BaseMap from "@/shared/ui/map/BaseMap";
 import { getFloodsOffline } from "@/lib/offline/storage";
 import { useCityBoundaries } from "./hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
@@ -382,8 +382,8 @@ export default function MapCanvas() {
   setSelectedRouteIndexRef.current = setSelectedRouteIndex;
 
   const isPickingRef = useRef(isPickingOnMap);
+  isPickingRef.current = isPickingOnMap;
   useEffect(() => {
-    isPickingRef.current = isPickingOnMap;
     if (mapRef.current) {
       mapRef.current.getCanvas().style.cursor = isPickingOnMap ? "crosshair" : "";
     }
@@ -516,254 +516,340 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style || !map.isStyleLoaded()) return;
 
-    // ── Cleanup: remove all previous route layers, sources, and ETA markers ──
-    altMarkerRefs.current.forEach((m) => m.remove());
-    altMarkerRefs.current = [];
-
-    altLayerIds.current.forEach((id) => {
-      if (map.getLayer(id)) map.removeLayer(id);
-    });
-    altSourceIds.current.forEach((id) => {
-      if (map.getSource(id)) map.removeSource(id);
-    });
-    altLayerIds.current = [];
-    altSourceIds.current = [];
-
-    if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
-    if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
-
-    if (!allRoutes || allRoutes.length === 0) return;
-
-    // ── 1. Render alternative (gray) routes with clickable layers + ETA banners ──
-    allRoutes.forEach((route) => {
-      if (route.index === selectedRouteIndex) return; // selected route rendered separately below
-
-      const sourceId = `route-alt-source-${route.index}`;
-      const layerId = `route-alt-layer-${route.index}`;
-
-      map.addSource(sourceId, {
-        type: "geojson",
-        data: { type: "Feature", properties: {}, geometry: route.geometry },
+    const cleanupRoutes = () => {
+      altMarkerRefs.current.forEach((m) => {
+        try { m.remove(); } catch {}
       });
-      map.addLayer({
-        id: layerId,
-        type: "line",
-        source: sourceId,
-        layout: { "line-join": "round", "line-cap": "round" },
-        paint: {
-          "line-color": "#4b5563", // Darker gray for better visibility
-          "line-width": 6,
-          "line-opacity": 0.85,
-        },
-      });
+      altMarkerRefs.current = [];
 
-      altSourceIds.current.push(sourceId);
-      altLayerIds.current.push(layerId);
-
-      // Click handler: selecting this route makes it the active one
-      const clickHandler = () => setSelectedRouteIndexRef.current(route.index);
-      map.on("click", layerId, clickHandler);
-      map.on("mouseenter", layerId, () => {
-        map.getCanvas().style.cursor = "pointer";
-        if (map.getLayer(layerId)) map.setPaintProperty(layerId, "line-color", "#1f2937"); // Almost black on hover
-      });
-      map.on("mouseleave", layerId, () => {
-        map.getCanvas().style.cursor = isPickingRef.current ? "crosshair" : "";
-        if (map.getLayer(layerId)) map.setPaintProperty(layerId, "line-color", "#4b5563");
-      });
-
-      // ── ETA Banner HTML Marker at route midpoint ──
-      const coords = route.geometry.coordinates;
-      const midCoord = coords[Math.floor(coords.length / 2)];
-      const mins = Math.round(route.duration / 60);
-      const etaText = mins < 60 ? `${mins} min` : `${Math.floor(mins / 60)}h ${mins % 60}m`;
-      const distText = `${(route.distance / 1000).toFixed(1)} km`;
-
-      const el = document.createElement("div");
-      el.style.cssText = [
-        "background: white",
-        "border: 1.5px solid #e5e7eb",
-        "border-radius: 8px",
-        "padding: 5px 10px 3px",
-        "box-shadow: 0 2px 8px rgba(0,0,0,0.13)",
-        "cursor: pointer",
-        "font-family: system-ui,-apple-system,sans-serif",
-        "display: flex",
-        "flex-direction: column",
-        "align-items: center",
-        "min-width: 72px",
-        "transition: box-shadow 0.15s, border-color 0.15s",
-      ].join(";");
-
-      const topRow = document.createElement("div");
-      topRow.style.cssText = "display:flex;align-items:center;gap:4px;";
-
-      if (route.is_truncated) {
-        const warn = document.createElement("span");
-        warn.textContent = "⚠";
-        warn.style.cssText = "font-size:11px;color:#d97706;";
-        topRow.appendChild(warn);
-      }
-
-      const etaEl = document.createElement("span");
-      etaEl.textContent = etaText;
-      etaEl.style.cssText = "font-size:13px;font-weight:700;color:#111827;";
-      topRow.appendChild(etaEl);
-
-      const distEl = document.createElement("span");
-      distEl.textContent = distText;
-      distEl.style.cssText = "font-size:10px;color:#6b7280;margin-top:1px;";
-
-      // Small downward-pointing triangle (caret) grounding the banner to the route line
-      const caret = document.createElement("div");
-      caret.style.cssText = [
-        "width:0",
-        "height:0",
-        "border-left:6px solid transparent",
-        "border-right:6px solid transparent",
-        "border-top:7px solid #e5e7eb",
-        "margin:3px auto 0",
-        "position:relative",
-      ].join(";");
-      const caretInner = document.createElement("div");
-      caretInner.style.cssText = [
-        "width:0",
-        "height:0",
-        "border-left:5px solid transparent",
-        "border-right:5px solid transparent",
-        "border-top:6px solid white",
-        "position:absolute",
-        "top:-8px",
-        "left:-5px",
-      ].join(";");
-      caret.appendChild(caretInner);
-
-      el.appendChild(topRow);
-      el.appendChild(distEl);
-      el.appendChild(caret);
-
-      el.addEventListener("click", clickHandler);
-      el.addEventListener("mouseenter", () => {
-        el.style.boxShadow = "0 4px 14px rgba(0,0,0,0.18)";
-        el.style.borderColor = "#9ca3af";
-      });
-      el.addEventListener("mouseleave", () => {
-        el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.13)";
-        el.style.borderColor = "#e5e7eb";
-      });
-
-      const marker = new maplibregl.Marker({ element: el, anchor: "bottom" })
-        .setLngLat([midCoord[0], midCoord[1]])
-        .addTo(map);
-
-      altMarkerRefs.current.push(marker);
-    });
-
-    // ── 2. Render the selected route with the existing blue/flood gradient ──
-    const activeRoute = allRoutes[selectedRouteIndex];
-    if (!activeRoute) return;
-
-    const routeGeometryActive = activeRoute.geometry;
-
-    // Default: solid blue gradient for clear routes
-    let gradientExpression: any = [
-      "interpolate",
-      ["linear"],
-      ["line-progress"],
-      0.0, "#2563eb",
-      1.0, "#2563eb",
-    ];
-
-    const coords = routeGeometryActive.coordinates;
-    if (coords && coords.length > 0) {
-      const dists = [0];
-      let totalDist = 0;
-      for (let i = 1; i < coords.length; i++) {
-        const c1 = coords[i - 1];
-        const c2 = coords[i];
-        const dx = c2[0] - c1[0];
-        const dy = c2[1] - c1[1];
-        totalDist += Math.sqrt(dx * dx + dy * dy) * 111000;
-        dists.push(totalDist);
-      }
-
-      let firstIntersectIdx = -1;
-      let lastIntersectIdx = -1;
-      for (let i = 0; i < coords.length; i++) {
-        const pt = coords[i] as [number, number];
-        const isFlooded = (activeZonesData || []).some((zone) =>
-          isPointInPolygon(pt, zone.geometry)
-        );
-        if (isFlooded) {
-          if (firstIntersectIdx === -1) firstIntersectIdx = i;
-          lastIntersectIdx = i;
+      for (let i = 0; i < 10; i++) {
+        const lId = `route-alt-layer-${i}`;
+        const sId = `route-alt-source-${i}`;
+        if (map.getLayer(lId)) {
+          try { map.removeLayer(lId); } catch {}
+        }
+        if (map.getSource(sId)) {
+          try { map.removeSource(sId); } catch {}
         }
       }
+      altLayerIds.current = [];
+      altSourceIds.current = [];
 
-      if (firstIntersectIdx !== -1 && totalDist > 0) {
-        const D_start = dists[firstIntersectIdx];
-        const D_end = dists[lastIntersectIdx];
-        const P_start_flood = D_start / totalDist;
-        const P_end_flood = D_end / totalDist;
-        const p_blue_approach = Math.max(0.0, D_start - 80) / totalDist;
-        const p_yellow_approach = Math.max(0.0, D_start - 40) / totalDist;
-        const p_orange_approach = Math.max(0.0, D_start - 15) / totalDist;
+      if (map.getLayer(ROUTE_LAYER_ID)) {
+        try { map.removeLayer(ROUTE_LAYER_ID); } catch {}
+      }
+      if (map.getSource(ROUTE_SOURCE_ID)) {
+        try { map.removeSource(ROUTE_SOURCE_ID); } catch {}
+      }
+    };
 
-        const rawStops = [
-          { p: 0.0, c: "#2563eb" },
-          { p: p_blue_approach, c: "#2563eb" },
-          { p: p_yellow_approach, c: "#eab308" },
-          { p: p_orange_approach, c: "#f97316" },
-          { p: P_start_flood, c: "#ef4444" },
-          { p: P_end_flood, c: "#ef4444" },
-        ];
+    const renderRoutes = () => {
+      if (!map.getStyle()) return;
 
-        if (P_end_flood < 1.0) {
-          rawStops.push({ p: Math.min(totalDist, D_end + 15) / totalDist, c: "#f97316" });
-          rawStops.push({ p: Math.min(totalDist, D_end + 40) / totalDist, c: "#eab308" });
-          rawStops.push({ p: Math.min(totalDist, D_end + 80) / totalDist, c: "#2563eb" });
-          rawStops.push({ p: 1.0, c: "#2563eb" });
-        }
+      cleanupRoutes();
 
-        rawStops.sort((a, b) => a.p - b.p);
-        const uniqueStops: [number, string][] = [];
-        rawStops.forEach((stop) => {
-          if (uniqueStops.length === 0) {
-            uniqueStops.push([stop.p, stop.c]);
-          } else {
-            const last = uniqueStops[uniqueStops.length - 1];
-            if (last[0] === stop.p) last[1] = stop.c;
-            else uniqueStops.push([stop.p, stop.c]);
+      if (!allRoutes || allRoutes.length === 0) return;
+
+      // ── 1. Render alternative (gray) routes with clickable layers + ETA banners ──
+      allRoutes.forEach((route) => {
+        if (route.index === selectedRouteIndex) return; // selected route rendered separately below
+
+        const sourceId = `route-alt-source-${route.index}`;
+        const layerId = `route-alt-layer-${route.index}`;
+
+        try {
+          if (!map.getSource(sourceId)) {
+            map.addSource(sourceId, {
+              type: "geojson",
+              data: { type: "Feature", properties: {}, geometry: route.geometry },
+            });
           }
-        });
+          if (!map.getLayer(layerId)) {
+            map.addLayer({
+              id: layerId,
+              type: "line",
+              source: sourceId,
+              layout: { "line-join": "round", "line-cap": "round" },
+              paint: {
+                "line-color": "#4b5563", // Darker gray for better visibility
+                "line-width": 6,
+                "line-opacity": 0.85,
+              },
+            });
+          }
 
-        gradientExpression = ["interpolate", ["linear"], ["line-progress"]];
-        uniqueStops.forEach(([p, c]) => {
-          gradientExpression.push(p);
-          gradientExpression.push(c);
-        });
+          altSourceIds.current.push(sourceId);
+          altLayerIds.current.push(layerId);
+
+          // Click handler: selecting this route makes it the active one
+          const clickHandler = () => setSelectedRouteIndexRef.current(route.index);
+          map.on("click", layerId, clickHandler);
+          map.on("mouseenter", layerId, () => {
+            map.getCanvas().style.cursor = "pointer";
+            if (map.getLayer(layerId)) map.setPaintProperty(layerId, "line-color", "#1f2937"); // Almost black on hover
+          });
+          map.on("mouseleave", layerId, () => {
+            map.getCanvas().style.cursor = isPickingRef.current ? "crosshair" : "";
+            if (map.getLayer(layerId)) map.setPaintProperty(layerId, "line-color", "#4b5563");
+          });
+
+          // ── ETA Banner HTML Marker at route midpoint ──
+          const coords = route.geometry.coordinates;
+          if (coords && coords.length > 0) {
+            const midCoord = coords[Math.floor(coords.length / 2)];
+            const mins = Math.round(route.duration / 60);
+            const etaText = mins < 60 ? `${mins} min` : `${Math.floor(mins / 60)}h ${mins % 60}m`;
+            const distText = `${(route.distance / 1000).toFixed(1)} km`;
+
+            const el = document.createElement("div");
+            el.style.cssText = [
+              "background: white",
+              "border: 1.5px solid #e5e7eb",
+              "border-radius: 8px",
+              "padding: 5px 10px 3px",
+              "box-shadow: 0 2px 8px rgba(0,0,0,0.13)",
+              "cursor: pointer",
+              "font-family: system-ui,-apple-system,sans-serif",
+              "display: flex",
+              "flex-direction: column",
+              "align-items: center",
+              "min-width: 72px",
+              "transition: box-shadow 0.15s, border-color 0.15s",
+            ].join(";");
+
+            const topRow = document.createElement("div");
+            topRow.style.cssText = "display:flex;align-items:center;gap:4px;";
+
+            if (route.is_truncated) {
+              const warn = document.createElement("span");
+              warn.textContent = "⚠";
+              warn.style.cssText = "font-size:11px;color:#d97706;";
+              topRow.appendChild(warn);
+            }
+
+            const etaEl = document.createElement("span");
+            etaEl.textContent = etaText;
+            etaEl.style.cssText = "font-size:13px;font-weight:700;color:#111827;";
+            topRow.appendChild(etaEl);
+
+            const distEl = document.createElement("span");
+            distEl.textContent = distText;
+            distEl.style.cssText = "font-size:10px;color:#6b7280;margin-top:1px;";
+
+            // Small downward-pointing triangle (caret) grounding the banner to the route line
+            const caret = document.createElement("div");
+            caret.style.cssText = [
+              "width:0",
+              "height:0",
+              "border-left:6px solid transparent",
+              "border-right:6px solid transparent",
+              "border-top:7px solid #e5e7eb",
+              "margin:3px auto 0",
+              "position:relative",
+            ].join(";");
+            const caretInner = document.createElement("div");
+            caretInner.style.cssText = [
+              "width:0",
+              "height:0",
+              "border-left:5px solid transparent",
+              "border-right:5px solid transparent",
+              "border-top:6px solid white",
+              "position:absolute",
+              "top:-8px",
+              "left:-5px",
+            ].join(";");
+            caret.appendChild(caretInner);
+
+            el.appendChild(topRow);
+            el.appendChild(distEl);
+            el.appendChild(caret);
+
+            el.addEventListener("click", clickHandler);
+            el.addEventListener("mouseenter", () => {
+              el.style.boxShadow = "0 4px 14px rgba(0,0,0,0.18)";
+              el.style.borderColor = "#9ca3af";
+            });
+            el.addEventListener("mouseleave", () => {
+              el.style.boxShadow = "0 2px 8px rgba(0,0,0,0.13)";
+              el.style.borderColor = "#e5e7eb";
+            });
+
+            const marker = new maplibregl.Marker({ element: el, anchor: "bottom" })
+              .setLngLat([midCoord[0], midCoord[1]])
+              .addTo(map);
+
+            altMarkerRefs.current.push(marker);
+          }
+        } catch (e) {
+          console.error(`Failed to add alternative route ${route.index}:`, e);
+        }
+      });
+
+      // ── 2. Render the selected route with blue/flood gradient ──
+      const activeRoute = allRoutes[selectedRouteIndex];
+      if (!activeRoute) return;
+
+      const routeGeometryActive = activeRoute.geometry;
+      const coords = routeGeometryActive.coordinates;
+
+      let hasFloodOverlap = false;
+      let gradientExpression: any = [
+        "interpolate",
+        ["linear"],
+        ["line-progress"],
+        0.0, "#2563eb",
+        1.0, "#2563eb",
+      ];
+
+      if (coords && coords.length > 0) {
+        const dists = [0];
+        let totalDist = 0;
+        for (let i = 1; i < coords.length; i++) {
+          const c1 = coords[i - 1];
+          const c2 = coords[i];
+          const dx = c2[0] - c1[0];
+          const dy = c2[1] - c1[1];
+          totalDist += Math.sqrt(dx * dx + dy * dy) * 111000;
+          dists.push(totalDist);
+        }
+
+        let firstIntersectIdx = -1;
+        let lastIntersectIdx = -1;
+        for (let i = 0; i < coords.length; i++) {
+          const pt = coords[i] as [number, number];
+          const isFlooded = (activeZonesData || []).some((zone) =>
+            isPointInPolygon(pt, zone.geometry)
+          );
+          if (isFlooded) {
+            if (firstIntersectIdx === -1) firstIntersectIdx = i;
+            lastIntersectIdx = i;
+          }
+        }
+
+        if (firstIntersectIdx !== -1 && totalDist > 0) {
+          const D_start = dists[firstIntersectIdx];
+          const D_end = dists[lastIntersectIdx];
+          const P_start_flood = D_start / totalDist;
+          const P_end_flood = D_end / totalDist;
+          const p_blue_approach = Math.max(0.0, D_start - 80) / totalDist;
+          const p_yellow_approach = Math.max(0.0, D_start - 40) / totalDist;
+          const p_orange_approach = Math.max(0.0, D_start - 15) / totalDist;
+
+          const rawStops = [
+            { p: 0.0, c: "#2563eb" },
+            { p: p_blue_approach, c: "#2563eb" },
+            { p: p_yellow_approach, c: "#eab308" },
+            { p: p_orange_approach, c: "#f97316" },
+            { p: P_start_flood, c: "#ef4444" },
+            { p: P_end_flood, c: "#ef4444" },
+          ];
+
+          if (P_end_flood < 1.0) {
+            rawStops.push({ p: Math.min(totalDist, D_end + 15) / totalDist, c: "#f97316" });
+            rawStops.push({ p: Math.min(totalDist, D_end + 40) / totalDist, c: "#eab308" });
+            rawStops.push({ p: Math.min(totalDist, D_end + 80) / totalDist, c: "#2563eb" });
+            rawStops.push({ p: 1.0, c: "#2563eb" });
+          }
+
+          rawStops.sort((a, b) => a.p - b.p);
+          const uniqueStops: [number, string][] = [];
+          rawStops.forEach((stop) => {
+            if (uniqueStops.length === 0) {
+              uniqueStops.push([stop.p, stop.c]);
+            } else {
+              const last = uniqueStops[uniqueStops.length - 1];
+              if (last[0] === stop.p) last[1] = stop.c;
+              else uniqueStops.push([stop.p, stop.c]);
+            }
+          });
+
+          if (uniqueStops.length >= 2) {
+            hasFloodOverlap = true;
+            gradientExpression = ["interpolate", ["linear"], ["line-progress"]];
+            uniqueStops.forEach(([p, c]) => {
+              gradientExpression.push(p);
+              gradientExpression.push(c);
+            });
+          }
+        }
+
+        // Auto-fit camera bounds to bring the complete route into view
+        try {
+          let minLng = coords[0][0];
+          let maxLng = coords[0][0];
+          let minLat = coords[0][1];
+          let maxLat = coords[0][1];
+          for (const c of coords) {
+            if (c[0] < minLng) minLng = c[0];
+            if (c[0] > maxLng) maxLng = c[0];
+            if (c[1] < minLat) minLat = c[1];
+            if (c[1] > maxLat) maxLat = c[1];
+          }
+          if (minLng !== maxLng || minLat !== maxLat) {
+            const isMobile = window.innerWidth < 768;
+            map.fitBounds(
+              [[minLng, minLat], [maxLng, maxLat]],
+              {
+                padding: isMobile
+                  ? { top: 120, bottom: 200, left: 30, right: 30 }
+                  : { top: 80, bottom: 80, left: 380, right: 80 },
+                duration: 800,
+                maxZoom: 16.5,
+              }
+            );
+          }
+        } catch (e) {
+          console.warn("Could not fitBounds to route:", e);
+        }
       }
+
+      try {
+        if (!map.getSource(ROUTE_SOURCE_ID)) {
+          map.addSource(ROUTE_SOURCE_ID, {
+            type: "geojson",
+            lineMetrics: true,
+            data: { type: "Feature", properties: {}, geometry: routeGeometryActive },
+          });
+        }
+
+        if (!map.getLayer(ROUTE_LAYER_ID)) {
+          const paintConfig: any = {
+            "line-color": "#2563eb",
+            "line-width": 6,
+            "line-opacity": 0.9,
+          };
+          if (hasFloodOverlap) {
+            paintConfig["line-gradient"] = gradientExpression;
+          }
+
+          map.addLayer({
+            id: ROUTE_LAYER_ID,
+            type: "line",
+            source: ROUTE_SOURCE_ID,
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: paintConfig,
+          });
+        }
+      } catch (e) {
+        console.error("Failed to render active route layer:", e);
+      }
+    };
+
+    if (map.getStyle()) {
+      renderRoutes();
     }
 
-    map.addSource(ROUTE_SOURCE_ID, {
-      type: "geojson",
-      lineMetrics: true,
-      data: { type: "Feature", properties: {}, geometry: routeGeometryActive },
-    });
-    map.addLayer({
-      id: ROUTE_LAYER_ID,
-      type: "line",
-      source: ROUTE_SOURCE_ID,
-      layout: { "line-join": "round", "line-cap": "round" },
-      paint: {
-        "line-gradient": gradientExpression,
-        "line-width": 6,
-        "line-opacity": 0.9,
-      },
-    });
+    const handleStyleData = () => {
+      renderRoutes();
+    };
 
+    map.on("style.load", handleStyleData);
+
+    return () => {
+      map.off("style.load", handleStyleData);
+      cleanupRoutes();
+    };
   }, [allRoutes, selectedRouteIndex, activeZonesData, isLoaded]);
 
   // ── Step highlight: driven by route-step-hover / route-step-click / route-step-clear events ──
@@ -776,14 +862,14 @@ export default function MapCanvas() {
     const HIGHLIGHT_GLOW   = "step-highlight-glow";
 
     const clearHighlight = () => {
-      if (!map.style || !map.isStyleLoaded()) return;
+      if (!map.getStyle()) return;
       if (map.getLayer(HIGHLIGHT_LAYER)) map.removeLayer(HIGHLIGHT_LAYER);
       if (map.getLayer(HIGHLIGHT_GLOW))  map.removeLayer(HIGHLIGHT_GLOW);
       if (map.getSource(HIGHLIGHT_SOURCE)) map.removeSource(HIGHLIGHT_SOURCE);
     };
 
     const drawHighlight = (segment: [number, number][]) => {
-      if (!map.style || !map.isStyleLoaded() || segment.length < 2) return;
+      if (!map.getStyle() || segment.length < 2) return;
       clearHighlight();
       map.addSource(HIGHLIGHT_SOURCE, {
         type: "geojson",
@@ -915,7 +1001,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style || !map.isStyleLoaded()) return;
+    if (!map.getStyle()) return;
 
     // Remove existing preview source/layers if they exist
     if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
@@ -981,7 +1067,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style || !map.isStyleLoaded()) return;
+    if (!map.getStyle()) return;
 
     if (map.getLayer("draft-reports-layer")) map.removeLayer("draft-reports-layer");
     if (map.getSource("draft-reports-source")) map.removeSource("draft-reports-source");
@@ -1036,7 +1122,7 @@ export default function MapCanvas() {
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
-    if (!map.style || !map.isStyleLoaded()) return;
+    if (!map.getStyle()) return;
     
     if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
     if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
@@ -1089,6 +1175,7 @@ export default function MapCanvas() {
         setMapInstance(map);
         mapRef.current = map;
         map.on("click", (event: MapMouseEvent) => {
+          if (!isPickingRef.current) return;
           setPointFromMapRef.current([event.lngLat.lng, event.lngLat.lat]);
         });
         map.on("moveend", () => {

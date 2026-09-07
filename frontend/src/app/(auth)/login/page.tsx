@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Logo } from "@/shared/ui/Logo";
+import { Logo } from "@/shared/ui";
 import LoginForm from "@/features/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";

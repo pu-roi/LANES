@@ -387,7 +387,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   const setPointFromMap = useCallback(
     (coords: [number, number]) => {
-      if (!activePoint) return;
+      if (!isPickingOnMap || !activePoint) return;
       const label = coordsLabel(coords);
       if (activePoint === "start") {
         setStart(coords, label);
@@ -428,7 +428,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
         setIsPickingOnMap(false);
       }
     },
-    [activePoint, setStart, setEnd, setFloodStart, setFloodEnd, router]
+    [isPickingOnMap, activePoint, setStart, setEnd, setFloodStart, setFloodEnd, router]
   );
 
   const resetAll = useCallback(() => {

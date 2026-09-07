@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, ButtonProps } from "./Button";
+import { Button, ButtonProps } from "../forms/Button";
 import { Trash2, Edit2, Download, RefreshCw, CheckCircle, XCircle, UserCheck, UserX, ShieldOff } from "lucide-react";
 
 export type ActionVariant = "delete" | "edit" | "download" | "restore" | "approve" | "reject" | "enable" | "disable" | "default";

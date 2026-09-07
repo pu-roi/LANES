@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Logo } from "@/shared/ui/Logo";
+import { Logo } from "@/shared/ui";
 import { Home, Map as MapIcon, User, Newspaper, LogOut, ShieldCheck, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";

@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 2:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -69,6 +69,25 @@
 - [x] Implement container `ResizeObserver` in `BaseMap.tsx` to keep MapLibre dimensions synced (@roicambe)
 - [x] Fix MapLibre desktop centering offset by coordinating layout reflow and resize against 340px sidebar (@roicambe)
 - [x] Fix post draft auto-saving and coordinate preservation across login/signup redirects in `CreatePostModal.tsx` (@roicambe)
+
+### Phase 9: Project Directory Cleanup & Shared Architecture Restructuring
+- [x] Audit `frontend/` and `backend/` directories, clarifying `/map` vs `/admin/map` persistent routing (@roicambe)
+- [x] Unify frontend API client by migrating `useHotlines.ts` to `@/lib/apiClient` and deleting `shared/api.ts` (@roicambe)
+- [x] Delete unused `shared/types.ts` and empty `shared/components/` directory (@roicambe)
+- [x] Eliminate 10 dead prototype files across `features/auth`, `features/hazards`, `features/profile`, and `features/admin` (@roicambe)
+- [x] Relocate `src/components/Map/OfflineManager.tsx` to `features/offline/OfflineManager.tsx` and delete orphaned `src/components` (@roicambe)
+- [x] Categorize 26 flat components in `src/shared/ui/` into domain subfolders (`forms/`, `feedback/`, `layout/`, `tables/`, `map/`), migrate all imports to clean barrel imports, and purge all 25 shims (@roicambe)
+- [x] Backend root clutter cleanup: relocate maintenance scripts (`duplicate_reports.py`, `fix_locations.py`, `fix_locations_nominatim.py`) to `backend/scripts/`, move `zones.json` to `backend/tests/fixtures/`, and delete scratch files (@roicambe)
+- [x] Domain & feature alignment: consolidate `savedPlacesApi.ts` into `features/places/` with backwards-compatible re-exports and local feature imports (@roicambe)
+- [x] Service-Based Backend Routing Separation: establish dedicated `endpoints/routes.py` controller mounted at `/routes` with zero-regression delegation aliases in `endpoints/reports.py` (@roicambe)
+
+### Phase 10: Route Planner Focus State, Saved Places & Route Rendering Fixes
+- [x] Guard `setPointFromMap` with explicit `isPickingOnMap` and `activePoint` checks to prevent stray map clicks from overwriting focused input fields (@roicambe)
+- [x] Streamline "Choose on Map" UX: automatically advance to `end` destination upon setting origin, allowing one-click destination selection on the map (@roicambe)
+- [x] Fix Saved Places selection logic in `RoutePanel.tsx` to sequentialize origin and destination assignments and automatically trigger routing (@roicambe)
+- [x] Fix "Choose on Map" event propagation in `RoutePanel.tsx` preventing portal click cancellation (@roicambe)
+- [x] Fix MapLibre route polyline rendering in `MapCanvas.tsx`: replace fragile `isStyleLoaded()` guards with `map.getStyle()` and register `style.load` listeners to prevent dropouts on tile re-fetches (@roicambe)
+- [x] Enhance active route paint reliability with standard `line-color` fallback and automatic camera `fitBounds` centering (@roicambe)
 
 ## Future Roadmap (Phases)
 

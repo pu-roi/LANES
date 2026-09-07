@@ -5,8 +5,8 @@ import { Download, Database, RefreshCw, Trash2, ShieldAlert } from "lucide-react
 import toast from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui";
+import { Button } from "@/shared/ui";
 import { ConfirmDialog, DatePicker, TableActionGroup, TableActionButton } from "@/shared/ui";
 import { apiClient } from "@/lib/apiClient";
 import { getBackups, createBackup, restoreBackup, deleteBackup, cleanupData, BackupFile } from "./adminApi";

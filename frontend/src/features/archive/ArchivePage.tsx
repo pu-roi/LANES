@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getReports, getUsers, FloodReport, UserRecord } from "@/features/admin/adminApi";
 import { Button, Tabs } from "@/shared/ui";
-import { Input } from "@/shared/ui/Input";
+import { Input } from "@/shared/ui";
 import { DataTable, Column } from "@/shared/ui";
 import {
   Loader2,
