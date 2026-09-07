@@ -60,6 +60,7 @@ class FloodReport(Base):
     # [NEW] Fields for Community Feed & 1:N Spatial Moderation
     human_readable_location: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     barangay: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
+    city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
     is_public: Mapped[bool] = mapped_column(Boolean, default=False)
     is_bidirectional: Mapped[bool] = mapped_column(Boolean, default=False)
     

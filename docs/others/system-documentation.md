@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 7, 2026, 2:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -450,6 +450,7 @@ Incoming flood event reports from users or external scraped sources.
 | `media_urls` | JSONB, nullable | Array of photo/video URLs attached to the report |
 | `human_readable_location` | String(255), nullable | Geocoded address string for display purposes |
 | `barangay` | String(100), nullable | Extracted barangay name (indexed for fast filtering) |
+| `city` | String(100), nullable | Resolved city or municipality name (indexed for fast filtering) |
 | `is_public` | Boolean | Whether this report appears in the community feed |
 | `zone_id` | FK → flood_avoidance_zones.id, nullable | The avoidance zone this report was merged into (deduplication) |
 | `geometry` | PostGIS GEOMETRY (SRID 4326), nullable | Point or LineString coordinates of the flood location |

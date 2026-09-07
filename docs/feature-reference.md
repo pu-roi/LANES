@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 7, 2026, 2:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -23,17 +23,18 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 2. Structured Flood Incident Survey (3NF Normalized)
-*   **Purpose:** Collects precise, structured data about flood scenarios directly from users on the ground, bypassing NLP for explicit facts.
-*   **What it does:** Allows a user to rapidly fill out a categorical survey (e.g., Hidden hazards, Passable vehicle types, Receding status) via a streamlined inline panel interface.
+### 2. Structured Flood Incident Survey & Automated Reverse-Geocoding (3NF Normalized)
+*   **Purpose:** Collects precise, structured data about flood scenarios directly from ground users while automatically resolving spatial street, barangay, and city attributes without requiring manual text input.
+*   **What it does:** Allows users to fill out categorical passability surveys (e.g., Hidden hazards, Passable vehicles) and mark road segments on the map. The backend automatically extracts topological midpoints and performs structured reverse geocoding to persist verified street, barangay, and city records.
 *   **How it works:** 
-    1. Replaces standard text fields with responsive UI checkboxes and toggle groups within the `FloodReportPanel`.
-    2. Payload is sent alongside the standard incident report data.
-    3. The backend maps the survey to a dedicated `flood_report_surveys` table holding a strict foreign key to the root report, ensuring full Third Normal Form (3NF) relational integrity.
+    1. Replaces standard text fields with responsive UI chips and toggle groups within `FloodReportPanel.tsx`.
+    2. When road segments (`LineString`/`MultiLineString`) or points are submitted, the backend (`report_service.py`) calculates the representative midpoint coordinate and queries a multi-provider reverse geocoding engine (Nominatim with Photon fallback in `geocoding_service.py`).
+    3. Address components are cleaned and parsed into normalized attributes: `human_readable_location` (street/road), `barangay`, and `city` (persisted to `flood_reports` with dedicated PostGIS indices).
+    4. Survey responses map directly to a dedicated `flood_report_surveys` table holding a strict foreign key to the root report, ensuring full Third Normal Form (3NF) relational integrity.
 *   **Access & Roles:** Public users can submit surveys; DRRM officers review them.
 *   **Related Components:**
-    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (survey state & UI).
-    *   **Backend:** [report.py](file:///d:/Documents/Github/LANES/backend/app/models/report.py) (SQLAlchemy schemas), `POST /api/v1/reports` endpoint.
+    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [ReportDetailsModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/ReportDetailsModal.tsx), [PendingReportsPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/PendingReportsPanel.tsx).
+    *   **Backend:** [report.py](file:///d:/Documents/Github/LANES/backend/app/models/report.py), [report_service.py](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py), [geocoding_service.py](file:///d:/Documents/Github/LANES/backend/app/services/geocoding_service.py), `POST /api/v1/reports` endpoint.
 
 ---
 

@@ -37,6 +37,7 @@ class FloodReportBase(BaseModel):
     depth: Optional[str] = None
     human_readable_location: Optional[str] = None
     barangay: Optional[str] = None
+    city: Optional[str] = None
     is_public: bool = False
     is_bidirectional: bool = False
 

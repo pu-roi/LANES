@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 7, 2026, 2:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -25,8 +25,27 @@
 | 14| Saved Places Camera Sync & Navigation UX | Completed | Camera fly-to alignment (zoom 16, 1500ms duration), 3-second pulsing red indicator, saved places panel activation from feed, pin order fix, custom scrollbars |
 | 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
 | 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
+| 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion and historical report backfill |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 15: Automated Street, Barangay & City Reverse-Geocoding for Flood Reports (🟢 COMPLETED)
+- [x] **Multi-Provider Structured Reverse Geocoding Engine** (@roicambe):
+  - Refactored `geocoding_service.py` to extract structured `ParsedLocation` models containing clean `street`, `barangay`, and `city` attributes alongside full formatted addresses.
+  - Implemented OpenStreetMap Nominatim zoom-17 reverse lookup with automated fallback to Photon (Komoot) and hardened `User-Agent` headers against bot blocks.
+  - Added clean prefix normalization (`_clean_barangay_name`) stripping redundant "Brgy.", "Barangay", and punctuation variations.
+- [x] **Multi-Geometry Representative Coordinate Extraction** (@roicambe):
+  - Engineered `extract_representative_coordinates` in `report_service.py` supporting `Point`, `LineString`, `MultiLineString`, and `Polygon` geometries by computing topological midpoints across multi-vertex road segments.
+- [x] **Database Schema & PostGIS City Column Migration** (@roicambe):
+  - Added indexed `city: Mapped[Optional[str]]` (VARCHAR 100) column to `flood_reports` via clean Alembic migration `a66a677fa71a_add_city_to_flood_reports.py`.
+  - Updated Pydantic schemas (`FloodReportBase`, `FloodReportCreate`, `FloodReportResponse`) and CRUD layer (`app/crud/report.py`) to persist and return `barangay` and `city`.
+- [x] **Historical Database Report Backfill** (@roicambe):
+  - Developed and executed `backend/scripts/backfill_report_locations.py`, successfully updating all 13 existing database flood reports with accurate streets (e.g. C. Raymundo Ave, E. Rodriguez Jr. Ave, Dr. Sixto Antonio Ave, A. Mabini St), barangays (Maybunga, Ugong, Kapasigan, Rosario), and city (Pasig).
+- [x] **Frontend Moderation & Reporting Synchronization** (@roicambe):
+  - Updated `FloodReportPanel.tsx` to forward autocomplete street labels as server-side location hints.
+  - Updated `adminApi.ts`, `ReportDetailsModal.tsx`, and `PendingReportsPanel.tsx` to dynamically render `{report.barangay ? \`Brgy. ${report.barangay}, ${report.city || "Pasig"}\` : (report.city || "Pasig City")}` and explicit road segment names.
+- [x] **Automated Test Suite Verification** (@roicambe):
+  - Added unit and integration tests in `backend/tests/test_report_geocoding.py` testing prefix cleaning, coordinate extraction, async reverse geocoding, and automated DB report location persistence.
 
 ### Capstone Phase 14: Route Focus, Saved Places & Map Polyline Engine (🟢 COMPLETED)
 - [x] **Map-Click Input Protection & Two-Click UX** (@roicambe):

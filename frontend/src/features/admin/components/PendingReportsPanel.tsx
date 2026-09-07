@@ -183,7 +183,9 @@ export function PendingReportsPanel({
 
             <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
               <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-              <span className="truncate">{report.barangay ? `Brgy. ${report.barangay}, Pasig` : "Pasig City"}</span>
+              <span className="truncate">
+                {report.barangay ? `Brgy. ${report.barangay}, ${report.city || "Pasig"}` : (report.city || "Pasig City")}
+              </span>
             </div>
 
             {/* Nearby Zone Alert Badge (Merging with existing active zones) */}

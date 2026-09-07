@@ -105,6 +105,8 @@ def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> model
         depth=report.depth,
         geometry=geometry_clause,
         human_readable_location=report.human_readable_location,
+        barangay=report.barangay,
+        city=report.city,
         is_public=report.is_public,
         is_bidirectional=report.is_bidirectional,
         user_id=report.user_id,

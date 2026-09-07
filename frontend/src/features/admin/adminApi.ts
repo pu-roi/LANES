@@ -43,6 +43,7 @@ export interface FloodReport {
   status: "pending" | "approved" | "rejected";
   zone_id?: number | null;
   barangay?: string | null;
+  city?: string | null;
   human_readable_location?: string | null;
   user_id?: number | null;
   created_at: string;

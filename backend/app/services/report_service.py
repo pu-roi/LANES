@@ -1,10 +1,58 @@
 import logging
+from typing import Optional, List, Any
 from sqlalchemy.orm import Session
 from app.schemas.report import FloodReportCreate
-from app.services.geocoding_service import reverse_geocode
+from app.services.geocoding_service import reverse_geocode, reverse_geocode_structured
 from app.crud.report import create_flood_report
 
 logger = logging.getLogger(__name__)
+
+
+def extract_representative_coordinates(geometry: Optional[dict]) -> Optional[tuple[float, float]]:
+    """
+    Extracts a representative (lat, lng) from Point, LineString, or MultiLineString geometries.
+    For lines, the midpoint coordinate is returned.
+    Coordinates in GeoJSON are formatted as [lng, lat].
+    """
+    if not geometry or not isinstance(geometry, dict):
+        return None
+
+    geom_type = geometry.get("type")
+    coords = geometry.get("coordinates", [])
+
+    if not coords:
+        return None
+
+    try:
+        if geom_type == "Point" and len(coords) >= 2:
+            return float(coords[1]), float(coords[0])
+
+        elif geom_type == "LineString" and len(coords) > 0:
+            mid_idx = len(coords) // 2
+            mid_pt = coords[mid_idx]
+            if len(mid_pt) >= 2:
+                return float(mid_pt[1]), float(mid_pt[0])
+
+        elif geom_type == "MultiLineString" and len(coords) > 0:
+            first_line = coords[0]
+            if len(first_line) > 0:
+                mid_idx = len(first_line) // 2
+                mid_pt = first_line[mid_idx]
+                if len(mid_pt) >= 2:
+                    return float(mid_pt[1]), float(mid_pt[0])
+
+        elif geom_type == "Polygon" and len(coords) > 0:
+            ring = coords[0]
+            if len(ring) > 0:
+                mid_idx = len(ring) // 2
+                mid_pt = ring[mid_idx]
+                if len(mid_pt) >= 2:
+                    return float(mid_pt[1]), float(mid_pt[0])
+    except Exception as e:
+        logger.warning(f"Error extracting representative coordinates from geometry: {e}")
+
+    return None
+
 
 async def process_new_report(
     db: Session,
@@ -15,6 +63,8 @@ async def process_new_report(
     is_bidirectional: bool = False,
     depth: str = None,
     human_readable_location: str = None,
+    barangay: str = None,
+    city: str = None,
     geometry: dict = None,
     media_urls: list[str] = None,
     user_id: int = None,
@@ -22,22 +72,27 @@ async def process_new_report(
 ):
     """
     Business logic for processing a new flood report.
-    Handles reverse geocoding to find a human_readable_location.
-    When is_bidirectional=True and a LineString geometry is provided, this function
-    uses the Hybrid Strategy (map-matching) to find the actual opposite carriageway
-    and combines both lines into a GeometryCollection so the admin approval buffer
-    accurately covers both sides of a divided road.
+    Automatically reverse-geocodes report coordinates to populate street/landmark,
+    barangay, and city if not already supplied.
+    Handles opposite carriageway calculation for bidirectional reports.
     """
-    # If no NLP match is found, fallback to reverse geocoding
-    if not human_readable_location and geometry and geometry.get("type") == "Point":
+    # Auto-resolve missing location details using coordinates
+    rep_coords = extract_representative_coordinates(geometry)
+    if rep_coords and (not human_readable_location or not barangay or not city):
         try:
-            coords = geometry.get("coordinates", [])
-            if len(coords) >= 2:
-                lng, lat = coords[0], coords[1]
-                # Reverse geocode (OpenStreetMap Nominatim)
-                location = await reverse_geocode(lat, lng)
-                if location:
-                    human_readable_location = location
+            lat, lng = rep_coords
+            parsed_loc = await reverse_geocode_structured(lat, lng)
+            if parsed_loc:
+                if not human_readable_location:
+                    human_readable_location = parsed_loc.street or parsed_loc.display_name
+                if not barangay and parsed_loc.barangay:
+                    barangay = parsed_loc.barangay
+                if not city and parsed_loc.city:
+                    city = parsed_loc.city
+                logger.info(
+                    f"[process_new_report] Reverse geocoded location: street='{human_readable_location}', "
+                    f"barangay='{barangay}', city='{city}'"
+                )
         except Exception as e:
             logger.error(f"Failed to reverse geocode report location: {e}")
 
@@ -46,7 +101,6 @@ async def process_new_report(
         try:
             from app.services.valhalla_service import find_opposite_carriageway
             original_coords = geometry.get("coordinates", [])
-            # Extract road name from human_readable_location as a validation hint
             road_name_hint = human_readable_location
 
             road_type, opposite_geom = find_opposite_carriageway(
@@ -55,8 +109,6 @@ async def process_new_report(
             )
 
             if opposite_geom and road_type == "DIVIDED_CARRIAGEWAY":
-                # Combine the original line and the opposite-carriageway line into a
-                # MultiLineString so Pydantic, GeoJSON, MapLibre, and PostGIS cleanly handle both roads.
                 orig_coords = geometry.get("coordinates", [])
                 opp_coords = opposite_geom.get("coordinates", [])
                 geometry = {
@@ -81,6 +133,8 @@ async def process_new_report(
         severity=severity,
         depth=depth,
         human_readable_location=human_readable_location,
+        barangay=barangay,
+        city=city,
         is_public=is_public,
         is_bidirectional=is_bidirectional,
         geometry=geometry,

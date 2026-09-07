@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 7, 2026, 2:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -88,6 +88,15 @@
 - [x] Fix "Choose on Map" event propagation in `RoutePanel.tsx` preventing portal click cancellation (@roicambe)
 - [x] Fix MapLibre route polyline rendering in `MapCanvas.tsx`: replace fragile `isStyleLoaded()` guards with `map.getStyle()` and register `style.load` listeners to prevent dropouts on tile re-fetches (@roicambe)
 - [x] Enhance active route paint reliability with standard `line-color` fallback and automatic camera `fitBounds` centering (@roicambe)
+
+### Phase 11: Automated Street, Barangay & City Reverse-Geocoding for Flood Reports
+- [x] Implement structured reverse geocoding with multi-provider fallback (Nominatim & Photon) in `geocoding_service.py` (@roicambe)
+- [x] Add multi-geometry coordinate midpoint extraction (Point, LineString, MultiLineString) in `report_service.py` (@roicambe)
+- [x] Add `city` column to `FloodReport` model and generate Alembic migration `a66a677fa71a_add_city_to_flood_reports.py` (@roicambe)
+- [x] Update CRUD and schema layers to persist `barangay` and `city` on `POST /api/v1/reports` (@roicambe)
+- [x] Execute historical backfill script updating all existing database reports with verified street, barangay, and city names (@roicambe)
+- [x] Sync frontend `FloodReportPanel`, `ReportDetailsModal`, and `PendingReportsPanel` with dynamic city and road labels (@roicambe)
+- [x] Add automated test suite in `backend/tests/test_report_geocoding.py` verifying coordinate extraction, reverse geocoding, and DB persistence (@roicambe)
 
 ## Future Roadmap (Phases)
 
