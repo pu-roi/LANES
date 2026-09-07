@@ -1,11 +1,11 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 7, 2026, 3:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
-## Completed Milestones (39+ Commits Integrated)
+## Completed Milestones (40+ Commits Integrated)
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
@@ -25,7 +25,7 @@
 | 14| Saved Places Camera Sync & Navigation UX | Completed | Camera fly-to alignment (zoom 16, 1500ms duration), 3-second pulsing red indicator, saved places panel activation from feed, pin order fix, custom scrollbars |
 | 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
 | 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
-| 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion and historical report backfill |
+| 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
 
 ## Capstone Roadmap - Delivered Phases
 
@@ -44,6 +44,11 @@
 - [x] **Frontend Moderation & Reporting Synchronization** (@roicambe):
   - Updated `FloodReportPanel.tsx` to forward autocomplete street labels as server-side location hints.
   - Updated `adminApi.ts`, `ReportDetailsModal.tsx`, and `PendingReportsPanel.tsx` to dynamically render `{report.barangay ? \`Brgy. ${report.barangay}, ${report.city || "Pasig"}\` : (report.city || "Pasig City")}` and explicit road segment names.
+- [x] **Community Feed Post Location Refinement & Deduplication** (@roicambe):
+  - Streamlined `PostItem.tsx` by eliminating redundant secondary blue text location buttons positioned below the severity badge.
+  - Consolidated header location display with red pin fallback (`post.location_tag || post.report?.human_readable_location || (post.report?.barangay ? \`Brgy. ${post.report.barangay}\` : null)`), smoothly flying to map coordinates on click.
+  - Preserved primary "View on Map" action button in the bottom interaction bar exclusively for shared flood reports (`post.report?.geometry && onViewMap`).
+  - Added optional `barangay` and `city` properties to `FeedPost.report` in `frontend/src/features/feed/feedApi.ts`.
 - [x] **Automated Test Suite Verification** (@roicambe):
   - Added unit and integration tests in `backend/tests/test_report_geocoding.py` testing prefix cleaning, coordinate extraction, async reverse geocoding, and automated DB report location persistence.
 

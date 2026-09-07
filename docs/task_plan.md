@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 7, 2026, 3:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -97,6 +97,7 @@
 - [x] Execute historical backfill script updating all existing database reports with verified street, barangay, and city names (@roicambe)
 - [x] Sync frontend `FloodReportPanel`, `ReportDetailsModal`, and `PendingReportsPanel` with dynamic city and road labels (@roicambe)
 - [x] Add automated test suite in `backend/tests/test_report_geocoding.py` verifying coordinate extraction, reverse geocoding, and DB persistence (@roicambe)
+- [x] Streamline Community Feed post cards: eliminate redundant blue location text beneath severity badge, unify post header location with red pin fallback to reverse-geocoded road or barangay, and preserve primary "View on Map" action button (@roicambe)
 
 ## Future Roadmap (Phases)
 
