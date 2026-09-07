@@ -103,6 +103,8 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
     }
   };
 
+  const displayLocation = post.location_tag || post.report?.human_readable_location || (post.report?.barangay ? `Brgy. ${post.report.barangay}` : null);
+
   return (
     <article className="py-6 px-4 sm:px-6 border-b border-gray-100 last:border-b-0 bg-white">
       
@@ -131,10 +133,10 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5 flex-wrap">
               <span>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
-              {post.location_tag && (
+              {displayLocation && (
                 <>
                   <span>•</span>
-                  {onViewMap && (post.location_lat && post.location_lng || post.report?.geometry) ? (
+                  {onViewMap && ((post.location_lat && post.location_lng) || post.report?.geometry) ? (
                     <button
                       type="button"
                       onClick={() => {
@@ -153,12 +155,12 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                       title="View on Map"
                     >
                       <MapPin className="w-3 h-3 text-red-500 group-hover:text-blue-500 transition-colors" />
-                      <span className="group-hover:underline">{post.location_tag}</span>
+                      <span className="group-hover:underline">{displayLocation}</span>
                     </button>
                   ) : (
                     <span className="flex items-center gap-1 font-semibold text-gray-600">
                       <MapPin className="w-3 h-3 text-red-500" />
-                      {post.location_tag}
+                      {displayLocation}
                     </span>
                   )}
                 </>
@@ -183,27 +185,6 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               <AlertTriangle className="w-3.5 h-3.5" />
               {getSeverityLabel(post.report.severity)}
             </span>
-          )}
-          {/* Flood report location link (top-right) — only for flood reports with human_readable_location but no location_tag */}
-          {post.report?.human_readable_location && !post.location_tag && post.report?.geometry && onViewMap && (
-            <button 
-              onClick={() => {
-                const geomType = post.report?.geometry?.type;
-                const coords = post.report?.geometry?.coordinates;
-                if (!geomType || !coords) return;
-                try {
-                  const center = getGeometryCenter(geomType, coords);
-                  if (center) onViewMap(center[1], center[0]);
-                } catch (e) {
-                  console.error("Failed to calculate geometry center", e);
-                }
-              }}
-              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 transition-colors max-w-[220px] sm:max-w-[300px]"
-              title="View on Map"
-            >
-              <MapPin className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate hover:underline">{post.report.human_readable_location}</span>
-            </button>
           )}
         </div>
       </div>

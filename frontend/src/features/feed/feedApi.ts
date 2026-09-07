@@ -25,6 +25,8 @@ export interface FeedPost {
     status: string;
     media_urls?: string[];
     human_readable_location?: string;
+    barangay?: string;
+    city?: string;
     geometry?: {
       type: 'Point' | 'LineString';
       coordinates: number[] | number[][];
