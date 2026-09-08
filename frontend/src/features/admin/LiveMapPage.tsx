@@ -11,10 +11,10 @@ import {
   createOfficialZone,
   FloodReport, NearbyZone
 } from "./adminApi";
-import { Button } from "@/shared/ui/Button";
-import { Modal } from "@/shared/ui/Modal";
+import { Button } from "@/shared/ui";
+import { Modal } from "@/shared/ui";
 import { Pagination, Tabs } from "@/shared/ui";
-import BaseMap from "@/shared/ui/BaseMap";
+import BaseMap from "@/shared/ui/map/BaseMap";
 import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
 import { usePendingReportsLayer } from "@/features/map/hooks/usePendingReportsLayer";

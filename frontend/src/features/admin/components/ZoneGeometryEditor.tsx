@@ -20,7 +20,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Map, MapMouseEvent } from "maplibre-gl";
 import { Square, Minus, Check, Trash2, CornerDownLeft, Info } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

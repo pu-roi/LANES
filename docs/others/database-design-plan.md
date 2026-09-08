@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -81,6 +81,8 @@ erDiagram
         string status "Moderation: pending, approved, rejected"
         string image_url "Optional photo evidence"
         string human_readable_location "Normalized landmark"
+        string barangay "Cleaned barangay name"
+        string city "City or municipality"
         boolean is_public "Consent toggle for feed"
         geometry geometry "PostGIS Point coordinates (SRID 4326)"
         datetime created_at "UTC timestamp of ingestion"
@@ -279,7 +281,9 @@ erDiagram
 | `source` | `VARCHAR(50)` | NOT NULL | Origin channel of the report (e.g., `'twitter'`, `'facebook'`, `'direct_user'`, `'manual_seeder'`). | Allows analytics regarding data feed trust and channel frequency. |
 | `source_url` | `VARCHAR(500)` | Nullable | Original URL link referencing the web article, social post, or feed bulletin. | **Fact-checking & Future AI:** Enables operators to click and verify raw sources. Will be used by the future AI model as citation references. |
 | `image_url` | `VARCHAR(500)` | Nullable | Uploaded photo evidence URL. | Provides visual verification of floods. |
-| `human_readable_location` | `VARCHAR(255)` | Nullable | Normalized street name or landmark resolved via NLP or Geocoding. | Replaces complex joins with `flood_report_locations` for fast Community Feed reads. |
+| `human_readable_location` | `VARCHAR(255)` | Nullable | Normalized street name or landmark resolved via reverse geocoding or user input. | Replaces complex joins with `flood_report_locations` for fast Community Feed reads. |
+| `barangay` | `VARCHAR(100)` | Nullable, Index | Cleaned barangay name resolved via reverse geocoding. | Used for spatial analytics, filtering, and localized moderation. |
+| `city` | `VARCHAR(100)` | Nullable, Index | City or municipality resolved via reverse geocoding. | Enables multi-city support across Metro Manila / nationwide. |
 | `is_public` | `BOOLEAN` | Default: `FALSE` | Toggle indicating if the user consented to share this report on the Community Feed. | Ensures privacy compliance before making reports visible to all users. |
 | `severity` | `VARCHAR(50)` | NOT NULL | Classified risk level of the flood. Allowed: `'low'`, `'medium'`, `'high'`, `'extreme'`. | Directly determines detour routing weights and map visual color-coding. |
 | `status` | `VARCHAR(50)` | Default: `'pending'` | Moderation queue status. Allowed: `'pending'`, `'approved'`, `'rejected'`. | Approved reports automatically generate detours; rejected reports are archived. |

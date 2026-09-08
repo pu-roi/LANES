@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { MapPin, Loader2, X } from "lucide-react";
-import { Input } from "./Input";
+import { Input } from "../forms/Input";
 import { cn } from "@/lib/utils";
 import { searchLocations } from "@/features/geocoding/geocodingApi";
 import type { LocationSuggestion } from "@/features/geocoding/types";

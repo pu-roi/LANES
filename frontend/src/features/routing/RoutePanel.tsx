@@ -25,13 +25,14 @@ import {
   Flag,
 } from "lucide-react";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
-import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
+import { LocationAutocomplete } from "@/shared/ui";
 import { LoadingOverlay } from "@/shared/ui";
 import { cn } from "@/lib/utils";
 import { useMapContext, type ActivePoint } from "@/features/map/MapContext";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { OfflineManager } from "@/components/Map/OfflineManager";
+import { useAuth } from "@/hooks/useAuth";
+import { OfflineManager } from "@/features/offline/OfflineManager";
 
 // ORS maneuver type → Lucide icon mapping
 // https://openrouteservice.org/dev/#/api-docs (type codes)
@@ -83,13 +84,14 @@ export default function RoutePanel() {
     setRoutingEngine
   } = useMapContext();
 
+  const { isAuthenticated } = useAuth();
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const isCollapsed = activePanel !== "route";
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
 
-  const sortedSavedPlaces = savedPlaces ? [...savedPlaces].sort((a, b) => {
+  const sortedSavedPlaces = (isAuthenticated && savedPlaces) ? [...savedPlaces].sort((a, b) => {
     const orderA = a.pin_order ?? 999;
     const orderB = b.pin_order ?? 999;
     if (orderA === orderB) return 0;
@@ -128,11 +130,11 @@ export default function RoutePanel() {
   };
 
   useEffect(() => {
-    if (start?.label) setStartInput(start.label);
+    setStartInput(start?.label ?? "");
   }, [start?.label]);
 
   useEffect(() => {
-    if (end?.label) setEndInput(end.label);
+    setEndInput(end?.label ?? "");
   }, [end?.label]);
 
   useEffect(() => {
@@ -146,12 +148,16 @@ export default function RoutePanel() {
     try {
       const coords = await getCurrentLocation();
       const label = "Current Location";
+      setIsPickingOnMap(false);
       if (target === "start") {
         setStart(coords, label);
         setStartInput(label);
+        if (!end) setActivePoint("end");
+        else setActivePoint(null);
       } else {
         setEnd(coords, label);
         setEndInput(label);
+        setActivePoint(null);
       }
     } catch (err: any) {
       alert(err.message || "Unable to retrieve your location");
@@ -189,14 +195,33 @@ export default function RoutePanel() {
   const handleSelectSavedPlace = (place: any) => {
     const coords: [number, number] = [place.longitude, place.latitude];
     const label = place.name;
-    if (activePoint === "start" || (!activePoint && !start)) {
+    setIsPickingOnMap(false);
+
+    if (activePoint === "start") {
       setStart(coords, label);
       setStartInput(label);
       setActivePoint("end");
-    } else {
+    } else if (activePoint === "end") {
       setEnd(coords, label);
       setEndInput(label);
       setActivePoint(null);
+    } else {
+      // Neither field explicitly active
+      if (!start) {
+        setStart(coords, label);
+        setStartInput(label);
+        setActivePoint("end");
+      } else if (start && !end) {
+        setEnd(coords, label);
+        setEndInput(label);
+        setActivePoint(null);
+      } else {
+        // Both start and end exist (e.g. from before logging in):
+        // Replace start first and auto-target end for the next click
+        setStart(coords, label);
+        setStartInput(label);
+        setActivePoint("end");
+      }
     }
   };
 
@@ -260,7 +285,10 @@ export default function RoutePanel() {
             type="button"
             className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100"
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => handlePickOnMapToggle(target)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePickOnMapToggle(target);
+            }}
           >
             <div className="bg-blue-100 p-1.5 rounded-full shrink-0">
               <Crosshair className="h-4 w-4 text-blue-700" />
@@ -302,9 +330,9 @@ export default function RoutePanel() {
               >
                 <LocationAutocomplete
                   value={startInput}
-                  onChange={(val) => { setStartInput(val); setStartLabel(val); }}
-                  onSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); }}
-                  onClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); }}
+                  onChange={(val) => { setStartInput(val); setStartLabel(val); setIsPickingOnMap(false); }}
+                  onSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
+                  onClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
                   placeholder="Your location"
                   className="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
                   renderTopOptions={renderTopOptions("start")}
@@ -316,9 +344,9 @@ export default function RoutePanel() {
               >
                 <LocationAutocomplete
                   value={endInput}
-                  onChange={(val) => { setEndInput(val); setEndLabel(val); }}
-                  onSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); }}
-                  onClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); }}
+                  onChange={(val) => { setEndInput(val); setEndLabel(val); setIsPickingOnMap(false); }}
+                  onSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
+                  onClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
                   placeholder="Choose destination"
                   className="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
                   renderTopOptions={renderTopOptions("end")}
@@ -550,7 +578,10 @@ export default function RoutePanel() {
           type="button"
           className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100"
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => handlePickOnMapToggle(target)}
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePickOnMapToggle(target);
+          }}
         >
           <div className="bg-blue-100 p-1.5 rounded-full shrink-0">
             <Crosshair className="h-4 w-4 text-blue-700" />
@@ -632,9 +663,9 @@ export default function RoutePanel() {
               >
                 <LocationAutocomplete
                   value={startInput}
-                  onChange={(val) => { setStartInput(val); setStartLabel(val); }}
-                  onSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); }}
-                  onClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); }}
+                  onChange={(val) => { setStartInput(val); setStartLabel(val); setIsPickingOnMap(false); }}
+                  onSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
+                  onClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
                   placeholder="Your location"
                   className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
                   renderTopOptions={renderTopOptions("start")}
@@ -646,9 +677,9 @@ export default function RoutePanel() {
               >
                 <LocationAutocomplete
                   value={endInput}
-                  onChange={(val) => { setEndInput(val); setEndLabel(val); }}
-                  onSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); }}
-                  onClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); }}
+                  onChange={(val) => { setEndInput(val); setEndLabel(val); setIsPickingOnMap(false); }}
+                  onSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
+                  onClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
                   placeholder="Choose destination"
                   className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
                   renderTopOptions={renderTopOptions("end")}

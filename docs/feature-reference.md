@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 7, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -23,17 +23,18 @@ This document serves as the central technical reference for all currently implem
 
 ---
 
-### 2. Structured Flood Incident Survey (3NF Normalized)
-*   **Purpose:** Collects precise, structured data about flood scenarios directly from users on the ground, bypassing NLP for explicit facts.
-*   **What it does:** Allows a user to rapidly fill out a categorical survey (e.g., Hidden hazards, Passable vehicle types, Receding status) via a streamlined inline panel interface.
+### 2. Structured Flood Incident Survey & Automated Reverse-Geocoding (3NF Normalized)
+*   **Purpose:** Collects precise, structured data about flood scenarios directly from ground users while automatically resolving spatial street, barangay, and city attributes without requiring manual text input.
+*   **What it does:** Allows users to fill out categorical passability surveys (e.g., Hidden hazards, Passable vehicles) and mark road segments on the map. The backend automatically extracts topological midpoints and performs structured reverse geocoding to persist verified street, barangay, and city records.
 *   **How it works:** 
-    1. Replaces standard text fields with responsive UI checkboxes and toggle groups within the `FloodReportPanel`.
-    2. Payload is sent alongside the standard incident report data.
-    3. The backend maps the survey to a dedicated `flood_report_surveys` table holding a strict foreign key to the root report, ensuring full Third Normal Form (3NF) relational integrity.
+    1. Replaces standard text fields with responsive UI chips and toggle groups within `FloodReportPanel.tsx`.
+    2. When road segments (`LineString`/`MultiLineString`) or points are submitted, the backend (`report_service.py`) calculates the representative midpoint coordinate and queries a multi-provider reverse geocoding engine (Nominatim with Photon fallback in `geocoding_service.py`).
+    3. Address components are cleaned and parsed into normalized attributes: `human_readable_location` (street/road), `barangay`, and `city` (persisted to `flood_reports` with dedicated PostGIS indices).
+    4. Survey responses map directly to a dedicated `flood_report_surveys` table holding a strict foreign key to the root report, ensuring full Third Normal Form (3NF) relational integrity.
 *   **Access & Roles:** Public users can submit surveys; DRRM officers review them.
 *   **Related Components:**
-    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (survey state & UI).
-    *   **Backend:** [report.py](file:///d:/Documents/Github/LANES/backend/app/models/report.py) (SQLAlchemy schemas), `POST /api/v1/reports` endpoint.
+    *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [ReportDetailsModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/ReportDetailsModal.tsx), [PendingReportsPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/PendingReportsPanel.tsx).
+    *   **Backend:** [report.py](file:///d:/Documents/Github/LANES/backend/app/models/report.py), [report_service.py](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py), [geocoding_service.py](file:///d:/Documents/Github/LANES/backend/app/services/geocoding_service.py), `POST /api/v1/reports` endpoint.
 
 ---
 
@@ -56,17 +57,20 @@ This document serves as the central technical reference for all currently implem
 
 ### 4. Flood-Adaptive Route Calculation & Rerouting
 *   **Purpose:** Ensures commuter safety by dynamically routing vehicles around active flood hazards.
-*   **What it does:** Calculates optimal navigation paths between origin and destination coordinates, ensuring that any road segments intersecting active flood zones are bypassed.
+*   **What it does:** Calculates optimal navigation paths between origin and destination coordinates, ensuring that any road segments intersecting active flood zones are bypassed, and visualizes alternative detours and turn-by-turn maneuvers directly on the map.
 *   **How it works:**
     1. When a user requests a route, the backend fetches all active avoidance polygons (Red, Orange, Yellow) from the PostGIS database.
     2. The routing service queries the local **Valhalla** engine using a dynamically built HTTP request.
     3. The avoidance polygons are passed natively into Valhalla's `avoid_polygons` parameter.
     4. The routing algorithm mathematically treats the polygons as impassable barriers, generating a safe alternative detour route. If trapped, it falls back to allowing Yellow zones, then Orange zones.
     5. The commuter can toggle "Ignore Floods" to compare the safe path against the default flooded route.
+    6. **Resilient Map Hydration & Style Persistence:** In `MapCanvas.tsx`, route polylines are added checking `map.getStyle()` with persistent `map.on("style.load")` listeners, ensuring routes never drop out during background tile fetches or 3D terrain toggles. When crossing floods, dynamic `"line-gradient"` interpolation indicates hazard approach; clear routes use reliable native `"line-color": "#2563eb"`.
+    7. **Auto-Framing Camera (`fitBounds`):** Automatically zooms and frames the full route geometry and terminal markers with responsive padding (offsetting desktop left panels and mobile bottom sheets).
+    8. **Sequential Saved Places Recalculation:** Authenticated commuters can tap saved place quick chips to sequentially assign Start and Destination, automatically firing routing without manual field clearing.
 *   **Access & Roles:** Open to all public commuters.
 *   **Related Components:**
-    *   **Frontend:** [RoutePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/routing/RoutePanel.tsx) (input panels, turn-by-turn lists, flood toggle), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx).
-    *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) router (`POST /api/v1/reports/route`), [routing.py](file:///d:/Documents/Github/LANES/backend/app/services/routing.py) service (`calculate_flood_safe_route`).
+    *   **Frontend:** [RoutePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/routing/RoutePanel.tsx) (input panels, turn-by-turn lists, flood toggle, saved places chips), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx) (route line rendering, camera fitBounds), [GlobalMap.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/GlobalMap.tsx).
+    *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) and [routes.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/routes.py) router (`POST /api/v1/reports/route`), [routing.py](file:///d:/Documents/Github/LANES/backend/app/services/routing.py) service (`calculate_flood_safe_route`).
 
 ---
 

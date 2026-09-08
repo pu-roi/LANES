@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Map, Rss, MessageSquarePlus, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { savedPlacesApi } from '@/features/profile/savedPlacesApi';
+import { savedPlacesApi } from '@/features/places/savedPlacesApi';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { EmergencyHotlinesCard } from './components/EmergencyHotlinesCard';

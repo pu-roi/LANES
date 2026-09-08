@@ -86,9 +86,11 @@ function MapLayout() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      import("@/features/profile/savedPlacesApi").then(({ savedPlacesApi }) => {
+      import("@/features/places/savedPlacesApi").then(({ savedPlacesApi }) => {
         savedPlacesApi.getSavedPlaces().then(setSavedPlaces).catch(console.error);
       });
+    } else {
+      setSavedPlaces([]);
     }
   }, [isAuthenticated, setSavedPlaces]);
 

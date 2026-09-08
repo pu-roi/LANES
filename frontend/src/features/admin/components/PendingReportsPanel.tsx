@@ -1,8 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { Loader2, CheckCircle, MapPin, AlertTriangle, Merge, X, Check, Info, ExternalLink } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
-import { Select } from "@/shared/ui/Select";
+import { Button } from "@/shared/ui";
+import { Select } from "@/shared/ui";
 import type { FloodReport, NearbyZone } from "../adminApi";
 import { UseMutationResult } from "@tanstack/react-query";
 
@@ -183,7 +183,9 @@ export function PendingReportsPanel({
 
             <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
               <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-              <span className="truncate">{report.barangay ? `Brgy. ${report.barangay}, Pasig` : "Pasig City"}</span>
+              <span className="truncate">
+                {report.barangay ? `Brgy. ${report.barangay}, ${report.city || "Pasig"}` : (report.city || "Pasig City")}
+              </span>
             </div>
 
             {/* Nearby Zone Alert Badge (Merging with existing active zones) */}

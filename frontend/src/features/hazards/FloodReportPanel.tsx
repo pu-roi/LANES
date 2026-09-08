@@ -21,13 +21,13 @@ import {
 } from "lucide-react";
 import { get, set } from "idb-keyval";
 import Link from "next/link";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
-import { Select } from "@/shared/ui/Select";
+import { Input } from "@/shared/ui";
+import { Button } from "@/shared/ui";
+import { Select } from "@/shared/ui";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
-import { Panel } from "@/shared/ui/Panel";
+import { Panel } from "@/shared/ui";
 import { useToast } from "@/shared/ui";
-import { LocationAutocomplete } from "@/shared/ui/LocationAutocomplete";
+import { LocationAutocomplete } from "@/shared/ui";
 import { cn, getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -324,6 +324,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       fd.append("source", "direct_user");
       fd.append("severity", data.severity);
       if (data.depth) fd.append("depth", data.depth);
+      if (data.humanReadableLocation) fd.append("human_readable_location", data.humanReadableLocation);
       fd.append("is_public", data.isPublic.toString());
       fd.append("is_bidirectional", data.isBidirectional.toString());
       fd.append("geometry", JSON.stringify(data.geometry));
@@ -344,11 +345,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
     // 1. Pack drafts
     draftReports.forEach((draft) => {
+      const draftHint = draft.startLabel && /[a-zA-Z]/.test(draft.startLabel) ? draft.startLabel : undefined;
       formsToSubmit.push(
         createFormData({
           description: draft.description,
           severity: draft.severity,
           depth: draft.depth,
+          humanReadableLocation: draftHint,
           isPublic: isPublic, // Shared across batch
           isBidirectional: draft.isBidirectional,
           geometry: draft.geometry,
@@ -364,11 +367,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     
     if (isCurrentFormFilled) {
       const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
+      const currentHint = startInput && /[a-zA-Z]/.test(startInput) ? startInput : undefined;
       formsToSubmit.push(
         createFormData({
           description: description,
           severity: selectedOption ? selectedOption.severity : "low",
           depth: selectedOption ? selectedOption.label : "",
+          humanReadableLocation: currentHint,
           isPublic: isPublic,
           isBidirectional: isBidirectional,
           geometry: floodPreviewGeometry,

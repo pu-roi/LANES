@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Modal } from "./Modal";
-import { Button } from "./Button";
+import { Button } from "../forms/Button";
 import { Loader2 } from "lucide-react";
 
 interface ConfirmDialogProps {

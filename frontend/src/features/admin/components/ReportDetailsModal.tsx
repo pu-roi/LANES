@@ -20,7 +20,7 @@ import {
   FileText
 } from "lucide-react";
 import { FloodReport } from "../adminApi";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui";
 
 interface ReportDetailsModalProps {
   report: FloodReport | null;
@@ -242,11 +242,13 @@ export const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
 
             <div className="space-y-1">
               <div className="text-sm font-bold text-slate-900">
-                {report.barangay ? `Brgy. ${report.barangay}, Pasig City` : "Pasig City, Metro Manila"}
+                {report.barangay
+                  ? `Brgy. ${report.barangay}, ${report.city || "Pasig City"}`
+                  : (report.city ? `${report.city}, Metro Manila` : "Pasig City, Metro Manila")}
               </div>
               {report.human_readable_location && (
-                <div className="text-xs text-slate-600">
-                  Landmark: {report.human_readable_location}
+                <div className="text-xs text-slate-600 font-medium">
+                  Road / Landmark: {report.human_readable_location}
                 </div>
               )}
               <div className="flex items-center justify-between gap-3 pt-1">

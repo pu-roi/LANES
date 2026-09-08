@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -83,11 +83,11 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and pulsing red focus markers. Includes container resize observer alignment for sidebar offsets and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
-| `BaseMap.tsx` | `src/shared/ui/BaseMap.tsx` — Low-level wrapper around MapLibre GL JS. Manages the map instance lifecycle and exposes an `onMapLoad` callback. |
-| `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector, start/destination inputs, autocomplete dropdowns, alternative route cards, and turn-by-turn instruction list. |
+| `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and pulsing red focus markers. Features resilient `map.getStyle()` layer mounting, `style.load` re-render listeners, auto camera `fitBounds` framing, container resize observer alignment for sidebar offsets, and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
+| `BaseMap.tsx` | `src/shared/ui/map/BaseMap.tsx` — Low-level wrapper around MapLibre GL JS. Manages the map instance lifecycle, resize observer, and exposes `onMapInit` and `onMapLoad` callbacks. |
+| `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector, start/destination inputs with focus guards and smart two-click "Choose on Map" advance, authenticated saved places chips with sequential recalculation, alternative route cards, and turn-by-turn instruction list. |
 | `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The incident reporting panel (opens from FAB or top CTA). Step-by-step form for reporting floods with start/end pin dropping, severity selection, survey questions, and draft cart batch submission. |
-| `OfflineManager.tsx` | `src/components/Map/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
+| `OfflineManager.tsx` | `src/features/offline/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
 | `MapPickerMobileOverlay.tsx` | `src/features/map/MapPickerMobileOverlay.tsx` — A translucent overlay with a centered crosshair that appears on mobile when the user taps a location input, letting them drag the map to pin a point. |
 
 ### Hidden Until Interaction (Map Panels)
@@ -123,7 +123,7 @@ These files are **always present** regardless of which page you are on.
 | `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the scrollable list of `PostItem` cards. Left and right sidebars are pinned on desktop. Fetches paginated posts on load. |
 | `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Left panel (desktop only). Shows the logged-in user's avatar, display name, trust score badge, quick stats, saved places pills (which open the Saved Places panel), and a "Create Post" shortcut button. Features hover-activated custom slim scrollbar. |
 | `RightSidebar.tsx` | `src/features/feed/RightSidebar.tsx` — Right panel (desktop only). Shows community highlights: top contributors, recent active flood zones, and trending location tags. |
-| `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached images, flood severity badge (if linked to a report), upvote/downvote buttons with counts, and comment count. Features an interactive red pin location badge that flies the 3D map directly to the tagged coordinates with a pulsing indicator. |
+| `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached media carousel, flood severity badge (if linked to a report), upvote/downvote buttons with counts, and comment count. Features an interactive red pin location badge in the header with automatic fallback to reverse-geocoded road or barangay, and a dedicated 'View on Map' action button in the bottom interaction bar exclusively for shared flood reports. |
 | `EmergencyHotlinesCard.tsx` | `src/features/feed/components/EmergencyHotlinesCard.tsx` — API-backed priority emergency contacts with expandable numbers, direct `tel:` links, loading/unavailable states, and a full-directory trigger. Rendered in the feed sidebar layout. |
 
 ### Hidden Until Interaction
@@ -450,6 +450,7 @@ Incoming flood event reports from users or external scraped sources.
 | `media_urls` | JSONB, nullable | Array of photo/video URLs attached to the report |
 | `human_readable_location` | String(255), nullable | Geocoded address string for display purposes |
 | `barangay` | String(100), nullable | Extracted barangay name (indexed for fast filtering) |
+| `city` | String(100), nullable | Resolved city or municipality name (indexed for fast filtering) |
 | `is_public` | Boolean | Whether this report appears in the community feed |
 | `zone_id` | FK → flood_avoidance_zones.id, nullable | The avoidance zone this report was merged into (deduplication) |
 | `geometry` | PostGIS GEOMETRY (SRID 4326), nullable | Point or LineString coordinates of the flood location |

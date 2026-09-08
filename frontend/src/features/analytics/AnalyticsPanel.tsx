@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { Loader2, TrendingUp, MapPin, AlertCircle } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Panel } from "@/shared/ui/Panel";
+import { Panel } from "@/shared/ui";
 import { useOptionalMapContext } from "@/features/map/MapContext";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";

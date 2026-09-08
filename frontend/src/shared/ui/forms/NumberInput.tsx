@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes, forwardRef, ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 export interface NumberInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {

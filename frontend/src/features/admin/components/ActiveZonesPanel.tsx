@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Loader2, CheckCircle, Clock, UserCheck, ChevronDown, ChevronUp, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/shared/ui/Button";
-import { Pagination } from "@/shared/ui/Pagination";
+import { Button } from "@/shared/ui";
+import { Pagination } from "@/shared/ui";
 import type { AvoidanceZone } from "@/features/admin/adminApi";
 
 interface ActiveZonesPanelProps {

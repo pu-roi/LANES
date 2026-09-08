@@ -22,6 +22,8 @@ async def create_report(
     severity: str = Form("medium"),
     depth: str = Form(None),
     human_readable_location: str = Form(None),
+    barangay: str = Form(None),
+    city: str = Form(None),
     is_public: bool = Form(False),
     is_bidirectional: bool = Form(False),
     geometry: str = Form(None),
@@ -61,6 +63,8 @@ async def create_report(
         severity=severity,
         depth=depth,
         human_readable_location=human_readable_location,
+        barangay=barangay,
+        city=city,
         is_public=is_public,
         is_bidirectional=is_bidirectional,
         geometry=geom_obj,
@@ -123,70 +127,15 @@ def create_avoidance_zone(zone: schemas.FloodAvoidanceZoneCreate, db: Session = 
     return crud.create_flood_avoidance_zone(db=db, zone=zone)
 
 
-from app.services.ors_service import calculate_flood_safe_route
+# Backwards-compatible route endpoints (delegated to dedicated routes endpoint controller)
+from app.api.v1.endpoints import routes as routes_endpoint
 
 @router.post("/route", response_model=schemas.MultiRouteResponse)
 async def get_safe_route(payload: schemas.RouteRequest, db: Session = Depends(get_db)):
-    """
-    Calculates route candidates between start and end coordinates using OpenRouteService.
-    Each candidate is annotated with flood zone intersection status and
-    a recommended_index pointing to the safest available option.
-    """
-    if payload.engine == "valhalla":
-        from app.services.valhalla_service import calculate_flood_safe_route as valhalla_route
-        return valhalla_route(
-            db=db,
-            start=payload.start,
-            end=payload.end,
-            ignore_floods=payload.ignore_floods,
-            vehicle_profile=payload.vehicle_profile,
-            heading=payload.heading
-        )
-        
-    return await calculate_flood_safe_route(
-        db=db,
-        start=payload.start,
-        end=payload.end,
-        ignore_floods=payload.ignore_floods,
-        vehicle_profile=payload.vehicle_profile
-    )
+    """Backwards-compatible alias for route calculation."""
+    return await routes_endpoint.calculate_route(payload=payload, db=db)
 
-
-from pydantic import BaseModel as PydanticBaseModel
-from typing import Optional as TypingOptional
-
-class BidirectionalPreviewRequest(PydanticBaseModel):
-    coordinates: list  # List of [lng, lat] points forming the original road segment
-    road_name: TypingOptional[str] = None  # Optional road name for validation
-
-class BidirectionalPreviewResponse(PydanticBaseModel):
-    original: dict       # GeoJSON LineString of the original road
-    opposite: TypingOptional[dict] = None  # GeoJSON LineString of opposite carriageway (None if one-way)
-    is_divided: bool     # True if a valid opposite carriageway was found
-    road_type: str       # NARROW_TWO_WAY, DIVIDED_CARRIAGEWAY, TRUE_ONE_WAY, UNMAPPED
-
-@router.post("/preview-bidirectional", response_model=BidirectionalPreviewResponse)
-def preview_bidirectional(payload: BidirectionalPreviewRequest):
-    """
-    Given a list of coordinates forming a road segment, uses the Traversability-Aware
-    Hybrid Strategy (perpendicular dynamic offset + Valhalla map-matching + name validation)
-    to detect and return the actual opposite carriageway geometry for preview before submission.
-    """
-    from app.services.valhalla_service import find_opposite_carriageway
-
-    original_geom = {
-        "type": "LineString",
-        "coordinates": payload.coordinates
-    }
-
-    road_type, opposite_geom = find_opposite_carriageway(
-        route_coords=payload.coordinates,
-        original_road_name=payload.road_name
-    )
-
-    return BidirectionalPreviewResponse(
-        original=original_geom,
-        opposite=opposite_geom,
-        is_divided=opposite_geom is not None,
-        road_type=road_type
-    )
+@router.post("/preview-bidirectional", response_model=routes_endpoint.BidirectionalPreviewResponse)
+def preview_bidirectional(payload: routes_endpoint.BidirectionalPreviewRequest):
+    """Backwards-compatible alias for bidirectional carriageway preview."""
+    return routes_endpoint.preview_bidirectional(payload=payload)

@@ -1,11 +1,11 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 7, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 7, 2026, 3:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
-## Completed Milestones (38+ Commits Integrated)
+## Completed Milestones (40+ Commits Integrated)
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
@@ -24,10 +24,48 @@
 | 13| Community Feed Emergency Hotline Directory | Completed | Cached national hotline integration, Pasig city/barangay directory, responsive feed hotline card, lazy-loaded directory modal |
 | 14| Saved Places Camera Sync & Navigation UX | Completed | Camera fly-to alignment (zoom 16, 1500ms duration), 3-second pulsing red indicator, saved places panel activation from feed, pin order fix, custom scrollbars |
 | 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
+| 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
+| 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
 
 ## Capstone Roadmap - Delivered Phases
 
-### Capstone Phase 13: Community Post Geolocation & Seamless Map Fly-to View (🟢 COMPLETED)
+### Capstone Phase 15: Automated Street, Barangay & City Reverse-Geocoding for Flood Reports (🟢 COMPLETED)
+- [x] **Multi-Provider Structured Reverse Geocoding Engine** (@roicambe):
+  - Refactored `geocoding_service.py` to extract structured `ParsedLocation` models containing clean `street`, `barangay`, and `city` attributes alongside full formatted addresses.
+  - Implemented OpenStreetMap Nominatim zoom-17 reverse lookup with automated fallback to Photon (Komoot) and hardened `User-Agent` headers against bot blocks.
+  - Added clean prefix normalization (`_clean_barangay_name`) stripping redundant "Brgy.", "Barangay", and punctuation variations.
+- [x] **Multi-Geometry Representative Coordinate Extraction** (@roicambe):
+  - Engineered `extract_representative_coordinates` in `report_service.py` supporting `Point`, `LineString`, `MultiLineString`, and `Polygon` geometries by computing topological midpoints across multi-vertex road segments.
+- [x] **Database Schema & PostGIS City Column Migration** (@roicambe):
+  - Added indexed `city: Mapped[Optional[str]]` (VARCHAR 100) column to `flood_reports` via clean Alembic migration `a66a677fa71a_add_city_to_flood_reports.py`.
+  - Updated Pydantic schemas (`FloodReportBase`, `FloodReportCreate`, `FloodReportResponse`) and CRUD layer (`app/crud/report.py`) to persist and return `barangay` and `city`.
+- [x] **Historical Database Report Backfill** (@roicambe):
+  - Developed and executed `backend/scripts/backfill_report_locations.py`, successfully updating all 13 existing database flood reports with accurate streets (e.g. C. Raymundo Ave, E. Rodriguez Jr. Ave, Dr. Sixto Antonio Ave, A. Mabini St), barangays (Maybunga, Ugong, Kapasigan, Rosario), and city (Pasig).
+- [x] **Frontend Moderation & Reporting Synchronization** (@roicambe):
+  - Updated `FloodReportPanel.tsx` to forward autocomplete street labels as server-side location hints.
+  - Updated `adminApi.ts`, `ReportDetailsModal.tsx`, and `PendingReportsPanel.tsx` to dynamically render `{report.barangay ? \`Brgy. ${report.barangay}, ${report.city || "Pasig"}\` : (report.city || "Pasig City")}` and explicit road segment names.
+- [x] **Community Feed Post Location Refinement & Deduplication** (@roicambe):
+  - Streamlined `PostItem.tsx` by eliminating redundant secondary blue text location buttons positioned below the severity badge.
+  - Consolidated header location display with red pin fallback (`post.location_tag || post.report?.human_readable_location || (post.report?.barangay ? \`Brgy. ${post.report.barangay}\` : null)`), smoothly flying to map coordinates on click.
+  - Preserved primary "View on Map" action button in the bottom interaction bar exclusively for shared flood reports (`post.report?.geometry && onViewMap`).
+  - Added optional `barangay` and `city` properties to `FeedPost.report` in `frontend/src/features/feed/feedApi.ts`.
+- [x] **Automated Test Suite Verification** (@roicambe):
+  - Added unit and integration tests in `backend/tests/test_report_geocoding.py` testing prefix cleaning, coordinate extraction, async reverse geocoding, and automated DB report location persistence.
+
+### Capstone Phase 14: Route Focus, Saved Places & Map Polyline Engine (🟢 COMPLETED)
+- [x] **Map-Click Input Protection & Two-Click UX** (@roicambe):
+  - Added synchronous `isPickingRef.current` guards in `MapCanvas.tsx` preventing map clicks and panning from accidentally overwriting focused location input text fields.
+  - Streamlined "Choose on Map": selecting origin automatically advances target focus to destination (`activePoint = "end"`), enabling single-click destination placement on the map.
+- [x] **Sequential Saved Places Recalculation** (@roicambe):
+  - Refactored `handleSelectSavedPlace` in `RoutePanel.tsx` so that selecting a saved place when both start and destination are already filled updates Start first and shifts focus to Destination, allowing a second click to set Destination and immediately calculate the route.
+- [x] **Resilient MapLibre Route Polyline & Gradient Engine** (@roicambe):
+  - Replaced fragile `map.isStyleLoaded()` checks with `map.getStyle()`, preventing route drawing from being permanently dropped when background tiles or live flood zone feeds (15s polling) are in-flight.
+  - Added persistent `map.on("style.load")` listener ensuring route polylines are restored across 3D terrain toggles and map style switches.
+  - Added reliable `"line-color": "#2563eb"` fallback with `"line-gradient"` interpolation when intersecting flood zones.
+  - Added automatic camera `map.fitBounds()` with device-aware padding framing the calculated route and pins in view.
+- [x] **Sign-Out Memory Cleanup & RoutePanel Auth Guarding** (@roicambe):
+  - Added `else { setSavedPlaces([]); }` cleanup in `GlobalMap.tsx` so saved places in context and their map markers are wiped immediately upon sign-out.
+  - Guarded saved places quick chips with `isAuthenticated` in `RoutePanel.tsx` across both mobile and desktop viewports.
 - [x] **PostGIS Coordinate Persistence** (@roicambe):
   - Added nullable `location_lat` and `location_lng` (Float) columns to `community_posts` with Alembic migration `84c00c5d976b_add_lat_lng_to_community_posts.py`.
   - Updated SQLAlchemy models, Pydantic schemas, and CRUD layers (`backend/app/crud/post.py`) to accurately ingest, store, and return geographic coordinates.
