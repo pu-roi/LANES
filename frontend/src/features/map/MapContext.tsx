@@ -171,7 +171,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [draftSavePlaceCoords, setDraftSavePlaceCoords] = useState<{coords: [number, number], label: string} | null>(null);
   const [savePlaceIcon, setSavePlaceIcon] = useState<string>("🏠");
 
-  const hasBottomOffset = false;
+  const hasBottomOffset = Boolean(
+    isReportPanelOpen ||
+    isSavePlacePanelOpen ||
+    isAnalyticsOpen ||
+    (allRoutes && allRoutes.length > 0)
+  );
 
   const [floodStart, setFloodStartState] = useState<MapPoint | null>(null);
   const [floodEnd, setFloodEndState] = useState<MapPoint | null>(null);

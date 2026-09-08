@@ -41,13 +41,15 @@ import { Select } from "@/shared/ui";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { Panel } from "@/shared/ui";
 import { useToast } from "@/shared/ui";
-import { LocationAutocomplete } from "@/shared/ui";
+import { LocationAutocomplete, LocationInputGroup } from "@/shared/ui";
 import { cn, getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import type { LocationSuggestion } from "@/features/geocoding/types";
+import { computeCenterCoordinate, flyToFeature, flyToCoordinates } from "@/features/map/mapGeoUtils";
+import { useFloodMapPreview } from "@/features/map/hooks/useFloodMapPreview";
 import { useMapContext, type ActivePoint } from "@/features/map/MapContext";
 import { getRoute } from "@/features/routing/routingApi";
 import { SEVERITY_COLORS as MAP_SEVERITY_COLORS, SEVERITY_BORDER_COLORS } from "@/features/map/mapStyles";
@@ -161,7 +163,8 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     draftReports = [],
     setDraftReports,
     floodPreviewGeometry,
-    floodOppositeGeometry
+    floodOppositeGeometry,
+    setPointFromMap
   } = useMapContext();
 
   // Form state
@@ -444,109 +447,54 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
     setIsPickingOnMap(true);
   };
 
-  // Direct map click to select point when picking on map is active
-  useEffect(() => {
-    if (!mapInstance || !isPickingOnMap || !activePoint) return;
-
-    const handleMapClick = (e: any) => {
-      const coords: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-      const label = `${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
-      
-      if (activePoint === "flood_start") {
-        setFloodStart(coords, label);
-        setStartInput(label);
-        setActivePoint("flood_end");
-      } else if (activePoint === "flood_end") {
-        setFloodEnd(coords, label);
-        setEndInput(label);
-        setActivePoint(null);
-        setIsPickingOnMap(false);
-      }
-    };
-
-    mapInstance.on("click", handleMapClick);
-    mapInstance.getCanvas().style.cursor = "crosshair";
-
-    return () => {
-      mapInstance.off("click", handleMapClick);
-      mapInstance.getCanvas().style.cursor = "";
-    };
-  }, [mapInstance, isPickingOnMap, activePoint, setFloodStart, setFloodEnd, setActivePoint, setIsPickingOnMap]);
-
-  // Markers for floodStart and floodEnd matching user-side FloodReportPanel
-  const startMarkerRef = useRef<any>(null);
-  const endMarkerRef = useRef<any>(null);
+  const setPointFromMapRef = useRef(setPointFromMap);
+  setPointFromMapRef.current = setPointFromMap;
+  
+  const isPickingRef = useRef(isPickingOnMap);
+  isPickingRef.current = isPickingOnMap;
 
   useEffect(() => {
     if (!mapInstance) return;
-
-    startMarkerRef.current?.remove();
-    startMarkerRef.current = null;
-
-    if (floodStart) {
-      startMarkerRef.current = new maplibregl.Marker({ color: "#f97316" })
-        .setLngLat(floodStart.coords)
-        .addTo(mapInstance);
+    const canvasContainer = mapInstance.getCanvasContainer();
+    const canvas = mapInstance.getCanvas();
+    if (isPickingOnMap) {
+      canvasContainer.style.setProperty("cursor", "crosshair", "important");
+      canvas.style.setProperty("cursor", "crosshair", "important");
+    } else {
+      canvasContainer.style.removeProperty("cursor");
+      canvas.style.removeProperty("cursor");
     }
-  }, [mapInstance, floodStart]);
+  }, [isPickingOnMap, mapInstance]);
 
   useEffect(() => {
     if (!mapInstance) return;
-
-    endMarkerRef.current?.remove();
-    endMarkerRef.current = null;
-
-    if (floodEnd) {
-      endMarkerRef.current = new maplibregl.Marker({ color: "#991b1b" })
-        .setLngLat(floodEnd.coords)
-        .addTo(mapInstance);
-    }
-  }, [mapInstance, floodEnd]);
-
-  // Draw the preview of the blocked road segment line (matching MapCanvas)
-  // Draw the preview of the blocked road segment line (matching MapCanvas)
-  useEffect(() => {
-    if (!mapInstance || !mapInstance.isStyleLoaded()) return;
-
-    const PREVIEW_SOURCE = "admin-flood-preview-source";
-    const PREVIEW_LAYER = "admin-flood-preview-layer";
-
-    if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
-    if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
-
-    if (!floodPreviewGeometry) return;
-
-    mapInstance.addSource(PREVIEW_SOURCE, {
-      type: "geojson",
-      data: {
-        type: "Feature",
-        properties: {},
-        geometry: floodPreviewGeometry,
-      },
-    });
-
-    const activeColor = MAP_SEVERITY_COLORS[currentSeverity] || "#84cc16";
-
-    mapInstance.addLayer({
-      id: PREVIEW_LAYER,
-      type: "line",
-      source: PREVIEW_SOURCE,
-      layout: { "line-join": "round", "line-cap": "round" },
-      paint: {
-        "line-color": activeColor,
-        "line-width": 6,
-        "line-dasharray": [2, 2],
-        "line-opacity": 0.85,
-      },
-    });
-
-    return () => {
-      try {
-        if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
-        if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
-      } catch {}
+    const canvas = mapInstance.getCanvas();
+    const handleCanvasClick = (e: MouseEvent) => {
+      if (!isPickingRef.current) return;
+      // We must stop propagation to prevent TerraDraw from interfering
+      e.stopPropagation();
+      const rect = canvas.getBoundingClientRect();
+      const point = [e.clientX - rect.left, e.clientY - rect.top] as [number, number];
+      const lngLat = mapInstance.unproject(point);
+      setPointFromMapRef.current([lngLat.lng, lngLat.lat]);
     };
-  }, [mapInstance, floodPreviewGeometry, geometryMode, currentSeverity]);
+    
+    // Use capture phase to intercept the click before TerraDraw does
+    canvas.addEventListener("click", handleCanvasClick, { capture: true });
+    return () => {
+      canvas.removeEventListener("click", handleCanvasClick, { capture: true });
+    };
+  }, [mapInstance]);
+
+  useFloodMapPreview(
+    mapInstance,
+    floodStart,
+    floodEnd,
+    floodPreviewGeometry,
+    floodOppositeGeometry,
+    isBidirectional,
+    geometryMode === "line"
+  );
 
   const confirmMapLocation = useCallback(() => {
     if (!activePoint || !mapCenter) return;
@@ -999,111 +947,26 @@ export function CreateOfficialZonePanel({ isOpen, onClose, isAdminMode = false, 
           {geometryMode === "line" ? (
             <>
             {/* Location Inputs (Timeline Style) */}
-            <div className="flex items-center mb-2">
-              {/* Left Icons */}
-              <div className="flex flex-col items-center justify-center gap-1 w-5 mr-2 relative z-10 shrink-0">
-                <CircleDot className="w-3.5 h-3.5 text-green-600 shrink-0 bg-white" />
-                <div className="w-[2px] h-5 bg-gray-200 border-l border-dashed border-gray-300" />
-                <MapPin className="w-4 h-4 text-red-500 shrink-0 bg-white" />
-              </div>
-
-            {/* Inputs */}
-            <div className="flex-1 flex flex-col gap-1.5 relative z-20 min-w-0">
-              <div
-                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "flood_start" ? "border-orange-400 ring-2 ring-orange-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
-                onClick={() => setActivePoint("flood_start")}
-              >
-                <LocationAutocomplete
-                  value={startInput}
-                  onChange={(val) => { setStartInput(val); setFloodStartLabel(val); }}
-                  onSelect={(s) => {
-                    setFloodStart([s.lng, s.lat], s.label);
-                    setStartInput(s.label);
-                    setActivePoint("flood_end");
-                  }}
-                  onClear={() => { setFloodStart(null); setStartInput(""); setFloodStartLabel(""); }}
-                  placeholder="e.g. Ortigas Ave, Pasig (Start)"
-                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-                  renderTopOptions={
-                    <>
-                      <li>
-                        <button
-                          type="button"
-                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => handlePickOnMap("flood_start")}
-                        >
-                          <div className="bg-orange-100 p-1.5 rounded-full shrink-0">
-                            <Crosshair className="h-4 w-4 text-orange-700" />
-                          </div>
-                          <span className="flex flex-col justify-center h-7 font-semibold text-orange-700">Choose on Map</span>
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          type="button"
-                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-orange-50 transition-colors border-b border-gray-100 mb-1"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => handleUseCurrent("start")}
-                        >
-                          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
-                            <MapPin className="h-4 w-4 text-gray-700" />
-                          </div>
-                          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
-                        </button>
-                      </li>
-                    </>
-                  }
-                />
-              </div>
-              <div
-                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "flood_end" ? "border-red-400 ring-2 ring-red-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
-                onClick={() => setActivePoint("flood_end")}
-              >
-                <LocationAutocomplete
-                  value={endInput}
-                  onChange={(val) => { setEndInput(val); setFloodEndLabel(val); }}
-                  onSelect={(s) => {
-                    setFloodEnd([s.lng, s.lat], s.label);
-                    setEndInput(s.label);
-                  }}
-                  onClear={() => { setFloodEnd(null); setEndInput(""); setFloodEndLabel(""); }}
-                  placeholder="e.g. C. Raymundo Ave (End)"
-                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-                  renderTopOptions={
-                    <>
-                      <li>
-                        <button
-                          type="button"
-                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-red-50 transition-colors border-b border-gray-100"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => handlePickOnMap("flood_end")}
-                        >
-                          <div className="bg-red-100 p-1.5 rounded-full shrink-0">
-                            <Crosshair className="h-4 w-4 text-red-700" />
-                          </div>
-                          <span className="flex flex-col justify-center h-7 font-semibold text-red-700">Choose on Map</span>
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          type="button"
-                          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-red-50 transition-colors border-b border-gray-100 mb-1"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => handleUseCurrent("end")}
-                        >
-                          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
-                            <MapPin className="h-4 w-4 text-gray-700" />
-                          </div>
-                          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
-                        </button>
-                      </li>
-                    </>
-                  }
-                />
-              </div>
-            </div>
-          </div>
+            <LocationInputGroup
+              startInput={startInput}
+              setStartInput={(val) => { setStartInput(val); setIsPickingOnMap(false); }}
+              endInput={endInput}
+              setEndInput={(val) => { setEndInput(val); setIsPickingOnMap(false); }}
+              activePoint={activePoint}
+              setActivePoint={setActivePoint}
+              startPointId="flood_start"
+              endPointId="flood_end"
+              onStartSelect={(s) => { setFloodStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("flood_end"); setIsPickingOnMap(false); }}
+              onEndSelect={(s) => { setFloodEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
+              onStartClear={() => { setFloodStart(null); setStartInput(""); setFloodStartLabel(""); setActivePoint("flood_start"); setIsPickingOnMap(false); }}
+              onEndClear={() => { setFloodEnd(null); setEndInput(""); setFloodEndLabel(""); setActivePoint("flood_end"); setIsPickingOnMap(false); }}
+              onStartChange={setFloodStartLabel}
+              onEndChange={setFloodEndLabel}
+              onPickOnMap={(target) => handlePickOnMap(target)}
+              onUseCurrentLocation={handleUseCurrent}
+              startPlaceholder="e.g. Ortigas Ave, Pasig (Start)"
+              endPlaceholder="e.g. C. Raymundo Ave (End)"
+            />
           
           {/* Bidirectional Toggle for Line Mode */}
           <div className="flex items-start gap-2 mb-4 px-1 group cursor-pointer" onClick={() => setIsBidirectional(!isBidirectional)}>

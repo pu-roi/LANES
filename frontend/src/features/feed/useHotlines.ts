@@ -19,7 +19,7 @@ export interface FullHotlineData {
 
 // --- Sidebar widget: only national hotlines ---
 const fetchHotlines = async (): Promise<HotlineGroup[]> => {
-  return apiClient.get('/hotlines/');
+  return apiClient.get('/hotlines');
 };
 
 export const useHotlines = () => {

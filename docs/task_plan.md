@@ -37,6 +37,8 @@
 - [x] Integrate adapted `FloodReportPanel` into `LiveMapPage.tsx`
 - [x] Refine "Create Official Zone" map interaction in `LiveMapPage.tsx`
 - [x] Fix "Create Official Zone" Panel logic (identical to public Line flow with Start/End pin markers & road segment preview line)
+- [x] Standardize MapLibre drawing logic between FloodReportPanel and CreateOfficialZonePanel via shared `useFloodMapPreview` hook (@antigravity)
+- [x] Force TerraDraw map interaction pass-through using native capture-phase canvas event listeners (@antigravity)
 - [x] Integrate **Terra Draw** (`terra-draw`) for native Polygon, Freehand, Rectangle, and Circle drawing for Admin Official Zones
 - [ ] Wire up real-time SSE broadcasts for zone updates
 

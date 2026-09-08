@@ -89,6 +89,7 @@ These files are **always present** regardless of which page you are on.
 | `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The incident reporting panel (opens from FAB or top CTA). Step-by-step form for reporting floods with start/end pin dropping, severity selection, survey questions, and draft cart batch submission. |
 | `OfflineManager.tsx` | `src/features/offline/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
 | `MapPickerMobileOverlay.tsx` | `src/features/map/MapPickerMobileOverlay.tsx` — A translucent overlay with a centered crosshair that appears on mobile when the user taps a location input, letting them drag the map to pin a point. |
+| `useFloodMapPreview.ts` | `src/features/map/hooks/useFloodMapPreview.ts` — A shared custom hook encapsulating `flyTo` camera panning, Start/End marker management, and the rendering of the bidirectional orange-dashed preview layer. Synchronizes drawing behavior between `MapCanvas` and `CreateOfficialZonePanel`. |
 
 ### Hidden Until Interaction (Map Panels)
 

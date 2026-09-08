@@ -8,3 +8,4 @@ export * from "./MultiSelect";
 export * from "./DatePicker";
 export * from "./PasswordStrength";
 export { ColorPicker } from "./ColorPicker";
+export * from "./LocationInputGroup";

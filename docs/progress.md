@@ -29,6 +29,17 @@
 
 ## Capstone Roadmap - Delivered Phases
 
+### Capstone Phase 16: Admin Map Controls & Component Standardization (🟢 COMPLETED)
+- [x] **Universal MapLibre Preview Architecture (`useFloodMapPreview.ts`)** (@antigravity):
+  - Extracted duplicated `flyTo` camera panning, orange/red MapLibre pins, and dynamic bidirectional orange-dashed preview layer logic into a single shared custom hook.
+  - Sourced the preview hook directly into both `MapCanvas.tsx` (Commuter Flood Report) and `CreateOfficialZonePanel.tsx` (DRRMO Admin Zone), enforcing strict parity between public and admin interactions.
+- [x] **TerraDraw Map Event Capture-Phase Override** (@antigravity):
+  - Bypassed TerraDraw's strict `stopPropagation()` map click interception by attaching a native `{ capture: true }` event listener directly to the underlying canvas, allowing "Choose on Map" logic to receive map clicks without breaking the drawing engine.
+  - Automatically advances "Choose on Map" logic from origin to destination selection on click, creating a seamless two-click location picking experience.
+- [x] **Enforced Cursor Aesthetics & Input Refinement** (@antigravity):
+  - Overrode TerraDraw's internal `mousemove` pointer hijacking by forcibly setting `cursor: crosshair !important` on both the canvas and its container whenever picking mode is active.
+  - Stripped theme-specific orange border rings from generic `LocationInputGroup.tsx` inputs to maintain clean UI independence across components.
+
 ### Capstone Phase 15: Automated Street, Barangay & City Reverse-Geocoding for Flood Reports (🟢 COMPLETED)
 - [x] **Multi-Provider Structured Reverse Geocoding Engine** (@roicambe):
   - Refactored `geocoding_service.py` to extract structured `ParsedLocation` models containing clean `street`, `barangay`, and `city` attributes alongside full formatted addresses.

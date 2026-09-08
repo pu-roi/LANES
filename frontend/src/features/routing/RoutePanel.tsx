@@ -25,7 +25,7 @@ import {
   Flag,
 } from "lucide-react";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
-import { LocationAutocomplete } from "@/shared/ui";
+import { LocationAutocomplete, LocationInputGroup } from "@/shared/ui";
 import { LoadingOverlay } from "@/shared/ui";
 import { cn } from "@/lib/utils";
 import { useMapContext, type ActivePoint } from "@/features/map/MapContext";
@@ -278,89 +278,33 @@ export default function RoutePanel() {
       return null;
     }
 
-    const renderTopOptions = (target: ActivePoint) => (
-      <>
-        <li>
-          <button
-            type="button"
-            className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePickOnMapToggle(target);
-            }}
-          >
-            <div className="bg-blue-100 p-1.5 rounded-full shrink-0">
-              <Crosshair className="h-4 w-4 text-blue-700" />
-            </div>
-            <span className="flex flex-col justify-center h-7 font-semibold text-blue-700">Choose on Map</span>
-          </button>
-        </li>
-        <li>
-          <button
-            type="button"
-            className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100 mb-1"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => handleUseCurrentLocation(target)}
-          >
-            <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
-              <MapPin className="h-4 w-4 text-gray-700" />
-            </div>
-            <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
-          </button>
-        </li>
-      </>
-    );
-
     return (
       <>
         {/* Mobile Top Search Bar */}
         <div className="absolute top-4 left-4 right-4 z-40 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-visible transition-all">
-          <div className="flex items-center p-3 pr-2">
-            <div className="flex flex-col items-center justify-center gap-1 w-6 relative z-10">
-              <CircleDot className="w-4 h-4 text-green-600 shrink-0 bg-white" />
-              <div className="w-[3px] h-6 bg-gray-200 border-l border-dashed border-gray-300" />
-              <MapPin className="w-5 h-5 text-red-500 shrink-0 bg-white" />
-            </div>
-
-            <div className="flex-1 flex flex-col gap-2 relative z-20">
-              <div
-                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "start" ? "border-blue-400 ring-2 ring-blue-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
-                onClick={() => setActivePoint("start")}
-              >
-                <LocationAutocomplete
-                  value={startInput}
-                  onChange={(val) => { setStartInput(val); setStartLabel(val); setIsPickingOnMap(false); }}
-                  onSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
-                  onClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
-                  placeholder="Your location"
-                  className="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-                  renderTopOptions={renderTopOptions("start")}
-                />
-              </div>
-              <div
-                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "end" ? "border-blue-400 ring-2 ring-blue-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
-                onClick={() => setActivePoint("end")}
-              >
-                <LocationAutocomplete
-                  value={endInput}
-                  onChange={(val) => { setEndInput(val); setEndLabel(val); setIsPickingOnMap(false); }}
-                  onSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
-                  onClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
-                  placeholder="Choose destination"
-                  className="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-                  renderTopOptions={renderTopOptions("end")}
-                />
-              </div>
-            </div>
-
-            <div className="w-10 flex items-center justify-center relative z-10 pl-1">
-              {(start || end) ? (
-                <button onClick={handleSwap} className="p-2 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors" title="Swap start and destination">
-                  <ArrowDownUp className="w-5 h-5" />
-                </button>
-              ) : null}
-            </div>
+          <div className="p-3 pr-2">
+            <LocationInputGroup
+              theme="blue"
+              startInput={startInput}
+              setStartInput={(val) => { setStartInput(val); setIsPickingOnMap(false); }}
+              endInput={endInput}
+              setEndInput={(val) => { setEndInput(val); setIsPickingOnMap(false); }}
+              activePoint={activePoint}
+              setActivePoint={setActivePoint}
+              startPointId="start"
+              endPointId="end"
+              onStartSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
+              onEndSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
+              onStartClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
+              onEndClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
+              onStartChange={setStartLabel}
+              onEndChange={setEndLabel}
+              onSwap={handleSwap}
+              canSwap={!!(start || end)}
+              onPickOnMap={handlePickOnMapToggle}
+              onUseCurrentLocation={handleUseCurrentLocation}
+              inputClassName="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
+            />
           </div>
 
           {/* Inline loading */}
@@ -571,40 +515,6 @@ export default function RoutePanel() {
   }
 
   // ── DESKTOP VIEW ─────────────────────────────────────────────────────────────
-  const renderTopOptions = (target: ActivePoint) => (
-    <>
-      <li>
-        <button
-          type="button"
-          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={(e) => {
-            e.stopPropagation();
-            handlePickOnMapToggle(target);
-          }}
-        >
-          <div className="bg-blue-100 p-1.5 rounded-full shrink-0">
-            <Crosshair className="h-4 w-4 text-blue-700" />
-          </div>
-          <span className="flex flex-col justify-center h-7 font-semibold text-blue-700">Choose on Map</span>
-        </button>
-      </li>
-      <li>
-        <button
-          type="button"
-          className="flex w-full items-start gap-2 px-3 py-3 text-left text-sm hover:bg-blue-50 transition-colors border-b border-gray-100 mb-1"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={() => handleUseCurrentLocation(target)}
-        >
-          <div className="bg-gray-100 p-1.5 rounded-full shrink-0">
-            <MapPin className="h-4 w-4 text-gray-700" />
-          </div>
-          <span className="flex flex-col justify-center h-7 font-semibold text-gray-800">Use Current Location</span>
-        </button>
-      </li>
-    </>
-  );
-
   return (
     <>
       <div className="fixed top-0 left-0 bottom-0 z-40 bg-white shadow-xl border-r border-gray-200 flex flex-col w-[340px]">
@@ -647,55 +557,27 @@ export default function RoutePanel() {
           </div>
 
           {/* Location Inputs (Timeline Style) */}
-          <div className="flex items-center">
-            {/* Left Icons */}
-            <div className="flex flex-col items-center justify-center gap-1 w-5 mr-2 relative z-10 shrink-0">
-              <CircleDot className="w-3.5 h-3.5 text-green-600 shrink-0 bg-white" />
-              <div className="w-[2px] h-5 bg-gray-200 border-l border-dashed border-gray-300" />
-              <MapPin className="w-4 h-4 text-red-500 shrink-0 bg-white" />
-            </div>
-
-            {/* Inputs */}
-            <div className="flex-1 flex flex-col gap-1.5 relative z-20 min-w-0">
-              <div
-                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "start" ? "border-blue-400 ring-2 ring-blue-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
-                onClick={() => setActivePoint("start")}
-              >
-                <LocationAutocomplete
-                  value={startInput}
-                  onChange={(val) => { setStartInput(val); setStartLabel(val); setIsPickingOnMap(false); }}
-                  onSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
-                  onClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
-                  placeholder="Your location"
-                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-                  renderTopOptions={renderTopOptions("start")}
-                />
-              </div>
-              <div
-                className={cn("w-full rounded-lg transition-all bg-gray-50 border", activePoint === "end" ? "border-blue-400 ring-2 ring-blue-100 bg-white shadow-sm relative z-30" : "border-transparent relative z-10")}
-                onClick={() => setActivePoint("end")}
-              >
-                <LocationAutocomplete
-                  value={endInput}
-                  onChange={(val) => { setEndInput(val); setEndLabel(val); setIsPickingOnMap(false); }}
-                  onSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
-                  onClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
-                  placeholder="Choose destination"
-                  className="[&_input]:border-none [&_input]:h-9 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-                  renderTopOptions={renderTopOptions("end")}
-                />
-              </div>
-            </div>
-
-            {/* Swap Button */}
-            <div className="w-8 flex items-center justify-center self-center shrink-0 pl-1">
-              {(start || end) ? (
-                <button onClick={handleSwap} className="p-1.5 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors" title="Swap start and destination">
-                  <ArrowDownUp className="w-4 h-4" />
-                </button>
-              ) : null}
-            </div>
-          </div>
+          <LocationInputGroup
+            theme="blue"
+            startInput={startInput}
+            setStartInput={(val) => { setStartInput(val); setIsPickingOnMap(false); }}
+            endInput={endInput}
+            setEndInput={(val) => { setEndInput(val); setIsPickingOnMap(false); }}
+            activePoint={activePoint}
+            setActivePoint={setActivePoint}
+            startPointId="start"
+            endPointId="end"
+            onStartSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
+            onEndSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
+            onStartClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
+            onEndClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
+            onStartChange={setStartLabel}
+            onEndChange={setEndLabel}
+            onSwap={handleSwap}
+            canSwap={!!(start || end)}
+            onPickOnMap={handlePickOnMapToggle}
+            onUseCurrentLocation={handleUseCurrentLocation}
+          />
 
           {/* Saved Places Chips */}
           {sortedSavedPlaces && sortedSavedPlaces.length > 0 && (

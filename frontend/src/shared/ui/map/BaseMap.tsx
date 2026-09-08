@@ -74,7 +74,7 @@ export class ZoomLevelControl {
       user-select: none;
       cursor: default;
       box-sizing: border-box;
-      border-radius: 8px;
+      border-radius: 12px;
     `;
 
     this._textSpan = document.createElement("span");
@@ -187,7 +187,7 @@ export class MapStylePickerControl {
     // Outer control wrapper
     this._container = document.createElement("div");
     this._container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-    this._container.style.cssText = `position: relative; overflow: visible !important;`;
+    this._container.style.cssText = `position: relative; overflow: visible !important; border-radius: 12px;`;
 
     // Toggle button
     const btn = document.createElement("button");
@@ -199,19 +199,20 @@ export class MapStylePickerControl {
       display: flex; align-items: center; justify-content: center;
       background: transparent; border: none; cursor: pointer;
       font-size: 20px; transition: background-color 0.2s;
+      border-radius: 12px;
     `;
     btn.innerHTML = `<span style="font-size:18px;line-height:1;">🎨</span>`;
     btn.onmouseenter = () => { btn.style.backgroundColor = "#f8fafc"; };
     btn.onmouseleave = () => { btn.style.backgroundColor = "transparent"; };
     btn.onclick = (e) => { e.stopPropagation(); this._togglePanel(); };
 
-    // Floating style picker panel
+    // Floating style picker panel (opens to the left of the control so it does not overlap upper buttons or route panel)
     this._panel = document.createElement("div");
     this._panel.style.cssText = `
       display: none;
       position: absolute;
-      bottom: 54px;
-      right: 0;
+      bottom: 0;
+      right: calc(100% + 8px);
       background: white;
       border-radius: 14px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
@@ -219,6 +220,7 @@ export class MapStylePickerControl {
       min-width: 140px;
       z-index: 9999;
       border: 1px solid #e5e7eb;
+      overflow: hidden;
     `;
 
     MAP_STYLES.forEach((style) => {
@@ -405,7 +407,7 @@ export class Toggle3DControl {
     if (!this._map || !this._map.getStyle()) return;
     try {
       if (this._is3D) {
-        // Only add terrain if it doesn't exist
+        // Only add terrain source if it doesn't exist
         if (!this._map.getSource(Toggle3DControl.DEM_SOURCE_ID)) {
           this._map.addSource(Toggle3DControl.DEM_SOURCE_ID, {
             type: "raster-dem",
@@ -415,6 +417,9 @@ export class Toggle3DControl {
             maxzoom: 15,
             attribution: "Elevation tiles &copy; Mapzen, &copy; USGS",
           });
+        }
+        // Always ensure terrain is applied when in 3D mode
+        if (!this._map.getTerrain()) {
           this._map.setTerrain({ source: Toggle3DControl.DEM_SOURCE_ID, exaggeration: Toggle3DControl.EXAGGERATION });
         }
         // In 3D mode, show 3D building extrusions and restore their heights
@@ -476,8 +481,8 @@ export class Toggle3DControl {
     if (animate && this._map.isStyleLoaded()) {
       this._map.easeTo({ pitch: Toggle3DControl.TARGET_PITCH_3D, duration: 700 });
     }
-    if (!this._map.getLayer("sky")) {
-      try {
+    try {
+      if (this._map.getStyle() && !this._map.getLayer("sky")) {
         this._map.addLayer({
           id: "sky",
           type: "sky",
@@ -489,8 +494,8 @@ export class Toggle3DControl {
             "sky-horizon-blend": 0.4,
           },
         } as any);
-      } catch {}
-    }
+      }
+    } catch {}
   }
 
   private _disable3D(animate: boolean = true) {
@@ -905,7 +910,6 @@ export default function BaseMap({
           height: 48px !important;
           background-color: transparent !important;
           border: none !important;
-          border-radius: 0 !important;
           box-shadow: none !important;
           cursor: pointer !important;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -913,6 +917,24 @@ export default function BaseMap({
           align-items: center !important;
           justify-content: center !important;
           margin: 0 !important;
+        }
+        .maplibregl-ctrl-group > button:only-child {
+          border-radius: 12px !important;
+        }
+        .maplibregl-ctrl-group > button:first-child:not(:only-child) {
+          border-top-left-radius: 12px !important;
+          border-top-right-radius: 12px !important;
+          border-bottom-left-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
+        }
+        .maplibregl-ctrl-group > button:last-child:not(:only-child) {
+          border-bottom-left-radius: 12px !important;
+          border-bottom-right-radius: 12px !important;
+          border-top-left-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+        }
+        .maplibregl-ctrl-group > button:not(:first-child):not(:last-child) {
+          border-radius: 0 !important;
         }
         .maplibregl-ctrl-group > button + button {
           border-top: 1px solid #e5e7eb !important;
