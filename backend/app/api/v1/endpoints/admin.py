@@ -1,6 +1,7 @@
+import json
 from typing import List, Any, Optional
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
@@ -178,8 +179,8 @@ async def approve_report(
     if report.user_id:
         crud.credit_user_verified_report(db, user_id=report.user_id)
 
-    # 5. [Phase 3] Auto-create CommunityPost if the report is public
-    if report.is_public and report.user_id:
+    # 5. [Phase 3] Auto-create CommunityPost if the report is public and not already posted
+    if report.is_public and report.user_id and not report.community_post:
         post_in = schemas.CommunityPostCreate(
             flood_report_id=report.id,
             content=report.raw_text,
@@ -219,6 +220,185 @@ async def approve_report(
     })
 
     return report
+
+
+@router.get("/reports/merge-candidates", response_model=schemas.MergeCandidatesListResponse)
+def get_merge_candidates(
+    report_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Intelligent Merge Candidate Engine (Decision #16 & OSM Graph Grouping).
+    Computes explainable match scores (0-100), detects conflicts in severity/depth/passability,
+    and returns a synthesized linear-referenced geometry proposal.
+    Requires admin privileges.
+    """
+    from app.services.merge_service import find_merge_candidates
+    try:
+        return find_merge_candidates(report_id=report_id, db=db)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to identify merge candidates: {e}")
+
+
+@router.post("/reports/merge", response_model=schemas.MergeReportsResponse)
+async def merge_reports(
+    payload: schemas.MergeReportsRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Atomic Multi-Report Merge & Official Zone Declaration.
+    - Merges primary_report and merged_report_ids into a new or existing FloodAvoidanceZone.
+    - Saves overridden passable vehicles, hazards, severity, depth, notes, and merge rationale.
+    - Buffers geometry into active avoidance polygon (using dual-carriageway hull if bidirectional).
+    - Credits +5 Trust Score to each unique reporter.
+    - Preserves all original crowdsourced reports and leaves CommunityFeed posts 100% immutable.
+    - Broadcasts real-time SSE notification and records audit trail.
+    Requires admin privileges.
+    """
+    all_report_ids = list(dict.fromkeys([payload.primary_report_id] + payload.merged_report_ids))
+    reports = db.query(models.FloodReport).filter(
+        models.FloodReport.id.in_(all_report_ids),
+        models.FloodReport.deleted_at.is_(None)
+    ).all()
+
+    if not reports:
+        raise HTTPException(status_code=404, detail="No matching reports found to merge")
+
+    final = payload.final_data
+    target_zone = None
+    created_new_zone = False
+
+    # 1. Resolve Target Avoidance Zone (Existing vs New)
+    if payload.target_zone_id:
+        target_zone = db.query(models.FloodAvoidanceZone).filter(
+            models.FloodAvoidanceZone.id == payload.target_zone_id
+        ).first()
+        if not target_zone:
+            raise HTTPException(status_code=404, detail=f"Target avoidance zone #{payload.target_zone_id} not found")
+    else:
+        # Create a new FloodAvoidanceZone
+        created_new_zone = True
+
+    # 2. Process and Buffer the Final Zone Geometry
+    # Final geometry can be Hand-Drawn Polygon (TerraDraw) or Routed Line/MultiLine
+    geom_dict = final.geometry.model_dump()
+    geom_type = geom_dict.get("type")
+    
+    if geom_type in ["Polygon", "MultiPolygon"]:
+        # Hand-drawn boundary polygon
+        geojson_str = json.dumps(geom_dict)
+        final_poly_geom = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
+    else:
+        # LineString or MultiLineString: buffer into avoidance polygon
+        geojson_str = json.dumps(geom_dict)
+        input_geom = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
+        buffer_radius = (final.buffer_radius or 25.0) / 111000.0  # meters to approx degrees
+
+        if geom_type == "MultiLineString":
+            # Dual carriageway (Decision #16): buffer both lines and take convex hull
+            final_poly_geom = func.ST_ConvexHull(
+                func.ST_Collect(
+                    func.ST_Buffer(func.ST_GeometryN(input_geom, 1), buffer_radius),
+                    func.ST_Buffer(func.ST_GeometryN(input_geom, 2), buffer_radius)
+                )
+            )
+        else:
+            final_poly_geom = func.ST_Buffer(input_geom, buffer_radius)
+
+    # 3. Apply Overrides to Avoidance Zone
+    if created_new_zone:
+        target_zone = models.FloodAvoidanceZone(
+            curated_by_admin_id=current_user.id,
+            geometry=final_poly_geom,
+            name=final.name,
+            severity_override=models.ReportSeverity(final.severity) if final.severity in [s.value for s in models.ReportSeverity] else models.ReportSeverity.MEDIUM,
+            depth_override=final.depth,
+            passable_vehicles_override=final.passable_vehicles,
+            hidden_hazards_override=final.hidden_hazards,
+            merge_rationale=final.merge_rationale or f"Merged {len(reports)} reports ({', '.join([f'#{r.id}' for r in reports])})",
+            admin_notes=final.admin_notes,
+            is_active=True
+        )
+        db.add(target_zone)
+        db.commit()
+        db.refresh(target_zone)
+    else:
+        target_zone.curated_by_admin_id = current_user.id
+        target_zone.geometry = final_poly_geom
+        target_zone.name = final.name
+        if final.severity:
+            target_zone.severity_override = models.ReportSeverity(final.severity) if final.severity in [s.value for s in models.ReportSeverity] else target_zone.severity_override
+        if final.depth:
+            target_zone.depth_override = final.depth
+        if final.passable_vehicles:
+            target_zone.passable_vehicles_override = final.passable_vehicles
+        if final.hidden_hazards:
+            target_zone.hidden_hazards_override = final.hidden_hazards
+        target_zone.merge_rationale = final.merge_rationale or f"Merged {len(reports)} additional reports ({', '.join([f'#{r.id}' for r in reports])})"
+        if final.admin_notes:
+            target_zone.admin_notes = final.admin_notes
+        target_zone.is_active = True
+        db.commit()
+        db.refresh(target_zone)
+
+    # 4. Attach all reports to zone, approve them, and credit trust scores
+    awarded_user_ids = []
+    for report in reports:
+        report.zone_id = target_zone.id
+        report.status = models.ReportStatus.APPROVED
+        report.approved_at = datetime.utcnow()
+        if report.user_id and report.user_id not in awarded_user_ids:
+            crud.credit_user_verified_report(db, user_id=report.user_id)
+            awarded_user_ids.append(report.user_id)
+
+    db.commit()
+
+    # 5. Audit Trail Logging
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="MERGE_REPORTS",
+            target_table="flood_avoidance_zones",
+            target_id=target_zone.id,
+            metadata_json={
+                "zone_id": target_zone.id,
+                "created_new_zone": created_new_zone,
+                "merged_report_ids": all_report_ids,
+                "awarded_user_ids": awarded_user_ids,
+                "final_severity": final.severity,
+            },
+            ip_address=client_ip
+        )
+    )
+
+    # 6. Real-Time Broadcast via SSE
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "reports_merged",
+        "data": {
+            "zone_id": target_zone.id,
+            "zone_name": target_zone.name,
+            "merged_count": len(reports),
+            "report_ids": all_report_ids
+        }
+    })
+
+    zone_resp = schemas.FloodAvoidanceZoneResponse.model_validate(target_zone)
+    return schemas.MergeReportsResponse(
+        message=f"Successfully merged {len(reports)} reports into zone '{target_zone.name}'",
+        zone_id=target_zone.id,
+        zone_name=target_zone.name,
+        merged_count=len(reports),
+        awarded_user_ids=awarded_user_ids,
+        zone=zone_resp
+    )
 
 
 @router.get("/zones/nearby", response_model=List[schemas.NearbyZoneResponse])
@@ -940,24 +1120,45 @@ async def merge_pending_into_zone(
 @router.post("/zones", response_model=schemas.FloodAvoidanceZoneResponse)
 async def create_official_zone(
     request: Request,
-    body: schemas.FloodAvoidanceZoneCreateOfficial,
+    body: str = Form(..., description="JSON-encoded FloodAvoidanceZoneCreateOfficial payload"),
+    media: List[UploadFile] = File(default=[]),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> Any:
     """
     Create a new official DRRMO flood avoidance zone without a user report.
+    Accepts multipart/form-data with an optional list of media files (photos/videos).
     """
+    from app.services.cloudinary_service import upload_image
+
+    # Parse the JSON body field
+    try:
+        payload_data = json.loads(body)
+        payload = schemas.FloodAvoidanceZoneCreateOfficial(**payload_data)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"Invalid body JSON: {e}")
+
     zone_in = schemas.FloodAvoidanceZoneCreate(
-        geometry=body.geometry,
+        geometry=payload.geometry,
         curated_by_admin_id=current_user.id,
-        is_active=body.is_active
+        is_active=payload.is_active
     )
     zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
-    
-    zone.name = body.name
-    zone.severity_override = body.severity_override
-    zone.depth_override = body.depth_override
-    zone.admin_notes = body.admin_notes
+
+    # Upload media files to Cloudinary
+    media_urls: List[str] = []
+    for file in media:
+        url = upload_image(file)
+        if url:
+            media_urls.append(url)
+
+    zone.name = payload.name
+    zone.severity_override = payload.severity_override
+    zone.depth_override = payload.depth_override
+    zone.passable_vehicles_override = payload.passable_vehicles_override
+    zone.hidden_hazards_override = payload.hidden_hazards_override
+    zone.admin_notes = payload.admin_notes
+    zone.media_urls = media_urls if media_urls else None
     db.commit()
     db.refresh(zone)
 
@@ -969,7 +1170,7 @@ async def create_official_zone(
             action_type="CREATE_OFFICIAL_ZONE",
             target_table="flood_avoidance_zones",
             target_id=zone.id,
-            metadata_json={"zone_id": zone.id},
+            metadata_json={"zone_id": zone.id, "media_count": len(media_urls)},
             ip_address=client_ip
         )
     )
@@ -1006,6 +1207,10 @@ async def update_zone(
         zone.depth_override = body.depth_override
     if body.admin_notes is not None:
         zone.admin_notes = body.admin_notes
+    if body.passable_vehicles_override is not None:
+        zone.passable_vehicles_override = body.passable_vehicles_override
+    if body.hidden_hazards_override is not None:
+        zone.hidden_hazards_override = body.hidden_hazards_override
     if body.is_active is not None:
         zone.is_active = body.is_active
 

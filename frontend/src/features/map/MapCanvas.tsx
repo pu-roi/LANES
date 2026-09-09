@@ -7,7 +7,6 @@ import { Loader2, MapPin } from "lucide-react";
 import { CONSTANTS } from "./mapUtils";
 import { computeCenterCoordinate, flyToCoordinates, flyToFeature } from "./mapGeoUtils";
 import { useFloodMapPreview } from "./hooks/useFloodMapPreview";
-import { MAP_LAYERS } from "./mapStyles";
 import { useMapContext } from "./MapContext";
 import { LoadingOverlay } from "@/shared/ui";
 import { useMediaQuery } from "@/hooks/useMediaQuery";

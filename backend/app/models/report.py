@@ -192,11 +192,15 @@ class FloodAvoidanceZone(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
-    # Admin Overrides for Official DRRMO Zone Data
+    # Admin Overrides for Official DRRMO Zone Data & Merging
     name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     severity_override: Mapped[Optional[ReportSeverity]] = mapped_column(Enum(ReportSeverity, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]), nullable=True)
     depth_override: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    passable_vehicles_override: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    hidden_hazards_override: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    merge_rationale: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
     admin_notes: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
+    media_urls: Mapped[Optional[List[str]]] = mapped_column(JSONB, nullable=True)
 
     # Relationships
     reports: Mapped[List["FloodReport"]] = relationship("FloodReport", back_populates="avoidance_zone")
@@ -260,12 +264,16 @@ class FloodAvoidanceZone(Base):
 
     @property
     def passable_vehicles(self) -> Optional[str]:
+        if self.passable_vehicles_override:
+            return self.passable_vehicles_override
         if self.primary_report and self.primary_report.survey:
             return self.primary_report.survey.passable_vehicles
         return None
 
     @property
     def hidden_hazards(self) -> Optional[str]:
+        if self.hidden_hazards_override:
+            return self.hidden_hazards_override
         if self.primary_report and self.primary_report.survey and hasattr(self.primary_report.survey.hidden_hazards, 'value'):
             return self.primary_report.survey.hidden_hazards.value
         return None

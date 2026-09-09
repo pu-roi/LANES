@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Loader2, CheckCircle, Clock, UserCheck, ChevronDown, ChevronUp, Shield } from "lucide-react";
+import { Loader2, CheckCircle, Clock, UserCheck, ChevronDown, ChevronUp, Shield, Pencil } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/shared/ui";
 import { Pagination } from "@/shared/ui";
@@ -23,6 +23,7 @@ interface ActiveZonesPanelProps {
   flyToZone: (zone: AvoidanceZone) => void;
   setConfirmId: (id: number | null) => void;
   onCreateOfficialZone?: () => void;
+  onEditZone?: (zone: AvoidanceZone) => void;
 }
 
 export function ActiveZonesPanel({
@@ -43,6 +44,7 @@ export function ActiveZonesPanel({
   flyToZone,
   setConfirmId,
   onCreateOfficialZone,
+  onEditZone,
 }: ActiveZonesPanelProps) {
   const [expandedZoneIds, setExpandedZoneIds] = useState<number[]>([]);
 
@@ -329,12 +331,24 @@ export function ActiveZonesPanel({
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
+                  {onEditZone && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEditZone(zone)}
+                      className="h-7 text-xs px-2.5 border-slate-200 text-slate-700 hover:bg-slate-50 gap-1 rounded-lg"
+                      title="Edit zone attributes & overrides"
+                    >
+                      <Pencil className="w-3 h-3 text-slate-500" />
+                      Edit
+                    </Button>
+                  )}
                   {zone.is_active && (
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setConfirmId(zone.id)}
-                      className="h-7 text-xs px-3 border-red-200 text-red-600 hover:bg-red-50"
+                      className="h-7 text-xs px-3 border-red-200 text-red-600 hover:bg-red-50 rounded-lg"
                     >
                       Deactivate
                     </Button>

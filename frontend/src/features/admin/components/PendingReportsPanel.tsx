@@ -13,6 +13,7 @@ interface PendingReportsPanelProps {
   selectedReportId: number | null;
   setSelectedReportId: (id: number | null) => void;
   onInfoClick: (report: FloodReport) => void;
+  onOpenMergeWorkspace?: (report: FloodReport) => void;
   batchCandidates: FloodReport[];
   batchSelectedIds: number[];
   setBatchSelectedIds: (ids: number[]) => void;
@@ -30,6 +31,7 @@ export function PendingReportsPanel({
   selectedReportId,
   setSelectedReportId,
   onInfoClick,
+  onOpenMergeWorkspace,
   batchCandidates,
   batchSelectedIds,
   setBatchSelectedIds,
@@ -246,12 +248,16 @@ export function PendingReportsPanel({
                     variant="outline"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setTargetZoneId(null); 
-                      setMergeModalOpen(true);
+                      if (onOpenMergeWorkspace) {
+                        onOpenMergeWorkspace(report);
+                      } else {
+                        setTargetZoneId(null); 
+                        setMergeModalOpen(true);
+                      }
                     }}
                     className="h-7 text-xs px-3 border-rose-300 bg-white hover:bg-rose-100 text-rose-900 font-semibold shadow-sm"
                   >
-                    <Merge className="w-3.5 h-3.5 mr-1 text-rose-600" /> Review & Merge All ({batchCandidates.length + 1})
+                    <Merge className="w-3.5 h-3.5 mr-1 text-rose-600" /> Review & Merge ({batchCandidates.length + 1})
                   </Button>
                 </div>
               </div>

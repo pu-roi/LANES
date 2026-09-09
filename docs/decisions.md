@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 3, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 9, 2026, 4:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -320,3 +320,52 @@ We needed a way to submit multiple disconnected or connected reports in one go, 
 - [`frontend/src/features/map/MapCanvas.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx) — Added `draft-reports-source` and `draft-reports-layer` rendering logic.
 - [`frontend/src/features/hazards/FloodReportPanel.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) — Refactored to include "Add Another Road" button, Draft Cart list view, and looping submit loop.
 - [`frontend/src/features/admin/components/CreateOfficialZonePanel.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/CreateOfficialZonePanel.tsx) — Cloned the Draft Cart logic, extending it to support TerraDraw drawn features alongside routed lines.
+
+---
+
+## 18. Official Avoidance Zone Moderation Architecture & Media Ingestion Pipeline
+**Date:** September 9, 2026
+**Decision:** Deconstruct the monolithic `CreateOfficialZonePanel.tsx` into a Feature-Based subcomponent hierarchy (`frontend/src/features/admin/components/zones/`), standardize form schema and UI sections directly with `FloodReportPanel.tsx`, introduce multipart `FormData` uploads to Cloudinary for avoidance zone evidence, and establish a decoupled boundary for the ongoing Flood-Report Merge Workspace (`MergeWorkspacePanel.tsx`).
+
+**Context:**
+1. Over iterative development, `CreateOfficialZonePanel.tsx` grew into a 1,000+ line monolithic component containing geometry mode switching, two-click road snapping, TerraDraw integration, draft queue state, and custom form controls.
+2. The form fields within the zone creation drawer drifted away from the public commuter reporting patterns in `FloodReportPanel.tsx`:
+   - It relied on manual severity pills (Low/Medium/High/Extreme) instead of auto-deriving severity from real-world water depth.
+   - Vehicle passability was rendered with generic pills missing critical local transport categories (e.g., Bicycles/E-Bikes).
+   - Hidden hazards lacked standard Yes/No/Unsure options.
+   - Admins had no way to attach photographic or video evidence directly to official DRRMO zones, unlike commuter reports.
+   - Non-standard UI controls like "Avoidance Polygon Buffer Width" sliders introduced visual clutter and confusion.
+3. Simultaneously, Capstone Phase 18 introduced backend models and endpoints for multi-report candidate merging (`merge_service.py`), but the frontend merge workspace (`MergeWorkspacePanel.tsx`) and live multi-report map resolution interface remain incomplete and in active development.
+
+**Architectural Shifts & Technical Strategy:**
+1. **Feature-Based Subcomponent Extraction (`src/features/admin/components/zones/`):**
+   - Refactored `CreateOfficialZonePanel.tsx` into a lightweight wrapper exporting `OfficialZoneDrawer.tsx`.
+   - Extracted dedicated, single-responsibility subcomponents:
+     - `GeometryModeSelector.tsx`: Line vs. TerraDraw shape controls.
+     - `RoadSegmentPicker.tsx`: Two-click start/end pin coordination and bidirectional road detection.
+     - `DraftZoneCart.tsx`: Draft list management for 1 Zone = 1 Incident batching.
+2. **Unified 5-Tier Form Architecture:**
+   Standardized the drawer sections to strictly mirror `FloodReportPanel.tsx`:
+   - **1. Spatial Geometry**: Road snapping (Line) or Terra Draw shapes (Polygon, Freehand, Rectangle, Circle).
+   - **2. Hazard Attributes**: 8-tile visual depth gauge (Gutter, Half-Knee, Half-Tire, Knee, Tires, Waist, Chest, Neck) with auto-derived severity (`low`, `medium`, `high`, `extreme`), plus directional carriageway toggling. The arbitrary buffer width slider was completely excised.
+   - **3. Survey (\*)**: Mandatory checkboxes for passable vehicles (including Bicycles/E-Bikes, Pedestrians, Sedans, etc.) and hidden hazard presence (Yes/No/Unsure).
+   - **4. Photos & Videos (Optional)**: Drag-and-drop media upload supporting JPEG, PNG, and MP4 files up to 10MB with interactive preview tags.
+   - **5. Description (\*)**: Mandatory operational notes and dispatch context.
+3. **Decoupled Form State (`ZoneDataEditorForm.tsx`):**
+   - Added granular section toggles (`hideSurvey`, `hideDescription`, `hideBidirectional`) to allow `ZoneDataEditorForm` to be reused cleanly between standalone zone creation/editing and future merge operations without code duplication.
+4. **Multipart FormData & Cloudinary Media Upload (`POST /admin/zones`):**
+   - Updated `POST /api/v1/admin/zones` to accept multipart `FormData` consisting of `body` (JSON string) and `media: List[UploadFile]`.
+   - Uploaded files are streamed synchronously to Cloudinary via `cloudinary_service.upload_image()`, returning secure URLs persisted into the new `media_urls` JSONB column on `flood_avoidance_zones`.
+   - Database schema migrated via Alembic migration `33ec62de236d_add_media_urls_to_avoidance_zones.py`.
+5. **Separation from Merge Workspace:**
+   - Explicitly decoupled the official zone creation/editing flow from the merge flow. The merge workspace interface (`MergeWorkspacePanel.tsx`) is an ongoing development initiative that will consume `ZoneDataEditorForm` as a child step once candidate recommendation and side-by-side conflict resolution UI are fully constructed.
+
+**Files Modified:**
+- [`backend/app/models/report.py`](file:///d:/Documents/Github/LANES/backend/app/models/report.py) — Added `media_urls` JSONB column to `FloodAvoidanceZone`.
+- [`backend/app/schemas/report.py`](file:///d:/Documents/Github/LANES/backend/app/schemas/report.py) — Added `media_urls` to `FloodAvoidanceZoneResponse`.
+- [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — Converted `create_official_zone` to multipart `FormData` with Cloudinary upload.
+- [`backend/alembic/versions/33ec62de236d_add_media_urls_to_avoidance_zones.py`](file:///d:/Documents/Github/LANES/backend/alembic/versions/33ec62de236d_add_media_urls_to_avoidance_zones.py) — Database migration for `media_urls`.
+- [`frontend/src/features/admin/adminApi.ts`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/adminApi.ts) — Updated `createOfficialZone` to dispatch `FormData`.
+- [`frontend/src/features/admin/components/ZoneDataEditorForm.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/ZoneDataEditorForm.tsx) — Rewritten with visual depth picker, survey isolation props, and buffer slider removal.
+- [`frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx) — Main modularized drawer supporting create & edit modes, media upload, and standalone Survey & Description sections.
+- [`frontend/src/features/admin/components/zones/subcomponents/`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/zones/subcomponents/) — Extracted `GeometryModeSelector.tsx`, `RoadSegmentPicker.tsx`, and `DraftZoneCart.tsx`.

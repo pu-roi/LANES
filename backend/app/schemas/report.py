@@ -121,14 +121,18 @@ class FloodAvoidanceZoneUpdate(BaseModel):
     name: Optional[str] = None
     severity_override: Optional[ReportSeverity] = None
     depth_override: Optional[str] = None
+    passable_vehicles_override: Optional[str] = None
+    hidden_hazards_override: Optional[str] = None
     admin_notes: Optional[str] = None
     is_active: Optional[bool] = None
 
 class FloodAvoidanceZoneCreateOfficial(BaseModel):
-    name: str
+    name: Optional[str] = None
     geometry: Union[PolygonGeometry, MultiPolygonGeometry]
     severity_override: ReportSeverity
     depth_override: Optional[str] = None
+    passable_vehicles_override: Optional[str] = None
+    hidden_hazards_override: Optional[str] = None
     admin_notes: Optional[str] = None
     is_active: bool = True
 
@@ -194,8 +198,12 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     reporter_reports_submitted: Optional[int] = None
     reporter_reports_verified: Optional[int] = None
     
+    passable_vehicles_override: Optional[str] = None
+    hidden_hazards_override: Optional[str] = None
+    merge_rationale: Optional[str] = None
     passable_vehicles: Optional[str] = None
     hidden_hazards: Optional[str] = None
+    media_urls: Optional[list[str]] = None
     contributors: list[ZoneContributorResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
@@ -215,7 +223,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
 
     @field_validator("report_geometry", mode="before")
     @classmethod
-    def convert_report_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry]]:
+    def convert_report_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]]:
         if isinstance(v, WKBElement):
             try:
                 data = bytes.fromhex(v.desc) if isinstance(v.desc, str) else bytes(v.data)
@@ -229,6 +237,9 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
                 elif pure_geom_type == 2:  # LineString
                     coords = parse_ewkb_linestring(data)
                     return LineStringGeometry(type="LineString", coordinates=coords)
+                elif pure_geom_type == 3:  # Polygon
+                    coords = parse_ewkb_polygon(data)
+                    return PolygonGeometry(type="Polygon", coordinates=coords)
                 elif pure_geom_type == 5:  # MultiLineString
                     coords = parse_ewkb_multilinestring(data)
                     return MultiLineStringGeometry(type="MultiLineString", coordinates=coords)
@@ -294,3 +305,78 @@ class MergePendingReportsResponse(BaseModel):
     message: str
     merged_count: int
     zone_id: int
+
+
+# =========================================================================
+# Schemas for Intelligent Multi-Factor Merging (Decision #16 & Graph Grouping)
+# =========================================================================
+
+class MergeConflict(BaseModel):
+    field: str  # "severity", "depth", "direction", "passable_vehicles"
+    message: str
+    suggested_value: Any
+
+
+class MergeCandidateItem(BaseModel):
+    report_id: int
+    road_name: Optional[str] = None
+    barangay: Optional[str] = None
+    city: Optional[str] = None
+    severity: str
+    depth: Optional[str] = None
+    passable_vehicles: Optional[str] = None
+    hidden_hazards: Optional[str] = None
+    reporter_username: Optional[str] = None
+    reporter_name: Optional[str] = None
+    reporter_trust_score: float = 100.0
+    media_urls: Optional[list[str]] = None
+    raw_text: Optional[str] = None
+    reported_at: datetime
+    geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
+    
+    # Matching Metrics
+    match_score: int  # 0 - 100
+    match_reasons: list[str] = []
+    is_crowd_consensus: bool = False
+    osm_way_id: Optional[int] = None
+    road_class: Optional[str] = None
+    corridor_overlap_ratio: Optional[float] = None
+    conflicts: list[MergeConflict] = []
+
+
+class MergeCandidatesListResponse(BaseModel):
+    primary_report: FloodReportResponse
+    candidates: list[MergeCandidateItem]
+    total_candidates: int
+    detected_conflicts: list[MergeConflict] = []
+    suggested_merged_geometry: Optional[Union[LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
+    is_bidirectional_detected: bool = False
+
+
+class MergedZoneFinalData(BaseModel):
+    name: Optional[str] = None
+    severity: str
+    depth: Optional[str] = None
+    passable_vehicles: Optional[str] = None
+    hidden_hazards: Optional[str] = None
+    is_bidirectional: bool = False
+    geometry: Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]
+    admin_notes: Optional[str] = None
+    merge_rationale: Optional[str] = None
+    buffer_radius: Optional[float] = 25.0
+
+
+class MergeReportsRequest(BaseModel):
+    primary_report_id: int
+    merged_report_ids: list[int]
+    target_zone_id: Optional[int] = None  # None = create new zone; int = merge into existing zone
+    final_data: MergedZoneFinalData
+
+
+class MergeReportsResponse(BaseModel):
+    message: str
+    zone_id: int
+    zone_name: Optional[str] = None
+    merged_count: int
+    awarded_user_ids: list[int] = []
+    zone: FloodAvoidanceZoneResponse

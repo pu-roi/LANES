@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 7, 2026, 3:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 9, 2026, 4:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -26,8 +26,51 @@
 | 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
 | 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
 | 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
+| 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based modular Official Zone Drawer with Cloudinary photo/video upload and 5-section FloodReportPanel parity; backend candidate scoring engine and carriageway analysis implemented; interactive merge workspace interface actively in progress |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Feature-Based Official Avoidance Zone Drawer (`OfficialZoneDrawer.tsx`, `zones/`)** (@roicambe):
+  - Modularized `CreateOfficialZonePanel.tsx` from a 1,000+ line monolith into single-responsibility subcomponents: `GeometryModeSelector.tsx`, `RoadSegmentPicker.tsx`, and `DraftZoneCart.tsx`.
+  - Reorganized into a clean 5-tier structure matching `FloodReportPanel.tsx`: 1. Spatial Geometry $\rightarrow$ 2. Hazard Attributes $\rightarrow$ 3. Survey (Passable Vehicles & Hidden Hazards) $\rightarrow$ 4. Photos & Videos $\rightarrow$ 5. Description.
+  - Replaced manual severity buttons with an 8-tile visual depth gauge auto-deriving severity, and removed non-standard avoidance buffer width sliders.
+  - Converted `POST /admin/zones` to multipart `FormData` with streaming Cloudinary uploads, persisting `media_urls` on `FloodAvoidanceZone` via Alembic migration `33ec62de236d`.
+- [x] **Intelligent Multi-Factor Merge Candidate Engine (`merge_service.py`)** (@roicambe):
+  - Engineered spatial corridor buffer calculation (`ST_Buffer(geom, 25m)`), intersection calculation (`ST_Intersection`), and Jaccard overlap ratio metrics.
+  - Sourced Decision #16 Valhalla edge traces (`trace_road_attributes`) to group reports by true OpenStreetMap `way_id`, road classification firewall (preventing highway-service road merges), and azimuth alignment.
+  - Implemented Linear Referencing synthesis: projected multi-user start/end coordinates onto road centerlines via `ST_LineLocatePoint` and sliced continuous merged lines via `ST_LineSubstring`.
+  - Implemented multi-factor scoring (0-100) with explainable reasons, crowd consensus badge (score $\ge 80$), and automated conflict detection (severity, depth, passable vehicles).
+- [x] **Decision #16 Decoupled Carriageway Service (`carriageway_service.py`)** (@roicambe):
+  - Extracted Decision #16 bidirectional logic out of `valhalla_service.py` into a dedicated modular service (`find_opposite_carriageway`, `_shift_coords_perpendicular`, `decode_polyline6`).
+  - Preserved backward compatibility by re-exporting methods through `valhalla_service.py`.
+- [x] **Transactional Multi-Report Merge & Official Zone Creation (`admin.py`)** (@roicambe):
+  - Created `GET /api/v1/admin/reports/merge-candidates?report_id={id}` and `POST /api/v1/admin/reports/merge`.
+  - Supported creating brand new `FloodAvoidanceZone` entities or merging into existing active zones, applying user overrides (`passable_vehicles_override`, `hidden_hazards_override`, `merge_rationale`).
+  - Preserved original crowdsourced reports, credited +5 Trust Score to each unique reporter, broadcasted real-time SSE event, and recorded audit trails.
+  - Guaranteed 100% Community Feed post immutability (`community_posts` remain completely untouched when reports are merged or approved).
+- [ ] **Interactive Merge Workspace Interface & Live Map Resolution (`MergeWorkspacePanel.tsx`)** (@roicambe):
+  - *In Active Development*: Candidate selection matrix, side-by-side report comparison cards, conflict resolution notices, and interactive spatial merge resolution require full end-to-end frontend execution and live testing.
+- [x] **Dual-Pane Master-Detail Sidebar / Slide-Out Drawer (`MergeWorkspacePanel.tsx`)** (@roicambe):
+  - Implemented secondary slide-out drawer docking seamlessly alongside `PendingReportsPanel`, keeping the MapLibre canvas unblocked.
+  - Designed 3-step workflow: 1. Candidate Selection $\rightarrow$ 2. Side-by-Side Review & Conflict Resolution $\rightarrow$ 3. Final Zone Data Editor.
+  - Built `ReportComparisonCard.tsx`, `ConflictResolutionNotice.tsx`, and `MergeExplanationBanner.tsx`.
+  - Integrated `useMergePreviewLayer.ts` to render vibrant multi-color candidate geometries alongside the primary report and proposed dashed merged geometry on the map.
+- [x] **1 Zone = 1 Incident Draft Cart Pattern & Field Streamlining (`CreateOfficialZonePanel.tsx`, `ZoneDataEditorForm.tsx`)** (@roicambe):
+  - Refactored zone drafting to ensure each official zone corresponds to exactly one incident with its own severity, depth, and survey attributes.
+  - Enabled batching multiple official zones sequentially via a draft cart before atomic submission.
+  - Streamlined flood zone creation and merging by removing manual zone naming (relying on clear location descriptions and real-world hazard conditions) and redundant scheduled status toggles (ensuring created flood hazard zones are automatically active `is_active: true`).
+- [x] **Docked Secondary Drawer Architecture for CreateOfficialZonePanel (`CreateOfficialZonePanel.tsx`, `LiveMapPage.tsx`, `ActiveZonesPanel.tsx`)** (@roicambe):
+  - Converted `CreateOfficialZonePanel` from a floating draggable card overlay into a docked secondary drawer (Pane 2) alongside the left sidebar (`md:w-[420px] xl:w-[460px] h-full bg-white border-r border-slate-200`), fully unifying it with the Dual-Pane Master-Detail architectural pattern established by `MergeWorkspacePanel`.
+  - Lifted `MapProvider` to wrap the root layout of `LiveMapPage`, ensuring seamless shared MapContext across both drawers and the map canvas without nested providers.
+  - Eliminated duplicate "+ Create Official Zone" and "New Zone" buttons across `ActiveZonesPanel` and `LiveMapPage` headers to maintain a single, intuitive point of interaction.
+  - Implemented the physical "Drawer Pull Handle in Your Hands" edge toggle matching user sketch:
+    - **Closed Handle (Pane 1 Edge)**: Sits at `top-3.5` on the right border of Pane 1, featuring a blue `Plus` icon badge, clear vertical typography (`CREATE ZONE`), and `ChevronRight`.
+    - **Open Handle (Pane 2 Edge)**: Travels smoothly to the outer front edge of Pane 2 (`-right-9 top-3.5`), styled in dark slate with `ChevronLeft`, vertical `CLOSE DRAWER` typography, and smooth hover interaction to push the drawer shut.
+    - **Smooth Drawer Slide Animation**: Powered by Framer Motion `<AnimatePresence>` with cubic-bezier easing (`[0.32, 0.72, 0, 1]`) from `width: 0` to `420px`/`460px`, paired with a continuous 35ms MapLibre canvas resize loop to ensure the WebGL viewport smoothly adjusts without jarring jumps.
+  - Maintained full mobile PWA responsiveness (full-screen slide-over drawer on mobile viewports; docked side-by-side pane on desktop), dynamic map container resize tracking via `ResizeObserver`, and centered floating drawing instruction banner.
+- [x] **Automated Pytest & Integration Verification (`test_flood_report_merging.py`)** (@roicambe):
+  - Authoring comprehensive automated Pytest integration tests validating candidate identification, multi-factor scoring, conflict detection, transactional merge, and feed post immutability (100% passing).
 
 ### Capstone Phase 16: Admin Map Controls & Component Standardization (🟢 COMPLETED)
 - [x] **Universal MapLibre Preview Architecture (`useFloodMapPreview.ts`)** (@antigravity):

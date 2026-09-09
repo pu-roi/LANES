@@ -20,7 +20,12 @@ export interface MultiLineStringGeometry {
   coordinates: [number, number][][];
 }
 
-export type ReportGeometry = PointGeometry | LineStringGeometry | PolygonGeometry | MultiLineStringGeometry;
+export interface MultiPolygonGeometry {
+  type: "MultiPolygon";
+  coordinates: [number, number][][][];
+}
+
+export type ReportGeometry = PointGeometry | LineStringGeometry | PolygonGeometry | MultiLineStringGeometry | MultiPolygonGeometry;
 
 /** Geometry drawn by admin in ZoneGeometryEditor */
 export type DrawnGeometry = PolygonGeometry | LineStringGeometry;
@@ -45,6 +50,10 @@ export interface FloodReport {
   barangay?: string | null;
   city?: string | null;
   human_readable_location?: string | null;
+  road_name?: string | null;
+  is_bidirectional?: boolean;
+  passable_vehicles?: string | null;
+  hidden_hazards?: string | null;
   user_id?: number | null;
   created_at: string;
   updated_at: string;
@@ -152,8 +161,15 @@ export async function getNearbyZones(reportId: number, maxDistanceMeters: number
   return apiClient.get<NearbyZone[]>(`/admin/zones/nearby?report_id=${reportId}&max_distance_meters=${maxDistanceMeters}`);
 }
 
-export async function createOfficialZone(payload: any): Promise<AvoidanceZone> {
-  return apiClient.post<AvoidanceZone>("/admin/zones", payload);
+export async function createOfficialZone(payload: any, mediaFiles: File[] = []): Promise<AvoidanceZone> {
+  const formData = new FormData();
+  formData.append("body", JSON.stringify(payload));
+  mediaFiles.forEach((file) => formData.append("media", file));
+  return apiClient.request<AvoidanceZone>("/admin/zones", {
+    method: "POST",
+    body: formData,
+    // Do NOT set Content-Type — browser sets it with the correct boundary for multipart
+  });
 }
 
 export async function getPendingReports(): Promise<FloodReport[]> {
@@ -195,12 +211,20 @@ export interface ZoneContributor {
 export interface AvoidanceZone {
   id: number;
   report_id: number;
+  name?: string | null;
   geometry: PolygonGeometry;
   is_active: boolean;
   created_at: string;
   expires_at: string | null;
   severity: string;
   depth?: string;
+  severity_override?: string | null;
+  depth_override?: string | null;
+  admin_notes?: string | null;
+  is_bidirectional?: boolean;
+  passable_vehicles_override?: string | null;
+  hidden_hazards_override?: string | null;
+  merge_rationale?: string | null;
   report_text?: string;
   report_source?: string;
   reporter_name?: string;
@@ -421,6 +445,23 @@ export async function updateZoneExpiration(zoneId: number, expiresAt: string | n
   });
 }
 
+export interface AvoidanceZoneUpdatePayload {
+  name?: string;
+  severity_override?: "low" | "medium" | "high" | "extreme";
+  depth_override?: string | null;
+  passable_vehicles_override?: string;
+  hidden_hazards_override?: string;
+  admin_notes?: string;
+  is_active?: boolean;
+}
+
+export async function updateZone(
+  zoneId: number,
+  payload: AvoidanceZoneUpdatePayload
+): Promise<AvoidanceZone> {
+  return apiClient.put<AvoidanceZone>(`/admin/zones/${zoneId}`, payload);
+}
+
 export interface MergePendingResponse {
   message: string;
   merged_count: number;
@@ -439,4 +480,93 @@ export async function mergePendingIntoZone(
     `/admin/zones/${zoneId}/merge-pending`,
     { report_ids: reportIds }
   );
+}
+
+// =========================================================================
+// Intelligent Multi-Factor Merging & Candidate Identification Types
+// =========================================================================
+
+export interface MergeConflict {
+  field: "severity" | "depth" | "direction" | "passable_vehicles" | string;
+  message: string;
+  suggested_value: any;
+}
+
+export interface MergeCandidateItem {
+  report_id: number;
+  road_name?: string | null;
+  human_readable_location?: string | null;
+  barangay?: string | null;
+  city?: string | null;
+  severity: "low" | "medium" | "high" | "extreme";
+  depth?: string | null;
+  passable_vehicles?: string | null;
+  hidden_hazards?: string | null;
+  reporter_username?: string | null;
+  reporter_name?: string | null;
+  reporter_trust_score: number;
+  media_urls?: string[];
+  raw_text?: string | null;
+  reported_at: string;
+  geometry?: ReportGeometry | null;
+  match_score: number;
+  match_reasons: string[];
+  is_crowd_consensus: boolean;
+  osm_way_id?: number | null;
+  road_class?: string | null;
+  corridor_overlap_ratio?: number | null;
+  conflicts: MergeConflict[];
+}
+
+export interface MergeCandidatesListResponse {
+  primary_report: FloodReport;
+  candidates: MergeCandidateItem[];
+  total_candidates: number;
+  detected_conflicts: MergeConflict[];
+  suggested_merged_geometry?: ReportGeometry | null;
+  is_bidirectional_detected: boolean;
+}
+
+export interface MergedZoneFinalData {
+  name?: string | null;
+  severity: "low" | "medium" | "high" | "extreme";
+  depth?: string | null;
+  passable_vehicles?: string | null;
+  hidden_hazards?: string | null;
+  is_bidirectional: boolean;
+  geometry: ReportGeometry;
+  admin_notes?: string | null;
+  merge_rationale?: string | null;
+  buffer_radius?: number;
+}
+
+export interface MergeReportsPayload {
+  primary_report_id: number;
+  merged_report_ids: number[];
+  target_zone_id?: number | null;
+  final_data: MergedZoneFinalData;
+}
+
+export interface MergeReportsResponse {
+  message: string;
+  zone_id: number;
+  zone_name?: string | null;
+  merged_count: number;
+  awarded_user_ids: number[];
+  zone: AvoidanceZone;
+}
+
+/**
+ * Fetch intelligent merge candidates for a pending report.
+ * Evaluates OSM way_id, corridor overlap, Decision #16 carriageways, and conflicts.
+ */
+export async function getMergeCandidates(reportId: number): Promise<MergeCandidatesListResponse> {
+  return apiClient.get<MergeCandidatesListResponse>(`/admin/reports/merge-candidates?report_id=${reportId}`);
+}
+
+/**
+ * Executes atomic multi-report merge into a new or existing official avoidance zone.
+ */
+export async function mergeReports(payload: MergeReportsPayload): Promise<MergeReportsResponse> {
+  return apiClient.post<MergeReportsResponse>('/admin/reports/merge', payload);
 }

@@ -360,7 +360,7 @@ export class Toggle3DControl {
     this._onStyleLoad = () => {
       this._enforceState();
     };
-    map.on("styledata", this._onStyleLoad);
+    map.on("style.load", this._onStyleLoad);
 
     // Ensure initial 2D state (flat view, no 3D extrusions)
     if (!this._is3D) {
@@ -524,7 +524,7 @@ export class Toggle3DControl {
 
   onRemove() {
     if (this._onStyleLoad && this._map) {
-      this._map.off("styledata", this._onStyleLoad);
+      this._map.off("style.load", this._onStyleLoad);
     }
     this._container?.parentNode?.removeChild(this._container);
     this._map = undefined;
@@ -828,18 +828,24 @@ export default function BaseMap({
     // Observe container size changes (e.g. sidebar open/close, responsive breakpoint shifts, route transitions)
     const container = mapContainerRef.current;
     let resizeObserver: ResizeObserver | null = null;
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     if (container && typeof ResizeObserver !== "undefined") {
       resizeObserver = new ResizeObserver(() => {
-        try {
-          if (mapInstance && typeof mapInstance.resize === "function") {
-            mapInstance.resize();
-          }
-        } catch (e) {}
+        // Debounce resize events so the WebGL canvas buffer is not discarded on every 16ms animation frame
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          try {
+            if (mapInstance && typeof mapInstance.resize === "function") {
+              mapInstance.resize();
+            }
+          } catch (e) {}
+        }, 400);
       });
       resizeObserver.observe(container);
     }
 
     return () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
       resizeObserver?.disconnect();
       clearTimeout(fallbackTimeout);
       mapInstance.remove();
@@ -873,10 +879,10 @@ export default function BaseMap({
 
   return (
     <div className={`${className} bg-[#f2efe9]`}>
-      <div ref={mapContainerRef} className="absolute inset-0 w-full h-full bg-[#f2efe9]" />
+      <div ref={mapContainerRef} className="absolute inset-0 w-full h-full bg-[#f2efe9] transform-gpu" />
 
       {showLoader && (
-        <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm flex items-center justify-center z-40">
+        <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm flex items-center justify-center z-10">
           <div className="bg-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3">
             <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
             <span className="font-semibold text-sm text-slate-700">

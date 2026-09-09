@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import type { Map } from "maplibre-gl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,13 +23,19 @@ import {
   Loader2, Trash2, ShieldAlert, 
   RefreshCw, Info, AlertTriangle, CheckCircle, Clock, 
   Download, FileQuestion, ArrowRight, Merge, Check, X,
-  MapPin, UserCheck, Shield
+  MapPin, UserCheck, Shield, Plus,
+  ChevronRight, ChevronLeft
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { PendingReportsPanel } from "./components/PendingReportsPanel";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
 import { CreateOfficialZonePanel } from "./components/CreateOfficialZonePanel";
+import { MergeWorkspacePanel } from "./components/merge/MergeWorkspacePanel";
+import { useMergePreviewLayer } from "@/features/map/hooks/useMergePreviewLayer";
+import type { MergeCandidateItem, ReportGeometry } from "./adminApi";
 import { MapProvider } from "@/features/map/MapContext";
 import maplibregl from "maplibre-gl";
 
@@ -124,11 +130,28 @@ export default function LiveMapPage() {
   const [targetZoneId, setTargetZoneId] = useState<number | null>(null);
   const [mergeModalOpen, setMergeModalOpen] = useState(false);
 
+  // Merge Workspace Secondary Drawer State
+  const [isMergeDrawerOpen, setIsMergeDrawerOpen] = useState(false);
+  const [mergingReport, setMergingReport] = useState<FloodReport | null>(null);
+  const [mergePreviewCandidates, setMergePreviewCandidates] = useState<MergeCandidateItem[]>([]);
+  const [mergeProposedGeometry, setMergeProposedGeometry] = useState<ReportGeometry | null>(null);
+
+  // Create Official Zone Secondary Drawer State
+  const [isCreateZoneDrawerOpen, setIsCreateZoneDrawerOpen] = useState(false);
+
   // Map State
   const [mapInstance, setMapInstance] = useState<Map | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [analyticsControl, setAnalyticsControl] = useState<AnalyticsControl | null>(null);
+
+  // Responsive viewport check
+  const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+
+  // DRAWER WIDTH: Consistent standard width across secondary workspace panels
+  const DRAWER_WIDTH = 440;
+
+
 
   // Active Zones List State
   const [page, setPage] = useState(1);
@@ -140,6 +163,7 @@ export default function LiveMapPage() {
   const [batchSelectedIds, setBatchSelectedIds] = useState<number[]>([]);
   const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
+  const [editingZone, setEditingZone] = useState<AvoidanceZone | null>(null);
 
   // Queries
   const { data: mapZones, refetch: refetchMap } = useQuery({
@@ -278,6 +302,14 @@ export default function LiveMapPage() {
     selectedReportId,
     isolatedReportId
   );
+  useMergePreviewLayer({
+    map: mapInstance,
+    isLoaded,
+    isOpen: isMergeDrawerOpen,
+    primaryReport: mergingReport,
+    selectedCandidates: mergePreviewCandidates,
+    proposedGeometry: mergeProposedGeometry,
+  });
 
   const pathname = usePathname();
 
@@ -442,19 +474,47 @@ export default function LiveMapPage() {
   });
 
   const createOfficialZoneMutation = useMutation({
-    mutationFn: createOfficialZone,
+    mutationFn: ({ payload, mediaFiles }: { payload: any; mediaFiles: File[] }) =>
+      createOfficialZone(payload, mediaFiles),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminActiveZones"] });
+      queryClient.invalidateQueries({ queryKey: ["adminZones"] });
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
+      queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       refetchMap();
+      refetchList();
+      setIsCreateZoneDrawerOpen(false);
     }
   });
 
-  const handleAdminSubmitZone = async (formData: FormData) => {
-    // The panel gives us multipart form data (with media etc)
-    // We send this exact form data to the admin zones endpoint.
-    await createOfficialZoneMutation.mutateAsync(formData);
+  const handleAdminSubmitZone = async (payloads: any, mediaFiles: File[] = []) => {
+    if (Array.isArray(payloads)) {
+      for (const p of payloads) {
+        await createOfficialZoneMutation.mutateAsync({ payload: p, mediaFiles });
+      }
+    } else {
+      await createOfficialZoneMutation.mutateAsync({ payload: payloads, mediaFiles });
+    }
   };
+
+  const handleActionControls = useCallback((map: Map) => {
+    const control = new AnalyticsControl(() => setIsAnalyticsOpen(prev => !prev), false);
+    map.addControl(control, "bottom-right");
+    setAnalyticsControl(control);
+  }, []);
+
+  const handleMapInit = useCallback((map: Map) => {
+    setMapInstance(map);
+  }, []);
+
+  const handleMapLoad = useCallback((map: Map) => {
+    setMapInstance(map);
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    analyticsControl?.updateState(isAnalyticsOpen);
+  }, [isAnalyticsOpen, analyticsControl]);
 
   const zones = listData?.zones || [];
   const total = listData?.total || 0;
@@ -490,166 +550,300 @@ export default function LiveMapPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
-      {/* LEFT PANEL: Moderation & Zones Sidebar */}
-      <div className="w-full md:w-[420px] xl:w-[460px] shrink-0 flex flex-col bg-white border-r border-slate-200 h-[50vh] md:h-full z-10 shadow-sm">
-        
-        {/* Mode Switcher Tabs Header */}
-        <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex items-center justify-between gap-2">
-          <div className="flex-1">
-            <Tabs<"pending" | "zones">
-              tabs={[
-                {
-                  id: "pending",
-                  label: "Pending Reports",
-                  icon: FileQuestion,
-                  badge: pendingReports && pendingReports.length > 0 ? pendingReports.length : undefined,
-                  badgeColor: "bg-amber-500 text-white"
-                },
-                {
-                  id: "zones",
-                  label: "Active Zones",
-                  icon: ShieldAlert,
-                  badge: total > 0 ? total : undefined,
-                  badgeColor: "bg-emerald-100 text-emerald-700"
-                }
-              ]}
-              activeTab={activeTab}
-              onChange={(tab) => setActiveTab(tab)}
-              variant="segmented"
-            />
+    <MapProvider>
+      <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
+        {/* LEFT PANEL: Moderation & Zones Sidebar */}
+        <div className="relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex flex-col bg-white border-r border-slate-200 h-[50vh] md:h-full z-30 shadow-sm">
+          
+          {/* Mode Switcher Tabs Header */}
+          <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex items-center justify-between gap-2">
+            <div className="flex-1">
+              <Tabs<"pending" | "zones">
+                tabs={[
+                  {
+                    id: "pending",
+                    label: "Pending Reports",
+                    icon: FileQuestion,
+                    badge: pendingReports && pendingReports.length > 0 ? pendingReports.length : undefined,
+                    badgeColor: "bg-amber-500 text-white"
+                  },
+                  {
+                    id: "zones",
+                    label: "Active Zones",
+                    icon: ShieldAlert,
+                    badge: total > 0 ? total : undefined,
+                    badgeColor: "bg-emerald-100 text-emerald-700"
+                  }
+                ]}
+                activeTab={activeTab}
+                onChange={(tab) => setActiveTab(tab)}
+                variant="segmented"
+              />
+            </div>
+
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => { refetchPending(); refetchList(); refetchMap(); }}
+              className="h-9 px-2.5 rounded-xl shrink-0 bg-white"
+              title="Refresh list"
+            >
+              <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
+            </Button>
           </div>
 
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => { refetchPending(); refetchList(); refetchMap(); }}
-            className="h-9 px-2.5 rounded-xl shrink-0 bg-white"
-            title="Refresh list"
-          >
-            <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
-          </Button>
-        </div>
-
-        {/* TAB 1: PENDING REPORTS (MODERATION QUEUE) */}
-        {activeTab === "pending" && (
-          <PendingReportsPanel 
-            pendingLoading={pendingLoading}
-            pendingReports={pendingReports}
-            filteredPendingReports={filteredPendingReports}
-            selectedReportId={selectedReportId}
-            setSelectedReportId={setSelectedReportId}
-            onInfoClick={(r) => setInfoModalReport(r)}
-            batchCandidates={batchCandidates}
-            batchSelectedIds={batchSelectedIds}
-            setBatchSelectedIds={setBatchSelectedIds}
-            nearbyZones={nearbyZones}
-            setTargetZoneId={setTargetZoneId}
-            setMergeModalOpen={setMergeModalOpen}
-            rejectMutation={rejectMutation}
-            approveMutation={approveMutation}
-          />
-        )}
-
-        {/* TAB 2: ACTIVE ZONES (DETOURS & OPERATIONS) */}
-        {activeTab === "zones" && (
-          <ActiveZonesPanel 
-            activeOnly={activeOnly}
-            setActiveOnly={setActiveOnly}
-            page={page}
-            setPage={setPage}
-            selectedIds={selectedIds}
-            setSelectedIds={setSelectedIds}
-            selectedZoneId={selectedZoneId}
-            setSelectedZoneId={setSelectedZoneId}
-            selectedContributorId={selectedContributorId}
-            setSelectedContributorId={setSelectedContributorId}
-            zones={zones}
-            listLoading={listLoading}
-            isPlaceholderData={isPlaceholderData}
-            totalPages={totalPages}
-            flyToZone={flyToZone}
-            setConfirmId={setConfirmId}
-          />
-        )}
-      </div>
-
-      {/* RIGHT PANEL: Live Map View */}
-      <div className="flex-1 relative h-[50vh] md:h-full bg-slate-100 overflow-hidden">
-        <MapProvider>
-          <BaseMap 
-            actionControls={(map) => {
-              const control = new AnalyticsControl(() => setIsAnalyticsOpen(prev => !prev), isAnalyticsOpen);
-              map.addControl(control, "bottom-right");
-              setAnalyticsControl(control);
-            }}
-            onMapInit={(map) => {
-              setMapInstance(map);
-            }}
-            onMapLoad={(map) => {
-              setMapInstance(map);
-              setIsLoaded(true);
-            }}
-          >
-            {/* Floating Analytics Panel */}
-            {isAnalyticsOpen && (
-              <>
-                <AnalyticsPanel
-                  isOpen={isAnalyticsOpen}
-                  onClose={() => setIsAnalyticsOpen(false)}
-                />
-                <div className="absolute top-4 right-4 z-20 pointer-events-auto">
-                  <Button 
-                    onClick={handleExportCSV} 
-                    disabled={isStatsLoading || !statsData}
-                    className="flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-md text-xs font-semibold py-2 px-3.5 h-auto rounded-xl"
-                  >
-                    <Download className="w-4 h-4 text-blue-600" />
-                    Export to CSV
-                  </Button>
-                </div>
-              </>
-            )}
-
-            {/* Bulk Actions Float (Over Map) */}
-            {selectedIds.length > 0 && (
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/95 text-slate-800 py-2.5 px-5 rounded-2xl flex items-center gap-5 shadow-2xl border border-slate-200/80 backdrop-blur-md z-30 animate-fade-in pointer-events-auto">
-                <span className="text-xs font-semibold text-slate-700">
-                  Selected <span className="text-blue-600 font-bold">{selectedIds.length}</span> {selectedIds.length === 1 ? "zone" : "zones"}
-                </span>
-                <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => setConfirmBulk(true)} 
-                    variant="danger" 
-                    size="sm" 
-                    className="rounded-xl font-medium gap-1.5 shadow-sm"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" /> Deactivate Selected
-                  </Button>
-                  <Button 
-                    onClick={() => setSelectedIds([])} 
-                    variant="outline" 
-                    size="sm" 
-                    className="rounded-xl font-medium"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            )}
-          </BaseMap>
-
-          {/* Admin Mode - Create Official Zone Panel overlay */}
-          {isLoaded && mapInstance && (
-            <CreateOfficialZonePanel 
-              isOpen={true} 
-              onClose={() => {}} 
-              isAdminMode={true}
-              onAdminSubmit={handleAdminSubmitZone}
-              mapInstance={mapInstance}
+          {/* TAB 1: PENDING REPORTS (MODERATION QUEUE) */}
+          {activeTab === "pending" && (
+            <PendingReportsPanel 
+              pendingLoading={pendingLoading}
+              pendingReports={pendingReports}
+              filteredPendingReports={filteredPendingReports}
+              selectedReportId={selectedReportId}
+              setSelectedReportId={setSelectedReportId}
+              onInfoClick={(r) => setInfoModalReport(r)}
+              onOpenMergeWorkspace={(r) => {
+                setIsCreateZoneDrawerOpen(false);
+                setMergingReport(r);
+                setSelectedReportId(r.id);
+                setIsolatedReportId(r.id);
+                setIsMergeDrawerOpen(true);
+              }}
+              batchCandidates={batchCandidates}
+              batchSelectedIds={batchSelectedIds}
+              setBatchSelectedIds={setBatchSelectedIds}
+              nearbyZones={nearbyZones}
+              setTargetZoneId={setTargetZoneId}
+              setMergeModalOpen={setMergeModalOpen}
+              rejectMutation={rejectMutation}
+              approveMutation={approveMutation}
             />
           )}
-        </MapProvider>
+
+          {/* TAB 2: ACTIVE ZONES (DETOURS & OPERATIONS) */}
+          {activeTab === "zones" && (
+            <ActiveZonesPanel 
+              activeOnly={activeOnly}
+              setActiveOnly={setActiveOnly}
+              page={page}
+              setPage={setPage}
+              selectedIds={selectedIds}
+              setSelectedIds={setSelectedIds}
+              selectedZoneId={selectedZoneId}
+              setSelectedZoneId={setSelectedZoneId}
+              selectedContributorId={selectedContributorId}
+              setSelectedContributorId={setSelectedContributorId}
+              zones={zones}
+              listLoading={listLoading}
+              isPlaceholderData={isPlaceholderData}
+              totalPages={totalPages}
+              flyToZone={flyToZone}
+              setConfirmId={setConfirmId}
+              onCreateOfficialZone={() => {
+                setIsMergeDrawerOpen(false);
+                setMergingReport(null);
+                setMergePreviewCandidates([]);
+                setMergeProposedGeometry(null);
+                setEditingZone(null);
+                setIsCreateZoneDrawerOpen(true);
+              }}
+              onEditZone={(zone) => {
+                setIsMergeDrawerOpen(false);
+                setMergingReport(null);
+                setMergePreviewCandidates([]);
+                setMergeProposedGeometry(null);
+                setEditingZone(zone);
+                setIsCreateZoneDrawerOpen(true);
+                flyToZone(zone);
+              }}
+            />
+          )}
+
+          {/* DRAWER PULL HANDLE (When drawer is closed) */}
+          {!isCreateZoneDrawerOpen && !isMergeDrawerOpen && (
+            <button
+              type="button"
+              onClick={() => {
+                setIsMergeDrawerOpen(false);
+                setMergingReport(null);
+                setMergePreviewCandidates([]);
+                setMergeProposedGeometry(null);
+                setEditingZone(null);
+                setIsCreateZoneDrawerOpen(true);
+              }}
+              className="absolute -right-9 top-3.5 z-30 hidden md:flex flex-col items-center justify-between w-9 h-40 bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 border border-l-0 border-slate-200 hover:border-blue-300 shadow-md hover:shadow-xl rounded-r-2xl transition-all cursor-pointer group py-3"
+              title="Create Official Zone (Pull drawer open)"
+            >
+              <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 group-hover:text-blue-600 tracking-widest uppercase [writing-mode:vertical-lr] select-none my-auto">
+                CREATE ZONE
+              </span>
+              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          )}
+        </div>
+
+      {/* SECONDARY DRAWER: Merge & Spatial Operations Workspace */}
+      <AnimatePresence>
+        {isMergeDrawerOpen && mergingReport && (
+          <motion.div
+            key="merge-workspace-drawer"
+            initial={{ width: 0 }}
+            animate={{ width: isMobile ? "100%" : DRAWER_WIDTH }}
+            exit={{ width: 0 }}
+            transition={{
+              width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
+            }}
+            className="relative shrink-0 flex h-full z-30"
+            onAnimationComplete={() => {
+              mapInstance?.resize();
+            }}
+          >
+            <div className="w-full h-full overflow-hidden flex flex-col bg-white border-r border-slate-200 shadow-xl">
+              <div className="w-[440px] h-full flex flex-col shrink-0">
+                <MergeWorkspacePanel 
+                  primaryReport={mergingReport}
+                  isOpen={isMergeDrawerOpen}
+                  onClose={() => {
+                    setIsMergeDrawerOpen(false);
+                    setMergingReport(null);
+                    setMergePreviewCandidates([]);
+                    setMergeProposedGeometry(null);
+                  }}
+                  activeZones={mapZones || []}
+                  onPreviewChange={(candidates, proposedGeom) => {
+                    setMergePreviewCandidates(candidates);
+                    setMergeProposedGeometry(proposedGeom);
+                  }}
+                  onMergeSuccess={() => {
+                    setIsMergeDrawerOpen(false);
+                    setMergingReport(null);
+                    setMergePreviewCandidates([]);
+                    setMergeProposedGeometry(null);
+                    refetchPending();
+                    refetchMap();
+                    refetchList();
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SECONDARY DRAWER: Create Official Zone Workspace (Pane 2) */}
+      <AnimatePresence>
+        {isCreateZoneDrawerOpen && (
+          <motion.div
+            key="create-official-zone-drawer"
+            initial={{ width: 0 }}
+            animate={{ width: isMobile ? "100%" : DRAWER_WIDTH }}
+            exit={{ width: 0 }}
+            transition={{
+              width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
+            }}
+            className="relative shrink-0 flex h-full z-30"
+            onAnimationComplete={() => {
+              mapInstance?.resize();
+            }}
+          >
+            <div className="w-full h-full overflow-hidden flex flex-col bg-white border-r border-slate-200 shadow-xl">
+              <div className="w-[440px] h-full flex flex-col shrink-0">
+                <CreateOfficialZonePanel 
+                  isOpen={isCreateZoneDrawerOpen} 
+                  onClose={() => {
+                    setIsCreateZoneDrawerOpen(false);
+                    setEditingZone(null);
+                  }} 
+                  isAdminMode={true}
+                  onAdminSubmit={handleAdminSubmitZone}
+                  onZoneUpdated={() => {
+                    refetchList();
+                    refetchMap();
+                  }}
+                  editingZone={editingZone}
+                  mapInstance={mapInstance}
+                />
+              </div>
+            </div>
+
+            {/* DRAWER COLLAPSE HANDLE (Front of drawer in your hands) */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsCreateZoneDrawerOpen(false);
+                setEditingZone(null);
+              }}
+              className="absolute -right-9 top-3.5 z-30 hidden md:flex flex-col items-center justify-between w-9 h-40 bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 border border-l-0 border-slate-200 hover:border-blue-300 shadow-md hover:shadow-xl rounded-r-2xl transition-all cursor-pointer group py-3"
+              title="Collapse zone drawer (Push drawer closed)"
+            >
+              <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
+                <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 group-hover:text-blue-600 tracking-widest uppercase [writing-mode:vertical-lr] select-none my-auto">
+                CLOSE DRAWER
+              </span>
+              <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:-translate-x-0.5 transition-transform" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* RIGHT PANEL: Live Map View */}
+      <div className="flex-1 relative h-[50vh] md:h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0">
+        <BaseMap 
+          actionControls={handleActionControls}
+          onMapInit={handleMapInit}
+          onMapLoad={handleMapLoad}
+        >
+          {/* Floating Analytics Panel */}
+          {isAnalyticsOpen && (
+            <>
+              <AnalyticsPanel
+                isOpen={isAnalyticsOpen}
+                onClose={() => setIsAnalyticsOpen(false)}
+              />
+              <div className="absolute top-4 right-4 z-20 pointer-events-auto">
+                <Button 
+                  onClick={handleExportCSV} 
+                  disabled={isStatsLoading || !statsData}
+                  className="flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-md text-xs font-semibold py-2 px-3.5 h-auto rounded-xl"
+                >
+                  <Download className="w-4 h-4 text-blue-600" />
+                  Export to CSV
+                </Button>
+              </div>
+            </>
+          )}
+
+          {/* Bulk Actions Float (Over Map) */}
+          {selectedIds.length > 0 && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/95 text-slate-800 py-2.5 px-5 rounded-2xl flex items-center gap-5 shadow-2xl border border-slate-200/80 backdrop-blur-md z-30 animate-fade-in pointer-events-auto">
+              <span className="text-xs font-semibold text-slate-700">
+                Selected <span className="text-blue-600 font-bold">{selectedIds.length}</span> {selectedIds.length === 1 ? "zone" : "zones"}
+              </span>
+              <div className="flex items-center gap-2">
+                <Button 
+                  onClick={() => setConfirmBulk(true)} 
+                  variant="danger" 
+                  size="sm" 
+                  className="rounded-xl font-medium gap-1.5 shadow-sm"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Deactivate Selected
+                </Button>
+                <Button 
+                  onClick={() => setSelectedIds([])} 
+                  variant="outline" 
+                  size="sm" 
+                  className="rounded-xl font-medium"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+        </BaseMap>
       </div>
 
       {/* Confirmation Modal for Single Deactivation */}
@@ -749,6 +943,7 @@ export default function LiveMapPage() {
           if (urls[idx]) window.open(urls[idx], "_blank");
         }}
       />
-    </div>
+      </div>
+    </MapProvider>
   );
 }

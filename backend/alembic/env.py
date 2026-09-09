@@ -21,7 +21,10 @@ from app.models import User, FloodReport, FloodAvoidanceZone, FloodReportLocatio
 target_metadata = Base.metadata
 
 # Set sqlalchemy.url from our application configuration
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+alembic_db_url = settings.DATABASE_URL
+if alembic_db_url.startswith("encrypted:"):
+    alembic_db_url = "postgresql+psycopg://postgres:postgres@localhost:5432/lanes"
+config.set_main_option("sqlalchemy.url", alembic_db_url)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

@@ -212,7 +212,7 @@ export function usePendingReportsLayer(
     const handleMapStyleData = () => {
       setupLayers();
     };
-    map.on("styledata", handleMapStyleData);
+    map.on("style.load", handleMapStyleData);
 
     const handlePopupOpen = (properties: any, lngLat: { lng: number; lat: number }) => {
       if (!properties) return;
@@ -377,7 +377,7 @@ export function usePendingReportsLayer(
     });
 
     return () => {
-      map.off("styledata", handleMapStyleData);
+      map.off("style.load", handleMapStyleData);
       clearOpenTimeout();
       clearCloseTimeout();
       if (activePopupRef.current) {

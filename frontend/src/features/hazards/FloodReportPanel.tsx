@@ -235,8 +235,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     } catch (e) {}
   };
 
-  const handlePickOnMap = (target: "flood_start" | "flood_end") => {
-    setActivePoint(target);
+  const handlePickOnMap = (target: any) => {
+    setActivePoint(target as ActivePoint);
     setIsPickingOnMap(true);
   };
 
@@ -257,11 +257,11 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   }, [activePoint, mapCenter, setFloodStart, setFloodEnd, setActivePoint, setIsPickingOnMap, setActivePanel]);
 
   // ── Current location helper ────────────────────────────────────────────────
-  const handleUseCurrent = async (target: "start" | "end") => {
+  const handleUseCurrent = async (target: any) => {
     try {
       const coords = await getCurrentLocation();
       const label = "Current Location";
-      if (target === "start") {
+      if (target === "start" || target === "flood_start") {
         setFloodStart(coords, label);
         setStartInput(label);
       } else {
