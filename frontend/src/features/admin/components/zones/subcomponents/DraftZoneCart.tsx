@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Layers, Trash2, MapPin, Route, Hexagon } from "lucide-react";
+import { Layers, Trash2, Pencil, Route, Hexagon } from "lucide-react";
 import { Button } from "@/shared/ui";
 import type { ZoneDraftItem } from "../types";
 import { SEVERITY_COLORS } from "../types";
@@ -9,12 +9,14 @@ import { SEVERITY_COLORS } from "../types";
 interface DraftZoneCartProps {
   drafts: ZoneDraftItem[];
   onRemoveDraft: (id: string) => void;
+  onEditDraft: (draft: ZoneDraftItem) => void;
   onClearDrafts: () => void;
 }
 
 export function DraftZoneCart({
   drafts,
   onRemoveDraft,
+  onEditDraft,
   onClearDrafts,
 }: DraftZoneCartProps) {
   if (drafts.length === 0) return null;
@@ -33,7 +35,7 @@ export function DraftZoneCart({
           onClick={onClearDrafts}
           className="text-[11px] font-medium text-slate-400 hover:text-red-600 transition-colors"
         >
-          Clear all
+          Discard all
         </button>
       </div>
 
@@ -69,15 +71,28 @@ export function DraftZoneCart({
                 </div>
               </div>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onRemoveDraft(draft.id)}
-                className="h-7 w-7 p-0 text-slate-400 hover:text-red-600 rounded-lg shrink-0"
-                title="Remove draft"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </Button>
+              <div className="flex shrink-0 items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onEditDraft(draft)}
+                  className="h-7 w-7 p-0 text-blue-600 hover:bg-blue-50 rounded-lg"
+                  title="Edit draft"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onRemoveDraft(draft.id)}
+                  className="h-7 w-7 p-0 text-slate-400 hover:text-red-600 rounded-lg"
+                  title="Remove draft"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+              </div>
             </div>
           );
         })}

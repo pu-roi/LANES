@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useState } from "react";
 import { LocationInputGroup } from "@/shared/ui";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useMapContext, type ActivePoint } from "@/features/map/MapContext";
 import { useToast } from "@/shared/ui";
 
 interface RoadSegmentPickerProps {
-  mapInstance: any;
   isBidirectional: boolean;
   onBidirectionalChange: (val: boolean) => void;
   onStartChange?: (label: string) => void;
@@ -15,7 +14,6 @@ interface RoadSegmentPickerProps {
 }
 
 export function RoadSegmentPicker({
-  mapInstance,
   isBidirectional,
   onBidirectionalChange,
   onStartChange,
@@ -26,89 +24,34 @@ export function RoadSegmentPicker({
     floodStart,
     floodEnd,
     activePoint,
-    isPickingOnMap,
     setActivePoint,
     setIsPickingOnMap,
     setFloodStart,
     setFloodEnd,
     setFloodStartLabel,
     setFloodEndLabel,
-    setPointFromMap,
   } = useMapContext();
 
-  const [startInput, setStartInput] = useState("");
-  const [endInput, setEndInput] = useState("");
-  const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+  const [startDraft, setStartDraft] = useState("");
+  const [endDraft, setEndDraft] = useState("");
+  const startInput = floodStart?.label ?? startDraft;
+  const endInput = floodEnd?.label ?? endDraft;
 
-  // Sync labels with map context
-  useEffect(() => {
-    if (floodStart?.label) setStartInput(floodStart.label);
-  }, [floodStart?.label]);
-
-  useEffect(() => {
-    if (floodEnd?.label) setEndInput(floodEnd.label);
-  }, [floodEnd?.label]);
-
-  // Listen to map center changes
-  useEffect(() => {
-    const handleCenter = (e: Event) => {
-      setMapCenter((e as CustomEvent<[number, number]>).detail);
-    };
-    window.addEventListener("map-center-changed", handleCenter);
-    return () => window.removeEventListener("map-center-changed", handleCenter);
-  }, []);
-
-  // Map cursor styling when picking
-  useEffect(() => {
-    if (!mapInstance) return;
-    const canvasContainer = mapInstance.getCanvasContainer ? mapInstance.getCanvasContainer() : null;
-    const canvas = mapInstance.getCanvas ? mapInstance.getCanvas() : null;
-    if (!canvasContainer || !canvas) return;
-
-    if (isPickingOnMap) {
-      canvas.style.cursor = "crosshair";
-      canvasContainer.classList.add("cursor-crosshair");
-    } else {
-      canvas.style.cursor = "";
-      canvasContainer.classList.remove("cursor-crosshair");
-    }
-  }, [isPickingOnMap, mapInstance]);
-
-  // Map click listener for coordinate selection
-  useEffect(() => {
-    if (!mapInstance) return;
-    const canvas = mapInstance.getCanvas ? mapInstance.getCanvas() : null;
-    if (!canvas) return;
-
-    const handleCanvasClick = (e: MouseEvent) => {
-      if (!isPickingOnMap) return;
-      e.stopPropagation();
-
-      const rect = canvas.getBoundingClientRect();
-      const point = [e.clientX - rect.left, e.clientY - rect.top] as [number, number];
-      const lngLat = mapInstance.unproject(point);
-      setPointFromMap([lngLat.lng, lngLat.lat]);
-      setIsPickingOnMap(false);
-      setActivePoint(null);
-    };
-
-    canvas.addEventListener("click", handleCanvasClick, { capture: true });
-    return () => {
-      canvas.removeEventListener("click", handleCanvasClick, { capture: true });
-    };
-  }, [isPickingOnMap, mapInstance, setPointFromMap, setActivePoint, setIsPickingOnMap]);
-
-  const handleUseCurrent = async (target: any) => {
+  const handleUseCurrent = async (target: ActivePoint) => {
     try {
       const coords = await getCurrentLocation();
       const label = "Current Location";
       if (target === "start" || target === "flood_start") {
         setFloodStart(coords, label);
-        setStartInput(label);
+        setStartDraft(label);
+        setActivePoint("flood_end");
+        setIsPickingOnMap(false);
         if (onStartChange) onStartChange(label);
-      } else {
+      } else if (target === "end" || target === "flood_end") {
         setFloodEnd(coords, label);
-        setEndInput(label);
+        setEndDraft(label);
+        setActivePoint(null);
+        setIsPickingOnMap(false);
         if (onEndChange) onEndChange(label);
       }
     } catch (err: unknown) {
@@ -117,17 +60,34 @@ export function RoadSegmentPicker({
     }
   };
 
+  const handleSwap = () => {
+    if (!floodStart || !floodEnd) return;
+
+    const previousStart = floodStart;
+    const previousEnd = floodEnd;
+    setFloodStart(previousEnd.coords, previousEnd.label);
+    setFloodEnd(previousStart.coords, previousStart.label);
+    setStartDraft(previousEnd.label);
+    setEndDraft(previousStart.label);
+    setActivePoint(null);
+    setIsPickingOnMap(false);
+    onStartChange?.(previousEnd.label);
+    onEndChange?.(previousStart.label);
+  };
+
   return (
     <div className="space-y-4">
       <LocationInputGroup
         startInput={startInput}
         setStartInput={(val) => {
-          setStartInput(val);
+          setStartDraft(val);
+          setFloodStartLabel(val);
           setIsPickingOnMap(false);
         }}
         endInput={endInput}
         setEndInput={(val) => {
-          setEndInput(val);
+          setEndDraft(val);
+          setFloodEndLabel(val);
           setIsPickingOnMap(false);
         }}
         activePoint={activePoint}
@@ -136,28 +96,28 @@ export function RoadSegmentPicker({
         endPointId="flood_end"
         onStartSelect={(s) => {
           setFloodStart([s.lng, s.lat], s.label);
-          setStartInput(s.label);
+          setStartDraft(s.label);
           setActivePoint("flood_end");
           setIsPickingOnMap(false);
           if (onStartChange) onStartChange(s.label);
         }}
         onEndSelect={(s) => {
           setFloodEnd([s.lng, s.lat], s.label);
-          setEndInput(s.label);
+          setEndDraft(s.label);
           setActivePoint(null);
           setIsPickingOnMap(false);
           if (onEndChange) onEndChange(s.label);
         }}
         onStartClear={() => {
           setFloodStart(null);
-          setStartInput("");
+          setStartDraft("");
           setFloodStartLabel("");
           setActivePoint("flood_start");
           setIsPickingOnMap(false);
         }}
         onEndClear={() => {
           setFloodEnd(null);
-          setEndInput("");
+          setEndDraft("");
           setFloodEndLabel("");
           setActivePoint("flood_end");
           setIsPickingOnMap(false);
@@ -174,6 +134,8 @@ export function RoadSegmentPicker({
           setActivePoint(target as ActivePoint);
           setIsPickingOnMap(true);
         }}
+        canSwap={Boolean(floodStart && floodEnd)}
+        onSwap={handleSwap}
         onUseCurrentLocation={handleUseCurrent}
         startPlaceholder="e.g. Ortigas Ave, Pasig (Start)"
         endPlaceholder="e.g. C. Raymundo Ave (End)"

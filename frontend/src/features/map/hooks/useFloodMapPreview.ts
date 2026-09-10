@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
+import type { RouteGeometry } from "@/features/routing/routingApi";
 
 export function useFloodMapPreview(
   mapInstance: maplibregl.Map | null,
   floodStart: { coords: [number, number]; label: string } | null,
   floodEnd: { coords: [number, number]; label: string } | null,
-  floodPreviewGeometry: any,
-  floodOppositeGeometry: any,
+  floodPreviewGeometry: RouteGeometry | null,
+  floodOppositeGeometry: RouteGeometry | null,
   floodIsBidirectional: boolean,
   isEnabled: boolean = true
 ) {
@@ -20,7 +21,7 @@ export function useFloodMapPreview(
       pitch: mapInstance.getPitch(),
       duration: 600,
     });
-  }, [floodStart?.coords[0], floodStart?.coords[1], mapInstance, isEnabled]);
+  }, [floodStart, mapInstance, isEnabled]);
 
   useEffect(() => {
     if (!mapInstance || !floodEnd || !isEnabled) return;
@@ -31,99 +32,110 @@ export function useFloodMapPreview(
       pitch: mapInstance.getPitch(),
       duration: 600,
     });
-  }, [floodEnd?.coords[0], floodEnd?.coords[1], mapInstance, isEnabled]);
+  }, [floodEnd, mapInstance, isEnabled]);
 
   // Markers
   const startMarkerRef = useRef<maplibregl.Marker | null>(null);
   const endMarkerRef = useRef<maplibregl.Marker | null>(null);
 
   useEffect(() => {
-    if (!mapInstance || !isEnabled) return;
     startMarkerRef.current?.remove();
     startMarkerRef.current = null;
-    if (floodStart) {
+    if (mapInstance && isEnabled && floodStart) {
       startMarkerRef.current = new maplibregl.Marker({ color: "#f97316" })
         .setLngLat(floodStart.coords)
         .addTo(mapInstance);
     }
+
+    return () => {
+      startMarkerRef.current?.remove();
+      startMarkerRef.current = null;
+    };
   }, [mapInstance, floodStart, isEnabled]);
 
   useEffect(() => {
-    if (!mapInstance || !isEnabled) return;
     endMarkerRef.current?.remove();
     endMarkerRef.current = null;
-    if (floodEnd) {
+    if (mapInstance && isEnabled && floodEnd) {
       endMarkerRef.current = new maplibregl.Marker({ color: "#991b1b" })
         .setLngLat(floodEnd.coords)
         .addTo(mapInstance);
     }
+
+    return () => {
+      endMarkerRef.current?.remove();
+      endMarkerRef.current = null;
+    };
   }, [mapInstance, floodEnd, isEnabled]);
 
   // Preview layer
   useEffect(() => {
-    if (!mapInstance || !isEnabled) return;
-
     const PREVIEW_SOURCE = "shared-flood-preview-source";
     const PREVIEW_LAYER = "shared-flood-preview-layer";
 
-    try {
-      if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
-      if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
-    } catch {}
+    if (!mapInstance) return;
 
-    if (!floodPreviewGeometry) return;
-
-    const features: any[] = [
-      {
-        type: "Feature",
-        properties: { is_opposite: false },
-        geometry: floodPreviewGeometry,
-      },
-    ];
-
-    if (floodIsBidirectional && floodOppositeGeometry) {
-      features.push({
-        type: "Feature",
-        properties: { is_opposite: true },
-        geometry: floodOppositeGeometry,
-      });
-    }
-
-    try {
-      mapInstance.addSource(PREVIEW_SOURCE, {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features,
-        },
-      });
-
-      mapInstance.addLayer({
-        id: PREVIEW_LAYER,
-        type: "line",
-        source: PREVIEW_SOURCE,
-        layout: { "line-join": "round", "line-cap": "round" },
-        paint: {
-          "line-color": [
-            "case",
-            ["==", ["get", "is_opposite"], true],
-            "#fb923c",
-            "#f97316",
-          ],
-          "line-width": 6,
-          "line-dasharray": [2, 2],
-          "line-opacity": 0.85,
-        },
-      });
-    } catch (err) {
-      console.warn("Failed to add shared preview layer", err);
-    }
-
-    return () => {
+    const removePreview = () => {
       try {
         if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
         if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
-      } catch {}
+      } catch (err) {
+        console.warn("Failed to remove flood preview layer", err);
+      }
+    };
+
+    const renderPreview = () => {
+      removePreview();
+      if (!isEnabled || !floodPreviewGeometry || !mapInstance.getStyle()) return;
+
+      const features: GeoJSON.Feature<RouteGeometry>[] = [
+        {
+          type: "Feature",
+          properties: { is_opposite: false },
+          geometry: floodPreviewGeometry,
+        },
+      ];
+
+      if (floodIsBidirectional && floodOppositeGeometry) {
+        features.push({
+          type: "Feature",
+          properties: { is_opposite: true },
+          geometry: floodOppositeGeometry,
+        });
+      }
+
+      try {
+        mapInstance.addSource(PREVIEW_SOURCE, {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features,
+          },
+        });
+
+        mapInstance.addLayer({
+          id: PREVIEW_LAYER,
+          type: "line",
+          source: PREVIEW_SOURCE,
+          layout: { "line-join": "round", "line-cap": "round" },
+          paint: {
+            "line-color": "#f97316",
+            "line-width": 6,
+            "line-dasharray": [2, 2],
+            "line-opacity": 0.9,
+          },
+        });
+      } catch (err) {
+        console.warn("Failed to add shared preview layer", err);
+      }
+    };
+
+    renderPreview();
+    mapInstance.on("style.load", renderPreview);
+
+    return () => {
+      mapInstance.off("style.load", renderPreview);
+      removePreview();
     };
   }, [mapInstance, floodPreviewGeometry, floodOppositeGeometry, floodIsBidirectional, isEnabled]);
 }

@@ -382,11 +382,11 @@ export function MergeWorkspacePanel({
               <div className="space-y-5">
                 <section className="space-y-3">
                   <div><h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">1. Final spatial geometry</h3><p className="mt-1 text-[11px] text-slate-500">Keep the primary geometry or redefine the official routing boundary using the shared zone tools.</p></div>
-                  <GeometryModeSelector geometryMode={geometryMode} onChange={setGeometryMode} isDrawingMode={isDrawingMode} onCancelDrawing={cancelDrawingMode} />
+                  <GeometryModeSelector geometryMode={geometryMode} onChange={(mode) => { setGeometryMode(mode); if (mode !== "line") setFloodIsBidirectional(false); }} isDrawingMode={isDrawingMode} onCancelDrawing={cancelDrawingMode} />
                   {geometryMode === "line" ? (
                     <div className="space-y-3">
                       <Button type="button" variant="outline" size="sm" onClick={loadProposalIntoLineEditor} className="w-full text-xs"><MapPinned className="mr-1 h-3.5 w-3.5" /> Edit current proposal with Start / End</Button>
-                      <RoadSegmentPicker mapInstance={mapInstance} isBidirectional={floodIsBidirectional} onBidirectionalChange={setFloodIsBidirectional} />
+                      <RoadSegmentPicker isBidirectional={floodIsBidirectional} onBidirectionalChange={setFloodIsBidirectional} />
                     </div>
                   ) : (
                     <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-center">
@@ -397,7 +397,7 @@ export function MergeWorkspacePanel({
                 </section>
                 <section className="space-y-3 border-t border-slate-100 pt-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">2. Final operational information</h3>
-                  <ZoneDataEditorForm initialValues={editorValues} onChange={setEditorValues} hideBidirectional={geometryMode === "line"} />
+                  <ZoneDataEditorForm initialValues={editorValues} onChange={setEditorValues} hideBidirectional />
                 </section>
                 <section className="space-y-1.5 border-t border-slate-100 pt-4">
                   <label htmlFor="merge-target-zone" className="text-xs font-semibold text-slate-700">Destination avoidance zone</label>

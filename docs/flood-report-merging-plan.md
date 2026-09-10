@@ -1,7 +1,7 @@
 # Intelligent Flood-Report Merging & Spatial Operations Redesign
 
 > **Authoritative Implementation Plan**
-> **Last Updated:** September 10, 2026, 11:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 1:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Reference:** Capstone Phase 18 (`docs/task_plan.md` and `docs/progress.md`)
 
 Overhaul the flood-report merging logic, candidate identification, and Spatial Operations UI/UX to enable intelligent, multi-factor spatial matching, explainable recommendations, conflict resolution, and seamless final-zone editing while strictly preserving original crowdsourced reports and Community Feed posts.
@@ -17,10 +17,10 @@ The Phase 5 interface is implemented and awaits developer-led end-to-end verific
 3. Candidates begin unselected. Selection uses a prominent checkbox, and recommendations, conflicts, map previews, and proposed geometry reflect only the reports included by the admin.
 4. Each candidate is a single readable report card. Its match score, consensus badge, and supporting evidence are grouped inside that card under its own explanation rather than floating between reports.
 5. The workspace now has four stages: Candidates, Compare, Edit Zone, and Confirm. It reuses the official-zone road controls and Terra Draw geometry tools.
-6. Create Zone and Review Merge use separate contextual edge-tab handles. Review Merge appears only after a merge session starts; collapsing it preserves the selected report, current step, choices, and edits until the admin changes the focused report or completes the merge.
+6. Create Zone and Review Merge use separate contextual edge-tab handles. Review Merge appears only after a merge session starts; collapsing it preserves the selected report, current step, choices, and edits until the admin changes the focused report or completes the merge. Create Zone preserves its in-memory draft, including geometry, attributes, survey, media, description, and cart items, while collapsed.
 7. The desktop workspace is docked; mobile uses a full-width workflow with an explicit map return control. Scrollbars are visually quiet until the relevant pane is hovered, focused, or actively scrolled.
 
-Focused TypeScript, targeted ESLint, and production build checks pass. Manual desktop/mobile workflow and final submission verification remain open.
+TypeScript passes. Manual desktop/mobile workflow and final submission verification remain open; rerun the project lint/build after the existing local Next.js build lock is released.
 
 ### Approved Phase 5 Execution Plan
 
@@ -33,7 +33,7 @@ Focused TypeScript, targeted ESLint, and production build checks pass. Manual de
 7. **Responsive and Accessibility Verification**: Preserve the docked desktop map workspace; use a full-width, safe-area-aware mobile workflow with an explicit way to inspect the map. Ensure keyboard labels, focus states, and non-color conflict indicators.
 8. **Quality Gate and Documentation Sync**: Run focused lint/type checks and manual desktop/mobile verification. Update progress and system documentation only after the flow is functioning.
 
-**Implementation status (Sept 10, 2026):** Steps 1–7 are implemented. TypeScript, focused ESLint (zero errors; one image-optimization warning), and the optimized Next.js production build pass. Step 8 remains open for developer-led desktop/mobile workflow and final-submission verification; the progress tracker and system documentation now record only the delivered, verified behavior.
+**Implementation status (Sept 10, 2026):** Steps 1–7 are implemented. The admin Create Zone line editor uses the shared MapContext pick state, automatically advances from Start to End, and restores the public-map Start/End markers and dashed preview. Its drawer now preserves the in-memory draft through collapse/reopen and pauses map drawing while closed. Step 8 remains open for developer-led desktop/mobile workflow and final-submission verification; rerun lint/build after the existing local Next.js build lock is released.
 
 ---
 

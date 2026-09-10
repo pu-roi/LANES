@@ -6,9 +6,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  size?: "sm" | "md";
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, size = "md" }: ModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -20,9 +21,12 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       />
       
       {/* Dialog */}
-      <div className="relative z-10 w-full max-w-md bg-white text-gray-900 rounded-xl shadow-2xl p-6 transform scale-100 transition-all">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+      <div className={cn(
+        "relative z-10 w-full bg-white text-gray-900 rounded-xl shadow-2xl transform scale-100 transition-all",
+        size === "sm" ? "max-w-[18rem] p-4" : "max-w-md p-6"
+      )}>
+        <div className={cn("flex items-center justify-between", size === "sm" ? "mb-3" : "mb-4")}>
+          <h2 className={cn("font-bold text-gray-900", size === "sm" ? "text-lg" : "text-xl")}>{title}</h2>
           <button 
             onClick={onClose}
             className="text-gray-400 hover:text-gray-700 transition"

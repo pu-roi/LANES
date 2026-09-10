@@ -18,6 +18,7 @@ interface UseTerraDrawOptions {
   geometryMode: GeometryMode;
   severity: Severity;
   isEnabled?: boolean;
+  isInteractive?: boolean;
 }
 
 export function useTerraDraw({
@@ -25,12 +26,20 @@ export function useTerraDraw({
   geometryMode,
   severity,
   isEnabled = true,
+  isInteractive = isEnabled,
 }: UseTerraDrawOptions) {
   const drawRef = useRef<TerraDraw | null>(null);
   const [drawInstance, setDrawInstance] = useState<TerraDraw | null>(null);
   const [drawnGeometry, setDrawnGeometry] = useState<ReportGeometry | null>(null);
   const [drawnFeatures, setDrawnFeatures] = useState<any[]>([]);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
+
+  const resetMapCursor = useCallback(() => {
+    const canvas = mapInstance?.getCanvas?.();
+    const container = mapInstance?.getCanvasContainer?.();
+    if (canvas) canvas.style.cursor = "";
+    if (container) container.style.cursor = "";
+  }, [mapInstance]);
 
   // Initialize TerraDraw
   useEffect(() => {
@@ -99,16 +108,18 @@ export function useTerraDraw({
         drawRef.current = null;
         setDrawInstance(null);
       }
+      resetMapCursor();
     };
-  }, [mapInstance, isEnabled]);
+  }, [mapInstance, isEnabled, resetMapCursor]);
 
   // Sync mode changes
   useEffect(() => {
     if (!drawRef.current) return;
     try {
-      if (geometryMode === "line") {
+      if (!isInteractive || geometryMode === "line") {
         drawRef.current.setMode("static");
         setIsDrawingMode(false);
+        resetMapCursor();
       } else {
         drawRef.current.setMode(geometryMode);
         setIsDrawingMode(true);
@@ -116,7 +127,7 @@ export function useTerraDraw({
     } catch (err) {
       console.warn("Error setting TerraDraw mode:", err);
     }
-  }, [geometryMode, drawInstance]);
+  }, [geometryMode, drawInstance, isInteractive, resetMapCursor]);
 
   // Sync styles on severity change
   useEffect(() => {
@@ -148,14 +159,41 @@ export function useTerraDraw({
     setDrawnGeometry(null);
   }, []);
 
+  const restoreDrawing = useCallback((features: any[]) => {
+    if (!drawRef.current) return false;
+    try {
+      drawRef.current.clear();
+      if (features.length > 0) {
+        drawRef.current.addFeatures(features);
+      }
+      const snapshot = drawRef.current.getSnapshot();
+      setDrawnFeatures(snapshot);
+      if (snapshot.length === 1) {
+        setDrawnGeometry(snapshot[0].geometry as ReportGeometry);
+      } else if (snapshot.length > 1) {
+        setDrawnGeometry({
+          type: "MultiPolygon",
+          coordinates: snapshot.map((feature: any) => feature.geometry?.coordinates).filter(Boolean),
+        } as ReportGeometry);
+      } else {
+        setDrawnGeometry(null);
+      }
+      return true;
+    } catch (err) {
+      console.error("Failed to restore zone drawing", err);
+      return false;
+    }
+  }, []);
+
   const cancelDrawingMode = useCallback(() => {
     if (drawRef.current) {
       try {
         drawRef.current.setMode("static");
       } catch {}
     }
+    resetMapCursor();
     setIsDrawingMode(false);
-  }, []);
+  }, [resetMapCursor]);
 
   return {
     drawInstance,
@@ -163,6 +201,7 @@ export function useTerraDraw({
     drawnFeatures,
     isDrawingMode,
     clearDrawing,
+    restoreDrawing,
     cancelDrawingMode,
     setDrawnGeometry,
   };
