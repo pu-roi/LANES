@@ -11,6 +11,7 @@ import {
   Loader2,
   Navigation2,
   HelpCircle,
+  FileVideo,
   ImagePlus,
   X,
   ArrowLeft,
@@ -19,13 +20,9 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import { get, set } from "idb-keyval";
 import Link from "next/link";
-import { Input } from "@/shared/ui";
-import { Button } from "@/shared/ui";
-import { Select } from "@/shared/ui";
+import { Button, ConfirmDialog, Input, Panel, Select } from "@/shared/ui";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
-import { Panel } from "@/shared/ui";
 import { useToast } from "@/shared/ui";
 import { LocationAutocomplete, LocationInputGroup } from "@/shared/ui";
 import { cn, getBearing } from "@/lib/utils";
@@ -36,6 +33,12 @@ import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import type { LocationSuggestion } from "@/features/geocoding/types";
 import { useMapContext, type ActivePoint, type DraftReport } from "@/features/map/MapContext";
 import { getRoute } from "@/features/routing/routingApi";
+import {
+  discardFloodReportDraft,
+  loadFloodReportDraft,
+  removeLegacyFloodReportDrafts,
+  saveFloodReportDraft,
+} from "./floodReportDraftStorage";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -91,6 +94,11 @@ const VISUAL_OPTIONS: {
   { id: "neck", severity: "extreme", label: "Neck & Above", description: "Danger" },
 ];
 
+function formatFileSize(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 
 
 // ── Main component ─────────────────────────────────────────────────────────────
@@ -98,6 +106,8 @@ const VISUAL_OPTIONS: {
 export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit }: FloodReportPanelProps) {
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const { user, isAuthenticated } = useAuth();
+  const userId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
+  const canPersistDraft = !isAdminMode && isAuthenticated && userId !== null;
 
   // Map context
   const {
@@ -111,6 +121,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setFloodEnd,
     setFloodStartLabel,
     setFloodEndLabel,
+    restoreFloodReportMapState,
     activePanel,
     setActivePanel,
     floodIsBidirectional: isBidirectional,
@@ -130,6 +141,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   const [showSurvey, setShowSurvey] = useState(false);
   const [description, setDescription] = useState("");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+  const mediaPreviewUrlsRef = useRef(new WeakMap<File, string>());
+  const createdPreviewUrlsRef = useRef(new Set<string>());
   const [isPublic, setIsPublic] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [isViewingDrafts, setIsViewingDrafts] = useState(false);
@@ -138,61 +151,163 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDiscardDialogOpen, setIsDiscardDialogOpen] = useState(false);
   const { success, error } = useToast();
 
-  // Hydration logic
-  const hasHydratedForm = useRef(false);
+  const getImagePreviewUrl = useCallback((file: File) => {
+    if (!file.type.startsWith("image/")) return undefined;
+    const existingUrl = mediaPreviewUrlsRef.current.get(file);
+    if (existingUrl) return existingUrl;
 
-  useEffect(() => {
-    const loadFormState = async () => {
-      try {
-        const savedTextState = localStorage.getItem("lanes_active_flood_form_text");
-        if (savedTextState) {
-          const parsed = JSON.parse(savedTextState);
-          if (parsed.description) setDescription(parsed.description);
-          if (parsed.visualOption) setVisualOption(parsed.visualOption);
-          if (parsed.passableVehicles) setPassableVehicles(parsed.passableVehicles);
-          if (parsed.hiddenHazards) setHiddenHazards(parsed.hiddenHazards);
-          if (parsed.isPublic !== undefined) setIsPublic(parsed.isPublic);
-          if (parsed.showSurvey !== undefined) setShowSurvey(parsed.showSurvey);
-          if (parsed.step) setStep(parsed.step);
-        }
-
-        const savedFiles = await get("lanes_active_flood_form_files");
-        if (savedFiles && Array.isArray(savedFiles)) {
-          setMediaFiles(savedFiles);
-        }
-      } catch (e) {
-        console.error("Failed to load active form state", e);
-      } finally {
-        hasHydratedForm.current = true;
-      }
-    };
-    loadFormState();
+    const previewUrl = URL.createObjectURL(file);
+    mediaPreviewUrlsRef.current.set(file, previewUrl);
+    createdPreviewUrlsRef.current.add(previewUrl);
+    return previewUrl;
   }, []);
 
+  const removeMediaFile = useCallback((index: number) => {
+    setMediaFiles((current) => {
+      const file = current[index];
+      const previewUrl = file ? mediaPreviewUrlsRef.current.get(file) : undefined;
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        createdPreviewUrlsRef.current.delete(previewUrl);
+        mediaPreviewUrlsRef.current.delete(file);
+      }
+      return current.filter((_, fileIndex) => fileIndex !== index);
+    });
+  }, []);
+
+  const clearMediaFiles = useCallback(() => {
+    createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    createdPreviewUrlsRef.current.clear();
+    mediaPreviewUrlsRef.current = new WeakMap<File, string>();
+    setMediaFiles([]);
+  }, []);
+
+  useEffect(() => () => {
+    createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    createdPreviewUrlsRef.current.clear();
+  }, []);
+
+  // Account-private draft hydration and persistence. Never read a device-wide draft
+  // for an unauthenticated or different account.
+  const hasHydratedForm = useRef(false);
+  const hydratedUserId = useRef<string | null>(null);
+  const hasShownPersistenceError = useRef(false);
+  const suppressNextDraftSave = useRef(false);
+
+  const clearInMemoryDraft = useCallback(() => {
+    setDraftReports([]);
+    restoreFloodReportMapState({
+      floodStart: null,
+      floodEnd: null,
+      floodPreviewGeometry: null,
+      floodOppositeGeometry: null,
+      floodIsBidirectional: false,
+    });
+    setStartInput("");
+    setEndInput("");
+    setVisualOption("gutter");
+    setPassableVehicles([]);
+    setHiddenHazards(null);
+    setShowSurvey(false);
+    setDescription("");
+    clearMediaFiles();
+    setIsPublic(false);
+    setStep(1);
+  }, [clearMediaFiles, restoreFloodReportMapState, setDraftReports]);
+
   useEffect(() => {
-    if (!hasHydratedForm.current) return;
-    try {
-      const state = {
-        description,
+    if (!canPersistDraft || !userId) {
+      hasHydratedForm.current = false;
+      hydratedUserId.current = null;
+      queueMicrotask(clearInMemoryDraft);
+      return;
+    }
+
+    let cancelled = false;
+    hasHydratedForm.current = false;
+    hydratedUserId.current = null;
+    queueMicrotask(clearInMemoryDraft);
+
+    const loadFormState = async () => {
+      try {
+        await removeLegacyFloodReportDrafts();
+        const saved = await loadFloodReportDraft(userId);
+        if (cancelled || !saved) return;
+
+        const { active } = saved;
+        setStartInput(active.startInput);
+        setEndInput(active.endInput);
+        setVisualOption(active.visualOption as ReportVisualOption | null);
+        setPassableVehicles(active.passableVehicles);
+        setHiddenHazards(active.hiddenHazards);
+        setShowSurvey(active.showSurvey);
+        setDescription(active.description);
+        setMediaFiles(active.mediaFiles);
+        setIsPublic(active.isPublic);
+        setStep(active.step);
+        setDraftReports(saved.queuedDrafts);
+        restoreFloodReportMapState({
+          floodStart: active.floodStart,
+          floodEnd: active.floodEnd,
+          floodPreviewGeometry: active.floodPreviewGeometry,
+          floodOppositeGeometry: active.floodOppositeGeometry,
+          floodIsBidirectional: active.floodIsBidirectional,
+        });
+        success("Draft Restored", "Your unfinished flood report is ready to continue.");
+      } catch (err) {
+        console.error("Failed to load account flood-report draft", err);
+        if (!cancelled) error("Draft Unavailable", "Your saved flood-report draft could not be restored.");
+      } finally {
+        if (!cancelled) {
+          hydratedUserId.current = userId;
+          hasHydratedForm.current = true;
+        }
+      }
+    };
+    void loadFormState();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [canPersistDraft, clearInMemoryDraft, error, restoreFloodReportMapState, setDraftReports, success, userId]);
+
+  useEffect(() => {
+    if (!canPersistDraft || !userId || !hasHydratedForm.current || hydratedUserId.current !== userId) return;
+    if (suppressNextDraftSave.current) {
+      suppressNextDraftSave.current = false;
+      return;
+    }
+
+    void saveFloodReportDraft(userId, {
+      active: {
+        floodStart,
+        floodEnd,
+        floodPreviewGeometry,
+        floodOppositeGeometry,
+        floodIsBidirectional: isBidirectional,
+        startInput,
+        endInput,
         visualOption,
         passableVehicles,
         hiddenHazards,
-        isPublic,
         showSurvey,
-        step
-      };
-      localStorage.setItem("lanes_active_flood_form_text", JSON.stringify(state));
-    } catch (e) {}
-  }, [description, visualOption, passableVehicles, hiddenHazards, isPublic, showSurvey, step]);
-
-  useEffect(() => {
-    if (!hasHydratedForm.current) return;
-    try {
-      set("lanes_active_flood_form_files", mediaFiles).catch(console.error);
-    } catch (e) {}
-  }, [mediaFiles]);
+        description,
+        mediaFiles,
+        isPublic,
+        step,
+      },
+      queuedDrafts: draftReports,
+    }).catch((err) => {
+      console.error("Failed to save account flood-report draft", err);
+      if (!hasShownPersistenceError.current) {
+        hasShownPersistenceError.current = true;
+        error("Draft Not Saved", "Your changes could not be saved on this device.");
+      }
+    });
+  }, [canPersistDraft, description, draftReports, endInput, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, hiddenHazards, isBidirectional, isPublic, mediaFiles, passableVehicles, showSurvey, startInput, step, userId, visualOption]);
 
   // ── Map-pick: listen to the shared map-center-changed event ────────────────
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -214,8 +329,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   }, [floodEnd?.label]);
 
   const clearForm = () => {
-    setFloodStart(null);
-    setFloodEnd(null);
+    restoreFloodReportMapState({
+      floodStart: null,
+      floodEnd: null,
+      floodPreviewGeometry: null,
+      floodOppositeGeometry: null,
+      floodIsBidirectional: false,
+    });
     setStartInput("");
     setEndInput("");
     setFloodStartLabel("");
@@ -224,15 +344,28 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setVisualOption("gutter");
     setPassableVehicles([]);
     setHiddenHazards(null);
-    setMediaFiles([]);
+    clearMediaFiles();
     setIsPublic(false);
     setShowSurvey(false);
-    setIsBidirectional(false);
     setStep(1);
     setEditingDraft(null);
+  };
+
+  const discardDraft = async () => {
+    if (!canPersistDraft || !userId) return;
+
     try {
-      localStorage.removeItem("lanes_active_flood_form_text");
-    } catch (e) {}
+      await discardFloodReportDraft(userId);
+      suppressNextDraftSave.current = true;
+      setDraftReports([]);
+      clearForm();
+      setIsViewingDrafts(false);
+      setIsDiscardDialogOpen(false);
+      success("Draft Discarded", "Your saved flood-report draft was removed from this device.");
+    } catch (err) {
+      console.error("Failed to discard account flood-report draft", err);
+      error("Could Not Discard Draft", "Your saved draft is still available. Please try again.");
+    }
   };
 
   const handlePickOnMap = (target: any) => {
@@ -287,7 +420,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     const depth = selectedOption ? selectedOption.label : "";
 
     const newDraft = {
-      id: Math.random().toString(36).substring(7),
+      id: editingDraft?.id ?? Math.random().toString(36).substring(7),
       geometry: floodPreviewGeometry,
       oppositeGeometry: floodOppositeGeometry,
       isBidirectional,
@@ -308,7 +441,37 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setDraftReports((prev) => [...prev, newDraft]);
     clearForm();
 
-    success("Road Saved", "Road added to your draft list. You can add another or submit all.");
+    success(editingDraft ? "Draft Updated" : "Road Saved", editingDraft ? "Your saved report draft was updated." : "Road added to your draft list. You can add another or submit all.");
+  };
+
+  const handleEditDraft = (draft: DraftReport) => {
+    restoreFloodReportMapState({
+      floodStart: draft.startCoords ? { coords: draft.startCoords, label: draft.startLabel } : null,
+      floodEnd: draft.endCoords ? { coords: draft.endCoords, label: draft.endLabel } : null,
+      floodPreviewGeometry: draft.geometry,
+      floodOppositeGeometry: draft.oppositeGeometry,
+      floodIsBidirectional: draft.isBidirectional,
+    });
+    setStartInput(draft.startLabel || "");
+    setEndInput(draft.endLabel || "");
+    setDescription(draft.description);
+    const option = VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth) || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
+    setVisualOption(option?.id ?? "gutter");
+    setPassableVehicles(draft.passableVehicles || []);
+    setHiddenHazards(draft.hiddenHazards || null);
+    setIsPublic(draft.isPublic || false);
+    setMediaFiles(draft.mediaFiles || []);
+    setEditingDraft(draft);
+    setDraftReports((previous) => previous.filter((item) => item.id !== draft.id));
+    setIsViewingDrafts(false);
+    setStep(2);
+  };
+
+  const cancelDraftEdit = () => {
+    if (!editingDraft) return;
+    setDraftReports((previous) => [...previous, editingDraft]);
+    clearForm();
+    setIsViewingDrafts(true);
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -404,6 +567,15 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       // Reset everything
       setDraftReports([]);
       clearForm();
+      if (canPersistDraft && userId) {
+        try {
+          await discardFloodReportDraft(userId);
+          suppressNextDraftSave.current = true;
+        } catch (discardError) {
+          console.error("Submitted reports but could not remove local draft", discardError);
+          error("Reports Submitted", "Your reports were submitted, but the local draft could not be removed. Please discard it manually.");
+        }
+      }
       
       success(isAdminMode ? "Zones Created" : "Reports Submitted", isAdminMode ? "Official zones are now active." : "Thank you! Your reports are now in review.");
       if (onClose) onClose();
@@ -440,51 +612,30 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       ? (passableVehicles.length > 0 || hiddenHazards !== null)
       : (description.trim() !== "" || mediaFiles.length > 0 || visualOption !== "gutter" || isPublic || passableVehicles.length > 0 || hiddenHazards !== null);
 
-  const clearButton =
-    editingDraft && !isViewingDrafts ? (
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setDraftReports(prev => [...prev, editingDraft]);
-          clearForm();
-        }}
-        className="text-[11px] font-medium text-blue-600 hover:text-blue-800 transition-colors px-2 py-1 mr-1 underline"
-      >
-        Cancel Edit
-      </button>
-    ) : showClear ? (
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (step === 1) {
-            setFloodStart(null);
-            setFloodEnd(null);
-            setStartInput("");
-            setEndInput("");
-            setFloodStartLabel("");
-            setFloodEndLabel("");
-          } else {
-            if (showSurvey) {
-              setPassableVehicles([]);
-              setHiddenHazards(null);
-            } else {
-              setVisualOption("gutter");
-              setPassableVehicles([]);
-              setHiddenHazards(null);
-              setDescription("");
-              setMediaFiles([]);
-              setIsPublic(false);
-            }
-          }
-        }}
-        className="text-[11px] font-medium text-gray-500 hover:text-red-600 transition-colors px-2 py-1 mr-1"
-        title={step === 1 ? "Clear locations" : "Clear details"}
-      >
-        Clear
-      </button>
-    ) : undefined;
+  const clearCurrentSection = () => {
+    if (step === 1) {
+      setFloodStart(null);
+      setFloodEnd(null);
+      setStartInput("");
+      setEndInput("");
+      setFloodStartLabel("");
+      setFloodEndLabel("");
+      return;
+    }
+
+    if (showSurvey) {
+      setPassableVehicles([]);
+      setHiddenHazards(null);
+      return;
+    }
+
+    setVisualOption("gutter");
+    setPassableVehicles([]);
+    setHiddenHazards(null);
+    setDescription("");
+    clearMediaFiles();
+    setIsPublic(false);
+  };
 
   const formBody = (!isAuthenticated && !isAdminMode) ? (
     <div className="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
@@ -521,25 +672,36 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       )}
 
       {!isViewingDrafts && draftReports.length > 0 && (
-        <div className="flex justify-between items-center mb-4 px-1">
-          <span className="text-sm font-semibold text-gray-800">You have {draftReports.length} saved draft(s)</span>
-          <button 
-            type="button" 
+        <div className="mb-4 flex items-center justify-between border-b border-gray-100 px-1 pb-3">
+          <span className="text-sm font-semibold text-gray-800">
+            {draftReports.length} saved {draftReports.length === 1 ? "draft" : "drafts"}
+          </span>
+          <button
+            type="button"
             onClick={() => setIsViewingDrafts(true)}
-            className="text-xs font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1"
+            className="rounded-full bg-purple-100 px-3 py-1.5 text-xs font-semibold text-purple-700 transition-colors hover:bg-purple-200"
           >
-            View Drafts
+            View drafts
           </button>
         </div>
       )}
 
       {isViewingDrafts && (
         <div className="flex flex-col flex-1 animate-in fade-in zoom-in-95 duration-200 min-h-[300px]">
-           <div className="flex items-center gap-2 mb-4">
+           <div className="mb-4 flex items-center justify-between gap-2">
+             <div className="flex min-w-0 items-center gap-2">
              <button type="button" onClick={() => setIsViewingDrafts(false)} className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 transition-colors">
                <ArrowLeft className="w-4 h-4" />
              </button>
              <h3 className="font-bold text-gray-900 text-lg">Saved Drafts</h3>
+             </div>
+             <button
+               type="button"
+               onClick={() => setIsDiscardDialogOpen(true)}
+               className="shrink-0 text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
+             >
+               Discard all
+             </button>
            </div>
            
            <div className="space-y-3 overflow-y-auto pr-1 flex-1 pb-20">
@@ -548,25 +710,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                     <div className="absolute top-3 right-3 flex gap-1">
                        <button 
                          type="button" 
-                         onClick={() => {
-                            if (draft.startCoords) setFloodStart(draft.startCoords, draft.startLabel);
-                            if (draft.endCoords) setFloodEnd(draft.endCoords, draft.endLabel);
-                            setStartInput(draft.startLabel || "");
-                            setEndInput(draft.endLabel || "");
-                            setDescription(draft.description);
-                            const opt = VISUAL_OPTIONS.find(o => o.severity === draft.severity && o.label === draft.depth) || VISUAL_OPTIONS.find(o => o.severity === draft.severity);
-                            setVisualOption(opt ? opt.id : null);
-                            setIsBidirectional(draft.isBidirectional);
-                            setMediaFiles(draft.mediaFiles || []);
-                            setPassableVehicles(draft.passableVehicles || []);
-                            setHiddenHazards(draft.hiddenHazards || null);
-                            setIsPublic(draft.isPublic || false);
-                            
-                            setEditingDraft(draft);
-                            setDraftReports(prev => prev.filter(r => r.id !== draft.id));
-                            setIsViewingDrafts(false);
-                            setStep(2);
-                         }}
+                         onClick={() => handleEditDraft(draft)}
                          className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
                          title="Edit Draft"
                        >
@@ -615,6 +759,24 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
       {!isViewingDrafts && step === 1 && (
         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+          {(editingDraft || showClear) && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  if (editingDraft) {
+                    setDraftReports((previous) => [...previous, editingDraft]);
+                    clearForm();
+                    return;
+                  }
+                  clearCurrentSection();
+                }}
+                className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
+              >
+                {editingDraft ? "Cancel edit" : "Clear locations"}
+              </button>
+            </div>
+          )}
           <LocationInputGroup
             startInput={startInput}
             setStartInput={(val) => { setStartInput(val); setIsPickingOnMap(false); }}
@@ -712,6 +874,28 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
       {!isViewingDrafts && step === 2 && !showSurvey && (
         <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
+          {editingDraft && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={cancelDraftEdit}
+                className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
+              >
+                Cancel edit
+              </button>
+            </div>
+          )}
+          {showClear && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={clearCurrentSection}
+                className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
+              >
+                Clear report details
+              </button>
+            </div>
+          )}
           {/* Survey link */}
           <div className="py-2 border-b border-gray-100 flex items-center justify-between">
             <div className="flex flex-col">
@@ -741,19 +925,46 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             </label>
             
             {mediaFiles.length > 0 && (
-              <div className="grid grid-cols-2 gap-2 mb-2">
-                {mediaFiles.map((file, idx) => (
-                  <div key={idx} className="relative rounded-md border border-gray-200 bg-gray-50 p-2 flex items-center justify-between group">
-                    <span className="text-xs text-gray-600 truncate max-w-[120px]">{file.name}</span>
-                    <button 
-                      type="button" 
-                      onClick={() => setMediaFiles(prev => prev.filter((_, i) => i !== idx))}
-                      className="p-1 hover:bg-gray-200 rounded-full text-gray-500 transition-colors"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
+              <div className="mb-2 space-y-2" aria-live="polite">
+                <p className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  {mediaFiles.length} {mediaFiles.length === 1 ? "file" : "files"} ready to publish
+                </p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {mediaFiles.map((file, index) => {
+                    const previewUrl = getImagePreviewUrl(file);
+                    return (
+                      <div
+                        key={`${file.name}-${file.lastModified}-${index}`}
+                        className="flex min-w-0 items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2"
+                      >
+                        {previewUrl ? (
+                          <img
+                            src={previewUrl}
+                            alt={`Selected ${file.name}`}
+                            className="h-11 w-11 shrink-0 rounded-md object-cover ring-1 ring-gray-200"
+                          />
+                        ) : (
+                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-orange-100 text-orange-700">
+                            <FileVideo className="h-5 w-5" />
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs font-medium text-gray-700" title={file.name}>{file.name}</p>
+                          <p className="text-[10px] text-gray-500">{file.type.startsWith("video/") ? "Video" : "Image"} · {formatFileSize(file.size)}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeMediaFile(index)}
+                          aria-label={`Remove ${file.name}`}
+                          className="shrink-0 rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
             
@@ -984,10 +1195,19 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       onClose={onClose}
       anchor="right"
       initialPosition={{ x: 16, y: 80 }}
-      headerActions={clearButton}
       panelId="flood_report"
     >
       {formBody}
+      <ConfirmDialog
+        isOpen={isDiscardDialogOpen}
+        title="Discard flood-report draft?"
+        message="Remove this saved draft and its media from this device? Submitted reports stay."
+        confirmLabel="Discard draft"
+        variant="destructive"
+        size="sm"
+        onConfirm={() => void discardDraft()}
+        onCancel={() => setIsDiscardDialogOpen(false)}
+      />
     </Panel>
   );
 }

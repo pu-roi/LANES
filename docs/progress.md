@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 10, 2026, 1:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 3:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -31,6 +31,11 @@
 ## Capstone Roadmap - Delivered Phases
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Account-Private, Editable Draft Workspaces (`floodReportDraftStorage.ts`, `zoneDraftStorage.ts`, `FloodReportPanel.tsx`, `OfficialZoneDrawer.tsx`)** (@roicambe):
+  - Replaced device-wide draft queues with versioned IndexedDB records isolated by authenticated commuter or administrator identity; sign-out and account changes clear in-memory state before the next account is hydrated.
+  - Saving a Flood Report or Create Zone draft now moves every active value into that draft and resets the form. Saved Drafts provides consistent back, edit, delete, discard-all, and batch-submit/publish controls.
+  - Editing temporarily removes a selected draft, restores its route or Terra Draw shape, fields, notes, and media, then replaces the original on save; cancellation restores the untouched queue item. Create Zone submits media per queued zone instead of sharing the active form's files.
+  - Successful submission clears persisted workspace only after all queued items succeed; failed submissions preserve drafts for recovery. TypeScript, production build, and whitespace checks passed; focused lint retains pre-existing rule violations in legacy map/panel components, and desktop/mobile manual verification remains pending.
 - [x] **Create Zone Interaction Restoration & Resumable Drawer Session** (`AdminFloodMapInteraction.tsx`, `LiveMapPage.tsx`, `OfficialZoneDrawer.tsx`) (@roicambe):
   - Restored the shared MapContext Start/End map-picking flow for the admin line editor: crosshair cursor, automatic Start-to-End progression, persistent markers, and the public-map orange dashed route preview.
   - Kept Create Zone mounted while its docked drawer is collapsed, preserving the spatial mode and geometry, flood depth/severity, survey selections, media, description, and draft-cart items on reopen during the same page session.

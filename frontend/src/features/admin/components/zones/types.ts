@@ -90,4 +90,9 @@ export interface ZoneDraftItem {
   startLabel?: string;
   endLabel?: string;
   roadName?: string | null;
+  startCoords?: [number, number];
+  endCoords?: [number, number];
+  geometryMode?: GeometryMode;
+  drawnFeatures?: any[];
+  mediaFiles?: File[];
 }

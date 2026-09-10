@@ -159,6 +159,32 @@ export function useTerraDraw({
     setDrawnGeometry(null);
   }, []);
 
+  const restoreDrawing = useCallback((features: any[]) => {
+    if (!drawRef.current) return false;
+    try {
+      drawRef.current.clear();
+      if (features.length > 0) {
+        drawRef.current.addFeatures(features);
+      }
+      const snapshot = drawRef.current.getSnapshot();
+      setDrawnFeatures(snapshot);
+      if (snapshot.length === 1) {
+        setDrawnGeometry(snapshot[0].geometry as ReportGeometry);
+      } else if (snapshot.length > 1) {
+        setDrawnGeometry({
+          type: "MultiPolygon",
+          coordinates: snapshot.map((feature: any) => feature.geometry?.coordinates).filter(Boolean),
+        } as ReportGeometry);
+      } else {
+        setDrawnGeometry(null);
+      }
+      return true;
+    } catch (err) {
+      console.error("Failed to restore zone drawing", err);
+      return false;
+    }
+  }, []);
+
   const cancelDrawingMode = useCallback(() => {
     if (drawRef.current) {
       try {
@@ -175,6 +201,7 @@ export function useTerraDraw({
     drawnFeatures,
     isDrawingMode,
     clearDrawing,
+    restoreDrawing,
     cancelDrawingMode,
     setDrawnGeometry,
   };

@@ -21,7 +21,6 @@ import {
 import { getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import toast from "react-hot-toast";
-import { get, set } from 'idb-keyval';
 import { useRef } from "react";
 
 export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
@@ -52,6 +51,14 @@ export interface DraftReport {
   passableVehicles?: string[];
   hiddenHazards?: "yes" | "no" | "unsure" | null;
   isPublic?: boolean;
+}
+
+export interface FloodReportMapState {
+  floodStart: MapPoint | null;
+  floodEnd: MapPoint | null;
+  floodPreviewGeometry: RouteGeometry | null;
+  floodOppositeGeometry: RouteGeometry | null;
+  floodIsBidirectional: boolean;
 }
 
 interface MapContextValue {
@@ -104,6 +111,7 @@ interface MapContextValue {
   setFloodEnd: (coords: [number, number] | null, label?: string) => void;
   setFloodStartLabel: (label: string) => void;
   setFloodEndLabel: (label: string) => void;
+  restoreFloodReportMapState: (state: FloodReportMapState) => void;
   floodIsBidirectional: boolean;
   setFloodIsBidirectional: (isBi: boolean) => void;
   clearRoute: () => void;
@@ -214,11 +222,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
           if (parsed.lastOpenedLeftPanel !== undefined) setLastOpenedLeftPanel(parsed.lastOpenedLeftPanel);
           if (parsed.routingEngine) setRoutingEngine(parsed.routingEngine);
         }
-        
-        const drafts = await get("lanes_map_drafts");
-        if (drafts) {
-          setDraftReports(drafts);
-        }
       } catch (e) {
         console.error("Failed to load map context state", e);
       } finally {
@@ -242,13 +245,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("lanes_panels_state", JSON.stringify(panelsState));
     } catch (e) {}
   }, [activePanel, isAnalyticsOpen, isSavePlacePanelOpen, lastOpenedLeftPanel, routingEngine]);
-
-  useEffect(() => {
-    if (!hasHydrated.current) return;
-    try {
-      set("lanes_map_drafts", draftReports).catch(console.error);
-    } catch (e) {}
-  }, [draftReports]);
 
   // Derived: currently active route option
   const selectedRoute: RouteOption | null = allRoutes?.[selectedRouteIndex] ?? null;
@@ -388,6 +384,16 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   const setFloodEndLabel = useCallback((label: string) => {
     setFloodEndState((prev) => (prev ? { ...prev, label } : null));
+  }, []);
+
+  const restoreFloodReportMapState = useCallback((state: FloodReportMapState) => {
+    setFloodStartState(state.floodStart);
+    setFloodEndState(state.floodEnd);
+    setFloodPreviewGeometry(state.floodPreviewGeometry);
+    setFloodOppositeGeometry(state.floodOppositeGeometry);
+    setFloodIsBidirectional(state.floodIsBidirectional);
+    setActivePoint(null);
+    setIsPickingOnMap(false);
   }, []);
 
   const setPointFromMap = useCallback(
@@ -603,6 +609,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setFloodEnd,
       setFloodStartLabel,
       setFloodEndLabel,
+      restoreFloodReportMapState,
       setPointFromMap,
       clearRoute,
       resetAll,
@@ -663,6 +670,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodIsBidirectional,
       setFloodStartLabel,
       setFloodEndLabel,
+      restoreFloodReportMapState,
       setPointFromMap,
       clearRoute,
       resetAll,

@@ -27,18 +27,22 @@ import {
   ChevronRight, ChevronLeft, Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useAuth } from "@/hooks/useAuth";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { PendingReportsPanel } from "./components/PendingReportsPanel";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
 import { CreateOfficialZonePanel } from "./components/CreateOfficialZonePanel";
+import type { ZoneSubmissionItem } from "./components/zones";
 import { MergeWorkspacePanel } from "./components/merge/MergeWorkspacePanel";
 import { useMergePreviewLayer } from "@/features/map/hooks/useMergePreviewLayer";
 import type { MergeCandidateItem, ReportGeometry } from "./adminApi";
 import { MapProvider } from "@/features/map/MapContext";
 import maplibregl from "maplibre-gl";
+import { hasCreateZoneDraft } from "./components/zones/zoneDraftStorage";
 
 class AnalyticsControl {
   private _map: maplibregl.Map | undefined;
@@ -121,6 +125,8 @@ const VIEW_STORAGE_KEY = "lanes_admin_map_viewport";
 export default function LiveMapPage() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const { user, isAuthenticated } = useAuth();
+  const createZoneDraftUserId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   
   // Tab State: 'pending' (Tab 1) | 'zones' (Tab 2)
   const [activeTab, setActiveTab] = useState<"pending" | "zones">("pending");
@@ -143,6 +149,20 @@ export default function LiveMapPage() {
   // Create Official Zone Secondary Drawer State
   const [isCreateZoneDrawerOpen, setIsCreateZoneDrawerOpen] = useState(false);
   const [hasCreateZoneSession, setHasCreateZoneSession] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated || !createZoneDraftUserId) return;
+    let cancelled = false;
+    void hasCreateZoneDraft(createZoneDraftUserId)
+      .then((hasDraft) => {
+        if (!cancelled && hasDraft) setHasCreateZoneSession(true);
+      })
+      .catch((err) => {
+        console.error("Failed to check Create Zone draft", err);
+        toast.error("Unable to check for your saved Create Zone draft.");
+      });
+    return () => { cancelled = true; };
+  }, [createZoneDraftUserId, isAuthenticated]);
 
   // Map State
   const [mapInstance, setMapInstance] = useState<Map | null>(null);
@@ -521,13 +541,9 @@ export default function LiveMapPage() {
     }
   });
 
-  const handleAdminSubmitZone = async (payloads: any, mediaFiles: File[] = []) => {
-    if (Array.isArray(payloads)) {
-      for (const p of payloads) {
-        await createOfficialZoneMutation.mutateAsync({ payload: p, mediaFiles });
-      }
-    } else {
-      await createOfficialZoneMutation.mutateAsync({ payload: payloads, mediaFiles });
+  const handleAdminSubmitZone = async (items: ZoneSubmissionItem[]) => {
+    for (const { payload, mediaFiles } of items) {
+      await createOfficialZoneMutation.mutateAsync({ payload, mediaFiles });
     }
   };
 
