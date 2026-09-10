@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Any
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from app import crud, models, schemas
 from app.api import deps
@@ -19,6 +20,7 @@ router = APIRouter()
 @limiter.limit("5/minute")
 def login_access_token(
     request: Request,
+    response: Response,
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Any:
@@ -127,6 +129,7 @@ from app.crud import otp as crud_otp
 @limiter.limit("5/minute")
 async def request_signup_otp(
     request: Request,
+    response: Response,
     payload: SignupOTPRequest,
     db: Session = Depends(get_db)
 ) -> Any:
@@ -162,6 +165,7 @@ async def request_signup_otp(
 @limiter.limit("10/minute")
 def verify_signup_otp(
     request: Request,
+    response: Response,
     payload: OTPVerificationRequest,
     db: Session = Depends(get_db)
 ) -> Any:
@@ -184,23 +188,46 @@ def verify_signup_otp(
 @limiter.limit("3/minute")
 async def register(
     request: Request,
+    response: Response,
     payload: RegistrationRequest,
     db: Session = Depends(get_db)
 ) -> Any:
     """
     Registers a new user, creates profile and address. Requires email to be pre-verified.
     """
-    existing_username = crud.get_user_by_username(db, username=payload.user.username)
-    if existing_username:
-        raise HTTPException(status_code=400, detail="Username already registered")
-        
-    existing_email = crud.get_user_by_email(db, email=payload.user.email)
-    if existing_email:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
     # Verify that the email was actually OTP verified recently
     if not crud_otp.is_email_verified(db, payload.user.email):
         raise HTTPException(status_code=403, detail="Email not verified or verification expired")
+
+    # 1. Check if email is already taken by an active account
+    existing_user_email = db.query(models.User).filter(models.User.email == payload.user.email).first()
+    if existing_user_email and existing_user_email.deleted_at is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, 
+            detail="Email already registered. Please sign in instead."
+        )
+
+    # 2. Check if username is already taken by another account
+    existing_user_username = db.query(models.User).filter(models.User.username == payload.user.username).first()
+    if existing_user_username:
+        # If the username is taken by a different user
+        if not existing_user_email or existing_user_username.id != existing_user_email.id:
+            if existing_user_username.deleted_at is None:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT, 
+                    detail="Username already registered. Please choose another one."
+                )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT, 
+                    detail="Username is unavailable. Please choose another one."
+                )
+
+    # 3. If an archived/soft-deleted account exists with this verified email:
+    # Since the registrant proved ownership of the email via OTP, purge the stale archived record
+    # so they can register cleanly with their new credentials.
+    if existing_user_email and existing_user_email.deleted_at is not None:
+        crud.hard_delete_user(db, existing_user_email.id)
 
     payload.user.is_active = True
     
@@ -211,11 +238,15 @@ async def register(
             profile_data=payload.profile, 
             address_data=payload.address
         )
-    except Exception as e:
+    except IntegrityError:
         db.rollback()
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, 
+            detail="Email or username already registered. Please sign in or choose another username."
+        )
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Registration could not be completed. Please try again.")
 
     # Eagerly load the role relationship so UserResponse serialization works
     db.refresh(new_user)
@@ -230,6 +261,7 @@ async def register(
 @limiter.limit("5/minute")
 def verify_otp(
     request: Request,
+    response: Response,
     payload: OTPVerificationRequest,
     db: Session = Depends(get_db)
 ) -> Any:
@@ -263,6 +295,7 @@ def verify_otp(
 @limiter.limit("2/minute")
 async def resend_otp(
     request: Request,
+    response: Response,
     payload: OTPResendRequest,
     db: Session = Depends(get_db)
 ) -> Any:

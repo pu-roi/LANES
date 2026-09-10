@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 1:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -132,7 +132,7 @@ These files are **always present** regardless of which page you are on.
 
 | File | How to Trigger It | What It Shows |
 |------|-------------------|--------------|
-| `CreatePostModal.tsx` | `src/features/feed/CreatePostModal.tsx` — Click **"Create Post"** or the **"+"** floating button | Full-screen modal with rich text area, drag-and-drop image upload, address autocomplete or map crosshair location picking, coordinate persistence (`location_lat`, `location_lng`), and draft auto-saving that persists across auth redirects. Submits to `POST /api/v1/feed/posts`. |
+| `CreatePostModal.tsx` | `src/features/feed/CreatePostModal.tsx` — Click **"Create Post"** or the **"+"** floating button | Full-screen modal with rich text area, drag-and-drop image & video upload (up to 100MB per file with explicit size validation toasts), address autocomplete or map crosshair location picking, coordinate persistence (`location_lat`, `location_lng`), and draft auto-saving that persists across auth redirects. Submits multipart payloads to `POST /api/v1/posts`. |
 | `EmergencyDirectoryModal.tsx` | `src/features/feed/components/EmergencyDirectoryModal.tsx` — Click **"View All Hotlines"** | Lazily loaded national, Pasig city, and Pasig barangay hotline directory with tabbed sections, search, and phone links. |
 
 ### Backend Calls from This Page
@@ -202,13 +202,13 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `LoginForm.tsx` | `src/features/auth/LoginForm.tsx` — Email + password fields, a "Forgot Password?" link, and a "Sign Up" redirect link. On submit, calls `POST /api/v1/auth/login`. The returned JWT is stored in `localStorage`. |
+| `LoginForm.tsx` | `src/features/auth/LoginForm.tsx` — Email + password fields, a "Forgot Password?" link, and a "Sign Up" redirect link. Displays a prominent green success banner when redirected from registration with `?registered=true`. On submit, calls `POST /api/v1/auth/login`. The returned JWT is stored in `localStorage`. |
 
 ### Register Page (/register)
 
 | File | What You See |
 |------|-------------|
-| `SignupForm.tsx` | `src/features/auth/SignupForm.tsx` — Registration form with username, email, password, and confirm password fields. On submit calls `POST /api/v1/auth/register`, which triggers an OTP email via Brevo SMTP and then redirects to `/verify`. |
+| `RegisterForm.tsx` | `src/features/auth/components/RegisterForm.tsx` — Multi-step registration wizard with identity-first email verification, OTP confirmation, password/profile entry, and PSGC address selection. On final submit, calls `POST /api/v1/auth/register`, clears registration drafts, and redirects to `/login?registered=true` for explicit credential sign-in. |
 
 ### Verify Page (/verify)
 
@@ -335,7 +335,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | **Zone Deduplication** | When a new flood report is approved near an existing active zone (within a configurable buffer distance), it is linked to that zone instead of creating a new duplicate polygon |
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |
 | **Weather Proxy** | Fetches data from the OpenWeatherMap API, transforms and caches the response, and serves it to the frontend |
-| **SSE Broadcaster** | Pushes real-time notification events to connected authenticated clients via Server-Sent Events, avoiding battery-draining WebSocket connections |
+| **SSE Broadcaster & LiveSync** | Pushes real-time notification events, active zone changes, and cache invalidations to connected clients via Server-Sent Events. Centralized in `sse.ts` to stream directly from FastAPI port 8000 in dev/LAN environments to bypass dev proxy response buffering, with unconditional unmount cleanup in `useLiveSync.ts` avoiding zombie reconnect loops |
 | **Hotline Aggregator** | Fetches and parses national and Pasig emergency contact pages, normalizes phone numbers for `tel:` links, and caches results for one hour |
 
 ---

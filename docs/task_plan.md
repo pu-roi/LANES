@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 1:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,13 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+> **Focus:** Hardening the authentication lifecycle, eliminating EventSource connection leaks on client unmount, resolving soft-delete unique constraint collisions on citizen re-registration, standardizing registration to require explicit credential sign-in, and expanding post media ingestion to 100MB videos across Next.js proxy, FastAPI, and Cloudinary.
+> **Current Status (Sept 11, 2026):**
+> - [x] **SSE Zombie Connection & Buffering Fix (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe): Removed `readyState === 1` guard during React unmount to unconditionally call `source.close()`, resolving reconnect loops in StrictMode. Created centralized `getSseUrl` pointing browser to direct port 8000 in dev to avoid Next.js reverse proxy buffering.
+> - [x] **Auth Re-registration & Explicit Sign-in Flow (`auth.py`, `RegisterForm.tsx`, `LoginForm.tsx`)** (@roicambe): Handled soft-deleted user unique collisions in `POST /auth/register` by detecting verified re-registration and purging stale soft-deleted accounts. Removed post-registration auto-login in favor of redirecting to `/login?registered=true` with a clear success alert banner.
+> - [x] **100MB Feed Media & Video Ingestion Pipeline (`next.config.ts`, `posts.py`, `cloudinary_service.py`, `CreatePostModal.tsx`)** (@roicambe): Configured Next.js 15/16 dev proxy body limits to 100MB (`middlewareClientMaxBodySize` & `experimental.proxyClientMaxBodySize`). Elevated backend payload limit in `POST /posts` to 100MB. Added video MIME sniffing and Cloudinary video resource type routing. Enhanced `CreatePostModal` with explicit file size toast errors and network drop handling.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
 > **Focus:** Overhauling the flood-report merging logic, candidate identification, and Spatial Operations UI/UX to enable intelligent, multi-factor spatial matching, explainable recommendations, conflict resolution, and seamless final-zone editing while strictly preserving original crowdsourced reports and Community Feed posts.

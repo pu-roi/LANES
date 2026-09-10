@@ -36,7 +36,13 @@ export function useAuth() {
 
       if (!response.ok) {
         if (response.status === 429) {
-          throw new Error("Too many requests. Please wait a minute before trying again.");
+          const retryAfterSeconds = Math.max(1, Math.ceil(Number(response.headers.get("Retry-After")) || 60));
+          const minutes = Math.floor(retryAfterSeconds / 60);
+          const seconds = retryAfterSeconds % 60;
+          const waitTime = minutes > 0
+            ? `${minutes} minute${minutes === 1 ? "" : "s"}${seconds > 0 ? ` and ${seconds} second${seconds === 1 ? "" : "s"}` : ""}`
+            : `${seconds} second${seconds === 1 ? "" : "s"}`;
+          throw new Error(`Too many requests. Try again in ${waitTime}.`);
         }
         const errorData = await response.json().catch(() => null);
         if (errorData?.detail?.code === "UNVERIFIED_ACCOUNT") {

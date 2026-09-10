@@ -97,11 +97,28 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
   // Safely initialize selectedFiles from initialFiles on mount/prop change
   useEffect(() => {
     if (initialFiles && initialFiles.length > 0) {
-      const mapped = initialFiles.map(file => ({
-        file,
-        preview: URL.createObjectURL(file)
-      }));
-      setSelectedFiles(mapped);
+      const MAX_FILE_SIZE_MB = 100;
+      const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+      const validFiles: { file: File; preview: string }[] = [];
+
+      for (const file of initialFiles) {
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+          showError(
+            "File Limit Exceeded",
+            `"${file.name}" is ${fileSizeMB}MB, which exceeds the ${MAX_FILE_SIZE_MB}MB maximum upload limit. Please select a smaller file.`
+          );
+          continue;
+        }
+        validFiles.push({
+          file,
+          preview: URL.createObjectURL(file)
+        });
+      }
+
+      if (validFiles.length > 0) {
+        setSelectedFiles(validFiles);
+      }
     }
   }, [initialFiles]);
 
@@ -245,7 +262,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const MAX_FILE_SIZE_MB = 20;
+      const MAX_FILE_SIZE_MB = 100;
       const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
       
       const files = Array.from(e.target.files);
@@ -253,7 +270,11 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       
       for (const file of files) {
         if (file.size > MAX_FILE_SIZE_BYTES) {
-          showError(`File "${file.name}" is too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`);
+          const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+          showError(
+            "File Limit Exceeded",
+            `"${file.name}" is ${fileSizeMB}MB, which exceeds the ${MAX_FILE_SIZE_MB}MB maximum limit. Please select a smaller file.`
+          );
           continue;
         }
         validFiles.push({
@@ -265,6 +286,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       if (validFiles.length > 0) {
         setSelectedFiles(prev => [...prev, ...validFiles]);
       }
+      e.target.value = '';
     }
   };
 
@@ -324,6 +346,17 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       if (err.status === 401 || err.message.includes('401') || err.message.includes('authenticated') || err.message.includes('credentials') || err.message.includes('logged in')) {
         localStorage.removeItem('lanes_token');
         setShowAuthPrompt(true);
+      } else if (
+        err.status === 413 || 
+        err.message?.includes('413') || 
+        err.message?.includes('Payload too large') || 
+        err.message?.includes('exceeded') || 
+        err.message?.includes('socket hang up')
+      ) {
+        showError(
+          "Upload Size Limit Exceeded",
+          "Your upload exceeds the maximum allowed limit (100MB). Please select a smaller video or fewer media files."
+        );
       } else {
         showError('Failed to create post', err.message);
       }

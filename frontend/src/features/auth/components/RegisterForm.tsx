@@ -39,6 +39,9 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
   
   const passwordReqRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // React state updates after an event. Keep a synchronous lock too, so rapid
+  // desktop double-clicks and mobile taps cannot send duplicate registrations.
+  const isRegistrationSubmittingRef = useRef(false);
 
   // Progressive cooldown interval ticker
   useEffect(() => {
@@ -424,46 +427,29 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
   const handleCreate = async () => {
     if (currentStep !== 3) return;
     if (!validateStep()) return;
+    if (isRegistrationSubmittingRef.current) return;
 
+    isRegistrationSubmittingRef.current = true;
     setLoading(true);
 
     try {
       await authClient.register(formData);
       sessionStorage.removeItem("lanes_registration_draft");
       
-      // Auto login
-      const loginData = new URLSearchParams();
-      loginData.append("username", formData.user.email);
-      loginData.append("password", formData.user.password);
+      success(
+        "Account Created",
+        "Your account has been created successfully! Please log in to continue."
+      );
+
+      const loginTarget = redirectTo && redirectTo.startsWith('/')
+        ? `/login?redirect=${encodeURIComponent(redirectTo)}&registered=true`
+        : `/login?registered=true`;
       
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-      try {
-        const loginRes = await fetch(`${baseUrl}/auth/login/access-token`, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: loginData.toString()
-        });
-        if (loginRes.ok) {
-          const d = await loginRes.json().catch(() => null);
-          if (d?.access_token) {
-            localStorage.setItem("lanes_token", d.access_token);
-            const destination = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/map';
-            window.location.href = destination;
-            return;
-          }
-        }
-      } catch (loginErr) {
-        console.warn("Auto-login failed after registration, redirecting to login page", loginErr);
-      }
-      
-      if (redirectTo) {
-        router.push(`/login?redirect=${encodeURIComponent(redirectTo)}`);
-      } else {
-        router.push("/login");
-      }
+      router.push(loginTarget);
     } catch (err: any) {
       showError("Registration Failed", err.message || "An error occurred during registration.");
     } finally {
+      isRegistrationSubmittingRef.current = false;
       setLoading(false);
     }
   };

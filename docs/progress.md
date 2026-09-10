@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 1:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, and exact file size error notifications |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
 | 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
 | 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
@@ -29,6 +30,20 @@
 | 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based Official Zone Drawer with Cloudinary uploads and five-section parity; candidate scoring and carriageway analysis; four-step merge workspace with a contextual, persistent secondary drawer. Developer-led end-to-end validation remains. |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+- [x] **EventSource Zombie Connection & SSE Dev Proxy Resolution (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe):
+  - Fixed persistent zombie connections and connection thrashing by removing the restrictive `readyState === 1` guard during React StrictMode unmount cleanup, ensuring `source.close()` executes unconditionally.
+  - Implemented centralized `getSseUrl('/sse/stream')` directing browser SSE connections straight to FastAPI on port `8000` in local dev/LAN, eliminating Next.js proxy response buffering and SSE dropouts.
+  - Standardized error logging in `useLiveSync` from intrusive console.error floods to graceful `console.warn`.
+- [x] **Auth Soft-Delete Re-registration Conflict & Explicit Login Flow (`auth.py`, `RegisterForm.tsx`, `LoginForm.tsx`)** (@roicambe):
+  - Resolved `IntegrityError` unique constraint failure when a citizen whose account was previously soft-deleted attempts to re-register with the same email or username. The endpoint now distinguishes active collisions from archived ones, automatically purging stale soft-deleted records upon OTP verification to permit clean re-registration.
+  - Corrected registration flow so citizens are not automatically logged in upon sign-up; registrations now clear draft states and redirect to `/login?registered=true`, displaying a prominent green alert banner informing the user to log in with their newly created credentials.
+- [x] **100MB Feed Media & Video Streaming Pipeline (`next.config.ts`, `posts.py`, `cloudinary_service.py`, `CreatePostModal.tsx`)** (@roicambe):
+  - Configured Next.js 15/16 proxy body limit via `middlewareClientMaxBodySize: '100mb'` and `experimental: { proxyClientMaxBodySize: '100mb' }`, preventing the dev proxy's 10MB default buffer limit from dropping connections (`socket hang up / ECONNRESET`).
+  - Elevated backend multipart upload size limit in `POST /posts` from 20MB to 100MB.
+  - Enhanced Cloudinary upload service with MIME-type and file-extension inspection, automatically assigning `resource_type="video"` without image crop transformations for video files.
+  - Updated `CreatePostModal.tsx` file limit from 20MB to 100MB and refined validation feedback to display a clear, descriptive toast ("File Limit Exceeded - [filename] ([size] MB) exceeds the 100MB maximum limit") and robust 413/network truncation handling.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
 - [x] **Persistent Edit Zone Workspace and Active-Line Persistence** (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `LiveMapPage.tsx`, `admin.py`) (@roicambe):

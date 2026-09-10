@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { saveFloodsOffline } from '@/lib/offline/storage';
 import { useQueryClient } from '@tanstack/react-query';
+import { getSseUrl } from '@/lib/sse';
 
 export function useLiveSync() {
   const queryClient = useQueryClient();
@@ -10,44 +11,46 @@ export function useLiveSync() {
     // Only connect if the browser supports EventSource
     if (typeof window === 'undefined' || !window.EventSource) return;
 
-    // Connect to the FastAPI SSE endpoint
-    // In production, this should point to your real backend domain
-    const sseUrl = (process.env.NEXT_PUBLIC_API_URL || '/api/v1') + '/sync/stream';
-    const source = new EventSource(sseUrl);
-    eventSourceRef.current = source;
+    const sseUrl = getSseUrl('/sync/stream');
+    let source: EventSource | null = null;
 
-    source.addEventListener('init', async (event) => {
-      try {
-        const floods = JSON.parse(event.data);
-        await saveFloodsOffline(floods);
-        // Optionally update the react-query cache so the map updates instantly
-        // queryClient.setQueryData(['floods'], floods);
-      } catch (err) {
-        console.error("Failed to parse SSE init:", err);
-      }
-    });
+    try {
+      source = new EventSource(sseUrl);
+      eventSourceRef.current = source;
 
-    source.addEventListener('update', async (event) => {
-      try {
-        const floods = JSON.parse(event.data);
-        await saveFloodsOffline(floods);
-        // Update the cache so useFloodZonesLayer instantly rerenders
-        // We use queryClient.invalidateQueries to trigger a background refetch
-        // or we can set it directly if the data structure matches perfectly.
-        // For safety, let's just tell react-query to refetch the regular endpoint:
-        queryClient.invalidateQueries({ queryKey: ['reports', 'flood'] });
-      } catch (err) {
-        console.error("Failed to parse SSE update:", err);
-      }
-    });
+      source.addEventListener('init', async (event) => {
+        try {
+          const floods = JSON.parse(event.data);
+          await saveFloodsOffline(floods);
+        } catch (err) {
+          console.warn("Failed to parse SSE init:", err);
+        }
+      });
 
-    source.onerror = (err) => {
-      console.error("SSE Connection Error. Retrying automatically...", err);
-    };
+      source.addEventListener('update', async (event) => {
+        try {
+          const floods = JSON.parse(event.data);
+          await saveFloodsOffline(floods);
+          queryClient.invalidateQueries({ queryKey: ['reports', 'flood'] });
+        } catch (err) {
+          console.warn("Failed to parse SSE update:", err);
+        }
+      });
+
+      source.onerror = (err) => {
+        // EventSource automatically reconnects; log warning rather than noisy error
+        console.warn("Live sync SSE connection state changed, retrying automatically...", err);
+      };
+    } catch (err) {
+      console.warn("Failed to initialize LiveSync EventSource:", err);
+    }
 
     return () => {
-      if (source.readyState === 1) { // OPEN
+      if (source) {
         source.close();
+      }
+      if (eventSourceRef.current === source) {
+        eventSourceRef.current = null;
       }
     };
   }, [queryClient]);

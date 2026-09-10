@@ -34,12 +34,12 @@ def create_post(
 ):
     """Create a standalone community post with multiple images."""
     
-    # Payload size check (20MB limit)
+    # Payload size check (100MB limit for video and high-res photo uploads)
     content_length = request.headers.get('content-length')
     if content_length:
         try:
-            if int(content_length) > 20 * 1024 * 1024:
-                raise HTTPException(status_code=413, detail="Payload too large. Maximum size is 20MB.")
+            if int(content_length) > 100 * 1024 * 1024:
+                raise HTTPException(status_code=413, detail="Payload too large. Maximum size is 100MB.")
         except ValueError:
             pass
 

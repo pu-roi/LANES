@@ -77,10 +77,12 @@ export function useFloodMapPreview(
 
     const removePreview = () => {
       try {
+        if (!mapInstance || typeof mapInstance.getLayer !== "function") return;
+        if (typeof mapInstance.getStyle === "function" && !mapInstance.getStyle()) return;
         if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
         if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
-      } catch (err) {
-        console.warn("Failed to remove flood preview layer", err);
+      } catch {
+        // Silently ignore teardown races
       }
     };
 
