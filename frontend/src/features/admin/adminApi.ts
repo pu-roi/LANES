@@ -489,7 +489,7 @@ export async function mergePendingIntoZone(
 export interface MergeConflict {
   field: "severity" | "depth" | "direction" | "passable_vehicles" | string;
   message: string;
-  suggested_value: any;
+  suggested_value: unknown;
 }
 
 export interface MergeCandidateItem {

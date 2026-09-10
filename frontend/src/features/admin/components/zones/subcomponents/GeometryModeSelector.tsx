@@ -34,7 +34,7 @@ export function GeometryModeSelector({
         fullWidth
         layoutId="official-zone-geometry-mode-tab"
         className="mb-4 bg-slate-100 p-1"
-        tabClassName="py-2 text-[11px] font-semibold"
+        tabClassName="py-2 px-1 gap-1 text-[10px] font-semibold min-w-0"
       />
 
       {/* Floating Map Instructions Banner rendered during drawing */}

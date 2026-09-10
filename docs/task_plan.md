@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 9, 2026, 4:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 11:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -16,7 +16,7 @@
 > **Current Status (Sept 9, 2026):**
 > - Backend candidate engine (`merge_service.py`), carriageway analysis (`carriageway_service.py`), and model overrides (`passable_vehicles_override`, `hidden_hazards_override`, `media_urls`) are implemented and migrated.
 > - `CreateOfficialZonePanel` has been completely restructured into a modular Feature-Based architecture (`zones/`) with 5-section `FloodReportPanel` parity (Depth/Severity, Survey, Cloudinary media upload, Description) and buffer slider removal.
-> - **IN PROGRESS / PENDING:** The interactive Flood-Report Merge Workspace Interface (`MergeWorkspacePanel.tsx`), live candidate selection matrix, conflict resolution card integration, and interactive multi-report spatial merge execution are **not yet completed or functioning end-to-end**.
+> - **IN PROGRESS / MANUAL VERIFICATION PENDING:** The Phase 5 merge interface has been implemented: report inspection is neutral; intelligent suggestions require an explicit action and selection; candidate evidence is grouped inside each report card; and the contextual secondary drawer preserves its merge session while collapsed. The workspace includes field comparison, reusable spatial editing, a separate confirmation step, visible query recovery states, and a full-width mobile form/map switch. TypeScript, focused ESLint, and the production build pass. Desktop/mobile workflow verification remains with the developer before Phase 5 is marked complete.
 
 ---
 
@@ -287,9 +287,20 @@ A structured 4-stage workflow inside the **Dual-Pane Secondary Drawer**:
 
 #### Phase 5: Redesigned Merge UI/UX Workspace & Live Map Integration
 - **Objective**: Implement the docked `MergeWorkspacePanel.tsx`, `ReportComparisonCard.tsx`, and `ConflictResolutionNotice.tsx`, replace the broken merge modal in `PendingReportsPanel.tsx`, and add `useMergePreviewLayer.ts` for multi-report color coding and merged preview on MapLibre.
+- **Confirmed Interaction Decision**: Normal report selection remains a neutral inspection action. Intelligent suggestions open only when the admin explicitly chooses **Review Merge Suggestions**. Suggestions are never called duplicates, never hard-block standalone approval, and are never automatically included without an admin selection.
+- **Implementation Sequence**:
+  1. [x] Remove legacy barangay/exact-GeoJSON candidate derivation, forced queue filtering, duplicate warnings, approval blocking, batch-selection remnants, and the obsolete merge modal. Keep the full pending queue visible during ordinary report inspection. (@roicambe)
+  2. [x] Add a non-blocking **Review Merge Suggestions** action that opens the intelligent candidate workspace and activates map spotlight only for the duration of that workflow. Provide explicit loading, empty, error, retry, cancel, and defer states. (@roicambe)
+  3. [x] Replace automatic score-based inclusion with explicit admin checkboxes. Retain confidence ranking and explanations as recommendations only, and recompute conflicts/preview from the reports actually selected. (@roicambe)
+  4. [x] Replace stacked comparison cards with a responsive field comparison covering reporter identity/role/trust, timestamp, road/location, severity, depth, passability, hidden hazards, description, and media evidence. Visually identify differences without overwriting original values. (@roicambe)
+  5. [x] Integrate reusable spatial controls from the official-zone workflow so the final merged zone supports routed Start/End editing, bidirectional detection, and Terra Draw Polygon/Freehand/Rectangle/Circle geometry. Avoid creating a second map-drawing implementation. (@roicambe)
+  6. [x] Add a distinct confirmation step summarizing included/excluded reports, destination zone, final operational attributes, geometry, trust-score effects, and preservation of original reports and Community Feed posts. Enforce frontend validation before submission. (@roicambe)
+  7. [x] Complete responsive behavior: docked master-detail panes on desktop and a full-width mobile workflow with an explicit map-view control, safe-area-aware actions, and no fixed-width overflow. (@roicambe)
+  8. [ ] Complete developer-led desktop/mobile workflow verification for report focus changes, collapsed-drawer session persistence, candidate selection, spatial editing, and merge submission. Focused lint/type/build checks and documentation synchronization are complete. (@roicambe)
 - **Affected Files**:
   - `frontend/src/features/admin/components/merge/MergeWorkspacePanel.tsx` [NEW]
   - `frontend/src/features/admin/components/merge/ReportComparisonCard.tsx` [NEW]
+  - `frontend/src/features/admin/components/merge/ReportComparisonMatrix.tsx` [NEW]
   - `frontend/src/features/admin/components/merge/MergeExplanationBanner.tsx` [NEW]
   - `frontend/src/features/admin/components/merge/ConflictResolutionNotice.tsx` [NEW]
   - `frontend/src/features/admin/components/PendingReportsPanel.tsx`
@@ -297,8 +308,8 @@ A structured 4-stage workflow inside the **Dual-Pane Secondary Drawer**:
   - `frontend/src/features/admin/adminApi.ts`
   - `frontend/src/features/map/hooks/useMergePreviewLayer.ts` [NEW]
 - **Dependencies**: Phases 2, 3, 4.
-- **Expected Outcome**: Complete, intuitive, map-centered merge review workspace with side-by-side comparison, conflict warnings, interactive spatial editing, and confirmation.
-- **Validation**: End-to-end user testing across desktop and mobile screen sizes.
+- **Expected Outcome**: Complete, understandable, map-centered merge review workspace in which the system recommends, the admin explicitly selects, original reports remain inspectable, final operational data and geometry are editable, and publication requires a deliberate confirmation.
+- **Validation**: Focused ESLint and TypeScript validation; desktop and mobile checks for ordinary report inspection, candidate loading/error/empty states, candidate inclusion/exclusion, selected-only conflict resolution, line and shape editing, bidirectional preview, cancel/defer behavior, new-zone and existing-zone submission, and post-merge refresh.
 
 #### Phase 6: Automated Testing & End-to-End Verification
 - **Objective**: Execute end-to-end integration tests verifying database integrity, Community Feed post preservation, audit log completeness, and edge case handling.

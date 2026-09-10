@@ -308,7 +308,7 @@ export function OfficialZoneDrawer({
       </div>
 
       {/* DRAWER BODY (Scrollable) */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-5">
+      <div className="scrollbar-auto-hide flex-1 overflow-y-auto p-4 space-y-5">
         {/* SPATIAL GEOMETRY DEFINITION (Create mode only) */}
         {!isEditMode && (
           <div className="space-y-3">

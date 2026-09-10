@@ -120,7 +120,7 @@ export function ActiveZonesPanel({
       </div>
 
       {/* Zones List Content */}
-      <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
+      <div className="scrollbar-auto-hide flex-1 overflow-y-auto divide-y divide-gray-100">
         {listLoading && !isPlaceholderData ? (
           <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2">
             <Loader2 className="w-6 h-6 animate-spin text-blue-500" />

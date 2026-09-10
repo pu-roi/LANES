@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 9, 2026, 4:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 11:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -26,7 +26,7 @@
 | 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
 | 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
 | 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
-| 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based modular Official Zone Drawer with Cloudinary photo/video upload and 5-section FloodReportPanel parity; backend candidate scoring engine and carriageway analysis implemented; interactive merge workspace interface actively in progress |
+| 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based Official Zone Drawer with Cloudinary uploads and five-section parity; candidate scoring and carriageway analysis; four-step merge workspace with a contextual, persistent secondary drawer. Developer-led end-to-end validation remains. |
 
 ## Capstone Roadmap - Delivered Phases
 
@@ -49,12 +49,17 @@
   - Supported creating brand new `FloodAvoidanceZone` entities or merging into existing active zones, applying user overrides (`passable_vehicles_override`, `hidden_hazards_override`, `merge_rationale`).
   - Preserved original crowdsourced reports, credited +5 Trust Score to each unique reporter, broadcasted real-time SSE event, and recorded audit trails.
   - Guaranteed 100% Community Feed post immutability (`community_posts` remain completely untouched when reports are merged or approved).
-- [ ] **Interactive Merge Workspace Interface & Live Map Resolution (`MergeWorkspacePanel.tsx`)** (@roicambe):
-  - *In Active Development*: Candidate selection matrix, side-by-side report comparison cards, conflict resolution notices, and interactive spatial merge resolution require full end-to-end frontend execution and live testing.
+- [x] **Interactive Merge Workspace Interface & Live Map Resolution (`MergeWorkspacePanel.tsx`)** (@roicambe):
+  - Replaced legacy duplicate grouping with explicit **Review Merge Suggestions** entry. Normal report focus is neutral and never blocks standalone approval.
+  - Delivered a four-step workflow: Candidates, Compare, Edit Zone, and Confirm. Candidate inclusion is always explicit; recommendations and conflicts are recalculated from the selected reports only.
+  - Added responsive field comparison, reusable road/Terra Draw geometry editing, map previews for primary/candidate/proposed geometry, recoverable query states, and a full-width mobile map/form switch.
+  - Candidate evidence now lives inside its related report card, with a prominent checkbox selection control rather than a detached action button.
+  - The Create Zone and Review Merge edge tabs act as contextual drawer handles: Review Merge appears only after a session starts, remains available after collapse, and retains its state until the focused primary report changes or the merge completes.
+  - Manual desktop/mobile workflow and submission verification remains pending with the developer.
 - [x] **Dual-Pane Master-Detail Sidebar / Slide-Out Drawer (`MergeWorkspacePanel.tsx`)** (@roicambe):
   - Implemented secondary slide-out drawer docking seamlessly alongside `PendingReportsPanel`, keeping the MapLibre canvas unblocked.
-  - Designed 3-step workflow: 1. Candidate Selection $\rightarrow$ 2. Side-by-Side Review & Conflict Resolution $\rightarrow$ 3. Final Zone Data Editor.
-  - Built `ReportComparisonCard.tsx`, `ConflictResolutionNotice.tsx`, and `MergeExplanationBanner.tsx`.
+  - Designed the contextual four-step workflow: 1. Candidate Selection $\rightarrow$ 2. Compare $\rightarrow$ 3. Edit Zone $\rightarrow$ 4. Confirm.
+  - Built `ReportComparisonCard.tsx`, `ReportComparisonMatrix.tsx`, `ConflictResolutionNotice.tsx`, and `MergeExplanationBanner.tsx`.
   - Integrated `useMergePreviewLayer.ts` to render vibrant multi-color candidate geometries alongside the primary report and proposed dashed merged geometry on the map.
 - [x] **1 Zone = 1 Incident Draft Cart Pattern & Field Streamlining (`CreateOfficialZonePanel.tsx`, `ZoneDataEditorForm.tsx`)** (@roicambe):
   - Refactored zone drafting to ensure each official zone corresponds to exactly one incident with its own severity, depth, and survey attributes.
@@ -69,8 +74,8 @@
     - **Open Handle (Pane 2 Edge)**: Travels smoothly to the outer front edge of Pane 2 (`-right-9 top-3.5`), styled in dark slate with `ChevronLeft`, vertical `CLOSE DRAWER` typography, and smooth hover interaction to push the drawer shut.
     - **Smooth Drawer Slide Animation**: Powered by Framer Motion `<AnimatePresence>` with cubic-bezier easing (`[0.32, 0.72, 0, 1]`) from `width: 0` to `420px`/`460px`, paired with a continuous 35ms MapLibre canvas resize loop to ensure the WebGL viewport smoothly adjusts without jarring jumps.
   - Maintained full mobile PWA responsiveness (full-screen slide-over drawer on mobile viewports; docked side-by-side pane on desktop), dynamic map container resize tracking via `ResizeObserver`, and centered floating drawing instruction banner.
-- [x] **Automated Pytest & Integration Verification (`test_flood_report_merging.py`)** (@roicambe):
-  - Authoring comprehensive automated Pytest integration tests validating candidate identification, multi-factor scoring, conflict detection, transactional merge, and feed post immutability (100% passing).
+- [ ] **Automated Pytest & Integration Verification (`test_flood_report_merging.py`)** (@roicambe):
+  - The suite covers candidate identification, multi-factor scoring, conflict detection, merge behavior, and feed post immutability. Its result is not recorded as passing here because pytest is unavailable in the current local environment; execute it in the configured backend test environment before closing Phase 18.
 
 ### Capstone Phase 16: Admin Map Controls & Component Standardization (🟢 COMPLETED)
 - [x] **Universal MapLibre Preview Architecture (`useFloodMapPreview.ts`)** (@antigravity):

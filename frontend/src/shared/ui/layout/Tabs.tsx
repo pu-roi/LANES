@@ -154,7 +154,7 @@ export function Tabs<T extends string = string>({
             type="button"
             onClick={() => onChange(tab.id)}
             className={cn(
-              "relative flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold transition-colors z-10 focus:outline-none select-none",
+              "relative flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold transition-colors z-10 focus:outline-none select-none min-w-0",
               isActive ? "text-blue-700 font-extrabold" : "text-slate-600 hover:text-slate-900",
               tabClassName
             )}

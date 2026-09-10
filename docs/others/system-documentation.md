@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 9, 2026, 4:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 11:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -261,7 +261,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 |-------|------|-------------|
 | `/admin` | `AdminDashboard.tsx` | Entry landing — shows role-based nav links and a summary stats row (total users, reports, active zones). |
 | `/admin/dashboard` | `DashboardPage.tsx` | Overview cards: total users, reports filed today, currently active flood zones. Recent activity feed and quick action shortcuts. |
-| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Moderation happens entirely here: features `PendingReportsPanel` for approving/rejecting user reports, `ActiveZonesPanel` for monitoring ongoing floods, `ReportDetailsModal` for deep inspection of MultiLineString and Polygon geometries, `FloodZonePopup` hover badge engine with a 400ms non-resetting dwell timer and ceiling-collision prevention, and `CreateOfficialZonePanel` (exporting `OfficialZoneDrawer` with modular subcomponents in `zones/`: `GeometryModeSelector`, `RoadSegmentPicker`, `DraftZoneCart`) with **Terra Draw** and Line modes, 5-tier aligned form structure (`FloodReportPanel` parity), and Cloudinary media upload. |
+| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Pane 1 contains `PendingReportsPanel` and `ActiveZonesPanel`; Pane 2 is a contextual docked drawer controlled by separate Create Zone and Review Merge edge-tab handles. Normal report focus is neutral. **Review Merge Suggestions** starts a persistent merge session with explicit candidate checkboxes, in-card match evidence, a field comparison matrix, selected-only conflicts, reusable road/Terra Draw editing, confirmation, and primary/candidate/proposed map previews. The Review Merge handle remains available after collapse until focus changes or the merge completes. Also includes `ReportDetailsModal`, the 400ms `FloodZonePopup` hover engine, and `OfficialZoneDrawer` with `GeometryModeSelector`, `RoadSegmentPicker`, `DraftZoneCart`, five aligned form sections, and Cloudinary media upload. |
 | `/admin/users` | `UsersPage.tsx` | Searchable table of all registered users. Admin can filter by role, view trust scores, activate or deactivate accounts, and reassign roles. |
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
@@ -278,7 +278,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `POST /api/v1/admin/zones` | Create official flood avoidance zone (multipart `FormData` with JSON `body` and `media` files) |
 | `PUT /api/v1/admin/zones/{id}` | Update existing avoidance zone metadata, depth, severity, passability, and notes |
 | `GET /api/v1/admin/reports/merge-candidates` | Multi-factor spatial candidate scoring for report merging |
-| `POST /api/v1/admin/reports/merge` | Transactional multi-report merge into new or existing avoidance zone |
+| `POST /api/v1/admin/reports/merge` | Multi-report merge into a new or existing avoidance zone |
 | `GET /api/v1/admin/users` | All users with role and profile info |
 | `PUT /api/v1/admin/users/{id}` | Update user role or active status |
 | `GET /api/v1/admin/roles` | All roles with their permission matrices |
@@ -503,9 +503,9 @@ Spatial polygon buffers generated around approved flood reports or curated direc
 | `severity_override` | Enum, nullable | Overridden severity level (`low`, `medium`, `high`, `extreme`) |
 | `depth_override` | String(50), nullable | Standard visual water depth gauge (e.g. `knee`, `waist`, `chest`) |
 | `passable_vehicles_override` | String(500), nullable | Comma-separated list of safe vehicle types |
-| `hidden_hazards_override` | Enum, nullable | Presence of submerged dangers: `yes`, `no`, `unsure` |
+| `hidden_hazards_override` | String(255), nullable | Presence of submerged dangers: `yes`, `no`, `unsure` |
 | `admin_notes` | Text, nullable | Dispatch notes and operational instructions |
-| `merge_rationale` | JSONB, nullable | Multi-factor matching scores, candidate report IDs, and conflict resolution summary |
+| `merge_rationale` | String(1000), nullable | Merge rationale summary |
 | `media_urls` | JSONB, nullable | Photographic and video evidence URLs stored in Cloudinary |
 | `is_active` | Boolean | Whether this zone is currently applied to route calculations |
 | `created_at` | DateTime | When the zone was generated or created |

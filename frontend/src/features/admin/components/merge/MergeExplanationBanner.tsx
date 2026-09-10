@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Users, CheckCircle2 } from "lucide-react";
+import { Sparkles, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MergeExplanationBannerProps {

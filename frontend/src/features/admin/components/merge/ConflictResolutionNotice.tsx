@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { AlertTriangle, Check, ShieldAlert } from "lucide-react";
+import { Check, ShieldAlert } from "lucide-react";
 import type { MergeConflict } from "../../adminApi";
 
 interface ConflictResolutionNoticeProps {
   conflicts: MergeConflict[];
-  onResolveConflict?: (field: string, value: any) => void;
+  onResolveConflict?: (field: string, value: unknown) => void;
 }
 
 export function ConflictResolutionNotice({
@@ -35,7 +35,7 @@ export function ConflictResolutionNotice({
               <span className="text-slate-600 truncate">{conflict.message}</span>
             </div>
 
-            {conflict.suggested_value && onResolveConflict && (
+            {conflict.suggested_value != null && onResolveConflict && (
               <button
                 type="button"
                 onClick={() => onResolveConflict(conflict.field, conflict.suggested_value)}

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { Map } from "maplibre-gl";
+import type { GeoJSONSource, Map } from "maplibre-gl";
 import type { FloodReport, MergeCandidateItem, ReportGeometry } from "@/features/admin/adminApi";
 
 interface UseMergePreviewLayerProps {
@@ -27,8 +27,9 @@ export function useMergePreviewLayer({
     const sourceId = "merge-preview-source";
     const lineLayerId = "merge-preview-lines";
     const fillLayerId = "merge-preview-polygons";
+    const pointLayerId = "merge-preview-points";
 
-    const existingSource = map.getSource(sourceId) as any;
+    const existingSource = map.getSource(sourceId) as GeoJSONSource | undefined;
 
     if (!isOpen || !primaryReport) {
       if (existingSource) {
@@ -37,7 +38,7 @@ export function useMergePreviewLayer({
       return;
     }
 
-    const features: any[] = [];
+    const features: GeoJSON.Feature[] = [];
 
     // 1. Primary Report Geometry
     if (primaryReport.geometry) {
@@ -129,11 +130,26 @@ export function useMergePreviewLayer({
           "line-opacity": 0.85,
         },
       });
+
+      // Point reports must remain visible even when they do not contain a road segment.
+      map.addLayer({
+        id: pointLayerId,
+        type: "circle",
+        source: sourceId,
+        filter: ["==", "$type", "Point"],
+        paint: {
+          "circle-color": ["get", "color"],
+          "circle-radius": ["case", ["get", "is_primary"], 9, 7],
+          "circle-stroke-color": "#ffffff",
+          "circle-stroke-width": 2,
+          "circle-opacity": 0.9,
+        },
+      });
     }
 
     return () => {
       // Clean up source data on unmount
-      const src = map.getSource(sourceId) as any;
+      const src = map.getSource(sourceId) as GeoJSONSource | undefined;
       if (src) {
         src.setData({ type: "FeatureCollection", features: [] });
       }

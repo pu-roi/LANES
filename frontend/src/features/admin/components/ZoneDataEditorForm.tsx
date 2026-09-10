@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import type { ReportGeometry } from "../adminApi";
 
@@ -85,38 +85,27 @@ export const HAZARD_OPTIONS = [
 export function ZoneDataEditorForm({
   initialValues,
   onChange,
-  readOnlyGeometry = false,
   hideBidirectional = false,
   hideSurvey = false,
   hideDescription = false,
 }: ZoneDataEditorFormProps) {
-  const initialOption = VISUAL_OPTIONS.find(o => o.id === initialValues.depth) ?? VISUAL_OPTIONS[3];
-  const [selectedOption, setSelectedOption] = useState<DepthOption>(initialOption);
+  const selectedOption = VISUAL_OPTIONS.find(o => o.id === initialValues.depth) ?? VISUAL_OPTIONS[3];
+  const values: ZoneDataEditorValues = {
+    name: initialValues.name || "Official Flood Avoidance Zone",
+    severity: selectedOption.severity,
+    depth: selectedOption.id,
+    passable_vehicles: initialValues.passable_vehicles || [],
+    hidden_hazards: initialValues.hidden_hazards || "unsure",
+    is_bidirectional: initialValues.is_bidirectional || false,
+    geometry: initialValues.geometry || { type: "LineString", coordinates: [] },
+    admin_notes: initialValues.admin_notes || "",
+    merge_rationale: initialValues.merge_rationale,
+    buffer_radius: initialValues.buffer_radius,
+  };
 
-  const [name] = useState(initialValues.name || "Official Flood Avoidance Zone");
-  const [passableVehicles, setPassableVehicles] = useState<string[]>(initialValues.passable_vehicles || []);
-  const [hiddenHazards, setHiddenHazards] = useState(initialValues.hidden_hazards || "unsure");
-  const [isBidirectional, setIsBidirectional] = useState(initialValues.is_bidirectional || false);
-  const [adminNotes, setAdminNotes] = useState(initialValues.admin_notes || "");
-  const [geometry] = useState<ReportGeometry>(
-    initialValues.geometry || { type: "LineString", coordinates: [] }
-  );
-
-  // Sync back to parent whenever anything changes
-  useEffect(() => {
-    onChange({
-      name,
-      severity: selectedOption.severity,
-      depth: selectedOption.id,
-      passable_vehicles: passableVehicles,
-      hidden_hazards: hiddenHazards,
-      is_bidirectional: isBidirectional,
-      geometry,
-      admin_notes: adminNotes,
-      merge_rationale: initialValues.merge_rationale,
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name, selectedOption, passableVehicles, hiddenHazards, isBidirectional, geometry, adminNotes]);
+  const updateValues = (updates: Partial<ZoneDataEditorValues>) => {
+    onChange({ ...values, ...updates });
+  };
 
   return (
     <div className="space-y-4 text-left">
@@ -133,7 +122,7 @@ export function ZoneDataEditorForm({
               <button
                 key={opt.id}
                 type="button"
-                onClick={() => setSelectedOption(opt)}
+                onClick={() => updateValues({ depth: opt.id, severity: opt.severity })}
                 className={cn(
                   "flex flex-col items-center gap-0.5 rounded-lg border px-1.5 py-2 text-xs font-semibold transition-all",
                   selectedOption.id === opt.id ? colors.active : colors.pill
@@ -165,15 +154,15 @@ export function ZoneDataEditorForm({
           </div>
           <button
             type="button"
-            onClick={() => setIsBidirectional(!isBidirectional)}
+            onClick={() => updateValues({ is_bidirectional: !values.is_bidirectional })}
             className={cn(
               "w-11 h-6 rounded-full transition-colors relative shrink-0 p-0.5 border",
-              isBidirectional ? "bg-blue-600 border-blue-700" : "bg-slate-200 border-slate-300"
+              values.is_bidirectional ? "bg-blue-600 border-blue-700" : "bg-slate-200 border-slate-300"
             )}
           >
             <div className={cn(
               "w-5 h-5 rounded-full bg-white transition-transform shadow-xs",
-              isBidirectional ? "translate-x-5" : "translate-x-0"
+              values.is_bidirectional ? "translate-x-5" : "translate-x-0"
             )} />
           </button>
         </div>
@@ -191,7 +180,7 @@ export function ZoneDataEditorForm({
             <p className="text-[11px] text-slate-400 mb-2">Select all that apply.</p>
             <div className="grid grid-cols-2 gap-2">
               {VEHICLE_OPTIONS.map((v) => {
-                const isChecked = passableVehicles.includes(v.id);
+                const isChecked = values.passable_vehicles.includes(v.id);
                 return (
                   <label
                     key={v.id}
@@ -205,9 +194,9 @@ export function ZoneDataEditorForm({
                       checked={isChecked}
                       onChange={(e) => {
                         if (e.target.checked) {
-                          setPassableVehicles(prev => [...prev, v.id]);
+                          updateValues({ passable_vehicles: [...values.passable_vehicles, v.id] });
                         } else {
-                          setPassableVehicles(prev => prev.filter(x => x !== v.id));
+                          updateValues({ passable_vehicles: values.passable_vehicles.filter(x => x !== v.id) });
                         }
                       }}
                       className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
@@ -231,10 +220,10 @@ export function ZoneDataEditorForm({
                 <button
                   key={opt.value}
                   type="button"
-                  onClick={() => setHiddenHazards(opt.value)}
+                  onClick={() => updateValues({ hidden_hazards: opt.value })}
                   className={cn(
                     "rounded-lg border py-2 text-xs font-semibold transition-colors",
-                    hiddenHazards === opt.value
+                    values.hidden_hazards === opt.value
                       ? opt.activeClass
                       : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                   )}
@@ -254,8 +243,8 @@ export function ZoneDataEditorForm({
             Description
           </label>
           <textarea
-            value={adminNotes}
-            onChange={(e) => setAdminNotes(e.target.value)}
+            value={values.admin_notes}
+            onChange={(e) => updateValues({ admin_notes: e.target.value })}
             placeholder="e.g., Pumping truck stationed on westbound lane. Detour all light vehicles via Shaw Blvd."
             rows={2}
             className="w-full text-xs p-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none font-medium text-slate-800"

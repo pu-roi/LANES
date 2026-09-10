@@ -2,18 +2,10 @@
 
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
-import { 
-  ShieldCheck, 
-  MapPin, 
-  Clock, 
-  Car, 
-  AlertTriangle, 
-  CheckCircle2, 
-  Eye,
-  UserCheck
-} from "lucide-react";
+import { MapPin, Clock, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FloodReport, MergeCandidateItem } from "../../adminApi";
+import { MergeExplanationBanner } from "./MergeExplanationBanner";
 
 interface ReportComparisonCardProps {
   report: FloodReport | MergeCandidateItem;
@@ -21,7 +13,9 @@ interface ReportComparisonCardProps {
   isSelected?: boolean;
   onToggleSelect?: () => void;
   badgeLabel?: string;
-  badgeColor?: string;
+  matchScore?: number;
+  matchReasons?: string[];
+  isCrowdConsensus?: boolean;
 }
 
 const SEVERITY_BADGES: Record<string, string> = {
@@ -37,7 +31,9 @@ export function ReportComparisonCard({
   isSelected = false,
   onToggleSelect,
   badgeLabel,
-  badgeColor = "blue",
+  matchScore,
+  matchReasons = [],
+  isCrowdConsensus = false,
 }: ReportComparisonCardProps) {
   const reportId = "id" in report ? report.id : report.report_id;
   const rawText = report.raw_text;
@@ -53,7 +49,7 @@ export function ReportComparisonCard({
     ? report.survey?.hidden_hazards 
     : report.hidden_hazards;
   const reporterName = report.reporter_name || report.reporter_username || "Citizen";
-  const trustScore = report.reporter_trust_score ?? 100;
+  const trustScore = report.reporter_trust_score;
   const createdAt = "created_at" in report ? report.created_at : report.reported_at;
 
   const timeAgo = createdAt 
@@ -61,14 +57,14 @@ export function ReportComparisonCard({
     : "Recently";
 
   return (
-    <div 
+    <article
       className={cn(
-        "rounded-xl border p-3.5 transition-all duration-150 text-left relative",
+        "relative rounded-xl border p-3.5 text-left transition-all duration-150",
         isPrimary 
-          ? "bg-blue-50/40 border-blue-200 shadow-sm ring-1 ring-blue-300/60" 
+          ? "border-blue-200 bg-blue-50/40"
           : isSelected 
-            ? "bg-indigo-50/30 border-indigo-300 shadow-sm ring-1 ring-indigo-300/50" 
-            : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm"
+            ? "border-violet-400 bg-violet-50/50 ring-2 ring-violet-200/70"
+            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
       )}
     >
       {/* Header Bar */}
@@ -92,25 +88,23 @@ export function ReportComparisonCard({
         </div>
 
         {!isPrimary && onToggleSelect && (
-          <button
-            type="button"
-            onClick={onToggleSelect}
+          <label
             className={cn(
-              "text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors flex items-center gap-1 shrink-0",
+              "flex shrink-0 cursor-pointer items-center gap-2 text-xs font-bold transition-colors",
               isSelected
-                ? "bg-indigo-600 text-white border-indigo-700 shadow-sm hover:bg-indigo-700"
-                : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                ? "text-violet-800"
+                : "text-slate-700 hover:text-violet-700"
             )}
           >
-            {isSelected ? (
-              <>
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Selected
-              </>
-            ) : (
-              "Include in Merge"
-            )}
-          </button>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={onToggleSelect}
+              className="h-5 w-5 shrink-0 cursor-pointer rounded border-2 border-slate-400 text-violet-600 accent-violet-600 focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
+              aria-label={`Include report #${reportId} in merge`}
+            />
+            <span>{isSelected ? "Included in merge" : "Include in merge"}</span>
+          </label>
         )}
       </div>
 
@@ -128,15 +122,22 @@ export function ReportComparisonCard({
       </div>
 
       {/* Metrics Strip */}
-      <div className="grid grid-cols-2 gap-2 bg-slate-50/75 border border-slate-100 rounded-lg p-2 mb-2.5 text-[11px]">
-        <div>
+      <div className="mb-3 mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-[11px] sm:grid-cols-3">
+        <div className="min-w-0">
           <span className="text-slate-400 block text-[10px] uppercase font-semibold">Water Depth</span>
           <span className="font-semibold text-slate-700 capitalize">
             {depth ? depth.replace(/-/g, " ") : "Not reported"}
           </span>
         </div>
 
-        <div>
+        <div className="min-w-0">
+          <span className="text-slate-400 block text-[10px] uppercase font-semibold">Hidden Hazards</span>
+          <span className="font-semibold text-slate-700 capitalize">
+            {hiddenHazards || "Not specified"}
+          </span>
+        </div>
+
+        <div className="min-w-0">
           <span className="text-slate-400 block text-[10px] uppercase font-semibold">Passable Vehicles</span>
           <span className="font-semibold text-slate-700 truncate block">
             {passableVehicles ? passableVehicles.split(",").join(", ") : "Not specified"}
@@ -145,13 +146,15 @@ export function ReportComparisonCard({
       </div>
 
       {/* Footer Details: Reporter & Timestamp */}
-      <div className="flex items-center justify-between pt-1 text-[11px] text-slate-500 border-t border-slate-100">
+      <div className="mt-1 flex items-center justify-between text-[11px] text-slate-500">
         <div className="flex items-center gap-1.5 min-w-0">
           <UserCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />
           <span className="font-medium text-slate-700 truncate">{reporterName}</span>
-          <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-mono font-semibold">
-            {trustScore.toFixed(0)}% trust
-          </span>
+          {trustScore != null && (
+            <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-mono font-semibold">
+              {trustScore.toFixed(0)}% trust
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-1 text-slate-400 text-[10px] shrink-0">
@@ -176,6 +179,17 @@ export function ReportComparisonCard({
           ))}
         </div>
       )}
-    </div>
+
+      {matchScore != null && (
+        <section aria-label={`Match evidence for report #${reportId}`} className="mt-3 pt-1">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Why this report was suggested</p>
+          <MergeExplanationBanner
+            matchScore={matchScore}
+            matchReasons={matchReasons}
+            isCrowdConsensus={isCrowdConsensus}
+          />
+        </section>
+      )}
+    </article>
   );
 }

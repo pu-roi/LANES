@@ -7,9 +7,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { 
   getZones, deactivateZone, deactivateZonesBulk, AvoidanceZone,
-  getPendingReports, approveReport, rejectReport, getNearbyZones,
+  getPendingReports, approveReport, rejectReport,
   createOfficialZone,
-  FloodReport, NearbyZone
+  FloodReport
 } from "./adminApi";
 import { Button } from "@/shared/ui";
 import { Modal } from "@/shared/ui";
@@ -22,9 +22,9 @@ import { computeCenterCoordinate, flyToFeature, flyToCoordinates } from "@/featu
 import { 
   Loader2, Trash2, ShieldAlert, 
   RefreshCw, Info, AlertTriangle, CheckCircle, Clock, 
-  Download, FileQuestion, ArrowRight, Merge, Check, X,
+  Download, FileQuestion, ArrowRight, Check, X,
   MapPin, UserCheck, Shield, Plus,
-  ChevronRight, ChevronLeft
+  ChevronRight, ChevronLeft, Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -127,14 +127,17 @@ export default function LiveMapPage() {
   // Pending Moderation State
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isolatedReportId, setIsolatedReportId] = useState<number | null>(null);
-  const [targetZoneId, setTargetZoneId] = useState<number | null>(null);
-  const [mergeModalOpen, setMergeModalOpen] = useState(false);
 
   // Merge Workspace Secondary Drawer State
   const [isMergeDrawerOpen, setIsMergeDrawerOpen] = useState(false);
+  const [isMergeMobileMapVisible, setIsMergeMobileMapVisible] = useState(false);
   const [mergingReport, setMergingReport] = useState<FloodReport | null>(null);
   const [mergePreviewCandidates, setMergePreviewCandidates] = useState<MergeCandidateItem[]>([]);
   const [mergeProposedGeometry, setMergeProposedGeometry] = useState<ReportGeometry | null>(null);
+  const handleMergePreviewChange = useCallback((candidates: MergeCandidateItem[], proposedGeometry: ReportGeometry | null) => {
+    setMergePreviewCandidates(candidates);
+    setMergeProposedGeometry(proposedGeometry);
+  }, []);
 
   // Create Official Zone Secondary Drawer State
   const [isCreateZoneDrawerOpen, setIsCreateZoneDrawerOpen] = useState(false);
@@ -160,7 +163,6 @@ export default function LiveMapPage() {
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
   const [selectedContributorId, setSelectedContributorId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
-  const [batchSelectedIds, setBatchSelectedIds] = useState<number[]>([]);
   const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
   const [editingZone, setEditingZone] = useState<AvoidanceZone | null>(null);
@@ -253,28 +255,60 @@ export default function LiveMapPage() {
 
   const selectedReport = pendingReports?.find((r) => r.id === selectedReportId) || null;
 
-  // Sub-Phase 2.4: Batch candidates — other pending reports on the same barangay/location or identical geometry
-  const batchCandidates: FloodReport[] = (pendingReports || []).filter(
-    (r: FloodReport) => {
-      if (r.id === selectedReportId) return false;
-      if (selectedReport?.barangay && r.barangay === selectedReport.barangay) return true;
-      // Fallback for missing barangay: match identical geometries (useful for testing duplicates)
-      if (r.geometry && selectedReport?.geometry && JSON.stringify(r.geometry) === JSON.stringify(selectedReport.geometry)) return true;
-      return false;
+  const openMergeWorkspace = (report: FloodReport) => {
+    setIsCreateZoneDrawerOpen(false);
+    setMergingReport(report);
+    setSelectedReportId(report.id);
+    setIsolatedReportId(report.id);
+    setIsMergeMobileMapVisible(false);
+    setIsMergeDrawerOpen(true);
+  };
+
+  const openCreateZoneWorkspace = () => {
+    setIsMergeDrawerOpen(false);
+    setIsMergeMobileMapVisible(false);
+    setMergePreviewCandidates([]);
+    setMergeProposedGeometry(null);
+    setIsolatedReportId(null);
+    setEditingZone(null);
+    setIsCreateZoneDrawerOpen(true);
+  };
+
+  const handleReportFocusChange = useCallback((id: number | null) => {
+    setSelectedReportId(id);
+
+    if (id === null) {
+      setIsolatedReportId(null);
+      setIsMergeDrawerOpen(false);
+      setMergingReport(null);
+      setMergePreviewCandidates([]);
+      setMergeProposedGeometry(null);
+      return;
     }
-  );
 
-  // If a report is selected, only show the selected report and its batch candidates (preserving original order)
-  const filteredPendingReports = selectedReportId 
-    ? (pendingReports || []).filter(r => r.id === selectedReportId || batchCandidates.some(b => b.id === r.id))
-    : (pendingReports || []);
+    const nextReport = pendingReports?.find((report) => report.id === id);
+    const willShowMergeWorkspace = isMergeDrawerOpen || Boolean(mergingReport && nextReport && isCreateZoneDrawerOpen);
+    if (mergingReport && nextReport && nextReport.id !== mergingReport.id) {
+      setMergingReport(nextReport);
+      setMergePreviewCandidates([]);
+      setMergeProposedGeometry(null);
+    }
 
-  // Nearby Zones Query for the selected pending report
-  const { data: nearbyZones, isLoading: nearbyLoading } = useQuery({
-    queryKey: ["nearbyZones", selectedReportId],
-    queryFn: () => (selectedReportId ? getNearbyZones(selectedReportId, 500) : Promise.resolve([])),
-    enabled: selectedReportId !== null,
-  });
+    if (mergingReport && nextReport && isCreateZoneDrawerOpen) {
+      setEditingZone(null);
+      setIsCreateZoneDrawerOpen(false);
+      setIsMergeDrawerOpen(true);
+    }
+
+    setIsolatedReportId(willShowMergeWorkspace ? id : null);
+  }, [isCreateZoneDrawerOpen, isMergeDrawerOpen, mergingReport, pendingReports]);
+
+  // Ordinary report selection never changes the queue or guesses which reports are related.
+  // Map spotlight is scoped to the explicit intelligent merge workflow.
+  const filteredPendingReports = pendingReports || [];
+  const mapPendingReports = isMergeDrawerOpen && mergingReport
+    ? filteredPendingReports.filter((report) => report.id === mergingReport.id)
+    : filteredPendingReports;
 
   // Modular Map Layers
   useCityBoundaries(mapInstance, isLoaded);
@@ -292,13 +326,9 @@ export default function LiveMapPage() {
   usePendingReportsLayer(
     mapInstance, 
     isLoaded, 
-    filteredPendingReports, 
+    mapPendingReports,
     activeTab, 
-    (id) => {
-      setSelectedReportId(id);
-      // Reset isolated mode if user clicks away
-      if (id === null) setIsolatedReportId(null);
-    }, 
+    handleReportFocusChange,
     selectedReportId,
     isolatedReportId
   );
@@ -439,7 +469,6 @@ export default function LiveMapPage() {
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setSelectedReportId(null);
-      setMergeModalOpen(false);
     }
   });
 
@@ -520,6 +549,22 @@ export default function LiveMapPage() {
   const total = listData?.total || 0;
   const totalPages = Math.ceil(total / LIMIT);
 
+  const handleZoneFocusChange = useCallback((id: number | null) => {
+    setSelectedZoneId(id);
+    if (id === null || (!isMergeDrawerOpen && !isCreateZoneDrawerOpen)) return;
+
+    const nextZone = zones.find((zone: AvoidanceZone) => zone.id === id);
+    if (!nextZone) return;
+
+    setIsMergeDrawerOpen(false);
+    setIsMergeMobileMapVisible(false);
+    setMergePreviewCandidates([]);
+    setMergeProposedGeometry(null);
+    setIsolatedReportId(null);
+    setEditingZone(nextZone);
+    setIsCreateZoneDrawerOpen(true);
+  }, [isCreateZoneDrawerOpen, isMergeDrawerOpen, zones]);
+
   const handleExportCSV = () => {
     if (!statsData) return;
     let csv = "Type,Name,Alert Count\n";
@@ -553,7 +598,7 @@ export default function LiveMapPage() {
     <MapProvider>
       <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
         {/* LEFT PANEL: Moderation & Zones Sidebar */}
-        <div className="relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex flex-col bg-white border-r border-slate-200 h-[50vh] md:h-full z-30 shadow-sm">
+        <div className={`${isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "hidden" : "flex"} relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex-col bg-white border-r border-slate-200 h-[50vh] md:flex md:h-full z-40 shadow-sm`}>
           
           {/* Mode Switcher Tabs Header */}
           <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex items-center justify-between gap-2">
@@ -599,21 +644,9 @@ export default function LiveMapPage() {
               pendingReports={pendingReports}
               filteredPendingReports={filteredPendingReports}
               selectedReportId={selectedReportId}
-              setSelectedReportId={setSelectedReportId}
+              setSelectedReportId={handleReportFocusChange}
               onInfoClick={(r) => setInfoModalReport(r)}
-              onOpenMergeWorkspace={(r) => {
-                setIsCreateZoneDrawerOpen(false);
-                setMergingReport(r);
-                setSelectedReportId(r.id);
-                setIsolatedReportId(r.id);
-                setIsMergeDrawerOpen(true);
-              }}
-              batchCandidates={batchCandidates}
-              batchSelectedIds={batchSelectedIds}
-              setBatchSelectedIds={setBatchSelectedIds}
-              nearbyZones={nearbyZones}
-              setTargetZoneId={setTargetZoneId}
-              setMergeModalOpen={setMergeModalOpen}
+              onOpenMergeWorkspace={openMergeWorkspace}
               rejectMutation={rejectMutation}
               approveMutation={approveMutation}
             />
@@ -629,7 +662,7 @@ export default function LiveMapPage() {
               selectedIds={selectedIds}
               setSelectedIds={setSelectedIds}
               selectedZoneId={selectedZoneId}
-              setSelectedZoneId={setSelectedZoneId}
+              setSelectedZoneId={handleZoneFocusChange}
               selectedContributorId={selectedContributorId}
               setSelectedContributorId={setSelectedContributorId}
               zones={zones}
@@ -639,18 +672,13 @@ export default function LiveMapPage() {
               flyToZone={flyToZone}
               setConfirmId={setConfirmId}
               onCreateOfficialZone={() => {
-                setIsMergeDrawerOpen(false);
-                setMergingReport(null);
-                setMergePreviewCandidates([]);
-                setMergeProposedGeometry(null);
-                setEditingZone(null);
-                setIsCreateZoneDrawerOpen(true);
+                openCreateZoneWorkspace();
               }}
               onEditZone={(zone) => {
                 setIsMergeDrawerOpen(false);
-                setMergingReport(null);
                 setMergePreviewCandidates([]);
                 setMergeProposedGeometry(null);
+                setIsolatedReportId(null);
                 setEditingZone(zone);
                 setIsCreateZoneDrawerOpen(true);
                 flyToZone(zone);
@@ -658,69 +686,71 @@ export default function LiveMapPage() {
             />
           )}
 
-          {/* DRAWER PULL HANDLE (When drawer is closed) */}
-          {!isCreateZoneDrawerOpen && !isMergeDrawerOpen && (
+          {/* The Create Zone tab belongs to the primary moderation panel. */}
+          {!isCreateZoneDrawerOpen && !isMergeDrawerOpen && !mergingReport && (
+          <div className="absolute right-[-35px] top-3.5 z-50 hidden md:flex">
             <button
               type="button"
-              onClick={() => {
-                setIsMergeDrawerOpen(false);
-                setMergingReport(null);
-                setMergePreviewCandidates([]);
-                setMergeProposedGeometry(null);
-                setEditingZone(null);
-                setIsCreateZoneDrawerOpen(true);
-              }}
-              className="absolute -right-9 top-3.5 z-30 hidden md:flex flex-col items-center justify-between w-9 h-40 bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 border border-l-0 border-slate-200 hover:border-blue-300 shadow-md hover:shadow-xl rounded-r-2xl transition-all cursor-pointer group py-3"
-              title="Create Official Zone (Pull drawer open)"
+              onClick={openCreateZoneWorkspace}
+              className="group flex h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-slate-200 bg-white py-3 text-slate-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+              title="Create official zone"
             >
-              <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
-                <Plus className="w-4 h-4 stroke-[2.5]" />
-              </div>
-              <span className="text-[10px] font-bold text-slate-700 group-hover:text-blue-600 tracking-widest uppercase [writing-mode:vertical-lr] select-none my-auto">
-                CREATE ZONE
-              </span>
-              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-transform" />
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs"><Plus className="h-4 w-4 stroke-[2.5]" /></div>
+              <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Create zone</span>
+              <ChevronRight className="h-4 w-4 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-600" />
             </button>
+          </div>
           )}
         </div>
 
       {/* SECONDARY DRAWER: Merge & Spatial Operations Workspace */}
       <AnimatePresence>
-        {isMergeDrawerOpen && mergingReport && (
+        {mergingReport && (
           <motion.div
             key="merge-workspace-drawer"
-            initial={{ width: 0 }}
-            animate={{ width: isMobile ? "100%" : DRAWER_WIDTH }}
-            exit={{ width: 0 }}
+            initial={{ width: 0, x: 0 }}
+            animate={{
+              width: isMergeDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0,
+              x: isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "100%" : 0,
+            }}
+            exit={{ width: 0, x: isMobile ? "100%" : 0 }}
             transition={{
               width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
+              x: { duration: 0.25, ease: [0.32, 0.72, 0, 1] },
             }}
-            className="relative shrink-0 flex h-full z-30"
+            className={`fixed inset-0 z-50 flex h-full shrink-0 md:relative md:inset-auto md:z-30 ${isMergeDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`}
             onAnimationComplete={() => {
               mapInstance?.resize();
             }}
           >
-            <div className="w-full h-full overflow-hidden flex flex-col bg-white border-r border-slate-200 shadow-xl">
-              <div className="w-[440px] h-full flex flex-col shrink-0">
+            <div className="flex h-full w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-[10px_0_28px_-16px_rgba(15,23,42,0.45)]">
+              <div className="flex h-full w-full min-w-0 flex-col">
                 <MergeWorkspacePanel 
+                  key={mergingReport.id}
                   primaryReport={mergingReport}
                   isOpen={isMergeDrawerOpen}
+                  onShowMap={() => {
+                    setIsMergeMobileMapVisible(true);
+                    window.setTimeout(() => mapInstance?.resize(), 260);
+                  }}
                   onClose={() => {
                     setIsMergeDrawerOpen(false);
-                    setMergingReport(null);
+                    setIsMergeMobileMapVisible(false);
                     setMergePreviewCandidates([]);
                     setMergeProposedGeometry(null);
+                    setIsolatedReportId(null);
                   }}
+                  mapInstance={mapInstance}
                   activeZones={mapZones || []}
-                  onPreviewChange={(candidates, proposedGeom) => {
-                    setMergePreviewCandidates(candidates);
-                    setMergeProposedGeometry(proposedGeom);
-                  }}
+                  onPreviewChange={handleMergePreviewChange}
                   onMergeSuccess={() => {
                     setIsMergeDrawerOpen(false);
+                    setIsMergeMobileMapVisible(false);
                     setMergingReport(null);
                     setMergePreviewCandidates([]);
                     setMergeProposedGeometry(null);
+                    setIsolatedReportId(null);
+                    setSelectedReportId(null);
                     refetchPending();
                     refetchMap();
                     refetchList();
@@ -728,9 +758,55 @@ export default function LiveMapPage() {
                 />
               </div>
             </div>
+
+            {/* A collapsed workspace keeps its bookmark and report state until focus changes. */}
+            {!isCreateZoneDrawerOpen && (
+            <>
+            <button
+              type="button"
+              onClick={openCreateZoneWorkspace}
+              aria-pressed={false}
+              className="group absolute right-[-35px] top-3.5 z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-blue-200 bg-white py-3 text-blue-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-blue-400 hover:bg-blue-50 md:flex"
+              title="Switch to Create Zone"
+            >
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs"><Plus className="h-4 w-4 stroke-[2.5]" /></div>
+              <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Create zone</span>
+              <ChevronRight className="h-4 w-4 text-blue-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-700" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const willOpen = !isMergeDrawerOpen;
+                setIsMergeDrawerOpen(willOpen);
+                setIsMergeMobileMapVisible(false);
+                setMergePreviewCandidates([]);
+                setMergeProposedGeometry(null);
+                setIsolatedReportId(willOpen ? mergingReport.id : null);
+              }}
+              aria-pressed={isMergeDrawerOpen}
+              className={`group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isMergeDrawerOpen ? "border-violet-700 bg-violet-600 text-white hover:bg-violet-700" : "border-violet-200 bg-white text-violet-700 hover:border-violet-400 hover:bg-violet-50"}`}
+              title={isMergeDrawerOpen ? "Collapse Review Merge drawer" : `Open Review Merge for report #${mergingReport.id}`}
+            >
+              <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${isMergeDrawerOpen ? "bg-white/20 text-white" : "bg-violet-600 text-white shadow-xs"}`}><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>
+              <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Review merge</span>
+              {isMergeDrawerOpen ? <ChevronLeft className="h-4 w-4 text-violet-100" /> : <ChevronRight className="h-4 w-4 text-violet-400" />}
+            </button>
+            </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {isMobile && isMergeDrawerOpen && mergingReport && isMergeMobileMapVisible && (
+        <Button
+          type="button"
+          onClick={() => setIsMergeMobileMapVisible(false)}
+          className="fixed bottom-[calc(env(safe-area-inset-bottom)+1rem)] left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-900 px-4 text-xs text-white shadow-xl hover:bg-slate-800"
+        >
+          <MapPin className="mr-1.5 h-4 w-4" /> Return to merge
+        </Button>
+      )}
 
       {/* SECONDARY DRAWER: Create Official Zone Workspace (Pane 2) */}
       <AnimatePresence>
@@ -748,8 +824,8 @@ export default function LiveMapPage() {
               mapInstance?.resize();
             }}
           >
-            <div className="w-full h-full overflow-hidden flex flex-col bg-white border-r border-slate-200 shadow-xl">
-              <div className="w-[440px] h-full flex flex-col shrink-0">
+            <div className="flex h-full w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-[10px_0_28px_-16px_rgba(15,23,42,0.45)]">
+              <div className="flex h-full w-full min-w-0 shrink-0 flex-col">
                 <CreateOfficialZonePanel 
                   isOpen={isCreateZoneDrawerOpen} 
                   onClose={() => {
@@ -775,23 +851,38 @@ export default function LiveMapPage() {
                 setIsCreateZoneDrawerOpen(false);
                 setEditingZone(null);
               }}
-              className="absolute -right-9 top-3.5 z-30 hidden md:flex flex-col items-center justify-between w-9 h-40 bg-white hover:bg-slate-50 text-slate-700 hover:text-blue-600 border border-l-0 border-slate-200 hover:border-blue-300 shadow-md hover:shadow-xl rounded-r-2xl transition-all cursor-pointer group py-3"
-              title="Collapse zone drawer (Push drawer closed)"
+              aria-pressed="true"
+              className="group absolute right-[-35px] top-3.5 z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-blue-700 bg-blue-600 py-3 text-white shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all hover:bg-blue-700 md:flex"
+              title="Close Create Zone drawer"
             >
-              <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
-                <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/20 text-white transition-transform group-hover:scale-105">
+                <Plus className="w-4 h-4 stroke-[2.5]" />
               </div>
-              <span className="text-[10px] font-bold text-slate-700 group-hover:text-blue-600 tracking-widest uppercase [writing-mode:vertical-lr] select-none my-auto">
-                CLOSE DRAWER
+              <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">
+                CREATE ZONE
               </span>
-              <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:-translate-x-0.5 transition-transform" />
+              <ChevronLeft className="h-4 w-4 text-blue-100 transition-transform group-hover:-translate-x-0.5 group-hover:text-white" />
             </button>
+
+            {mergingReport && (
+              <button
+                type="button"
+                onClick={() => openMergeWorkspace(mergingReport)}
+                aria-pressed={false}
+                className="group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex"
+                title={`Return to merge review for report #${mergingReport.id}`}
+              >
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-600 text-white shadow-xs"><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>
+                <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Review merge</span>
+                <ChevronRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5 group-hover:text-violet-700" />
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* RIGHT PANEL: Live Map View */}
-      <div className="flex-1 relative h-[50vh] md:h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0">
+      <div className={`flex-1 relative ${isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "h-full" : "h-[50vh]"} md:h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
         <BaseMap 
           actionControls={handleActionControls}
           onMapInit={handleMapInit}
@@ -887,31 +978,6 @@ export default function LiveMapPage() {
               className="rounded-xl"
             >
               {deactivateBulkMutation.isPending ? "Deactivating..." : "Deactivate Selected"}
-            </Button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Merge Confirmation Modal */}
-      <Modal isOpen={mergeModalOpen} onClose={() => setMergeModalOpen(false)} title="Confirm Spatial Merge">
-        <div className="space-y-4 text-sm text-gray-600">
-          <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100 text-blue-800">
-            <Merge className="w-5 h-5 shrink-0 mt-0.5" />
-            <p>Merging will attach Report <strong>#{selectedReportId}</strong> into active Zone <strong>#{targetZoneId}</strong>. Both reporters will receive full Trust Score credit without creating a duplicate routing barrier.</p>
-          </div>
-          <div className="flex justify-end gap-2.5 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setMergeModalOpen(false)} className="rounded-xl">Cancel</Button>
-            <Button 
-              variant="primary" 
-              size="sm"
-              onClick={() => selectedReportId && targetZoneId && approveMutation.mutate({
-                id: selectedReportId,
-                payload: { action: "MERGE", target_zone_id: targetZoneId }
-              })} 
-              disabled={approveMutation.isPending} 
-              className="rounded-xl"
-            >
-              {approveMutation.isPending ? "Merging..." : "Confirm & Merge"}
             </Button>
           </div>
         </div>
