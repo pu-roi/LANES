@@ -41,16 +41,31 @@ export default function LoginForm() {
       
       if (profileResponse.ok) {
         const profile = await profileResponse.json();
-        if (profile.role?.name === "Super Admin") {
-          router.push("/admin/dashboard");
-          return;
-        } else if (profile.role?.name !== "Commuter") {
-          router.push("/");
+        const roleName = profile.role?.name;
+        const isAdminRole = roleName === "Super Admin" || roleName === "DRRM Officer" || roleName === "Moderator";
+
+        if (redirectTo && redirectTo.startsWith("/")) {
+          if (redirectTo.startsWith("/admin") && !isAdminRole) {
+            router.push("/map");
+          } else {
+            router.push(redirectTo);
+          }
           return;
         }
+
+        if (typeof window !== "undefined" && sessionStorage.getItem("lanes_post_intent")) {
+          sessionStorage.removeItem("lanes_post_intent");
+          router.push("/feed?openPostModal=true");
+          return;
+        }
+
+        if (isAdminRole) {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/map");
+        }
+        return;
       }
-      
-      // If Commuter, auth state is updated globally. No reload needed.
     } catch (err: any) {
       try {
         const parsed = JSON.parse(err.message);

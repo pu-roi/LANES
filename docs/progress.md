@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 10, 2026, 3:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -31,6 +31,11 @@
 ## Capstone Roadmap - Delivered Phases
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Persistent Edit Zone Workspace and Active-Line Persistence** (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `LiveMapPage.tsx`, `admin.py`) (@roicambe):
+  - Added account-private, per-zone IndexedDB edit workspaces that restore unsaved zone metadata, survey selections, notes, and local media after collapse, reload, or sign-in; Cancel Edit explicitly discards only that local workspace, while Save clears it only after the metadata and media operations succeed.
+  - Added `updated_at` conflict baselines. When a shared zone was saved more recently by another administrator, the current server version is shown instead of silently applying stale local edits.
+  - Persisted `source_geometry` for administrator-created Line zones, allowing the existing active-zone map layer to render the dark road centreline over the buffered avoidance polygon after a reload. Drawn area modes remain polygon-buffer-only.
+  - Added authenticated `GET /admin/zones/{id}` and `POST /admin/zones/{id}/media` endpoints, plus migrations `2a4c8e91d605` and `0d5f7a6b4c11`. Repaired a migration-history mismatch without deleting zone rows; TypeScript, backend compilation, Alembic head verification, and production build passed. Developer-led UI verification remains pending.
 - [x] **Account-Private, Editable Draft Workspaces (`floodReportDraftStorage.ts`, `zoneDraftStorage.ts`, `FloodReportPanel.tsx`, `OfficialZoneDrawer.tsx`)** (@roicambe):
   - Replaced device-wide draft queues with versioned IndexedDB records isolated by authenticated commuter or administrator identity; sign-out and account changes clear in-memory state before the next account is hydrated.
   - Saving a Flood Report or Create Zone draft now moves every active value into that draft and resets the form. Saved Drafts provides consistent back, edit, delete, discard-all, and batch-submit/publish controls.

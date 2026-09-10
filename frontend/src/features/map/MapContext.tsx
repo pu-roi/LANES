@@ -503,15 +503,22 @@ export function MapProvider({ children }: { children: ReactNode }) {
     }
 
     let cancelled = false;
+    // Show feedback as soon as both endpoints are chosen. The routed geometry
+    // below replaces this fallback as soon as Valhalla responds.
+    setFloodPreviewGeometry({
+      type: "LineString",
+      coordinates: [floodStart.coords, floodEnd.coords],
+    });
+    setFloodOppositeGeometry(null);
 
     const fetchFloodPreview = async () => {
       try {
         const routeAB = await getRoute(floodStart.coords, floodEnd.coords, true);
         if (cancelled) return;
         
-        const originalGeometry = routeAB.routes[0]?.geometry ?? null;
+        const originalGeometry = routeAB.routes[0]?.geometry;
 
-        if (!cancelled) {
+        if (originalGeometry?.coordinates?.length >= 2 && !cancelled) {
           setFloodPreviewGeometry(originalGeometry);
         }
 
@@ -545,7 +552,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
         }
       } catch {
         if (!cancelled) {
-          setFloodPreviewGeometry(null);
           setFloodOppositeGeometry(null);
         }
       }

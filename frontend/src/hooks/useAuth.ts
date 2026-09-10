@@ -13,7 +13,12 @@ export function useAuth() {
       if (typeof window !== 'undefined' && !localStorage.getItem('lanes_token')) {
         return null;
       }
-      return apiClient.post('/auth/test-token').catch(() => null);
+      return apiClient.post('/auth/test-token').catch(() => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('lanes_token');
+        }
+        return null;
+      });
     },
     retry: false, // Don't retry auth checks if unauthorized
     staleTime: 5 * 60 * 1000, // 5 minutes

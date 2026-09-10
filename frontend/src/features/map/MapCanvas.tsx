@@ -388,7 +388,7 @@ export default function MapCanvas() {
     if (mapRef.current) {
       mapRef.current.getCanvas().style.cursor = isPickingOnMap ? "crosshair" : "";
     }
-  }, [isPickingOnMap, isLoaded]);
+  }, [isPickingOnMap, activePoint, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;

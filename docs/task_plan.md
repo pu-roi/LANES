@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 10, 2026, 3:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -13,10 +13,11 @@
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
 > **Focus:** Overhauling the flood-report merging logic, candidate identification, and Spatial Operations UI/UX to enable intelligent, multi-factor spatial matching, explainable recommendations, conflict resolution, and seamless final-zone editing while strictly preserving original crowdsourced reports and Community Feed posts.
-> **Current Status (Sept 10, 2026):**
+> **Current Status (Sept 11, 2026):**
 > - Backend candidate engine (`merge_service.py`), carriageway analysis (`carriageway_service.py`), and model overrides (`passable_vehicles_override`, `hidden_hazards_override`, `media_urls`) are implemented and migrated.
 > - `CreateOfficialZonePanel` has been completely restructured into a modular Feature-Based architecture (`zones/`) with 5-section `FloodReportPanel` parity (Depth/Severity, Survey, Cloudinary media upload, Description) and buffer slider removal.
 > - **IN PROGRESS / MANUAL VERIFICATION PENDING:** The Phase 5 merge interface has been implemented: report inspection is neutral; intelligent suggestions require an explicit action and selection; candidate evidence is grouped inside each report card; and the contextual secondary drawer preserves its merge session while collapsed. Flood Report and Create Zone now persist account-private, full workspaces in IndexedDB across collapse, reload, and sign-in restoration. Their saved drafts can be reopened for replacement editing without losing media or geometry; Create Zone restores both routed line previews and Terra Draw shapes. TypeScript, production build, and whitespace checks are clean; focused lint still reports existing rule violations in the legacy map/panel components. Developer-led desktop/mobile workflow verification remains before Phase 5 is marked complete.
+> - **DELIVERED / MANUAL VERIFICATION PENDING:** Edit Zone is now the third resumable Pane 2 workspace. Per-admin IndexedDB drafts restore metadata, survey answers, notes, and locally selected media after collapse, reload, or sign-in. A newer server `updated_at` version wins over stale local work. Admin-created Line zones persist their original road centreline in `source_geometry`, so active-zone rendering can retain its existing dark road core plus polygon buffer after reload. Alembic migrations `2a4c8e91d605` and `0d5f7a6b4c11` must be applied together on every development database.
 
 ---
 

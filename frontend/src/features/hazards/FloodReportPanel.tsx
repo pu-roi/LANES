@@ -606,11 +606,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   }
 
   // ── Shared form body ───────────────────────────────────────────────────────
-  const showClear = step === 1 
-    ? (floodStart || floodEnd) 
-    : showSurvey
-      ? (passableVehicles.length > 0 || hiddenHazards !== null)
-      : (description.trim() !== "" || mediaFiles.length > 0 || visualOption !== "gutter" || isPublic || passableVehicles.length > 0 || hiddenHazards !== null);
+  const showClear = step === 1 && Boolean(floodStart || floodEnd);
 
   const clearCurrentSection = () => {
     if (step === 1) {
@@ -759,21 +755,14 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
       {!isViewingDrafts && step === 1 && (
         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-          {(editingDraft || showClear) && (
+          {showClear && !editingDraft && (
             <div className="flex justify-end">
               <button
                 type="button"
-                onClick={() => {
-                  if (editingDraft) {
-                    setDraftReports((previous) => [...previous, editingDraft]);
-                    clearForm();
-                    return;
-                  }
-                  clearCurrentSection();
-                }}
+                onClick={clearCurrentSection}
                 className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
               >
-                {editingDraft ? "Cancel edit" : "Clear locations"}
+                Clear locations
               </button>
             </div>
           )}
@@ -874,28 +863,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
       {!isViewingDrafts && step === 2 && !showSurvey && (
         <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
-          {editingDraft && (
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={cancelDraftEdit}
-                className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
-              >
-                Cancel edit
-              </button>
-            </div>
-          )}
-          {showClear && (
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={clearCurrentSection}
-                className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
-              >
-                Clear report details
-              </button>
-            </div>
-          )}
           {/* Survey link */}
           <div className="py-2 border-b border-gray-100 flex items-center justify-between">
             <div className="flex flex-col">
@@ -1188,6 +1155,19 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       title={isAdminMode ? "Create Official Zone" : "Report Flood"}
       icon={isAdminMode ? <ShieldCheck className="h-4 w-4 text-blue-600" /> : <Navigation2 className="h-4 w-4 text-orange-600 rotate-180" />}
       iconBgClassName={isAdminMode ? "bg-blue-100" : "bg-orange-100"}
+      headerActions={!isViewingDrafts && editingDraft ? (
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            cancelDraftEdit();
+          }}
+          className="rounded-md px-1.5 py-1 text-xs font-medium text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600"
+          title="Return this draft to Saved Drafts without applying changes"
+        >
+          Cancel edit
+        </button>
+      ) : undefined}
       isCollapsed={isCollapsed}
       onCollapseToggle={() => setActivePanel(isCollapsed ? "flood" : null)}
       isMobile={isMobile}

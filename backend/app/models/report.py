@@ -187,9 +187,21 @@ class FloodAvoidanceZone(Base):
         Geometry(geometry_type="POLYGON", srid=4326, spatial_index=True),
         nullable=False
     )
+
+    # Original routed centreline for administrator-created road zones. The
+    # persisted polygon above remains the authoritative avoidance boundary.
+    source_geometry: Mapped[Optional[Any]] = mapped_column(
+        Geometry(geometry_type="GEOMETRY", srid=4326, spatial_index=False),
+        nullable=True,
+    )
     
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
     expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     # Admin Overrides for Official DRRMO Zone Data & Merging
@@ -239,6 +251,8 @@ class FloodAvoidanceZone(Base):
 
     @property
     def report_geometry(self) -> Any:
+        if self.source_geometry is not None:
+            return self.source_geometry
         return self.primary_report.geometry if self.primary_report else None
 
     @property

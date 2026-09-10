@@ -185,9 +185,16 @@ def create_flood_avoidance_zone(db: Session, zone: schemas.FloodAvoidanceZoneCre
     # Convert Pydantic PolygonGeometry to GeoJSON string for direct PostGIS parsing
     geojson_str = zone.geometry.model_dump_json()
     geometry_clause = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
+    source_geometry_clause = None
+    if zone.source_geometry is not None:
+        source_geometry_clause = func.ST_SetSRID(
+            func.ST_GeomFromGeoJSON(zone.source_geometry.model_dump_json()),
+            4326,
+        )
 
     db_zone = models.FloodAvoidanceZone(
         geometry=geometry_clause,
+        source_geometry=source_geometry_clause,
         is_active=zone.is_active,
         expires_at=zone.expires_at,
         curated_by_admin_id=zone.curated_by_admin_id

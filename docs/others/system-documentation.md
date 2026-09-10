@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 10, 2026, 3:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -262,7 +262,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 |-------|------|-------------|
 | `/admin` | `AdminDashboard.tsx` | Entry landing — shows role-based nav links and a summary stats row (total users, reports, active zones). |
 | `/admin/dashboard` | `DashboardPage.tsx` | Overview cards: total users, reports filed today, currently active flood zones. Recent activity feed and quick action shortcuts. |
-| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Pane 1 contains `PendingReportsPanel` and `ActiveZonesPanel`; Pane 2 is a contextual docked drawer controlled by separate Create Zone and Review Merge edge-tab handles. Normal report focus is neutral. **Review Merge Suggestions** starts a persistent merge session with explicit candidate checkboxes, in-card match evidence, a field comparison matrix, selected-only conflicts, reusable road/Terra Draw editing, confirmation, and primary/candidate/proposed map previews. The Review Merge handle remains available after collapse until focus changes or the merge completes. Create Zone remains mounted while collapsed; its account-private IndexedDB record (`zoneDraftStorage.ts`) restores the active workspace and editable queued drafts, including line routes, Terra Draw shapes, attributes, survey, notes, and per-zone media after reload or sign-in. Its line editor uses shared Start/End map picking and preview markers. It also includes `ReportDetailsModal`, the 400ms `FloodZonePopup` hover engine, and `OfficialZoneDrawer` with `GeometryModeSelector`, `RoadSegmentPicker`, `DraftZoneCart`, five aligned form sections, and Cloudinary media upload. |
+| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Pane 1 contains `PendingReportsPanel` and `ActiveZonesPanel`; Pane 2 switches in place among Create Zone, Review Merge, and amber Edit Zone workspaces. Normal report focus is neutral. **Review Merge Suggestions** starts a persistent merge session with explicit candidate checkboxes, in-card match evidence, a field comparison matrix, selected-only conflicts, reusable road/Terra Draw editing, confirmation, and primary/candidate/proposed map previews. Create Zone remains mounted while collapsed; `zoneDraftStorage.ts` restores its account-private active workspace and editable queued drafts. Edit Zone uses `zoneEditDraftStorage.ts` to restore the same admin's unfinished metadata, survey, notes, and local media; it fetches the latest server zone first and rejects stale drafts when another admin has saved newer data. Its line editor uses shared Start/End map picking and preview markers. It also includes `ReportDetailsModal`, the 400ms `FloodZonePopup` hover engine, and `OfficialZoneDrawer` with `GeometryModeSelector`, `RoadSegmentPicker`, `DraftZoneCart`, five aligned form sections, and Cloudinary media upload. |
 | `/admin/users` | `UsersPage.tsx` | Searchable table of all registered users. Admin can filter by role, view trust scores, activate or deactivate accounts, and reassign roles. |
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
@@ -277,7 +277,9 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `PUT /api/v1/admin/reports/{id}/approve` | Approve report, auto-generates flood avoidance zone polygon |
 | `PUT /api/v1/admin/reports/{id}/reject` | Reject report with a reason (updates trust score) |
 | `POST /api/v1/admin/zones` | Create official flood avoidance zone (multipart `FormData` with JSON `body` and `media` files) |
+| `GET /api/v1/admin/zones/{id}` | Retrieve the current shared zone before resuming an account-private Edit Zone draft |
 | `PUT /api/v1/admin/zones/{id}` | Update existing avoidance zone metadata, depth, severity, passability, and notes |
+| `POST /api/v1/admin/zones/{id}/media` | Append authenticated administrator evidence uploads to an existing zone |
 | `GET /api/v1/admin/reports/merge-candidates` | Multi-factor spatial candidate scoring for report merging |
 | `POST /api/v1/admin/reports/merge` | Multi-report merge into a new or existing avoidance zone |
 | `GET /api/v1/admin/users` | All users with role and profile info |
@@ -501,6 +503,7 @@ Spatial polygon buffers generated around approved flood reports or curated direc
 | `name` | String(100), nullable | Descriptive operational name of the avoidance zone |
 | `curated_by_admin_id` | FK → users.id, nullable | Admin who manually edited or created this zone (null if auto-generated) |
 | `geometry` | PostGIS POLYGON (SRID 4326) | The actual closed polygon boundary of the avoidance area |
+| `source_geometry` | PostGIS GEOMETRY, nullable | Original administrator-selected LineString or MultiLineString; used to render the active road core while `geometry` remains the routing buffer |
 | `severity_override` | Enum, nullable | Overridden severity level (`low`, `medium`, `high`, `extreme`) |
 | `depth_override` | String(50), nullable | Standard visual water depth gauge (e.g. `knee`, `waist`, `chest`) |
 | `passable_vehicles_override` | String(500), nullable | Comma-separated list of safe vehicle types |
@@ -510,6 +513,7 @@ Spatial polygon buffers generated around approved flood reports or curated direc
 | `media_urls` | JSONB, nullable | Photographic and video evidence URLs stored in Cloudinary |
 | `is_active` | Boolean | Whether this zone is currently applied to route calculations |
 | `created_at` | DateTime | When the zone was generated or created |
+| `updated_at` | DateTime | Latest shared zone metadata update; used to protect Edit Zone drafts from overwriting a newer server version |
 | `expires_at` | DateTime, nullable | Automatic expiry time (null = never expires automatically) |
 
 ---

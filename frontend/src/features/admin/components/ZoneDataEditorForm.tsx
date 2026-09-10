@@ -89,11 +89,11 @@ export function ZoneDataEditorForm({
   hideSurvey = false,
   hideDescription = false,
 }: ZoneDataEditorFormProps) {
-  const selectedOption = VISUAL_OPTIONS.find(o => o.id === initialValues.depth) ?? VISUAL_OPTIONS[3];
+  const selectedOption = VISUAL_OPTIONS.find(o => o.id === initialValues.depth);
   const values: ZoneDataEditorValues = {
     name: initialValues.name || "Official Flood Avoidance Zone",
-    severity: selectedOption.severity,
-    depth: selectedOption.id,
+    severity: selectedOption?.severity ?? initialValues.severity ?? "low",
+    depth: selectedOption?.id ?? initialValues.depth ?? "",
     passable_vehicles: initialValues.passable_vehicles || [],
     hidden_hazards: initialValues.hidden_hazards || "unsure",
     is_bidirectional: initialValues.is_bidirectional || false,
@@ -125,7 +125,7 @@ export function ZoneDataEditorForm({
                 onClick={() => updateValues({ depth: opt.id, severity: opt.severity })}
                 className={cn(
                   "flex flex-col items-center gap-0.5 rounded-lg border px-1.5 py-2 text-xs font-semibold transition-all",
-                  selectedOption.id === opt.id ? colors.active : colors.pill
+                  selectedOption?.id === opt.id ? colors.active : colors.pill
                 )}
               >
                 <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10", SEVERITY_DOT_COLORS[opt.severity])} />
@@ -136,8 +136,11 @@ export function ZoneDataEditorForm({
           })}
         </div>
         <p className="text-[10px] text-slate-400 mt-1">
-          Severity is automatically set based on depth:{" "}
-          <span className="font-semibold capitalize text-slate-500">{selectedOption.severity}</span>
+          {selectedOption ? (
+            <>Severity is automatically set based on depth: <span className="font-semibold capitalize text-slate-500">{selectedOption.severity}</span></>
+          ) : (
+            "Choose a flood depth to set the severity."
+          )}
         </p>
       </div>
 

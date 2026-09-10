@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 7, 2026, 3:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -100,8 +100,10 @@ erDiagram
         int id PK "Unique detour zone identifier"
         int report_id FK "Cascade reference to flood_reports"
         geometry geometry "PostGIS Polygon boundaries (SRID 4326)"
+        source_geometry geometry "Nullable original admin road centreline"
         boolean is_active "Status toggle for routing engine"
         datetime created_at "UTC timestamp of generation"
+        datetime updated_at "UTC timestamp of latest metadata update"
         datetime expires_at "Nullable UTC expiry limit"
     }
 
@@ -309,8 +311,10 @@ erDiagram
 | `id` | `INTEGER` | Primary Key | Zone ID. |
 | `report_id` | `INTEGER` | Foreign Key (CASCADE) | Source report. |
 | `geometry` | `GEOMETRY(Polygon, 4326)` | GIST Index | Routing blockage polygon. |
+| `source_geometry` | `GEOMETRY`, nullable | No spatial index | Original LineString/MultiLineString selected for an administrator-created road zone; preserves the active map road core while `geometry` is the buffered routing boundary. |
 | `is_active` | `BOOLEAN` | Default: TRUE | Is the detour currently active. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Creation timestamp. |
+| `updated_at` | `TIMESTAMP` | Default: UTC Now | Latest zone metadata update, used as the optimistic baseline for account-private Edit Zone drafts. |
 | `expires_at` | `TIMESTAMP` | Nullable | When the detour naturally expires. |
 
 ### Table I: `audit_logs`
