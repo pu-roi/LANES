@@ -52,9 +52,9 @@ cd backend
 # Install any newly added python packages:
 pip install -r requirements.txt
 
-# Apply new database schema migrations with dotenvx:
-npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\alembic.exe upgrade head
-# (Or on Mac/Linux: npx @dotenvx/dotenvx run -f .env -- alembic upgrade head)
+# Apply new database schema migrations with the pinned Dotenvx CLI:
+npx --yes @dotenvx/dotenvx@2.21.0 run -f .env -- .\venv\Scripts\alembic.exe upgrade head
+# (Or on Mac/Linux: npx --yes @dotenvx/dotenvx@2.21.0 run -f .env -- alembic upgrade head)
 ```
 
 ### 3. Frontend Directory: `LANES/frontend/`
@@ -72,7 +72,7 @@ npm install
 
 ### Prerequisites
 * **Git** (For cloning the repository)
-* **Node.js** (v18 or higher) & **npm**
+* **Node.js** (v20.9 or higher) & **npm**
 * **Python** (v3.11 or v3.12)
 * **Docker Desktop** (Must be running for the local PostGIS spatial database and Valhalla routing engine)
 * **Private Decryption Keys** (Ask the project lead/admin for the 2 keys: `DOTENV_PRIVATE_KEY` for backend and `DOTENV_PRIVATE_KEY_LOCAL` for frontend)
@@ -91,11 +91,16 @@ cd LANES
 ### Step 1: Start Background Services (PostGIS & Valhalla)
 📂 **Directory:** `LANES/` *(Root Folder)*
 
-Spin up the pre-configured PostgreSQL + PostGIS database and Valhalla routing engine using Docker:
+Prepare the Valhalla map data first. The initial Philippines download and tile build can take several minutes:
 ```powershell
-docker-compose up -d
+.\setup_valhalla.ps1
 ```
-*(Note: Docker Desktop must be running. The database runs on port `5432` and Valhalla binds to `http://localhost:8002`).*
+
+Then start the pre-configured PostgreSQL + PostGIS database and Valhalla routing engine:
+```powershell
+docker compose up -d --wait
+```
+*(Docker Desktop must be running. PostGIS listens on `5432`; Valhalla listens on `http://localhost:8002`.)*
 
 ---
 
@@ -146,18 +151,18 @@ The repository uses **dotenvx** for encrypted secrets. You do **not** need to ma
 4. Apply database schema migrations:
    ```powershell
    # Windows:
-   npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\alembic.exe upgrade head
+   npx --yes @dotenvx/dotenvx@2.21.0 run -f .env -- .\venv\Scripts\alembic.exe upgrade head
 
    # Mac/Linux:
-   npx @dotenvx/dotenvx run -f .env -- alembic upgrade head
+   npx --yes @dotenvx/dotenvx@2.21.0 run -f .env -- alembic upgrade head
    ```
 5. Start the backend development server:
    ```powershell
    # Windows:
-   npx @dotenvx/dotenvx run -f .env -- .\venv\Scripts\uvicorn.exe app.main:app --host 0.0.0.0 --port 8000 --reload
+   npx --yes @dotenvx/dotenvx@2.21.0 run -f .env -- .\venv\Scripts\uvicorn.exe app.main:app --host 0.0.0.0 --port 8000 --reload
 
    # Mac/Linux:
-   npx @dotenvx/dotenvx run -f .env -- uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+   npx --yes @dotenvx/dotenvx@2.21.0 run -f .env -- uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
    ```
    *The backend API will be available at `http://localhost:8000` (docs at `http://localhost:8000/docs`).*
 
@@ -187,19 +192,19 @@ If you ever need to add or edit an environment variable:
 1. **Decrypt temporarily:**
    ```powershell
    # In frontend:
-   npx @dotenvx/dotenvx decrypt -f .env.local
+   npx --yes @dotenvx/dotenvx@2.21.0 decrypt -f .env.local
 
    # In backend:
-   npx @dotenvx/dotenvx decrypt -f .env
+   npx --yes @dotenvx/dotenvx@2.21.0 decrypt -f .env
    ```
 2. **Edit the values** in `backend/.env` or `frontend/.env.local`.
 3. **Re-encrypt before staging/committing:**
    ```powershell
    # In frontend:
-   npx @dotenvx/dotenvx encrypt -f .env.local
+   npx --yes @dotenvx/dotenvx@2.21.0 encrypt -f .env.local
 
    # In backend:
-   npx @dotenvx/dotenvx encrypt -f .env
+   npx --yes @dotenvx/dotenvx@2.21.0 encrypt -f .env
    ```
 4. Commit and push the encrypted file safely to Git.
 
