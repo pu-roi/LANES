@@ -12,6 +12,20 @@ services:
     volumes:
       - lanes_db_data:/var/lib/postgresql/data
 
+  valhalla:
+    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+    container_name: lanes_valhalla
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    environment:
+      use_tiles_ignore_pbf: "True"
+      build_tar: "True"
+      serve_tiles: "True"
+      update_existing_config: "True"
+    volumes:
+      - ./data/valhalla/custom_files:/custom_files
+
 
 volumes:
   lanes_db_data:
