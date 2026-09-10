@@ -5,6 +5,8 @@ import maplibregl from "maplibre-gl";
 import type { Map, Marker, MapMouseEvent } from "maplibre-gl";
 import { Loader2, MapPin } from "lucide-react";
 import { CONSTANTS } from "./mapUtils";
+import { computeCenterCoordinate, flyToCoordinates, flyToFeature } from "./mapGeoUtils";
+import { useFloodMapPreview } from "./hooks/useFloodMapPreview";
 import { useMapContext } from "./MapContext";
 import { LoadingOverlay } from "@/shared/ui";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -16,7 +18,6 @@ import BaseMap from "@/shared/ui/map/BaseMap";
 import { getFloodsOffline } from "@/lib/offline/storage";
 import { useCityBoundaries } from "./hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
-import { flyToCoordinates } from "./mapGeoUtils";
 
 let hasZoomedToPasigForAnalytics = false;
 let hasZoomedToPasigForMap = false;
@@ -417,33 +418,15 @@ export default function MapCanvas() {
     }
   }, [end, isLoaded]);
 
-  useEffect(() => {
-    if (!isLoaded || !mapRef.current) return;
-    const map = mapRef.current;
-
-    floodStartMarkerRef.current?.remove();
-    floodStartMarkerRef.current = null;
-
-    if (floodStart) {
-      floodStartMarkerRef.current = new maplibregl.Marker({ color: "#f97316" })
-        .setLngLat(floodStart.coords)
-        .addTo(map);
-    }
-  }, [floodStart, isLoaded]);
-
-  useEffect(() => {
-    if (!isLoaded || !mapRef.current) return;
-    const map = mapRef.current;
-
-    floodEndMarkerRef.current?.remove();
-    floodEndMarkerRef.current = null;
-
-    if (floodEnd) {
-      floodEndMarkerRef.current = new maplibregl.Marker({ color: "#991b1b" }) // darker red
-        .setLngLat(floodEnd.coords)
-        .addTo(map);
-    }
-  }, [floodEnd, isLoaded]);
+  useFloodMapPreview(
+    mapRef.current,
+    floodStart,
+    floodEnd,
+    floodPreviewGeometry,
+    floodOppositeGeometry,
+    floodIsBidirectional,
+    isLoaded
+  );
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
@@ -523,25 +506,29 @@ export default function MapCanvas() {
       });
       altMarkerRefs.current = [];
 
-      for (let i = 0; i < 10; i++) {
-        const lId = `route-alt-layer-${i}`;
-        const sId = `route-alt-source-${i}`;
-        if (map.getLayer(lId)) {
-          try { map.removeLayer(lId); } catch {}
-        }
-        if (map.getSource(sId)) {
-          try { map.removeSource(sId); } catch {}
-        }
-      }
-      altLayerIds.current = [];
-      altSourceIds.current = [];
+      try {
+        if (!map || !map.getStyle()) return;
 
-      if (map.getLayer(ROUTE_LAYER_ID)) {
-        try { map.removeLayer(ROUTE_LAYER_ID); } catch {}
-      }
-      if (map.getSource(ROUTE_SOURCE_ID)) {
-        try { map.removeSource(ROUTE_SOURCE_ID); } catch {}
-      }
+        for (let i = 0; i < 10; i++) {
+          const lId = `route-alt-layer-${i}`;
+          const sId = `route-alt-source-${i}`;
+          try {
+            if (map.getLayer(lId)) map.removeLayer(lId);
+          } catch {}
+          try {
+            if (map.getSource(sId)) map.removeSource(sId);
+          } catch {}
+        }
+        altLayerIds.current = [];
+        altSourceIds.current = [];
+
+        try {
+          if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
+        } catch {}
+        try {
+          if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
+        } catch {}
+      } catch {}
     };
 
     const renderRoutes = () => {
@@ -847,7 +834,9 @@ export default function MapCanvas() {
     map.on("style.load", handleStyleData);
 
     return () => {
-      map.off("style.load", handleStyleData);
+      try {
+        map.off("style.load", handleStyleData);
+      } catch {}
       cleanupRoutes();
     };
   }, [allRoutes, selectedRouteIndex, activeZonesData, isLoaded]);
@@ -862,39 +851,49 @@ export default function MapCanvas() {
     const HIGHLIGHT_GLOW   = "step-highlight-glow";
 
     const clearHighlight = () => {
-      if (!map.getStyle()) return;
-      if (map.getLayer(HIGHLIGHT_LAYER)) map.removeLayer(HIGHLIGHT_LAYER);
-      if (map.getLayer(HIGHLIGHT_GLOW))  map.removeLayer(HIGHLIGHT_GLOW);
-      if (map.getSource(HIGHLIGHT_SOURCE)) map.removeSource(HIGHLIGHT_SOURCE);
+      try {
+        if (!map || !map.getStyle()) return;
+        if (map.getLayer(HIGHLIGHT_LAYER)) map.removeLayer(HIGHLIGHT_LAYER);
+        if (map.getLayer(HIGHLIGHT_GLOW))  map.removeLayer(HIGHLIGHT_GLOW);
+        if (map.getSource(HIGHLIGHT_SOURCE)) map.removeSource(HIGHLIGHT_SOURCE);
+      } catch {}
     };
 
     const drawHighlight = (segment: [number, number][]) => {
-      if (!map.getStyle() || segment.length < 2) return;
-      clearHighlight();
-      map.addSource(HIGHLIGHT_SOURCE, {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          properties: {},
-          geometry: { type: "LineString", coordinates: segment },
-        },
-      });
-      // Outer glow
-      map.addLayer({
-        id: HIGHLIGHT_GLOW,
-        type: "line",
-        source: HIGHLIGHT_SOURCE,
-        layout: { "line-join": "round", "line-cap": "round" },
-        paint: { "line-color": "#38bdf8", "line-width": 14, "line-opacity": 0.25, "line-blur": 4 },
-      });
-      // Inner highlight line
-      map.addLayer({
-        id: HIGHLIGHT_LAYER,
-        type: "line",
-        source: HIGHLIGHT_SOURCE,
-        layout: { "line-join": "round", "line-cap": "round" },
-        paint: { "line-color": "#0ea5e9", "line-width": 5, "line-opacity": 0.95 },
-      });
+      try {
+        if (!map || !map.getStyle() || segment.length < 2) return;
+        clearHighlight();
+        if (!map.getSource(HIGHLIGHT_SOURCE)) {
+          map.addSource(HIGHLIGHT_SOURCE, {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: { type: "LineString", coordinates: segment },
+            },
+          });
+        }
+        // Outer glow
+        if (!map.getLayer(HIGHLIGHT_GLOW)) {
+          map.addLayer({
+            id: HIGHLIGHT_GLOW,
+            type: "line",
+            source: HIGHLIGHT_SOURCE,
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: { "line-color": "#38bdf8", "line-width": 14, "line-opacity": 0.25, "line-blur": 4 },
+          });
+        }
+        // Inner highlight line
+        if (!map.getLayer(HIGHLIGHT_LAYER)) {
+          map.addLayer({
+            id: HIGHLIGHT_LAYER,
+            type: "line",
+            source: HIGHLIGHT_SOURCE,
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: { "line-color": "#0ea5e9", "line-width": 5, "line-opacity": 0.95 },
+          });
+        }
+      } catch {}
     };
 
     const onHover = (e: Event) => {
@@ -996,81 +995,16 @@ export default function MapCanvas() {
     const center = map.getCenter();
     window.dispatchEvent(new CustomEvent("map-center-changed", { detail: [center.lng, center.lat] }));
   }, [isPickingOnMap, isLoaded]);
-
-  // Draw the preview of the flood report road segment (only when road-aligned geometry is ready)
-  useEffect(() => {
-    if (!isLoaded || !mapRef.current) return;
-    const map = mapRef.current;
-    if (!map.getStyle()) return;
-
-    // Remove existing preview source/layers if they exist
-    if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
-    if (map.getLayer("flood-preview-layer-opposite")) map.removeLayer("flood-preview-layer-opposite");
-    if (map.getSource("flood-preview-source")) map.removeSource("flood-preview-source");
-    if (map.getSource("flood-preview-source-opposite")) map.removeSource("flood-preview-source-opposite");
-
-    if (!floodPreviewGeometry) return;
-
-    const features: any[] = [
-      {
-        type: "Feature",
-        properties: { is_opposite: false },
-        geometry: floodPreviewGeometry,
-      },
-    ];
-
-    if (floodIsBidirectional && floodOppositeGeometry) {
-      features.push({
-        type: "Feature",
-        properties: { is_opposite: true },
-        geometry: floodOppositeGeometry,
-      });
-    }
-
-    map.addSource("flood-preview-source", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features,
-      },
-    });
-
-    map.addLayer({
-      id: "flood-preview-layer",
-      type: "line",
-      source: "flood-preview-source",
-      layout: { "line-join": "round", "line-cap": "round" },
-      paint: {
-        "line-color": [
-          "case",
-          ["==", ["get", "is_opposite"], true],
-          "#fb923c", // Distinct orange tint for opposite carriageway
-          "#f97316", // Primary road segment
-        ],
-        "line-width": 6,
-        "line-dasharray": [2, 2],
-        "line-opacity": 0.85,
-      },
-    });
-
-    return () => {
-      try {
-        if (map.getLayer("flood-preview-layer")) map.removeLayer("flood-preview-layer");
-        if (map.getLayer("flood-preview-layer-opposite")) map.removeLayer("flood-preview-layer-opposite");
-        if (map.getSource("flood-preview-source")) map.removeSource("flood-preview-source");
-        if (map.getSource("flood-preview-source-opposite")) map.removeSource("flood-preview-source-opposite");
-      } catch {}
-    };
-  }, [floodPreviewGeometry, floodOppositeGeometry, floodIsBidirectional, isLoaded]);
-
   // Render drafted reports (Cart)
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
     const map = mapRef.current;
     if (!map.getStyle()) return;
 
-    if (map.getLayer("draft-reports-layer")) map.removeLayer("draft-reports-layer");
-    if (map.getSource("draft-reports-source")) map.removeSource("draft-reports-source");
+    try {
+      if (map.getLayer("draft-reports-layer")) map.removeLayer("draft-reports-layer");
+      if (map.getSource("draft-reports-source")) map.removeSource("draft-reports-source");
+    } catch {}
 
     if (!draftReports || draftReports.length === 0) return;
 
@@ -1090,29 +1024,32 @@ export default function MapCanvas() {
       }
     });
 
-    map.addSource("draft-reports-source", {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features,
-      },
-    });
+    try {
+      map.addSource("draft-reports-source", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features,
+        },
+      });
 
-    map.addLayer({
-      id: "draft-reports-layer",
-      type: "line",
-      source: "draft-reports-source",
-      layout: { "line-join": "round", "line-cap": "round" },
-      paint: {
-        "line-color": "#8b5cf6", // Purple to distinguish drafts
-        "line-width": 6,
-        "line-dasharray": [2, 2],
-        "line-opacity": 0.8,
-      },
-    });
+      map.addLayer({
+        id: "draft-reports-layer",
+        type: "line",
+        source: "draft-reports-source",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: {
+          "line-color": "#8b5cf6", // Purple to distinguish drafts
+          "line-width": 6,
+          "line-dasharray": [2, 2],
+          "line-opacity": 0.8,
+        },
+      });
+    } catch {}
 
     return () => {
       try {
+        if (!map || !map.getStyle()) return;
         if (map.getLayer("draft-reports-layer")) map.removeLayer("draft-reports-layer");
         if (map.getSource("draft-reports-source")) map.removeSource("draft-reports-source");
       } catch {}
@@ -1124,40 +1061,52 @@ export default function MapCanvas() {
     const map = mapRef.current;
     if (!map.getStyle()) return;
     
-    if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
-    if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
+    try {
+      if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
+      if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
+    } catch {}
 
     const showAnalytics = (isAnalyticsOpen && !isAnalyticsCollapsed) || pathname === "/admin/analytics";
     if (!showAnalytics || !heatmapData || !heatmapData.features || heatmapData.features.length === 0) return;
 
-    map.addSource("heatmap-source", {
-      type: "geojson",
-      data: heatmapData
-    });
+    try {
+      map.addSource("heatmap-source", {
+        type: "geojson",
+        data: heatmapData
+      });
 
-    map.addLayer({
-      id: "heatmap-layer",
-      type: "heatmap",
-      source: "heatmap-source",
-      maxzoom: 15,
-      paint: {
-        "heatmap-weight": ["get", "weight"],
-        "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 15, 3],
-        "heatmap-color": [
-          "interpolate",
-          ["linear"],
-          ["heatmap-density"],
-          0, "rgba(0, 0, 255, 0)",
-          0.2, "royalblue",
-          0.4, "cyan",
-          0.6, "lime",
-          0.8, "yellow",
-          1, "red"
-        ],
-        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 2, 15, 20],
-        "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 15, 0]
-      }
-    });
+      map.addLayer({
+        id: "heatmap-layer",
+        type: "heatmap",
+        source: "heatmap-source",
+        maxzoom: 15,
+        paint: {
+          "heatmap-weight": ["get", "weight"],
+          "heatmap-intensity": ["interpolate", ["linear"], ["zoom"], 0, 1, 15, 3],
+          "heatmap-color": [
+            "interpolate",
+            "linear",
+            ["heatmap-density"],
+            0, "rgba(0, 0, 255, 0)",
+            0.2, "royalblue",
+            0.4, "cyan",
+            0.6, "lime",
+            0.8, "yellow",
+            1, "red"
+          ],
+          "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 0, 2, 15, 20],
+          "heatmap-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.8, 15, 0]
+        } as any
+      });
+    } catch {}
+
+    return () => {
+      try {
+        if (!map || !map.getStyle()) return;
+        if (map.getLayer("heatmap-layer")) map.removeLayer("heatmap-layer");
+        if (map.getSource("heatmap-source")) map.removeSource("heatmap-source");
+      } catch {}
+    };
   }, [heatmapData, isLoaded, pathname, isAnalyticsOpen, isAnalyticsCollapsed]);
 
   return (
@@ -1250,7 +1199,6 @@ export default function MapCanvas() {
           height: 48px !important;
           background-color: transparent !important;
           border: none !important;
-          border-radius: 0 !important;
           box-shadow: none !important;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
           display: flex !important;
@@ -1258,6 +1206,24 @@ export default function MapCanvas() {
           justify-content: center !important;
           margin: 0 !important;
           cursor: pointer !important;
+        }
+        .maplibregl-ctrl-group > button:only-child {
+          border-radius: 12px !important;
+        }
+        .maplibregl-ctrl-group > button:first-child:not(:only-child) {
+          border-top-left-radius: 12px !important;
+          border-top-right-radius: 12px !important;
+          border-bottom-left-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
+        }
+        .maplibregl-ctrl-group > button:last-child:not(:only-child) {
+          border-bottom-left-radius: 12px !important;
+          border-bottom-right-radius: 12px !important;
+          border-top-left-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+        }
+        .maplibregl-ctrl-group > button:not(:first-child):not(:last-child) {
+          border-radius: 0 !important;
         }
         .maplibregl-ctrl-group > button + button {
           border-top: 1px solid #e5e7eb !important;

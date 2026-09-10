@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 7, 2026, 3:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 11:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -26,8 +26,67 @@
 | 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
 | 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
 | 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
+| 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based Official Zone Drawer with Cloudinary uploads and five-section parity; candidate scoring and carriageway analysis; four-step merge workspace with a contextual, persistent secondary drawer. Developer-led end-to-end validation remains. |
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Feature-Based Official Avoidance Zone Drawer (`OfficialZoneDrawer.tsx`, `zones/`)** (@roicambe):
+  - Modularized `CreateOfficialZonePanel.tsx` from a 1,000+ line monolith into single-responsibility subcomponents: `GeometryModeSelector.tsx`, `RoadSegmentPicker.tsx`, and `DraftZoneCart.tsx`.
+  - Reorganized into a clean 5-tier structure matching `FloodReportPanel.tsx`: 1. Spatial Geometry $\rightarrow$ 2. Hazard Attributes $\rightarrow$ 3. Survey (Passable Vehicles & Hidden Hazards) $\rightarrow$ 4. Photos & Videos $\rightarrow$ 5. Description.
+  - Replaced manual severity buttons with an 8-tile visual depth gauge auto-deriving severity, and removed non-standard avoidance buffer width sliders.
+  - Converted `POST /admin/zones` to multipart `FormData` with streaming Cloudinary uploads, persisting `media_urls` on `FloodAvoidanceZone` via Alembic migration `33ec62de236d`.
+- [x] **Intelligent Multi-Factor Merge Candidate Engine (`merge_service.py`)** (@roicambe):
+  - Engineered spatial corridor buffer calculation (`ST_Buffer(geom, 25m)`), intersection calculation (`ST_Intersection`), and Jaccard overlap ratio metrics.
+  - Sourced Decision #16 Valhalla edge traces (`trace_road_attributes`) to group reports by true OpenStreetMap `way_id`, road classification firewall (preventing highway-service road merges), and azimuth alignment.
+  - Implemented Linear Referencing synthesis: projected multi-user start/end coordinates onto road centerlines via `ST_LineLocatePoint` and sliced continuous merged lines via `ST_LineSubstring`.
+  - Implemented multi-factor scoring (0-100) with explainable reasons, crowd consensus badge (score $\ge 80$), and automated conflict detection (severity, depth, passable vehicles).
+- [x] **Decision #16 Decoupled Carriageway Service (`carriageway_service.py`)** (@roicambe):
+  - Extracted Decision #16 bidirectional logic out of `valhalla_service.py` into a dedicated modular service (`find_opposite_carriageway`, `_shift_coords_perpendicular`, `decode_polyline6`).
+  - Preserved backward compatibility by re-exporting methods through `valhalla_service.py`.
+- [x] **Transactional Multi-Report Merge & Official Zone Creation (`admin.py`)** (@roicambe):
+  - Created `GET /api/v1/admin/reports/merge-candidates?report_id={id}` and `POST /api/v1/admin/reports/merge`.
+  - Supported creating brand new `FloodAvoidanceZone` entities or merging into existing active zones, applying user overrides (`passable_vehicles_override`, `hidden_hazards_override`, `merge_rationale`).
+  - Preserved original crowdsourced reports, credited +5 Trust Score to each unique reporter, broadcasted real-time SSE event, and recorded audit trails.
+  - Guaranteed 100% Community Feed post immutability (`community_posts` remain completely untouched when reports are merged or approved).
+- [x] **Interactive Merge Workspace Interface & Live Map Resolution (`MergeWorkspacePanel.tsx`)** (@roicambe):
+  - Replaced legacy duplicate grouping with explicit **Review Merge Suggestions** entry. Normal report focus is neutral and never blocks standalone approval.
+  - Delivered a four-step workflow: Candidates, Compare, Edit Zone, and Confirm. Candidate inclusion is always explicit; recommendations and conflicts are recalculated from the selected reports only.
+  - Added responsive field comparison, reusable road/Terra Draw geometry editing, map previews for primary/candidate/proposed geometry, recoverable query states, and a full-width mobile map/form switch.
+  - Candidate evidence now lives inside its related report card, with a prominent checkbox selection control rather than a detached action button.
+  - The Create Zone and Review Merge edge tabs act as contextual drawer handles: Review Merge appears only after a session starts, remains available after collapse, and retains its state until the focused primary report changes or the merge completes.
+  - Manual desktop/mobile workflow and submission verification remains pending with the developer.
+- [x] **Dual-Pane Master-Detail Sidebar / Slide-Out Drawer (`MergeWorkspacePanel.tsx`)** (@roicambe):
+  - Implemented secondary slide-out drawer docking seamlessly alongside `PendingReportsPanel`, keeping the MapLibre canvas unblocked.
+  - Designed the contextual four-step workflow: 1. Candidate Selection $\rightarrow$ 2. Compare $\rightarrow$ 3. Edit Zone $\rightarrow$ 4. Confirm.
+  - Built `ReportComparisonCard.tsx`, `ReportComparisonMatrix.tsx`, `ConflictResolutionNotice.tsx`, and `MergeExplanationBanner.tsx`.
+  - Integrated `useMergePreviewLayer.ts` to render vibrant multi-color candidate geometries alongside the primary report and proposed dashed merged geometry on the map.
+- [x] **1 Zone = 1 Incident Draft Cart Pattern & Field Streamlining (`CreateOfficialZonePanel.tsx`, `ZoneDataEditorForm.tsx`)** (@roicambe):
+  - Refactored zone drafting to ensure each official zone corresponds to exactly one incident with its own severity, depth, and survey attributes.
+  - Enabled batching multiple official zones sequentially via a draft cart before atomic submission.
+  - Streamlined flood zone creation and merging by removing manual zone naming (relying on clear location descriptions and real-world hazard conditions) and redundant scheduled status toggles (ensuring created flood hazard zones are automatically active `is_active: true`).
+- [x] **Docked Secondary Drawer Architecture for CreateOfficialZonePanel (`CreateOfficialZonePanel.tsx`, `LiveMapPage.tsx`, `ActiveZonesPanel.tsx`)** (@roicambe):
+  - Converted `CreateOfficialZonePanel` from a floating draggable card overlay into a docked secondary drawer (Pane 2) alongside the left sidebar (`md:w-[420px] xl:w-[460px] h-full bg-white border-r border-slate-200`), fully unifying it with the Dual-Pane Master-Detail architectural pattern established by `MergeWorkspacePanel`.
+  - Lifted `MapProvider` to wrap the root layout of `LiveMapPage`, ensuring seamless shared MapContext across both drawers and the map canvas without nested providers.
+  - Eliminated duplicate "+ Create Official Zone" and "New Zone" buttons across `ActiveZonesPanel` and `LiveMapPage` headers to maintain a single, intuitive point of interaction.
+  - Implemented the physical "Drawer Pull Handle in Your Hands" edge toggle matching user sketch:
+    - **Closed Handle (Pane 1 Edge)**: Sits at `top-3.5` on the right border of Pane 1, featuring a blue `Plus` icon badge, clear vertical typography (`CREATE ZONE`), and `ChevronRight`.
+    - **Open Handle (Pane 2 Edge)**: Travels smoothly to the outer front edge of Pane 2 (`-right-9 top-3.5`), styled in dark slate with `ChevronLeft`, vertical `CLOSE DRAWER` typography, and smooth hover interaction to push the drawer shut.
+    - **Smooth Drawer Slide Animation**: Powered by Framer Motion `<AnimatePresence>` with cubic-bezier easing (`[0.32, 0.72, 0, 1]`) from `width: 0` to `420px`/`460px`, paired with a continuous 35ms MapLibre canvas resize loop to ensure the WebGL viewport smoothly adjusts without jarring jumps.
+  - Maintained full mobile PWA responsiveness (full-screen slide-over drawer on mobile viewports; docked side-by-side pane on desktop), dynamic map container resize tracking via `ResizeObserver`, and centered floating drawing instruction banner.
+- [ ] **Automated Pytest & Integration Verification (`test_flood_report_merging.py`)** (@roicambe):
+  - The suite covers candidate identification, multi-factor scoring, conflict detection, merge behavior, and feed post immutability. Its result is not recorded as passing here because pytest is unavailable in the current local environment; execute it in the configured backend test environment before closing Phase 18.
+
+### Capstone Phase 16: Admin Map Controls & Component Standardization (🟢 COMPLETED)
+- [x] **Universal MapLibre Preview Architecture (`useFloodMapPreview.ts`)** (@antigravity):
+  - Extracted duplicated `flyTo` camera panning, orange/red MapLibre pins, and dynamic bidirectional orange-dashed preview layer logic into a single shared custom hook.
+  - Sourced the preview hook directly into both `MapCanvas.tsx` (Commuter Flood Report) and `CreateOfficialZonePanel.tsx` (DRRMO Admin Zone), enforcing strict parity between public and admin interactions.
+- [x] **TerraDraw Map Event Capture-Phase Override** (@antigravity):
+  - Bypassed TerraDraw's strict `stopPropagation()` map click interception by attaching a native `{ capture: true }` event listener directly to the underlying canvas, allowing "Choose on Map" logic to receive map clicks without breaking the drawing engine.
+  - Automatically advances "Choose on Map" logic from origin to destination selection on click, creating a seamless two-click location picking experience.
+- [x] **Enforced Cursor Aesthetics & Input Refinement** (@antigravity):
+  - Overrode TerraDraw's internal `mousemove` pointer hijacking by forcibly setting `cursor: crosshair !important` on both the canvas and its container whenever picking mode is active.
+  - Stripped theme-specific orange border rings from generic `LocationInputGroup.tsx` inputs to maintain clean UI independence across components.
 
 ### Capstone Phase 15: Automated Street, Barangay & City Reverse-Geocoding for Flood Reports (🟢 COMPLETED)
 - [x] **Multi-Provider Structured Reverse Geocoding Engine** (@roicambe):

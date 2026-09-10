@@ -143,7 +143,25 @@ async def process_new_report(
         survey_data=survey_data
     )
     
-    return create_flood_report(db=db, report=report_create)
+    created_report = create_flood_report(db=db, report=report_create)
+
+    # Immediately post to Community Feed if is_public is True (without affecting /map routing barriers)
+    if is_public and user_id:
+        try:
+            from app.schemas.post import CommunityPostCreate
+            from app.crud.post import create_community_post
+            post_in = CommunityPostCreate(
+                flood_report_id=created_report.id,
+                content=raw_text,
+                media_urls=media_urls if media_urls else None,
+                location_tag=barangay or human_readable_location or None
+            )
+            create_community_post(db=db, post_in=post_in, user_id=user_id)
+            logger.info(f"[process_new_report] Created CommunityPost immediately for public report #{created_report.id}")
+        except Exception as e:
+            logger.error(f"[process_new_report] Failed to auto-create CommunityPost for report #{created_report.id}: {e}")
+
+    return created_report
 
 
 import json

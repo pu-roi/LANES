@@ -30,12 +30,77 @@ def _clean_number(raw: str) -> str:
     return re.sub(r"[^\d+]", "", raw.strip())
 
 
+FALLBACK_NATIONAL_HOTLINES = [
+    HotlineGroup(
+        name="National Emergency Hotline",
+        numbers=[HotlineNumber(raw="911", display="911")]
+    ),
+    HotlineGroup(
+        name="National Disaster Risk Reduction and Management Council (NDRRMC)",
+        numbers=[
+            HotlineNumber(raw="0289115061", display="(02) 8911-5061 to 65"),
+            HotlineNumber(raw="0289111406", display="(02) 8911-1406"),
+            HotlineNumber(raw="0289122665", display="(02) 8912-2665"),
+            HotlineNumber(raw="0289125668", display="(02) 8912-5668"),
+            HotlineNumber(raw="0289111873", display="(02) 8911-1873"),
+        ]
+    ),
+    HotlineGroup(
+        name="Red Cross",
+        numbers=[
+            HotlineNumber(raw="143", display="143 (Hotline)"),
+            HotlineNumber(raw="0285278385", display="(02) 8527-8385 to 95"),
+            HotlineNumber(raw="0285270000", display="(02) 8527-0000"),
+        ]
+    ),
+    HotlineGroup(
+        name="Philippine National Police (PNP)",
+        numbers=[
+            HotlineNumber(raw="117", display="117 (Emergency)"),
+            HotlineNumber(raw="0287220650", display="(02) 8722-0650"),
+            HotlineNumber(raw="09178475757", display="0917-847-5757 (Text Hotline)"),
+        ]
+    ),
+    HotlineGroup(
+        name="Bureau of Fire Protection (BFP)",
+        numbers=[
+            HotlineNumber(raw="0284260219", display="(02) 8426-0219"),
+            HotlineNumber(raw="0284260246", display="(02) 8426-0246"),
+        ]
+    ),
+    HotlineGroup(
+        name="Philippine Coast Guard",
+        numbers=[
+            HotlineNumber(raw="0285278481", display="(02) 8527-8481 to 89"),
+            HotlineNumber(raw="09177243682", display="0917-724-3682 (Text Hotline)"),
+        ]
+    ),
+    HotlineGroup(
+        name="Metro Manila Development Authority (MMDA)",
+        numbers=[
+            HotlineNumber(raw="136", display="136 (Hotline)"),
+            HotlineNumber(raw="0288824151", display="(02) 8882-4151 to 77"),
+        ]
+    ),
+    HotlineGroup(
+        name="Department of Social Welfare and Development",
+        numbers=[
+            HotlineNumber(raw="09189122813", display="0918-912-2813 (Text Hotline)"),
+            HotlineNumber(raw="0289318101", display="(02) 8931-8101 to 07"),
+            HotlineNumber(raw="0288563665", display="(02) 8856-3665 (Disaster Response)"),
+        ]
+    ),
+]
+
+
 # ---------------------------------------------------------------------------
 # National hotlines — ehotlines.e.gov.ph
 # ---------------------------------------------------------------------------
 
-@cached(_national_cache)
 def fetch_and_parse_hotlines() -> List[HotlineGroup]:
+    if "national" in _national_cache:
+        return _national_cache["national"]
+
     try:
         response = httpx.get("https://ehotlines.e.gov.ph/", timeout=10.0, verify=False)
         response.raise_for_status()
@@ -57,10 +122,14 @@ def fetch_and_parse_hotlines() -> List[HotlineGroup]:
             if numbers:
                 data.append(HotlineGroup(name=name, numbers=numbers))
 
-        return data
+        if data:
+            _national_cache["national"] = data
+            return data
+        print("Warning: Scraped national hotlines empty, using fallback.")
+        return FALLBACK_NATIONAL_HOTLINES
     except Exception as e:
-        print(f"Failed to scrape national hotlines: {e}")
-        return []
+        print(f"Failed to scrape national hotlines: {e}. Using fallback.")
+        return FALLBACK_NATIONAL_HOTLINES
 
 
 # ---------------------------------------------------------------------------
@@ -159,8 +228,34 @@ def _parse_pasig_text(text: str) -> Dict[str, List[HotlineGroup]]:
     return {"pasig_city": city_groups, "pasig_barangay": sorted(barangay_groups, key=lambda g: g.name)}
 
 
-@cached(_pasig_cache)
+FALLBACK_PASIG_CITY_HOTLINES = [
+    HotlineGroup(
+        name="Pasig City DRRMO",
+        numbers=[HotlineNumber(raw="86430000", display="8643-0000")]
+    ),
+    HotlineGroup(
+        name="PNP – Pasig",
+        numbers=[HotlineNumber(raw="0286410433", display="(02) 8641-0433")]
+    ),
+    HotlineGroup(
+        name="Bureau of Fire Protection",
+        numbers=[HotlineNumber(raw="0286412815", display="(02) 8641-2815")]
+    ),
+    HotlineGroup(
+        name="Pasig City Children's Hosp.",
+        numbers=[HotlineNumber(raw="0286432222", display="(02) 8643-2222")]
+    ),
+    HotlineGroup(
+        name="Pasig City General Hospital",
+        numbers=[HotlineNumber(raw="0286433333", display="(02) 8643-3333")]
+    ),
+]
+
+
 def fetch_and_parse_pasig_hotlines() -> Dict[str, List[HotlineGroup]]:
+    if "pasig" in _pasig_cache:
+        return _pasig_cache["pasig"]
+
     try:
         response = httpx.get(
             "https://pasigcity.gov.ph/news-and-releases/emergency-contact-numbers-ng-lungsod-ng-pasig-393",
@@ -178,8 +273,8 @@ def fetch_and_parse_pasig_hotlines() -> Dict[str, List[HotlineGroup]]:
         # Pick the one that actually contains hotline data
         og_text = next((m for m in og_matches if "DRRMO" in m or "HOTLINE" in m or "8643" in m), None)
         if not og_text:
-            print("Pasig: Could not find hotlines og:description")
-            return {"pasig_city": [], "pasig_barangay": []}
+            print("Pasig: Could not find hotlines og:description, using fallback")
+            return {"pasig_city": FALLBACK_PASIG_CITY_HOTLINES, "pasig_barangay": []}
         # Decode HTML entities
         og_text = (og_text
                    .replace("&#39;", "'")
@@ -187,10 +282,14 @@ def fetch_and_parse_pasig_hotlines() -> Dict[str, List[HotlineGroup]]:
                    .replace("&quot;", '"')
                    .replace("&#x27;", "'"))
 
-        return _parse_pasig_text(og_text)
+        parsed = _parse_pasig_text(og_text)
+        if parsed.get("pasig_city") or parsed.get("pasig_barangay"):
+            _pasig_cache["pasig"] = parsed
+            return parsed
+        return {"pasig_city": FALLBACK_PASIG_CITY_HOTLINES, "pasig_barangay": []}
     except Exception as e:
-        print(f"Failed to scrape Pasig hotlines: {e}")
-        return {"pasig_city": [], "pasig_barangay": []}
+        print(f"Failed to scrape Pasig hotlines: {e}. Using fallback.")
+        return {"pasig_city": FALLBACK_PASIG_CITY_HOTLINES, "pasig_barangay": []}
 
 
 def fetch_full_hotlines() -> FullHotlineResponse:

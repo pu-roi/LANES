@@ -7,7 +7,9 @@ from app.schemas.report import (
     FloodReportsPaginatedResponse, AdminDashboardStats,
     FloodAvoidanceZonesPaginatedResponse, AvoidanceZoneDeactivateBulkRequest,
     AvoidanceZoneUpdateRequest, ApproveReportRequest, NearbyZoneResponse,
-    MergePendingReportsRequest, MergePendingReportsResponse
+    MergePendingReportsRequest, MergePendingReportsResponse,
+    MergeConflict, MergeCandidateItem, MergeCandidatesListResponse,
+    MergedZoneFinalData, MergeReportsRequest, MergeReportsResponse
 )
 from app.schemas.route import RouteRequest, RouteResponse, LineStringGeometry, RouteOption, MultiRouteResponse
 from app.schemas.common import PointGeometry, PolygonGeometry

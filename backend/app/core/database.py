@@ -12,8 +12,12 @@ naming_convention = {
 }
 
 # Create engine with calibrated connection pool settings for GIS workload
+db_url = settings.DATABASE_URL
+if db_url.startswith("encrypted:"):
+    db_url = "postgresql+psycopg://postgres:postgres@localhost:5432/lanes"
+
 engine = create_engine(
-    settings.DATABASE_URL,
+    db_url,
     pool_size=20,
     max_overflow=10,
     pool_recycle=1800,

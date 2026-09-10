@@ -109,10 +109,11 @@ This document serves as the central technical reference for all currently implem
 *   **What it does:** Queues all raw NLP-parsed flood reports into a staging feed on the live Spatial Operations map, allowing authorized DRRM officers to inspect, batch merge, adjust, approve, or discard reports before public broadcast.
 *   **How it works:**
     1. Newly parsed reports are inserted with a status of `pending`.
-    2. DRRM operators review pending reports in the map sidebar, filter trolls by trust score, inspect geolocations directly on the map, and click "Approve".
-    3. Upon approval, PostGIS automatically calculates a spatial buffer (using `ST_Buffer` with a 50m to 200m radius depending on geometry) around the coordinate.
-    4. This buffer is saved to the `flood_avoidance_zones` table as an active polygon, which immediately updates Valhalla route requests.
-    5. Discarded reports are marked as `rejected`.
+    2. DRRM operators review pending reports in the map sidebar, filter trolls by trust score, inspect geolocations directly on the map, and click "Approve". Selecting a report is neutral; it never forces a merge.
+    3. When an operator explicitly selects **Review Merge Suggestions**, the system opens the four-stage merge workspace. Candidates remain unselected until the operator checks them, and each card keeps its score and supporting evidence with that report.
+    4. Upon approval, PostGIS automatically calculates a spatial buffer (using `ST_Buffer` with a 50m to 200m radius depending on geometry) around the coordinate.
+    5. This buffer is saved to the `flood_avoidance_zones` table as an active polygon, which immediately updates Valhalla route requests.
+    6. Discarded reports are marked as `rejected`.
 *   **Access & Roles:** Restricted to `admin` / `drrm` roles.
 *   **Related Components:**
     *   **Frontend:** [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx) (Spatial Operations map), [PendingReportsPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/PendingReportsPanel.tsx), [ActiveZonesPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/ActiveZonesPanel.tsx).
