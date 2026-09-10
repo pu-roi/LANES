@@ -15,13 +15,13 @@ python-multipart
 alembic==1.18.5
 cloudinary==1.36.0
 passlib[bcrypt]==1.7.4
-slowapi
-sse-starlette
+slowapi==0.1.10
+sse-starlette==3.0.3
 openmeteo-requests
 requests-cache
 retry-requests
 numpy
 pandas
-cachetools
-python-dotenv
+cachetools==7.1.8
+python-dotenv==1.2.2
 

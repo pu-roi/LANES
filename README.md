@@ -228,6 +228,15 @@ LANES features a triple-path routing engine setup designed for maximum reliabili
 ---
 
 ## 🛠️ Troubleshooting & Commands
+* **ModuleNotFoundError: No module named '<package>' (e.g. `cachetools`):**
+  This happens after a `git pull` when new packages have been added. Navigate to `backend/`, activate your virtual environment, and install the updated requirements:
+  ```powershell
+  cd backend
+  .\venv\Scripts\Activate.ps1
+  pip install -r requirements.txt
+  ```
+* **Alembic Migration Connection Errors (`alembic upgrade head`):**
+  Alembic needs a live database connection to record migrations. Make sure Docker Desktop is open and run `docker compose up -d --wait` in the root `LANES/` directory before running the migration command.
 * **TypeError: Failed to fetch (Frontend):** Check that the backend server is running at `http://localhost:8000`.
 * **Database Connection Warnings:** If PostgreSQL is offline, the backend operates in fallback mode.
 * **Resetting the Database:** If you need to clear all dummy data (reports, zones, logs) while keeping the default `admin` user intact, run:
