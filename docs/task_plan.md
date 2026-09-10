@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 10, 2026, 11:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 1:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -16,7 +16,7 @@
 > **Current Status (Sept 9, 2026):**
 > - Backend candidate engine (`merge_service.py`), carriageway analysis (`carriageway_service.py`), and model overrides (`passable_vehicles_override`, `hidden_hazards_override`, `media_urls`) are implemented and migrated.
 > - `CreateOfficialZonePanel` has been completely restructured into a modular Feature-Based architecture (`zones/`) with 5-section `FloodReportPanel` parity (Depth/Severity, Survey, Cloudinary media upload, Description) and buffer slider removal.
-> - **IN PROGRESS / MANUAL VERIFICATION PENDING:** The Phase 5 merge interface has been implemented: report inspection is neutral; intelligent suggestions require an explicit action and selection; candidate evidence is grouped inside each report card; and the contextual secondary drawer preserves its merge session while collapsed. The workspace includes field comparison, reusable spatial editing, a separate confirmation step, visible query recovery states, and a full-width mobile form/map switch. TypeScript, focused ESLint, and the production build pass. Desktop/mobile workflow verification remains with the developer before Phase 5 is marked complete.
+> - **IN PROGRESS / MANUAL VERIFICATION PENDING:** The Phase 5 merge interface has been implemented: report inspection is neutral; intelligent suggestions require an explicit action and selection; candidate evidence is grouped inside each report card; and the contextual secondary drawer preserves its merge session while collapsed. Create Zone now also resumes its in-memory draft after collapse, including form values, media, draft-cart entries, and map geometry; line picking uses the shared MapContext workflow and automatically advances Start to End. Desktop/mobile workflow verification remains with the developer before Phase 5 is marked complete.
 
 ---
 
@@ -296,7 +296,7 @@ A structured 4-stage workflow inside the **Dual-Pane Secondary Drawer**:
   5. [x] Integrate reusable spatial controls from the official-zone workflow so the final merged zone supports routed Start/End editing, bidirectional detection, and Terra Draw Polygon/Freehand/Rectangle/Circle geometry. Avoid creating a second map-drawing implementation. (@roicambe)
   6. [x] Add a distinct confirmation step summarizing included/excluded reports, destination zone, final operational attributes, geometry, trust-score effects, and preservation of original reports and Community Feed posts. Enforce frontend validation before submission. (@roicambe)
   7. [x] Complete responsive behavior: docked master-detail panes on desktop and a full-width mobile workflow with an explicit map-view control, safe-area-aware actions, and no fixed-width overflow. (@roicambe)
-  8. [ ] Complete developer-led desktop/mobile workflow verification for report focus changes, collapsed-drawer session persistence, candidate selection, spatial editing, and merge submission. Focused lint/type/build checks and documentation synchronization are complete. (@roicambe)
+  8. [ ] Complete developer-led desktop/mobile workflow verification for report focus changes, collapsed-drawer session persistence, candidate selection, spatial editing, Create Zone line/shape picking, and merge submission. TypeScript is currently clean; rerun the project lint/build once the existing local Next.js build lock is released. (@roicambe)
 - **Affected Files**:
   - `frontend/src/features/admin/components/merge/MergeWorkspacePanel.tsx` [NEW]
   - `frontend/src/features/admin/components/merge/ReportComparisonCard.tsx` [NEW]

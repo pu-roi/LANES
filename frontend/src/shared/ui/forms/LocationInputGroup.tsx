@@ -74,7 +74,7 @@ export function LocationInputGroup({
             isBlue ? "hover:bg-blue-50" : "hover:bg-orange-50"
           )}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={(e) => {
+          onClick={() => {
             onPickOnMap(target);
           }}
         >
@@ -170,6 +170,7 @@ export function LocationInputGroup({
       <div className="w-8 flex items-center justify-center self-center shrink-0 pl-1">
         {canSwap && onSwap && (
           <button
+            type="button"
             onClick={onSwap}
             className={cn(
               "p-1.5 rounded-full text-gray-400 transition-colors",

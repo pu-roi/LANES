@@ -31,6 +31,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { PendingReportsPanel } from "./components/PendingReportsPanel";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
+import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
 import { CreateOfficialZonePanel } from "./components/CreateOfficialZonePanel";
 import { MergeWorkspacePanel } from "./components/merge/MergeWorkspacePanel";
@@ -141,6 +142,7 @@ export default function LiveMapPage() {
 
   // Create Official Zone Secondary Drawer State
   const [isCreateZoneDrawerOpen, setIsCreateZoneDrawerOpen] = useState(false);
+  const [hasCreateZoneSession, setHasCreateZoneSession] = useState(false);
 
   // Map State
   const [mapInstance, setMapInstance] = useState<Map | null>(null);
@@ -270,7 +272,10 @@ export default function LiveMapPage() {
     setMergePreviewCandidates([]);
     setMergeProposedGeometry(null);
     setIsolatedReportId(null);
-    setEditingZone(null);
+    if (!hasCreateZoneSession) {
+      setEditingZone(null);
+      setHasCreateZoneSession(true);
+    }
     setIsCreateZoneDrawerOpen(true);
   };
 
@@ -596,6 +601,12 @@ export default function LiveMapPage() {
 
   return (
     <MapProvider>
+      <AdminFloodMapInteraction
+        map={mapInstance}
+        isLoaded={isLoaded}
+        isPreviewEnabled={isCreateZoneDrawerOpen}
+        isCreateZoneDrawerOpen={isCreateZoneDrawerOpen}
+      />
       <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
         {/* LEFT PANEL: Moderation & Zones Sidebar */}
         <div className={`${isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "hidden" : "flex"} relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex-col bg-white border-r border-slate-200 h-[50vh] md:flex md:h-full z-40 shadow-sm`}>
@@ -680,6 +691,7 @@ export default function LiveMapPage() {
                 setMergeProposedGeometry(null);
                 setIsolatedReportId(null);
                 setEditingZone(zone);
+                setHasCreateZoneSession(true);
                 setIsCreateZoneDrawerOpen(true);
                 flyToZone(zone);
               }}
@@ -687,7 +699,7 @@ export default function LiveMapPage() {
           )}
 
           {/* The Create Zone tab belongs to the primary moderation panel. */}
-          {!isCreateZoneDrawerOpen && !isMergeDrawerOpen && !mergingReport && (
+          {!isCreateZoneDrawerOpen && !hasCreateZoneSession && !isMergeDrawerOpen && !mergingReport && (
           <div className="absolute right-[-35px] top-3.5 z-50 hidden md:flex">
             <button
               type="button"
@@ -810,16 +822,15 @@ export default function LiveMapPage() {
 
       {/* SECONDARY DRAWER: Create Official Zone Workspace (Pane 2) */}
       <AnimatePresence>
-        {isCreateZoneDrawerOpen && (
+        {hasCreateZoneSession && (
           <motion.div
             key="create-official-zone-drawer"
             initial={{ width: 0 }}
-            animate={{ width: isMobile ? "100%" : DRAWER_WIDTH }}
-            exit={{ width: 0 }}
+            animate={{ width: isCreateZoneDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0 }}
             transition={{
               width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
             }}
-            className="relative shrink-0 flex h-full z-30"
+            className={`relative z-30 flex h-full shrink-0 ${isCreateZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`}
             onAnimationComplete={() => {
               mapInstance?.resize();
             }}
@@ -827,10 +838,10 @@ export default function LiveMapPage() {
             <div className="flex h-full w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-[10px_0_28px_-16px_rgba(15,23,42,0.45)]">
               <div className="flex h-full w-full min-w-0 shrink-0 flex-col">
                 <CreateOfficialZonePanel 
+                  key={editingZone?.id ?? "new-zone"}
                   isOpen={isCreateZoneDrawerOpen} 
                   onClose={() => {
                     setIsCreateZoneDrawerOpen(false);
-                    setEditingZone(null);
                   }} 
                   isAdminMode={true}
                   onAdminSubmit={handleAdminSubmitZone}
@@ -848,20 +859,19 @@ export default function LiveMapPage() {
             <button
               type="button"
               onClick={() => {
-                setIsCreateZoneDrawerOpen(false);
-                setEditingZone(null);
+                setIsCreateZoneDrawerOpen((open) => !open);
               }}
-              aria-pressed="true"
-              className="group absolute right-[-35px] top-3.5 z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-blue-700 bg-blue-600 py-3 text-white shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all hover:bg-blue-700 md:flex"
-              title="Close Create Zone drawer"
+              aria-pressed={isCreateZoneDrawerOpen}
+              className={`group absolute right-[-35px] top-3.5 z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isCreateZoneDrawerOpen ? "border-blue-700 bg-blue-600 text-white hover:bg-blue-700" : "border-blue-200 bg-white text-blue-700 hover:border-blue-400 hover:bg-blue-50"}`}
+              title={isCreateZoneDrawerOpen ? "Collapse Create Zone drawer" : "Resume Create Zone draft"}
             >
-              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/20 text-white transition-transform group-hover:scale-105">
+              <div className={`flex h-6 w-6 items-center justify-center rounded-lg transition-transform group-hover:scale-105 ${isCreateZoneDrawerOpen ? "bg-white/20 text-white" : "bg-blue-600 text-white shadow-xs"}`}>
                 <Plus className="w-4 h-4 stroke-[2.5]" />
               </div>
               <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">
                 CREATE ZONE
               </span>
-              <ChevronLeft className="h-4 w-4 text-blue-100 transition-transform group-hover:-translate-x-0.5 group-hover:text-white" />
+              {isCreateZoneDrawerOpen ? <ChevronLeft className="h-4 w-4 text-blue-100 transition-transform group-hover:-translate-x-0.5 group-hover:text-white" /> : <ChevronRight className="h-4 w-4 text-blue-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-700" />}
             </button>
 
             {mergingReport && (
@@ -888,6 +898,7 @@ export default function LiveMapPage() {
           onMapInit={handleMapInit}
           onMapLoad={handleMapLoad}
         >
+          <div id="admin-map-drawing-instruction-root" className="pointer-events-none absolute inset-0 z-40" />
           {/* Floating Analytics Panel */}
           {isAnalyticsOpen && (
             <>

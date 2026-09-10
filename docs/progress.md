@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 10, 2026, 11:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 10, 2026, 1:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -31,6 +31,10 @@
 ## Capstone Roadmap - Delivered Phases
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Create Zone Interaction Restoration & Resumable Drawer Session** (`AdminFloodMapInteraction.tsx`, `LiveMapPage.tsx`, `OfficialZoneDrawer.tsx`) (@roicambe):
+  - Restored the shared MapContext Start/End map-picking flow for the admin line editor: crosshair cursor, automatic Start-to-End progression, persistent markers, and the public-map orange dashed route preview.
+  - Kept Create Zone mounted while its docked drawer is collapsed, preserving the spatial mode and geometry, flood depth/severity, survey selections, media, description, and draft-cart items on reopen during the same page session.
+  - Paused Terra Draw interaction and restored the normal map cursor while collapsed; shape geometry remains available when the drawer is reopened. The two-direction option is now limited to line geometries.
 - [x] **Feature-Based Official Avoidance Zone Drawer (`OfficialZoneDrawer.tsx`, `zones/`)** (@roicambe):
   - Modularized `CreateOfficialZonePanel.tsx` from a 1,000+ line monolith into single-responsibility subcomponents: `GeometryModeSelector.tsx`, `RoadSegmentPicker.tsx`, and `DraftZoneCart.tsx`.
   - Reorganized into a clean 5-tier structure matching `FloodReportPanel.tsx`: 1. Spatial Geometry $\rightarrow$ 2. Hazard Attributes $\rightarrow$ 3. Survey (Passable Vehicles & Hidden Hazards) $\rightarrow$ 4. Photos & Videos $\rightarrow$ 5. Description.

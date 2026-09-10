@@ -54,6 +54,8 @@ export function OfficialZoneDrawer({
     setFloodEnd,
     setFloodStartLabel,
     setFloodEndLabel,
+    setActivePoint,
+    setIsPickingOnMap,
     floodIsBidirectional: isBidirectional,
     setFloodIsBidirectional: setIsBidirectional,
   } = useMapContext();
@@ -93,7 +95,10 @@ export function OfficialZoneDrawer({
     mapInstance,
     geometryMode,
     severity: editorValues.severity,
-    isEnabled: isOpen,
+    // Keep the Terra Draw instance and captured features alive while this
+    // drawer is collapsed; only its map interaction is paused.
+    isEnabled: true,
+    isInteractive: isOpen,
   });
 
   // Draft Cart hook
@@ -129,16 +134,24 @@ export function OfficialZoneDrawer({
     : floodStart && floodEnd
     ? floodPreviewGeometry
     : null;
+  const isEditableLineGeometry = editorValues.geometry?.type === "LineString" || editorValues.geometry?.type === "MultiLineString";
+
+  const handleGeometryModeChange = (mode: GeometryMode) => {
+    setGeometryMode(mode);
+    if (mode !== "line") setIsBidirectional(false);
+  };
 
   const handleResetCurrent = useCallback(() => {
     setFloodStart(null);
     setFloodEnd(null);
     setFloodStartLabel("");
     setFloodEndLabel("");
+    setActivePoint(null);
+    setIsPickingOnMap(false);
     setIsBidirectional(false);
     clearDrawing();
     cancelDrawingMode();
-  }, [setFloodStart, setFloodEnd, setFloodStartLabel, setFloodEndLabel, setIsBidirectional, clearDrawing, cancelDrawingMode]);
+  }, [setFloodStart, setFloodEnd, setFloodStartLabel, setFloodEndLabel, setActivePoint, setIsPickingOnMap, setIsBidirectional, clearDrawing, cancelDrawingMode]);
 
   // Handle Add to Draft Cart (Create mode only)
   const handleAddToDraftQueue = () => {
@@ -316,16 +329,15 @@ export function OfficialZoneDrawer({
               1. Spatial Geometry
             </label>
 
-            <GeometryModeSelector
-              geometryMode={geometryMode}
-              onChange={setGeometryMode}
+              <GeometryModeSelector
+                geometryMode={geometryMode}
+                onChange={handleGeometryModeChange}
               isDrawingMode={isDrawingMode}
               onCancelDrawing={cancelDrawingMode}
             />
 
             {geometryMode === "line" ? (
               <RoadSegmentPicker
-                mapInstance={mapInstance}
                 isBidirectional={isBidirectional}
                 onBidirectionalChange={setIsBidirectional}
               />
@@ -370,7 +382,7 @@ export function OfficialZoneDrawer({
             initialValues={editorValues}
             onChange={setEditorValues}
             readOnlyGeometry={true}
-            hideBidirectional={!isEditMode && geometryMode === "line"}
+            hideBidirectional={!isEditMode || !isEditableLineGeometry}
             hideSurvey={true}
             hideDescription={true}
           />
