@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
 import os from "os";
+import path from "path";
 
 const getLocalIPs = () => {
   const interfaces = os.networkInterfaces();
@@ -61,6 +62,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: path.resolve(__dirname),
   // @ts-ignore - allowedDevOrigins is suggested by Next.js CLI but may lack TS definitions
   allowedDevOrigins: getLocalIPs(),
   turbopack: {},
