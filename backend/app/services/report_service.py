@@ -3,9 +3,24 @@ from typing import Optional, List, Any
 from sqlalchemy.orm import Session
 from app.schemas.report import FloodReportCreate
 from app.services.geocoding_service import reverse_geocode, reverse_geocode_structured
+from app.services.carriageway_service import build_road_segment_preview
 from app.crud.report import create_flood_report
 
 logger = logging.getLogger(__name__)
+
+
+def validate_bidirectional_report_geometry(geometry: dict, road_name_hint: Optional[str]) -> tuple[dict, str]:
+    """Rebuild coverage from untrusted report endpoints before persistence."""
+    coordinates = geometry.get("coordinates", [])
+    if geometry.get("type") != "LineString" or len(coordinates) < 2:
+        return geometry, "UNMAPPED"
+    preview = build_road_segment_preview(
+        start=coordinates[0],
+        end=coordinates[-1],
+        is_bidirectional=True,
+        road_name=road_name_hint,
+    )
+    return preview["coverage_geometry"], preview["road_type"]
 
 
 def extract_representative_coordinates(geometry: Optional[dict]) -> Optional[tuple[float, float]]:
@@ -96,25 +111,15 @@ async def process_new_report(
         except Exception as e:
             logger.error(f"Failed to reverse geocode report location: {e}")
 
-    # Hybrid Strategy: find the real opposite carriageway for bidirectional LineString reports
+    # Repeat the authoritative raw-anchor validation at persistence time. Client
+    # previews are advisory and cannot cause an unverified second line to be saved.
     if is_bidirectional and geometry and geometry.get("type") == "LineString":
         try:
-            from app.services.valhalla_service import find_opposite_carriageway
-            original_coords = geometry.get("coordinates", [])
-            road_name_hint = human_readable_location
-
-            road_type, opposite_geom = find_opposite_carriageway(
-                route_coords=original_coords,
-                original_road_name=road_name_hint
+            geometry, road_type = validate_bidirectional_report_geometry(
+                geometry,
+                human_readable_location,
             )
-
-            if opposite_geom and road_type == "DIVIDED_CARRIAGEWAY":
-                orig_coords = geometry.get("coordinates", [])
-                opp_coords = opposite_geom.get("coordinates", [])
-                geometry = {
-                    "type": "MultiLineString",
-                    "coordinates": [orig_coords, opp_coords]
-                }
+            if road_type == "DIVIDED_CARRIAGEWAY":
                 logger.info(
                     "[process_new_report] Bidirectional: successfully combined original + "
                     "opposite carriageway into MultiLineString."

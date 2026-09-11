@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 11, 2026, 1:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 6:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -86,10 +86,10 @@ These files are **always present** regardless of which page you are on.
 | `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and pulsing red focus markers. Features resilient `map.getStyle()` layer mounting, `style.load` re-render listeners, auto camera `fitBounds` framing, container resize observer alignment for sidebar offsets, and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
 | `BaseMap.tsx` | `src/shared/ui/map/BaseMap.tsx` — Low-level wrapper around MapLibre GL JS. Manages the map instance lifecycle, resize observer, and exposes `onMapInit` and `onMapLoad` callbacks. |
 | `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector, start/destination inputs with focus guards and smart two-click "Choose on Map" advance, authenticated saved places chips with sequential recalculation, alternative route cards, and turn-by-turn instruction list. |
-| `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The incident reporting panel (opens from FAB or top CTA). Step-by-step form for reporting floods with start/end pin dropping, severity selection, survey questions, media previews, and an editable Saved Drafts workspace. Its account-private IndexedDB record (`floodReportDraftStorage.ts`) restores the active form, map state, media, and queued reports only for the signed-in commuter. |
+| `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The responsive incident reporting panel (opens from FAB or top CTA). Step one provides Start/End pin dropping with a direction-swap control, opt-in two-way coverage, required unselected-by-default severity tiles, and a shared blocking overlay while road topology is verified. Later steps contain survey questions, media previews, and an editable Saved Drafts workspace. Its account-private IndexedDB record (`floodReportDraftStorage.ts`) restores the active form, map state, media, and queued reports only for the signed-in commuter. |
 | `OfflineManager.tsx` | `src/features/offline/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
 | `MapPickerMobileOverlay.tsx` | `src/features/map/MapPickerMobileOverlay.tsx` — A translucent overlay with a centered crosshair that appears on mobile when the user taps a location input, letting them drag the map to pin a point. |
-| `useFloodMapPreview.ts` | `src/features/map/hooks/useFloodMapPreview.ts` — A shared custom hook for Start/End marker management and the bidirectional orange-dashed route preview. It is used by the public map and the admin map interaction layer. |
+| `useFloodMapPreview.ts` | `src/features/map/hooks/useFloodMapPreview.ts` — A shared custom hook for Start/End marker management and the bidirectional orange-dashed route preview. It overlays short solid orange terminal segments beneath the pins so MapLibre dash-phase gaps cannot make verified geometry appear detached. It is used by the public map and the admin map interaction layer. |
 | `AdminFloodMapInteraction.tsx` | `src/features/admin/components/AdminFloodMapInteraction.tsx` — Admin `/admin/map` bridge between MapLibre and `MapContext`; owns Create Zone map clicks, crosshair cursor state, Start-to-End progression, and the shared preview lifecycle. |
 
 ### Hidden Until Interaction (Map Panels)
@@ -106,6 +106,7 @@ These files are **always present** regardless of which page you are on.
 |----------|---------|
 | `GET /api/v1/reports/zones` | Fetches all active flood avoidance zone polygons to render on the map |
 | `POST /api/v1/reports/` | Submits a new flood report from the FloodReportPanel form |
+| `POST /api/v1/reports/preview-bidirectional` | Builds an authoritative road preview from raw Start/End anchors. Valid routes retain their Valhalla-snapped road vertices and include short accepted endpoint connectors so the returned original geometry begins and ends exactly at the selected pins. Returns the original line, an optional graph-validated opposite carriageway, combined coverage geometry, road classification, validation status, and user-facing explanation. The `/routes/preview-bidirectional` controller remains the canonical implementation. |
 | `POST /api/v1/routing/calculate` | Calculates a route via Valhalla or ORS, injecting avoidance zones as exclusion polygons |
 | `GET /api/v1/geocode/autocomplete?q=...` | Returns place name suggestions for location inputs |
 | `GET /api/v1/geocode/reverse?lat=&lon=` | Converts a map tap coordinate to a human-readable address |

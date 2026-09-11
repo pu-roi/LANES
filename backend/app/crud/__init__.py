@@ -1,11 +1,12 @@
 # CRUD index
 from app.crud.user import (
     get_password_hash, get_user, get_user_by_username, get_user_by_email, create_user,
+    create_user_with_profile, update_user_role,
     get_users_filtered, update_user_status, delete_user, hard_delete_user
 )
 from app.crud.report import (
-    get_flood_report, get_flood_reports, get_pending_flood_reports, 
-    update_flood_report_status, create_flood_report,
+    get_flood_report, get_flood_reports, get_flood_reports_by_user, get_pending_flood_reports, 
+    update_flood_report_status, archive_flood_report, restore_flood_report, create_flood_report,
     get_active_avoidance_zones, create_flood_avoidance_zone,
     get_all_flood_reports_filtered, get_admin_dashboard_stats,
     deactivate_flood_avoidance_zone, deactivate_flood_avoidance_zones_bulk,

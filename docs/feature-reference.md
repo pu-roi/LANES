@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 11, 2026, 1:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 4:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -258,19 +258,20 @@ This document serves as the central technical reference for all currently implem
 *   **Purpose:** Accurately models road-segment submersion along divided boulevards, dual carriageways (e.g., C-5, Ortigas Ave, Shaw Blvd), and narrow two-way streets without erroneously blocking oncoming lanes or under-reporting flooded dual lanes.
 *   **What it does:** Dynamically inspects the OpenStreetMap/Valhalla road network graph at report creation. When a user reports a bidirectional flood on a divided carriageway, it identifies both opposing highway lines, validates street naming consistency to prevent false positives across unrelated alleys, and generates a unified multi-geometry avoidance zone.
 *   **How it works:**
-    1. **Pre-Submission Carriageway Detection:** The endpoint `POST /api/v1/reports/detect-carriageway` evaluates the user's drawn `LineString` segment against Valhalla's routing graph via `find_opposite_carriageway`.
-    2. **Road Classification Engine:** Classifies the street segment into one of four topology modes:
+    1. **Authoritative Pre-Submission Preview:** `POST /api/v1/reports/preview-bidirectional` receives the raw Start/End anchors, evaluates both route directions, rejects legal-driving loops, and returns the original road, optional validated counterpart, combined coverage, classification, and explanation.
+    2. **Road Classification Engine:** Uses length-weighted Valhalla evidence to classify the street segment:
        - `NARROW_TWO_WAY`: Single physical pavement with two-way traffic flow; standard directional buffering applies.
        - `DIVIDED_CARRIAGEWAY`: Physically separated dual carriageways requiring paired opposite-lane discovery.
        - `TRUE_ONE_WAY`: Confirmed single-direction street with no counterpart.
+       - `AMBIGUOUS`: Mixed road topology or an excessive route detour; conservative single-line coverage applies.
        - `UNMAPPED`: Segment outside graph coverage.
-    3. **Dynamic Perpendicular Offset Probe:** For one-way candidates, executes a progressive orthogonal ray-cast search (stepping 5m, 10m, 15m, 20m, 25m, 30m) along the normal vector of the segment midpoint to locate the opposing directional edge.
-    4. **Name Validation Firewall:** Validates that the discovered opposite edge shares the exact normalized road name (or highway classification) with the source segment, strictly preventing accidental snapping to parallel access alleys or service roads.
+    3. **Two-Sided Dynamic Perpendicular Probe:** For one-way candidates, searches left and right at 5m, 10m, 15m, 20m, and 30m so anchor direction cannot force the search onto the wrong side.
+    4. **Counterpart Validation Firewall:** Requires matching normalized road identity and class, distinct OSM way IDs, opposing direction, comparable length, parallel alignment, sufficient longitudinal overlap, and 4–35m lateral separation before accepting a second carriageway.
     5. **PostGIS Dual-Buffering:** In `report_service.py` and `admin.py`, creates buffered line geometries for both carriageways and merges them into a single avoidance polygon boundary (`ST_Multi` / `ST_Buffer`), guaranteeing Valhalla detour calculations route around both carriageways simultaneously.
 *   **Access & Roles:** Public users can report bidirectional hazards; DRRM officers inspect and confirm carriageway pairs during spatial moderation.
 *   **Related Components:**
     *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [CreateOfficialZonePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/CreateOfficialZonePanel.tsx), [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx).
-    *   **Backend:** [valhalla_service.py](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py) (`find_opposite_carriageway`), [report_service.py](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py), [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) (`/detect-carriageway`), [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py).
+    *   **Backend:** [carriageway_service.py](file:///d:/Documents/Github/LANES/backend/app/services/carriageway_service.py), [report_service.py](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py), [routes.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/routes.py) (`/preview-bidirectional`), [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py).
 
 ---
 

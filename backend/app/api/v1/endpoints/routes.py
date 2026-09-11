@@ -10,15 +10,23 @@ router = APIRouter()
 
 
 class BidirectionalPreviewRequest(BaseModel):
-    coordinates: list  # List of [lng, lat] points forming the original road segment
+    # ``coordinates`` keeps older clients compatible. New clients send the raw
+    # anchors so the backend—not a legal-driving preview route—builds the line.
+    coordinates: Optional[list] = None
+    start: Optional[list[float]] = None
+    end: Optional[list[float]] = None
+    is_bidirectional: bool = True
     road_name: Optional[str] = None  # Optional road name for validation
 
 
 class BidirectionalPreviewResponse(BaseModel):
     original: dict  # GeoJSON LineString of the original road
     opposite: Optional[dict] = None  # GeoJSON LineString of opposite carriageway (None if one-way)
+    coverage_geometry: dict
     is_divided: bool  # True if a valid opposite carriageway was found
-    road_type: str  # NARROW_TWO_WAY, DIVIDED_CARRIAGEWAY, TRUE_ONE_WAY, UNMAPPED
+    road_type: str
+    validation_status: str
+    message: str
 
 
 @router.post("", response_model=schemas.MultiRouteResponse)
@@ -58,21 +66,19 @@ def preview_bidirectional(payload: BidirectionalPreviewRequest):
     Hybrid Strategy (perpendicular dynamic offset + Valhalla map-matching + name validation)
     to detect and return the actual opposite carriageway geometry for preview before submission.
     """
-    from app.services.valhalla_service import find_opposite_carriageway
+    from app.services.carriageway_service import build_road_segment_preview
 
-    original_geom = {
-        "type": "LineString",
-        "coordinates": payload.coordinates
-    }
+    start = payload.start
+    end = payload.end
+    if (not start or not end) and payload.coordinates and len(payload.coordinates) >= 2:
+        start = payload.coordinates[0]
+        end = payload.coordinates[-1]
+    if not start or not end or len(start) != 2 or len(end) != 2:
+        raise HTTPException(status_code=422, detail="Start and end coordinates are required.")
 
-    road_type, opposite_geom = find_opposite_carriageway(
-        route_coords=payload.coordinates,
-        original_road_name=payload.road_name
-    )
-
-    return BidirectionalPreviewResponse(
-        original=original_geom,
-        opposite=opposite_geom,
-        is_divided=opposite_geom is not None,
-        road_type=road_type
-    )
+    return BidirectionalPreviewResponse(**build_road_segment_preview(
+        start=start,
+        end=end,
+        is_bidirectional=payload.is_bidirectional,
+        road_name=payload.road_name,
+    ))

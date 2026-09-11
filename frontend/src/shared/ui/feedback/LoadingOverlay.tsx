@@ -7,6 +7,7 @@ interface LoadingOverlayProps {
   message?: string;
   variant?: "fixed" | "absolute" | "inline";
   zIndex?: number;
+  blocking?: boolean;
 }
 
 export function LoadingOverlay({
@@ -14,6 +15,7 @@ export function LoadingOverlay({
   message = "Loading...",
   variant = "fixed",
   zIndex = 100,
+  blocking = false,
 }: LoadingOverlayProps) {
   if (variant === "inline") {
     return (
@@ -37,13 +39,17 @@ export function LoadingOverlay({
     <AnimatePresence>
       {isVisible && (
         <motion.div
+          role="status"
+          aria-live="polite"
+          aria-label={message}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           style={{ zIndex }}
           className={cn(
             variant === "fixed" ? "fixed" : "absolute",
-            "inset-0 flex flex-col items-center justify-center bg-neutral-100/50 backdrop-blur-sm pointer-events-none"
+            "inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm",
+            blocking ? "pointer-events-auto cursor-wait" : "pointer-events-none"
           )}
         >
           <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-3" />

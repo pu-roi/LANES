@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 9, 2026, 4:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 4:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -249,7 +249,7 @@ The DRRMO Admin panel requires interactive map tools to define custom detour geo
 
 ## 16. Bidirectional Flood Report: Hybrid Carriageway Detection Strategy
 **Date:** September 2, 2026
-**Decision:** Replace the naive CSS `line-offset` visual hack for "Affects both sides of the road" with an intelligent **Hybrid Carriageway Detection Strategy** combining Valhalla Map Matching, perpendicular geometric hinting, and PostGIS `GeometryCollection` storage.
+**Decision:** Replace the naive CSS `line-offset` visual hack for "Affects both sides of the road" with an intelligent **Hybrid Carriageway Detection Strategy** combining authoritative Valhalla routing/map matching, perpendicular geometric hinting, and PostGIS `MultiLineString` storage.
 
 **Context:**
 When a user submits a flood report and checks "Affects both sides of the road (2-way)", the system needs to show and buffer both carriageways of the affected road. The challenge is that roads in the Philippines vary significantly:
@@ -271,32 +271,33 @@ The final decision combines Valhalla's Traversability metrics with a dynamic geo
 
 | Step | Technique | Purpose |
 |---|---|---|
-| 1 | **Traversability Inspection** (`/trace_attributes`) | Determines if the plotted road is one-way (`forward`) or a standard two-way street (`both`). If `both`, the system classifies it as a `NARROW_TWO_WAY` and aborts searching, as one line is sufficient. |
-| 2 | **Dynamic Offset Search** | For one-way roads (or divided highways), the system attempts to find the opposite lane by shifting coordinates perpendicularly to the left in increasing increments: **5m, 10m, 15m, 20m, 30m**. |
-| 3 | **Coordinate Reversal** | For each offset iteration, the order of shifted coordinates is reversed so map-matching sees traffic flowing in the opposite direction. |
-| 4 | **Valhalla Map Matching** | Snaps the shifted+reversed shape to the nearest road. Because map-matching strictly follows the shape instead of routing laws, it never invents U-turns. |
-| 5 | **Backend Name Validation** | Extracts the original road name from the *initial* trace (bypassing the need for frontend reverse-geocoding). Compares matched edge names against this extracted name. If names mismatch (e.g., snapped to a neighboring side-street or unnamed alley), it continues the loop. If names match, it accepts the `DIVIDED_CARRIAGEWAY`. |
+| 1 | **Authoritative Segment Selection** | Evaluates Start→End and End→Start from the raw user anchors, normalizes the shorter valid result to Start→End order, and rejects excessive legal-driving loops before topology detection. |
+| 2 | **Length-Weighted Traversability Inspection** (`/trace_attributes`) | Determines if the dominant plotted road is one-way (`forward`/`backward`) or a standard two-way street (`both`). If at least 70% of mapped edge length is `both`, the system classifies it as `NARROW_TWO_WAY`; mixed evidence is `AMBIGUOUS`. |
+| 3 | **Two-Sided Dynamic Offset Search** | For one-way roads or divided highways, probes both perpendicular sides at **5m, 10m, 15m, 20m, 30m**. Geometry is a search hint only. |
+| 4 | **Coordinate Reversal & Map Matching** | Reverses each shifted probe and map-matches it so the candidate follows the expected opposing flow without constructing a legal U-turn route. |
+| 5 | **Strict Counterpart Validation** | Accepts `DIVIDED_CARRIAGEWAY` only when normalized name/reference and road class match, OSM way IDs are distinct, direction is opposite, length is 70–130%, longitudinal overlap is at least 70%, lateral separation is 4–35m, and the candidate is not a loop. |
 
 **Why Map Matching avoids U-turns:**
 The standard `/route` API is path-finding (must obey traffic laws between two points). The `/trace_attributes` Map Matching API is shape-fitting (finds the road beneath a shape, regardless of legal drivability). Feeding it a reversed shape causes it to snap directly to the opposite-flowing lane without needing any legal U-turn maneuver.
 
 **PostGIS Storage:**
-When an opposite carriageway is successfully found, the backend stores **both** LineStrings as a single `GeometryCollection` in the `flood_reports.geometry` column. During admin approval, the buffer query is updated:
+When an opposite carriageway is successfully found, the backend stores **both** LineStrings as a single `MultiLineString` in the `flood_reports.geometry` column. During admin approval, the buffer query is updated:
 - **Single road (LineString):** `ST_Buffer(geometry, 0.00015)` — standard single-line buffer.
-- **Dual carriageway (GeometryCollection):** `ST_ConvexHull(ST_Collect(ST_Buffer(line1), ST_Buffer(line2)))` — wraps both buffered lines into one convex hull polygon that accurately covers both carriageways.
+- **Dual carriageway (MultiLineString):** `ST_ConvexHull(ST_Collect(ST_Buffer(line1), ST_Buffer(line2)))` — wraps both buffered lines into one convex hull polygon that accurately covers both carriageways.
 
-**Frontend Preview:**
-A new `POST /api/v1/reports/preview-bidirectional` endpoint was added. When "Affects both sides" is toggled, the frontend calls this endpoint and renders **two separate MapLibre source/layer pairs** (`flood-preview-source` + `flood-preview-source-opposite`) — displaying the actual opposite road line on the map before submission, not a fake visual offset.
+**Shared Preview and Persistence Contract:**
+`POST /api/v1/reports/preview-bidirectional` accepts raw Start/End anchors and returns `original`, `opposite`, `coverage_geometry`, `road_type`, `is_divided`, `validation_status`, and a user-facing `message`. `MapContext` owns this state for Flood Report, Create Zone, Edit Zone, and Merge. Public report persistence independently repeats the authoritative raw-anchor validation; client preview geometry is never trusted to create a second stored line.
 
 **Fallback Behavior:**
-- If no opposite carriageway is found (true one-way street, dead-end, or unmapped road), the system silently stores only the original LineString. No error is shown to the user; the flood zone simply covers the one road that was plotted.
+- If no opposite carriageway is proven (true one-way, ambiguous, unmapped, or routing unavailable), the system conservatively keeps only the original LineString and shows a non-blocking explanation. It never persists a guessed mathematical parallel.
 
 **Files Modified:**
-- [`backend/app/services/valhalla_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py) — `find_opposite_carriageway()` + `_shift_coords_perpendicular()`
-- [`backend/app/services/report_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py) — GeometryCollection construction on bidirectional reports
-- [`backend/app/api/v1/endpoints/reports.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) — `POST /reports/preview-bidirectional` endpoint
+- [`backend/app/services/carriageway_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/carriageway_service.py) — authoritative segment routing, classification, opposite search, and validation
+- [`backend/app/services/report_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py) — server-authoritative revalidation and validated `MultiLineString` construction
+- [`backend/app/api/v1/endpoints/routes.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/routes.py) — canonical `POST /preview-bidirectional` implementation and response contract
+- [`backend/app/api/v1/endpoints/reports.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) — backwards-compatible `POST /reports/preview-bidirectional` alias
 - [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — `ST_ConvexHull(ST_Collect(...))` dual-buffer approval logic
-- [`frontend/src/features/map/MapContext.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx) — `floodOppositeGeometry` state + `/preview-bidirectional` API call
+- [`frontend/src/features/map/MapContext.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapContext.tsx) — centralized validated geometry, road type, status, and explanation
 - [`frontend/src/features/map/MapCanvas.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx) — Dual-source real line rendering replacing CSS offset hack
 
 ---

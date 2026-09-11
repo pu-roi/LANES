@@ -2,11 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
-  CircleDot,
-  Flag,
-  Crosshair,
-  MapPin,
-  Check,
   CheckCircle,
   Loader2,
   Navigation2,
@@ -21,18 +16,16 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import { Button, ConfirmDialog, Input, Panel, Select } from "@/shared/ui";
+import { Button, ConfirmDialog, LoadingOverlay, Panel } from "@/shared/ui";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { useToast } from "@/shared/ui";
-import { LocationAutocomplete, LocationInputGroup } from "@/shared/ui";
-import { cn, getBearing } from "@/lib/utils";
+import { LocationInputGroup } from "@/shared/ui";
+import { cn } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
-import type { LocationSuggestion } from "@/features/geocoding/types";
 import { useMapContext, type ActivePoint, type DraftReport } from "@/features/map/MapContext";
-import { getRoute } from "@/features/routing/routingApi";
 import {
   discardFloodReportDraft,
   loadFloodReportDraft,
@@ -129,13 +122,15 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     draftReports = [],
     setDraftReports,
     floodPreviewGeometry,
-    floodOppositeGeometry
+    floodOppositeGeometry,
+    floodPreviewStatus,
+    floodPreviewMessage,
   } = useMapContext();
 
   // Form state
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
-  const [visualOption, setVisualOption] = useState<ReportVisualOption | null>("gutter");
+  const [visualOption, setVisualOption] = useState<ReportVisualOption | null>(null);
   const [passableVehicles, setPassableVehicles] = useState<string[]>([]);
   const [hiddenHazards, setHiddenHazards] = useState<"yes" | "no" | "unsure" | null>(null);
   const [showSurvey, setShowSurvey] = useState(false);
@@ -208,7 +203,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     });
     setStartInput("");
     setEndInput("");
-    setVisualOption("gutter");
+    setVisualOption(null);
     setPassableVehicles([]);
     setHiddenHazards(null);
     setShowSurvey(false);
@@ -341,7 +336,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setFloodStartLabel("");
     setFloodEndLabel("");
     setDescription("");
-    setVisualOption("gutter");
+    setVisualOption(null);
     setPassableVehicles([]);
     setHiddenHazards(null);
     clearMediaFiles();
@@ -368,8 +363,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     }
   };
 
-  const handlePickOnMap = (target: any) => {
-    setActivePoint(target as ActivePoint);
+  const handlePickOnMap = (target: ActivePoint) => {
+    setActivePoint(target);
     setIsPickingOnMap(true);
   };
 
@@ -390,7 +385,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   }, [activePoint, mapCenter, setFloodStart, setFloodEnd, setActivePoint, setIsPickingOnMap, setActivePanel]);
 
   // ── Current location helper ────────────────────────────────────────────────
-  const handleUseCurrent = async (target: any) => {
+  const handleUseCurrent = async (target: ActivePoint) => {
     try {
       const coords = await getCurrentLocation();
       const label = "Current Location";
@@ -406,18 +401,39 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       error("Location Error", message);
     }
   };
+
+  const handleSwapDirection = useCallback(() => {
+    if (!floodStart || !floodEnd) return;
+    const previousStartInput = startInput;
+    const previousEndInput = endInput;
+    setFloodStart(floodEnd.coords, floodEnd.label);
+    setFloodEnd(floodStart.coords, floodStart.label);
+    setStartInput(previousEndInput || floodEnd.label);
+    setEndInput(previousStartInput || floodStart.label);
+    setActivePoint(null);
+    setIsPickingOnMap(false);
+  }, [endInput, floodEnd, floodStart, setActivePoint, setFloodEnd, setFloodStart, setIsPickingOnMap, startInput]);
+
   // ── Draft & Submit ─────────────────────────────────────────────────────────
 
   const handleDraftRoad = () => {
     if (!floodStart || !floodEnd || !floodPreviewGeometry) return;
+    if (!visualOption) {
+      error("Flood Severity Required", "Select the observed flood depth before saving this road.");
+      return;
+    }
     if (!passableVehicles.length || !hiddenHazards) {
       error("Missing Information", "Please complete the Community Survey before drafting.");
       return;
     }
 
     const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
-    const severity = selectedOption ? selectedOption.severity : "low";
-    const depth = selectedOption ? selectedOption.label : "";
+    if (!selectedOption) {
+      error("Flood Severity Required", "Select a valid flood depth before saving this road.");
+      return;
+    }
+    const severity = selectedOption.severity;
+    const depth = selectedOption.label;
 
     const newDraft = {
       id: editingDraft?.id ?? Math.random().toString(36).substring(7),
@@ -456,7 +472,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setEndInput(draft.endLabel || "");
     setDescription(draft.description);
     const option = VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth) || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
-    setVisualOption(option?.id ?? "gutter");
+    setVisualOption(option?.id ?? null);
     setPassableVehicles(draft.passableVehicles || []);
     setHiddenHazards(draft.hiddenHazards || null);
     setIsPublic(draft.isPublic || false);
@@ -526,16 +542,20 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     });
 
     // 2. Pack current form if filled
-    const isCurrentFormFilled = !!floodStart && !!floodEnd && description.trim().length > 0 && passableVehicles.length > 0 && hiddenHazards !== null && floodPreviewGeometry;
+    const isCurrentFormFilled = !!floodStart && !!floodEnd && !!visualOption && description.trim().length > 0 && passableVehicles.length > 0 && hiddenHazards !== null && floodPreviewGeometry;
     
     if (isCurrentFormFilled) {
       const selectedOption = VISUAL_OPTIONS.find((opt) => opt.id === visualOption);
+      if (!selectedOption) {
+        error("Flood Severity Required", "Select a valid flood depth before submitting this report.");
+        return;
+      }
       const currentHint = startInput && /[a-zA-Z]/.test(startInput) ? startInput : undefined;
       formsToSubmit.push(
         createFormData({
           description: description,
-          severity: selectedOption ? selectedOption.severity : "low",
-          depth: selectedOption ? selectedOption.label : "",
+          severity: selectedOption.severity,
+          depth: selectedOption.label,
           humanReadableLocation: currentHint,
           isPublic: isPublic,
           isBidirectional: isBidirectional,
@@ -588,7 +608,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   };
 
   const isSurveyComplete = passableVehicles.length > 0 && hiddenHazards !== null;
-  const canSubmitCurrent = !!floodStart && !!floodEnd && description.trim().length > 0 && isSurveyComplete;
+  const canSubmitCurrent = !!floodStart && !!floodEnd && !!visualOption && description.trim().length > 0 && isSurveyComplete;
   const canSubmitAny = (draftReports.length > 0) || canSubmitCurrent;
 
   // ── Mobile map-pick overlay ────────────────────────────────────────────────
@@ -625,7 +645,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       return;
     }
 
-    setVisualOption("gutter");
+    setVisualOption(null);
     setPassableVehicles([]);
     setHiddenHazards(null);
     setDescription("");
@@ -647,7 +667,17 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       </Link>
     </div>
   ) : (
-    <form onSubmit={handleSubmit} className="flex flex-col">
+    <form
+      onSubmit={handleSubmit}
+      className="relative flex flex-col"
+      aria-busy={floodPreviewStatus === "loading"}
+    >
+      <LoadingOverlay
+        isVisible={floodPreviewStatus === "loading" && Boolean(floodStart && floodEnd)}
+        message="Verifying the selected road and traffic directions…"
+        variant="absolute"
+        blocking
+      />
       {isAdminMode && (
         <div className="flex items-center gap-3 px-1 mb-4 mt-2 border-b border-gray-100 pb-3">
           <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-sm ring-1 ring-blue-100/50 uppercase">
@@ -783,6 +813,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             onEndChange={setFloodEndLabel}
             onPickOnMap={(target) => handlePickOnMap(target)}
             onUseCurrentLocation={handleUseCurrent}
+            canSwap={Boolean(floodStart && floodEnd)}
+            onSwap={handleSwapDirection}
             startPlaceholder="e.g. Ortigas Ave, Pasig (Start)"
             endPlaceholder="e.g. C. Raymundo Ave (End)"
           />
@@ -806,6 +838,20 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                 </span>
               </div>
           </label>
+
+          {floodPreviewStatus !== "loading" && floodPreviewMessage && floodStart && floodEnd && (
+            <p
+              role={floodPreviewStatus === "error" ? "alert" : "status"}
+              className={cn(
+                "rounded-lg px-3 py-2 text-[11px] leading-relaxed",
+                floodPreviewStatus === "validated"
+                  ? "bg-emerald-50 text-emerald-800"
+                  : "bg-amber-50 text-amber-800"
+              )}
+            >
+              {floodPreviewMessage}
+            </p>
+          )}
 
           {/* Severity selector */}
           <div className="space-y-1">
@@ -851,7 +897,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
           <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
             <Button
               type="button"
-              disabled={!floodStart || !floodEnd}
+              disabled={!floodStart || !floodEnd || !visualOption || floodPreviewStatus === "loading"}
               onClick={() => setStep(2)}
               className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold shadow-sm h-10 rounded-xl"
             >
@@ -1110,7 +1156,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                 <button
                   key={opt.value}
                   type="button"
-                  onClick={() => setHiddenHazards(opt.value as any)}
+                  onClick={() => setHiddenHazards(opt.value as "yes" | "no" | "unsure")}
                   className={cn(
                     "rounded-md border py-2 text-sm font-medium transition-colors",
                     hiddenHazards === opt.value

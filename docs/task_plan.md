@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 11, 2026, 1:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 6:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -21,6 +21,9 @@
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
 > **Focus:** Overhauling the flood-report merging logic, candidate identification, and Spatial Operations UI/UX to enable intelligent, multi-factor spatial matching, explainable recommendations, conflict resolution, and seamless final-zone editing while strictly preserving original crowdsourced reports and Community Feed posts.
 > **Current Status (Sept 11, 2026):**
+> - [x] **User Reports Serialization & Admin Map Initialization Stability (`backend/app/crud/__init__.py`, `LiveMapPage.tsx`, `useMergePreviewLayer.ts`)** (@roicambe): Resolved missing `get_flood_reports_by_user` export causing 500 on user reports query, cleaned up 404 stale edit drafts in IndexedDB, and protected MapLibre merge layer hooks against uninitialized map styles during auto-recovery.
+> - [x] **Decision #16 Bidirectional Detection Repair (`carriageway_service.py`, `routes.py`, `MapContext.tsx`, `useFloodMapPreview.ts`)** (@roicambe): Replaced the normal-driving-route preview chain with one authoritative raw-anchor endpoint, rejects legal-driving loops and same-side map matches, probes both sides of divided roads, connects validated snapped routes back to the exact selected pins, renders short solid terminal caps so dash-phase gaps cannot hide those connections, and surfaces conservative single-line fallbacks across Flood Report, Create Zone, Edit Zone, and Merge workflows. Added focused pytest regression coverage; manual multi-road/device verification remains pending.
+> - [x] **Flood Preview Loading & Input Defaults (`LoadingOverlay.tsx`, `FloodReportPanel.tsx`, `carriageway_service.py`)** (@roicambe): Replaced the temporary loading label with the shared blocking overlay on mobile and desktop, restored Start/End direction swapping, kept two-way coverage unchecked by default, removed the preselected severity tile and implicit low-severity fallback, and parallelized the two directional Valhalla route checks.
 > - Backend candidate engine (`merge_service.py`), carriageway analysis (`carriageway_service.py`), and model overrides (`passable_vehicles_override`, `hidden_hazards_override`, `media_urls`) are implemented and migrated.
 > - `CreateOfficialZonePanel` has been completely restructured into a modular Feature-Based architecture (`zones/`) with 5-section `FloodReportPanel` parity (Depth/Severity, Survey, Cloudinary media upload, Description) and buffer slider removal.
 > - **IN PROGRESS / MANUAL VERIFICATION PENDING:** The Phase 5 merge interface has been implemented: report inspection is neutral; intelligent suggestions require an explicit action and selection; candidate evidence is grouped inside each report card; and the contextual secondary drawer preserves its merge session while collapsed. Flood Report and Create Zone now persist account-private, full workspaces in IndexedDB across collapse, reload, and sign-in restoration. Their saved drafts can be reopened for replacement editing without losing media or geometry; Create Zone restores both routed line previews and Terra Draw shapes. TypeScript, production build, and whitespace checks are clean; focused lint still reports existing rule violations in the legacy map/panel components. Developer-led desktop/mobile workflow verification remains before Phase 5 is marked complete.

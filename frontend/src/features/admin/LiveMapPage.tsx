@@ -43,7 +43,7 @@ import type { MergeCandidateItem, ReportGeometry } from "./adminApi";
 import { MapProvider } from "@/features/map/MapContext";
 import maplibregl from "maplibre-gl";
 import { hasCreateZoneDraft } from "./components/zones/zoneDraftStorage";
-import { findLatestZoneEditDraft } from "./components/zones/zoneEditDraftStorage";
+import { findLatestZoneEditDraft, discardZoneEditDraft } from "./components/zones/zoneEditDraftStorage";
 
 class AnalyticsControl {
   private _map: maplibregl.Map | undefined;
@@ -210,13 +210,21 @@ export default function LiveMapPage() {
     void findLatestZoneEditDraft(createZoneDraftUserId)
       .then(async (draft) => {
         if (!draft || cancelled) return;
-        const zone = await getZone(draft.zoneId);
-        if (cancelled) return;
-        setIsMergeDrawerOpen(false);
-        setMergingReport(null);
-        setEditingZone(zone);
-        setHasCreateZoneSession(true);
-        setIsCreateZoneDrawerOpen(true);
+        try {
+          const zone = await getZone(draft.zoneId);
+          if (cancelled) return;
+          setIsMergeDrawerOpen(false);
+          setMergingReport(null);
+          setEditingZone(zone);
+          setHasCreateZoneSession(true);
+          setIsCreateZoneDrawerOpen(true);
+        } catch (err: any) {
+          if (err?.status === 404) {
+            await discardZoneEditDraft(createZoneDraftUserId, draft.zoneId);
+            return;
+          }
+          throw err;
+        }
       })
       .catch((err) => {
         console.error("Failed to resume Edit Zone draft", err);

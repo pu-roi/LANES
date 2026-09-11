@@ -103,6 +103,19 @@ function normalizeOfficialZoneGeometry(geometry: ReportGeometry): ReportGeometry
   return geometry;
 }
 
+function buildValidatedRoadCoverage(
+  original: ReportGeometry | null,
+  opposite: ReportGeometry | null,
+  isBidirectional: boolean,
+): ReportGeometry | null {
+  if (!original || original.type !== "LineString") return original;
+  if (!isBidirectional || !opposite || opposite.type !== "LineString") return original;
+  return {
+    type: "MultiLineString",
+    coordinates: [original.coordinates, opposite.coordinates],
+  };
+}
+
 export function OfficialZoneDrawer({
   isOpen,
   onClose,
@@ -438,12 +451,17 @@ export function OfficialZoneDrawer({
   }, [adminNotes, canPersistDraft, drafts, drawnFeatures, editorValues, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, geometryMode, hasMaterialWorkspace, hiddenHazards, isBidirectional, mediaFiles, passableVehicles, userId]);
 
   // Current active geometry
+  const validatedRoadCoverage = buildValidatedRoadCoverage(
+    floodPreviewGeometry as ReportGeometry | null,
+    floodOppositeGeometry as ReportGeometry | null,
+    isBidirectional,
+  );
   const currentGeometry = isEditMode
     ? editorValues.geometry
     : drawnFeatures.length > 0
     ? drawnGeometry
     : floodStart && floodEnd
-    ? floodPreviewGeometry
+    ? validatedRoadCoverage
     : null;
   const isEditableLineGeometry = editorValues.geometry?.type === "LineString" || editorValues.geometry?.type === "MultiLineString";
 
