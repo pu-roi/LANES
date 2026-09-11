@@ -64,24 +64,6 @@ def _line_length_meters(coords: LineCoordinates) -> float:
     return sum(_distance_meters(coords[index - 1], coords[index]) for index in range(1, len(coords)))
 
 
-def _connect_route_to_anchors(
-    coords: LineCoordinates,
-    start: Coordinate,
-    end: Coordinate,
-) -> LineCoordinates:
-    """Keep the routed shape while making its visible coverage meet both pins."""
-    connected = [list(coordinate) for coordinate in coords]
-    if _distance_meters(connected[0], start) > 0.5:
-        connected.insert(0, list(start))
-    else:
-        connected[0] = list(start)
-    if _distance_meters(connected[-1], end) > 0.5:
-        connected.append(list(end))
-    else:
-        connected[-1] = list(end)
-    return connected
-
-
 def _bearing_degrees(coords: LineCoordinates) -> float:
     if len(coords) < 2:
         return 0.0
@@ -354,10 +336,10 @@ def build_road_segment_preview(
             _line_length_meters(candidate),
         ),
     )
-    # Topology is classified from the snapped road only; raw anchor connectors
-    # may touch a junction and must not pollute carriageway edge evidence.
+    # The snapped road itself is the authoritative result. Raw clicks are input
+    # anchors only and must never become sidewalk connector geometry.
     road_type, opposite = find_opposite_carriageway(selected_route, road_name) if is_bidirectional else ("SINGLE_DIRECTION", None)
-    original = _connect_route_to_anchors(selected_route, start, end)
+    original = [list(coordinate) for coordinate in selected_route]
     messages = {
         "NARROW_TWO_WAY": "This two-way street uses one mapped centerline; that line covers both directions.",
         "DIVIDED_CARRIAGEWAY": "Both mapped carriageways were verified.",

@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 11, 2026, 6:08 PM
+> **Last Updated:** September 11, 2026, 11:42 PM
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,54 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-011] Public Road Preview Saved Raw Sidewalk Connectors
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 11, 2026
+- **Affected Area**: Public Flood Report / Routing / Pending Reports
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+An orange public road preview could look acceptable beneath its Start/End pins, but the same pending report later appeared to extend toward a sidewalk or nearby building in the admin map. The severity aura exposed geometry that was not actually on the road.
+
+#### 2. Root Cause Analysis (RCA)
+The authoritative route service first found a valid Valhalla-snapped road line, then prepended and appended the user's raw clicked coordinates to make the dashed preview visibly meet the pins. For ordinary reports, that combined line was stored directly. For bidirectional reports, the frontend submitted only the original line and persistence independently rebuilt coverage, allowing the public preview and stored geometry to drift.
+
+#### 3. Solution & Architectural Strategy
+Raw clicks are now input anchors only. The preview service returns only the snapped road line, and public markers move to its endpoints after verification. Flood Report submits the full validated dual coverage when available; the backend still rebuilds every submitted road segment before storage, using the first validated road line for authoritative classification. Pending Reports continues to render stored geometry directly, which is now road-only for newly created reports.
+
+#### 4. Files Modified / What Changed
+- `backend/app/services/carriageway_service.py`: Removed raw-anchor connector vertices from authoritative preview output.
+- `backend/app/services/report_service.py`: Rebuilds both single and bidirectional submitted road geometry before persistence.
+- `frontend/src/features/hazards/FloodReportPanel.tsx`: Submits validated `MultiLineString` coverage when an opposite carriageway was confirmed.
+- `frontend/src/features/map/hooks/useFloodMapPreview.ts`: Places visible public Start/End markers on the validated road endpoints.
+- `backend/tests/test_carriageway_service.py`: Replaced connector expectations with road-only preview and persistence regression coverage.
+
+---
+
+### [BUG-010] Pending Report Aura Extends Beyond Validated Road Endpoints
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 11, 2026
+- **Affected Area**: Admin Map / Pending Reports
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+At street level, pending public flood reports could appear to spill from the correctly aligned road into adjacent buildings or lots. The problem was most visible at either end of a report segment as a large transparent severity-colored bulb, giving the impression that the report geometry was not aligned with the map.
+
+#### 2. Root Cause Analysis (RCA)
+The pending layer correctly rendered the persisted validated report geometry without recalculating a route. However, its 24px aura (32px when selected) used MapLibre's `round` line cap. A round cap extends past each geometry endpoint by half the line width, so the visual aura exceeded the saved road segment even though its coordinates were correct.
+
+The initial layout correction applied only when the custom MapLibre layer was first created. Because the global map instance survives panel navigation and development Fast Refresh, an already-created layer could retain its old `round` cap while its GeoJSON source refreshed normally. This made the fixed code appear ineffective for current reports.
+
+#### 3. Solution & Architectural Strategy
+The existing pending-report design remains intact: transparent severity colors, opacity, zoom behavior, selected emphasis, and rounded joins are unchanged. The line cap is now `butt`, which ends exactly at the validated geometry endpoint and removes unintended endpoint overspill. The hook reapplies that layout to any existing live MapLibre layer as well as newly created layers. Approved-zone rendering is unchanged and still uses its server-created transparent buffer with a dark road core.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/map/hooks/usePendingReportsLayer.ts`: Changed the pending road aura from round endpoint caps to exact endpoint caps while retaining rounded joins, and synchronizes the layout on existing live layers.
+
+---
 
 ### [BUG-009] Admin Live Map Crashing on Login: Stale Edit Draft 404 & MapLibre getSource Timing
 - **Status**: Resolved
@@ -121,12 +169,16 @@ A follow-up regression showed the corrected dashed route stopping visibly before
 
 After exact endpoint connectors were added, the apparent gap could still reappear only after loading completed even though the returned coordinate matched the marker.
 
+A further UX regression briefly drew a raw straight orange connector between the selected pins during verification, then replaced it with the mapped road shape. This made the preview look broken before the final result was ready.
+
 #### 2. Root Cause Analysis (RCA)
 `MapContext.tsx` first requested an ordinary traffic-law-aware route and passed that complete result into Decision #16. When anchor direction conflicted with mapped traffic flow, Valhalla legally detoured around neighboring roads. The carriageway service then used raw edge counts, searched only the left side, and accepted name similarity without proving distinct OSM way identity, lateral separation, overlap, or comparable length. A snap back onto the original road could therefore be labeled `DIVIDED_CARRIAGEWAY`.
 
 The hardened service correctly limited endpoint snaps to 35 metres, but returned the snapped polyline unchanged. Because markers intentionally remained at the user’s raw anchors, accepted snap distance appeared as a gap between the marker and dashed coverage.
 
 The remaining post-loading symptom was a MapLibre rendering artifact: changing from the temporary two-point line to the longer verified polyline recalculated `line-dasharray` phase. The endpoint could fall inside the pattern’s transparent interval, visually hiding the final portion despite correct geometry.
+
+`MapContext.tsx` explicitly placed that temporary two-point geometry in shared preview state as soon as both anchors existed. The loading overlay covered the panel but not the map, so users could see an unverified straight route before Valhalla completed.
 
 #### 3. Solution & Architectural Strategy
 The backend now owns road-preview generation from raw anchors, evaluates both directions, rejects excessive detours, and uses length-weighted topology classification. Divided-road searches probe both sides and require road identity/class, distinct way IDs, opposing direction, parallelism, comparable length, longitudinal overlap, safe separation, and no loop. Narrow two-way roads intentionally render one mapped centerline. Ambiguous or unavailable graph data returns one conservative line with an explanation.
@@ -135,12 +187,17 @@ For a route that already passes endpoint-snap and loop validation, the backend n
 
 The shared preview hook additionally renders solid orange terminal caps for first/last segments no longer than 40 metres. These caps sit above the dashed layer and below the existing markers, while the road body remains dashed on both mobile and desktop maps.
 
+Shared preview state is now cleared while an authoritative request is in flight. The Start and End pins remain visible with the loading overlay, and the orange route is rendered only after the service returns its final validated or conservative fallback geometry. API failures leave the map clear and keep the existing panel error feedback.
+
+The earlier raw-anchor connector and solid terminal-cap workaround is superseded by BUG-011: raw clicks are no longer geometry vertices, and pins move to the verified road endpoints instead.
+
 #### 4. Files Modified / What Changed
 - `backend/app/services/carriageway_service.py`: Added authoritative segment selection, conservative classification, two-sided probing, strict candidate validation, endpoint-fidelity ranking, and exact pin connectors.
 - `backend/app/services/report_service.py`: Repeats raw-anchor validation before persistence so client geometry cannot create an unverified `MultiLineString`.
 - `backend/app/api/v1/endpoints/routes.py`: Expanded the backward-compatible preview contract for raw anchors, coverage geometry, validation status, and explanation.
 - `frontend/src/features/map/MapContext.tsx`: Removed the general-route preview chain and centralized shared preview status and geometry.
-- `frontend/src/features/map/hooks/useFloodMapPreview.ts`: Added shared solid terminal-cap rendering and cleanup for public/admin preview maps.
+- `frontend/src/features/map/MapContext.tsx`: Removed the temporary raw straight-line fallback during loading so shared public/admin maps never animate from an unverified connector to the final road shape.
+- `frontend/src/features/map/hooks/useFloodMapPreview.ts`: Initially added terminal-cap rendering; BUG-011 removed that workaround in favor of a single road-only dashed geometry and snapped visible pins.
 - `frontend/src/features/hazards/FloodReportPanel.tsx`: Added responsive inline road-verification feedback.
 - `frontend/src/features/admin/components/zones/`: Reused the same feedback and persisted validated dual-carriageway geometry for official zones.
 - `backend/tests/test_carriageway_service.py`: Added focused regression coverage for narrow, divided, one-way, ambiguous, same-side, unrelated-road, loop, outage, concurrency, and exact pin endpoint cases.

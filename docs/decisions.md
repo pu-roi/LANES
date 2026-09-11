@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 11, 2026, 4:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 11:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -286,7 +286,7 @@ When an opposite carriageway is successfully found, the backend stores **both** 
 - **Dual carriageway (MultiLineString):** `ST_ConvexHull(ST_Collect(ST_Buffer(line1), ST_Buffer(line2)))` — wraps both buffered lines into one convex hull polygon that accurately covers both carriageways.
 
 **Shared Preview and Persistence Contract:**
-`POST /api/v1/reports/preview-bidirectional` accepts raw Start/End anchors and returns `original`, `opposite`, `coverage_geometry`, `road_type`, `is_divided`, `validation_status`, and a user-facing `message`. `MapContext` owns this state for Flood Report, Create Zone, Edit Zone, and Merge. Public report persistence independently repeats the authoritative raw-anchor validation; client preview geometry is never trusted to create a second stored line.
+`POST /api/v1/reports/preview-bidirectional` accepts raw Start/End anchors and returns `original`, `opposite`, `coverage_geometry`, `road_type`, `is_divided`, `validation_status`, and a user-facing `message`. The returned lines contain only Valhalla-snapped road geometry; raw clicks are inputs, never connector vertices. `MapContext` uses the result for the orange preview and moves its visible pins to the snapped endpoints. Public submission carries the verified single or dual coverage, and server persistence independently rebuilds every road line before saving so Pending Reports render the same road-only contract.
 
 **Fallback Behavior:**
 - If no opposite carriageway is proven (true one-way, ambiguous, unmapped, or routing unavailable), the system conservatively keeps only the original LineString and shows a non-blocking explanation. It never persists a guessed mathematical parallel.

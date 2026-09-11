@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 11, 2026, 4:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 11:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -258,7 +258,7 @@ This document serves as the central technical reference for all currently implem
 *   **Purpose:** Accurately models road-segment submersion along divided boulevards, dual carriageways (e.g., C-5, Ortigas Ave, Shaw Blvd), and narrow two-way streets without erroneously blocking oncoming lanes or under-reporting flooded dual lanes.
 *   **What it does:** Dynamically inspects the OpenStreetMap/Valhalla road network graph at report creation. When a user reports a bidirectional flood on a divided carriageway, it identifies both opposing highway lines, validates street naming consistency to prevent false positives across unrelated alleys, and generates a unified multi-geometry avoidance zone.
 *   **How it works:**
-    1. **Authoritative Pre-Submission Preview:** `POST /api/v1/reports/preview-bidirectional` receives the raw Start/End anchors, evaluates both route directions, rejects legal-driving loops, and returns the original road, optional validated counterpart, combined coverage, classification, and explanation.
+    1. **Authoritative Pre-Submission Preview:** `POST /api/v1/reports/preview-bidirectional` receives raw Start/End anchors, evaluates both route directions, rejects legal-driving loops, and returns road-only snapped original/optional counterpart coverage. Raw clicks never become geometry vertices; preview pins move to the returned road endpoints and the same coverage is rebuilt before persistence.
     2. **Road Classification Engine:** Uses length-weighted Valhalla evidence to classify the street segment:
        - `NARROW_TWO_WAY`: Single physical pavement with two-way traffic flow; standard directional buffering applies.
        - `DIVIDED_CARRIAGEWAY`: Physically separated dual carriageways requiring paired opposite-lane discovery.

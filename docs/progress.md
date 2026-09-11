@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 11, 2026, 6:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 11:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -56,14 +56,17 @@
   - Replaced the inline road-verification loading message with the reusable blocking loading overlay while retaining non-blocking success/fallback explanations after verification.
   - Restored the shared Start/End swap control, made both-sides coverage explicitly opt-in, and changed flood depth/severity to an unselected required state with no silent `low` fallback.
   - Runs Start→End and End→Start Valhalla requests concurrently to reduce preview latency without weakening Decision #16 validation.
+- [x] **Pending-Report Aura Endpoint Overspill Repair** (`usePendingReportsLayer.ts`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Retained the pending-report translucent severity aura, zoom threshold, selected emphasis, and rounded road turns, but changed its line endings to terminate precisely at the persisted validated geometry rather than extending a large round-cap bulb over adjacent buildings. Existing live MapLibre layers are also updated after navigation or Fast Refresh.
 - [x] **Decision #16 Authoritative Road Preview & Same-Side False-Positive Repair** (`carriageway_service.py`, `routes.py`, `MapContext.tsx`) (@roicambe):
   - Reproduced the Caruncho-area failure where two nearby anchors produced an 834m legal-driving loop that was then misclassified as a divided carriageway.
   - Centralized raw Start/End preview generation in the backend, evaluates both travel directions, rejects excessive detours, and falls back to the selected line without inventing an opposite road.
-  - Preserves the validated Valhalla road shape while connecting its accepted endpoint snaps back to the exact raw Start/End anchors, preventing the dashed coverage line from visibly stopping before either marker.
-  - Updated the shared public/admin MapLibre preview hook to overlay solid orange terminal caps only on short endpoint segments, preventing a transparent dash interval from visually reopening the marker gap after verified geometry replaces the temporary line.
+  - Returns only the validated Valhalla road shape; raw Start/End clicks never become saved sidewalk connector segments, and public marker positions derive from the snapped preview endpoints.
+  - Suppresses the temporary raw straight connector while verification is loading, so public and admin maps render only the final authoritative road geometry.
+  - The shared public/admin MapLibre preview hook now draws one final orange dashed road geometry only; public pins move to its snapped endpoints rather than relying on connector or terminal-cap overlays.
   - Hardened counterpart validation with length-weighted traversability, two-sided offset probes, exact normalized road identity, road class, distinct OSM way IDs, reverse direction, length, overlap, separation, and loop guards.
   - Shared validation status and explanations across the public Flood Report and admin road editors; official zone and merge flows use validated `MultiLineString` coverage only when a distinct carriageway is proven.
-  - Added 15 focused backend regressions, including persistence-time raw-anchor revalidation, concurrent directional-route execution, and exact preview-to-pin endpoint coverage. Pytest carriageway and merge-integrity suites, Python compilation, TypeScript checking, and the production frontend build passed; external reverse-geocoding testing remains network-dependent and manual desktop/mobile road verification is pending.
+  - Rebuilds every submitted road line at persistence time and submits verified dual coverage for two-way reports, keeping public preview, PostGIS geometry, and Pending Report rendering on one road-only contract. Focused pytest carriageway and merge-integrity suites, Python compilation, TypeScript checking, and the production frontend build passed; external reverse-geocoding testing remains network-dependent and manual desktop/mobile road verification is pending.
 - [x] **Persistent Edit Zone Workspace and Active-Line Persistence** (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `LiveMapPage.tsx`, `admin.py`) (@roicambe):
   - Added account-private, per-zone IndexedDB edit workspaces that restore unsaved zone metadata, survey selections, notes, and local media after collapse, reload, or sign-in; Cancel Edit explicitly discards only that local workspace, while Save clears it only after the metadata and media operations succeed.
   - Added `updated_at` conflict baselines. When a shared zone was saved more recently by another administrator, the current server version is shown instead of silently applying stale local edits.

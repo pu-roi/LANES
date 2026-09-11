@@ -9,15 +9,21 @@ from app.crud.report import create_flood_report
 logger = logging.getLogger(__name__)
 
 
-def validate_bidirectional_report_geometry(geometry: dict, road_name_hint: Optional[str]) -> tuple[dict, str]:
-    """Rebuild coverage from untrusted report endpoints before persistence."""
+def validate_report_road_geometry(
+    geometry: dict,
+    road_name_hint: Optional[str],
+    is_bidirectional: bool,
+) -> tuple[dict, str]:
+    """Rebuild authoritative road-only coverage from submitted road endpoints."""
     coordinates = geometry.get("coordinates", [])
-    if geometry.get("type") != "LineString" or len(coordinates) < 2:
+    if geometry.get("type") == "MultiLineString":
+        coordinates = coordinates[0] if coordinates else []
+    if len(coordinates) < 2:
         return geometry, "UNMAPPED"
     preview = build_road_segment_preview(
         start=coordinates[0],
         end=coordinates[-1],
-        is_bidirectional=True,
+        is_bidirectional=is_bidirectional,
         road_name=road_name_hint,
     )
     return preview["coverage_geometry"], preview["road_type"]
@@ -111,13 +117,14 @@ async def process_new_report(
         except Exception as e:
             logger.error(f"Failed to reverse geocode report location: {e}")
 
-    # Repeat the authoritative raw-anchor validation at persistence time. Client
-    # previews are advisory and cannot cause an unverified second line to be saved.
-    if is_bidirectional and geometry and geometry.get("type") == "LineString":
+    # Preview geometry is advisory. Rebuild every submitted road segment so the
+    # stored geometry is always the authoritative snapped road-only coverage.
+    if geometry and geometry.get("type") in {"LineString", "MultiLineString"}:
         try:
-            geometry, road_type = validate_bidirectional_report_geometry(
+            geometry, road_type = validate_report_road_geometry(
                 geometry,
                 human_readable_location,
+                is_bidirectional,
             )
             if road_type == "DIVIDED_CARRIAGEWAY":
                 logger.info(
@@ -126,8 +133,8 @@ async def process_new_report(
                 )
             else:
                 logger.info(
-                    f"[process_new_report] Bidirectional ignored. Classification: {road_type}. "
-                    "Storing original line only."
+                    f"[process_new_report] Road geometry rebuilt. Classification: {road_type}. "
+                    "Storing the authoritative original line only."
                 )
         except Exception as e:
             logger.error(f"[process_new_report] Hybrid Strategy failed: {e}. Falling back to original geometry.")

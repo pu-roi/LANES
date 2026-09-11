@@ -143,7 +143,7 @@ def test_route_snapped_to_wrong_nearby_road_falls_back(monkeypatch):
     assert preview["opposite"] is None
 
 
-def test_valid_snapped_route_connects_to_exact_user_anchors(monkeypatch):
+def test_valid_snapped_route_returns_road_only_geometry(monkeypatch):
     snapped = [[121.0, 14.0001], [121.0, 14.0009]]
     reverse_snapped = list(reversed(snapped))
     classified = {}
@@ -161,10 +161,9 @@ def test_valid_snapped_route_connects_to_exact_user_anchors(monkeypatch):
     preview = service.build_road_segment_preview(ORIGINAL[0], ORIGINAL[-1])
 
     coordinates = preview["original"]["coordinates"]
-    assert coordinates[0] == ORIGINAL[0]
-    assert coordinates[-1] == ORIGINAL[-1]
-    assert snapped[0] in coordinates
-    assert snapped[-1] in coordinates
+    assert coordinates == snapped
+    assert ORIGINAL[0] not in coordinates
+    assert ORIGINAL[-1] not in coordinates
     assert classified["coordinates"] == snapped
 
 
@@ -247,7 +246,7 @@ def test_preview_endpoint_accepts_raw_anchors(monkeypatch):
     assert response.json()["coverage_geometry"]["type"] == "LineString"
 
 
-def test_public_report_persistence_revalidates_raw_anchors(monkeypatch):
+def test_public_report_persistence_revalidates_submitted_road_geometry(monkeypatch):
     captured = {}
 
     def preview(**kwargs):
@@ -264,12 +263,41 @@ def test_public_report_persistence_revalidates_raw_anchors(monkeypatch):
 
     # The import-level dependency used by process_new_report is now the full
     # authoritative builder, not the old detector-only compatibility export.
-    result, road_type = report_service.validate_bidirectional_report_geometry(
+    result, road_type = report_service.validate_report_road_geometry(
         {"type": "LineString", "coordinates": ORIGINAL},
         "Example Avenue",
+        True,
     )
 
     assert captured["start"] == ORIGINAL[0]
     assert captured["end"] == ORIGINAL[-1]
     assert result["type"] == "MultiLineString"
     assert road_type == "DIVIDED_CARRIAGEWAY"
+
+
+def test_single_road_report_persistence_revalidates_submitted_geometry(monkeypatch):
+    captured = {}
+
+    def preview(**kwargs):
+        captured.update(kwargs)
+        return service._preview_result(
+            ORIGINAL,
+            None,
+            "SINGLE_DIRECTION",
+            "validated",
+            "The selected road segment is ready.",
+        )
+
+    monkeypatch.setattr(report_service, "build_road_segment_preview", preview)
+
+    result, road_type = report_service.validate_report_road_geometry(
+        {"type": "LineString", "coordinates": ORIGINAL},
+        "Example Avenue",
+        False,
+    )
+
+    assert captured["start"] == ORIGINAL[0]
+    assert captured["end"] == ORIGINAL[-1]
+    assert captured["is_bidirectional"] is False
+    assert result == {"type": "LineString", "coordinates": ORIGINAL}
+    assert road_type == "SINGLE_DIRECTION"

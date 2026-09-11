@@ -161,11 +161,19 @@ export function usePendingReportsLayer(
             ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
           ],
           layout: {
-            "line-cap": "round",
+            // Preserve smooth corners, but do not extend the transparent aura
+            // past the validated report endpoints into adjacent properties.
+            "line-cap": "butt",
             "line-join": "round",
           },
           paint: PENDING_REPORT_ROAD_AURA_PAINT,
         });
+      } else {
+        // The shared map survives panel navigation and Fast Refresh. Reapply
+        // layout values to an existing layer so it cannot retain stale rounded
+        // endpoint caps from an earlier client bundle.
+        map.setLayoutProperty("all-pending-reports-line-layer", "line-cap", "butt");
+        map.setLayoutProperty("all-pending-reports-line-layer", "line-join", "round");
       }
 
       // Layer 3: Zoomed-in Pure Transparent Polygon Auras (Street View: Zoom > 14)
