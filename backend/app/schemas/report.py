@@ -115,6 +115,7 @@ class FloodAvoidanceZoneBase(BaseModel):
 class FloodAvoidanceZoneCreate(FloodAvoidanceZoneBase):
     report_id: Optional[int] = None
     geometry: Union[PolygonGeometry, MultiPolygonGeometry]
+    source_geometry: Optional[Union[LineStringGeometry, MultiLineStringGeometry]] = None
     curated_by_admin_id: Optional[int] = None
 
 class FloodAvoidanceZoneUpdate(BaseModel):
@@ -128,7 +129,9 @@ class FloodAvoidanceZoneUpdate(BaseModel):
 
 class FloodAvoidanceZoneCreateOfficial(BaseModel):
     name: Optional[str] = None
-    geometry: Union[PolygonGeometry, MultiPolygonGeometry]
+    # Create Zone accepts road-following lines as well as hand-drawn areas.
+    # The official-zone endpoint buffers line geometries into persisted polygons.
+    geometry: Union[LineStringGeometry, MultiLineStringGeometry, PolygonGeometry, MultiPolygonGeometry]
     severity_override: ReportSeverity
     depth_override: Optional[str] = None
     passable_vehicles_override: Optional[str] = None
@@ -189,6 +192,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     depth: Optional[str] = None
     report_geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     created_at: datetime
+    updated_at: datetime
     
     report_text: Optional[str] = None
     report_source: Optional[str] = None

@@ -11,7 +11,7 @@ You are the **Senior Technical Project Manager & Documentation Auditor** for LAN
 
 ## 📚 Core Document Registry & Responsibilities
 
-Whenever features are implemented, modified, or refactored, you are responsible for auditing and keeping these **7 authoritative documentation files** accurate and synchronized:
+Whenever features are implemented, modified, or refactored, you are responsible for auditing and keeping these **8 authoritative documentation files** accurate and synchronized:
 
 | Document | File Path | Focus & Audit Scope |
 |---|---|---|
@@ -22,6 +22,7 @@ Whenever features are implemented, modified, or refactored, you are responsible 
 | **Architectural Decisions** | [`docs/decisions.md`](file:///d:/Documents/Github/LANES/docs/decisions.md) | **MAJOR/CRITICAL SHIFTS ONLY**: High-impact architectural changes, core framework/engine replacements, security models, or fundamental paradigms. **DO NOT** update for minor changes or small progress. |
 | **System Documentation** | [`docs/others/system-documentation.md`](file:///d:/Documents/Github/LANES/docs/others/system-documentation.md) | Screen-by-screen breakdown, component locations, frontend route map, backend endpoints, and navigation layouts. |
 | **Database Design Plan** | [`docs/others/database-design-plan.md`](file:///d:/Documents/Github/LANES/docs/others/database-design-plan.md) | 3NF schemas, tables, relationships, spatial indexes, PostGIS functions, triggers, and migrations. |
+| **Bug Fix Log** | [`docs/others/bug-log.md`](file:///d:/Documents/Github/LANES/docs/others/bug-log.md) | Resolved & investigated bugs, regressions, root cause analyses, architectural solutions, and exact changed files. |
 
 ---
 
@@ -30,12 +31,17 @@ Whenever features are implemented, modified, or refactored, you are responsible 
 Whenever reviewing code changes, finishing a task, or requested to update documents, follow these principles:
 
 1. **Mandatory File Timestamping**:
-   - Every time you modify one of the 7 core documents, update the single global timestamp block located directly beneath the main `# Title` of that file to reflect the latest overall modification. Use the format: `> **Last Updated:** [Month DD, YYYY, H:MM AM/PM]`. 
+   - Every time you modify one of the 8 core documents, update the single global timestamp block located directly beneath the main `# Title` of that file to reflect the latest overall modification. Use the format: `> **Last Updated:** [Month DD, YYYY, H:MM AM/PM]`. 
 
-2. **Task-Level Author Attribution (Historical Record)**:
-   - To maintain a clear record of who built what, **you must append the author's username to any new tasks, milestones, or architecture decisions they add.**
-   - Example: `- [x] Implemented multi-engine routing (@chris)`
-   - *Note:* Do not retroactively add authors to old tasks if they were all done by the original author (Roi Cambe). Only tag new additions to preserve the historical audit trail.
+2. **Dynamic Author Detection & Attribution (Historical Record)**:
+   - To maintain an unambiguous audit record of who built or resolved what across groupmates (Roi, Jace, Chris, etc.), **you must inspect the active developer's identity** before logging tasks, milestones, or bug entries:
+     - Run `git config user.name` and `git config user.email` or inspect the current branch (`git branch --show-current`).
+     - Always tag entries with their GitHub handle and full name:
+       - Roi Cambe: `[@roicambe](https://github.com/roicambe) (Roi Cambe)`
+       - Jace: `[@username](https://github.com/username) (Jace ...)`
+       - Chris: `[@username](https://github.com/username) (Chris ...)`
+     - Append or attribute this identity to any new tasks, milestones in `task_plan.md`/`progress.md`, architecture decisions in `decisions.md`, or bug entries in `docs/others/bug-log.md`.
+     - *Note:* Do not retroactively rewrite historical tasks already completed by Roi Cambe. Only tag new and current entries.
 
 3. **Dual-File Sprint Tracking & Top-Down Progress**:
    - When a task or milestone is completed, check it off in [`docs/task_plan.md`](file:///d:/Documents/Github/LANES/docs/task_plan.md).
@@ -60,6 +66,15 @@ Whenever reviewing code changes, finishing a task, or requested to update docume
 
 7. **Schema & Spatial Auditing**:
    - If SQLAlchemy models or migrations are introduced or altered, audit [`docs/others/database-design-plan.md`](file:///d:/Documents/Github/LANES/docs/others/database-design-plan.md) to reflect updated table columns, indexes, foreign keys, or 3NF structures.
+
+8. **Bug Tracking & Issue Auditing**:
+   - Whenever a bug, regression, or unintended behavior is investigated, currently being resolved, or has been resolved, record or update its entry in [`docs/others/bug-log.md`](file:///d:/Documents/Github/LANES/docs/others/bug-log.md).
+   - Each entry must strictly document:
+     - **Status** (Resolved / In Progress / Investigating), **Severity**, and **Author/Resolver** (detected dynamically via git user/branch identity as defined in rule #2).
+     - **1. Problem Description**: Symptoms, reproduction steps, and context.
+     - **2. Root Cause Analysis (RCA)**: Why it failed at code/state/lifecycle level.
+     - **3. Solution & Architectural Strategy**: How it was fixed or will be fixed.
+     - **4. Files Modified / What Changed**: Specific files and modifications.
 
 ---
 

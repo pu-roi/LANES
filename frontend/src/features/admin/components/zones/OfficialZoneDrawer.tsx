@@ -24,13 +24,18 @@ import { DraftZoneCart } from "./subcomponents/DraftZoneCart";
 import { useTerraDraw } from "./hooks/useTerraDraw";
 import { useZoneDrafts } from "./hooks/useZoneDrafts";
 import type { GeometryMode, Severity, ZoneDraftItem } from "./types";
-import { updateZone, type AvoidanceZone, type AvoidanceZoneUpdatePayload } from "../../adminApi";
+import { addZoneMedia, updateZone, type AvoidanceZone, type AvoidanceZoneUpdatePayload, type ReportGeometry } from "../../adminApi";
 import {
   discardCreateZoneDraft,
   loadCreateZoneDraft,
   removeLegacyCreateZoneDraft,
   saveCreateZoneDraft,
 } from "./zoneDraftStorage";
+import {
+  discardZoneEditDraft,
+  loadZoneEditDraft,
+  saveZoneEditDraft,
+} from "./zoneEditDraftStorage";
 
 export interface OfficialZoneDrawerProps {
   isOpen: boolean;
@@ -56,6 +61,61 @@ function formatFileSize(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+type Position = [number, number];
+
+function isPosition(value: unknown): value is Position {
+  return Array.isArray(value) && value.length >= 2 &&
+    typeof value[0] === "number" && typeof value[1] === "number";
+}
+
+function closeRing(ring: Position[]): Position[] {
+  if (ring.length < 3) return ring;
+  const [firstLng, firstLat] = ring[0];
+  const [lastLng, lastLat] = ring[ring.length - 1];
+  return firstLng === lastLng && firstLat === lastLat ? ring : [...ring, [firstLng, firstLat]];
+}
+
+/**
+ * TerraDraw shape modes can emit a polygon as a flat list of positions.
+ * The official-zone endpoint requires standard GeoJSON Polygon/MultiPolygon
+ * ring nesting, so normalize it before drafts are saved or submitted.
+ */
+function normalizeOfficialZoneGeometry(geometry: ReportGeometry): ReportGeometry {
+  if (geometry.type === "Polygon") {
+    const coordinates = geometry.coordinates as unknown as unknown[];
+    const rings = isPosition(coordinates[0])
+      ? [coordinates as Position[]]
+      : coordinates as Position[][];
+    return { ...geometry, coordinates: rings.map(closeRing) };
+  }
+
+  if (geometry.type === "MultiPolygon") {
+    const polygons = geometry.coordinates as unknown as unknown[];
+    return {
+      ...geometry,
+      coordinates: polygons.map((polygon) => {
+        const rings = polygon as unknown[];
+        return (isPosition(rings[0]) ? [rings as Position[]] : rings as Position[][]).map(closeRing);
+      }),
+    };
+  }
+
+  return geometry;
+}
+
+function buildValidatedRoadCoverage(
+  original: ReportGeometry | null,
+  opposite: ReportGeometry | null,
+  isBidirectional: boolean,
+): ReportGeometry | null {
+  if (!original || original.type !== "LineString") return original;
+  if (!isBidirectional || !opposite || opposite.type !== "LineString") return original;
+  return {
+    type: "MultiLineString",
+    coordinates: [original.coordinates, opposite.coordinates],
+  };
+}
+
 export function OfficialZoneDrawer({
   isOpen,
   onClose,
@@ -69,6 +129,7 @@ export function OfficialZoneDrawer({
   const isEditMode = Boolean(editingZone);
   const userId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   const canPersistDraft = !isEditMode && isAuthenticated && userId !== null;
+  const canPersistEdit = isEditMode && isAuthenticated && userId !== null && editingZone !== null;
 
   // Map context for Line mode
   const {
@@ -95,6 +156,7 @@ export function OfficialZoneDrawer({
   const [editingDraft, setEditingDraft] = useState<ZoneDraftItem | null>(null);
   const [pendingDraftToEdit, setPendingDraftToEdit] = useState<ZoneDraftItem | null>(null);
   const [isSaveBeforeEditDialogOpen, setIsSaveBeforeEditDialogOpen] = useState(false);
+  const [isCancelEditDialogOpen, setIsCancelEditDialogOpen] = useState(false);
   const [mediaItems, setMediaItems] = useState<SelectedMediaItem[]>([]);
   const createdPreviewUrlsRef = useRef(new Set<string>());
   const mediaFiles = mediaItems.map(({ file }) => file);
@@ -103,16 +165,16 @@ export function OfficialZoneDrawer({
   const [passableVehicles, setPassableVehicles] = useState<string[]>(
     editingZone?.passable_vehicles_override ? editingZone.passable_vehicles_override.split(",").filter(Boolean) : []
   );
-  const [hiddenHazards, setHiddenHazards] = useState(editingZone?.hidden_hazards_override || "unsure");
+  const [hiddenHazards, setHiddenHazards] = useState(editingZone?.hidden_hazards_override || "");
   const [adminNotes, setAdminNotes] = useState(editingZone?.admin_notes || "");
 
   // Core attribute state (managed via ZoneDataEditorForm — depth/severity/bidirectional/buffer)
   const [editorValues, setEditorValues] = useState<ZoneDataEditorValues>({
     name: editingZone?.name || "Official Flood Avoidance Zone",
-    severity: (editingZone?.severity_override as Severity) || "medium",
-    depth: editingZone?.depth_override || "knee",
+    severity: (editingZone?.severity_override as Severity) || "low",
+    depth: editingZone?.depth_override || "",
     passable_vehicles: editingZone?.passable_vehicles_override ? editingZone.passable_vehicles_override.split(",").filter(Boolean) : [],
-    hidden_hazards: editingZone?.hidden_hazards_override || "unsure",
+    hidden_hazards: editingZone?.hidden_hazards_override || "",
     is_bidirectional: editingZone?.is_bidirectional || false,
     geometry: (editingZone?.geometry as any) || { type: "LineString", coordinates: [] },
     admin_notes: editingZone?.admin_notes || "",
@@ -146,6 +208,18 @@ export function OfficialZoneDrawer({
   const suppressNextDraftSave = useRef(false);
   const hasShownPersistenceError = useRef(false);
   const hasShownDrawingRestoreError = useRef(false);
+  const hasHydratedEditDraft = useRef(false);
+  const hydratedEditKey = useRef<string | null>(null);
+
+  const replaceMediaFiles = useCallback((files: File[]) => {
+    createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    createdPreviewUrlsRef.current.clear();
+    setMediaItems(files.map((file) => {
+      const previewUrl = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+      if (previewUrl) createdPreviewUrlsRef.current.add(previewUrl);
+      return { file, previewUrl };
+    }));
+  }, []);
 
   // Sync editingZone when it changes (including standalone survey + description state)
   useEffect(() => {
@@ -169,19 +243,66 @@ export function OfficialZoneDrawer({
     }
   }, [editingZone]);
 
+  // Edit Zone is a per-admin local workspace. The server's current version is
+  // authoritative if another admin has saved this zone since this draft began.
+  useEffect(() => {
+    if (!canPersistEdit || !editingZone || !userId) {
+      hasHydratedEditDraft.current = false;
+      hydratedEditKey.current = null;
+      return;
+    }
+
+    let cancelled = false;
+    const draftKey = `${userId}:${editingZone.id}`;
+    hasHydratedEditDraft.current = false;
+    hydratedEditKey.current = null;
+    void loadZoneEditDraft(userId, editingZone.id).then((draft) => {
+      if (cancelled) return;
+      if (draft && draft.baselineUpdatedAt === editingZone.updated_at) {
+        setEditorValues(draft.editorValues);
+        setPassableVehicles(draft.passableVehicles);
+        setHiddenHazards(draft.hiddenHazards);
+        setAdminNotes(draft.adminNotes);
+        replaceMediaFiles(draft.mediaFiles);
+        success("Edit Restored", `Your unfinished edits for Zone #${editingZone.id} are ready to continue.`);
+      } else if (draft) {
+        void discardZoneEditDraft(userId, editingZone.id);
+        error("Zone Updated", "Another administrator saved a newer version, so the latest zone details are shown.");
+      }
+    }).catch((err) => {
+      console.error("Failed to restore Edit Zone draft", err);
+      if (!cancelled) error("Draft Unavailable", "Your unfinished zone edit could not be restored.");
+    }).finally(() => {
+      if (!cancelled) {
+        hydratedEditKey.current = draftKey;
+        hasHydratedEditDraft.current = true;
+      }
+    });
+    return () => { cancelled = true; };
+  }, [canPersistEdit, editingZone, error, replaceMediaFiles, success, userId]);
+
+  useEffect(() => {
+    if (!canPersistEdit || !editingZone || !userId || !hasHydratedEditDraft.current) return;
+    if (hydratedEditKey.current !== `${userId}:${editingZone.id}`) return;
+    void saveZoneEditDraft(userId, editingZone.id, {
+      baselineUpdatedAt: editingZone.updated_at,
+      editorValues,
+      passableVehicles,
+      hiddenHazards,
+      adminNotes,
+      mediaFiles,
+    }).catch((err) => {
+      console.error("Failed to save Edit Zone draft", err);
+      if (!hasShownPersistenceError.current) {
+        hasShownPersistenceError.current = true;
+        error("Draft Not Saved", "Your unfinished zone edit could not be saved on this device.");
+      }
+    });
+  }, [adminNotes, canPersistEdit, editingZone, editorValues, error, hiddenHazards, mediaFiles, passableVehicles, userId]);
+
   useEffect(() => () => {
     createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
     createdPreviewUrlsRef.current.clear();
-  }, []);
-
-  const replaceMediaFiles = useCallback((files: File[]) => {
-    createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-    createdPreviewUrlsRef.current.clear();
-    setMediaItems(files.map((file) => {
-      const previewUrl = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
-      if (previewUrl) createdPreviewUrlsRef.current.add(previewUrl);
-      return { file, previewUrl };
-    }));
   }, []);
 
   const clearCurrentZone = useCallback(() => {
@@ -197,16 +318,16 @@ export function OfficialZoneDrawer({
     cancelDrawingMode();
     setEditorValues({
       name: "Official Flood Avoidance Zone",
-      severity: "medium",
-      depth: "knee",
+      severity: "low",
+      depth: "",
       passable_vehicles: [],
-      hidden_hazards: "unsure",
+      hidden_hazards: "",
       is_bidirectional: false,
       geometry: { type: "LineString", coordinates: [] },
       admin_notes: "",
     });
     setPassableVehicles([]);
-    setHiddenHazards("unsure");
+    setHiddenHazards("");
     setAdminNotes("");
     replaceMediaFiles([]);
   }, [cancelDrawingMode, clearDrawing, replaceMediaFiles, restoreFloodReportMapState]);
@@ -284,13 +405,13 @@ export function OfficialZoneDrawer({
 
   const hasMaterialWorkspace = drafts.length > 0 || Boolean(
     floodStart || floodEnd || drawnFeatures.length || mediaFiles.length || adminNotes.trim() ||
-    passableVehicles.length || hiddenHazards !== "unsure" || editorValues.depth !== "knee" ||
+    passableVehicles.length || Boolean(hiddenHazards) || Boolean(editorValues.depth) ||
     editorValues.name !== "Official Flood Avoidance Zone" || geometryMode !== "line"
   );
   const hasActiveZoneWork = Boolean(
     floodStart || floodEnd || drawnFeatures.length || mediaFiles.length || adminNotes.trim() ||
-    passableVehicles.length || hiddenHazards !== "unsure" || editorValues.depth !== "knee" ||
-    editorValues.name !== "Official Flood Avoidance Zone" || geometryMode !== "line"
+    passableVehicles.length || Boolean(hiddenHazards) || Boolean(editorValues.depth) ||
+    editorValues.name !== "Official Flood Avoidance Zone"
   );
 
   useEffect(() => {
@@ -330,12 +451,17 @@ export function OfficialZoneDrawer({
   }, [adminNotes, canPersistDraft, drafts, drawnFeatures, editorValues, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, geometryMode, hasMaterialWorkspace, hiddenHazards, isBidirectional, mediaFiles, passableVehicles, userId]);
 
   // Current active geometry
+  const validatedRoadCoverage = buildValidatedRoadCoverage(
+    floodPreviewGeometry as ReportGeometry | null,
+    floodOppositeGeometry as ReportGeometry | null,
+    isBidirectional,
+  );
   const currentGeometry = isEditMode
     ? editorValues.geometry
     : drawnFeatures.length > 0
     ? drawnGeometry
     : floodStart && floodEnd
-    ? floodPreviewGeometry
+    ? validatedRoadCoverage
     : null;
   const isEditableLineGeometry = editorValues.geometry?.type === "LineString" || editorValues.geometry?.type === "MultiLineString";
 
@@ -381,6 +507,11 @@ export function OfficialZoneDrawer({
     clearDrawing();
     cancelDrawingMode();
   }, [setFloodStart, setFloodEnd, setFloodStartLabel, setFloodEndLabel, setActivePoint, setIsPickingOnMap, setIsBidirectional, clearDrawing, cancelDrawingMode]);
+
+  const handleClearActiveForm = useCallback(() => {
+    clearCurrentZone();
+    success("Form Cleared", "Your current zone inputs were cleared. Saved drafts are unchanged.");
+  }, [clearCurrentZone, success]);
 
   const handleDiscardWorkspace = async () => {
     if (!canPersistDraft || !userId) return;
@@ -456,7 +587,7 @@ export function OfficialZoneDrawer({
 
     const newDraft: ZoneDraftItem = {
       id: editingDraft?.id ?? Math.random().toString(36).substring(7),
-      geometry: currentGeometry,
+      geometry: normalizeOfficialZoneGeometry(currentGeometry),
       oppositeGeometry: isBidirectional ? floodOppositeGeometry : undefined,
       isBidirectional,
       name: editorValues.name,
@@ -511,6 +642,10 @@ export function OfficialZoneDrawer({
         };
 
         await updateZone(editingZone.id, payload);
+        if (mediaFiles.length > 0) {
+          await addZoneMedia(editingZone.id, mediaFiles);
+        }
+        if (userId) await discardZoneEditDraft(userId, editingZone.id);
         success("Zone Updated", `Official Zone #${editingZone.id} has been saved.`);
         if (onZoneUpdated) onZoneUpdated();
         onClose();
@@ -523,7 +658,7 @@ export function OfficialZoneDrawer({
           submissionItems.push({
             payload: {
               name: d.name,
-              geometry: d.geometry,
+              geometry: d.geometry ? normalizeOfficialZoneGeometry(d.geometry) : d.geometry,
               severity_override: d.severity,
               depth_override: d.depth,
               passable_vehicles_override: d.passableVehicles.length > 0 ? d.passableVehicles.join(",") : undefined,
@@ -540,7 +675,7 @@ export function OfficialZoneDrawer({
           submissionItems.push({
             payload: {
               name: editorValues.name,
-              geometry: currentGeometry,
+              geometry: normalizeOfficialZoneGeometry(currentGeometry),
               severity_override: editorValues.severity,
               depth_override: editorValues.depth,
               passable_vehicles_override: passableVehicles.length > 0 ? passableVehicles.join(",") : undefined,
@@ -576,11 +711,24 @@ export function OfficialZoneDrawer({
         onClose();
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to save avoidance zone.";
-      error("Submission Error", msg);
+      const rawMessage = err instanceof Error ? err.message : "";
+      const isGeometryValidationError = /invalid body json|validation errors|geometry\.(polygon|multipolygon)/i.test(rawMessage);
+      error(
+        "Couldn’t publish zone",
+        isGeometryValidationError
+          ? "The zone shape could not be read. Please redraw it and try again."
+          : rawMessage || "Failed to save the avoidance zone. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const confirmCancelEdit = async () => {
+    if (editingZone && userId) await discardZoneEditDraft(userId, editingZone.id);
+    clearMediaFiles();
+    setIsCancelEditDialogOpen(false);
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -623,7 +771,7 @@ export function OfficialZoneDrawer({
           {/* Mobile-only close button (hidden on desktop where outer handle is used) */}
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => isEditMode ? setIsCancelEditDialogOpen(true) : onClose()}
             className="md:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
             title="Close drawer"
           >
@@ -686,9 +834,21 @@ export function OfficialZoneDrawer({
         {/* SPATIAL GEOMETRY DEFINITION (Create mode only) */}
         {!isEditMode && (
           <div className="space-y-3">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-              1. Spatial Geometry
-            </label>
+            <div className="flex items-center justify-between gap-3">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                1. Spatial Geometry
+              </label>
+              {hasActiveZoneWork && !editingDraft && (
+                <button
+                  type="button"
+                  onClick={handleClearActiveForm}
+                  className="flex shrink-0 items-center gap-1 text-xs font-medium text-slate-500 transition-colors hover:text-red-600"
+                  title="Clear the current zone form without removing saved drafts"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" /> Clear form
+                </button>
+              )}
+            </div>
 
               <GeometryModeSelector
                 geometryMode={geometryMode}
@@ -929,6 +1089,16 @@ export function OfficialZoneDrawer({
           setIsSaveBeforeEditDialogOpen(false);
         }}
       />
+      <ConfirmDialog
+        isOpen={isCancelEditDialogOpen}
+        title="Discard unfinished edit?"
+        message="Your local changes and attached media for this zone will be removed. The published zone will not change."
+        confirmLabel="Discard edit"
+        variant="destructive"
+        size="sm"
+        onConfirm={() => void confirmCancelEdit()}
+        onCancel={() => setIsCancelEditDialogOpen(false)}
+      />
 
       {/* DRAWER FOOTER */}
       <div className="p-3.5 border-t border-slate-200 bg-slate-50/90 flex items-center justify-between gap-2 shrink-0">
@@ -974,7 +1144,7 @@ export function OfficialZoneDrawer({
               type="button"
               variant="outline"
               size="sm"
-              onClick={onClose}
+              onClick={() => setIsCancelEditDialogOpen(true)}
               disabled={isSubmitting}
               className="flex-1 h-9 rounded-xl text-xs font-semibold"
             >

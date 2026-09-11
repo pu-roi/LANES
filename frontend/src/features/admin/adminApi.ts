@@ -215,6 +215,7 @@ export interface AvoidanceZone {
   geometry: PolygonGeometry;
   is_active: boolean;
   created_at: string;
+  updated_at: string;
   expires_at: string | null;
   severity: string;
   depth?: string;
@@ -490,6 +491,16 @@ export interface MergeConflict {
   field: "severity" | "depth" | "direction" | "passable_vehicles" | string;
   message: string;
   suggested_value: unknown;
+}
+
+export async function getZone(zoneId: number): Promise<AvoidanceZone> {
+  return apiClient.get<AvoidanceZone>(`/admin/zones/${zoneId}`);
+}
+
+export async function addZoneMedia(zoneId: number, mediaFiles: File[]): Promise<AvoidanceZone> {
+  const body = new FormData();
+  mediaFiles.forEach((file) => body.append("media", file));
+  return apiClient.post<AvoidanceZone>(`/admin/zones/${zoneId}/media`, body);
 }
 
 export interface MergeCandidateItem {

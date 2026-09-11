@@ -30,6 +30,8 @@ export function RoadSegmentPicker({
     setFloodEnd,
     setFloodStartLabel,
     setFloodEndLabel,
+    floodPreviewStatus,
+    floodPreviewMessage,
   } = useMapContext();
 
   const [startDraft, setStartDraft] = useState("");
@@ -165,6 +167,21 @@ export function RoadSegmentPicker({
           </span>
         </div>
       </div>
+
+      {floodPreviewMessage && floodStart && floodEnd && (
+        <p
+          role={floodPreviewStatus === "error" ? "alert" : "status"}
+          className={`rounded-lg px-3 py-2 text-[11px] leading-relaxed ${
+            floodPreviewStatus === "validated"
+              ? "bg-emerald-50 text-emerald-800"
+              : floodPreviewStatus === "loading"
+                ? "bg-blue-50 text-blue-700"
+                : "bg-amber-50 text-amber-800"
+          }`}
+        >
+          {floodPreviewMessage}
+        </p>
+      )}
     </div>
   );
 }

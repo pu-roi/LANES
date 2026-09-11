@@ -71,7 +71,8 @@ export const apiClient = {
         baseUrl = "http://127.0.0.1:8000/api/v1"; // Server-side fetching
       }
     }
-    const url = `${baseUrl}${endpoint}`; 
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    const url = `${baseUrl}${cleanEndpoint}`; 
     
     // Inject JWT token if available
     if (typeof window !== "undefined") {
@@ -88,6 +89,9 @@ export const apiClient = {
       const response = await fetch(url, options);
       
       if (!response.ok) {
+        if (response.status === 401 && typeof window !== "undefined") {
+          localStorage.removeItem("lanes_token");
+        }
         // Attempt to parse JSON error message from FastAPI if it exists
         let errorMsg = `API request failed with status ${response.status}`;
         try {

@@ -22,14 +22,19 @@ export function useMergePreviewLayer({
   proposedGeometry,
 }: UseMergePreviewLayerProps) {
   useEffect(() => {
-    if (!map || !isLoaded) return;
+    if (!map || !isLoaded || typeof map.getStyle !== "function" || !map.getStyle()) return;
 
     const sourceId = "merge-preview-source";
     const lineLayerId = "merge-preview-lines";
     const fillLayerId = "merge-preview-polygons";
     const pointLayerId = "merge-preview-points";
 
-    const existingSource = map.getSource(sourceId) as GeoJSONSource | undefined;
+    let existingSource: GeoJSONSource | undefined;
+    try {
+      existingSource = map.getSource(sourceId) as GeoJSONSource | undefined;
+    } catch {
+      return;
+    }
 
     if (!isOpen || !primaryReport) {
       if (existingSource) {
@@ -149,9 +154,15 @@ export function useMergePreviewLayer({
 
     return () => {
       // Clean up source data on unmount
-      const src = map.getSource(sourceId) as GeoJSONSource | undefined;
-      if (src) {
-        src.setData({ type: "FeatureCollection", features: [] });
+      try {
+        if (map && typeof map.getStyle === "function" && map.getStyle()) {
+          const src = map.getSource(sourceId) as GeoJSONSource | undefined;
+          if (src) {
+            src.setData({ type: "FeatureCollection", features: [] });
+          }
+        }
+      } catch {
+        // Silently ignore if map or style was already torn down
       }
     };
   }, [map, isLoaded, isOpen, primaryReport, selectedCandidates, proposedGeometry]);

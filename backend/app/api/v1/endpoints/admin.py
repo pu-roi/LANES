@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List, Any, Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
@@ -10,6 +11,7 @@ from app.api import deps
 from app.core.database import get_db
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.get("/reports/pending", response_model=List[schemas.FloodReportResponse])
@@ -1135,11 +1137,47 @@ async def create_official_zone(
     try:
         payload_data = json.loads(body)
         payload = schemas.FloodAvoidanceZoneCreateOfficial(**payload_data)
-    except Exception as e:
-        raise HTTPException(status_code=422, detail=f"Invalid body JSON: {e}")
+    except Exception:
+        logger.warning("Invalid official-zone request payload", exc_info=True)
+        raise HTTPException(
+            status_code=422,
+            detail="The zone data is invalid. Please review the shape and try again.",
+        )
+
+    zone_geometry: Any = payload.geometry
+    source_geometry: Any = None
+    if payload.geometry.type in {"LineString", "MultiLineString"}:
+        # Official zones are stored as polygons, while the line-mode UI sends a
+        # routed road centreline. Buffer it by roughly 25 metres to create the
+        # actual avoidance corridor without changing the client contract.
+        source_geometry = payload.geometry
+        buffer_degrees = 25.0 / 111000.0
+        buffered_geojson = db.query(
+            func.ST_AsGeoJSON(
+                func.ST_Buffer(
+                    func.ST_SetSRID(
+                        func.ST_GeomFromGeoJSON(payload.geometry.model_dump_json()),
+                        4326,
+                    ),
+                    buffer_degrees,
+                )
+            )
+        ).scalar()
+        if not buffered_geojson:
+            raise HTTPException(status_code=422, detail="The road segment could not be converted into an avoidance zone.")
+
+        buffered_geometry = json.loads(buffered_geojson)
+        if buffered_geometry.get("type") == "Polygon":
+            zone_geometry = schemas.PolygonGeometry(**buffered_geometry)
+        elif buffered_geometry.get("type") == "MultiPolygon":
+            zone_geometry = schemas.MultiPolygonGeometry(**buffered_geometry)
+        else:
+            logger.error("Unexpected buffered official-zone geometry type: %s", buffered_geometry.get("type"))
+            raise HTTPException(status_code=422, detail="The road segment could not be converted into an avoidance zone.")
 
     zone_in = schemas.FloodAvoidanceZoneCreate(
-        geometry=payload.geometry,
+        geometry=zone_geometry,
+        source_geometry=source_geometry,
         curated_by_admin_id=current_user.id,
         is_active=payload.is_active
     )
@@ -1181,6 +1219,19 @@ async def create_official_zone(
         "data": {"zone_id": zone.id}
     })
 
+    return zone
+
+
+@router.get("/zones/{zone_id}", response_model=schemas.FloodAvoidanceZoneResponse)
+def get_zone(
+    zone_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """Return the current shared version before resuming a local zone edit."""
+    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if not zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
     return zone
 
 
@@ -1236,4 +1287,28 @@ async def update_zone(
         "data": {"zone_id": zone.id}
     })
     
+    return zone
+
+
+@router.post("/zones/{zone_id}/media", response_model=schemas.FloodAvoidanceZoneResponse)
+async def add_zone_media(
+    zone_id: int,
+    media: List[UploadFile] = File(...),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """Append evidence files while an authenticated administrator edits a zone."""
+    from app.services.cloudinary_service import upload_image
+
+    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if not zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+
+    uploaded_urls = [url for file in media if (url := upload_image(file))]
+    if not uploaded_urls:
+        raise HTTPException(status_code=422, detail="No media files could be uploaded")
+
+    zone.media_urls = [*(zone.media_urls or []), *uploaded_urls]
+    db.commit()
+    db.refresh(zone)
     return zone

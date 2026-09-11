@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 10, 2026, 3:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 6:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -11,12 +11,23 @@
 
 ## Active Sprint (Next Feature)
 
+### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+> **Focus:** Hardening the authentication lifecycle, eliminating EventSource connection leaks on client unmount, resolving soft-delete unique constraint collisions on citizen re-registration, standardizing registration to require explicit credential sign-in, and expanding post media ingestion to 100MB videos across Next.js proxy, FastAPI, and Cloudinary.
+> **Current Status (Sept 11, 2026):**
+> - [x] **SSE Zombie Connection & Buffering Fix (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe): Removed `readyState === 1` guard during React unmount to unconditionally call `source.close()`, resolving reconnect loops in StrictMode. Created centralized `getSseUrl` pointing browser to direct port 8000 in dev to avoid Next.js reverse proxy buffering.
+> - [x] **Auth Re-registration & Explicit Sign-in Flow (`auth.py`, `RegisterForm.tsx`, `LoginForm.tsx`)** (@roicambe): Handled soft-deleted user unique collisions in `POST /auth/register` by detecting verified re-registration and purging stale soft-deleted accounts. Removed post-registration auto-login in favor of redirecting to `/login?registered=true` with a clear success alert banner.
+> - [x] **100MB Feed Media & Video Ingestion Pipeline (`next.config.ts`, `posts.py`, `cloudinary_service.py`, `CreatePostModal.tsx`)** (@roicambe): Configured Next.js 15/16 dev proxy body limits to 100MB (`experimental.proxyClientMaxBodySize: '100mb'`). Elevated backend payload limit in `POST /posts` to 100MB. Added video MIME sniffing and Cloudinary video resource type routing. Enhanced `CreatePostModal` with explicit file size toast errors and network drop handling.
+
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
 > **Focus:** Overhauling the flood-report merging logic, candidate identification, and Spatial Operations UI/UX to enable intelligent, multi-factor spatial matching, explainable recommendations, conflict resolution, and seamless final-zone editing while strictly preserving original crowdsourced reports and Community Feed posts.
-> **Current Status (Sept 10, 2026):**
+> **Current Status (Sept 11, 2026):**
+> - [x] **User Reports Serialization & Admin Map Initialization Stability (`backend/app/crud/__init__.py`, `LiveMapPage.tsx`, `useMergePreviewLayer.ts`)** (@roicambe): Resolved missing `get_flood_reports_by_user` export causing 500 on user reports query, cleaned up 404 stale edit drafts in IndexedDB, and protected MapLibre merge layer hooks against uninitialized map styles during auto-recovery.
+> - [x] **Decision #16 Bidirectional Detection Repair (`carriageway_service.py`, `routes.py`, `MapContext.tsx`, `useFloodMapPreview.ts`)** (@roicambe): Replaced the normal-driving-route preview chain with one authoritative raw-anchor endpoint, rejects legal-driving loops and same-side map matches, probes both sides of divided roads, connects validated snapped routes back to the exact selected pins, renders short solid terminal caps so dash-phase gaps cannot hide those connections, and surfaces conservative single-line fallbacks across Flood Report, Create Zone, Edit Zone, and Merge workflows. Added focused pytest regression coverage; manual multi-road/device verification remains pending.
+> - [x] **Flood Preview Loading & Input Defaults (`LoadingOverlay.tsx`, `FloodReportPanel.tsx`, `carriageway_service.py`)** (@roicambe): Replaced the temporary loading label with the shared blocking overlay on mobile and desktop, restored Start/End direction swapping, kept two-way coverage unchecked by default, removed the preselected severity tile and implicit low-severity fallback, and parallelized the two directional Valhalla route checks.
 > - Backend candidate engine (`merge_service.py`), carriageway analysis (`carriageway_service.py`), and model overrides (`passable_vehicles_override`, `hidden_hazards_override`, `media_urls`) are implemented and migrated.
 > - `CreateOfficialZonePanel` has been completely restructured into a modular Feature-Based architecture (`zones/`) with 5-section `FloodReportPanel` parity (Depth/Severity, Survey, Cloudinary media upload, Description) and buffer slider removal.
 > - **IN PROGRESS / MANUAL VERIFICATION PENDING:** The Phase 5 merge interface has been implemented: report inspection is neutral; intelligent suggestions require an explicit action and selection; candidate evidence is grouped inside each report card; and the contextual secondary drawer preserves its merge session while collapsed. Flood Report and Create Zone now persist account-private, full workspaces in IndexedDB across collapse, reload, and sign-in restoration. Their saved drafts can be reopened for replacement editing without losing media or geometry; Create Zone restores both routed line previews and Terra Draw shapes. TypeScript, production build, and whitespace checks are clean; focused lint still reports existing rule violations in the legacy map/panel components. Developer-led desktop/mobile workflow verification remains before Phase 5 is marked complete.
+> - **DELIVERED / MANUAL VERIFICATION PENDING:** Edit Zone is now the third resumable Pane 2 workspace. Per-admin IndexedDB drafts restore metadata, survey answers, notes, and locally selected media after collapse, reload, or sign-in. A newer server `updated_at` version wins over stale local work. Admin-created Line zones persist their original road centreline in `source_geometry`, so active-zone rendering can retain its existing dark road core plus polygon buffer after reload. Alembic migrations `2a4c8e91d605` and `0d5f7a6b4c11` must be applied together on every development database.
 
 ---
 

@@ -1,22 +1,6 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-
-const getSseUrl = (): string => {
-  if (typeof window === "undefined") return "";
-  
-  const apiEnv = process.env.NEXT_PUBLIC_API_URL;
-  if (apiEnv && apiEnv.startsWith("http")) {
-    return `${apiEnv}/sse/stream`;
-  }
-  
-  // In local development, bypass the Next.js proxy which often buffers SSE.
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.')) {
-    const host = window.location.hostname === 'localhost' ? '127.0.0.1' : window.location.hostname;
-    return `http://${host}:8000/api/v1/sse/stream`;
-  }
-  
-  return `/api/v1/sse/stream`;
-};
+import { getSseUrl } from "@/lib/sse";
 
 export function useSSE() {
   const queryClient = useQueryClient();
@@ -24,7 +8,7 @@ export function useSSE() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const sseUrl = getSseUrl();
+    const sseUrl = getSseUrl("/sse/stream");
     console.log(`Connecting to SSE at: ${sseUrl}`);
     
     const eventSource = new EventSource(sseUrl, { withCredentials: true });

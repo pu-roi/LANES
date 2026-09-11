@@ -18,9 +18,7 @@ import {
   type RouteOption,
   type MultiRouteResponse,
 } from "@/features/routing/routingApi";
-import { getBearing } from "@/lib/utils";
 import { apiClient } from "@/lib/apiClient";
-import toast from "react-hot-toast";
 import { useRef } from "react";
 
 export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
@@ -60,6 +58,8 @@ export interface FloodReportMapState {
   floodOppositeGeometry: RouteGeometry | null;
   floodIsBidirectional: boolean;
 }
+
+export type FloodPreviewStatus = "idle" | "loading" | "validated" | "fallback" | "ambiguous" | "unmapped" | "error";
 
 interface MapContextValue {
   start: MapPoint | null;
@@ -107,6 +107,9 @@ interface MapContextValue {
   floodEnd: MapPoint | null;
   floodPreviewGeometry: RouteGeometry | null;
   floodOppositeGeometry: RouteGeometry | null;
+  floodPreviewStatus: FloodPreviewStatus;
+  floodPreviewMessage: string | null;
+  floodRoadType: string | null;
   setFloodStart: (coords: [number, number] | null, label?: string) => void;
   setFloodEnd: (coords: [number, number] | null, label?: string) => void;
   setFloodStartLabel: (label: string) => void;
@@ -190,6 +193,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [floodEnd, setFloodEndState] = useState<MapPoint | null>(null);
   const [floodPreviewGeometry, setFloodPreviewGeometry] = useState<RouteGeometry | null>(null);
   const [floodOppositeGeometry, setFloodOppositeGeometry] = useState<RouteGeometry | null>(null);
+  const [floodPreviewStatus, setFloodPreviewStatus] = useState<FloodPreviewStatus>("idle");
+  const [floodPreviewMessage, setFloodPreviewMessage] = useState<string | null>(null);
+  const [floodRoadType, setFloodRoadType] = useState<string | null>(null);
   const [floodIsBidirectional, setFloodIsBidirectional] = useState(false);
   const [draftReports, setDraftReports] = useState<DraftReport[]>([]);
 
@@ -363,6 +369,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setFloodStart = useCallback((coords: [number, number] | null, label?: string) => {
+    setFloodOppositeGeometry(null);
+    setFloodPreviewStatus("idle");
+    setFloodPreviewMessage(null);
+    setFloodRoadType(null);
     if (coords === null) {
       setFloodStartState(null);
     } else {
@@ -371,6 +381,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setFloodEnd = useCallback((coords: [number, number] | null, label?: string) => {
+    setFloodOppositeGeometry(null);
+    setFloodPreviewStatus("idle");
+    setFloodPreviewMessage(null);
+    setFloodRoadType(null);
     if (coords === null) {
       setFloodEndState(null);
     } else {
@@ -391,6 +405,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
     setFloodEndState(state.floodEnd);
     setFloodPreviewGeometry(state.floodPreviewGeometry);
     setFloodOppositeGeometry(state.floodOppositeGeometry);
+    setFloodPreviewStatus("idle");
+    setFloodPreviewMessage(null);
+    setFloodRoadType(null);
     setFloodIsBidirectional(state.floodIsBidirectional);
     setActivePoint(null);
     setIsPickingOnMap(false);
@@ -448,6 +465,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
     setFloodStartState(null);
     setFloodEndState(null);
     setFloodPreviewGeometry(null);
+    setFloodOppositeGeometry(null);
+    setFloodPreviewStatus("idle");
+    setFloodPreviewMessage(null);
+    setFloodRoadType(null);
     setActivePoint("start");
     clearRoute();
   }, [clearRoute]);
@@ -494,59 +515,62 @@ export function MapProvider({ children }: { children: ReactNode }) {
     };
   }, [start, end, clearRoute, vehicleProfile, routingEngine]);
 
-  // Flood segment preview (uses ignore_floods=true for a straight reference line)
+  // Authoritative flood segment preview shared by public and admin workflows.
   useEffect(() => {
     if (!floodStart || !floodEnd) {
+      // MapContext synchronizes an external map controller; clearing stale map
+      // geometry when either anchor disappears is intentional.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFloodPreviewGeometry(null);
       setFloodOppositeGeometry(null);
+      setFloodPreviewStatus("idle");
+      setFloodPreviewMessage(null);
+      setFloodRoadType(null);
       return;
     }
 
     let cancelled = false;
+    // Show feedback as soon as both endpoints are chosen. The routed geometry
+    // below replaces this fallback as soon as Valhalla responds.
+    setFloodPreviewGeometry({
+      type: "LineString",
+      coordinates: [floodStart.coords, floodEnd.coords],
+    });
+    setFloodOppositeGeometry(null);
+    setFloodPreviewStatus("loading");
+    setFloodPreviewMessage("Checking the selected road against the routing map…");
+    setFloodRoadType(null);
 
     const fetchFloodPreview = async () => {
       try {
-        const routeAB = await getRoute(floodStart.coords, floodEnd.coords, true);
+        const preview = await apiClient.post<{
+          original: RouteGeometry;
+          opposite: RouteGeometry | null;
+          coverage_geometry: RouteGeometry;
+          is_divided: boolean;
+          road_type: string;
+          validation_status: FloodPreviewStatus;
+          message: string;
+        }>("/reports/preview-bidirectional", {
+          start: floodStart.coords,
+          end: floodEnd.coords,
+          is_bidirectional: floodIsBidirectional,
+          road_name: null,
+        });
         if (cancelled) return;
-        
-        const originalGeometry = routeAB.routes[0]?.geometry ?? null;
-
+        setFloodPreviewGeometry(preview.original);
+        setFloodOppositeGeometry(preview.opposite ?? null);
+        setFloodPreviewStatus(preview.validation_status);
+        setFloodPreviewMessage(preview.message);
+        setFloodRoadType(preview.road_type);
+      } catch (previewError: unknown) {
         if (!cancelled) {
-          setFloodPreviewGeometry(originalGeometry);
-        }
-
-        // If bidirectional is enabled, call the backend to find the real opposite carriageway
-        if (floodIsBidirectional && originalGeometry?.coordinates?.length >= 2) {
-          try {
-            const preview = await apiClient.post<{
-              original: RouteGeometry;
-              opposite: RouteGeometry | null;
-              is_divided: boolean;
-              road_type: string;
-            }>("/reports/preview-bidirectional", {
-              coordinates: originalGeometry.coordinates,
-              road_name: null,
-            });
-
-            if (!cancelled) {
-              setFloodOppositeGeometry(preview.opposite ?? null);
-              
-              if (preview.road_type === "NARROW_TWO_WAY") {
-                toast("This is a standard two-way road. A single boundary is sufficient.", { icon: "ℹ️" });
-              } else if (preview.road_type === "TRUE_ONE_WAY") {
-                toast.error("This is a one-way street. Two-way mapping cannot be applied.");
-              }
-            }
-          } catch {
-            if (!cancelled) setFloodOppositeGeometry(null);
-          }
-        } else {
-          if (!cancelled) setFloodOppositeGeometry(null);
-        }
-      } catch {
-        if (!cancelled) {
-          setFloodPreviewGeometry(null);
           setFloodOppositeGeometry(null);
+          setFloodPreviewStatus("error");
+          setFloodPreviewMessage(previewError instanceof Error
+            ? previewError.message
+            : "Road verification is unavailable. Only the selected line will be used.");
+          setFloodRoadType("UNMAPPED");
         }
       }
     };
@@ -584,6 +608,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodEnd,
       floodPreviewGeometry,
       floodOppositeGeometry,
+      floodPreviewStatus,
+      floodPreviewMessage,
+      floodRoadType,
       floodIsBidirectional,
       setFloodIsBidirectional,
       draftReports,
@@ -644,6 +671,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodEnd,
       floodPreviewGeometry,
       floodOppositeGeometry,
+      floodPreviewStatus,
+      floodPreviewMessage,
+      floodRoadType,
       floodIsBidirectional,
       setFloodIsBidirectional,
       draftReports,
@@ -667,7 +697,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setEndLabel,
       setFloodStart,
       setFloodEnd,
-      floodIsBidirectional,
       setFloodStartLabel,
       setFloodEndLabel,
       restoreFloodReportMapState,

@@ -34,12 +34,12 @@ def create_post(
 ):
     """Create a standalone community post with multiple images."""
     
-    # Payload size check (20MB limit)
+    # Payload size check (100MB limit for video and high-res photo uploads)
     content_length = request.headers.get('content-length')
     if content_length:
         try:
-            if int(content_length) > 20 * 1024 * 1024:
-                raise HTTPException(status_code=413, detail="Payload too large. Maximum size is 20MB.")
+            if int(content_length) > 100 * 1024 * 1024:
+                raise HTTPException(status_code=413, detail="Payload too large. Maximum size is 100MB.")
         except ValueError:
             pass
 
@@ -62,12 +62,26 @@ def create_post(
     )
     post = crud_post.create_community_post(db=db, post_in=post_in, user_id=current_user.id)
     
+    from app.crud import feed as crud_feed
+    post_data = crud_feed.get_feed_post(db, post.id, user_id=current_user.id)
+    if post_data:
+        return post_data
+
     avatar_url = None
     if getattr(current_user, "profile", None):
         avatar_url = current_user.profile.avatar_url
         
     return {
-        **post.__dict__,
+        "id": post.id,
+        "user_id": post.user_id,
+        "content": post.content,
+        "media_urls": post.media_urls,
+        "location_tag": post.location_tag,
+        "location_lat": post.location_lat,
+        "location_lng": post.location_lng,
+        "flood_report_id": post.flood_report_id,
+        "created_at": post.created_at,
+        "updated_at": post.updated_at,
         "author_name": current_user.username,
         "author_avatar": avatar_url,
         "upvotes": 0,

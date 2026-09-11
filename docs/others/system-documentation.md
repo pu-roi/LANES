@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 10, 2026, 3:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 6:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -86,10 +86,10 @@ These files are **always present** regardless of which page you are on.
 | `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and pulsing red focus markers. Features resilient `map.getStyle()` layer mounting, `style.load` re-render listeners, auto camera `fitBounds` framing, container resize observer alignment for sidebar offsets, and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
 | `BaseMap.tsx` | `src/shared/ui/map/BaseMap.tsx` — Low-level wrapper around MapLibre GL JS. Manages the map instance lifecycle, resize observer, and exposes `onMapInit` and `onMapLoad` callbacks. |
 | `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector, start/destination inputs with focus guards and smart two-click "Choose on Map" advance, authenticated saved places chips with sequential recalculation, alternative route cards, and turn-by-turn instruction list. |
-| `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The incident reporting panel (opens from FAB or top CTA). Step-by-step form for reporting floods with start/end pin dropping, severity selection, survey questions, media previews, and an editable Saved Drafts workspace. Its account-private IndexedDB record (`floodReportDraftStorage.ts`) restores the active form, map state, media, and queued reports only for the signed-in commuter. |
+| `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The responsive incident reporting panel (opens from FAB or top CTA). Step one provides Start/End pin dropping with a direction-swap control, opt-in two-way coverage, required unselected-by-default severity tiles, and a shared blocking overlay while road topology is verified. Later steps contain survey questions, media previews, and an editable Saved Drafts workspace. Its account-private IndexedDB record (`floodReportDraftStorage.ts`) restores the active form, map state, media, and queued reports only for the signed-in commuter. |
 | `OfflineManager.tsx` | `src/features/offline/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
 | `MapPickerMobileOverlay.tsx` | `src/features/map/MapPickerMobileOverlay.tsx` — A translucent overlay with a centered crosshair that appears on mobile when the user taps a location input, letting them drag the map to pin a point. |
-| `useFloodMapPreview.ts` | `src/features/map/hooks/useFloodMapPreview.ts` — A shared custom hook for Start/End marker management and the bidirectional orange-dashed route preview. It is used by the public map and the admin map interaction layer. |
+| `useFloodMapPreview.ts` | `src/features/map/hooks/useFloodMapPreview.ts` — A shared custom hook for Start/End marker management and the bidirectional orange-dashed route preview. It overlays short solid orange terminal segments beneath the pins so MapLibre dash-phase gaps cannot make verified geometry appear detached. It is used by the public map and the admin map interaction layer. |
 | `AdminFloodMapInteraction.tsx` | `src/features/admin/components/AdminFloodMapInteraction.tsx` — Admin `/admin/map` bridge between MapLibre and `MapContext`; owns Create Zone map clicks, crosshair cursor state, Start-to-End progression, and the shared preview lifecycle. |
 
 ### Hidden Until Interaction (Map Panels)
@@ -106,6 +106,7 @@ These files are **always present** regardless of which page you are on.
 |----------|---------|
 | `GET /api/v1/reports/zones` | Fetches all active flood avoidance zone polygons to render on the map |
 | `POST /api/v1/reports/` | Submits a new flood report from the FloodReportPanel form |
+| `POST /api/v1/reports/preview-bidirectional` | Builds an authoritative road preview from raw Start/End anchors. Valid routes retain their Valhalla-snapped road vertices and include short accepted endpoint connectors so the returned original geometry begins and ends exactly at the selected pins. Returns the original line, an optional graph-validated opposite carriageway, combined coverage geometry, road classification, validation status, and user-facing explanation. The `/routes/preview-bidirectional` controller remains the canonical implementation. |
 | `POST /api/v1/routing/calculate` | Calculates a route via Valhalla or ORS, injecting avoidance zones as exclusion polygons |
 | `GET /api/v1/geocode/autocomplete?q=...` | Returns place name suggestions for location inputs |
 | `GET /api/v1/geocode/reverse?lat=&lon=` | Converts a map tap coordinate to a human-readable address |
@@ -132,7 +133,7 @@ These files are **always present** regardless of which page you are on.
 
 | File | How to Trigger It | What It Shows |
 |------|-------------------|--------------|
-| `CreatePostModal.tsx` | `src/features/feed/CreatePostModal.tsx` — Click **"Create Post"** or the **"+"** floating button | Full-screen modal with rich text area, drag-and-drop image upload, address autocomplete or map crosshair location picking, coordinate persistence (`location_lat`, `location_lng`), and draft auto-saving that persists across auth redirects. Submits to `POST /api/v1/feed/posts`. |
+| `CreatePostModal.tsx` | `src/features/feed/CreatePostModal.tsx` — Click **"Create Post"** or the **"+"** floating button | Full-screen modal with rich text area, drag-and-drop image & video upload (up to 100MB per file with explicit size validation toasts), address autocomplete or map crosshair location picking, coordinate persistence (`location_lat`, `location_lng`), and draft auto-saving that persists across auth redirects. Submits multipart payloads to `POST /api/v1/posts`. |
 | `EmergencyDirectoryModal.tsx` | `src/features/feed/components/EmergencyDirectoryModal.tsx` — Click **"View All Hotlines"** | Lazily loaded national, Pasig city, and Pasig barangay hotline directory with tabbed sections, search, and phone links. |
 
 ### Backend Calls from This Page
@@ -202,13 +203,13 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `LoginForm.tsx` | `src/features/auth/LoginForm.tsx` — Email + password fields, a "Forgot Password?" link, and a "Sign Up" redirect link. On submit, calls `POST /api/v1/auth/login`. The returned JWT is stored in `localStorage`. |
+| `LoginForm.tsx` | `src/features/auth/LoginForm.tsx` — Email + password fields, a "Forgot Password?" link, and a "Sign Up" redirect link. Displays a prominent green success banner when redirected from registration with `?registered=true`. On submit, calls `POST /api/v1/auth/login`. The returned JWT is stored in `localStorage`. |
 
 ### Register Page (/register)
 
 | File | What You See |
 |------|-------------|
-| `SignupForm.tsx` | `src/features/auth/SignupForm.tsx` — Registration form with username, email, password, and confirm password fields. On submit calls `POST /api/v1/auth/register`, which triggers an OTP email via Brevo SMTP and then redirects to `/verify`. |
+| `RegisterForm.tsx` | `src/features/auth/components/RegisterForm.tsx` — Multi-step registration wizard with identity-first email verification, OTP confirmation, password/profile entry, and PSGC address selection. On final submit, calls `POST /api/v1/auth/register`, clears registration drafts, and redirects to `/login?registered=true` for explicit credential sign-in. |
 
 ### Verify Page (/verify)
 
@@ -262,7 +263,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 |-------|------|-------------|
 | `/admin` | `AdminDashboard.tsx` | Entry landing — shows role-based nav links and a summary stats row (total users, reports, active zones). |
 | `/admin/dashboard` | `DashboardPage.tsx` | Overview cards: total users, reports filed today, currently active flood zones. Recent activity feed and quick action shortcuts. |
-| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Pane 1 contains `PendingReportsPanel` and `ActiveZonesPanel`; Pane 2 is a contextual docked drawer controlled by separate Create Zone and Review Merge edge-tab handles. Normal report focus is neutral. **Review Merge Suggestions** starts a persistent merge session with explicit candidate checkboxes, in-card match evidence, a field comparison matrix, selected-only conflicts, reusable road/Terra Draw editing, confirmation, and primary/candidate/proposed map previews. The Review Merge handle remains available after collapse until focus changes or the merge completes. Create Zone remains mounted while collapsed; its account-private IndexedDB record (`zoneDraftStorage.ts`) restores the active workspace and editable queued drafts, including line routes, Terra Draw shapes, attributes, survey, notes, and per-zone media after reload or sign-in. Its line editor uses shared Start/End map picking and preview markers. It also includes `ReportDetailsModal`, the 400ms `FloodZonePopup` hover engine, and `OfficialZoneDrawer` with `GeometryModeSelector`, `RoadSegmentPicker`, `DraftZoneCart`, five aligned form sections, and Cloudinary media upload. |
+| `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Pane 1 contains `PendingReportsPanel` and `ActiveZonesPanel`; Pane 2 switches in place among Create Zone, Review Merge, and amber Edit Zone workspaces. Normal report focus is neutral. **Review Merge Suggestions** starts a persistent merge session with explicit candidate checkboxes, in-card match evidence, a field comparison matrix, selected-only conflicts, reusable road/Terra Draw editing, confirmation, and primary/candidate/proposed map previews. Create Zone remains mounted while collapsed; `zoneDraftStorage.ts` restores its account-private active workspace and editable queued drafts. Edit Zone uses `zoneEditDraftStorage.ts` to restore the same admin's unfinished metadata, survey, notes, and local media; it fetches the latest server zone first and rejects stale drafts when another admin has saved newer data. Its line editor uses shared Start/End map picking and preview markers. It also includes `ReportDetailsModal`, the 400ms `FloodZonePopup` hover engine, and `OfficialZoneDrawer` with `GeometryModeSelector`, `RoadSegmentPicker`, `DraftZoneCart`, five aligned form sections, and Cloudinary media upload. |
 | `/admin/users` | `UsersPage.tsx` | Searchable table of all registered users. Admin can filter by role, view trust scores, activate or deactivate accounts, and reassign roles. |
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
@@ -277,7 +278,9 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `PUT /api/v1/admin/reports/{id}/approve` | Approve report, auto-generates flood avoidance zone polygon |
 | `PUT /api/v1/admin/reports/{id}/reject` | Reject report with a reason (updates trust score) |
 | `POST /api/v1/admin/zones` | Create official flood avoidance zone (multipart `FormData` with JSON `body` and `media` files) |
+| `GET /api/v1/admin/zones/{id}` | Retrieve the current shared zone before resuming an account-private Edit Zone draft |
 | `PUT /api/v1/admin/zones/{id}` | Update existing avoidance zone metadata, depth, severity, passability, and notes |
+| `POST /api/v1/admin/zones/{id}/media` | Append authenticated administrator evidence uploads to an existing zone |
 | `GET /api/v1/admin/reports/merge-candidates` | Multi-factor spatial candidate scoring for report merging |
 | `POST /api/v1/admin/reports/merge` | Multi-report merge into a new or existing avoidance zone |
 | `GET /api/v1/admin/users` | All users with role and profile info |
@@ -333,7 +336,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | **Zone Deduplication** | When a new flood report is approved near an existing active zone (within a configurable buffer distance), it is linked to that zone instead of creating a new duplicate polygon |
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |
 | **Weather Proxy** | Fetches data from the OpenWeatherMap API, transforms and caches the response, and serves it to the frontend |
-| **SSE Broadcaster** | Pushes real-time notification events to connected authenticated clients via Server-Sent Events, avoiding battery-draining WebSocket connections |
+| **SSE Broadcaster & LiveSync** | Pushes real-time notification events, active zone changes, and cache invalidations to connected clients via Server-Sent Events. Centralized in `sse.ts` to stream directly from FastAPI port 8000 in dev/LAN environments to bypass dev proxy response buffering, with unconditional unmount cleanup in `useLiveSync.ts` avoiding zombie reconnect loops |
 | **Hotline Aggregator** | Fetches and parses national and Pasig emergency contact pages, normalizes phone numbers for `tel:` links, and caches results for one hour |
 
 ---
@@ -501,6 +504,7 @@ Spatial polygon buffers generated around approved flood reports or curated direc
 | `name` | String(100), nullable | Descriptive operational name of the avoidance zone |
 | `curated_by_admin_id` | FK → users.id, nullable | Admin who manually edited or created this zone (null if auto-generated) |
 | `geometry` | PostGIS POLYGON (SRID 4326) | The actual closed polygon boundary of the avoidance area |
+| `source_geometry` | PostGIS GEOMETRY, nullable | Original administrator-selected LineString or MultiLineString; used to render the active road core while `geometry` remains the routing buffer |
 | `severity_override` | Enum, nullable | Overridden severity level (`low`, `medium`, `high`, `extreme`) |
 | `depth_override` | String(50), nullable | Standard visual water depth gauge (e.g. `knee`, `waist`, `chest`) |
 | `passable_vehicles_override` | String(500), nullable | Comma-separated list of safe vehicle types |
@@ -510,6 +514,7 @@ Spatial polygon buffers generated around approved flood reports or curated direc
 | `media_urls` | JSONB, nullable | Photographic and video evidence URLs stored in Cloudinary |
 | `is_active` | Boolean | Whether this zone is currently applied to route calculations |
 | `created_at` | DateTime | When the zone was generated or created |
+| `updated_at` | DateTime | Latest shared zone metadata update; used to protect Edit Zone drafts from overwriting a newer server version |
 | `expires_at` | DateTime, nullable | Automatic expiry time (null = never expires automatically) |
 
 ---

@@ -93,7 +93,12 @@ export default function ProfileView() {
   };
 
   const handleViewMap = (lat: number, lng: number) => {
-    router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`);
+    router.push('/map');
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fly-to-location', {
+        detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
+      }));
+    }, 150);
   };
 
   if (authLoading) {

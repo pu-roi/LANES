@@ -4,21 +4,50 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import AdminSidebar from "@/features/navigation/AdminSidebar";
 import LiveMapPage from "@/features/admin/LiveMapPage";
+import { useAuth } from "@/hooks/useAuth";
+import { Loader2 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { user, isLoading, isAuthenticated } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    const token = localStorage.getItem("lanes_token");
-    if (!token) {
-      router.push("/login");
-    }
-  }, [router]);
+  }, []);
 
-  if (!isMounted) return null; // Prevent hydration errors
+  useEffect(() => {
+    if (!isMounted || isLoading) return;
+
+    if (!isAuthenticated || !user) {
+      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+      return;
+    }
+
+    const roleName = (user as any)?.role?.name;
+    const isAdmin = roleName === "Super Admin" || roleName === "DRRM Officer" || roleName === "Moderator";
+    if (!isAdmin) {
+      router.replace("/map");
+    }
+  }, [isMounted, isLoading, isAuthenticated, user, router, pathname]);
+
+  if (!isMounted || isLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-slate-100">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          <p className="text-sm font-medium text-slate-600">Verifying credentials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const roleName = (user as any)?.role?.name;
+  const isAdmin = roleName === "Super Admin" || roleName === "DRRM Officer" || roleName === "Moderator";
+  if (!isAuthenticated || !isAdmin) {
+    return null;
+  }
 
   const isMapPage = pathname === "/admin/map";
 

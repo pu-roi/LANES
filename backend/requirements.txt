@@ -24,4 +24,3 @@ numpy
 pandas
 cachetools==7.1.8
 python-dotenv==1.2.2
-

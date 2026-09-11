@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 7, 2026, 3:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 4:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -47,7 +47,7 @@ This document serves as the central technical reference for all currently implem
     3. **Sliding Grace Window for Network Latency:** Retains up to **3 unexpired active codes** (5-minute lifetime) per session. If a delayed email arrives after a resend, entering the older code still succeeds. All codes are purged immediately upon verification.
     4. **Zero-Click Verification & Attempt Throttling:** 6 distinct pin boxes auto-advance, handle paste events, and automatically fire verification when the 6th digit is entered. Wrong attempts auto-clear and refocus with remaining attempt warnings; exceeding 5 failed attempts locks verification for 5 minutes.
     5. **Demographic & Address Profile:** Upon verification, the user sets their username/password, completes their profile, and selects Province -> City -> Barangay using live PSGC API data.
-    6. **Seamless Auto-Login:** Successfully creating the account automatically logs the user in and redirects to the landing page with zero manual login redirects.
+    6. **Explicit Login Redirection:** Successfully creating the account clears pending registration drafts and redirects to the login page (`/login?registered=true`), displaying a green notification banner informing the citizen of account creation and prompting explicit credential authentication.
 *   **Access & Roles:** Public users.
 *   **Related Components:**
     *   **Frontend:** [RegisterForm.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/auth/components/RegisterForm.tsx), [DatePicker.tsx](file:///d:/Documents/Github/LANES/frontend/src/shared/ui/DatePicker.tsx), [LocationPickerModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/auth/components/LocationPickerModal.tsx).
@@ -246,6 +246,7 @@ This document serves as the central technical reference for all currently implem
     5. Interaction events (Likes, Mentions, Replies) trigger real-time `Notification` rows stored in the database for the post author, accessible via the global Bell icon.
     6. **Post Geolocation & Map Fly-to:** Community posts support tagged coordinates (`location_lat`, `location_lng`). When published, the header displays a clickable red pin badge that navigates directly to `/map`, uses container `ResizeObserver` alignment to center coordinates within the desktop visible area (compensating for the 340px routing panel), and focuses the camera with a 3-second pulsing red indicator.
     7. **Persistent Post Drafting (IndexedDB):** Prevents accidental data loss when users navigate away from the post creation modal or lose connection. Text content is persisted in `sessionStorage`, while heavy media binary blobs (images/videos) are serialized into the browser's native **IndexedDB** via `idb-keyval`, reconstructing them safely back into JavaScript `File` objects and object URLs on remount.
+    8. **100MB Multi-format Media Uploads & Video Streaming:** Supports photo and video attachments up to 100MB per file with Next.js proxy client size configuration (`experimental.proxyClientMaxBodySize: '100mb'`), FastAPI multipart handling, dynamic Cloudinary resource classification (`resource_type="video"`), and detailed user error toasts specifying exact file size versus system limits on rejection.
 *   **Access & Roles:** Public users can post and reply. Admins and Authors can Pin comments.
 *   **Related Components:**
     *   **Frontend:** `src/features/feed/` ([PostItem.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/PostItem.tsx), [CreatePostModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/feed/CreatePostModal.tsx)), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [BaseMap.tsx](file:///d:/Documents/Github/LANES/frontend/src/shared/ui/BaseMap.tsx), `src/features/notifications/` (NotificationDropdown).
@@ -257,19 +258,20 @@ This document serves as the central technical reference for all currently implem
 *   **Purpose:** Accurately models road-segment submersion along divided boulevards, dual carriageways (e.g., C-5, Ortigas Ave, Shaw Blvd), and narrow two-way streets without erroneously blocking oncoming lanes or under-reporting flooded dual lanes.
 *   **What it does:** Dynamically inspects the OpenStreetMap/Valhalla road network graph at report creation. When a user reports a bidirectional flood on a divided carriageway, it identifies both opposing highway lines, validates street naming consistency to prevent false positives across unrelated alleys, and generates a unified multi-geometry avoidance zone.
 *   **How it works:**
-    1. **Pre-Submission Carriageway Detection:** The endpoint `POST /api/v1/reports/detect-carriageway` evaluates the user's drawn `LineString` segment against Valhalla's routing graph via `find_opposite_carriageway`.
-    2. **Road Classification Engine:** Classifies the street segment into one of four topology modes:
+    1. **Authoritative Pre-Submission Preview:** `POST /api/v1/reports/preview-bidirectional` receives the raw Start/End anchors, evaluates both route directions, rejects legal-driving loops, and returns the original road, optional validated counterpart, combined coverage, classification, and explanation.
+    2. **Road Classification Engine:** Uses length-weighted Valhalla evidence to classify the street segment:
        - `NARROW_TWO_WAY`: Single physical pavement with two-way traffic flow; standard directional buffering applies.
        - `DIVIDED_CARRIAGEWAY`: Physically separated dual carriageways requiring paired opposite-lane discovery.
        - `TRUE_ONE_WAY`: Confirmed single-direction street with no counterpart.
+       - `AMBIGUOUS`: Mixed road topology or an excessive route detour; conservative single-line coverage applies.
        - `UNMAPPED`: Segment outside graph coverage.
-    3. **Dynamic Perpendicular Offset Probe:** For one-way candidates, executes a progressive orthogonal ray-cast search (stepping 5m, 10m, 15m, 20m, 25m, 30m) along the normal vector of the segment midpoint to locate the opposing directional edge.
-    4. **Name Validation Firewall:** Validates that the discovered opposite edge shares the exact normalized road name (or highway classification) with the source segment, strictly preventing accidental snapping to parallel access alleys or service roads.
+    3. **Two-Sided Dynamic Perpendicular Probe:** For one-way candidates, searches left and right at 5m, 10m, 15m, 20m, and 30m so anchor direction cannot force the search onto the wrong side.
+    4. **Counterpart Validation Firewall:** Requires matching normalized road identity and class, distinct OSM way IDs, opposing direction, comparable length, parallel alignment, sufficient longitudinal overlap, and 4–35m lateral separation before accepting a second carriageway.
     5. **PostGIS Dual-Buffering:** In `report_service.py` and `admin.py`, creates buffered line geometries for both carriageways and merges them into a single avoidance polygon boundary (`ST_Multi` / `ST_Buffer`), guaranteeing Valhalla detour calculations route around both carriageways simultaneously.
 *   **Access & Roles:** Public users can report bidirectional hazards; DRRM officers inspect and confirm carriageway pairs during spatial moderation.
 *   **Related Components:**
     *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx), [CreateOfficialZonePanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/CreateOfficialZonePanel.tsx), [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx).
-    *   **Backend:** [valhalla_service.py](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py) (`find_opposite_carriageway`), [report_service.py](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py), [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) (`/detect-carriageway`), [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py).
+    *   **Backend:** [carriageway_service.py](file:///d:/Documents/Github/LANES/backend/app/services/carriageway_service.py), [report_service.py](file:///d:/Documents/Github/LANES/backend/app/services/report_service.py), [routes.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/routes.py) (`/preview-bidirectional`), [admin.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py).
 
 ---
 

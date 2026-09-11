@@ -60,7 +60,7 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
     return (
       <>
         {loaderOverlay}
-        {children}
+        {!showLoader && children}
       </>
     );
   }

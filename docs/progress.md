@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 10, 2026, 3:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 11, 2026, 6:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, and exact file size error notifications |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
 | 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
 | 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
@@ -30,7 +31,44 @@
 
 ## Capstone Roadmap - Delivered Phases
 
+### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+- [x] **EventSource Zombie Connection & SSE Dev Proxy Resolution (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe):
+  - Fixed persistent zombie connections and connection thrashing by removing the restrictive `readyState === 1` guard during React StrictMode unmount cleanup, ensuring `source.close()` executes unconditionally.
+  - Implemented centralized `getSseUrl('/sse/stream')` directing browser SSE connections straight to FastAPI on port `8000` in local dev/LAN, eliminating Next.js proxy response buffering and SSE dropouts.
+  - Standardized error logging in `useLiveSync` from intrusive console.error floods to graceful `console.warn`.
+- [x] **Auth Soft-Delete Re-registration Conflict & Explicit Login Flow (`auth.py`, `RegisterForm.tsx`, `LoginForm.tsx`)** (@roicambe):
+  - Resolved `IntegrityError` unique constraint failure when a citizen whose account was previously soft-deleted attempts to re-register with the same email or username. The endpoint now distinguishes active collisions from archived ones, automatically purging stale soft-deleted records upon OTP verification to permit clean re-registration.
+  - Corrected registration flow so citizens are not automatically logged in upon sign-up; registrations now clear draft states and redirect to `/login?registered=true`, displaying a prominent green alert banner informing the user to log in with their newly created credentials.
+- [x] **100MB Feed Media & Video Streaming Pipeline (`next.config.ts`, `posts.py`, `cloudinary_service.py`, `CreatePostModal.tsx`)** (@roicambe):
+  - Configured Next.js 15/16 proxy body limit via `experimental: { proxyClientMaxBodySize: '100mb' }` in `next.config.ts`, preventing the dev proxy's 10MB default buffer limit from dropping connections (`socket hang up / ECONNRESET`) while adhering to Next.js 16 configuration schema.
+  - Elevated backend multipart upload size limit in `POST /posts` from 20MB to 100MB.
+  - Enhanced Cloudinary upload service with MIME-type and file-extension inspection, automatically assigning `resource_type="video"` without image crop transformations for video files.
+  - Updated `CreatePostModal.tsx` file limit from 20MB to 100MB and refined validation feedback to display a clear, descriptive toast ("File Limit Exceeded - [filename] ([size] MB) exceeds the 100MB maximum limit") and robust 413/network truncation handling.
+- [x] **Post Media Draft Not Saved on Unauthenticated Login Redirect Bugfix (`CreatePostModal.tsx`)** (@roicambe):
+  - Fixed a bug where images and videos uploaded into the Create Post modal were silently dropped when an unauthenticated user was redirected to `/login`. Two code paths were missing `await set('lanes_draft_files', ...)`: (1) `handleSubmit`'s no-token branch that shows the auth prompt, and (2) the auth prompt "Go to Login" button's `onClick`. Both now persist all selected `File` objects to IndexedDB via `idb-keyval` before any navigation occurs, ensuring the files are fully restored alongside the text draft when the modal re-opens after successful login.
+
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **User Reports Serialization & Admin Map Initialization Stability** (`backend/app/crud/__init__.py`, `LiveMapPage.tsx`, `useMergePreviewLayer.ts`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Resolved `500 Internal Server Error` on `GET /api/v1/reports/me` by re-exporting `get_flood_reports_by_user`, `archive_flood_report`, and `restore_flood_report` in `backend/app/crud/__init__.py`.
+  - Fixed persistent `ApiError: Zone not found (404)` toast on admin sign-in by automatically purging stale IndexedDB zone edit drafts via `discardZoneEditDraft`.
+  - Prevented runtime crashes (`Cannot read properties of undefined (reading 'getSource')`) in `useMergePreviewLayer` by verifying `map.getStyle()` before querying sources and adding defensive unmount guards.
+- [x] **Flood Preview Loading UX, Direction Swap & Explicit Defaults** (`LoadingOverlay.tsx`, `FloodReportPanel.tsx`, `carriageway_service.py`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced the inline road-verification loading message with the reusable blocking loading overlay while retaining non-blocking success/fallback explanations after verification.
+  - Restored the shared Start/End swap control, made both-sides coverage explicitly opt-in, and changed flood depth/severity to an unselected required state with no silent `low` fallback.
+  - Runs Start→End and End→Start Valhalla requests concurrently to reduce preview latency without weakening Decision #16 validation.
+- [x] **Decision #16 Authoritative Road Preview & Same-Side False-Positive Repair** (`carriageway_service.py`, `routes.py`, `MapContext.tsx`) (@roicambe):
+  - Reproduced the Caruncho-area failure where two nearby anchors produced an 834m legal-driving loop that was then misclassified as a divided carriageway.
+  - Centralized raw Start/End preview generation in the backend, evaluates both travel directions, rejects excessive detours, and falls back to the selected line without inventing an opposite road.
+  - Preserves the validated Valhalla road shape while connecting its accepted endpoint snaps back to the exact raw Start/End anchors, preventing the dashed coverage line from visibly stopping before either marker.
+  - Updated the shared public/admin MapLibre preview hook to overlay solid orange terminal caps only on short endpoint segments, preventing a transparent dash interval from visually reopening the marker gap after verified geometry replaces the temporary line.
+  - Hardened counterpart validation with length-weighted traversability, two-sided offset probes, exact normalized road identity, road class, distinct OSM way IDs, reverse direction, length, overlap, separation, and loop guards.
+  - Shared validation status and explanations across the public Flood Report and admin road editors; official zone and merge flows use validated `MultiLineString` coverage only when a distinct carriageway is proven.
+  - Added 15 focused backend regressions, including persistence-time raw-anchor revalidation, concurrent directional-route execution, and exact preview-to-pin endpoint coverage. Pytest carriageway and merge-integrity suites, Python compilation, TypeScript checking, and the production frontend build passed; external reverse-geocoding testing remains network-dependent and manual desktop/mobile road verification is pending.
+- [x] **Persistent Edit Zone Workspace and Active-Line Persistence** (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `LiveMapPage.tsx`, `admin.py`) (@roicambe):
+  - Added account-private, per-zone IndexedDB edit workspaces that restore unsaved zone metadata, survey selections, notes, and local media after collapse, reload, or sign-in; Cancel Edit explicitly discards only that local workspace, while Save clears it only after the metadata and media operations succeed.
+  - Added `updated_at` conflict baselines. When a shared zone was saved more recently by another administrator, the current server version is shown instead of silently applying stale local edits.
+  - Persisted `source_geometry` for administrator-created Line zones, allowing the existing active-zone map layer to render the dark road centreline over the buffered avoidance polygon after a reload. Drawn area modes remain polygon-buffer-only.
+  - Added authenticated `GET /admin/zones/{id}` and `POST /admin/zones/{id}/media` endpoints, plus migrations `2a4c8e91d605` and `0d5f7a6b4c11`. Repaired a migration-history mismatch without deleting zone rows; TypeScript, backend compilation, Alembic head verification, and production build passed. Developer-led UI verification remains pending.
 - [x] **Account-Private, Editable Draft Workspaces (`floodReportDraftStorage.ts`, `zoneDraftStorage.ts`, `FloodReportPanel.tsx`, `OfficialZoneDrawer.tsx`)** (@roicambe):
   - Replaced device-wide draft queues with versioned IndexedDB records isolated by authenticated commuter or administrator identity; sign-out and account changes clear in-memory state before the next account is hydrated.
   - Saving a Flood Report or Create Zone draft now moves every active value into that draft and resets the form. Saved Drafts provides consistent back, edit, delete, discard-all, and batch-submit/publish controls.

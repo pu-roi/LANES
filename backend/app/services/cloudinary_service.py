@@ -15,26 +15,33 @@ cloudinary.config(
 
 def upload_image(file: UploadFile) -> Optional[str]:
     """
-    Uploads an image to Cloudinary, converts it to webp, and resizes it.
-    Returns the secure URL of the uploaded image.
+    Uploads an image or video to Cloudinary.
+    Returns the secure URL of the uploaded media.
     """
     try:
-        # Upload to Cloudinary with transformations
-        response = cloudinary.uploader.upload(
-            file.file,
-            folder="lanes_flood_reports",
-            resource_type="auto",
-            transformation=[
-                {"width": 1200, "crop": "limit"},
-                {"fetch_format": "auto", "quality": "auto"}
-            ]
-        )
-        # return the secure URL with f_auto and q_auto
-        # Cloudinary URLs look like: https://res.cloudinary.com/demo/image/upload/v12345/folder/file.jpg
-        # We can just return the secure_url which already has the uploaded format, 
-        # but optimally we'd inject f_auto,q_auto if we want optimization.
-        # For simplicity, just return the raw secure_url for now.
+        is_video = False
+        if file.content_type and file.content_type.startswith("video/"):
+            is_video = True
+        elif file.filename and any(file.filename.lower().endswith(ext) for ext in [".mp4", ".mov", ".webm", ".avi", ".mkv", ".m4v"]):
+            is_video = True
+
+        if is_video:
+            response = cloudinary.uploader.upload(
+                file.file,
+                folder="lanes_flood_reports",
+                resource_type="video"
+            )
+        else:
+            response = cloudinary.uploader.upload(
+                file.file,
+                folder="lanes_flood_reports",
+                resource_type="image",
+                transformation=[
+                    {"width": 1200, "crop": "limit"},
+                    {"fetch_format": "auto", "quality": "auto"}
+                ]
+            )
         return response.get("secure_url")
     except Exception as e:
-        print(f"Error uploading image to Cloudinary: {e}")
+        print(f"Error uploading media to Cloudinary: {e}")
         return None

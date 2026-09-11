@@ -10,7 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { searchLocations, getCurrentLocation } from '@/features/geocoding/geocodingApi';
 import type { LocationSuggestion } from '@/features/geocoding/types';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { get, set, del } from 'idb-keyval';
 const slideVariants = {
   enter: (direction: 'forward' | 'backward') => ({
@@ -30,11 +30,15 @@ const slideVariants = {
 interface CreatePostModalProps {
   onClose: () => void;
   initialFiles?: File[];
+  initialLocation?: {
+    locationTag: string;
+    lat: number | null;
+    lng: number | null;
+  } | null;
 }
 
-export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps) {
+export function CreatePostModal({ onClose, initialFiles, initialLocation }: CreatePostModalProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [content, setContent] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<{ file: File; preview: string }[]>([]);
   const [locationTag, setLocationTag] = useState('');
@@ -97,15 +101,43 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
   // Safely initialize selectedFiles from initialFiles on mount/prop change
   useEffect(() => {
     if (initialFiles && initialFiles.length > 0) {
-      const mapped = initialFiles.map(file => ({
-        file,
-        preview: URL.createObjectURL(file)
-      }));
-      setSelectedFiles(mapped);
+      const MAX_FILE_SIZE_MB = 100;
+      const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+      const validFiles: { file: File; preview: string }[] = [];
+
+      for (const file of initialFiles) {
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+          showError(
+            "File Limit Exceeded",
+            `"${file.name}" is ${fileSizeMB}MB, which exceeds the ${MAX_FILE_SIZE_MB}MB maximum upload limit. Please select a smaller file.`
+          );
+          continue;
+        }
+        validFiles.push({
+          file,
+          preview: URL.createObjectURL(file)
+        });
+      }
+
+      if (validFiles.length > 0) {
+        setSelectedFiles(validFiles);
+      }
     }
   }, [initialFiles]);
 
-  // Keep track of all object URLs created for previewing files
+  // Apply location pre-fill from the map picker round-trip.
+  // This comes as a prop from FeedPage (which reads searchParams reliably)
+  // so we never stale-read useSearchParams() inside this component.
+  useEffect(() => {
+    if (initialLocation) {
+      setLocationTag(initialLocation.locationTag);
+      setLocationLat(initialLocation.lat);
+      setLocationLng(initialLocation.lng);
+      setShowLocationInput(true);
+    }
+  }, [initialLocation]);
+
   useEffect(() => {
     objectUrlsRef.current = selectedFiles.map(f => f.preview);
   }, [selectedFiles]);
@@ -159,33 +191,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
     setMounted(true);
     document.body.style.overflow = 'hidden';
     
-    // Check searchParams for location tag pre-fill
-    const locTag = searchParams.get('location_tag');
-    const latStr = searchParams.get('lat');
-    const lngStr = searchParams.get('lng');
-    
-    if (locTag) {
-      setLocationTag(locTag);
-      if (latStr && lngStr) {
-        setLocationLat(parseFloat(latStr));
-        setLocationLng(parseFloat(lngStr));
-      }
-      setShowLocationInput(true);
-      
-      // Clean up URL search params
-      const params = new URLSearchParams(window.location.search);
-      params.delete('location_tag');
-      params.delete('lat');
-      params.delete('lng');
-      params.delete('openPostModal');
-      window.history.replaceState(
-        null, 
-        '', 
-        window.location.pathname + (params.toString() ? '?' + params.toString() : '')
-      );
-    }
-    
-    // Always restore files from IndexedDB
+    // Restore files from IndexedDB (saved before navigating to /map or /login)
     if (!hasRestoredRef.current) {
       hasRestoredRef.current = true;
       get('lanes_draft_files').then(files => {
@@ -205,7 +211,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [searchParams]);
+  }, []);
 
   const handleChooseOnMap = async () => {
     sessionStorage.setItem('lanes_draft_post', JSON.stringify({
@@ -245,7 +251,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const MAX_FILE_SIZE_MB = 20;
+      const MAX_FILE_SIZE_MB = 100;
       const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
       
       const files = Array.from(e.target.files);
@@ -253,7 +259,11 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       
       for (const file of files) {
         if (file.size > MAX_FILE_SIZE_BYTES) {
-          showError(`File "${file.name}" is too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`);
+          const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+          showError(
+            "File Limit Exceeded",
+            `"${file.name}" is ${fileSizeMB}MB, which exceeds the ${MAX_FILE_SIZE_MB}MB maximum limit. Please select a smaller file.`
+          );
           continue;
         }
         validFiles.push({
@@ -265,6 +275,7 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       if (validFiles.length > 0) {
         setSelectedFiles(prev => [...prev, ...validFiles]);
       }
+      e.target.value = '';
     }
   };
 
@@ -324,6 +335,17 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
       if (err.status === 401 || err.message.includes('401') || err.message.includes('authenticated') || err.message.includes('credentials') || err.message.includes('logged in')) {
         localStorage.removeItem('lanes_token');
         setShowAuthPrompt(true);
+      } else if (
+        err.status === 413 || 
+        err.message?.includes('413') || 
+        err.message?.includes('Payload too large') || 
+        err.message?.includes('exceeded') || 
+        err.message?.includes('socket hang up')
+      ) {
+        showError(
+          "Upload Size Limit Exceeded",
+          "Your upload exceeds the maximum allowed limit (100MB). Please select a smaller video or fewer media files."
+        );
       } else {
         showError('Failed to create post', err.message);
       }
@@ -345,6 +367,10 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
         locationLng
       }));
       sessionStorage.setItem('lanes_post_intent', 'true');
+      // Persist any selected files to IndexedDB so they survive the login redirect
+      if (selectedFiles.length > 0) {
+        set('lanes_draft_files', selectedFiles.map(f => f.file)).catch(() => {});
+      }
       setShowAuthPrompt(true);
       return;
     }
@@ -473,7 +499,21 @@ export function CreatePostModal({ onClose, initialFiles }: CreatePostModalProps)
                   Cancel
                 </button>
                 <button 
-                  onClick={() => router.push('/login?redirect=%2Ffeed%3FopenPostModal%3Dtrue')}
+                  onClick={async () => {
+                    // Save any uploaded files to IndexedDB before navigating to login
+                    // so they can be restored when the modal re-opens after auth.
+                    if (selectedFiles.length > 0) {
+                      await set('lanes_draft_files', selectedFiles.map(f => f.file)).catch(() => {});
+                    }
+                    // Also persist text draft in case handleSubmit wasn't called first
+                    sessionStorage.setItem('lanes_draft_post', JSON.stringify({
+                      content,
+                      locationTag,
+                      locationLat,
+                      locationLng
+                    }));
+                    router.push('/login?redirect=%2Ffeed%3FopenPostModal%3Dtrue');
+                  }}
                   className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                 >
                   Go to Login
