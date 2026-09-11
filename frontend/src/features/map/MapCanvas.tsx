@@ -931,7 +931,7 @@ export default function MapCanvas() {
           <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
         </div>
       `;
-      const marker = new maplibregl.Marker({ element: el })
+      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
         .setLngLat([longitude, latitude])
         .addTo(map);
 

@@ -161,11 +161,18 @@ export function usePendingReportsLayer(
             ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
           ],
           layout: {
+            // Pending and active road coverage intentionally share rounded
+            // endpoints and turns for a consistent severity treatment.
             "line-cap": "round",
             "line-join": "round",
           },
           paint: PENDING_REPORT_ROAD_AURA_PAINT,
         });
+      } else {
+        // The shared map survives panel navigation and Fast Refresh. Reapply
+        // the intended rounded layout to existing live layers as well.
+        map.setLayoutProperty("all-pending-reports-line-layer", "line-cap", "round");
+        map.setLayoutProperty("all-pending-reports-line-layer", "line-join", "round");
       }
 
       // Layer 3: Zoomed-in Pure Transparent Polygon Auras (Street View: Zoom > 14)

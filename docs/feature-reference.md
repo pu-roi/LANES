@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 11, 2026, 4:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 2:31 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -258,15 +258,15 @@ This document serves as the central technical reference for all currently implem
 *   **Purpose:** Accurately models road-segment submersion along divided boulevards, dual carriageways (e.g., C-5, Ortigas Ave, Shaw Blvd), and narrow two-way streets without erroneously blocking oncoming lanes or under-reporting flooded dual lanes.
 *   **What it does:** Dynamically inspects the OpenStreetMap/Valhalla road network graph at report creation. When a user reports a bidirectional flood on a divided carriageway, it identifies both opposing highway lines, validates street naming consistency to prevent false positives across unrelated alleys, and generates a unified multi-geometry avoidance zone.
 *   **How it works:**
-    1. **Authoritative Pre-Submission Preview:** `POST /api/v1/reports/preview-bidirectional` receives the raw Start/End anchors, evaluates both route directions, rejects legal-driving loops, and returns the original road, optional validated counterpart, combined coverage, classification, and explanation.
-    2. **Road Classification Engine:** Uses length-weighted Valhalla evidence to classify the street segment:
+    1. **Authoritative Pre-Submission Preview:** `POST /api/v1/reports/preview-bidirectional` receives raw Start/End anchors, evaluates both route directions, rejects legal-driving loops, and returns road-only snapped original/optional counterpart coverage. Raw clicks never become geometry vertices; preview pins move to the returned road endpoints and the same coverage is rebuilt before persistence.
+    2. **Road-Run Classification Engine:** Uses Valhalla edge shape indexes to split a mixed route wherever its road identity or traversability changes, then classifies every run independently:
        - `NARROW_TWO_WAY`: Single physical pavement with two-way traffic flow; standard directional buffering applies.
        - `DIVIDED_CARRIAGEWAY`: Physically separated dual carriageways requiring paired opposite-lane discovery.
        - `TRUE_ONE_WAY`: Confirmed single-direction street with no counterpart.
        - `AMBIGUOUS`: Mixed road topology or an excessive route detour; conservative single-line coverage applies.
        - `UNMAPPED`: Segment outside graph coverage.
     3. **Two-Sided Dynamic Perpendicular Probe:** For one-way candidates, searches left and right at 5m, 10m, 15m, 20m, and 30m so anchor direction cannot force the search onto the wrong side.
-    4. **Counterpart Validation Firewall:** Requires matching normalized road identity and class, distinct OSM way IDs, opposing direction, comparable length, parallel alignment, sufficient longitudinal overlap, and 4–35m lateral separation before accepting a second carriageway.
+    4. **Counterpart Validation Firewall:** Requires matching normalized road identity and class, distinct OSM way IDs, opposing direction, comparable length, parallel alignment, sufficient longitudinal overlap, and 4–35m lateral separation before accepting a second carriageway. For a mixed route only, the service may retain a 50%+ verified parallel subsection using a 3.5m quantization tolerance. It removes unrelated junction connectors but retains a ≤50m graph-mapped Y merge only when it reaches the corresponding original-road endpoint within 12m; normal single-road checks remain 70% overlap/length and 4m separation.
     5. **PostGIS Dual-Buffering:** In `report_service.py` and `admin.py`, creates buffered line geometries for both carriageways and merges them into a single avoidance polygon boundary (`ST_Multi` / `ST_Buffer`), guaranteeing Valhalla detour calculations route around both carriageways simultaneously.
 *   **Access & Roles:** Public users can report bidirectional hazards; DRRM officers inspect and confirm carriageway pairs during spatial moderation.
 *   **Related Components:**

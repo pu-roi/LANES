@@ -2,33 +2,6 @@ import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import type { RouteGeometry } from "@/features/routing/routingApi";
 
-const MAX_ENDPOINT_CONNECTOR_METERS = 40;
-
-function distanceMeters(first: [number, number], second: [number, number]) {
-  const meanLatitude = ((first[1] + second[1]) / 2) * (Math.PI / 180);
-  const dx = (second[0] - first[0]) * 111_000 * Math.cos(meanLatitude);
-  const dy = (second[1] - first[1]) * 111_000;
-  return Math.hypot(dx, dy);
-}
-
-function endpointConnectorFeatures(geometry: RouteGeometry): GeoJSON.Feature<GeoJSON.LineString>[] {
-  const coordinates = geometry.coordinates;
-  if (coordinates.length < 3) return [];
-
-  const segments = [
-    [coordinates[0], coordinates[1]],
-    [coordinates[coordinates.length - 2], coordinates[coordinates.length - 1]],
-  ] as [number, number][][];
-
-  return segments
-    .filter(([start, end]) => distanceMeters(start, end) <= MAX_ENDPOINT_CONNECTOR_METERS)
-    .map((segment) => ({
-      type: "Feature",
-      properties: {},
-      geometry: { type: "LineString", coordinates: segment },
-    }));
-}
-
 export function useFloodMapPreview(
   mapInstance: maplibregl.Map | null,
   floodStart: { coords: [number, number]; label: string } | null,
@@ -69,8 +42,9 @@ export function useFloodMapPreview(
     startMarkerRef.current?.remove();
     startMarkerRef.current = null;
     if (mapInstance && isEnabled && floodStart) {
+      const snappedStart = floodPreviewGeometry?.coordinates[0] ?? floodStart.coords;
       startMarkerRef.current = new maplibregl.Marker({ color: "#f97316" })
-        .setLngLat(floodStart.coords)
+        .setLngLat(snappedStart)
         .addTo(mapInstance);
     }
 
@@ -78,14 +52,15 @@ export function useFloodMapPreview(
       startMarkerRef.current?.remove();
       startMarkerRef.current = null;
     };
-  }, [mapInstance, floodStart, isEnabled]);
+  }, [mapInstance, floodStart, floodPreviewGeometry, isEnabled]);
 
   useEffect(() => {
     endMarkerRef.current?.remove();
     endMarkerRef.current = null;
     if (mapInstance && isEnabled && floodEnd) {
+      const snappedEnd = floodPreviewGeometry?.coordinates.at(-1) ?? floodEnd.coords;
       endMarkerRef.current = new maplibregl.Marker({ color: "#991b1b" })
-        .setLngLat(floodEnd.coords)
+        .setLngLat(snappedEnd)
         .addTo(mapInstance);
     }
 
@@ -93,25 +68,26 @@ export function useFloodMapPreview(
       endMarkerRef.current?.remove();
       endMarkerRef.current = null;
     };
-  }, [mapInstance, floodEnd, isEnabled]);
+  }, [mapInstance, floodEnd, floodPreviewGeometry, isEnabled]);
 
   // Preview layer
   useEffect(() => {
-    const PREVIEW_SOURCE = "shared-flood-preview-source";
-    const PREVIEW_LAYER = "shared-flood-preview-layer";
-    const ENDPOINT_SOURCE = "shared-flood-preview-endpoint-source";
-    const ENDPOINT_LAYER = "shared-flood-preview-endpoint-layer";
-
+    const ORIGINAL_SOURCE = "shared-flood-preview-original-source";
+    const ORIGINAL_LAYER = "shared-flood-preview-original-layer";
+    const OPPOSITE_SOURCE = "shared-flood-preview-opposite-source";
+    const OPPOSITE_LAYER = "shared-flood-preview-opposite-layer";
     if (!mapInstance) return;
 
     const removePreview = () => {
       try {
         if (!mapInstance || typeof mapInstance.getLayer !== "function") return;
         if (typeof mapInstance.getStyle === "function" && !mapInstance.getStyle()) return;
-        if (mapInstance.getLayer(ENDPOINT_LAYER)) mapInstance.removeLayer(ENDPOINT_LAYER);
-        if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
-        if (mapInstance.getSource(ENDPOINT_SOURCE)) mapInstance.removeSource(ENDPOINT_SOURCE);
-        if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
+        for (const layerId of [ORIGINAL_LAYER, OPPOSITE_LAYER]) {
+          if (mapInstance.getLayer(layerId)) mapInstance.removeLayer(layerId);
+        }
+        for (const sourceId of [ORIGINAL_SOURCE, OPPOSITE_SOURCE]) {
+          if (mapInstance.getSource(sourceId)) mapInstance.removeSource(sourceId);
+        }
       } catch {
         // Silently ignore teardown races
       }
@@ -121,35 +97,20 @@ export function useFloodMapPreview(
       removePreview();
       if (!isEnabled || !floodPreviewGeometry || !mapInstance.getStyle()) return;
 
-      const features: GeoJSON.Feature<RouteGeometry>[] = [
-        {
-          type: "Feature",
-          properties: { is_opposite: false },
-          geometry: floodPreviewGeometry,
-        },
-      ];
-
-      if (floodIsBidirectional && floodOppositeGeometry) {
-        features.push({
-          type: "Feature",
-          properties: { is_opposite: true },
-          geometry: floodOppositeGeometry,
-        });
-      }
-
       try {
-        mapInstance.addSource(PREVIEW_SOURCE, {
+        mapInstance.addSource(ORIGINAL_SOURCE, {
           type: "geojson",
           data: {
-            type: "FeatureCollection",
-            features,
+            type: "Feature",
+            properties: {},
+            geometry: floodPreviewGeometry,
           },
         });
 
         mapInstance.addLayer({
-          id: PREVIEW_LAYER,
+          id: ORIGINAL_LAYER,
           type: "line",
-          source: PREVIEW_SOURCE,
+          source: ORIGINAL_SOURCE,
           layout: { "line-join": "round", "line-cap": "round" },
           paint: {
             "line-color": "#f97316",
@@ -159,27 +120,32 @@ export function useFloodMapPreview(
           },
         });
 
-        const endpointFeatures = endpointConnectorFeatures(floodPreviewGeometry);
-        if (endpointFeatures.length > 0) {
-          mapInstance.addSource(ENDPOINT_SOURCE, {
+        // Keep the graph-validated counterpart in its own source/layer. This
+        // prevents a very short, close carriageway from being collapsed by a
+        // shared FeatureCollection update during React/MapLibre style reloads.
+        if (floodIsBidirectional && floodOppositeGeometry) {
+          mapInstance.addSource(OPPOSITE_SOURCE, {
             type: "geojson",
             data: {
-              type: "FeatureCollection",
-              features: endpointFeatures,
+              type: "Feature",
+              properties: {},
+              geometry: floodOppositeGeometry,
             },
           });
           mapInstance.addLayer({
-            id: ENDPOINT_LAYER,
+            id: OPPOSITE_LAYER,
             type: "line",
-            source: ENDPOINT_SOURCE,
+            source: OPPOSITE_SOURCE,
             layout: { "line-join": "round", "line-cap": "round" },
             paint: {
               "line-color": "#f97316",
               "line-width": 6,
+              "line-dasharray": [2, 2],
               "line-opacity": 0.9,
             },
           });
         }
+
       } catch (err) {
         console.warn("Failed to add shared preview layer", err);
       }

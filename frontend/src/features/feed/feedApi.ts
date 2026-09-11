@@ -28,8 +28,8 @@ export interface FeedPost {
     barangay?: string;
     city?: string;
     geometry?: {
-      type: 'Point' | 'LineString';
-      coordinates: number[] | number[][];
+      type: 'Point' | 'LineString' | 'MultiLineString';
+      coordinates: number[] | number[][] | number[][][];
     };
   };
 }

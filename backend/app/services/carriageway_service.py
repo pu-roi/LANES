@@ -29,6 +29,16 @@ MAX_PARALLEL_ANGLE_DEGREES = 30.0
 MIN_LENGTH_RATIO = 0.70
 MAX_LENGTH_RATIO = 1.30
 MIN_LONGITUDINAL_OVERLAP = 0.70
+MIN_PARTIAL_COUNTERPART_RATIO = 0.50
+# A multi-topology report can legitimately intersect only part of its opposite
+# carriageway.  This relaxed threshold is deliberately scoped to those runs;
+# normal single-road reports retain the stricter 70% rule above.
+MIN_PARTIAL_COUNTERPART_OVERLAP = 0.50
+# Valhalla's decoded polyline is rounded to six decimals.  A 0.5 m tolerance
+# prevents that quantization from rejecting a physically 4 m separated lane.
+MIN_PARTIAL_LATERAL_SEPARATION_METERS = 3.5
+MAX_MERGE_TRANSITION_METERS = 50.0
+MAX_MERGE_TRANSITION_ENDPOINT_METERS = 12.0
 
 
 def decode_polyline6(encoded_str: str) -> LineCoordinates:
@@ -62,24 +72,6 @@ def _distance_meters(first: Coordinate, second: Coordinate) -> float:
 
 def _line_length_meters(coords: LineCoordinates) -> float:
     return sum(_distance_meters(coords[index - 1], coords[index]) for index in range(1, len(coords)))
-
-
-def _connect_route_to_anchors(
-    coords: LineCoordinates,
-    start: Coordinate,
-    end: Coordinate,
-) -> LineCoordinates:
-    """Keep the routed shape while making its visible coverage meet both pins."""
-    connected = [list(coordinate) for coordinate in coords]
-    if _distance_meters(connected[0], start) > 0.5:
-        connected.insert(0, list(start))
-    else:
-        connected[0] = list(start)
-    if _distance_meters(connected[-1], end) > 0.5:
-        connected.append(list(end))
-    else:
-        connected[-1] = list(end)
-    return connected
 
 
 def _bearing_degrees(coords: LineCoordinates) -> float:
@@ -164,6 +156,7 @@ def trace_road_attributes(shape_coords: LineCoordinates) -> Optional[Dict[str, A
             "attributes": [
                 "edge.names", "edge.traversability", "edge.road_class",
                 "edge.way_id", "edge.length", "shape",
+                "edge.begin_shape_index", "edge.end_shape_index",
             ],
             "action": "include",
         },
@@ -234,11 +227,145 @@ def _longitudinal_overlap(original: LineCoordinates, candidate: LineCoordinates)
     return max(0.0, min(1.0, high) - max(0.0, low))
 
 
+def _longest_parallel_component(
+    original: LineCoordinates,
+    candidate_reversed: LineCoordinates,
+) -> Optional[LineCoordinates]:
+    """Discard junction connectors and keep one continuous mapped counterpart."""
+    if len(original) < 2 or len(candidate_reversed) < 2:
+        return None
+
+    display_candidate = list(reversed(candidate_reversed))
+    best: LineCoordinates = []
+    current: LineCoordinates = []
+    best_length = current_length = 0.0
+
+    for index in range(1, len(display_candidate)):
+        start, end = display_candidate[index - 1], display_candidate[index]
+        segment_length = _distance_meters(start, end)
+        midpoint = [(start[0] + end[0]) / 2.0, (start[1] + end[1]) / 2.0]
+        nearest = min(
+            range(1, len(original)),
+            key=lambda original_index: _point_to_segment_distance(
+                midpoint, original[original_index - 1], original[original_index]
+            ),
+        )
+        separation = _point_to_segment_distance(midpoint, original[nearest - 1], original[nearest])
+        original_bearing = _bearing_degrees([original[nearest - 1], original[nearest]])
+        candidate_bearing = _bearing_degrees([start, end])
+        directionless_angle = min(
+            _angle_difference(original_bearing, candidate_bearing),
+            _angle_difference(original_bearing, (candidate_bearing + 180.0) % 360.0),
+        )
+        is_parallel = (
+            segment_length > 0
+            and MIN_LATERAL_SEPARATION_METERS <= separation <= MAX_LATERAL_SEPARATION_METERS
+            and directionless_angle <= MAX_PARALLEL_ANGLE_DEGREES
+        )
+
+        if is_parallel:
+            current = [start, end] if not current else [*current, end]
+            current_length += segment_length
+        else:
+            if current_length > best_length:
+                best, best_length = current, current_length
+            current, current_length = [], 0.0
+
+    if current_length > best_length:
+        best = current
+    return list(reversed(best)) if len(best) >= 2 else None
+
+
+def _candidate_with_validated_merge_transitions(
+    original: LineCoordinates,
+    candidate_reversed: LineCoordinates,
+    parallel_reversed: LineCoordinates,
+) -> LineCoordinates:
+    """Retain short graph-mapped Y merges attached to a proven parallel run.
+
+    The caller has already proved that ``parallel_reversed`` is an opposite
+    carriageway.  A terminal non-parallel portion is kept only if it joins the
+    matching endpoint of the selected road, so this never invents a connector.
+    """
+    display_candidate = list(reversed(candidate_reversed))
+    display_parallel = list(reversed(parallel_reversed))
+    if len(display_parallel) < 2:
+        return parallel_reversed
+
+    def coordinate_index(coordinates: LineCoordinates, target: Coordinate) -> Optional[int]:
+        for index, coordinate in enumerate(coordinates):
+            if _distance_meters(coordinate, target) <= 0.25:
+                return index
+        return None
+
+    start_index = coordinate_index(display_candidate, display_parallel[0])
+    end_index = coordinate_index(display_candidate, display_parallel[-1])
+    if start_index is None or end_index is None or start_index > end_index:
+        return parallel_reversed
+
+    retained = list(display_parallel)
+    leading = display_candidate[:start_index + 1]
+    if len(leading) >= 2 and (
+        _line_length_meters(leading) <= MAX_MERGE_TRANSITION_METERS
+        and _distance_meters(leading[0], original[0]) <= MAX_MERGE_TRANSITION_ENDPOINT_METERS
+    ):
+        retained = [*leading[:-1], *retained]
+
+    trailing = display_candidate[end_index:]
+    if len(trailing) >= 2 and (
+        _line_length_meters(trailing) <= MAX_MERGE_TRANSITION_METERS
+        and _distance_meters(trailing[-1], original[-1]) <= MAX_MERGE_TRANSITION_ENDPOINT_METERS
+    ):
+        retained = [*retained, *trailing[1:]]
+
+    return list(reversed(retained))
+
+
+def _split_route_by_topology(
+    route_coords: LineCoordinates,
+    trace: Optional[Dict[str, Any]],
+) -> List[LineCoordinates]:
+    """Split a route whenever its mapped road identity or flow topology changes."""
+    edges = list((trace or {}).get("edges") or [])
+    if len(route_coords) < 2 or not edges:
+        return [route_coords]
+
+    runs: List[LineCoordinates] = []
+    run_start: Optional[int] = None
+    run_end: Optional[int] = None
+    previous_key: Optional[Tuple[Tuple[str, ...], str]] = None
+    for edge in edges:
+        try:
+            begin = int(edge["begin_shape_index"])
+            end = int(edge["end_shape_index"])
+        except (KeyError, TypeError, ValueError):
+            return [route_coords]
+        if not (0 <= begin < end < len(route_coords)):
+            return [route_coords]
+
+        names = tuple(sorted(_edge_names([edge])))
+        key = (names, str(edge.get("traversability") or "unknown"))
+        if previous_key is not None and key != previous_key and run_start is not None and run_end is not None:
+            runs.append(route_coords[run_start:run_end + 1])
+            run_start = begin
+        elif run_start is None:
+            run_start = begin
+        run_end = end
+        previous_key = key
+
+    if run_start is not None and run_end is not None:
+        runs.append(route_coords[run_start:run_end + 1])
+    return [run for run in runs if len(run) >= 2] or [route_coords]
+
+
 def _candidate_is_valid(
     original: LineCoordinates,
     original_edges: List[Dict[str, Any]],
     candidate_reversed: LineCoordinates,
     candidate_edges: List[Dict[str, Any]],
+    min_length_ratio: float = MIN_LENGTH_RATIO,
+    min_longitudinal_overlap: float = MIN_LONGITUDINAL_OVERLAP,
+    min_lateral_separation: float = MIN_LATERAL_SEPARATION_METERS,
 ) -> bool:
     original_names = _edge_names(original_edges)
     candidate_names = _edge_names(candidate_edges)
@@ -255,7 +382,7 @@ def _candidate_is_valid(
 
     original_length = _line_length_meters(original)
     candidate_length = _line_length_meters(candidate_reversed)
-    if original_length <= 0 or not MIN_LENGTH_RATIO <= candidate_length / original_length <= MAX_LENGTH_RATIO:
+    if original_length <= 0 or not min_length_ratio <= candidate_length / original_length <= MAX_LENGTH_RATIO:
         return False
     expected_reverse_bearing = (_bearing_degrees(original) + 180.0) % 360.0
     if _angle_difference(_bearing_degrees(candidate_reversed), expected_reverse_bearing) > MAX_PARALLEL_ANGLE_DEGREES:
@@ -263,9 +390,9 @@ def _candidate_is_valid(
 
     display_candidate = list(reversed(candidate_reversed))
     separation = _lateral_separation(original, display_candidate)
-    if not MIN_LATERAL_SEPARATION_METERS <= separation <= MAX_LATERAL_SEPARATION_METERS:
+    if not min_lateral_separation <= separation <= MAX_LATERAL_SEPARATION_METERS:
         return False
-    if _longitudinal_overlap(original, display_candidate) < MIN_LONGITUDINAL_OVERLAP:
+    if _longitudinal_overlap(original, display_candidate) < min_longitudinal_overlap:
         return False
     chord = _distance_meters(candidate_reversed[0], candidate_reversed[-1])
     return chord > 0 and candidate_length / chord <= 1.8
@@ -274,6 +401,9 @@ def _candidate_is_valid(
 def find_opposite_carriageway(
     route_coords: LineCoordinates,
     original_road_name: Optional[str] = None,
+    min_length_ratio: float = MIN_LENGTH_RATIO,
+    min_longitudinal_overlap: float = MIN_LONGITUDINAL_OVERLAP,
+    min_lateral_separation: float = MIN_LATERAL_SEPARATION_METERS,
 ) -> Tuple[str, Optional[Dict[str, Any]]]:
     """Classify a routed segment and return only a graph-validated counterpart."""
     if len(route_coords) < 2:
@@ -303,12 +433,22 @@ def find_opposite_carriageway(
             except (IndexError, TypeError, ValueError):
                 logger.warning("Valhalla returned an invalid opposite-carriageway shape", exc_info=True)
                 continue
-            if len(matched_reversed) >= 2 and _candidate_is_valid(
-                route_coords, original_edges, matched_reversed, list(opposite_trace["edges"])
+            trimmed_reversed = _longest_parallel_component(route_coords, matched_reversed)
+            if trimmed_reversed and _candidate_is_valid(
+                route_coords,
+                original_edges,
+                trimmed_reversed,
+                list(opposite_trace["edges"]),
+                min_length_ratio,
+                min_longitudinal_overlap,
+                min_lateral_separation,
             ):
+                candidate_for_display = _candidate_with_validated_merge_transitions(
+                    route_coords, matched_reversed, trimmed_reversed
+                )
                 return "DIVIDED_CARRIAGEWAY", {
                     "type": "LineString",
-                    "coordinates": list(reversed(matched_reversed)),
+                    "coordinates": list(reversed(candidate_for_display)),
                 }
     return ("TRUE_ONE_WAY" if probe_responded else "UNMAPPED"), None
 
@@ -354,20 +494,52 @@ def build_road_segment_preview(
             _line_length_meters(candidate),
         ),
     )
-    # Topology is classified from the snapped road only; raw anchor connectors
-    # may touch a junction and must not pollute carriageway edge evidence.
-    road_type, opposite = find_opposite_carriageway(selected_route, road_name) if is_bidirectional else ("SINGLE_DIRECTION", None)
-    original = _connect_route_to_anchors(selected_route, start, end)
+    # The snapped road itself is authoritative. A single report may cross a
+    # one-way road, a divided section, and a narrow two-way section, so classify
+    # each Valhalla edge run rather than applying one dominant label to all.
+    route_trace = trace_road_attributes(selected_route) if is_bidirectional else None
+    route_runs = _split_route_by_topology(selected_route, route_trace) if is_bidirectional else [selected_route]
+    allow_partial_counterpart = len(route_runs) > 1
+    classifications = [
+        (
+            find_opposite_carriageway(
+                run,
+                road_name,
+                MIN_PARTIAL_COUNTERPART_RATIO,
+                MIN_PARTIAL_COUNTERPART_OVERLAP,
+                MIN_PARTIAL_LATERAL_SEPARATION_METERS,
+            )
+            if allow_partial_counterpart
+            else find_opposite_carriageway(run, road_name)
+        )
+        if is_bidirectional
+        else ("SINGLE_DIRECTION", None)
+        for run in route_runs
+    ]
+    opposites = [opposite for road_type, opposite in classifications if road_type == "DIVIDED_CARRIAGEWAY" and opposite]
+    opposite = opposites[0] if len(opposites) == 1 else None
+    if opposite:
+        road_type = "DIVIDED_CARRIAGEWAY"
+    elif len({road_type for road_type, _ in classifications}) > 1:
+        road_type = "MIXED_TOPOLOGY"
+    else:
+        road_type = classifications[0][0]
+    original = [list(coordinate) for coordinate in selected_route]
     messages = {
         "NARROW_TWO_WAY": "This two-way street uses one mapped centerline; that line covers both directions.",
         "DIVIDED_CARRIAGEWAY": "Both mapped carriageways were verified.",
         "TRUE_ONE_WAY": "No distinct opposite carriageway was verified; only the selected road will be used.",
+        "MIXED_TOPOLOGY": "This report crosses road sections with different traffic layouts; only verified coverage will be used.",
         "AMBIGUOUS": "The road structure is ambiguous; no opposite line was added.",
         "UNMAPPED": "Road verification is unavailable; no opposite line was added.",
         "SINGLE_DIRECTION": "The selected road segment is ready.",
     }
+    if opposite and allow_partial_counterpart:
+        messages["DIVIDED_CARRIAGEWAY"] = (
+            "The mapped opposite carriageway was verified only for the matching divided road section."
+        )
     status = "validated" if road_type in {
-        "NARROW_TWO_WAY", "DIVIDED_CARRIAGEWAY", "TRUE_ONE_WAY", "SINGLE_DIRECTION"
+        "NARROW_TWO_WAY", "DIVIDED_CARRIAGEWAY", "TRUE_ONE_WAY", "MIXED_TOPOLOGY", "SINGLE_DIRECTION"
     } else road_type.lower()
     return _preview_result(original, opposite, road_type, status, messages[road_type])
 

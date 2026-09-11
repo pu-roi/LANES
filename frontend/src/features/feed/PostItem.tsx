@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { FeedPost } from './feedApi';
 import { useToast, MediaViewer } from '@/shared/ui';
+import { computeCenterCoordinate } from "@/features/map/mapGeoUtils";
 interface PostItemProps {
   post: FeedPost;
   onVote: (reportId: number, type: 'upvote' | 'downvote') => void;
@@ -14,35 +15,6 @@ interface PostItemProps {
   initialMediaIndex?: number;
   onPostClick?: (postId: number, initialMediaIndex?: number) => void;
 }
-
-const getGeometryCenter = (geomType: string, coords: any): [number, number] | null => {
-  if (geomType === 'Point') return coords as [number, number];
-  
-  const flattenCoords = (arr: any[]): [number, number][] => {
-    if (arr.length > 0 && typeof arr[0] === 'number') {
-      return [arr as [number, number]];
-    }
-    let result: [number, number][] = [];
-    for (const item of arr) {
-      result = result.concat(flattenCoords(item));
-    }
-    return result;
-  };
-  
-  const flatCoords = flattenCoords(coords);
-  if (flatCoords.length === 0) return null;
-  
-  let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity;
-  for (const [lng, lat] of flatCoords) {
-    if (lng < minLng) minLng = lng;
-    if (lng > maxLng) maxLng = lng;
-    if (lat < minLat) minLat = lat;
-    if (lat > maxLat) maxLat = lat;
-  }
-  
-  return [(minLng + maxLng) / 2, (minLat + maxLat) / 2];
-};
-
 
 export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick }: PostItemProps) {
   const router = useRouter();
@@ -144,7 +116,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                           const geomType = post.report.geometry.type;
                           const coords = post.report.geometry.coordinates;
                           try {
-                            const center = getGeometryCenter(geomType, coords);
+                            const center = computeCenterCoordinate({ type: geomType, coordinates: coords });
                             if (center) onViewMap(center[1], center[0]);
                           } catch (e) { console.error(e); }
                         } else if (post.location_lat && post.location_lng) {
@@ -399,7 +371,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               const coords = post.report?.geometry?.coordinates;
               if (!geomType || !coords) return;
               try {
-                const center = getGeometryCenter(geomType, coords);
+                const center = computeCenterCoordinate({ type: geomType, coordinates: coords });
                 if (center) onViewMap(center[1], center[0]);
               } catch (e) {
                 console.error("Failed to calculate geometry center", e);

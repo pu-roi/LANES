@@ -506,7 +506,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       if (data.humanReadableLocation) fd.append("human_readable_location", data.humanReadableLocation);
       fd.append("is_public", data.isPublic.toString());
       fd.append("is_bidirectional", data.isBidirectional.toString());
-      fd.append("geometry", JSON.stringify(data.geometry));
+      const coverageGeometry = data.isBidirectional && data.oppositeGeometry
+        ? {
+            type: "MultiLineString",
+            coordinates: [data.geometry.coordinates, data.oppositeGeometry.coordinates],
+          }
+        : data.geometry;
+      fd.append("geometry", JSON.stringify(coverageGeometry));
       fd.append(
         "survey_data",
         JSON.stringify({
@@ -534,6 +540,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
           isPublic: isPublic, // Shared across batch
           isBidirectional: draft.isBidirectional,
           geometry: draft.geometry,
+          oppositeGeometry: draft.oppositeGeometry,
           passableVehicles: null, // Let's just pass null for drafts for now
           hiddenHazards: "unsure",
           mediaFiles: draft.mediaFiles,
@@ -560,6 +567,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
           isPublic: isPublic,
           isBidirectional: isBidirectional,
           geometry: floodPreviewGeometry,
+          oppositeGeometry: floodOppositeGeometry,
           passableVehicles: passableVehicles.join(", "),
           hiddenHazards: hiddenHazards,
           mediaFiles: mediaFiles,

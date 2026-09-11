@@ -530,12 +530,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
     }
 
     let cancelled = false;
-    // Show feedback as soon as both endpoints are chosen. The routed geometry
-    // below replaces this fallback as soon as Valhalla responds.
-    setFloodPreviewGeometry({
-      type: "LineString",
-      coordinates: [floodStart.coords, floodEnd.coords],
-    });
+    // A raw two-point connector is not a verified road segment. Keep the map
+    // clear until the authoritative service returns the final mapped geometry
+    // so people never see a straight line that later changes shape.
+    setFloodPreviewGeometry(null);
     setFloodOppositeGeometry(null);
     setFloodPreviewStatus("loading");
     setFloodPreviewMessage("Checking the selected road against the routing map…");
