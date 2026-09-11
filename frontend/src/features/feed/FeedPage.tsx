@@ -25,6 +25,14 @@ export function FeedPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [preselectedFiles, setPreselectedFiles] = useState<File[]>([]);
+  // Stores location pre-fill data received from the map picker round-trip.
+  // We read it here (where searchParams is reliably fresh) and pass it as a
+  // prop so CreatePostModal never touches useSearchParams for this purpose.
+  const [initialLocation, setInitialLocation] = useState<{
+    locationTag: string;
+    lat: number | null;
+    lng: number | null;
+  } | null>(null);
   const photoInputRef = React.useRef<HTMLInputElement>(null);
   const videoInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -63,13 +71,29 @@ export function FeedPage() {
   const visiblePlaces = sortedPlaces.slice(0, 3);
   const hiddenPlaces = sortedPlaces.slice(3);
 
-  // Auto-open modal if user just logged in from a draft redirect
+  // Auto-open modal if user just came back from map location pick or login redirect
   useEffect(() => {
     if (searchParams.get('openPostModal') === 'true') {
+      const locTag = searchParams.get('location_tag');
+      const latStr = searchParams.get('lat');
+      const lngStr = searchParams.get('lng');
+      if (locTag) {
+        setInitialLocation({
+          locationTag: locTag,
+          lat: latStr ? parseFloat(latStr) : null,
+          lng: lngStr ? parseFloat(lngStr) : null,
+        });
+      } else {
+        setInitialLocation(null);
+      }
       setIsCreateModalOpen(true);
-      window.history.replaceState(null, '', '/feed');
+      // Use router.replace so Next.js router state stays in sync with the browser
+      // URL. window.history.replaceState was desync-ing the two, causing
+      // useSearchParams() in CreatePostModal to return stale values on the
+      // second+ "Choose on Map" round-trip.
+      router.replace('/feed', { scroll: false });
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   // Request location if nearby tab is clicked and we don't have it
   useEffect(() => {
@@ -280,7 +304,18 @@ export function FeedPage() {
                 key={post.id} 
                 post={post} 
                 onVote={handleVote}
-                onViewMap={(lat, lng) => router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`)} 
+                onViewMap={(lat, lng) => {
+                  // Navigate to /map first (clean URL, no query params), then fire the
+                  // fly-to-location event. Using query params was unreliable because
+                  // MapCanvas is a persistent component — its searchParams useEffect
+                  // dep sometimes didn't change, so the flyTo never triggered.
+                  router.push('/map');
+                  setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('fly-to-location', {
+                      detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
+                    }));
+                  }, 150);
+                }}
               />
             ))}
           </div>
@@ -291,8 +326,10 @@ export function FeedPage() {
           onClose={() => {
             setIsCreateModalOpen(false);
             setPreselectedFiles([]);
+            setInitialLocation(null);
           }} 
           initialFiles={preselectedFiles}
+          initialLocation={initialLocation}
         />
       )}
 

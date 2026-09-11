@@ -47,7 +47,8 @@
         {
             "label": "LANES: Frontend (Production)",
             "type": "shell",
-            "command": "npm run build && npm start",
+            "command": "npm",
+            "args": ["run", "prod"],
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
             },

@@ -66,13 +66,9 @@ const nextConfig: NextConfig = {
   // @ts-ignore - allowedDevOrigins is suggested by Next.js CLI but may lack TS definitions
   allowedDevOrigins: getLocalIPs(),
   turbopack: {},
-  // @ts-ignore
-  middlewareClientMaxBodySize: '100mb',
   experimental: {
     // @ts-ignore
     proxyClientMaxBodySize: '100mb',
-    // @ts-ignore
-    middlewareClientMaxBodySize: '100mb',
   },
   async rewrites() {
     return [

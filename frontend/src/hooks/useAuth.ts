@@ -64,8 +64,14 @@ export function useAuth() {
   // 3. Logout function
   const logout = () => {
     localStorage.removeItem("lanes_token");
-    // Clear user and all other queries from cache
-    queryClient.clear();
+    // Immediately push null into the auth-user cache so all subscribers (FloatingNav,
+    // ProfileView, etc.) re-render RIGHT AWAY without waiting for a re-fetch.
+    // queryClient.clear() removes the cache but does NOT notify React Query observers,
+    // which is why the UI appeared "stuck" until a manual page refresh.
+    queryClient.setQueryData(['auth-user'], null);
+    // Wipe all other cached data (feed, notifications, saved places, etc.) so stale
+    // data from the previous session doesn't bleed through on the next login.
+    queryClient.removeQueries();
   };
 
   return {

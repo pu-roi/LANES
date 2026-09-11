@@ -63,6 +63,7 @@ docs/others/*
 !docs/others/routing-logic.md
 !docs/others/vehicle-passability.md
 !docs/others/database-design-plan.md
+!docs/others/bug-log.md
 
 # Large data files
 data/

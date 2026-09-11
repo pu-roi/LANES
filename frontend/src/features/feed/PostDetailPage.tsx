@@ -299,7 +299,14 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
         <PostItem
           post={post}
           onVote={handleVote}
-          onViewMap={(lat, lng) => router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`)}
+          onViewMap={(lat, lng) => {
+            router.push('/map');
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent('fly-to-location', {
+                detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
+              }));
+            }, 150);
+          }}
           isExpanded={true}
           initialMediaIndex={parseInt(searchParams.get('media') || '0')}
         />
