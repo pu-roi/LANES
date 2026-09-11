@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 11, 2026, 11:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 2:31 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -48,6 +48,10 @@
   - Fixed a bug where images and videos uploaded into the Create Post modal were silently dropped when an unauthenticated user was redirected to `/login`. Two code paths were missing `await set('lanes_draft_files', ...)`: (1) `handleSubmit`'s no-token branch that shows the auth prompt, and (2) the auth prompt "Go to Login" button's `onClick`. Both now persist all selected `File` objects to IndexedDB via `idb-keyval` before any navigation occurs, ensuring the files are fully restored alongside the text draft when the modal re-opens after successful login.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Decision #16 Mixed-Topology Segmentation** (`carriageway_service.py`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Uses Valhalla edge shape indexes to split mixed Start/End routes by road identity and traversability. Caruncho/Urbano-style reports retain their full selected line but receive an opposite carriageway only on the independently verified matching run; a short graph-mapped Y merge is retained only when it reaches that run's matching endpoint, while cross-street connectors remain stripped.
+- [x] **Feed Road-Focus Pulse Alignment** (`PostItem.tsx`, `mapGeoUtils.ts`, `MapCanvas.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced Feed's bounding-box geometry focus with travelled-road midpoint calculation and centers paired `MultiLineString` carriageways between their two directions. The temporary MapLibre pulse marker now uses a center anchor, so the red ring aligns exactly with the focused road coordinate.
 - [x] **User Reports Serialization & Admin Map Initialization Stability** (`backend/app/crud/__init__.py`, `LiveMapPage.tsx`, `useMergePreviewLayer.ts`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Resolved `500 Internal Server Error` on `GET /api/v1/reports/me` by re-exporting `get_flood_reports_by_user`, `archive_flood_report`, and `restore_flood_report` in `backend/app/crud/__init__.py`.
   - Fixed persistent `ApiError: Zone not found (404)` toast on admin sign-in by automatically purging stale IndexedDB zone edit drafts via `discardZoneEditDraft`.
@@ -57,7 +61,7 @@
   - Restored the shared Start/End swap control, made both-sides coverage explicitly opt-in, and changed flood depth/severity to an unselected required state with no silent `low` fallback.
   - Runs Start→End and End→Start Valhalla requests concurrently to reduce preview latency without weakening Decision #16 validation.
 - [x] **Pending-Report Aura Endpoint Overspill Repair** (`usePendingReportsLayer.ts`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
-  - Retained the pending-report translucent severity aura, zoom threshold, selected emphasis, and rounded road turns, but changed its line endings to terminate precisely at the persisted validated geometry rather than extending a large round-cap bulb over adjacent buildings. Existing live MapLibre layers are also updated after navigation or Fast Refresh.
+  - The geometry-source repair prevents off-road extensions. The pending-report translucent severity aura retains its zoom threshold, selected emphasis, and intentionally rounded endpoints and turns to match Active Zones and the public preview. Existing live MapLibre layers are also updated after navigation or Fast Refresh.
 - [x] **Decision #16 Authoritative Road Preview & Same-Side False-Positive Repair** (`carriageway_service.py`, `routes.py`, `MapContext.tsx`) (@roicambe):
   - Reproduced the Caruncho-area failure where two nearby anchors produced an 834m legal-driving loop that was then misclassified as a divided carriageway.
   - Centralized raw Start/End preview generation in the backend, evaluates both travel directions, rejects excessive detours, and falls back to the selected line without inventing an opposite road.

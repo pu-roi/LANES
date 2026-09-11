@@ -161,18 +161,17 @@ export function usePendingReportsLayer(
             ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
           ],
           layout: {
-            // Preserve smooth corners, but do not extend the transparent aura
-            // past the validated report endpoints into adjacent properties.
-            "line-cap": "butt",
+            // Pending and active road coverage intentionally share rounded
+            // endpoints and turns for a consistent severity treatment.
+            "line-cap": "round",
             "line-join": "round",
           },
           paint: PENDING_REPORT_ROAD_AURA_PAINT,
         });
       } else {
         // The shared map survives panel navigation and Fast Refresh. Reapply
-        // layout values to an existing layer so it cannot retain stale rounded
-        // endpoint caps from an earlier client bundle.
-        map.setLayoutProperty("all-pending-reports-line-layer", "line-cap", "butt");
+        // the intended rounded layout to existing live layers as well.
+        map.setLayoutProperty("all-pending-reports-line-layer", "line-cap", "round");
         map.setLayoutProperty("all-pending-reports-line-layer", "line-join", "round");
       }
 

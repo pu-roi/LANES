@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 11, 2026, 11:42 PM
+> **Last Updated:** September 12, 2026, 2:31 AM
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,54 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-013] Mixed Road Topology Was Classified as One Whole Route
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Flood Report / Decision #16 Carriageway Detection
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+A report spanning Caruncho Avenue and Urbano Velasco Avenue showed only one orange line, or previously could produce a misleading counterpart, because its Start/End range crossed one-way and two-way map sections. The valid opposite carriageway exists only for the appropriate Urbano Velasco run.
+
+#### 2. Root Cause Analysis (RCA)
+The service evaluated the entire Valhalla route as one unit and chose its dominant traversability. For the reproduced coordinates, Valhalla edges identify Caruncho as one-way, Urbano Velasco as one-way, then Urbano Velasco as two-way. One whole-route counterpart search cannot represent that topology safely.
+
+#### 3. Solution & Architectural Strategy
+The trace request now includes Valhalla edge `begin_shape_index` and `end_shape_index`. The service splits the snapped route whenever road identity or traversability changes, classifies each run independently, and searches for an opposite carriageway only for eligible runs. Before validation, a map-matched candidate is reduced to its longest contiguous component that is actually parallel and laterally separated from the selected run. A short terminal transition is restored only when the graph-mapped geometry reaches the matching endpoint of that original road run, which represents a genuine Y merge; unrelated cross-street or detached connectors remain removed. For split routes only, the valid component can cover 50%+ of the run with a 3.5m lateral tolerance for six-decimal polyline rounding. The final preview keeps the original full line and adds only the verified counterpart section.
+
+#### 4. Files Modified / What Changed
+- `backend/app/services/carriageway_service.py`: Requests edge shape indexes, applies per-run carriageway classification, and retains only endpoint-attached graph-mapped Y transitions from otherwise trimmed counterparts.
+- `frontend/src/features/map/hooks/useFloodMapPreview.ts`: Renders the original and verified counterpart through independent MapLibre sources/layers so a short nearby line cannot be lost when the map style reloads.
+- `backend/tests/test_carriageway_service.py`: Covers road-identity/traversability splits, connector removal, and the mixed-run partial-counterpart threshold.
+- `docs/decisions.md`: Updates Decision #16 to prohibit dominant whole-route topology classification and scopes the partial-run tolerance.
+
+---
+
+### [BUG-012] Feed View-on-Map Pulse Was Offset from Road Coverage
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Community Feed / Map Focus Indicator
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+Clicking a Flood Report location or **View on Map** in the Community Feed opened `/map`, but the temporary red pulsing circle could sit above or beside the reported road. Curved segments and two-carriageway reports made the misalignment especially visible.
+
+#### 2. Root Cause Analysis (RCA)
+`PostItem.tsx` reduced every road geometry to the midpoint of its bounding box. That mathematical point is often off a curved line and does not correctly represent paired carriageways. The `fly-to-location` MapLibre marker also used the default bottom anchor, which placed the visual pulse above its supplied geographic coordinate.
+
+#### 3. Solution & Architectural Strategy
+The shared map geometry utility now finds a LineString's midpoint by travelled road distance. For a `MultiLineString`, it calculates each carriageway's travelled-distance midpoint and uses their length-weighted average, producing the expected center between paired directions. The Feed shares that utility for both map entry points, and the pulse marker uses a center anchor so the animation's visual center exactly matches the fly-to coordinate.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/map/mapGeoUtils.ts`: Added road-length and dual-carriageway coverage midpoint calculation.
+- `frontend/src/features/feed/PostItem.tsx`: Replaced its duplicate bounding-box midpoint logic with the shared utility.
+- `frontend/src/features/feed/feedApi.ts`: Recognizes `MultiLineString` report geometry from the API.
+- `frontend/src/features/map/MapCanvas.tsx`: Center-anchors `fly-to-location` pulse markers.
+
+---
 
 ### [BUG-011] Public Road Preview Saved Raw Sidewalk Connectors
 - **Status**: Resolved
@@ -77,10 +125,10 @@ The pending layer correctly rendered the persisted validated report geometry wit
 The initial layout correction applied only when the custom MapLibre layer was first created. Because the global map instance survives panel navigation and development Fast Refresh, an already-created layer could retain its old `round` cap while its GeoJSON source refreshed normally. This made the fixed code appear ineffective for current reports.
 
 #### 3. Solution & Architectural Strategy
-The existing pending-report design remains intact: transparent severity colors, opacity, zoom behavior, selected emphasis, and rounded joins are unchanged. The line cap is now `butt`, which ends exactly at the validated geometry endpoint and removes unintended endpoint overspill. The hook reapplies that layout to any existing live MapLibre layer as well as newly created layers. Approved-zone rendering is unchanged and still uses its server-created transparent buffer with a dark road core.
+The geometry-source repair in BUG-011 removes the actual off-road connector cause. Pending Reports intentionally use MapLibre `round` caps and rounded joins again, matching the rounded endpoint treatment of Active Zones and the public orange preview. The hook reapplies this layout to existing live layers after navigation or Fast Refresh. Approved-zone rendering remains unchanged, using its server-created transparent buffer with a dark road core.
 
 #### 4. Files Modified / What Changed
-- `frontend/src/features/map/hooks/usePendingReportsLayer.ts`: Changed the pending road aura from round endpoint caps to exact endpoint caps while retaining rounded joins, and synchronizes the layout on existing live layers.
+- `frontend/src/features/map/hooks/usePendingReportsLayer.ts`: Restored intentional rounded endpoint caps and rounded joins for the pending road aura, and synchronizes that layout on existing live layers.
 
 ---
 

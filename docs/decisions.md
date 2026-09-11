@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 11, 2026, 11:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 2:31 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -272,10 +272,10 @@ The final decision combines Valhalla's Traversability metrics with a dynamic geo
 | Step | Technique | Purpose |
 |---|---|---|
 | 1 | **Authoritative Segment Selection** | Evaluates Start→End and End→Start from the raw user anchors, normalizes the shorter valid result to Start→End order, and rejects excessive legal-driving loops before topology detection. |
-| 2 | **Length-Weighted Traversability Inspection** (`/trace_attributes`) | Determines if the dominant plotted road is one-way (`forward`/`backward`) or a standard two-way street (`both`). If at least 70% of mapped edge length is `both`, the system classifies it as `NARROW_TWO_WAY`; mixed evidence is `AMBIGUOUS`. |
+| 2 | **Edge-Indexed Road-Run Inspection** (`/trace_attributes`) | Requests Valhalla `begin_shape_index`/`end_shape_index` attributes and splits a report where normalized road identity or traversability changes. Each run is then classified independently as one-way, divided, or narrow two-way; no dominant whole-route label is used for a mixed route. |
 | 3 | **Two-Sided Dynamic Offset Search** | For one-way roads or divided highways, probes both perpendicular sides at **5m, 10m, 15m, 20m, 30m**. Geometry is a search hint only. |
 | 4 | **Coordinate Reversal & Map Matching** | Reverses each shifted probe and map-matches it so the candidate follows the expected opposing flow without constructing a legal U-turn route. |
-| 5 | **Strict Counterpart Validation** | Accepts `DIVIDED_CARRIAGEWAY` only when normalized name/reference and road class match, OSM way IDs are distinct, direction is opposite, length is 70–130%, longitudinal overlap is at least 70%, lateral separation is 4–35m, and the candidate is not a loop. |
+| 5 | **Strict Counterpart Validation** | Accepts `DIVIDED_CARRIAGEWAY` only when normalized name/reference and road class match, OSM way IDs are distinct, direction is opposite, length is 70–130%, longitudinal overlap is at least 70%, lateral separation is 4–35m, and the candidate is not a loop. For a route split into multiple topology runs, a counterpart may cover 50–130% with at least 50% overlap and 3.5–35m separation. Non-parallel geometry is removed except for a short graph-mapped Y transition that joins the matching endpoint of the proven parallel road section; a cross-street or detached connector remains rejected. |
 
 **Why Map Matching avoids U-turns:**
 The standard `/route` API is path-finding (must obey traffic laws between two points). The `/trace_attributes` Map Matching API is shape-fitting (finds the road beneath a shape, regardless of legal drivability). Feeding it a reversed shape causes it to snap directly to the opposite-flowing lane without needing any legal U-turn maneuver.

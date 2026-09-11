@@ -72,16 +72,22 @@ export function useFloodMapPreview(
 
   // Preview layer
   useEffect(() => {
-    const PREVIEW_SOURCE = "shared-flood-preview-source";
-    const PREVIEW_LAYER = "shared-flood-preview-layer";
+    const ORIGINAL_SOURCE = "shared-flood-preview-original-source";
+    const ORIGINAL_LAYER = "shared-flood-preview-original-layer";
+    const OPPOSITE_SOURCE = "shared-flood-preview-opposite-source";
+    const OPPOSITE_LAYER = "shared-flood-preview-opposite-layer";
     if (!mapInstance) return;
 
     const removePreview = () => {
       try {
         if (!mapInstance || typeof mapInstance.getLayer !== "function") return;
         if (typeof mapInstance.getStyle === "function" && !mapInstance.getStyle()) return;
-        if (mapInstance.getLayer(PREVIEW_LAYER)) mapInstance.removeLayer(PREVIEW_LAYER);
-        if (mapInstance.getSource(PREVIEW_SOURCE)) mapInstance.removeSource(PREVIEW_SOURCE);
+        for (const layerId of [ORIGINAL_LAYER, OPPOSITE_LAYER]) {
+          if (mapInstance.getLayer(layerId)) mapInstance.removeLayer(layerId);
+        }
+        for (const sourceId of [ORIGINAL_SOURCE, OPPOSITE_SOURCE]) {
+          if (mapInstance.getSource(sourceId)) mapInstance.removeSource(sourceId);
+        }
       } catch {
         // Silently ignore teardown races
       }
@@ -91,35 +97,20 @@ export function useFloodMapPreview(
       removePreview();
       if (!isEnabled || !floodPreviewGeometry || !mapInstance.getStyle()) return;
 
-      const features: GeoJSON.Feature<RouteGeometry>[] = [
-        {
-          type: "Feature",
-          properties: { is_opposite: false },
-          geometry: floodPreviewGeometry,
-        },
-      ];
-
-      if (floodIsBidirectional && floodOppositeGeometry) {
-        features.push({
-          type: "Feature",
-          properties: { is_opposite: true },
-          geometry: floodOppositeGeometry,
-        });
-      }
-
       try {
-        mapInstance.addSource(PREVIEW_SOURCE, {
+        mapInstance.addSource(ORIGINAL_SOURCE, {
           type: "geojson",
           data: {
-            type: "FeatureCollection",
-            features,
+            type: "Feature",
+            properties: {},
+            geometry: floodPreviewGeometry,
           },
         });
 
         mapInstance.addLayer({
-          id: PREVIEW_LAYER,
+          id: ORIGINAL_LAYER,
           type: "line",
-          source: PREVIEW_SOURCE,
+          source: ORIGINAL_SOURCE,
           layout: { "line-join": "round", "line-cap": "round" },
           paint: {
             "line-color": "#f97316",
@@ -128,6 +119,32 @@ export function useFloodMapPreview(
             "line-opacity": 0.9,
           },
         });
+
+        // Keep the graph-validated counterpart in its own source/layer. This
+        // prevents a very short, close carriageway from being collapsed by a
+        // shared FeatureCollection update during React/MapLibre style reloads.
+        if (floodIsBidirectional && floodOppositeGeometry) {
+          mapInstance.addSource(OPPOSITE_SOURCE, {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: floodOppositeGeometry,
+            },
+          });
+          mapInstance.addLayer({
+            id: OPPOSITE_LAYER,
+            type: "line",
+            source: OPPOSITE_SOURCE,
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: {
+              "line-color": "#f97316",
+              "line-width": 6,
+              "line-dasharray": [2, 2],
+              "line-opacity": 0.9,
+            },
+          });
+        }
 
       } catch (err) {
         console.warn("Failed to add shared preview layer", err);
