@@ -71,7 +71,7 @@ export function FeedPage() {
   const visiblePlaces = sortedPlaces.slice(0, 3);
   const hiddenPlaces = sortedPlaces.slice(3);
 
-  // Auto-open modal if user just came back from map location pick or login redirect
+  // Auto-open modal if user just came back from map location pick or login redirect, or refreshed while composing
   useEffect(() => {
     if (searchParams.get('openPostModal') === 'true') {
       const locTag = searchParams.get('location_tag');
@@ -92,6 +92,16 @@ export function FeedPage() {
       // useSearchParams() in CreatePostModal to return stale values on the
       // second+ "Choose on Map" round-trip.
       router.replace('/feed', { scroll: false });
+    } else if (typeof window !== 'undefined') {
+      const rawDraft = localStorage.getItem('lanes_draft_post') || sessionStorage.getItem('lanes_draft_post');
+      if (rawDraft) {
+        try {
+          const parsed = JSON.parse(rawDraft);
+          if (parsed.isModalOpen) {
+            setIsCreateModalOpen(true);
+          }
+        } catch (e) {}
+      }
     }
   }, [searchParams, router]);
 
@@ -327,6 +337,17 @@ export function FeedPage() {
             setIsCreateModalOpen(false);
             setPreselectedFiles([]);
             setInitialLocation(null);
+            if (typeof window !== 'undefined') {
+              const rawDraft = localStorage.getItem('lanes_draft_post') || sessionStorage.getItem('lanes_draft_post');
+              if (rawDraft) {
+                try {
+                  const parsed = JSON.parse(rawDraft);
+                  parsed.isModalOpen = false;
+                  localStorage.setItem('lanes_draft_post', JSON.stringify(parsed));
+                  sessionStorage.setItem('lanes_draft_post', JSON.stringify(parsed));
+                } catch (e) {}
+              }
+            }
           }} 
           initialFiles={preselectedFiles}
           initialLocation={initialLocation}

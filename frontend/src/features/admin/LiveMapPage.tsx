@@ -150,6 +150,9 @@ export default function LiveMapPage() {
   // Create Official Zone Secondary Drawer State
   const [isCreateZoneDrawerOpen, setIsCreateZoneDrawerOpen] = useState(false);
   const [hasCreateZoneSession, setHasCreateZoneSession] = useState(false);
+  // Edit Zone owns an independent session. Keeping it separate from Create
+  // prevents opening an edit from changing the persistent Create Zone bookmark.
+  const [isEditZoneDrawerOpen, setIsEditZoneDrawerOpen] = useState(false);
   useEffect(() => {
     if (!isAuthenticated || !createZoneDraftUserId) return;
     let cancelled = false;
@@ -197,12 +200,14 @@ export default function LiveMapPage() {
     if (!isAuthenticated || !createZoneDraftUserId) {
       setEditingZone(null);
       setIsCreateZoneDrawerOpen(false);
+      setIsEditZoneDrawerOpen(false);
       previousAdminId.current = null;
       return;
     }
     if (previousAdminId.current && previousAdminId.current !== createZoneDraftUserId) {
       setEditingZone(null);
       setIsCreateZoneDrawerOpen(false);
+      setIsEditZoneDrawerOpen(false);
     }
     previousAdminId.current = createZoneDraftUserId;
 
@@ -216,8 +221,7 @@ export default function LiveMapPage() {
           setIsMergeDrawerOpen(false);
           setMergingReport(null);
           setEditingZone(zone);
-          setHasCreateZoneSession(true);
-          setIsCreateZoneDrawerOpen(true);
+          setIsEditZoneDrawerOpen(true);
         } catch (err: any) {
           if (err?.status === 404) {
             await discardZoneEditDraft(createZoneDraftUserId, draft.zoneId);
@@ -325,6 +329,7 @@ export default function LiveMapPage() {
     // Keep Pane 2 at its current width when moving between workspaces. The
     // visible page changes in place instead of closing one drawer first.
     setIsCreateZoneDrawerOpen(false);
+    setIsEditZoneDrawerOpen(false);
     setMergingReport(report);
     setSelectedReportId(report.id);
     setIsolatedReportId(report.id);
@@ -339,10 +344,21 @@ export default function LiveMapPage() {
     setMergePreviewCandidates([]);
     setMergeProposedGeometry(null);
     setIsolatedReportId(null);
-    setEditingZone(null);
     setHasCreateZoneSession(true);
+    setIsEditZoneDrawerOpen(false);
     setIsCreateZoneDrawerOpen(true);
   };
+
+  const openEditZoneWorkspace = useCallback((zone: AvoidanceZone) => {
+    setIsMergeDrawerOpen(false);
+    setIsMergeMobileMapVisible(false);
+    setMergePreviewCandidates([]);
+    setMergeProposedGeometry(null);
+    setIsolatedReportId(null);
+    setEditingZone(zone);
+    setIsCreateZoneDrawerOpen(false);
+    setIsEditZoneDrawerOpen(true);
+  }, []);
 
   const handleReportFocusChange = useCallback((id: number | null) => {
     setSelectedReportId(id);
@@ -357,21 +373,22 @@ export default function LiveMapPage() {
     }
 
     const nextReport = pendingReports?.find((report) => report.id === id);
-    const willShowMergeWorkspace = isMergeDrawerOpen || Boolean(mergingReport && nextReport && isCreateZoneDrawerOpen);
+    const isZoneWorkspaceOpen = isCreateZoneDrawerOpen || isEditZoneDrawerOpen;
+    const willShowMergeWorkspace = isMergeDrawerOpen || Boolean(mergingReport && nextReport && isZoneWorkspaceOpen);
     if (mergingReport && nextReport && nextReport.id !== mergingReport.id) {
       setMergingReport(nextReport);
       setMergePreviewCandidates([]);
       setMergeProposedGeometry(null);
     }
 
-    if (mergingReport && nextReport && isCreateZoneDrawerOpen) {
-      setEditingZone(null);
+    if (mergingReport && nextReport && isZoneWorkspaceOpen) {
       setIsCreateZoneDrawerOpen(false);
+      setIsEditZoneDrawerOpen(false);
       setIsMergeDrawerOpen(true);
     }
 
     setIsolatedReportId(willShowMergeWorkspace ? id : null);
-  }, [isCreateZoneDrawerOpen, isMergeDrawerOpen, mergingReport, pendingReports]);
+  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, mergingReport, pendingReports]);
 
   // Ordinary report selection never changes the queue or guesses which reports are related.
   // Map spotlight is scoped to the explicit intelligent merge workflow.
@@ -617,19 +634,13 @@ export default function LiveMapPage() {
 
   const handleZoneFocusChange = useCallback((id: number | null) => {
     setSelectedZoneId(id);
-    if (id === null || (!isMergeDrawerOpen && !isCreateZoneDrawerOpen)) return;
+    if (id === null || (!isMergeDrawerOpen && !isCreateZoneDrawerOpen && !isEditZoneDrawerOpen)) return;
 
     const nextZone = zones.find((zone: AvoidanceZone) => zone.id === id);
     if (!nextZone) return;
 
-    setIsMergeDrawerOpen(false);
-    setIsMergeMobileMapVisible(false);
-    setMergePreviewCandidates([]);
-    setMergeProposedGeometry(null);
-    setIsolatedReportId(null);
-    setEditingZone(nextZone);
-    setIsCreateZoneDrawerOpen(true);
-  }, [isCreateZoneDrawerOpen, isMergeDrawerOpen, zones]);
+    openEditZoneWorkspace(nextZone);
+  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, openEditZoneWorkspace, zones]);
 
   const handleExportCSV = () => {
     if (!statsData) return;
@@ -660,13 +671,15 @@ export default function LiveMapPage() {
     }
   };
 
+  const isZoneWorkspaceOpen = isCreateZoneDrawerOpen || isEditZoneDrawerOpen;
+
   return (
     <MapProvider>
       <AdminFloodMapInteraction
         map={mapInstance}
         isLoaded={isLoaded}
-        isPreviewEnabled={isCreateZoneDrawerOpen}
-        isCreateZoneDrawerOpen={isCreateZoneDrawerOpen}
+        isPreviewEnabled={isCreateZoneDrawerOpen || isEditZoneDrawerOpen}
+        isCreateZoneDrawerOpen={isCreateZoneDrawerOpen || isEditZoneDrawerOpen}
       />
       <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
         {/* LEFT PANEL: Moderation & Zones Sidebar */}
@@ -747,20 +760,14 @@ export default function LiveMapPage() {
                 openCreateZoneWorkspace();
               }}
               onEditZone={(zone) => {
-                setIsMergeDrawerOpen(false);
-                setMergePreviewCandidates([]);
-                setMergeProposedGeometry(null);
-                setIsolatedReportId(null);
-                setEditingZone(zone);
-                setHasCreateZoneSession(true);
-                setIsCreateZoneDrawerOpen(true);
+                openEditZoneWorkspace(zone);
                 flyToZone(zone);
               }}
             />
           )}
 
           {/* The Create Zone tab belongs to the primary moderation panel. */}
-          {!isCreateZoneDrawerOpen && !hasCreateZoneSession && !isMergeDrawerOpen && !mergingReport && (
+          {!isCreateZoneDrawerOpen && !isEditZoneDrawerOpen && !hasCreateZoneSession && !editingZone && !isMergeDrawerOpen && !mergingReport && (
           <div className="absolute right-[-35px] top-3.5 z-50 hidden md:flex">
             <button
               type="button"
@@ -785,7 +792,7 @@ export default function LiveMapPage() {
             // Do not replay the drawer's zero-width entrance in that case.
             initial={false}
             animate={{
-              width: isMergeDrawerOpen || isCreateZoneDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0,
+              width: isMergeDrawerOpen || isZoneWorkspaceOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0,
               x: isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "100%" : 0,
             }}
             exit={{ width: 0, x: isMobile ? "100%" : 0 }}
@@ -793,7 +800,7 @@ export default function LiveMapPage() {
               width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
               x: { duration: 0.25, ease: [0.32, 0.72, 0, 1] },
             }}
-            className={isCreateZoneDrawerOpen
+            className={isZoneWorkspaceOpen
               ? "absolute inset-0 hidden"
               : `fixed inset-0 z-50 flex h-full min-w-0 shrink-0 md:relative md:inset-auto md:z-30 ${isMergeDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
             }
@@ -838,7 +845,7 @@ export default function LiveMapPage() {
             </div>
 
             {/* A collapsed workspace keeps its bookmark and report state until focus changes. */}
-            {!isCreateZoneDrawerOpen && (
+            {!isZoneWorkspaceOpen && (
             <>
             <button
               type="button"
@@ -852,10 +859,26 @@ export default function LiveMapPage() {
               <ChevronRight className="h-4 w-4 text-blue-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-700" />
             </button>
 
+            {editingZone && (
+              <button
+                type="button"
+                onClick={() => openEditZoneWorkspace(editingZone)}
+                aria-pressed={false}
+                className="group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-amber-200 bg-white py-3 text-amber-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-amber-400 hover:bg-amber-50 md:flex"
+                title={`Resume Edit Zone #${editingZone.id}`}
+              >
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-600 text-white shadow-xs"><ShieldAlert className="h-4 w-4 stroke-[2.5]" /></div>
+                <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Edit zone</span>
+                <ChevronRight className="h-4 w-4 text-amber-400 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-700" />
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => {
                 const willOpen = !isMergeDrawerOpen;
+                setIsCreateZoneDrawerOpen(false);
+                setIsEditZoneDrawerOpen(false);
                 setIsMergeDrawerOpen(willOpen);
                 setIsMergeMobileMapVisible(false);
                 setMergePreviewCandidates([]);
@@ -863,7 +886,7 @@ export default function LiveMapPage() {
                 setIsolatedReportId(willOpen ? mergingReport.id : null);
               }}
               aria-pressed={isMergeDrawerOpen}
-              className={`group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isMergeDrawerOpen ? "border-violet-700 bg-violet-600 text-white hover:bg-violet-700" : "border-violet-200 bg-white text-violet-700 hover:border-violet-400 hover:bg-violet-50"}`}
+              className={`group absolute right-[-35px] ${editingZone ? "top-[22.5rem]" : "top-[11.5rem]"} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isMergeDrawerOpen ? "border-violet-700 bg-violet-600 text-white hover:bg-violet-700" : "border-violet-200 bg-white text-violet-700 hover:border-violet-400 hover:bg-violet-50"}`}
               title={isMergeDrawerOpen ? "Collapse Review Merge drawer" : `Open Review Merge for report #${mergingReport.id}`}
             >
               <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${isMergeDrawerOpen ? "bg-white/20 text-white" : "bg-violet-600 text-white shadow-xs"}`}><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>
@@ -894,11 +917,11 @@ export default function LiveMapPage() {
             // Keep a newly mounted alternative workspace at Pane 2's current
             // width so changing pages never looks like close-then-reopen.
             initial={false}
-            animate={{ width: isCreateZoneDrawerOpen || isMergeDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0 }}
+            animate={{ width: isCreateZoneDrawerOpen || isMergeDrawerOpen || isEditZoneDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0 }}
             transition={{
               width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] },
             }}
-            className={isMergeDrawerOpen
+            className={isMergeDrawerOpen || isEditZoneDrawerOpen
               ? "absolute inset-0 hidden"
               : `relative z-30 flex h-full min-w-0 shrink-0 ${isCreateZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
             }
@@ -907,10 +930,11 @@ export default function LiveMapPage() {
             }}
           >
             <div className={`flex h-full w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-[10px_0_28px_-16px_rgba(15,23,42,0.45)] ${isCreateZoneDrawerOpen ? "animate-in fade-in slide-in-from-right-2 duration-200" : ""}`}>
+              {isCreateZoneDrawerOpen && (
               <div className="flex h-full w-full min-w-0 shrink-0 flex-col">
-                <CreateOfficialZonePanel 
-                  key={editingZone?.id ?? "new-zone"}
-                  isOpen={isCreateZoneDrawerOpen} 
+                <CreateOfficialZonePanel
+                  key="new-zone"
+                  isOpen
                   onClose={() => {
                     setIsCreateZoneDrawerOpen(false);
                   }} 
@@ -920,29 +944,135 @@ export default function LiveMapPage() {
                     refetchList();
                     refetchMap();
                   }}
-                  editingZone={editingZone}
+                  editingZone={null}
                   mapInstance={mapInstance}
+                  onSwitchWorkspace={editingZone ? () => openEditZoneWorkspace(editingZone) : undefined}
+                  switchWorkspaceLabel={editingZone ? `Edit #${editingZone.id}` : undefined}
                 />
               </div>
+              )}
             </div>
 
             {/* DRAWER COLLAPSE HANDLE (Front of drawer in your hands) */}
             <button
               type="button"
               onClick={() => {
-                setIsCreateZoneDrawerOpen((open) => !open);
+                if (isCreateZoneDrawerOpen) {
+                  setIsCreateZoneDrawerOpen(false);
+                } else {
+                  openCreateZoneWorkspace();
+                }
               }}
               aria-pressed={isCreateZoneDrawerOpen}
-              className={`group absolute right-[-35px] top-3.5 z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${editingZone ? (isCreateZoneDrawerOpen ? "border-amber-700 bg-amber-600 text-white hover:bg-amber-700" : "border-amber-200 bg-white text-amber-700 hover:border-amber-400 hover:bg-amber-50") : (isCreateZoneDrawerOpen ? "border-blue-700 bg-blue-600 text-white hover:bg-blue-700" : "border-blue-200 bg-white text-blue-700 hover:border-blue-400 hover:bg-blue-50")}`}
-              title={isCreateZoneDrawerOpen ? `Collapse ${editingZone ? "Edit Zone" : "Create Zone"} drawer` : editingZone ? `Resume Edit Zone #${editingZone.id}` : "Resume Create Zone draft"}
+              className={`group absolute right-[-35px] top-3.5 z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isCreateZoneDrawerOpen ? "border-blue-700 bg-blue-600 text-white hover:bg-blue-700" : "border-blue-200 bg-white text-blue-700 hover:border-blue-400 hover:bg-blue-50"}`}
+              title={isCreateZoneDrawerOpen ? "Collapse Create Zone drawer" : "Resume Create Zone draft"}
             >
-              <div className={`flex h-6 w-6 items-center justify-center rounded-lg transition-transform group-hover:scale-105 ${isCreateZoneDrawerOpen ? "bg-white/20 text-white" : editingZone ? "bg-amber-600 text-white shadow-xs" : "bg-blue-600 text-white shadow-xs"}`}>
-                {editingZone ? <ShieldAlert className="w-4 h-4 stroke-[2.5]" /> : <Plus className="w-4 h-4 stroke-[2.5]" />}
+              <div className={`flex h-6 w-6 items-center justify-center rounded-lg transition-transform group-hover:scale-105 ${isCreateZoneDrawerOpen ? "bg-white/20 text-white" : "bg-blue-600 text-white shadow-xs"}`}>
+                <Plus className="w-4 h-4 stroke-[2.5]" />
               </div>
               <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">
-                {editingZone ? "EDIT ZONE" : "CREATE ZONE"}
+                CREATE ZONE
               </span>
-              {isCreateZoneDrawerOpen ? <ChevronLeft className="h-4 w-4 text-white/80 transition-transform group-hover:-translate-x-0.5 group-hover:text-white" /> : <ChevronRight className={`h-4 w-4 transition-transform group-hover:translate-x-0.5 ${editingZone ? "text-amber-400 group-hover:text-amber-700" : "text-blue-400 group-hover:text-blue-700"}`} />}
+              {isCreateZoneDrawerOpen ? <ChevronLeft className="h-4 w-4 text-white/80 transition-transform group-hover:-translate-x-0.5 group-hover:text-white" /> : <ChevronRight className="h-4 w-4 text-blue-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-700" />}
+            </button>
+
+            {editingZone && (
+              <button
+                type="button"
+                onClick={() => openEditZoneWorkspace(editingZone)}
+                aria-pressed={false}
+                className="group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-amber-200 bg-white py-3 text-amber-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-amber-400 hover:bg-amber-50 md:flex"
+                title={`Resume Edit Zone #${editingZone.id}`}
+              >
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-600 text-white shadow-xs"><ShieldAlert className="h-4 w-4 stroke-[2.5]" /></div>
+                <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Edit zone</span>
+                <ChevronRight className="h-4 w-4 text-amber-400 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-700" />
+              </button>
+            )}
+
+            {mergingReport && (
+              <button
+                type="button"
+                onClick={() => openMergeWorkspace(mergingReport)}
+                aria-pressed={false}
+                className={`group absolute right-[-35px] ${editingZone ? "top-[22.5rem]" : "top-[11.5rem]"} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex`}
+                title={`Return to merge review for report #${mergingReport.id}`}
+              >
+                <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-600 text-white shadow-xs"><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>
+                <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Review merge</span>
+                <ChevronRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5 group-hover:text-violet-700" />
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* SECONDARY DRAWER: Edit Official Zone Workspace (Pane 2) */}
+      <AnimatePresence>
+        {editingZone && (
+          <motion.div
+            key={`edit-official-zone-drawer-${editingZone.id}`}
+            initial={false}
+            animate={{ width: isEditZoneDrawerOpen || isMergeDrawerOpen || isCreateZoneDrawerOpen ? (isMobile ? "100%" : DRAWER_WIDTH) : 0 }}
+            transition={{ width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] } }}
+            className={isMergeDrawerOpen || isCreateZoneDrawerOpen
+              ? "absolute inset-0 hidden"
+              : `relative z-30 flex h-full min-w-0 shrink-0 ${isEditZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
+            }
+            onAnimationComplete={() => mapInstance?.resize()}
+          >
+            <div className={`flex h-full w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-[10px_0_28px_-16px_rgba(15,23,42,0.45)] ${isEditZoneDrawerOpen ? "animate-in fade-in slide-in-from-right-2 duration-200" : ""}`}>
+              {isEditZoneDrawerOpen && (
+              <CreateOfficialZonePanel
+                key={`edit-zone-${editingZone.id}`}
+                isOpen
+                onClose={() => setIsEditZoneDrawerOpen(false)}
+                isAdminMode={true}
+                onZoneUpdated={() => {
+                  refetchList();
+                  refetchMap();
+                  void getZone(editingZone.id)
+                    .then((updatedZone) => setEditingZone(updatedZone))
+                    .catch(() => toast.error(`Unable to refresh Zone #${editingZone.id}.`));
+                }}
+                editingZone={editingZone}
+                mapInstance={mapInstance}
+                onSwitchWorkspace={openCreateZoneWorkspace}
+                switchWorkspaceLabel="Create Zone"
+              />
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (isEditZoneDrawerOpen) {
+                  setIsEditZoneDrawerOpen(false);
+                } else {
+                  openEditZoneWorkspace(editingZone);
+                }
+              }}
+              aria-pressed={isEditZoneDrawerOpen}
+              className={`group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isEditZoneDrawerOpen ? "border-amber-700 bg-amber-600 text-white hover:bg-amber-700" : "border-amber-200 bg-white text-amber-700 hover:border-amber-400 hover:bg-amber-50"}`}
+              title={isEditZoneDrawerOpen ? `Collapse Edit Zone #${editingZone.id}` : `Resume Edit Zone #${editingZone.id}`}
+            >
+              <div className={`flex h-6 w-6 items-center justify-center rounded-lg transition-transform group-hover:scale-105 ${isEditZoneDrawerOpen ? "bg-white/20 text-white" : "bg-amber-600 text-white shadow-xs"}`}>
+                <ShieldAlert className="h-4 w-4 stroke-[2.5]" />
+              </div>
+              <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">EDIT ZONE</span>
+              {isEditZoneDrawerOpen ? <ChevronLeft className="h-4 w-4 text-white/80 transition-transform group-hover:-translate-x-0.5 group-hover:text-white" /> : <ChevronRight className="h-4 w-4 text-amber-400 transition-transform group-hover:translate-x-0.5 group-hover:text-amber-700" />}
+            </button>
+
+            <button
+              type="button"
+              onClick={openCreateZoneWorkspace}
+              aria-pressed={false}
+              className="group absolute right-[-35px] top-3.5 z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-blue-200 bg-white py-3 text-blue-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-blue-400 hover:bg-blue-50 md:flex"
+              title="Switch to Create Zone"
+            >
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs"><Plus className="h-4 w-4 stroke-[2.5]" /></div>
+              <span className="my-auto select-none [writing-mode:vertical-lr] text-[10px] font-bold uppercase tracking-widest">Create zone</span>
+              <ChevronRight className="h-4 w-4 text-blue-400 transition-transform group-hover:translate-x-0.5 group-hover:text-blue-700" />
             </button>
 
             {mergingReport && (
@@ -950,7 +1080,7 @@ export default function LiveMapPage() {
                 type="button"
                 onClick={() => openMergeWorkspace(mergingReport)}
                 aria-pressed={false}
-                className="group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex"
+                className="group absolute right-[-35px] top-[22.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex"
                 title={`Return to merge review for report #${mergingReport.id}`}
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-600 text-white shadow-xs"><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>

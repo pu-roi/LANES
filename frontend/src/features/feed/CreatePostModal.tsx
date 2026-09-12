@@ -44,100 +44,125 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
   const [locationTag, setLocationTag] = useState('');
   const [locationLat, setLocationLat] = useState<number | null>(null);
   const [locationLng, setLocationLng] = useState<number | null>(null);
+  const [isRestored, setIsRestored] = useState(false);
+  const [showDraftConfirm, setShowDraftConfirm] = useState(false);
+  const objectUrlsRef = React.useRef<string[]>([]);
+  const { success, error: showError } = useToast();
 
+  // Restore draft and media files on mount
   useEffect(() => {
+    setMounted(true);
+    document.body.style.overflow = 'hidden';
+
+    // 1. Restore text content & location from storage
     if (typeof window !== 'undefined') {
-      const draft = sessionStorage.getItem('lanes_draft_post');
-      if (draft) {
+      const rawDraft = localStorage.getItem('lanes_draft_post') || sessionStorage.getItem('lanes_draft_post');
+      if (rawDraft) {
         try {
-          if (draft.startsWith('{')) {
-            const parsed = JSON.parse(draft);
-            setContent(parsed.content || '');
-            setLocationTag(parsed.locationTag || '');
-            setLocationLat(parsed.locationLat || null);
-            setLocationLng(parsed.locationLng || null);
+          if (rawDraft.startsWith('{')) {
+            const parsed = JSON.parse(rawDraft);
+            if (parsed.content !== undefined) setContent(parsed.content || '');
+            if (parsed.locationTag) {
+              setLocationTag(parsed.locationTag);
+              setShowLocationInput(true);
+            }
+            if (parsed.locationLat !== undefined) setLocationLat(parsed.locationLat);
+            if (parsed.locationLng !== undefined) setLocationLng(parsed.locationLng);
           } else {
-            // Backwards compatibility with old raw string drafts
-            setContent(draft);
+            setContent(rawDraft);
           }
         } catch (e) {
-          setContent(draft);
+          setContent(rawDraft);
         }
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only once on mount
-  const objectUrlsRef = React.useRef<string[]>([]);
-  const hasRestoredRef = React.useRef(false);
-  const [showDraftConfirm, setShowDraftConfirm] = useState(false);
 
-  const handleCloseRequest = () => {
-    if (content.trim() || selectedFiles.length > 0 || locationTag.trim()) {
-      setShowDraftConfirm(true);
-    } else {
-      onClose();
-    }
-  };
-
-  const handleSaveDraftAndClose = async () => {
-    sessionStorage.setItem('lanes_draft_post', JSON.stringify({
-      content,
-      locationTag,
-      locationLat,
-      locationLng
-    }));
-    if (selectedFiles.length > 0) {
-      await set('lanes_draft_files', selectedFiles.map(f => f.file));
-    }
-    onClose();
-  };
-
-  const handleDiscardAndClose = async () => {
-    sessionStorage.removeItem('lanes_draft_post');
-    await del('lanes_draft_files');
-    onClose();
-  };
-
-  // Safely initialize selectedFiles from initialFiles on mount/prop change
-  useEffect(() => {
-    if (initialFiles && initialFiles.length > 0) {
-      const MAX_FILE_SIZE_MB = 100;
-      const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-      const validFiles: { file: File; preview: string }[] = [];
-
-      for (const file of initialFiles) {
-        if (file.size > MAX_FILE_SIZE_BYTES) {
-          const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
-          showError(
-            "File Limit Exceeded",
-            `"${file.name}" is ${fileSizeMB}MB, which exceeds the ${MAX_FILE_SIZE_MB}MB maximum upload limit. Please select a smaller file.`
-          );
-          continue;
+    // 2. Restore media files from IndexedDB and merge with initialFiles
+    get('lanes_draft_files').then((storedFiles: File[] | undefined) => {
+      const fileList: File[] = storedFiles && Array.isArray(storedFiles) ? [...storedFiles] : [];
+      
+      if (initialFiles && initialFiles.length > 0) {
+        const MAX_FILE_SIZE_MB = 100;
+        const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+        const existingKeys = new Set(fileList.map(f => `${f.name}_${f.size}_${f.lastModified}`));
+        
+        for (const file of initialFiles) {
+          if (file.size > MAX_FILE_SIZE_BYTES) {
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+            showError(
+              "File Limit Exceeded",
+              `"${file.name}" is ${fileSizeMB}MB, which exceeds the ${MAX_FILE_SIZE_MB}MB maximum upload limit. Please select a smaller file.`
+            );
+            continue;
+          }
+          const key = `${file.name}_${file.size}_${file.lastModified}`;
+          if (!existingKeys.has(key)) {
+            fileList.push(file);
+            existingKeys.add(key);
+          }
         }
-        validFiles.push({
+      }
+
+      if (fileList.length > 0) {
+        const mapped = fileList.map(file => ({
           file,
           preview: URL.createObjectURL(file)
-        });
+        }));
+        setSelectedFiles(mapped);
       }
+      setIsRestored(true);
+    }).catch((err: any) => {
+      showError("Draft Error", "Failed to restore files from IndexedDB: " + err.message);
+      setIsRestored(true);
+    });
 
-      if (validFiles.length > 0) {
-        setSelectedFiles(validFiles);
-      }
-    }
-  }, [initialFiles]);
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Apply location pre-fill from the map picker round-trip.
-  // This comes as a prop from FeedPage (which reads searchParams reliably)
-  // so we never stale-read useSearchParams() inside this component.
+  // Continuous auto-save for text and location
   useEffect(() => {
-    if (initialLocation) {
+    if (!isRestored || typeof window === 'undefined') return;
+    const hasData = content.trim().length > 0 || locationTag.trim().length > 0 || selectedFiles.length > 0;
+    if (hasData) {
+      const draftData = JSON.stringify({
+        content,
+        locationTag,
+        locationLat,
+        locationLng,
+        isModalOpen: true
+      });
+      localStorage.setItem('lanes_draft_post', draftData);
+      sessionStorage.setItem('lanes_draft_post', draftData);
+    } else {
+      localStorage.removeItem('lanes_draft_post');
+      sessionStorage.removeItem('lanes_draft_post');
+    }
+  }, [content, locationTag, locationLat, locationLng, selectedFiles.length, isRestored]);
+
+  // Continuous auto-save for attached media files in IndexedDB
+  useEffect(() => {
+    if (!isRestored || typeof window === 'undefined') return;
+    if (selectedFiles.length > 0) {
+      set('lanes_draft_files', selectedFiles.map(f => f.file)).catch(() => {});
+    } else {
+      del('lanes_draft_files').catch(() => {});
+    }
+  }, [selectedFiles, isRestored]);
+
+  // Apply location pre-fill from the map picker round-trip
+  useEffect(() => {
+    if (initialLocation && isRestored) {
       setLocationTag(initialLocation.locationTag);
       setLocationLat(initialLocation.lat);
       setLocationLng(initialLocation.lng);
       setShowLocationInput(true);
     }
-  }, [initialLocation]);
+  }, [initialLocation, isRestored]);
 
+  // Track active object URLs for cleanup
   useEffect(() => {
     objectUrlsRef.current = selectedFiles.map(f => f.preview);
   }, [selectedFiles]);
@@ -149,6 +174,53 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
     };
   }, []);
 
+  const handleCloseRequest = () => {
+    if (content.trim() || selectedFiles.length > 0 || locationTag.trim()) {
+      setShowDraftConfirm(true);
+    } else {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('lanes_draft_post');
+        sessionStorage.removeItem('lanes_draft_post');
+      }
+      onClose();
+    }
+  };
+
+  const handleSaveDraftAndClose = async () => {
+    if (typeof window !== 'undefined') {
+      const draftData = JSON.stringify({
+        content,
+        locationTag,
+        locationLat,
+        locationLng,
+        isModalOpen: false
+      });
+      localStorage.setItem('lanes_draft_post', draftData);
+      sessionStorage.setItem('lanes_draft_post', draftData);
+    }
+    if (selectedFiles.length > 0) {
+      await set('lanes_draft_files', selectedFiles.map(f => f.file)).catch(() => {});
+    }
+    setShowDraftConfirm(false);
+    onClose();
+  };
+
+  const handleDiscardAndClose = async () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('lanes_draft_post');
+      sessionStorage.removeItem('lanes_draft_post');
+    }
+    await del('lanes_draft_files').catch(() => {});
+    selectedFiles.forEach(f => URL.revokeObjectURL(f.preview));
+    setSelectedFiles([]);
+    setContent('');
+    setLocationTag('');
+    setLocationLat(null);
+    setLocationLng(null);
+    setShowDraftConfirm(false);
+    onClose();
+  };
+
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [viewMode, setViewMode] = useState<'write' | 'location'>('write');
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
@@ -158,7 +230,6 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
   const [mounted, setMounted] = useState(false);
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
   const { isAuthenticated } = useAuth();
-  const { success, error: showError } = useToast();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -187,41 +258,20 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
     return () => clearTimeout(timer);
   }, [locationTag]);
 
-  useEffect(() => {
-    setMounted(true);
-    document.body.style.overflow = 'hidden';
-    
-    // Restore files from IndexedDB (saved before navigating to /map or /login)
-    if (!hasRestoredRef.current) {
-      hasRestoredRef.current = true;
-      get('lanes_draft_files').then(files => {
-        if (files && files.length > 0) {
-          const mapped = files.map((file: File) => ({
-            file,
-            preview: URL.createObjectURL(file)
-          }));
-          setSelectedFiles(prev => [...prev, ...mapped]);
-          del('lanes_draft_files');
-        }
-      }).catch((err: any) => {
-        showError("Draft Error", "Failed to restore files from IndexedDB: " + err.message);
-      });
-    }
-    
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, []);
-
   const handleChooseOnMap = async () => {
-    sessionStorage.setItem('lanes_draft_post', JSON.stringify({
-      content,
-      locationTag,
-      locationLat,
-      locationLng
-    }));
+    if (typeof window !== 'undefined') {
+      const draftData = JSON.stringify({
+        content,
+        locationTag,
+        locationLat,
+        locationLng,
+        isModalOpen: true
+      });
+      localStorage.setItem('lanes_draft_post', draftData);
+      sessionStorage.setItem('lanes_draft_post', draftData);
+    }
     if (selectedFiles.length > 0) {
-      await set('lanes_draft_files', selectedFiles.map(f => f.file));
+      await set('lanes_draft_files', selectedFiles.map(f => f.file)).catch(() => {});
     }
     router.push('/map?action=pickPostLocation');
   };
@@ -322,9 +372,16 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
         location_lng: locationLng !== null ? locationLng : undefined
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       success('Post created successfully!');
-      sessionStorage.removeItem('lanes_draft_post');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('lanes_draft_post');
+        sessionStorage.removeItem('lanes_draft_post');
+      }
+      await del('lanes_draft_files').catch(() => {});
+      selectedFiles.forEach(f => URL.revokeObjectURL(f.preview));
+      setSelectedFiles([]);
+      setContent('');
       setLocationTag('');
       setLocationLat(null);
       setLocationLng(null);
@@ -360,13 +417,18 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
     }
     
     if (!localStorage.getItem('lanes_token')) {
-      sessionStorage.setItem('lanes_draft_post', JSON.stringify({
-        content,
-        locationTag,
-        locationLat,
-        locationLng
-      }));
-      sessionStorage.setItem('lanes_post_intent', 'true');
+      if (typeof window !== 'undefined') {
+        const draftData = JSON.stringify({
+          content,
+          locationTag,
+          locationLat,
+          locationLng,
+          isModalOpen: true
+        });
+        localStorage.setItem('lanes_draft_post', draftData);
+        sessionStorage.setItem('lanes_draft_post', draftData);
+        sessionStorage.setItem('lanes_post_intent', 'true');
+      }
       // Persist any selected files to IndexedDB so they survive the login redirect
       if (selectedFiles.length > 0) {
         set('lanes_draft_files', selectedFiles.map(f => f.file)).catch(() => {});
@@ -505,13 +567,17 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
                     if (selectedFiles.length > 0) {
                       await set('lanes_draft_files', selectedFiles.map(f => f.file)).catch(() => {});
                     }
-                    // Also persist text draft in case handleSubmit wasn't called first
-                    sessionStorage.setItem('lanes_draft_post', JSON.stringify({
-                      content,
-                      locationTag,
-                      locationLat,
-                      locationLng
-                    }));
+                    if (typeof window !== 'undefined') {
+                      const draftData = JSON.stringify({
+                        content,
+                        locationTag,
+                        locationLat,
+                        locationLng,
+                        isModalOpen: true
+                      });
+                      localStorage.setItem('lanes_draft_post', draftData);
+                      sessionStorage.setItem('lanes_draft_post', draftData);
+                    }
                     router.push('/login?redirect=%2Ffeed%3FopenPostModal%3Dtrue');
                   }}
                   className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
