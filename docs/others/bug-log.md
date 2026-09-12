@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 12, 2026, 8:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 11:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,75 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-020] Landing Flood Analytics Action Opened a Separate Page Instead of the Map Panel
+- **Status**: Resolved
+- **Severity**: Low
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Frontend / Landing Page / Map Analytics
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+Selecting **View Flood Analytics** from the landing page opened `/analytics` rather than the commuter map with Flood Insights visible.
+
+#### 2. Root Cause Analysis (RCA)
+The landing action used the standalone analytics route, while the map's URL-driven panel contract handled only the `saveplace` panel value.
+
+#### 3. Solution & Architectural Strategy
+The action now navigates to `/map?panel=analytics`. `MapContext` recognizes that panel value and opens the existing Flood Insights panel through its standard state setter, preserving map-panel layout, stacking, and responsive behavior.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/landing/LandingView.tsx`: Routes the action to the map with the analytics panel signal.
+- `frontend/src/features/map/MapContext.tsx`: Opens Flood Insights for `panel=analytics`.
+- `docs/others/system-documentation.md`, `docs/task_plan.md`, `docs/progress.md`: Records the corrected landing-to-map flow.
+
+---
+
+### [BUG-019] Primary Map Tabs Must Fly Only to Currently Selected Items
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Frontend / Admin Map / Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+After an administrator selected a Pending Report or Active Zone and then toggled its card or map feature off, the map still flew back to that item after returning to its primary tab.
+
+#### 2. Root Cause Analysis (RCA)
+The first repair added separate last-target IDs. That made deselected items continue to qualify for tab-switch navigation even though they were no longer selected.
+
+#### 3. Solution & Architectural Strategy
+Pending and Active selections remain independent, but tab-switch navigation now reads only `selectedReportId` or `selectedZoneId`. A selected item flies into view when its tab is reopened; toggling that same card or map feature off sets its selection to `null`, so the next tab switch leaves the map unchanged.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/admin/LiveMapPage.tsx`: Restores a tab's currently selected item on return and prevents deselected items from triggering map movement.
+- `docs/others/system-documentation.md`, `docs/task_plan.md`, `docs/progress.md`: Records the independent per-tab fly-to memory.
+
+---
+
+### [BUG-018] Secondary Workspace Tabs Used a Fixed Order and Did Not Close
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Frontend / Admin Map / Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On `/admin/map`, the secondary drawer handles always followed a hard-coded Create → Edit → Merge sequence. A Merge or Edit workspace could remain as a collapsed handle after its Close action, so the visible stack did not reflect opened workspaces or the most recently opened one.
+
+#### 2. Root Cause Analysis (RCA)
+Each drawer render path positioned its handles with fixed offsets. Close handlers only hid a drawer in some paths, retaining the Merge report or Edit zone session that caused a stale placeholder to remain. Inactive workspace components were also unmounted, losing in-progress view state when switching tabs.
+
+#### 3. Solution & Architectural Strategy
+`LiveMapPage` now maintains a shared most-recent-first Merge/Edit workspace order. Create Zone stays permanently first; only sessions the administrator opened are rendered, and reopening Merge or Edit moves it directly below Create Zone. Switching keeps the workspace component mounted so its in-progress state and scroll position remain available. Explicit Close clears the matching session and its ordering entry. The Edit drawer has the same visible Close control on desktop and mobile; its existing discard confirmation continues to protect unsaved edits.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/admin/LiveMapPage.tsx`: Adds recency-based workspace ordering, preserves inactive workspace mounts, and clears Merge/Edit sessions on close.
+- `frontend/src/features/admin/components/merge/MergeWorkspacePanel.tsx`: Keeps an inactive opened Merge workspace mounted until it is explicitly closed.
+- `frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx`: Keeps inactive zone workspaces mounted and exposes the Edit Close control at every viewport size.
+- `docs/others/system-documentation.md`, `docs/task_plan.md`, `docs/progress.md`: Records the corrected workspace-tab behavior.
+
+---
 
 ### [BUG-017] Flood Report Saved Accidental UI-Only Drafts
 - **Status**: Resolved

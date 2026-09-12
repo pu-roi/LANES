@@ -122,6 +122,7 @@ const PASIG_BOUNDS: [[number, number], [number, number]] = [
 ];
 
 const VIEW_STORAGE_KEY = "lanes_admin_map_viewport";
+type SecondaryWorkspace = "merge" | "edit";
 
 export default function LiveMapPage() {
   const searchParams = useSearchParams();
@@ -153,6 +154,18 @@ export default function LiveMapPage() {
   // Edit Zone owns an independent session. Keeping it separate from Create
   // prevents opening an edit from changing the persistent Create Zone bookmark.
   const [isEditZoneDrawerOpen, setIsEditZoneDrawerOpen] = useState(false);
+  // Create Zone is intentionally omitted: it is the permanent first shortcut.
+  // The remaining workspace tabs are kept in most-recently-opened order.
+  const [secondaryWorkspaceOrder, setSecondaryWorkspaceOrder] = useState<SecondaryWorkspace[]>([]);
+  const markSecondaryWorkspaceOpened = useCallback((workspace: SecondaryWorkspace) => {
+    setSecondaryWorkspaceOrder((current) => [workspace, ...current.filter((item) => item !== workspace)]);
+  }, []);
+  const removeSecondaryWorkspace = useCallback((workspace: SecondaryWorkspace) => {
+    setSecondaryWorkspaceOrder((current) => current.filter((item) => item !== workspace));
+  }, []);
+  const secondaryWorkspaceTop = useCallback((workspace: SecondaryWorkspace) => (
+    secondaryWorkspaceOrder.indexOf(workspace) === 0 ? "top-[11.5rem]" : "top-[22.5rem]"
+  ), [secondaryWorkspaceOrder]);
   useEffect(() => {
     if (!isAuthenticated || !createZoneDraftUserId) return;
     let cancelled = false;
@@ -221,6 +234,7 @@ export default function LiveMapPage() {
           setIsMergeDrawerOpen(false);
           setMergingReport(null);
           setEditingZone(zone);
+          markSecondaryWorkspaceOpened("edit");
           setIsEditZoneDrawerOpen(true);
         } catch (err: any) {
           if (err?.status === 404) {
@@ -235,7 +249,7 @@ export default function LiveMapPage() {
         if (!cancelled) toast.error("Unable to resume your saved Edit Zone draft.");
       });
     return () => { cancelled = true; };
-  }, [createZoneDraftUserId, isAuthenticated]);
+  }, [createZoneDraftUserId, isAuthenticated, markSecondaryWorkspaceOpened]);
 
   // Queries
   const { data: mapZones, refetch: refetchMap } = useQuery({
@@ -252,6 +266,7 @@ export default function LiveMapPage() {
 
   // Track last focused query to avoid duplicate re-flying
   const lastFocusedParamRef = useRef<string | null>(null);
+  const lastPrimaryTabRef = useRef<"pending" | "zones" | null>(null);
 
   // Read focus_report_id and coordinate params from URL query parameters (when redirected from Reports Page)
   useEffect(() => {
@@ -323,7 +338,8 @@ export default function LiveMapPage() {
     refetchInterval: 15000,
   });
 
-  const selectedReport = pendingReports?.find((r) => r.id === selectedReportId) || null;
+  const selectedReport = pendingReports?.find((report) => report.id === selectedReportId) || null;
+  const selectedZone = (mapZones || []).find((zone: AvoidanceZone) => zone.id === selectedZoneId) || null;
 
   const openMergeWorkspace = (report: FloodReport) => {
     // Keep Pane 2 at its current width when moving between workspaces. The
@@ -334,6 +350,7 @@ export default function LiveMapPage() {
     setSelectedReportId(report.id);
     setIsolatedReportId(report.id);
     setIsMergeMobileMapVisible(false);
+    markSecondaryWorkspaceOpened("merge");
     setIsMergeDrawerOpen(true);
   };
 
@@ -356,9 +373,10 @@ export default function LiveMapPage() {
     setMergeProposedGeometry(null);
     setIsolatedReportId(null);
     setEditingZone(zone);
+    markSecondaryWorkspaceOpened("edit");
     setIsCreateZoneDrawerOpen(false);
     setIsEditZoneDrawerOpen(true);
-  }, []);
+  }, [markSecondaryWorkspaceOpened]);
 
   const handleReportFocusChange = useCallback((id: number | null) => {
     setSelectedReportId(id);
@@ -367,6 +385,7 @@ export default function LiveMapPage() {
       setIsolatedReportId(null);
       setIsMergeDrawerOpen(false);
       setMergingReport(null);
+      removeSecondaryWorkspace("merge");
       setMergePreviewCandidates([]);
       setMergeProposedGeometry(null);
       return;
@@ -384,11 +403,12 @@ export default function LiveMapPage() {
     if (mergingReport && nextReport && isZoneWorkspaceOpen) {
       setIsCreateZoneDrawerOpen(false);
       setIsEditZoneDrawerOpen(false);
+      markSecondaryWorkspaceOpened("merge");
       setIsMergeDrawerOpen(true);
     }
 
     setIsolatedReportId(willShowMergeWorkspace ? id : null);
-  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, mergingReport, pendingReports]);
+  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, markSecondaryWorkspaceOpened, mergingReport, pendingReports, removeSecondaryWorkspace]);
 
   // Ordinary report selection never changes the queue or guesses which reports are related.
   // Map spotlight is scoped to the explicit intelligent merge workflow.
@@ -541,51 +561,74 @@ export default function LiveMapPage() {
     });
   }, [heatmapData, isLoaded, isAnalyticsOpen, mapInstance]);
 
-  // Fly to selected report when clicked in the list
+  // Pending cards delegate their initial fly-to to selection state. The tab
+  // switch effect below runs after this guard, avoiding a duplicate flight.
   useEffect(() => {
-    if (!mapInstance || !isLoaded || !selectedReport || !selectedReport.geometry || activeTab !== "pending") return;
+    if (!mapInstance || !isLoaded || activeTab !== "pending" || lastPrimaryTabRef.current !== activeTab || !selectedReport?.geometry) return;
     flyToFeature(mapInstance, selectedReport.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1200 });
-  }, [selectedReport, activeTab, isLoaded, mapInstance]);
+  }, [activeTab, isLoaded, mapInstance, selectedReport]);
+
+  // Switching tabs restores only the currently selected item for that tab.
+  // A deliberately deselected card has a null ID and must not move the map.
+  useEffect(() => {
+    if (!mapInstance || !isLoaded || lastPrimaryTabRef.current === activeTab) return;
+
+    if (activeTab === "pending") {
+      if (!pendingReports) return;
+      if (selectedReport?.geometry) {
+        flyToFeature(mapInstance, selectedReport.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1200 });
+      }
+    } else {
+      if (!mapZones) return;
+      if (selectedZone?.geometry) {
+        flyToFeature(mapInstance, selectedZone.geometry, selectedZone.report_geometry, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1200 });
+      }
+    }
+
+    lastPrimaryTabRef.current = activeTab;
+  }, [activeTab, isLoaded, mapInstance, mapZones, pendingReports, selectedReport, selectedZone]);
 
   // Mutations
   const approveMutation = useMutation({
     mutationFn: ({ id, payload }: { id: number; payload?: any }) => approveReport(id, payload),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["adminPendingReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminZones"] });
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
-      setSelectedReportId(null);
+      setSelectedReportId((current) => current === variables.id ? null : current);
     }
   });
 
   const rejectMutation = useMutation({
     mutationFn: (id: number) => rejectReport(id),
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: ["adminPendingReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
-      setSelectedReportId(null);
+      setSelectedReportId((current) => current === id ? null : current);
     }
   });
 
   const deactivateSingleMutation = useMutation({
     mutationFn: (id: number) => deactivateZone(id),
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: ["adminZones"] });
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setConfirmId(null);
+      setSelectedZoneId((current) => current === id ? null : current);
     },
   });
 
   const deactivateBulkMutation = useMutation({
     mutationFn: (ids: number[]) => deactivateZonesBulk(ids),
-    onSuccess: () => {
+    onSuccess: (_data, ids) => {
       queryClient.invalidateQueries({ queryKey: ["adminZones"] });
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setSelectedIds([]);
       setConfirmBulk(false);
+      setSelectedZoneId((current) => ids.includes(current ?? -1) ? null : current);
     },
   });
 
@@ -821,9 +864,12 @@ export default function LiveMapPage() {
                   onClose={() => {
                     setIsMergeDrawerOpen(false);
                     setIsMergeMobileMapVisible(false);
+                    setMergingReport(null);
                     setMergePreviewCandidates([]);
                     setMergeProposedGeometry(null);
                     setIsolatedReportId(null);
+                    setSelectedReportId(null);
+                    removeSecondaryWorkspace("merge");
                   }}
                   mapInstance={mapInstance}
                   activeZones={mapZones || []}
@@ -864,7 +910,7 @@ export default function LiveMapPage() {
                 type="button"
                 onClick={() => openEditZoneWorkspace(editingZone)}
                 aria-pressed={false}
-                className="group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-amber-200 bg-white py-3 text-amber-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-amber-400 hover:bg-amber-50 md:flex"
+                className={`group absolute right-[-35px] ${secondaryWorkspaceTop("edit")} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-amber-200 bg-white py-3 text-amber-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-amber-400 hover:bg-amber-50 md:flex`}
                 title={`Resume Edit Zone #${editingZone.id}`}
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-600 text-white shadow-xs"><ShieldAlert className="h-4 w-4 stroke-[2.5]" /></div>
@@ -884,9 +930,10 @@ export default function LiveMapPage() {
                 setMergePreviewCandidates([]);
                 setMergeProposedGeometry(null);
                 setIsolatedReportId(willOpen ? mergingReport.id : null);
+                if (willOpen) markSecondaryWorkspaceOpened("merge");
               }}
               aria-pressed={isMergeDrawerOpen}
-              className={`group absolute right-[-35px] ${editingZone ? "top-[22.5rem]" : "top-[11.5rem]"} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isMergeDrawerOpen ? "border-violet-700 bg-violet-600 text-white hover:bg-violet-700" : "border-violet-200 bg-white text-violet-700 hover:border-violet-400 hover:bg-violet-50"}`}
+              className={`group absolute right-[-35px] ${secondaryWorkspaceTop("merge")} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isMergeDrawerOpen ? "border-violet-700 bg-violet-600 text-white hover:bg-violet-700" : "border-violet-200 bg-white text-violet-700 hover:border-violet-400 hover:bg-violet-50"}`}
               title={isMergeDrawerOpen ? "Collapse Review Merge drawer" : `Open Review Merge for report #${mergingReport.id}`}
             >
               <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${isMergeDrawerOpen ? "bg-white/20 text-white" : "bg-violet-600 text-white shadow-xs"}`}><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>
@@ -930,11 +977,10 @@ export default function LiveMapPage() {
             }}
           >
             <div className={`flex h-full w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-[10px_0_28px_-16px_rgba(15,23,42,0.45)] ${isCreateZoneDrawerOpen ? "animate-in fade-in slide-in-from-right-2 duration-200" : ""}`}>
-              {isCreateZoneDrawerOpen && (
               <div className="flex h-full w-full min-w-0 shrink-0 flex-col">
                 <CreateOfficialZonePanel
                   key="new-zone"
-                  isOpen
+                  isOpen={isCreateZoneDrawerOpen}
                   onClose={() => {
                     setIsCreateZoneDrawerOpen(false);
                   }} 
@@ -950,7 +996,6 @@ export default function LiveMapPage() {
                   switchWorkspaceLabel={editingZone ? `Edit #${editingZone.id}` : undefined}
                 />
               </div>
-              )}
             </div>
 
             {/* DRAWER COLLAPSE HANDLE (Front of drawer in your hands) */}
@@ -981,7 +1026,7 @@ export default function LiveMapPage() {
                 type="button"
                 onClick={() => openEditZoneWorkspace(editingZone)}
                 aria-pressed={false}
-                className="group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-amber-200 bg-white py-3 text-amber-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-amber-400 hover:bg-amber-50 md:flex"
+                className={`group absolute right-[-35px] ${secondaryWorkspaceTop("edit")} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-amber-200 bg-white py-3 text-amber-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-amber-400 hover:bg-amber-50 md:flex`}
                 title={`Resume Edit Zone #${editingZone.id}`}
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-600 text-white shadow-xs"><ShieldAlert className="h-4 w-4 stroke-[2.5]" /></div>
@@ -995,7 +1040,7 @@ export default function LiveMapPage() {
                 type="button"
                 onClick={() => openMergeWorkspace(mergingReport)}
                 aria-pressed={false}
-                className={`group absolute right-[-35px] ${editingZone ? "top-[22.5rem]" : "top-[11.5rem]"} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex`}
+                className={`group absolute right-[-35px] ${secondaryWorkspaceTop("merge")} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex`}
                 title={`Return to merge review for report #${mergingReport.id}`}
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-600 text-white shadow-xs"><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>
@@ -1022,11 +1067,14 @@ export default function LiveMapPage() {
             onAnimationComplete={() => mapInstance?.resize()}
           >
             <div className={`flex h-full w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-[10px_0_28px_-16px_rgba(15,23,42,0.45)] ${isEditZoneDrawerOpen ? "animate-in fade-in slide-in-from-right-2 duration-200" : ""}`}>
-              {isEditZoneDrawerOpen && (
               <CreateOfficialZonePanel
                 key={`edit-zone-${editingZone.id}`}
-                isOpen
-                onClose={() => setIsEditZoneDrawerOpen(false)}
+                isOpen={isEditZoneDrawerOpen}
+                onClose={() => {
+                  setIsEditZoneDrawerOpen(false);
+                  setEditingZone(null);
+                  removeSecondaryWorkspace("edit");
+                }}
                 isAdminMode={true}
                 onZoneUpdated={() => {
                   refetchList();
@@ -1040,7 +1088,6 @@ export default function LiveMapPage() {
                 onSwitchWorkspace={openCreateZoneWorkspace}
                 switchWorkspaceLabel="Create Zone"
               />
-              )}
             </div>
 
             <button
@@ -1053,7 +1100,7 @@ export default function LiveMapPage() {
                 }
               }}
               aria-pressed={isEditZoneDrawerOpen}
-              className={`group absolute right-[-35px] top-[11.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isEditZoneDrawerOpen ? "border-amber-700 bg-amber-600 text-white hover:bg-amber-700" : "border-amber-200 bg-white text-amber-700 hover:border-amber-400 hover:bg-amber-50"}`}
+              className={`group absolute right-[-35px] ${secondaryWorkspaceTop("edit")} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 py-3 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.55)] transition-all md:flex ${isEditZoneDrawerOpen ? "border-amber-700 bg-amber-600 text-white hover:bg-amber-700" : "border-amber-200 bg-white text-amber-700 hover:border-amber-400 hover:bg-amber-50"}`}
               title={isEditZoneDrawerOpen ? `Collapse Edit Zone #${editingZone.id}` : `Resume Edit Zone #${editingZone.id}`}
             >
               <div className={`flex h-6 w-6 items-center justify-center rounded-lg transition-transform group-hover:scale-105 ${isEditZoneDrawerOpen ? "bg-white/20 text-white" : "bg-amber-600 text-white shadow-xs"}`}>
@@ -1080,7 +1127,7 @@ export default function LiveMapPage() {
                 type="button"
                 onClick={() => openMergeWorkspace(mergingReport)}
                 aria-pressed={false}
-                className="group absolute right-[-35px] top-[22.5rem] z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex"
+                className={`group absolute right-[-35px] ${secondaryWorkspaceTop("merge")} z-30 hidden h-40 w-9 flex-col items-center justify-between rounded-r-xl border border-l-0 border-violet-200 bg-white py-3 text-violet-700 shadow-[5px_4px_12px_-8px_rgba(15,23,42,0.5)] transition-all hover:border-violet-400 hover:bg-violet-50 md:flex`}
                 title={`Return to merge review for report #${mergingReport.id}`}
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-600 text-white shadow-xs"><Sparkles className="h-4 w-4 stroke-[2.5]" /></div>

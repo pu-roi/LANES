@@ -285,12 +285,6 @@ export function MapProvider({ children }: { children: ReactNode }) {
     }
   }, [locationParam, typeParam, labelParam]);
 
-  useEffect(() => {
-    if (panelParam === "saveplace") {
-      setIsSavePlacePanelOpen(true);
-    }
-  }, [panelParam]);
-
   const setActivePanel = useCallback((panel: ActivePanel) => {
     setActivePanelState(panel);
   }, []);
@@ -399,6 +393,14 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const setFloodEndLabel = useCallback((label: string) => {
     setFloodEndState((prev) => (prev ? { ...prev, label } : null));
   }, []);
+
+  useEffect(() => {
+    if (panelParam === "saveplace") {
+      setIsSavePlacePanelOpen(true);
+    } else if (panelParam === "analytics") {
+      setIsAnalyticsOpen(true);
+    }
+  }, [panelParam, setIsAnalyticsOpen, setIsSavePlacePanelOpen]);
 
   const restoreFloodReportMapState = useCallback((state: FloodReportMapState) => {
     setFloodStartState(state.floodStart);

@@ -197,7 +197,7 @@ export function MergeWorkspacePanel({
     },
   });
 
-  if (!isOpen || !primaryReport) return null;
+  if (!primaryReport) return null;
 
   const toggleCandidate = (id: number) => {
     setSelectedCandidateIds((previous) => previous.includes(id) ? previous.filter((item) => item !== id) : [...previous, id]);
