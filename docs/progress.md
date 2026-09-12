@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 12, 2026, 8:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 11:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -87,6 +87,15 @@
   - Added composer session restore in `FeedPage.tsx` to automatically reopen the modal with all text, location metadata, and media previews intact when the user refreshes `/feed`.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Landing Flood Insights Map Handoff** (`LandingView.tsx`, `MapContext.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Routes the landing **View Flood Analytics** action to `/map?panel=analytics`.
+  - Opens the existing responsive Flood Insights panel through the map's URL-driven panel state.
+- [x] **Primary-Tab Selected-Item Fly-To Repair** (`LiveMapPage.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Keeps the Pending and Active tab selections independent while returning the map only to the currently selected item for the tab being opened.
+  - Explicit card or map-feature deselection clears that target, so switching back leaves the map in its current location.
+- [x] **Recency-Ordered Secondary Workspace Tabs & Close Repair** (`LiveMapPage.tsx`, `MergeWorkspacePanel.tsx`, `OfficialZoneDrawer.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Keeps Create Zone first and shows Merge/Edit handles only after their workspace has been opened; the most recently opened workspace moves directly below Create Zone.
+  - Keeps inactive workspace components mounted while switching, preserving the active form, workflow, scroll position, and selected context; an explicit Merge Close or confirmed Edit discard removes its corresponding tab/session.
 - [x] **Flood Report Draft Eligibility & Scoped Clear** (`FloodReportPanel.tsx`, `floodReportDraftStorage.ts`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Replaced broad field-presence persistence with selected-road-plus-substantive-detail eligibility; UI toggles, wizard progress, survey visibility, and typed-only locations no longer create a restorable report.
   - Added severity deselection and a compact scoped **Clear** dialog: neutral **Clear all** removes queued drafts, map geometry, media, and account-private storage; rightmost red **Clear this page** preserves work on the other page.

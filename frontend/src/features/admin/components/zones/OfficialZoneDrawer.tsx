@@ -735,8 +735,6 @@ export function OfficialZoneDrawer({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
     <aside
       aria-label="Official Avoidance Zone Workspace"
@@ -783,11 +781,11 @@ export function OfficialZoneDrawer({
               {switchWorkspaceLabel}
             </Button>
           )}
-          {/* Mobile-only close button (hidden on desktop where outer handle is used) */}
+          {/* Close removes this workspace; the outer handle only switches tabs. */}
           <button
             type="button"
             onClick={() => isEditMode ? setIsCancelEditDialogOpen(true) : onClose()}
-            className="md:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
             title="Close drawer"
           >
             <X className="w-4 h-4" />

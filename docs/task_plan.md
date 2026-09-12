@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 12, 2026, 8:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 11:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -22,6 +22,9 @@
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
 > **Focus:** Overhauling the flood-report merging logic, candidate identification, and Spatial Operations UI/UX to enable intelligent, multi-factor spatial matching, explainable recommendations, conflict resolution, and seamless final-zone editing while strictly preserving original crowdsourced reports and Community Feed posts.
 > **Current Status (Sept 11, 2026):**
+> - [x] **Landing Flood Insights Map Handoff** (`LandingView.tsx`, `MapContext.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Routes **View Flood Analytics** to `/map?panel=analytics`; the map consumes the URL signal and opens the existing Flood Insights panel.
+> - [x] **Primary-Tab Selected-Item Fly-To Repair** (`LiveMapPage.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Keeps Pending Reports and Active Zones independently selected. Returning to a tab flies only to its currently selected item; explicitly deselecting the card or map feature clears its target and prevents a later tab switch from moving the map.
+> - [x] **Recency-Ordered Secondary Workspace Tabs & Close Repair** (`LiveMapPage.tsx`, `MergeWorkspacePanel.tsx`, `OfficialZoneDrawer.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Keeps Create Zone permanently first, places only opened Merge/Edit sessions below it in most-recent-first order, preserves their mounted workspace state when switching, and removes the corresponding session when the Merge or Edit Close action is confirmed.
 > - [x] **Flood Report Draft Eligibility & Scoped Clear (`FloodReportPanel.tsx`, `floodReportDraftStorage.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): An active draft now requires a selected road endpoint plus severity, survey data, description, or media; queued reports remain recoverable. Two-way/sharing toggles, wizard state, survey visibility, and typed-only locations cannot save a draft. Severity can be deselected, and the compact Clear dialog offers neutral **Clear all** plus rightmost red **Clear this page**.
 > - [x] **Separate Create and Edit Zone Workspaces (`LiveMapPage.tsx`, `OfficialZoneDrawer.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Create Zone retains a blue resumable bookmark and its own draft; Edit Zone has a distinct amber bookmark tied to its selected zone. Only one Pane 2 drawer is visible at a time, without discarding another workspace or Merge Review. The desktop bookmark stack is spaced Create → Edit → Merge without overlap. Mobile exposes both workspaces through the Active Zones entry point and shared drawer header.
 > - [x] **Feed Road-Focus Pulse Alignment (`PostItem.tsx`, `mapGeoUtils.ts`, `MapCanvas.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Feed location links now find the length-aware midpoint of a saved road segment, or the shared midpoint of a validated pair of carriageways, instead of a bounding-box center. The temporary MapLibre pulse uses a center anchor so its red circle is aligned with that coordinate.
