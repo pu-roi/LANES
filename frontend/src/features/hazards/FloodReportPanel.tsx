@@ -28,6 +28,8 @@ import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useMapContext, type ActivePoint, type DraftReport } from "@/features/map/MapContext";
 import {
   discardFloodReportDraft,
+  hasFloodReportPanelState,
+  hasMeaningfulFloodReportDraft,
   loadFloodReportDraft,
   removeLegacyFloodReportDrafts,
   saveFloodReportDraft,
@@ -231,6 +233,10 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         await removeLegacyFloodReportDrafts();
         const saved = await loadFloodReportDraft(userId);
         if (cancelled || !saved) return;
+        if (!hasMeaningfulFloodReportDraft(saved)) {
+          await discardFloodReportDraft(userId);
+          return;
+        }
 
         const { active } = saved;
         setStartInput(active.startInput);
@@ -276,7 +282,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       return;
     }
 
-    void saveFloodReportDraft(userId, {
+    const draft = {
       active: {
         floodStart,
         floodEnd,
@@ -295,7 +301,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         step,
       },
       queuedDrafts: draftReports,
-    }).catch((err) => {
+    };
+
+    const persist = hasMeaningfulFloodReportDraft(draft)
+      ? saveFloodReportDraft(userId, draft)
+      : discardFloodReportDraft(userId);
+
+    void persist.catch((err) => {
       console.error("Failed to save account flood-report draft", err);
       if (!hasShownPersistenceError.current) {
         hasShownPersistenceError.current = true;
@@ -346,15 +358,60 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setEditingDraft(null);
   };
 
+  const resetEntireFloodReport = () => {
+    suppressNextDraftSave.current = true;
+    setDraftReports([]);
+    clearForm();
+    setIsViewingDrafts(false);
+    setActivePoint(null);
+    setIsPickingOnMap(false);
+  };
+
+  const clearCurrentFloodReportPage = () => {
+    if (isViewingDrafts) {
+      setDraftReports([]);
+      setIsViewingDrafts(false);
+      setIsDiscardDialogOpen(false);
+      return;
+    }
+
+    if (step === 1) {
+      restoreFloodReportMapState({
+        floodStart: null,
+        floodEnd: null,
+        floodPreviewGeometry: null,
+        floodOppositeGeometry: null,
+        floodIsBidirectional: false,
+      });
+      setStartInput("");
+      setEndInput("");
+      setFloodStartLabel("");
+      setFloodEndLabel("");
+      setVisualOption(null);
+      setActivePoint(null);
+      setIsPickingOnMap(false);
+    } else {
+      setPassableVehicles([]);
+      setHiddenHazards(null);
+      setShowSurvey(false);
+      setDescription("");
+      clearMediaFiles();
+      setIsPublic(false);
+    }
+
+    setIsDiscardDialogOpen(false);
+  };
+
   const discardDraft = async () => {
-    if (!canPersistDraft || !userId) return;
+    if (!canPersistDraft || !userId) {
+      resetEntireFloodReport();
+      setIsDiscardDialogOpen(false);
+      return;
+    }
 
     try {
       await discardFloodReportDraft(userId);
-      suppressNextDraftSave.current = true;
-      setDraftReports([]);
-      clearForm();
-      setIsViewingDrafts(false);
+      resetEntireFloodReport();
       setIsDiscardDialogOpen(false);
       success("Draft Discarded", "Your saved flood-report draft was removed from this device.");
     } catch (err) {
@@ -634,31 +691,30 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   }
 
   // ── Shared form body ───────────────────────────────────────────────────────
-  const showClear = step === 1 && Boolean(floodStart || floodEnd);
+  const currentDraftContent = {
+    active: {
+      floodStart,
+      floodEnd,
+      floodPreviewGeometry,
+      floodOppositeGeometry,
+      floodIsBidirectional: isBidirectional,
+      startInput,
+      endInput,
+      visualOption,
+      passableVehicles,
+      hiddenHazards,
+      showSurvey,
+      description,
+      mediaFiles,
+      isPublic,
+      step,
+    },
+    queuedDrafts: draftReports,
+  };
+  const hasPanelState = hasFloodReportPanelState(currentDraftContent);
 
-  const clearCurrentSection = () => {
-    if (step === 1) {
-      setFloodStart(null);
-      setFloodEnd(null);
-      setStartInput("");
-      setEndInput("");
-      setFloodStartLabel("");
-      setFloodEndLabel("");
-      return;
-    }
-
-    if (showSurvey) {
-      setPassableVehicles([]);
-      setHiddenHazards(null);
-      return;
-    }
-
-    setVisualOption(null);
-    setPassableVehicles([]);
-    setHiddenHazards(null);
-    setDescription("");
-    clearMediaFiles();
-    setIsPublic(false);
+  const requestClear = () => {
+    setIsDiscardDialogOpen(true);
   };
 
   const formBody = (!isAuthenticated && !isAdminMode) ? (
@@ -720,6 +776,18 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         </div>
       )}
 
+      {!isViewingDrafts && hasPanelState && (
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={requestClear}
+            className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {isViewingDrafts && (
         <div className="flex flex-col flex-1 animate-in fade-in zoom-in-95 duration-200 min-h-[300px]">
            <div className="mb-4 flex items-center justify-between gap-2">
@@ -731,10 +799,10 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
              </div>
              <button
                type="button"
-               onClick={() => setIsDiscardDialogOpen(true)}
+               onClick={requestClear}
                className="shrink-0 text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
              >
-               Discard all
+               Clear
              </button>
            </div>
            
@@ -793,17 +861,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
       {!isViewingDrafts && step === 1 && (
         <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-          {showClear && !editingDraft && (
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={clearCurrentSection}
-                className="text-xs font-medium text-gray-500 transition-colors hover:text-red-600"
-              >
-                Clear locations
-              </button>
-            </div>
-          )}
           <LocationInputGroup
             startInput={startInput}
             setStartInput={(val) => { setStartInput(val); setIsPickingOnMap(false); }}
@@ -873,7 +930,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                   <button
                     key={opt.id}
                     type="button"
-                    onClick={() => setVisualOption(opt.id)}
+                    aria-pressed={visualOption === opt.id}
+                    onClick={() => setVisualOption((current) => current === opt.id ? null : opt.id)}
                     className={cn(
                       "flex flex-col items-center gap-0.5 rounded-lg border px-2 py-2 text-xs font-semibold transition-all",
                       visualOption === opt.id ? colors.active : colors.pill
@@ -1234,10 +1292,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       {formBody}
       <ConfirmDialog
         isOpen={isDiscardDialogOpen}
-        title="Discard flood-report draft?"
-        message="Remove this saved draft and its media from this device? Submitted reports stay."
-        confirmLabel="Discard draft"
-        variant="destructive"
+        title="Clear flood-report panel?"
+        message="Clear only what is on this page, or remove the entire unfinished report and its queued drafts? Submitted reports stay."
+        confirmLabel="Clear all"
+        confirmVariant="outline"
+        secondaryLabel="Clear this page"
+        onSecondary={clearCurrentFloodReportPage}
+        secondaryVariant="danger"
         size="sm"
         onConfirm={() => void discardDraft()}
         onCancel={() => setIsDiscardDialogOpen(false)}

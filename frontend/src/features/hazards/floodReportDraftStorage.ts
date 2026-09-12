@@ -28,6 +28,54 @@ export interface SavedFloodReportDraft {
   queuedDrafts: DraftReport[];
 }
 
+type FloodReportDraftContent = Pick<SavedFloodReportDraft, "active" | "queuedDrafts">;
+
+/**
+ * A restorable report needs both a selected road anchor and substantive report
+ * content. UI-only state (page, toggles, typed-but-unselected text) must never
+ * create a draft on its own.
+ */
+export function hasMeaningfulFloodReportDraft(draft: FloodReportDraftContent) {
+  const { active, queuedDrafts } = draft;
+  if (queuedDrafts.length > 0) return true;
+
+  const hasSelectedRoadAnchor = Boolean(active.floodStart || active.floodEnd);
+  const hasSubstantiveReportDetail = Boolean(
+    active.visualOption ||
+    active.passableVehicles.length ||
+    active.hiddenHazards ||
+    active.description.trim() ||
+    active.mediaFiles.length
+  );
+
+  return hasSelectedRoadAnchor && hasSubstantiveReportDetail;
+}
+
+/**
+ * This is intentionally broader than draft eligibility: it controls whether
+ * the panel should offer Clear for any local interaction, including state that
+ * is not important enough to be persisted as a draft.
+ */
+export function hasFloodReportPanelState(draft: FloodReportDraftContent) {
+  const { active, queuedDrafts } = draft;
+  return queuedDrafts.length > 0 || Boolean(
+    active.floodStart ||
+    active.floodEnd ||
+    active.floodPreviewGeometry ||
+    active.floodOppositeGeometry ||
+    active.floodIsBidirectional ||
+    active.startInput.trim() ||
+    active.endInput.trim() ||
+    active.visualOption ||
+    active.passableVehicles.length ||
+    active.hiddenHazards ||
+    active.description.trim() ||
+    active.mediaFiles.length ||
+    active.isPublic ||
+    active.step !== 1
+  );
+}
+
 function keyFor(userId: string) {
   return `${DRAFT_KEY_PREFIX}${userId}`;
 }

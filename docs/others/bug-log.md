@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 12, 2026, 6:47 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 8:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,52 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-017] Flood Report Saved Accidental UI-Only Drafts
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Frontend / Flood Report Panel / IndexedDB Drafts
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+An accidental severity selection could be saved and restored as a Flood Report draft. The panel’s `Clear locations` action also left survey answers, media, sharing state, preview geometry, queued reports, and other report values behind.
+
+#### 2. Root Cause Analysis (RCA)
+Draft eligibility accepted any populated field, while the clear control only reset location inputs. UI-only values and incomplete interactions therefore looked like recoverable report work.
+
+#### 3. Solution & Architectural Strategy
+Draft eligibility now requires at least one selected road endpoint plus substantive report content (severity, survey answer, description, or media); queued reports remain recoverable. Two-way coverage, sharing, wizard state, survey visibility, and unselected location text cannot create a draft. Severity tiles now toggle off. **Clear** presents a compact, no-wrap choice row: neutral **Clear all** followed by the rightmost red **Clear this page**, which preserves work on the other report page.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/hazards/floodReportDraftStorage.ts`: Separates meaningful draft eligibility from any local panel state.
+- `frontend/src/features/hazards/FloodReportPanel.tsx`: Adds toggleable severity and scoped/full Clear handlers.
+- `frontend/src/shared/ui/feedback/ConfirmDialog.tsx`: Supports the compact optional third action used by the Flood Report Clear dialog.
+- `docs/others/bug-log.md`, `docs/task_plan.md`, `docs/progress.md`, `docs/others/system-documentation.md`: Records the corrected Flood Report draft contract.
+
+---
+
+### [BUG-016] Empty Flood Report Draft Triggered a False Restore Message
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Frontend / Flood Report Panel / IndexedDB Drafts
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+After sign-in, Flood Report could display “Draft Restored” even though the report panel contained no locations, severity, text, media, or queued report.
+
+#### 2. Root Cause Analysis (RCA)
+Flood Report persisted every hydrated form state, including an entirely empty active form. On startup it treated the presence of any account-private IndexedDB record as a successful draft restore and showed the toast without checking whether it contained report work.
+
+#### 3. Solution & Architectural Strategy
+A shared meaningful-draft check now gates both persistence and restoration. Empty records are deleted silently, never produce a restore message, and are not re-saved. The follow-up eligibility refinement in BUG-017 requires a selected road endpoint plus substantive report content for an active form, while queued reports remain recoverable.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/hazards/floodReportDraftStorage.ts`: Adds the shared meaningful Flood Report draft classifier.
+- `frontend/src/features/hazards/FloodReportPanel.tsx`: Removes empty persisted records before restore and deletes rather than saves an empty active form.
+
+---
 
 ### [BUG-015] Feed Create Post Draft Lost Media Attachments and Location on Refresh
 - **Status**: Resolved
