@@ -12,6 +12,8 @@ export interface CreateOfficialZonePanelProps {
   mapInstance?: any;
   editingZone?: AvoidanceZone | null;
   onZoneUpdated?: () => void;
+  onSwitchWorkspace?: () => void;
+  switchWorkspaceLabel?: string;
 }
 
 export function CreateOfficialZonePanel({
@@ -21,6 +23,8 @@ export function CreateOfficialZonePanel({
   editingZone,
   onAdminSubmit,
   onZoneUpdated,
+  onSwitchWorkspace,
+  switchWorkspaceLabel,
 }: CreateOfficialZonePanelProps) {
   return (
     <OfficialZoneDrawer
@@ -30,6 +34,8 @@ export function CreateOfficialZonePanel({
       editingZone={editingZone}
       onAdminSubmit={onAdminSubmit}
       onZoneUpdated={onZoneUpdated}
+      onSwitchWorkspace={onSwitchWorkspace}
+      switchWorkspaceLabel={switchWorkspaceLabel}
     />
   );
 }

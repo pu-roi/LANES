@@ -103,6 +103,19 @@ export function ActiveZonesPanel({
           </label>
         </div>
 
+        {onCreateOfficialZone && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onCreateOfficialZone}
+            className="md:hidden h-7 px-2.5 gap-1 border-blue-200 text-blue-700 hover:bg-blue-50"
+          >
+            <Shield className="h-3.5 w-3.5" />
+            Create
+          </Button>
+        )}
+
         <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-xs ml-auto">
           <button
             onClick={() => { setActiveOnly(true); setPage(1); }}

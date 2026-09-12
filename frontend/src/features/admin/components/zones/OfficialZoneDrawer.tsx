@@ -44,6 +44,8 @@ export interface OfficialZoneDrawerProps {
   editingZone?: AvoidanceZone | null;
   onAdminSubmit?: (items: ZoneSubmissionItem[]) => Promise<void>;
   onZoneUpdated?: () => void;
+  onSwitchWorkspace?: () => void;
+  switchWorkspaceLabel?: string;
 }
 
 export interface ZoneSubmissionItem {
@@ -123,6 +125,8 @@ export function OfficialZoneDrawer({
   editingZone = null,
   onAdminSubmit,
   onZoneUpdated,
+  onSwitchWorkspace,
+  switchWorkspaceLabel,
 }: OfficialZoneDrawerProps) {
   const { success, error } = useToast();
   const { user, isAuthenticated } = useAuth();
@@ -768,6 +772,17 @@ export function OfficialZoneDrawer({
         </div>
 
         <div className="flex items-center gap-1">
+          {onSwitchWorkspace && switchWorkspaceLabel && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onSwitchWorkspace}
+              className="md:hidden h-7 px-2 text-[10px] font-semibold text-slate-600 hover:bg-slate-100"
+            >
+              {switchWorkspaceLabel}
+            </Button>
+          )}
           {/* Mobile-only close button (hidden on desktop where outer handle is used) */}
           <button
             type="button"

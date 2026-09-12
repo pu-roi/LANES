@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 12, 2026, 2:31 AM
+> **Last Updated:** September 12, 2026, 6:47 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,57 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-015] Feed Create Post Draft Lost Media Attachments and Location on Refresh
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Frontend / Community Feed / Post Composer
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When composing a community post in `CreatePostModal` on `/feed`, attaching media (images or videos) and selecting a location tag/coordinates were held purely in volatile React state. Refreshing or reloading the page discarded the attached files and selected location. Furthermore, previously restored files were prematurely cleared from IndexedDB upon initial restore.
+
+#### 2. Root Cause Analysis (RCA)
+1. Media files in `selectedFiles` and location coordinates were only saved to storage on explicit button navigation actions ("Choose on Map" or clicking 'X' and choosing "Save Draft"), rather than continuously synchronizing state changes.
+2. `CreatePostModal` called `del('lanes_draft_files')` immediately when loading files into React state on mount, erasing the persistent IndexedDB record. Subsequent browser refreshes therefore found no stored files.
+3. `FeedPage` initialized `isCreateModalOpen` to `false` without checking whether a draft session was active before the page reload.
+
+#### 3. Solution & Architectural Strategy
+1. **Continuous Draft Synchronization**: Added reactive synchronization effects that automatically persist text content, location tags, and coordinates to `localStorage` (with `sessionStorage` fallback) and attached `File[]` objects to IndexedDB via `idb-keyval`.
+2. **Preserve Draft Until Terminal Action**: Removed premature deletion on mount. Draft storage is now only cleared when the user successfully publishes a post (`createMutation.onSuccess`) or explicitly clicks **"Discard Post"**.
+3. **Session Restoration on Refresh**: `FeedPage` checks for an active composing session on mount and restores the open modal state alongside the draft content, location tag/coordinates, and all attached media files (re-generating object preview URLs).
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/feed/CreatePostModal.tsx`: Implements continuous auto-save for content, location, and IndexedDB media files, eliminates premature IndexedDB deletion, merges `initialFiles` on mount, and ensures clean draft disposal on post or discard.
+- `frontend/src/features/feed/FeedPage.tsx`: Restores composer modal state if user reloads while composing, and syncs modal closure to draft storage.
+- `docs/others/bug-log.md`: Documents BUG-015 root causes and resolution.
+
+---
+
+### [BUG-014] Edit Zone Replaced the Create Zone Workspace Bookmark
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 12, 2026
+- **Affected Area**: Admin Map / Spatial Operations Workspace
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On `/admin/map`, selecting **Edit** from Active Zones passed the selected zone into the same secondary drawer state used by Create Zone. The lone blue Create Zone bookmark therefore changed into an amber Edit Zone bookmark, leaving the unfinished Create workspace inaccessible and making the control appear permanently renamed.
+
+#### 2. Root Cause Analysis (RCA)
+`LiveMapPage.tsx` represented both actions with `isCreateZoneDrawerOpen` and a mutable `editingZone`. The drawer title, color, form mode, and bookmark were all derived from that one state pair. This conflated two independent admin sessions even though `OfficialZoneDrawer` already supports separate create and per-zone edit draft persistence.
+
+#### 3. Solution & Architectural Strategy
+Create and Edit now have independent visibility sessions. Create keeps its blue bookmark and account-private draft; Edit keeps its selected zone and amber bookmark. Only one Pane 2 drawer is visible at once, while switching preserves the other workspace through the existing IndexedDB draft mechanism. Merge Review remains an independent third session. Desktop bookmarks now use non-overlapping stacked offsets: Create, Edit, then Merge. Mobile exposes Create from Active Zones and provides a workspace switch action in the shared drawer header.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/admin/LiveMapPage.tsx`: Separates Create/Edit drawer state, preserves sessions while switching, and renders distinct blue, amber, and merge bookmarks.
+- `frontend/src/features/admin/components/CreateOfficialZonePanel.tsx`: Forwards optional mobile workspace-switch controls to the shared drawer.
+- `frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx`: Adds the mobile-only workspace switch action without duplicating the form or changing APIs.
+- `frontend/src/features/admin/components/ActiveZonesPanel.tsx`: Exposes a mobile Create Zone entry point.
+
+---
 
 ### [BUG-013] Mixed Road Topology Was Classified as One Whole Route
 - **Status**: Resolved

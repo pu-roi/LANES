@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 12, 2026, 2:31 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 6:47 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,40 @@
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
 | 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, and exact file size error notifications |
+| 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
+| 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
+| 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
+| 4 | Immersive UI & Navigation | Completed | Floating animated navigation (Framer Motion), FAB menu, Route picker panel, Split-screen Auth layout |
+| 5 | Authentication & Identity | Completed | OTP Registration (Brevo integration), User Profiles, Profile Picture Uploads, Secure Sessions |
+| 6 | RBAC & Admin Dashboard | Completed | 3NF DB Normalization, Roles CRUD, User Management, Audit Trails, Data Mgmt & System Settings |
+| 7 | Real-Time Operations | In Progress | Server-Sent Events (SSE) broadcasting, Live active zones, Real-time admin dashboard invalidations |
+| 8 | Community Feed & Moderation | Completed | Feed layout, Upvotes/Downvotes, Post archiving, Soft deletes, Map coordinate rendering |
+| 9 | Spatial Analytics & Heatmap | Completed | Global Heatmap, Top Barangays stats, Dedicated Analytics Pages for Commuters and Admins |
+| 10| Official Flood Zones (DRRMO) Moderation | Completed | Admin panel restructuring, backend Zone Override schemas, bulk merging operations, troll filtration, DRRMO Official Zone mapping with Terra Draw |
+| 11| Intelligent Bidirectional Flood Reporting | Completed | Hybrid Carriageway Detection Strategy, Valhalla Map Matching for opposite-side road detection, GeometryCollection PostGIS storage, dual-buffer approval |
+| 12| Spatial Operations & Map Hover Badge Engine | Completed | Multi-geometry layers (MultiLineString/Polygon), 400ms hover dwell timer, smart collision-free positioning, two-row FloodZonePopup, Lenis scroll scoping |
+| 13| Community Feed Emergency Hotline Directory | Completed | Cached national hotline integration, Pasig city/barangay directory, responsive feed hotline card, lazy-loaded directory modal |
+| 14| Saved Places Camera Sync & Navigation UX | Completed | Camera fly-to alignment (zoom 16, 1500ms duration), 3-second pulsing red indicator, saved places panel activation from feed, pin order fix, custom scrollbars |
+| 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
+| 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
+| 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
+| 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based Official Zone Drawer with Cloudinary uploads and five-section parity; candidate scoring and carriageway analysis; four-step merge workspace with a contextual, persistent secondary drawer. Developer-led end-to-end validation remains. |
+
+## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+- [x] **EventSource Zombie Connection & SSE Dev Proxy Resolution (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe):
+  - Fixed persistent zombie connections and connection thrashing by removing the restrictive `readyState === 1` guard during React StrictMode unmount cleanup, ensuring `source.close()` executes unconditionally.
+  - Implemented centralized `getSseUrl('/sse/stream')` directing browser SSE connections straight to FastAPI on port `8000` in local dev/LAN, eliminating Next.js proxy response buffering and SSE dropouts.
+  - Standardized error logging in `useLiveSync` from intrusive console.error floods to graceful `console.warn`.
+
+---
+
+## Completed Milestones (40+ Commits Integrated)
+
+| # | Milestone | Status | Key Features Delivered |
+|---|-----------|--------|------------------------|
+| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, and feed post draft & media persistence on browser refresh |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
 | 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
 | 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
@@ -46,8 +80,16 @@
   - Updated `CreatePostModal.tsx` file limit from 20MB to 100MB and refined validation feedback to display a clear, descriptive toast ("File Limit Exceeded - [filename] ([size] MB) exceeds the 100MB maximum limit") and robust 413/network truncation handling.
 - [x] **Post Media Draft Not Saved on Unauthenticated Login Redirect Bugfix (`CreatePostModal.tsx`)** (@roicambe):
   - Fixed a bug where images and videos uploaded into the Create Post modal were silently dropped when an unauthenticated user was redirected to `/login`. Two code paths were missing `await set('lanes_draft_files', ...)`: (1) `handleSubmit`'s no-token branch that shows the auth prompt, and (2) the auth prompt "Go to Login" button's `onClick`. Both now persist all selected `File` objects to IndexedDB via `idb-keyval` before any navigation occurs, ensuring the files are fully restored alongside the text draft when the modal re-opens after successful login.
+- [x] **Feed Post Draft & Media Persistence on Browser Refresh (`CreatePostModal.tsx`, `FeedPage.tsx`)** (@roicambe):
+  - Fixed an issue where refreshing the feed page while composing a community post discarded attached photos/videos, chosen location tags, and typed content.
+  - Implemented continuous auto-saving of post text, location tags, and coordinates to `localStorage` (with `sessionStorage` fallback), and synchronization of attached `File` objects to IndexedDB via `idb-keyval`.
+  - Removed premature deletion of IndexedDB draft files on modal restore, preserving draft files across multiple page reloads until explicitly published or discarded.
+  - Added composer session restore in `FeedPage.tsx` to automatically reopen the modal with all text, location metadata, and media previews intact when the user refreshes `/feed`.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Independent Create and Edit Zone Workspaces** (`LiveMapPage.tsx`, `CreateOfficialZonePanel.tsx`, `OfficialZoneDrawer.tsx`, `ActiveZonesPanel.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced the shared Create/Edit drawer state with independent Create and selected-zone Edit sessions. Desktop now retains a non-overlapping Create → Edit → Merge bookmark stack, with only one Pane 2 workspace visible at a time.
+  - Preserved the one shared `OfficialZoneDrawer` form and all existing validation, persistence, media, and API behavior. Switching workspaces relies on the existing account-private IndexedDB drafts rather than discarding another session. Mobile adds an Active Zones Create entry point and an in-drawer workspace switch action.
 - [x] **Decision #16 Mixed-Topology Segmentation** (`carriageway_service.py`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Uses Valhalla edge shape indexes to split mixed Start/End routes by road identity and traversability. Caruncho/Urbano-style reports retain their full selected line but receive an opposite carriageway only on the independently verified matching run; a short graph-mapped Y merge is retained only when it reaches that run's matching endpoint, while cross-street connectors remain stripped.
 - [x] **Feed Road-Focus Pulse Alignment** (`PostItem.tsx`, `mapGeoUtils.ts`, `MapCanvas.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
@@ -83,7 +125,7 @@
   - Successful submission clears persisted workspace only after all queued items succeed; failed submissions preserve drafts for recovery. TypeScript, production build, and whitespace checks passed; focused lint retains pre-existing rule violations in legacy map/panel components, and desktop/mobile manual verification remains pending.
 - [x] **Create Zone Interaction Restoration & Resumable Drawer Session** (`AdminFloodMapInteraction.tsx`, `LiveMapPage.tsx`, `OfficialZoneDrawer.tsx`) (@roicambe):
   - Restored the shared MapContext Start/End map-picking flow for the admin line editor: crosshair cursor, automatic Start-to-End progression, persistent markers, and the public-map orange dashed route preview.
-  - Kept Create Zone mounted while its docked drawer is collapsed, preserving the spatial mode and geometry, flood depth/severity, survey selections, media, description, and draft-cart items on reopen during the same page session.
+  - Preserved Create Zone state through its account-private draft workspace when the docked drawer is collapsed or another workspace is opened, avoiding concurrent MapContext editors while retaining the spatial mode, geometry, attributes, media, description, and draft-cart items on reopen.
   - Paused Terra Draw interaction and restored the normal map cursor while collapsed; shape geometry remains available when the drawer is reopened. The two-direction option is now limited to line geometries.
 - [x] **Feature-Based Official Avoidance Zone Drawer (`OfficialZoneDrawer.tsx`, `zones/`)** (@roicambe):
   - Modularized `CreateOfficialZonePanel.tsx` from a 1,000+ line monolith into single-responsibility subcomponents: `GeometryModeSelector.tsx`, `RoadSegmentPicker.tsx`, and `DraftZoneCart.tsx`.
