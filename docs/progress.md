@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 12, 2026, 6:47 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 12, 2026, 8:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -87,6 +87,11 @@
   - Added composer session restore in `FeedPage.tsx` to automatically reopen the modal with all text, location metadata, and media previews intact when the user refreshes `/feed`.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Flood Report Draft Eligibility & Scoped Clear** (`FloodReportPanel.tsx`, `floodReportDraftStorage.ts`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced broad field-presence persistence with selected-road-plus-substantive-detail eligibility; UI toggles, wizard progress, survey visibility, and typed-only locations no longer create a restorable report.
+  - Added severity deselection and a compact scoped **Clear** dialog: neutral **Clear all** removes queued drafts, map geometry, media, and account-private storage; rightmost red **Clear this page** preserves work on the other page.
+- [x] **Flood Report Empty-Draft Guard** (`FloodReportPanel.tsx`, `floodReportDraftStorage.ts`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added one shared meaningful-work classifier to both autosave and restoration. Blank IndexedDB records are now silently removed, while real road, severity, text, media, survey, progress, or queued-report work remains account-private and recoverable after refresh or sign-in.
 - [x] **Independent Create and Edit Zone Workspaces** (`LiveMapPage.tsx`, `CreateOfficialZonePanel.tsx`, `OfficialZoneDrawer.tsx`, `ActiveZonesPanel.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Replaced the shared Create/Edit drawer state with independent Create and selected-zone Edit sessions. Desktop now retains a non-overlapping Create → Edit → Merge bookmark stack, with only one Pane 2 workspace visible at a time.
   - Preserved the one shared `OfficialZoneDrawer` form and all existing validation, persistence, media, and API behavior. Switching workspaces relies on the existing account-private IndexedDB drafts rather than discarding another session. Mobile adds an Active Zones Create entry point and an in-drawer workspace switch action.

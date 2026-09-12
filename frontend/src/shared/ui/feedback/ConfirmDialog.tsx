@@ -4,6 +4,8 @@ import { Button } from "../forms/Button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+type ButtonVariant = "primary" | "secondary" | "outline" | "danger" | "ghost";
+
 interface ConfirmDialogProps {
   isOpen: boolean;
   title: string;
@@ -12,6 +14,10 @@ interface ConfirmDialogProps {
   cancelLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
+  secondaryLabel?: string;
+  onSecondary?: () => void;
+  secondaryVariant?: ButtonVariant;
+  confirmVariant?: ButtonVariant;
   variant?: "default" | "destructive";
   isLoading?: boolean;
   size?: "sm" | "md";
@@ -25,6 +31,10 @@ export function ConfirmDialog({
   cancelLabel = "Cancel",
   onConfirm,
   onCancel,
+  secondaryLabel,
+  onSecondary,
+  secondaryVariant = "outline",
+  confirmVariant,
   variant = "default",
   isLoading = false,
   size = "md",
@@ -35,24 +45,37 @@ export function ConfirmDialog({
         <div className={size === "sm" ? "text-sm leading-relaxed text-gray-700" : "text-gray-700"}>
           {message}
         </div>
-        <div className={cn("flex justify-end space-x-2 border-t border-gray-100", size === "sm" ? "pt-3" : "space-x-3 pt-4")}>
+        <div className={cn("flex flex-nowrap justify-end gap-2 border-t border-gray-100", size === "sm" ? "pt-3" : "gap-3 pt-4")}>
           <Button 
             variant="outline" 
             onClick={onCancel} 
             disabled={isLoading}
             size={size === "sm" ? "sm" : "md"}
+            className="shrink-0 whitespace-nowrap"
           >
             {cancelLabel}
           </Button>
           <Button 
-            variant={variant === "destructive" ? "danger" : "primary"} 
+            variant={confirmVariant ?? (variant === "destructive" ? "danger" : "primary")}
             onClick={onConfirm}
             disabled={isLoading}
             size={size === "sm" ? "sm" : "md"}
+            className="shrink-0 whitespace-nowrap"
           >
             {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
             {confirmLabel}
           </Button>
+          {secondaryLabel && onSecondary ? (
+            <Button
+              variant={secondaryVariant}
+              onClick={onSecondary}
+              disabled={isLoading}
+              size={size === "sm" ? "sm" : "md"}
+              className="shrink-0 whitespace-nowrap"
+            >
+              {secondaryLabel}
+            </Button>
+          ) : null}
         </div>
       </div>
     </Modal>
