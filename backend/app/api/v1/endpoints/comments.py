@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
@@ -14,6 +14,7 @@ from app.models.interaction import CommentInteraction, InteractionType
 from app.models.notification import NotificationType
 from app.schemas.notification import NotificationCreate
 from app.crud import notification as crud_notification
+from app.crud.user import get_user_display_name
 
 router = APIRouter()
 
@@ -30,10 +31,12 @@ class CommentEdit(BaseModel):
 class CommentResponse(BaseModel):
     """Response schema for a single comment."""
     id: int
+    user_id: Optional[int] = None
     content: str
     created_at: datetime
     edited_at: Optional[datetime] = None
     author_name: str
+    author_avatar: Optional[str] = None
     parent_id: Optional[int]
     upvotes: int
     downvotes: int
@@ -58,10 +61,12 @@ def _build_comment_response(
     if c.is_deleted or is_deleted_override:
         return {
             "id": c.id,
+            "user_id": None,
             "content": "[deleted]",
             "created_at": c.created_at,
             "edited_at": None,
             "author_name": "[deleted]",
+            "author_avatar": None,
             "parent_id": c.parent_id,
             "upvotes": c.upvotes,
             "downvotes": c.downvotes,
@@ -70,12 +75,15 @@ def _build_comment_response(
             "is_pinned": c.is_pinned,
             "pinned_by": c.pinned_by,
         }
+    avatar = c.user.profile.avatar_url if (c.user and getattr(c.user, "profile", None)) else None
     return {
         "id": c.id,
+        "user_id": c.user_id,
         "content": c.content,
         "created_at": c.created_at,
         "edited_at": c.edited_at,
-        "author_name": c.user.username if c.user else "Unknown User",
+        "author_name": get_user_display_name(c.user),
+        "author_avatar": avatar,
         "parent_id": c.parent_id,
         "upvotes": c.upvotes,
         "downvotes": c.downvotes,
@@ -99,6 +107,7 @@ def get_comments(
 
     comments = (
         db.query(Comment)
+        .options(joinedload(Comment.user).joinedload(User.profile))
         .filter(Comment.post_id == post_id)
         .order_by(Comment.created_at.asc())
         .all()
@@ -163,12 +172,15 @@ def create_comment(
             ),
         )
 
+    avatar = current_user.profile.avatar_url if getattr(current_user, "profile", None) else None
     return {
         "id": db_comment.id,
+        "user_id": current_user.id,
         "content": db_comment.content,
         "created_at": db_comment.created_at,
         "edited_at": None,
-        "author_name": current_user.username,
+        "author_name": get_user_display_name(current_user),
+        "author_avatar": avatar,
         "parent_id": db_comment.parent_id,
         "upvotes": 0,
         "downvotes": 0,

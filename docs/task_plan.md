@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 14, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 14, 2026, 3:18 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -14,6 +14,9 @@
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
 > **Focus:** Hardening the authentication lifecycle, eliminating EventSource connection leaks on client unmount, resolving soft-delete unique constraint collisions on citizen re-registration, standardizing registration to require explicit credential sign-in, expanding post media ingestion to 100MB videos across Next.js proxy, FastAPI, and Cloudinary, integrating post edit history & reporting, and adding mobile search bar collapsibility.
 > **Current Status (Sept 14, 2026):**
+> - [x] **Profile "Display Full Name" SQL Privacy Resolution & Comment Avatars (`feed.py`, `comments.py`, `posts.py`, `user.py`, `PostDetailPage.tsx`, `feedApi.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Implemented server-side SQL `case()` evaluation in `feed.py` and `get_user_display_name` helper in `user.py` ensuring that `Profile.display_full_name` strictly governs whether the author's real full name or username handle appears across the Community Feed, post detail pages, and comments. Added profile eager loading (`joinedload`) to comment queries, attached `user_id` and `author_avatar` to `CommentResponse`, rendered author avatars in comment items, and migrated frontend permission checks (`isPostAuthor`, `isOwn`) from username string matching to reliable numeric ID comparisons (`user.id === post.user_id` / `user.id === comment.user_id`).
+> - [x] **Profile Subtabs Mobile Margin Polish (`ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Removed redundant mobile wrapper padding classes on Posts and Reports tabs, giving mobile users full-width cards without double-margin inset.
+> - [x] **Contextual Authentication Navigation (`FloatingNav.tsx`, `MobileNav.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Preserves current pathname context across unauthenticated navigation bar clicks, preventing accidental redirection diversion.
 > - [x] **Community Feed Mobile Responsiveness & Standalone Action Buttons (`PostItem.tsx`, `FeedPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Optimized Community Feed for compact mobile screens (iPhone SE 375px, iPhone 12 390px). Replaced heavy pill enclosures with standalone action buttons using `ArrowBigUp` and `ArrowBigDown` from Lucide, responsive severity badge sizing (compact on mobile vs full on desktop), single-row action bar containment with responsive label truncation (`🗺️ Map` / `🗺️ View on Map`, hidden Share label on small screens), and responsive composer placeholder.
 > - [x] **Mobile Route Search Collapsibility & Explicit Geolocation Diagnostics (`RoutePanel.tsx`, `geocodingApi.ts`, `LandingView.tsx`, `FeedPage.tsx`)** ([@follosochris](https://github.com/follosochris) (Chris Folloso)): Implemented expandable/collapsible floating top search bar for mobile maps, surfaced accurate GPS permission error feedback across landing and routing panels, and enabled direct map coordinate navigation from Trending Hotspots.
 > - [x] **Community Post Reporting Foundation & Shared Select Integration (`PostItem.tsx`, `posts.py`, Alembic `c8a3d1f9e426`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added private post reporting with backend persistence, authenticated submission, and shared `Select` dropdown component integration.

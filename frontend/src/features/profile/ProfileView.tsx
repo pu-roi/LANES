@@ -274,8 +274,8 @@ export default function ProfileView() {
   );
 
   const renderReports = () => (
-    <div className="p-6">
-      <h3 className="text-base font-bold text-slate-900 mb-4 hidden lg:block">My Hazard Reports</h3>
+    <div className="py-4 sm:py-6 px-3.5 sm:px-6">
+      <h3 className="text-base font-bold text-slate-900 mb-4">My Hazard Reports</h3>
       {isLoadingReports ? (
         <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 text-slate-400 animate-spin" /></div>
       ) : (myReports as any[])?.length > 0 ? (
@@ -319,7 +319,7 @@ export default function ProfileView() {
 
   const renderPosts = () => (
     <div className="pb-6">
-      <h3 className="text-base font-bold text-slate-900 mb-2 px-6 pt-6 hidden lg:block">My Community Posts</h3>
+      <h3 className="text-base font-bold text-slate-900 mb-2 px-3.5 sm:px-6 pt-4 sm:pt-6">My Community Posts</h3>
       {isLoadingPosts ? (
         <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 text-slate-400 animate-spin" /></div>
       ) : (myPosts as any)?.posts?.length > 0 ? (
@@ -348,7 +348,7 @@ export default function ProfileView() {
   const renderSettings = () => {
     if (isEditingProfile) {
       return (
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-base font-bold text-slate-900">Edit Profile</h3>
           </div>
@@ -363,9 +363,9 @@ export default function ProfileView() {
     }
     
     return (
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-base font-bold text-slate-900 hidden lg:block">Profile Settings</h3>
+          <h3 className="text-base font-bold text-slate-900">Profile Settings</h3>
           <Button 
             variant="secondary"
             onClick={handleEditProfileStart}
@@ -582,53 +582,40 @@ export default function ProfileView() {
         </div>
 
         {/* MOBILE LAYOUT */}
-        <div className="block lg:hidden w-full px-4 sm:px-0">
+        <div className="block lg:hidden w-full px-0">
           
           {/* Mobile Horizontal Tabs Navigation */}
-          <Tabs<"stats" | "posts" | "reports" | "settings">
-            tabs={[
-              { id: "stats", label: "Stats", icon: ShieldCheck, hideLabelOnMobile: true },
-              { id: "posts", label: "Posts", icon: MessageSquare, hideLabelOnMobile: true },
-              { id: "reports", label: "Reports", icon: AlertTriangle, hideLabelOnMobile: true },
-              { id: "settings", label: "Settings", icon: Settings, hideLabelOnMobile: true },
-            ]}
-            activeTab={activeTab}
-            onChange={(tab) => handleTabChange(tab)}
-            variant="underline"
-            layoutId="profile-mobile-tab-indicator"
-            fullWidth
-            className="mb-4 w-full"
-          />
+          <div className="px-4 sm:px-0">
+            <Tabs<"stats" | "posts" | "reports" | "settings">
+              tabs={[
+                { id: "stats", label: "Stats", icon: ShieldCheck, hideLabelOnMobile: true },
+                { id: "posts", label: "Posts", icon: MessageSquare, hideLabelOnMobile: true },
+                { id: "reports", label: "Reports", icon: AlertTriangle, hideLabelOnMobile: true },
+                { id: "settings", label: "Settings", icon: Settings, hideLabelOnMobile: true },
+              ]}
+              activeTab={activeTab}
+              onChange={(tab) => handleTabChange(tab)}
+              variant="underline"
+              layoutId="profile-mobile-tab-indicator"
+              fullWidth
+              className="mb-4 w-full"
+            />
+          </div>
 
           {/* Mobile Tab Content */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 min-h-[50vh] p-4 sm:p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-hidden">
+          <div className="bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-sm border-y sm:border border-slate-100 min-h-[50vh] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-hidden w-full">
             <TabContentPanel tabKey={activeTab} direction={tabDirection}>
               {activeTab === "stats" && (
-                <div className="mt-2">
-                  <h3 className="text-base font-bold text-slate-900 mb-6 px-2">My Overview</h3>
+                <div className="p-4 sm:p-6">
+                  <h3 className="text-base font-bold text-slate-900 mb-6">My Overview</h3>
                   <div>
                     {renderStats()}
                   </div>
                 </div>
               )}
-              {activeTab === "reports" && (
-                <div className="mt-2">
-                  <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Hazard Reports</h3>
-                  {renderReports()}
-                </div>
-              )}
-              {activeTab === "posts" && (
-                <div className="mt-2">
-                  <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Community Posts</h3>
-                  {renderPosts()}
-                </div>
-              )}
-              {activeTab === "settings" && (
-                <div className="mt-2">
-                  <h3 className="text-base font-bold text-slate-900 mb-4 px-2">Account Settings</h3>
-                  {renderSettings()}
-                </div>
-              )}
+              {activeTab === "reports" && renderReports()}
+              {activeTab === "posts" && renderPosts()}
+              {activeTab === "settings" && renderSettings()}
             </TabContentPanel>
           </div>
         </div>

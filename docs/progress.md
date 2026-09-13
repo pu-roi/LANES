@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 14, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 14, 2026, 3:18 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,7 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
-| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, Community Feed mobile responsiveness (iPhone SE/12 single-row action bar & standalone Lucide voting buttons), mobile route search bar collapsibility, and explicit geolocation diagnostics |
+| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, Profile "Display Full Name" SQL preference resolution across feed/comments, Community Feed mobile responsiveness (iPhone SE/12 single-row action bar & standalone Lucide voting buttons), mobile route search bar collapsibility, and explicit geolocation diagnostics |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
 | 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
 | 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
@@ -34,6 +34,14 @@
 ## Capstone Roadmap - Delivered Phases
 
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+- [x] **Profile "Display Full Name" SQL Privacy Resolution & Comment Avatars (`feed.py`, `comments.py`, `posts.py`, `user.py`, `PostDetailPage.tsx`, `feedApi.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Implemented server-side SQL `case()` evaluation in `feed.py` and `get_user_display_name` helper in `user.py` ensuring that `Profile.display_full_name` strictly governs whether the author's real full name or username handle appears across the Community Feed, post detail pages, and comments.
+  - Added profile eager loading (`joinedload`) to comment queries, attached `user_id` and `author_avatar` to `CommentResponse`, and rendered author avatars in comment items.
+  - Migrated frontend permission checks (`isPostAuthor`, `isOwn`) from username string matching to reliable numeric ID comparisons (`user.id === post.user_id` / `user.id === comment.user_id`).
+- [x] **Profile Subtabs Mobile Margin Polish (`ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed redundant mobile wrapper padding classes on Posts and Reports tabs, giving mobile users full-width cards without double-margin inset.
+- [x] **Contextual Authentication Navigation (`FloatingNav.tsx`, `MobileNav.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Preserves current pathname context across unauthenticated navigation bar clicks, preventing accidental redirection diversion.
 - [x] **Community Feed Mobile Responsiveness & Standalone Action Buttons (`PostItem.tsx`, `FeedPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Redesigned voting interactions in `PostItem.tsx` to use standalone `ArrowBigUp` and `ArrowBigDown` icon buttons without heavy pill enclosures, adhering to the "Anti Box-in-a-Box" principle.
   - Implemented responsive severity badges: compact (`Medium`, `High`, `Extreme`, `Low`) on mobile (<640px) and full (`Medium (Warning)`) on desktop/tablet (≥640px) to prevent post header crowding.

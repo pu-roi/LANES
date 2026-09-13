@@ -1,26 +1,31 @@
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from typing import Optional, List
+from fastapi import APIRouter, Depends, HTTPException, Query, Form, UploadFile, File, Request
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.api.deps import get_current_user_optional, get_current_user
 from app.models.user import User
-from app.schemas.post import CommunityPostCreate, CommunityPostUpdate, CommunityPostReportCreate, CommunityPostEditHistoryResponse, CommunityPostResponse, CommunityPostPaginatedResponse, CommentCreate, CommentResponse
+from app.schemas.post import (
+    CommunityPostCreate,
+    CommunityPostUpdate,
+    CommunityPostReportCreate,
+    CommunityPostEditHistoryResponse,
+    CommunityPostResponse,
+    CommunityPostPaginatedResponse,
+)
 from app.models.post import CommunityPostReport
 from app.schemas.interaction import PostInteractionCreate, PostInteraction
 from app.crud import post as crud_post
 from app.crud import interaction as crud_interaction
 from app.crud import notification as crud_notification
+from app.crud.user import get_user_display_name
 from app.models.interaction import InteractionType
 from app.schemas.notification import NotificationCreate
 from app.models.notification import NotificationType
+from app.services.cloudinary_service import upload_image
 
 router = APIRouter()
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Form, UploadFile, File, Request
-from app.services.cloudinary_service import upload_image
-
-from typing import List
 
 @router.post("", response_model=CommunityPostResponse)
 def create_post(
@@ -83,7 +88,7 @@ def create_post(
         "flood_report_id": post.flood_report_id,
         "created_at": post.created_at,
         "updated_at": post.updated_at,
-        "author_name": current_user.username,
+        "author_name": get_user_display_name(current_user),
         "author_avatar": avatar_url,
         "upvotes": 0,
         "downvotes": 0,
@@ -144,20 +149,34 @@ def update_post(
     from app.crud import feed as crud_feed
     return crud_feed.get_feed_post(db, updated_post.id, user_id=current_user.id)
 
+
 @router.post("/{post_id}/reports", status_code=201)
-def report_post(post_id: int, payload: CommunityPostReportCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def report_post(
+    post_id: int,
+    payload: CommunityPostReportCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     if payload.reason not in {"spam_scam", "misinformation", "harassment_hate", "explicit_violent", "other"}:
         raise HTTPException(status_code=422, detail="Invalid report reason")
     if payload.reason == "other" and not (payload.details or "").strip():
         raise HTTPException(status_code=422, detail="Explain the report reason")
     post = crud_post.get_post(db, post_id)
-    if not post: raise HTTPException(status_code=404, detail="Post not found")
-    if post.user_id == current_user.id: raise HTTPException(status_code=403, detail="You cannot report your own post")
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.user_id == current_user.id:
+        raise HTTPException(status_code=403, detail="You cannot report your own post")
     if db.query(CommunityPostReport).filter_by(post_id=post_id, reporter_user_id=current_user.id, status="open").first():
         raise HTTPException(status_code=409, detail="You already have an open report for this post")
-    db.add(CommunityPostReport(post_id=post_id, reporter_user_id=current_user.id, reason=payload.reason, details=payload.details.strip() if payload.details else None))
+    db.add(CommunityPostReport(
+        post_id=post_id,
+        reporter_user_id=current_user.id,
+        reason=payload.reason,
+        details=payload.details.strip() if payload.details else None
+    ))
     db.commit()
     return {"message": "Report submitted for moderator review"}
+
 
 @router.get("/{post_id}", response_model=CommunityPostResponse)
 def get_post(
@@ -171,6 +190,7 @@ def get_post(
     if not post_data:
         raise HTTPException(status_code=404, detail="Post not found")
     return post_data
+
 
 @router.get("/", response_model=CommunityPostPaginatedResponse)
 def get_posts(
@@ -214,11 +234,12 @@ def vote_post(
             crud_notification.create_notification(db, NotificationCreate(
                 user_id=post.user_id,
                 type=NotificationType.LIKE,
-                message=f"Someone liked your post.",
+                message="Someone liked your post.",
                 payload={"post_id": post_id, "actor_id": current_user.id}
             ))
 
     return result
+
 
 @router.delete("/{post_id}")
 def delete_post(

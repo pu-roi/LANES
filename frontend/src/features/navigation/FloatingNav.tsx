@@ -34,11 +34,16 @@ export default function FloatingNav() {
         <span className="w-px h-5 bg-gray-200 hidden sm:block mr-2 shrink-0" />
         {NAV_ITEMS.map((item) => {
           const isProfileItem = item.href === "/profile";
-          const actualHref = isProfileItem && !user ? `/login?redirect=${encodeURIComponent(pathname)}` : item.href;
+          const redirectTarget = (!pathname.startsWith("/login") && !pathname.startsWith("/register") && !pathname.startsWith("/verify"))
+            ? pathname
+            : "/feed";
+          const actualHref = isProfileItem && !user ? `/login?redirect=${encodeURIComponent(redirectTarget)}` : item.href;
           const actualLabel = isProfileItem && !user ? "Sign In" : item.label;
           const Icon = isProfileItem && !user ? LogIn : item.icon;
           
-          const isActive = pathname.startsWith(item.href) && (item.href !== "/" || pathname === "/");
+          const isActive = isProfileItem && !user
+            ? pathname.startsWith("/login")
+            : (pathname.startsWith(item.href) && (item.href !== "/" || pathname === "/"));
           return (
             <Link
               key={item.href}

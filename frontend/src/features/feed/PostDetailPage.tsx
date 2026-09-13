@@ -226,7 +226,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
 
   // ── helper: is current user an admin/staff ─────────────────────────
   const isAdmin = user && (user as any).role && (user as any).role.name !== 'Commuter';
-  const isPostAuthor = post && user && (post as any).author_name === (user as any).username;
+  const isPostAuthor = post && user && post.user_id === user.id;
   const canPin = isAdmin || isPostAuthor;
 
   const contextValue = {
@@ -589,7 +589,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
     const replyInputRef = useRef<HTMLTextAreaElement>(null);
 
     const isEditing = editingCommentId === comment.id;
-    const isOwn = user?.username === comment.author_name;
+    const isOwn = user && ((comment.user_id && user.id === comment.user_id) || user.username === comment.author_name);
 
     useEffect(() => {
       if (isEditing && editInputRef.current) {
@@ -648,19 +648,27 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
           <div className="flex flex-col items-center shrink-0 w-6">
             {isCollapsed ? (
               <div
-                className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 z-10 relative bg-white cursor-pointer hover:bg-gray-200"
+                className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 z-10 relative bg-white cursor-pointer hover:bg-gray-200 overflow-hidden"
                 onClick={() => setIsCollapsed(false)}
               >
-                <span className="font-bold text-gray-400 text-[10px]">
-                  {comment.is_deleted ? '?' : (comment.author_name ? comment.author_name[0].toUpperCase() : 'U')}
-                </span>
-              </div>
-            ) : (
-              <>
-                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 z-10 relative bg-white">
+                {comment.author_avatar && !comment.is_deleted ? (
+                  <img src={comment.author_avatar} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
                   <span className="font-bold text-gray-400 text-[10px]">
                     {comment.is_deleted ? '?' : (comment.author_name ? comment.author_name[0].toUpperCase() : 'U')}
                   </span>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 z-10 relative bg-white overflow-hidden">
+                  {comment.author_avatar && !comment.is_deleted ? (
+                    <img src={comment.author_avatar} alt="avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="font-bold text-gray-400 text-[10px]">
+                      {comment.is_deleted ? '?' : (comment.author_name ? comment.author_name[0].toUpperCase() : 'U')}
+                    </span>
+                  )}
                 </div>
                 {comment.replies.length > 0 && (
                   <div

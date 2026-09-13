@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 13, 2026, 8:32 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 14, 2026, 3:18 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,73 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-027] Profile "Display Full Name" Setting Ignored in Community Feed and Comment Sections
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 14, 2026
+- **Affected Area**: Backend / Frontend / Privacy & Community Feed / PostGIS SQL / REST API
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+In the Profile Settings tab, users can toggle the **"Display Full Name"** preference (`Profile.display_full_name`), which promises to show their real full name on posts and profile instead of their username handle. However, the Community Feed post cards, single-post detail pages, and comment sections continued to strictly display `User.username`. In addition, client-side author checks for post pinning and comment editing compared string values of `author_name === username`, which broke when full names were used.
+
+#### 2. Root Cause Analysis (RCA)
+1. In `backend/app/crud/feed.py`, the feed query expressions for `get_feed_posts` and `get_feed_post` hardcoded `func.coalesce(User.username, text("'Unknown'")).label("author_name")` without evaluating `Profile.display_full_name` or concatenating `Profile.first_name` and `Profile.last_name`.
+2. In `backend/app/api/v1/endpoints/comments.py`, comment responses hardcoded `c.user.username` for `author_name` instead of inspecting the author's profile privacy preferences.
+3. In `frontend/src/features/feed/PostDetailPage.tsx`, author ownership permissions (`isPostAuthor` and `isOwn`) checked `(post as any).author_name === user.username` instead of matching primary keys (`user.id === post.user_id` / `user.id === comment.user_id`).
+
+#### 3. Solution & Architectural Strategy
+1. **Server-Side Privacy Resolution (`api-agent` + `security-agent`)**: Added `get_user_display_name(user)` helper in `backend/app/crud/user.py`. In `feed.py`, constructed a SQL `case()` expression that dynamically concatenates `first_name` and `last_name` when `display_full_name` is true (or default) and falls back strictly to `User.username` without exposing personal names to unprivileged queries.
+2. **Comment Profile Eager Loading**: Updated `get_comments` to eager-load `joinedload(Comment.user).joinedload(User.profile)` to avoid N+1 queries, returning resolved `author_name` and `author_avatar`.
+3. **Primary Key Ownership Verification (`ui-agent`)**: Updated `PostDetailPage.tsx` and `feedApi.ts` to include `user_id` on comment responses and evaluate ownership via numeric user IDs. Added author avatar rendering support to comment cards.
+
+#### 4. Files Modified / What Changed
+- `backend/app/crud/user.py`: Added `get_user_display_name` helper function.
+- `backend/app/crud/feed.py`: Applied SQL `author_name_expr` conditional expression in `get_feed_posts` and `get_feed_post`.
+- `backend/app/api/v1/endpoints/comments.py`: Eager loaded profiles and resolved `author_name` / `author_avatar` in comment builders.
+- `backend/app/api/v1/endpoints/posts.py`: Updated post author fallback to use `get_user_display_name`.
+- `frontend/src/features/feed/feedApi.ts`: Added `user_id` and `author_avatar` to `CommentResponse`.
+- `frontend/src/features/feed/PostDetailPage.tsx`: Fixed `isPostAuthor` and `isOwn` logic to compare user IDs; added comment avatar support.
+
+### [BUG-026] Mobile Layout Inset and Horizontal Margin Overflow in Profile Subtabs
+- **Status**: Resolved
+- **Severity**: Low
+- **Date Reported / Resolved**: September 14, 2026
+- **Affected Area**: Frontend / UI / Mobile Responsiveness (PWA)
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On compact mobile screens (e.g., iPhone SE 375px, iPhone 12 390px), the Profile page's Posts and Reports tabs rendered with redundant nested horizontal padding (`px-4 sm:px-0`), creating visible left/right borders and shrinking usable card width.
+
+#### 2. Root Cause Analysis (RCA)
+Inner tab containers in `ProfileView.tsx` wrapped post and report item lists in an extra mobile padding block, causing double-margin inset on viewports under 640px.
+
+#### 3. Solution & Architectural Strategy
+Removed redundant mobile wrapper padding classes on the Posts and Reports subtab views in `ProfileView.tsx`, enabling seamless full-width card layout on mobile devices while preserving proper responsive gutters on desktop screens.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/profile/ProfileView.tsx`: Flattened mobile margin hierarchy for profile subtabs.
+
+### [BUG-025] Unauthenticated Navigation Tab Click Diverted to Profile Instead of Current View
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 14, 2026
+- **Affected Area**: Frontend / Navigation / Authentication Flow
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When an unauthenticated commuter was exploring the Community Feed (`/feed`) or a specific post (`/feed/[id]`) and clicked the Profile navigation item to sign in, completing authentication always redirected them to `/profile` rather than returning them to the feed context they were browsing.
+
+#### 2. Root Cause Analysis (RCA)
+`FloatingNav.tsx` and `MobileNav.tsx` used hardcoded navigation handlers that routed unauthenticated users directly to `/login?redirect=/profile` regardless of their active page.
+
+#### 3. Solution & Architectural Strategy
+Updated navigation triggers to check the current `pathname` and preserve the active URL or return path in query parameters, allowing post-login redirection to gracefully return the user to their prior context.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/navigation/FloatingNav.tsx`: Contextual auth redirect handling.
+- `frontend/src/features/navigation/MobileNav.tsx`: Contextual auth redirect handling.
 
 ### [BUG-024] Community Sharing Helper Text Contradicted Actual Publication Timing
 - **Status**: Resolved
