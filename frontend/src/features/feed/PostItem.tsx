@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { MapPin, ArrowUpCircle, ArrowDownCircle, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { MapPin, ArrowUpCircle, ArrowDownCircle, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { FeedPost } from './feedApi';
-import { useToast, MediaViewer } from '@/shared/ui';
+import { FeedPost, getPostEditHistory, updatePost, reportPost } from './feedApi';
+import { useToast, MediaViewer, Select } from '@/shared/ui';
+import { useAuth } from '@/hooks/useAuth';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { computeCenterCoordinate } from "@/features/map/mapGeoUtils";
 interface PostItemProps {
   post: FeedPost;
@@ -16,11 +18,37 @@ interface PostItemProps {
   onPostClick?: (postId: number, initialMediaIndex?: number) => void;
 }
 
+const REPORT_REASON_OPTIONS = [
+  { value: 'spam_scam', label: 'Spam or scam' },
+  { value: 'misinformation', label: 'Misinformation' },
+  { value: 'harassment_hate', label: 'Harassment or hate' },
+  { value: 'explicit_violent', label: 'Explicit or violent content' },
+  { value: 'other', label: 'Other' },
+];
+
 export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick }: PostItemProps) {
   const router = useRouter();
   const { info, success, error: showError } = useToast();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [currentMediaIndex, setCurrentMediaIndex] = useState(initialMediaIndex);
   const [isFullscreenMediaOpen, setIsFullscreenMediaOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [editContent, setEditContent] = useState(post.content);
+  const [editLocation, setEditLocation] = useState(post.location_tag || '');
+  const [isReporting, setIsReporting] = useState(false);
+  const [reportReason, setReportReason] = useState('spam_scam');
+  const [reportDetails, setReportDetails] = useState('');
+  const isAuthor = user?.id === post.user_id;
+  const historyQuery = useQuery({ queryKey: ['post-history', post.id], queryFn: () => getPostEditHistory(post.id), enabled: isHistoryOpen });
+  const editMutation = useMutation({
+    mutationFn: () => updatePost(post.id, { content: editContent.trim(), media_urls: post.media_urls || [], location_tag: editLocation.trim() || undefined, location_lat: post.location_lat, location_lng: post.location_lng }),
+    onSuccess: () => { success('Post updated successfully.'); queryClient.invalidateQueries({ queryKey: ['feed'] }); queryClient.invalidateQueries({ queryKey: ['post', post.id] }); setIsEditing(false); },
+    onError: (err: unknown) => showError('Failed to update post', err instanceof Error ? err.message : 'Please try again.'),
+  });
+  const reportMutation = useMutation({ mutationFn: () => reportPost(post.id, reportReason, reportDetails || undefined), onSuccess: () => { success('Report submitted for moderator review.'); setIsReporting(false); }, onError: (err: unknown) => showError('Could not submit report', err instanceof Error ? err.message : 'Please try again.') });
 
   const getSeverityColor = (severity: string) => {
     switch (severity?.toLowerCase()) {
@@ -105,6 +133,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5 flex-wrap">
               <span>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
+              {post.updated_at && new Date(post.updated_at).getTime() > new Date(post.created_at).getTime() && <span className="text-gray-400">• Edited</span>}
               {displayLocation && (
                 <>
                   <span>•</span>
@@ -151,13 +180,21 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-1.5">
+        <div className="flex items-start gap-1.5">
           {post.report && (
             <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border flex items-center gap-1 ${getSeverityColor(post.report.severity)}`}>
               <AlertTriangle className="w-3.5 h-3.5" />
               {getSeverityLabel(post.report.severity)}
             </span>
           )}
+          <div className="relative">
+            <button type="button" aria-label="Post actions" onClick={() => setIsMenuOpen((value) => !value)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800"><MoreHorizontal className="w-5 h-5" /></button>
+            {isMenuOpen && <div className="absolute right-0 top-9 z-20 w-48 rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
+              {isAuthor && <button type="button" onClick={() => { setEditContent(post.content); setEditLocation(post.location_tag || ''); setIsEditing(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Pencil className="w-4 h-4" />Edit Post</button>}
+              {!isAuthor && <button type="button" onClick={() => { setIsReporting(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Flag className="w-4 h-4" />Report Post</button>}
+              <button type="button" onClick={() => { setIsHistoryOpen(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><History className="w-4 h-4" />View Edit History</button>
+            </div>}
+          </div>
         </div>
       </div>
 
@@ -392,6 +429,63 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
         isOpen={isFullscreenMediaOpen}
         onClose={() => setIsFullscreenMediaOpen(false)}
       />
+      {typeof document !== 'undefined' && createPortal(
+        <>
+      {isEditing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"><div className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit Post</h2><button onClick={() => setIsEditing(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div><textarea value={editContent} onChange={(event) => setEditContent(event.target.value)} className="min-h-40 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><input value={editLocation} onChange={(event) => setEditLocation(event.target.value)} placeholder="Location label (optional)" className="mt-3 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><div className="mt-4 flex justify-end gap-2"><button onClick={() => setIsEditing(false)} className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button><button disabled={!editContent.trim() || editMutation.isPending} onClick={() => editMutation.mutate()} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{editMutation.isPending ? 'Saving…' : 'Save changes'}</button></div></div></div>}
+      {isHistoryOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4"><div className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit History</h2><button onClick={() => setIsHistoryOpen(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div>{historyQuery.isLoading && <div className="flex justify-center py-8 text-slate-500"><Loader2 className="h-5 w-5 animate-spin" /></div>}{historyQuery.isError && <p className="py-6 text-center text-sm text-red-600">Could not load edit history.</p>}{historyQuery.data?.length === 0 && <p className="py-6 text-center text-sm text-slate-500">This post has not been edited.</p>}{historyQuery.data?.map((entry) => <div key={entry.id} className="border-t border-slate-100 py-4"><p className="mb-2 text-xs font-medium text-slate-500">Edit {entry.version} · {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true })}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="mb-1 text-xs font-semibold text-slate-500">Previous</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.previous_content}</p></div><div><p className="mb-1 text-xs font-semibold text-slate-500">Updated</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.updated_content}</p></div></div></div>)}</div></div>}
+      {isReporting && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900">Report Post</h2>
+              <button
+                onClick={() => setIsReporting(false)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="mb-4 text-sm text-slate-600">Reports are private and reviewed by moderators.</p>
+
+            <div className="mb-3">
+              <Select
+                label="Reason"
+                options={REPORT_REASON_OPTIONS}
+                value={reportReason}
+                onChange={(e) => setReportReason(String(e.target.value))}
+                placeholder="Select a reason..."
+                className="w-full"
+              />
+            </div>
+
+            <textarea
+              value={reportDetails}
+              onChange={(event) => setReportDetails(event.target.value)}
+              placeholder={reportReason === 'other' ? 'Please explain why (required)' : 'Optional details'}
+              className="mt-1 min-h-24 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-400"
+            />
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={() => setIsReporting(false)}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                disabled={reportMutation.isPending || (reportReason === 'other' && !reportDetails.trim())}
+                onClick={() => reportMutation.mutate()}
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60 transition-colors"
+              >
+                {reportMutation.isPending ? 'Submitting…' : 'Submit report'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+        </>,
+        document.body,
+      )}
     </article>
   );
 }

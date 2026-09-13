@@ -9,7 +9,7 @@ from app.models.audit import AuditLog
 from app.models.setting import SystemSetting
 from app.models.interaction import PostInteraction, CommentInteraction
 from app.models.comment import Comment
-from app.models.post import CommunityPost
+from app.models.post import CommunityPost, CommunityPostEditHistory, CommunityPostReport
 from app.models.notification import Notification
 from app.models.saved_place import SavedPlace
 

@@ -189,17 +189,7 @@ async def approve_report(
     if report.user_id:
         crud.credit_user_verified_report(db, user_id=report.user_id)
 
-    # 5. [Phase 3] Auto-create CommunityPost if the report is public and not already posted
-    if report.is_public and report.user_id and not report.community_post:
-        post_in = schemas.CommunityPostCreate(
-            flood_report_id=report.id,
-            content=report.raw_text,
-            media_urls=report.media_urls if report.media_urls else None,
-            location_tag=report.barangay or report.human_readable_location or None
-        )
-        crud.create_community_post(db=db, post_in=post_in, user_id=report.user_id)
-
-    # 6. Audit Trail Logging
+    # 5. Audit Trail Logging
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
         db,
@@ -218,7 +208,7 @@ async def approve_report(
         )
     )
 
-    # 7. Broadcast real-time signal via SSE
+    # 6. Broadcast real-time signal via SSE
     from app.core.sse import manager
     await manager.broadcast({
         "event": "report_approved",

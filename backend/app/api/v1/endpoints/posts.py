@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.api.deps import get_current_user_optional, get_current_user
 from app.models.user import User
-from app.schemas.post import CommunityPostCreate, CommunityPostResponse, CommunityPostPaginatedResponse, CommentCreate, CommentResponse
+from app.schemas.post import CommunityPostCreate, CommunityPostUpdate, CommunityPostReportCreate, CommunityPostEditHistoryResponse, CommunityPostResponse, CommunityPostPaginatedResponse, CommentCreate, CommentResponse
+from app.models.post import CommunityPostReport
 from app.schemas.interaction import PostInteractionCreate, PostInteraction
 from app.crud import post as crud_post
 from app.crud import interaction as crud_interaction
@@ -108,6 +109,48 @@ def get_my_posts(
         limit=limit,
         author_id=current_user.id
     )
+
+
+@router.get("/{post_id}/history", response_model=List[CommunityPostEditHistoryResponse])
+def get_post_history(post_id: int, db: Session = Depends(get_db)):
+    """Return public before/after versions for an existing Community Post."""
+    if not crud_post.get_post(db, post_id):
+        raise HTTPException(status_code=404, detail="Post not found")
+    return crud_post.get_post_edit_history(db, post_id)
+
+
+@router.patch("/{post_id}", response_model=CommunityPostResponse)
+def update_post(
+    post_id: int,
+    post_in: CommunityPostUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Update a post owned by the authenticated author and record its history."""
+    post = crud_post.get_post(db, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    updated_post = crud_post.update_community_post(db, post, post_in, current_user.id)
+    from app.crud import feed as crud_feed
+    return crud_feed.get_feed_post(db, updated_post.id, user_id=current_user.id)
+
+@router.post("/{post_id}/reports", status_code=201)
+def report_post(post_id: int, payload: CommunityPostReportCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if payload.reason not in {"spam_scam", "misinformation", "harassment_hate", "explicit_violent", "other"}:
+        raise HTTPException(status_code=422, detail="Invalid report reason")
+    if payload.reason == "other" and not (payload.details or "").strip():
+        raise HTTPException(status_code=422, detail="Explain the report reason")
+    post = crud_post.get_post(db, post_id)
+    if not post: raise HTTPException(status_code=404, detail="Post not found")
+    if post.user_id == current_user.id: raise HTTPException(status_code=403, detail="You cannot report your own post")
+    if db.query(CommunityPostReport).filter_by(post_id=post_id, reporter_user_id=current_user.id, status="open").first():
+        raise HTTPException(status_code=409, detail="You already have an open report for this post")
+    db.add(CommunityPostReport(post_id=post_id, reporter_user_id=current_user.id, reason=payload.reason, details=payload.details.strip() if payload.details else None))
+    db.commit()
+    return {"message": "Report submitted for moderator review"}
 
 @router.get("/{post_id}", response_model=CommunityPostResponse)
 def get_post(

@@ -2,12 +2,14 @@ import { apiClient } from '@/lib/apiClient';
 
 export interface FeedPost {
   id: number;
+  user_id: number;
   content: string;
   media_urls?: string[];
   location_tag?: string;
   location_lat?: number;
   location_lng?: number;
   created_at: string;
+  updated_at: string;
   
   upvotes: number;
   downvotes: number;
@@ -141,6 +143,32 @@ export interface CreatePostRequest {
   location_lng?: number;
 }
 
+export interface UpdatePostRequest {
+  content: string;
+  media_urls?: string[];
+  location_tag?: string;
+  location_lat?: number;
+  location_lng?: number;
+}
+
+export interface PostEditHistoryEntry {
+  id: number;
+  post_id: number;
+  editor_user_id: number;
+  version: number;
+  previous_content: string;
+  previous_media_urls?: string[];
+  previous_location_tag?: string;
+  previous_location_lat?: number;
+  previous_location_lng?: number;
+  updated_content: string;
+  updated_media_urls?: string[];
+  updated_location_tag?: string;
+  updated_location_lat?: number;
+  updated_location_lng?: number;
+  created_at: string;
+}
+
 export const createPost = async (request: CreatePostRequest): Promise<FeedPost> => {
   const formData = new FormData();
   formData.append('content', request.content);
@@ -159,5 +187,17 @@ export const createPost = async (request: CreatePostRequest): Promise<FeedPost> 
     });
   }
   return apiClient.post<FeedPost>(`/posts`, formData);
+};
+
+export const updatePost = async (postId: number, request: UpdatePostRequest): Promise<FeedPost> => {
+  return apiClient.patch<FeedPost>(`/posts/${postId}`, request);
+};
+
+export const getPostEditHistory = async (postId: number): Promise<PostEditHistoryEntry[]> => {
+  return apiClient.get<PostEditHistoryEntry[]>(`/posts/${postId}/history`);
+};
+
+export const reportPost = async (postId: number, reason: string, details?: string): Promise<void> => {
+  await apiClient.post(`/posts/${postId}/reports`, { reason, details });
 };
 
