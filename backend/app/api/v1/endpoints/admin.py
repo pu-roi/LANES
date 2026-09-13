@@ -14,6 +14,14 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
+def _attach_report_media(zone: models.FloodAvoidanceZone) -> schemas.FloodAvoidanceZoneResponse:
+    """Expose source-report evidence without copying it into zone media."""
+    response = schemas.FloodAvoidanceZoneResponse.model_validate(zone)
+    return response.model_copy(
+        update={"report_media_urls": list(zone.primary_report.media_urls or []) if zone.primary_report else []}
+    )
+
+
 @router.get("/reports/pending", response_model=List[schemas.FloodReportResponse])
 def get_pending_reports(
     db: Session = Depends(get_db),
@@ -631,7 +639,7 @@ def get_all_zones(
         active_only=active_only
     )
     
-    return {"zones": zones, "total": total}
+    return {"zones": [_attach_report_media(zone) for zone in zones], "total": total}
 
 
 @router.patch("/zones/{zone_id}/deactivate", response_model=schemas.FloodAvoidanceZoneResponse)
@@ -1219,7 +1227,7 @@ async def create_official_zone(
         "data": {"zone_id": zone.id}
     })
 
-    return zone
+    return _attach_report_media(zone)
 
 
 @router.get("/zones/{zone_id}", response_model=schemas.FloodAvoidanceZoneResponse)
@@ -1232,7 +1240,7 @@ def get_zone(
     zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
-    return zone
+    return _attach_report_media(zone)
 
 
 @router.put("/zones/{zone_id}", response_model=schemas.FloodAvoidanceZoneResponse)

@@ -743,7 +743,11 @@ export function OfficialZoneDrawer({
           depth_override: editorValues.depth,
           passable_vehicles_override: passableVehicles.join(","),
           hidden_hazards_override: hiddenHazards,
-          admin_notes: adminNotes.trim(),
+          // Showing the public report text in the editor must not turn it into
+          // an admin override merely because another field was saved.
+          admin_notes: editingZone.admin_notes == null && adminNotes === (editingZone.report_text ?? "")
+            ? undefined
+            : adminNotes.trim(),
           geometry: isEditableZoneGeometry(currentGeometry)
             ? normalizeOfficialZoneGeometry(currentGeometry) as AvoidanceZoneUpdatePayload["geometry"]
             : undefined,
@@ -1113,6 +1117,34 @@ export function OfficialZoneDrawer({
             {isEditMode ? "Photos & Videos" : "4. Photos & Videos"}{" "}
             <span className="text-[10px] font-normal text-slate-400 normal-case tracking-normal">(Optional)</span>
           </label>
+
+          {isEditMode && editingZone?.report_media_urls && editingZone.report_media_urls.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[11px] font-semibold text-slate-600">Original report evidence</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {editingZone.report_media_urls.map((url, index) => {
+                  const isVideo = /\.(mp4|webm|mov)(?:\?|$)/i.test(url) || url.includes("/video/");
+                  return (
+                    <a
+                      key={url}
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition-colors hover:border-blue-300"
+                    >
+                      {isVideo ? (
+                        <video src={url} preload="metadata" controls className="h-24 w-full bg-slate-900 object-cover" />
+                      ) : (
+                        <img src={url} alt={`Original report evidence ${index + 1}`} className="h-24 w-full object-cover" />
+                      )}
+                      <p className="truncate px-2 py-1.5 text-[10px] font-medium text-slate-600">Original evidence {index + 1}</p>
+                    </a>
+                  );
+                })}
+              </div>
+              <p className="text-[10px] text-slate-400">Original evidence is preserved; uploads below add new zone evidence.</p>
+            </div>
+          )}
 
           {mediaItems.length > 0 && (
             <div className="space-y-2" aria-live="polite">

@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 13, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 1:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -89,6 +89,8 @@
   - Added composer session restore in `FeedPage.tsx` to automatically reopen the modal with all text, location metadata, and media previews intact when the user refreshes `/feed`.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Edit Zone Effective Flood-Report Data** (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `admin.py`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Falls back from empty zone overrides to the linked report’s depth, severity, survey answers, and description; original report evidence is rendered separately as read-only media.
 - [x] **Edit Zone Baseline Draft Guard & Geometry Editing** (`zoneEditDraftStorage.ts`, `LiveMapPage.tsx`, `OfficialZoneDrawer.tsx`, `useTerraDraw.ts`, `admin.py`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Prevented false **Edit Restored** sessions by comparing the local values and new media with the freshly fetched zone baseline. Unchanged legacy records are deleted silently.
   - Added road-centreline replacement and exact saved-polygon vertex editing to the existing Edit Zone workspace. Line updates regenerate the existing 25-metre routing barrier; area updates replace the saved polygon and clear obsolete road source geometry.

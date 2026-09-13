@@ -225,6 +225,8 @@ export interface AvoidanceZone {
   is_bidirectional?: boolean;
   passable_vehicles_override?: string | null;
   hidden_hazards_override?: string | null;
+  passable_vehicles?: string | null;
+  hidden_hazards?: string | null;
   merge_rationale?: string | null;
   report_text?: string;
   report_source?: string;
@@ -233,6 +235,10 @@ export interface AvoidanceZone {
   reporter_reports_submitted?: number;
   reporter_reports_verified?: number;
   report_geometry?: ReportGeometry | null;
+  /** Evidence submitted with the original public Flood Report. */
+  report_media_urls?: string[];
+  /** Evidence later attached directly by an administrator to this zone. */
+  media_urls?: string[];
   contributors?: ZoneContributor[];
 }
 
