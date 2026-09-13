@@ -43,7 +43,14 @@ import type { MergeCandidateItem, ReportGeometry } from "./adminApi";
 import { MapProvider } from "@/features/map/MapContext";
 import maplibregl from "maplibre-gl";
 import { hasCreateZoneDraft } from "./components/zones/zoneDraftStorage";
-import { findLatestZoneEditDraft, discardZoneEditDraft } from "./components/zones/zoneEditDraftStorage";
+import {
+  discardZoneEditDraft,
+  areZoneEditValuesEqual,
+  findLatestZoneEditDraft,
+  getZoneEditBaseline,
+  getZoneEditValues,
+  hasZoneEditChanges,
+} from "./components/zones/zoneEditDraftStorage";
 
 class AnalyticsControl {
   private _map: maplibregl.Map | undefined;
@@ -231,6 +238,14 @@ export default function LiveMapPage() {
         try {
           const zone = await getZone(draft.zoneId);
           if (cancelled) return;
+          const baseline = getZoneEditBaseline(zone);
+          const isCurrentDraft = draft.baselineUpdatedAt === zone.updated_at
+            && areZoneEditValuesEqual(draft.baseline, baseline)
+            && hasZoneEditChanges(getZoneEditValues(draft), draft.baseline, draft.mediaFiles);
+          if (!isCurrentDraft) {
+            await discardZoneEditDraft(createZoneDraftUserId, draft.zoneId);
+            return;
+          }
           setIsMergeDrawerOpen(false);
           setMergingReport(null);
           setEditingZone(zone);

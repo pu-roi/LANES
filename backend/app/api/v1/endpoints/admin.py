@@ -1264,6 +1264,29 @@ async def update_zone(
         zone.hidden_hazards_override = body.hidden_hazards_override
     if body.is_active is not None:
         zone.is_active = body.is_active
+    if body.geometry is not None:
+        if body.geometry.type in {"LineString", "MultiLineString"}:
+            # Preserve the exact routed centreline for later editing while the
+            # polygon remains the authoritative routing barrier.
+            source_expression = func.ST_SetSRID(
+                func.ST_GeomFromGeoJSON(body.geometry.model_dump_json()),
+                4326,
+            )
+            buffered_geojson = db.query(
+                func.ST_AsGeoJSON(func.ST_Buffer(source_expression, 25.0 / 111000.0))
+            ).scalar()
+            if not buffered_geojson:
+                raise HTTPException(status_code=422, detail="The road segment could not be converted into an avoidance zone.")
+            buffered_geometry = json.loads(buffered_geojson)
+            # The existing column is intentionally a Polygon. A disconnected
+            # line set cannot be stored as one operational zone safely.
+            if buffered_geometry.get("type") != "Polygon":
+                raise HTTPException(status_code=422, detail="The selected road geometry must form one continuous avoidance zone.")
+            zone.source_geometry = source_expression
+            zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(buffered_geometry)), 4326)
+        else:
+            zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(body.geometry.model_dump_json()), 4326)
+            zone.source_geometry = None
 
     db.commit()
     db.refresh(zone)

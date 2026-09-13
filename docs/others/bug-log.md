@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 12, 2026, 11:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,48 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-022] Registration Success Was Shown Twice on Login
+- **Status**: Resolved
+- **Severity**: Low
+- **Date Reported / Resolved**: September 13, 2026
+- **Affected Area**: Frontend / Authentication
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+After a successful registration, the Login page showed both the global **Account Created** toast and an identical green success banner above the credentials fields.
+
+#### 2. Root Cause Analysis (RCA)
+`RegisterForm` displays the toast before redirecting to `/login?registered=true`; `LoginForm` also rendered a static banner from the same query parameter.
+
+#### 3. Solution & Architectural Strategy
+The static Login banner was removed. The redirect keeps the `registered=true` compatibility parameter, while the single global toast remains the registration confirmation.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/auth/LoginForm.tsx`: Removes only the duplicate post-registration banner.
+
+### [BUG-021] Edit Zone Reopened Without an Actual Edit and Could Not Change Geometry
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 13, 2026
+- **Affected Area**: Frontend / Backend / Admin Map / IndexedDB Drafts / PostGIS
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+Opening an active zone wrote a local copy of its unchanged server values. On a later sign-in, that copy opened the amber Edit Zone workspace and displayed **Edit Restored** despite no work having been started. Edit Zone also exposed no Spatial Geometry section, preventing an administrator from correcting an active road centreline or saved area boundary.
+
+#### 2. Root Cause Analysis (RCA)
+The edit-draft lifecycle treated every saved IndexedDB record as meaningful and had no comparison to the fetched server version. The secured update request accepted only metadata overrides, even though Create Zone already supported routed lines and Terra Draw area geometry.
+
+#### 3. Solution & Architectural Strategy
+Edit drafts now use a versioned snapshot of the exact fetched baseline, then compare normalized editable values and selected media against that snapshot. This prevents the previous polygon-versus-source-line mismatch from classifying an untouched legacy record as an edit; incompatible v1 records are removed silently. An inactive Create Zone workspace is also barred from reading or saving shared MapContext anchors while Edit Zone is active, preventing it from creating a false Create draft. Only a genuine change resumes the edit workspace and produces the restore toast. Edit Zone now shares Create Zone's Line, Polygon, Freehand, Rectangle, and Circle controls. Road replacements preserve a source centreline and regenerate the existing 25-metre avoidance polygon; area replacements persist their exact edited polygon and remove obsolete road source geometry. Existing areas reopen as editable polygons because the database intentionally stores the final polygon, not a drawing-tool label.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/admin/components/zones/zoneEditDraftStorage.ts`: Adds normalized edit-baseline comparison helpers.
+- `frontend/src/features/admin/LiveMapPage.tsx`: Validates an edit draft against the freshly fetched zone before opening Pane 2.
+- `frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx` and `hooks/useTerraDraw.ts`: Adds editable geometry controls and Terra Draw vertex selection to Edit Zone.
+- `frontend/src/features/admin/adminApi.ts`, `backend/app/schemas/report.py`, and `backend/app/api/v1/endpoints/admin.py`: Accept and securely persist supported edit geometry without a migration.
+- `backend/tests/test_zone_edit_geometry_schema.py`: Covers line and polygon update payload validation.
 
 ### [BUG-020] Landing Flood Analytics Action Opened a Separate Page Instead of the Map Panel
 - **Status**: Resolved

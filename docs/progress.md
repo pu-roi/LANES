@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 12, 2026, 11:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -66,6 +66,8 @@
 ## Capstone Roadmap - Delivered Phases
 
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+- [x] **Registration Confirmation De-duplication** (`LoginForm.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Retained the global Account Created toast and removed the duplicate success banner displayed after the Login redirect.
 - [x] **EventSource Zombie Connection & SSE Dev Proxy Resolution (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe):
   - Fixed persistent zombie connections and connection thrashing by removing the restrictive `readyState === 1` guard during React StrictMode unmount cleanup, ensuring `source.close()` executes unconditionally.
   - Implemented centralized `getSseUrl('/sse/stream')` directing browser SSE connections straight to FastAPI on port `8000` in local dev/LAN, eliminating Next.js proxy response buffering and SSE dropouts.
@@ -87,6 +89,9 @@
   - Added composer session restore in `FeedPage.tsx` to automatically reopen the modal with all text, location metadata, and media previews intact when the user refreshes `/feed`.
 
 ### Capstone Phase 18: Intelligent Flood-Report Merging & Spatial Operations Redesign (🟡 IN PROGRESS)
+- [x] **Edit Zone Baseline Draft Guard & Geometry Editing** (`zoneEditDraftStorage.ts`, `LiveMapPage.tsx`, `OfficialZoneDrawer.tsx`, `useTerraDraw.ts`, `admin.py`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Prevented false **Edit Restored** sessions by comparing the local values and new media with the freshly fetched zone baseline. Unchanged legacy records are deleted silently.
+  - Added road-centreline replacement and exact saved-polygon vertex editing to the existing Edit Zone workspace. Line updates regenerate the existing 25-metre routing barrier; area updates replace the saved polygon and clear obsolete road source geometry.
 - [x] **Landing Flood Insights Map Handoff** (`LandingView.tsx`, `MapContext.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Routes the landing **View Flood Analytics** action to `/map?panel=analytics`.
   - Opens the existing responsive Flood Insights panel through the map's URL-driven panel state.
