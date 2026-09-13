@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 13, 2026, 1:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 9:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -12,8 +12,11 @@
 ## Active Sprint (Next Feature)
 
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
-> **Focus:** Hardening the authentication lifecycle, eliminating EventSource connection leaks on client unmount, resolving soft-delete unique constraint collisions on citizen re-registration, standardizing registration to require explicit credential sign-in, and expanding post media ingestion to 100MB videos across Next.js proxy, FastAPI, and Cloudinary.
-> **Current Status (Sept 11, 2026):**
+> **Focus:** Hardening the authentication lifecycle, eliminating EventSource connection leaks on client unmount, resolving soft-delete unique constraint collisions on citizen re-registration, standardizing registration to require explicit credential sign-in, expanding post media ingestion to 100MB videos across Next.js proxy, FastAPI, and Cloudinary, integrating post edit history & reporting, and adding mobile search bar collapsibility.
+> **Current Status (Sept 13, 2026):**
+> - [x] **Mobile Route Search Collapsibility & Explicit Geolocation Diagnostics (`RoutePanel.tsx`, `geocodingApi.ts`, `LandingView.tsx`, `FeedPage.tsx`)** ([@follosochris](https://github.com/follosochris) (Chris Folloso)): Implemented expandable/collapsible floating top search bar for mobile maps, surfaced accurate GPS permission error feedback across landing and routing panels, and enabled direct map coordinate navigation from Trending Hotspots.
+> - [x] **Community Post Reporting Foundation & Shared Select Integration (`PostItem.tsx`, `posts.py`, Alembic `c8a3d1f9e426`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added private post reporting with backend persistence, authenticated submission, and shared `Select` dropdown component integration.
+> - [x] **Community Post Edit-History Foundation (`post.py`, `posts.py`, `feedApi.ts`, Alembic `b4c2d91e7a30`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added owner-verified post editing with an immutable before/after snapshot for every update and a public history endpoint.
 > - [x] **Registration Confirmation De-duplication (`LoginForm.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Keeps the global account-created toast and removes the redundant Login-page success banner.
 > - [x] **Edit Zone Draft Eligibility & Geometry Editing (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `useTerraDraw.ts`, `admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Edit Zone only restores a real change from the newly fetched server baseline; baseline-only IndexedDB records are silently removed. Administrators can now replace a road centreline or edit the exact saved area polygon through the existing geometry controls. Lines rebuild the 25-metre operational buffer; area edits clear obsolete source-road geometry. No schema migration is needed.
 > - [x] **Edit Zone Effective Report Data (`OfficialZoneDrawer.tsx`, `admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Edit Zone now displays fallback severity/depth, survey answers, description, and read-only original evidence from its linked public report when no administrative override exists.
