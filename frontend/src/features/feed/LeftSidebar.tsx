@@ -87,15 +87,24 @@ export function LeftSidebar() {
             <TrendingUp className="w-3.5 h-3.5" />
             Trending Hotspots
           </h3>
-          <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group">
+          <div 
+            onClick={() => router.push("/map?lat=14.6091&lng=120.9899&zoom=15")}
+            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
+          >
             <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /> Espana Blvd</span>
             <span className="text-xs text-gray-400 group-hover:text-gray-600">12</span>
           </div>
-          <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group">
+          <div 
+            onClick={() => router.push("/map?lat=14.5648&lng=120.9932&zoom=15")}
+            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
+          >
             <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /> Taft Ave</span>
             <span className="text-xs text-gray-400 group-hover:text-gray-600">8</span>
           </div>
-          <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group">
+          <div 
+            onClick={() => router.push("/map?lat=14.6353&lng=121.0433&zoom=15")}
+            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
+          >
             <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-400" /> EDSA-Kamuning</span>
             <span className="text-xs text-gray-400 group-hover:text-gray-600">5</span>
           </div>
