@@ -7,6 +7,7 @@ import {
   TerraDrawRectangleMode,
   TerraDrawCircleMode,
   TerraDrawFreehandMode,
+  TerraDrawSelectMode,
 } from "terra-draw";
 import { TerraDrawMapLibreGLAdapter } from "terra-draw-maplibre-gl-adapter";
 import type { GeometryMode, Severity } from "../types";
@@ -19,6 +20,7 @@ interface UseTerraDrawOptions {
   severity: Severity;
   isEnabled?: boolean;
   isInteractive?: boolean;
+  isEditingExistingShape?: boolean;
 }
 
 export function useTerraDraw({
@@ -27,6 +29,7 @@ export function useTerraDraw({
   severity,
   isEnabled = true,
   isInteractive = isEnabled,
+  isEditingExistingShape = false,
 }: UseTerraDrawOptions) {
   const drawRef = useRef<TerraDraw | null>(null);
   const [drawInstance, setDrawInstance] = useState<TerraDraw | null>(null);
@@ -58,6 +61,7 @@ export function useTerraDraw({
             new TerraDrawFreehandMode({ pointerDistance: 45, styles: initialStyles as any }),
             new TerraDrawRectangleMode({ pointerDistance: 45, styles: initialStyles as any }),
             new TerraDrawCircleMode({ pointerDistance: 45, styles: initialStyles as any }),
+            new TerraDrawSelectMode({}),
           ],
         });
 
@@ -120,6 +124,9 @@ export function useTerraDraw({
         drawRef.current.setMode("static");
         setIsDrawingMode(false);
         resetMapCursor();
+      } else if (isEditingExistingShape) {
+        drawRef.current.setMode("select");
+        setIsDrawingMode(false);
       } else {
         drawRef.current.setMode(geometryMode);
         setIsDrawingMode(true);
@@ -127,7 +134,7 @@ export function useTerraDraw({
     } catch (err) {
       console.warn("Error setting TerraDraw mode:", err);
     }
-  }, [geometryMode, drawInstance, isInteractive, resetMapCursor]);
+  }, [geometryMode, drawInstance, isEditingExistingShape, isInteractive, resetMapCursor]);
 
   // Sync styles on severity change
   useEffect(() => {

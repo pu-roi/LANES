@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 12, 2026, 11:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -14,6 +14,8 @@
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
 > **Focus:** Hardening the authentication lifecycle, eliminating EventSource connection leaks on client unmount, resolving soft-delete unique constraint collisions on citizen re-registration, standardizing registration to require explicit credential sign-in, and expanding post media ingestion to 100MB videos across Next.js proxy, FastAPI, and Cloudinary.
 > **Current Status (Sept 11, 2026):**
+> - [x] **Registration Confirmation De-duplication (`LoginForm.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Keeps the global account-created toast and removes the redundant Login-page success banner.
+> - [x] **Edit Zone Draft Eligibility & Geometry Editing (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `useTerraDraw.ts`, `admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Edit Zone only restores a real change from the newly fetched server baseline; baseline-only IndexedDB records are silently removed. Administrators can now replace a road centreline or edit the exact saved area polygon through the existing geometry controls. Lines rebuild the 25-metre operational buffer; area edits clear obsolete source-road geometry. No schema migration is needed.
 > - [x] **Decision #16 Mixed-Topology Segmentation (`carriageway_service.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Requests Valhalla edge shape indexes, splits reports whenever road identity or traversability changes, and validates opposite coverage per run. A mixed Caruncho/Urbano report now shows a second line only for its proven matching subsection, preserving a short graph-mapped Y merge at its matching endpoint while rejecting a cross-street junction connector.
 > - [x] **SSE Zombie Connection & Buffering Fix (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe): Removed `readyState === 1` guard during React unmount to unconditionally call `source.close()`, resolving reconnect loops in StrictMode. Created centralized `getSseUrl` pointing browser to direct port 8000 in dev to avoid Next.js reverse proxy buffering.
 > - [x] **Auth Re-registration & Explicit Sign-in Flow (`auth.py`, `RegisterForm.tsx`, `LoginForm.tsx`)** (@roicambe): Handled soft-deleted user unique collisions in `POST /auth/register` by detecting verified re-registration and purging stale soft-deleted accounts. Removed post-registration auto-login in favor of redirecting to `/login?registered=true` with a clear success alert banner.

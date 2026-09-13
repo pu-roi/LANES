@@ -24,7 +24,7 @@ import { DraftZoneCart } from "./subcomponents/DraftZoneCart";
 import { useTerraDraw } from "./hooks/useTerraDraw";
 import { useZoneDrafts } from "./hooks/useZoneDrafts";
 import type { GeometryMode, Severity, ZoneDraftItem } from "./types";
-import { addZoneMedia, updateZone, type AvoidanceZone, type AvoidanceZoneUpdatePayload, type ReportGeometry } from "../../adminApi";
+import { addZoneMedia, updateZone, type AvoidanceZone, type AvoidanceZoneUpdatePayload, type LineStringGeometry, type MultiLineStringGeometry, type PolygonGeometry, type ReportGeometry } from "../../adminApi";
 import {
   discardCreateZoneDraft,
   loadCreateZoneDraft,
@@ -33,6 +33,10 @@ import {
 } from "./zoneDraftStorage";
 import {
   discardZoneEditDraft,
+  areZoneEditValuesEqual,
+  getZoneEditBaseline,
+  getZoneEditValues,
+  hasZoneEditChanges,
   loadZoneEditDraft,
   saveZoneEditDraft,
 } from "./zoneEditDraftStorage";
@@ -118,6 +122,33 @@ function buildValidatedRoadCoverage(
   };
 }
 
+function isRoadGeometry(geometry: ReportGeometry | null | undefined): geometry is Extract<ReportGeometry, { type: "LineString" | "MultiLineString" }> {
+  return geometry?.type === "LineString" || geometry?.type === "MultiLineString";
+}
+
+function isEditableZoneGeometry(
+  geometry: ReportGeometry | null | undefined,
+): geometry is LineStringGeometry | MultiLineStringGeometry | PolygonGeometry {
+  return geometry?.type === "LineString" || geometry?.type === "MultiLineString" || geometry?.type === "Polygon";
+}
+
+function roadEndpoints(geometry: ReportGeometry): { start: Position; end: Position } | null {
+  const line = geometry.type === "LineString"
+    ? geometry.coordinates
+    : geometry.type === "MultiLineString"
+    ? geometry.coordinates[0]
+    : null;
+  if (!line || line.length < 2) return null;
+  return { start: line[0], end: line[line.length - 1] };
+}
+
+function geometryToTerraFeatures(geometry: ReportGeometry): any[] {
+  if (geometry.type === "Polygon") {
+    return [{ type: "Feature", id: "saved-zone-area", properties: { mode: "polygon" }, geometry }];
+  }
+  return [];
+}
+
 export function OfficialZoneDrawer({
   isOpen,
   onClose,
@@ -154,6 +185,7 @@ export function OfficialZoneDrawer({
 
   // Mode and form states
   const [geometryMode, setGeometryMode] = useState<GeometryMode>("line");
+  const [isEditingExistingShape, setIsEditingExistingShape] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isViewingDrafts, setIsViewingDrafts] = useState(false);
   const [isDiscardDialogOpen, setIsDiscardDialogOpen] = useState(false);
@@ -161,6 +193,7 @@ export function OfficialZoneDrawer({
   const [pendingDraftToEdit, setPendingDraftToEdit] = useState<ZoneDraftItem | null>(null);
   const [isSaveBeforeEditDialogOpen, setIsSaveBeforeEditDialogOpen] = useState(false);
   const [isCancelEditDialogOpen, setIsCancelEditDialogOpen] = useState(false);
+  const [isDiscardingEdit, setIsDiscardingEdit] = useState(false);
   const [mediaItems, setMediaItems] = useState<SelectedMediaItem[]>([]);
   const createdPreviewUrlsRef = useRef(new Set<string>());
   const mediaFiles = mediaItems.map(({ file }) => file);
@@ -201,6 +234,7 @@ export function OfficialZoneDrawer({
     // drawer is collapsed; only its map interaction is paused.
     isEnabled: true,
     isInteractive: isOpen,
+    isEditingExistingShape,
   });
 
   // Draft Cart hook
@@ -214,6 +248,8 @@ export function OfficialZoneDrawer({
   const hasShownDrawingRestoreError = useRef(false);
   const hasHydratedEditDraft = useRef(false);
   const hydratedEditKey = useRef<string | null>(null);
+  const editBaseline = useRef<ReturnType<typeof getZoneEditBaseline> | null>(null);
+  const suppressEditDraftSave = useRef(false);
 
   const replaceMediaFiles = useCallback((files: File[]) => {
     createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
@@ -228,24 +264,32 @@ export function OfficialZoneDrawer({
   // Sync editingZone when it changes (including standalone survey + description state)
   useEffect(() => {
     if (editingZone) {
-      const vehicles = editingZone.passable_vehicles_override
-        ? editingZone.passable_vehicles_override.split(",").filter(Boolean)
-        : [];
+      const baseline = getZoneEditBaseline(editingZone);
+      const { editorValues: baselineValues, passableVehicles: vehicles } = baseline;
+      editBaseline.current = baseline;
       setPassableVehicles(vehicles);
-      setHiddenHazards(editingZone.hidden_hazards_override || "unsure");
-      setAdminNotes(editingZone.admin_notes || "");
-      setEditorValues({
-        name: editingZone.name || `Official Zone #${editingZone.id}`,
-        severity: (editingZone.severity_override as Severity) || "medium",
-        depth: editingZone.depth_override || "knee",
-        passable_vehicles: vehicles,
-        hidden_hazards: editingZone.hidden_hazards_override || "unsure",
-        is_bidirectional: editingZone.is_bidirectional || false,
-        geometry: (editingZone.geometry as any) || { type: "LineString", coordinates: [] },
-        admin_notes: editingZone.admin_notes || "",
-      });
+      setHiddenHazards(baseline.hiddenHazards);
+      setAdminNotes(baseline.adminNotes);
+      setEditorValues(baselineValues);
+      const isRoad = isRoadGeometry(baselineValues.geometry);
+      setGeometryMode(isRoad ? "line" : "polygon");
+      setIsEditingExistingShape(!isRoad);
+      if (isRoad) {
+        const endpoints = roadEndpoints(baselineValues.geometry);
+        restoreFloodReportMapState({
+          floodStart: endpoints ? { coords: endpoints.start, label: `${endpoints.start[0].toFixed(5)}, ${endpoints.start[1].toFixed(5)}` } : null,
+          floodEnd: endpoints ? { coords: endpoints.end, label: `${endpoints.end[0].toFixed(5)}, ${endpoints.end[1].toFixed(5)}` } : null,
+          floodPreviewGeometry: baselineValues.geometry.type === "LineString" ? baselineValues.geometry : null,
+          floodOppositeGeometry: baselineValues.geometry.type === "MultiLineString"
+            ? { type: "LineString", coordinates: baselineValues.geometry.coordinates[1] ?? [] }
+            : null,
+          floodIsBidirectional: baselineValues.is_bidirectional,
+        });
+      } else {
+        pendingDrawnFeatures.current = geometryToTerraFeatures(baselineValues.geometry);
+      }
     }
-  }, [editingZone]);
+  }, [editingZone, restoreFloodReportMapState]);
 
   // Edit Zone is a per-admin local workspace. The server's current version is
   // authoritative if another admin has saved this zone since this draft began.
@@ -262,16 +306,43 @@ export function OfficialZoneDrawer({
     hydratedEditKey.current = null;
     void loadZoneEditDraft(userId, editingZone.id).then((draft) => {
       if (cancelled) return;
-      if (draft && draft.baselineUpdatedAt === editingZone.updated_at) {
+      const baseline = getZoneEditBaseline(editingZone);
+      editBaseline.current = baseline;
+      if (
+        draft
+        && draft.baselineUpdatedAt === editingZone.updated_at
+        && areZoneEditValuesEqual(draft.baseline, baseline)
+        && hasZoneEditChanges(getZoneEditValues(draft), draft.baseline, draft.mediaFiles)
+      ) {
         setEditorValues(draft.editorValues);
         setPassableVehicles(draft.passableVehicles);
         setHiddenHazards(draft.hiddenHazards);
         setAdminNotes(draft.adminNotes);
         replaceMediaFiles(draft.mediaFiles);
+        if (isRoadGeometry(draft.editorValues.geometry)) {
+          const endpoints = roadEndpoints(draft.editorValues.geometry);
+          setGeometryMode("line");
+          setIsEditingExistingShape(false);
+          restoreFloodReportMapState({
+            floodStart: endpoints ? { coords: endpoints.start, label: `${endpoints.start[0].toFixed(5)}, ${endpoints.start[1].toFixed(5)}` } : null,
+            floodEnd: endpoints ? { coords: endpoints.end, label: `${endpoints.end[0].toFixed(5)}, ${endpoints.end[1].toFixed(5)}` } : null,
+            floodPreviewGeometry: draft.editorValues.geometry.type === "LineString" ? draft.editorValues.geometry : null,
+            floodOppositeGeometry: draft.editorValues.geometry.type === "MultiLineString"
+              ? { type: "LineString", coordinates: draft.editorValues.geometry.coordinates[1] ?? [] }
+              : null,
+            floodIsBidirectional: draft.editorValues.is_bidirectional,
+          });
+        } else if (draft.editorValues.geometry.type === "Polygon") {
+          setGeometryMode("polygon");
+          setIsEditingExistingShape(true);
+          pendingDrawnFeatures.current = geometryToTerraFeatures(draft.editorValues.geometry);
+        }
         success("Edit Restored", `Your unfinished edits for Zone #${editingZone.id} are ready to continue.`);
       } else if (draft) {
         void discardZoneEditDraft(userId, editingZone.id);
-        error("Zone Updated", "Another administrator saved a newer version, so the latest zone details are shown.");
+        if (draft.baselineUpdatedAt !== editingZone.updated_at) {
+          error("Zone Updated", "Another administrator saved a newer version, so the latest zone details are shown.");
+        }
       }
     }).catch((err) => {
       console.error("Failed to restore Edit Zone draft", err);
@@ -283,13 +354,20 @@ export function OfficialZoneDrawer({
       }
     });
     return () => { cancelled = true; };
-  }, [canPersistEdit, editingZone, error, replaceMediaFiles, success, userId]);
+  }, [canPersistEdit, editingZone, error, replaceMediaFiles, restoreFloodReportMapState, success, userId]);
 
   useEffect(() => {
-    if (!canPersistEdit || !editingZone || !userId || !hasHydratedEditDraft.current) return;
+    if (suppressEditDraftSave.current || !canPersistEdit || !editingZone || !userId || !hasHydratedEditDraft.current) return;
     if (hydratedEditKey.current !== `${userId}:${editingZone.id}`) return;
+    const values = { editorValues, passableVehicles, hiddenHazards, adminNotes };
+    const baseline = editBaseline.current ?? getZoneEditBaseline(editingZone);
+    if (!hasZoneEditChanges(values, baseline, mediaFiles)) {
+      void discardZoneEditDraft(userId, editingZone.id);
+      return;
+    }
     void saveZoneEditDraft(userId, editingZone.id, {
       baselineUpdatedAt: editingZone.updated_at,
+      baseline,
       editorValues,
       passableVehicles,
       hiddenHazards,
@@ -344,7 +422,7 @@ export function OfficialZoneDrawer({
   }, [clearCurrentZone, setDrafts]);
 
   useEffect(() => {
-    if (isEditMode) {
+    if (isEditMode || !isOpen) {
       hasHydratedDraft.current = false;
       hydratedUserId.current = null;
       return;
@@ -395,7 +473,7 @@ export function OfficialZoneDrawer({
     };
     void hydrate();
     return () => { cancelled = true; };
-  }, [canPersistDraft, clearCreateWorkspace, error, isEditMode, replaceMediaFiles, restoreFloodReportMapState, setDrafts, success, userId]);
+  }, [canPersistDraft, clearCreateWorkspace, error, isEditMode, isOpen, replaceMediaFiles, restoreFloodReportMapState, setDrafts, success, userId]);
 
   useEffect(() => {
     if (!pendingDrawnFeatures.current || !drawInstance) return;
@@ -419,7 +497,9 @@ export function OfficialZoneDrawer({
   );
 
   useEffect(() => {
-    if (!canPersistDraft || !userId || !hasHydratedDraft.current || hydratedUserId.current !== userId) return;
+    // Create and Edit share MapContext anchors. An inactive Create drawer must
+    // never interpret an Edit Zone's anchors as a new Create Zone draft.
+    if (!isOpen || !canPersistDraft || !userId || !hasHydratedDraft.current || hydratedUserId.current !== userId) return;
     if (suppressNextDraftSave.current) {
       suppressNextDraftSave.current = false;
       return;
@@ -452,7 +532,7 @@ export function OfficialZoneDrawer({
         error("Draft Not Saved", "Your Create Zone workspace could not be saved on this device.");
       }
     });
-  }, [adminNotes, canPersistDraft, drafts, drawnFeatures, editorValues, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, geometryMode, hasMaterialWorkspace, hiddenHazards, isBidirectional, mediaFiles, passableVehicles, userId]);
+  }, [adminNotes, canPersistDraft, drafts, drawnFeatures, editorValues, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, geometryMode, hasMaterialWorkspace, hiddenHazards, isBidirectional, isOpen, mediaFiles, passableVehicles, userId]);
 
   // Current active geometry
   const validatedRoadCoverage = buildValidatedRoadCoverage(
@@ -461,7 +541,11 @@ export function OfficialZoneDrawer({
     isBidirectional,
   );
   const currentGeometry = isEditMode
-    ? editorValues.geometry
+    ? geometryMode === "line" && floodStart && floodEnd && validatedRoadCoverage
+      ? validatedRoadCoverage
+      : geometryMode !== "line" && drawnGeometry
+      ? drawnGeometry
+      : editorValues.geometry
     : drawnFeatures.length > 0
     ? drawnGeometry
     : floodStart && floodEnd
@@ -469,9 +553,26 @@ export function OfficialZoneDrawer({
     : null;
   const isEditableLineGeometry = editorValues.geometry?.type === "LineString" || editorValues.geometry?.type === "MultiLineString";
 
+  // Keep the form/draft payload tied to the geometry currently displayed on
+  // the map.  This makes a restored polygon vertex edit or a new validated
+  // road selection part of the same dirty-state comparison as the attributes.
+  useEffect(() => {
+    if (!isEditMode || !currentGeometry) return;
+    if (JSON.stringify(editorValues.geometry) === JSON.stringify(currentGeometry)) return;
+    setEditorValues((current) => ({ ...current, geometry: normalizeOfficialZoneGeometry(currentGeometry) }));
+  }, [currentGeometry, editorValues.geometry, isEditMode]);
+
   const handleGeometryModeChange = (mode: GeometryMode) => {
+    // In Edit Zone, selecting a drawing tool means “replace the saved area”.
+    // Remove the old feature first so the next shape cannot be submitted as an
+    // accidental disconnected MultiPolygon.
+    if (isEditMode && mode !== geometryMode) clearDrawing();
     setGeometryMode(mode);
-    if (mode !== "line") setIsBidirectional(false);
+    setIsEditingExistingShape(false);
+    if (mode !== "line") {
+      setIsBidirectional(false);
+      setEditorValues((current) => ({ ...current, is_bidirectional: false }));
+    }
   };
 
   const addMediaFiles = (files: File[]) => {
@@ -643,6 +744,9 @@ export function OfficialZoneDrawer({
           passable_vehicles_override: passableVehicles.join(","),
           hidden_hazards_override: hiddenHazards,
           admin_notes: adminNotes.trim(),
+          geometry: isEditableZoneGeometry(currentGeometry)
+            ? normalizeOfficialZoneGeometry(currentGeometry) as AvoidanceZoneUpdatePayload["geometry"]
+            : undefined,
         };
 
         await updateZone(editingZone.id, payload);
@@ -729,10 +833,25 @@ export function OfficialZoneDrawer({
   };
 
   const confirmCancelEdit = async () => {
-    if (editingZone && userId) await discardZoneEditDraft(userId, editingZone.id);
-    clearMediaFiles();
-    setIsCancelEditDialogOpen(false);
-    onClose();
+    if (!editingZone || !userId) {
+      setIsCancelEditDialogOpen(false);
+      onClose();
+      return;
+    }
+    suppressEditDraftSave.current = true;
+    setIsDiscardingEdit(true);
+    try {
+      await discardZoneEditDraft(userId, editingZone.id);
+      clearMediaFiles();
+      setIsCancelEditDialogOpen(false);
+      onClose();
+    } catch (discardError) {
+      console.error("Failed to discard Edit Zone draft", discardError);
+      suppressEditDraftSave.current = false;
+      error("Could Not Discard Edit", "Your unfinished edit is still saved on this device. Please try again.");
+    } finally {
+      setIsDiscardingEdit(false);
+    }
   };
 
   return (
@@ -844,70 +963,64 @@ export function OfficialZoneDrawer({
           </div>
         )}
 
-        {/* SPATIAL GEOMETRY DEFINITION (Create mode only) */}
-        {!isEditMode && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-                1. Spatial Geometry
-              </label>
-              {hasActiveZoneWork && !editingDraft && (
-                <button
-                  type="button"
-                  onClick={handleClearActiveForm}
-                  className="flex shrink-0 items-center gap-1 text-xs font-medium text-slate-500 transition-colors hover:text-red-600"
-                  title="Clear the current zone form without removing saved drafts"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" /> Clear form
-                </button>
-              )}
-            </div>
-
-              <GeometryModeSelector
-                geometryMode={geometryMode}
-                onChange={handleGeometryModeChange}
-              isDrawingMode={isDrawingMode}
-              onCancelDrawing={cancelDrawingMode}
-            />
-
-            {geometryMode === "line" ? (
-              <>
-                <RoadSegmentPicker
-                  isBidirectional={isBidirectional}
-                  onBidirectionalChange={setIsBidirectional}
-                />
-                {(floodStart || floodEnd) && (
-                  <button
-                    type="button"
-                    onClick={handleResetCurrent}
-                    className="flex items-center gap-1 text-xs font-medium text-slate-500 transition-colors hover:text-red-600"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" /> Clear locations
-                  </button>
-                )}
-              </>
-            ) : (
-              <div className="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 text-center">
-                <p className="text-xs text-slate-600 font-medium">
-                  {drawnFeatures.length > 0
-                    ? `Captured ${drawnFeatures.length} shape(s) on map.`
-                    : `Click and draw your ${geometryMode} directly on the map.`}
-                </p>
-                {drawnFeatures.length > 0 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={clearDrawing}
-                    className="mt-2 text-xs h-7 px-2.5 rounded-lg text-red-600 border-red-200 hover:bg-red-50"
-                  >
-                    Clear Drawing
-                  </Button>
-                )}
-              </div>
+        {/* SPATIAL GEOMETRY DEFINITION */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+              {isEditMode ? "Spatial Geometry" : "1. Spatial Geometry"}
+            </label>
+            {!isEditMode && hasActiveZoneWork && !editingDraft && (
+              <button
+                type="button"
+                onClick={handleClearActiveForm}
+                className="flex shrink-0 items-center gap-1 text-xs font-medium text-slate-500 transition-colors hover:text-red-600"
+                title="Clear the current zone form without removing saved drafts"
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Clear form
+              </button>
             )}
           </div>
-        )}
+          <GeometryModeSelector
+            geometryMode={geometryMode}
+            onChange={handleGeometryModeChange}
+            isDrawingMode={isDrawingMode}
+            onCancelDrawing={cancelDrawingMode}
+          />
+          {geometryMode === "line" ? (
+            <>
+              <RoadSegmentPicker
+                isBidirectional={isBidirectional}
+                onBidirectionalChange={(enabled) => {
+                  setIsBidirectional(enabled);
+                  setEditorValues((current) => ({ ...current, is_bidirectional: enabled }));
+                }}
+              />
+              {(floodStart || floodEnd) && (
+                <button type="button" onClick={handleResetCurrent} className="flex items-center gap-1 text-xs font-medium text-slate-500 transition-colors hover:text-red-600">
+                  <RotateCcw className="h-3.5 w-3.5" /> Clear locations
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 text-center">
+              <p className="text-xs text-slate-600 font-medium">
+                {drawnFeatures.length > 0 ? "Drag the displayed vertices to refine this area, or choose a tool to replace it." : `Click and draw your ${geometryMode} directly on the map.`}
+              </p>
+              {drawnFeatures.length > 0 && (
+                <div className="mt-2 flex justify-center gap-2">
+                  {isEditMode && (
+                    <Button type="button" variant="outline" size="sm" onClick={() => setIsEditingExistingShape(true)} className="h-7 px-2.5 text-xs rounded-lg">
+                      Edit vertices
+                    </Button>
+                  )}
+                  <Button type="button" variant="outline" size="sm" onClick={clearDrawing} className="h-7 px-2.5 text-xs rounded-lg text-red-600 border-red-200 hover:bg-red-50">
+                    Clear Drawing
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* SECTION 2: HAZARD ATTRIBUTES — depth/severity + bidirectional + buffer */}
         <div className="space-y-3 pt-1 border-t border-slate-100">
@@ -1109,6 +1222,7 @@ export function OfficialZoneDrawer({
         confirmLabel="Discard edit"
         variant="destructive"
         size="sm"
+        isLoading={isDiscardingEdit}
         onConfirm={() => void confirmCancelEdit()}
         onCancel={() => setIsCancelEditDialogOpen(false)}
       />

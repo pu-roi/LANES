@@ -454,6 +454,8 @@ export interface AvoidanceZoneUpdatePayload {
   hidden_hazards_override?: string;
   admin_notes?: string;
   is_active?: boolean;
+  /** Replaces the operational road centreline or saved avoidance area. */
+  geometry?: LineStringGeometry | MultiLineStringGeometry | PolygonGeometry;
 }
 
 export async function updateZone(

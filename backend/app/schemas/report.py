@@ -126,6 +126,9 @@ class FloodAvoidanceZoneUpdate(BaseModel):
     hidden_hazards_override: Optional[str] = None
     admin_notes: Optional[str] = None
     is_active: Optional[bool] = None
+    # A zone persists its operational avoidance area as a Polygon. Road
+    # centrelines are accepted here and buffered by the secured admin route.
+    geometry: Optional[Union[LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
 
 class FloodAvoidanceZoneCreateOfficial(BaseModel):
     name: Optional[str] = None
