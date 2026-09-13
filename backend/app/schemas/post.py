@@ -27,6 +27,9 @@ class CommunityPostReportCreate(BaseModel):
     reason: str
     details: Optional[str] = None
 
+class CommunityPostModerationResolution(BaseModel):
+    action: str
+
 
 class CommunityPostEditHistoryResponse(BaseModel):
     id: int

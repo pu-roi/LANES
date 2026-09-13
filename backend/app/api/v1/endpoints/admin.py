@@ -9,9 +9,99 @@ from sqlalchemy import func
 from app import crud, models, schemas
 from app.api import deps
 from app.core.database import get_db
+from app.models.post import CommunityPost, CommunityPostReport
+from app.models.notification import Notification, NotificationType
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+@router.get("/moderation/reports")
+def get_community_post_reports(
+    status_filter: str = "open",
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> list[dict]:
+    if status_filter not in {"open", "resolved"}:
+        raise HTTPException(status_code=422, detail="Invalid report status")
+
+    reports = (
+        db.query(CommunityPostReport)
+        .filter(CommunityPostReport.status == status_filter)
+        .order_by(CommunityPostReport.created_at.asc())
+        .all()
+    )
+    result: list[dict] = []
+    seen_post_ids: set[int] = set()
+    for report in reports:
+        if report.post_id in seen_post_ids:
+            continue
+        seen_post_ids.add(report.post_id)
+        post = db.query(CommunityPost).filter(CommunityPost.id == report.post_id).first()
+        if post:
+            open_report_count = (
+                db.query(CommunityPostReport)
+                .filter(
+                    CommunityPostReport.post_id == post.id,
+                    CommunityPostReport.status == "open",
+                )
+                .count()
+            )
+            result.append(
+                {
+                    "id": report.id,
+                    "post_id": post.id,
+                    "post_content": post.content,
+                    "post_author_id": post.user_id,
+                    "reason": report.reason,
+                    "details": report.details,
+                    "created_at": report.created_at,
+                    "open_report_count": open_report_count,
+                }
+            )
+    return result
+
+@router.post("/moderation/posts/{post_id}/resolve")
+def resolve_community_post_reports(
+    post_id: int,
+    payload: schemas.CommunityPostModerationResolution,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> dict:
+    if payload.action not in {"dismiss", "warn", "hide"}:
+        raise HTTPException(status_code=422, detail="Invalid moderation action")
+    post = db.query(CommunityPost).filter(CommunityPost.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    reports = db.query(CommunityPostReport).filter(CommunityPostReport.post_id == post_id, CommunityPostReport.status == "open").all()
+    if not reports:
+        raise HTTPException(status_code=404, detail="No open reports for this post")
+    now = datetime.utcnow()
+    if payload.action == "hide":
+        post.hidden_at, post.hidden_by_user_id = now, current_user.id
+    for report in reports:
+        report.status = "resolved"
+        report.resolution_action = payload.action
+        report.resolved_by_user_id, report.resolved_at = current_user.id, now
+        db.add(
+            Notification(
+                user_id=report.reporter_user_id,
+                type=NotificationType.SYSTEM,
+                message="Your post report was reviewed.",
+                payload={"post_id": post_id, "action": payload.action},
+            )
+        )
+    if payload.action in {"warn", "hide"}:
+        message = "A moderator warned you about a Community Feed post." if payload.action == "warn" else "A moderator hid one of your Community Feed posts from public view."
+        db.add(
+            Notification(
+                user_id=post.user_id,
+                type=NotificationType.SYSTEM,
+                message=message,
+                payload={"post_id": post_id, "action": payload.action},
+            )
+        )
+    db.commit()
+    return {"message": "Reports resolved", "action": payload.action, "resolved_count": len(reports)}
 
 
 def _attach_report_media(zone: models.FloodAvoidanceZone) -> schemas.FloodAvoidanceZoneResponse:

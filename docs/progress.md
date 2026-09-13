@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 13, 2026, 9:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 14, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,7 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
-| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, mobile route search bar collapsibility, and explicit geolocation diagnostics |
+| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, Community Feed mobile responsiveness (iPhone SE/12 single-row action bar & standalone Lucide voting buttons), mobile route search bar collapsibility, and explicit geolocation diagnostics |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
 | 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
 | 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
@@ -34,6 +34,14 @@
 ## Capstone Roadmap - Delivered Phases
 
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+- [x] **Community Feed Mobile Responsiveness & Standalone Action Buttons (`PostItem.tsx`, `FeedPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Redesigned voting interactions in `PostItem.tsx` to use standalone `ArrowBigUp` and `ArrowBigDown` icon buttons without heavy pill enclosures, adhering to the "Anti Box-in-a-Box" principle.
+  - Implemented responsive severity badges: compact (`Medium`, `High`, `Extreme`, `Low`) on mobile (<640px) and full (`Medium (Warning)`) on desktop/tablet (≥640px) to prevent post header crowding.
+  - Resolved multi-row action bar wrapping on compact mobile devices (iPhone SE 375px, iPhone 12 390px) via responsive label management (`🗺️ Map` on mobile / `🗺️ View on Map` on desktop, hidden `Share` text on small screens), keeping all 4 primary actions on a single sleek row.
+  - Enhanced composer placeholder responsiveness in `FeedPage.tsx` (`"What's happening?"` on small screens vs `"What's happening in your area?"` on larger viewports) and scaled touch targets (`w-5 h-5` icons, `p-2`) for comfortable mobile ergonomics.
+- [x] **Community Post Moderation Center (`ModerationCenterPage.tsx`, `AdminSidebar.tsx`, `admin.py`, Alembic `d1f6e2a9b730`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added a staff-only queue that groups open private reports by Community Post and exposes Dismiss, Warn, and Hide actions on desktop and mobile-safe layouts.
+  - Resolving a case atomically updates every open report for that post, records the action and reviewer, optionally soft-hides the post from public feeds, and creates reporter/author system notifications.
 - [x] **Registration Confirmation De-duplication** (`LoginForm.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Retained the global Account Created toast and removed the duplicate success banner displayed after the Login redirect.
 - [x] **EventSource Zombie Connection & SSE Dev Proxy Resolution (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe):

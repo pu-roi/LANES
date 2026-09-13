@@ -112,9 +112,16 @@ def get_my_posts(
 
 
 @router.get("/{post_id}/history", response_model=List[CommunityPostEditHistoryResponse])
-def get_post_history(post_id: int, db: Session = Depends(get_db)):
+def get_post_history(
+    post_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user_optional),
+):
     """Return public before/after versions for an existing Community Post."""
-    if not crud_post.get_post(db, post_id):
+    from app.crud import feed as crud_feed
+
+    user_id = current_user.id if current_user else None
+    if not crud_feed.get_feed_post(db, post_id, user_id=user_id):
         raise HTTPException(status_code=404, detail="Post not found")
     return crud_post.get_post_edit_history(db, post_id)
 

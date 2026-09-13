@@ -186,22 +186,23 @@ export function FeedPage() {
   return (
     <>
       {/* Header with Tabs */}
-          <div className="bg-transparent border-b border-gray-200 px-4 pt-1 pb-0 flex flex-col justify-end">
-            <div className="flex items-center gap-3 mb-2 px-2">
+          <div className="bg-transparent border-b border-gray-200 px-3 sm:px-4 pt-1 pb-0 flex flex-col justify-end">
+            <div className="flex items-center gap-2.5 sm:gap-3 mb-2 px-1 sm:px-2">
               <button 
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden p-2 -ml-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors active:scale-95"
+                className="md:hidden p-1.5 -ml-1 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors active:scale-95"
+                aria-label="Open navigation menu"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <h1 className="text-xl font-extrabold tracking-tight">Community Feed</h1>
+              <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-gray-900">Community Feed</h1>
             </div>
             
-            <div className="flex justify-between items-end px-2">
-              <div className="flex gap-6">
+            <div className="flex justify-between items-end px-1 sm:px-2">
+              <div className="flex gap-4 sm:gap-6">
                 <button 
                   onClick={() => setTab('recent')}
-                  className={`pb-3 text-sm font-bold transition-colors relative ${
+                  className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-bold transition-colors relative ${
                     tab === 'recent' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -213,7 +214,7 @@ export function FeedPage() {
                 
                 <button 
                   onClick={() => setTab('nearby')}
-                  className={`pb-3 text-sm font-bold transition-colors relative ${
+                  className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-bold transition-colors relative ${
                     tab === 'nearby' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -224,23 +225,24 @@ export function FeedPage() {
                 </button>
               </div>
 
-              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600">
-                <Filter className="w-4 h-4 mr-1.5" />
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600 text-xs sm:text-sm px-2 sm:px-3">
+                <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
                 Filters
               </Button>
             </div>
           </div>
 
           {/* Create Post Input Trigger */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4 flex items-center gap-3">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3.5 sm:p-4 mb-3.5 sm:mb-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
               <span className="font-bold text-blue-700 text-sm">Me</span>
             </div>
             <button 
               onClick={() => setIsCreateModalOpen(true)}
-              className="flex-1 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full text-left px-5 py-3 text-gray-500 text-sm font-medium"
+              className="flex-1 min-w-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3 text-gray-500 text-sm font-medium truncate"
             >
-              What's happening in your area?
+              <span className="sm:hidden">What's happening?</span>
+              <span className="hidden sm:inline">What's happening in your area?</span>
             </button>
             
             {/* Quick Media Actions */}

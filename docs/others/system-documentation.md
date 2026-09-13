@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 13, 2026, 9:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 14, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -124,10 +124,10 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the scrollable list of `PostItem` cards. Left and right sidebars are pinned on desktop. Fetches paginated posts on load. |
+| `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the scrollable list of `PostItem` cards with responsive composer placeholder (`"What's happening?"` on mobile vs `"What's happening in your area?"` on desktop). Left and right sidebars are pinned on desktop. Fetches paginated posts on load. |
 | `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Left panel (desktop only). Shows the logged-in user's avatar, display name, trust score badge, quick stats, saved places pills (which open the Saved Places panel), and a "Create Post" shortcut button. Features hover-activated custom slim scrollbar. |
 | `RightSidebar.tsx` | `src/features/feed/RightSidebar.tsx` — Right panel (desktop only). Shows community highlights: top contributors, recent active flood zones, and trending location tags. |
-| `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached media carousel, flood severity badge (if linked to a report), upvote/downvote buttons with counts, and comment count. Its interactive location badge and flood-report **View on Map** action focus the road-length midpoint of the saved report geometry; paired carriageways focus their shared center. |
+| `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached media carousel, responsive flood severity badge (compact on mobile, detailed on desktop), standalone `ArrowBigUp`/`ArrowBigDown` voting buttons with active fills, comment count, and responsive single-row action bar (compact map/share labels on iPhone SE/12). Its interactive location badge and flood-report **View on Map** action focus the road-length midpoint of the saved report geometry; paired carriageways focus their shared center. |
 | `EmergencyHotlinesCard.tsx` | `src/features/feed/components/EmergencyHotlinesCard.tsx` — API-backed priority emergency contacts with expandable numbers, direct `tel:` links, loading/unavailable states, and a full-directory trigger. Rendered in the feed sidebar layout. |
 
 ### Hidden Until Interaction
@@ -272,6 +272,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
+| `/admin/moderation` | `ModerationCenterPage.tsx` | Staff-only Community Post moderation queue. Open reports are grouped into one case per post and can be dismissed, warned, or soft-hidden. The responsive action area remains clear of the mobile bottom navigation. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
 
 ### Backend Calls (Admin)
@@ -287,6 +288,8 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `POST /api/v1/admin/zones/{id}/media` | Append authenticated administrator evidence uploads to an existing zone |
 | `GET /api/v1/admin/reports/merge-candidates` | Multi-factor spatial candidate scoring for report merging |
 | `POST /api/v1/admin/reports/merge` | Multi-report merge into a new or existing avoidance zone |
+| `GET /api/v1/admin/moderation/reports` | Staff-only list of open (or resolved) Community Post moderation cases, grouped by post |
+| `POST /api/v1/admin/moderation/posts/{id}/resolve` | Atomically dismiss, warn, or soft-hide a Community Post and resolve all its open reports |
 | `GET /api/v1/admin/users` | All users with role and profile info |
 | `PUT /api/v1/admin/users/{id}` | Update user role or active status |
 | `GET /api/v1/admin/roles` | All roles with their permission matrices |
