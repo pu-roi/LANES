@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 13, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 1:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -70,6 +70,8 @@ The edit-draft lifecycle treated every saved IndexedDB record as meaningful and 
 
 #### 3. Solution & Architectural Strategy
 Edit drafts now use a versioned snapshot of the exact fetched baseline, then compare normalized editable values and selected media against that snapshot. This prevents the previous polygon-versus-source-line mismatch from classifying an untouched legacy record as an edit; incompatible v1 records are removed silently. An inactive Create Zone workspace is also barred from reading or saving shared MapContext anchors while Edit Zone is active, preventing it from creating a false Create draft. Only a genuine change resumes the edit workspace and produces the restore toast. Edit Zone now shares Create Zone's Line, Polygon, Freehand, Rectangle, and Circle controls. Road replacements preserve a source centreline and regenerate the existing 25-metre avoidance polygon; area replacements persist their exact edited polygon and remove obsolete road source geometry. Existing areas reopen as editable polygons because the database intentionally stores the final polygon, not a drawing-tool label.
+
+**Follow-up data mapping repair:** Edit Zone now uses its effective zone response values—administrator override when present, otherwise the linked public report’s severity, depth, survey, and description. Original report media is returned separately as read-only evidence, so it remains preserved and cannot be confused with newly uploaded zone media.
 
 #### 4. Files Modified / What Changed
 - `frontend/src/features/admin/components/zones/zoneEditDraftStorage.ts`: Adds normalized edit-baseline comparison helpers.

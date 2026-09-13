@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 13, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 1:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -16,6 +16,7 @@
 > **Current Status (Sept 11, 2026):**
 > - [x] **Registration Confirmation De-duplication (`LoginForm.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Keeps the global account-created toast and removes the redundant Login-page success banner.
 > - [x] **Edit Zone Draft Eligibility & Geometry Editing (`zoneEditDraftStorage.ts`, `OfficialZoneDrawer.tsx`, `useTerraDraw.ts`, `admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Edit Zone only restores a real change from the newly fetched server baseline; baseline-only IndexedDB records are silently removed. Administrators can now replace a road centreline or edit the exact saved area polygon through the existing geometry controls. Lines rebuild the 25-metre operational buffer; area edits clear obsolete source-road geometry. No schema migration is needed.
+> - [x] **Edit Zone Effective Report Data (`OfficialZoneDrawer.tsx`, `admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Edit Zone now displays fallback severity/depth, survey answers, description, and read-only original evidence from its linked public report when no administrative override exists.
 > - [x] **Decision #16 Mixed-Topology Segmentation (`carriageway_service.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Requests Valhalla edge shape indexes, splits reports whenever road identity or traversability changes, and validates opposite coverage per run. A mixed Caruncho/Urbano report now shows a second line only for its proven matching subsection, preserving a short graph-mapped Y merge at its matching endpoint while rejecting a cross-street junction connector.
 > - [x] **SSE Zombie Connection & Buffering Fix (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe): Removed `readyState === 1` guard during React unmount to unconditionally call `source.close()`, resolving reconnect loops in StrictMode. Created centralized `getSseUrl` pointing browser to direct port 8000 in dev to avoid Next.js reverse proxy buffering.
 > - [x] **Auth Re-registration & Explicit Sign-in Flow (`auth.py`, `RegisterForm.tsx`, `LoginForm.tsx`)** (@roicambe): Handled soft-deleted user unique collisions in `POST /auth/register` by detecting verified re-registration and purging stale soft-deleted accounts. Removed post-registration auto-login in favor of redirecting to `/login?registered=true` with a clear success alert banner.

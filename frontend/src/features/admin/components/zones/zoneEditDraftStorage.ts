@@ -96,24 +96,24 @@ export function getZoneEditValues(draft: SavedZoneEditDraft): ZoneEditValues {
 }
 
 export function getZoneEditBaseline(zone: AvoidanceZone): ZoneEditValues {
-  const passableVehicles = zone.passable_vehicles_override?.split(",").filter(Boolean) ?? [];
+  const passableVehicles = (zone.passable_vehicles_override ?? zone.passable_vehicles ?? "").split(",").filter(Boolean);
   const sourceGeometry = zone.report_geometry?.type === "LineString" || zone.report_geometry?.type === "MultiLineString"
     ? zone.report_geometry
     : zone.geometry;
   return {
     editorValues: {
       name: zone.name || `Official Zone #${zone.id}`,
-      severity: (zone.severity_override || "medium") as ZoneDataEditorValues["severity"],
-      depth: zone.depth_override || "knee",
+      severity: (zone.severity_override ?? zone.severity ?? "medium") as ZoneDataEditorValues["severity"],
+      depth: zone.depth_override ?? zone.depth ?? "",
       passable_vehicles: passableVehicles,
-      hidden_hazards: zone.hidden_hazards_override || "unsure",
+      hidden_hazards: zone.hidden_hazards_override ?? zone.hidden_hazards ?? "unsure",
       is_bidirectional: sourceGeometry.type === "MultiLineString",
       geometry: sourceGeometry as ReportGeometry,
-      admin_notes: zone.admin_notes || "",
+      admin_notes: zone.admin_notes ?? zone.report_text ?? "",
     },
     passableVehicles,
-    hiddenHazards: zone.hidden_hazards_override || "unsure",
-    adminNotes: zone.admin_notes || "",
+    hiddenHazards: zone.hidden_hazards_override ?? zone.hidden_hazards ?? "unsure",
+    adminNotes: zone.admin_notes ?? zone.report_text ?? "",
   };
 }
 

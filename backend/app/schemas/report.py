@@ -211,6 +211,9 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     passable_vehicles: Optional[str] = None
     hidden_hazards: Optional[str] = None
     media_urls: Optional[list[str]] = None
+    # Original public-report evidence is separate from media an administrator
+    # later attaches directly to the operational zone.
+    report_media_urls: Optional[list[str]] = None
     contributors: list[ZoneContributorResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
