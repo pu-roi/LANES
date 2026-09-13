@@ -19,6 +19,39 @@ class CommunityPostCreate(CommunityPostBase):
     pass
 
 
+class CommunityPostUpdate(CommunityPostBase):
+    """The complete editable Community Post state supplied by its author."""
+    pass
+
+class CommunityPostReportCreate(BaseModel):
+    reason: str
+    details: Optional[str] = None
+
+
+class CommunityPostEditHistoryResponse(BaseModel):
+    id: int
+    post_id: int
+    editor_user_id: int
+    version: int
+    previous_content: str
+    previous_media_urls: Optional[List[str]] = None
+    previous_location_tag: Optional[str] = None
+    previous_location_lat: Optional[float] = None
+    previous_location_lng: Optional[float] = None
+    updated_content: str
+    updated_media_urls: Optional[List[str]] = None
+    updated_location_tag: Optional[str] = None
+    updated_location_lat: Optional[float] = None
+    updated_location_lng: Optional[float] = None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer('created_at')
+    def serialize_history_datetime(self, dt: datetime, _info):
+        return dt.isoformat() + "Z" if dt.tzinfo is None else dt.isoformat()
+
+
 class CommentBase(BaseModel):
     content: str
 

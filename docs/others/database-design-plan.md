@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 11, 2026, 10:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 9:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -390,6 +390,32 @@ erDiagram
 | `pinned_at` | `TIMESTAMP` | Nullable | Timestamp of pinning. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Timestamp. |
 | `updated_at` | `TIMESTAMP` | Default: UTC Now | Last update timestamp. |
+
+### Table N-1: `community_post_edit_history`
+**Description:** Immutable audit snapshots for each author-approved Community Post revision. Before/after values are stored together so public history remains correct even after later edits.
+
+| Attribute | Data Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | Primary Key | History row ID. |
+| `post_id` | `INTEGER` | Foreign Key (CASCADE), Index | Edited Community Post. |
+| `editor_user_id` | `INTEGER` | Foreign Key (CASCADE), Index | Author who made the edit. |
+| `version` | `INTEGER` | UNIQUE with `post_id` | Sequential edit number per post. |
+| `previous_*` | `TEXT` / `JSONB` / location fields | NOT NULL for content | Snapshot before the edit. |
+| `updated_*` | `TEXT` / `JSONB` / location fields | NOT NULL for content | Snapshot after the edit. |
+| `created_at` | `TIMESTAMP` | Default: UTC Now | When the edit occurred. |
+
+### Table N-2: `community_post_reports`
+**Description:** Private moderation reports submitted by authenticated non-authors. Reports remain separate from public post history and support one open report per reporter/post pair.
+
+| Attribute | Data Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | Primary Key | Report ID. |
+| `post_id` | `INTEGER` | Foreign Key (CASCADE), Index | Reported post. |
+| `reporter_user_id` | `INTEGER` | Foreign Key (CASCADE), Index | User who submitted the report. |
+| `reason` | `VARCHAR(50)` | NOT NULL | `spam_scam`, `misinformation`, `harassment_hate`, `explicit_violent`, or `other`. |
+| `details` | `TEXT` | Nullable | Required explanation when reason is `other`. |
+| `status` | `VARCHAR(20)` | Default: `open`, Index | Moderation lifecycle state. |
+| `created_at` | `TIMESTAMP` | Default: UTC Now | Submission time. |
 
 ### Table O: `notifications`
 **Description:** Stores in-app alerts for users (e.g., comments, likes, system alerts).

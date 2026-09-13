@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 13, 2026, 1:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 9:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -32,6 +32,9 @@
 ## Capstone Roadmap - Delivered Phases
 
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
+- [~] **Community Post Reporting Foundation** (`CommunityPostReport`, `posts.py`, Alembic `c8a3d1f9e426`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added private report persistence and authenticated reason submission. Shared form-component adoption and staff review remain in progress.
+- [x] **Community Post Edit-History Foundation** (`post.py`, `posts.py`, `feedApi.ts`, Alembic `b4c2d91e7a30`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added owner-verified post editing with an immutable before/after snapshot for every update and a public history endpoint. Linked flood-report evidence remains unchanged by post edits.
+- [x] **Immediate Community Feed Sharing Repair** (`report_service.py`, `admin.py`, `FloodReportPanel.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Confirmed that opting into Community Feed sharing publishes when a flood report is submitted, independently of map approval. Removed the obsolete approval-time fallback and replaced the misleading approval-dependent helper text.
 - [x] **EventSource Zombie Connection & SSE Dev Proxy Resolution (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe):
   - Fixed persistent zombie connections and connection thrashing by removing the restrictive `readyState === 1` guard during React StrictMode unmount cleanup, ensuring `source.close()` executes unconditionally.
   - Implemented centralized `getSseUrl('/sse/stream')` directing browser SSE connections straight to FastAPI on port `8000` in local dev/LAN, eliminating Next.js proxy response buffering and SSE dropouts.

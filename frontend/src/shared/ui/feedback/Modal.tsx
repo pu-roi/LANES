@@ -7,16 +7,17 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   size?: "sm" | "md";
+  blurBackdrop?: boolean;
 }
 
-export function Modal({ isOpen, onClose, title, children, size = "md" }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, size = "md", blurBackdrop = true }: ModalProps) {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" 
+        className={cn("absolute inset-0 bg-black/50 transition-opacity", blurBackdrop && "backdrop-blur-sm")}
         onClick={onClose}
       />
       

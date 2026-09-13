@@ -1102,7 +1102,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             {isPublic && (
               <div className="bg-blue-50/70 border border-blue-100/50 rounded-lg p-3 text-[11px] leading-relaxed text-blue-900 space-y-1">
                 <p>
-                  This report may be shared publicly in the Community Feed after it has been reviewed and approved by an administrator. Please ensure that the information provided is accurate and does not contain sensitive or personal information.
+                  This report will be shared publicly in the Community Feed immediately after submission. It will not appear as an official flood zone on the map unless an administrator approves it. Please ensure that the information provided is accurate and does not contain sensitive or personal information.
                 </p>
               </div>
             )}

@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 13, 2026, 7:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 8:32 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,27 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-024] Community Sharing Helper Text Contradicted Actual Publication Timing
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 13, 2026
+- **Affected Area**: Frontend / Backend / Flood Reports / Community Feed
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+After a commuter selected **Share in Community Feed**, the submitted flood report appeared in the feed immediately, but the panel said that sharing would occur only after administrator approval. A second legacy publication branch also remained in the approval endpoint.
+
+#### 2. Root Cause Analysis (RCA)
+`process_new_report` had already made report submission the publication owner. `FloodReportPanel` retained pre-change wording, while `approve_report` retained an obsolete fallback that duplicated responsibility for the same lifecycle.
+
+#### 3. Solution & Architectural Strategy
+Community publication now has one owner: report submission. Map-zone approval remains exclusively responsible for official spatial activation. The helper text explicitly distinguishes immediate public sharing from later map approval.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Removes the obsolete approval-time Community Post creation branch.
+- `frontend/src/features/hazards/FloodReportPanel.tsx`: States the immediate feed-publication and separate map-approval behavior.
+- `docs/task_plan.md`, `docs/progress.md`, and `docs/others/system-documentation.md`: Synchronize the documented workflow.
 
 ### [BUG-023] Flood Polygon Fetch Failure During Route Calculation Due to Property Join
 - **Status**: Resolved
