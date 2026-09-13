@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 13, 2026, 9:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 9:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,7 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
-| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, and exact file size error notifications |
+| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, mobile route search bar collapsibility, and explicit geolocation diagnostics |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
 | 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
 | 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
@@ -29,42 +29,7 @@
 | 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
 | 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based Official Zone Drawer with Cloudinary uploads and five-section parity; candidate scoring and carriageway analysis; four-step merge workspace with a contextual, persistent secondary drawer. Developer-led end-to-end validation remains. |
 
-## Capstone Roadmap - Delivered Phases
-
-### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
-- [~] **Community Post Reporting Foundation** (`CommunityPostReport`, `posts.py`, Alembic `c8a3d1f9e426`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added private report persistence and authenticated reason submission. Shared form-component adoption and staff review remain in progress.
-- [x] **Community Post Edit-History Foundation** (`post.py`, `posts.py`, `feedApi.ts`, Alembic `b4c2d91e7a30`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added owner-verified post editing with an immutable before/after snapshot for every update and a public history endpoint. Linked flood-report evidence remains unchanged by post edits.
-- [x] **Immediate Community Feed Sharing Repair** (`report_service.py`, `admin.py`, `FloodReportPanel.tsx`) ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Confirmed that opting into Community Feed sharing publishes when a flood report is submitted, independently of map approval. Removed the obsolete approval-time fallback and replaced the misleading approval-dependent helper text.
-- [x] **EventSource Zombie Connection & SSE Dev Proxy Resolution (`useLiveSync.ts`, `useSSE.ts`, `sse.ts`)** (@roicambe):
-  - Fixed persistent zombie connections and connection thrashing by removing the restrictive `readyState === 1` guard during React StrictMode unmount cleanup, ensuring `source.close()` executes unconditionally.
-  - Implemented centralized `getSseUrl('/sse/stream')` directing browser SSE connections straight to FastAPI on port `8000` in local dev/LAN, eliminating Next.js proxy response buffering and SSE dropouts.
-  - Standardized error logging in `useLiveSync` from intrusive console.error floods to graceful `console.warn`.
-
 ---
-
-## Completed Milestones (40+ Commits Integrated)
-
-| # | Milestone | Status | Key Features Delivered |
-|---|-----------|--------|------------------------|
-| 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, and feed post draft & media persistence on browser refresh |
-| 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
-| 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
-| 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
-| 4 | Immersive UI & Navigation | Completed | Floating animated navigation (Framer Motion), FAB menu, Route picker panel, Split-screen Auth layout |
-| 5 | Authentication & Identity | Completed | OTP Registration (Brevo integration), User Profiles, Profile Picture Uploads, Secure Sessions |
-| 6 | RBAC & Admin Dashboard | Completed | 3NF DB Normalization, Roles CRUD, User Management, Audit Trails, Data Mgmt & System Settings |
-| 7 | Real-Time Operations | In Progress | Server-Sent Events (SSE) broadcasting, Live active zones, Real-time admin dashboard invalidations |
-| 8 | Community Feed & Moderation | Completed | Feed layout, Upvotes/Downvotes, Post archiving, Soft deletes, Map coordinate rendering |
-| 9 | Spatial Analytics & Heatmap | Completed | Global Heatmap, Top Barangays stats, Dedicated Analytics Pages for Commuters and Admins |
-| 10| Official Flood Zones (DRRMO) Moderation | Completed | Admin panel restructuring, backend Zone Override schemas, bulk merging operations, troll filtration, DRRMO Official Zone mapping with Terra Draw |
-| 11| Intelligent Bidirectional Flood Reporting | Completed | Hybrid Carriageway Detection Strategy, Valhalla Map Matching for opposite-side road detection, GeometryCollection PostGIS storage, dual-buffer approval |
-| 12| Spatial Operations & Map Hover Badge Engine | Completed | Multi-geometry layers (MultiLineString/Polygon), 400ms hover dwell timer, smart collision-free positioning, two-row FloodZonePopup, Lenis scroll scoping |
-| 13| Community Feed Emergency Hotline Directory | Completed | Cached national hotline integration, Pasig city/barangay directory, responsive feed hotline card, lazy-loaded directory modal |
-| 14| Saved Places Camera Sync & Navigation UX | Completed | Camera fly-to alignment (zoom 16, 1500ms duration), 3-second pulsing red indicator, saved places panel activation from feed, pin order fix, custom scrollbars |
-| 15| Community Post Geolocation & Seamless Map Fly-to | Completed | PostGIS `location_lat`/`location_lng` columns, clickable red pin header navigation, ResizeObserver layout compensation for 340px sidebar, draft auto-save across auth redirection |
-| 16| Route Focus, Saved Places & Map Polyline Engine | Completed | Stray click protection, two-click map picking, sequential saved place recalculation, resilient MapLibre getStyle() route polyline rendering, auto camera framing, sign-out memory cleanup |
-| 17| Automated Street, Barangay & City Reverse-Geocoding | Completed | Multi-provider structured reverse geocoding (Nominatim/Photon), representative geometry coordinate midpoint parsing, PostGIS city column migration, automatic location ingestion, historical report backfill, and Community Feed post location card deduplication |
-| 18| Intelligent Flood-Report Merging & Spatial Operations | In Progress | Feature-based Official Zone Drawer with Cloudinary uploads and five-section parity; candidate scoring and carriageway analysis; four-step merge workspace with a contextual, persistent secondary drawer. Developer-led end-to-end validation remains. |
 
 ## Capstone Roadmap - Delivered Phases
 

@@ -165,30 +165,22 @@ export function FeedPage() {
 
   const closeMenu = () => {
     setIsMobileMenuOpen(false);
-    if (window.history.state?.sidebar) {
-      window.history.back();
-    }
+  };
+
+  const handleNavClick = (href: string) => {
+    setIsMobileMenuOpen(false);
+    router.push(href);
   };
 
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
-      if (!window.history.state?.sidebar) {
-        window.history.pushState({ sidebar: true }, '');
-      }
-
-      const handlePopState = () => {
-        setIsMobileMenuOpen(false);
-      };
-      
-      window.addEventListener('popstate', handlePopState);
-      return () => {
-        document.body.style.overflow = '';
-        window.removeEventListener('popstate', handlePopState);
-      };
     } else {
       document.body.style.overflow = '';
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isMobileMenuOpen]);
 
   return (
@@ -394,19 +386,19 @@ export function FeedPage() {
                   const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
                   const Icon = item.icon;
                   return (
-                    <Link
+                    <button
                       key={item.name}
-                      href={item.href}
-                      onClick={closeMenu}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors font-medium text-sm ${
+                      type="button"
+                      onClick={() => handleNavClick(item.href)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors font-medium text-sm text-left ${
                         isActive
                           ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
                       }`}
                     >
                       <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
                       {item.name}
-                    </Link>
+                    </button>
                   );
                 })}
               </div>
@@ -417,15 +409,24 @@ export function FeedPage() {
                   <TrendingUp className="w-3.5 h-3.5" />
                   Trending Hotspots
                 </h3>
-                <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group">
+                <div 
+                  onClick={() => handleNavClick("/map?lat=14.6091&lng=120.9899&zoom=15")}
+                  className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
+                >
                   <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /> Espana Blvd</span>
                   <span className="text-xs text-gray-400 group-hover:text-gray-600">12</span>
                 </div>
-                <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group">
+                <div 
+                  onClick={() => handleNavClick("/map?lat=14.5648&lng=120.9932&zoom=15")}
+                  className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
+                >
                   <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /> Taft Ave</span>
                   <span className="text-xs text-gray-400 group-hover:text-gray-600">8</span>
                 </div>
-                <div className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group">
+                <div 
+                  onClick={() => handleNavClick("/map?lat=14.6353&lng=121.0433&zoom=15")}
+                  className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
+                >
                   <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-400" /> EDSA-Kamuning</span>
                   <span className="text-xs text-gray-400 group-hover:text-gray-600">5</span>
                 </div>

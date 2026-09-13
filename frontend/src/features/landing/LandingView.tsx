@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, ArrowRight, MousePointerClick, TrendingUp, Download } from "lucide-react";
+import { MapPin, ArrowRight, MousePointerClick, TrendingUp, Download, AlertCircle } from "lucide-react";
 
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
 
@@ -47,15 +47,17 @@ export default function LandingView() {
   const [selectedCoords, setSelectedCoords] = useState<[number, number] | null>(null);
   const [pointType, setPointType] = useState<"start" | "end">("start");
   const [isLoading, setIsLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const handleUseCurrentLocation = async () => {
     setIsLoading(true);
+    setLocationError(null);
     try {
       const coords = await getCurrentLocation();
       setSelectedCoords(coords);
       setLocationLabel("Current Location");
     } catch (err: any) {
-      alert(err.message || "Unable to retrieve your location");
+      setLocationError(err.message || "Unable to retrieve your location.");
     } finally {
       setIsLoading(false);
     }
@@ -180,6 +182,14 @@ export default function LandingView() {
                           </>
                         )}
                       </Button>
+
+                      {/* Inline location error */}
+                      {locationError && (
+                        <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm text-red-700">
+                          <AlertCircle className="w-4 h-4 mt-0.5 shrink-0 text-red-500" />
+                          <span>{locationError}</span>
+                        </div>
+                      )}
 
                       <div className="relative flex items-center py-1">
                         <div className="flex-grow border-t border-gray-100"></div>
