@@ -57,11 +57,9 @@ def get_active_flood_polygons(db: Session) -> Tuple[List[List[List[float]]], Lis
     Fetches active flood avoidance zones and groups them by severity.
     Returns lists of Valhalla-compatible polygons (exterior rings).
     """
-    zones = db.query(
-        func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson"),
-        models.FloodReport.severity
-    ).join(
-        models.FloodReport, models.FloodAvoidanceZone.report_id == models.FloodReport.id
+    zones_query = db.query(
+        models.FloodAvoidanceZone,
+        func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson")
     ).filter(
         models.FloodAvoidanceZone.is_active == True,
         (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
@@ -71,18 +69,21 @@ def get_active_flood_polygons(db: Session) -> Tuple[List[List[List[float]]], Lis
     orange_polygons = []
     yellow_polygons = []
     
-    for z in zones:
-        geom = json.loads(z.geojson)
-        if geom["type"] == "Polygon" and len(geom["coordinates"]) > 0:
-            exterior_ring = geom["coordinates"][0] # Valhalla expects an array of points for each polygon
-            if z.severity == ReportSeverity.LOW:
+    for zone, geojson_str in zones_query:
+        if not geojson_str:
+            continue
+        geom = json.loads(geojson_str)
+        if geom.get("type") == "Polygon" and len(geom.get("coordinates", [])) > 0:
+            exterior_ring = geom["coordinates"][0]  # Valhalla expects an array of points for each polygon
+            sev = zone.severity.lower() if isinstance(zone.severity, str) else str(zone.severity).lower()
+            if sev == "low":
                 # White/Low is passable. No detour required.
                 continue
-            elif z.severity == ReportSeverity.EXTREME:
+            elif sev == "extreme":
                 red_polygons.append(exterior_ring)
-            elif z.severity == ReportSeverity.HIGH:
+            elif sev == "high":
                 orange_polygons.append(exterior_ring)
-            elif z.severity == ReportSeverity.MEDIUM:
+            elif sev == "medium":
                 yellow_polygons.append(exterior_ring)
                 
     return red_polygons, orange_polygons, yellow_polygons

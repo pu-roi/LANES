@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 13, 2026, 1:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 13, 2026, 7:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +35,36 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-023] Flood Polygon Fetch Failure During Route Calculation Due to Property Join
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 13, 2026
+- **Affected Area**: Backend / Routing / Flood Avoidance / PostGIS / Valhalla / ORS
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+During route calculation (`POST /api/v1/reports/route` / `calculate_flood_safe_route`), the backend logged a database warning:
+`Warning: Failed to fetch flood polygons ((psycopg.ProgrammingError) cannot adapt type 'property' using placeholder '%s' (format: AUTO) [SQL: SELECT ST_AsGeoJSON(flood_avoidance_zones.geometry) AS geojson, flood_reports.severity AS flood_reports_severity FROM flood_avoidance_zones JOIN flood_reports ON flood_reports.id = %(id_1)s::INTEGER ...]). Bypassing flood avoidance.`
+As a result of this database error, active flood avoidance polygons failed to load, causing route calculations to bypass flood detour zones.
+
+#### 2. Root Cause Analysis (RCA)
+Following the 1:N spatial deduplication schema migration, `FloodAvoidanceZone` no longer has a physical `report_id` database column; instead, `report_id` was implemented as a Python `@property` dynamically resolving to the primary report's ID (`self.primary_report.id`), while the foreign key moved to `flood_reports.zone_id`.
+In `backend/app/services/valhalla_service.py` and `backend/app/services/ors_service.py`, `get_active_flood_polygons` attempted an SQL join:
+`models.FloodAvoidanceZone.report_id == models.FloodReport.id`.
+SQLAlchemy evaluated `models.FloodAvoidanceZone.report_id` as the Python `property` descriptor object rather than an ORM Column / InstrumentedAttribute, passing `<property object>` as parameter `%(id_1)s` to psycopg and throwing a `psycopg.ProgrammingError`.
+Furthermore, performing an inner join against `flood_reports` would drop admin-curated avoidance zones with no direct report and duplicate multi-report zones.
+
+#### 3. Solution & Architectural Strategy
+Refactored `get_active_flood_polygons` in both `valhalla_service.py` and `ors_service.py` to query `FloodAvoidanceZone` and its PostGIS GeoJSON geometry directly without an inner join.
+Zone severities are evaluated using the model's authoritative `.severity` property, which correctly respects administrator severity overrides, prioritizes the highest severity across merged reports, and falls back to default values for standalone curated zones.
+
+#### 4. Files Modified / What Changed
+- `backend/app/services/valhalla_service.py`: Replaced the invalid SQL join with a direct `FloodAvoidanceZone` geometry query and `.severity` property classification.
+- `backend/app/services/ors_service.py`: Synchronized `get_active_flood_polygons` to query `FloodAvoidanceZone` directly and use `.severity`.
+- `docs/others/bug-log.md`: Documented root cause analysis and resolution for BUG-023.
+
+---
 
 ### [BUG-022] Registration Success Was Shown Twice on Login
 - **Status**: Resolved
