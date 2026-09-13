@@ -18,26 +18,27 @@ def get_active_flood_polygons(db: Session) -> Tuple[List[List[List[float]]], Lis
     Fetches active flood avoidance zones and groups them by severity.
     Returns lists of GeoJSON polygon exterior rings.
     """
-    zones = db.query(
-        func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson"),
-        models.FloodReport.severity
-    ).join(
-        models.FloodReport, models.FloodAvoidanceZone.id == models.FloodReport.zone_id
+    zones_query = db.query(
+        models.FloodAvoidanceZone,
+        func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson")
     ).filter(
         models.FloodAvoidanceZone.is_active == True,
         (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
     ).all()
     
     red, orange, yellow = [], [], []
-    for z in zones:
-        geom = json.loads(z.geojson)
-        if geom["type"] == "Polygon" and len(geom["coordinates"]) > 0:
+    for zone, geojson_str in zones_query:
+        if not geojson_str:
+            continue
+        geom = json.loads(geojson_str)
+        if geom.get("type") == "Polygon" and len(geom.get("coordinates", [])) > 0:
             exterior_ring = geom["coordinates"][0]
-            if z.severity == ReportSeverity.EXTREME:
+            sev = zone.severity.lower() if isinstance(zone.severity, str) else str(zone.severity).lower()
+            if sev == "extreme":
                 red.append(exterior_ring)
-            elif z.severity == ReportSeverity.HIGH:
+            elif sev == "high":
                 orange.append(exterior_ring)
-            elif z.severity == ReportSeverity.MEDIUM:
+            elif sev == "medium":
                 yellow.append(exterior_ring)
                 
     return red, orange, yellow
