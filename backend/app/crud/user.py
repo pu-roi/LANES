@@ -3,9 +3,27 @@ from typing import Optional, List
 from sqlalchemy.orm import Session
 
 from app import models, schemas
-
-
 from app.core.security import get_password_hash
+
+
+def get_user_display_name(user: Optional[models.User]) -> str:
+    """
+    Returns the user's full name if profile exists and display_full_name is True.
+    Otherwise returns the username or 'Unknown'.
+    """
+    if not user:
+        return "Unknown"
+    profile = getattr(user, "profile", None)
+    if profile:
+        display_full = getattr(profile, "display_full_name", True)
+        if (display_full is True or display_full is None) and profile.first_name and profile.first_name.strip():
+            first = profile.first_name.strip()
+            last = profile.last_name.strip() if profile.last_name else ""
+            full = f"{first} {last}".strip()
+            if full:
+                return full
+    return user.username or "Unknown"
+
 
 
 def get_user(db: Session, user_id: int) -> Optional[models.User]:

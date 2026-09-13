@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { MapPin, ArrowUpCircle, ArrowDownCircle, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag } from 'lucide-react';
+import { MapPin, ArrowBigUp, ArrowBigDown, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { FeedPost, getPostEditHistory, updatePost, reportPost } from './feedApi';
-import { useToast, MediaViewer, Select } from '@/shared/ui';
+import { useToast, MediaViewer, Select, Modal, Button } from '@/shared/ui';
 import { useAuth } from '@/hooks/useAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { computeCenterCoordinate } from "@/features/map/mapGeoUtils";
@@ -50,6 +50,16 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   });
   const reportMutation = useMutation({ mutationFn: () => reportPost(post.id, reportReason, reportDetails || undefined), onSuccess: () => { success('Report submitted for moderator review.'); setIsReporting(false); }, onError: (err: unknown) => showError('Could not submit report', err instanceof Error ? err.message : 'Please try again.') });
 
+  useEffect(() => {
+    if (!isReporting && !isHistoryOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isReporting, isHistoryOpen]);
+
   const getSeverityColor = (severity: string) => {
     switch (severity?.toLowerCase()) {
       case "extreme":
@@ -67,14 +77,14 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   const getSeverityLabel = (severity: string) => {
     switch (severity?.toLowerCase()) {
       case "extreme":
-        return "Extreme (Impassable)";
+        return { short: "Extreme", full: "Extreme (Impassable)" };
       case "high":
-        return "High (Hazardous)";
+        return { short: "High", full: "High (Hazardous)" };
       case "medium":
-        return "Medium (Warning)";
+        return { short: "Medium", full: "Medium (Warning)" };
       case "low":
       default:
-        return "Low (Passable)";
+        return { short: "Low", full: "Low (Passable)" };
     }
   };
 
@@ -106,12 +116,12 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   const displayLocation = post.location_tag || post.report?.human_readable_location || (post.report?.barangay ? `Brgy. ${post.report.barangay}` : null);
 
   return (
-    <article className="py-6 px-4 sm:px-6 border-b border-gray-100 last:border-b-0 bg-white">
+    <article className="py-4 sm:py-6 px-3.5 sm:px-6 border-b border-gray-100 last:border-b-0 bg-white">
       
       {/* Header Area */}
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-100 to-blue-200 flex items-center justify-center border border-blue-300">
+      <div className="flex justify-between items-start gap-2 mb-3">
+        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-100 to-blue-200 flex items-center justify-center border border-blue-300 shrink-0">
             {post.author_avatar ? (
               <img src={post.author_avatar} alt="avatar" className="w-full h-full rounded-full object-cover" />
             ) : (
@@ -120,23 +130,25 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               </span>
             )}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900 text-sm">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="font-semibold text-gray-900 text-sm truncate max-w-[140px] sm:max-w-[220px]">
                 {post.author_name || 'External Source'}
               </span>
               {post.report?.status === 'approved' && (
-                <span title="Verified by Admin">
+                <span title="Verified by Admin" className="shrink-0">
                   <ShieldCheck className="w-4 h-4 text-blue-500" />
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5 flex-wrap">
-              <span>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
-              {post.updated_at && new Date(post.updated_at).getTime() > new Date(post.created_at).getTime() && <span className="text-gray-400">• Edited</span>}
+            <div className="flex items-center gap-x-1.5 gap-y-0.5 text-xs text-gray-500 mt-0.5 flex-wrap">
+              <span className="shrink-0">{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
+              {post.updated_at && new Date(post.updated_at).getTime() > new Date(post.created_at).getTime() && (
+                <span className="text-gray-400 shrink-0">• Edited</span>
+              )}
               {displayLocation && (
                 <>
-                  <span>•</span>
+                  <span className="text-gray-300 select-none shrink-0">•</span>
                   {onViewMap && ((post.location_lat && post.location_lng) || post.report?.geometry) ? (
                     <button
                       type="button"
@@ -152,43 +164,46 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                           onViewMap(post.location_lat, post.location_lng);
                         }
                       }}
-                      className="flex items-center gap-1 font-semibold text-gray-600 hover:text-blue-600 transition-colors group"
+                      className="flex items-center gap-1 font-semibold text-gray-600 hover:text-blue-600 transition-colors group truncate max-w-[150px] sm:max-w-[240px]"
                       title="View on Map"
                     >
-                      <MapPin className="w-3 h-3 text-red-500 group-hover:text-blue-500 transition-colors" />
-                      <span className="group-hover:underline">{displayLocation}</span>
+                      <MapPin className="w-3.5 h-3.5 text-red-500 group-hover:text-blue-500 transition-colors shrink-0" />
+                      <span className="group-hover:underline truncate">{displayLocation}</span>
                     </button>
                   ) : (
-                    <span className="flex items-center gap-1 font-semibold text-gray-600">
-                      <MapPin className="w-3 h-3 text-red-500" />
-                      {displayLocation}
+                    <span className="flex items-center gap-1 font-semibold text-gray-600 truncate max-w-[150px] sm:max-w-[240px]">
+                      <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                      <span className="truncate">{displayLocation}</span>
                     </span>
                   )}
                 </>
               )}
               {post.distance_meters !== undefined && post.distance_meters !== null && (
                 <>
-                  <span>•</span>
-                  <span className="flex items-center gap-1 font-medium text-blue-600">
-                    <MapPin className="w-3 h-3" />
+                  <span className="text-gray-300 select-none shrink-0">•</span>
+                  <span className="flex items-center gap-1 font-medium text-blue-600 shrink-0">
+                    <MapPin className="w-3.5 h-3.5 shrink-0" />
                     {formatDistance(post.distance_meters)}
                   </span>
                 </>
               )}
-
             </div>
           </div>
         </div>
 
-        <div className="flex items-start gap-1.5">
-          {post.report && (
-            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border flex items-center gap-1 ${getSeverityColor(post.report.severity)}`}>
-              <AlertTriangle className="w-3.5 h-3.5" />
-              {getSeverityLabel(post.report.severity)}
-            </span>
-          )}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          {post.report && (() => {
+            const severityLabel = getSeverityLabel(post.report.severity);
+            return (
+              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border flex items-center gap-1 shrink-0 ${getSeverityColor(post.report.severity)}`}>
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <span className="sm:hidden">{severityLabel.short}</span>
+                <span className="hidden sm:inline">{severityLabel.full}</span>
+              </span>
+            );
+          })()}
           <div className="relative">
-            <button type="button" aria-label="Post actions" onClick={() => setIsMenuOpen((value) => !value)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800"><MoreHorizontal className="w-5 h-5" /></button>
+            <button type="button" aria-label="Post actions" onClick={() => setIsMenuOpen((value) => !value)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"><MoreHorizontal className="w-5 h-5" /></button>
             {isMenuOpen && <div className="absolute right-0 top-9 z-20 w-48 rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
               {isAuthor && <button type="button" onClick={() => { setEditContent(post.content); setEditLocation(post.location_tag || ''); setIsEditing(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Pencil className="w-4 h-4" />Edit Post</button>}
               {!isAuthor && <button type="button" onClick={() => { setIsReporting(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Flag className="w-4 h-4" />Report Post</button>}
@@ -199,8 +214,8 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
       </div>
 
       {/* Content Area */}
-      <div className="mb-4">
-        <p className="text-gray-800 text-[15px] leading-relaxed whitespace-pre-wrap">
+      <div className="mb-3 sm:mb-4">
+        <p className="text-gray-800 text-sm sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words">
           {post.content}
         </p>
 
@@ -346,37 +361,45 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
       </div>
 
       {/* Interaction Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center bg-gray-50 rounded-full border border-gray-200 p-1">
-            <button 
-              onClick={() => onVote(post.id, 'upvote')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full transition-colors text-sm font-medium ${
-                post.user_interaction === 'upvote' 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <ArrowUpCircle className={`w-4 h-4 ${post.user_interaction === 'upvote' ? 'fill-blue-200' : ''}`} />
-              <span>{post.upvotes}</span>
-            </button>
-            
-            <div className="w-px h-4 bg-gray-300 mx-1"></div>
-            
-            <button 
-              onClick={() => onVote(post.id, 'downvote')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full transition-colors text-sm font-medium ${
-                post.user_interaction === 'downvote' 
-                  ? 'bg-red-100 text-red-700' 
-                  : 'text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <span>{post.downvotes}</span>
-              <ArrowDownCircle className={`w-4 h-4 ${post.user_interaction === 'downvote' ? 'fill-red-200' : ''}`} />
-            </button>
-          </div>
-
+      <div className="flex items-center justify-between gap-1 sm:gap-2 pt-1.5">
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* Upvote Button */}
           <button 
+            type="button"
+            onClick={() => onVote(post.id, 'upvote')}
+            className={`group flex items-center gap-1 px-2.5 py-1 rounded-full transition-all duration-150 active:scale-95 text-xs sm:text-sm font-semibold select-none ${
+              post.user_interaction === 'upvote' 
+                ? 'bg-blue-50 text-blue-600 ring-1 ring-blue-200/70' 
+                : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50/70'
+            }`}
+            aria-label="Upvote"
+          >
+            <ArrowBigUp className={`w-4 h-4 sm:w-[18px] sm:h-[18px] transition-transform group-hover:-translate-y-0.5 ${
+              post.user_interaction === 'upvote' ? 'fill-blue-600 text-blue-600' : ''
+            }`} />
+            <span>{post.upvotes}</span>
+          </button>
+          
+          {/* Downvote Button */}
+          <button 
+            type="button"
+            onClick={() => onVote(post.id, 'downvote')}
+            className={`group flex items-center gap-1 px-2.5 py-1 rounded-full transition-all duration-150 active:scale-95 text-xs sm:text-sm font-semibold select-none ${
+              post.user_interaction === 'downvote' 
+                ? 'bg-rose-50 text-rose-600 ring-1 ring-rose-200/70' 
+                : 'text-slate-600 hover:text-rose-600 hover:bg-rose-50/70'
+            }`}
+            aria-label="Downvote"
+          >
+            <ArrowBigDown className={`w-4 h-4 sm:w-[18px] sm:h-[18px] transition-transform group-hover:translate-y-0.5 ${
+              post.user_interaction === 'downvote' ? 'fill-rose-600 text-rose-600' : ''
+            }`} />
+            <span>{post.downvotes}</span>
+          </button>
+
+          {/* Comment Button */}
+          <button 
+            type="button"
             onClick={() => {
               if (isExpanded) {
                 // Already expanded, maybe focus the input
@@ -388,21 +411,27 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                 }
               }
             }}
-            className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50/70 rounded-full transition-all duration-150 active:scale-95 select-none"
           >
             <MessageSquare className="w-4 h-4" />
             <span>{post.comment_count}</span>
           </button>
           
-          <button onClick={handleShare} className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors">
+          {/* Share Button */}
+          <button 
+            type="button"
+            onClick={handleShare} 
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50/70 rounded-full transition-all duration-150 active:scale-95 select-none"
+          >
             <Share className="w-4 h-4" />
-            <span>Share</span>
+            <span className="hidden sm:inline">Share</span>
           </button>
         </div>
 
         {/* View on Map button — only shown for flood reports (regular post locations use the clickable red pin instead) */}
         {post.report?.geometry && onViewMap && (
           <button 
+            type="button"
             onClick={() => {
               const geomType = post.report?.geometry?.type;
               const coords = post.report?.geometry?.coordinates;
@@ -414,10 +443,11 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                 console.error("Failed to calculate geometry center", e);
               }
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-sm font-medium transition-colors border border-blue-100"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-full text-xs sm:text-sm border border-blue-200/70 shadow-xs transition-all duration-150 active:scale-95 shrink-0 select-none"
           >
-            <MapIcon className="w-4 h-4" />
-            <span>View on Map</span>
+            <MapIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
+            <span className="sm:inline hidden">View on </span>
+            <span>Map</span>
           </button>
         )}
       </div>
@@ -433,18 +463,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
         <>
       {isEditing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"><div className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit Post</h2><button onClick={() => setIsEditing(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div><textarea value={editContent} onChange={(event) => setEditContent(event.target.value)} className="min-h-40 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><input value={editLocation} onChange={(event) => setEditLocation(event.target.value)} placeholder="Location label (optional)" className="mt-3 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><div className="mt-4 flex justify-end gap-2"><button onClick={() => setIsEditing(false)} className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button><button disabled={!editContent.trim() || editMutation.isPending} onClick={() => editMutation.mutate()} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{editMutation.isPending ? 'Saving…' : 'Save changes'}</button></div></div></div>}
       {isHistoryOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4"><div className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit History</h2><button onClick={() => setIsHistoryOpen(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div>{historyQuery.isLoading && <div className="flex justify-center py-8 text-slate-500"><Loader2 className="h-5 w-5 animate-spin" /></div>}{historyQuery.isError && <p className="py-6 text-center text-sm text-red-600">Could not load edit history.</p>}{historyQuery.data?.length === 0 && <p className="py-6 text-center text-sm text-slate-500">This post has not been edited.</p>}{historyQuery.data?.map((entry) => <div key={entry.id} className="border-t border-slate-100 py-4"><p className="mb-2 text-xs font-medium text-slate-500">Edit {entry.version} · {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true })}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="mb-1 text-xs font-semibold text-slate-500">Previous</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.previous_content}</p></div><div><p className="mb-1 text-xs font-semibold text-slate-500">Updated</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.updated_content}</p></div></div></div>)}</div></div>}
-      {isReporting && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">Report Post</h2>
-              <button
-                onClick={() => setIsReporting(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      <Modal isOpen={isReporting} onClose={() => setIsReporting(false)} title="Report Post" blurBackdrop={false}>
             <p className="mb-4 text-sm text-slate-600">Reports are private and reviewed by moderators.</p>
 
             <div className="mb-3">
@@ -466,23 +485,16 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
             />
 
             <div className="mt-4 flex justify-end gap-2">
-              <button
-                onClick={() => setIsReporting(false)}
-                className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
+              <Button variant="ghost" onClick={() => setIsReporting(false)}>Cancel</Button>
+              <Button
+                variant="danger"
                 disabled={reportMutation.isPending || (reportReason === 'other' && !reportDetails.trim())}
                 onClick={() => reportMutation.mutate()}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60 transition-colors"
               >
                 {reportMutation.isPending ? 'Submitting…' : 'Submit report'}
-              </button>
+              </Button>
             </div>
-          </div>
-        </div>
-      )}
+      </Modal>
         </>,
         document.body,
       )}

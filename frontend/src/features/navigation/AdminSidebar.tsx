@@ -7,16 +7,14 @@ import { Logo } from "@/shared/ui";
 import {
   LayoutDashboard,
   Map,
-  Layers,
-  FileText,
   Users,
   ShieldCheck,
   ClipboardList,
+  Flag,
   Archive,
   Database,
   Settings,
   LogOut,
-  TrendingUp,
   Home
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,6 +28,7 @@ const navItems = [
   { name: "User Registry",  href: "/admin/users",     icon: Users },
   { name: "Roles",          href: "/admin/roles",     icon: ShieldCheck },
   { name: "Audit Trail",    href: "/admin/audit",     icon: ClipboardList },
+  { name: "Moderation Center", href: "/admin/moderation", icon: Flag },
   { name: "Archive Center", href: "/admin/archive",   icon: Archive },
   { name: "Data Management",href: "/admin/data",      icon: Database },
   { name: "System Settings",href: "/admin/settings",  icon: Settings },
@@ -104,7 +103,7 @@ export default function AdminSidebar() {
 
       {/* Footer actions */}
       <div className="p-2 border-t border-gray-200">
-        {(user as any)?.role?.name !== "Super Admin" && (
+        {user?.role?.name !== "Super Admin" && (
           <Link
             href="/"
             className="flex items-center w-full h-9 mb-1 rounded-md text-gray-700 hover:bg-gray-100 transition-colors overflow-hidden shrink-0"

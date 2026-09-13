@@ -44,10 +44,12 @@ export interface FeedResponse {
 
 export interface CommentResponse {
   id: number;
+  user_id?: number;
   content: string;
   created_at: string;
   edited_at?: string | null;
   author_name: string;
+  author_avatar?: string | null;
   parent_id?: number | null;
   upvotes: number;
   downvotes: number;
@@ -200,4 +202,3 @@ export const getPostEditHistory = async (postId: number): Promise<PostEditHistor
 export const reportPost = async (postId: number, reason: string, details?: string): Promise<void> => {
   await apiClient.post(`/posts/${postId}/reports`, { reason, details });
 };
-

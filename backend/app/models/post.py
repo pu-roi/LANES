@@ -28,9 +28,12 @@ class CommunityPost(Base):
     location_lng: Mapped[Optional[float]] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    hidden_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True, index=True)
+    hidden_by_user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
     # Relationships
-    user: Mapped["User"] = relationship("User")
+    user: Mapped["User"] = relationship("User", foreign_keys=[user_id])
+    hidden_by: Mapped[Optional["User"]] = relationship("User", foreign_keys=[hidden_by_user_id])
     report: Mapped[Optional["FloodReport"]] = relationship("FloodReport", back_populates="community_post")
     comments: Mapped[List["Comment"]] = relationship(
         "Comment",
@@ -84,4 +87,7 @@ class CommunityPostReport(Base):
     reason: Mapped[str] = mapped_column(String(50), nullable=False)
     details: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="open", index=True)
+    resolution_action: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    resolved_by_user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)

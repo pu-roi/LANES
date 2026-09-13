@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func, case, text, Float, String
+from sqlalchemy import func, case, text, Float, String, and_
 from app.models.report import FloodReport
 from app.models.interaction import PostInteraction
 from app.models.user import User
@@ -22,6 +22,10 @@ def get_feed_posts(
 ):
     # Base query for community posts
     base_query = db.query(CommunityPost).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id)
+    if user_id is None:
+        base_query = base_query.filter(CommunityPost.hidden_at.is_(None))
+    else:
+        base_query = base_query.filter((CommunityPost.hidden_at.is_(None)) | (CommunityPost.user_id == user_id))
     if author_id:
         base_query = base_query.filter(CommunityPost.user_id == author_id)
 
@@ -50,12 +54,25 @@ def get_feed_posts(
             PostInteraction.interaction_type.label("user_interaction")
         ).filter(PostInteraction.user_id == user_id).subquery()
 
+    # Build author name expression respecting display_full_name preference
+    author_name_expr = case(
+        (
+            and_(
+                func.coalesce(Profile.display_full_name, True).is_(True),
+                Profile.first_name.isnot(None),
+                func.trim(Profile.first_name) != ""
+            ),
+            func.trim(func.concat(Profile.first_name, text("' '"), func.coalesce(Profile.last_name, text("''"))))
+        ),
+        else_=func.coalesce(User.username, text("'Unknown'"))
+    ).label("author_name")
+
     # Build the main select fields
     select_fields = [
         CommunityPost,
         func.coalesce(upvotes_query.c.upvotes, 0).label("upvotes"),
         func.coalesce(downvotes_query.c.downvotes, 0).label("downvotes"),
-        func.coalesce(User.username, text("'Unknown'")).label("author_name"),
+        author_name_expr,
         func.coalesce(Profile.avatar_url, text("null")).label("author_avatar"),
         func.coalesce(comments_query.c.comment_count, 0).label("comment_count"),
         FloodReport # to eager load the report if exists
@@ -199,6 +216,10 @@ def get_feed_post(
 ):
     # Base query for community post
     base_query = db.query(CommunityPost).filter(CommunityPost.id == post_id).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id)
+    if user_id is None:
+        base_query = base_query.filter(CommunityPost.hidden_at.is_(None))
+    else:
+        base_query = base_query.filter((CommunityPost.hidden_at.is_(None)) | (CommunityPost.user_id == user_id))
 
     # Subqueries for upvotes and downvotes
     upvotes_query = db.query(
@@ -225,12 +246,25 @@ def get_feed_post(
             PostInteraction.interaction_type.label("user_interaction")
         ).filter(PostInteraction.user_id == user_id).subquery()
 
+    # Build author name expression respecting display_full_name preference
+    author_name_expr = case(
+        (
+            and_(
+                func.coalesce(Profile.display_full_name, True).is_(True),
+                Profile.first_name.isnot(None),
+                func.trim(Profile.first_name) != ""
+            ),
+            func.trim(func.concat(Profile.first_name, text("' '"), func.coalesce(Profile.last_name, text("''"))))
+        ),
+        else_=func.coalesce(User.username, text("'Unknown'"))
+    ).label("author_name")
+
     # Build the main select fields
     select_fields = [
         CommunityPost,
         func.coalesce(upvotes_query.c.upvotes, 0).label("upvotes"),
         func.coalesce(downvotes_query.c.downvotes, 0).label("downvotes"),
-        func.coalesce(User.username, text("'Unknown'")).label("author_name"),
+        author_name_expr,
         func.coalesce(Profile.avatar_url, text("null")).label("author_avatar"),
         func.coalesce(comments_query.c.comment_count, 0).label("comment_count"),
         FloodReport # to eager load the report if exists
@@ -283,4 +317,3 @@ def get_feed_post(
     }
 
     return post_data
-

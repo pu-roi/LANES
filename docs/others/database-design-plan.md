@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 13, 2026, 9:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 14, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -390,6 +390,8 @@ erDiagram
 | `pinned_at` | `TIMESTAMP` | Nullable | Timestamp of pinning. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Timestamp. |
 | `updated_at` | `TIMESTAMP` | Default: UTC Now | Last update timestamp. |
+| `hidden_at` | `TIMESTAMP` | Nullable, Index | Soft-hide timestamp. A hidden post is excluded from public feed reads but remains available to its author and staff moderation workflow. |
+| `hidden_by_user_id` | `INTEGER` | Foreign Key (SET NULL), Nullable | Staff user who applied the soft-hide. |
 
 ### Table N-1: `community_post_edit_history`
 **Description:** Immutable audit snapshots for each author-approved Community Post revision. Before/after values are stored together so public history remains correct even after later edits.
@@ -415,6 +417,9 @@ erDiagram
 | `reason` | `VARCHAR(50)` | NOT NULL | `spam_scam`, `misinformation`, `harassment_hate`, `explicit_violent`, or `other`. |
 | `details` | `TEXT` | Nullable | Required explanation when reason is `other`. |
 | `status` | `VARCHAR(20)` | Default: `open`, Index | Moderation lifecycle state. |
+| `resolution_action` | `VARCHAR(20)` | Nullable | Recorded staff decision: `dismiss`, `warn`, or `hide`. |
+| `resolved_by_user_id` | `INTEGER` | Foreign Key (SET NULL), Nullable | Staff reviewer who resolved the report. |
+| `resolved_at` | `TIMESTAMP` | Nullable | Resolution timestamp. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Submission time. |
 
 ### Table O: `notifications`
