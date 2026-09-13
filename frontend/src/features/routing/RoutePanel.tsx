@@ -23,6 +23,9 @@ import {
   CornerDownRight,
   Navigation,
   Flag,
+  ChevronUp,
+  ChevronDown,
+  Search,
 } from "lucide-react";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { LocationAutocomplete, LocationInputGroup } from "@/shared/ui";
@@ -87,6 +90,7 @@ export default function RoutePanel() {
   const { isAuthenticated } = useAuth();
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const isCollapsed = activePanel !== "route";
+  const [isTopBarCollapsed, setIsTopBarCollapsed] = useState(false);
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -280,77 +284,139 @@ export default function RoutePanel() {
 
     return (
       <>
-        {/* Mobile Top Search Bar */}
-        <div className="absolute top-4 left-4 right-4 z-40 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-visible transition-all">
-          <div className="p-3 pr-2">
-            <LocationInputGroup
-              theme="blue"
-              startInput={startInput}
-              setStartInput={(val) => { setStartInput(val); setIsPickingOnMap(false); }}
-              endInput={endInput}
-              setEndInput={(val) => { setEndInput(val); setIsPickingOnMap(false); }}
-              activePoint={activePoint}
-              setActivePoint={setActivePoint}
-              startPointId="start"
-              endPointId="end"
-              onStartSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
-              onEndSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
-              onStartClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
-              onEndClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
-              onStartChange={setStartLabel}
-              onEndChange={setEndLabel}
-              onSwap={handleSwap}
-              canSwap={!!(start || end)}
-              onPickOnMap={handlePickOnMapToggle}
-              onUseCurrentLocation={handleUseCurrentLocation}
-              inputClassName="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
-            />
-          </div>
-
-          {/* Inline loading */}
-          {isRouting && (
-            <div className="px-4 pb-3">
-              <LoadingOverlay isVisible={isRouting} message="Calculating safe route..." variant="inline" />
-            </div>
-          )}
-
-          {/* Saved Places */}
-          {sortedSavedPlaces && sortedSavedPlaces.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar hide-scrollbar mt-3">
-              {sortedSavedPlaces.map(place => {
-                const Icon = iconMap[place.icon] || MapPin;
-                return (
-                  <button
-                    key={place.id}
-                    onClick={() => handleSelectSavedPlace(place)}
-                    className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-semibold hover:bg-blue-100 active:scale-95 transition-all"
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    {place.name}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Mobile Vehicle Profile */}
-          <div className="flex border-t border-gray-100 overflow-x-auto">
-            {PROFILE_OPTIONS.map((opt) => (
-              <button
-                key={opt.id}
-                onClick={() => setVehicleProfile(opt.id)}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 text-[11px] font-semibold transition-colors",
-                  vehicleProfile === opt.id
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                )}
+        {/* Mobile Top Search Bar & Floating Collapsed Trigger */}
+        <div className="absolute top-4 left-4 right-4 z-40 flex flex-col items-center">
+          <AnimatePresence mode="wait">
+            {isTopBarCollapsed ? (
+              /* Compact Floating Pill when hidden */
+              <motion.div
+                key="collapsed-pill"
+                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                onClick={() => setIsTopBarCollapsed(false)}
+                className="w-full max-w-sm bg-white/95 backdrop-blur-md rounded-full shadow-lg border border-gray-200/80 px-4 py-2.5 flex items-center justify-between gap-2 cursor-pointer active:scale-98 select-none transition-all"
               >
-                <opt.icon className="w-4 h-4" />
-                <span className="whitespace-nowrap">{opt.label}</span>
-              </button>
-            ))}
-          </div>
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <Search className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-xs font-bold text-gray-900 truncate">
+                      {endInput || "Choose destination"}
+                    </span>
+                    <span className="text-[10px] font-medium text-gray-500 truncate">
+                      {startInput ? `From: ${startInput}` : "Tap to plan route"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-[11px] font-semibold text-blue-600 px-2 py-0.5 bg-blue-50 rounded-full">
+                    Expand
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                </div>
+              </motion.div>
+            ) : (
+              /* Expanded Search Box */
+              <motion.div
+                key="expanded-search-box"
+                initial={{ opacity: 0, y: -20, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                className="w-full bg-white rounded-2xl shadow-xl border border-gray-100 overflow-visible transition-all flex flex-col"
+              >
+                {/* Header with Hide/Collapse button */}
+                <div className="flex items-center justify-between px-3.5 pt-2.5 pb-1 border-b border-gray-50">
+                  <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                    Plan Route
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsTopBarCollapsed(true)}
+                    className="flex items-center gap-1 text-[11px] font-semibold text-gray-500 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 px-2.5 py-1 rounded-full transition-colors active:scale-95"
+                    title="Hide to see full map"
+                  >
+                    <span>Hide</span>
+                    <ChevronUp className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="p-3 pr-2">
+                  <LocationInputGroup
+                    theme="blue"
+                    startInput={startInput}
+                    setStartInput={(val) => { setStartInput(val); setIsPickingOnMap(false); }}
+                    endInput={endInput}
+                    setEndInput={(val) => { setEndInput(val); setIsPickingOnMap(false); }}
+                    activePoint={activePoint}
+                    setActivePoint={setActivePoint}
+                    startPointId="start"
+                    endPointId="end"
+                    onStartSelect={(s) => { setStart([s.lng, s.lat], s.label); setStartInput(s.label); setActivePoint("end"); setIsPickingOnMap(false); }}
+                    onEndSelect={(s) => { setEnd([s.lng, s.lat], s.label); setEndInput(s.label); setActivePoint(null); setIsPickingOnMap(false); }}
+                    onStartClear={() => { setStart(null, ""); setStartInput(""); setStartLabel(""); setActivePoint("start"); setIsPickingOnMap(false); }}
+                    onEndClear={() => { setEnd(null, ""); setEndInput(""); setEndLabel(""); setActivePoint("end"); setIsPickingOnMap(false); }}
+                    onStartChange={setStartLabel}
+                    onEndChange={setEndLabel}
+                    onSwap={handleSwap}
+                    canSwap={!!(start || end)}
+                    onPickOnMap={handlePickOnMapToggle}
+                    onUseCurrentLocation={handleUseCurrentLocation}
+                    inputClassName="[&_input]:border-none [&_input]:h-10 [&_input]:bg-transparent [&_input]:text-sm [&_input]:font-medium"
+                  />
+                </div>
+
+                {/* Inline loading */}
+                {isRouting && (
+                  <div className="px-4 pb-3">
+                    <LoadingOverlay isVisible={isRouting} message="Calculating safe route..." variant="inline" />
+                  </div>
+                )}
+
+                {/* Saved Places */}
+                {sortedSavedPlaces && sortedSavedPlaces.length > 0 && (
+                  <div className="flex gap-2 overflow-x-auto pb-2 px-3 custom-scrollbar hide-scrollbar mt-1">
+                    {sortedSavedPlaces.map(place => {
+                      const Icon = iconMap[place.icon] || MapPin;
+                      return (
+                        <button
+                          key={place.id}
+                          onClick={() => handleSelectSavedPlace(place)}
+                          className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-semibold hover:bg-blue-100 active:scale-95 transition-all"
+                        >
+                          <Icon className="w-3.5 h-3.5" />
+                          {place.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Mobile Vehicle Profile */}
+                <div className="flex border-t border-gray-100 overflow-x-auto rounded-b-2xl bg-gray-50/50">
+                  {PROFILE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setVehicleProfile(opt.id)}
+                      className={cn(
+                        "flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 text-[11px] font-semibold transition-colors",
+                        vehicleProfile === opt.id
+                          ? "bg-blue-50 text-blue-700 font-bold border-b-2 border-blue-600"
+                          : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                      )}
+                    >
+                      <opt.icon className="w-4 h-4" />
+                      <span className="whitespace-nowrap">{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Mobile Bottom Sheet for Route Summary */}

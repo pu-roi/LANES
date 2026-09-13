@@ -109,22 +109,33 @@ export function parseCoords(value: string): [number, number] | null {
 export async function getCurrentLocation(): Promise<[number, number]> {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject(new Error("Geolocation is not supported by your browser"));
+      reject(new Error("Geolocation is not supported by your browser. Please use a modern browser."));
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (position) => resolve([position.coords.longitude, position.coords.latitude]),
-      async (error) => {
-        console.warn("Geolocation API failed, falling back to IP-based location:", error.message);
-        try {
-          const res = await fetch("https://get.geojs.io/v1/ip/geo.json");
-          if (!res.ok) throw new Error("IP Fallback failed");
-          const data = await res.json();
-          resolve([parseFloat(data.longitude), parseFloat(data.latitude)]);
-        } catch {
-          reject(new Error("Unable to retrieve your location. Please check your location permissions."));
+      (error) => {
+        // Do NOT silently fall back to IP-based location — it is city/ISP-level and highly inaccurate.
+        // Surface the actual error so the user knows to grant location permissions.
+        let message: string;
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            message =
+              "Location access was denied. Please enable location permissions in your browser settings and try again.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            message =
+              "Your location could not be determined. Please ensure your device's GPS or location services are enabled.";
+            break;
+          case error.TIMEOUT:
+            message =
+              "Location request timed out. Please check your connection and try again.";
+            break;
+          default:
+            message = "Unable to retrieve your location. Please check your location permissions.";
         }
+        reject(new Error(message));
       },
       {
         enableHighAccuracy: true,
