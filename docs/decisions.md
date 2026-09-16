@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 12, 2026, 2:31 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -34,6 +34,8 @@ LANES requires real-time flood detouring and multiple route recommendations for 
 - The route planner sidebar has an engine toggle: **Valhalla | OpenRouteService**
 - When offline, the app silently falls back to WASM regardless of the toggle selection
 - An `OfflineManager` in the sidebar footer shows download status and triggers tile caching
+
+**Production deployment update (September 17, 2026):** Valhalla is deployed as a separate, private Cloud Run service rather than assumed to exist on the FastAPI container's localhost. FastAPI authenticates with its runtime identity and automatically retries via ORS only for Valhalla availability failures. The versioned Philippines tile archive lives in private Cloud Storage and is baked into each immutable Valhalla image, avoiding startup downloads.
 
 ---
 

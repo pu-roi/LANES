@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 22| Private Valhalla Cloud Run Recovery | Ready for cloud deployment | Private Valhalla deployment assets, Cloud Storage tile artifact flow, Cloud Run identity-token calls, automatic ORS availability fallback, typed engine metadata, and matched desktop/mobile backup notice |
 | 21| Production Cloud Infrastructure & Firebase App Hosting Deployment | Completed | Production deployment of Next.js frontend to Firebase App Hosting (asia-east1), build-time API variable injection via apphosting.yaml, backend CORS middleware whitelist expansion (*.hosted.app, *.web.app, *.firebaseapp.com), dotenvx environment encryption, and deployment gitignore hygiene |
 | 20| Complete Email Infrastructure Migration to Resend | Completed | Full excision of Brevo configuration, seamless transition to Resend REST API (from `Lanes <noreply@navlanes.live>`), 100% preservation of OTP email HTML layout/CDN branding, and verified outbound domain delivery |
 | 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, Profile "Display Full Name" SQL preference resolution across feed/comments, Community Feed mobile responsiveness (iPhone SE/12 single-row action bar & standalone Lucide voting buttons), mobile route search bar collapsibility, and explicit geolocation diagnostics |
@@ -34,6 +35,11 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 22: Private Valhalla Cloud Run Recovery (🟡 READY FOR CLOUD DEPLOYMENT)
+- [x] **Resilient provider orchestration** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Valhalla remains the default online engine; connection, timeout, identity-token, and 5xx availability failures retry through ORS while valid no-route responses do not.
+- [x] **Private-service contract & responsive status** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Route responses now identify the provider used and whether fallback occurred; the shared route state renders the same backup explanation in desktop and mobile layouts.
+- [x] **Cloud deployment assets** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added a versioned Cloud Storage artifact workflow and private `lanes-valhalla` Cloud Run deployment script with backend-only `roles/run.invoker` access.
 
 ### Capstone Phase 21: Production Cloud Infrastructure & Firebase App Hosting Deployment (🟢 COMPLETED)
 - [x] **Next.js App Hosting Setup & Production Deployment (`apphosting.yaml`, `firebase.json`, `.firebaserc`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

@@ -93,4 +93,7 @@ graphhopper_data/graph-cache/
 *.osm.pbf
 valhalla_data/valhalla_tiles.tar
 valhalla_data/
+infrastructure/valhalla/artifacts/
+!infrastructure/valhalla/artifacts/
+!infrastructure/valhalla/artifacts/.gitkeep
 graphhopper_data/

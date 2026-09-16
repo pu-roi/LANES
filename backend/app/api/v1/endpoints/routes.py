@@ -38,25 +38,9 @@ async def calculate_route(payload: schemas.RouteRequest, db: Session = Depends(g
     Fallback Engine: OpenRouteService.
     Each candidate is evaluated against active flood avoidance zones.
     """
-    if payload.engine == "valhalla":
-        from app.services.valhalla_service import calculate_flood_safe_route as valhalla_route
-        return valhalla_route(
-            db=db,
-            start=payload.start,
-            end=payload.end,
-            ignore_floods=payload.ignore_floods,
-            vehicle_profile=payload.vehicle_profile,
-            heading=payload.heading
-        )
+    from app.services.routing_service import calculate_route as calculate_provider_route
 
-    from app.services.ors_service import calculate_flood_safe_route as ors_route
-    return await ors_route(
-        db=db,
-        start=payload.start,
-        end=payload.end,
-        ignore_floods=payload.ignore_floods,
-        vehicle_profile=payload.vehicle_profile
-    )
+    return await calculate_provider_route(payload=payload, db=db)
 
 
 @router.post("/preview-bidirectional", response_model=BidirectionalPreviewResponse)

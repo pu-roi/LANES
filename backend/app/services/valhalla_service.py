@@ -12,8 +12,14 @@ logger = logging.getLogger(__name__)
 from app import models
 from app.models.report import ReportSeverity
 from app.core.config import settings
+from app.core.valhalla_auth import ValhallaAuthenticationError, get_valhalla_auth_headers
 
 ROUTE_LABELS = ["Recommended", "Alternative 1", "Alternative 2"]
+
+
+class ValhallaServiceUnavailable(Exception):
+    """The Valhalla service could not accept a valid routing request."""
+
 
 def decode_polyline6(encoded_str: str) -> List[List[float]]:
     """Decodes Valhalla's 6-digit precision polyline string into GeoJSON [lng, lat] coordinates."""
@@ -118,21 +124,21 @@ def request_valhalla_route(start: List[float], end: List[float], avoid_polygons:
     url = f"{settings.VALHALLA_URL}/route"
     
     try:
-        response = httpx.post(url, json=body, timeout=10.0)
+        response = httpx.post(url, json=body, headers=get_valhalla_auth_headers(), timeout=10.0)
         if response.status_code == 200:
             return response.json()
         elif response.status_code == 400 and "avoid_polygons" in response.text:
              # If Valhalla rejects the route because it cannot avoid the polygons
              return None
+        elif response.status_code in (401, 403) or response.status_code >= 500:
+            logger.warning("valhalla_request_failed status=%s", response.status_code)
+            raise ValhallaServiceUnavailable(f"Valhalla returned HTTP {response.status_code}.")
         else:
-            # For logging/debugging unhandled errors
-            print(f"Valhalla Error: {response.text}")
+            logger.info("valhalla_route_unavailable status=%s", response.status_code)
             return None
-    except httpx.RequestError as exc:
-        raise HTTPException(
-            status_code=503,
-            detail=f"Failed to communicate with Valhalla routing server: {exc}"
-        )
+    except (httpx.RequestError, ValhallaAuthenticationError) as exc:
+        logger.warning("valhalla_connection_failed error=%s", exc)
+        raise ValhallaServiceUnavailable("Valhalla is unavailable.") from exc
 
 def process_valhalla_response(
     data: Dict[str, Any], 

@@ -87,6 +87,7 @@ interface MapContextValue {
 
   isRouting: boolean;
   routeError: string | null;
+  routeNotice: string | null;
   isPickingOnMap: boolean;
   isReportPanelOpen: boolean;
   isSavePlacePanelOpen: boolean;
@@ -167,6 +168,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   const [isRouting, setIsRouting] = useState(false);
   const [routeError, setRouteError] = useState<string | null>(null);
+  const [routeNotice, setRouteNotice] = useState<string | null>(null);
   const [isPickingOnMap, setIsPickingOnMap] = useState(false);
   const [isReportPanelOpen, setIsReportPanelOpen] = useState(false);
   const [isSavePlacePanelOpen, setIsSavePlacePanelOpenState] = useState(false);
@@ -333,6 +335,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
     setAllRoutes(null);
     setSelectedRouteIndexState(0);
     setRouteError(null);
+    setRouteNotice(null);
     setIsRouting(false);
   }, []);
 
@@ -487,6 +490,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
     const fetchRoutes = async () => {
       setIsRouting(true);
       setRouteError(null);
+      setRouteNotice(null);
 
       try {
         const result: MultiRouteResponse = await getRoute(start.coords, end.coords, false, vehicleProfile, routingEngine);
@@ -494,6 +498,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
         setAllRoutes(result.routes);
         setSelectedRouteIndexState(result.recommended_index);
+        if (result.fallback_used && result.engine_used === "ors") {
+          setRouteNotice("Valhalla is temporarily unavailable. Using OpenRouteService backup.");
+        }
         
         if (result.routes.length === 0) {
           setRouteError("No safe route available. The destination is completely blocked by severe floods for your vehicle profile.");
@@ -600,6 +607,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       routeInfo,
       isRouting,
       routeError,
+      routeNotice,
       isPickingOnMap,
       isReportPanelOpen,
       isSavePlacePanelOpen,
@@ -663,6 +671,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
       routeInfo,
       isRouting,
       routeError,
+      routeNotice,
       isPickingOnMap,
       isReportPanelOpen,
       isSavePlacePanelOpen,

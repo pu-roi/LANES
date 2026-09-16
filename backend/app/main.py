@@ -8,7 +8,7 @@ from sqlalchemy import text
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
-from app.core.config import settings
+from app.core.config import settings, validate_production_routing_configuration
 from app.core.database import engine, Base
 from app.core.limiter import limiter
 from app import models
@@ -16,6 +16,7 @@ from app import models
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    validate_production_routing_configuration()
     # Attempt to create database tables on startup
     try:
         # Base.metadata.create_all(bind=engine) # Disabled to enforce Alembic migrations

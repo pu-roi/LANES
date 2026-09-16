@@ -71,6 +71,8 @@ export interface RouteOption {
 export interface MultiRouteResponse {
   routes: RouteOption[];
   recommended_index: number;
+  engine_used: "valhalla" | "ors";
+  fallback_used: boolean;
   avoided_floods?: boolean;
   blocked?: boolean;
   weather_condition?: string;
@@ -193,7 +195,9 @@ export async function getRoute(
 
             resolve({
               routes: [routeOption],
-              recommended_index: 0
+              recommended_index: 0,
+              engine_used: "valhalla",
+              fallback_used: false,
             });
           } else if (e.data.type === "error") {
             clearTimeout(timeoutId);

@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 16, 2026, 4:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -60,7 +60,7 @@ This document serves as the central technical reference for all currently implem
 *   **What it does:** Calculates optimal navigation paths between origin and destination coordinates, ensuring that any road segments intersecting active flood zones are bypassed, and visualizes alternative detours and turn-by-turn maneuvers directly on the map.
 *   **How it works:**
     1. When a user requests a route, the backend fetches all active avoidance polygons (Red, Orange, Yellow) from the PostGIS database.
-    2. The routing service queries the local **Valhalla** engine using a dynamically built HTTP request.
+    2. The routing service queries the private **Valhalla** Cloud Run engine using an authenticated, dynamically built HTTP request; availability failures transparently retry through OpenRouteService and identify the backup result to the user.
     3. The avoidance polygons are passed natively into Valhalla's `avoid_polygons` parameter.
     4. The routing algorithm mathematically treats the polygons as impassable barriers, generating a safe alternative detour route. If trapped, it falls back to allowing Yellow zones, then Orange zones.
     5. The commuter can toggle "Ignore Floods" to compare the safe path against the default flooded route.

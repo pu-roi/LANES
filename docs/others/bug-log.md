@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,69 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-031] Valhalla Production Route Requests Targeted an Absent Local Container
+- **Status**: Resolved in code / Pending Cloud rollout
+- **Severity**: Critical
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Backend / Routing / Cloud Run
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+The deployed `POST /api/v1/reports/route` request returned HTTP 503 when Valhalla was selected.
+
+#### 2. Root Cause Analysis (RCA)
+Cloud Run ran only FastAPI while `VALHALLA_URL` retained the local Docker address `http://localhost:8002`; no Valhalla process exists in that container.
+
+#### 3. Solution & Architectural Strategy
+Added a private Cloud Run Valhalla deployment flow backed by versioned Cloud Storage tiles, authenticated FastAPI-to-Valhalla calls, and automatic ORS fallback only for Valhalla availability failures.
+
+#### 4. Files Modified / What Changed
+- `infrastructure/valhalla/`: Reproducible artifact build and private-service deployment assets.
+- `backend/app/services/routing_service.py`: Provider fallback and response metadata.
+- `frontend/src/features/routing/RoutePanel.tsx`: Matching desktop/mobile fallback explanation.
+
+### [BUG-030] Production Fallback Credentials Are Present in the Backend Code Path
+- **Status**: Investigating
+- **Severity**: Critical
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Backend / Authentication / Cloud Run Configuration
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+The Cloud Run image deliberately excludes `backend/.env`, but the backend accepts a source-controlled fallback JWT signing secret when `SECRET_KEY` is missing. Its startup routine can also seed a predictable `admin/admin` account when the roles table is empty. This makes a missing or incorrectly injected Cloud Run secret a critical production security failure.
+
+#### 2. Root Cause Analysis (RCA)
+`backend/app/core/config.py` defines a concrete default `SECRET_KEY`, and `backend/app/main.py` creates the default administrator in the lifespan routine. Neither behavior is guarded by a production-environment check. The repository deployment files do not define the Cloud Run `SECRET_KEY` injection, so the codebase cannot verify that the secure runtime setting overrides the fallback.
+
+#### 3. Solution & Architectural Strategy
+Provision a unique `SECRET_KEY` as a Cloud Run secret and fail startup outside local development when it is absent. Remove production default-admin seeding; bootstrap an administrator with an explicit one-time deployment command or a securely supplied, rotated credential. Confirm the active Cloud Run revision has the secret before considering the deployment secure.
+
+#### 4. Files Modified / What Changed
+- `docs/others/bug-log.md`: Recorded the production credentials investigation and required remediation.
+- `backend/app/core/config.py`: Requires environment-aware secret validation.
+- `backend/app/main.py`: Requires production-safe administrator bootstrap behavior.
+
+### [BUG-029] Weather Insights Uses a Build-Time Backend Rewrite Without a Build-Time Destination
+- **Status**: Investigating
+- **Severity**: High
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Frontend / Firebase App Hosting / Production API Routing
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+The weather-insights modal sends its request to the relative URL `/api/v1/weather/insights`, unlike the rest of the production client, which uses `NEXT_PUBLIC_API_URL` to call Cloud Run directly. In Firebase App Hosting, the relative request depends on the Next.js rewrite in `frontend/next.config.ts`. That rewrite can be compiled with its localhost fallback rather than the Cloud Run URL, causing only the **Generate AI Insights** action to fail in production while weather and other direct API calls continue to work.
+
+#### 2. Root Cause Analysis (RCA)
+`frontend/next.config.ts` constructs the rewrite destination from `process.env.BACKEND_URL`, with `http://127.0.0.1:8000` as its fallback. `frontend/apphosting.yaml` supplies `BACKEND_URL` only at `RUNTIME`; it does not make the value available during `BUILD`. Next.js resolves rewrite configuration while generating its build artifacts, so the deployment configuration does not guarantee that the production rewrite target is embedded in the build.
+
+#### 3. Solution & Architectural Strategy
+Use a single production API-resolution path. The preferred minimal fix is to update `WeatherInsightsModal.tsx` to use `NEXT_PUBLIC_API_URL` (with `/api/v1` as the local fallback), matching the other browser-side calls and avoiding a Next.js proxy hop. Alternatively, add `BUILD` availability to `BACKEND_URL` and retain the rewrite. After either change, run the production build and test the modal request against the deployed Cloud Run endpoint.
+
+#### 4. Files Modified / What Changed
+- `docs/others/bug-log.md`: Recorded the investigated production routing issue and remediation options.
+- `frontend/src/features/landing/WeatherInsightsModal.tsx`: Requires the API URL resolution correction.
+- `frontend/apphosting.yaml`: Requires `BACKEND_URL` build availability only if retaining the rewrite approach.
 
 ### [BUG-028] Cloud Run FastAPI Backend CORS Rejection on Firebase App Hosting Domains (*.hosted.app)
 - **Status**: Resolved
