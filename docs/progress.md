@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 16, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 21| Production Cloud Infrastructure & Firebase App Hosting Deployment | Completed | Production deployment of Next.js frontend to Firebase App Hosting (asia-east1), build-time API variable injection via apphosting.yaml, backend CORS middleware whitelist expansion (*.hosted.app, *.web.app, *.firebaseapp.com), dotenvx environment encryption, and deployment gitignore hygiene |
 | 20| Complete Email Infrastructure Migration to Resend | Completed | Full excision of Brevo configuration, seamless transition to Resend REST API (from `Lanes <noreply@navlanes.live>`), 100% preservation of OTP email HTML layout/CDN branding, and verified outbound domain delivery |
 | 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, Profile "Display Full Name" SQL preference resolution across feed/comments, Community Feed mobile responsiveness (iPhone SE/12 single-row action bar & standalone Lucide voting buttons), mobile route search bar collapsibility, and explicit geolocation diagnostics |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
@@ -33,6 +34,19 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 21: Production Cloud Infrastructure & Firebase App Hosting Deployment (🟢 COMPLETED)
+- [x] **Next.js App Hosting Setup & Production Deployment (`apphosting.yaml`, `firebase.json`, `.firebaserc`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Initialized Firebase App Hosting in `frontend/` on project `lanes-project-508809` (backend `lanes-frontend` in `asia-east1`) with Node.js 22 automatic base image security updates.
+  - Successfully verified production build and rollout to `https://lanes-frontend--lanes-project-508809.asia-east1.hosted.app`.
+- [x] **Production API Environment Variable Ingestion (`apphosting.yaml`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Configured `NEXT_PUBLIC_API_URL` (`https://lanes-api-557679867071.asia-east1.run.app/api/v1`) with `BUILD` and `RUNTIME` availability so Next.js embeds the live Cloud Run backend URL into client-side bundles during Cloud Build.
+  - Configured `BACKEND_URL` (`https://lanes-api-557679867071.asia-east1.run.app`) with `RUNTIME` availability for server-side route rewrites.
+- [x] **Backend Cloud Run CORS Expansion (`main.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Updated FastAPI `CORSMiddleware` `allow_origin_regex` to whitelist Firebase App Hosting domains (`https://.*\.hosted\.app`), Firebase Hosting web domains (`https://.*\.web\.app`), and Firebase project domains (`https://.*\.firebaseapp\.com`), unblocking cross-origin REST calls and persistent SSE streams (`/sse/stream`, `/sync/stream`).
+- [x] **Environment Secrets Re-encryption & Git Hygiene (`.env`, `.gitignore`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Re-encrypted `backend/.env` using `@dotenvx/dotenvx` to prevent raw database credentials, Resend keys, and Google Routes API tokens from being tracked in cleartext.
+  - Added `.firebase/` local cache and `firebase-debug.log*` patterns to both root and `frontend/.gitignore` files.
 
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
 - [x] **Profile "Display Full Name" SQL Privacy Resolution & Comment Avatars (`feed.py`, `comments.py`, `posts.py`, `user.py`, `PostDetailPage.tsx`, `feedApi.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

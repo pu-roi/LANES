@@ -1,6 +1,7 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 16, 2026, 4:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
 
@@ -86,3 +87,12 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Executing automated backend tests for API endpoints and business logic. Used to verify quota enforcement rules (e.g., 10-place saved places limit), CRUD operations, and edge case handling across FastAPI routes.
 * **NLP Verification Libraries:** **scikit-learn & seqeval**
   * *Role:* Running isolated validation scripts to compute linguistic extraction performance metrics (precision, recall, and F1-scores) for the custom NLP model.
+
+### **6\. Cloud Infrastructure & Deployment Tier (Hosting & Production)**
+
+* **Frontend Serverless Hosting:** **Firebase App Hosting (Google Cloud)**
+  * *Role:* Next.js App Router (SSR) deployment in `asia-east1` (Taiwan). Automatically handles server-rendered React components, dynamic routes, and asset caching backed by Cloud Run containers with build-time environment variable injection via `apphosting.yaml`.
+* **Backend Microservices:** **Google Cloud Run (`asia-east1`)**
+  * *Role:* Fully managed serverless container runtime hosting the FastAPI ASGI application (`lanes-api`), dynamically binding to `$PORT` with automated horizontal autoscaling and CORS whitelist support.
+* **CLI Deployment & Automation:** **Firebase CLI (`firebase-tools`)**
+  * *Role:* Local project linking, App Hosting backend lifecycle management, build verification, and deployment orchestration.

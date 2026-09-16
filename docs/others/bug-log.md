@@ -1,6 +1,7 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 14, 2026, 3:18 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
@@ -35,6 +36,30 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-028] Cloud Run FastAPI Backend CORS Rejection on Firebase App Hosting Domains (*.hosted.app)
+- **Status**: Resolved
+- **Severity**: Critical
+- **Date Reported / Resolved**: September 16, 2026
+- **Affected Area**: Backend / Infrastructure / CORS / Firebase App Hosting
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+Upon deploying the frontend Next.js application to Firebase App Hosting at `https://lanes-frontend--lanes-project-508809.asia-east1.hosted.app`, opening the site in a browser triggered immediate cascading client-side network failures across all initial API fetches (`/weather/current`, `/weather/forecast`, `/reports/active-zones`, `/public/stats`) and streaming Server-Sent Events endpoints (`/sse/stream`, `/sync/stream`). The browser console logged:
+`Access to fetch at 'https://lanes-api-557679867071.asia-east1.run.app/api/v1/...' from origin 'https://lanes-frontend--lanes-project-508809.asia-east1.hosted.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
+
+#### 2. Root Cause Analysis (RCA)
+In `backend/app/main.py`, FastAPI's `CORSMiddleware` configured `allow_origin_regex` to match only:
+`r"^(https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000|https://.*\.vercel\.app|https://.*\.navlanes\.live)$"`
+Firebase App Hosting generates production and preview web domains ending with `.hosted.app`, `.web.app`, or `.firebaseapp.com`. Because none of these domains were included in either `origins` or `allow_origin_regex`, preflight `OPTIONS` and standard cross-origin `GET`/`POST` requests were rejected by Starlette's CORS filter without sending `Access-Control-Allow-Origin`.
+
+#### 3. Solution & Architectural Strategy
+Updated `allow_origin_regex` in `backend/app/main.py` to:
+`r"^(https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000|https://.*\.vercel\.app|https://.*\.navlanes\.live|https://.*\.hosted\.app|https://.*\.web\.app|https://.*\.firebaseapp\.com)$"`
+This securely permits all valid Firebase App Hosting rollouts and custom Firebase domains while maintaining strict origin sandboxing against arbitrary external domains.
+
+#### 4. Files Modified / What Changed
+- `backend/app/main.py`: Updated `allow_origin_regex` in `CORSMiddleware` to include `https://.*\.hosted\.app`, `https://.*\.web\.app`, and `https://.*\.firebaseapp\.com`.
 
 ### [BUG-027] Profile "Display Full Name" Setting Ignored in Community Feed and Comment Sections
 - **Status**: Resolved

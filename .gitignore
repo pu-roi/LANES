@@ -76,6 +76,12 @@ data/
 node_modules/
 .next/
 
+# Firebase
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log
+
+
 # IDE / Tool configs
 .gemini/
 .codex/

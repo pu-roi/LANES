@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 14, 2026, 3:18 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,14 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 21: Production Cloud Infrastructure & Firebase App Hosting Deployment (🟢 COMPLETED)
+> **Focus:** Provisioning and deploying the production Next.js frontend to Firebase App Hosting (Google Cloud `asia-east1`), injecting live build-time API environment variables via `apphosting.yaml`, expanding backend FastAPI CORS whitelist regex to accommodate `*.hosted.app`, `*.web.app`, and `*.firebaseapp.com`, re-encrypting local `.env` secrets with `@dotenvx/dotenvx`, and enforcing repository gitignore hygiene for Firebase cache and logs.
+> **Current Status (Sept 16, 2026):**
+> - [x] **Next.js App Hosting Setup & Production Deployment (`apphosting.yaml`, `firebase.json`, `.firebaserc`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Linked `frontend/` to Firebase project `lanes-project-508809`, configured Node.js 22 runtime with automatic security updates, and rolled out production build to `https://lanes-frontend--lanes-project-508809.asia-east1.hosted.app`.
+> - [x] **Production API Environment Variable Ingestion (`apphosting.yaml`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Configured `NEXT_PUBLIC_API_URL` (`https://lanes-api-557679867071.asia-east1.run.app/api/v1`) with `BUILD` and `RUNTIME` availability and `BACKEND_URL` with `RUNTIME` availability for Cloud Run server proxying.
+> - [x] **Backend Cloud Run CORS Expansion (`main.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Updated FastAPI `CORSMiddleware` `allow_origin_regex` to whitelist Firebase App Hosting domains (`https://.*\.hosted\.app`), Firebase Hosting web domains (`https://.*\.web\.app`), and Firebase project domains (`https://.*\.firebaseapp\.com`), unblocking cross-origin REST calls and persistent SSE streams (`/sse/stream`, `/sync/stream`).
+> - [x] **Environment Secrets Re-encryption & Git Hygiene (`.env`, `.gitignore`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Re-encrypted `backend/.env` using `@dotenvx/dotenvx` to prevent raw database credentials and API keys from leaking into version control. Added `.firebase/` local cache and `firebase-debug.log*` patterns to both root and `frontend/.gitignore` files.
 
 ### Capstone Phase 19: Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline (🟢 COMPLETED)
 > **Focus:** Hardening the authentication lifecycle, eliminating EventSource connection leaks on client unmount, resolving soft-delete unique constraint collisions on citizen re-registration, standardizing registration to require explicit credential sign-in, expanding post media ingestion to 100MB videos across Next.js proxy, FastAPI, and Cloudinary, integrating post edit history & reporting, and adding mobile search bar collapsibility.
