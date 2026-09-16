@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 12, 2026, 2:31 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 16, 2026, 4:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -42,7 +42,7 @@ This document serves as the central technical reference for all currently implem
 *   **Purpose:** Provides a seamless, identity-first registration wizard with secure email validation, spam resistance, network-latency resilience, and instant verification.
 *   **What it does:** Breaks registration into an Identity-First sequence (`Email -> OTP -> Account Credentials -> Personal Profile -> Demographic Address`). Delivers zero-click automatic verification as soon as 6 digits are entered, while managing progressive resend cooldowns and sliding grace windows.
 *   **How it works:**
-    1. **Identity-First Stage:** User submits their email address first. The backend verifies uniqueness and dispatches a 6-digit OTP via the Brevo REST API using a crisp, zero-attachment CDN brand seal.
+    1. **Identity-First Stage:** User submits their email address first. The backend verifies uniqueness and dispatches a 6-digit OTP via the Resend REST API (from `Lanes <noreply@navlanes.live>`) using a crisp, zero-attachment CDN brand seal.
     2. **Progressive Rate Limiting & Cooldowns:** Enforces progressive resend cooldown tiers (**1 minute** -> **3 minutes** -> **5 minutes**) to prevent gateway spamming while providing ample time to check inbox/spam folders.
     3. **Sliding Grace Window for Network Latency:** Retains up to **3 unexpired active codes** (5-minute lifetime) per session. If a delayed email arrives after a resend, entering the older code still succeeds. All codes are purged immediately upon verification.
     4. **Zero-Click Verification & Attempt Throttling:** 6 distinct pin boxes auto-advance, handle paste events, and automatically fire verification when the 6th digit is entered. Wrong attempts auto-clear and refocus with remaining attempt warnings; exceeding 5 failed attempts locks verification for 5 minutes.

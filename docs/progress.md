@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 14, 2026, 3:18 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 16, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,12 +9,13 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 20| Complete Email Infrastructure Migration to Resend | Completed | Full excision of Brevo configuration, seamless transition to Resend REST API (from `Lanes <noreply@navlanes.live>`), 100% preservation of OTP email HTML layout/CDN branding, and verified outbound domain delivery |
 | 19| Authentication Lifecycle, Resilient SSE Synchronization & 100MB Feed Media Pipeline | Completed | Soft-delete re-registration conflict resolution, explicit login redirect without auto-login, unconditional EventSource unmount cleanup, direct port 8000 SSE streaming, 100MB multipart video upload support across Next.js proxy & FastAPI, exact file size error notifications, post edit history and post reporting with shared select dropdown, Profile "Display Full Name" SQL preference resolution across feed/comments, Community Feed mobile responsiveness (iPhone SE/12 single-row action bar & standalone Lucide voting buttons), mobile route search bar collapsibility, and explicit geolocation diagnostics |
 | 1 | Architecture & Core Services | Completed | FastAPI setup, PostGIS routing, PWA support, Modular frontend, Domain-based backend structure |
 | 2 | Advanced 3D Map Engine | Completed | 3D MapTiler integration, Pasig boundary overlay, Persistent Global Map, Location Autocomplete |
 | 3 | Spatial Flooding & Routing | Completed | Road-based flood highlights, Dynamic route gradients, LineString avoidance logic, Ignore-floods toggle |
 | 4 | Immersive UI & Navigation | Completed | Floating animated navigation (Framer Motion), FAB menu, Route picker panel, Split-screen Auth layout |
-| 5 | Authentication & Identity | Completed | OTP Registration (Brevo integration), User Profiles, Profile Picture Uploads, Secure Sessions |
+| 5 | Authentication & Identity | Completed | OTP Registration (Resend integration), User Profiles, Profile Picture Uploads, Secure Sessions |
 | 6 | RBAC & Admin Dashboard | Completed | 3NF DB Normalization, Roles CRUD, User Management, Audit Trails, Data Mgmt & System Settings |
 | 7 | Real-Time Operations | In Progress | Server-Sent Events (SSE) broadcasting, Live active zones, Real-time admin dashboard invalidations |
 | 8 | Community Feed & Moderation | Completed | Feed layout, Upvotes/Downvotes, Post archiving, Soft deletes, Map coordinate rendering |
@@ -442,7 +443,7 @@
   - Added attempt throttling (up to 5 incorrect guesses) with a 5-minute brute-force lockout.
   - Upgraded frontend to zero-click automatic verification upon entering/pasting the 6th digit, with automatic input clearing on error.
   - Redesigned OTP view with 6 interactive pin boxes, inline verification indicator, and clean bottom navigation actions (Change Email & Resend Code).
-  - Integrated official LANES CDN brand header into Brevo transactional email templates without downloadable attachments.
+  - Integrated official LANES CDN brand header into Resend transactional email templates without downloadable attachments.
   - Created automated Pytest suite in `backend/tests/test_otp_lifecycle.py` verifying cooldowns, grace periods, and lockout rules.
 
 ### Phase 2: Spatial Moderation, 1:N Deduplication & Fluid Spatial Hub (🟢 COMPLETED)

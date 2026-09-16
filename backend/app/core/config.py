@@ -18,10 +18,14 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str = ""
     CLOUDINARY_API_SECRET: str = ""
     
-    # Brevo SMTP Configuration
-    BREVO_SMTP_SERVER: str = "smtp-relay.brevo.com"
-    BREVO_SMTP_PORT: int | str = 587
-    BREVO_SMTP_KEY: str = ""
+    # Resend Email Configuration
+    RESEND: str = ""
+    RESEND_API_KEY: str = ""
+    RESEND_FROM_EMAIL: str = "Lanes <noreply@navlanes.live>"
+
+    @property
+    def effective_resend_api_key(self) -> str:
+        return self.RESEND_API_KEY or self.RESEND
 
     # Valhalla Engine
     VALHALLA_URL: str = "http://localhost:8002"
