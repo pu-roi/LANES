@@ -24,7 +24,7 @@ target_metadata = Base.metadata
 alembic_db_url = settings.DATABASE_URL
 if alembic_db_url.startswith("encrypted:"):
     alembic_db_url = "postgresql+psycopg://postgres:postgres@localhost:5432/lanes"
-config.set_main_option("sqlalchemy.url", alembic_db_url)
+config.set_main_option("sqlalchemy.url", alembic_db_url.replace("%", "%%"))
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
