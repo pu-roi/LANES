@@ -24,3 +24,4 @@ numpy
 pandas
 cachetools==7.1.8
 python-dotenv==1.2.2
+google-auth==2.40.3

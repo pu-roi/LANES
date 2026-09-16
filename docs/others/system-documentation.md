@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -711,7 +711,8 @@ The production environment operates across Google Cloud and Firebase within regi
 | Component | Service | Configuration File | Role |
 | :--- | :--- | :--- | :--- |
 | **Frontend** | **Firebase App Hosting** | `frontend/apphosting.yaml`<br>`frontend/firebase.json` | Hosts Next.js SSR / App Router on Node.js 22 runtime. Builds via Google Cloud Build with injected build-time variables (`NEXT_PUBLIC_API_URL` pointing to Cloud Run backend). Production URL: `https://lanes-frontend--lanes-project-508809.asia-east1.hosted.app`. |
-| **Backend** | **Google Cloud Run** | `backend/Dockerfile` | Serverless containerized FastAPI ASGI server running on Uvicorn. Binds to dynamic `$PORT` (8080). Handles spatial PostGIS queries, Valhalla routing, and SSE event streaming. Endpoint: `https://lanes-api-557679867071.asia-east1.run.app`. |
+| **Backend** | **Google Cloud Run** | `backend/Dockerfile` | Public FastAPI ASGI gateway. Binds to dynamic `$PORT` (8080), handles PostGIS and SSE, and calls private routing providers. Endpoint: `https://lanes-api-557679867071.asia-east1.run.app`. |
+| **Online Router** | **Private Cloud Run Valhalla** | `infrastructure/valhalla/` | `lanes-valhalla` serves the Philippines graph with no public invoker. FastAPI supplies an ID token; Valhalla failures retry through ORS and the route response reports `engine_used` and `fallback_used`. |
 | **CORS Policy** | **FastAPI CORSMiddleware** | `backend/app/main.py` | Dynamically authorizes local development (`localhost:3000`), production apex (`navlanes.live`), Vercel previews (`*.vercel.app`), and Firebase domains (`*.hosted.app`, `*.web.app`, `*.firebaseapp.com`). |
 | **Secrets Mgmt** | **@dotenvx/dotenvx** | `backend/.env`<br>`backend/.env.keys` | Cross-platform AES-256 encrypted environment variables preventing credential leakage in git version control. |
 

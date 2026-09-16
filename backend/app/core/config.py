@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    ENVIRONMENT: str = "development"
     PROJECT_NAME: str = "LANES"
     API_VERSION: str = "0.1.0"
     
@@ -29,6 +30,7 @@ class Settings(BaseSettings):
 
     # Valhalla Engine
     VALHALLA_URL: str = "http://localhost:8002"
+    VALHALLA_AUDIENCE: str = ""
     
     # Valhalla
     VALHALLA_DATA_DIR: str = "./valhalla_data"
@@ -46,3 +48,14 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def validate_production_routing_configuration() -> None:
+    """Fail closed when a production backend would call a local routing engine."""
+    if settings.ENVIRONMENT.lower() not in {"production", "prod"}:
+        return
+
+    if "localhost" in settings.VALHALLA_URL or "127.0.0.1" in settings.VALHALLA_URL:
+        raise RuntimeError("VALHALLA_URL must reference the private Valhalla service in production.")
+    if not settings.VALHALLA_AUDIENCE:
+        raise RuntimeError("VALHALLA_AUDIENCE is required for authenticated Valhalla requests in production.")

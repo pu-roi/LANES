@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,12 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 22: Private Valhalla Cloud Run Recovery (🟡 READY FOR CLOUD DEPLOYMENT)
+> **Focus:** Restore Valhalla as the resilient default routing engine for desktop and mobile by deploying it as a private Cloud Run service, using Cloud Storage as the versioned tile-artifact source, and retaining automatic ORS availability fallback. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Application recovery path:** Added typed Valhalla/ORS route-provider metadata, private Cloud Run identity-token support, automatic ORS fallback for Valhalla availability failures, and the shared desktop/mobile backup notice.
+> - [x] **Reproducible deployment assets:** Added the Valhalla image, Cloud Build configuration, and PowerShell deployment script for regional artifact upload, private service deployment, and backend invoker permission wiring.
+> - [ ] **Cloud rollout:** Run `infrastructure/valhalla/deploy.ps1` from an authenticated Google Cloud SDK shell after assigning an explicit service account to `lanes-api`, then smoke-test private Valhalla and ORS fallback.
 
 ### Capstone Phase 21: Production Cloud Infrastructure & Firebase App Hosting Deployment (🟢 COMPLETED)
 > **Focus:** Provisioning and deploying the production Next.js frontend to Firebase App Hosting (Google Cloud `asia-east1`), injecting live build-time API environment variables via `apphosting.yaml`, expanding backend FastAPI CORS whitelist regex to accommodate `*.hosted.app`, `*.web.app`, and `*.firebaseapp.com`, re-encrypting local `.env` secrets with `@dotenvx/dotenvx`, and enforcing repository gitignore hygiene for Firebase cache and logs.

@@ -69,6 +69,7 @@ export default function RoutePanel() {
     setActivePanel,
     isRouting,
     routeError,
+    routeNotice,
     setActivePoint,
     setStart,
     setEnd,
@@ -444,6 +445,11 @@ export default function RoutePanel() {
               </div>
 
               <div className="px-4 pb-5 overflow-y-auto max-h-[60vh]">
+                {routeNotice && (
+                  <p className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800" role="status">
+                    {routeNotice}
+                  </p>
+                )}
                 {/* Selected route summary */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex flex-col">
@@ -673,6 +679,11 @@ export default function RoutePanel() {
               <AlertTriangle className="h-4 w-4 shrink-0" />
               <span className="text-xs">{routeError}</span>
             </div>
+          )}
+          {routeNotice && !isRouting && (
+            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800" role="status">
+              {routeNotice}
+            </p>
           )}
         </div>
 

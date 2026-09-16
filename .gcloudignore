@@ -1,0 +1,14 @@
+# Cloud Build must receive the generated tile artifacts, although Git ignores them.
+.gcloudignore
+.git
+.gitignore
+node_modules/
+frontend/node_modules/
+backend/venv/
+backend/.venv/
+.venv/
+.next/
+data/
+valhalla_data/
+!infrastructure/valhalla/artifacts/
+!infrastructure/valhalla/artifacts/**

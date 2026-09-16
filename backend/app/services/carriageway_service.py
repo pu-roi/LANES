@@ -16,6 +16,10 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 import httpx
 
 from app.core.config import settings
+from app.core.valhalla_auth import (
+    ValhallaAuthenticationError,
+    get_valhalla_auth_headers,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -162,11 +166,16 @@ def trace_road_attributes(shape_coords: LineCoordinates) -> Optional[Dict[str, A
         },
     }
     try:
-        response = httpx.post(f"{settings.VALHALLA_URL}/trace_attributes", json=body, timeout=10.0)
+        response = httpx.post(
+            f"{settings.VALHALLA_URL}/trace_attributes",
+            json=body,
+            headers=get_valhalla_auth_headers(),
+            timeout=10.0,
+        )
         if response.status_code == 200:
             return response.json()
         logger.warning("Valhalla trace failed with status %s", response.status_code)
-    except (httpx.HTTPError, ValueError):
+    except (httpx.HTTPError, ValhallaAuthenticationError, ValueError):
         logger.warning("Valhalla trace request failed", exc_info=True)
     return None
 
@@ -179,12 +188,24 @@ def _request_route_geometry(start: Coordinate, end: Coordinate) -> Optional[Line
         "directions_options": {"units": "kilometers"},
     }
     try:
-        response = httpx.post(f"{settings.VALHALLA_URL}/route", json=body, timeout=10.0)
+        response = httpx.post(
+            f"{settings.VALHALLA_URL}/route",
+            json=body,
+            headers=get_valhalla_auth_headers(),
+            timeout=10.0,
+        )
         if response.status_code != 200:
             return None
         shape = response.json().get("trip", {}).get("legs", [{}])[0].get("shape")
         return decode_polyline6(shape) if shape else None
-    except (httpx.HTTPError, IndexError, KeyError, TypeError, ValueError):
+    except (
+        httpx.HTTPError,
+        ValhallaAuthenticationError,
+        IndexError,
+        KeyError,
+        TypeError,
+        ValueError,
+    ):
         logger.warning("Valhalla route request failed", exc_info=True)
         return None
 

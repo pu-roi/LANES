@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 16, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -72,8 +72,8 @@ This document serves as the official technical stack reference for the LANES pla
 
 ### **4\. Pathfinding Engine (Routing Graph Optimization)**
 
-* **Online Primary Routing Engine:** **Valhalla (Docker / HTTP API)**  
-  * *Role:* High-performance self-hosted routing engine running via Docker (`ghcr.io/gis-ops/docker-valhalla`). Natively supports dynamic polygon avoidance via `exclude_polygons`, multiple route alternatives (`alternates=2`), and clearance vehicle profiles (High Clearance, Low Clearance, Motorcycle, Walk).
+* **Online Primary Routing Engine:** **Valhalla (Docker / private Cloud Run HTTP API)**  
+  * *Role:* High-performance self-hosted routing engine running as the private `lanes-valhalla` Cloud Run service. FastAPI calls it with a Cloud Run ID token; it natively supports `exclude_polygons`, multiple alternatives (`alternates=2`), and clearance vehicle profiles.
 * **Online Cloud Routing Engine:** **OpenRouteService (ORS API)**  
   * *Role:* Cloud-hosted secondary routing engine used as an alternative routing provider for dynamic comparison, fallback resilience, and user-switchable routing in the UI.
 * **Offline Routing Engine (PWA):** **Valhalla WebAssembly (WASM)**  
@@ -93,6 +93,8 @@ This document serves as the official technical stack reference for the LANES pla
 * **Frontend Serverless Hosting:** **Firebase App Hosting (Google Cloud)**
   * *Role:* Next.js App Router (SSR) deployment in `asia-east1` (Taiwan). Automatically handles server-rendered React components, dynamic routes, and asset caching backed by Cloud Run containers with build-time environment variable injection via `apphosting.yaml`.
 * **Backend Microservices:** **Google Cloud Run (`asia-east1`)**
-  * *Role:* Fully managed serverless container runtime hosting the FastAPI ASGI application (`lanes-api`), dynamically binding to `$PORT` with automated horizontal autoscaling and CORS whitelist support.
+  * *Role:* Hosts public `lanes-api` plus private `lanes-valhalla`; the routing service scales to zero and is invokable only by the FastAPI runtime identity.
+* **Routing Artifact Storage:** **Google Cloud Storage**
+  * *Role:* Private, versioned source for the ignored Philippines Valhalla tile archive and build metadata; Cloud Build bakes a selected version into the Valhalla image.
 * **CLI Deployment & Automation:** **Firebase CLI (`firebase-tools`)**
-  * *Role:* Local project linking, App Hosting backend lifecycle management, build verification, and deployment orchestration.
+  * *Role:* Local project linking, App Hosting backend lifecycle management, build verification, and deployment orchestration.

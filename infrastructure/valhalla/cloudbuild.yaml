@@ -1,0 +1,35 @@
+substitutions:
+  _ARTIFACT_BUCKET: ""
+  _TILE_VERSION: "philippines-2026-07-13"
+  _IMAGE: "asia-east1-docker.pkg.dev/${PROJECT_ID}/lanes/lanes-valhalla:${_TILE_VERSION}"
+
+options:
+  dynamic_substitutions: true
+
+steps:
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - storage
+      - cp
+      - gs://${_ARTIFACT_BUCKET}/valhalla/${_TILE_VERSION}/valhalla_tiles.tar
+      - infrastructure/valhalla/artifacts/valhalla_tiles.tar
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - storage
+      - cp
+      - gs://${_ARTIFACT_BUCKET}/valhalla/${_TILE_VERSION}/valhalla.json
+      - infrastructure/valhalla/artifacts/valhalla.json
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - storage
+      - cp
+      - gs://${_ARTIFACT_BUCKET}/valhalla/${_TILE_VERSION}/file_hashes.txt
+      - infrastructure/valhalla/artifacts/file_hashes.txt
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "infrastructure/valhalla/Dockerfile", "-t", "${_IMAGE}", "infrastructure/valhalla"]
+
+images:
+  - "${_IMAGE}"

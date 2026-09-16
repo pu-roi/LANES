@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Literal
 from pydantic import BaseModel, Field
 
 
@@ -16,7 +16,7 @@ class RouteRequest(BaseModel):
     end: List[float] = Field(..., min_length=2, max_length=2, description="End coordinates [lng, lat]")
     ignore_floods: bool = Field(False, description="Bypass flood avoidance checks and return the raw shortest path")
     vehicle_profile: str = Field("light", description="Vehicle profile: light, heavy, motorcycle, walk")
-    engine: str = Field("ors", description="Routing Engine to use")
+    engine: Literal["valhalla", "ors"] = Field("valhalla", description="Routing engine to use")
     heading: int = Field(None, description="Optional heading in degrees (0-360) to force snapping to a specific lane direction")
 
 
@@ -58,6 +58,8 @@ class MultiRouteResponse(BaseModel):
     """
     routes: List[RouteOption]
     recommended_index: int
+    engine_used: Literal["valhalla", "ors"]
+    fallback_used: bool = False
 
 
 # Legacy schema retained for backward compatibility
