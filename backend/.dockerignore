@@ -1,0 +1,31 @@
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases & caches
+.cache.sqlite
+*.sqlite3
+*.db
+
+# Backups & test exports
+backups/
+exports/
+data/
+
+# Git metadata
+.git/
+.gitignore
+
+# Environment secrets (provided via Cloud Run environment variables)
+.env
+.env.keys
+.env*.local
