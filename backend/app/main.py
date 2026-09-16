@@ -88,17 +88,20 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://navlanes.live",
+    "https://www.navlanes.live",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex=r"^https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000$",
+    allow_origin_regex=r"^(https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000|https://.*\.vercel\.app|https://.*\.navlanes\.live|https://.*\.hosted\.app|https://.*\.web\.app|https://.*\.firebaseapp\.com)$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["Content-Length", "Content-Range", "Accept-Ranges"],
 )
+
 
 from app.api.v1.api import api_router
 
