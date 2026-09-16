@@ -153,13 +153,12 @@ async def request_signup_otp(
             )
         raise HTTPException(
             status_code=500, 
-            detail=f"Email delivery failed: {err or 'Please check Brevo configuration'}"
+            detail=f"Email delivery failed: {err or 'Please check email service configuration'}"
         )
     return {
         "msg": "OTP sent successfully",
         "cooldown_seconds": cooldown_seconds
     }
-
 
 @router.post("/verify-signup-otp")
 @limiter.limit("10/minute")

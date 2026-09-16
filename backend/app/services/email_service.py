@@ -1,6 +1,4 @@
 import httpx
-import base64
-from pathlib import Path
 from app.core.config import settings
 
 def get_logo_url() -> str:
@@ -10,18 +8,18 @@ def get_logo_url() -> str:
 
 async def send_otp_email_async(to_email: str, otp_code: str) -> tuple[bool, str]:
     """
-    Sends an OTP email using Brevo REST API with clean hosted branding (no attachments).
+    Sends an OTP email using Resend REST API with clean hosted branding (no attachments).
     Returns (success, error_message)
     """
-    if not settings.BREVO_SMTP_KEY:
-        print(f"WARN: Brevo API Key not set. Simulating OTP {otp_code} to {to_email}")
+    api_key = settings.effective_resend_api_key
+    if not api_key:
+        print(f"WARN: Resend API Key not set. Simulating OTP {otp_code} to {to_email}")
         return True, ""
 
-    url = "https://api.brevo.com/v3/smtp/email"
+    url = "https://api.resend.com/emails"
     headers = {
-        "accept": "application/json",
-        "api-key": settings.BREVO_SMTP_KEY,
-        "content-type": "application/json"
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
     }
 
     logo_url = get_logo_url()
@@ -96,10 +94,10 @@ async def send_otp_email_async(to_email: str, otp_code: str) -> tuple[bool, str]
     """
 
     payload: dict = {
-        "sender": {"name": "LANES", "email": "roicambe02@gmail.com"},
-        "to": [{"email": to_email}],
+        "from": settings.RESEND_FROM_EMAIL,
+        "to": [to_email],
         "subject": "Your LANES Account Verification Code",
-        "htmlContent": html_content
+        "html": html_content
     }
 
     async with httpx.AsyncClient() as client:
@@ -108,11 +106,15 @@ async def send_otp_email_async(to_email: str, otp_code: str) -> tuple[bool, str]
             response.raise_for_status()
             return True, ""
         except httpx.HTTPStatusError as e:
-            err_msg = f"Brevo HTTP {e.response.status_code}: {e.response.text}"
-            print(f"Error sending email via Brevo API: {err_msg}")
+            try:
+                err_json = e.response.json()
+                err_msg = err_json.get("message") or f"Resend HTTP {e.response.status_code}: {e.response.text}"
+            except Exception:
+                err_msg = f"Resend HTTP {e.response.status_code}: {e.response.text}"
+            print(f"Error sending email via Resend API: {err_msg}")
             return False, err_msg
         except Exception as e:
-            err_msg = f"Brevo Error: {str(e)}"
-            print(f"Error sending email via Brevo API: {err_msg}")
+            err_msg = f"Resend Error: {str(e)}"
+            print(f"Error sending email via Resend API: {err_msg}")
             return False, err_msg
 
