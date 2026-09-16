@@ -22,6 +22,6 @@ requests-cache
 retry-requests
 numpy
 pandas
-cachetools==7.1.8
+cachetools==5.5.2
 python-dotenv==1.2.2
 google-auth==2.40.3
