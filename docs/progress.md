@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,8 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 26 | Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), and BaseMap MapTiler 403 reload throttling |
+| 25 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
 | 24 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
 | 23| Identity-First Google Auth, Password Recovery & Resilient Admin Routing | Completed | Google Sign-in/Sign-up integration with automatic profile prefill and citizen onboarding completion, self-service Resend OTP password recovery workflow, hardened admin login redirection ([BUG-034]) directly to /admin/dashboard, and NavigationWrapper route guard enforcement |
 | 22| Private Valhalla Cloud Run Recovery | Ready for cloud deployment | Private Valhalla deployment assets, Cloud Storage tile artifact flow, Cloud Run identity-token calls, automatic ORS availability fallback, typed engine metadata, and matched desktop/mobile backup notice |
@@ -38,11 +40,36 @@
 
 ## Capstone Roadmap - Delivered Phases
 
+### Capstone Phase 27: Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening (🟢 COMPLETED)
+- [x] **Non-Destructive Dual-Session Geometry Caching (`OfficialZoneDrawer.tsx`)**: Introduced `lineSessionCacheRef` and `polygonSessionCacheRef` to preserve line start/end coordinates and drawn polygon features across mode switches without premature state destruction. Added "Reset to Saved" action to revert geometry and attributes back to baseline.
+- [x] **Option 2 Reference Map Styling & Pin Visibility (`useFloodMapPreview.ts`, `MapContext.tsx`, `AdminFloodMapInteraction.tsx`, `MapCanvas.tsx`)**: Extended `useFloodMapPreview` with `showMarkers: boolean` and exposed `floodShowMarkers` in `MapContext`. In polygon mode, start and end pins are hidden to provide a clean canvas while the existing road line remains visible as an orange broken reference line.
+- [x] **Active Zone Layer Isolation (`LiveMapPage.tsx`)**: Excluded `editingZone` from `visibleMapZones` in `useFloodZonesLayer` so that only the preview reference line represents the zone during editing, returning to the solid active style cleanly if cancelled.
+- [x] **TerraDraw Instance Gating & Source Collision Resolution (`useTerraDraw.ts`, `OfficialZoneDrawer.tsx`)**: Gated TerraDraw mounting behind `isEnabled: isOpen` so Create and Edit drawers do not clash over the same MapLibre sources. Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers and sources before adapter creation and on unmount. Directly set active mode on `draw.start()` and monitored `drawInstance` in mode sync effect to immediately activate the crosshair cursor and instruction banner.
+- [x] **Permanent Map Style Reload Halting (`BaseMap.tsx`)**: Detected permanent 401/403 authorization failures on MapTiler styles and capped retries, preventing perpetual background `map.setStyle()` reloads that wiped map layers.
+
+### Capstone Phase 26: Profile Picture Privacy, Tab Title Standardization & About Contact Form (🟢 COMPLETED)
+- [x] **Profile Picture Privacy Toggle & Query Masking (`profile.py`, `feed.py`, `user.py`, `posts.py`, `comments.py`, `ProfileView.tsx`, `4389876f4499_add_hide_profile_picture_to_profile.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `hide_profile_picture = Column(Boolean, default=False)` to the `profiles` table with Alembic migration `4389876f4499`.
+  - Masked `author_avatar`/`avatar_url` to `None`/`NULL` in public post feeds, comment threads, top contributor leaderboards, and user profile endpoints when enabled.
+  - Added toggle in Profile Settings tab under Privacy section and rendered fallback uppercase initial letter avatar with `EyeOff` indicator on profile view and quick menu.
+  - Added unit test suite `backend/tests/test_profile_privacy.py` covering model flags and privacy masking across endpoints.
+- [x] **Browser Tab Title Standardization (`layout.tsx`, `manifest.json`, subpages)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Configured root App Router metadata template to `LANES | %s` with default fallback `LANES`.
+  - Standardized tab titles across subpages (`LANES | Map`, `LANES | Community Feed`, `LANES | Profile`, `LANES | Flood Risk Analytics`, `LANES | About`).
+  - Updated PWA manifest application name to `"LANES - Localized Alternative Navigation for Environs under Submersion"`.
+- [x] **Official Contact Channels & Interactive Resend Inquiries (`ContactSection.tsx`, `about/page.tsx`, `public.py`, `email_service.py`, `contact.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Displayed official contact channels (`lanes@navlanes.live` with backup `navlanes.live@gmail.com`) with one-click copy support on `/about`.
+  - Implemented rate-limited `POST /api/v1/public/contact` (5/min) and asynchronous Resend transactional dispatch (`send_contact_email_async`) with direct `reply_to` headers to deliver commuter messages directly to project administrators.
+
 ### Capstone Phase 25: Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience (🟡 IMPLEMENTED / MANUAL VERIFICATION PENDING)
 - [x] **One-instance basemap lifecycle (`BaseMap.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Replaced the preflight-and-recreate cycle with a 1.5-second initial MapTiler render budget and in-place OSM fallback.
   - Restores LANES-owned flood, boundary, and route layers through existing `style.load` hooks instead of creating another WebGL map.
   - Retries MapTiler after connectivity returns and on bounded backoff; recovery allows six seconds because OSM is already a usable baseline.
+  - Uses LANES-specific fallback identifiers rather than generic `osm` names, allowing a loaded MapTiler retry to be recognized correctly.
+  - Treats the first rendered map frame as usable rather than waiting on every remote font glyph; production repeat visits reuse cached MapTiler style, font, sprite, and tile assets after an early connection warm-up.
+- [x] **Admin TerraDraw lifecycle repair (`useTerraDraw.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Cancels stale deferred style callbacks and removes only abandoned `td-*` artifacts before initialization, preventing duplicate MapLibre sources during repeated zone editing.
 - [x] **Responsive status and safe configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Positioned the recovery notice relative to the viewport, below the desktop floating navigation and with a width cap/wrapping for smaller screens.
   - Centralized MapTiler style construction under `NEXT_PUBLIC_MAPTILER_KEY`; App Hosting now references the `maptiler-api-key` secret rather than a literal production value.

@@ -25,3 +25,4 @@ from app.schemas.data import BackupFile, RestoreRequest, CleanupRequest, ExportR
 from app.schemas.profile import ProfileBase, ProfileCreate, ProfileResponse, ProfileUpdate
 from app.schemas.address import AddressBase, AddressCreate, AddressResponse, AddressUpdate
 from app.schemas.otp import OTPVerificationBase, OTPVerificationCreate, OTPVerificationResponse
+from app.schemas.contact import ContactMessageCreate, ContactMessageResponse

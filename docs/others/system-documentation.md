@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -86,7 +86,7 @@ These files are **always present** regardless of which page you are on.
 | File | What You See |
 |------|-------------|
 | `MapCanvas.tsx` | `src/features/map/MapCanvas.tsx` — The full-screen MapLibre GL map canvas. Renders 3D terrain, Pasig city boundary, active flood avoidance zones (color-coded polygons), user location dot, alternative route polylines, saved places, and center-anchored pulsing red focus markers. Features resilient `map.getStyle()` layer mounting, `style.load` re-render listeners, auto camera `fitBounds` framing, container resize observer alignment for sidebar offsets, and parses `?lat=&lng=&zoom=` for smooth camera fly-to. |
-| `BaseMap.tsx` | `src/shared/ui/map/BaseMap.tsx` — Low-level MapLibre wrapper that owns one WebGL map instance, resize observation, and `onMapInit`/`onMapLoad` callbacks. It begins with MapTiler when configured, falls back to OSM on a MapTiler resource error or 1.5-second first-render budget without recreating the map, then retries MapTiler on reconnect/backoff. `style.load` preserves LANES-owned layers after each style replacement. A compact viewport-anchored status remains clear of the desktop floating navigation and wraps on smaller screens. |
+| `BaseMap.tsx` | `src/shared/ui/map/BaseMap.tsx` — Low-level MapLibre wrapper that owns one WebGL map instance, resize observation, and `onMapInit`/`onMapLoad` callbacks. It begins with MapTiler when configured, treats the first rendered frame after `style.load` as usable, and falls back to a LANES-identified OSM raster style only on a MapTiler resource error or exhausted 1.5-second budget. It retries MapTiler on reconnect/backoff. `style.load` preserves LANES-owned layers after each style replacement. A compact viewport-anchored status remains clear of the desktop floating navigation and wraps on smaller screens; document-level connection hints and production PWA caching accelerate MapTiler repeat visits. |
 | `RoutePanel.tsx` | `src/features/routing/RoutePanel.tsx` — The left sidebar on desktop (collapsible on mobile). Contains the travel profile selector (including **Bike/Motorcycle**), start/destination inputs with focus guards and smart two-click "Choose on Map" advance, authenticated saved places chips with Start/End-preserving recalculation, and up to four navigable route cards categorized as Fastest, Safest, Balanced, and Alternative. Cards render route-specific flood exposure; a rejected fastest baseline is explanation-only, never selectable. |
 | `FloodReportPanel.tsx` | `src/features/hazards/FloodReportPanel.tsx` — The responsive incident reporting panel (opens from FAB or top CTA). Step one accepts raw Start/End selections, then submits the verified road-only line or dual-carriageway coverage returned by the shared preview; it never persists a raw sidewalk-to-road connector. When **Share in Community Feed** is checked, the report is published to the feed immediately; only official map-zone visibility awaits administrator approval. Account-private drafts restore only when an active report has a selected road endpoint plus severity, survey data, description, or media; queued reports remain recoverable. UI-only toggles, wizard state, survey visibility, and typed-but-unselected locations never restore a draft. Severity tiles are unselected by default and toggle off when reselected; opt-in two-way coverage is unchecked by default. The compact **Clear** dialog offers neutral **Clear all** (removes previews, queued drafts, media, and the persisted account draft) plus rightmost red **Clear this page** (preserves work on the other page). `useFloodMapPreview.ts` renders each validated carriageway in its own MapLibre source/layer so close parallel geometry remains visible through a style reload. |
 | `OfflineManager.tsx` | `src/features/offline/OfflineManager.tsx` — The "Offline Routing — Ready for offline use" status indicator at the bottom of the RoutePanel. Shows whether the offline tile cache and Valhalla routing data are downloaded and ready. |
@@ -186,7 +186,7 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Security** (change password + OTP verification), **Saved Places** (list of bookmarked map locations), **Privacy** (toggle profile visibility and full name display), and **Trust Score** (gamified accuracy stats showing a score bar, reports submitted, approved, rejected, accuracy rate). |
+| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Security** (change password + OTP verification), **Saved Places** (list of bookmarked map locations), **Privacy** (toggle profile visibility, full name display, and hide profile picture with fallback uppercase initial letter avatar), and **Trust Score** (gamified accuracy stats showing a score bar, reports submitted, approved, rejected, accuracy rate). |
 | `SavedRoutesList.tsx` | `src/features/profile/SavedRoutesList.tsx` — Sub-component inside ProfileView that lists the user's saved map places with their custom icons and addresses, and a delete button for each. |
 
 ### Backend Calls from This Page
@@ -249,7 +249,19 @@ These files are **always present** regardless of which page you are on.
 
 **Route file:** `src/app/about/page.tsx`
 
-A static informational page with no backend API calls. Describes the LANES project mission, team, and the technology stack used (Next.js, FastAPI, PostGIS, Valhalla).
+Informational page describing the LANES project mission, authors, adviser, and system architecture. Features official communication channels and an interactive contact inquiry form.
+
+### Always Visible on Load
+
+| File | What You See |
+|------|-------------|
+| `ContactSection.tsx` | `src/features/about/ContactSection.tsx` — Direct contact card displaying official communication channels (`lanes@navlanes.live` with backup `navlanes.live@gmail.com`) with one-click copy support, and an interactive message inquiry form (Name, Email, Subject, Message) connected to Resend with client feedback states. |
+
+### Backend Calls
+
+| Endpoint | Purpose |
+|----------|---------|
+| `POST /api/v1/public/contact` | Submits a contact inquiry with rate limiting (`5/min`) and dispatches transactional emails via Resend (`send_contact_email_async`) with direct reply-to headers |
 
 ---
 
@@ -414,6 +426,7 @@ Extended personal details and community trust metrics. One-to-one with `users`.
 | `contact_number` | String(20), nullable | Phone number |
 | `birthdate` | Date, nullable | Date of birth |
 | `avatar_url` | String(255), nullable | URL to the profile picture |
+| `hide_profile_picture` | Boolean | Whether to hide avatar and display uppercase initial fallback (default: false) |
 | `cover_color` | String(20) | Hex color for the profile page banner (default: `#3B82F6`) |
 | `is_public` | Boolean | Whether the profile is visible to other users |
 | `display_full_name` | Boolean | Whether to show full name or just username on posts |

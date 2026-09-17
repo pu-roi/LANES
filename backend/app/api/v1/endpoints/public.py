@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 import datetime
@@ -6,6 +6,9 @@ import datetime
 from app.core.database import get_db
 from app.models.report import FloodReport, ReportStatus
 from app.models.audit import VisitorCount
+from app.core.limiter import limiter
+from app import schemas
+from app.services.email_service import send_contact_email_async
 
 router = APIRouter()
 
@@ -40,3 +43,30 @@ def get_public_stats(increment: bool = False, db: Session = Depends(get_db)):
         "daily_verified_reports": daily_verified_reports,
         "total_visitors": visitor_record.total_visitors
     }
+
+
+@router.post("/contact", response_model=schemas.ContactMessageResponse)
+@limiter.limit("5/minute")
+async def send_contact_message(
+    request: Request,
+    payload: schemas.ContactMessageCreate
+):
+    """
+    Send a direct message/inquiry to lanes@navlanes.live and navlanes.live@gmail.com using Resend.
+    """
+    success, err_msg = await send_contact_email_async(
+        name=payload.name,
+        sender_email=payload.email,
+        subject=payload.subject,
+        message=payload.message
+    )
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to deliver message: {err_msg}"
+        )
+    return {
+        "success": True,
+        "message": "Your message has been sent successfully. We will get back to you soon!"
+    }
+

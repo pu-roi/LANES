@@ -23,6 +23,87 @@ interface UseTerraDrawOptions {
   isEditingExistingShape?: boolean;
 }
 
+const TERRADRAW_LAYER_IDS = [
+  "td-point",
+  "td-point-marker",
+  "td-linestring",
+  "td-polygon",
+  "td-polygon-outline",
+];
+const TERRADRAW_SOURCE_IDS = ["td-point", "td-linestring", "td-polygon"];
+
+/**
+ * A cancelled `style.load` callback can otherwise outlive this hook and leave
+ * TerraDraw's MapLibre sources behind. Clear only this hook's known artifacts
+ * before creating its single replacement instance.
+ */
+function removeStaleTerraDrawArtifacts(mapInstance: any) {
+  if (!mapInstance) return;
+  try {
+    const style = mapInstance.getStyle?.();
+    const styleLayers = style?.layers || [];
+
+    // 1. Remove all MapLibre layers that belong to TerraDraw from style
+    styleLayers.forEach((layer: any) => {
+      if (
+        layer.id?.startsWith("td-") ||
+        layer.source?.startsWith("td-") ||
+        TERRADRAW_LAYER_IDS.includes(layer.id) ||
+        TERRADRAW_SOURCE_IDS.includes(layer.source)
+      ) {
+        try {
+          if (mapInstance.getLayer(layer.id)) {
+            mapInstance.removeLayer(layer.id);
+          }
+        } catch {}
+      }
+    });
+
+    // Explicitly remove known layers in safe detachment order (outline, point-marker before base)
+    [
+      "td-point-marker",
+      "td-polygon-outline",
+      "td-point",
+      "td-polygon",
+      "td-linestring",
+    ].forEach((layerId) => {
+      try {
+        if (mapInstance.getLayer(layerId)) {
+          mapInstance.removeLayer(layerId);
+        }
+      } catch {}
+    });
+
+    // 2. Remove all TerraDraw sources now that dependent layers are cleared
+    const styleSources = style?.sources || {};
+    Object.keys(styleSources).forEach((sourceId) => {
+      if (sourceId.startsWith("td-") || TERRADRAW_SOURCE_IDS.includes(sourceId)) {
+        try {
+          if (mapInstance.getSource(sourceId)) {
+            mapInstance.removeSource(sourceId);
+          }
+        } catch {}
+      }
+    });
+
+    // Explicitly remove known sources, purging any lingering layer referencing them
+    TERRADRAW_SOURCE_IDS.forEach((sourceId) => {
+      try {
+        if (mapInstance.getSource(sourceId)) {
+          mapInstance.getStyle?.()?.layers?.forEach((l: any) => {
+            if (l.source === sourceId && mapInstance.getLayer(l.id)) {
+              try { mapInstance.removeLayer(l.id); } catch {}
+            }
+          });
+          mapInstance.removeSource(sourceId);
+        }
+      } catch {}
+    });
+  } catch (err) {
+    console.warn("Could not remove stale TerraDraw artifacts:", err);
+  }
+}
+
 export function useTerraDraw({
   mapInstance,
   geometryMode,
@@ -47,10 +128,15 @@ export function useTerraDraw({
   // Initialize TerraDraw
   useEffect(() => {
     if (!mapInstance || !isEnabled) return;
-    if (drawRef.current) return;
+
+    let cancelled = false;
 
     const initDraw = () => {
+      if (cancelled || drawRef.current) return;
       try {
+        if (!mapInstance.getStyle || !mapInstance.getStyle()) return;
+
+        removeStaleTerraDrawArtifacts(mapInstance);
         const adapter = new TerraDrawMapLibreGLAdapter({ map: mapInstance });
         const initialStyles = getTerraDrawActiveZoneStyles(severity);
 
@@ -69,22 +155,43 @@ export function useTerraDraw({
         drawRef.current = draw;
         setDrawInstance(draw);
 
+        // Apply initial mode immediately upon start
+        if (!isInteractive || geometryMode === "line") {
+          draw.setMode("static");
+          setIsDrawingMode(false);
+          resetMapCursor();
+        } else if (isEditingExistingShape) {
+          draw.setMode("select");
+          setIsDrawingMode(false);
+        } else {
+          draw.setMode(geometryMode);
+          setIsDrawingMode(true);
+        }
+
         // Listen for drawing changes
         draw.on("change", () => {
           const snapshot = draw.getSnapshot();
-          setDrawnFeatures(snapshot);
-          if (snapshot.length === 1) {
-            setDrawnGeometry(snapshot[0].geometry as any);
-          } else if (snapshot.length > 1) {
-            const multiPolyCoords = snapshot
-              .map((f: any) => f.geometry?.coordinates)
+          const polygonFeatures = snapshot.filter(
+            (f: any) => f.geometry?.type === "Polygon" || f.geometry?.type === "MultiPolygon"
+          );
+          setDrawnFeatures(polygonFeatures);
+          if (polygonFeatures.length === 0) {
+            setDrawnGeometry(null);
+          } else if (polygonFeatures.length === 1) {
+            setDrawnGeometry(polygonFeatures[0].geometry as any);
+          } else {
+            const multiPolyCoords = polygonFeatures
+              .map((f: any) => {
+                const coords = f.geometry?.coordinates;
+                if (!Array.isArray(coords) || coords.length === 0) return null;
+                const isFlat = Array.isArray(coords[0]) && typeof coords[0][0] === "number";
+                return isFlat ? [coords] : coords;
+              })
               .filter(Boolean);
             setDrawnGeometry({
               type: "MultiPolygon",
               coordinates: multiPolyCoords,
             } as any);
-          } else {
-            setDrawnGeometry(null);
           }
         });
       } catch (err) {
@@ -92,17 +199,28 @@ export function useTerraDraw({
       }
     };
 
-    let initTimer: NodeJS.Timeout | null = null;
-    initTimer = setTimeout(() => {
-      if (mapInstance.isStyleLoaded && mapInstance.isStyleLoaded()) {
-        initDraw();
-      } else if (mapInstance.once) {
-        mapInstance.once("style.load", initDraw);
+    const handleStyleLoad = () => {
+      if (drawRef.current) {
+        try {
+          drawRef.current.stop();
+        } catch {}
+        drawRef.current = null;
+        setDrawInstance(null);
       }
-    }, 360);
+      initDraw();
+    };
+
+    if (mapInstance.isStyleLoaded && mapInstance.isStyleLoaded()) {
+      initDraw();
+    } else {
+      mapInstance.once?.("style.load", handleStyleLoad);
+    }
+
+    mapInstance.on?.("style.load", handleStyleLoad);
 
     return () => {
-      if (initTimer) clearTimeout(initTimer);
+      cancelled = true;
+      mapInstance.off?.("style.load", handleStyleLoad);
       if (drawRef.current) {
         try {
           if (drawRef.current.enabled && mapInstance?.getStyle && mapInstance.getStyle()) {
@@ -112,9 +230,10 @@ export function useTerraDraw({
         drawRef.current = null;
         setDrawInstance(null);
       }
+      removeStaleTerraDrawArtifacts(mapInstance);
       resetMapCursor();
     };
-  }, [mapInstance, isEnabled, resetMapCursor]);
+  }, [mapInstance, isEnabled, resetMapCursor, severity]);
 
   // Sync mode changes
   useEffect(() => {
@@ -174,16 +293,27 @@ export function useTerraDraw({
         drawRef.current.addFeatures(features);
       }
       const snapshot = drawRef.current.getSnapshot();
-      setDrawnFeatures(snapshot);
-      if (snapshot.length === 1) {
-        setDrawnGeometry(snapshot[0].geometry as ReportGeometry);
-      } else if (snapshot.length > 1) {
+      const polygonFeatures = snapshot.filter(
+        (f: any) => f.geometry?.type === "Polygon" || f.geometry?.type === "MultiPolygon"
+      );
+      setDrawnFeatures(polygonFeatures);
+      if (polygonFeatures.length === 0) {
+        setDrawnGeometry(null);
+      } else if (polygonFeatures.length === 1) {
+        setDrawnGeometry(polygonFeatures[0].geometry as ReportGeometry);
+      } else {
+        const multiPolyCoords = polygonFeatures
+          .map((f: any) => {
+            const coords = f.geometry?.coordinates;
+            if (!Array.isArray(coords) || coords.length === 0) return null;
+            const isFlat = Array.isArray(coords[0]) && typeof coords[0][0] === "number";
+            return isFlat ? [coords] : coords;
+          })
+          .filter(Boolean);
         setDrawnGeometry({
           type: "MultiPolygon",
-          coordinates: snapshot.map((feature: any) => feature.geometry?.coordinates).filter(Boolean),
+          coordinates: multiPolyCoords,
         } as ReportGeometry);
-      } else {
-        setDrawnGeometry(null);
       }
       return true;
     } catch (err) {

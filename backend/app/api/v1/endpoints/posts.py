@@ -74,7 +74,7 @@ def create_post(
         return post_data
 
     avatar_url = None
-    if getattr(current_user, "profile", None):
+    if getattr(current_user, "profile", None) and not getattr(current_user.profile, "hide_profile_picture", False):
         avatar_url = current_user.profile.avatar_url
         
     return {

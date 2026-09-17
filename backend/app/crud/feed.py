@@ -67,13 +67,25 @@ def get_feed_posts(
         else_=func.coalesce(User.username, text("'Unknown'"))
     ).label("author_name")
 
+    # Build author avatar expression respecting hide_profile_picture preference
+    author_avatar_expr = case(
+        (
+            and_(
+                Profile.avatar_url.isnot(None),
+                func.coalesce(Profile.hide_profile_picture, False).is_(False)
+            ),
+            Profile.avatar_url
+        ),
+        else_=text("null")
+    ).label("author_avatar")
+
     # Build the main select fields
     select_fields = [
         CommunityPost,
         func.coalesce(upvotes_query.c.upvotes, 0).label("upvotes"),
         func.coalesce(downvotes_query.c.downvotes, 0).label("downvotes"),
         author_name_expr,
-        func.coalesce(Profile.avatar_url, text("null")).label("author_avatar"),
+        author_avatar_expr,
         func.coalesce(comments_query.c.comment_count, 0).label("comment_count"),
         FloodReport # to eager load the report if exists
     ]
@@ -174,11 +186,22 @@ def get_top_reporters(
     limit: int = 5
 ) -> List[TopReporter]:
     """Retrieve the top community reporters ranked by their approved, public report count."""
+    top_avatar_expr = case(
+        (
+            and_(
+                Profile.avatar_url.isnot(None),
+                func.coalesce(Profile.hide_profile_picture, False).is_(False)
+            ),
+            Profile.avatar_url
+        ),
+        else_=text("null")
+    ).label("avatar_url")
+
     results = (
         db.query(
             User.id.label("user_id"),
             User.username.label("username"),
-            Profile.avatar_url.label("avatar_url"),
+            top_avatar_expr,
             func.count(FloodReport.id).label("report_count")
         )
         .join(FloodReport, FloodReport.user_id == User.id)
@@ -190,7 +213,7 @@ def get_top_reporters(
             User.deleted_at.is_(None),
             User.is_active == True
         )
-        .group_by(User.id, User.username, Profile.avatar_url)
+        .group_by(User.id, User.username, Profile.avatar_url, Profile.hide_profile_picture)
         .order_by(func.count(FloodReport.id).desc())
         .limit(limit)
         .all()
@@ -259,13 +282,25 @@ def get_feed_post(
         else_=func.coalesce(User.username, text("'Unknown'"))
     ).label("author_name")
 
+    # Build author avatar expression respecting hide_profile_picture preference
+    author_avatar_expr = case(
+        (
+            and_(
+                Profile.avatar_url.isnot(None),
+                func.coalesce(Profile.hide_profile_picture, False).is_(False)
+            ),
+            Profile.avatar_url
+        ),
+        else_=text("null")
+    ).label("author_avatar")
+
     # Build the main select fields
     select_fields = [
         CommunityPost,
         func.coalesce(upvotes_query.c.upvotes, 0).label("upvotes"),
         func.coalesce(downvotes_query.c.downvotes, 0).label("downvotes"),
         author_name_expr,
-        func.coalesce(Profile.avatar_url, text("null")).label("author_avatar"),
+        author_avatar_expr,
         func.coalesce(comments_query.c.comment_count, 0).label("comment_count"),
         FloodReport # to eager load the report if exists
     ]

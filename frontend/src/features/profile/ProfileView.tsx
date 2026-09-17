@@ -7,7 +7,7 @@ import {
   Camera, MapPin, Calendar, Activity, 
   ShieldCheck, AlertTriangle, FileText, 
   MessageSquare, Settings, CheckCircle, 
-  XCircle, Loader2, Edit3, LogOut
+  XCircle, Loader2, Edit3, LogOut, Eye, EyeOff
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ColorPicker } from "@/shared/ui";
@@ -139,16 +139,27 @@ export default function ProfileView() {
   const handlePrivacyToggle = async () => {
     try {
       await updateProfile({ is_public: !profile.is_public });
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      showError('Update Failed', err?.message || 'Failed to update privacy settings');
     }
   };
 
   const handleNameDisplayToggle = async () => {
     try {
       await updateProfile({ display_full_name: !(profile.display_full_name ?? true) });
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      showError('Update Failed', err?.message || 'Failed to update name display');
+    }
+  };
+
+  const handleHideProfilePictureToggle = async () => {
+    try {
+      await updateProfile({ hide_profile_picture: !(profile.hide_profile_picture ?? false) });
+    } catch (err: any) {
+      console.error(err);
+      showError('Update Failed', err?.message || 'Failed to update profile picture visibility');
     }
   };
 
@@ -413,6 +424,23 @@ export default function ProfileView() {
                   <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
               </div>
+
+              <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                <div>
+                  <p className="font-medium text-slate-900">Hide Profile Picture</p>
+                  <p className="text-sm text-slate-500 mt-1">Hide your profile picture across your profile, community posts, and comments. A default letter avatar will be displayed instead.</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0 ml-4">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={profile.hide_profile_picture ?? false}
+                    onChange={handleHideProfilePictureToggle}
+                    disabled={isUpdatingProfile}
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
             </div>
           </div>
           
@@ -495,15 +523,23 @@ export default function ProfileView() {
           <div className="relative mb-4 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-6">
             <div className="shrink-0 w-24 sm:w-40 mx-auto sm:mx-0">
               <div className="relative -mt-12 sm:-mt-24 group">
-                <div className="w-24 h-24 sm:w-40 sm:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white">
-                  {profile.avatar_url ? (
+                <div className="w-24 h-24 sm:w-40 sm:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white relative">
+                  {profile.avatar_url && !profile.hide_profile_picture ? (
                     <img src={profile.avatar_url} alt={user.username} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-50 flex items-center justify-center text-blue-500 text-4xl sm:text-5xl font-bold">
+                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-50 flex items-center justify-center text-blue-500 text-4xl sm:text-5xl font-bold select-none">
                       {user.username.charAt(0).toUpperCase()}
                     </div>
                   )}
                 </div>
+                {profile.hide_profile_picture && (
+                  <div 
+                    title="Profile picture is private (hidden from public view)" 
+                    className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-slate-900/80 backdrop-blur-sm text-amber-300 p-1 sm:p-1.5 rounded-full shadow-md border border-white/20 flex items-center justify-center pointer-events-auto"
+                  >
+                    <EyeOff className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  </div>
+                )}
                 <button 
                   onClick={() => setShowAvatarMenu(!showAvatarMenu)}
                   className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-slate-800 text-white p-1.5 sm:p-2 rounded-full shadow-lg hover:bg-slate-700 transition-colors"
@@ -511,12 +547,27 @@ export default function ProfileView() {
                   <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
                 {showAvatarMenu && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
                     <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors" onClick={() => setShowAvatarMenu(false)}>
                       View Profile Picture
                     </button>
                     <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors" onClick={() => setShowAvatarMenu(false)}>
                       Change Profile Picture
+                    </button>
+                    <div className="border-t border-slate-100 my-1"></div>
+                    <button 
+                      className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-between" 
+                      onClick={() => {
+                        setShowAvatarMenu(false);
+                        handleHideProfilePictureToggle();
+                      }}
+                    >
+                      <span>{profile.hide_profile_picture ? "Show Profile Picture" : "Hide Profile Picture"}</span>
+                      {profile.hide_profile_picture ? (
+                        <Eye className="w-4 h-4 text-slate-400" />
+                      ) : (
+                        <EyeOff className="w-4 h-4 text-slate-400" />
+                      )}
                     </button>
                   </div>
                 )}

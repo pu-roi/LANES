@@ -143,11 +143,11 @@ const OSM_PICKER_STYLE = {
 export const MAP_STYLES: { id: string; label: string; emoji: string; url: string | object }[] = [
   ...(MAPTILER_KEY
     ? [
-        { id: "streets-v2", label: "Streets", emoji: "\uD83C\uDFD9", url: getMapTilerStyleUrl("streets-v2")! },
-        { id: "streets-v2-dark", label: "Dark", emoji: "\uD83C\uDF11", url: getMapTilerStyleUrl("streets-v2-dark")! },
-        { id: "bright-v2", label: "Roads", emoji: "\uD83D\uDEE3", url: getMapTilerStyleUrl("bright-v2")! },
-        { id: "satellite", label: "Satellite", emoji: "\uD83D\uDEF0", url: getMapTilerStyleUrl("satellite")! },
-      ]
+      { id: "streets-v2", label: "Streets", emoji: "\uD83C\uDFD9", url: getMapTilerStyleUrl("streets-v2")! },
+      { id: "streets-v2-dark", label: "Dark", emoji: "\uD83C\uDF11", url: getMapTilerStyleUrl("streets-v2-dark")! },
+      { id: "bright-v2", label: "Roads", emoji: "\uD83D\uDEE3", url: getMapTilerStyleUrl("bright-v2")! },
+      { id: "satellite", label: "Satellite", emoji: "\uD83D\uDEF0", url: getMapTilerStyleUrl("satellite")! },
+    ]
     : []),
   // Raw OpenStreetMap raster tiles — no API key required, no terrain support.
   { id: "openstreetmap", label: "OpenStreetMap", emoji: "\uD83D\uDDFA", url: OSM_PICKER_STYLE },
@@ -411,7 +411,7 @@ export class Toggle3DControl {
             this._map!.setPaintProperty(id, "fill-extrusion-base", { property: "render_min_height", type: "identity" });
             this._map!.setPaintProperty(id, "fill-extrusion-opacity", 0.4);
             this._map!.setPaintProperty(id, "fill-extrusion-color", "hsl(44,14%,79%)");
-          } catch {}
+          } catch { }
         });
 
         // Restore 2D building layer maxzooms to 15 (default MapTiler behavior)
@@ -420,7 +420,7 @@ export class Toggle3DControl {
             const styleLayer = this._map!.getStyle()?.layers.find(l => l.id === id);
             const minZ = styleLayer?.minzoom ?? 13;
             this._map!.setLayerZoomRange(id, minZ, 15);
-          } catch {}
+          } catch { }
         });
       } else {
         // In 2D mode: disable terrain and hide 3D building extrusions entirely
@@ -431,7 +431,7 @@ export class Toggle3DControl {
         this._get3DBuildingLayerIds(this._map).forEach((id) => {
           try {
             this._map!.setLayoutProperty(id, "visibility", "none");
-          } catch {}
+          } catch { }
         });
 
         // The critical fix: The 2D 'Building' layer natively disappears at maxzoom 15 in MapTiler styles.
@@ -442,13 +442,13 @@ export class Toggle3DControl {
             const minZ = styleLayer?.minzoom ?? 13;
             this._map!.setLayerZoomRange(id, minZ, 24);
             this._map!.setLayoutProperty(id, "visibility", "visible");
-            
+
             if (styleLayer?.type === "fill") {
               this._map!.setPaintProperty(id, "fill-opacity", 0.7);
               this._map!.setPaintProperty(id, "fill-color", "#d1cbbf");
               this._map!.setPaintProperty(id, "fill-outline-color", "#9e9787");
             }
-          } catch {}
+          } catch { }
         });
       }
     } catch (err) {
@@ -476,7 +476,7 @@ export class Toggle3DControl {
           },
         } as any);
       }
-    } catch {}
+    } catch { }
   }
 
   private _disable3D(animate: boolean = true) {
@@ -489,7 +489,7 @@ export class Toggle3DControl {
       if (this._map.getStyle() && this._map.getLayer("sky")) {
         this._map.removeLayer("sky");
       }
-    } catch {}
+    } catch { }
   }
 
   private _toggle() {
@@ -513,10 +513,14 @@ export class Toggle3DControl {
 }
 
 const DEFAULT_CENTER: [number, number] = [121.0772, 14.562];
-const OSM_FALLBACK_STYLE = {
+// Keep these IDs LANES-specific. MapTiler may legitimately use generic IDs
+// such as "osm" in its own style, so generic IDs cannot identify our fallback.
+const OSM_FALLBACK_SOURCE_ID = "lanes-osm-fallback";
+const OSM_FALLBACK_LAYER_ID = "lanes-osm-fallback-tiles";
+const OSM_FALLBACK_STYLE: any = {
   version: 8,
   sources: {
-    osm: {
+    [OSM_FALLBACK_SOURCE_ID]: {
       type: "raster",
       tiles: [
         "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -529,9 +533,9 @@ const OSM_FALLBACK_STYLE = {
   },
   layers: [
     {
-      id: "osm-layer",
+      id: OSM_FALLBACK_LAYER_ID,
       type: "raster",
-      source: "osm",
+      source: OSM_FALLBACK_SOURCE_ID,
       minzoom: 0,
       maxzoom: 19,
     },
@@ -629,7 +633,7 @@ export default function BaseMap({
             dynamicBounds = parsed as [[number, number], [number, number]];
           }
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     let initialCenter = initialViewportRef.current.center;
@@ -647,7 +651,7 @@ export default function BaseMap({
           if (parsed.pitch !== undefined) initialPitch = parsed.pitch;
           if (parsed.bearing !== undefined) initialBearing = parsed.bearing;
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     const startedAt = performance.now();
@@ -667,8 +671,13 @@ export default function BaseMap({
 
     const styleMatchesActiveAttempt = () => {
       try {
-        const isOsmStyle = Boolean(mapInstance.getSource("osm"));
-        return activeStyle === "fallback" ? isOsmStyle : !isOsmStyle;
+        const currentStyle = mapInstance.getStyle();
+        // MapTiler styles may also name a vector source "osm". Identify our
+        // fallback by LANES' own raster source and layer instead of generic IDs.
+        const isOsmFallbackStyle =
+          currentStyle.sources[OSM_FALLBACK_SOURCE_ID]?.type === "raster"
+          && currentStyle.layers.some((layer) => layer.id === OSM_FALLBACK_LAYER_ID);
+        return activeStyle === "fallback" ? isOsmFallbackStyle : !isOsmFallbackStyle;
       } catch {
         return false;
       }
@@ -717,13 +726,42 @@ export default function BaseMap({
       }
     };
 
-    const schedulePrimaryRetry = (immediate = false) => {
-      if (destroyed || retryTimer || !PRIMARY_MAP_STYLE_URL || (typeof navigator !== "undefined" && !navigator.onLine)) return;
+    const isPermanentAuthError = (error?: unknown) => {
+      const event = error as any;
+      const status = event?.status || event?.error?.status;
+      const message = `${event?.message || ""} ${event?.error?.message || ""}`.toLowerCase();
+      return (
+        status === 401 ||
+        status === 403 ||
+        message.includes("403") ||
+        message.includes("401") ||
+        message.includes("forbidden") ||
+        message.includes("unauthorized")
+      );
+    };
+
+    let hasPermanentPrimaryFailure = false;
+
+    const schedulePrimaryRetry = (immediate = false, error?: unknown) => {
+      if (
+        destroyed ||
+        retryTimer ||
+        !PRIMARY_MAP_STYLE_URL ||
+        (typeof navigator !== "undefined" && !navigator.onLine) ||
+        hasPermanentPrimaryFailure ||
+        retryIndex >= 2
+      ) {
+        return;
+      }
+      if (isPermanentAuthError(error)) {
+        hasPermanentPrimaryFailure = true;
+        return;
+      }
       const delay = immediate ? 0 : MAPTILER_RETRY_DELAYS_MS[Math.min(retryIndex, MAPTILER_RETRY_DELAYS_MS.length - 1)];
       retryIndex += 1;
       retryTimer = setTimeout(() => {
         retryTimer = null;
-        if (destroyed || activeStyle !== "fallback" || (typeof navigator !== "undefined" && !navigator.onLine)) return;
+        if (destroyed || activeStyle !== "fallback" || (typeof navigator !== "undefined" && !navigator.onLine) || hasPermanentPrimaryFailure) return;
         activeStyle = "primary";
         activeAttempt += 1;
         setIsLoaded(false);
@@ -747,7 +785,7 @@ export default function BaseMap({
       setIsRecovering(true);
       setIsUsingFallback(true);
       mapInstance.setStyle(OSM_FALLBACK_STYLE, { diff: false });
-      schedulePrimaryRetry();
+      schedulePrimaryRetry(false, error);
     };
 
     if (activeStyle === "primary") {
@@ -765,7 +803,7 @@ export default function BaseMap({
           bearing: mapInstance.getBearing()
         };
         sessionStorage.setItem("lanes_map_viewport", JSON.stringify(viewport));
-      } catch (e) {}
+      } catch (e) { }
     });
 
     mapInstance.addControl(new TopViewControlV3(), "bottom-right");
@@ -827,10 +865,16 @@ export default function BaseMap({
     });
 
     mapInstance.on("style.load", () => {
-      // `load` establishes the initial first-render budget. Subsequent setStyle
-      // operations retain this WebGL map and let feature hooks restore layers.
-      if (!initialLoadFinished && activeStyle === "primary") return;
-      requestAnimationFrame(() => completeStyle(activeStyle));
+      // `load` waits for every style asset, including remote glyph ranges. A
+      // MapLibre render after `style.load` proves the user can see the map, so
+      // use it for the 1.5-second usability budget while still listening for
+      // resource errors that require the OSM fallback.
+      const attemptAtStyleLoad = activeAttempt;
+      const styleAtStyleLoad = activeStyle;
+      mapInstance.once("render", () => {
+        if (destroyed || attemptAtStyleLoad !== activeAttempt || styleAtStyleLoad !== activeStyle) return;
+        completeStyle(styleAtStyleLoad);
+      });
     });
 
     const handleOnline = () => {
@@ -869,7 +913,7 @@ export default function BaseMap({
             [maxLng + 0.01, maxLat + 0.01]
           ];
           localStorage.setItem("lanes_explored_bounds", JSON.stringify(expanded));
-        } catch (e) {}
+        } catch (e) { }
       }
     });
 
@@ -886,7 +930,7 @@ export default function BaseMap({
             if (mapInstance && typeof mapInstance.resize === "function") {
               mapInstance.resize();
             }
-          } catch (e) {}
+          } catch (e) { }
         }, 400);
       });
       resizeObserver.observe(container);

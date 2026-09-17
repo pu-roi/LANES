@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 17, 2026, 1:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -50,8 +50,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Preventing brute-force attacks and DDoS by applying strict rate limits on authentication endpoints and enforcing progressive cooldown tiers (1m, 3m, 5m) with sliding grace windows for OTP generation.
 * **Authentication Stack:** **JWT, python-jose, & bcrypt**  
   * *Role:* Securing API endpoints via JSON Web Tokens, cryptographically signing tokens, and securely hashing user passwords for role-based access control.
-* **Transactional Email & OTP:** **Resend REST API & httpx**
-  * *Role:* Generating async HTTP requests to the Resend API (from `Lanes <noreply@navlanes.live>`) to securely dispatch 6-digit One-Time Password verification codes to user emails during account onboarding with zero-attachment CDN brand seals.
+* **Transactional Email & Communication:** **Resend REST API & httpx**
+  * *Role:* Generating async HTTP requests to the Resend API (from `Lanes <noreply@navlanes.live>`) to securely dispatch 6-digit One-Time Password verification codes to user emails during account onboarding/password recovery, as well as delivering commuter messages from the /about contact form to official project inboxes (lanes@navlanes.live, navlanes.live@gmail.com).
 * **Image Processing & Storage:** **Cloudinary Python SDK**  
   * *Role:* Managing direct upload, scaling (down to 1024px), and WebP format compression of user-submitted flood evidence photos to a dedicated cloud CDN, ensuring lightweight database records and fast frontend loading.
 * **NLP & Information Extraction:** **spaCy**  

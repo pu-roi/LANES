@@ -26,6 +26,20 @@ def get_user_display_name(user: Optional[models.User]) -> str:
     return user.username or "Unknown"
 
 
+def get_user_avatar_url(user: Optional[models.User]) -> Optional[str]:
+    """
+    Returns the user's avatar URL if profile exists and hide_profile_picture is False.
+    Otherwise returns None.
+    """
+    if not user:
+        return None
+    profile = getattr(user, "profile", None)
+    if profile and not getattr(profile, "hide_profile_picture", False):
+        return profile.avatar_url
+    return None
+
+
+
 
 def get_user(db: Session, user_id: int) -> Optional[models.User]:
     return db.query(models.User).filter(models.User.id == user_id, models.User.deleted_at.is_(None)).first()

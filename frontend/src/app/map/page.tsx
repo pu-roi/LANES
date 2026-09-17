@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Map | LANES",
+  title: "Map",
 };
 
 export default function MapPage() {

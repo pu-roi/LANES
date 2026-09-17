@@ -18,8 +18,11 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LANES Navigation",
-  description: "Flood-Adaptive Route Calculation Platform",
+  title: {
+    default: "LANES",
+    template: "LANES | %s",
+  },
+  description: "Localized Alternative Navigation for Environs under Submersion - Flood-Adaptive Route Calculation Platform",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -44,6 +47,8 @@ export default function RootLayout({
       className={`${openSans.variable} ${robotoMono.variable} antialiased`}
     >
       <head>
+        <link rel="dns-prefetch" href="https://api.maptiler.com" />
+        <link rel="preconnect" href="https://api.maptiler.com" crossOrigin="anonymous" />
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />

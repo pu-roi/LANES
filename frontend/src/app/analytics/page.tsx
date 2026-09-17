@@ -1,7 +1,7 @@
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 
 export const metadata = {
-  title: "Analytics | LANES",
+  title: "Analytics",
 };
 
 export default function AnalyticsPage() {

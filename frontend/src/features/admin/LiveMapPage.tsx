@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import type { Map } from "maplibre-gl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -433,11 +433,20 @@ export default function LiveMapPage() {
     : filteredPendingReports;
 
   // Modular Map Layers
+  // When an existing zone is being edited, exclude it from the solid active zones layer so
+  // that its baseline is represented exclusively by the preview layer (orange dashed line).
+  const visibleMapZones = useMemo(() => {
+    if (isEditZoneDrawerOpen && editingZone) {
+      return (mapZones || []).filter((z: AvoidanceZone) => z.id !== editingZone.id);
+    }
+    return mapZones;
+  }, [isEditZoneDrawerOpen, editingZone, mapZones]);
+
   useCityBoundaries(mapInstance, isLoaded);
   useFloodZonesLayer(
     mapInstance,
     isLoaded,
-    mapZones,
+    visibleMapZones,
     false,
     activeTab,
     selectedZoneId,
@@ -985,7 +994,7 @@ export default function LiveMapPage() {
             }}
             className={isMergeDrawerOpen || isEditZoneDrawerOpen
               ? "absolute inset-0 hidden"
-              : `relative z-30 flex h-full min-w-0 shrink-0 ${isCreateZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
+              : `${isCreateZoneDrawerOpen ? "fixed inset-0 z-50 md:relative md:inset-auto md:z-30" : "relative z-30 hidden md:flex"} flex h-full min-w-0 shrink-0 ${isCreateZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
             }
             onAnimationComplete={() => {
               mapInstance?.resize();
@@ -1077,7 +1086,7 @@ export default function LiveMapPage() {
             transition={{ width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] } }}
             className={isMergeDrawerOpen || isCreateZoneDrawerOpen
               ? "absolute inset-0 hidden"
-              : `relative z-30 flex h-full min-w-0 shrink-0 ${isEditZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
+              : `${isEditZoneDrawerOpen ? "fixed inset-0 z-50 md:relative md:inset-auto md:z-30" : "relative z-30 hidden md:flex"} flex h-full min-w-0 shrink-0 ${isEditZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
             }
             onAnimationComplete={() => mapInstance?.resize()}
           >

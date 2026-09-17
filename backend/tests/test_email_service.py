@@ -58,3 +58,35 @@ async def test_send_otp_email_resend_http_error():
             success, err = await send_otp_email_async(to_email="user@example.com", otp_code="123456")
             assert success is False
             assert "You can only send testing emails to your own email address." in err
+
+
+@pytest.mark.asyncio
+async def test_send_contact_email_success():
+    """Verify that send_contact_email_async posts to Resend with correct recipients and payload."""
+    from app.services.email_service import send_contact_email_async
+    with patch.object(settings, "RESEND_API_KEY", "re_test_key_12345"), \
+         patch.object(settings, "RESEND", ""), \
+         patch.object(settings, "RESEND_FROM_EMAIL", "Lanes <noreply@navlanes.live>"):
+        
+        mock_response = httpx.Response(200, json={"id": "msg_contact_123"}, request=httpx.Request("POST", "https://api.resend.com/emails"))
+        
+        with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+            mock_post.return_value = mock_response
+            
+            success, err = await send_contact_email_async(
+                name="Maria Clara",
+                sender_email="maria@example.com",
+                subject="Feedback on Flood Route",
+                message="Great app! Thank you for the flood warnings."
+            )
+            
+            assert success is True
+            assert err == ""
+            mock_post.assert_called_once()
+            call_kwargs = mock_post.call_args.kwargs
+            
+            assert call_kwargs["json"]["to"] == ["lanes@navlanes.live", "navlanes.live@gmail.com"]
+            assert call_kwargs["json"]["reply_to"] == "maria@example.com"
+            assert "Maria Clara" in call_kwargs["json"]["html"]
+            assert "Great app!" in call_kwargs["json"]["html"]
+
