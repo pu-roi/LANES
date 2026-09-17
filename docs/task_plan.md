@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,13 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 28: Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization (🟢 COMPLETED)
+> **Focus:** Resolving backend PostgreSQL connection pool starvation on streaming endpoints (`/api/v1/sync` and `/api/v1/sse`), implementing full profile picture previewing and Cloudinary upload pipelines, eliminating privacy toggle lag with optimistic React Query updates, and disabling intrusive Next.js dev indicators. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Backend Database Connection Pool Exhaustion Fix (`sync.py`, `sse.py`, `database.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Removed persistent session dependency injection from streaming endpoints, switched generator loops to ephemeral `with SessionLocal() as session:` blocks per poll/event, and tuned pool limits (`pool_size=20`, `max_overflow=10`, `pool_pre_ping=True`, `pool_recycle=300`) to eliminate `QueuePool limit of size 20 overflow 10 reached` timeout errors under persistent client streaming.
+> - [x] **Profile Picture Privacy Instant Sync & Optimistic Updates (`useProfile.ts`, `ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added optimistic cache updates (`onMutate`) in `useProfile.ts` for instantaneous UI toggle response, synchronized cache across `['auth-user']`, `['my-posts']`, and `['posts']` on mutation success, and added clear toast notifications.
+> - [x] **Profile Picture Viewer Modal & Cloudinary Upload Pipeline (`ProfileView.tsx`, `users.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Built high-resolution Profile Picture modal with visibility status, connected native file selector to new backend endpoint `POST /api/v1/users/me/avatar` with 10MB guard and Cloudinary upload, added `DELETE /api/v1/users/me/avatar` with confirmation dialog, removed duplicate "Hide Profile Picture" option from camera menu, and added outside-click menu dismissal.
+> - [x] **Next.js Development Indicator Cleanup (`next.config.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added `devIndicators: false` in `next.config.ts` to disable the distracting dev-only `● Rendering...` badge caused by active background SSE streams.
 
 ### Capstone Phase 27: Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening (🟢 COMPLETED)
 > **Focus:** Enabling non-destructive geometry mode switching (Line ↔ Shape/Polygon) in the Edit Flood Zone drawer, implementing Option 2 reference map styling (keeping the existing road line visible as an orange dashed preview line while hiding pin markers in polygon mode), resolving TerraDraw instance collisions (`td-polygon` already exists), stopping the MapTiler 403 reload loop, and standardizing production AI Weather Insights routing. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

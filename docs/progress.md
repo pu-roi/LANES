@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 28 | Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization | Completed | Ephemeral DB sessions for SSE streaming (/sync & /sse), NullPool/QueuePool connection starvation resolution, full profile picture viewer modal & Cloudinary upload pipeline, optimistic privacy toggle sync, and Next.js dev indicator cleanup |
 | 27 | Edit Flood Zone Geometry Switching, TerraDraw Collision Hardening & Production Weather Insights | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), BaseMap MapTiler 403 reload throttling, and production AI Weather Insights gateway routing on Firebase App Hosting |
 | 26 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
 | 25 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
@@ -40,6 +41,23 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 28: Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization (🟢 COMPLETED)
+- [x] **Backend Database Connection Pool Exhaustion Fix (`sync.py`, `sse.py`, `database.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed persistent session dependency injection (`db: Session = Depends(get_db)`) from long-running SSE streaming endpoints (`/api/v1/sync` and `/api/v1/sse`).
+  - Switched generator loops to ephemeral `with SessionLocal() as session:` blocks scoped strictly to each poll snapshot, immediately closing and returning connections to the pool between heartbeats.
+  - Hardened PostgreSQL pool settings (`pool_size=20`, `max_overflow=10`, `pool_pre_ping=True`, `pool_recycle=300`) to eliminate `QueuePool limit of size 20 overflow 10 reached` timeout errors under persistent client streaming.
+- [x] **Profile Picture Privacy Instant Sync & Optimistic Updates (`useProfile.ts`, `ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added optimistic cache updates (`onMutate`) in `useProfile.ts` for immediate UI response without waiting for background HTTP refetches, accompanied by automatic rollback on error.
+  - Synchronized React Query cache across `['auth-user']`, `['my-posts']`, and `['posts']` on mutation success, resolving toggle lag and switch bounce.
+  - Added explicit toast notifications ("Your profile picture is now hidden from public view." / "Your profile picture is now visible to the public.").
+- [x] **Profile Picture Viewer Modal & Cloudinary Upload Pipeline (`ProfileView.tsx`, `users.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Built high-resolution Profile Picture modal showing user avatar, full name, `@username`, and "Hidden from public" privacy badge with direct action shortcuts. Made clicking the profile avatar directly open this modal.
+  - Connected native file selector to new backend endpoint `POST /api/v1/users/me/avatar` with image MIME validation, 10MB file size guard, and Cloudinary upload integration.
+  - Added `DELETE /api/v1/users/me/avatar` and "Remove Picture" action with `<ConfirmDialog>` to allow reverting to the default initials avatar.
+  - Removed duplicate "Hide Profile Picture" option from the camera dropdown menu and added outside-click dismissal.
+- [x] **Next.js Development Indicator Cleanup (`next.config.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `devIndicators: false` in `next.config.ts` to disable the distracting dev-only `● Rendering...` badge caused by active background SSE streams.
 
 ### Capstone Phase 27: Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening (🟢 COMPLETED)
 - [x] **Non-Destructive Dual-Session Geometry Caching (`OfficialZoneDrawer.tsx`)**: Introduced `lineSessionCacheRef` and `polygonSessionCacheRef` to preserve line start/end coordinates and drawn polygon features across mode switches without premature state destruction. Added "Reset to Saved" action to revert geometry and attributes back to baseline.

@@ -65,6 +65,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   outputFileTracingRoot: path.resolve(__dirname),
   // @ts-ignore - allowedDevOrigins is suggested by Next.js CLI but may lack TS definitions
   allowedDevOrigins: getLocalIPs(),
