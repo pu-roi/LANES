@@ -3,12 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import type { Map, Marker, MapMouseEvent } from "maplibre-gl";
-import { Loader2, MapPin } from "lucide-react";
-import { CONSTANTS } from "./mapUtils";
-import { computeCenterCoordinate, flyToCoordinates, flyToFeature } from "./mapGeoUtils";
+import { flyToCoordinates } from "./mapGeoUtils";
 import { useFloodMapPreview } from "./hooks/useFloodMapPreview";
 import { useMapContext } from "./MapContext";
-import { LoadingOverlay } from "@/shared/ui";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery } from "@tanstack/react-query";
@@ -24,38 +21,6 @@ let hasZoomedToPasigForMap = false;
 
 const ROUTE_SOURCE_ID = "route-line";
 const ROUTE_LAYER_ID = "route-line-layer";
-
-const OSM_FALLBACK_STYLE = {
-  version: 8,
-  sources: {
-    osm: {
-      type: "raster",
-      tiles: [
-        "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      ],
-      tileSize: 256,
-      attribution: "&copy; OpenStreetMap contributors"
-    }
-  },
-  layers: [
-    {
-      id: "osm-tiles",
-      type: "raster",
-      source: "osm",
-      minzoom: 0,
-      maxzoom: 19
-    }
-  ]
-};
-
-const SEVERITY_COLORS: Record<string, string> = {
-  low: "#84cc16",      // Lime 500 (Yellow-Green)
-  medium: "#eab308",   // Yellow
-  high: "#f97316",     // Orange
-  extreme: "#ef4444",  // Red
-};
 
 const isPointInPolygon = (point: [number, number], polygon: any): boolean => {
   if (!polygon || polygon.type !== "Polygon" || !polygon.coordinates) return false;
@@ -182,9 +147,6 @@ export default function MapCanvas() {
   const altLayerIds = useRef<string[]>([]);
   const altSourceIds = useRef<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [mapStyle, setMapStyle] = useState<any>(
-    "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU"
-  );
 
   const { data: activeZonesData } = useQuery({
     queryKey: ["activeZones"],

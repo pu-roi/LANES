@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 17, 2026, 5:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,14 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 25: Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience (🟡 IMPLEMENTED / MANUAL VERIFICATION PENDING)
+> **Focus:** Keep `/map` usable when the external MapTiler style is slow or unavailable, without recreating the WebGL map, while ensuring long-lived SSE connections do not exhaust the backend's Postgres pool. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **MapTiler first-render policy (`BaseMap.tsx`)**: Removed the `HEAD` preflight, 8-second watchdog, and map-recreation retries. The initial detailed-map attempt has a 1.5-second usable-map budget; it switches the existing MapLibre instance to OSM on timeout or a MapTiler resource failure.
+> - [x] **Automatic detailed-map restoration (`BaseMap.tsx`)**: Added stale-callback guards, one structured/redacted diagnostic per failed attempt, retry backoff (online event, 30s, 60s, 2m, then 5m), and a longer 6-second recovery window after OSM is already usable. A first fallback now marks the map lifecycle complete so later MapTiler `style.load` events can restore the detailed style.
+> - [x] **Responsive recovery presentation and configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)**: Added a non-blocking, viewport-anchored recovery notice that stays below the desktop floating navigation and wraps on smaller screens. Removed the source-code MapTiler URL/key duplication; Firebase App Hosting reads `NEXT_PUBLIC_MAPTILER_KEY` from the `maptiler-api-key` secret at build/runtime.
+> - [x] **SSE connection-pool protection (`sync.py`, `database.py`, `main.py`)**: Reworked `/sync/stream` to acquire short-lived worker-thread sessions per poll rather than holding one database connection for each streaming client; tuned fail-fast pool limits and added a JSON global exception response path.
+> - [ ] **Manual verification**: Confirm normal MapTiler load, OSM fallback at the 1.5-second budget, successful automatic MapTiler restoration, and desktop/mobile notice placement. Create the Firebase `maptiler-api-key` secret and restrict the browser key to local/LAN/production origins before rollout.
 
 ### Capstone Phase 24: Unified Flood-Routing Policy & Provider Parity (🟢 IMPLEMENTED / CLOUD VERIFICATION PENDING)
 > **Focus:** Establish one server-side, MMDA-aligned flood-routing policy for Valhalla and OpenRouteService (ORS), then use each provider only as a route-generation adapter. This investigation was initiated before any routing rewrite. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

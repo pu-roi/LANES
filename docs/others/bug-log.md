@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 17, 2026, 5:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,29 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-037] MapTiler Startup Timeout Recreated the Map and Prevented Automatic Detailed-Style Restoration
+- **Status**: Resolved in code / manual verification pending
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Frontend / Map / PWA
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On `/map`, MapTiler could wait through a 2-second network preflight and an 8-second style watchdog before switching to OSM. Repeated retries destroyed and recreated the WebGL map, producing noisy browser logs and delaying access to a usable map. The fallback status could also overlap desktop map controls.
+
+#### 2. Root Cause Analysis (RCA)
+The map lifecycle treated MapTiler availability as a blocking preflight and recreated `MapLibre.Map` for each recovery attempt. After replacing the initial timed-out MapTiler style with OSM, the lifecycle did not mark that first successful fallback style as complete; later MapTiler `style.load` events were therefore ignored, even when the browser had successfully retrieved the style and tiles.
+
+#### 3. Solution & Architectural Strategy
+Removed the preflight and recreation loop. One MapLibre instance now starts with MapTiler and switches in place to OSM after 1.5 seconds or a confirmed MapTiler resource error. Attempt IDs, timer cleanup, and redacted structured diagnostics protect against stale callbacks. OSM is immediately usable; MapTiler retries on the `online` event and exponential backoff, with a six-second recovery window. Completing OSM marks the lifecycle ready for a later successful MapTiler `style.load`; existing feature hooks restore layers after each style replacement. The recovery notice is fixed to the viewport, constrained responsively, and placed below the desktop floating navigation.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/shared/ui/map/BaseMap.tsx`: Implemented one-instance startup/fallback/retry lifecycle, diagnostics, lifecycle-completion guard, and responsive recovery notice.
+- `frontend/src/features/map/MapCanvas.tsx`: Removed the unused duplicate hardcoded MapTiler style state.
+- `frontend/apphosting.yaml`, `frontend/.env.local`: Centralized browser style configuration under `NEXT_PUBLIC_MAPTILER_KEY`; production configuration references the `maptiler-api-key` App Hosting secret.
+
+---
 
 ### [BUG-036] Live Sync SSE Stream Exhausts SQLAlchemy Connection Pool Causing Cascading 500 & Apparent CORS Errors
 - **Status**: Resolved
