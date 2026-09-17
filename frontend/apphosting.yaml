@@ -18,6 +18,7 @@ env:
   - variable: BACKEND_URL
     value: https://lanes-api-557679867071.asia-east1.run.app
     availability:
+      - BUILD
       - RUNTIME
 
   - variable: NEXT_PUBLIC_GOOGLE_CLIENT_ID

@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -12,12 +12,13 @@
 ## Active Sprint (Next Feature)
 
 ### Capstone Phase 27: Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening (🟢 COMPLETED)
-> **Focus:** Enabling non-destructive geometry mode switching (Line ↔ Shape/Polygon) in the Edit Flood Zone drawer, implementing Option 2 reference map styling (keeping the existing road line visible as an orange dashed preview line while hiding pin markers in polygon mode), resolving TerraDraw instance collisions (`td-polygon` already exists), and stopping the MapTiler 403 reload loop. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> **Focus:** Enabling non-destructive geometry mode switching (Line ↔ Shape/Polygon) in the Edit Flood Zone drawer, implementing Option 2 reference map styling (keeping the existing road line visible as an orange dashed preview line while hiding pin markers in polygon mode), resolving TerraDraw instance collisions (`td-polygon` already exists), stopping the MapTiler 403 reload loop, and standardizing production AI Weather Insights routing. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 > - [x] **Non-Destructive Dual-Session Geometry Caching (`OfficialZoneDrawer.tsx`)**: Introduced `lineSessionCacheRef` and `polygonSessionCacheRef` to preserve line start/end coordinates and drawn polygon features across mode switches without premature state destruction. Added "Reset to Saved" action to revert geometry and attributes back to baseline.
 > - [x] **Option 2 Reference Map Styling & Pin Visibility (`useFloodMapPreview.ts`, `MapContext.tsx`, `AdminFloodMapInteraction.tsx`, `MapCanvas.tsx`)**: Extended `useFloodMapPreview` with `showMarkers: boolean` and exposed `floodShowMarkers` in `MapContext`. In polygon mode, start and end pins are hidden to provide a clean canvas while the existing road line remains visible as an orange broken reference line.
 > - [x] **Active Zone Layer Isolation (`LiveMapPage.tsx`)**: Excluded `editingZone` from `visibleMapZones` in `useFloodZonesLayer` so that only the preview reference line represents the zone during editing, returning to the solid active style cleanly if cancelled.
 > - [x] **TerraDraw Instance Gating & Source Collision Resolution (`useTerraDraw.ts`, `OfficialZoneDrawer.tsx`)**: Gated TerraDraw mounting behind `isEnabled: isOpen` so Create and Edit drawers do not clash over the same MapLibre sources. Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers and sources before adapter creation and on unmount. Directly set active mode on `draw.start()` and monitored `drawInstance` in mode sync effect to immediately activate the crosshair cursor and instruction banner.
 > - [x] **Permanent Map Style Reload Halting (`BaseMap.tsx`)**: Detected permanent 401/403 authorization failures on MapTiler styles and capped retries, preventing perpetual background `map.setStyle()` reloads that wiped map layers.
+> - [x] **Production Weather Insights Gateway Standardization (`WeatherInsightsModal.tsx`, `apphosting.yaml`)**: Standardized AI weather insights to query `NEXT_PUBLIC_API_URL` directly rather than a hardcoded relative path, and added `BUILD` availability to `BACKEND_URL` in `apphosting.yaml` to prevent Firebase App Hosting 500 rewrite errors.
 
 ### Capstone Phase 26: Profile Picture Privacy, Tab Title Standardization & About Contact Form (🟢 COMPLETED)
 > **Focus:** Introducing a profile picture privacy setting with uppercase initial letter fallback across the platform, standardizing browser tab titles to `LANES | <Page>`, and establishing official contact channels with an interactive Resend message delivery form on `/about`. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

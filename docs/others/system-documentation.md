@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -64,7 +64,7 @@ These files are **always present** regardless of which page you are on.
 
 | File | How to Trigger It | What It Shows |
 |------|-------------------|--------------|
-| `WeatherInsightsModal.tsx` | `src/features/landing/WeatherInsightsModal.tsx` — Click the **"See Full Forecast"** button on the weather widget | Full-screen modal with detailed hourly and 7-day weather forecast, rain probability bar charts, and wind speed data. All data from the backend `/weather/forecast` endpoint. |
+| `WeatherInsightsModal.tsx` | `src/features/landing/WeatherInsightsModal.tsx` — Click the **"See Full Forecast"** button on the weather widget | Full-screen modal with detailed hourly and 7-day weather forecast, rain probability bar charts, wind speed data, and AI-generated commute recommendations powered by OpenRouter (`/weather/insights`). Calls backend directly via `NEXT_PUBLIC_API_URL`. |
 
 ### Backend Calls from This Page
 
@@ -74,6 +74,7 @@ These files are **always present** regardless of which page you are on.
 | `GET /api/v1/public/stats` | Returns total reports, verified zones, visitor count |
 | `GET /api/v1/weather/current` | Current weather for Metro Manila |
 | `GET /api/v1/weather/forecast` | 7-day weather forecast data |
+| `GET /api/v1/weather/insights` | AI-generated commuter flood risk insights & weather advisory via OpenRouter |
 
 ---
 
