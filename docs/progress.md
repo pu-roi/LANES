@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 23| Identity-First Google Auth, Password Recovery & Resilient Admin Routing | Completed | Google Sign-in/Sign-up integration with automatic profile prefill and citizen onboarding completion, self-service Resend OTP password recovery workflow, hardened admin login redirection ([BUG-034]) directly to /admin/dashboard, and NavigationWrapper route guard enforcement |
 | 22| Private Valhalla Cloud Run Recovery | Ready for cloud deployment | Private Valhalla deployment assets, Cloud Storage tile artifact flow, Cloud Run identity-token calls, automatic ORS availability fallback, typed engine metadata, and matched desktop/mobile backup notice |
 | 21| Production Cloud Infrastructure & Firebase App Hosting Deployment | Completed | Production deployment of Next.js frontend to Firebase App Hosting (asia-east1), build-time API variable injection via apphosting.yaml, backend CORS middleware whitelist expansion (*.hosted.app, *.web.app, *.firebaseapp.com), dotenvx environment encryption, and deployment gitignore hygiene |
 | 20| Complete Email Infrastructure Migration to Resend | Completed | Full excision of Brevo configuration, seamless transition to Resend REST API (from `Lanes <noreply@navlanes.live>`), 100% preservation of OTP email HTML layout/CDN branding, and verified outbound domain delivery |
@@ -35,6 +36,23 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 23: Identity-First Google Authentication, Self-Service Password Recovery & Resilient Admin Routing (🟢 COMPLETED)
+- [x] **Google OAuth Citizen Onboarding & Sign-In (`useGoogleAuth.ts`, `auth.py`, `auth_service.py`, `RegisterForm.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Implemented secure Google Identity Services ID token verification in FastAPI (`POST /auth/google`) using `google-auth` token decoders.
+  - Sign-In Mode: Authenticates registered citizens and returns JWT access tokens with instant profile retrieval. If no account is registered, returns a structured 404 prompting the user to complete onboarding.
+  - Sign-Up Mode: Automatically extracts verified name, email, and Google avatar, pre-populating citizen identity fields while guiding users to complete their local PSGC residential address before minting their account.
+- [x] **Self-Service Forgot Password Recovery Flow (`ForgotPasswordForm.tsx`, `auth.py`, `auth_service.py`, `email_service.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Built a 3-step password recovery flow strictly matching the visual system of the register/login pages.
+  - `POST /auth/forgot-password/request-otp`: Dispatches a single-use 6-digit OTP code to the registered email via the Resend REST API, enforcing progressive cooldown tiers (1m, 3m, 5m) with anti-enumeration response masking.
+  - `POST /auth/forgot-password/verify-otp`: Validates the recovery OTP code and mints a cryptographically signed 15-minute `password_reset` JWT token.
+  - `POST /auth/forgot-password/reset`: Verifies the reset token, enforces password complexity, commits the updated bcrypt password hash, and purges all active OTP records.
+  - UI Features: 6-box auto-advancing OTP inputs with clipboard paste support, progressive resend countdown timer, `<PasswordStrength>` validation meter, and hold-to-view eye toggles.
+- [x] **Resilient Admin Login Redirection & Route Guard Hardening (`LoginForm.tsx`, `login/page.tsx`, `useGoogleAuth.ts`, `NavigationWrapper.tsx`, `[BUG-034]`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Resolved `[BUG-034]`: Fixed inversion bug where guest commuter post intents (`lanes_post_intent`) and public URL redirect targets took precedence over role verification.
+  - Authenticated admin logins (`Super Admin`, `DRRM Officer`, `Moderator`, and `*admin*`) now immediately purge commuter draft flags and route directly to `/admin/dashboard` (or explicit `/admin/*` deep links).
+  - Preserved commuter navigation to `/feed?openPostModal=true` for drafted posts, explicit deep links, and default `/map`.
+  - Hardened `NavigationWrapper.tsx` route guards to safely eject non-staff from `/admin/*` routes and keep `Super Admin` sessions centered on administrative operations.
 
 ### Capstone Phase 22: Private Valhalla Cloud Run Recovery (🟡 READY FOR CLOUD DEPLOYMENT)
 - [x] **Resilient provider orchestration** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Valhalla remains the default online engine; connection, timeout, identity-token, and 5xx availability failures retry through ORS while valid no-route responses do not.

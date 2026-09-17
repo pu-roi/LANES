@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,12 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 23: Identity-First Google Auth, Password Recovery & Resilient Admin Routing (🟢 COMPLETED)
+> **Focus:** Integrating seamless Google OAuth Sign-In and Sign-Up flows with demographic completion, introducing a self-service 3-step password recovery workflow powered by Resend transactional emails, and hardening administrative client-side routing to guarantee instant redirection to `/admin/dashboard`. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Google OAuth Citizen Onboarding & Sign-In (`useGoogleAuth.ts`, `auth.py`, `auth_service.py`, `RegisterForm.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Integrated Google Identity Services credential verification (`POST /auth/google`). In Sign-In mode, checks existing accounts and yields JWT session; in Sign-Up mode, auto-populates Google name, email, and avatar while seamlessly prompting citizens to fulfill required PSGC address details prior to account activation.
+> - [x] **Self-Service Forgot Password Recovery Flow (`ForgotPasswordForm.tsx`, `auth.py`, `auth_service.py`, `email_service.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Built a 3-step recovery workflow matching the registration aesthetic: Step 1 initiates recovery via Resend OTP (`POST /auth/forgot-password/request-otp`) with progressive cooldown enforcement (1m, 3m, 5m); Step 2 verifies 6-box OTP entry (`POST /auth/forgot-password/verify-otp`) issuing a signed 15-minute `password_reset` JWT; Step 3 commits new password hash (`POST /auth/forgot-password/reset`) with `<PasswordStrength>` validation and hold-to-view toggle.
+> - [x] **Resilient Admin Login Redirection & Route Guard Hardening (`LoginForm.tsx`, `login/page.tsx`, `useGoogleAuth.ts`, `NavigationWrapper.tsx`, `[BUG-034]`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Inverted navigation decision tree so administrative roles (`Super Admin`, `DRRM Officer`, `Moderator`) unconditionally take precedence over commuter post drafting intents or public redirect parameters, guaranteeing direct navigation to `/admin/dashboard` (or explicit admin sub-routes) and updating `NavigationWrapper.tsx` route protection.
 
 ### Capstone Phase 22: Private Valhalla Cloud Run Recovery (🟡 READY FOR CLOUD DEPLOYMENT)
 > **Focus:** Restore Valhalla as the resilient default routing engine for desktop and mobile by deploying it as a private Cloud Run service, using Cloud Storage as the versioned tile-artifact source, and retaining automatic ORS availability fallback. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

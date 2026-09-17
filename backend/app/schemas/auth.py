@@ -33,3 +33,42 @@ class OTPResendRequest(BaseModel):
 
 class SignupOTPRequest(BaseModel):
     email: EmailStr
+
+
+from typing import Optional, Literal
+
+
+class GoogleAuthRequest(BaseModel):
+    credential: Optional[str] = None
+    access_token: Optional[str] = None
+    mode: Literal["login", "register"] = "login"
+    user: Optional[UserCreate] = None
+    profile: Optional[ProfileCreate] = None
+    address: Optional[AddressCreate] = None
+
+
+
+class GoogleAuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    is_new_user: bool = False
+
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+
+class PasswordResetVerifyRequest(BaseModel):
+    email: EmailStr
+    otp_code: str
+
+
+class PasswordResetVerifyResponse(BaseModel):
+    msg: str
+    reset_token: str
+
+
+class PasswordResetConfirm(BaseModel):
+    reset_token: str
+    new_password: str
+

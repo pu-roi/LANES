@@ -20,3 +20,10 @@ env:
     availability:
       - RUNTIME
 
+  - variable: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+    value: 557679867071-qm2mgu0pl3vueof2mcj43b87ajv82cbk.apps.googleusercontent.com
+    availability:
+      - BUILD
+      - RUNTIME
+
+

@@ -40,5 +40,39 @@ export const authClient = {
 
   resendOtp: async (email: string) => {
     return await apiClient.post("/auth/resend-otp", { email });
+  },
+
+  loginWithGoogle: async (payload: {
+    credential?: string;
+    access_token?: string;
+    mode?: "login" | "register";
+    user?: any;
+    profile?: any;
+    address?: any;
+  }) => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+    const res = await fetch(`${baseUrl}/auth/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => null);
+      throw new Error(errData?.detail || "Google authentication failed");
+    }
+    return await res.json();
+  },
+
+  requestPasswordResetOtp: async (email: string) => {
+    return await apiClient.post<{ msg: string; cooldown_seconds: number }>("/auth/forgot-password/request-otp", { email });
+  },
+
+  verifyPasswordResetOtp: async (email: string, otp_code: string) => {
+    return await apiClient.post<{ msg: string; reset_token: string }>("/auth/forgot-password/verify-otp", { email, otp_code });
+  },
+
+  resetPassword: async (reset_token: string, new_password: string) => {
+    return await apiClient.post<{ msg: string }>("/auth/forgot-password/reset", { reset_token, new_password });
   }
 };
+

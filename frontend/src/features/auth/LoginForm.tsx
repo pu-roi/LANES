@@ -7,19 +7,53 @@ import { Input } from "@/shared/ui";
 import { Button } from "@/shared/ui";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/shared/ui";
 import { FcGoogle } from "react-icons/fc";
+import { useGoogleAuth } from "./hooks/useGoogleAuth";
+import ForgotPasswordForm from "./components/ForgotPasswordForm";
 
-export default function LoginForm() {
+interface LoginFormProps {
+  initialView?: "login" | "forgot";
+  onViewChange?: (view: "login" | "forgot") => void;
+}
+
+export default function LoginForm({ initialView, onViewChange }: LoginFormProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect');
-  const { info } = useToast();
+  const isForgotQuery = searchParams.get('forgot') === 'true';
+
+  const [internalView, setInternalView] = useState<"login" | "forgot">(
+    initialView || (isForgotQuery ? "forgot" : "login")
+  );
+  const currentView = initialView !== undefined ? initialView : internalView;
+
+  const changeView = (nextView: "login" | "forgot") => {
+    setInternalView(nextView);
+    if (onViewChange) {
+      onViewChange(nextView);
+    }
+  };
+
   const { login, isLoggingIn } = useAuth();
+  const { signInWithGoogle, isGoogleLoading } = useGoogleAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  if (currentView === "forgot") {
+    return (
+      <ForgotPasswordForm
+        initialEmail={username.includes("@") ? username : ""}
+        onBackToLogin={(prefilledEmail) => {
+          changeView("login");
+          if (prefilledEmail) {
+            setUsername(prefilledEmail);
+          }
+        }}
+      />
+    );
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,13 +76,23 @@ export default function LoginForm() {
       if (profileResponse.ok) {
         const profile = await profileResponse.json();
         const roleName = profile.role?.name;
-        const isAdminRole = roleName === "Super Admin" || roleName === "DRRM Officer" || roleName === "Moderator";
+        const isAdminRole = Boolean(
+          roleName && (
+            roleName === "Super Admin" ||
+            roleName === "DRRM Officer" ||
+            roleName === "Moderator" ||
+            roleName.toLowerCase().includes("admin")
+          )
+        );
 
-        if (redirectTo && redirectTo.startsWith("/")) {
-          if (redirectTo.startsWith("/admin") && !isAdminRole) {
-            router.push("/map");
-          } else {
+        if (isAdminRole) {
+          if (typeof window !== "undefined") {
+            sessionStorage.removeItem("lanes_post_intent");
+          }
+          if (redirectTo && redirectTo.startsWith("/admin")) {
             router.push(redirectTo);
+          } else {
+            router.push("/admin/dashboard");
           }
           return;
         }
@@ -59,11 +103,15 @@ export default function LoginForm() {
           return;
         }
 
-        if (isAdminRole) {
-          router.push("/admin/dashboard");
-        } else {
-          router.push("/map");
+        if (redirectTo && redirectTo.startsWith("/") && redirectTo !== "/" && !redirectTo.startsWith("/admin")) {
+          router.push(redirectTo);
+          return;
         }
+
+        router.push("/map");
+        return;
+      } else {
+        router.push("/map");
         return;
       }
     } catch (err: any) {
@@ -130,10 +178,16 @@ export default function LoginForm() {
         }
       />
       <div className="flex justify-end mt-1">
-        <a href="#" className="text-sm text-blue-200 lg:text-blue-600 font-medium hover:text-white lg:hover:text-blue-500 hover:underline transition-colors">Forgot password?</a>
+        <button
+          type="button"
+          onClick={() => changeView("forgot")}
+          className="text-sm text-blue-200 lg:text-blue-600 font-medium hover:text-white lg:hover:text-blue-500 hover:underline transition-colors cursor-pointer"
+        >
+          Forgot password?
+        </button>
       </div>
       <div className="pt-2">
-        <Button type="submit" className="w-full" disabled={isLoggingIn}>
+        <Button type="submit" className="w-full" disabled={isLoggingIn || isGoogleLoading}>
           {isLoggingIn ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -154,11 +208,21 @@ export default function LoginForm() {
       <div>
         <button
           type="button"
-          onClick={() => info("Under Development", "Google Sign-In is currently under development.")}
-          className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          onClick={() => signInWithGoogle(redirectTo || undefined)}
+          disabled={isLoggingIn || isGoogleLoading}
+          className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
         >
-          <FcGoogle className="w-5 h-5" />
-          Sign in with Google
+          {isGoogleLoading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin text-slate-500" />
+              Connecting to Google...
+            </>
+          ) : (
+            <>
+              <FcGoogle className="w-5 h-5" />
+              Sign in with Google
+            </>
+          )}
         </button>
       </div>
 

@@ -118,3 +118,116 @@ async def send_otp_email_async(to_email: str, otp_code: str) -> tuple[bool, str]
             print(f"Error sending email via Resend API: {err_msg}")
             return False, err_msg
 
+
+async def send_password_reset_email_async(to_email: str, otp_code: str) -> tuple[bool, str]:
+    """
+    Sends a Password Reset OTP email using Resend REST API with clean hosted branding.
+    Returns (success, error_message)
+    """
+    api_key = settings.effective_resend_api_key
+    if not api_key:
+        print(f"WARN: Resend API Key not set. Simulating Password Reset OTP {otp_code} to {to_email}")
+        return True, ""
+
+    url = "https://api.resend.com/emails"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    logo_url = get_logo_url()
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reset your LANES password</title>
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 40px 16px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 540px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06); border: 1px solid #e2e8f0; overflow: hidden; margin: 0 auto;">
+            <!-- Brand Header / Seal -->
+            <tr>
+                <td style="padding: 40px 32px 24px 32px; text-align: center; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-bottom: 1px solid #f1f5f9;">
+                    <img 
+                        src="{logo_url}" 
+                        alt="LANES" 
+                        width="160"
+                        style="width: 160px; max-width: 100%; height: auto; display: inline-block; margin: 0 auto; border: 0; outline: none; text-decoration: none;" 
+                    />
+                </td>
+            </tr>
+            <!-- Main Content -->
+            <tr>
+                <td style="padding: 36px 36px 32px 36px;">
+                    <h1 style="color: #0f172a; font-size: 22px; font-weight: 700; margin: 0 0 12px 0; text-align: center; letter-spacing: -0.3px;">
+                        Reset your password
+                    </h1>
+                    <p style="color: #64748b; font-size: 15px; line-height: 1.6; margin: 0 0 28px 0; text-align: center;">
+                        We received a request to reset the password for your <strong>LANES</strong> account. Please enter the verification code below to set a new password.
+                    </p>
+                    
+                    <!-- OTP Code Badge -->
+                    <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 28px;">
+                        <span style="font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #2563eb; display: block; margin-left: 8px;">
+                            {otp_code}
+                        </span>
+                    </div>
+                    
+                    <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin: 0 0 28px 0; text-align: center;">
+                        This code will expire in <strong style="color: #64748b;">5 minutes</strong>.<br>If you did not request a password reset, please safely ignore this email — your account remains secure.
+                    </p>
+                    
+                    <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 0 0 24px 0;">
+                    
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                        <tr>
+                            <td style="color: #64748b; font-size: 13px; text-align: center; line-height: 1.4;">
+                                Stay safe on the road,<br>
+                                <strong style="color: #0f172a;">The LANES Team</strong>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        
+        <!-- Footer -->
+        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 540px; margin: 20px auto 0 auto;">
+            <tr>
+                <td style="color: #94a3b8; font-size: 12px; text-align: center; line-height: 1.5;">
+                    &copy; 2026 LANES — Localised Alternative Navigation for Environs under Submersion.<br>
+                    All rights reserved.
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+
+    payload: dict = {
+        "from": settings.RESEND_FROM_EMAIL,
+        "to": [to_email],
+        "subject": "LANES Password Reset Verification Code",
+        "html": html_content
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(url, headers=headers, json=payload, timeout=10.0)
+            response.raise_for_status()
+            return True, ""
+        except httpx.HTTPStatusError as e:
+            try:
+                err_json = e.response.json()
+                err_msg = err_json.get("message") or f"Resend HTTP {e.response.status_code}: {e.response.text}"
+            except Exception:
+                err_msg = f"Resend HTTP {e.response.status_code}: {e.response.text}"
+            print(f"Error sending password reset email via Resend API: {err_msg}")
+            return False, err_msg
+        except Exception as e:
+            err_msg = f"Resend Error: {str(e)}"
+            print(f"Error sending password reset email via Resend API: {err_msg}")
+            return False, err_msg
+
