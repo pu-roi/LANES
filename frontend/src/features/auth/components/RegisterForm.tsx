@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { authClient } from "../api/authClient";
@@ -542,15 +542,10 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
         {/* Stepper Header */}
         <div className="bg-transparent lg:bg-slate-50 px-5 sm:px-6 pt-5 pb-7 border-b border-white/10 lg:border-slate-100 rounded-t-2xl select-none">
           <h2 className="text-xl font-bold text-white lg:text-slate-900 mb-5 text-center drop-shadow-md lg:drop-shadow-none">Create your Citizen Account</h2>
-          <div className="flex items-center justify-between relative px-2">
-            <div className="absolute left-2 right-2 top-4 -translate-y-1/2 h-[2px] bg-white/20 lg:bg-slate-200 z-0"></div>
-            <div 
-              className="absolute left-2 top-4 -translate-y-1/2 h-[2px] bg-blue-500 lg:bg-blue-600 z-0 transition-all duration-500"
-              style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 96}%` }}
-            ></div>
-            
-            {steps.map((step) => (
-              <div key={step.id} className="relative z-10 flex flex-col items-center">
+          <div className="flex items-start relative px-2">
+            {steps.map((step, index) => (
+              <Fragment key={step.id}>
+                <div className="relative z-10 flex flex-col items-center shrink-0">
                 <div 
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300 ${
                     currentStep > step.id 
@@ -567,7 +562,13 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                 }`}>
                   {step.name}
                 </span>
-              </div>
+                </div>
+                {index < steps.length - 1 && (
+                  <div className={`flex-1 h-[2px] mt-4 transition-colors duration-500 ${
+                    currentStep > step.id ? "bg-blue-500 lg:bg-blue-600" : "bg-white/20 lg:bg-slate-200"
+                  }`} />
+                )}
+              </Fragment>
             ))}
           </div>
         </div>
