@@ -521,6 +521,11 @@ export function MapProvider({ children }: { children: ReactNode }) {
         if (result.fallback_used && result.engine_used === "ors") {
           setRouteNotice("Valhalla is temporarily unavailable. Using OpenRouteService backup.");
         }
+        if (result.offline_limited) {
+          setRouteNotice("Offline mode: showing one safe route. Alternative ranking requires a connection.");
+        } else if (result.blocked_baseline) {
+          setRouteNotice(`${result.blocked_baseline.message} A safe detour is shown below.`);
+        }
         
         if (result.routes.length === 0) {
           setRouteError("No safe route available. The destination is completely blocked by severe floods for your vehicle profile.");

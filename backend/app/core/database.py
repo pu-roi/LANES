@@ -18,8 +18,9 @@ if db_url.startswith("encrypted:"):
 
 engine = create_engine(
     db_url,
-    pool_size=20,
-    max_overflow=10,
+    pool_size=25,
+    max_overflow=20,
+    pool_timeout=10,  # Fail fast after 10s rather than hanging for 30s during connection spikes
     pool_recycle=1800,
     pool_pre_ping=True,
     connect_args={"connect_timeout": 3},  # Prevent hanging when DB is offline

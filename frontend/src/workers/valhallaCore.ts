@@ -6,6 +6,7 @@ export interface CustomRoutingRequest extends Partial<RoutingRequest> {
   end: [number, number];
   regions: string[];
   exclude_polygons?: [number, number][][];
+  vehicle_profile?: 'light' | 'heavy' | 'motorcycle' | 'walk';
 }
 
 export interface RoutingEngineOptions {
@@ -140,7 +141,7 @@ function getValhallaConfig() {
             skadi: { max_shape: 750000, min_resample: 10.0 },
             status: { allow_verbose: false },
             centroid: { max_distance: 200000.0, max_locations: 5 },
-            max_alternates: 2, max_radius: 200, max_reachability: 50, max_exclude_locations: 50,
+            max_alternates: 3, max_radius: 200, max_reachability: 50, max_exclude_locations: 50,
             max_exclude_polygons_length: 10000, max_timedep_distance: 500000,
             max_timedep_distance_matrix: 0, max_distance_disable_hierarchy_culling: 0,
         },
@@ -171,10 +172,16 @@ function decodePolyline(encoded: string, precision = 1e6) {
     return coordinates;
 }
 
-function performRouting(valhallaRouter: any, start: [number, number], end: [number, number], excludePolygons?: [number, number][][]): any {
+function performRouting(
+    valhallaRouter: any,
+    start: [number, number],
+    end: [number, number],
+    excludePolygons?: [number, number][][],
+    vehicleProfile: CustomRoutingRequest['vehicle_profile'] = 'light',
+): any {
     const routingRequest: any = {
         locations: [{ lon: start[0], lat: start[1] }, { lon: end[0], lat: end[1] }],
-        costing: 'auto',
+        costing: vehicleProfile === 'walk' ? 'pedestrian' : vehicleProfile === 'motorcycle' ? 'motorcycle' : 'auto',
         units: 'miles',
     };
     
@@ -186,12 +193,6 @@ function performRouting(valhallaRouter: any, start: [number, number], end: [numb
     const result = JSON.parse(routeResult);
     
     if (result.error || !result.trip || !result.trip.legs || result.trip.legs.length === 0) {
-        // If routing failed AND we tried to use excludePolygons, fallback to Direct route
-        if (excludePolygons && excludePolygons.length > 0) {
-            console.warn("[valhalla-worker] Detour failed (no suitable edges). Retrying without flood polygons.");
-            return performRouting(valhallaRouter, start, end, undefined);
-        }
-        
         let errorMsg = result.error || 'No route found.';
         if (String(errorMsg).includes('No suitable edges') || result.error_code === 171) {
             errorMsg = 'Could not find a road near this location. Ensure tiles are mounted for all regions along the route.';
@@ -223,7 +224,7 @@ export function createCustomRoutingEngine(opts: RoutingEngineOptions) {
     let valhallaRouter: any = null;
     const mounted = new Set();
     return async function route(request: CustomRoutingRequest) {
-        const { start, end, regions, exclude_polygons } = request;
+        const { start, end, regions, exclude_polygons, vehicle_profile } = request;
         if (!wasmModule) {
             wasmModule = await opts.initModule();
             try {
@@ -247,6 +248,6 @@ export function createCustomRoutingEngine(opts: RoutingEngineOptions) {
             valhallaRouter = new wasmModule.ValhallaRouter(JSON.stringify(getValhallaConfig()));
         }
         opts.onProgress?.('Computing route.');
-        return performRouting(valhallaRouter, start, end, exclude_polygons);
+        return performRouting(valhallaRouter, start, end, exclude_polygons, vehicle_profile);
     };
 }

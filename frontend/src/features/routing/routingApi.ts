@@ -65,7 +65,24 @@ export interface RouteOption {
   is_truncated: boolean;
   safety_score: number;
   flood_risk: string;
+  category: "fastest" | "safest" | "balanced" | "alternative";
+  flood_exposure: FloodExposure;
   instructions?: any[];
+}
+
+export interface FloodExposure {
+  highest_severity: "none" | "low" | "medium" | "high" | "extreme";
+  zone_count: number;
+  intersected_distance_m: number;
+  exposure_score: number;
+  message: string;
+}
+
+export interface BlockedRouteBaseline {
+  distance: number;
+  duration: number;
+  flood_exposure: FloodExposure;
+  message: string;
 }
 
 export interface MultiRouteResponse {
@@ -73,6 +90,8 @@ export interface MultiRouteResponse {
   recommended_index: number;
   engine_used: "valhalla" | "ors";
   fallback_used: boolean;
+  blocked_baseline?: BlockedRouteBaseline | null;
+  offline_limited?: boolean;
   avoided_floods?: boolean;
   blocked?: boolean;
   weather_condition?: string;
@@ -102,23 +121,26 @@ export async function getRoute(
   if (typeof window !== "undefined" && !navigator.onLine) {
     let excludePolygons: [number, number][][] = [];
     
-    if (!ignoreFloods) {
-      try {
-        const cachedFloods = await getFloodsOffline();
-        if (cachedFloods && cachedFloods.length > 0) {
+    try {
+      const cachedFloods = await getFloodsOffline();
+      if (cachedFloods && cachedFloods.length > 0) {
           // Convert cached GeoJSON polygons to Valhalla format
           excludePolygons = cachedFloods.map((flood: any) => {
-             // The backend SSE sends the GeoJSON under the 'polygon' key
-             if (flood.polygon && flood.polygon.type === "Polygon") {
-                return flood.polygon.coordinates[0];
+             // Older cached records have no server-authored restriction metadata.
+             // Treat them as blocked until a fresh sync can safely classify them.
+             if (!flood.routing_restrictions || flood.routing_restrictions[vehicleProfile] === "blocked") {
+               // The backend SSE sends the GeoJSON under the 'polygon' key
+               if (flood.polygon && flood.polygon.type === "Polygon") {
+                  return flood.polygon.coordinates[0];
+               }
              }
              return null;
           }).filter(Boolean);
           console.log("[Offline Routing] Fetched cached floods. excludePolygons =", excludePolygons);
-        }
-      } catch (err) {
-        console.warn("Failed to load cached floods for offline routing", err);
       }
+    } catch (err) {
+      console.warn("Failed to load cached floods for offline routing", err);
+      throw new Error("Offline routing cannot verify flood restrictions. Connect to the internet and try again.");
     }
 
     return new Promise((resolve, reject) => {
@@ -127,7 +149,8 @@ export async function getRoute(
         const payload: any = {
           start: [start[0], start[1]], // [lng, lat]
           end: [end[0], end[1]],       // [lng, lat]
-          regions: ["philippines"]     // matches philippines_routing.tar
+          regions: ["philippines"],    // matches philippines_routing.tar
+          vehicle_profile: vehicleProfile,
         };
         
         if (excludePolygons.length > 0) {
@@ -181,15 +204,23 @@ export async function getRoute(
 
             const routeOption: RouteOption = {
               index: 0,
-              label: result.avoided_floods ? "Recommended (Offline)" : "Offline Route",
+              label: "Fastest",
               geometry: result.geometry,
               distance: (result.summary?.distance || 0) * 1609.34, // valhalla summary distance is miles, convert to meters
               duration: result.summary?.time || 0, // seconds
               avoided_floods: result.avoided_floods,
               blocked: false,
               is_truncated: false,
-              safety_score: 1.0,
-              flood_risk: "None",
+              safety_score: 100,
+              flood_risk: "none",
+              category: "fastest",
+              flood_exposure: {
+                highest_severity: "none",
+                zone_count: 0,
+                intersected_distance_m: 0,
+                exposure_score: 0,
+                message: "Offline safe route. Live exposure ranking is unavailable.",
+              },
               instructions: result.instructions || []
             };
 
@@ -198,6 +229,7 @@ export async function getRoute(
               recommended_index: 0,
               engine_used: "valhalla",
               fallback_used: false,
+              offline_limited: true,
             });
           } else if (e.data.type === "error") {
             clearTimeout(timeoutId);

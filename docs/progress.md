@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 17, 2026, 1:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,8 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 25 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
+| 24 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
 | 23| Identity-First Google Auth, Password Recovery & Resilient Admin Routing | Completed | Google Sign-in/Sign-up integration with automatic profile prefill and citizen onboarding completion, self-service Resend OTP password recovery workflow, hardened admin login redirection ([BUG-034]) directly to /admin/dashboard, and NavigationWrapper route guard enforcement |
 | 22| Private Valhalla Cloud Run Recovery | Ready for cloud deployment | Private Valhalla deployment assets, Cloud Storage tile artifact flow, Cloud Run identity-token calls, automatic ORS availability fallback, typed engine metadata, and matched desktop/mobile backup notice |
 | 21| Production Cloud Infrastructure & Firebase App Hosting Deployment | Completed | Production deployment of Next.js frontend to Firebase App Hosting (asia-east1), build-time API variable injection via apphosting.yaml, backend CORS middleware whitelist expansion (*.hosted.app, *.web.app, *.firebaseapp.com), dotenvx environment encryption, and deployment gitignore hygiene |
@@ -36,6 +38,32 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 26: Profile Picture Privacy, Tab Title Standardization & About Contact Form (🟢 COMPLETED)
+- [x] **Profile Picture Privacy Toggle & Query Masking (`profile.py`, `feed.py`, `user.py`, `posts.py`, `comments.py`, `ProfileView.tsx`, `4389876f4499_add_hide_profile_picture_to_profile.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `hide_profile_picture = Column(Boolean, default=False)` to the `profiles` table with Alembic migration `4389876f4499`.
+  - Masked `author_avatar`/`avatar_url` to `None`/`NULL` in public post feeds, comment threads, top contributor leaderboards, and user profile endpoints when enabled.
+  - Added toggle in Profile Settings tab under Privacy section and rendered fallback uppercase initial letter avatar with `EyeOff` indicator on profile view and quick menu.
+  - Added unit test suite `backend/tests/test_profile_privacy.py` covering model flags and privacy masking across endpoints.
+- [x] **Browser Tab Title Standardization (`layout.tsx`, `manifest.json`, subpages)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Configured root App Router metadata template to `LANES | %s` with default fallback `LANES`.
+  - Standardized tab titles across subpages (`LANES | Map`, `LANES | Community Feed`, `LANES | Profile`, `LANES | Flood Risk Analytics`, `LANES | About`).
+  - Updated PWA manifest application name to `"LANES - Localized Alternative Navigation for Environs under Submersion"`.
+- [x] **Official Contact Channels & Interactive Resend Inquiries (`ContactSection.tsx`, `about/page.tsx`, `public.py`, `email_service.py`, `contact.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Displayed official contact channels (`lanes@navlanes.live` with backup `navlanes.live@gmail.com`) with one-click copy support on `/about`.
+  - Implemented rate-limited `POST /api/v1/public/contact` (5/min) and asynchronous Resend transactional dispatch (`send_contact_email_async`) with direct `reply_to` headers to deliver commuter messages directly to project administrators.
+
+### Capstone Phase 25: Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience (🟡 IMPLEMENTED / MANUAL VERIFICATION PENDING)
+- [x] **One-instance basemap lifecycle (`BaseMap.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced the preflight-and-recreate cycle with a 1.5-second initial MapTiler render budget and in-place OSM fallback.
+  - Restores LANES-owned flood, boundary, and route layers through existing `style.load` hooks instead of creating another WebGL map.
+  - Retries MapTiler after connectivity returns and on bounded backoff; recovery allows six seconds because OSM is already a usable baseline.
+- [x] **Responsive status and safe configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Positioned the recovery notice relative to the viewport, below the desktop floating navigation and with a width cap/wrapping for smaller screens.
+  - Centralized MapTiler style construction under `NEXT_PUBLIC_MAPTILER_KEY`; App Hosting now references the `maptiler-api-key` secret rather than a literal production value.
+- [x] **SSE database-pool resilience (`sync.py`, `database.py`, `main.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed the request-lifetime SQLAlchemy dependency from `/sync/stream`, moved active-zone queries to short-lived worker-thread sessions, and added fail-fast pool/JSON error handling.
+- [ ] **Remaining verification** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Confirm the MapTiler restoration path in a clean browser session and deployed Firebase build after creating/restricting the `maptiler-api-key` secret.
 
 ### Capstone Phase 23: Identity-First Google Authentication, Self-Service Password Recovery & Resilient Admin Routing (🟢 COMPLETED)
 - [x] **Google OAuth Citizen Onboarding & Sign-In (`useGoogleAuth.ts`, `auth.py`, `auth_service.py`, `RegisterForm.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

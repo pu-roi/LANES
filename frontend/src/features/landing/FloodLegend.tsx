@@ -33,7 +33,7 @@ export function FloodLegend() {
             <span className="text-[10px] text-amber-900 font-bold ml-auto px-2 py-0.5 bg-amber-200/60 rounded-md">Half-Tire to Knee</span>
           </div>
           <p className="text-xs text-amber-900/90 leading-snug">
-            13 - 19 inches. Passable by 4-Wheel High Clearance (SUVs) & Low Clearance (Sedans).
+            13 - 19 inches. Not passable to light vehicles; use a high-clearance vehicle only with caution.
           </p>
         </div>
 

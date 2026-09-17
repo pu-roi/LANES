@@ -923,6 +923,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             <label className="text-sm font-semibold text-gray-800 block mb-1.5">
               Flood Severity <span className="text-red-500 ml-0.5">*</span>
             </label>
+            <p className="text-[11px] text-gray-500 mb-2">Half-Tire to Knee water is not passable to light vehicles; Tires and deeper are blocked for normal navigation.</p>
             <div className="grid grid-cols-4 gap-2">
               {VISUAL_OPTIONS.map((opt) => {
                 const colors = SEVERITY_COLORS[opt.severity];

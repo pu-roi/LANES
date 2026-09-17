@@ -231,3 +231,76 @@ async def send_password_reset_email_async(to_email: str, otp_code: str) -> tuple
             print(f"Error sending password reset email via Resend API: {err_msg}")
             return False, err_msg
 
+
+async def send_contact_email_async(
+    name: str,
+    sender_email: str,
+    subject: str,
+    message: str
+) -> tuple[bool, str]:
+    """
+    Sends a contact inquiry email to the LANES administrative inboxes via Resend REST API.
+    Returns (success, error_message)
+    """
+    api_key = settings.effective_resend_api_key
+    if not api_key:
+        print(f"WARN: Resend API Key not set. Simulating Contact Message from {name} ({sender_email}): {subject}")
+        return True, ""
+
+    url = "https://api.resend.com/emails"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    html_content = f"""
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+        <h2 style="color: #0f172a; margin-top: 0; font-size: 20px; border-bottom: 2px solid #2563eb; padding-bottom: 8px;">
+            New Contact Message — LANES
+        </h2>
+        <table style="width: 100%; margin-top: 16px; font-size: 14px; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 6px 0; color: #64748b; width: 80px; font-weight: 600;">From:</td>
+                <td style="padding: 6px 0; color: #0f172a;">{name} &lt;{sender_email}&gt;</td>
+            </tr>
+            <tr>
+                <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Subject:</td>
+                <td style="padding: 6px 0; color: #0f172a; font-weight: 600;">{subject}</td>
+            </tr>
+        </table>
+        <div style="margin-top: 20px; padding: 16px; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">
+{message}
+        </div>
+        <p style="margin-top: 24px; font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 12px;">
+            Submitted via LANES About / Contact Form. Reply directly to this email to respond to the sender.
+        </p>
+    </div>
+    """
+
+    payload: dict = {
+        "from": settings.RESEND_FROM_EMAIL,
+        "to": ["lanes@navlanes.live", "navlanes.live@gmail.com"],
+        "reply_to": sender_email,
+        "subject": f"[LANES Inquiry] {subject}",
+        "html": html_content
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(url, headers=headers, json=payload, timeout=10.0)
+            response.raise_for_status()
+            return True, ""
+        except httpx.HTTPStatusError as e:
+            try:
+                err_json = e.response.json()
+                err_msg = err_json.get("message") or f"Resend HTTP {e.response.status_code}: {e.response.text}"
+            except Exception:
+                err_msg = f"Resend HTTP {e.response.status_code}: {e.response.text}"
+            print(f"Error sending contact email via Resend API: {err_msg}")
+            return False, err_msg
+        except Exception as e:
+            err_msg = f"Resend Error: {str(e)}"
+            print(f"Error sending contact email via Resend API: {err_msg}")
+            return False, err_msg
+
+

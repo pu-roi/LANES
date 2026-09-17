@@ -18,8 +18,11 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LANES Navigation",
-  description: "Flood-Adaptive Route Calculation Platform",
+  title: {
+    default: "LANES",
+    template: "LANES | %s",
+  },
+  description: "Localized Alternative Navigation for Environs under Submersion - Flood-Adaptive Route Calculation Platform",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

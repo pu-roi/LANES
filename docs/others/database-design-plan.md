@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 14, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -39,6 +39,7 @@ erDiagram
         string contact_number
         date birthdate
         string avatar_url
+        boolean hide_profile_picture "Avatar privacy toggle"
         datetime updated_at
     }
 
@@ -242,6 +243,7 @@ erDiagram
 | `contact_number` | `VARCHAR(20)` | Nullable | Phone number. |
 | `birthdate` | `DATE` | Nullable | User's date of birth. |
 | `avatar_url` | `VARCHAR(255)` | Nullable | Link to user avatar image. |
+| `hide_profile_picture` | `BOOLEAN` | Default: `FALSE` | Privacy preference to hide avatar and display uppercase initial fallback. |
 | `updated_at` | `TIMESTAMP` | Default: UTC Now | Last profile update. |
 
 ### Table D: `addresses`

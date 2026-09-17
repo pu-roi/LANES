@@ -1,20 +1,15 @@
-import json
 import logging
-import math
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 import httpx
 from fastapi import HTTPException
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
-from app import models
-from app.models.report import ReportSeverity
 from app.core.config import settings
 from app.core.valhalla_auth import ValhallaAuthenticationError, get_valhalla_auth_headers
 
-ROUTE_LABELS = ["Recommended", "Alternative 1", "Alternative 2"]
+ROUTE_LABELS = ["Recommended", "Alternative 1", "Alternative 2", "Alternative 3"]
 
 
 class ValhallaServiceUnavailable(Exception):
@@ -58,42 +53,6 @@ def decode_polyline6(encoded_str: str) -> List[List[float]]:
         
     return coordinates
 
-def get_active_flood_polygons(db: Session) -> Tuple[List[List[List[float]]], List[List[List[float]]], List[List[List[float]]]]:
-    """
-    Fetches active flood avoidance zones and groups them by severity.
-    Returns lists of Valhalla-compatible polygons (exterior rings).
-    """
-    zones_query = db.query(
-        models.FloodAvoidanceZone,
-        func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson")
-    ).filter(
-        models.FloodAvoidanceZone.is_active == True,
-        (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
-    ).all()
-    
-    red_polygons = []
-    orange_polygons = []
-    yellow_polygons = []
-    
-    for zone, geojson_str in zones_query:
-        if not geojson_str:
-            continue
-        geom = json.loads(geojson_str)
-        if geom.get("type") == "Polygon" and len(geom.get("coordinates", [])) > 0:
-            exterior_ring = geom["coordinates"][0]  # Valhalla expects an array of points for each polygon
-            sev = zone.severity.lower() if isinstance(zone.severity, str) else str(zone.severity).lower()
-            if sev == "low":
-                # White/Low is passable. No detour required.
-                continue
-            elif sev == "extreme":
-                red_polygons.append(exterior_ring)
-            elif sev == "high":
-                orange_polygons.append(exterior_ring)
-            elif sev == "medium":
-                yellow_polygons.append(exterior_ring)
-                
-    return red_polygons, orange_polygons, yellow_polygons
-
 def request_valhalla_route(start: List[float], end: List[float], avoid_polygons: Optional[List[List[List[float]]]] = None, vehicle_profile: str = "light", heading: Optional[int] = None) -> Optional[Dict[str, Any]]:
     """Queries the Valhalla server for routes between start and end coordinates, optionally avoiding polygons."""
     
@@ -114,12 +73,14 @@ def request_valhalla_route(start: List[float], end: List[float], avoid_polygons:
     body: Dict[str, Any] = {
         "locations": [start_loc, end_loc],
         "costing": costing,
-        "alternates": 2,
+        "alternates": 3,
         "units": "kilometers"
     }
     
     if avoid_polygons and len(avoid_polygons) > 0:
-        body["avoid_polygons"] = avoid_polygons
+        # Valhalla's route API calls this ``exclude_polygons``.  The former
+        # ``avoid_polygons`` field was silently ignored by some deployments.
+        body["exclude_polygons"] = avoid_polygons
         
     url = f"{settings.VALHALLA_URL}/route"
     
@@ -127,7 +88,7 @@ def request_valhalla_route(start: List[float], end: List[float], avoid_polygons:
         response = httpx.post(url, json=body, headers=get_valhalla_auth_headers(), timeout=10.0)
         if response.status_code == 200:
             return response.json()
-        elif response.status_code == 400 and "avoid_polygons" in response.text:
+        elif response.status_code == 400 and "exclude_polygons" in response.text:
              # If Valhalla rejects the route because it cannot avoid the polygons
              return None
         elif response.status_code in (401, 403) or response.status_code >= 500:
@@ -230,7 +191,8 @@ def calculate_flood_safe_route(
     vehicle_profile: str = "light",
     heading: Optional[int] = None
 ) -> Dict[str, Any]:
-    """Queries Valhalla to find a route, intelligently falling back on flood avoidance rules based on vehicle profile."""
+    """Deprecated internal API; unified routing is provided by routing_service."""
+    raise RuntimeError("Use routing_service.calculate_route for flood-aware routing.")
     
     # 1. Fast path: completely ignore all floods
     if ignore_floods:
@@ -392,6 +354,24 @@ def calculate_flood_safe_route(
     # If we reach this point, it means no safe detours exist. 
     # Since we explicitly discard 0% safe direct routes, we have no valid routes to show.
     return {"routes": [], "recommended_index": -1}
+
+
+def fetch_route_candidates(
+    start: List[float],
+    end: List[float],
+    exclude_polygons: Optional[List[List[List[float]]]] = None,
+    vehicle_profile: str = "light",
+    heading: Optional[int] = None,
+) -> List[Dict[str, Any]]:
+    """Return raw Valhalla candidates; policy evaluation happens centrally."""
+    data = request_valhalla_route(
+        start=start,
+        end=end,
+        avoid_polygons=exclude_polygons,
+        vehicle_profile=vehicle_profile,
+        heading=heading,
+    )
+    return process_valhalla_response(data or {})
 
 # Re-export Decision #16 carriageway functions from dedicated service for backwards compatibility
 from app.services.carriageway_service import (

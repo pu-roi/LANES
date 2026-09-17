@@ -67,7 +67,8 @@ async def calculate_flood_safe_route(
     ignore_floods: bool = False,
     vehicle_profile: str = "light"
 ) -> Dict[str, Any]:
-    """Queries OpenRouteService using dynamic avoid_polygons."""
+    """Deprecated internal API; unified routing is provided by routing_service."""
+    raise RuntimeError("Use routing_service.calculate_route for flood-aware routing.")
     
     try:
         red, orange, yellow = get_active_flood_polygons(db) if not ignore_floods else ([], [], [])
@@ -185,3 +186,42 @@ async def calculate_flood_safe_route(
         "routes": valid_routes,
         "recommended_index": 1 if multi_polygon_coords and not ignore_floods and len(valid_routes) > 1 else 0
     }
+
+
+async def fetch_route_candidates(
+    start: List[float],
+    end: List[float],
+    exclude_polygons: Optional[List[List[List[float]]]] = None,
+    vehicle_profile: str = "light",
+) -> List[Dict[str, Any]]:
+    """Return raw ORS candidates; policy evaluation happens centrally."""
+    multi_polygon_coords = [[polygon] for polygon in (exclude_polygons or []) if polygon]
+    ors_profile = "foot-walking" if vehicle_profile == "walk" else "driving-car"
+    payload: Dict[str, Any] = {
+        "coordinates": [[start[0], start[1]], [end[0], end[1]]],
+        "instructions": True,
+        "geometry": True,
+        "units": "m",
+        "preference": "fastest",
+        "alternative_routes": {"target_count": 3, "weight_factor": 1.5, "share_factor": 0.5},
+    }
+    if multi_polygon_coords:
+        payload["options"] = {"avoid_polygons": {"type": "MultiPolygon", "coordinates": multi_polygon_coords}}
+    async with httpx.AsyncClient() as client:
+        result = await fetch_ors_route(client, payload, ors_profile)
+    candidates: List[Dict[str, Any]] = []
+    for feature in (result or {}).get("features", []):
+        properties = feature.get("properties", {})
+        summary = properties.get("summary", {})
+        candidates.append({
+            "geometry": feature.get("geometry", {}),
+            "distance": summary.get("distance", 0.0),
+            "duration": summary.get("duration", 0.0),
+            "avoided_floods": False,
+            "blocked": False,
+            "is_truncated": False,
+            "safety_score": 100.0,
+            "flood_risk": "none",
+            "instructions": properties.get("segments", [{}])[0].get("steps", []),
+        })
+    return candidates

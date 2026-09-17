@@ -1,8 +1,9 @@
 # **LANES Flood Depth & Vehicle Passability Implementation Review**
 
-**Document Version:** 1.0 (Audit & Implementation Reference)  
+**Document Version:** 1.1 (Unified Routing Policy)
 **System Scope:** Frontend Routing Panel, Citizen Flood Reporting, PostGIS Spatial Zones, and Valhalla / ORS Routing Engines  
 **Target Codebase:** LANES Metro Manila Flood-Aware Navigation Platform  
+**Last Updated:** September 17, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -13,7 +14,7 @@ This document provides a technical audit and operational reference detailing how
 It explicitly resolves the question of **which vehicles can pass each flood depth level**, bridging the gap between:
 1. **Public MMDA Flood Gauge Standards** (Gutter, Half-Knee, Half-Tire, Knee, Tires, Waist, Chest, Neck & Above).
 2. **Citizen Flood Reporting Survey Options** ([`FloodReportPanel.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx)).
-3. **The Active Backend Routing Logic** ([`valhalla_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py) & [`ors_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/ors_service.py)).
+3. **The Active Backend Routing Policy** ([`flood_routing_policy.py`](file:///d:/Documents/Github/LANES/backend/app/services/flood_routing_policy.py)), shared by the Valhalla and ORS provider adapters.
 
 ---
 
@@ -56,7 +57,9 @@ When citizens submit flood hazard reports, they can confirm vehicle safety throu
 
 ## 4. Master Passability & Routing Decision Table
 
-The table below explains how the backend routing algorithm ([`valhalla_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py)) processes route candidates for every vehicle profile at each specific flood depth:
+The table below explains how the shared backend policy ([`flood_routing_policy.py`](file:///d:/Documents/Github/LANES/backend/app/services/flood_routing_policy.py)) evaluates every provider candidate for each profile. Safety scores are deterministic indicators, not probabilities.
+
+An official passable-vehicle list can make a listed vehicle profile more restrictive, but a vehicle-only survey list does not silently prohibit Walking. Walking is restricted only by an explicit pedestrian/walking prohibition.
 
 | Flood Level | Depth | Pedestrian (`walk`) | Motorcycle (`motorcycle`) | Low Clearance Sedan (`light`) | High Clearance SUV (`heavy`) | Engineering / Biological Justification |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -64,9 +67,9 @@ The table below explains how the backend routing algorithm ([`valhalla_service.p
 | **Half-Knee** | 10" (0.25m) | **Passable** (100%) | **Passable** (100%) | **Passable** (100%) | **Passable** (100%) | Within tolerable wading limit for slow traversal. Low zone is excluded from route avoidance polygons. |
 | **Half-Tire** | 13" (0.33m) | **Penalized** (80% Safe) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | **Passable** (85% Safe) | **Moto/Sedan:** Water reaches scooter CVT intakes and car door seals; hydro-lock risk.<br>**Pedestrian:** DOH *Leptospira* health hazard advisory applies.<br>**SUV:** Safely within 700mm wading depth. |
 | **Knee** | 19" (0.48m) | **Penalized** (80% Safe) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | **Passable** (85% Safe) | **Sedan:** Floods exhaust and cabin floorboards; loss of traction.<br>**Moto:** Engine stalls immediately.<br>**Pedestrian:** Heavily penalized due to Leptospirosis infection and open curb hazards.<br>**SUV:** Within wading limit. |
-| **Tires** | 26" (0.66m) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | **Penalized** (35% Safe) | **Pedestrian:** Strong currents and invisible missing manhole covers make walking lethal.<br>**SUV:** Approaches the ~700mm–800mm factory threshold; routed **only as a defensive last resort**. |
-| **Waist** | 37" (0.94m) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | **Penalized** (35% Safe) | Exceeds standard vehicle wading specs. Grouped in Orange zone; Valhalla penalizes heavily (35% score), steering vehicles to dry detours unless no other path exists. |
-| **Chest** | 45" (1.14m) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | **Penalized** (35% Safe) | Water level presents severe buoyant floatation. High Clearance is permitted only if trapped without alternative dry routes. |
+| **Tires** | 26" (0.66m) | **Strong caution** (40% Safe) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | Walking is a highly discouraged fallback; vehicle navigation remains unavailable. |
+| **Waist** | 37" (0.94m) | **Strong caution** (40% Safe) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | Walking remains possible but exposed to currents, contaminated water, debris, and hidden hazards. |
+| **Chest** | 45" (1.14m) | **Strong caution** (40% Safe) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | This is the strongest public walking warning; vehicle navigation remains blocked. |
 | **Neck & Above** | >45" (>1.14m) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | 🚫 **BLOCKED** (0%) | **100% IMPASSABLE TO ALL PROFILES.** Complete road closure; extreme danger of drowning and total vehicle submersion. |
 
 ---
@@ -75,14 +78,15 @@ The table below explains how the backend routing algorithm ([`valhalla_service.p
 
 When reviewing the implementation against theoretical documentation, three key design decisions stand out:
 
-### 1. The Orange Zone "Last-Resort" Principle for High Clearance
+### 1. Orange Is a Vehicle Closure and Strong Walking Warning
 * **MMDA View:** MMDA classifies **Tires (26")**, **Waist (37")**, and **Chest (45")** as **NPATV** (Not Passable to All Types of Vehicles).
-* **LANES Implementation:** In [`valhalla_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py#L234-L237), High Clearance (`heavy`) vehicles are **not strictly hard-blocked** in Orange zones. Instead, they receive a **35.0% safety score penalty**. 
-* **Reasoning:** If an emergency evacuation requires navigating an area surrounded by water, an SUV or rescue truck must not be stranded with a "No Route Found" error if a traversable path exists. The algorithm penalizes the route so that completely dry alternative roads are prioritized first; the flooded route is offered only as a last resort.
+* **LANES Implementation:** `high`/Orange is a 40% safety, strongly cautioned fallback for Walking only. It remains hard-blocked for Bike/Motorcycle, Low Clearance, and High Clearance routes. `extreme`/Red is hard-blocked for every public profile.
+* **Reasoning:** A person may remain above water at Orange depth, but hazards still make it a last-choice route. Vehicle wading specifications cannot account for currents, debris, open manholes, visibility, or local road condition.
 
-### 2. Valhalla vs. OpenRouteService (ORS) Behavioral Difference
-* **Valhalla Engine (`valhalla_service.py`):** Supports cost penalties and safety scoring. Yellow zones reduce safety to 85% (High Cl.) and 80% (Walk), while Orange zones reduce safety to 35% (High Cl.).
-* **OpenRouteService (`ors_service.py`):** Uses GeoJSON `avoid_polygons` with strict binary exclusion. Any polygon sent to ORS is 100% impassable. Consequently, ORS hard-blocks `walk` on Red + Orange, `motorcycle`/`light` on Red + Orange + Yellow, and `heavy` on Red only.
+### 2. Provider Adapters Share One Eligibility Decision
+* **Valhalla (`valhalla_service.py`):** Receives hard-exclusion polygons through documented `exclude_polygons` and may use native motorcycle/pedestrian costing.
+* **ORS (`ors_service.py`):** Receives the same hard-exclusion polygons as GeoJSON `options.avoid_polygons`; it uses `driving-car` for public vehicle profiles and `foot-walking` for Walking.
+* **Shared evaluation:** Provider output is evaluated against authoritative active-zone geometry after routing. This determines route eligibility, deterministic safety score (100 dry, 95 low, 85 cautious Heavy/Medium, 80 cautious Walking/Medium, 40 strongly cautioned Walking/Orange), exposure details, de-duplication, and card category.
 
 ### 3. Identical Thresholds for Motorcycles and Low Clearance Sedans
 In the backend logic:
@@ -104,6 +108,6 @@ For development, testing, or capstone defense, the passability logic is located 
 
 1. **Depth UI Selection:** [`frontend/src/features/hazards/FloodReportPanel.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx#L78-L92)
 2. **Vehicle Profile Selection:** [`frontend/src/features/routing/RoutePanel.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/routing/RoutePanel.tsx#L172-L177)
-3. **Valhalla Avoidance & Safety Calculations:** [`backend/app/services/valhalla_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py#L215-L245)
-4. **ORS Avoidance Fallback:** [`backend/app/services/ors_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/ors_service.py#L77-L84)
-5. **Spatial Avoidance Polygons Query:** [`backend/app/services/valhalla_service.py:get_active_flood_polygons`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py#L55-L89)
+3. **Shared flood policy, evaluation, and ranking:** [`backend/app/services/flood_routing_policy.py`](file:///d:/Documents/Github/LANES/backend/app/services/flood_routing_policy.py)
+4. **Valhalla and ORS provider adapters:** [`backend/app/services/valhalla_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/valhalla_service.py) and [`backend/app/services/ors_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/ors_service.py)
+5. **Routing orchestration:** [`backend/app/services/routing_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/routing_service.py)
