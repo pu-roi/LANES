@@ -11,8 +11,86 @@ export function useProfile() {
       const response = await apiClient.patch('/users/me/profile', data);
       return response;
     },
-    onSuccess: () => {
+    onMutate: async (newData: any) => {
+      await queryClient.cancelQueries({ queryKey: ['auth-user'] });
+      const previousUser = queryClient.getQueryData(['auth-user']);
+      queryClient.setQueryData(['auth-user'], (oldUser: any) => {
+        if (!oldUser) return oldUser;
+        return {
+          ...oldUser,
+          profile: {
+            ...(oldUser.profile || {}),
+            ...newData,
+          },
+        };
+      });
+      return { previousUser };
+    },
+    onError: (_err, _newData, context: any) => {
+      if (context?.previousUser) {
+        queryClient.setQueryData(['auth-user'], context.previousUser);
+      }
+    },
+    onSuccess: (updatedProfile: any) => {
+      queryClient.setQueryData(['auth-user'], (oldUser: any) => {
+        if (!oldUser) return oldUser;
+        return {
+          ...oldUser,
+          profile: {
+            ...(oldUser.profile || {}),
+            ...updatedProfile,
+          },
+        };
+      });
       queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+      queryClient.invalidateQueries({ queryKey: ['my-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
+
+  const uploadAvatarMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await apiClient.post('/users/me/avatar', formData);
+      return response;
+    },
+    onSuccess: (updatedProfile: any) => {
+      queryClient.setQueryData(['auth-user'], (oldUser: any) => {
+        if (!oldUser) return oldUser;
+        return {
+          ...oldUser,
+          profile: {
+            ...(oldUser.profile || {}),
+            ...updatedProfile,
+          },
+        };
+      });
+      queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+      queryClient.invalidateQueries({ queryKey: ['my-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
+
+  const removeAvatarMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.delete('/users/me/avatar');
+      return response;
+    },
+    onSuccess: (updatedProfile: any) => {
+      queryClient.setQueryData(['auth-user'], (oldUser: any) => {
+        if (!oldUser) return oldUser;
+        return {
+          ...oldUser,
+          profile: {
+            ...(oldUser.profile || {}),
+            ...updatedProfile,
+          },
+        };
+      });
+      queryClient.invalidateQueries({ queryKey: ['auth-user'] });
+      queryClient.invalidateQueries({ queryKey: ['my-posts'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
   });
 
@@ -37,6 +115,10 @@ export function useProfile() {
   return {
     updateProfile: updateProfileMutation.mutateAsync,
     isUpdatingProfile: updateProfileMutation.isPending,
+    uploadAvatar: uploadAvatarMutation.mutateAsync,
+    isUploadingAvatar: uploadAvatarMutation.isPending,
+    removeAvatar: removeAvatarMutation.mutateAsync,
+    isRemovingAvatar: removeAvatarMutation.isPending,
     myReports,
     isLoadingReports,
     myPosts,

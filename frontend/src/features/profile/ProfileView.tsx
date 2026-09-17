@@ -7,7 +7,8 @@ import {
   Camera, MapPin, Calendar, Activity, 
   ShieldCheck, AlertTriangle, FileText, 
   MessageSquare, Settings, CheckCircle, 
-  XCircle, Loader2, Edit3, LogOut, Eye, EyeOff
+  XCircle, Loader2, Edit3, LogOut, Eye, EyeOff,
+  Upload, Trash2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ColorPicker } from "@/shared/ui";
@@ -19,12 +20,14 @@ import { PostItem } from "../feed/PostItem";
 import { PostDetailPage } from "../feed/PostDetailPage";
 import { LeftSidebar } from "../feed/LeftSidebar";
 import { RightSidebar } from "../feed/RightSidebar";
-import { useToast, Button, Tabs, TabContentPanel } from "@/shared/ui";
+import { useToast, Button, Tabs, TabContentPanel, Modal, ConfirmDialog } from "@/shared/ui";
 
 export default function ProfileView() {
   const { user, isLoading: authLoading, logout } = useAuth();
   const { 
     updateProfile, isUpdatingProfile, 
+    uploadAvatar, isUploadingAvatar,
+    removeAvatar, isRemovingAvatar,
     myReports, isLoadingReports, 
     myPosts, isLoadingPosts 
   } = useProfile();
@@ -43,13 +46,32 @@ export default function ProfileView() {
   };
 
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+  const [showViewAvatarModal, setShowViewAvatarModal] = useState(false);
+  const [showRemoveAvatarConfirm, setShowRemoveAvatarConfirm] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [viewingPostId, setViewingPostId] = useState<number | null>(null);
 
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [sidebarTop, setSidebarTop] = useState("1.5rem");
+
+  // Close avatar dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(event.target as Node)) {
+        setShowAvatarMenu(false);
+      }
+    };
+    if (showAvatarMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showAvatarMenu]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -72,7 +94,7 @@ export default function ProfileView() {
 
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { error: showError } = useToast();
+  const { success, error: showError } = useToast();
 
   const voteMutation = useMutation({
     mutationFn: ({ postId, type }: { postId: number, type: 'upvote' | 'downvote' }) => votePost(postId, type),
@@ -155,11 +177,67 @@ export default function ProfileView() {
   };
 
   const handleHideProfilePictureToggle = async () => {
+    const nextState = !(profile.hide_profile_picture ?? false);
     try {
-      await updateProfile({ hide_profile_picture: !(profile.hide_profile_picture ?? false) });
+      await updateProfile({ hide_profile_picture: nextState });
+      success(
+        'Visibility Updated',
+        nextState
+          ? 'Your profile picture is now hidden from public view.'
+          : 'Your profile picture is now visible to the public.'
+      );
     } catch (err: any) {
       console.error(err);
       showError('Update Failed', err?.message || 'Failed to update profile picture visibility');
+    }
+  };
+
+  const handleViewAvatar = () => {
+    setShowAvatarMenu(false);
+    setShowViewAvatarModal(true);
+  };
+
+  const handleChangeAvatarClick = () => {
+    setShowAvatarMenu(false);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showError("Invalid File", "Please select an image file (JPEG, PNG, WebP).");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      showError("File Too Large", "Profile image size must not exceed 10MB.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    try {
+      await uploadAvatar(file);
+      success("Profile Picture Updated", "Your profile picture has been updated successfully.");
+    } catch (err: any) {
+      console.error(err);
+      showError("Upload Failed", err?.message || "Failed to upload profile picture.");
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    try {
+      await removeAvatar();
+      setShowRemoveAvatarConfirm(false);
+      setShowViewAvatarModal(false);
+      success("Picture Removed", "Your profile picture has been reset to default.");
+    } catch (err: any) {
+      console.error(err);
+      showError("Removal Failed", err?.message || "Failed to remove profile picture.");
     }
   };
 
@@ -522,9 +600,27 @@ export default function ProfileView() {
           {/* Profile Info & Avatar */}
           <div className="relative mb-4 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-6">
             <div className="shrink-0 w-24 sm:w-40 mx-auto sm:mx-0">
-              <div className="relative -mt-12 sm:-mt-24 group">
-                <div className="w-24 h-24 sm:w-40 sm:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white relative">
-                  {profile.avatar_url && !profile.hide_profile_picture ? (
+              <div className="relative -mt-12 sm:-mt-24 group" ref={avatarMenuRef}>
+                {/* Hidden File Input for Avatar Upload */}
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  accept="image/png,image/jpeg,image/webp,image/jpg" 
+                  onChange={handleFileSelected} 
+                  className="hidden" 
+                />
+
+                <div 
+                  className="w-24 h-24 sm:w-40 sm:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white relative cursor-pointer group-hover:ring-4 group-hover:ring-blue-100 transition-all"
+                  onClick={handleViewAvatar}
+                  title="Click to view profile picture"
+                >
+                  {isUploadingAvatar || isRemovingAvatar ? (
+                    <div className="w-full h-full bg-slate-100 flex flex-col items-center justify-center text-blue-600 gap-1">
+                      <Loader2 className="w-8 h-8 animate-spin" />
+                      <span className="text-[10px] font-semibold">Updating...</span>
+                    </div>
+                  ) : profile.avatar_url && !profile.hide_profile_picture ? (
                     <img src={profile.avatar_url} alt={user.username} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-50 flex items-center justify-center text-blue-500 text-4xl sm:text-5xl font-bold select-none">
@@ -532,6 +628,7 @@ export default function ProfileView() {
                     </div>
                   )}
                 </div>
+
                 {profile.hide_profile_picture && (
                   <div 
                     title="Profile picture is private (hidden from public view)" 
@@ -540,35 +637,51 @@ export default function ProfileView() {
                     <EyeOff className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </div>
                 )}
+
                 <button 
                   onClick={() => setShowAvatarMenu(!showAvatarMenu)}
-                  className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-slate-800 text-white p-1.5 sm:p-2 rounded-full shadow-lg hover:bg-slate-700 transition-colors"
+                  disabled={isUploadingAvatar || isRemovingAvatar}
+                  aria-label="Profile picture actions"
+                  className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-slate-800 text-white p-1.5 sm:p-2 rounded-full shadow-lg hover:bg-slate-700 transition-colors disabled:opacity-50"
                 >
-                  <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+                  {isUploadingAvatar ? (
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                  ) : (
+                    <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+                  )}
                 </button>
+
                 {showAvatarMenu && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
-                    <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors" onClick={() => setShowAvatarMenu(false)}>
-                      View Profile Picture
-                    </button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors" onClick={() => setShowAvatarMenu(false)}>
-                      Change Profile Picture
-                    </button>
-                    <div className="border-t border-slate-100 my-1"></div>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                     <button 
-                      className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-between" 
-                      onClick={() => {
-                        setShowAvatarMenu(false);
-                        handleHideProfilePictureToggle();
-                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2.5" 
+                      onClick={handleViewAvatar}
                     >
-                      <span>{profile.hide_profile_picture ? "Show Profile Picture" : "Hide Profile Picture"}</span>
-                      {profile.hide_profile_picture ? (
-                        <Eye className="w-4 h-4 text-slate-400" />
-                      ) : (
-                        <EyeOff className="w-4 h-4 text-slate-400" />
-                      )}
+                      <Eye className="w-4 h-4 text-slate-500" />
+                      <span>View Profile Picture</span>
                     </button>
+                    <button 
+                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2.5" 
+                      onClick={handleChangeAvatarClick}
+                    >
+                      <Upload className="w-4 h-4 text-slate-500" />
+                      <span>Change Profile Picture</span>
+                    </button>
+                    {profile.avatar_url && (
+                      <>
+                        <div className="border-t border-slate-100 my-1"></div>
+                        <button 
+                          className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2.5" 
+                          onClick={() => {
+                            setShowAvatarMenu(false);
+                            setShowRemoveAvatarConfirm(true);
+                          }}
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                          <span>Remove Picture</span>
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -715,6 +828,105 @@ export default function ProfileView() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* View Profile Picture Modal */}
+      <Modal
+        isOpen={showViewAvatarModal}
+        onClose={() => setShowViewAvatarModal(false)}
+        title="Profile Picture"
+        size="md"
+      >
+        <div className="flex flex-col items-center py-2 text-center">
+          <div className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-2xl overflow-hidden shadow-xl border-4 border-slate-100 bg-slate-50 mb-5 flex items-center justify-center">
+            {profile.avatar_url ? (
+              <img 
+                src={profile.avatar_url} 
+                alt={user.username} 
+                className="w-full h-full object-cover" 
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-100 flex flex-col items-center justify-center text-blue-600 select-none">
+                <span className="text-7xl font-extrabold">{user.username.charAt(0).toUpperCase()}</span>
+                <span className="text-xs text-slate-500 mt-2 font-medium">Default initials avatar</span>
+              </div>
+            )}
+            
+            {profile.hide_profile_picture && (
+              <div className="absolute top-3 right-3 bg-slate-900/90 backdrop-blur-md text-amber-300 text-xs px-2.5 py-1 rounded-full shadow-lg border border-white/20 flex items-center gap-1.5 font-medium">
+                <EyeOff className="w-3.5 h-3.5" />
+                <span>Hidden from public</span>
+              </div>
+            )}
+          </div>
+
+          <h4 className="text-lg font-bold text-slate-900">
+            {(profile.first_name && (profile.display_full_name !== false))
+              ? `${profile.first_name} ${profile.last_name}`
+              : user.username}
+          </h4>
+          <p className="text-xs text-slate-500 mb-5">@{user.username}</p>
+
+          {profile.hide_profile_picture && (
+            <div className="w-full bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 text-xs flex items-start gap-2 mb-5 text-left">
+              <EyeOff className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span>
+                Your profile picture visibility is set to <strong>Hidden</strong> in Settings. Other users only see your letter initials avatar.
+              </span>
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center justify-center gap-2.5 w-full pt-2 border-t border-slate-100">
+            <Button
+              variant="primary"
+              onClick={() => {
+                setShowViewAvatarModal(false);
+                fileInputRef.current?.click();
+              }}
+              className="flex items-center gap-2 text-sm"
+              disabled={isUploadingAvatar}
+            >
+              <Upload className="w-4 h-4" />
+              <span>{profile.avatar_url ? "Change Picture" : "Upload Picture"}</span>
+            </Button>
+
+            {profile.avatar_url && (
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setShowViewAvatarModal(false);
+                  setShowRemoveAvatarConfirm(true);
+                }}
+                className="flex items-center gap-2 text-sm"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Remove</span>
+              </Button>
+            )}
+
+            <Button
+              variant="secondary"
+              onClick={() => setShowViewAvatarModal(false)}
+              className="text-sm"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Remove Picture Confirmation */}
+      <ConfirmDialog
+        isOpen={showRemoveAvatarConfirm}
+        title="Remove Profile Picture"
+        message="Are you sure you want to remove your custom profile picture? Your profile will revert to displaying your default initials avatar."
+        confirmLabel="Remove Picture"
+        cancelLabel="Cancel"
+        variant="destructive"
+        confirmVariant="danger"
+        isLoading={isRemovingAvatar}
+        onConfirm={handleRemoveAvatar}
+        onCancel={() => setShowRemoveAvatarConfirm(false)}
+      />
     </div>
   );
 }

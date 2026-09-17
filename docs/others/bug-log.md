@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,66 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-042] Profile Page Settings "Hide Profile Picture" Lag & Inoperative Camera Action Options
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Profile / Photo Management / React Query Cache
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On the `/profile` page:
+1. Toggling "Hide Profile Picture" in the Settings tab exhibited UI lag or appeared unresponsive because the change was not updated optimistically in React Query state, resulting in switch bounce.
+2. Clicking the camera icon on the user avatar opened a dropdown with three options ("View Profile Picture", "Change Profile Picture", "Hide Profile Picture"). All three options were non-functional dummy buttons that merely closed the dropdown menu without executing any action.
+3. The "Hide Profile Picture" option was redundantly duplicated inside both the camera button dropdown and the Settings tab.
+
+#### 2. Root Cause Analysis (RCA)
+1. In `useProfile.ts`, `updateProfileMutation` only called `queryClient.invalidateQueries({ queryKey: ['auth-user'] })` in `onSuccess` without optimistic state updates (`onMutate`) or immediate `setQueryData` cache synchronization. As a result, the UI had to wait for an asynchronous background refetch over HTTP to re-render, creating visual delays and apparent switch failure.
+2. In `ProfileView.tsx`, the camera dropdown items ("View Profile Picture" and "Change Profile Picture") were placeholder buttons executing only `setShowAvatarMenu(false)`. No image viewer modal or file upload pipeline existed.
+3. "Hide Profile Picture" was unnecessarily placed in the camera button dropdown when the official switch is centralized under Profile Settings.
+
+#### 3. Solution & Architectural Strategy
+1. **Optimistic Updates & Immediate Cache Synchronization**: Enhanced `useProfile.ts` with `onMutate` to immediately write updated profile state into `['auth-user']` with automatic rollback on failure, and `onSuccess` to synchronize `['auth-user']`, `['my-posts']`, and `['posts']`.
+2. **View Profile Picture Modal**: Built a dedicated preview modal in `ProfileView.tsx` showing the high-resolution avatar, username, handle, and a privacy status badge ("Hidden from public") when enabled, along with action shortcuts. Also made clicking the avatar in the header directly open this modal.
+3. **Change Profile Picture Pipeline**: Implemented file input triggering with image format verification (JPEG, PNG, WebP) and a 10MB size guard, uploading directly to Cloudinary via backend endpoint `POST /api/v1/users/me/avatar`.
+4. **Remove Picture Capability**: Added a "Remove Picture" action allowing users to revert to the default initials avatar via `DELETE /api/v1/users/me/avatar`.
+5. **Redundant Option Excision**: Removed "Hide Profile Picture" from the camera dropdown per design requirements. Added outside-click dismissal to `showAvatarMenu`.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/profile/ProfileView.tsx`: Implemented View Profile Picture Modal, file selection handler, avatar dropdown cleanup, and outside-click handler.
+- `frontend/src/hooks/useProfile.ts`: Added optimistic updates, cache synchronization, and `uploadAvatar`/`removeAvatar` mutations.
+- `backend/app/api/v1/endpoints/users.py`: Added `POST /me/avatar` and `DELETE /me/avatar` endpoints with MIME type validation.
+
+### [BUG-041] Database Connection Pool Exhaustion (QueuePool limit 20 overflow 10 reached) Caused by Persistent Streaming SSE Endpoints
+- **Status**: Resolved
+- **Severity**: Critical
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Backend / Database Pooling / Server-Sent Events (SSE) / LiveSync
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On the production Cloud Run backend service (`lanes-api`), continuous client streaming calls to `/api/v1/sync` and `/api/v1/sse` resulted in severe database connection pool exhaustion errors:
+`sqlalchemy.exc.TimeoutError: QueuePool limit of size 20 overflow 10 reached, connection timed out, timeout 30.00`.
+Subsequent API requests across the entire platform failed with HTTP 500 until the container restarted.
+
+#### 2. Root Cause Analysis (RCA)
+1. In FastAPI endpoints `sse.py` and `sync.py`, the database session dependency (`db: Session = Depends(get_db)`) was injected directly at the endpoint signature level.
+2. In FastAPI generator-based streaming responses (`StreamingResponse`), dependency cleanup (`get_db()`'s `yield` context manager) does not close or return the database connection to the SQLAlchemy `QueuePool` until the generator is closed.
+3. Because SSE connections are long-lived and persistent, each connected client held an exclusive PostgreSQL connection check-out indefinitely. Once more than 30 clients connected, the pool (size 20 + overflow 10) was completely starved, blocking all other endpoints.
+
+#### 3. Solution & Architectural Strategy
+1. **Removed Session Dependency from Streaming Signatures**: Removed `db: Session = Depends(get_db)` from the long-lived streaming endpoints in `sse.py` and `sync.py`.
+2. **Ephemeral Sessions Per Event/Poll**: Refactored the internal event generator loops to instantiate short-lived worker sessions (`with SessionLocal() as session:`) strictly for the duration of the query snapshot, immediately closing and returning the connection to the pool between polling intervals.
+3. **Database Pool Configuration Hardening**: Tuned `pool_size`, `max_overflow`, and `pool_pre_ping=True` in `database.py` to ensure resilient recycling under high concurrency.
+4. **Client-Side Reconnect Resilience**: In `useLiveSync.ts` and `useSSE.ts`, added exponential backoff, visibility-based pause/resume, and proper unmount aborts to avoid reconnect storms.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/sync.py`: Refactored streaming generator to use ephemeral database sessions.
+- `backend/app/api/v1/endpoints/sse.py`: Removed long-lived DB dependency injection from streaming generator.
+- `backend/app/core/database.py`: Hardened pool size, overflow limits, and pre-ping connectivity tests.
+- `frontend/src/hooks/useLiveSync.ts`: Added tab visibility awareness and resilient backoff.
+- `frontend/src/hooks/useSSE.ts`: Added connection teardown cleanup.
 
 ### [BUG-040] AI Weather Insights Failed with 500 on Production Domain Due to Hardcoded Relative Fetch and Build-Time Rewrite Mismatch
 - **Status**: Resolved

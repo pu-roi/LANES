@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -187,7 +187,7 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Security** (change password + OTP verification), **Saved Places** (list of bookmarked map locations), **Privacy** (toggle profile visibility, full name display, and hide profile picture with fallback uppercase initial letter avatar), and **Trust Score** (gamified accuracy stats showing a score bar, reports submitted, approved, rejected, accuracy rate). |
+| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Hazard Reports** (submitted user reports with severity and approval status), **Community Posts** (user's authored community feed posts), and **Settings** (instant optimistic privacy toggles for profile visibility, full name display, and hide profile picture). Includes an interactive avatar header with click-to-preview high-resolution modal, Cloudinary photo upload with loading spinner, and remove picture actions. |
 | `SavedRoutesList.tsx` | `src/features/profile/SavedRoutesList.tsx` — Sub-component inside ProfileView that lists the user's saved map places with their custom icons and addresses, and a delete button for each. |
 
 ### Backend Calls from This Page
@@ -195,12 +195,14 @@ These files are **always present** regardless of which page you are on.
 | Endpoint | Purpose |
 |----------|---------|
 | `GET /api/v1/users/me` | Load current user's full profile data |
-| `PUT /api/v1/users/me` | Update profile fields |
+| `PATCH /api/v1/users/me/profile` | Update profile fields and privacy toggles |
+| `POST /api/v1/users/me/avatar` | Upload and attach a profile picture to Cloudinary |
+| `DELETE /api/v1/users/me/avatar` | Remove the custom profile picture and revert to initial avatar |
 | `PUT /api/v1/users/me/password` | Change password (requires current password) |
 | `POST /api/v1/auth/request-otp` | Send OTP to email for re-verification |
 | `POST /api/v1/auth/verify-otp` | Verify an OTP code |
-| `GET /api/v1/users/me/saved-places` | Load saved places list |
-| `DELETE /api/v1/users/me/saved-places/{id}` | Delete a saved place bookmark |
+| `GET /api/v1/users/me/places` | Load saved places list |
+| `DELETE /api/v1/users/me/places/{id}` | Delete a saved place bookmark |
 
 ---
 

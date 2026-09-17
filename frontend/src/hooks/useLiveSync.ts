@@ -1,14 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { saveFloodsOffline } from '@/lib/offline/storage';
 import { useQueryClient } from '@tanstack/react-query';
 import { getSseUrl } from '@/lib/sse';
 
+const INITIAL_BACKOFF_MS = 1000;
+const MAX_BACKOFF_MS = 30000;
+const MAX_RETRIES = 20;
+
 export function useLiveSync() {
   const queryClient = useQueryClient();
   const eventSourceRef = useRef<EventSource | null>(null);
+  const backoffRef = useRef(INITIAL_BACKOFF_MS);
+  const retriesRef = useRef(0);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
 
-  useEffect(() => {
-    // Only connect if the browser supports EventSource
+  const connect = useCallback(() => {
+    if (!mountedRef.current) return;
     if (typeof window === 'undefined' || !window.EventSource) return;
 
     const sseUrl = getSseUrl('/sync/stream');
@@ -37,21 +45,52 @@ export function useLiveSync() {
         }
       });
 
-      source.onerror = (err) => {
-        // EventSource automatically reconnects; log warning rather than noisy error
-        console.warn("Live sync SSE connection state changed, retrying automatically...", err);
+      source.onopen = () => {
+        // Connection succeeded — reset backoff
+        backoffRef.current = INITIAL_BACKOFF_MS;
+        retriesRef.current = 0;
+      };
+
+      source.onerror = () => {
+        // Close the broken connection to prevent native auto-reconnect
+        source?.close();
+        eventSourceRef.current = null;
+
+        if (!mountedRef.current) return;
+
+        if (retriesRef.current >= MAX_RETRIES) {
+          console.error(`LiveSync: max retries (${MAX_RETRIES}) reached. Giving up.`);
+          return;
+        }
+
+        const delay = backoffRef.current;
+        console.warn(`LiveSync: reconnecting in ${delay}ms (attempt ${retriesRef.current + 1}/${MAX_RETRIES})`);
+
+        reconnectTimerRef.current = setTimeout(() => {
+          retriesRef.current += 1;
+          backoffRef.current = Math.min(backoffRef.current * 2, MAX_BACKOFF_MS);
+          connect();
+        }, delay);
       };
     } catch (err) {
       console.warn("Failed to initialize LiveSync EventSource:", err);
     }
+  }, [queryClient]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    connect();
 
     return () => {
-      if (source) {
-        source.close();
+      mountedRef.current = false;
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current);
+        reconnectTimerRef.current = null;
       }
-      if (eventSourceRef.current === source) {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
         eventSourceRef.current = null;
       }
     };
-  }, [queryClient]);
+  }, [connect]);
 }

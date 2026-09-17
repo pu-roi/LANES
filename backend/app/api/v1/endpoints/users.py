@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
@@ -67,6 +67,55 @@ def update_user_profile(
     db.commit()
     db.refresh(profile)
     return profile
+
+
+@router.post("/me/avatar", response_model=schemas.ProfileResponse)
+def upload_user_avatar(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Upload and update the current user's profile avatar image.
+    """
+    from app.services.cloudinary_service import upload_image
+
+    if not file.content_type or not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Uploaded file must be an image (JPEG, PNG, WebP, etc.).")
+
+    profile = current_user.profile
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    url = upload_image(file)
+    if not url:
+        raise HTTPException(status_code=500, detail="Failed to upload image to cloud storage.")
+
+    profile.avatar_url = url
+    db.add(profile)
+    db.commit()
+    db.refresh(profile)
+    return profile
+
+
+@router.delete("/me/avatar", response_model=schemas.ProfileResponse)
+def delete_user_avatar(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Remove the current user's profile avatar image.
+    """
+    profile = current_user.profile
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    profile.avatar_url = None
+    db.add(profile)
+    db.commit()
+    db.refresh(profile)
+    return profile
+
 
 from typing import List
 
