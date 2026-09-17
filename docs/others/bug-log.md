@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 12:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,57 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-039] TerraDraw Source Collision ("td-polygon already exists") and Perpetual Map Style Reload Loop in Edit Flood Zone
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Map / Admin Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+In `/admin/map`, when an administrator opened an existing road flood zone (e.g. Zone #1) and switched Spatial Geometry to Polygon mode, clicking on the map did not draw vertices and the instruction banner did not appear. The browser console reported `Failed to initialize TerraDraw: Error: Source "td-polygon" already exists`. Simultaneously, the map style entered an infinite background reload loop every 40–120 seconds due to MapTiler 403 Forbidden errors, wiping active layers and disrupting drawing interactions.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Competing TerraDraw Instances**: Both CreateOfficialZonePanel (Pane 1) and EditOfficialZonePanel (Pane 2) were mounted simultaneously in `LiveMapPage.tsx`. In `OfficialZoneDrawer.tsx`, `useTerraDraw` was called with `isEnabled: true` hardcoded instead of `isEnabled: isOpen`. Pane 1 claimed `td-polygon` on `mapInstance`, so when Pane 2 mounted upon clicking "Edit", `draw.start()` threw `Source "td-polygon" already exists`, leaving `drawRef.current` null and the drawing tool uninitialized.
+2. **Missing Mode Sync Dependency**: In `useTerraDraw.ts`, the mode sync effect did not depend on `drawInstance`. When TerraDraw finished asynchronous initialization after the component had already switched to `polygon`, the mode sync effect did not re-fire, leaving TerraDraw in `static` mode with `isDrawingMode` as false.
+3. **Unbounded Retries on 403**: In `BaseMap.tsx`, `schedulePrimaryRetry` continually attempted to reapply the primary MapTiler style without checking whether the failure was a permanent authorization error (401/403).
+
+#### 3. Solution & Architectural Strategy
+1. **Instance Gating**: Gated `useTerraDraw` with `isEnabled: isOpen` so only the currently active, visible drawer connects TerraDraw to the map.
+2. **Robust Cleanup**: Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers (outline, markers, fills) and sources (`td-polygon`, `td-linestring`, `td-point`) in proper detachment order before adapter creation and upon drawer unmount.
+3. **Immediate Mode Activation**: Applied active mode immediately upon `draw.start()` and added `drawInstance` to mode sync dependencies so the crosshair cursor and instruction banner activate directly.
+4. **Permanent Auth Throttling**: Added `isPermanentAuthError` detection in `BaseMap.tsx` to halt automated retries on 401/403 or invalid keys, preventing background style reload loops.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx`: Changed `isEnabled` to `isOpen` in `useTerraDraw` and added drawing restoration from `polygonSessionCacheRef` when `drawInstance` becomes ready.
+- `frontend/src/features/admin/components/zones/hooks/useTerraDraw.ts`: Hardened layer/source cleanup in `removeStaleTerraDrawArtifacts`, set mode directly on start, and included `drawInstance` in mode sync dependencies.
+- `frontend/src/shared/ui/map/BaseMap.tsx`: Throttled retries and halted automated style reload loop on permanent 401/403 errors.
+- `frontend/src/features/admin/LiveMapPage.tsx`: Isolated active zone layer so only the reference line represents the zone during editing.
+- `frontend/src/features/map/hooks/useFloodMapPreview.ts`: Added `showMarkers` prop to hide pins in polygon mode while keeping the reference line.
+- `frontend/src/features/map/MapContext.tsx`: Exposed `floodShowMarkers` state and setter.
+- `frontend/src/features/admin/components/AdminFloodMapInteraction.tsx`: Forwarded `floodShowMarkers` to preview hook.
+- `frontend/src/features/map/MapCanvas.tsx`: Forwarded `floodShowMarkers` to preview hook.
+
+### [BUG-038] MapTiler Recovery and TerraDraw Could Retain Stale Map State
+- **Status**: Resolved in code / manual verification pending
+- **Severity**: High
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Frontend / Map / Admin Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+After an initial MapTiler-to-OSM fallback, successful MapTiler retries could continue to log `primary_retry_timeout`. Separately, reopening an Admin polygon workspace could fail with `Source "td-polygon" already exists`.
+
+#### 2. Root Cause Analysis (RCA)
+The fallback detector checked generic/nonexistent OSM identifiers, while MapTiler styles may also define a generic `osm` source. TerraDraw's deferred `style.load` initialization could run after React cleanup and leave its adapter layers/sources on the current MapLibre style.
+
+#### 3. Solution & Architectural Strategy
+The fallback style now uses LANES-specific source/layer identifiers and validates the actual active style before accepting a retry. TerraDraw cancels the deferred listener during cleanup and removes only its known stale adapter artifacts before creating its single replacement instance.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/shared/ui/map/BaseMap.tsx`: Added LANES-specific OSM fallback identity and reliable active-style matching.
+- `frontend/src/features/admin/components/zones/hooks/useTerraDraw.ts`: Added deferred-listener cleanup and safe stale TerraDraw artifact removal.
 
 ### [BUG-037] MapTiler Startup Timeout Recreated the Map and Prevented Automatic Detailed-Style Restoration
 - **Status**: Resolved in code / manual verification pending

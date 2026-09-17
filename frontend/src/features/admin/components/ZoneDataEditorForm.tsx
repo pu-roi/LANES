@@ -107,6 +107,11 @@ export function ZoneDataEditorForm({
     onChange({ ...values, ...updates });
   };
 
+  const isShapeGeometry =
+    values.geometry?.type === "Polygon" ||
+    values.geometry?.type === "MultiPolygon";
+  const shouldShowBidirectional = !hideBidirectional && !isShapeGeometry;
+
   return (
     <div className="space-y-4 text-left">
 
@@ -145,7 +150,7 @@ export function ZoneDataEditorForm({
       </div>
 
       {/* ── Bidirectional Toggle ── */}
-      {!hideBidirectional && (
+      {shouldShowBidirectional && (
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-3">
           <div>
             <span className="text-xs font-semibold text-slate-800 block">

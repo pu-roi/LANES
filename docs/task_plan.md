@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 12:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,14 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 27: Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening (🟢 COMPLETED)
+> **Focus:** Enabling non-destructive geometry mode switching (Line ↔ Shape/Polygon) in the Edit Flood Zone drawer, implementing Option 2 reference map styling (keeping the existing road line visible as an orange dashed preview line while hiding pin markers in polygon mode), resolving TerraDraw instance collisions (`td-polygon` already exists), and stopping the MapTiler 403 reload loop. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Non-Destructive Dual-Session Geometry Caching (`OfficialZoneDrawer.tsx`)**: Introduced `lineSessionCacheRef` and `polygonSessionCacheRef` to preserve line start/end coordinates and drawn polygon features across mode switches without premature state destruction. Added "Reset to Saved" action to revert geometry and attributes back to baseline.
+> - [x] **Option 2 Reference Map Styling & Pin Visibility (`useFloodMapPreview.ts`, `MapContext.tsx`, `AdminFloodMapInteraction.tsx`, `MapCanvas.tsx`)**: Extended `useFloodMapPreview` with `showMarkers: boolean` and exposed `floodShowMarkers` in `MapContext`. In polygon mode, start and end pins are hidden to provide a clean canvas while the existing road line remains visible as an orange broken reference line.
+> - [x] **Active Zone Layer Isolation (`LiveMapPage.tsx`)**: Excluded `editingZone` from `visibleMapZones` in `useFloodZonesLayer` so that only the preview reference line represents the zone during editing, returning to the solid active style cleanly if cancelled.
+> - [x] **TerraDraw Instance Gating & Source Collision Resolution (`useTerraDraw.ts`, `OfficialZoneDrawer.tsx`)**: Gated TerraDraw mounting behind `isEnabled: isOpen` so Create and Edit drawers do not clash over the same MapLibre sources. Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers and sources before adapter creation and on unmount. Directly set active mode on `draw.start()` and monitored `drawInstance` in mode sync effect to immediately activate the crosshair cursor and instruction banner.
+> - [x] **Permanent Map Style Reload Halting (`BaseMap.tsx`)**: Detected permanent 401/403 authorization failures on MapTiler styles and capped retries, preventing perpetual background `map.setStyle()` reloads that wiped map layers.
 
 ### Capstone Phase 26: Profile Picture Privacy, Tab Title Standardization & About Contact Form (🟢 COMPLETED)
 > **Focus:** Introducing a profile picture privacy setting with uppercase initial letter fallback across the platform, standardizing browser tab titles to `LANES | <Page>`, and establishing official contact channels with an interactive Resend message delivery form on `/about`. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
@@ -20,7 +28,8 @@
 ### Capstone Phase 25: Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience (🟡 IMPLEMENTED / MANUAL VERIFICATION PENDING)
 > **Focus:** Keep `/map` usable when the external MapTiler style is slow or unavailable, without recreating the WebGL map, while ensuring long-lived SSE connections do not exhaust the backend's Postgres pool. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 > - [x] **MapTiler first-render policy (`BaseMap.tsx`)**: Removed the `HEAD` preflight, 8-second watchdog, and map-recreation retries. The initial detailed-map attempt has a 1.5-second usable-map budget; it switches the existing MapLibre instance to OSM on timeout or a MapTiler resource failure.
-> - [x] **Automatic detailed-map restoration (`BaseMap.tsx`)**: Added stale-callback guards, one structured/redacted diagnostic per failed attempt, retry backoff (online event, 30s, 60s, 2m, then 5m), and a longer 6-second recovery window after OSM is already usable. A first fallback now marks the map lifecycle complete so later MapTiler `style.load` events can restore the detailed style.
+> - [x] **Automatic detailed-map restoration (`BaseMap.tsx`)**: Added stale-callback guards, one structured/redacted diagnostic per failed attempt, retry backoff (online event, 30s, 60s, 2m, then 5m), and a longer 6-second recovery window after OSM is already usable. LANES-specific fallback source/layer identifiers distinguish the OSM style from MapTiler's own generic sources, so a successful retry can complete.
+> - [x] **Admin drawing lifecycle repair (`useTerraDraw.ts`)**: Cancels stale deferred `style.load` initialization and cleans up only abandoned TerraDraw adapter artifacts before a replacement instance starts, preventing duplicate `td-polygon` sources.
 > - [x] **Responsive recovery presentation and configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)**: Added a non-blocking, viewport-anchored recovery notice that stays below the desktop floating navigation and wraps on smaller screens. Removed the source-code MapTiler URL/key duplication; Firebase App Hosting reads `NEXT_PUBLIC_MAPTILER_KEY` from the `maptiler-api-key` secret at build/runtime.
 > - [x] **SSE connection-pool protection (`sync.py`, `database.py`, `main.py`)**: Reworked `/sync/stream` to acquire short-lived worker-thread sessions per poll rather than holding one database connection for each streaming client; tuned fail-fast pool limits and added a JSON global exception response path.
 > - [ ] **Manual verification**: Confirm normal MapTiler load, OSM fallback at the 1.5-second budget, successful automatic MapTiler restoration, and desktop/mobile notice placement. Create the Firebase `maptiler-api-key` secret and restrict the browser key to local/LAN/production origins before rollout.
