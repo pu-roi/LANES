@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 5:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,61 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-036] Live Sync SSE Stream Exhausts SQLAlchemy Connection Pool Causing Cascading 500 & Apparent CORS Errors
+- **Status**: Resolved
+- **Severity**: Critical
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Backend / Database / SSE / Sync / CORS
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+In production, all public API requests (`/api/v1/public/stats`, `/api/v1/feed`, `/api/v1/reports/active-zones`) began hanging for 30 seconds and failing with `HTTP 500 Internal Server Error: QueuePool limit of size 20 overflow 10 reached, connection timed out, timeout 30.00`. In web browsers, these failed requests appeared as `Access to fetch at ... has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource`.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Connection Leak in SSE Streaming Endpoint**: The `/api/v1/sync/stream` endpoint had `db: Session = Depends(get_db)`. In FastAPI, dependencies provided via `Depends(get_db)` remain checked out for the entire lifetime of the HTTP connection. Because `EventSourceResponse` runs an infinite polling loop (`while True: await asyncio.sleep(10)`), each connected client held an active PostgreSQL database connection indefinitely. As soon as ~30 clients connected (or reconnects triggered), the entire connection pool was exhausted.
+2. **Cascading Reconnect Storm**: When connections timed out, the SSE generator threw an unhandled exception, closing the stream. The frontend's `EventSource` automatically reconnected, requesting another connection and exacerbating the deadlock.
+3. **CORS Masking of 500 Errors**: Starlette's raw `ServerErrorMiddleware` catches unhandled exceptions and outputs a plain `text/plain` 500 response without passing through `CORSMiddleware`. Browsers blocked reading the 500 error response due to missing `Access-Control-Allow-Origin` headers, making server database timeouts masquerade as CORS errors in developer tools.
+
+#### 3. Solution & Architectural Strategy
+1. **Short-Lived Sessions in Background Worker**: Removed `db: Session = Depends(get_db)` from `/api/v1/sync/stream`. Created `_get_active_floods_safe()` using `with SessionLocal() as db:` wrapped in `try/finally: db.close()`. Executed it using `await asyncio.to_thread(_get_active_floods_safe)` so that database checkouts only last milliseconds and 0 connections are held during the 10-second SSE idle sleep.
+2. **Graceful Exception Fallback**: If a database blip occurs during live sync, `_get_active_floods_safe()` catches the exception and returns empty results rather than crashing the client's SSE connection and triggering reconnect storms.
+3. **Calibrated Engine Pool**: Added `pool_timeout=10` to `create_engine` (reduced from 30s) and increased pool limits (`pool_size=25`, `max_overflow=20`) to prevent requests from hanging indefinitely during spikes.
+4. **Global Exception Handler**: Added `@app.exception_handler(Exception)` in `backend/app/main.py` returning `JSONResponse(status_code=500)` so that uncaught server errors always pass through `CORSMiddleware` and supply proper CORS headers to the client.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/sync.py`: Removed `Depends(get_db)` from streaming route; decoupled queries into short-lived thread-pool sessions.
+- `backend/app/core/database.py`: Added `pool_timeout=10` and tuned pool size to fail fast and accommodate burst traffic.
+- `backend/app/main.py`: Added global `Exception` handler returning `JSONResponse` with CORS headers.
+
+---
+
+### [BUG-035] Flood-Routing Providers Return Inconsistent and Non-Route-Specific Safety Results
+- **Status**: Resolved in code / Cloud verification pending
+- **Severity**: Critical
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Backend / Routing / Valhalla / OpenRouteService / Route Planner
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+Valhalla and ORS do not currently apply the same flood passability rules or return trustworthy per-route flood metadata. A user can receive a blocked direct ORS route alongside safe routes, while the equivalent Valhalla path is suppressed. Cautious pedestrian and high-clearance routing is only partially represented by Valhalla and absent from ORS. The active route cards therefore cannot consistently explain vehicle safety, danger, or ranking.
+
+#### 2. Root Cause Analysis (RCA)
+1. Both provider services independently query and classify active flood polygons instead of consuming one policy result.
+2. `valhalla_service.py` submits `avoid_polygons`, although the Valhalla route API documents `exclude_polygons`; its direct-route risk assessment assumes every active orange/yellow zone was intersected.
+3. `ors_service.py` uses only binary `avoid_polygons`, inserts an always-blocked direct route, and labels all surviving routes 100% safe without measuring their intersections.
+4. There is no centralized post-route PostGIS intersection evaluator, common exposure score, deterministic category ranker, or parity test suite. The current focused routing tests also contain stale `httpx.post` mocks (6 passed, 4 failed).
+
+#### 3. Solution & Architectural Strategy
+Implemented a typed FastAPI flood-routing policy and active-zone loader as the sole source of business decisions. Valhalla receives documented `exclude_polygons`; ORS receives GeoJSON `options.avoid_polygons`; both produce raw candidates only. The shared evaluator intersects each candidate geometry with authoritative active-zone geometry, attaches deterministic exposure/safety metadata, rejects impassable routes, deduplicates overlaps, and assigns up to four distinct Fastest/Safest/Balanced/Alternative cards. Walking through Orange is a strongly cautioned 40% fallback; vehicles remain blocked and Red remains blocked for every public profile. A blocked baseline is returned only as a non-selectable explanation when it was the fastest raw choice. Offline cached zones now carry server-authored per-profile restriction metadata and legacy metadata is treated conservatively.
+
+#### 4. Files Modified / What Changed
+- `backend/app/services/flood_routing_policy.py`, `routing_service.py`: Added shared policy, authoritative-zone evaluation, exposure scoring, deduplication, and deterministic ranking.
+- `backend/app/services/valhalla_service.py`, `ors_service.py`, `report_service.py`: Converted current route flow to provider adapters, corrected polygon payloads, and synchronized offline restriction metadata.
+- `backend/app/schemas/route.py`, `backend/tests/test_flood_routing_policy.py`, `backend/tests/test_routing_service.py`: Extended the contract and added/updated focused coverage (20 passing tests).
+- `frontend/src/features/routing/routingApi.ts`, `RoutePanel.tsx`, `MapContext.tsx`, `workers/valhallaCore.ts`: Render route categories/exposure and a non-selectable blocked explanation on responsive layouts; keep offline routing fail-closed.
+- `frontend/src/features/landing/FloodLegend.tsx`, `frontend/src/features/hazards/FloodReportPanel.tsx`: Corrected Medium-water passability wording.
+- `docs/task_plan.md`, `docs/others/routing-logic.md`, `docs/others/vehicle-passability.md`, `docs/others/system-documentation.md`: Updated the policy and verification record.
 
 ### [BUG-034] Admin Login Redirection Routing to /feed Instead of /admin/dashboard
 - **Status**: Resolved

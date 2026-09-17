@@ -6,6 +6,8 @@ The script uploads the ignored Philippines tile archive to a private regional bu
 
 Before running it, assign an explicit runtime service account to `lanes-api`; the script intentionally refuses to grant access to an implicit default identity. The Cloud Build service account also needs read access to the tile bucket and permission to push to the `lanes` Artifact Registry repository. Choose a new `-TileVersion` for every tile/config update—the script will refuse to overwrite an existing artifact version.
 
+The uploaded `valhalla.json` must set `service_limits.max_alternates` to at least `3`; LANES requests three alternates to produce up to four route cards.
+
 After deployment, verify the following from an authenticated Cloud SDK shell:
 
 ```powershell

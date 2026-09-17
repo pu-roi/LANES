@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 17, 2026, 1:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 5:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,27 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 24: Unified Flood-Routing Policy & Provider Parity (🟢 IMPLEMENTED / CLOUD VERIFICATION PENDING)
+> **Focus:** Establish one server-side, MMDA-aligned flood-routing policy for Valhalla and OpenRouteService (ORS), then use each provider only as a route-generation adapter. This investigation was initiated before any routing rewrite. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> **Safety recommendation:** Treat a zone that is non-passable for the selected travel profile as a hard exclusion from every navigable recommendation. A non-selectable, clearly separated **Blocked direct route** explanation may be offered later, but it must never be the top recommendation or navigation-ready alternative.
+> **Presentation recommendation:** Return up to **four route cards total** (Fastest passable, Safest, Balanced, then one distinct alternative), rather than promising four arbitrary engine alternates. Categories are assigned only after common flood intersection and risk scoring; unavailable or duplicate categories are omitted.
+> **Audit findings (September 17, 2026):**
+> - [x] Confirmed that `MapContext.tsx` recalculates automatically when `vehicleProfile` changes while preserving selected Start and End locations. This effect also reacts to a manual Valhalla/ORS engine switch.
+> - [x] Confirmed that Valhalla and ORS currently duplicate flood-polygon loading and apply materially different policies: Valhalla has a partial penalty concept, whereas ORS only hard-excludes zones and reports surviving routes as flood-free.
+> - [x] Confirmed that neither adapter performs a real route-geometry-to-zone intersection after route generation. Valhalla infers a hit merely from the existence of orange/yellow zones, and ORS marks every unexcluded route as 100% safe; therefore `safety_score`, `flood_risk`, `blocked`, and `avoided_floods` are not reliable route-specific facts.
+> - [x] Confirmed a Valhalla request-contract defect: the online adapter sends `avoid_polygons`, but the documented Valhalla route option is `exclude_polygons`; the offline Valhalla worker already uses `exclude_polygons`. Verify this against the deployed image before rollout and correct it as part of provider-adapter tests.
+> - [x] Confirmed incompatible impassable-route behavior: Valhalla attempts to discard blocked direct routes, while ORS adds a `Direct (Flooded)` route with `blocked=true` and 0% safety before safe results. ORS also omits the documented walking/heavy penalty bands entirely.
+> - [x] Confirmed alternative-count inconsistency: Valhalla asks for two alternates (at most three total routes), while ORS asks for three alternatives; neither output is normalized, deduplicated, or ranked to a shared four-card UX.
+> - [x] Ran `backend/tests/test_routing_service.py`: 6 passed, 4 failed. The four failures are test-double drift (`httpx.post` mocks do not accept the URL positional argument), and the suite does not yet cover the passability matrix, polygon payload contract, actual intersections, ranking, or profile-switch flow.
+> **Implementation delivered (September 17, 2026):**
+> - [x] Added the typed `flood_routing_policy.py` with the four-profile/four-severity policy. Low is passable; Medium is cautious only for Walking and High Clearance; Orange is a strongly cautioned 40% fallback for Walking and blocked for all vehicles; Extreme/Red is blocked for every public profile. Official vehicle-passability data can only tighten a decision.
+> - [x] Centralized active, unexpired authoritative PostGIS-zone loading once per route request. Both adapters receive common hard exclusions and an additional cautious-zone avoidance request when applicable.
+> - [x] Corrected Valhalla to send `exclude_polygons`, retained ORS GeoJSON `options.avoid_polygons`, and requested three alternates so the centralized ranker can present at most four cards.
+> - [x] Evaluates each returned geometry against active zone geometry, measures exposed distance, calculates deterministic exposure/safety metadata, rejects ineligible paths, deduplicates overlaps, and ranks distinct Fastest, Safest, Balanced, and Alternative cards. A blocked baseline is returned only when it was the unfiltered fastest path and is explanation-only.
+> - [x] Extended the API/frontend contract with categories and structured exposure, updated desktop/mobile Route Planner presentation, standardized **Bike/Motorcycle**, corrected the landing legend and flood-report wording, and made offline routing fail closed when restriction metadata is missing or blocks the selected profile.
+> - [x] Added focused policy and provider-contract coverage, repaired the four stale `httpx.post` mocks, and ran `20 passed` across `test_routing_service.py` and `test_flood_routing_policy.py`.
+> - [x] Updated `routing-logic.md`, `vehicle-passability.md`, system documentation, and BUG-035. Manual cloud-provider and responsive browser verification remain required before declaring rollout complete; the frontend currently has no configured component-test runner.
 
 ### Capstone Phase 23: Identity-First Google Auth, Password Recovery & Resilient Admin Routing (🟢 COMPLETED)
 > **Focus:** Integrating seamless Google OAuth Sign-In and Sign-Up flows with demographic completion, introducing a self-service 3-step password recovery workflow powered by Resend transactional emails, and hardening administrative client-side routing to guarantee instant redirection to `/admin/dashboard`. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

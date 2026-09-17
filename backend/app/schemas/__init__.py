@@ -11,7 +11,7 @@ from app.schemas.report import (
     MergeConflict, MergeCandidateItem, MergeCandidatesListResponse,
     MergedZoneFinalData, MergeReportsRequest, MergeReportsResponse
 )
-from app.schemas.route import RouteRequest, RouteResponse, LineStringGeometry, RouteOption, MultiRouteResponse
+from app.schemas.route import RouteRequest, RouteResponse, LineStringGeometry, RouteOption, MultiRouteResponse, FloodExposure, BlockedRouteBaseline
 from app.schemas.common import PointGeometry, PolygonGeometry
 from app.schemas.auth import (
     Token, TokenPayload, GoogleAuthRequest, GoogleAuthResponse,
