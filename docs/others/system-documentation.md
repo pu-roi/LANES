@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 1:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -209,13 +209,19 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `LoginForm.tsx` | `src/features/auth/LoginForm.tsx` — Email + password fields, a "Forgot Password?" link, and a "Sign Up" redirect link. Displays a prominent green success banner when redirected from registration with `?registered=true`. On submit, calls `POST /api/v1/auth/login`. The returned JWT is stored in `localStorage`. |
+| `LoginForm.tsx` | `src/features/auth/LoginForm.tsx` — Email + password fields, Google Sign-In button, "Forgot Password?" trigger, and a "Sign Up" redirect link. Displays a green success banner when redirected from registration with `?registered=true`. Prioritizes administrative roles (`Super Admin`, `DRRM Officer`, `Moderator`) to route directly to `/admin/dashboard` upon login while purging commuter session intents. For commuters, routes to `/map` or `/feed?openPostModal=true` if post intent is active. |
+
+### Forgot Password Flow (/login?forgot=true or /forgot-password)
+
+| File | What You See |
+|------|-------------|
+| `ForgotPasswordForm.tsx` | `src/features/auth/components/ForgotPasswordForm.tsx` — Pixel-consistent 3-step password recovery modal: Step 1 accepts user email and dispatches single-use OTP via Resend with progressive cooldown tiers (1m, 3m, 5m); Step 2 provides 6-box OTP entry with clipboard paste support and countdown timer; Step 3 provides new password entry with `<PasswordStrength>` meter, confirm password validation, and hold-to-view toggle. On submit, resets password and returns user to login. |
 
 ### Register Page (/register)
 
 | File | What You See |
 |------|-------------|
-| `RegisterForm.tsx` | `src/features/auth/components/RegisterForm.tsx` — Multi-step registration wizard with identity-first email verification, OTP confirmation, password/profile entry, and PSGC address selection. On final submit, calls `POST /api/v1/auth/register`, clears registration drafts, and redirects to `/login?registered=true` for explicit credential sign-in. |
+| `RegisterForm.tsx` | `src/features/auth/components/RegisterForm.tsx` — Multi-step registration wizard with identity-first email verification, OTP confirmation, password/profile entry, and PSGC address selection. Supports Google OAuth Sign-Up with automatic prefill of full name, email, and avatar, allowing citizens to complete only remaining required demographic fields before account activation. On final submit, calls `POST /api/v1/auth/register` (or `POST /api/v1/auth/google` with `mode: "register"`), clears registration drafts, and redirects to login. |
 
 ### Verify Page (/verify)
 
@@ -228,9 +234,13 @@ These files are **always present** regardless of which page you are on.
 | Endpoint | Purpose |
 |----------|---------|
 | `POST /api/v1/auth/login` | Authenticates and returns a JWT access token |
+| `POST /api/v1/auth/google` | Authenticates or registers users using verified Google OAuth ID tokens |
 | `POST /api/v1/auth/register` | Creates a new user account and sends OTP via email |
 | `POST /api/v1/auth/verify-otp` | Marks the account as active after OTP verification |
 | `POST /api/v1/auth/request-otp` | Resend a new OTP to the email |
+| `POST /api/v1/auth/forgot-password/request-otp` | Initiates self-service password recovery by sending a single-use OTP via Resend |
+| `POST /api/v1/auth/forgot-password/verify-otp` | Verifies recovery OTP and returns a signed 15-minute `password_reset` JWT |
+| `POST /api/v1/auth/forgot-password/reset` | Validates `password_reset` JWT and commits updated password hash |
 | `POST /api/v1/auth/logout` | Invalidates the current JWT server-side |
 
 ---

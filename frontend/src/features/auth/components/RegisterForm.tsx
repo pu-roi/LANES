@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { authClient } from "../api/authClient";
 import { LocationPickerModal, LocationItem } from "./LocationPickerModal";
 import { Input } from "@/shared/ui";
@@ -11,8 +12,9 @@ import { DatePicker } from "@/shared/ui";
 import { useToast } from "@/shared/ui";
 import { PasswordStrength } from "@/shared/ui";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { Check, ChevronRight, ChevronLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { useGoogleAuth } from "../hooks/useGoogleAuth";
 
 // Metro Manila constant
 const METRO_MANILA_CODE = "130000000";
@@ -25,7 +27,10 @@ const steps = [
 
 export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { error: showError } = useToast();
+  const { getGoogleUserProfile, isGoogleLoading } = useGoogleAuth();
+  const [googleToken, setGoogleToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
@@ -166,9 +171,44 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
 
   const [formData, setFormData] = useState({
     user: { username: "", email: "", password: "" },
-    profile: { first_name: "", last_name: "", middle_initial: "", suffix: "", contact_number: "", birthdate: "" },
+    profile: { first_name: "", last_name: "", middle_initial: "", suffix: "", contact_number: "", birthdate: "", avatar_url: "" },
     address: { house_number: "", street: "", barangay: "", city_municipality: "", province: "", postal_code: "", country: "Philippines" },
   });
+
+  const handleGoogleSignUp = async () => {
+    const profile = await getGoogleUserProfile();
+    if (!profile) return;
+
+    const emailPrefix = profile.email.split("@")[0].toLowerCase().replace(/[^a-zA-Z0-9._]/g, "");
+    const suggestedUsername = emailPrefix.length >= 3 ? emailPrefix : "user";
+
+    const firstName = profile.given_name || (profile.name ? profile.name.split(" ")[0] : "");
+    const lastName = profile.family_name || (profile.name && profile.name.includes(" ") ? profile.name.split(" ").slice(1).join(" ") : "");
+
+    setFormData((prev) => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        email: profile.email,
+        username: suggestedUsername,
+        password: "",
+      },
+      profile: {
+        ...prev.profile,
+        first_name: firstName,
+        last_name: lastName,
+        avatar_url: profile.picture || "",
+      },
+    }));
+
+    setGoogleToken(profile.access_token);
+    success(
+      "Google Connected",
+      "Your email and name have been auto-filled! Please complete your remaining details."
+    );
+    setCurrentStep(2);
+  };
+
 
   const showPasswordReqs = formData.user.password.length > 0;
 
@@ -356,6 +396,13 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
 
   const validateStep = () => {
     if (currentStep === 1) {
+      if (googleToken) {
+        if (!formData.user.username) {
+          showError("Validation Error", "Username is required.");
+          return false;
+        }
+        return true;
+      }
       if (setupPhase !== "password") return false;
       if (!formData.user.username) {
         showError("Validation Error", "Username is required.");
@@ -433,6 +480,22 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
     setLoading(true);
 
     try {
+      if (googleToken) {
+        const data = await authClient.loginWithGoogle({
+          access_token: googleToken,
+          mode: "register",
+          user: formData.user,
+          profile: formData.profile,
+          address: formData.address,
+        });
+        localStorage.setItem("lanes_token", data.access_token);
+        sessionStorage.removeItem("lanes_registration_draft");
+        await queryClient.invalidateQueries({ queryKey: ["auth-user"] });
+        success("Welcome to LANES!", "Your account and citizen profile have been created successfully.");
+        router.push(redirectTo && redirectTo.startsWith("/") ? redirectTo : "/map");
+        return;
+      }
+
       await authClient.register(formData);
       sessionStorage.removeItem("lanes_registration_draft");
       
@@ -536,7 +599,49 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                   transition={{ duration: 0.3 }}
                   className="space-y-4"
                 >
-                  {setupPhase === "email" && (
+                  {googleToken ? (
+                    <div className="space-y-4">
+                      <div className="p-4 rounded-xl bg-blue-50/90 border border-blue-200 flex items-center gap-3">
+                        {formData.profile.avatar_url ? (
+                          <img
+                            src={formData.profile.avatar_url}
+                            alt="Google Avatar"
+                            className="w-11 h-11 rounded-full border-2 border-blue-300 object-cover"
+                          />
+                        ) : (
+                          <div className="w-11 h-11 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-base">
+                            G
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-blue-900 flex items-center gap-1.5">
+                            <FcGoogle className="w-4 h-4 shrink-0" />
+                            Connected with Google
+                          </p>
+                          <p className="text-sm text-slate-800 truncate font-medium">{formData.user.email}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setGoogleToken(null);
+                            setSetupPhase("email");
+                          }}
+                          className="text-xs text-blue-700 hover:text-blue-900 font-semibold underline cursor-pointer"
+                        >
+                          Change
+                        </button>
+                      </div>
+
+                      <Input 
+                        label="Username"
+                        labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
+                        placeholder="juandelacruz" 
+                        required
+                        value={formData.user.username} 
+                        onChange={e => handleChange("user", "username", e.target.value)}
+                      />
+                    </div>
+                  ) : setupPhase === "email" ? (
                     <div className="space-y-4">
                       <Input 
                         label="Email Address"
@@ -554,14 +659,24 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                       </div>
                       <button
                         type="button"
-                        onClick={() => info("Under Development", "Google Sign-Up is currently under development.")}
-                        className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                        onClick={handleGoogleSignUp}
+                        disabled={loading || otpLoading || isGoogleLoading}
+                        className="w-full flex items-center justify-center gap-2 bg-white text-slate-700 border border-slate-300 font-medium py-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                       >
-                        <FcGoogle className="w-5 h-5" />
-                        Sign up with Google
+                        {isGoogleLoading ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin text-slate-500" />
+                            Connecting to Google...
+                          </>
+                        ) : (
+                          <>
+                            <FcGoogle className="w-5 h-5" />
+                            Sign up with Google
+                          </>
+                        )}
                       </button>
                     </div>
-                  )}
+                  ) : null}
 
                   {setupPhase === "otp" && (
                     <div className="space-y-6 pt-1">
@@ -636,7 +751,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                     </div>
                   )}
 
-                  {setupPhase === "password" && (
+                  {!googleToken && setupPhase === "password" && (
                     <div className="space-y-4">
                       <Input 
                         label="Username"
@@ -943,7 +1058,12 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                   )}
 
                   {currentStep === 1 ? (
-                    setupPhase === "email" ? (
+                    googleToken ? (
+                      <Button type="button" onClick={nextStep} className="pl-6 pr-4 py-2">
+                        Next Step
+                        <ChevronRight className="w-4 h-4 ml-2 inline" />
+                      </Button>
+                    ) : setupPhase === "email" ? (
                       <Button type="button" onClick={handleRequestOTP} disabled={otpLoading} className="pl-6 pr-4 py-2">
                         {otpLoading ? "Sending..." : "Send OTP"}
                         <ChevronRight className="w-4 h-4 ml-2 inline" />

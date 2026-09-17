@@ -37,6 +37,106 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 
 ## 🗂️ Bug Log Entries
 
+### [BUG-034] Admin Login Redirection Routing to /feed Instead of /admin/dashboard
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Frontend / Authentication / Client-Side Routing / Role-Based Access Control
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When logging in with an administrative account (e.g., `Super Admin`, `DRRM Officer`, `Moderator`), users were erroneously redirected to the `/feed` page (or `/feed?openPostModal=true`) instead of the admin dashboard (`/admin/dashboard`).
+
+#### 2. Root Cause Analysis (RCA)
+1. In `LoginForm.tsx`, `useGoogleAuth.ts`, and `login/page.tsx`, URL redirection (`redirectTo`) and guest post intent (`lanes_post_intent` stored in `sessionStorage` when unauthenticated users interacted with "Create Post" in the feed) were evaluated before checking user role (`isAdminRole`).
+2. If `redirectTo` pointed to `/feed` or `/login?redirect=%2Ffeed`, or if `lanes_post_intent` was persisted in `sessionStorage`, the login process dispatched `router.push(redirectTo)` or `router.push('/feed?openPostModal=true')` immediately, bypassing the admin dashboard redirection logic entirely.
+3. In `NavigationWrapper.tsx`, route guards only checked exact equality for `Super Admin` and lacked normalized coverage for other staff/admin roles, allowing admins to remain on or be directed to commuter pages.
+
+#### 3. Solution & Architectural Strategy
+1. **Admin-First Priority**: Inverted the navigation decision tree across `LoginForm.tsx`, `login/page.tsx`, and `useGoogleAuth.ts` so that `isAdminRole` is evaluated before any commuter post intent or public redirect targets.
+2. **Post Intent Clearing**: When an admin account logs in, `sessionStorage.removeItem("lanes_post_intent")` is immediately invoked to purge any guest commuter draft intents.
+3. **Target Routing**: If an admin account logs in with an explicit admin destination (`redirectTo.startsWith("/admin")`), they navigate directly to that sub-route; otherwise, they default to `/admin/dashboard`.
+4. **Hardened Route Guards**: Updated `NavigationWrapper.tsx` to ensure any non-staff user attempting to access `/admin` is ejected to `/`, while `Super Admin` accounts visiting public routes are forwarded to `/admin/dashboard`.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/auth/LoginForm.tsx`: Prioritized `isAdminRole` in post-login navigation, cleaned up session post intents, and routed non-admin deep-links appropriately.
+- `frontend/src/app/(auth)/login/page.tsx`: Aligned the `useEffect` auth redirection logic so authenticated admin sessions navigate directly to `/admin/dashboard`.
+- `frontend/src/features/auth/hooks/useGoogleAuth.ts`: Updated Google OAuth completion navigation to enforce the same admin-first routing priority.
+- `frontend/src/features/navigation/NavigationWrapper.tsx`: Hardened role checks to recognize staff accounts and enforce route boundaries.
+
+---
+
+### [BUG-033] Forgot Password Link on Login Form Was an Inert Anchor Tag
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Frontend / Backend / Authentication / Password Recovery
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+The "Forgot password?" link on the login form was an inert `<a href="#">` element with no backend password recovery endpoints or verification workflow.
+
+#### 2. Root Cause Analysis (RCA)
+No password reset endpoints or client-side recovery views had been created. The platform required a secure, OTP-verified reset flow adhering to strict anti-enumeration and brute-force protection standards.
+
+#### 3. Solution & Architectural Strategy
+1. **Backend Endpoints & Cryptographic Security**:
+   - `POST /api/v1/auth/forgot-password/request-otp`: Checks user status and resend cooldown eligibility; returns a generic success response to prevent email enumeration.
+   - `POST /api/v1/auth/forgot-password/verify-otp`: Validates the 6-digit OTP against active codes and mints a signed 15-minute `reset_token` (JWT with `scope: "password_reset"`).
+   - `POST /api/v1/auth/forgot-password/reset`: Validates the JWT signature and scope, enforces password complexity, updates `user.hashed_password`, purges OTP records, and logs `PASSWORD_RESET_SUCCESS`.
+2. **Branded Email Notification**: Created `send_password_reset_email_async` delivering a clean, hosted-branding HTML email via Resend with single-use OTP code and expiry warnings.
+3. **Consistent UI Experience**:
+   - Created `ForgotPasswordForm` featuring a pixel-for-pixel consistent design with the registration flow: identical 6-box OTP inputs, auto-advance, clipboard paste support, progressive resend timer, `<PasswordStrength>` validation meter, and hold-to-view eye icons.
+   - Integrated in-place transition into `LoginForm` preserving the split-screen Agnes background shell on desktop and mobile.
+   - Added `/forgot-password` route redirection to `/login?forgot=true`.
+
+#### 4. Files Modified / What Changed
+- `backend/app/core/security.py`: Added `create_password_reset_token` and `verify_password_reset_token`.
+- `backend/app/schemas/auth.py` & `backend/app/schemas/__init__.py`: Added password reset request/verify/confirm schemas.
+- `backend/app/crud/user.py` & `backend/app/crud/__init__.py`: Added `update_user_password`.
+- `backend/app/services/email_service.py`: Added `send_password_reset_email_async`.
+- `backend/app/services/auth_service.py`: Added `generate_and_send_password_reset_otp`.
+- `backend/app/api/v1/endpoints/auth.py`: Added `forgot-password/request-otp`, `verify-otp`, and `reset` endpoints with rate limiting.
+- `backend/tests/test_forgot_password.py`: Unit test suite (7 tests) covering anti-enumeration, token forgery protection, and complexity rules.
+- `frontend/src/features/auth/api/authClient.ts`: Added forgot password API calls.
+- `frontend/src/features/auth/components/ForgotPasswordForm.tsx`: Created 4-phase animated recovery form.
+- `frontend/src/features/auth/LoginForm.tsx`: Wired "Forgot password?" button to toggle recovery mode in-place.
+- `frontend/src/app/(auth)/login/page.tsx`: Added dynamic header and view state binding.
+- `frontend/src/app/(auth)/forgot-password/page.tsx`: Added fallback route redirecting to `/login?forgot=true`.
+
+### [BUG-032] Google Sign-In and Registration Buttons Were Inert Placeholders
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Frontend / Backend / Authentication / OAuth
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+The "Sign in with Google" and "Sign up with Google" buttons on the Login and Registration forms were static UI placeholders that displayed an "Under Development" toast rather than executing an OAuth authentication flow.
+
+#### 2. Root Cause Analysis (RCA)
+Google OAuth 2.0 Web Client credentials had not yet been integrated into the system, and the backend lacked an endpoint to verify Google ID tokens / OAuth access tokens and authenticate or register users.
+
+#### 3. Solution & Architectural Strategy
+1. **Google Identity Services Integration**: Created `useGoogleAuth` hook using Google's modern GIS library (`accounts.google.com/gsi/client`) and `initTokenClient` for popup-blocker-free custom button authorization.
+2. **Backend OAuth Gateway**: Added `POST /api/v1/auth/google` with rate limiting and audience verification (`GOOGLE_CLIENT_ID`) protecting against token substitution attacks.
+3. **Intent-Specific Auth Flow (Strict Login vs Auto-Fill Signup)**:
+   - **Login Mode**: When signing in from `/login`, unregistered Google accounts are rejected with HTTP 404 (`"No registered account found with this Google email. Please sign up first."`) displayed via a standard error toast.
+   - **Register Mode**: Clicking "Sign up with Google" on `/register` fetches the user's verified Google profile and auto-populates their email, first name, last name, avatar, and suggested username, skipping redundant email OTP verification and password creation. The user completes their birthdate, contact number, and address before the account is provisioned.
+4. **Environment Configuration**: Encrypted `GOOGLE_CLIENT_ID` in `backend/.env` and `NEXT_PUBLIC_GOOGLE_CLIENT_ID` in `frontend/.env.local` using `@dotenvx/dotenvx`, documented in `.env.example` and `apphosting.yaml`.
+
+#### 4. Files Modified / What Changed
+- `backend/app/core/config.py`: Added `GOOGLE_CLIENT_ID` to backend settings.
+- `backend/app/schemas/auth.py` & `backend/app/schemas/__init__.py`: Added `GoogleAuthRequest` and `GoogleAuthResponse`.
+- `backend/app/services/auth_service.py`: Added `verify_google_token` and `authenticate_or_register_google_user` supporting `login` and `register` modes with Profile and Address provisioning.
+- `backend/app/api/v1/endpoints/auth.py`: Added `POST /auth/google` route.
+- `backend/tests/test_google_auth.py`: Unit tests verifying audience checks, token verification, and unregistered user rejection.
+- `frontend/src/features/auth/api/authClient.ts`: Added `loginWithGoogle` API method.
+- `frontend/src/features/auth/hooks/useGoogleAuth.ts`: Created GIS OAuth hook with `signInWithGoogle` and `getGoogleUserProfile`.
+- `frontend/src/features/auth/LoginForm.tsx`: Wired "Sign in with Google" button with error toast handling.
+- `frontend/src/features/auth/components/RegisterForm.tsx`: Wired "Sign up with Google" auto-fill flow, step validation bypass, and connected Google account badge.
+- `frontend/apphosting.yaml` & `backend/.env.example`: Documented Google Client ID.
+
 ### [BUG-031] Valhalla Production Route Requests Targeted an Absent Local Container
 - **Status**: Resolved in code / Pending Cloud rollout
 - **Severity**: Critical

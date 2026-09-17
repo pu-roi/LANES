@@ -1,5 +1,6 @@
 
 from typing import Optional, List
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -35,7 +36,13 @@ def get_user_by_username(db: Session, username: str) -> Optional[models.User]:
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[models.User]:
-    return db.query(models.User).filter(models.User.email == email, models.User.deleted_at.is_(None)).first()
+    if not email:
+        return None
+    clean_email = email.strip().lower()
+    return db.query(models.User).filter(
+        func.lower(models.User.email) == clean_email,
+        models.User.deleted_at.is_(None)
+    ).first()
 
 
 def create_user(db: Session, user: schemas.UserCreate) -> models.User:
@@ -155,3 +162,15 @@ def hard_delete_user(db: Session, user_id: int) -> bool:
         db.commit()
         return True
     return False
+
+
+def update_user_password(db: Session, user_id: int, new_password: str) -> Optional[models.User]:
+    """
+    Updates the hashed password of a user.
+    """
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user:
+        user.hashed_password = get_password_hash(new_password)
+        db.commit()
+        db.refresh(user)
+    return user

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from jose import jwt
+from jose import jwt, JWTError
 import bcrypt
 
 from app.core.config import settings
@@ -41,3 +41,33 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
+
+
+def create_password_reset_token(user_id: int) -> str:
+    """
+    Creates a signed 15-minute JWT specifically scoped for password reset.
+    """
+    expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode = {
+        "sub": str(user_id),
+        "scope": "password_reset",
+        "exp": expire,
+    }
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def verify_password_reset_token(token: str) -> Optional[int]:
+    """
+    Verifies the password reset token signature, expiration, and scope.
+    Returns the user_id if valid, None otherwise.
+    """
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        if payload.get("scope") != "password_reset":
+            return None
+        user_id_str = payload.get("sub")
+        if user_id_str is None:
+            return None
+        return int(user_id_str)
+    except (JWTError, ValueError):
+        return None

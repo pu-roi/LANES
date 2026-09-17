@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Response, status, Request
@@ -120,8 +121,50 @@ def test_token(current_user: models.User = Depends(deps.get_current_user)) -> An
     return current_user
 
 
-from app.schemas.auth import RegistrationRequest, OTPVerificationRequest, OTPResendRequest, SignupOTPRequest
-from app.services.auth_service import generate_and_send_otp, validate_otp
+from app.services.auth_service import verify_google_token, authenticate_or_register_google_user
+
+@router.post("/google", response_model=schemas.GoogleAuthResponse)
+@limiter.limit("15/minute")
+def login_with_google(
+    request: Request,
+    response: Response,
+    payload: schemas.GoogleAuthRequest,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Authenticate or register a user using verified Google OAuth credentials.
+    Supports Google Identity Services ID tokens (credential) and OAuth access tokens.
+    """
+    client_ip = request.client.host if request.client else None
+    google_info = verify_google_token(
+        credential=payload.credential,
+        access_token=payload.access_token
+    )
+    user, is_new_user = authenticate_or_register_google_user(
+        db=db,
+        google_info=google_info,
+        mode=payload.mode,
+        user_data=payload.user,
+        profile_data=payload.profile,
+        address_data=payload.address,
+        client_ip=client_ip
+    )
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    return {
+        "access_token": security.create_access_token(
+            {"sub": str(user.id)}, expires_delta=access_token_expires
+        ),
+        "token_type": "bearer",
+        "is_new_user": is_new_user,
+    }
+
+
+
+from app.schemas.auth import (
+    RegistrationRequest, OTPVerificationRequest, OTPResendRequest, SignupOTPRequest,
+    PasswordResetRequest, PasswordResetVerifyRequest, PasswordResetVerifyResponse, PasswordResetConfirm
+)
+from app.services.auth_service import generate_and_send_otp, generate_and_send_password_reset_otp, validate_otp
 from app.crud.user import create_user_with_profile
 from app.crud import otp as crud_otp
 
@@ -310,3 +353,133 @@ async def resend_otp(
         
     await generate_and_send_otp(db, email=payload.email)
     return {"msg": "OTP resent successfully"}
+
+
+@router.post("/forgot-password/request-otp")
+@limiter.limit("5/minute")
+async def forgot_password_request_otp(
+    request: Request,
+    response: Response,
+    payload: PasswordResetRequest,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Sends a password reset OTP to the given email if an active account exists.
+    Returns generic success message to prevent user email enumeration.
+    """
+    user = crud.get_user_by_email(db, email=payload.email)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="No registered account found with this email. Please check your email or sign up."
+        )
+    if not user.is_active:
+        raise HTTPException(
+            status_code=400,
+            detail="This account is currently inactive. Please contact support or register again."
+        )
+
+    sent, err, cooldown_seconds = await generate_and_send_password_reset_otp(db, email=user.email)
+    if not sent:
+        if "Please wait" in err:
+            raise HTTPException(
+                status_code=429,
+                detail=err,
+                headers={"Retry-After": str(cooldown_seconds)}
+            )
+        raise HTTPException(
+            status_code=500,
+            detail=f"Email delivery failed: {err or 'Please check email service configuration'}"
+        )
+
+    return {
+        "msg": "Password reset code sent successfully",
+        "cooldown_seconds": cooldown_seconds
+    }
+
+
+@router.post("/forgot-password/verify-otp", response_model=PasswordResetVerifyResponse)
+@limiter.limit("10/minute")
+def forgot_password_verify_otp(
+    request: Request,
+    response: Response,
+    payload: PasswordResetVerifyRequest,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Verifies the password reset OTP code.
+    Returns a signed 15-minute reset_token if the OTP is valid.
+    """
+    user = crud.get_user_by_email(db, email=payload.email)
+    if not user or not user.is_active:
+        raise HTTPException(status_code=400, detail="Invalid verification request")
+
+    result = validate_otp(db, email=payload.email, plain_otp=payload.otp_code)
+
+    if result["status"] == "SUCCESS":
+        reset_token = security.create_password_reset_token(user_id=user.id)
+        return {
+            "msg": result["message"],
+            "reset_token": reset_token
+        }
+    elif result["status"] == "LOCKED":
+        raise HTTPException(status_code=429, detail=result["message"])
+    elif result["status"] == "EXPIRED":
+        raise HTTPException(status_code=410, detail=result["message"])
+    else:
+        raise HTTPException(status_code=400, detail=result["message"])
+
+
+@router.post("/forgot-password/reset")
+@limiter.limit("5/minute")
+def forgot_password_reset(
+    request: Request,
+    response: Response,
+    payload: PasswordResetConfirm,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Resets the user's password using the signed reset_token.
+    Enforces password complexity requirements, clears active OTPs, and logs an audit record.
+    """
+    user_id = security.verify_password_reset_token(payload.reset_token)
+    if not user_id:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token. Please request a new one.")
+
+    user = crud.get_user(db, user_id=user_id)
+    if not user or not user.is_active:
+        raise HTTPException(status_code=404, detail="User not found or inactive")
+
+    pwd = payload.new_password
+    if len(pwd) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long.")
+    if re.search(r"\s", pwd):
+        raise HTTPException(status_code=400, detail="Password must not contain spaces.")
+    if not (re.search(r"[a-z]", pwd) and re.search(r"[A-Z]", pwd) and re.search(r"\d", pwd) and re.search(r"[^a-zA-Z\d\s]", pwd)):
+        raise HTTPException(
+            status_code=400,
+            detail="Password must contain an uppercase letter, a lowercase letter, a number, and a special character."
+        )
+
+    crud.update_user_password(db, user_id=user.id, new_password=pwd)
+
+    # Purge OTP records so verification cannot be replayed
+    crud_otp.delete_otp(db, email=user.email)
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=user.id,
+            action_type="PASSWORD_RESET_SUCCESS",
+            target_table="users",
+            target_id=user.id,
+            metadata_json={
+                "username": user.username,
+                "email": user.email,
+            },
+            ip_address=client_ip
+        )
+    )
+
+    return {"msg": "Password has been successfully reset. Please log in with your new password."}

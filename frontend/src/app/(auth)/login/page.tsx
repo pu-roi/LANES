@@ -5,31 +5,54 @@ import { Logo } from "@/shared/ui";
 import LoginForm from "@/features/auth/LoginForm";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
 function LoginPageContent() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isForgotQuery = searchParams.get('forgot') === 'true';
+  const [view, setView] = useState<"login" | "forgot">(isForgotQuery ? "forgot" : "login");
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
       const redirectUrl = searchParams.get('redirect');
-      
-      if (redirectUrl && redirectUrl.startsWith('/')) {
-        router.push(redirectUrl);
-      } else if (typeof window !== 'undefined' && sessionStorage.getItem('lanes_post_intent')) {
+      const u = user as any;
+      const roleName = u?.role?.name;
+      const isAdminRole = Boolean(
+        roleName && (
+          roleName === 'Super Admin' ||
+          roleName === 'DRRM Officer' ||
+          roleName === 'Moderator' ||
+          roleName.toLowerCase().includes('admin')
+        )
+      );
+
+      if (isAdminRole) {
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('lanes_post_intent');
+        }
+        if (redirectUrl && redirectUrl.startsWith('/admin')) {
+          router.push(redirectUrl);
+        } else {
+          router.push('/admin/dashboard');
+        }
+        return;
+      }
+
+      if (typeof window !== 'undefined' && sessionStorage.getItem('lanes_post_intent')) {
         sessionStorage.removeItem('lanes_post_intent');
         router.push('/feed?openPostModal=true');
-      } else {
-        const u = user as any;
-        if (u?.role?.name === 'Super Admin' || u?.role?.name === 'Moderator' || u?.role?.name === 'DRRM Officer') {
-          router.push('/admin/dashboard');
-        } else {
-          router.push('/map');
-        }
+        return;
       }
+
+      if (redirectUrl && redirectUrl.startsWith('/') && redirectUrl !== '/' && !redirectUrl.startsWith('/admin')) {
+        router.push(redirectUrl);
+        return;
+      }
+
+      router.push('/map');
     }
   }, [isAuthenticated, isLoading, router, user, searchParams]);
 
@@ -113,14 +136,20 @@ function LoginPageContent() {
           <div className="w-full max-w-xl lg:ml-[-6%] xl:ml-[-8%] z-10 relative">
             {/* Form Header */}
             <div className="text-center lg:text-left space-y-2 mb-8 pl-2">
-              <h2 className="text-3xl font-extrabold text-white lg:text-slate-900 tracking-tight drop-shadow-md lg:drop-shadow-none">Welcome back</h2>
-              <p className="text-sm text-blue-100 lg:text-slate-500 font-medium">Log in to view your profile and saved routes.</p>
+              <h2 className="text-3xl font-extrabold text-white lg:text-slate-900 tracking-tight drop-shadow-md lg:drop-shadow-none">
+                {view === "forgot" ? "Account Recovery" : "Welcome back"}
+              </h2>
+              <p className="text-sm text-blue-100 lg:text-slate-500 font-medium">
+                {view === "forgot"
+                  ? "Reset your password to regain access to your account."
+                  : "Log in to view your profile and saved routes."}
+              </p>
             </div>
 
             {/* Form Container Card matching RegisterForm */}
             <div className="w-full max-w-xl mx-auto bg-white/10 backdrop-blur-sm lg:bg-white rounded-2xl shadow-2xl lg:shadow-[0_8px_40px_rgba(59,130,246,0.15)] border border-white/20 lg:border-slate-200/80 border-t-4 border-t-blue-600 lg:ring-1 lg:ring-blue-100/50">
               <div className="p-8 pt-10">
-                <LoginForm />
+                <LoginForm initialView={view} onViewChange={setView} />
               </div>
             </div>
 

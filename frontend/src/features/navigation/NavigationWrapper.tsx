@@ -34,10 +34,21 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
     } else {
       // Authenticated user checks
       const u = user as any;
-      if (isAdminRoute && u?.role?.name === "Commuter") {
+      const roleName = u?.role?.name;
+      const isSuperAdmin = Boolean(roleName && (roleName === "Super Admin" || roleName === "Admin"));
+      const isStaff = Boolean(
+        roleName && (
+          isSuperAdmin ||
+          roleName === "DRRM Officer" ||
+          roleName === "Moderator" ||
+          roleName.toLowerCase().includes("admin")
+        )
+      );
+
+      if (isAdminRoute && !isStaff) {
         setIsRedirecting(true);
         router.replace("/");
-      } else if (isPublicRoute && u?.role?.name === "Super Admin") {
+      } else if (isPublicRoute && isSuperAdmin) {
         setIsRedirecting(true);
         router.replace("/admin/dashboard");
       } else {
