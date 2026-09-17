@@ -1103,9 +1103,9 @@ export default function LiveMapPage() {
                 onZoneUpdated={() => {
                   refetchList();
                   refetchMap();
-                  void getZone(editingZone.id)
-                    .then((updatedZone) => setEditingZone(updatedZone))
-                    .catch(() => toast.error(`Unable to refresh Zone #${editingZone.id}.`));
+                  setIsEditZoneDrawerOpen(false);
+                  setEditingZone(null);
+                  removeSecondaryWorkspace("edit");
                 }}
                 editingZone={editingZone}
                 mapInstance={mapInstance}
