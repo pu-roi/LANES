@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 18, 2026, 12:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -29,6 +29,7 @@
 > **Focus:** Keep `/map` usable when the external MapTiler style is slow or unavailable, without recreating the WebGL map, while ensuring long-lived SSE connections do not exhaust the backend's Postgres pool. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 > - [x] **MapTiler first-render policy (`BaseMap.tsx`)**: Removed the `HEAD` preflight, 8-second watchdog, and map-recreation retries. The initial detailed-map attempt has a 1.5-second usable-map budget; it switches the existing MapLibre instance to OSM on timeout or a MapTiler resource failure.
 > - [x] **Automatic detailed-map restoration (`BaseMap.tsx`)**: Added stale-callback guards, one structured/redacted diagnostic per failed attempt, retry backoff (online event, 30s, 60s, 2m, then 5m), and a longer 6-second recovery window after OSM is already usable. LANES-specific fallback source/layer identifiers distinguish the OSM style from MapTiler's own generic sources, so a successful retry can complete.
+> - [x] **First-visible-render and repeat-visit acceleration (`BaseMap.tsx`, `layout.tsx`, `next.config.ts`)**: Treats the first MapLibre render after `style.load` as usable instead of waiting for every remote glyph range; establishes a MapTiler DNS/TLS connection early; and caches MapTiler maps, fonts, sprites, and tiles with production PWA stale-while-revalidate storage.
 > - [x] **Admin drawing lifecycle repair (`useTerraDraw.ts`)**: Cancels stale deferred `style.load` initialization and cleans up only abandoned TerraDraw adapter artifacts before a replacement instance starts, preventing duplicate `td-polygon` sources.
 > - [x] **Responsive recovery presentation and configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)**: Added a non-blocking, viewport-anchored recovery notice that stays below the desktop floating navigation and wraps on smaller screens. Removed the source-code MapTiler URL/key duplication; Firebase App Hosting reads `NEXT_PUBLIC_MAPTILER_KEY` from the `maptiler-api-key` secret at build/runtime.
 > - [x] **SSE connection-pool protection (`sync.py`, `database.py`, `main.py`)**: Reworked `/sync/stream` to acquire short-lived worker-thread sessions per poll rather than holding one database connection for each streaming client; tuned fail-fast pool limits and added a JSON global exception response path.

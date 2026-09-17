@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 18, 2026, 12:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -57,11 +57,13 @@ In `/admin/map`, when an administrator opened an existing road flood zone (e.g. 
 2. **Robust Cleanup**: Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers (outline, markers, fills) and sources (`td-polygon`, `td-linestring`, `td-point`) in proper detachment order before adapter creation and upon drawer unmount.
 3. **Immediate Mode Activation**: Applied active mode immediately upon `draw.start()` and added `drawInstance` to mode sync dependencies so the crosshair cursor and instruction banner activate directly.
 4. **Permanent Auth Throttling**: Added `isPermanentAuthError` detection in `BaseMap.tsx` to halt automated retries on 401/403 or invalid keys, preventing background style reload loops.
+5. **Visual-Readiness Optimization**: Uses the first MapLibre render after `style.load` as the usability signal rather than waiting for all font glyph ranges. DNS/TLS preconnect and production PWA caching reduce cold connection work and accelerate later visits.
 
 #### 4. Files Modified / What Changed
 - `frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx`: Changed `isEnabled` to `isOpen` in `useTerraDraw` and added drawing restoration from `polygonSessionCacheRef` when `drawInstance` becomes ready.
 - `frontend/src/features/admin/components/zones/hooks/useTerraDraw.ts`: Hardened layer/source cleanup in `removeStaleTerraDrawArtifacts`, set mode directly on start, and included `drawInstance` in mode sync dependencies.
 - `frontend/src/shared/ui/map/BaseMap.tsx`: Throttled retries and halted automated style reload loop on permanent 401/403 errors.
+- `frontend/src/app/layout.tsx`, `frontend/next.config.ts`: Added MapTiler connection hints and runtime caching for styles, glyphs, sprites, and tiles.
 - `frontend/src/features/admin/LiveMapPage.tsx`: Isolated active zone layer so only the reference line represents the zone during editing.
 - `frontend/src/features/map/hooks/useFloodMapPreview.ts`: Added `showMarkers` prop to hide pins in polygon mode while keeping the reference line.
 - `frontend/src/features/map/MapContext.tsx`: Exposed `floodShowMarkers` state and setter.

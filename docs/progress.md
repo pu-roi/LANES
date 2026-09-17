@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 18, 2026, 12:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -67,6 +67,7 @@
   - Restores LANES-owned flood, boundary, and route layers through existing `style.load` hooks instead of creating another WebGL map.
   - Retries MapTiler after connectivity returns and on bounded backoff; recovery allows six seconds because OSM is already a usable baseline.
   - Uses LANES-specific fallback identifiers rather than generic `osm` names, allowing a loaded MapTiler retry to be recognized correctly.
+  - Treats the first rendered map frame as usable rather than waiting on every remote font glyph; production repeat visits reuse cached MapTiler style, font, sprite, and tile assets after an early connection warm-up.
 - [x] **Admin TerraDraw lifecycle repair (`useTerraDraw.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Cancels stale deferred style callbacks and removes only abandoned `td-*` artifacts before initialization, preventing duplicate MapLibre sources during repeated zone editing.
 - [x] **Responsive status and safe configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

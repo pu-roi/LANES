@@ -865,10 +865,16 @@ export default function BaseMap({
     });
 
     mapInstance.on("style.load", () => {
-      // `load` establishes the initial first-render budget. Subsequent setStyle
-      // operations retain this WebGL map and let feature hooks restore layers.
-      if (!initialLoadFinished && activeStyle === "primary") return;
-      requestAnimationFrame(() => completeStyle(activeStyle));
+      // `load` waits for every style asset, including remote glyph ranges. A
+      // MapLibre render after `style.load` proves the user can see the map, so
+      // use it for the 1.5-second usability budget while still listening for
+      // resource errors that require the OSM fallback.
+      const attemptAtStyleLoad = activeAttempt;
+      const styleAtStyleLoad = activeStyle;
+      mapInstance.once("render", () => {
+        if (destroyed || attemptAtStyleLoad !== activeAttempt || styleAtStyleLoad !== activeStyle) return;
+        completeStyle(styleAtStyleLoad);
+      });
     });
 
     const handleOnline = () => {
