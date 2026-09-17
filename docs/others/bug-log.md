@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,29 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-040] AI Weather Insights Failed with 500 on Production Domain Due to Hardcoded Relative Fetch and Build-Time Rewrite Mismatch
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Production Cloud Infrastructure / Weather Insights
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On the production deployment (`https://navlanes.live`), opening the AI Weather Insights modal on the landing page failed with `500 Internal Server Error`, while the local dev environment and direct Cloud Run endpoint (`https://lanes-api-557679867071.asia-east1.run.app/api/v1/weather/insights`) responded with `200 OK`.
+
+#### 2. Root Cause Analysis (RCA)
+1. In `WeatherInsightsModal.tsx`, the API request hardcoded a relative URL path (`fetch('/api/v1/weather/insights')`) rather than using `process.env.NEXT_PUBLIC_API_URL`.
+2. On Firebase App Hosting, the browser sent the request to the Next.js frontend container (`https://navlanes.live/api/v1/weather/insights`) instead of the Cloud Run API.
+3. In `frontend/apphosting.yaml`, `BACKEND_URL` only had `RUNTIME` availability. During `next build`, Next.js rewrites in `next.config.ts` evaluated `process.env.BACKEND_URL` as undefined, falling back to `http://127.0.0.1:8000`. Because no backend runs inside the App Hosting container, Next.js server proxies failed and returned `500 Internal Server Error`.
+
+#### 3. Solution & Architectural Strategy
+1. Standardized `WeatherInsightsModal.tsx` to read `process.env.NEXT_PUBLIC_API_URL || '/api/v1'` matching `ForecastChart.tsx`, `apiClient.ts`, and auth components. The browser now calls the live Cloud Run backend gateway directly.
+2. Added `BUILD` availability to `BACKEND_URL` in `apphosting.yaml` so any server-side Next.js rewrites correctly resolve `https://lanes-api-557679867071.asia-east1.run.app` at build time.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/landing/WeatherInsightsModal.tsx`: Updated fetch call to use `NEXT_PUBLIC_API_URL`.
+- `frontend/apphosting.yaml`: Added `BUILD` availability to `BACKEND_URL`.
 
 ### [BUG-039] TerraDraw Source Collision ("td-polygon already exists") and Perpetual Map Style Reload Loop in Edit Flood Zone
 - **Status**: Resolved

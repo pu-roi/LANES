@@ -345,7 +345,7 @@ export function OfficialZoneDrawer({
 
   // Sync editingZone when it changes (including standalone survey + description state)
   useEffect(() => {
-    if (editingZone) {
+    if (editingZone && isOpen) {
       const baseline = getZoneEditBaseline(editingZone);
       const { editorValues: baselineValues, passableVehicles: vehicles } = baseline;
       editBaseline.current = baseline;
@@ -418,12 +418,12 @@ export function OfficialZoneDrawer({
         pendingDrawnFeatures.current = polyFeatures;
       }
     }
-  }, [editingZone, restoreFloodReportMapState, setFloodShowMarkers]);
+  }, [editingZone, isOpen, restoreFloodReportMapState, setFloodShowMarkers]);
 
   // Edit Zone is a per-admin local workspace. The server's current version is
   // authoritative if another admin has saved this zone since this draft began.
   useEffect(() => {
-    if (!canPersistEdit || !editingZone || !userId) {
+    if (!isOpen || !canPersistEdit || !editingZone || !userId) {
       hasHydratedEditDraft.current = false;
       hydratedEditKey.current = null;
       return;
@@ -523,10 +523,18 @@ export function OfficialZoneDrawer({
       }
     });
     return () => { cancelled = true; };
-  }, [canPersistEdit, editingZone, error, replaceMediaFiles, restoreFloodReportMapState, success, userId]);
+  }, [canPersistEdit, editingZone, error, isOpen, replaceMediaFiles, restoreFloodReportMapState, success, userId]);
 
   useEffect(() => {
-    if (suppressEditDraftSave.current || !canPersistEdit || !editingZone || !userId || !hasHydratedEditDraft.current) return;
+    if (
+      !isOpen ||
+      isSubmitting ||
+      suppressEditDraftSave.current ||
+      !canPersistEdit ||
+      !editingZone ||
+      !userId ||
+      !hasHydratedEditDraft.current
+    ) return;
     if (hydratedEditKey.current !== `${userId}:${editingZone.id}`) return;
     const values = { editorValues, passableVehicles, hiddenHazards, adminNotes };
     const baseline = editBaseline.current ?? getZoneEditBaseline(editingZone);
@@ -549,7 +557,7 @@ export function OfficialZoneDrawer({
         error("Draft Not Saved", "Your unfinished zone edit could not be saved on this device.");
       }
     });
-  }, [adminNotes, canPersistEdit, editingZone, editorValues, error, hiddenHazards, mediaFiles, passableVehicles, userId]);
+  }, [adminNotes, canPersistEdit, editingZone, editorValues, error, hiddenHazards, isOpen, isSubmitting, mediaFiles, passableVehicles, userId]);
 
   useEffect(() => () => {
     createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
@@ -1047,6 +1055,7 @@ export function OfficialZoneDrawer({
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsSubmitting(true);
+    suppressEditDraftSave.current = true;
 
     try {
       if (isEditMode && editingZone) {
@@ -1054,12 +1063,14 @@ export function OfficialZoneDrawer({
           if (!floodStart || !floodEnd || !validatedRoadCoverage) {
             error("Incomplete Road Line", "Please select valid start and end points along a mapped road.");
             setIsSubmitting(false);
+            suppressEditDraftSave.current = false;
             return;
           }
         } else {
           if (!drawnGeometry || drawnFeatures.length === 0) {
             error("No Shape Defined", "Please draw a shape on the map or switch back to Road Line mode.");
             setIsSubmitting(false);
+            suppressEditDraftSave.current = false;
             return;
           }
         }
@@ -1088,6 +1099,10 @@ export function OfficialZoneDrawer({
           await addZoneMedia(editingZone.id, mediaFiles);
         }
         if (userId) await discardZoneEditDraft(userId, editingZone.id);
+        clearMediaFiles();
+        hasHydratedEditDraft.current = false;
+        hydratedEditKey.current = null;
+        editBaseline.current = null;
         success("Zone Updated", `Official Zone #${editingZone.id} has been saved.`);
         if (onZoneUpdated) onZoneUpdated();
         setFloodShowMarkers(true);
@@ -1139,8 +1154,9 @@ export function OfficialZoneDrawer({
         }
 
         if (submissionItems.length === 0) {
-          error("Nothing to Submit", "Please define at least one road segment or drawn hazard.");
+          error("No Zones to Publish", "Please add at least one zone to publish.");
           setIsSubmitting(false);
+          suppressEditDraftSave.current = false;
           return;
         }
 
@@ -1162,6 +1178,7 @@ export function OfficialZoneDrawer({
         onClose();
       }
     } catch (err: unknown) {
+      suppressEditDraftSave.current = false;
       const rawMessage = err instanceof Error ? err.message : "";
       const isGeometryValidationError = /invalid body json|validation errors|geometry\.(polygon|multipolygon)/i.test(rawMessage);
       error(

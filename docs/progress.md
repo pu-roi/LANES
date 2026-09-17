@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 18, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 1:48 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,9 +9,10 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
-| 26 | Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), and BaseMap MapTiler 403 reload throttling |
-| 25 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
-| 24 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
+| 27 | Edit Flood Zone Geometry Switching, TerraDraw Collision Hardening & Production Weather Insights | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), BaseMap MapTiler 403 reload throttling, and production AI Weather Insights gateway routing on Firebase App Hosting |
+| 26 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
+| 25 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
+| 24 | Unified Flood-Routing Policy & Provider Parity | Implemented / cloud verification pending | Centralized four-profile/four-severity passability policy, PostGIS intersection exposure measurement, normalized 4-card ranking (Fastest, Safest, Balanced, Alternative), and Valhalla exclude_polygons contract alignment |
 | 23| Identity-First Google Auth, Password Recovery & Resilient Admin Routing | Completed | Google Sign-in/Sign-up integration with automatic profile prefill and citizen onboarding completion, self-service Resend OTP password recovery workflow, hardened admin login redirection ([BUG-034]) directly to /admin/dashboard, and NavigationWrapper route guard enforcement |
 | 22| Private Valhalla Cloud Run Recovery | Ready for cloud deployment | Private Valhalla deployment assets, Cloud Storage tile artifact flow, Cloud Run identity-token calls, automatic ORS availability fallback, typed engine metadata, and matched desktop/mobile backup notice |
 | 21| Production Cloud Infrastructure & Firebase App Hosting Deployment | Completed | Production deployment of Next.js frontend to Firebase App Hosting (asia-east1), build-time API variable injection via apphosting.yaml, backend CORS middleware whitelist expansion (*.hosted.app, *.web.app, *.firebaseapp.com), dotenvx environment encryption, and deployment gitignore hygiene |
@@ -46,6 +47,7 @@
 - [x] **Active Zone Layer Isolation (`LiveMapPage.tsx`)**: Excluded `editingZone` from `visibleMapZones` in `useFloodZonesLayer` so that only the preview reference line represents the zone during editing, returning to the solid active style cleanly if cancelled.
 - [x] **TerraDraw Instance Gating & Source Collision Resolution (`useTerraDraw.ts`, `OfficialZoneDrawer.tsx`)**: Gated TerraDraw mounting behind `isEnabled: isOpen` so Create and Edit drawers do not clash over the same MapLibre sources. Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers and sources before adapter creation and on unmount. Directly set active mode on `draw.start()` and monitored `drawInstance` in mode sync effect to immediately activate the crosshair cursor and instruction banner.
 - [x] **Permanent Map Style Reload Halting (`BaseMap.tsx`)**: Detected permanent 401/403 authorization failures on MapTiler styles and capped retries, preventing perpetual background `map.setStyle()` reloads that wiped map layers.
+- [x] **Production Weather Insights Gateway Standardization (`WeatherInsightsModal.tsx`, `apphosting.yaml`)**: Standardized AI weather insights to query `NEXT_PUBLIC_API_URL` directly rather than a hardcoded relative path, and added `BUILD` availability to `BACKEND_URL` in `apphosting.yaml` to prevent Firebase App Hosting 500 rewrite errors.
 
 ### Capstone Phase 26: Profile Picture Privacy, Tab Title Standardization & About Contact Form (🟢 COMPLETED)
 - [x] **Profile Picture Privacy Toggle & Query Masking (`profile.py`, `feed.py`, `user.py`, `posts.py`, `comments.py`, `ProfileView.tsx`, `4389876f4499_add_hide_profile_picture_to_profile.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
