@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,12 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 26: Profile Picture Privacy, Tab Title Standardization & About Contact Form (🟢 COMPLETED)
+> **Focus:** Introducing a profile picture privacy setting with uppercase initial letter fallback across the platform, standardizing browser tab titles to `LANES | <Page>`, and establishing official contact channels with an interactive Resend message delivery form on `/about`. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Profile Picture Privacy & Feed Query Masking (`profile.py`, `feed.py`, `user.py`, `posts.py`, `comments.py`, `ProfileView.tsx`, `4389876f4499_add_hide_profile_picture_to_profile.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Added `hide_profile_picture` boolean column (default `False`) to the `profiles` table via Alembic migration `4389876f4499`. Masked `author_avatar`/`avatar_url` to `None`/`NULL` in backend Feed cursor queries, single post lookups, comment threads, user profile endpoints, and top contributor leaderboards when enabled. Integrated "Hide Profile Picture" toggle in Profile Settings tab under Privacy and rendered the fallback uppercase initial avatar with `EyeOff` privacy badges.
+> - [x] **Browser Tab Title Standardization (`layout.tsx`, `manifest.json`, subpages)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Configured root App Router metadata template to `LANES | %s` with default `LANES`. Standardized tab titles across subpages (`LANES | Map`, `LANES | Community Feed`, `LANES | Profile`, `LANES | Flood Risk Analytics`, `LANES | About`). Updated PWA manifest application name to `"LANES - Localized Alternative Navigation for Environs under Submersion"`.
+> - [x] **Official Contact Channels & Interactive Inquiries (`ContactSection.tsx`, `about/page.tsx`, `public.py`, `email_service.py`, `contact.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Surfaced official contact channels (`lanes@navlanes.live` with backup `navlanes.live@gmail.com`) with one-click copy support on `/about`. Implemented `POST /api/v1/public/contact` with rate limiting (`5/min`) and async Resend delivery (`send_contact_email_async`) with direct reply-to headers to forward citizen inquiries directly to administrators.
 
 ### Capstone Phase 25: Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience (🟡 IMPLEMENTED / MANUAL VERIFICATION PENDING)
 > **Focus:** Keep `/map` usable when the external MapTiler style is slow or unavailable, without recreating the WebGL map, while ensuring long-lived SSE connections do not exhaust the backend's Postgres pool. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

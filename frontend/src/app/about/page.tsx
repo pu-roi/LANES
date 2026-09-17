@@ -1,10 +1,11 @@
-import { Info, Users, Map as MapIcon, Cpu, Construction, ChevronRight } from "lucide-react";
+import { Info, Users, Map as MapIcon, Cpu, ChevronRight } from "lucide-react";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ContactSection } from "@/features/about/ContactSection";
 
 export const metadata = {
-  title: "About | LANES",
+  title: "About",
   description: "About the LANES Project",
 };
 
@@ -119,22 +120,8 @@ export default function AboutPage() {
           </section>
         </div>
 
-        {/* Contact Us (Under Development) */}
-        <section className="bg-slate-50 rounded-2xl border border-slate-200 p-6 sm:p-8 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-            <Construction className="w-32 h-32 text-slate-900" />
-          </div>
-          <div className="relative z-10 space-y-5 flex flex-col items-center">
-            <h2 className="text-2xl font-bold text-slate-900">Contact Us</h2>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-800 font-medium text-sm">
-              <Construction className="w-4 h-4" />
-              Under Development
-            </div>
-            <p className="text-slate-600 max-w-md mx-auto">
-              Our contact form and support channels are currently being set up. Please check back later or reach out through official PLP university channels.
-            </p>
-          </div>
-        </section>
+        {/* Contact Us Section */}
+        <ContactSection />
 
       </div>
     </div>

@@ -23,6 +23,7 @@ class ProfileBase(BaseModel):
     cover_color: Optional[str] = "#3B82F6"
     is_public: Optional[bool] = True
     display_full_name: Optional[bool] = True
+    hide_profile_picture: Optional[bool] = False
     trust_score: Optional[int] = 50
     reports_submitted: Optional[int] = 0
     reports_approved: Optional[int] = 0
@@ -55,6 +56,7 @@ class ProfileUpdate(BaseModel):
     cover_color: Optional[str] = None
     is_public: Optional[bool] = None
     display_full_name: Optional[bool] = None
+    hide_profile_picture: Optional[bool] = None
     address: Optional[AddressUpdate] = None
 
 

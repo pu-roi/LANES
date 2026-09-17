@@ -75,7 +75,7 @@ def _build_comment_response(
             "is_pinned": c.is_pinned,
             "pinned_by": c.pinned_by,
         }
-    avatar = c.user.profile.avatar_url if (c.user and getattr(c.user, "profile", None)) else None
+    avatar = c.user.profile.avatar_url if (c.user and getattr(c.user, "profile", None) and not getattr(c.user.profile, "hide_profile_picture", False)) else None
     return {
         "id": c.id,
         "user_id": c.user_id,
@@ -172,7 +172,7 @@ def create_comment(
             ),
         )
 
-    avatar = current_user.profile.avatar_url if getattr(current_user, "profile", None) else None
+    avatar = current_user.profile.avatar_url if (getattr(current_user, "profile", None) and not getattr(current_user.profile, "hide_profile_picture", False)) else None
     return {
         "id": db_comment.id,
         "user_id": current_user.id,
