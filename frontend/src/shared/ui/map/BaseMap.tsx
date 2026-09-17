@@ -5,7 +5,6 @@ import maplibregl from "maplibre-gl";
 import type { Map } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Loader2 } from "lucide-react";
-import { LoadingOverlay } from "../feedback/LoadingOverlay";
 import { registerOfflineProtocol } from "@/lib/offline/map-pmtiles";
 import { preloadOfflineEngine } from "@/features/routing/routingApi";
 
@@ -114,7 +113,13 @@ export class ZoomLevelControl {
 }
 
 // ── Map Style Definitions ─────────────────────────────────────────────────────
-const MAPTILER_KEY = "BHhRqsneD3M4HnOd57WU";
+const MAPTILER_KEY = process.env.NEXT_PUBLIC_MAPTILER_KEY?.trim();
+
+function getMapTilerStyleUrl(styleId: string): string | null {
+  return MAPTILER_KEY
+    ? `https://api.maptiler.com/maps/${styleId}/style.json?key=${encodeURIComponent(MAPTILER_KEY)}`
+    : null;
+}
 
 // OpenStreetMap raster style — used as the OSM option in the picker.
 // Defined here (above MAP_STYLES) so it can be referenced in the array.
@@ -136,40 +141,16 @@ const OSM_PICKER_STYLE = {
 };
 
 export const MAP_STYLES: { id: string; label: string; emoji: string; url: string | object }[] = [
-  {
-    id: "streets-v2",
-    label: "Streets",
-    emoji: "\uD83C\uDFD9",
-    url: `https://api.maptiler.com/maps/streets-v2/style.json?key=${MAPTILER_KEY}`,
-  },
-  {
-    id: "streets-v2-dark",
-    label: "Dark",
-    emoji: "\uD83C\uDF11",
-    url: `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_KEY}`,
-  },
-  {
-    // bright-v2 uses high-contrast road colours:
-    // motorways = orange, primary = yellow, secondary = white, residential = light-grey.
-    // Ideal for differentiating expressways, highways, city roads, and streets at a glance.
-    id: "bright-v2",
-    label: "Roads",
-    emoji: "\uD83D\uDEE3",
-    url: `https://api.maptiler.com/maps/bright-v2/style.json?key=${MAPTILER_KEY}`,
-  },
-  {
-    id: "satellite",
-    label: "Satellite",
-    emoji: "\uD83D\uDEF0",
-    url: `https://api.maptiler.com/maps/satellite/style.json?key=${MAPTILER_KEY}`,
-  },
-  {
-    // Raw OpenStreetMap raster tiles — no API key required, no terrain support.
-    id: "openstreetmap",
-    label: "OpenStreetMap",
-    emoji: "\uD83D\uDDFA",
-    url: OSM_PICKER_STYLE,
-  },
+  ...(MAPTILER_KEY
+    ? [
+        { id: "streets-v2", label: "Streets", emoji: "\uD83C\uDFD9", url: getMapTilerStyleUrl("streets-v2")! },
+        { id: "streets-v2-dark", label: "Dark", emoji: "\uD83C\uDF11", url: getMapTilerStyleUrl("streets-v2-dark")! },
+        { id: "bright-v2", label: "Roads", emoji: "\uD83D\uDEE3", url: getMapTilerStyleUrl("bright-v2")! },
+        { id: "satellite", label: "Satellite", emoji: "\uD83D\uDEF0", url: getMapTilerStyleUrl("satellite")! },
+      ]
+    : []),
+  // Raw OpenStreetMap raster tiles — no API key required, no terrain support.
+  { id: "openstreetmap", label: "OpenStreetMap", emoji: "\uD83D\uDDFA", url: OSM_PICKER_STYLE },
 ];
 
 // ── MapStylePickerControl ─────────────────────────────────────────────────────
@@ -563,6 +544,19 @@ const PHILIPPINES_WIDE_BOUNDS: [[number, number], [number, number]] = [
   [127.0, 21.5],  // Northeast Philippines
 ];
 
+const PRIMARY_MAP_STYLE_URL = getMapTilerStyleUrl("streets-v2");
+const FIRST_RENDER_BUDGET_MS = 1500;
+// OSM is already usable before a background retry begins, so MapTiler gets a
+// longer window to fully rebuild its detailed style without weakening startup.
+const PRIMARY_RETRY_RENDER_BUDGET_MS = 6000;
+const MAPTILER_RETRY_DELAYS_MS = [30_000, 60_000, 120_000, 300_000];
+
+type ActiveMapStyle = "primary" | "fallback";
+
+function redactMapTilerKey(value: string | undefined): string | undefined {
+  return value?.replace(/([?&]key=)[^&]+/i, "$1[redacted]");
+}
+
 interface BaseMapProps {
   onMapInit?: (map: Map) => void;
   onMapLoad?: (map: Map) => void;
@@ -584,75 +578,43 @@ export default function BaseMap({
 }: BaseMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
+  const initialViewportRef = useRef({ center, zoom });
+  const callbacksRef = useRef({ onMapInit, onMapLoad, actionControls });
   const [isLoaded, setIsLoaded] = useState(false);
-  const [mapStyle, setMapStyle] = useState<any>(null); // Start null to indicate "checking"
-  const [retryCount, setRetryCount] = useState(0);
   const [isRecovering, setIsRecovering] = useState(false);
-  const [isCheckingNetwork, setIsCheckingNetwork] = useState(true);
+  const [isUsingFallback, setIsUsingFallback] = useState(false);
 
-  const MAPTILER_STYLE_URL = "https://api.maptiler.com/maps/streets-v2/style.json?key=BHhRqsneD3M4HnOd57WU";
-
-  // ── Pre-flight Network Check ──
   useEffect(() => {
-    const checkNetwork = async () => {
-      const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
-      if (isOffline) {
-        setMapStyle(OSM_FALLBACK_STYLE);
-        setIsCheckingNetwork(false);
-        return;
-      }
-
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000); // Fast 2s ping
-
-        const res = await fetch(MAPTILER_STYLE_URL, { 
-          method: "HEAD", 
-          signal: controller.signal 
-        });
-        clearTimeout(timeoutId);
-
-        if (res.ok) {
-          setMapStyle(MAPTILER_STYLE_URL);
-        } else {
-          setMapStyle(OSM_FALLBACK_STYLE);
-        }
-      } catch (err) {
-        setMapStyle(OSM_FALLBACK_STYLE);
-      } finally {
-        setIsCheckingNetwork(false);
-      }
-    };
-    checkNetwork();
-  }, []);
+    callbacksRef.current = { onMapInit, onMapLoad, actionControls };
+  }, [actionControls, onMapInit, onMapLoad]);
 
   useEffect(() => {
     preloadOfflineEngine();
   }, []);
 
+  // Map creation intentionally uses the initial viewport only. Updating these
+  // props must not recreate the WebGL map; callback props are read via refs.
   useEffect(() => {
-    if (!mapContainerRef.current || !mapStyle) return;
+    if (!mapContainerRef.current) return;
 
-    let fallbackTimeout: NodeJS.Timeout;
+    let destroyed = false;
+    let activeStyle: ActiveMapStyle = (
+      !PRIMARY_MAP_STYLE_URL || (typeof navigator !== "undefined" && !navigator.onLine)
+    ) ? "fallback" : "primary";
+    let activeAttempt = 1;
+    let initialLoadFinished = false;
+    let hasNotifiedMapLoad = false;
+    let retryIndex = 0;
+    let firstRenderTimer: ReturnType<typeof setTimeout> | null = null;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+    const reportedAttempts = new Set<number>();
 
-    const handleFailure = (reason: string) => {
-      if (mapStyle === OSM_FALLBACK_STYLE) return; // Already on fallback
-
-      if (retryCount < 2) {
-        console.warn(`Map load failed (${reason}). Attempting auto-recovery (Attempt ${retryCount + 1})...`);
-        setIsRecovering(true);
-        // Small delay before destroying and recreating map to give network a breather
-        setTimeout(() => setRetryCount((prev) => prev + 1), 800);
-      } else {
-        console.warn(`Map auto-recovery failed after retries. Silently switching to OpenStreetMap fallback.`);
-        setMapStyle(OSM_FALLBACK_STYLE);
-        setIsRecovering(false);
+    const clearFirstRenderTimer = () => {
+      if (firstRenderTimer) {
+        clearTimeout(firstRenderTimer);
+        firstRenderTimer = null;
       }
     };
-
-    fallbackTimeout = setTimeout(() => {
-      if (!isLoaded) handleFailure("Timeout waiting for style to load");
-    }, 8000);
 
     const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
@@ -670,8 +632,8 @@ export default function BaseMap({
       } catch (e) {}
     }
 
-    let initialCenter = center;
-    let initialZoom = zoom;
+    let initialCenter = initialViewportRef.current.center;
+    let initialZoom = initialViewportRef.current.zoom;
     let initialPitch = 0;
     let initialBearing = 0;
 
@@ -688,9 +650,10 @@ export default function BaseMap({
       } catch (e) {}
     }
 
+    const startedAt = performance.now();
     const mapInstance = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: isOffline ? OSM_FALLBACK_STYLE : mapStyle,
+      style: activeStyle === "primary" ? PRIMARY_MAP_STYLE_URL! : OSM_FALLBACK_STYLE,
       center: initialCenter,
       zoom: initialZoom,
       minZoom: isOffline ? 11.5 : 5.0, // Only clamp zoom-out when offline so you don't zoom into grey void
@@ -700,6 +663,98 @@ export default function BaseMap({
       pitch: initialPitch,
       bearing: initialBearing,
     });
+    mapRef.current = mapInstance;
+
+    const styleMatchesActiveAttempt = () => {
+      try {
+        const isOsmStyle = Boolean(mapInstance.getSource("osm"));
+        return activeStyle === "fallback" ? isOsmStyle : !isOsmStyle;
+      } catch {
+        return false;
+      }
+    };
+
+    const reportFailure = (phase: string, error?: unknown) => {
+      if (reportedAttempts.has(activeAttempt)) return;
+      reportedAttempts.add(activeAttempt);
+      const event = error as { message?: string; error?: { message?: string }; url?: string } | undefined;
+      const message = event?.message || event?.error?.message || String(error || "No first visual render");
+      console.warn("[map-style-fallback]", {
+        attempt: activeAttempt,
+        phase,
+        elapsedMs: Math.round(performance.now() - startedAt),
+        url: redactMapTilerKey(event?.url),
+        message: redactMapTilerKey(message),
+      });
+    };
+
+    const completeStyle = (style: ActiveMapStyle) => {
+      if (destroyed || style !== activeStyle || !styleMatchesActiveAttempt()) return;
+      clearFirstRenderTimer();
+      // A fallback can become the map's first completed style when MapTiler
+      // misses the startup budget. Mark it complete so future MapTiler
+      // `style.load` events are eligible to restore the detailed map.
+      initialLoadFinished = true;
+      setIsLoaded(true);
+      setIsRecovering(false);
+      setIsUsingFallback(style === "fallback");
+
+      if (style === "primary") {
+        retryIndex = 0;
+        if (retryTimer) {
+          clearTimeout(retryTimer);
+          retryTimer = null;
+        }
+        console.debug("[map-performance]", {
+          style: "maptiler",
+          loadMs: Math.round(performance.now() - startedAt),
+        });
+      }
+
+      if (!hasNotifiedMapLoad) {
+        hasNotifiedMapLoad = true;
+        callbacksRef.current.onMapLoad?.(mapInstance);
+      }
+    };
+
+    const schedulePrimaryRetry = (immediate = false) => {
+      if (destroyed || retryTimer || !PRIMARY_MAP_STYLE_URL || (typeof navigator !== "undefined" && !navigator.onLine)) return;
+      const delay = immediate ? 0 : MAPTILER_RETRY_DELAYS_MS[Math.min(retryIndex, MAPTILER_RETRY_DELAYS_MS.length - 1)];
+      retryIndex += 1;
+      retryTimer = setTimeout(() => {
+        retryTimer = null;
+        if (destroyed || activeStyle !== "fallback" || (typeof navigator !== "undefined" && !navigator.onLine)) return;
+        activeStyle = "primary";
+        activeAttempt += 1;
+        setIsLoaded(false);
+        setIsRecovering(true);
+        setIsUsingFallback(false);
+        mapInstance.setStyle(PRIMARY_MAP_STYLE_URL, { diff: false });
+        firstRenderTimer = setTimeout(
+          () => activateFallback("primary_retry_timeout"),
+          PRIMARY_RETRY_RENDER_BUDGET_MS,
+        );
+      }, delay);
+    };
+
+    const activateFallback = (phase: string, error?: unknown) => {
+      if (destroyed || activeStyle === "fallback") return;
+      reportFailure(phase, error);
+      clearFirstRenderTimer();
+      activeStyle = "fallback";
+      activeAttempt += 1;
+      setIsLoaded(false);
+      setIsRecovering(true);
+      setIsUsingFallback(true);
+      mapInstance.setStyle(OSM_FALLBACK_STYLE, { diff: false });
+      schedulePrimaryRetry();
+    };
+
+    if (activeStyle === "primary") {
+      firstRenderTimer = setTimeout(() => activateFallback("first_render_timeout"), FIRST_RENDER_BUDGET_MS);
+    } else {
+      setIsUsingFallback(true);
+    }
 
     mapInstance.on('moveend', () => {
       try {
@@ -735,32 +790,21 @@ export default function BaseMap({
     }, 100);
 
     // Add the 3D / 2D terrain toggle button (only when online; offline has no elevation data)
-    if (!isOffline) {
+    if (!isOffline && PRIMARY_MAP_STYLE_URL) {
       mapInstance.addControl(new Toggle3DControl(), "bottom-right");
       mapInstance.addControl(new MapStylePickerControl(), "bottom-right");
     }
 
-    if (actionControls) {
-      actionControls(mapInstance);
-    }
-
-    if (onMapInit) {
-      onMapInit(mapInstance);
-    }
+    callbacksRef.current.actionControls?.(mapInstance);
+    callbacksRef.current.onMapInit?.(mapInstance);
 
     mapInstance.on("error", (e) => {
-      const errMsg = (e.message || (e.error && e.error.message) || "").toLowerCase();
-      // If offline, individual missing tiles should be silently ignored (not trigger a style reset)
-      if (typeof navigator !== "undefined" && !navigator.onLine) {
-        return;
-      }
-      const isStyleError =
-        errMsg.includes("style") ||
-        errMsg.includes("fetch") ||
-        errMsg.includes("failed to fetch") ||
-        errMsg.includes("ajax");
-      if (isStyleError && !isLoaded) {
-        handleFailure(errMsg || "MapLibre AJAX or source loading error");
+      if (activeStyle !== "primary" || (typeof navigator !== "undefined" && !navigator.onLine)) return;
+      const errorEvent = e as unknown as { message?: string; error?: { message?: string }; url?: string };
+      const message = `${errorEvent.message || ""} ${errorEvent.error?.message || ""}`.toLowerCase();
+      const url = errorEvent.url || "";
+      if (url.includes("api.maptiler.com") || message.includes("maptiler") || message.includes("failed to fetch") || message.includes("ajax")) {
+        activateFallback("maptiler_resource_error", errorEvent);
       }
     });
 
@@ -777,21 +821,25 @@ export default function BaseMap({
     });
 
     mapInstance.on("load", () => {
-      clearTimeout(fallbackTimeout);
-      mapRef.current = mapInstance;
-      setIsLoaded(true);
-      setIsRecovering(false);
-
-      if (mapStyle !== OSM_FALLBACK_STYLE) {
-        setRetryCount(0); // Reset retries on successful primary load
-      }
-
+      initialLoadFinished = true;
+      completeStyle(activeStyle);
       setTimeout(() => mapInstance.resize(), 100);
-
-      if (onMapLoad) {
-        onMapLoad(mapInstance);
-      }
     });
+
+    mapInstance.on("style.load", () => {
+      // `load` establishes the initial first-render budget. Subsequent setStyle
+      // operations retain this WebGL map and let feature hooks restore layers.
+      if (!initialLoadFinished && activeStyle === "primary") return;
+      requestAnimationFrame(() => completeStyle(activeStyle));
+    });
+
+    const handleOnline = () => {
+      if (activeStyle === "fallback") {
+        retryIndex = 0;
+        schedulePrimaryRetry(true);
+      }
+    };
+    window.addEventListener("online", handleOnline);
 
     // Continuously update the explored boundary in localStorage while online
     mapInstance.on("moveend", () => {
@@ -845,37 +893,19 @@ export default function BaseMap({
     }
 
     return () => {
+      destroyed = true;
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeObserver?.disconnect();
-      clearTimeout(fallbackTimeout);
+      clearFirstRenderTimer();
+      if (retryTimer) clearTimeout(retryTimer);
+      window.removeEventListener("online", handleOnline);
       mapInstance.remove();
       mapRef.current = null;
       setIsLoaded(false);
     };
-  }, [mapStyle, retryCount]);
+  }, []);
 
-  // Auto-retry MapTiler ONLY when browser is online
-  useEffect(() => {
-    if (mapStyle !== OSM_FALLBACK_STYLE) return;
-    const interval = setInterval(() => {
-      if (typeof navigator !== "undefined" && !navigator.onLine) {
-        return; // Do not reload or spam network while user is offline
-      }
-      fetch(MAPTILER_STYLE_URL, { method: "HEAD" })
-        .then((res) => {
-          if (res.ok) {
-            console.log("MapTiler connectivity restored. Switching back from OSM fallback.");
-            setRetryCount(0);
-            setMapStyle(MAPTILER_STYLE_URL);
-          }
-        })
-        .catch(() => {});
-    }, 15000); // Check every 15s
-
-    return () => clearInterval(interval);
-  }, [mapStyle]);
-
-  const showLoader = isCheckingNetwork || isRecovering || !isLoaded;
+  const showLoader = !isLoaded || isRecovering;
 
   return (
     <div className={`${className} bg-[#f2efe9]`}>
@@ -886,9 +916,18 @@ export default function BaseMap({
           <div className="bg-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3">
             <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
             <span className="font-semibold text-sm text-slate-700">
-              {isCheckingNetwork || isRecovering ? "Optimizing Map Connection..." : "Loading Map..."}
+              {isRecovering ? "Reconnecting detailed map..." : "Loading map..."}
             </span>
           </div>
+        </div>
+      )}
+
+      {isLoaded && isUsingFallback && (
+        <div
+          role="status"
+          className="pointer-events-none fixed top-4 sm:top-[5.25rem] left-1/2 -translate-x-1/2 z-10 w-[calc(100vw-2rem)] max-w-sm sm:w-auto sm:max-w-72 rounded-2xl bg-white/95 px-3 py-2 text-center text-xs font-medium leading-5 text-slate-600 shadow-md backdrop-blur-sm"
+        >
+          Using a basic map while the detailed map reconnects.
         </div>
       )}
 

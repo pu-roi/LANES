@@ -26,4 +26,8 @@ env:
       - BUILD
       - RUNTIME
 
-
+  - variable: NEXT_PUBLIC_MAPTILER_KEY
+    secret: maptiler-api-key
+    availability:
+      - BUILD
+      - RUNTIME

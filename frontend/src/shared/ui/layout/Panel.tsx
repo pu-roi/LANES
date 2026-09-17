@@ -62,6 +62,8 @@ interface PanelProps {
   panelId?: string;
   /** Delay in seconds before the panel slides in (useful for sequencing). */
   entranceDelay?: number;
+  /** Fixed mobile sheet height for panels that should share a consistent footprint. */
+  mobileHeight?: string;
 }
 
 /**
@@ -91,6 +93,7 @@ export function Panel({
   bodyClassName,
   panelId,
   entranceDelay = 0,
+  mobileHeight,
 }: PanelProps) {
   const dragControls = useDragControls();
   const dragStartPos = useRef({ x: 0, y: 0 });
@@ -205,7 +208,7 @@ export function Panel({
               } else if (info.offset.y < -60 && isCollapsed) {
                 onCollapseToggle();
               }
-              if (info.offset.y > 150 && onClose) {
+              if (info.offset.y > 60 && onClose) {
                 onClose();
               }
             }}
@@ -215,6 +218,7 @@ export function Panel({
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed inset-x-0 z-40 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] bg-white border-t border-gray-200"
             style={{ 
+              height: mobileHeight,
               maxHeight: "calc(100vh - 80px - 4rem - env(safe-area-inset-bottom, 0px))",
               bottom: "calc(4rem + env(safe-area-inset-bottom, 0px))"
             }}
@@ -249,7 +253,8 @@ export function Panel({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className={cn("px-4 pb-0 overflow-y-auto max-h-[60vh]", bodyClassName)}
+                  className={cn("min-h-0 px-4 pb-0 overflow-y-auto overscroll-contain touch-pan-y max-h-[60vh]", bodyClassName)}
+                  style={mobileHeight ? { maxHeight: "calc(100% - 84px)" } : undefined}
                 >
                   {children}
                 </motion.div>

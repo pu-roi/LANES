@@ -90,11 +90,18 @@ export default function RoutePanel() {
 
   const { isAuthenticated } = useAuth();
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
-  const isCollapsed = activePanel !== "route";
-  const [isTopBarCollapsed, setIsTopBarCollapsed] = useState(false);
+  const [isMobileRouteExpanded, setIsMobileRouteExpanded] = useState(false);
+  const isCollapsed = activePanel !== "route" || (isMobile && !selectedRoute && !isMobileRouteExpanded);
+  const [isTopBarCollapsed, setIsTopBarCollapsed] = useState(true);
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+
+  useEffect(() => {
+    if (isMobile && activePanel !== "route") {
+      setIsMobileRouteExpanded(false);
+    }
+  }, [isMobile, activePanel]);
 
   const sortedSavedPlaces = (isAuthenticated && savedPlaces) ? [...savedPlaces].sort((a, b) => {
     const orderA = a.pin_order ?? 999;
@@ -188,10 +195,19 @@ export default function RoutePanel() {
     return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1)} km`;
   };
 
+  // The backend owns the score; the panel only gives that returned indicator
+  // a prominent, accessible visual treatment.
+  const getSafetyBadge = (score: number) => {
+    if (score >= 95) return { className: "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200", label: "Safe" };
+    if (score >= 85) return { className: "bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200", label: "Caution" };
+    if (score >= 70) return { className: "bg-orange-100 text-orange-800 ring-1 ring-orange-200", label: "High caution" };
+    return { className: "bg-red-100 text-red-800 ring-1 ring-red-200", label: "Danger" };
+  };
+
   const PROFILE_OPTIONS: Array<{ id: "light" | "heavy" | "motorcycle" | "walk", icon: any, label: string }> = [
     { id: "heavy", icon: Truck, label: "High Cl." },
     { id: "light", icon: Car, label: "Low Cl." },
-    { id: "motorcycle", icon: Bike, label: "Moto" },
+    { id: "motorcycle", icon: Bike, label: "Bike/Motorcycle" },
     { id: "walk", icon: PersonStanding, label: "Walk" },
   ];
 
@@ -429,7 +445,10 @@ export default function RoutePanel() {
               dragElastic={0.2}
               onDragEnd={(e, { offset, velocity }) => {
                 if (offset.y > 50 || velocity.y > 200) setActivePanel(null);
-                else if (offset.y < -50 || velocity.y < -200) setActivePanel("route");
+                else if (offset.y < -50 || velocity.y < -200) {
+                  setIsMobileRouteExpanded(true);
+                  setActivePanel("route");
+                }
               }}
               initial={{ y: "100%" }}
               animate={{ y: isCollapsed ? "calc(100% - 64px)" : "0%" }}
@@ -439,7 +458,10 @@ export default function RoutePanel() {
             >
               <div
                 className="w-full flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing touch-none select-none"
-                onClick={() => setActivePanel(isCollapsed ? "route" : null)}
+                onClick={() => {
+                  if (isCollapsed) setIsMobileRouteExpanded(true);
+                  setActivePanel(isCollapsed ? "route" : null);
+                }}
               >
                 <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
               </div>
@@ -471,8 +493,9 @@ export default function RoutePanel() {
                 {/* Route option strip */}
                 {allRoutes && allRoutes.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-                    {allRoutes.map((route) => (
-                      <button
+                    {allRoutes.map((route) => {
+                      const safetyBadge = getSafetyBadge(route.safety_score);
+                      return <button
                         key={route.index}
                         id={`mobile-route-option-${route.index}`}
                         onClick={() => setSelectedRouteIndex(route.index)}
@@ -492,8 +515,14 @@ export default function RoutePanel() {
                         <span className="text-[11px] text-gray-500">
                           {(route.distance / 1000).toFixed(1)} km
                         </span>
-                      </button>
-                    ))}
+                        <span
+                          className={cn("mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide", safetyBadge.className)}
+                          aria-label={`${route.safety_score}% safety: ${safetyBadge.label}`}
+                        >
+                          {route.safety_score}% {safetyBadge.label}
+                        </span>
+                      </button>;
+                    })}
                   </div>
                 )}
 
@@ -501,24 +530,20 @@ export default function RoutePanel() {
                 <div
                   className={cn(
                     "flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl border mt-3",
-                    selectedRoute.blocked
-                      ? "bg-red-50 text-red-700 border-red-100"
-                      : selectedRoute.avoided_floods
-                        ? "bg-amber-50 text-amber-700 border-amber-100"
-                        : "bg-green-50 text-green-700 border-green-100"
+                    selectedRoute.flood_exposure?.zone_count > 0
+                      ? "bg-amber-50 text-amber-700 border-amber-100"
+                      : "bg-green-50 text-green-700 border-green-100"
                   )}
                 >
-                  {selectedRoute.blocked || selectedRoute.avoided_floods ? (
+                  {selectedRoute.flood_exposure?.zone_count > 0 ? (
                     <AlertTriangle className="h-5 w-5" />
                   ) : (
                     <CheckCircle className="h-5 w-5" />
                   )}
                   <span>
-                    {selectedRoute.blocked
-                      ? "Route contains flooded areas"
-                      : selectedRoute.avoided_floods
-                        ? "Safe detour applied"
-                        : "Clear path — no floods detected"}
+                    {selectedRoute.flood_exposure?.zone_count > 0
+                      ? selectedRoute.flood_exposure.message
+                      : "Clear path — no active flood zones detected"}
                   </span>
                 </div>
 
@@ -693,8 +718,9 @@ export default function RoutePanel() {
           {/* Compact Route Option Strips */}
           {allRoutes && allRoutes.length > 0 && !isRouting && (
             <div className="px-3 pt-3 flex flex-col gap-1.5">
-              {allRoutes.map((route) => (
-                <button
+              {allRoutes.map((route) => {
+                const safetyBadge = getSafetyBadge(route.safety_score);
+                return <button
                   key={route.index}
                   id={`desktop-route-option-${route.index}`}
                   onClick={() => setSelectedRouteIndex(route.index)}
@@ -712,9 +738,7 @@ export default function RoutePanel() {
 
                   {/* Flood icon */}
                   <div className="shrink-0 ml-1">
-                    {route.blocked ? (
-                      <AlertTriangle className="h-3.5 w-3.5 text-red-500" />
-                    ) : route.avoided_floods ? (
+                    {route.flood_exposure?.zone_count > 0 ? (
                       <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
                     ) : (
                       <CheckCircle className="h-3.5 w-3.5 text-green-500" />
@@ -727,16 +751,22 @@ export default function RoutePanel() {
                   </span>
 
                   {/* ETA + distance */}
-                  <div className="flex items-baseline gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <span className="text-sm font-black text-gray-900">{formatDuration(route.duration)}</span>
                     <span className="text-xs text-gray-400">{(route.distance / 1000).toFixed(1)} km</span>
+                    <span
+                      className={cn("inline-flex rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide", safetyBadge.className)}
+                      aria-label={`${route.safety_score}% safety: ${safetyBadge.label}`}
+                    >
+                      {route.safety_score}%
+                    </span>
                   </div>
 
                   {route.index === selectedRouteIndex && (
                     <CheckCircle className="h-3.5 w-3.5 text-blue-500 shrink-0" />
                   )}
-                </button>
-              ))}
+                </button>;
+              })}
             </div>
           )}
 

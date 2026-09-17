@@ -49,6 +49,15 @@ export function LeftSidebar() {
   const visiblePlaces = sortedPlaces.slice(0, 3);
   const hiddenPlaces = sortedPlaces.slice(3);
 
+  const handleSavedPlaceClick = (latitude: number, longitude: number) => {
+    router.push('/map');
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fly-to-location', {
+        detail: { latitude, longitude, zoom: 16, duration: 1500 },
+      }));
+    }, 150);
+  };
+
   const navItems = [
     { name: 'Community Feed', href: '/feed', icon: Rss },
     { name: 'Live Map', href: '/map', icon: Map },
@@ -129,7 +138,7 @@ export function LeftSidebar() {
                   <div
                     key={place.id}
                     onClick={() => {
-                      router.push(`/map?lat=${place.latitude}&lng=${place.longitude}&zoom=16&panel=saveplace&tab=list`);
+                      handleSavedPlaceClick(place.latitude, place.longitude);
                     }}
                     className={`px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center justify-between select-none caret-transparent ${place.pin_order !== null ? 'bg-amber-50/30' : ''}`}
                   >
@@ -157,7 +166,7 @@ export function LeftSidebar() {
                           key={place.id}
                           onClick={() => {
                             setIsDropdownOpen(false);
-                            router.push(`/map?lat=${place.latitude}&lng=${place.longitude}&zoom=16&panel=saveplace&tab=list`);
+                            handleSavedPlaceClick(place.latitude, place.longitude);
                           }}
                           className={`px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center justify-between select-none caret-transparent ${place.pin_order !== null ? 'bg-amber-50/30' : ''}`}
                         >

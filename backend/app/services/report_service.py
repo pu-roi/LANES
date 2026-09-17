@@ -181,24 +181,19 @@ from sqlalchemy import func
 from app.models.report import FloodReport, FloodAvoidanceZone
 
 def get_active_floods(db: Session):
-    zones = db.query(
-        func.ST_AsGeoJSON(FloodAvoidanceZone.geometry).label("geojson"),
-        FloodReport.severity,
-        FloodAvoidanceZone.id,
-    ).join(
-        FloodReport, FloodAvoidanceZone.id == FloodReport.zone_id
-    ).filter(
-        FloodAvoidanceZone.is_active == True,
-        (FloodAvoidanceZone.expires_at == None) | (FloodAvoidanceZone.expires_at > func.now())
-    ).all()
-    
+    """Serialize zones and server-authored profile restrictions for offline use."""
+    from app.services.flood_routing_policy import get_active_flood_zones, zone_decision
+
     data = []
-    for z in zones:
-        geom = json.loads(z.geojson) if z.geojson else None
+    for zone in get_active_flood_zones(db):
         data.append({
-            "id": z.id,
+            "id": zone.id,
             "status": "active",
-            "severity": z.severity.value if hasattr(z.severity, "value") else z.severity,
-            "polygon": geom
+            "severity": zone.severity,
+            "polygon": {"type": "Polygon", "coordinates": [zone.polygon]},
+            "routing_restrictions": {
+                profile: zone_decision(profile, zone)
+                for profile in ("walk", "motorcycle", "light", "heavy")
+            },
         })
     return data

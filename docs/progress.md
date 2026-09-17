@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 17, 2026, 1:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 24 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
 | 23| Identity-First Google Auth, Password Recovery & Resilient Admin Routing | Completed | Google Sign-in/Sign-up integration with automatic profile prefill and citizen onboarding completion, self-service Resend OTP password recovery workflow, hardened admin login redirection ([BUG-034]) directly to /admin/dashboard, and NavigationWrapper route guard enforcement |
 | 22| Private Valhalla Cloud Run Recovery | Ready for cloud deployment | Private Valhalla deployment assets, Cloud Storage tile artifact flow, Cloud Run identity-token calls, automatic ORS availability fallback, typed engine metadata, and matched desktop/mobile backup notice |
 | 21| Production Cloud Infrastructure & Firebase App Hosting Deployment | Completed | Production deployment of Next.js frontend to Firebase App Hosting (asia-east1), build-time API variable injection via apphosting.yaml, backend CORS middleware whitelist expansion (*.hosted.app, *.web.app, *.firebaseapp.com), dotenvx environment encryption, and deployment gitignore hygiene |
@@ -36,6 +37,18 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 25: Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience (🟡 IMPLEMENTED / MANUAL VERIFICATION PENDING)
+- [x] **One-instance basemap lifecycle (`BaseMap.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced the preflight-and-recreate cycle with a 1.5-second initial MapTiler render budget and in-place OSM fallback.
+  - Restores LANES-owned flood, boundary, and route layers through existing `style.load` hooks instead of creating another WebGL map.
+  - Retries MapTiler after connectivity returns and on bounded backoff; recovery allows six seconds because OSM is already a usable baseline.
+- [x] **Responsive status and safe configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Positioned the recovery notice relative to the viewport, below the desktop floating navigation and with a width cap/wrapping for smaller screens.
+  - Centralized MapTiler style construction under `NEXT_PUBLIC_MAPTILER_KEY`; App Hosting now references the `maptiler-api-key` secret rather than a literal production value.
+- [x] **SSE database-pool resilience (`sync.py`, `database.py`, `main.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed the request-lifetime SQLAlchemy dependency from `/sync/stream`, moved active-zone queries to short-lived worker-thread sessions, and added fail-fast pool/JSON error handling.
+- [ ] **Remaining verification** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): Confirm the MapTiler restoration path in a clean browser session and deployed Firebase build after creating/restricting the `maptiler-api-key` secret.
 
 ### Capstone Phase 23: Identity-First Google Authentication, Self-Service Password Recovery & Resilient Admin Routing (🟢 COMPLETED)
 - [x] **Google OAuth Citizen Onboarding & Sign-In (`useGoogleAuth.ts`, `auth.py`, `auth_service.py`, `RegisterForm.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

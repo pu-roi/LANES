@@ -170,12 +170,13 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [routeError, setRouteError] = useState<string | null>(null);
   const [routeNotice, setRouteNotice] = useState<string | null>(null);
   const [isPickingOnMap, setIsPickingOnMap] = useState(false);
-  const [isReportPanelOpen, setIsReportPanelOpen] = useState(false);
+  const [isReportPanelOpen, setIsReportPanelOpenState] = useState(false);
   const [isSavePlacePanelOpen, setIsSavePlacePanelOpenState] = useState(false);
 
   const setIsSavePlacePanelOpen = useCallback((open: boolean) => {
     setIsSavePlacePanelOpenState(open);
     if (open) {
+      setIsAnalyticsOpenState(false);
       setLastOpenedLeftPanel("save_place");
     }
   }, []);
@@ -222,13 +223,23 @@ export function MapProvider({ children }: { children: ReactNode }) {
     const loadState = async () => {
       try {
         const savedPanels = localStorage.getItem("lanes_panels_state");
+        const isMobile = window.matchMedia("(max-width: 640px), (pointer: coarse)").matches;
         if (savedPanels) {
           const parsed = JSON.parse(savedPanels);
-          if (parsed.activePanel) setActivePanelState(parsed.activePanel);
-          if (parsed.isAnalyticsOpen !== undefined) setIsAnalyticsOpenState(parsed.isAnalyticsOpen);
-          if (parsed.isSavePlacePanelOpen !== undefined) setIsSavePlacePanelOpenState(parsed.isSavePlacePanelOpen);
-          if (parsed.lastOpenedLeftPanel !== undefined) setLastOpenedLeftPanel(parsed.lastOpenedLeftPanel);
+          if (!isMobile) {
+            if (parsed.activePanel) setActivePanelState(parsed.activePanel);
+            if (parsed.isAnalyticsOpen !== undefined) setIsAnalyticsOpenState(parsed.isAnalyticsOpen);
+            if (parsed.isSavePlacePanelOpen !== undefined) setIsSavePlacePanelOpenState(parsed.isSavePlacePanelOpen);
+            if (parsed.lastOpenedLeftPanel !== undefined) setLastOpenedLeftPanel(parsed.lastOpenedLeftPanel);
+          } else {
+            setActivePanelState(null);
+            setIsAnalyticsOpenState(false);
+            setIsSavePlacePanelOpenState(false);
+            setLastOpenedLeftPanel(null);
+          }
           if (parsed.routingEngine) setRoutingEngine(parsed.routingEngine);
+        } else if (isMobile) {
+          setActivePanelState(null);
         }
       } catch (e) {
         console.error("Failed to load map context state", e);
@@ -294,10 +305,21 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const setIsAnalyticsOpen = useCallback((open: boolean) => {
     setIsAnalyticsOpenState(open);
     if (open) {
+      setIsReportPanelOpenState(false);
+      setIsSavePlacePanelOpenState(false);
       setLastOpenedLeftPanel("analytics");
       setIsAnalyticsCollapsedState(false);
     } else {
       setIsAnalyticsCollapsedState(false);
+    }
+  }, []);
+
+  const setIsReportPanelOpen = useCallback((open: boolean) => {
+    setIsReportPanelOpenState(open);
+    if (open) {
+      setIsAnalyticsOpenState(false);
+      setIsAnalyticsCollapsedState(false);
+      setIsSavePlacePanelOpenState(false);
     }
   }, []);
 
@@ -317,14 +339,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
     }
   }, [isAnalyticsOpen, isSavePlacePanelOpen]);
 
-  // When both left panels are closed, expand Route Planner
+  // Keep the current panel state when both left panels close. Mobile keeps the
+  // route planner minimized until the user expands it from the handle.
   useEffect(() => {
     if (isInitialMountPanels.current) {
       isInitialMountPanels.current = false;
       return;
-    }
-    if (!isAnalyticsOpen && !isSavePlacePanelOpen) {
-      setActivePanelState((prev) => prev === "flood" ? "flood" : "route");
     }
   }, [isAnalyticsOpen, isSavePlacePanelOpen]);
   const setIsAnalyticsCollapsed = useCallback((collapsed: boolean) => {
@@ -500,6 +520,11 @@ export function MapProvider({ children }: { children: ReactNode }) {
         setSelectedRouteIndexState(result.recommended_index);
         if (result.fallback_used && result.engine_used === "ors") {
           setRouteNotice("Valhalla is temporarily unavailable. Using OpenRouteService backup.");
+        }
+        if (result.offline_limited) {
+          setRouteNotice("Offline mode: showing one safe route. Alternative ranking requires a connection.");
+        } else if (result.blocked_baseline) {
+          setRouteNotice(`${result.blocked_baseline.message} A safe detour is shown below.`);
         }
         
         if (result.routes.length === 0) {

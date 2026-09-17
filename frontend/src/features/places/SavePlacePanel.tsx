@@ -70,8 +70,42 @@ export function SavePlacePanel() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
+  const hasHydratedSavePlaceDraft = useRef(false);
 
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    try {
+      const savedDraft = localStorage.getItem("lanes_save_place_draft");
+      if (!savedDraft) {
+        hasHydratedSavePlaceDraft.current = true;
+        return;
+      }
+      const draft = JSON.parse(savedDraft) as {
+        name?: string;
+        address?: string;
+        coords?: [number, number] | null;
+        icon?: string;
+      };
+      if (typeof draft.name === "string") setName(draft.name);
+      if (typeof draft.address === "string") setAddress(draft.address);
+      if (Array.isArray(draft.coords) && draft.coords.length === 2) setCoords(draft.coords);
+      if (typeof draft.icon === "string") setIcon(draft.icon);
+    } catch (error) {
+      console.warn("Failed to restore saved-place draft", error);
+    } finally {
+      hasHydratedSavePlaceDraft.current = true;
+    }
+  }, [setIcon]);
+
+  useEffect(() => {
+    if (!hasHydratedSavePlaceDraft.current) return;
+    if (!name && !address && !coords && icon === "🏠") {
+      localStorage.removeItem("lanes_save_place_draft");
+      return;
+    }
+    localStorage.setItem("lanes_save_place_draft", JSON.stringify({ name, address, coords, icon }));
+  }, [address, coords, icon, name]);
 
   // Sync active tab with URL query param if present
   useEffect(() => {
@@ -303,6 +337,7 @@ export function SavePlacePanel() {
       onCollapseToggle={() => setIsPanelCollapsed(!isPanelCollapsed)}
       isMobile={isMobile}
       bodyClassName="!max-h-[60vh] min-h-[45vh] pb-0 flex flex-col"
+      mobileHeight={`${isAuthenticated ? "min(520px" : "min(440px"}, calc(100vh - 80px - 4rem - env(safe-area-inset-bottom, 0px)))`}
       anchor="left"
       initialPosition={{ x: initialX, y: 80 }}
       showDesktopClose={true}
@@ -360,7 +395,7 @@ export function SavePlacePanel() {
           </div>
 
           {activeTab === "add" ? (
-            <div className="flex flex-col gap-4 p-1 flex-1 overflow-y-auto">
+            <div className="min-h-0 flex flex-col gap-4 p-1 flex-1 overflow-y-auto overscroll-contain touch-pan-y">
               {isLimitReached && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs flex flex-col gap-1">
                   <p className="font-semibold">Maximum limit reached ({MAX_SAVED_PLACES}/{MAX_SAVED_PLACES})</p>
@@ -440,8 +475,9 @@ export function SavePlacePanel() {
                 )}
               </div>
 
-              <div className="mt-auto sticky bottom-0 bg-white pt-2 pb-6 z-20 border-t border-transparent">
+              <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
                 <Button 
+                  type="button"
                   className="w-full" 
                   onClick={handleSave} 
                   disabled={isSubmitting || !name || !coords || isLimitReached}

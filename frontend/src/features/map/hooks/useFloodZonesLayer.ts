@@ -445,15 +445,29 @@ export function useFloodZonesLayer(
       "active-zones-circle-layer",
     ];
 
+    const handleMapClick = (e: maplibregl.MapMouseEvent) => {
+      if (!isTouchDevice || !activePopupRef.current) return;
+
+      const clickedZone = map.queryRenderedFeatures(e.point, { layers: activeLayers }).length > 0;
+      if (clickedZone) return;
+
+      clearOpenTimeout();
+      activePopupRef.current.popup.remove();
+      activePopupRef.current = null;
+      setSelectedZoneId?.(null);
+    };
+
     activeLayers.forEach((layer) => {
       map.on("mouseenter", layer, handleMouseEnterOrMove);
       map.on("mousemove", layer, handleMouseEnterOrMove);
       map.on("mouseleave", layer, handleMouseLeave);
       map.on("click", layer, handleZoneClick);
     });
+    map.on("click", handleMapClick);
 
     return () => {
       map.off("style.load", handleMapStyleData);
+      map.off("click", handleMapClick);
       clearOpenTimeout();
       clearCloseTimeout();
       if (activePopupRef.current) {
@@ -467,5 +481,5 @@ export function useFloodZonesLayer(
         map.off("click", layer, handleZoneClick);
       });
     };
-  }, [map, isLoaded, activeZonesData, isTouchDevice, activeTab, selectedZoneId, selectedContributorId]);
+  }, [map, isLoaded, activeZonesData, isTouchDevice, activeTab, selectedZoneId, setSelectedZoneId, selectedContributorId]);
 }

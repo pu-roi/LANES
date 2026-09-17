@@ -2,6 +2,8 @@
 
 **Based on Philippine Urban Flooding Research (2020–2026)**
 
+> **Last Updated:** September 17, 2026, 5:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe) — public Route Planner policy. Walking may use Orange as a strongly cautioned 40% fallback; Red remains blocked for every public profile.
+
 This document defines the mathematical constraints and safety algorithms used by the LANES PostGIS routing engine. By mapping local flood terminology to actual metric depths and comparing them against vehicle engineering limits, the system provides highly accurate, safety-first navigation.
 
 ## **1\. The Localized Flood Severity Matrix & MMDA Standards**
@@ -37,7 +39,7 @@ The routing engine dictates whether a path segment is marked as **Passable**, **
 
 * **Yellow-Green (Ankle):** Passable.  
 * **Yellow (Knee):** Passable (Highly Penalized). While physically possible to walk, the Department of Health (DOH) strictly advises against wading in knee-deep water due to urban leptospirosis risks.  
-* **Orange (Waist/Chest):** **Impassable**. At this depth, open manholes are invisible, and urban currents can sweep individuals away.  
+* **Orange (Waist/Chest):** **Passable with strong caution (40% safety indicator)**. This is a highly discouraged walking-only fallback; open manholes, contaminated water, and currents remain serious hazards.
 * **Red (Neck+):** **Impassable**.
 
 ### **🏍️ B. 2-Wheels Profile (Motorcycles/Scooters)**
@@ -58,7 +60,7 @@ The routing engine dictates whether a path segment is marked as **Passable**, **
 
 * **Yellow-Green (Ankle):** Passable.  
 * **Yellow (Knee):** **Passable (Penalized to 85% Safety)**. Standard mid-size SUVs in the Philippines (e.g., Isuzu mu-X, Toyota Fortuner) have an engineered water-wading depth of ![][image9] to ![][image10].  
-* **Orange (Waist/Chest):** **Passable (Penalized to 35% Safety)**. While an SUV's ![][image10] wading limit can physically clear a standard knee-to-lower-waist flood, the route is mathematically penalized to 35% safety. This enforces a "defensive routing" logic to protect drivers from hidden underwater road hazards (open manholes, debris), ensuring the app prioritizes completely dry detours first before using Orange zones as a last resort.
+* **Orange (Waist/Chest):** **Impassable for normal navigation**. Although a particular SUV may have a stated wading depth, the MMDA NPATV safety baseline and hidden-road hazards mean LANES never recommends it. A future emergency-responder profile would require its own explicit policy.
 * **Red (Neck+):** **Impassable**. Waist-level water (![][image11]) exceeds the factory ![][image10] wading limit. The engine will ingest water and stall.
 
 ## **3\. The Final Routing Truth Table**
@@ -67,10 +69,10 @@ The routing engine dictates whether a path segment is marked as **Passable**, **
 
 | Vehicle Profile | Yellow-Green (Ankle) | Yellow (Knee) | Orange (Waist/Chest) | Red (Neck+) |
 | :---- | :---- | :---- | :---- | :---- |
-| **Pedestrian** | Traverse | Traverse (Penalized) | **Avoid (Blocked)** | **Avoid (Blocked)** |
+| **Pedestrian** | Traverse | Traverse (Penalized) | Traverse (Strongly Penalized, 40% safety) | **Avoid (Blocked)** |
 | **2-Wheels** | Traverse | **Avoid (Blocked)** | **Avoid (Blocked)** | **Avoid (Blocked)** |
 | **4-Wheel Low** | Traverse | **Avoid (Blocked)** | **Avoid (Blocked)** | **Avoid (Blocked)** |
-| **4-Wheel High** | Traverse | Traverse (Penalized) | Traverse (Highly Penalized) | **Avoid (Blocked)** |
+| **4-Wheel High** | Traverse | Traverse (Penalized) | **Avoid (Blocked)** | **Avoid (Blocked)** |
 
 ## **4\. Academic & Scientific References (2023–2026)**
 

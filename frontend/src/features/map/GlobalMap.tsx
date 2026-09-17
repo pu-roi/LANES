@@ -198,7 +198,7 @@ function MapLayout() {
         {isAnalyticsOpen && <AnalyticsPanel />}
       </AnimatePresence>
       <AnimatePresence>
-        {isSavePlacePanelOpen && <SavePlacePanel />}
+        <SavePlacePanel />
       </AnimatePresence>
       {!pathname.startsWith('/admin') && pathname !== "/analytics" && (
         <>
