@@ -85,7 +85,7 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
       className={cn(
         "flex-1 flex flex-col w-full sm:pb-0",
         isLandingPage ? "bg-blue-50" : (!isMapPage ? "bg-gray-50" : ""),
-        !isMapPage && "pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]"
+        !isMapPage && !isLandingPage && "pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]"
       )}
     >
       {loaderOverlay}

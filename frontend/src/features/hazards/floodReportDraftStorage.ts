@@ -32,14 +32,15 @@ type FloodReportDraftContent = Pick<SavedFloodReportDraft, "active" | "queuedDra
 
 /**
  * A restorable report needs both a selected road anchor and substantive report
- * content. UI-only state (page, toggles, typed-but-unselected text) must never
- * create a draft on its own.
+ * content. Navigation text is preserved even before a location is selected so
+ * users do not lose work when the mobile panel is closed or refreshed.
  */
 export function hasMeaningfulFloodReportDraft(draft: FloodReportDraftContent) {
   const { active, queuedDrafts } = draft;
   if (queuedDrafts.length > 0) return true;
 
   const hasSelectedRoadAnchor = Boolean(active.floodStart || active.floodEnd);
+  const hasNavigationText = Boolean(active.startInput.trim() || active.endInput.trim());
   const hasSubstantiveReportDetail = Boolean(
     active.visualOption ||
     active.passableVehicles.length ||
@@ -48,7 +49,7 @@ export function hasMeaningfulFloodReportDraft(draft: FloodReportDraftContent) {
     active.mediaFiles.length
   );
 
-  return hasSelectedRoadAnchor && hasSubstantiveReportDetail;
+  return hasNavigationText || (hasSelectedRoadAnchor && hasSubstantiveReportDetail);
 }
 
 /**

@@ -90,11 +90,18 @@ export default function RoutePanel() {
 
   const { isAuthenticated } = useAuth();
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
-  const isCollapsed = activePanel !== "route";
-  const [isTopBarCollapsed, setIsTopBarCollapsed] = useState(false);
+  const [isMobileRouteExpanded, setIsMobileRouteExpanded] = useState(false);
+  const isCollapsed = activePanel !== "route" || (isMobile && !selectedRoute && !isMobileRouteExpanded);
+  const [isTopBarCollapsed, setIsTopBarCollapsed] = useState(true);
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+
+  useEffect(() => {
+    if (isMobile && activePanel !== "route") {
+      setIsMobileRouteExpanded(false);
+    }
+  }, [isMobile, activePanel]);
 
   const sortedSavedPlaces = (isAuthenticated && savedPlaces) ? [...savedPlaces].sort((a, b) => {
     const orderA = a.pin_order ?? 999;
@@ -429,7 +436,10 @@ export default function RoutePanel() {
               dragElastic={0.2}
               onDragEnd={(e, { offset, velocity }) => {
                 if (offset.y > 50 || velocity.y > 200) setActivePanel(null);
-                else if (offset.y < -50 || velocity.y < -200) setActivePanel("route");
+                else if (offset.y < -50 || velocity.y < -200) {
+                  setIsMobileRouteExpanded(true);
+                  setActivePanel("route");
+                }
               }}
               initial={{ y: "100%" }}
               animate={{ y: isCollapsed ? "calc(100% - 64px)" : "0%" }}
@@ -439,7 +449,10 @@ export default function RoutePanel() {
             >
               <div
                 className="w-full flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing touch-none select-none"
-                onClick={() => setActivePanel(isCollapsed ? "route" : null)}
+                onClick={() => {
+                  if (isCollapsed) setIsMobileRouteExpanded(true);
+                  setActivePanel(isCollapsed ? "route" : null);
+                }}
               >
                 <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
               </div>

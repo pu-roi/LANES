@@ -1285,6 +1285,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       isMobile={isMobile}
       isOpen={isOpen}
       onClose={onClose}
+      mobileHeight={`${isAuthenticated ? "min(520px" : "min(440px"}, calc(100vh - 80px - 4rem - env(safe-area-inset-bottom, 0px)))`}
       anchor="right"
       initialPosition={{ x: 16, y: 80 }}
       panelId="flood_report"

@@ -6,10 +6,9 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { getFeed, votePost, FeedPost } from './feedApi';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
-import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, Settings, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
+import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
 import { useToast, Button } from '@/shared/ui';
 import { savedPlacesApi } from '@/features/places/savedPlacesApi';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { EmergencyHotlinesCard } from './components/EmergencyHotlinesCard';
@@ -165,6 +164,16 @@ export function FeedPage() {
 
   const closeMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const handleSavedPlaceClick = (latitude: number, longitude: number) => {
+    closeMenu();
+    router.push('/map');
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('fly-to-location', {
+        detail: { latitude, longitude, zoom: 16, duration: 1500 },
+      }));
+    }, 150);
   };
 
   const handleNavClick = (href: string) => {
@@ -452,10 +461,7 @@ export function FeedPage() {
                       visiblePlaces.map((place) => (
                         <div
                           key={place.id}
-                          onClick={() => {
-                            closeMenu();
-                            router.push(`/map?lat=${place.latitude}&lng=${place.longitude}&zoom=16&panel=saveplace&tab=list`);
-                          }}
+                          onClick={() => handleSavedPlaceClick(place.latitude, place.longitude)}
                           className={`px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center justify-between select-none caret-transparent ${place.pin_order !== null ? 'bg-amber-50/30' : ''}`}
                         >
                           <div className="flex items-center gap-3 overflow-hidden">
@@ -482,8 +488,7 @@ export function FeedPage() {
                                 key={place.id}
                                 onClick={() => {
                                   setIsDropdownOpen(false);
-                                  closeMenu();
-                                  router.push(`/map?lat=${place.latitude}&lng=${place.longitude}&zoom=16&panel=saveplace&tab=list`);
+                                  handleSavedPlaceClick(place.latitude, place.longitude);
                                 }}
                                 className={`px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex items-center justify-between select-none caret-transparent ${place.pin_order !== null ? 'bg-amber-50/30' : ''}`}
                               >
@@ -528,16 +533,6 @@ export function FeedPage() {
               <EmergencyHotlinesCard />
             </div>
 
-            <div className="p-4 border-t border-gray-100 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] md:pb-4">
-              <Link
-                href="/settings"
-                onClick={closeMenu}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors font-medium text-sm text-gray-700 hover:bg-gray-100"
-              >
-                <Settings className="w-5 h-5 text-gray-500" />
-                Settings
-              </Link>
-            </div>
           </motion.div>
           </div>
         )}
