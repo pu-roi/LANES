@@ -1,6 +1,6 @@
 from typing import List, Optional
 from datetime import datetime
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import func, or_
 
 from app import models, schemas
@@ -383,7 +383,16 @@ def get_all_avoidance_zones_filtered(
         )
     
     total = query.count()
-    zones = query.order_by(models.FloodAvoidanceZone.created_at.desc()).offset(skip).limit(limit).all()
+    zones = (
+        query.options(
+            selectinload(models.FloodAvoidanceZone.reports).selectinload(models.FloodReport.user).selectinload(models.User.profile),
+            selectinload(models.FloodAvoidanceZone.reports).selectinload(models.FloodReport.user).selectinload(models.User.role),
+        )
+        .order_by(models.FloodAvoidanceZone.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
     return zones, total
 
 

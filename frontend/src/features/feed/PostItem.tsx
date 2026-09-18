@@ -50,15 +50,19 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   });
   const reportMutation = useMutation({ mutationFn: () => reportPost(post.id, reportReason, reportDetails || undefined), onSuccess: () => { success('Report submitted for moderator review.'); setIsReporting(false); }, onError: (err: unknown) => showError('Could not submit report', err instanceof Error ? err.message : 'Please try again.') });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteReason, setDeleteReason] = useState('misinformation');
+  const [deleteDetails, setDeleteDetails] = useState('');
   const roleName = user?.role?.name || '';
   const canDelete = isAuthor || ['Super Admin', 'DRRM Officer', 'Moderator'].includes(roleName);
   const deleteMutation = useMutation({
-    mutationFn: () => deletePost(post.id),
+    mutationFn: (payload?: { reason?: string; details?: string }) => deletePost(post.id, payload),
     onSuccess: () => {
-      success('Post deleted successfully.');
+      success(isAuthor ? 'Post deleted successfully.' : 'Post removed and author notified.');
       queryClient.invalidateQueries({ queryKey: ['feed'] });
       queryClient.invalidateQueries({ queryKey: ['post', post.id] });
       setIsDeleting(false);
+      setDeleteReason('misinformation');
+      setDeleteDetails('');
       if (isExpanded) {
         router.push('/feed');
       }
@@ -512,22 +516,86 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               </Button>
             </div>
       </Modal>
-      <Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)} title="Delete Post" blurBackdrop={false}>
-        <p className="mb-4 text-sm text-slate-600">
-          Are you sure you want to delete this post? It will be removed from the public feed and moved to the archive.
-        </p>
-        <div className="mt-4 flex justify-end gap-2">
-          <Button variant="ghost" onClick={() => setIsDeleting(false)} disabled={deleteMutation.isPending}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            disabled={deleteMutation.isPending}
-            onClick={() => deleteMutation.mutate()}
-          >
-            {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
-          </Button>
-        </div>
+      <Modal 
+        isOpen={isDeleting} 
+        onClose={() => setIsDeleting(false)} 
+        title={isAuthor ? "Delete Post" : "Administrative Post Removal"} 
+        blurBackdrop={false}
+      >
+        {isAuthor ? (
+          <div>
+            <p className="mb-4 text-sm text-slate-600">
+              Are you sure you want to delete your post? It will be removed from the public community feed.
+            </p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setIsDeleting(false)} disabled={deleteMutation.isPending}>
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                disabled={deleteMutation.isPending}
+                onClick={() => deleteMutation.mutate(undefined)}
+              >
+                {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold">Author will be notified of removal</p>
+                <p className="text-amber-700 mt-0.5">
+                  This post will be soft-deleted from the Community Feed and moved to the Archive Center. The author ({post.author_name || 'User'}) will receive an in-app notification explaining why their post was removed.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                Removal Reason / Purpose <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={deleteReason}
+                onChange={(e) => setDeleteReason(e.target.value as string)}
+                options={[
+                  { label: "Misinformation / False Hazard Report", value: "misinformation" },
+                  { label: "Spam, Scam, or Advertising", value: "spam_scam" },
+                  { label: "Harassment, Hate Speech, or Hostility", value: "harassment_hate" },
+                  { label: "Explicit, Graphic, or Violent Content", value: "explicit_violent" },
+                  { label: "Duplicate or Outdated / Resolved Hazard", value: "duplicate_outdated" },
+                  { label: "Other Policy Violation", value: "other" },
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                Explanation & Notes {deleteReason === 'other' ? <span className="text-red-500">* (Required)</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
+              </label>
+              <textarea
+                value={deleteDetails}
+                onChange={(e) => setDeleteDetails(e.target.value)}
+                placeholder={deleteReason === 'other' ? "Please explain why this post is being removed (sent directly to author)..." : "Additional notes for the author and audit trail..."}
+                className="w-full min-h-20 rounded-xl border border-slate-200 p-3 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-400"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+              <Button variant="ghost" onClick={() => setIsDeleting(false)} disabled={deleteMutation.isPending}>
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                disabled={deleteMutation.isPending || (deleteReason === 'other' && !deleteDetails.trim())}
+                onClick={() => deleteMutation.mutate({ reason: deleteReason, details: deleteDetails.trim() || undefined })}
+              >
+                {deleteMutation.isPending ? 'Removing…' : 'Remove & Notify Author'}
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
         </>,
         document.body,

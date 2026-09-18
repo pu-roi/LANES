@@ -1,5 +1,5 @@
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException, Query, Form, UploadFile, File, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Form, UploadFile, File, Request, Body
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -9,15 +9,18 @@ from app.schemas.post import (
     CommunityPostCreate,
     CommunityPostUpdate,
     CommunityPostReportCreate,
+    CommunityPostDeletePayload,
     CommunityPostEditHistoryResponse,
     CommunityPostResponse,
     CommunityPostPaginatedResponse,
 )
+from app.schemas.audit import AuditLogCreate
 from app.models.post import CommunityPostReport
 from app.schemas.interaction import PostInteractionCreate, PostInteraction
 from app.crud import post as crud_post
 from app.crud import interaction as crud_interaction
 from app.crud import notification as crud_notification
+from app.crud import audit as crud_audit
 from app.crud.user import get_user_display_name
 from app.models.interaction import InteractionType
 from app.schemas.notification import NotificationCreate
@@ -242,8 +245,10 @@ def vote_post(
 
 
 @router.delete("/{post_id}")
-def delete_post(
+async def delete_post(
     post_id: int,
+    request: Request,
+    payload: Optional[CommunityPostDeletePayload] = Body(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -256,5 +261,65 @@ def delete_post(
     if post.user_id != current_user.id and not is_admin:
         raise HTTPException(status_code=403, detail="Not authorized to delete this post")
 
+    author_user_id = post.user_id
     crud_post.delete_post(db, post_id=post_id, deleted_by_user_id=current_user.id)
+
+    # When staff/admin removes another user's post, notify author and create audit log
+    if is_admin and author_user_id != current_user.id:
+        reason_label_map = {
+            "misinformation": "Misinformation / False Hazard Report",
+            "spam_scam": "Spam, Scam, or Advertising",
+            "harassment_hate": "Harassment, Hate Speech, or Hostility",
+            "explicit_violent": "Explicit, Graphic, or Violent Content",
+            "duplicate_outdated": "Duplicate or Outdated / Resolved Hazard",
+            "other": "Community Guidelines Violation",
+        }
+        raw_reason = payload.reason if payload and payload.reason else "other"
+        formatted_reason = reason_label_map.get(raw_reason, raw_reason)
+        details = payload.details.strip() if payload and payload.details else None
+
+        message = f"Your Community Feed post was removed by an administrator: {formatted_reason}."
+        if details:
+            message += f" Note: {details}"
+
+        # 1. In-app notification for the author
+        crud_notification.create_notification(db, NotificationCreate(
+            user_id=author_user_id,
+            type=NotificationType.SYSTEM,
+            message=message,
+            payload={
+                "post_id": post_id,
+                "action": "post_removed_by_admin",
+                "reason": formatted_reason,
+                "details": details,
+                "admin_id": current_user.id,
+            }
+        ))
+
+        # 2. Audit log entry for administrator accountability
+        client_ip = request.client.host if request.client else None
+        crud_audit.create_audit_log(
+            db,
+            audit_in=AuditLogCreate(
+                admin_id=current_user.id,
+                action_type="ADMIN_DELETE_POST",
+                target_table="community_posts",
+                target_id=post_id,
+                metadata_json={
+                    "post_id": post_id,
+                    "author_id": author_user_id,
+                    "reason": formatted_reason,
+                    "details": details,
+                },
+                ip_address=client_ip,
+            )
+        )
+
+    # 3. Real-time SSE broadcast so clients update live
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "feed_post_deleted",
+        "data": {"post_id": post_id}
+    })
+
     return {"message": "Post deleted", "id": post_id}

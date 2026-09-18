@@ -17,7 +17,9 @@ import {
   Layers,
   RotateCcw,
   Trash2,
-  Loader2
+  Loader2,
+  ExternalLink,
+  Image as ImageIcon
 } from "lucide-react";
 import { AvoidanceZone } from "@/features/admin/adminApi";
 import { Button, Modal } from "@/shared/ui";
@@ -54,6 +56,24 @@ export function ZoneDetailsModal({
         return <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-lime-100 text-lime-800 border border-lime-200 uppercase">Passable (Low)</span>;
     }
   };
+
+  // Collect all media from official zone and attached reports
+  const mediaItems: { url: string; label: string; isOfficial: boolean }[] = [];
+  const seenUrls = new Set<string>();
+
+  (zone.media_urls || []).forEach((url, idx) => {
+    if (url && !seenUrls.has(url)) {
+      seenUrls.add(url);
+      mediaItems.push({ url, label: `Zone Evidence ${idx + 1}`, isOfficial: true });
+    }
+  });
+
+  (zone.report_media_urls || []).forEach((url, idx) => {
+    if (url && !seenUrls.has(url)) {
+      seenUrls.add(url);
+      mediaItems.push({ url, label: `Report Evidence ${idx + 1}`, isOfficial: false });
+    }
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Archived Avoidance Zone #${zone.id}`}>
@@ -106,6 +126,57 @@ export function ZoneDetailsModal({
             </div>
           )}
         </div>
+
+        {/* Attached Evidence & Media Gallery */}
+        {mediaItems.length > 0 && (
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5 text-blue-500" />
+                Attached Media & Evidence ({mediaItems.length})
+              </span>
+              <span className="text-[10px] text-gray-400 font-normal">Click to open full size</span>
+            </h4>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {mediaItems.map((item, idx) => {
+                const isVideo = /\.(mp4|webm|mov|ogg)(?:\?|$)/i.test(item.url) || item.url.includes("/video/upload/") || item.url.includes("/video/");
+                return (
+                  <div
+                    key={`${item.url}-${idx}`}
+                    onClick={() => window.open(item.url, "_blank")}
+                    className="group relative rounded-xl overflow-hidden border border-gray-200 bg-slate-900/5 aspect-video cursor-pointer flex items-center justify-center transition-all hover:border-blue-400 hover:shadow-sm"
+                  >
+                    {isVideo ? (
+                      <video
+                        src={item.url}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        preload="metadata"
+                      />
+                    ) : (
+                      <img
+                        src={item.url}
+                        alt={item.label}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-xs font-medium gap-1 backdrop-blur-xs p-2 text-center">
+                      <ExternalLink className="w-4 h-4" />
+                      <span className="truncate max-w-full text-[11px]">{item.label}</span>
+                    </div>
+                    <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 text-white text-[9px] font-medium backdrop-blur-xs pointer-events-none">
+                      {isVideo ? "Video" : "Photo"}
+                    </span>
+                    <span className={`absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[9px] font-semibold backdrop-blur-xs pointer-events-none ${
+                      item.isOfficial ? "bg-blue-600/80 text-white" : "bg-gray-800/80 text-gray-200"
+                    }`}>
+                      {item.isOfficial ? "Zone" : "Report"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Admin Notes & Rationale */}
         {zone.admin_notes && (

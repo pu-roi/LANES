@@ -21,6 +21,7 @@ from app.schemas.audit import AuditLogCreate, AuditLogResponse, AuditLogsPaginat
 from app.schemas.post import (
     CommunityPostBase, CommunityPostCreate, CommunityPostUpdate,
     CommunityPostReportCreate, CommunityPostModerationResolution,
+    CommunityPostDeletePayload,
     CommunityPostEditHistoryResponse, CommunityPostResponse,
     CommunityPostPaginatedResponse, CommentBase, CommentCreate,
     CommentResponse, ArchivedCommunityPostResponse,

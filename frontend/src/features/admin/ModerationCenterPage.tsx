@@ -35,7 +35,12 @@ export default function ModerationCenterPage() {
       apiClient.post(`/admin/moderation/posts/${postId}/resolve`, { action }),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["moderation-reports"] });
-      toast.success("Reports resolved", `The post was ${variables.action === "hide" ? "hidden" : variables.action + "ed"}.`);
+      toast.success(
+        "Reports resolved",
+        variables.action === "hide"
+          ? "The post has been hidden and moved to the Archive Center."
+          : `The reports were ${variables.action}ed.`
+      );
     },
     onError: (error: Error) => toast.error("Could not resolve reports", error.message),
   });

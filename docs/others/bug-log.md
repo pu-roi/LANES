@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 18, 2026, 7:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 10:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,37 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-044] Archived Avoidance Zone Media (Photos & Videos) Missing in Archive Center Zone Details Modal
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Backend / Admin Archive Center / Zone Details
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When administrators inspected deactivated or expired flood avoidance zones in the Archive Center (`/admin/archive` -> **Spatial Data** -> **Archived Zones**) by clicking the view/details action icon, the `ZoneDetailsModal` displayed hazard attributes, coordinates, and metadata, but completely lacked any attached media (photos and videos), even when the avoidance zone was created with direct media uploads or originated from citizen flood reports with photographic evidence. In contrast, `ReportDetailsModal` in the adjacent Archived Reports tab rendered evidence thumbnails.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Frontend Omission**: `ZoneDetailsModal.tsx` was built with attribute sections (Hazard & Severity, Timing & Lifecycle, Location & Coordinates, Operational Notes) but omitted a media gallery section and never parsed `media_urls` or `report_media_urls`.
+2. **Backend Aggregation Limitation**: In `backend/app/api/v1/endpoints/admin.py`, the internal helper `_attach_report_media` only inspected `zone.primary_report.media_urls` rather than aggregating across all associated child reports in `zone.reports`.
+3. **Lazy Loading Exclusion**: In `backend/app/crud/report.py`, `get_all_avoidance_zones_filtered` did not include eager loading (`selectinload(models.FloodAvoidanceZone.reports)`) or author profile loading for avoidance zones, risking detached instance queries or empty child collections when assembling media lists.
+
+#### 3. Solution & Architectural Strategy
+1. **Aggregated Media Serialization**: Updated `_attach_report_media` in `admin.py` to aggregate media URLs from all linked reports (`zone.reports`) alongside the zone's direct `media_urls`, preserving source attribution tags (`"Zone"` vs `"Report"`).
+2. **Eager Loading in CRUD**: Enhanced `get_all_avoidance_zones_filtered` in `crud/report.py` to eagerly load `reports`, `user`, and `profile` via `selectinload`.
+3. **Attached Media & Evidence Gallery**: Built an **Attached Media & Evidence** gallery in `ZoneDetailsModal.tsx` supporting:
+   - Dynamic photo and video thumbnail previews with video indicator badges (`Video` Lucide badge).
+   - Source provenance tags indicating whether media was directly attached to the official zone or contributed by an associated field report.
+   - Click-to-preview functionality opening full-resolution media in a secure new browser tab.
+   - Empty state fallback showing a camera icon with "No attached photos or video evidence for this zone."
+4. **ArchivePage Media Prop Forwarding**: Passed `onOpenMedia={(url) => window.open(url, '_blank')}` to `ReportDetailsModal` in `ArchivePage.tsx` for cross-modal interaction parity.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Updated `_attach_report_media` to aggregate media from all linked reports and combine with zone media.
+- `backend/app/crud/report.py`: Added `selectinload` for `reports`, `user`, and `profile` in `get_all_avoidance_zones_filtered`.
+- `frontend/src/features/archive/components/ZoneDetailsModal.tsx`: Added Attached Media & Evidence gallery with photo/video preview, badges, and source tags.
+- `frontend/src/features/archive/ArchivePage.tsx`: Connected `onOpenMedia` handler on `ReportDetailsModal`.
 
 ### [BUG-043] Archive Center Archived Posts 500 Error on 'Profile' Object Has No Attribute 'full_name'
 - **Status**: Resolved

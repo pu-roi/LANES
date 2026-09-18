@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -707,9 +707,6 @@ export default function ArchivePage() {
           >
             <FileText className="w-4 h-4" />
             Archived Reports
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-xs bg-blue-100 text-blue-800 font-mono">
-              {totalReports}
-            </span>
           </button>
           <button
             type="button"
@@ -725,9 +722,6 @@ export default function ArchivePage() {
           >
             <ShieldAlert className="w-4 h-4" />
             Archived Zones
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-xs bg-blue-100 text-blue-800 font-mono">
-              {totalZones}
-            </span>
           </button>
         </div>
       )}
@@ -749,11 +743,6 @@ export default function ArchivePage() {
           >
             <Trash2 className="w-4 h-4" />
             Deleted Posts
-            {postSubTab === "deleted" && (
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-xs bg-blue-100 text-blue-800 font-mono">
-                {totalPosts}
-              </span>
-            )}
           </button>
           <button
             type="button"
@@ -769,11 +758,6 @@ export default function ArchivePage() {
           >
             <EyeOff className="w-4 h-4" />
             Hidden Posts
-            {postSubTab === "hidden" && (
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-xs bg-blue-100 text-blue-800 font-mono">
-                {totalPosts}
-              </span>
-            )}
           </button>
         </div>
       )}
@@ -941,6 +925,11 @@ export default function ArchivePage() {
           }
         }}
         isApproveLoading={restoreReportMutation.isPending}
+        onOpenMedia={(urls, idx) => {
+          if (urls && urls[idx]) {
+            window.open(urls[idx], "_blank");
+          }
+        }}
       />
 
       <ZoneDetailsModal

@@ -11,9 +11,7 @@ import {
   createOfficialZone,
   FloodReport
 } from "./adminApi";
-import { Button } from "@/shared/ui";
-import { Modal } from "@/shared/ui";
-import { Pagination, Tabs } from "@/shared/ui";
+import { Button, Modal, Pagination, Tabs, useToast } from "@/shared/ui";
 import BaseMap from "@/shared/ui/map/BaseMap";
 import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
@@ -27,7 +25,6 @@ import {
   ChevronRight, ChevronLeft, Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import toast from "react-hot-toast";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
@@ -134,6 +131,7 @@ type SecondaryWorkspace = "merge" | "edit";
 export default function LiveMapPage() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const toast = useToast();
   const { user, isAuthenticated } = useAuth();
   const createZoneDraftUserId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   
@@ -630,6 +628,10 @@ export default function LiveMapPage() {
       queryClient.invalidateQueries({ queryKey: ["adminPendingReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setSelectedReportId((current) => current === id ? null : current);
+      toast.success("Report Rejected", `Flood report #${id} has been rejected and moved to the Archive Center.`);
+    },
+    onError: (err: any) => {
+      toast.error("Rejection Failed", err?.response?.data?.detail || err?.message || "Could not reject report.");
     }
   });
 
@@ -641,7 +643,11 @@ export default function LiveMapPage() {
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setConfirmId(null);
       setSelectedZoneId((current) => current === id ? null : current);
+      toast.success("Zone Deactivated", `Avoidance zone #${id} has been deactivated and moved to the Archive Center.`);
     },
+    onError: (err: any) => {
+      toast.error("Deactivation Failed", err?.response?.data?.detail || err?.message || "Could not deactivate zone.");
+    }
   });
 
   const deactivateBulkMutation = useMutation({
@@ -653,7 +659,11 @@ export default function LiveMapPage() {
       setSelectedIds([]);
       setConfirmBulk(false);
       setSelectedZoneId((current) => ids.includes(current ?? -1) ? null : current);
+      toast.success("Zones Deactivated", `${ids.length} avoidance zones deactivated and moved to the Archive Center.`);
     },
+    onError: (err: any) => {
+      toast.error("Bulk Deactivation Failed", err?.response?.data?.detail || err?.message || "Could not deactivate zones.");
+    }
   });
 
   const createOfficialZoneMutation = useMutation({

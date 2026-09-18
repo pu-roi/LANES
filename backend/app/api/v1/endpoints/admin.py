@@ -61,7 +61,7 @@ def get_community_post_reports(
     return result
 
 @router.post("/moderation/posts/{post_id}/resolve")
-def resolve_community_post_reports(
+async def resolve_community_post_reports(
     post_id: int,
     payload: schemas.CommunityPostModerationResolution,
     db: Session = Depends(get_db),
@@ -91,24 +91,58 @@ def resolve_community_post_reports(
             )
         )
     if payload.action in {"warn", "hide"}:
-        message = "A moderator warned you about a Community Feed post." if payload.action == "warn" else "A moderator hid one of your Community Feed posts from public view."
+        reason_label_map = {
+            "spam_scam": "Spam or scam",
+            "misinformation": "Misinformation / False Hazard",
+            "harassment_hate": "Harassment or hate speech",
+            "explicit_violent": "Explicit or violent content",
+            "other": "Community guidelines violation",
+        }
+        reasons_list = [reason_label_map.get(r.reason, r.reason) for r in reports if r.reason]
+        unique_reasons = list(dict.fromkeys(reasons_list))
+        reasons_str = f" Reason: {', '.join(unique_reasons)}." if unique_reasons else ""
+
+        message = (
+            f"A moderator warned you about a Community Feed post.{reasons_str}"
+            if payload.action == "warn"
+            else f"A moderator hid one of your Community Feed posts from public view.{reasons_str}"
+        )
         db.add(
             Notification(
                 user_id=post.user_id,
                 type=NotificationType.SYSTEM,
                 message=message,
-                payload={"post_id": post_id, "action": payload.action},
+                payload={"post_id": post_id, "action": payload.action, "reasons": unique_reasons},
             )
         )
     db.commit()
+
+    if payload.action == "hide":
+        from app.core.sse import manager
+        await manager.broadcast({
+            "event": "feed_post_deleted",
+            "data": {"post_id": post_id}
+        })
+
     return {"message": "Reports resolved", "action": payload.action, "resolved_count": len(reports)}
 
 
 def _attach_report_media(zone: models.FloodAvoidanceZone) -> schemas.FloodAvoidanceZoneResponse:
-    """Expose source-report evidence without copying it into zone media."""
+    """Expose source-report evidence and zone media without copying."""
     response = schemas.FloodAvoidanceZoneResponse.model_validate(zone)
+    report_media: list[str] = []
+    if zone.reports:
+        for r in zone.reports:
+            if r.media_urls:
+                for url in r.media_urls:
+                    if url and url not in report_media:
+                        report_media.append(url)
+
     return response.model_copy(
-        update={"report_media_urls": list(zone.primary_report.media_urls or []) if zone.primary_report else []}
+        update={
+            "report_media_urls": report_media,
+            "media_urls": list(zone.media_urls or []),
+        }
     )
 
 

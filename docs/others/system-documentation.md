@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 18, 2026, 7:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 10:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -40,7 +40,7 @@ These files are **always present** regardless of which page you are on.
 | `FloatingNav.tsx` | `src/features/navigation/FloatingNav.tsx` | The pill-shaped floating top navigation bar (desktop only). Contains the LANES logo, links to Home / Feed / Map / Profile, an Admin shortcut (for non-Commuter staff), and a Log Out button. Always centered on the full viewport regardless of page. |
 | `MobileNav.tsx` | `src/features/navigation/MobileNav.tsx` | Fixed bottom tab bar visible only on mobile. Same links as FloatingNav but icon-only with labels. |
 | `OfflineBanner.tsx` | `src/features/offline/OfflineBanner.tsx` | A slim red banner that appears at the very top of the page when the browser loses internet connectivity. |
-| `NotificationBell.tsx` | `src/features/notifications/NotificationBell.tsx` | A floating bell icon (bottom-right corner, desktop). Shows an unread count badge. Clicking opens a dropdown of recent notifications (likes, comments, system alerts). Listens to a real-time SSE stream from the backend. |
+| `NotificationBell.tsx` | `src/features/notifications/NotificationBell.tsx` | A floating bell icon (bottom-right corner, desktop). Shows an unread count badge. Clicking opens a dropdown of recent notifications (likes, comments, system alerts, and administrative post removal/moderation warnings styled with amber `AlertTriangle` warning badges). Listens to a real-time SSE stream from the backend. |
 | `GlobalMap.tsx` | `src/features/map/GlobalMap.tsx` | Mounts the map instance globally via `providers.tsx` so it persists across all page navigations. Manages which map panels are open (Route, Analytics, Save Place, Flood Report, Offline Manager). |
 | `providers.tsx` | `src/app/providers.tsx` | Wraps children with `MapContextProvider` and mounts `GlobalMap`. This is why the map is always rendered even when visiting non-map pages. |
 
@@ -130,7 +130,7 @@ These files are **always present** regardless of which page you are on.
 | `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the scrollable list of `PostItem` cards with responsive composer placeholder (`"What's happening?"` on mobile vs `"What's happening in your area?"` on desktop). Left and right sidebars are pinned on desktop. Fetches paginated posts on load. |
 | `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Left panel (desktop only). Shows the logged-in user's avatar, display name, trust score badge, quick stats, saved places pills (which open the Saved Places panel), and a "Create Post" shortcut button. Features hover-activated custom slim scrollbar. |
 | `RightSidebar.tsx` | `src/features/feed/RightSidebar.tsx` — Right panel (desktop only). Shows community highlights: top contributors, recent active flood zones, and trending location tags. |
-| `PostItem.tsx` | `src/features/feed/PostItem.tsx` — A single post card in the feed. Shows author avatar/name/role, post text, attached media carousel, responsive flood severity badge (compact on mobile, detailed on desktop), standalone `ArrowBigUp`/`ArrowBigDown` voting buttons with active fills, comment count, and responsive single-row action bar (compact map/share labels on iPhone SE/12). Its interactive location badge and flood-report **View on Map** action focus the road-length midpoint of the saved report geometry; paired carriageways focus their shared center. |
+| `PostItem.tsx` | `src/features/feed/PostItem.tsx` | A single post card in the feed. Shows author avatar/name/role, post text, attached media carousel, responsive flood severity badge (compact on mobile, detailed on desktop), standalone `ArrowBigUp`/`ArrowBigDown` voting buttons with active fills, comment count, and responsive single-row action bar (compact map/share labels on iPhone SE/12). Provides a dropdown menu with soft-deletion support: author self-deletion prompts a standard confirmation dialog, while staff/admin removal triggers an **Administrative Post Removal** modal prompting for violation category and notes. Dispatches an in-app `SYSTEM` notification to the post author explaining the decision, logs an `ADMIN_DELETE_POST` audit record, and updates the feed via SSE. Its interactive location badge and flood-report **View on Map** action focus the road-length midpoint of the saved report geometry; paired carriageways focus their shared center. |
 | `EmergencyHotlinesCard.tsx` | `src/features/feed/components/EmergencyHotlinesCard.tsx` — API-backed priority emergency contacts with expandable numbers, direct `tel:` links, loading/unavailable states, and a full-directory trigger. Rendered in the feed sidebar layout. |
 
 ### Hidden Until Interaction
@@ -146,6 +146,7 @@ These files are **always present** regardless of which page you are on.
 |----------|---------|
 | `GET /api/v1/feed/posts?page=&limit=` | Paginated list of community posts |
 | `POST /api/v1/feed/posts` | Create a new community post |
+| `DELETE /api/v1/posts/{id}` | Soft-deletes a post; supports optional `CommunityPostDeletePayload(reason, details)` when deleted by staff to deliver author notification and audit log |
 | `POST /api/v1/feed/posts/{id}/interact` | Upvote or downvote a post |
 | `PATCH /api/v1/posts/{id}` | Owner-only complete post update; writes an immutable before/after history version |
 | `GET /api/v1/posts/{id}/history` | Public chronological edit-history entries for a post |
@@ -301,7 +302,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
 | `/admin/moderation` | `ModerationCenterPage.tsx` | Staff-only Community Post moderation queue. Open reports are grouped into one case per post and can be dismissed, warned, or soft-hidden. The responsive action area remains clear of the mobile bottom navigation. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
-| `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with three primary tabs: **Archived Users** (soft-deleted commuter accounts with status toggles), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). |
+| `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with three primary tabs: **Archived Users** (soft-deleted commuter accounts with status toggles), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). |
 
 ### Backend Calls (Admin)
 

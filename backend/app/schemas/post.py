@@ -33,6 +33,11 @@ class CommunityPostModerationResolution(BaseModel):
     action: str
 
 
+class CommunityPostDeletePayload(BaseModel):
+    reason: Optional[str] = None
+    details: Optional[str] = None
+
+
 class CommunityPostEditHistoryResponse(BaseModel):
     id: int
     post_id: int

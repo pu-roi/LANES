@@ -203,7 +203,18 @@ export const reportPost = async (postId: number, reason: string, details?: strin
   await apiClient.post(`/posts/${postId}/reports`, { reason, details });
 };
 
-export const deletePost = async (postId: number): Promise<void> => {
-  await apiClient.delete(`/posts/${postId}`);
+export interface DeletePostPayload {
+  reason?: string;
+  details?: string;
+}
+
+export const deletePost = async (postId: number, payload?: DeletePostPayload): Promise<void> => {
+  await apiClient.request(`/posts/${postId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: payload ? JSON.stringify(payload) : undefined,
+  });
 };
 
