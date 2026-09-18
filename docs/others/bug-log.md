@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 2:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,72 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-047] Community Feed Voting Desynchronization, Incomplete Flip Delta & Full Feed Re-fetch Lag
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 19, 2026
+- **Affected Area**: Frontend / Backend / Community Feed / Interaction Engine
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When commuters upvoted or downvoted posts on the Community Feed, several issues occurred:
+1. **Network Lag / Feed Jitter**: The voting action relied on query invalidation (`invalidateQueries(['feed'])`), triggering a heavy 50-post re-fetch over the network before the UI count updated.
+2. **Count Desynchronization on Flipped Votes**: Clicking Downvote while previously Upvoted (or vice versa) produced incorrect visual delta counts because the client only decremented by 1 rather than applying a net flip delta ($\pm 2$).
+3. **Missing Response Payload**: The `POST /feed/{post_id}/vote` endpoint only returned a generic status message rather than the new authoritative upvote/downvote/net_score state, preventing authoritative client cache synchronization.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Lack of Optimistic Cache Mutators**: Vote mutations did not implement `onMutate` optimistic updates on TanStack Query caches, forcing the UI to wait for network roundtrips.
+2. **Absence of Dedicated Vote Response Schema**: Backend only returned `{ "status": "success", "message": "Vote recorded" }`, leaving clients with no authoritative post vote counters unless a full re-fetch occurred.
+
+#### 3. Solution & Architectural Strategy
+1. **Optimistic Tri-State Vote Calculation**: Implemented `onMutate` hooks across `FeedPage.tsx`, `PostDetailPage.tsx`, and `ProfileView.tsx` that instantly calculate new scores in 0ms (fresh vote $\pm 1$, flip $\pm 2$, cancel vote) and rollback on error.
+2. **Authoritative Vote Response**: Created `VoteResponse` Pydantic model and updated `crud/interaction.py` to return the new exact `upvotes`, `downvotes`, `net_score`, and `user_interaction` in `POST /feed/{post_id}/vote`.
+3. **Reddit-Style Compact Pill**: Consolidated disjointed counters into a unified `▲ Net Score ▼` pill badge with active color coding and hover breakdown.
+
+#### 4. Files Modified / What Changed
+- `backend/app/schemas/feed.py`: Added `VoteResponse` schema.
+- `backend/app/crud/interaction.py`: Added `get_post_vote_summary` function.
+- `backend/app/api/v1/endpoints/feed.py`: Updated vote endpoint to return `VoteResponse`.
+- `frontend/src/features/feed/feedApi.ts`: Updated `votePost` return type.
+- `frontend/src/features/feed/PostItem.tsx`: Implemented unified `▲ Net Score ▼` pill badge.
+- `frontend/src/features/feed/FeedPage.tsx`: Added optimistic vote mutations.
+- `frontend/src/features/feed/PostDetailPage.tsx`: Added optimistic vote mutations for detail view.
+- `frontend/src/features/profile/ProfileView.tsx`: Added optimistic vote mutations for profile feed tabs.
+- `backend/tests/test_feed_voting.py`: Added automated schema and response tests.
+
+### [BUG-046] Mixed Content Browser Blocking on HTTPS Due to Trailing Slash Redirection and Missing Proxy Headers
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 19, 2026
+- **Affected Area**: Frontend / Backend / Networking & Deployment (Cloud Run)
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On production (`https://navlanes.live`), navigating to `/admin/dashboard` or `/admin/map` triggered repeated console errors:
+```
+Mixed Content: The page at 'https://navlanes.live/admin/dashboard' was loaded over HTTPS, but requested an insecure resource 'http://lanes-api-557679867071.asia-east1.run.app/api/v1/notifications?skip=0&limit=20'. This request has been blocked; the content must be served over HTTPS.
+```
+This caused the notification bell component to fail fetching unread notifications and flooded the browser console.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Frontend Trailing Slash Inconsistency**: The root `layout.tsx` mounts `NotificationBell`, which calls `getNotifications(0, 20)`. In `frontend/src/features/notifications/notificationsApi.ts`, the fetch URL was formulated with a trailing slash before query parameters (`/notifications/?skip=${skip}&limit=${limit}`).
+2. **FastAPI Trailing Slash Normalization**: In `backend/app/api/v1/endpoints/notifications.py`, the route was registered as `@router.get("")`. When receiving a request with a trailing slash (`/notifications/?...`), Starlette issued an automatic `HTTP 307 Temporary Redirect` to canonicalize the route to `/notifications?...`.
+3. **Missing Reverse Proxy Protocol Propagation**: Google Cloud Run terminates SSL/TLS at its edge load balancer and forwards plain HTTP internally to port 8080. Because Uvicorn was running without `--proxy-headers --forwarded-allow-ips "*"` and without `ProxyHeadersMiddleware`, FastAPI was unaware that the client connection originated over HTTPS. Consequently, FastAPI generated the redirect `Location` header using `http://` instead of `https://`.
+4. **Mixed Active Content Blocking**: Browsers strictly disallow HTTPS pages from following or executing active fetch/XHR requests to insecure HTTP endpoints, causing the browser to block the notification request immediately.
+
+#### 3. Solution & Architectural Strategy
+1. **Eliminated Unnecessary Client-Side Redirect**: Updated `getNotifications` in `notificationsApi.ts` to call `/notifications?skip=${skip}&limit=${limit}` directly without the redundant trailing slash. This prevents the 307 roundtrip altogether, optimizing latency.
+2. **Dual Route Registration for Resilience**: Added `@router.get("/", response_model=NotificationPaginatedResponse, include_in_schema=False)` to `backend/app/api/v1/endpoints/notifications.py` so that requests sent either with or without trailing slashes resolve directly with `200 OK` without triggering redirects.
+3. **Proxy Header & Protocol Forwarding Enforcement**:
+   - Updated `backend/Dockerfile` CMD to execute Uvicorn with `--proxy-headers --forwarded-allow-ips '*'`.
+   - Injected `ProxyHeadersMiddleware` into the FastAPI application in `backend/app/main.py` so FastAPI recognizes `X-Forwarded-Proto: https` from reverse proxies (Google Cloud Run / Envoy) and ensures any system-generated redirect retains the HTTPS scheme.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/notifications/notificationsApi.ts`: Removed the trailing slash before query parameters in `getNotifications`.
+- `backend/app/api/v1/endpoints/notifications.py`: Added `@router.get("/")` alias route to avoid 307 trailing slash redirects.
+- `backend/Dockerfile`: Added `--proxy-headers --forwarded-allow-ips '*'` to Uvicorn command.
+- `backend/app/main.py`: Added `ProxyHeadersMiddleware` with trusted hosts wildcard.
 
 ### [BUG-045] Cloud Build Trigger Failure Under Custom Service Account Due to Missing Logging Configuration
 - **Status**: Resolved

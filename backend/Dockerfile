@@ -31,4 +31,4 @@ EXPOSE 8080
 
 # Run FastAPI using Uvicorn
 # Dynamically binds to $PORT provided by Cloud Run (defaults to 8080)
-CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080} --proxy-headers --forwarded-allow-ips '*'"]

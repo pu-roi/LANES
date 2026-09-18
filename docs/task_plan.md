@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 1:40 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,13 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 32: Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing (🟢 COMPLETED)
+> **Focus:** Modernizing Community Feed voting mechanics to follow Reddit-style interaction standards (`▲ Net Score ▼`), implementing instant 0ms optimistic UI updates with automatic error rollbacks across Feed, Post Detail, and Profile, returning authoritative `VoteResponse` counts from FastAPI backend to eliminate 50-post re-fetch waste, and introducing DRRMO flood disaster life-cycle recency filtering with interactive time span pills (`Last 24 Hours`, `Last 3 Days` [Default], `All Time`). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Reddit-Style Unified Vote Pill (`PostItem.tsx`)**: Replaced disjointed upvote and downvote counters with a consolidated `▲ Net Score ▼` pill badge with active blue/rose tinting, filled arrows, and native hover tooltips displaying the exact breakdown (`X upvotes, Y downvotes`).
+> - [x] **Instant 0ms Optimistic UI Updates (`FeedPage.tsx`, `PostDetailPage.tsx`, `ProfileView.tsx`)**: Added `onMutate` query cache mutations executing immediate score calculations (+1/-1 fresh vote, ±2 flip, toggle undo) with snapshot rollback on error or 401 session expiration.
+> - [x] **Authoritative Backend Voting Response (`schemas/feed.py`, `crud/interaction.py`, `endpoints/feed.py`)**: Defined `VoteResponse` model, implemented `get_post_vote_summary`, and returned fresh counts directly in `POST /feed/{post_id}/vote`. Added unit tests in `tests/test_feed_voting.py`.
+> - [x] **Disaster/Civic Recency Windowing (`FeedPage.tsx`, `feed.py`, `crud/feed.py`)**: Added `time_window_hours` filtering on backend and interactive span filter pills (`Last 24 Hours`, `Last 3 Days`, `All Time`) under the Recent feed tab.
 
 ### Capstone Phase 31: Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening (🟢 COMPLETED)
 > **Focus:** Automating database migrations within Google Cloud Build CI/CD via Cloud Run Jobs (`lanes-migration`), running migrations synchronously (`--wait`) prior to updating the `lanes-api` web service revision to prevent schema drift, hardening Cloud Build options (`logging: CLOUD_LOGGING_ONLY`) for custom service account builds, and re-encrypting environment secrets. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
