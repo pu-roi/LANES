@@ -1,7 +1,7 @@
 from typing import List, Optional
 from datetime import datetime
-from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy.orm import Session, selectinload
+from sqlalchemy import func, or_
 
 from app import models, schemas
 
@@ -64,8 +64,10 @@ def update_flood_report_status(db: Session, report_id: int, status: str) -> Opti
     report = get_flood_report(db, report_id)
     if report:
         report.status = status
-        if status == "rejected" and report.user_id:
-            penalize_user_rejected_report(db, report.user_id)
+        if status == "rejected":
+            report.deleted_at = datetime.utcnow()
+            if report.user_id:
+                penalize_user_rejected_report(db, report.user_id)
         db.commit()
         db.refresh(report)
     return report
@@ -84,11 +86,35 @@ def archive_flood_report(db: Session, report_id: int) -> Optional[models.FloodRe
 
 def restore_flood_report(db: Session, report_id: int) -> Optional[models.FloodReport]:
     report = db.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
-    if report and report.deleted_at is not None:
+    if report and (report.deleted_at is not None or report.status == "rejected"):
+        was_rejected = (report.status == "rejected")
         report.deleted_at = None
+        if was_rejected:
+            report.status = "pending"
+            if report.user_id:
+                user = db.query(models.User).filter(models.User.id == report.user_id).first()
+                if user and user.profile:
+                    user.profile.reports_rejected = max(0, user.profile.reports_rejected - 1)
+                    user.profile.trust_score = min(100, user.profile.trust_score + 10)
+                    total_graded = user.profile.reports_approved + user.profile.reports_rejected
+                    if total_graded > 0:
+                        user.profile.accuracy_rate = round((user.profile.reports_approved / total_graded) * 100.0, 1)
+                    else:
+                        user.profile.accuracy_rate = 100.0
         db.commit()
         db.refresh(report)
     return report
+
+
+def hard_delete_flood_report(db: Session, report_id: int) -> bool:
+    report = db.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
+    if not report:
+        return False
+    from app.models.post import CommunityPost
+    db.query(CommunityPost).filter(CommunityPost.flood_report_id == report_id).update({CommunityPost.flood_report_id: None})
+    db.delete(report)
+    db.commit()
+    return True
 
 
 def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> models.FloodReport:
@@ -233,9 +259,14 @@ def get_all_flood_reports_filtered(
     Returns a tuple of (reports, total_count).
     """
     if archived:
-        query = db.query(models.FloodReport).filter(models.FloodReport.deleted_at.is_not(None))
+        query = db.query(models.FloodReport).filter(
+            or_(models.FloodReport.deleted_at.is_not(None), models.FloodReport.status == "rejected")
+        )
     else:
-        query = db.query(models.FloodReport).filter(models.FloodReport.deleted_at.is_(None))
+        query = db.query(models.FloodReport).filter(
+            models.FloodReport.deleted_at.is_(None),
+            models.FloodReport.status != "rejected"
+        )
 
     if status and status != "all":
         query = query.filter(models.FloodReport.status == status)
@@ -325,18 +356,66 @@ def get_all_avoidance_zones_filtered(
     db: Session,
     skip: int = 0,
     limit: int = 100,
-    active_only: bool = False
+    active_only: bool = False,
+    archived: bool = False,
+    search: Optional[str] = None
 ) -> tuple[List[models.FloodAvoidanceZone], int]:
     query = db.query(models.FloodAvoidanceZone)
-    if active_only:
+    if archived:
+        query = query.filter(
+            or_(
+                models.FloodAvoidanceZone.is_active == False,
+                (models.FloodAvoidanceZone.expires_at.is_not(None)) & (models.FloodAvoidanceZone.expires_at <= func.now())
+            )
+        )
+    elif active_only:
         query = query.filter(
             models.FloodAvoidanceZone.is_active == True,
             (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
         )
+
+    if search:
+        query = query.filter(
+            or_(
+                models.FloodAvoidanceZone.name.ilike(f"%{search}%"),
+                models.FloodAvoidanceZone.admin_notes.ilike(f"%{search}%")
+            )
+        )
     
     total = query.count()
-    zones = query.order_by(models.FloodAvoidanceZone.created_at.desc()).offset(skip).limit(limit).all()
+    zones = (
+        query.options(
+            selectinload(models.FloodAvoidanceZone.reports).selectinload(models.FloodReport.user).selectinload(models.User.profile),
+            selectinload(models.FloodAvoidanceZone.reports).selectinload(models.FloodReport.user).selectinload(models.User.role),
+        )
+        .order_by(models.FloodAvoidanceZone.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
     return zones, total
+
+
+def restore_flood_avoidance_zone(db: Session, zone_id: int) -> Optional[models.FloodAvoidanceZone]:
+    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if not zone:
+        return None
+    zone.is_active = True
+    if zone.expires_at and zone.expires_at <= datetime.utcnow():
+        zone.expires_at = None
+    db.commit()
+    db.refresh(zone)
+    return zone
+
+
+def hard_delete_flood_avoidance_zone(db: Session, zone_id: int) -> bool:
+    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if not zone:
+        return False
+    db.query(models.FloodReport).filter(models.FloodReport.zone_id == zone_id).update({models.FloodReport.zone_id: None})
+    db.delete(zone)
+    db.commit()
+    return True
 
 
 def update_flood_avoidance_zone(

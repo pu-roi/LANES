@@ -9,11 +9,12 @@ export function useFloodMapPreview(
   floodPreviewGeometry: RouteGeometry | null,
   floodOppositeGeometry: RouteGeometry | null,
   floodIsBidirectional: boolean,
-  isEnabled: boolean = true
+  isEnabled: boolean = true,
+  showMarkers: boolean = true
 ) {
   // Sync flyTo animations
   useEffect(() => {
-    if (!mapInstance || !floodStart || !isEnabled) return;
+    if (!mapInstance || !floodStart || !isEnabled || !showMarkers) return;
     mapInstance.flyTo({
       center: floodStart.coords,
       zoom: Math.max(mapInstance.getZoom(), 14),
@@ -21,10 +22,10 @@ export function useFloodMapPreview(
       pitch: mapInstance.getPitch(),
       duration: 600,
     });
-  }, [floodStart, mapInstance, isEnabled]);
+  }, [floodStart, mapInstance, isEnabled, showMarkers]);
 
   useEffect(() => {
-    if (!mapInstance || !floodEnd || !isEnabled) return;
+    if (!mapInstance || !floodEnd || !isEnabled || !showMarkers) return;
     mapInstance.flyTo({
       center: floodEnd.coords,
       zoom: Math.max(mapInstance.getZoom(), 14),
@@ -32,7 +33,7 @@ export function useFloodMapPreview(
       pitch: mapInstance.getPitch(),
       duration: 600,
     });
-  }, [floodEnd, mapInstance, isEnabled]);
+  }, [floodEnd, mapInstance, isEnabled, showMarkers]);
 
   // Markers
   const startMarkerRef = useRef<maplibregl.Marker | null>(null);
@@ -41,7 +42,7 @@ export function useFloodMapPreview(
   useEffect(() => {
     startMarkerRef.current?.remove();
     startMarkerRef.current = null;
-    if (mapInstance && isEnabled && floodStart) {
+    if (mapInstance && isEnabled && showMarkers && floodStart) {
       const snappedStart = floodPreviewGeometry?.coordinates[0] ?? floodStart.coords;
       startMarkerRef.current = new maplibregl.Marker({ color: "#f97316" })
         .setLngLat(snappedStart)
@@ -52,12 +53,12 @@ export function useFloodMapPreview(
       startMarkerRef.current?.remove();
       startMarkerRef.current = null;
     };
-  }, [mapInstance, floodStart, floodPreviewGeometry, isEnabled]);
+  }, [mapInstance, floodStart, floodPreviewGeometry, isEnabled, showMarkers]);
 
   useEffect(() => {
     endMarkerRef.current?.remove();
     endMarkerRef.current = null;
-    if (mapInstance && isEnabled && floodEnd) {
+    if (mapInstance && isEnabled && showMarkers && floodEnd) {
       const snappedEnd = floodPreviewGeometry?.coordinates.at(-1) ?? floodEnd.coords;
       endMarkerRef.current = new maplibregl.Marker({ color: "#991b1b" })
         .setLngLat(snappedEnd)
@@ -68,7 +69,7 @@ export function useFloodMapPreview(
       endMarkerRef.current?.remove();
       endMarkerRef.current = null;
     };
-  }, [mapInstance, floodEnd, floodPreviewGeometry, isEnabled]);
+  }, [mapInstance, floodEnd, floodPreviewGeometry, isEnabled, showMarkers]);
 
   // Preview layer
   useEffect(() => {

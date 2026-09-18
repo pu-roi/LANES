@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
-import { Bell, Check, Info, MapPin, X } from 'lucide-react';
+import { Bell, Check, Info, MapPin, X, AlertTriangle } from 'lucide-react';
 import { getNotifications, markAsRead, markAllAsRead, Notification } from './notificationsApi';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
@@ -51,7 +51,15 @@ export function NotificationBell() {
     return null;
   }
 
-  const getIcon = (type: string) => {
+  const getIcon = (type: string, message: string = "") => {
+    const isWarningOrRemoval = message.toLowerCase().includes("removed") || 
+      message.toLowerCase().includes("hid") || 
+      message.toLowerCase().includes("warn");
+
+    if (isWarningOrRemoval) {
+      return <div className="p-2 bg-amber-100 text-amber-700 rounded-full"><AlertTriangle size={16} /></div>;
+    }
+
     switch (type.toUpperCase()) {
       case 'LIKE':
         return <div className="p-2 bg-blue-100 text-blue-600 rounded-full"><Check size={16} /></div>;
@@ -138,7 +146,7 @@ export function NotificationBell() {
                     }}
                   >
                     <div className="shrink-0">
-                      {getIcon(notif.type)}
+                      {getIcon(notif.type, notif.message)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm text-gray-800 ${!notif.is_read ? 'font-semibold' : ''}`}>

@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 17, 2026, 9:06 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,218 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-045] Cloud Build Trigger Failure Under Custom Service Account Due to Missing Logging Configuration
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: CI/CD / Google Cloud Build / Infrastructure
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When executing automated Google Cloud Build workflows (`cloudbuild.yaml`) triggered on git commit pushes, builds utilizing a custom/user-managed Google Cloud service account failed immediately at initiation with the error:
+`generic::invalid_argument: if 'serviceAccount' is specified, the build must specify a Cloud Storage bucket for logging or specify logging option CLOUD_LOGGING_ONLY`.
+
+#### 2. Root Cause Analysis (RCA)
+By default, Google Cloud Build attempts to stream logs to default Google-managed Cloud Storage buckets. When builds are configured with a custom service account for least-privilege security access rather than the default compute service account, Google Cloud requires an explicit build option designating whether build logs should stream to a dedicated storage bucket or directly to Google Cloud Logging.
+
+#### 3. Solution & Architectural Strategy
+Configured `options: logging: CLOUD_LOGGING_ONLY` in the root configuration block of `cloudbuild.yaml`. This routes all build logs directly into Google Cloud Logging without mandating external storage bucket provisioning while ensuring build invocations under custom service accounts succeed seamlessly.
+
+#### 4. Files Modified / What Changed
+- `cloudbuild.yaml`: Added `options: logging: CLOUD_LOGGING_ONLY`.
+
+### [BUG-044] Archived Avoidance Zone Media (Photos & Videos) Missing in Archive Center Zone Details Modal
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Backend / Admin Archive Center / Zone Details
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When administrators inspected deactivated or expired flood avoidance zones in the Archive Center (`/admin/archive` -> **Spatial Data** -> **Archived Zones**) by clicking the view/details action icon, the `ZoneDetailsModal` displayed hazard attributes, coordinates, and metadata, but completely lacked any attached media (photos and videos), even when the avoidance zone was created with direct media uploads or originated from citizen flood reports with photographic evidence. In contrast, `ReportDetailsModal` in the adjacent Archived Reports tab rendered evidence thumbnails.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Frontend Omission**: `ZoneDetailsModal.tsx` was built with attribute sections (Hazard & Severity, Timing & Lifecycle, Location & Coordinates, Operational Notes) but omitted a media gallery section and never parsed `media_urls` or `report_media_urls`.
+2. **Backend Aggregation Limitation**: In `backend/app/api/v1/endpoints/admin.py`, the internal helper `_attach_report_media` only inspected `zone.primary_report.media_urls` rather than aggregating across all associated child reports in `zone.reports`.
+3. **Lazy Loading Exclusion**: In `backend/app/crud/report.py`, `get_all_avoidance_zones_filtered` did not include eager loading (`selectinload(models.FloodAvoidanceZone.reports)`) or author profile loading for avoidance zones, risking detached instance queries or empty child collections when assembling media lists.
+
+#### 3. Solution & Architectural Strategy
+1. **Aggregated Media Serialization**: Updated `_attach_report_media` in `admin.py` to aggregate media URLs from all linked reports (`zone.reports`) alongside the zone's direct `media_urls`, preserving source attribution tags (`"Zone"` vs `"Report"`).
+2. **Eager Loading in CRUD**: Enhanced `get_all_avoidance_zones_filtered` in `crud/report.py` to eagerly load `reports`, `user`, and `profile` via `selectinload`.
+3. **Attached Media & Evidence Gallery**: Built an **Attached Media & Evidence** gallery in `ZoneDetailsModal.tsx` supporting:
+   - Dynamic photo and video thumbnail previews with video indicator badges (`Video` Lucide badge).
+   - Source provenance tags indicating whether media was directly attached to the official zone or contributed by an associated field report.
+   - Click-to-preview functionality opening full-resolution media in a secure new browser tab.
+   - Empty state fallback showing a camera icon with "No attached photos or video evidence for this zone."
+4. **ArchivePage Media Prop Forwarding**: Passed `onOpenMedia={(url) => window.open(url, '_blank')}` to `ReportDetailsModal` in `ArchivePage.tsx` for cross-modal interaction parity.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Updated `_attach_report_media` to aggregate media from all linked reports and combine with zone media.
+- `backend/app/crud/report.py`: Added `selectinload` for `reports`, `user`, and `profile` in `get_all_avoidance_zones_filtered`.
+- `frontend/src/features/archive/components/ZoneDetailsModal.tsx`: Added Attached Media & Evidence gallery with photo/video preview, badges, and source tags.
+- `frontend/src/features/archive/ArchivePage.tsx`: Connected `onOpenMedia` handler on `ReportDetailsModal`.
+
+### [BUG-043] Archive Center Archived Posts 500 Error on 'Profile' Object Has No Attribute 'full_name'
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Backend / Admin Archive Center / Post Serialization
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When browsing `/admin/archive` and navigating to the "Archived Posts" tab (or toggling between "Deleted Posts" and "Hidden Posts"), the backend terminal reported repeated `500 Internal Server Error` exceptions with the message:
+```text
+AttributeError: 'Profile' object has no attribute 'full_name'
+Unhandled Exception on GET /api/v1/admin/posts/archived: 'Profile' object has no attribute 'full_name'
+```
+This caused the archived posts table to fail to load records whenever any archived or hidden post had an author or remover with an existing user profile.
+
+#### 2. Root Cause Analysis (RCA)
+In `backend/app/api/v1/endpoints/admin.py`, the serialization block in `get_archived_community_posts` and `restore_archived_post` attempted to resolve author and moderator names using `post.user.profile.full_name`, `post.deleted_by.profile.full_name`, and `post.hidden_by.profile.full_name`.
+However, the `Profile` SQLAlchemy model (`backend/app/models/profile.py`) stores names as separate `first_name` and `last_name` columns; it does not contain a `full_name` column or property. Accessing the non-existent attribute raised an unhandled `AttributeError`, aborting the request with HTTP 500.
+
+#### 3. Solution & Architectural Strategy
+Created a centralized helper function `_get_user_display_name(user: Optional[models.User], fallback: Optional[str] = "Unknown") -> Optional[str]` that safely inspects `user.profile` and constructs the full name via `f"{user.profile.first_name or ''} {user.profile.last_name or ''}".strip()`. If the profile or names are empty, it gracefully falls back to `user.username`, and ultimately to the supplied fallback string or `None`. Replaced all direct `.full_name` attribute accesses across the post archive endpoints.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Added `_get_user_display_name` helper and replaced all `profile.full_name` property accesses in `get_archived_community_posts` and `restore_archived_post`.
+
+### [BUG-042] Profile Page Settings "Hide Profile Picture" Lag & Inoperative Camera Action Options
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Profile / Photo Management / React Query Cache
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On the `/profile` page:
+1. Toggling "Hide Profile Picture" in the Settings tab exhibited UI lag or appeared unresponsive because the change was not updated optimistically in React Query state, resulting in switch bounce.
+2. Clicking the camera icon on the user avatar opened a dropdown with three options ("View Profile Picture", "Change Profile Picture", "Hide Profile Picture"). All three options were non-functional dummy buttons that merely closed the dropdown menu without executing any action.
+3. The "Hide Profile Picture" option was redundantly duplicated inside both the camera button dropdown and the Settings tab.
+
+#### 2. Root Cause Analysis (RCA)
+1. In `useProfile.ts`, `updateProfileMutation` only called `queryClient.invalidateQueries({ queryKey: ['auth-user'] })` in `onSuccess` without optimistic state updates (`onMutate`) or immediate `setQueryData` cache synchronization. As a result, the UI had to wait for an asynchronous background refetch over HTTP to re-render, creating visual delays and apparent switch failure.
+2. In `ProfileView.tsx`, the camera dropdown items ("View Profile Picture" and "Change Profile Picture") were placeholder buttons executing only `setShowAvatarMenu(false)`. No image viewer modal or file upload pipeline existed.
+3. "Hide Profile Picture" was unnecessarily placed in the camera button dropdown when the official switch is centralized under Profile Settings.
+
+#### 3. Solution & Architectural Strategy
+1. **Optimistic Updates & Immediate Cache Synchronization**: Enhanced `useProfile.ts` with `onMutate` to immediately write updated profile state into `['auth-user']` with automatic rollback on failure, and `onSuccess` to synchronize `['auth-user']`, `['my-posts']`, and `['posts']`.
+2. **View Profile Picture Modal**: Built a dedicated preview modal in `ProfileView.tsx` showing the high-resolution avatar, username, handle, and a privacy status badge ("Hidden from public") when enabled, along with action shortcuts. Also made clicking the avatar in the header directly open this modal.
+3. **Change Profile Picture Pipeline**: Implemented file input triggering with image format verification (JPEG, PNG, WebP) and a 10MB size guard, uploading directly to Cloudinary via backend endpoint `POST /api/v1/users/me/avatar`.
+4. **Remove Picture Capability**: Added a "Remove Picture" action allowing users to revert to the default initials avatar via `DELETE /api/v1/users/me/avatar`.
+5. **Redundant Option Excision**: Removed "Hide Profile Picture" from the camera dropdown per design requirements. Added outside-click dismissal to `showAvatarMenu`.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/profile/ProfileView.tsx`: Implemented View Profile Picture Modal, file selection handler, avatar dropdown cleanup, and outside-click handler.
+- `frontend/src/hooks/useProfile.ts`: Added optimistic updates, cache synchronization, and `uploadAvatar`/`removeAvatar` mutations.
+- `backend/app/api/v1/endpoints/users.py`: Added `POST /me/avatar` and `DELETE /me/avatar` endpoints with MIME type validation.
+
+### [BUG-041] Database Connection Pool Exhaustion (QueuePool limit 20 overflow 10 reached) Caused by Persistent Streaming SSE Endpoints
+- **Status**: Resolved
+- **Severity**: Critical
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Backend / Database Pooling / Server-Sent Events (SSE) / LiveSync
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On the production Cloud Run backend service (`lanes-api`), continuous client streaming calls to `/api/v1/sync` and `/api/v1/sse` resulted in severe database connection pool exhaustion errors:
+`sqlalchemy.exc.TimeoutError: QueuePool limit of size 20 overflow 10 reached, connection timed out, timeout 30.00`.
+Subsequent API requests across the entire platform failed with HTTP 500 until the container restarted.
+
+#### 2. Root Cause Analysis (RCA)
+1. In FastAPI endpoints `sse.py` and `sync.py`, the database session dependency (`db: Session = Depends(get_db)`) was injected directly at the endpoint signature level.
+2. In FastAPI generator-based streaming responses (`StreamingResponse`), dependency cleanup (`get_db()`'s `yield` context manager) does not close or return the database connection to the SQLAlchemy `QueuePool` until the generator is closed.
+3. Because SSE connections are long-lived and persistent, each connected client held an exclusive PostgreSQL connection check-out indefinitely. Once more than 30 clients connected, the pool (size 20 + overflow 10) was completely starved, blocking all other endpoints.
+
+#### 3. Solution & Architectural Strategy
+1. **Removed Session Dependency from Streaming Signatures**: Removed `db: Session = Depends(get_db)` from the long-lived streaming endpoints in `sse.py` and `sync.py`.
+2. **Ephemeral Sessions Per Event/Poll**: Refactored the internal event generator loops to instantiate short-lived worker sessions (`with SessionLocal() as session:`) strictly for the duration of the query snapshot, immediately closing and returning the connection to the pool between polling intervals.
+3. **Database Pool Configuration Hardening**: Tuned `pool_size`, `max_overflow`, and `pool_pre_ping=True` in `database.py` to ensure resilient recycling under high concurrency.
+4. **Client-Side Reconnect Resilience**: In `useLiveSync.ts` and `useSSE.ts`, added exponential backoff, visibility-based pause/resume, and proper unmount aborts to avoid reconnect storms.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/sync.py`: Refactored streaming generator to use ephemeral database sessions.
+- `backend/app/api/v1/endpoints/sse.py`: Removed long-lived DB dependency injection from streaming generator.
+- `backend/app/core/database.py`: Hardened pool size, overflow limits, and pre-ping connectivity tests.
+- `frontend/src/hooks/useLiveSync.ts`: Added tab visibility awareness and resilient backoff.
+- `frontend/src/hooks/useSSE.ts`: Added connection teardown cleanup.
+
+### [BUG-040] AI Weather Insights Failed with 500 on Production Domain Due to Hardcoded Relative Fetch and Build-Time Rewrite Mismatch
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Production Cloud Infrastructure / Weather Insights
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+On the production deployment (`https://navlanes.live`), opening the AI Weather Insights modal on the landing page failed with `500 Internal Server Error`, while the local dev environment and direct Cloud Run endpoint (`https://lanes-api-557679867071.asia-east1.run.app/api/v1/weather/insights`) responded with `200 OK`.
+
+#### 2. Root Cause Analysis (RCA)
+1. In `WeatherInsightsModal.tsx`, the API request hardcoded a relative URL path (`fetch('/api/v1/weather/insights')`) rather than using `process.env.NEXT_PUBLIC_API_URL`.
+2. On Firebase App Hosting, the browser sent the request to the Next.js frontend container (`https://navlanes.live/api/v1/weather/insights`) instead of the Cloud Run API.
+3. In `frontend/apphosting.yaml`, `BACKEND_URL` only had `RUNTIME` availability. During `next build`, Next.js rewrites in `next.config.ts` evaluated `process.env.BACKEND_URL` as undefined, falling back to `http://127.0.0.1:8000`. Because no backend runs inside the App Hosting container, Next.js server proxies failed and returned `500 Internal Server Error`.
+
+#### 3. Solution & Architectural Strategy
+1. Standardized `WeatherInsightsModal.tsx` to read `process.env.NEXT_PUBLIC_API_URL || '/api/v1'` matching `ForecastChart.tsx`, `apiClient.ts`, and auth components. The browser now calls the live Cloud Run backend gateway directly.
+2. Added `BUILD` availability to `BACKEND_URL` in `apphosting.yaml` so any server-side Next.js rewrites correctly resolve `https://lanes-api-557679867071.asia-east1.run.app` at build time.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/landing/WeatherInsightsModal.tsx`: Updated fetch call to use `NEXT_PUBLIC_API_URL`.
+- `frontend/apphosting.yaml`: Added `BUILD` availability to `BACKEND_URL`.
+
+### [BUG-039] TerraDraw Source Collision ("td-polygon already exists") and Perpetual Map Style Reload Loop in Edit Flood Zone
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Map / Admin Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+In `/admin/map`, when an administrator opened an existing road flood zone (e.g. Zone #1) and switched Spatial Geometry to Polygon mode, clicking on the map did not draw vertices and the instruction banner did not appear. The browser console reported `Failed to initialize TerraDraw: Error: Source "td-polygon" already exists`. Simultaneously, the map style entered an infinite background reload loop every 40–120 seconds due to MapTiler 403 Forbidden errors, wiping active layers and disrupting drawing interactions.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Competing TerraDraw Instances**: Both CreateOfficialZonePanel (Pane 1) and EditOfficialZonePanel (Pane 2) were mounted simultaneously in `LiveMapPage.tsx`. In `OfficialZoneDrawer.tsx`, `useTerraDraw` was called with `isEnabled: true` hardcoded instead of `isEnabled: isOpen`. Pane 1 claimed `td-polygon` on `mapInstance`, so when Pane 2 mounted upon clicking "Edit", `draw.start()` threw `Source "td-polygon" already exists`, leaving `drawRef.current` null and the drawing tool uninitialized.
+2. **Missing Mode Sync Dependency**: In `useTerraDraw.ts`, the mode sync effect did not depend on `drawInstance`. When TerraDraw finished asynchronous initialization after the component had already switched to `polygon`, the mode sync effect did not re-fire, leaving TerraDraw in `static` mode with `isDrawingMode` as false.
+3. **Unbounded Retries on 403**: In `BaseMap.tsx`, `schedulePrimaryRetry` continually attempted to reapply the primary MapTiler style without checking whether the failure was a permanent authorization error (401/403).
+
+#### 3. Solution & Architectural Strategy
+1. **Instance Gating**: Gated `useTerraDraw` with `isEnabled: isOpen` so only the currently active, visible drawer connects TerraDraw to the map.
+2. **Robust Cleanup**: Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers (outline, markers, fills) and sources (`td-polygon`, `td-linestring`, `td-point`) in proper detachment order before adapter creation and upon drawer unmount.
+3. **Immediate Mode Activation**: Applied active mode immediately upon `draw.start()` and added `drawInstance` to mode sync dependencies so the crosshair cursor and instruction banner activate directly.
+4. **Permanent Auth Throttling**: Added `isPermanentAuthError` detection in `BaseMap.tsx` to halt automated retries on 401/403 or invalid keys, preventing background style reload loops.
+5. **Visual-Readiness Optimization**: Uses the first MapLibre render after `style.load` as the usability signal rather than waiting for all font glyph ranges. DNS/TLS preconnect and production PWA caching reduce cold connection work and accelerate later visits.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx`: Changed `isEnabled` to `isOpen` in `useTerraDraw` and added drawing restoration from `polygonSessionCacheRef` when `drawInstance` becomes ready.
+- `frontend/src/features/admin/components/zones/hooks/useTerraDraw.ts`: Hardened layer/source cleanup in `removeStaleTerraDrawArtifacts`, set mode directly on start, and included `drawInstance` in mode sync dependencies.
+- `frontend/src/shared/ui/map/BaseMap.tsx`: Throttled retries and halted automated style reload loop on permanent 401/403 errors.
+- `frontend/src/app/layout.tsx`, `frontend/next.config.ts`: Added MapTiler connection hints and runtime caching for styles, glyphs, sprites, and tiles.
+- `frontend/src/features/admin/LiveMapPage.tsx`: Isolated active zone layer so only the reference line represents the zone during editing.
+- `frontend/src/features/map/hooks/useFloodMapPreview.ts`: Added `showMarkers` prop to hide pins in polygon mode while keeping the reference line.
+- `frontend/src/features/map/MapContext.tsx`: Exposed `floodShowMarkers` state and setter.
+- `frontend/src/features/admin/components/AdminFloodMapInteraction.tsx`: Forwarded `floodShowMarkers` to preview hook.
+- `frontend/src/features/map/MapCanvas.tsx`: Forwarded `floodShowMarkers` to preview hook.
+
+### [BUG-038] MapTiler Recovery and TerraDraw Could Retain Stale Map State
+- **Status**: Resolved in code / manual verification pending
+- **Severity**: High
+- **Date Reported / Resolved**: September 17, 2026
+- **Affected Area**: Frontend / Map / Admin Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+After an initial MapTiler-to-OSM fallback, successful MapTiler retries could continue to log `primary_retry_timeout`. Separately, reopening an Admin polygon workspace could fail with `Source "td-polygon" already exists`.
+
+#### 2. Root Cause Analysis (RCA)
+The fallback detector checked generic/nonexistent OSM identifiers, while MapTiler styles may also define a generic `osm` source. TerraDraw's deferred `style.load` initialization could run after React cleanup and leave its adapter layers/sources on the current MapLibre style.
+
+#### 3. Solution & Architectural Strategy
+The fallback style now uses LANES-specific source/layer identifiers and validates the actual active style before accepting a retry. TerraDraw cancels the deferred listener during cleanup and removes only its known stale adapter artifacts before creating its single replacement instance.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/shared/ui/map/BaseMap.tsx`: Added LANES-specific OSM fallback identity and reliable active-style matching.
+- `frontend/src/features/admin/components/zones/hooks/useTerraDraw.ts`: Added deferred-listener cleanup and safe stale TerraDraw artifact removal.
 
 ### [BUG-037] MapTiler Startup Timeout Recreated the Map and Prevented Automatic Detailed-Style Restoration
 - **Status**: Resolved in code / manual verification pending

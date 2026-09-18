@@ -118,6 +118,8 @@ interface MapContextValue {
   restoreFloodReportMapState: (state: FloodReportMapState) => void;
   floodIsBidirectional: boolean;
   setFloodIsBidirectional: (isBi: boolean) => void;
+  floodShowMarkers: boolean;
+  setFloodShowMarkers: (show: boolean) => void;
   clearRoute: () => void;
   resetAll: () => void;
   vehicleProfile: "light" | "heavy" | "motorcycle" | "walk";
@@ -200,6 +202,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [floodPreviewMessage, setFloodPreviewMessage] = useState<string | null>(null);
   const [floodRoadType, setFloodRoadType] = useState<string | null>(null);
   const [floodIsBidirectional, setFloodIsBidirectional] = useState(false);
+  const [floodShowMarkers, setFloodShowMarkers] = useState(true);
   const [draftReports, setDraftReports] = useState<DraftReport[]>([]);
 
   const [vehicleProfile, setVehicleProfile] = useState<"light" | "heavy" | "motorcycle" | "walk">("light");
@@ -494,6 +497,7 @@ export function MapProvider({ children }: { children: ReactNode }) {
     setFloodPreviewStatus("idle");
     setFloodPreviewMessage(null);
     setFloodRoadType(null);
+    setFloodShowMarkers(true);
     setActivePoint("start");
     clearRoute();
   }, [clearRoute]);
@@ -646,6 +650,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodRoadType,
       floodIsBidirectional,
       setFloodIsBidirectional,
+      floodShowMarkers,
+      setFloodShowMarkers,
       draftReports,
       setDraftReports,
       savedPlaces,
@@ -710,6 +716,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       floodRoadType,
       floodIsBidirectional,
       setFloodIsBidirectional,
+      floodShowMarkers,
+      setFloodShowMarkers,
       draftReports,
       setDraftReports,
       savedPlaces,

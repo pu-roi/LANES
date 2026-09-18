@@ -18,7 +18,15 @@ from app.schemas.auth import (
     PasswordResetRequest, PasswordResetVerifyRequest, PasswordResetVerifyResponse, PasswordResetConfirm
 )
 from app.schemas.audit import AuditLogCreate, AuditLogResponse, AuditLogsPaginatedResponse
-from app.schemas.post import CommunityPostBase, CommunityPostCreate, CommunityPostUpdate, CommunityPostReportCreate, CommunityPostModerationResolution, CommunityPostEditHistoryResponse, CommunityPostResponse, CommunityPostPaginatedResponse, CommentBase, CommentCreate, CommentResponse
+from app.schemas.post import (
+    CommunityPostBase, CommunityPostCreate, CommunityPostUpdate,
+    CommunityPostReportCreate, CommunityPostModerationResolution,
+    CommunityPostDeletePayload,
+    CommunityPostEditHistoryResponse, CommunityPostResponse,
+    CommunityPostPaginatedResponse, CommentBase, CommentCreate,
+    CommentResponse, ArchivedCommunityPostResponse,
+    ArchivedCommunityPostsPaginatedResponse
+)
 from app.schemas.saved_place import SavedPlaceBase, SavedPlaceCreate, SavedPlaceUpdate, SavedPlaceResponse
 from app.schemas.role import RoleBase, RoleCreate, RoleUpdate, RoleResponse
 from app.schemas.data import BackupFile, RestoreRequest, CleanupRequest, ExportResponse

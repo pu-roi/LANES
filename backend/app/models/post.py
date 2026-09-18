@@ -30,10 +30,13 @@ class CommunityPost(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     hidden_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True, index=True)
     hidden_by_user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True, index=True)
+    deleted_by_user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
     # Relationships
     user: Mapped["User"] = relationship("User", foreign_keys=[user_id])
     hidden_by: Mapped[Optional["User"]] = relationship("User", foreign_keys=[hidden_by_user_id])
+    deleted_by: Mapped[Optional["User"]] = relationship("User", foreign_keys=[deleted_by_user_id])
     report: Mapped[Optional["FloodReport"]] = relationship("FloodReport", back_populates="community_post")
     comments: Mapped[List["Comment"]] = relationship(
         "Comment",

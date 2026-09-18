@@ -20,10 +20,10 @@ engine = create_engine(
     db_url,
     pool_size=25,
     max_overflow=20,
-    pool_timeout=10,  # Fail fast after 10s rather than hanging for 30s during connection spikes
+    pool_timeout=30,  # Allow 30s for pool recovery during SSE reconnect storms
     pool_recycle=1800,
     pool_pre_ping=True,
-    connect_args={"connect_timeout": 3},  # Prevent hanging when DB is offline
+    connect_args={"connect_timeout": 10},  # Allow adequate headroom for remote cloud PostgreSQL
 )
 
 SessionLocal = sessionmaker(

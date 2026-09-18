@@ -157,6 +157,14 @@ export async function rejectReport(reportId: number): Promise<FloodReport> {
   return apiClient.post<FloodReport>(`/admin/reports/${reportId}/reject`, {});
 }
 
+export async function restoreReport(reportId: number): Promise<FloodReport> {
+  return apiClient.post<FloodReport>(`/admin/reports/${reportId}/restore`, {});
+}
+
+export async function hardDeleteReport(reportId: number): Promise<{ message: string; id: number }> {
+  return apiClient.request<{ message: string; id: number }>(`/admin/reports/${reportId}/permanent`, { method: "DELETE" });
+}
+
 export async function getNearbyZones(reportId: number, maxDistanceMeters: number = 400): Promise<NearbyZone[]> {
   return apiClient.get<NearbyZone[]>(`/admin/zones/nearby?report_id=${reportId}&max_distance_meters=${maxDistanceMeters}`);
 }
@@ -247,9 +255,58 @@ export interface PaginatedZonesResponse {
   total: number;
 }
 
-export async function getZones(page: number, limit: number, activeOnly: boolean = false): Promise<PaginatedZonesResponse> {
+export interface GetZonesOptions {
+  page: number;
+  limit: number;
+  activeOnly?: boolean;
+  archived?: boolean;
+  search?: string;
+}
+
+export async function getZones(
+  pageOrOptions: number | GetZonesOptions,
+  limitParam?: number,
+  activeOnlyParam: boolean = false,
+  archivedParam: boolean = false,
+  searchParam?: string
+): Promise<PaginatedZonesResponse> {
+  let page: number;
+  let limit: number;
+  let activeOnly = false;
+  let archived = false;
+  let search: string | undefined;
+
+  if (typeof pageOrOptions === "object") {
+    page = pageOrOptions.page;
+    limit = pageOrOptions.limit;
+    activeOnly = !!pageOrOptions.activeOnly;
+    archived = !!pageOrOptions.archived;
+    search = pageOrOptions.search;
+  } else {
+    page = pageOrOptions;
+    limit = limitParam || 10;
+    activeOnly = activeOnlyParam;
+    archived = archivedParam;
+    search = searchParam;
+  }
+
   const skip = (page - 1) * limit;
-  return apiClient.get<PaginatedZonesResponse>(`/admin/zones/all?skip=${skip}&limit=${limit}&active_only=${activeOnly}`);
+  const params = new URLSearchParams();
+  params.append("skip", skip.toString());
+  params.append("limit", limit.toString());
+  if (activeOnly) params.append("active_only", "true");
+  if (archived) params.append("archived", "true");
+  if (search) params.append("search", search);
+
+  return apiClient.get<PaginatedZonesResponse>(`/admin/zones/all?${params.toString()}`);
+}
+
+export async function restoreZone(zoneId: number): Promise<AvoidanceZone> {
+  return apiClient.request<AvoidanceZone>(`/admin/zones/${zoneId}/restore`, { method: "POST" });
+}
+
+export async function hardDeleteZone(zoneId: number): Promise<{ message: string; id: number }> {
+  return apiClient.request<{ message: string; id: number }>(`/admin/zones/${zoneId}/permanent`, { method: "DELETE" });
 }
 
 export async function deactivateZone(zoneId: number): Promise<AvoidanceZone> {
@@ -588,4 +645,55 @@ export async function getMergeCandidates(reportId: number): Promise<MergeCandida
  */
 export async function mergeReports(payload: MergeReportsPayload): Promise<MergeReportsResponse> {
   return apiClient.post<MergeReportsResponse>('/admin/reports/merge', payload);
+}
+
+
+export interface ArchivedPost {
+  id: number;
+  user_id: number;
+  author_name: string;
+  author_avatar?: string | null;
+  content: string;
+  media_urls?: string[];
+  location_tag?: string | null;
+  location_lat?: number | null;
+  location_lng?: number | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string | null;
+  deleted_by_user_id?: number | null;
+  deleted_by_name?: string | null;
+  hidden_at?: string | null;
+  hidden_by_user_id?: number | null;
+  hidden_by_name?: string | null;
+  flood_report_id?: number | null;
+}
+
+export interface PaginatedArchivedPostsResponse {
+  posts: ArchivedPost[];
+  total: number;
+}
+
+export async function getArchivedPosts(
+  page: number = 1,
+  limit: number = 10,
+  filterType: 'deleted' | 'hidden' | 'all' = 'deleted',
+  search?: string
+): Promise<PaginatedArchivedPostsResponse> {
+  const skip = (page - 1) * limit;
+  const params = new URLSearchParams();
+  params.append("skip", skip.toString());
+  params.append("limit", limit.toString());
+  params.append("filter_type", filterType);
+  if (search) params.append("search", search);
+
+  return apiClient.get<PaginatedArchivedPostsResponse>(`/admin/posts/archived?${params.toString()}`);
+}
+
+export async function restorePost(postId: number): Promise<ArchivedPost> {
+  return apiClient.post<ArchivedPost>(`/admin/posts/${postId}/restore`, {});
+}
+
+export async function hardDeletePost(postId: number): Promise<{ message: string; id: number }> {
+  return apiClient.delete<{ message: string; id: number }>(`/admin/posts/${postId}/permanent`);
 }

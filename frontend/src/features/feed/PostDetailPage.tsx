@@ -295,24 +295,22 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
         </button>
       </div>
 
-      <div className="bg-white sm:rounded-xl sm:shadow-sm sm:border border-gray-100 border-y sm:border-y-0 overflow-hidden">
-        <PostItem
-          post={post}
-          onVote={handleVote}
-          onViewMap={(lat, lng) => {
-            router.push('/map');
-            setTimeout(() => {
-              window.dispatchEvent(new CustomEvent('fly-to-location', {
-                detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
-              }));
-            }, 150);
-          }}
-          isExpanded={true}
-          initialMediaIndex={parseInt(searchParams.get('media') || '0')}
-        />
-      </div>
+      <PostItem
+        post={post}
+        onVote={handleVote}
+        onViewMap={(lat, lng) => {
+          router.push('/map');
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('fly-to-location', {
+              detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
+            }));
+          }, 150);
+        }}
+        isExpanded={true}
+        initialMediaIndex={parseInt(searchParams.get('media') || '0')}
+      />
 
-      <div className="bg-white sm:rounded-xl sm:shadow-sm sm:border border-gray-100 overflow-hidden p-4 sm:p-6 mt-1 sm:mt-0">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-4 sm:p-6 mt-3 sm:mt-4">
         {/* Header + Sort Toggle */}
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">

@@ -21,7 +21,7 @@ def get_feed_posts(
     author_id: Optional[int] = None
 ):
     # Base query for community posts
-    base_query = db.query(CommunityPost).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id)
+    base_query = db.query(CommunityPost).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id).filter(CommunityPost.deleted_at.is_(None))
     if user_id is None:
         base_query = base_query.filter(CommunityPost.hidden_at.is_(None))
     else:
@@ -238,7 +238,7 @@ def get_feed_post(
     user_id: Optional[int] = None
 ):
     # Base query for community post
-    base_query = db.query(CommunityPost).filter(CommunityPost.id == post_id).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id)
+    base_query = db.query(CommunityPost).filter(CommunityPost.id == post_id, CommunityPost.deleted_at.is_(None)).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id)
     if user_id is None:
         base_query = base_query.filter(CommunityPost.hidden_at.is_(None))
     else:

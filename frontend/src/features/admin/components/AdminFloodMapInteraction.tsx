@@ -33,6 +33,7 @@ export function AdminFloodMapInteraction({
     floodPreviewGeometry,
     floodOppositeGeometry,
     floodIsBidirectional,
+    floodShowMarkers,
   } = useMapContext();
 
   const isPickingRef = useRef(isPickingOnMap);
@@ -60,9 +61,9 @@ export function AdminFloodMapInteraction({
   useEffect(() => {
     if (!map || !isLoaded) return;
 
-    const handleMapClick = (event: MapMouseEvent) => {
+    const handleMapClick = (e: MapMouseEvent) => {
       if (!isPickingRef.current) return;
-      setPointFromMapRef.current([event.lngLat.lng, event.lngLat.lat]);
+      setPointFromMapRef.current([e.lngLat.lng, e.lngLat.lat]);
     };
 
     map.on("click", handleMapClick);
@@ -94,6 +95,7 @@ export function AdminFloodMapInteraction({
     floodOppositeGeometry,
     floodIsBidirectional,
     isLoaded && isPreviewEnabled,
+    floodShowMarkers,
   );
 
   return null;

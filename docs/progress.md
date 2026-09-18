@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,8 +9,14 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
-| 25 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
-| 24 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
+| 31 | Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening | Completed | Google Cloud Build CI/CD pipeline automation (`cloudbuild.yaml`), automated Alembic database migration execution via Cloud Run Job (`lanes-migration --wait`) before web service rollout, and Cloud Logging option hardening (`CLOUD_LOGGING_ONLY`) |
+| 30 | Community Feed & Profile Post Tab Spaced Card UI Redesign | Completed | Replaced dividing lines with standalone card architecture (`space-y-3 sm:space-y-4`), mobile margin padding (`px-3 sm:px-0`), Profile post tab de-nesting, and post count badge |
+| 29 | Archive Center Redesign, Spatial Avoidance Zones Archive, Admin Removal Notifications & Media Gallery | Completed | Complete Archive Center overhaul (Users, Spatial Data [Reports/Zones], Archived Posts [Deleted/Hidden]), community post soft-deletion on feed, admin removal reason modal with in-app author notifications, avoidance zone media gallery, PostGIS/SSE zone restore & purge, and typed 'DELETE' permanent purge protection |
+| 28 | Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization | Completed | Ephemeral DB sessions for SSE streaming (/sync & /sse), NullPool/QueuePool connection starvation resolution, full profile picture viewer modal & Cloudinary upload pipeline, optimistic privacy toggle sync, and Next.js dev indicator cleanup |
+| 27 | Edit Flood Zone Geometry Switching, TerraDraw Collision Hardening & Production Weather Insights | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), BaseMap MapTiler 403 reload throttling, and production AI Weather Insights gateway routing on Firebase App Hosting |
+| 26 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
+| 25 | Fast Map Startup, Automatic Basemap Recovery & Live-Sync Pool Resilience | Implemented / manual verification pending | Same-instance MapTiler-to-OSM fallback at a 1.5-second first-map budget, guarded automatic MapTiler restoration, responsive recovery status, App Hosting key configuration, and short-lived SSE polling sessions that no longer monopolize Postgres connections. |
+| 24 | Unified Flood-Routing Policy & Provider Parity | Implemented / cloud verification pending | Centralized four-profile/four-severity passability policy, PostGIS intersection exposure measurement, normalized 4-card ranking (Fastest, Safest, Balanced, Alternative), and Valhalla exclude_polygons contract alignment |
 | 23| Identity-First Google Auth, Password Recovery & Resilient Admin Routing | Completed | Google Sign-in/Sign-up integration with automatic profile prefill and citizen onboarding completion, self-service Resend OTP password recovery workflow, hardened admin login redirection ([BUG-034]) directly to /admin/dashboard, and NavigationWrapper route guard enforcement |
 | 22| Private Valhalla Cloud Run Recovery | Ready for cloud deployment | Private Valhalla deployment assets, Cloud Storage tile artifact flow, Cloud Run identity-token calls, automatic ORS availability fallback, typed engine metadata, and matched desktop/mobile backup notice |
 | 21| Production Cloud Infrastructure & Firebase App Hosting Deployment | Completed | Production deployment of Next.js frontend to Firebase App Hosting (asia-east1), build-time API variable injection via apphosting.yaml, backend CORS middleware whitelist expansion (*.hosted.app, *.web.app, *.firebaseapp.com), dotenvx environment encryption, and deployment gitignore hygiene |
@@ -39,6 +45,87 @@
 
 ## Capstone Roadmap - Delivered Phases
 
+### Capstone Phase 31: Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening (🟢 COMPLETED)
+- [x] **Automated Database Migration via Cloud Run Job (`cloudbuild.yaml`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Configured Cloud Build with automated deployment and execution steps for `lanes-migration` (`gcloud run jobs deploy lanes-migration ...` and `gcloud run jobs execute lanes-migration --wait ...`).
+  - Executes batch Alembic migrations synchronously (`alembic upgrade head`) using the newly compiled container image prior to deploying new `lanes-api` service revisions, ensuring zero schema drift against production PostgreSQL.
+- [x] **Cloud Build Custom Service Account Logging Option (`cloudbuild.yaml`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `options: logging: CLOUD_LOGGING_ONLY` to `cloudbuild.yaml` to prevent invalid argument errors when executing builds under a user-managed Google Cloud service account.
+- [x] **Encrypted Secrets & Environment Integrity (`backend/.env`, `frontend/.env.local`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Re-encrypted local environment files using `@dotenvx/dotenvx` prior to committing to ensure sensitive credentials and API keys remain protected in version control.
+
+### Capstone Phase 30: Community Feed & Profile Post Tab Spaced Card UI Redesign (🟢 COMPLETED)
+- [x] **Standalone Post Card Styling (`PostItem.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed legacy bottom border divider line (`border-b border-gray-100 last:border-b-0`).
+  - Redesigned the root `<article>` element into an independent card styled with `bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 transition-all hover:border-gray-200/90`.
+  - Added optional `className` prop to `PostItemProps` to allow callers (like single-post views) to customize or augment card styling.
+- [x] **Community Feed Spaced Card Container (`FeedPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced the single giant white card enclosing all posts with a responsive spaced layout (`space-y-3 sm:space-y-4`).
+  - Added responsive horizontal margin padding (`px-3 sm:px-0 pt-3 sm:pt-4`) ensuring post cards float cleanly on mobile viewports while aligning with the header tab bar.
+  - Converted empty feed, loading skeleton, and error states into standalone rounded cards.
+- [x] **Profile Page Post Tab Overhaul (`ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Resolved "box-in-a-box" nesting by conditionally bypassing the enclosing white container panel when `activeTab === "posts"`, letting post cards float directly on the `bg-slate-50` background on both desktop and mobile.
+  - Formatted posts with responsive spacing (`space-y-3 sm:space-y-4`).
+  - Added a post count indicator pill badge next to "My Community Posts" in the tab header.
+  - Rendered loading skeletons and empty states as dedicated cards.
+- [x] **Post Detail Page Refinement (`PostDetailPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed the redundant outer border wrapper around `PostItem` and adjusted comments section spacing to match card proportions.
+
+### Capstone Phase 29: Archive Center Redesign, Spatial Avoidance Zones Archive, Admin Removal Notifications & Media Gallery (🟢 COMPLETED)
+- [x] **Alembic Migration & Post Soft-Delete Schema (`models/post.py`, `alembic/versions/e2f891ab7034_add_post_soft_delete_fields.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Generated and verified Alembic revision `e2f891ab7034` adding nullable `deleted_at` (DateTime with index) and `deleted_by_user_id` (ForeignKey to `users.id` with `ondelete='SET NULL'`) columns to `community_posts`.
+  - Added SQLAlchemy relationships `deleted_by` and `hidden_by` mapped to the `User` model.
+- [x] **Spatial Archive Backend Extensions & Media Aggregation (`crud/report.py`, `endpoints/admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Updated `update_flood_report_status` to automatically set `deleted_at = datetime.utcnow()` whenever a report is rejected in the Live Map moderation panel.
+  - Implemented `restore_flood_report` to clear `deleted_at`, revert status to `pending`, and refund reporter trust score penalties.
+  - Implemented `hard_delete_flood_report` to nullify linked community post references and permanently purge the report with `HARD_DELETE_REPORT` audit logging.
+  - Extended `get_all_avoidance_zones_filtered` with `archived: bool`, eager `selectinload` for `reports`, `user`, and `profile`, and search query filters.
+  - Added `POST /api/v1/admin/zones/{zone_id}/restore` to reactivate zones, clear past expiry, create `RESTORE_ZONE` audit logs, and broadcast SSE `zone_updated`.
+  - Added `DELETE /api/v1/admin/zones/{zone_id}/permanent` to nullify linked report `zone_id` foreign keys, permanently delete the zone, log `HARD_DELETE_ZONE`, and broadcast SSE `zone_deactivated`.
+  - Enhanced `_attach_report_media` to aggregate photo/video attachments across all child reports in `zone.reports` alongside direct zone media, stamping provenance tags (`"Zone"` vs `"Report"`).
+- [x] **Administrative Post Removal & Author Notification Workflow (`schemas/post.py`, `crud/post.py`, `crud/feed.py`, `endpoints/posts.py`, `endpoints/admin.py`, `feedApi.ts`, `PostItem.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `CommunityPostDeletePayload(reason, details)` Pydantic schema in `schemas/post.py`.
+  - Extended `DELETE /api/v1/posts/{post_id}` to accept optional removal payload with `Body(None)` dependency.
+  - Differentiated author self-deletion from administrative removals in `PostItem.tsx`. For staff/admin removals, prompts for a reason category dropdown (Inappropriate Content, Harassment/Hate Speech, Spam/Advertising, Misinformation, Irrelevant to Flood/Commute, Other) and mandatory notes.
+  - Dispatches an in-app `SYSTEM` notification to the post author detailing the removal justification, logs an `ADMIN_DELETE_POST` entry in `AuditLog`, and broadcasts real-time SSE `feed_post_deleted`.
+  - Added parity in `resolve_community_post_reports` (`endpoints/admin.py`) to compile reported reasons and deliver an in-app moderation notice to authors upon post hiding.
+  - Enhanced `NotificationBell.tsx` to highlight moderation notices with an amber `AlertTriangle` icon badge.
+- [x] **Archive Center Frontend Overhaul & Evidence Media Gallery (`ArchivePage.tsx`, `adminApi.ts`, `TypedDeleteModal.tsx`, `ZoneDetailsModal.tsx`, `PostDetailsModal.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Redesigned `/admin/archive` with three main tabs: **Archived Users**, **Spatial Data**, and **Archived Posts**.
+  - Structured **Spatial Data** with dual sub-tabs: *Archived Reports* and *Archived Zones*, removing redundant sub-tab count badges to prevent UI clutter.
+  - Structured **Archived Posts** with dual sub-tabs: *Deleted Posts* and *Hidden Posts*, displaying post content, author avatar, media badges, removal timestamp, and remover identity.
+  - Built comprehensive **Attached Media & Evidence** gallery in `ZoneDetailsModal.tsx` displaying thumbnails, video badges, source provenance tags, and full-resolution tab previews.
+  - Connected `onOpenMedia` in `ArchivePage.tsx` so report media links in `ReportDetailsModal` also preview seamlessly.
+  - Built reusable `TypedDeleteModal` enforcing safety for permanent hard deletions across reports, zones, and posts by requiring the admin to type `"DELETE"` before purging.
+- [x] **Live Map Archive Redirection Toasts (`LiveMapPage.tsx`, `ModerationCenterPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added clear toast alerts in `LiveMapPage.tsx` upon rejecting a report or deactivating single/bulk avoidance zones informing admins that records are accessible in the Archive Center.
+  - Standardized toasts using central `useToast` from `@/shared/ui` and removed extraneous `react-hot-toast` imports.
+
+### Capstone Phase 28: Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization (🟢 COMPLETED)
+- [x] **Backend Database Connection Pool Exhaustion Fix (`sync.py`, `sse.py`, `database.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed persistent session dependency injection (`db: Session = Depends(get_db)`) from long-running SSE streaming endpoints (`/api/v1/sync` and `/api/v1/sse`).
+  - Switched generator loops to ephemeral `with SessionLocal() as session:` blocks scoped strictly to each poll snapshot, immediately closing and returning connections to the pool between heartbeats.
+  - Hardened PostgreSQL pool settings (`pool_size=20`, `max_overflow=10`, `pool_pre_ping=True`, `pool_recycle=300`) to eliminate `QueuePool limit of size 20 overflow 10 reached` timeout errors under persistent client streaming.
+- [x] **Profile Picture Privacy Instant Sync & Optimistic Updates (`useProfile.ts`, `ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added optimistic cache updates (`onMutate`) in `useProfile.ts` for immediate UI response without waiting for background HTTP refetches, accompanied by automatic rollback on error.
+  - Synchronized React Query cache across `['auth-user']`, `['my-posts']`, and `['posts']` on mutation success, resolving toggle lag and switch bounce.
+  - Added explicit toast notifications ("Your profile picture is now hidden from public view." / "Your profile picture is now visible to the public.").
+- [x] **Profile Picture Viewer Modal & Cloudinary Upload Pipeline (`ProfileView.tsx`, `users.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Built high-resolution Profile Picture modal showing user avatar, full name, `@username`, and "Hidden from public" privacy badge with direct action shortcuts. Made clicking the profile avatar directly open this modal.
+  - Connected native file selector to new backend endpoint `POST /api/v1/users/me/avatar` with image MIME validation, 10MB file size guard, and Cloudinary upload integration.
+  - Added `DELETE /api/v1/users/me/avatar` and "Remove Picture" action with `<ConfirmDialog>` to allow reverting to the default initials avatar.
+  - Removed duplicate "Hide Profile Picture" option from the camera dropdown menu and added outside-click dismissal.
+- [x] **Next.js Development Indicator Cleanup (`next.config.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `devIndicators: false` in `next.config.ts` to disable the distracting dev-only `● Rendering...` badge caused by active background SSE streams.
+
+### Capstone Phase 27: Edit Flood Zone Geometry Switching, Option 2 Reference UX & TerraDraw Collision Hardening (🟢 COMPLETED)
+- [x] **Non-Destructive Dual-Session Geometry Caching (`OfficialZoneDrawer.tsx`)**: Introduced `lineSessionCacheRef` and `polygonSessionCacheRef` to preserve line start/end coordinates and drawn polygon features across mode switches without premature state destruction. Added "Reset to Saved" action to revert geometry and attributes back to baseline.
+- [x] **Option 2 Reference Map Styling & Pin Visibility (`useFloodMapPreview.ts`, `MapContext.tsx`, `AdminFloodMapInteraction.tsx`, `MapCanvas.tsx`)**: Extended `useFloodMapPreview` with `showMarkers: boolean` and exposed `floodShowMarkers` in `MapContext`. In polygon mode, start and end pins are hidden to provide a clean canvas while the existing road line remains visible as an orange broken reference line.
+- [x] **Active Zone Layer Isolation (`LiveMapPage.tsx`)**: Excluded `editingZone` from `visibleMapZones` in `useFloodZonesLayer` so that only the preview reference line represents the zone during editing, returning to the solid active style cleanly if cancelled.
+- [x] **TerraDraw Instance Gating & Source Collision Resolution (`useTerraDraw.ts`, `OfficialZoneDrawer.tsx`)**: Gated TerraDraw mounting behind `isEnabled: isOpen` so Create and Edit drawers do not clash over the same MapLibre sources. Hardened `removeStaleTerraDrawArtifacts` to purge all `td-*` layers and sources before adapter creation and on unmount. Directly set active mode on `draw.start()` and monitored `drawInstance` in mode sync effect to immediately activate the crosshair cursor and instruction banner.
+- [x] **Permanent Map Style Reload Halting (`BaseMap.tsx`)**: Detected permanent 401/403 authorization failures on MapTiler styles and capped retries, preventing perpetual background `map.setStyle()` reloads that wiped map layers.
+- [x] **Production Weather Insights Gateway Standardization (`WeatherInsightsModal.tsx`, `apphosting.yaml`)**: Standardized AI weather insights to query `NEXT_PUBLIC_API_URL` directly rather than a hardcoded relative path, and added `BUILD` availability to `BACKEND_URL` in `apphosting.yaml` to prevent Firebase App Hosting 500 rewrite errors.
+
 ### Capstone Phase 26: Profile Picture Privacy, Tab Title Standardization & About Contact Form (🟢 COMPLETED)
 - [x] **Profile Picture Privacy Toggle & Query Masking (`profile.py`, `feed.py`, `user.py`, `posts.py`, `comments.py`, `ProfileView.tsx`, `4389876f4499_add_hide_profile_picture_to_profile.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Added `hide_profile_picture = Column(Boolean, default=False)` to the `profiles` table with Alembic migration `4389876f4499`.
@@ -58,6 +145,10 @@
   - Replaced the preflight-and-recreate cycle with a 1.5-second initial MapTiler render budget and in-place OSM fallback.
   - Restores LANES-owned flood, boundary, and route layers through existing `style.load` hooks instead of creating another WebGL map.
   - Retries MapTiler after connectivity returns and on bounded backoff; recovery allows six seconds because OSM is already a usable baseline.
+  - Uses LANES-specific fallback identifiers rather than generic `osm` names, allowing a loaded MapTiler retry to be recognized correctly.
+  - Treats the first rendered map frame as usable rather than waiting on every remote font glyph; production repeat visits reuse cached MapTiler style, font, sprite, and tile assets after an early connection warm-up.
+- [x] **Admin TerraDraw lifecycle repair (`useTerraDraw.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Cancels stale deferred style callbacks and removes only abandoned `td-*` artifacts before initialization, preventing duplicate MapLibre sources during repeated zone editing.
 - [x] **Responsive status and safe configuration (`BaseMap.tsx`, `MapCanvas.tsx`, `apphosting.yaml`, `.env.local`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Positioned the recovery notice relative to the viewport, below the desktop floating navigation and with a width cap/wrapping for smaller screens.
   - Centralized MapTiler style construction under `NEXT_PUBLIC_MAPTILER_KEY`; App Hosting now references the `maptiler-api-key` secret rather than a literal production value.

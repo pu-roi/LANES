@@ -180,7 +180,7 @@ export default function MapCanvas() {
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
     savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen,
-    floodIsBidirectional, floodOppositeGeometry,
+    floodIsBidirectional, floodOppositeGeometry, floodShowMarkers,
     draftReports
   } = useMapContext();
 
@@ -387,7 +387,8 @@ export default function MapCanvas() {
     floodPreviewGeometry,
     floodOppositeGeometry,
     floodIsBidirectional,
-    isLoaded
+    isLoaded,
+    floodShowMarkers
   );
 
   useEffect(() => {

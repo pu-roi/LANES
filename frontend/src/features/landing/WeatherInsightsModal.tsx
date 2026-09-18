@@ -40,7 +40,8 @@ export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: We
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('/api/v1/weather/insights', {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+      const response = await fetch(`${baseUrl}/weather/insights`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

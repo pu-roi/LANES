@@ -36,12 +36,15 @@ const withPWA = withPWAInit({
         },
       },
       {
-        urlPattern: /^https:\/\/api\.maptiler\.com\/tiles\/.*/i,
+        // Cache style JSON, sprites, glyphs, and vector tiles after the first
+        // production visit. A stale response is immediately usable while a
+        // fresh request updates the cache in the background.
+        urlPattern: /^https:\/\/api\.maptiler\.com\/(?:maps|tiles|fonts)\/.*/i,
         handler: "StaleWhileRevalidate",
         options: {
-          cacheName: "maptiler-tiles",
+          cacheName: "maptiler-map-assets",
           expiration: {
-            maxEntries: 1500,
+            maxEntries: 1800,
             maxAgeSeconds: 30 * 24 * 60 * 60,
           },
         },
@@ -62,6 +65,7 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   outputFileTracingRoot: path.resolve(__dirname),
   // @ts-ignore - allowedDevOrigins is suggested by Next.js CLI but may lack TS definitions
   allowedDevOrigins: getLocalIPs(),
