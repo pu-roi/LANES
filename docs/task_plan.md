@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 18, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,12 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 31: Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening (🟢 COMPLETED)
+> **Focus:** Automating database migrations within Google Cloud Build CI/CD via Cloud Run Jobs (`lanes-migration`), running migrations synchronously (`--wait`) prior to updating the `lanes-api` web service revision to prevent schema drift, hardening Cloud Build options (`logging: CLOUD_LOGGING_ONLY`) for custom service account builds, and re-encrypting environment secrets. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Automated Database Migration via Cloud Run Job (`cloudbuild.yaml`)**: Added deployment and execution steps for `lanes-migration` (`gcloud run jobs deploy lanes-migration ...` and `gcloud run jobs execute lanes-migration --wait ...`) ensuring schema updates run synchronously before `lanes-api` service deployment.
+> - [x] **Cloud Build Custom Service Account Logging Option (`cloudbuild.yaml`)**: Configured `options: logging: CLOUD_LOGGING_ONLY` to eliminate build validation errors when running builds with custom service account identities.
+> - [x] **Encrypted Secrets & Environment Integrity (`backend/.env`, `frontend/.env.local`)**: Re-encrypted all local secrets using `@dotenvx/dotenvx` prior to committing to ensure zero secret leakage in git history.
 
 ### Capstone Phase 30: Community Feed & Profile Post Tab Spaced Card UI Redesign (🟢 COMPLETED)
 > **Focus:** Replacing single-line post dividers with responsive, standalone spaced card layouts (`space-y-3 sm:space-y-4`) across both the Community Feed (`FeedPage.tsx`) and Profile Page Post Tab (`ProfileView.tsx`), converting `PostItem.tsx` into a self-contained card (`rounded-xl sm:rounded-2xl shadow-sm border border-gray-100`), removing redundant nested container boxes on the profile tab, adding mobile screen margin breathing room (`px-3 sm:px-0`), and displaying post count badges. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

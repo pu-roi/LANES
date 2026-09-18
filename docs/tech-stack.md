@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -98,3 +98,7 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Private, versioned source for the ignored Philippines Valhalla tile archive and build metadata; Cloud Build bakes a selected version into the Valhalla image.
 * **CLI Deployment & Automation:** **Firebase CLI (`firebase-tools`)**
   * *Role:* Local project linking, App Hosting backend lifecycle management, build verification, and deployment orchestration.
+* **CI/CD Build Automation & Container Orchestration:** **Google Cloud Build**  
+  * *Role:* Automates container image build (`cloudbuild.yaml`), pushes tagged images to Google Container Registry (`gcr.io`), executes automated database migrations ahead of rollouts via Cloud Run Jobs (`lanes-migration`), and deploys new revisions to Cloud Run (`lanes-api`) with hardened service account logging (`CLOUD_LOGGING_ONLY`).
+* **Database Migration Jobs:** **Google Cloud Run Jobs (`lanes-migration`)**  
+  * *Role:* Serverless batch execution task triggered synchronously during Cloud Build (`gcloud run jobs execute lanes-migration --wait`) to apply latest Alembic schema migrations (`alembic upgrade head`) before new web service revisions are deployed, eliminating schema drift between backend code and production PostgreSQL.

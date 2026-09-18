@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 18, 2026, 10:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,26 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-045] Cloud Build Trigger Failure Under Custom Service Account Due to Missing Logging Configuration
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: CI/CD / Google Cloud Build / Infrastructure
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When executing automated Google Cloud Build workflows (`cloudbuild.yaml`) triggered on git commit pushes, builds utilizing a custom/user-managed Google Cloud service account failed immediately at initiation with the error:
+`generic::invalid_argument: if 'serviceAccount' is specified, the build must specify a Cloud Storage bucket for logging or specify logging option CLOUD_LOGGING_ONLY`.
+
+#### 2. Root Cause Analysis (RCA)
+By default, Google Cloud Build attempts to stream logs to default Google-managed Cloud Storage buckets. When builds are configured with a custom service account for least-privilege security access rather than the default compute service account, Google Cloud requires an explicit build option designating whether build logs should stream to a dedicated storage bucket or directly to Google Cloud Logging.
+
+#### 3. Solution & Architectural Strategy
+Configured `options: logging: CLOUD_LOGGING_ONLY` in the root configuration block of `cloudbuild.yaml`. This routes all build logs directly into Google Cloud Logging without mandating external storage bucket provisioning while ensuring build invocations under custom service accounts succeed seamlessly.
+
+#### 4. Files Modified / What Changed
+- `cloudbuild.yaml`: Added `options: logging: CLOUD_LOGGING_ONLY`.
 
 ### [BUG-044] Archived Avoidance Zone Media (Photos & Videos) Missing in Archive Center Zone Details Modal
 - **Status**: Resolved
