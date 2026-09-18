@@ -5,7 +5,6 @@ import { FloodZonePopup } from "../components/FloodZonePopup";
 import {
   SEVERITY_COLORS,
   SEVERITY_BORDER_COLORS,
-  ZOOM_THRESHOLDS,
   PIN_CIRCLE_PAINT,
   PENDING_REPORT_ROAD_AURA_PAINT,
   PENDING_REPORT_POINT_AURA_PAINT,
@@ -19,7 +18,8 @@ export function usePendingReportsLayer(
   activeTab: string,
   setSelectedReportId: (id: number | null) => void,
   selectedReportId: number | null,
-  isolatedReportId?: number | null
+  isolatedReportId?: number | null,
+  isTouchDevice: boolean = false
 ) {
   const activePopupRef = useRef<{ popup: maplibregl.Popup; root: Root; reportId?: number } | null>(null);
   const openTimeoutRef = useRef<any>(null);
@@ -47,11 +47,11 @@ export function usePendingReportsLayer(
     const scheduleClose = () => {
       clearCloseTimeout();
       closeTimeoutRef.current = setTimeout(() => {
-        if (activePopupRef.current) {
+        if (!isTouchDevice && activePopupRef.current) {
           activePopupRef.current.popup.remove();
           activePopupRef.current = null;
         }
-      }, 150);
+      }, 250);
     };
 
     const setupLayers = () => {
@@ -161,16 +161,12 @@ export function usePendingReportsLayer(
             ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
           ],
           layout: {
-            // Pending and active road coverage intentionally share rounded
-            // endpoints and turns for a consistent severity treatment.
             "line-cap": "round",
             "line-join": "round",
           },
           paint: PENDING_REPORT_ROAD_AURA_PAINT,
         });
       } else {
-        // The shared map survives panel navigation and Fast Refresh. Reapply
-        // the intended rounded layout to existing live layers as well.
         map.setLayoutProperty("all-pending-reports-line-layer", "line-cap", "round");
         map.setLayoutProperty("all-pending-reports-line-layer", "line-join", "round");
       }
@@ -254,9 +250,6 @@ export function usePendingReportsLayer(
         const spaceLeft = pt.x;
         const spaceRight = width - pt.x;
 
-        // Floating nav bar sits at top (Y: 0 to ~100px) and popup is ~360px tall + 14px offset.
-        // To safely place the popup above without colliding with the top navigation,
-        // we need at least 500px of clearance above AND more space above than below.
         const canSafelyFitAbove = spaceAbove >= 500 && spaceAbove >= spaceBelow;
         const canFitBelow = spaceBelow >= 360;
         const isNearLeft = spaceLeft < 190;
@@ -271,7 +264,6 @@ export function usePendingReportsLayer(
           else if (isNearRight) smartAnchor = "top-right";
           else smartAnchor = "top";
         } else {
-          // If vertical space is constrained, place to the side with more horizontal room
           if (spaceRight >= spaceLeft) {
             smartAnchor = "left";
           } else {
@@ -320,6 +312,7 @@ export function usePendingReportsLayer(
 
     const handleMouseEnterOrMove = (e: any) => {
       map.getCanvas().style.cursor = "pointer";
+      if (isTouchDevice) return;
       if (!e.features || e.features.length === 0) return;
       const feature = e.features[0];
       const properties = feature.properties;
@@ -351,8 +344,10 @@ export function usePendingReportsLayer(
 
     const handleMouseLeave = () => {
       map.getCanvas().style.cursor = "";
-      clearOpenTimeout();
-      scheduleClose();
+      if (!isTouchDevice) {
+        clearOpenTimeout();
+        scheduleClose();
+      }
     };
 
     // Interactivity
@@ -366,6 +361,10 @@ export function usePendingReportsLayer(
       // Center, angle, and zoom into the clicked report ONLY on select
       if (isSelecting && e.lngLat) {
         flyToCoordinates(map, [e.lngLat.lng, e.lngLat.lat], { zoom: 16, pitch: map.getPitch(), duration: 1500 });
+      }
+
+      if (isTouchDevice && isSelecting) {
+        handlePopupOpen(feature.properties, { lng: e.lngLat.lng, lat: e.lngLat.lat });
       }
     };
 
@@ -398,5 +397,5 @@ export function usePendingReportsLayer(
         map.off("mouseleave", layer, handleMouseLeave);
       });
     };
-  }, [map, isLoaded, pendingReports, activeTab, selectedReportId, isolatedReportId]);
+  }, [map, isLoaded, pendingReports, activeTab, selectedReportId, isolatedReportId, isTouchDevice]);
 }

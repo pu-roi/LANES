@@ -445,7 +445,7 @@ export default function LiveMapPage() {
     mapInstance,
     isLoaded,
     visibleMapZones,
-    false,
+    isMobile,
     activeTab,
     selectedZoneId,
     setSelectedZoneId,
@@ -459,7 +459,8 @@ export default function LiveMapPage() {
     activeTab, 
     handleReportFocusChange,
     selectedReportId,
-    isolatedReportId
+    isolatedReportId,
+    isMobile
   );
   useMergePreviewLayer({
     map: mapInstance,
@@ -471,8 +472,6 @@ export default function LiveMapPage() {
   });
 
   const pathname = usePathname();
-
-  // Resize map canvas whenever returning to the spatial operations tab
   useEffect(() => {
     if (mapInstance && isLoaded && pathname === "/admin/map") {
       setTimeout(() => {

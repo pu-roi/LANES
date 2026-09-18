@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 19, 2026, 2:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 2:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,37 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-048] ReferenceError `isTouchDevice is not defined` on Admin Map Zone & Pending Report Hover/Click
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 19, 2026
+- **Affected Area**: Frontend / Map Engine / Admin Portal
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When navigating to `/admin/map` and hovering over or clicking a pending flood report or avoidance zone on the MapLibre canvas, the client application threw an uncaught runtime exception in the browser console:
+```text
+[browser] Uncaught ReferenceError: isTouchDevice is not defined
+    at usePendingReportsLayer.useEffect.handlePopupOpen (src\features\map\hooks\usePendingReportsLayer.ts:309:78)
+    at usePendingReportsLayer.useEffect.handleMouseEnterOrMove (src\features\map\hooks\usePendingReportsLayer.ts:347:9)
+```
+This crashed popup rendering for pending reports and prevented administrators from inspecting report details directly on the spatial map.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Missing Parameter in Hook Signature**: In `usePendingReportsLayer.ts`, popup rendering logic was adapted from `useFloodZonesLayer.ts` to render `FloodZonePopup` and handle hover/click timers. However, `isTouchDevice` was referenced in the hook without being declared in the function arguments or initialized in scope.
+2. **Missing Touch Propagation in Admin Map**: `LiveMapPage.tsx` was computing `isMobile` via `useMediaQuery("(max-width: 640px), (pointer: coarse)")`, but passed hardcoded `false` into `useFloodZonesLayer` and did not pass touch state to `usePendingReportsLayer`.
+
+#### 3. Solution & Architectural Strategy
+1. **Parametric Touch Support**: Added `isTouchDevice: boolean = false` to `usePendingReportsLayer` parameter list and its `useEffect` dependency array.
+2. **Touch-Aware Hover & Click Protocol**: Updated `handleMouseEnterOrMove`, `handleMouseLeave`, and `handleLayerClick` inside `usePendingReportsLayer.ts` to disable hover dwell timers on touch devices while cleanly opening the popup on click/tap, mirroring `useFloodZonesLayer.ts`.
+3. **Propagate Responsive State**: Passed `isMobile` from `useMediaQuery` into both `useFloodZonesLayer` and `usePendingReportsLayer` in `LiveMapPage.tsx`.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/map/hooks/usePendingReportsLayer.ts`: Added `isTouchDevice` parameter, touch-aware event listeners, and robust popup cleanup.
+- `frontend/src/features/admin/LiveMapPage.tsx`: Connected `isMobile` to `useFloodZonesLayer` and `usePendingReportsLayer`.
+
+---
 
 ### [BUG-047] Community Feed Voting Desynchronization, Incomplete Flip Delta & Full Feed Re-fetch Lag
 - **Status**: Resolved
