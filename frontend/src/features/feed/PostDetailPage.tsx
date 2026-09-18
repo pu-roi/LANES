@@ -5,7 +5,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   getPost, getComments, postComment, votePost, voteComment,
-  deleteComment, editComment, pinComment, searchUsers, CommentResponse
+  deleteComment, editComment, pinComment, searchUsers, CommentResponse,
+  VoteResponse, FeedPost
 } from './feedApi';
 import { PostItem } from './PostItem';
 import { Loader2, ArrowLeft, Send, ArrowUp, ArrowDown, MessageSquare, X, Pin, Flag } from 'lucide-react';
@@ -114,13 +115,63 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
   // ── mutations ──────────────────────────────────────────────────────
   const voteMutation = useMutation({
     mutationFn: ({ type }: { type: 'upvote' | 'downvote' }) => votePost(postId, type),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['post', postId] });
+    onMutate: async ({ type }) => {
+      await queryClient.cancelQueries({ queryKey: ['post', postId] });
+      const previousPost = queryClient.getQueryData<FeedPost>(['post', postId]);
+
+      if (previousPost) {
+        let newUpvotes = previousPost.upvotes || 0;
+        let newDownvotes = previousPost.downvotes || 0;
+        let newInteraction: 'upvote' | 'downvote' | undefined = undefined;
+
+        if (previousPost.user_interaction === type) {
+          if (type === 'upvote') newUpvotes = Math.max(0, newUpvotes - 1);
+          if (type === 'downvote') newDownvotes = Math.max(0, newDownvotes - 1);
+          newInteraction = undefined;
+        } else if (previousPost.user_interaction) {
+          if (type === 'upvote') {
+            newUpvotes += 1;
+            newDownvotes = Math.max(0, newDownvotes - 1);
+            newInteraction = 'upvote';
+          } else {
+            newDownvotes += 1;
+            newUpvotes = Math.max(0, newUpvotes - 1);
+            newInteraction = 'downvote';
+          }
+        } else {
+          if (type === 'upvote') newUpvotes += 1;
+          if (type === 'downvote') newDownvotes += 1;
+          newInteraction = type;
+        }
+
+        queryClient.setQueryData<FeedPost>(['post', postId], {
+          ...previousPost,
+          upvotes: newUpvotes,
+          downvotes: newDownvotes,
+          user_interaction: newInteraction,
+        });
+      }
+
+      return { previousPost };
+    },
+    onSuccess: (voteRes: VoteResponse) => {
+      queryClient.setQueryData<FeedPost>(['post', postId], (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          upvotes: voteRes.upvotes,
+          downvotes: voteRes.downvotes,
+          user_interaction: (voteRes.user_interaction as 'upvote' | 'downvote') || undefined,
+        };
+      });
       queryClient.invalidateQueries({ queryKey: ['feed'] });
     },
-    onError: (err: any) => {
+    onError: (err: any, _vars, context) => {
+      if (context?.previousPost) {
+        queryClient.setQueryData(['post', postId], context.previousPost);
+      }
       if (err.status === 401) showError('Login Required', 'Please log in first to interact with posts!');
-      else showError('Failed to vote', err.message);
+      else showError('Failed to vote', err.message || 'Could not register your vote.');
     }
   });
 

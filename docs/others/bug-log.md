@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 19, 2026, 1:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 2:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,39 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-047] Community Feed Voting Desynchronization, Incomplete Flip Delta & Full Feed Re-fetch Lag
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 19, 2026
+- **Affected Area**: Frontend / Backend / Community Feed / Interaction Engine
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When commuters upvoted or downvoted posts on the Community Feed, several issues occurred:
+1. **Network Lag / Feed Jitter**: The voting action relied on query invalidation (`invalidateQueries(['feed'])`), triggering a heavy 50-post re-fetch over the network before the UI count updated.
+2. **Count Desynchronization on Flipped Votes**: Clicking Downvote while previously Upvoted (or vice versa) produced incorrect visual delta counts because the client only decremented by 1 rather than applying a net flip delta ($\pm 2$).
+3. **Missing Response Payload**: The `POST /feed/{post_id}/vote` endpoint only returned a generic status message rather than the new authoritative upvote/downvote/net_score state, preventing authoritative client cache synchronization.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Lack of Optimistic Cache Mutators**: Vote mutations did not implement `onMutate` optimistic updates on TanStack Query caches, forcing the UI to wait for network roundtrips.
+2. **Absence of Dedicated Vote Response Schema**: Backend only returned `{ "status": "success", "message": "Vote recorded" }`, leaving clients with no authoritative post vote counters unless a full re-fetch occurred.
+
+#### 3. Solution & Architectural Strategy
+1. **Optimistic Tri-State Vote Calculation**: Implemented `onMutate` hooks across `FeedPage.tsx`, `PostDetailPage.tsx`, and `ProfileView.tsx` that instantly calculate new scores in 0ms (fresh vote $\pm 1$, flip $\pm 2$, cancel vote) and rollback on error.
+2. **Authoritative Vote Response**: Created `VoteResponse` Pydantic model and updated `crud/interaction.py` to return the new exact `upvotes`, `downvotes`, `net_score`, and `user_interaction` in `POST /feed/{post_id}/vote`.
+3. **Reddit-Style Compact Pill**: Consolidated disjointed counters into a unified `▲ Net Score ▼` pill badge with active color coding and hover breakdown.
+
+#### 4. Files Modified / What Changed
+- `backend/app/schemas/feed.py`: Added `VoteResponse` schema.
+- `backend/app/crud/interaction.py`: Added `get_post_vote_summary` function.
+- `backend/app/api/v1/endpoints/feed.py`: Updated vote endpoint to return `VoteResponse`.
+- `frontend/src/features/feed/feedApi.ts`: Updated `votePost` return type.
+- `frontend/src/features/feed/PostItem.tsx`: Implemented unified `▲ Net Score ▼` pill badge.
+- `frontend/src/features/feed/FeedPage.tsx`: Added optimistic vote mutations.
+- `frontend/src/features/feed/PostDetailPage.tsx`: Added optimistic vote mutations for detail view.
+- `frontend/src/features/profile/ProfileView.tsx`: Added optimistic vote mutations for profile feed tabs.
+- `backend/tests/test_feed_voting.py`: Added automated schema and response tests.
 
 ### [BUG-046] Mixed Content Browser Blocking on HTTPS Due to Trailing Slash Redirection and Missing Proxy Headers
 - **Status**: Resolved

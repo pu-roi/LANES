@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { getFeed, votePost, FeedPost } from './feedApi';
+import { getFeed, votePost, FeedPost, FeedResponse, VoteResponse } from './feedApi';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
 import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
@@ -124,25 +124,100 @@ export function FeedPage() {
     }
   }, [tab, userLocation, showError]);
 
+  const feedQueryKey = ['feed', tab, userLocation?.lat, userLocation?.lng];
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['feed', tab, userLocation?.lat, userLocation?.lng],
+    queryKey: feedQueryKey,
     queryFn: () => getFeed(userLocation?.lat, userLocation?.lng, tab, 0, 50),
     enabled: tab === 'recent' || (tab === 'nearby' && userLocation !== null),
   });
 
   const voteMutation = useMutation({
-    mutationFn: ({ postId, type }: { postId: number, type: 'upvote' | 'downvote' }) => votePost(postId, type),
-    onSuccess: () => {
-      // Invalidate feed to refresh votes
-      queryClient.invalidateQueries({ queryKey: ['feed'] });
+    mutationFn: ({ postId, type }: { postId: number; type: 'upvote' | 'downvote' }) => votePost(postId, type),
+    onMutate: async ({ postId, type }) => {
+      // Cancel outgoing refetches so they don't overwrite optimistic update
+      await queryClient.cancelQueries({ queryKey: ['feed'] });
+
+      // Snapshot previous feed state
+      const previousFeed = queryClient.getQueryData<FeedResponse>(feedQueryKey);
+
+      // Optimistically update target post in feed query cache
+      if (previousFeed) {
+        queryClient.setQueryData<FeedResponse>(feedQueryKey, {
+          ...previousFeed,
+          posts: previousFeed.posts.map((p) => {
+            if (p.id !== postId) return p;
+
+            let newUpvotes = p.upvotes || 0;
+            let newDownvotes = p.downvotes || 0;
+            let newInteraction: 'upvote' | 'downvote' | undefined = undefined;
+
+            if (p.user_interaction === type) {
+              // Toggle off (undo vote)
+              if (type === 'upvote') newUpvotes = Math.max(0, newUpvotes - 1);
+              if (type === 'downvote') newDownvotes = Math.max(0, newDownvotes - 1);
+              newInteraction = undefined;
+            } else if (p.user_interaction) {
+              // Switch/flip between upvote and downvote
+              if (type === 'upvote') {
+                newUpvotes += 1;
+                newDownvotes = Math.max(0, newDownvotes - 1);
+                newInteraction = 'upvote';
+              } else {
+                newDownvotes += 1;
+                newUpvotes = Math.max(0, newUpvotes - 1);
+                newInteraction = 'downvote';
+              }
+            } else {
+              // New vote from neutral state
+              if (type === 'upvote') newUpvotes += 1;
+              if (type === 'downvote') newDownvotes += 1;
+              newInteraction = type;
+            }
+
+            return {
+              ...p,
+              upvotes: newUpvotes,
+              downvotes: newDownvotes,
+              user_interaction: newInteraction,
+            };
+          }),
+        });
+      }
+
+      return { previousFeed };
     },
-    onError: (err: any) => {
+    onSuccess: (voteRes: VoteResponse, { postId }) => {
+      // Lock in authoritative backend numbers
+      queryClient.setQueryData<FeedResponse>(feedQueryKey, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          posts: old.posts.map((p) => {
+            if (p.id !== postId) return p;
+            return {
+              ...p,
+              upvotes: voteRes.upvotes,
+              downvotes: voteRes.downvotes,
+              user_interaction: (voteRes.user_interaction as 'upvote' | 'downvote') || undefined,
+            };
+          }),
+        };
+      });
+      // Synchronize single post query if opened
+      queryClient.invalidateQueries({ queryKey: ['post', postId] });
+    },
+    onError: (err: any, _vars, context) => {
+      // Rollback to snapshot on failure
+      if (context?.previousFeed) {
+        queryClient.setQueryData(feedQueryKey, context.previousFeed);
+      }
       if (err.status === 401) {
         showError('Login Required', 'Please log in first to interact with posts!');
       } else {
-        showError('Failed to vote', err.message);
+        showError('Failed to vote', err.message || 'Could not register your vote.');
       }
-    }
+    },
   });
 
   const handleVote = (postId: number, type: 'upvote' | 'downvote') => {

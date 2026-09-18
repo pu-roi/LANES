@@ -10,6 +10,7 @@ export interface FeedPost {
   location_lng?: number;
   created_at: string;
   updated_at: string;
+  flood_report_id?: number | null;
   
   upvotes: number;
   downvotes: number;
@@ -71,12 +72,21 @@ export interface TopReportersResponse {
   reporters: TopReporter[];
 }
 
+export interface VoteResponse {
+  post_id: number;
+  upvotes: number;
+  downvotes: number;
+  net_score: number;
+  user_interaction: 'upvote' | 'downvote' | null;
+}
+
 export const getFeed = async (
   lat?: number, 
   lng?: number, 
-  tab: 'recent' | 'nearby' = 'recent', 
-  skip = 0, 
-  limit = 20
+  tab: string = 'recent',
+  skip: number = 0,
+  limit: number = 20,
+  timeWindowHours?: number
 ): Promise<FeedResponse> => {
   const searchParams = new URLSearchParams();
   searchParams.append('tab', tab);
@@ -87,12 +97,16 @@ export const getFeed = async (
     searchParams.append('lat', lat.toString());
     searchParams.append('lng', lng.toString());
   }
+
+  if (timeWindowHours !== undefined) {
+    searchParams.append('time_window_hours', timeWindowHours.toString());
+  }
   
   return apiClient.get<FeedResponse>(`/feed?${searchParams.toString()}`);
 };
 
-export const votePost = async (postId: number, interactionType: 'upvote' | 'downvote') => {
-  return apiClient.post(`/feed/${postId}/vote`, {
+export const votePost = async (postId: number, interactionType: 'upvote' | 'downvote'): Promise<VoteResponse> => {
+  return apiClient.post<VoteResponse>(`/feed/${postId}/vote`, {
     post_id: postId,
     interaction_type: interactionType,
   });

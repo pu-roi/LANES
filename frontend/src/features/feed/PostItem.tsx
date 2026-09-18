@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { MapPin, ArrowBigUp, ArrowBigDown, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag, Trash2 } from 'lucide-react';
@@ -35,6 +35,33 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   const [currentMediaIndex, setCurrentMediaIndex] = useState(initialMediaIndex);
   const [isFullscreenMediaOpen, setIsFullscreenMediaOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMenuOpen]);
   const [isEditing, setIsEditing] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [editContent, setEditContent] = useState(post.content);
@@ -223,7 +250,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               </span>
             );
           })()}
-          <div className="relative">
+          <div className="relative" ref={menuRef}>
             <button type="button" aria-label="Post actions" onClick={() => setIsMenuOpen((value) => !value)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"><MoreHorizontal className="w-5 h-5" /></button>
             {isMenuOpen && <div className="absolute right-0 top-9 z-20 w-48 rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
               {isAuthor && <button type="button" onClick={() => { setEditContent(post.content); setEditLocation(post.location_tag || ''); setIsEditing(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Pencil className="w-4 h-4" />Edit Post</button>}
@@ -385,39 +412,57 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
       {/* Interaction Bar */}
       <div className="flex items-center justify-between gap-1 sm:gap-2 pt-1.5">
         <div className="flex items-center gap-1 sm:gap-2">
-          {/* Upvote Button */}
-          <button 
-            type="button"
-            onClick={() => onVote(post.id, 'upvote')}
-            className={`group flex items-center gap-1 px-2.5 py-1 rounded-full transition-all duration-150 active:scale-95 text-xs sm:text-sm font-semibold select-none ${
+          {/* Reddit-Style Unified Vote Pill */}
+          <div 
+            className={`flex items-center rounded-full border transition-all duration-150 select-none ${
               post.user_interaction === 'upvote' 
-                ? 'bg-blue-50 text-blue-600 ring-1 ring-blue-200/70' 
-                : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50/70'
+                ? 'bg-blue-50/80 border-blue-200 text-blue-700 shadow-sm' 
+                : post.user_interaction === 'downvote'
+                ? 'bg-rose-50/80 border-rose-200 text-rose-700 shadow-sm'
+                : 'bg-slate-50/80 border-slate-200/80 text-slate-700 hover:border-slate-300'
             }`}
-            aria-label="Upvote"
+            title={`${post.upvotes || 0} upvotes, ${post.downvotes || 0} downvotes`}
           >
-            <ArrowBigUp className={`w-4 h-4 sm:w-[18px] sm:h-[18px] transition-transform group-hover:-translate-y-0.5 ${
-              post.user_interaction === 'upvote' ? 'fill-blue-600 text-blue-600' : ''
-            }`} />
-            <span>{post.upvotes}</span>
-          </button>
-          
-          {/* Downvote Button */}
-          <button 
-            type="button"
-            onClick={() => onVote(post.id, 'downvote')}
-            className={`group flex items-center gap-1 px-2.5 py-1 rounded-full transition-all duration-150 active:scale-95 text-xs sm:text-sm font-semibold select-none ${
-              post.user_interaction === 'downvote' 
-                ? 'bg-rose-50 text-rose-600 ring-1 ring-rose-200/70' 
-                : 'text-slate-600 hover:text-rose-600 hover:bg-rose-50/70'
-            }`}
-            aria-label="Downvote"
-          >
-            <ArrowBigDown className={`w-4 h-4 sm:w-[18px] sm:h-[18px] transition-transform group-hover:translate-y-0.5 ${
-              post.user_interaction === 'downvote' ? 'fill-rose-600 text-rose-600' : ''
-            }`} />
-            <span>{post.downvotes}</span>
-          </button>
+            <button 
+              type="button"
+              onClick={() => onVote(post.id, 'upvote')}
+              className={`p-1 sm:p-1.5 rounded-full transition-all duration-150 active:scale-90 ${
+                post.user_interaction === 'upvote' 
+                  ? 'text-blue-600 hover:bg-blue-100/70' 
+                  : 'text-slate-500 hover:text-blue-600 hover:bg-slate-200/60'
+              }`}
+              aria-label="Upvote"
+            >
+              <ArrowBigUp className={`w-4 h-4 sm:w-[18px] sm:h-[18px] transition-transform ${
+                post.user_interaction === 'upvote' ? 'fill-blue-600 text-blue-600' : ''
+              }`} />
+            </button>
+            
+            <span className={`text-xs sm:text-sm font-bold min-w-[20px] text-center px-0.5 ${
+              post.user_interaction === 'upvote'
+                ? 'text-blue-700'
+                : post.user_interaction === 'downvote'
+                ? 'text-rose-700'
+                : 'text-slate-700'
+            }`}>
+              {(post.upvotes || 0) - (post.downvotes || 0)}
+            </span>
+
+            <button 
+              type="button"
+              onClick={() => onVote(post.id, 'downvote')}
+              className={`p-1 sm:p-1.5 rounded-full transition-all duration-150 active:scale-90 ${
+                post.user_interaction === 'downvote' 
+                  ? 'text-rose-600 hover:bg-rose-100/70' 
+                  : 'text-slate-500 hover:text-rose-600 hover:bg-slate-200/60'
+              }`}
+              aria-label="Downvote"
+            >
+              <ArrowBigDown className={`w-4 h-4 sm:w-[18px] sm:h-[18px] transition-transform ${
+                post.user_interaction === 'downvote' ? 'fill-rose-600 text-rose-600' : ''
+              }`} />
+            </button>
+          </div>
 
           {/* Comment Button */}
           <button 

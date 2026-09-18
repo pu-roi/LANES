@@ -1,5 +1,6 @@
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from sqlalchemy import func, case, text, Float, String, and_
+from sqlalchemy import func, case, text, Float, String, and_, or_
 from app.models.report import FloodReport
 from app.models.interaction import PostInteraction
 from app.models.user import User
@@ -18,7 +19,8 @@ def get_feed_posts(
     skip: int = 0,
     limit: int = 20,
     tab: str = "recent",
-    author_id: Optional[int] = None
+    author_id: Optional[int] = None,
+    time_window_hours: Optional[int] = None
 ):
     # Base query for community posts
     base_query = db.query(CommunityPost).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id).filter(CommunityPost.deleted_at.is_(None))
@@ -28,6 +30,9 @@ def get_feed_posts(
         base_query = base_query.filter((CommunityPost.hidden_at.is_(None)) | (CommunityPost.user_id == user_id))
     if author_id:
         base_query = base_query.filter(CommunityPost.user_id == author_id)
+    if time_window_hours is not None:
+        cutoff = datetime.utcnow() - timedelta(hours=time_window_hours)
+        base_query = base_query.filter(CommunityPost.created_at >= cutoff)
 
     # Subqueries for upvotes and downvotes
     upvotes_query = db.query(
@@ -95,26 +100,61 @@ def get_feed_posts(
     if lat is not None and lng is not None:
         # Create a PostGIS point for the user location
         user_pt = func.ST_SetSRID(func.ST_MakePoint(lng, lat), 4326)
-        
-        # Calculate distance in meters using Geography casting against the joined report's geometry
-        distance_col = func.ST_Distance(
+
+        # Build a point from the post's own location_lat/lng (if available)
+        post_pt = func.ST_SetSRID(
+            func.ST_MakePoint(CommunityPost.location_lng, CommunityPost.location_lat), 4326
+        )
+
+        # Distance from flood report geometry (if the post has a linked report)
+        report_distance = func.ST_Distance(
             func.cast(FloodReport.geometry, text("GEOGRAPHY")),
             func.cast(user_pt, text("GEOGRAPHY"))
+        )
+
+        # Distance from post's own location coordinates
+        post_distance = func.ST_Distance(
+            func.cast(post_pt, text("GEOGRAPHY")),
+            func.cast(user_pt, text("GEOGRAPHY"))
+        )
+
+        # Prefer flood report geometry distance; fall back to post location distance
+        distance_col = case(
+            (CommunityPost.flood_report_id.isnot(None), report_distance),
+            (
+                and_(
+                    CommunityPost.location_lat.isnot(None),
+                    CommunityPost.location_lng.isnot(None)
+                ),
+                post_distance
+            ),
+            else_=func.cast(None, Float)
         ).label("distance_meters")
         select_fields.append(distance_col)
 
-        if radius is not None:
-            # Filter reports within the radius OR if there's no report, allow the post if tab is not strictly nearby?
-            # Actually, if tab=nearby, only show posts with a report inside the radius
-            if tab == "nearby":
-                base_query = base_query.filter(
-                    CommunityPost.flood_report_id.isnot(None),
-                    func.ST_DWithin(
-                        func.cast(FloodReport.geometry, text("GEOGRAPHY")),
-                        func.cast(user_pt, text("GEOGRAPHY")),
-                        radius
-                    )
+        if radius is not None and tab == "nearby":
+            # Include posts that either:
+            #   1. Have a linked flood report with geometry within the radius, OR
+            #   2. Have post-level location_lat/lng within the radius
+            # Posts with no location data at all are excluded.
+            has_report_nearby = and_(
+                CommunityPost.flood_report_id.isnot(None),
+                func.ST_DWithin(
+                    func.cast(FloodReport.geometry, text("GEOGRAPHY")),
+                    func.cast(user_pt, text("GEOGRAPHY")),
+                    radius
                 )
+            )
+            has_post_location_nearby = and_(
+                CommunityPost.location_lat.isnot(None),
+                CommunityPost.location_lng.isnot(None),
+                func.ST_DWithin(
+                    func.cast(post_pt, text("GEOGRAPHY")),
+                    func.cast(user_pt, text("GEOGRAPHY")),
+                    radius
+                )
+            )
+            base_query = base_query.filter(or_(has_report_nearby, has_post_location_nearby))
     else:
         # Placeholder for distance if no location is given
         select_fields.append(func.cast(None, Float).label("distance_meters"))
@@ -134,12 +174,50 @@ def get_feed_posts(
     if user_interaction_sq is not None:
         query = query.outerjoin(user_interaction_sq, CommunityPost.id == user_interaction_sq.c.post_id)
 
-    # Ordering
+    # ── Shared scoring components ──────────────────────────────────────────
+    # Age in hours (floored at 0.01 to avoid division-by-zero for brand-new posts)
+    age_hours = func.greatest(
+        func.extract('epoch', func.now() - CommunityPost.created_at) / 3600.0,
+        0.01
+    )
+
+    net_votes = func.greatest(
+        func.coalesce(upvotes_query.c.upvotes, 0) - func.coalesce(downvotes_query.c.downvotes, 0),
+        0
+    )
+
+    engagement_points = net_votes + (func.coalesce(comments_query.c.comment_count, 0) * 0.5)
+
+    # Content-type boost: flood reports get a head start, location-tagged posts get a smaller one
+    content_boost = case(
+        (CommunityPost.flood_report_id.isnot(None), 3.0),
+        (and_(
+            CommunityPost.location_lat.isnot(None),
+            CommunityPost.location_lng.isnot(None)
+        ), 1.0),
+        else_=0.0
+    )
+
+    # ── Ordering ─────────────────────────────────────────────────────────
     if tab == "nearby" and distance_col is not None:
-        query = query.order_by(distance_col.asc(), CommunityPost.created_at.desc())
+        # Nearby: blend distance relevance (60%) with engagement (40%)
+        effective_radius = func.coalesce(func.cast(radius, Float), 5000.0)
+        distance_score = func.greatest(
+            1.0 - (distance_col / effective_radius),
+            0.0
+        )
+
+        nearby_engagement = engagement_points + content_boost
+        # Log-scale engagement to prevent mega-upvoted posts from dominating distance
+        nearby_engagement_norm = func.log(func.greatest(nearby_engagement, 1) + 1)
+
+        nearby_score = (0.6 * distance_score) + (0.4 * nearby_engagement_norm)
+        query = query.order_by(nearby_score.desc(), CommunityPost.created_at.desc())
     else:
-        # Default to recent
-        query = query.order_by(CommunityPost.created_at.desc())
+        # Recent: HN-inspired hot score with civic boosts and gravity decay
+        gravity = 1.5
+        hot_score = (engagement_points + content_boost) / func.power(age_hours + 2, gravity)
+        query = query.order_by(hot_score.desc())
 
     total = base_query.count()
     results = query.offset(skip).limit(limit).all()
@@ -163,6 +241,7 @@ def get_feed_posts(
         # Convert ORM model to dictionary
         post_data = {
             **post.__dict__,
+            "flood_report_id": post.flood_report_id,
             "upvotes": upvotes,
             "downvotes": downvotes,
             "distance_meters": dist,
