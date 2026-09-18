@@ -18,7 +18,7 @@ export interface NotificationPaginatedResponse {
 }
 
 export const getNotifications = async (skip: number = 0, limit: number = 50): Promise<NotificationPaginatedResponse> => {
-  return await apiClient.get<NotificationPaginatedResponse>(`/notifications/?skip=${skip}&limit=${limit}`);
+  return await apiClient.get<NotificationPaginatedResponse>(`/notifications?skip=${skip}&limit=${limit}`);
 };
 
 export const markAsRead = async (notificationId: number): Promise<Notification> => {
