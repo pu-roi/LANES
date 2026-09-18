@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 18, 2026, 10:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,13 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 30: Community Feed & Profile Post Tab Spaced Card UI Redesign (🟢 COMPLETED)
+> **Focus:** Replacing single-line post dividers with responsive, standalone spaced card layouts (`space-y-3 sm:space-y-4`) across both the Community Feed (`FeedPage.tsx`) and Profile Page Post Tab (`ProfileView.tsx`), converting `PostItem.tsx` into a self-contained card (`rounded-xl sm:rounded-2xl shadow-sm border border-gray-100`), removing redundant nested container boxes on the profile tab, adding mobile screen margin breathing room (`px-3 sm:px-0`), and displaying post count badges. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Standalone Post Card Styling (`PostItem.tsx`)**: Removed `border-b border-gray-100 last:border-b-0` divider line. Converted the outer article into an independent card styled with `bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 transition-all hover:border-gray-200/90`. Added `className` prop support for consumer-level styling customization.
+> - [x] **Community Feed Spaced Layout (`FeedPage.tsx`)**: Replaced the single giant white card enclosing all posts with a responsive spaced layout (`space-y-3 sm:space-y-4`). Wrapped the feed content in `px-3 sm:px-0 pt-3 sm:pt-4` so cards maintain breathing room on mobile viewports and align with the header tab bar. Formatted loading, error, and empty feed states as standalone cards.
+> - [x] **Profile Page Post Tab Overhaul (`ProfileView.tsx`)**: Eliminated "box-in-a-box" nesting by conditionally bypassing the enclosing white panel wrapper when `activeTab === "posts"`, letting post cards float directly on the slate background on both desktop and mobile. Added a post count indicator badge to the section header and formatted empty/loading skeletons as dedicated cards.
+> - [x] **Post Detail Page Cleanup (`PostDetailPage.tsx`)**: Removed redundant outer border and wrapper around `PostItem` and adjusted comments section spacing to match card proportions.
 
 ### Capstone Phase 29: Archive Center Redesign, Spatial Avoidance Zones Archive, Admin Post Removal Notifications & Media Gallery (🟢 COMPLETED)
 > **Focus:** Redesigning the Admin Archive Center (`/admin/archive`) into a three-pillar administrative lifecycle management hub (Archived Users, Spatial Data, Archived Posts), separating spatial data into dual sub-tabs (Archived Reports and Archived Avoidance Zones), adding non-destructive post soft-deletion on the Community Feed (`PostItem.tsx`), administrative post removal reason modal with automated author notifications, and supporting administrative actions (Detail Inspection with full Photo/Video gallery, Instant Restoration, and Typed `"DELETE"` Permanent Purge). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

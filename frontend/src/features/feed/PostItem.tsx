@@ -16,6 +16,7 @@ interface PostItemProps {
   isExpanded?: boolean;
   initialMediaIndex?: number;
   onPostClick?: (postId: number, initialMediaIndex?: number) => void;
+  className?: string;
 }
 
 const REPORT_REASON_OPTIONS = [
@@ -26,7 +27,7 @@ const REPORT_REASON_OPTIONS = [
   { value: 'other', label: 'Other' },
 ];
 
-export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick }: PostItemProps) {
+export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick, className = "" }: PostItemProps) {
   const router = useRouter();
   const { info, success, error: showError } = useToast();
   const { user } = useAuth();
@@ -136,7 +137,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   const displayLocation = post.location_tag || post.report?.human_readable_location || (post.report?.barangay ? `Brgy. ${post.report.barangay}` : null);
 
   return (
-    <article className="py-4 sm:py-6 px-3.5 sm:px-6 border-b border-gray-100 last:border-b-0 bg-white">
+    <article className={`py-4 sm:py-6 px-3.5 sm:px-6 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 transition-all hover:border-gray-200/90 ${className}`}>
       
       {/* Header Area */}
       <div className="flex justify-between items-start gap-2 mb-3">

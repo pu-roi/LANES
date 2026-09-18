@@ -241,96 +241,98 @@ export function FeedPage() {
             </div>
           </div>
 
-          {/* Create Post Input Trigger */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3.5 sm:p-4 mb-3.5 sm:mb-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-              <span className="font-bold text-blue-700 text-sm">Me</span>
-            </div>
-            <button 
-              onClick={() => setIsCreateModalOpen(true)}
-              className="flex-1 min-w-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3 text-gray-500 text-sm font-medium truncate"
-            >
-              <span className="sm:hidden">What's happening?</span>
-              <span className="hidden sm:inline">What's happening in your area?</span>
-            </button>
-            
-            {/* Quick Media Actions */}
-            <div className="flex items-center gap-1 border-l border-gray-100 pl-2 shrink-0">
-              <input 
-                type="file" 
-                ref={photoInputRef}
-                accept="image/*" 
-                multiple 
-                className="hidden" 
-                onChange={handleFileChange} 
-              />
-              <input 
-                type="file" 
-                ref={videoInputRef}
-                accept="video/*" 
-                multiple 
-                className="hidden" 
-                onChange={handleFileChange} 
-              />
+          <div className="px-3 sm:px-0 pt-3 sm:pt-4">
+            {/* Create Post Input Trigger */}
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-3.5 sm:p-4 mb-3 sm:mb-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                <span className="font-bold text-blue-700 text-sm">Me</span>
+              </div>
               <button 
-                onClick={() => photoInputRef.current?.click()}
-                className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors flex items-center justify-center"
-                title="Add Photo"
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex-1 min-w-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3 text-gray-500 text-sm font-medium truncate"
               >
-                <ImageIcon className="w-5 h-5" />
+                <span className="sm:hidden">What's happening?</span>
+                <span className="hidden sm:inline">What's happening in your area?</span>
               </button>
-              <button 
-                onClick={() => videoInputRef.current?.click()}
-                className="p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors flex items-center justify-center"
-                title="Add Video"
-              >
-                <Video className="w-5 h-5" />
-              </button>
+              
+              {/* Quick Media Actions */}
+              <div className="flex items-center gap-1 border-l border-gray-100 pl-2 shrink-0">
+                <input 
+                  type="file" 
+                  ref={photoInputRef}
+                  accept="image/*" 
+                  multiple 
+                  className="hidden" 
+                  onChange={handleFileChange} 
+                />
+                <input 
+                  type="file" 
+                  ref={videoInputRef}
+                  accept="video/*" 
+                  multiple 
+                  className="hidden" 
+                  onChange={handleFileChange} 
+                />
+                <button 
+                  onClick={() => photoInputRef.current?.click()}
+                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors flex items-center justify-center"
+                  title="Add Photo"
+                >
+                  <ImageIcon className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={() => videoInputRef.current?.click()}
+                  className="p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors flex items-center justify-center"
+                  title="Add Video"
+                >
+                  <Video className="w-5 h-5" />
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Feed Content */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 mt-2 overflow-hidden mb-20">
-            {isLoading && (
-              <div className="flex flex-col items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
-                <p className="text-gray-500 text-sm font-medium">Fetching reports...</p>
-              </div>
-            )}
+            {/* Feed Content */}
+            <div className="space-y-3 sm:space-y-4 mb-20">
+              {isLoading && (
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center py-20">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
+                  <p className="text-gray-500 text-sm font-medium">Fetching reports...</p>
+                </div>
+              )}
 
-            {isError && (
-              <div className="p-8 text-center text-red-500">
-                <p>Failed to load feed.</p>
-                <p className="text-xs mt-2 opacity-70">{(error as Error).message}</p>
-              </div>
-            )}
+              {isError && (
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-8 text-center text-red-500">
+                  <p>Failed to load feed.</p>
+                  <p className="text-xs mt-2 opacity-70">{(error as Error).message}</p>
+                </div>
+              )}
 
-            {data && data.posts.length === 0 && (
-              <div className="p-16 text-center text-gray-500">
-                <p className="font-medium text-lg text-gray-700">No reports found.</p>
-                <p className="text-sm mt-1">Check back later or submit a new report.</p>
-              </div>
-            )}
+              {data && data.posts.length === 0 && (
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-16 text-center text-gray-500">
+                  <p className="font-medium text-lg text-gray-700">No reports found.</p>
+                  <p className="text-sm mt-1">Check back later or submit a new report.</p>
+                </div>
+              )}
 
-            {data && data.posts.map((post: FeedPost) => (
-              <PostItem 
-                key={post.id} 
-                post={post} 
-                onVote={handleVote}
-                onViewMap={(lat, lng) => {
-                  // Navigate to /map first (clean URL, no query params), then fire the
-                  // fly-to-location event. Using query params was unreliable because
-                  // MapCanvas is a persistent component — its searchParams useEffect
-                  // dep sometimes didn't change, so the flyTo never triggered.
-                  router.push('/map');
-                  setTimeout(() => {
-                    window.dispatchEvent(new CustomEvent('fly-to-location', {
-                      detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
-                    }));
-                  }, 150);
-                }}
-              />
-            ))}
+              {data && data.posts.map((post: FeedPost) => (
+                <PostItem 
+                  key={post.id} 
+                  post={post} 
+                  onVote={handleVote}
+                  onViewMap={(lat, lng) => {
+                    // Navigate to /map first (clean URL, no query params), then fire the
+                    // fly-to-location event. Using query params was unreliable because
+                    // MapCanvas is a persistent component — its searchParams useEffect
+                    // dep sometimes didn't change, so the flyTo never triggered.
+                    router.push('/map');
+                    setTimeout(() => {
+                      window.dispatchEvent(new CustomEvent('fly-to-location', {
+                        detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
+                      }));
+                    }, 150);
+                  }}
+                />
+              ))}
+            </div>
           </div>
 
       {/* Create Post Modal */}

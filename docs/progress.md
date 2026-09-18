@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 18, 2026, 10:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 30 | Community Feed & Profile Post Tab Spaced Card UI Redesign | Completed | Replaced dividing lines with standalone card architecture (`space-y-3 sm:space-y-4`), mobile margin padding (`px-3 sm:px-0`), Profile post tab de-nesting, and post count badge |
 | 29 | Archive Center Redesign, Spatial Avoidance Zones Archive, Admin Removal Notifications & Media Gallery | Completed | Complete Archive Center overhaul (Users, Spatial Data [Reports/Zones], Archived Posts [Deleted/Hidden]), community post soft-deletion on feed, admin removal reason modal with in-app author notifications, avoidance zone media gallery, PostGIS/SSE zone restore & purge, and typed 'DELETE' permanent purge protection |
 | 28 | Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization | Completed | Ephemeral DB sessions for SSE streaming (/sync & /sse), NullPool/QueuePool connection starvation resolution, full profile picture viewer modal & Cloudinary upload pipeline, optimistic privacy toggle sync, and Next.js dev indicator cleanup |
 | 27 | Edit Flood Zone Geometry Switching, TerraDraw Collision Hardening & Production Weather Insights | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), BaseMap MapTiler 403 reload throttling, and production AI Weather Insights gateway routing on Firebase App Hosting |
@@ -42,6 +43,23 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 30: Community Feed & Profile Post Tab Spaced Card UI Redesign (🟢 COMPLETED)
+- [x] **Standalone Post Card Styling (`PostItem.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed legacy bottom border divider line (`border-b border-gray-100 last:border-b-0`).
+  - Redesigned the root `<article>` element into an independent card styled with `bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 transition-all hover:border-gray-200/90`.
+  - Added optional `className` prop to `PostItemProps` to allow callers (like single-post views) to customize or augment card styling.
+- [x] **Community Feed Spaced Card Container (`FeedPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Replaced the single giant white card enclosing all posts with a responsive spaced layout (`space-y-3 sm:space-y-4`).
+  - Added responsive horizontal margin padding (`px-3 sm:px-0 pt-3 sm:pt-4`) ensuring post cards float cleanly on mobile viewports while aligning with the header tab bar.
+  - Converted empty feed, loading skeleton, and error states into standalone rounded cards.
+- [x] **Profile Page Post Tab Overhaul (`ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Resolved "box-in-a-box" nesting by conditionally bypassing the enclosing white container panel when `activeTab === "posts"`, letting post cards float directly on the `bg-slate-50` background on both desktop and mobile.
+  - Formatted posts with responsive spacing (`space-y-3 sm:space-y-4`).
+  - Added a post count indicator pill badge next to "My Community Posts" in the tab header.
+  - Rendered loading skeletons and empty states as dedicated cards.
+- [x] **Post Detail Page Refinement (`PostDetailPage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Removed the redundant outer border wrapper around `PostItem` and adjusted comments section spacing to match card proportions.
 
 ### Capstone Phase 29: Archive Center Redesign, Spatial Avoidance Zones Archive, Admin Removal Notifications & Media Gallery (🟢 COMPLETED)
 - [x] **Alembic Migration & Post Soft-Delete Schema (`models/post.py`, `alembic/versions/e2f891ab7034_add_post_soft_delete_fields.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
