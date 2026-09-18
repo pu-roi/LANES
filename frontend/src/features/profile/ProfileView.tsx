@@ -407,12 +407,21 @@ export default function ProfileView() {
   );
 
   const renderPosts = () => (
-    <div className="pb-6">
-      <h3 className="text-base font-bold text-slate-900 mb-2 px-3.5 sm:px-6 pt-4 sm:pt-6">My Community Posts</h3>
+    <div className="space-y-3 sm:space-y-4">
+      <div className="flex items-center justify-between px-1 py-1">
+        <h3 className="text-base font-bold text-slate-900">My Community Posts</h3>
+        {(myPosts as any)?.posts?.length ? (
+          <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+            {(myPosts as any).posts.length} {(myPosts as any).posts.length === 1 ? 'post' : 'posts'}
+          </span>
+        ) : null}
+      </div>
       {isLoadingPosts ? (
-        <div className="py-12 flex justify-center"><Loader2 className="w-6 h-6 text-slate-400 animate-spin" /></div>
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-100 py-12 flex justify-center">
+          <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+        </div>
       ) : (myPosts as any)?.posts?.length > 0 ? (
-        <div className="flex flex-col">
+        <div className="space-y-3 sm:space-y-4">
           {(myPosts as any).posts.map((post: FeedPost) => (
             <PostItem 
               key={post.id}
@@ -424,7 +433,7 @@ export default function ProfileView() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-100 text-center py-12 px-4">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-50 mb-3 text-slate-400">
             <MessageSquare className="w-6 h-6" />
           </div>
@@ -730,7 +739,7 @@ export default function ProfileView() {
             />
 
             {/* Tab Content */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 min-h-[400px] overflow-hidden">
+            <div className={activeTab === "posts" ? "min-h-[400px]" : "bg-white rounded-2xl shadow-sm border border-slate-100 min-h-[400px] overflow-hidden"}>
               <TabContentPanel tabKey={activeTab} direction={tabDirection}>
                 {activeTab === "stats" && (
                   <div className="p-6 text-center text-slate-500">
@@ -767,7 +776,7 @@ export default function ProfileView() {
           </div>
 
           {/* Mobile Tab Content */}
-          <div className="bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-sm border-y sm:border border-slate-100 min-h-[50vh] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-hidden w-full">
+          <div className={activeTab === "posts" ? "min-h-[50vh] pb-[calc(1.5rem+env(safe-area-inset-bottom))] px-3 sm:px-0 w-full" : "bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-sm border-y sm:border border-slate-100 min-h-[50vh] pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-hidden w-full"}>
             <TabContentPanel tabKey={activeTab} direction={tabDirection}>
               {activeTab === "stats" && (
                 <div className="p-4 sm:p-6">

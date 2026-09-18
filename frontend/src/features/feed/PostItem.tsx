@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { MapPin, ArrowBigUp, ArrowBigDown, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag } from 'lucide-react';
+import { MapPin, ArrowBigUp, ArrowBigDown, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { FeedPost, getPostEditHistory, updatePost, reportPost } from './feedApi';
+import { FeedPost, getPostEditHistory, updatePost, reportPost, deletePost } from './feedApi';
 import { useToast, MediaViewer, Select, Modal, Button } from '@/shared/ui';
 import { useAuth } from '@/hooks/useAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ interface PostItemProps {
   isExpanded?: boolean;
   initialMediaIndex?: number;
   onPostClick?: (postId: number, initialMediaIndex?: number) => void;
+  className?: string;
 }
 
 const REPORT_REASON_OPTIONS = [
@@ -26,7 +27,7 @@ const REPORT_REASON_OPTIONS = [
   { value: 'other', label: 'Other' },
 ];
 
-export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick }: PostItemProps) {
+export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialMediaIndex = 0, onPostClick, className = "" }: PostItemProps) {
   const router = useRouter();
   const { info, success, error: showError } = useToast();
   const { user } = useAuth();
@@ -49,9 +50,29 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
     onError: (err: unknown) => showError('Failed to update post', err instanceof Error ? err.message : 'Please try again.'),
   });
   const reportMutation = useMutation({ mutationFn: () => reportPost(post.id, reportReason, reportDetails || undefined), onSuccess: () => { success('Report submitted for moderator review.'); setIsReporting(false); }, onError: (err: unknown) => showError('Could not submit report', err instanceof Error ? err.message : 'Please try again.') });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteReason, setDeleteReason] = useState('misinformation');
+  const [deleteDetails, setDeleteDetails] = useState('');
+  const roleName = user?.role?.name || '';
+  const canDelete = isAuthor || ['Super Admin', 'DRRM Officer', 'Moderator'].includes(roleName);
+  const deleteMutation = useMutation({
+    mutationFn: (payload?: { reason?: string; details?: string }) => deletePost(post.id, payload),
+    onSuccess: () => {
+      success(isAuthor ? 'Post deleted successfully.' : 'Post removed and author notified.');
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
+      queryClient.invalidateQueries({ queryKey: ['post', post.id] });
+      setIsDeleting(false);
+      setDeleteReason('misinformation');
+      setDeleteDetails('');
+      if (isExpanded) {
+        router.push('/feed');
+      }
+    },
+    onError: (err: unknown) => showError('Failed to delete post', err instanceof Error ? err.message : 'Please try again.'),
+  });
 
   useEffect(() => {
-    if (!isReporting && !isHistoryOpen) return;
+    if (!isReporting && !isHistoryOpen && !isDeleting) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -116,7 +137,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   const displayLocation = post.location_tag || post.report?.human_readable_location || (post.report?.barangay ? `Brgy. ${post.report.barangay}` : null);
 
   return (
-    <article className="py-4 sm:py-6 px-3.5 sm:px-6 border-b border-gray-100 last:border-b-0 bg-white">
+    <article className={`py-4 sm:py-6 px-3.5 sm:px-6 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 transition-all hover:border-gray-200/90 ${className}`}>
       
       {/* Header Area */}
       <div className="flex justify-between items-start gap-2 mb-3">
@@ -208,6 +229,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               {isAuthor && <button type="button" onClick={() => { setEditContent(post.content); setEditLocation(post.location_tag || ''); setIsEditing(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Pencil className="w-4 h-4" />Edit Post</button>}
               {!isAuthor && <button type="button" onClick={() => { setIsReporting(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Flag className="w-4 h-4" />Report Post</button>}
               <button type="button" onClick={() => { setIsHistoryOpen(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><History className="w-4 h-4" />View Edit History</button>
+              {canDelete && <button type="button" onClick={() => { setIsDeleting(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" />Delete Post</button>}
             </div>}
           </div>
         </div>
@@ -494,6 +516,87 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                 {reportMutation.isPending ? 'Submitting…' : 'Submit report'}
               </Button>
             </div>
+      </Modal>
+      <Modal 
+        isOpen={isDeleting} 
+        onClose={() => setIsDeleting(false)} 
+        title={isAuthor ? "Delete Post" : "Administrative Post Removal"} 
+        blurBackdrop={false}
+      >
+        {isAuthor ? (
+          <div>
+            <p className="mb-4 text-sm text-slate-600">
+              Are you sure you want to delete your post? It will be removed from the public community feed.
+            </p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setIsDeleting(false)} disabled={deleteMutation.isPending}>
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                disabled={deleteMutation.isPending}
+                onClick={() => deleteMutation.mutate(undefined)}
+              >
+                {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold">Author will be notified of removal</p>
+                <p className="text-amber-700 mt-0.5">
+                  This post will be soft-deleted from the Community Feed and moved to the Archive Center. The author ({post.author_name || 'User'}) will receive an in-app notification explaining why their post was removed.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                Removal Reason / Purpose <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={deleteReason}
+                onChange={(e) => setDeleteReason(e.target.value as string)}
+                options={[
+                  { label: "Misinformation / False Hazard Report", value: "misinformation" },
+                  { label: "Spam, Scam, or Advertising", value: "spam_scam" },
+                  { label: "Harassment, Hate Speech, or Hostility", value: "harassment_hate" },
+                  { label: "Explicit, Graphic, or Violent Content", value: "explicit_violent" },
+                  { label: "Duplicate or Outdated / Resolved Hazard", value: "duplicate_outdated" },
+                  { label: "Other Policy Violation", value: "other" },
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                Explanation & Notes {deleteReason === 'other' ? <span className="text-red-500">* (Required)</span> : <span className="text-gray-400 font-normal">(Optional)</span>}
+              </label>
+              <textarea
+                value={deleteDetails}
+                onChange={(e) => setDeleteDetails(e.target.value)}
+                placeholder={deleteReason === 'other' ? "Please explain why this post is being removed (sent directly to author)..." : "Additional notes for the author and audit trail..."}
+                className="w-full min-h-20 rounded-xl border border-slate-200 p-3 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-400"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+              <Button variant="ghost" onClick={() => setIsDeleting(false)} disabled={deleteMutation.isPending}>
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                disabled={deleteMutation.isPending || (deleteReason === 'other' && !deleteDetails.trim())}
+                onClick={() => deleteMutation.mutate({ reason: deleteReason, details: deleteDetails.trim() || undefined })}
+              >
+                {deleteMutation.isPending ? 'Removing…' : 'Remove & Notify Author'}
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
         </>,
         document.body,

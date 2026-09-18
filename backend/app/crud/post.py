@@ -1,3 +1,6 @@
+from datetime import datetime
+from typing import Optional, List, Tuple
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from app.models.post import CommunityPost, CommunityPostEditHistory
 from app.schemas.post import CommunityPostCreate, CommunityPostUpdate
@@ -65,10 +68,72 @@ def get_post_edit_history(db: Session, post_id: int) -> list[CommunityPostEditHi
         .all()
     )
 
-def delete_post(db: Session, post_id: int):
-    db_post = get_post(db, post_id)
+def soft_delete_post(db: Session, post_id: int, deleted_by_user_id: Optional[int] = None) -> Optional[CommunityPost]:
+    db_post = db.query(CommunityPost).filter(CommunityPost.id == post_id).first()
+    if db_post:
+        db_post.deleted_at = datetime.utcnow()
+        db_post.deleted_by_user_id = deleted_by_user_id
+        db.commit()
+        db.refresh(db_post)
+        return db_post
+    return None
+
+def delete_post(db: Session, post_id: int, deleted_by_user_id: Optional[int] = None):
+    return soft_delete_post(db, post_id=post_id, deleted_by_user_id=deleted_by_user_id)
+
+def restore_post(db: Session, post_id: int) -> Optional[CommunityPost]:
+    db_post = db.query(CommunityPost).filter(CommunityPost.id == post_id).first()
+    if db_post:
+        db_post.deleted_at = None
+        db_post.deleted_by_user_id = None
+        db_post.hidden_at = None
+        db_post.hidden_by_user_id = None
+        db.commit()
+        db.refresh(db_post)
+        return db_post
+    return None
+
+def hard_delete_post(db: Session, post_id: int) -> bool:
+    db_post = db.query(CommunityPost).filter(CommunityPost.id == post_id).first()
     if db_post:
         db.delete(db_post)
         db.commit()
         return True
     return False
+
+def get_archived_posts(
+    db: Session,
+    skip: int = 0,
+    limit: int = 10,
+    post_filter: str = "deleted",
+    search: Optional[str] = None
+) -> Tuple[List[CommunityPost], int]:
+    from sqlalchemy.orm import joinedload
+    from app.models.user import User
+
+    query = db.query(CommunityPost)
+    if post_filter == "deleted":
+        query = query.filter(CommunityPost.deleted_at.is_not(None))
+    elif post_filter == "hidden":
+        query = query.filter(CommunityPost.hidden_at.is_not(None), CommunityPost.deleted_at.is_(None))
+    else:
+        query = query.filter(
+            or_(CommunityPost.deleted_at.is_not(None), CommunityPost.hidden_at.is_not(None))
+        )
+    
+    if search:
+        query = query.filter(CommunityPost.content.ilike(f"%{search}%"))
+        
+    total = query.count()
+    posts = (
+        query.options(
+            joinedload(CommunityPost.user).joinedload(User.profile),
+            joinedload(CommunityPost.deleted_by).joinedload(User.profile),
+            joinedload(CommunityPost.hidden_by).joinedload(User.profile),
+        )
+        .order_by(CommunityPost.updated_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    return posts, total

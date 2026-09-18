@@ -1486,7 +1486,7 @@ export function OfficialZoneDrawer({
           )}
         </div>
 
-        {/* SECTION 2: HAZARD ATTRIBUTES — depth/severity + bidirectional + buffer */}
+        {/* SECTION 2: HAZARD ATTRIBUTES — depth/severity + buffer */}
         <div className="space-y-3 pt-1 border-t border-slate-100">
           <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
             {isEditMode ? "Hazard Attributes" : "2. Hazard Attributes"}
@@ -1495,7 +1495,7 @@ export function OfficialZoneDrawer({
             initialValues={editorValues}
             onChange={setEditorValues}
             readOnlyGeometry={true}
-            hideBidirectional={geometryMode !== "line" || !isEditMode || !isEditableLineGeometry}
+            hideBidirectional={true}
             hideSurvey={true}
             hideDescription={true}
           />

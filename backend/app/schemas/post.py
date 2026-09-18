@@ -23,12 +23,19 @@ class CommunityPostUpdate(CommunityPostBase):
     """The complete editable Community Post state supplied by its author."""
     pass
 
+
 class CommunityPostReportCreate(BaseModel):
     reason: str
     details: Optional[str] = None
 
+
 class CommunityPostModerationResolution(BaseModel):
     action: str
+
+
+class CommunityPostDeletePayload(BaseModel):
+    reason: Optional[str] = None
+    details: Optional[str] = None
 
 
 class CommunityPostEditHistoryResponse(BaseModel):
@@ -58,8 +65,10 @@ class CommunityPostEditHistoryResponse(BaseModel):
 class CommentBase(BaseModel):
     content: str
 
+
 class CommentCreate(CommentBase):
     pass
+
 
 class CommentResponse(CommentBase):
     id: int
@@ -108,3 +117,39 @@ class CommunityPostPaginatedResponse(BaseModel):
     posts: List[CommunityPostResponse]
     total: int
     has_more: bool
+
+
+class ArchivedCommunityPostResponse(BaseModel):
+    id: int
+    user_id: int
+    author_name: str
+    author_avatar: Optional[str] = None
+    content: str
+    media_urls: Optional[List[str]] = None
+    location_tag: Optional[str] = None
+    location_lat: Optional[float] = None
+    location_lng: Optional[float] = None
+    created_at: datetime
+    updated_at: datetime
+    deleted_at: Optional[datetime] = None
+    deleted_by_user_id: Optional[int] = None
+    deleted_by_name: Optional[str] = None
+    hidden_at: Optional[datetime] = None
+    hidden_by_user_id: Optional[int] = None
+    hidden_by_name: Optional[str] = None
+    flood_report_id: Optional[int] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer('created_at', 'updated_at', 'deleted_at', 'hidden_at')
+    def serialize_datetime(self, dt: Optional[datetime], _info):
+        if dt is None:
+            return None
+        if dt.tzinfo is None:
+            return dt.isoformat() + "Z"
+        return dt.isoformat()
+
+
+class ArchivedCommunityPostsPaginatedResponse(BaseModel):
+    posts: List[ArchivedCommunityPostResponse]
+    total: int

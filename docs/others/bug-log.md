@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 10:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -36,6 +36,62 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-044] Archived Avoidance Zone Media (Photos & Videos) Missing in Archive Center Zone Details Modal
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Frontend / Backend / Admin Archive Center / Zone Details
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When administrators inspected deactivated or expired flood avoidance zones in the Archive Center (`/admin/archive` -> **Spatial Data** -> **Archived Zones**) by clicking the view/details action icon, the `ZoneDetailsModal` displayed hazard attributes, coordinates, and metadata, but completely lacked any attached media (photos and videos), even when the avoidance zone was created with direct media uploads or originated from citizen flood reports with photographic evidence. In contrast, `ReportDetailsModal` in the adjacent Archived Reports tab rendered evidence thumbnails.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Frontend Omission**: `ZoneDetailsModal.tsx` was built with attribute sections (Hazard & Severity, Timing & Lifecycle, Location & Coordinates, Operational Notes) but omitted a media gallery section and never parsed `media_urls` or `report_media_urls`.
+2. **Backend Aggregation Limitation**: In `backend/app/api/v1/endpoints/admin.py`, the internal helper `_attach_report_media` only inspected `zone.primary_report.media_urls` rather than aggregating across all associated child reports in `zone.reports`.
+3. **Lazy Loading Exclusion**: In `backend/app/crud/report.py`, `get_all_avoidance_zones_filtered` did not include eager loading (`selectinload(models.FloodAvoidanceZone.reports)`) or author profile loading for avoidance zones, risking detached instance queries or empty child collections when assembling media lists.
+
+#### 3. Solution & Architectural Strategy
+1. **Aggregated Media Serialization**: Updated `_attach_report_media` in `admin.py` to aggregate media URLs from all linked reports (`zone.reports`) alongside the zone's direct `media_urls`, preserving source attribution tags (`"Zone"` vs `"Report"`).
+2. **Eager Loading in CRUD**: Enhanced `get_all_avoidance_zones_filtered` in `crud/report.py` to eagerly load `reports`, `user`, and `profile` via `selectinload`.
+3. **Attached Media & Evidence Gallery**: Built an **Attached Media & Evidence** gallery in `ZoneDetailsModal.tsx` supporting:
+   - Dynamic photo and video thumbnail previews with video indicator badges (`Video` Lucide badge).
+   - Source provenance tags indicating whether media was directly attached to the official zone or contributed by an associated field report.
+   - Click-to-preview functionality opening full-resolution media in a secure new browser tab.
+   - Empty state fallback showing a camera icon with "No attached photos or video evidence for this zone."
+4. **ArchivePage Media Prop Forwarding**: Passed `onOpenMedia={(url) => window.open(url, '_blank')}` to `ReportDetailsModal` in `ArchivePage.tsx` for cross-modal interaction parity.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Updated `_attach_report_media` to aggregate media from all linked reports and combine with zone media.
+- `backend/app/crud/report.py`: Added `selectinload` for `reports`, `user`, and `profile` in `get_all_avoidance_zones_filtered`.
+- `frontend/src/features/archive/components/ZoneDetailsModal.tsx`: Added Attached Media & Evidence gallery with photo/video preview, badges, and source tags.
+- `frontend/src/features/archive/ArchivePage.tsx`: Connected `onOpenMedia` handler on `ReportDetailsModal`.
+
+### [BUG-043] Archive Center Archived Posts 500 Error on 'Profile' Object Has No Attribute 'full_name'
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 18, 2026
+- **Affected Area**: Backend / Admin Archive Center / Post Serialization
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When browsing `/admin/archive` and navigating to the "Archived Posts" tab (or toggling between "Deleted Posts" and "Hidden Posts"), the backend terminal reported repeated `500 Internal Server Error` exceptions with the message:
+```text
+AttributeError: 'Profile' object has no attribute 'full_name'
+Unhandled Exception on GET /api/v1/admin/posts/archived: 'Profile' object has no attribute 'full_name'
+```
+This caused the archived posts table to fail to load records whenever any archived or hidden post had an author or remover with an existing user profile.
+
+#### 2. Root Cause Analysis (RCA)
+In `backend/app/api/v1/endpoints/admin.py`, the serialization block in `get_archived_community_posts` and `restore_archived_post` attempted to resolve author and moderator names using `post.user.profile.full_name`, `post.deleted_by.profile.full_name`, and `post.hidden_by.profile.full_name`.
+However, the `Profile` SQLAlchemy model (`backend/app/models/profile.py`) stores names as separate `first_name` and `last_name` columns; it does not contain a `full_name` column or property. Accessing the non-existent attribute raised an unhandled `AttributeError`, aborting the request with HTTP 500.
+
+#### 3. Solution & Architectural Strategy
+Created a centralized helper function `_get_user_display_name(user: Optional[models.User], fallback: Optional[str] = "Unknown") -> Optional[str]` that safely inspects `user.profile` and constructs the full name via `f"{user.profile.first_name or ''} {user.profile.last_name or ''}".strip()`. If the profile or names are empty, it gracefully falls back to `user.username`, and ultimately to the supplied fallback string or `None`. Replaced all direct `.full_name` attribute accesses across the post archive endpoints.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Added `_get_user_display_name` helper and replaced all `profile.full_name` property accesses in `get_archived_community_posts` and `restore_archived_post`.
 
 ### [BUG-042] Profile Page Settings "Hide Profile Picture" Lag & Inoperative Camera Action Options
 - **Status**: Resolved

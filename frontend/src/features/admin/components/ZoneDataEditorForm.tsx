@@ -107,11 +107,6 @@ export function ZoneDataEditorForm({
     onChange({ ...values, ...updates });
   };
 
-  const isShapeGeometry =
-    values.geometry?.type === "Polygon" ||
-    values.geometry?.type === "MultiPolygon";
-  const shouldShowBidirectional = !hideBidirectional && !isShapeGeometry;
-
   return (
     <div className="space-y-4 text-left">
 
@@ -148,33 +143,6 @@ export function ZoneDataEditorForm({
           )}
         </p>
       </div>
-
-      {/* ── Bidirectional Toggle ── */}
-      {shouldShowBidirectional && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-3">
-          <div>
-            <span className="text-xs font-semibold text-slate-800 block">
-              Affects Both Road Directions (2-Way)
-            </span>
-            <span className="text-[11px] text-slate-500 block leading-snug">
-              Applies hazard avoidance to opposing carriageway lane.
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => updateValues({ is_bidirectional: !values.is_bidirectional })}
-            className={cn(
-              "w-11 h-6 rounded-full transition-colors relative shrink-0 p-0.5 border",
-              values.is_bidirectional ? "bg-blue-600 border-blue-700" : "bg-slate-200 border-slate-300"
-            )}
-          >
-            <div className={cn(
-              "w-5 h-5 rounded-full bg-white transition-transform shadow-xs",
-              values.is_bidirectional ? "translate-x-5" : "translate-x-0"
-            )} />
-          </button>
-        </div>
-      )}
 
 
 
