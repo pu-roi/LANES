@@ -73,3 +73,15 @@ class TopReporter(BaseModel):
 class TopReportersResponse(BaseModel):
     """Schema for the paginated top reporters leaderboard response."""
     reporters: list[TopReporter]
+
+
+class VoteResponse(BaseModel):
+    """Schema for the authoritative response after voting on a post."""
+    post_id: int
+    upvotes: int
+    downvotes: int
+    net_score: int
+    user_interaction: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+

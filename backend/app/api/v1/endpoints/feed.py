@@ -5,8 +5,8 @@ from app.core.database import get_db
 from app.api.deps import get_current_user_optional, get_current_user
 from app.models.user import User
 from app.schemas.post import CommunityPostPaginatedResponse
-from app.schemas.feed import TopReportersResponse
-from app.schemas.interaction import PostInteractionCreate, PostInteraction
+from app.schemas.feed import TopReportersResponse, VoteResponse
+from app.schemas.interaction import PostInteractionCreate
 from app.crud import feed as crud_feed
 from app.crud import interaction as crud_interaction
 from app.models.interaction import InteractionType
@@ -21,12 +21,15 @@ def get_feed(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
     tab: str = Query("recent", pattern="^(recent|nearby)$"),
+    time_window_hours: Optional[int] = Query(72, ge=1, description="Filter posts from the last N hours (defaults to 72h / 3 days)"),
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_current_user_optional)
 ):
     """
     Retrieve community feed.
     If tab='nearby', lat and lng are required.
+    By default, 'recent' tab prioritizes posts from the last 72 hours (3 days) to match
+    flood hazard lifecycles, falling back gracefully to latest posts if none exist in that window.
     """
     if tab == "nearby" and (lat is None or lng is None):
         raise HTTPException(
@@ -44,8 +47,24 @@ def get_feed(
         radius=radius,
         skip=skip,
         limit=limit,
-        tab=tab
+        tab=tab,
+        time_window_hours=time_window_hours if tab == "recent" else None
     )
+
+    # If the 72h window yielded 0 posts (e.g., dry season or seed data),
+    # gracefully fall back to latest available posts so the feed is never an empty screen.
+    if tab == "recent" and feed_data["total"] == 0 and time_window_hours is not None:
+        feed_data = crud_feed.get_feed_posts(
+            db=db,
+            user_id=user_id,
+            lat=lat,
+            lng=lng,
+            radius=radius,
+            skip=skip,
+            limit=limit,
+            tab=tab,
+            time_window_hours=None
+        )
     
     return feed_data
 
@@ -60,7 +79,7 @@ def get_leaderboard(
     return TopReportersResponse(reporters=reporters)
 
 
-@router.post("/{post_id}/vote", response_model=Optional[PostInteraction])
+@router.post("/{post_id}/vote", response_model=VoteResponse)
 def vote_post(
     post_id: int,
     interaction_in: PostInteractionCreate,
@@ -71,6 +90,7 @@ def vote_post(
     Upvote or downvote a feed post.
     If the exact same interaction is sent, it will toggle (remove) it.
     If a different interaction is sent (e.g. upvote when previously downvoted), it will swap.
+    Returns the authoritative fresh vote counts, net score, and active user interaction.
     """
     if interaction_in.post_id != post_id:
         raise HTTPException(status_code=400, detail="Post ID mismatch")
@@ -78,17 +98,17 @@ def vote_post(
     if interaction_in.interaction_type not in [InteractionType.UPVOTE, InteractionType.DOWNVOTE]:
         raise HTTPException(status_code=400, detail="Invalid interaction type")
 
-    result = crud_interaction.toggle_interaction(
+    crud_interaction.toggle_interaction(
         db=db, 
         user_id=current_user.id, 
         interaction_in=interaction_in
     )
     
-    # If toggled off, result is None. Return a dummy schema or handle 204 No Content.
-    # We will return the result or raise a 204 equivalent, but for simplicity, 
-    # we can return an empty object or a dummy response if None.
-    # To keep response_model clean, if it was deleted, we can return the input with a null ID.
-    if result is None:
-        return None
+    summary = crud_interaction.get_post_vote_summary(
+        db=db,
+        post_id=post_id,
+        user_id=current_user.id
+    )
     
-    return result
+    return summary
+
