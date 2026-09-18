@@ -604,6 +604,7 @@ async def archive_report(
 
 
 @router.patch("/reports/{report_id}/restore", response_model=schemas.FloodReportResponse)
+@router.post("/reports/{report_id}/restore", response_model=schemas.FloodReportResponse)
 async def restore_report(
     report_id: int,
     request: Request,
@@ -639,6 +640,36 @@ async def restore_report(
     })
 
     return report
+
+
+@router.delete("/reports/{report_id}/permanent")
+async def permanent_delete_report(
+    report_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Permanently delete (hard-delete) a flood report from the archive.
+    Requires admin privileges.
+    """
+    success = crud.hard_delete_flood_report(db, report_id=report_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Report not found")
+    
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="HARD_DELETE_REPORT",
+            target_table="flood_reports",
+            target_id=report_id,
+            metadata_json={"report_id": report_id},
+            ip_address=client_ip
+        )
+    )
+    return {"message": "Report permanently deleted", "id": report_id}
 
 
 @router.get("/reports/all", response_model=schemas.FloodReportsPaginatedResponse)
@@ -707,6 +738,8 @@ def get_all_zones(
     skip: int = 0,
     limit: int = 10,
     active_only: bool = False,
+    archived: bool = False,
+    search: Optional[str] = None,
 ) -> Any:
     """
     Retrieve all flood avoidance zones (detours) with pagination.
@@ -716,7 +749,9 @@ def get_all_zones(
         db=db,
         skip=skip,
         limit=limit,
-        active_only=active_only
+        active_only=active_only,
+        archived=archived,
+        search=search,
     )
     
     return {"zones": [_attach_report_media(zone) for zone in zones], "total": total}
@@ -758,6 +793,81 @@ async def deactivate_zone(
     })
 
     return zone
+
+
+@router.patch("/zones/{zone_id}/restore", response_model=schemas.FloodAvoidanceZoneResponse)
+@router.post("/zones/{zone_id}/restore", response_model=schemas.FloodAvoidanceZoneResponse)
+async def restore_zone(
+    zone_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Restore a deactivated avoidance zone back to active.
+    Requires admin privileges.
+    """
+    zone = crud.restore_flood_avoidance_zone(db=db, zone_id=zone_id)
+    if not zone:
+        raise HTTPException(status_code=404, detail="Avoidance zone not found")
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="RESTORE_ZONE",
+            target_table="flood_avoidance_zones",
+            target_id=zone_id,
+            metadata_json={"zone_id": zone_id},
+            ip_address=client_ip
+        )
+    )
+
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "zone_updated",
+        "data": {"zone_id": zone_id}
+    })
+
+    return _attach_report_media(zone)
+
+
+@router.delete("/zones/{zone_id}/permanent")
+async def permanent_delete_zone(
+    zone_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Permanently delete (hard-delete) an avoidance zone from the archive.
+    Requires admin privileges.
+    """
+    success = crud.hard_delete_flood_avoidance_zone(db, zone_id=zone_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Avoidance zone not found")
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="HARD_DELETE_ZONE",
+            target_table="flood_avoidance_zones",
+            target_id=zone_id,
+            metadata_json={"zone_id": zone_id},
+            ip_address=client_ip
+        )
+    )
+
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "zone_deactivated",
+        "data": {"zone_id": zone_id}
+    })
+
+    return {"message": "Avoidance zone permanently deleted", "id": zone_id}
 
 
 @router.patch("/zones/{zone_id}", response_model=schemas.FloodAvoidanceZoneResponse)
@@ -1423,3 +1533,164 @@ async def add_zone_media(
     db.commit()
     db.refresh(zone)
     return zone
+
+
+def _get_user_display_name(user: Optional[models.User], fallback: Optional[str] = "Unknown") -> Optional[str]:
+    if not user:
+        return fallback
+    if user.profile and (user.profile.first_name or user.profile.last_name):
+        name = f"{user.profile.first_name or ''} {user.profile.last_name or ''}".strip()
+        if name:
+            return name
+    return user.username or fallback
+
+
+@router.get("/posts/archived", response_model=schemas.ArchivedCommunityPostsPaginatedResponse)
+def get_archived_community_posts(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+    skip: int = 0,
+    limit: int = 10,
+    filter_type: str = "deleted",
+    search: Optional[str] = None,
+) -> Any:
+    """
+    Retrieve soft-deleted or hidden community feed posts for the Archive Center.
+    Requires admin privileges.
+    """
+    posts, total = crud.get_archived_posts(
+        db=db,
+        skip=skip,
+        limit=limit,
+        post_filter=filter_type,
+        search=search,
+    )
+    
+    formatted_posts = []
+    for post in posts:
+        author_name = _get_user_display_name(post.user, fallback="Unknown") or "Unknown"
+        author_avatar = post.user.profile.avatar_url if (post.user and post.user.profile) else None
+        deleted_by_name = _get_user_display_name(post.deleted_by, fallback=None) if post.deleted_by else None
+        hidden_by_name = _get_user_display_name(post.hidden_by, fallback=None) if post.hidden_by else None
+
+        formatted_posts.append(
+            schemas.ArchivedCommunityPostResponse(
+                id=post.id,
+                user_id=post.user_id,
+                author_name=author_name,
+                author_avatar=author_avatar,
+                content=post.content,
+                media_urls=post.media_urls,
+                location_tag=post.location_tag,
+                location_lat=post.location_lat,
+                location_lng=post.location_lng,
+                created_at=post.created_at,
+                updated_at=post.updated_at,
+                deleted_at=post.deleted_at,
+                deleted_by_user_id=post.deleted_by_user_id,
+                deleted_by_name=deleted_by_name,
+                hidden_at=post.hidden_at,
+                hidden_by_user_id=post.hidden_by_user_id,
+                hidden_by_name=hidden_by_name,
+                flood_report_id=post.flood_report_id,
+            )
+        )
+
+    return schemas.ArchivedCommunityPostsPaginatedResponse(posts=formatted_posts, total=total)
+
+
+@router.post("/posts/{post_id}/restore", response_model=schemas.ArchivedCommunityPostResponse)
+@router.patch("/posts/{post_id}/restore", response_model=schemas.ArchivedCommunityPostResponse)
+async def restore_archived_post(
+    post_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Restore a soft-deleted or hidden post back to the active community feed.
+    Requires admin privileges.
+    """
+    post = crud.restore_post(db=db, post_id=post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="RESTORE_POST",
+            target_table="community_posts",
+            target_id=post_id,
+            metadata_json={"post_id": post_id},
+            ip_address=client_ip,
+        )
+    )
+
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "feed_post_restored",
+        "data": {"post_id": post_id}
+    })
+
+    author_name = _get_user_display_name(post.user, fallback="Unknown") or "Unknown"
+    author_avatar = post.user.profile.avatar_url if (post.user and post.user.profile) else None
+
+    return schemas.ArchivedCommunityPostResponse(
+        id=post.id,
+        user_id=post.user_id,
+        author_name=author_name,
+        author_avatar=author_avatar,
+        content=post.content,
+        media_urls=post.media_urls,
+        location_tag=post.location_tag,
+        location_lat=post.location_lat,
+        location_lng=post.location_lng,
+        created_at=post.created_at,
+        updated_at=post.updated_at,
+        deleted_at=post.deleted_at,
+        deleted_by_user_id=post.deleted_by_user_id,
+        deleted_by_name=None,
+        hidden_at=post.hidden_at,
+        hidden_by_user_id=post.hidden_by_user_id,
+        hidden_by_name=None,
+        flood_report_id=post.flood_report_id,
+    )
+
+
+@router.delete("/posts/{post_id}/permanent")
+async def permanent_delete_post(
+    post_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Permanently delete (hard-delete) a post from the database.
+    Requires admin privileges.
+    """
+    success = crud.hard_delete_post(db=db, post_id=post_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="HARD_DELETE_POST",
+            target_table="community_posts",
+            target_id=post_id,
+            metadata_json={"post_id": post_id},
+            ip_address=client_ip,
+        )
+    )
+
+    from app.core.sse import manager
+    await manager.broadcast({
+        "event": "feed_post_permanently_deleted",
+        "data": {"post_id": post_id}
+    })
+
+    return {"message": "Post permanently deleted", "id": post_id}

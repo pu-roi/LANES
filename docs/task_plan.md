@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 7:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -10,6 +10,14 @@
 - [ ] (Empty for now)
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 29: Archive Center Redesign, Spatial Avoidance Zones Archive & Community Post Soft-Deletion (🟢 COMPLETED)
+> **Focus:** Redesigning the Admin Archive Center (`/admin/archive`) into a three-pillar administrative lifecycle management hub (Archived Users, Spatial Data, Archived Posts), separating spatial data into dual sub-tabs (Archived Reports and Archived Avoidance Zones), adding non-destructive post soft-deletion on the Community Feed (`PostItem.tsx`), and supporting administrative actions (Detail Inspection, Instant Restoration, and Typed `"DELETE"` Permanent Purge). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Alembic Migration & Post Soft-Delete Schema (`models/post.py`, `alembic/versions/e2f891ab7034_add_post_soft_delete_fields.py`)**: Added nullable `deleted_at` and `deleted_by_user_id` columns with indexes and foreign keys referencing `users.id` to `community_posts`.
+> - [x] **Spatial Archive Backend Extensions (`crud/report.py`, `endpoints/admin.py`)**: Updated `update_flood_report_status` to automatically stamp `deleted_at` when a report is rejected in the Live Map moderation panel. Added `restore_flood_report` (clears deletion, reverts status to `pending`, refunds reporter trust penalty) and `hard_delete_flood_report` (nullifies post links, permanently purges record). Extended `get_all_avoidance_zones_filtered` with `archived: bool` and search query filters. Added `restore_flood_avoidance_zone` (reactivates zone, clears past expiry, broadcasts SSE `zone_updated`) and `hard_delete_flood_avoidance_zone` (nullifies report `zone_id` foreign keys, permanently purges zone, broadcasts SSE `zone_deactivated`).
+> - [x] **Community Post Soft-Deletion Backend Pipeline (`crud/post.py`, `crud/feed.py`, `endpoints/posts.py`, `endpoints/admin.py`)**: Updated `crud.feed` queries to exclude `deleted_at IS NOT NULL`. Updated `DELETE /api/v1/posts/{post_id}` to soft-delete posts when called by authors or administrators. Added `GET /api/v1/admin/posts/archived` supporting pagination, search, and filtering (`deleted` vs `hidden`). Added `POST /api/v1/admin/posts/{post_id}/restore` and `DELETE /api/v1/admin/posts/{post_id}/permanent` with audit logging and SSE events (`feed_post_restored`, `feed_post_permanently_deleted`).
+> - [x] **Community Feed Soft-Delete Action (`feedApi.ts`, `PostItem.tsx`)**: Added `deletePost` client method and integrated "Delete Post" into the post dropdown menu for authors and staff (`Super Admin`, `DRRM Officer`, `Moderator`) with confirmation dialog.
+> - [x] **Archive Center Frontend Overhaul (`ArchivePage.tsx`, `adminApi.ts`, `TypedDeleteModal.tsx`, `ZoneDetailsModal.tsx`, `PostDetailsModal.tsx`)**: Redesigned `/admin/archive` with three main tabs: **Archived Users**, **Spatial Data** (with sub-tabs *Archived Reports* and *Archived Zones*), and **Archived Posts** (with sub-tabs *Deleted Posts* and *Hidden Posts*). Built `ZoneDetailsModal` and `PostDetailsModal` for in-depth metadata review. Protected permanent deletion actions across reports, zones, and posts behind `TypedDeleteModal` requiring explicitly typing `"DELETE"`.
 
 ### Capstone Phase 28: Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization (🟢 COMPLETED)
 > **Focus:** Resolving backend PostgreSQL connection pool starvation on streaming endpoints (`/api/v1/sync` and `/api/v1/sse`), implementing full profile picture previewing and Cloudinary upload pipelines, eliminating privacy toggle lag with optimistic React Query updates, and disabling intrusive Next.js dev indicators. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

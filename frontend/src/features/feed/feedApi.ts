@@ -202,3 +202,8 @@ export const getPostEditHistory = async (postId: number): Promise<PostEditHistor
 export const reportPost = async (postId: number, reason: string, details?: string): Promise<void> => {
   await apiClient.post(`/posts/${postId}/reports`, { reason, details });
 };
+
+export const deletePost = async (postId: number): Promise<void> => {
+  await apiClient.delete(`/posts/${postId}`);
+};
+

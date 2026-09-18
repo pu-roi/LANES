@@ -250,7 +250,11 @@ def delete_post(
     post = crud_post.get_post(db, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
-    if post.user_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
-    crud_post.delete_post(db, post_id)
-    return {"message": "Post deleted"}
+    
+    role_name = current_user.role.name if getattr(current_user, "role", None) else ""
+    is_admin = role_name in {"Super Admin", "DRRM Officer", "Moderator"}
+    if post.user_id != current_user.id and not is_admin:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this post")
+
+    crud_post.delete_post(db, post_id=post_id, deleted_by_user_id=current_user.id)
+    return {"message": "Post deleted", "id": post_id}

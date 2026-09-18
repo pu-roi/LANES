@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 7:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 29 | Archive Center Redesign, Spatial Avoidance Zones Archive & Community Post Soft-Deletion | Completed | Complete Archive Center overhaul with three tabs (Users, Spatial Data [Reports/Zones], Archived Posts [Deleted/Hidden]), community post soft-deletion on feed, PostGIS/SSE zone restore & purge, and typed 'DELETE' permanent purge protection |
 | 28 | Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization | Completed | Ephemeral DB sessions for SSE streaming (/sync & /sse), NullPool/QueuePool connection starvation resolution, full profile picture viewer modal & Cloudinary upload pipeline, optimistic privacy toggle sync, and Next.js dev indicator cleanup |
 | 27 | Edit Flood Zone Geometry Switching, TerraDraw Collision Hardening & Production Weather Insights | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), BaseMap MapTiler 403 reload throttling, and production AI Weather Insights gateway routing on Firebase App Hosting |
 | 26 | Profile Picture Privacy, Tab Title Standardization & About Contact Form | Completed | User preference to hide profile picture across public feeds, post comments, leaderboard, and profile with initial fallback; brand tab titles (LANES \| <Page>); and official contact details with interactive Resend email form on /about. |
@@ -41,6 +42,34 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 29: Archive Center Redesign, Spatial Avoidance Zones Archive & Community Post Soft-Deletion (🟢 COMPLETED)
+- [x] **Alembic Migration & Post Soft-Delete Schema (`models/post.py`, `alembic/versions/e2f891ab7034_add_post_soft_delete_fields.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Generated and verified Alembic revision `e2f891ab7034` adding nullable `deleted_at` (DateTime with index) and `deleted_by_user_id` (ForeignKey to `users.id` with `ondelete='SET NULL'`) columns to `community_posts`.
+  - Added SQLAlchemy relationships `deleted_by` and `hidden_by` mapped to the `User` model.
+- [x] **Spatial Archive Backend Extensions (`crud/report.py`, `endpoints/admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Updated `update_flood_report_status` to automatically set `deleted_at = datetime.utcnow()` whenever a report is rejected in the Live Map moderation panel.
+  - Implemented `restore_flood_report` to clear `deleted_at`, revert status to `pending`, and refund reporter trust score penalties.
+  - Implemented `hard_delete_flood_report` to nullify linked community post references and permanently purge the report with `HARD_DELETE_REPORT` audit logging.
+  - Extended `get_all_avoidance_zones_filtered` with `archived: bool` and `search: Optional[str]` filters, querying deactivated (`is_active = False`) and expired avoidance zones.
+  - Added `POST /api/v1/admin/zones/{zone_id}/restore` to reactivate zones, clear past expiry, create `RESTORE_ZONE` audit logs, and broadcast SSE `zone_updated`.
+  - Added `DELETE /api/v1/admin/zones/{zone_id}/permanent` to nullify linked report `zone_id` foreign keys, permanently delete the zone, log `HARD_DELETE_ZONE`, and broadcast SSE `zone_deactivated`.
+- [x] **Community Post Soft-Deletion Backend Pipeline (`crud/post.py`, `crud/feed.py`, `endpoints/posts.py`, `endpoints/admin.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Updated Feed queries in `crud/feed.py` to filter out soft-deleted posts (`deleted_at.is_not(None)`).
+  - Updated `DELETE /api/v1/posts/{post_id}` in `endpoints/posts.py` to allow authors and staff to soft-delete posts, recording `deleted_by_user_id`.
+  - Added `GET /api/v1/admin/posts/archived` with pagination, search, and sub-filter (`deleted` vs `hidden`) using eager `joinedload` for author and moderator profiles.
+  - Added `POST /api/v1/admin/posts/{post_id}/restore` with `RESTORE_POST` audit logs and SSE `feed_post_restored`.
+  - Added `DELETE /api/v1/admin/posts/{post_id}/permanent` with `HARD_DELETE_POST` audit logs and SSE `feed_post_permanently_deleted`.
+- [x] **Community Feed Soft-Delete Action (`feedApi.ts`, `PostItem.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `deletePost` client method in `feedApi.ts`.
+  - Added "Delete Post" action with `Trash2` icon in `PostItem.tsx` dropdown menu for authors and staff (`Super Admin`, `DRRM Officer`, `Moderator`).
+  - Added delete confirmation modal with loading spinner and automatic React Query cache invalidation across `['feed']` and `['post', id]`.
+- [x] **Archive Center Frontend Overhaul (`ArchivePage.tsx`, `adminApi.ts`, `TypedDeleteModal.tsx`, `ZoneDetailsModal.tsx`, `PostDetailsModal.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Redesigned `/admin/archive` with three main tabs: **Archived Users**, **Spatial Data**, and **Archived Posts**.
+  - Structured **Spatial Data** with dual sub-tabs: *Archived Reports* and *Archived Zones*, each with dedicated data tables, search, pagination, and count badges.
+  - Structured **Archived Posts** with dual sub-tabs: *Deleted Posts* and *Hidden Posts*, displaying post content, author avatar, media badges, removal timestamp, and remover identity.
+  - Built `ZoneDetailsModal` and `PostDetailsModal` for inspecting archived metadata, media attachments, and notes.
+  - Built reusable `TypedDeleteModal` enforcing safety for permanent hard deletions across reports, zones, and posts by requiring the admin to type `"DELETE"` before purging.
 
 ### Capstone Phase 28: Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization (🟢 COMPLETED)
 - [x] **Backend Database Connection Pool Exhaustion Fix (`sync.py`, `sse.py`, `database.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

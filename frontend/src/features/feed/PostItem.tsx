@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { MapPin, ArrowBigUp, ArrowBigDown, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag } from 'lucide-react';
+import { MapPin, ArrowBigUp, ArrowBigDown, AlertTriangle, ShieldCheck, MessageSquare, Share, Map as MapIcon, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut, MoreHorizontal, Pencil, History, Loader2, Flag, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { FeedPost, getPostEditHistory, updatePost, reportPost } from './feedApi';
+import { FeedPost, getPostEditHistory, updatePost, reportPost, deletePost } from './feedApi';
 import { useToast, MediaViewer, Select, Modal, Button } from '@/shared/ui';
 import { useAuth } from '@/hooks/useAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -49,9 +49,25 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
     onError: (err: unknown) => showError('Failed to update post', err instanceof Error ? err.message : 'Please try again.'),
   });
   const reportMutation = useMutation({ mutationFn: () => reportPost(post.id, reportReason, reportDetails || undefined), onSuccess: () => { success('Report submitted for moderator review.'); setIsReporting(false); }, onError: (err: unknown) => showError('Could not submit report', err instanceof Error ? err.message : 'Please try again.') });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const roleName = user?.role?.name || '';
+  const canDelete = isAuthor || ['Super Admin', 'DRRM Officer', 'Moderator'].includes(roleName);
+  const deleteMutation = useMutation({
+    mutationFn: () => deletePost(post.id),
+    onSuccess: () => {
+      success('Post deleted successfully.');
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
+      queryClient.invalidateQueries({ queryKey: ['post', post.id] });
+      setIsDeleting(false);
+      if (isExpanded) {
+        router.push('/feed');
+      }
+    },
+    onError: (err: unknown) => showError('Failed to delete post', err instanceof Error ? err.message : 'Please try again.'),
+  });
 
   useEffect(() => {
-    if (!isReporting && !isHistoryOpen) return;
+    if (!isReporting && !isHistoryOpen && !isDeleting) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -208,6 +224,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               {isAuthor && <button type="button" onClick={() => { setEditContent(post.content); setEditLocation(post.location_tag || ''); setIsEditing(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Pencil className="w-4 h-4" />Edit Post</button>}
               {!isAuthor && <button type="button" onClick={() => { setIsReporting(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Flag className="w-4 h-4" />Report Post</button>}
               <button type="button" onClick={() => { setIsHistoryOpen(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><History className="w-4 h-4" />View Edit History</button>
+              {canDelete && <button type="button" onClick={() => { setIsDeleting(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" />Delete Post</button>}
             </div>}
           </div>
         </div>
@@ -494,6 +511,23 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                 {reportMutation.isPending ? 'Submitting…' : 'Submit report'}
               </Button>
             </div>
+      </Modal>
+      <Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)} title="Delete Post" blurBackdrop={false}>
+        <p className="mb-4 text-sm text-slate-600">
+          Are you sure you want to delete this post? It will be removed from the public feed and moved to the archive.
+        </p>
+        <div className="mt-4 flex justify-end gap-2">
+          <Button variant="ghost" onClick={() => setIsDeleting(false)} disabled={deleteMutation.isPending}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            disabled={deleteMutation.isPending}
+            onClick={() => deleteMutation.mutate()}
+          >
+            {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
+          </Button>
+        </div>
       </Modal>
         </>,
         document.body,

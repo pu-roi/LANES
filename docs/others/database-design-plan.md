@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 17, 2026, 10:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 7:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -155,6 +155,10 @@ erDiagram
         datetime pinned_at "Timestamp of pinning"
         datetime created_at "UTC creation timestamp"
         datetime updated_at "UTC update timestamp"
+        datetime hidden_at "Nullable moderation hide timestamp"
+        int hidden_by_user_id FK "Nullable reference to users"
+        datetime deleted_at "Nullable soft delete timestamp"
+        int deleted_by_user_id FK "Nullable reference to users"
     }
 
     saved_places {

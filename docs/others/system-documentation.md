@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 18, 2026, 3:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 18, 2026, 7:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -301,6 +301,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
 | `/admin/moderation` | `ModerationCenterPage.tsx` | Staff-only Community Post moderation queue. Open reports are grouped into one case per post and can be dismissed, warned, or soft-hidden. The responsive action area remains clear of the mobile bottom navigation. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
+| `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with three primary tabs: **Archived Users** (soft-deleted commuter accounts with status toggles), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). |
 
 ### Backend Calls (Admin)
 
@@ -330,6 +331,13 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `POST /api/v1/admin/zones` | Manually create a new zone polygon |
 | `PUT /api/v1/admin/zones/{id}` | Update zone geometry, status, or expiry |
 | `DELETE /api/v1/admin/zones/{id}` | Permanently delete a zone |
+| `POST /api/v1/admin/reports/{id}/restore` | Restore rejected or soft-deleted flood report back to pending moderation |
+| `DELETE /api/v1/admin/reports/{id}/permanent` | Permanently hard-delete a flood report from the archive |
+| `POST /api/v1/admin/zones/{id}/restore` | Reactivate a deactivated or expired avoidance zone |
+| `DELETE /api/v1/admin/zones/{id}/permanent` | Permanently hard-delete an avoidance zone from the archive |
+| `GET /api/v1/admin/posts/archived` | Paginated soft-deleted and hidden community posts with search and filter |
+| `POST /api/v1/admin/posts/{id}/restore` | Restore soft-deleted or hidden post back to the public community feed |
+| `DELETE /api/v1/admin/posts/{id}/permanent` | Permanently hard-delete a community post from the database |
 
 ---
 
