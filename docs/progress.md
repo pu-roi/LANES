@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 18, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -9,6 +9,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 31 | Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening | Completed | Google Cloud Build CI/CD pipeline automation (`cloudbuild.yaml`), automated Alembic database migration execution via Cloud Run Job (`lanes-migration --wait`) before web service rollout, and Cloud Logging option hardening (`CLOUD_LOGGING_ONLY`) |
 | 30 | Community Feed & Profile Post Tab Spaced Card UI Redesign | Completed | Replaced dividing lines with standalone card architecture (`space-y-3 sm:space-y-4`), mobile margin padding (`px-3 sm:px-0`), Profile post tab de-nesting, and post count badge |
 | 29 | Archive Center Redesign, Spatial Avoidance Zones Archive, Admin Removal Notifications & Media Gallery | Completed | Complete Archive Center overhaul (Users, Spatial Data [Reports/Zones], Archived Posts [Deleted/Hidden]), community post soft-deletion on feed, admin removal reason modal with in-app author notifications, avoidance zone media gallery, PostGIS/SSE zone restore & purge, and typed 'DELETE' permanent purge protection |
 | 28 | Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization | Completed | Ephemeral DB sessions for SSE streaming (/sync & /sse), NullPool/QueuePool connection starvation resolution, full profile picture viewer modal & Cloudinary upload pipeline, optimistic privacy toggle sync, and Next.js dev indicator cleanup |
@@ -43,6 +44,15 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 31: Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening (🟢 COMPLETED)
+- [x] **Automated Database Migration via Cloud Run Job (`cloudbuild.yaml`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Configured Cloud Build with automated deployment and execution steps for `lanes-migration` (`gcloud run jobs deploy lanes-migration ...` and `gcloud run jobs execute lanes-migration --wait ...`).
+  - Executes batch Alembic migrations synchronously (`alembic upgrade head`) using the newly compiled container image prior to deploying new `lanes-api` service revisions, ensuring zero schema drift against production PostgreSQL.
+- [x] **Cloud Build Custom Service Account Logging Option (`cloudbuild.yaml`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `options: logging: CLOUD_LOGGING_ONLY` to `cloudbuild.yaml` to prevent invalid argument errors when executing builds under a user-managed Google Cloud service account.
+- [x] **Encrypted Secrets & Environment Integrity (`backend/.env`, `frontend/.env.local`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Re-encrypted local environment files using `@dotenvx/dotenvx` prior to committing to ensure sensitive credentials and API keys remain protected in version control.
 
 ### Capstone Phase 30: Community Feed & Profile Post Tab Spaced Card UI Redesign (🟢 COMPLETED)
 - [x] **Standalone Post Card Styling (`PostItem.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

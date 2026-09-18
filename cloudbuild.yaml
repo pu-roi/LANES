@@ -19,7 +19,31 @@ steps:
       - 'push'
       - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
 
-  # 3. Automatically deploy the new image to Cloud Run
+  # 3. Update & execute database migration job
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'jobs'
+      - 'deploy'
+      - 'lanes-migration'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
+      - '--region'
+      - 'asia-east1'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'jobs'
+      - 'execute'
+      - 'lanes-migration'
+      - '--wait'
+      - '--region'
+      - 'asia-east1'
+
+  # 4. Automatically deploy the new image to Cloud Run web service
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:

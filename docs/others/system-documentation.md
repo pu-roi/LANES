@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 18, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 19, 2026, 12:15 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -751,4 +751,6 @@ The production environment operates across Google Cloud and Firebase within regi
 | **Online Router** | **Private Cloud Run Valhalla** | `infrastructure/valhalla/` | `lanes-valhalla` serves the Philippines graph with no public invoker. FastAPI supplies an ID token; Valhalla failures retry through ORS and the route response reports `engine_used` and `fallback_used`. |
 | **CORS Policy** | **FastAPI CORSMiddleware** | `backend/app/main.py` | Dynamically authorizes local development (`localhost:3000`), production apex (`navlanes.live`), Vercel previews (`*.vercel.app`), and Firebase domains (`*.hosted.app`, `*.web.app`, `*.firebaseapp.com`). |
 | **Secrets Mgmt** | **@dotenvx/dotenvx** | `backend/.env`<br>`backend/.env.keys` | Cross-platform AES-256 encrypted environment variables preventing credential leakage in git version control. |
+| **CI/CD Pipeline** | **Google Cloud Build** | `cloudbuild.yaml` | Automates container image build (`gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA`), executes database migrations via Cloud Run Job (`lanes-migration`), and deploys new revisions to `lanes-api` with `CLOUD_LOGGING_ONLY` audit logging. |
+| **Database Migrations** | **Google Cloud Run Jobs** | `cloudbuild.yaml`<br>`backend/alembic/` | Serverless batch job (`lanes-migration`) executed synchronously (`--wait`) prior to web service rollout to apply Alembic migrations against production PostgreSQL. |
 
