@@ -1,9 +1,49 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 21, 2026, 1:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 2:40 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-051] Admin-Created Accounts Encounter 404 Not Found on Profile Edit & Missing Admin Profile Management
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Backend / User Profile / Admin Panel / Identity Lifecycle
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When an account was created via the Admin Panel's Account Registry modal (`POST /api/v1/admin/users`) (such as user `roicambe`), visiting their profile and attempting to update profile details failed with `404 Not Found` (`Profile not found`). Furthermore, Super Admins (restricted from public routes by `NavigationWrapper.tsx`) had no interface within the Admin Panel to edit their personal information, manage their avatar, or update their password.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Uninstantiated Profile Model**: The admin user creation handler in `backend/app/api/v1/endpoints/admin.py` called `crud.create_user()`, which only inserted a row into the `users` table without initializing a row in the `profiles` table.
+2. **Missing Self-Healing Fallback**: `PATCH /api/v1/users/me/profile` assumed `current_user.profile` always existed, raising `HTTPException(404, detail="Profile not found")`. Avatar upload and delete endpoints had the same limitation.
+3. **Database Not-Null Constraints**: The PostgreSQL `profiles` table schema specifies `NOT NULL` for `first_name` and `last_name`. Any naive fallback creation without default string values caused a `psycopg.errors.NotNullViolation`.
+4. **Admin Route Separation**: Because Super Admins are restricted from public routes like `/profile`, administrative staff needed an integrated profile management hub directly within the Admin Panel (`/admin/*`).
+
+#### 3. Solution & Architectural Strategy
+1. **Auto-Provisioning on Creation**: Updated `create_admin_user` in `admin.py` to automatically instantiate and commit `models.Profile(user_id=new_user.id, first_name=new_user.username, last_name="", display_full_name=True, is_public=True)`.
+2. **Self-Healing Token & Profile Handlers**:
+   - Updated `POST /api/v1/auth/test-token` to detect missing profiles and auto-provision them on session validation, instantaneously healing existing accounts like `roicambe`.
+   - Added self-healing fallback to `PATCH /api/v1/users/me/profile`, `POST /api/v1/users/me/avatar`, and `DELETE /api/v1/users/me/avatar` with proper `first_name=current_user.username` defaults.
+3. **Native Admin Profile Management**:
+   - Created `AdminProfilePage.tsx` at `/admin/profile` mirroring the public profile design (custom cover color banner with color picker, avatar upload/view/remove, and personal/address info via `EditProfileForm`).
+   - Added password change capability (`PUT /api/v1/users/me/password`) with current password verification and live `<PasswordStrength>` validation.
+   - Updated `AdminSidebar.tsx` with a staff user profile link card in the footer showing avatar, name, and staff role.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Auto-provisioned `Profile` on admin user creation.
+- `backend/app/api/v1/endpoints/auth.py`: Auto-heal missing profile in `test-token` endpoint.
+- `backend/app/api/v1/endpoints/users.py`: Self-healing fallback in profile/avatar endpoints; added `PUT /api/v1/users/me/password`.
+- `backend/app/schemas/user.py` & `backend/app/schemas/__init__.py`: Added `PasswordChangeRequest` schema.
+- `backend/tests/test_admin_profile.py`: Pytest suite verifying self-healing and password change.
+- `frontend/src/features/admin/AdminProfilePage.tsx`: Dedicated admin profile page component.
+- `frontend/src/app/admin/profile/page.tsx`: Page route for `/admin/profile`.
+- `frontend/src/features/navigation/AdminSidebar.tsx`: Profile link card in sidebar footer.
+- `frontend/src/features/admin/AdminLayout.tsx`: Zero padding for `/admin/profile` layout.
+- `frontend/src/hooks/useProfile.ts`: Added `changePassword` mutation.
 
 ---
 

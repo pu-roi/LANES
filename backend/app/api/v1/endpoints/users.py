@@ -78,10 +78,14 @@ def update_user_profile(
     Update the current user's profile and user details (including username, personal info, address, etc.)
     """
     from app.models.address import Address
+    from app.models.profile import Profile
     
     profile = current_user.profile
     if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
+        profile = Profile(user_id=current_user.id, first_name=current_user.username, last_name="", display_full_name=True, is_public=True)
+        db.add(profile)
+        db.flush()
+        current_user.profile = profile
         
     update_data = profile_in.model_dump(exclude_unset=True)
     address_data = update_data.pop('address', None)
@@ -141,13 +145,17 @@ def upload_user_avatar(
     Upload and update the current user's profile avatar image.
     """
     from app.services.cloudinary_service import upload_image
+    from app.models.profile import Profile
 
     if not file.content_type or not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Uploaded file must be an image (JPEG, PNG, WebP, etc.).")
 
     profile = current_user.profile
     if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
+        profile = Profile(user_id=current_user.id, first_name=current_user.username, last_name="", display_full_name=True, is_public=True)
+        db.add(profile)
+        db.flush()
+        current_user.profile = profile
 
     url = upload_image(file)
     if not url:
@@ -168,9 +176,14 @@ def delete_user_avatar(
     """
     Remove the current user's profile avatar image.
     """
+    from app.models.profile import Profile
+
     profile = current_user.profile
     if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
+        profile = Profile(user_id=current_user.id, first_name=current_user.username, last_name="", display_full_name=True, is_public=True)
+        db.add(profile)
+        db.flush()
+        current_user.profile = profile
 
     profile.avatar_url = None
     db.add(profile)
@@ -267,3 +280,69 @@ def update_my_saved_place(
     if not updated_place:
         raise HTTPException(status_code=404, detail="Saved place not found or not authorized")
     return updated_place
+
+
+@router.post("/me/password/request-otp")
+async def request_password_change_otp(
+    payload: schemas.PasswordChangeOtpRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Validates current password and dispatches a 6-digit OTP to the user's email for password change.
+    """
+    from app.core import security
+    from app.services import auth_service
+
+    if not security.verify_password(payload.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect current password")
+
+    success, err_msg, cooldown = await auth_service.generate_and_send_password_change_otp(
+        db, email=current_user.email
+    )
+    if not success:
+        raise HTTPException(status_code=400, detail=err_msg or "Failed to send verification code")
+
+    return {
+        "message": f"Verification code sent to {current_user.email}",
+        "cooldown_seconds": cooldown,
+        "email": current_user.email
+    }
+
+
+@router.put("/me/password")
+def change_my_password(
+    payload: schemas.PasswordChangeRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_user)
+):
+    """
+    Change current user's password with current password and email OTP verification.
+    """
+    from app.core import security
+    from app.services import auth_service
+
+    if not security.verify_password(payload.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect current password")
+
+    if not payload.otp_code or len(payload.otp_code.strip()) != 6:
+        raise HTTPException(status_code=400, detail="Please enter a valid 6-digit verification code")
+
+    otp_validation = auth_service.validate_otp(db, email=current_user.email, plain_otp=payload.otp_code.strip())
+    if otp_validation.get("status") != "SUCCESS":
+        raise HTTPException(status_code=400, detail=otp_validation.get("message", "Invalid or expired verification code"))
+
+    pwd = payload.new_password
+    if len(pwd) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters long")
+    if " " in pwd:
+        raise HTTPException(status_code=400, detail="Password cannot contain spaces")
+    if not re.search(r"[a-z]", pwd) or not re.search(r"[A-Z]", pwd):
+        raise HTTPException(status_code=400, detail="Password must contain both uppercase and lowercase letters")
+    if not re.search(r"\d", pwd) or not re.search(r"[^a-zA-Z\d\s]", pwd):
+        raise HTTPException(status_code=400, detail="Password must contain at least one number and one special character")
+
+    crud.update_user_password(db, user_id=current_user.id, new_password=pwd)
+    return {"message": "Password updated successfully"}
+
+

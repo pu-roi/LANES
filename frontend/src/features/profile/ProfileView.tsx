@@ -8,10 +8,11 @@ import {
   ShieldCheck, AlertTriangle, FileText, 
   MessageSquare, Settings, CheckCircle, 
   XCircle, Loader2, Edit3, LogOut, Eye, EyeOff,
-  Upload, Trash2
+  Upload, Trash2, Lock, KeyRound
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ColorPicker } from "@/shared/ui";
+import { ColorPicker, Input } from "@/shared/ui";
+import { PasswordStrength } from "@/shared/ui/forms/PasswordStrength";
 import { EditProfileForm } from "./components/EditProfileForm";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -21,6 +22,7 @@ import { PostDetailPage } from "../feed/PostDetailPage";
 import { LeftSidebar } from "../feed/LeftSidebar";
 import { RightSidebar } from "../feed/RightSidebar";
 import { useToast, Button, Tabs, TabContentPanel, Modal, ConfirmDialog } from "@/shared/ui";
+import PasswordOtpModal from "./components/PasswordOtpModal";
 
 export default function ProfileView() {
   const { user, isLoading: authLoading, logout } = useAuth();
@@ -29,6 +31,8 @@ export default function ProfileView() {
     uploadAvatar, isUploadingAvatar,
     removeAvatar, isRemovingAvatar,
     deleteAccount, isDeletingAccount,
+    requestPasswordOtp, isRequestingPasswordOtp,
+    changePassword, isChangingPassword,
     myReports, isLoadingReports, 
     myPosts, isLoadingPosts 
   } = useProfile();
@@ -55,6 +59,17 @@ export default function ProfileView() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [viewingPostId, setViewingPostId] = useState<number | null>(null);
+  const [showPasswordOtpModal, setShowPasswordOtpModal] = useState(false);
+  const [passwordOtpCooldown, setPasswordOtpCooldown] = useState(60);
+
+  // Password Change State
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -313,6 +328,54 @@ export default function ProfileView() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError("");
+
+    if (!currentPassword) {
+      setPasswordError("Please enter your current password.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters long.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      const res = await requestPasswordOtp({ current_password: currentPassword });
+      setPasswordOtpCooldown(res.cooldown_seconds || 60);
+      setShowPasswordOtpModal(true);
+      success("Verification Code Sent", "We sent a 6-digit confirmation code to your email address.");
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail || err?.message || "Failed to send verification code.";
+      setPasswordError(detail);
+      showError("Verification Failed", detail);
+    }
+  };
+
+  const handleVerifyPasswordOtp = async (code: string) => {
+    await changePassword({
+      current_password: currentPassword,
+      new_password: newPassword,
+      otp_code: code,
+    });
+    success("Password Updated", "Your password has been changed successfully.");
+    setShowPasswordOtpModal(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
+
+  const handleResendPasswordOtp = async () => {
+    const res = await requestPasswordOtp({ current_password: currentPassword });
+    success("Code Resent", "A new 6-digit confirmation code has been sent to your email.");
+    return res.cooldown_seconds || 60;
   };
 
   const handleDeleteAccount = async () => {
@@ -610,6 +673,114 @@ export default function ProfileView() {
               </div>
             </div>
           </div>
+
+          {/* Security / Change Password */}
+          <div className="pt-6 border-t border-slate-100">
+            <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <KeyRound className="w-4 h-4 text-blue-600" /> Security & Password
+            </h4>
+            <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white">
+              <form onSubmit={handlePasswordChange} className="space-y-4 max-w-lg">
+                {passwordError && (
+                  <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                    <span>{passwordError}</span>
+                  </div>
+                )}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                    Current Password
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type={showCurrentPassword ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                    New Password
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Enter new password"
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <PasswordStrength password={newPassword} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                    Confirm New Password
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Re-enter new password"
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="pt-2 flex justify-end">
+                  <Button
+                    type="submit"
+                    disabled={isChangingPassword || isRequestingPasswordOtp}
+                    className="rounded-xl px-5 text-xs sm:text-sm flex items-center gap-2"
+                  >
+                    {isRequestingPasswordOtp ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Sending Code...
+                      </>
+                    ) : isChangingPassword ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-3.5 h-3.5" />
+                        Update Password
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
           
           {/* Danger Zone */}
           <div className="pt-6 border-t border-red-100">
@@ -802,11 +973,19 @@ export default function ProfileView() {
             </div>
             
             <div className="flex-1 text-center sm:text-left mt-1 sm:mt-4">
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
-                {(profile.first_name && (profile.display_full_name !== false)) 
-                  ? `${profile.first_name} ${profile.last_name}` 
-                  : user.username}
-              </h1>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+                  {(profile.first_name && (profile.display_full_name !== false)) 
+                    ? `${profile.first_name} ${profile.last_name}` 
+                    : user.username}
+                </h1>
+                {user.role?.name && user.role?.name !== "Commuter" && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    {user.role.name}
+                  </span>
+                )}
+              </div>
               <p className="text-xs sm:text-sm text-slate-500 flex items-center justify-center sm:justify-start gap-1.5 mt-1">
                 <Calendar className="w-3.5 h-3.5" /> Joined {joinedDate}
               </p>
@@ -1102,6 +1281,17 @@ export default function ProfileView() {
           </div>
         </div>
       </Modal>
+
+      {/* Email OTP Verification Modal for Password Update */}
+      <PasswordOtpModal
+        isOpen={showPasswordOtpModal}
+        onClose={() => setShowPasswordOtpModal(false)}
+        email={user?.email || ""}
+        onVerify={handleVerifyPasswordOtp}
+        onResendOtp={handleResendPasswordOtp}
+        initialCooldown={passwordOtpCooldown}
+      />
     </div>
   );
 }
+

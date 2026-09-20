@@ -131,6 +131,23 @@ export function useProfile() {
     },
   });
 
+  const requestPasswordOtpMutation = useMutation({
+    mutationFn: async (payload: { current_password: string }) => {
+      const response = await apiClient.post<{ message: string; cooldown_seconds: number; email: string }>(
+        '/users/me/password/request-otp',
+        payload
+      );
+      return response;
+    },
+  });
+
+  const changePasswordMutation = useMutation({
+    mutationFn: async (payload: { current_password: string; new_password: string; otp_code: string }) => {
+      const response = await apiClient.put('/users/me/password', payload);
+      return response;
+    },
+  });
+
   return {
     updateProfile: updateProfileMutation.mutateAsync,
     isUpdatingProfile: updateProfileMutation.isPending,
@@ -140,9 +157,14 @@ export function useProfile() {
     isRemovingAvatar: removeAvatarMutation.isPending,
     deleteAccount: deleteAccountMutation.mutateAsync,
     isDeletingAccount: deleteAccountMutation.isPending,
+    requestPasswordOtp: requestPasswordOtpMutation.mutateAsync,
+    isRequestingPasswordOtp: requestPasswordOtpMutation.isPending,
+    changePassword: changePasswordMutation.mutateAsync,
+    isChangingPassword: changePasswordMutation.isPending,
     myReports,
     isLoadingReports,
     myPosts,
     isLoadingPosts,
   };
 }
+

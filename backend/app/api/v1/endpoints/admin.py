@@ -1406,6 +1406,18 @@ def create_admin_user(
 
     try:
         new_user = crud.create_user(db=db, user=payload)
+        # Auto-provision a linked Profile record so the user can immediately edit their profile
+        if not new_user.profile:
+            default_profile = models.Profile(
+                user_id=new_user.id,
+                first_name=new_user.username,
+                last_name="",
+                display_full_name=True,
+                is_public=True
+            )
+            db.add(default_profile)
+            db.commit()
+            db.refresh(new_user)
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=409, detail="An account with this email or username already exists.")

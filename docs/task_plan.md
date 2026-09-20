@@ -1,9 +1,22 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 1:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 
 ---
+
+## Completed Sprints
+
+- [x] **Capstone Phase 35 — Admin Profile Management, Self-Healing Profile Provisioning & Secure Password Updates** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - [x] Fixed `404 Profile not found` for admin-created accounts by automatically provisioning a linked `models.Profile` on user creation (`POST /api/v1/admin/users`) ([`BUG-051`]).
+  - [x] Self-healing fallback in `POST /api/v1/auth/test-token`, `PATCH /api/v1/users/me/profile`, and avatar upload/delete endpoints to heal existing profile-less accounts on session validation.
+  - [x] Created `/admin/profile` route and `AdminProfilePage.tsx` mirroring the public profile design with cover color banner, avatar management, and address configuration via `EditProfileForm`.
+  - [x] Added `PUT /api/v1/users/me/password` endpoint with current password verification and password complexity validation, paired with `<PasswordStrength>` checklist meter.
+  - [x] Implemented Email OTP Verification for Password Changes: Added `POST /api/v1/users/me/password/request-otp` and updated `PUT /api/v1/users/me/password` with OTP validation. Dispatches single-use 6-digit verification code using Resend REST API matching signup/register email branding, with sliding cooldown and grace periods.
+  - [x] Created reusable `PasswordOtpModal` with 6-box zero-click auto-submitting numeric inputs, auto-focus, paste support, live cooldown ticker, and error handling, integrated seamlessly into both `/profile` and `/admin/profile`.
+  - [x] Added user profile card in `AdminSidebar.tsx` footer linking to `/admin/profile`, and zero padding in `AdminLayout.tsx`.
+
 
 ## Backlog
 

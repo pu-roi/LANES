@@ -39,3 +39,14 @@ class UserStatusUpdateRequest(BaseModel):
 
 class UserRoleUpdateRequest(BaseModel):
     role_id: int
+
+
+class PasswordChangeOtpRequest(BaseModel):
+    current_password: str
+
+
+class PasswordChangeRequest(BaseModel):
+    current_password: str
+    new_password: str
+    otp_code: str
+

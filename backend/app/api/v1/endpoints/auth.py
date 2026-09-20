@@ -148,10 +148,24 @@ def login_access_token(
 
 
 @router.post("/test-token", response_model=schemas.UserResponse)
-def test_token(current_user: models.User = Depends(deps.get_current_user)) -> Any:
+def test_token(
+    current_user: models.User = Depends(deps.get_current_user),
+    db: Session = Depends(get_db)
+) -> Any:
     """
-    Test access token
+    Test access token and ensure linked Profile record exists.
     """
+    if not current_user.profile:
+        new_profile = models.Profile(
+            user_id=current_user.id,
+            first_name=current_user.username,
+            last_name="",
+            display_full_name=True,
+            is_public=True
+        )
+        db.add(new_profile)
+        db.commit()
+        db.refresh(current_user)
     return current_user
 
 

@@ -54,7 +54,7 @@ export default function ArchivePage() {
   const queryClient = useQueryClient();
   const toast = useToast();
 
-  const [activeTab, setActiveTab] = useState<MainTab>("spatial");
+  const [activeTab, setActiveTab] = useState<MainTab>("users");
   const [spatialSubTab, setSpatialSubTab] = useState<SpatialSubTab>("reports");
   const [postSubTab, setPostSubTab] = useState<PostSubTab>("deleted");
   const [page, setPage] = useState(1);

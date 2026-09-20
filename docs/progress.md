@@ -1,7 +1,31 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 21, 2026, 1:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+---
+
+### Capstone Phase 35: Admin Profile Management, Self-Healing Profile Provisioning & Secure Password Updates (🟢 COMPLETED)
+- [x] **Self-Healing Profile Lifecycle & Creation Bug Fix (`admin.py`, `auth.py`, `users.py`, [`BUG-051`])** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Resolved `404 Profile not found` when editing accounts created via Admin User Registry by automatically provisioning a linked `models.Profile` on user creation in `POST /api/v1/admin/users`.
+  - Added self-healing fallback to `POST /api/v1/auth/test-token`, `PATCH /api/v1/users/me/profile`, `POST /api/v1/users/me/avatar`, and `DELETE /api/v1/users/me/avatar` so existing profile-less accounts heal instantaneously on session validation without 404 or not-null integrity violations.
+  - Implemented automated pytest suite (`tests/test_admin_profile.py`) verifying token self-healing, profile updates, and password security.
+- [x] **Native Admin Profile Management Page (`/admin/profile`, `AdminProfilePage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Created dedicated profile management screen for Super Admins, DRRM Officers, and Moderators natively within the Admin Panel.
+  - Reused exact public profile aesthetic: full-bleed cover banner with color picker, avatar container with preview modal, Cloudinary upload, and remove confirmation dialog.
+  - Integrated `EditProfileForm` with personal information, Philippine Standard Geographic Code (PSGC) address selectors, and live unique username verification.
+  - Displayed staff role badges, verified staff account ID, email, and joined date.
+  - Provided privacy preferences ("Display Full Name" and "Hide Profile Picture" toggles).
+- [x] **Secure Admin & User Password Change with Email OTP Verification (`users.py`, `auth_service.py`, `email_service.py`, `PasswordOtpModal.tsx`, `PasswordStrength.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Implemented `POST /api/v1/users/me/password/request-otp` and updated `PUT /api/v1/users/me/password` to require email OTP verification before changing passwords.
+  - Implemented `send_password_change_otp_email_async` with hosted branding, logo header, single-use 6-digit code box, 5-minute expiry notice, and security disclaimers matching signup/register emails.
+  - Built reusable `PasswordOtpModal` with 6-box zero-click auto-submitting numeric inputs, auto-focus, paste support, live countdown ticker, and inline validation, integrated across both `/profile` and `/admin/profile`.
+  - Added Password & Security section with interactive eye reveal toggles and live `<PasswordStrength>` checklist validation.
+- [x] **Admin Navigation Integration (`AdminSidebar.tsx`, `AdminLayout.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added user profile card in the sidebar footer with avatar, display name, and staff role tag linking directly to `/admin/profile`.
+  - Configured edge-to-edge padding (`p-0`) in `AdminLayout` for `/admin/profile` to support full-bleed cover banners.
+
 
 ---
 
@@ -37,6 +61,7 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 35 | Admin Profile Management, Self-Healing Profile Provisioning & Secure Password Updates | Completed | Native Admin Profile hub (`/admin/profile`, `AdminProfilePage.tsx`) with cover color banner, avatar management, and address configuration; auto-provisioning of `Profile` in `create_admin_user`; self-healing fallback in `test-token` and `users/me/profile` ([`BUG-051`]); secure password update endpoint (`PUT /users/me/password`) with live `<PasswordStrength>` meter; and user profile card in `AdminSidebar.tsx` footer |
 | 34 | 30-Day Archive Retention Lifecycle, Auto-Purge Worker, Delete Controls & User Self-Deletion | Completed | Automatic 30-day retention countdown and daily background purge worker (`retention_service.py`), explicit user account restoration (`POST /admin/users/{id}/restore`) and permanent purge (`DELETE /admin/users/{id}/permanent`), manual on-demand purge trigger (`POST /admin/archive/purge-expired`), public user self-deletion Danger Zone modal (`DELETE /users/me`) with 30-day login grace period, and unique constraint conflict mitigation ([`BUG-050`]) |
 | 33 | Flood Event Lifecycle Foundation & Historical Tracking | In Progress | Verified Flood Event persistence model, server-owned duration/evidence metrics, idempotent report operations, and staff Moderation Center queue |
 | 32 | Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing | Completed | Unified compact net score vote pill (`▲ Net Score ▼`), instant 0ms optimistic updates with tri-state transitions and flip mechanics across Feed, Post Detail, and Profile, authoritative `VoteResponse` backend synchronization, and clean built-in disaster/civic recency duration (72h / 3 days) with graceful fallback |

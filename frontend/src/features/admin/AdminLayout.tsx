@@ -69,7 +69,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {!isMapPage && (
           <div 
             data-lenis-prevent="true"
-            className="relative z-10 h-full w-full p-6 overflow-y-auto bg-slate-100"
+            className={`relative z-10 h-full w-full overflow-y-auto bg-slate-100 ${
+              pathname === "/admin/profile" ? "p-0" : "p-6"
+            }`}
           >
             {children}
           </div>
