@@ -23,7 +23,7 @@ export function useFloodZonesLayer(
   selectedContributorId?: number | null,
   setSelectedContributorId?: (id: number | null) => void
 ) {
-  const activePopupRef = useRef<{ popup: maplibregl.Popup; root: Root; zoneId?: number } | null>(null);
+  const activePopupRef = useRef<{ popup: maplibregl.Popup | null; root: Root; zoneId?: number } | null>(null);
 
   useEffect(() => {
     console.log("[useFloodZonesLayer] hook execution started", { mapExists: !!map, isLoaded, activeZonesLength: activeZonesData?.length });
@@ -268,12 +268,19 @@ export function useFloodZonesLayer(
       pendingHoverIdRef.current = null;
     };
 
+    const removeActivePopup = () => {
+      const activePopup = activePopupRef.current;
+      if (!activePopup) return;
+      activePopup.popup?.remove();
+      activePopup.root.unmount();
+      activePopupRef.current = null;
+    };
+
     const scheduleClose = () => {
       clearCloseTimeout();
       closeTimeoutRef.current = setTimeout(() => {
         if (!isTouchDevice && activePopupRef.current) {
-          activePopupRef.current.popup.remove();
-          activePopupRef.current = null;
+          removeActivePopup();
         }
       }, 250); // 250ms grace period to allow cursor to bridge into the popup
     };
@@ -289,8 +296,7 @@ export function useFloodZonesLayer(
       }
 
       if (activePopupRef.current) {
-        activePopupRef.current.popup.remove();
-        activePopupRef.current = null;
+        removeActivePopup();
       }
 
       const popupContainer = document.createElement("div");
@@ -347,36 +353,54 @@ export function useFloodZonesLayer(
 
       const root = createRoot(popupContainer);
 
-      const popup = new maplibregl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        maxWidth: "360px",
-        offset: 14,
-        anchor: smartAnchor,
-        className: "flood-zone-popup",
-      })
-        .setLngLat(lngLat)
-        .setDOMContent(popupContainer)
-        .addTo(map);
+      const closeMobileModal = () => {
+        root.unmount();
+        if (activePopupRef.current?.root === root) {
+          activePopupRef.current = null;
+        }
+      };
+
+      const popup = isTouchDevice
+        ? null
+        : new maplibregl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+            maxWidth: "360px",
+            offset: 14,
+            anchor: smartAnchor,
+            className: "flood-zone-popup",
+          })
+            .setLngLat(lngLat)
+            .setDOMContent(popupContainer)
+            .addTo(map);
 
       // Colorize the popup tip to match the header when anchored at the top
-      const tip = popup.getElement()?.querySelector(".maplibregl-popup-tip") as HTMLElement;
-      if (tip) {
-        if (smartAnchor.startsWith("top")) {
-          tip.style.borderBottomColor = properties.color || "#eab308";
-        } else if (smartAnchor.startsWith("bottom")) {
-          tip.style.borderTopColor = "#f9fafb";
+      if (popup) {
+        const tip = popup.getElement()?.querySelector(".maplibregl-popup-tip") as HTMLElement;
+        if (tip) {
+          if (smartAnchor.startsWith("top")) {
+            tip.style.borderBottomColor = properties.color || "#eab308";
+          } else if (smartAnchor.startsWith("bottom")) {
+            tip.style.borderTopColor = "#f9fafb";
+          }
         }
       }
 
-      root.render(React.createElement(FloodZonePopup, { properties }));
+      root.render(React.createElement(FloodZonePopup, {
+        properties,
+        compact: !isTouchDevice,
+        modal: isTouchDevice,
+        onClose: closeMobileModal,
+      }));
 
-      popup.on("close", () => {
-        setTimeout(() => root.unmount(), 0);
-        if (activePopupRef.current?.popup === popup) {
-          activePopupRef.current = null;
-        }
-      });
+      if (popup) {
+        popup.on("close", () => {
+          setTimeout(() => root.unmount(), 0);
+          if (activePopupRef.current?.popup === popup) {
+            activePopupRef.current = null;
+          }
+        });
+      }
 
       activePopupRef.current = { popup, root, zoneId: Number(properties.id) };
     };
@@ -452,8 +476,7 @@ export function useFloodZonesLayer(
       if (clickedZone) return;
 
       clearOpenTimeout();
-      activePopupRef.current.popup.remove();
-      activePopupRef.current = null;
+      removeActivePopup();
       setSelectedZoneId?.(null);
     };
 
@@ -471,8 +494,7 @@ export function useFloodZonesLayer(
       clearOpenTimeout();
       clearCloseTimeout();
       if (activePopupRef.current) {
-        activePopupRef.current.popup.remove();
-        activePopupRef.current = null;
+        removeActivePopup();
       }
       activeLayers.forEach((layer) => {
         map.off("mouseenter", layer, handleMouseEnterOrMove);

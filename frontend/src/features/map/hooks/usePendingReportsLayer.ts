@@ -306,7 +306,7 @@ export function usePendingReportsLayer(
         }
       }
 
-      root.render(React.createElement(FloodZonePopup, { properties }));
+      root.render(React.createElement(FloodZonePopup, { properties, compact: isTouchDevice }));
 
       popup.on("close", () => {
         setTimeout(() => root.unmount(), 0);

@@ -363,6 +363,37 @@ export default function RoutePanel() {
                 </div>
 
                 <div className="p-3 pr-2">
+                  <div className="mb-2 rounded-lg border border-gray-200 bg-gray-50/80 p-0.5">
+                    <div className="grid grid-cols-2 gap-0.5" role="group" aria-label="Routing engine">
+                      <button
+                        type="button"
+                        aria-pressed={routingEngine === "valhalla"}
+                        onClick={() => setRoutingEngine("valhalla")}
+                        className={cn(
+                          "min-h-9 rounded-md px-1.5 py-1 text-[11px] font-semibold transition-colors",
+                          routingEngine === "valhalla"
+                            ? "bg-white text-blue-700 shadow-sm ring-1 ring-blue-100"
+                            : "text-gray-500 hover:bg-white/80 hover:text-gray-800"
+                        )}
+                      >
+                        Valhalla
+                      </button>
+                      <button
+                        type="button"
+                        aria-pressed={routingEngine === "ors"}
+                        onClick={() => setRoutingEngine("ors")}
+                        className={cn(
+                          "min-h-9 rounded-md px-1.5 py-1 text-[11px] font-semibold transition-colors",
+                          routingEngine === "ors"
+                            ? "bg-white text-blue-700 shadow-sm ring-1 ring-blue-100"
+                            : "text-gray-500 hover:bg-white/80 hover:text-gray-800"
+                        )}
+                      >
+                        OpenRoute
+                      </button>
+                    </div>
+                  </div>
+
                   <LocationInputGroup
                     theme="blue"
                     startInput={startInput}

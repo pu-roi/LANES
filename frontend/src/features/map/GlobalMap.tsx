@@ -106,8 +106,8 @@ function MapLayout() {
     }
   }, [searchParams, setIsReportPanelOpen, setActivePanel, setIsPickingOnMap, setActivePoint]);
 
-  // The panel is expanded when it is both open and actively selected, or when Analytics is open, or when SavePlace is open.
-  const isPanelExpanded = (isReportPanelOpen && activePanel === "flood") || isAnalyticsOpen || isSavePlacePanelOpen;
+  // Keep the FAB beneath whichever mobile panel is currently expanded.
+  const isPanelExpanded = (isReportPanelOpen && activePanel === "flood") || isAnalyticsOpen || isSavePlacePanelOpen || (isMobile && activePanel === "route");
   
   const pillBottomClass = hasBottomOffset 
     ? "bottom-[calc(64px+env(safe-area-inset-bottom)+160px)]" 
