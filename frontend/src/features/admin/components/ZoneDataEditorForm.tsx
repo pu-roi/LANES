@@ -37,18 +37,18 @@ type DepthOption = {
   id: string;
   severity: "low" | "medium" | "high" | "extreme";
   label: string;
-  description: string;
+  description?: string;
 };
 
 const VISUAL_OPTIONS: DepthOption[] = [
-  { id: "gutter",    severity: "low",     label: "Gutter",       description: "8 inches" },
-  { id: "half-knee", severity: "low",     label: "Half-Knee",    description: "10 inches" },
-  { id: "half-tire", severity: "medium",  label: "Half-Tire",    description: "13 inches" },
-  { id: "knee",      severity: "medium",  label: "Knee",         description: "19 inches" },
-  { id: "tires",     severity: "high",    label: "Tires",        description: "26 inches" },
-  { id: "waist",     severity: "high",    label: "Waist",        description: "37 inches" },
-  { id: "chest",     severity: "high",    label: "Chest",        description: "45 inches" },
-  { id: "neck",      severity: "extreme", label: "Neck & Above", description: "Danger" },
+  { id: "gutter",    severity: "low",     label: "Gutter" },
+  { id: "half-knee", severity: "low",     label: "Half-Knee" },
+  { id: "half-tire", severity: "medium",  label: "Half-Tire" },
+  { id: "knee",      severity: "medium",  label: "Knee" },
+  { id: "tires",     severity: "high",    label: "Tires" },
+  { id: "waist",     severity: "high",    label: "Waist" },
+  { id: "chest",     severity: "high",    label: "Chest" },
+  { id: "neck",      severity: "extreme", label: "Neck & Above" },
 ];
 
 const SEVERITY_COLORS: Record<string, { pill: string; active: string }> = {
@@ -130,7 +130,7 @@ export function ZoneDataEditorForm({
               >
                 <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10", SEVERITY_DOT_COLORS[opt.severity])} />
                 <span>{opt.label}</span>
-                <span className="font-normal text-[10px] opacity-75">{opt.description}</span>
+                {opt.description && <span className="font-normal text-[10px] opacity-75">{opt.description}</span>}
               </button>
             );
           })}

@@ -7,7 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { 
   getZone, getZones, deactivateZone, deactivateZonesBulk, AvoidanceZone,
-  getPendingReports, approveReport, rejectReport,
+  getPendingReports, getReportForSpatialReview, approveReport, rejectReport,
   createOfficialZone,
   FloodReport
 } from "./adminApi";
@@ -279,6 +279,13 @@ export default function LiveMapPage() {
     queryFn: getPendingReports,
     refetchInterval: 10000,
   });
+  const focusedReportId = Number(searchParams.get("focus_report_id")) || null;
+  const { data: focusedModerationReport } = useQuery({
+    queryKey: ["adminFocusedModerationReport", focusedReportId],
+    queryFn: () => getReportForSpatialReview(focusedReportId!),
+    enabled: focusedReportId !== null,
+    retry: 1,
+  });
 
   // Track last focused query to avoid duplicate re-flying
   const lastFocusedParamRef = useRef<string | null>(null);
@@ -293,16 +300,21 @@ export default function LiveMapPage() {
     const latStr = searchParams.get("lat");
     const lngStr = searchParams.get("lng");
     const zoomStr = searchParams.get("zoom");
+    const reviewToken = searchParams.get("review_token");
 
-    const queryKey = `${focusId}_${tabParam}_${latStr}_${lngStr}`;
+    const queryKey = `${focusId}_${tabParam}_${latStr}_${lngStr}_${reviewToken}`;
     if (!focusId && !latStr && !lngStr) return;
+
+    // A Moderation Center handoff needs the selected report's geometry before
+    // it can be isolated. Do not mark the URL as handled while that query is
+    // still loading; otherwise the follow-up render has nothing left to focus.
+    if (focusId && !focusedModerationReport) return;
 
     if (tabParam === "zones" || tabParam === "pending") {
       setActiveTab(tabParam);
     }
 
     if (lastFocusedParamRef.current === queryKey) return;
-    lastFocusedParamRef.current = queryKey;
 
     const executeFocus = () => {
       // 1. Direct coordinates passed from Reports Page
@@ -318,15 +330,16 @@ export default function LiveMapPage() {
       // 2. Select report / zone in state
       if (focusId) {
         const idNum = Number(focusId);
-        const targetPending = pendingReports?.find((r) => r.id === idNum);
-        if (targetPending) {
+        const targetReport = focusedModerationReport?.id === idNum ? focusedModerationReport : null;
+        if (targetReport) {
           setActiveTab("pending");
           setSelectedReportId(idNum);
           setIsolatedReportId(idNum);
 
-          if (targetPending.geometry && (!latStr || !lngStr)) {
-            flyToFeature(mapInstance, targetPending.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
+          if (targetReport.geometry && (!latStr || !lngStr)) {
+            flyToFeature(mapInstance, targetReport.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
           }
+          lastFocusedParamRef.current = queryKey;
         } else {
           const targetZone = (mapZones || []).find(
             (z: any) => z.report_id === idNum || (z.contributors || []).some((c: any) => c.report_id === idNum)
@@ -337,15 +350,18 @@ export default function LiveMapPage() {
             if (targetZone.geometry && (!latStr || !lngStr)) {
               flyToFeature(mapInstance, targetZone.geometry, targetZone.report_geometry, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
             }
+            lastFocusedParamRef.current = queryKey;
           }
         }
+      } else {
+        lastFocusedParamRef.current = queryKey;
       }
     };
 
     // Small delay ensures MapLibre terrain and canvas resizing are settled
     const timer = setTimeout(executeFocus, 250);
     return () => clearTimeout(timer);
-  }, [searchParams, pendingReports, mapZones, mapInstance, isLoaded]);
+  }, [searchParams, focusedModerationReport, mapZones, mapInstance, isLoaded]);
 
   const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
     queryKey: ["adminZones", page, activeOnly],
@@ -429,7 +445,9 @@ export default function LiveMapPage() {
   // Ordinary report selection never changes the queue or guesses which reports are related.
   // Map spotlight is scoped to the explicit intelligent merge workflow.
   const filteredPendingReports = pendingReports || [];
-  const mapPendingReports = isMergeDrawerOpen && mergingReport
+  const mapPendingReports = focusedModerationReport && isolatedReportId === focusedModerationReport.id
+    ? [focusedModerationReport]
+    : isMergeDrawerOpen && mergingReport
     ? filteredPendingReports.filter((report) => report.id === mergingReport.id)
     : filteredPendingReports;
 
@@ -437,11 +455,12 @@ export default function LiveMapPage() {
   // When an existing zone is being edited, exclude it from the solid active zones layer so
   // that its baseline is represented exclusively by the preview layer (orange dashed line).
   const visibleMapZones = useMemo(() => {
+    if (isolatedReportId !== null) return [];
     if (isEditZoneDrawerOpen && editingZone) {
       return (mapZones || []).filter((z: AvoidanceZone) => z.id !== editingZone.id);
     }
     return mapZones;
-  }, [isEditZoneDrawerOpen, editingZone, mapZones]);
+  }, [isEditZoneDrawerOpen, editingZone, isolatedReportId, mapZones]);
 
   useCityBoundaries(mapInstance, isLoaded);
   useFloodZonesLayer(

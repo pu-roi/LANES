@@ -1,9 +1,34 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 21, 2026, 2:40 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-052] Repeated Flood Moderation Map Review Did Not Re-focus the Report
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Moderation Center / Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Reviewing a Flood Report could fail after returning from Spatial Operations, and approved/rejected moderation records were not available to the pending-only map query.
+
+#### 2. Root Cause Analysis (RCA)
+
+The map cached an identical focus URL and only searched its pending-report dataset.
+
+#### 3. Solution & Architectural Strategy
+
+Each handoff has a fresh review token. Spatial Operations retrieves the exact admin-authorized report, renders only that report, and clears active-zone data while focused.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/api/v1/endpoints/admin.py`, `frontend/src/features/admin/adminApi.ts`, `frontend/src/features/admin/LiveMapPage.tsx`, `frontend/src/features/admin/components/FloodModerationQueue.tsx`
 
 ---
 

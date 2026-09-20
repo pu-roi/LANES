@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 3:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -101,6 +101,7 @@ Official admin-created Flood Zone ───────────────�
 - [x] Extend the existing staff-only Moderation Center with clear top-level/tabbed separation between Community Post Reports and Flood Report Moderation.
 - [x] Show flood moderation status, submitted report context, structured rejection reason, resolution timestamp, and assigned/acting administrator where appropriate.
 - [x] Provide a single **Review on Map** action that opens/focuses the relevant item in Spatial Operations. This is navigation/context handoff only, not a second spatial moderation workspace.
+  - The handoff must fetch the exact selected report regardless of moderation state, isolate it from all active zones and other reports, and accept a fresh review token so repeat visits re-focus the map.
 - [x] Include filters for pending, approved/linked, rejected, date, location, reporter/source, and rejection reason as supported by final data design.
 - [x] Keep rejected reports out of the live routing map and Flood Event analytics while retaining them for internal moderation-quality review.
 

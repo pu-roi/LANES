@@ -260,6 +260,19 @@ def get_pending_reports(
     return crud.get_pending_flood_reports(db=db, skip=skip, limit=limit)
 
 
+@router.get("/reports/detail/{report_id}", response_model=schemas.FloodReportResponse)
+def get_report_for_spatial_review(
+    report_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> models.FloodReport:
+    """Return one non-deleted report for an admin's focused spatial review."""
+    report = crud.get_flood_report(db=db, report_id=report_id)
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    return report
+
+
 @router.get("/flood-events/{event_id}/summary")
 def get_flood_event_summary(
     event_id: int,

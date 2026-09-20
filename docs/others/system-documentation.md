@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 21, 2026, 3:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -330,6 +330,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `GET /api/v1/admin/moderation/reports` | Staff-only list of open (or resolved) Community Post moderation cases, grouped by post |
 | `POST /api/v1/admin/moderation/posts/{id}/resolve` | Atomically dismiss, warn, or soft-hide a Community Post and resolve all its open reports |
 | `GET /api/v1/admin/moderation/flood-reports` | Admin-only Flood Report moderation cases with status, source, date, location, reporter, and rejection-reason filters; provides safe map-focus coordinates |
+| `GET /api/v1/admin/reports/detail/{report_id}` | Admin-only full report read for a focused Spatial Operations review, including approved and rejected reports retained in moderation history |
 | `GET /api/v1/admin/users` | All users with role and profile info |
 | `PUT /api/v1/admin/users/{id}` | Update user role or active status |
 | `POST /api/v1/admin/users/{id}/restore` | Restore a soft-deleted/archived user account and profile |

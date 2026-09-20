@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 21, 2026, 3:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -50,6 +50,7 @@
 
 ### Current Delivery — Capstone Phase 33 Flood Event Lifecycle Foundation (🟡 IN PROGRESS)
 
+- [x] **Focused moderation map handoff and depth-label cleanup** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): removed unverified gauge measurements, added the Spatial Operations-style Info modal, and made review handoffs fetch any report state, isolate it from active zones, and re-run on repeat clicks.
 - [x] **Verified Flood Event lifecycle safeguards** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): server-owned duration/evidence/peak metrics, readable zone-update and severity-peak timeline records, final-zone event ending, and admin-only event summary reads.
 - [x] **Idempotent report operations and private rejection notification** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): retries reuse an existing event/report association without duplicate trust credit or moderation outcome; report rejection notifies the submitting user through the existing bell without exposing staff-only notes.
 - [x] **Flood Report Moderation tracking surface** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): separates Community and Flood Report queues, supports operational-status/source/date/location/reporter/rejection-reason filters, and hands cases back to Spatial Operations through one map-review action.

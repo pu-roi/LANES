@@ -190,6 +190,10 @@ export async function getPendingReports(): Promise<FloodReport[]> {
   return apiClient.get<FloodReport[]>("/admin/reports/pending");
 }
 
+export async function getReportForSpatialReview(reportId: number): Promise<FloodReport> {
+  return apiClient.get<FloodReport>(`/admin/reports/detail/${reportId}`);
+}
+
 /**
  * Fetches other pending reports that share the same street/location segment as
  * the given report, suitable for batch street merge.
