@@ -52,6 +52,7 @@ export interface OfficialZoneDrawerProps {
   onZoneUpdated?: () => void;
   onSwitchWorkspace?: () => void;
   switchWorkspaceLabel?: string;
+  onShowMap?: () => void;
 }
 
 export interface ZoneSubmissionItem {
@@ -210,6 +211,7 @@ export function OfficialZoneDrawer({
   onZoneUpdated,
   onSwitchWorkspace,
   switchWorkspaceLabel,
+  onShowMap,
 }: OfficialZoneDrawerProps) {
   const { success, error } = useToast();
   const { user, isAuthenticated } = useAuth();
@@ -1282,6 +1284,17 @@ export function OfficialZoneDrawer({
               className="md:hidden h-7 px-2 text-[10px] font-semibold text-slate-600 hover:bg-slate-100"
             >
               {switchWorkspaceLabel}
+            </Button>
+          )}
+          {onShowMap && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onShowMap}
+              className="md:hidden h-7 px-2 text-[10px] font-semibold text-blue-600 hover:bg-blue-50"
+            >
+              View Map
             </Button>
           )}
           {/* Close removes this workspace; the outer handle only switches tabs. */}
