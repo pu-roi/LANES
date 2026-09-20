@@ -691,69 +691,93 @@ export default function ProfileView() {
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                     Current Password
                   </label>
-                  <div className="relative">
-                    <Input
-                      type={showCurrentPassword ? "text" : "password"}
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      placeholder="Enter current password"
-                      required
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    >
-                      {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
+                  <Input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
+                    required
+                    rightIcon={
+                      <button
+                        type="button"
+                        onMouseDown={() => setShowCurrentPassword(true)}
+                        onMouseUp={() => setShowCurrentPassword(false)}
+                        onMouseLeave={() => setShowCurrentPassword(false)}
+                        onTouchStart={() => setShowCurrentPassword(true)}
+                        onTouchEnd={() => setShowCurrentPassword(false)}
+                        onTouchCancel={() => setShowCurrentPassword(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
+                        tabIndex={-1}
+                        aria-label="Hold to view current password"
+                        title="Hold to view current password"
+                      >
+                        {showCurrentPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+                    }
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                     New Password
                   </label>
-                  <div className="relative">
-                    <Input
-                      type={showNewPassword ? "text" : "password"}
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Enter new password"
-                      required
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    >
-                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    required
+                    rightIcon={
+                      <button
+                        type="button"
+                        onMouseDown={() => setShowNewPassword(true)}
+                        onMouseUp={() => setShowNewPassword(false)}
+                        onMouseLeave={() => setShowNewPassword(false)}
+                        onTouchStart={() => setShowNewPassword(true)}
+                        onTouchEnd={() => setShowNewPassword(false)}
+                        onTouchCancel={() => setShowNewPassword(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
+                        tabIndex={-1}
+                        aria-label="Hold to view new password"
+                        title="Hold to view new password"
+                      >
+                        {showNewPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+                    }
+                  />
+                  <div className="mt-1.5">
+                    <PasswordStrength password={newPassword} />
                   </div>
-                  <PasswordStrength password={newPassword} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
                     Confirm New Password
                   </label>
-                  <div className="relative">
-                    <Input
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Re-enter new password"
-                      required
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    >
-                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Re-enter new password"
+                    required
+                    rightIcon={
+                      <button
+                        type="button"
+                        onMouseDown={() => setShowConfirmPassword(true)}
+                        onMouseUp={() => setShowConfirmPassword(false)}
+                        onMouseLeave={() => setShowConfirmPassword(false)}
+                        onTouchStart={() => setShowConfirmPassword(true)}
+                        onTouchEnd={() => setShowConfirmPassword(false)}
+                        onTouchCancel={() => setShowConfirmPassword(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
+                        tabIndex={-1}
+                        aria-label="Hold to view confirm password"
+                        title="Hold to view confirm password"
+                      >
+                        {showConfirmPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+                    }
+                  />
                 </div>
+
                 <div className="pt-2 flex justify-end">
                   <Button
                     type="submit"
