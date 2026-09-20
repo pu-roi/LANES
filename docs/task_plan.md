@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -20,7 +20,7 @@
 
 ## Backlog
 
-- [ ] **Capstone Phase 33 — Flood Event History, Records & City Planning Analytics**: In progress. The approved Flood Event persistence model and migration are deployed; verified official zones and approved reports now create/link events, structured rejection stays outside Archive Center, final-zone deactivation ends the event, and the staff Flood Report Moderation tracking tab is available. Historical records and planning analytics remain planned.
+- [ ] **Capstone Phase 33 — Flood Event History, Records & City Planning Analytics**: In progress. The approved Flood Event persistence model and migration are deployed; verified official zones and approved reports now create/link events, structured rejection stays outside Archive Center, final-zone deactivation ends the event, and the staff Flood Report Moderation and Flood Event Records workspaces are available. City-planning analytics and exports remain planned.
 
 ## Active Sprint (Next Feature)
 
@@ -106,12 +106,13 @@ Official admin-created Flood Zone ───────────────�
 - [x] Keep rejected reports out of the live routing map and Flood Event analytics while retaining them for internal moderation-quality review.
 
 ##### Phase 33.5 — Admin-only Flood History & Analytics Information Architecture
-- [ ] Add an admin-protected sidebar route named **Flood History & Analytics**. Do not add a public-map link or change the existing public quick-insights panel.
-- [ ] Build the **Overview & Analytics** tab as an at-a-glance dashboard, using bento cards and charts without duplicating the same figures in a second vertical section.
-- [ ] Build the **Flood Event Records** tab with synchronized filters, historical MapLibre layers, and a searchable event table/list. Desktop layout: map and list side by side. Mobile layout: safely stacked or explicitly switchable map/list views with safe-area-aware bottom spacing.
-- [ ] Reuse the shared `BaseMap` and feature-based map hooks; create separate historical sources/layers from the active zone/routing layers so history never contaminates live navigation.
-- [ ] Selecting a map feature selects the corresponding list row; selecting a row focuses the event on the map. Filter controls include date range, barangay, road/street, severity, status, and recurrence-related filters agreed during implementation.
-- [ ] Provide an event-detail drawer/modal that keeps the administrator in context. It includes official event summary, affected places, source zones, readable incident timeline, evidence counts, and a compact supporting-reports table. Each report has a **View** action opening full original details: reporter, timestamps, description, exact geometry, media, passability/hidden-hazard survey, and moderation outcome.
+- [x] Add an admin-protected sidebar route named **Flood History & Analytics**. Do not add a public-map link or change the existing public quick-insights panel. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Build the initial **Overview & Analytics** at-a-glance bento dashboard without duplicating its metrics in a second vertical section. Chart expansion will follow the historical records/map data slice. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Build the **Flood Event Records** tab with synchronized filters, historical MapLibre layers, and a searchable event table/list. Desktop layout: map and list side by side. Mobile layout: safely stacked or explicitly switchable map/list views with safe-area-aware bottom spacing. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+  - [x] Establish protected server reads for filtered historic event records and a single event’s full evidence/timeline detail; this does not complete the Records workspace UI. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Reuse the shared `BaseMap` and feature-based map hooks; create separate historical sources/layers from the active zone/routing layers so history never contaminates live navigation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Selecting a map feature selects the corresponding list row; selecting a row focuses the event on the map. Filter controls include date range, barangay, road/street, severity, status, and recurrence-related filters agreed during implementation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Provide an event-detail drawer/modal that keeps the administrator in context. It includes official event summary, affected places, source zones, readable incident timeline, evidence counts, and a compact supporting-reports table. Each report has a **View** action opening full original details: reporter, timestamps, description, exact geometry, media, passability/hidden-hazard survey, and moderation outcome. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ##### Phase 33.6 — Event-Based Planning Analytics and Exports
 - [ ] Replace/augment report-count-only historical analytics with event-based aggregation queries. Existing quick insights may remain a simple summary, but Flood History & Analytics must use the distinct-event counting rules above.

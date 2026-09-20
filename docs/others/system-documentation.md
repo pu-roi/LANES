@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:09 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -307,6 +307,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
 | `/admin/moderation` | `ModerationCenterPage.tsx`, `components/FloodModerationQueue.tsx` | Staff-only tabbed Community Post and Flood Report tracking using the shared underline `Tabs` component. Flood cases show their outcome/context and filters, then provide a single **Review on Map** handoff; no spatial approval/rejection controls are duplicated here. The responsive action area remains clear of the mobile bottom navigation. |
+| `/admin/flood-history` | `flood-history/page.tsx`, `features/flood-history/*` | Admin-only Flood History & Analytics uses shared cards and tabs for its overview, plus a separate historical `BaseMap` source/layer set for Flood Event Records. Protected server filters drive a synchronized desktop map/list and a mobile-safe map/list switcher; staff can inspect the event timeline and then the unmodified original supporting-report evidence without entering Spatial Operations. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
 | `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with 30-day auto-purge retention lifecycle across three primary tabs: **Archived Users** (soft-deleted commuter accounts with 30-day countdown badge, restore action, and typed `"DELETE"` permanent purge), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). Includes on-demand manual trigger to purge expired records. |
 | `/admin/profile` | `AdminProfilePage.tsx` | Native Admin Profile hub matching public profile design. Super Admins, DRRM Officers, and Moderators can edit personal details, phone number, birthdate, and PSGC address, change account cover banner color, upload or remove avatar images, toggle privacy preferences ("Display Full Name", "Hide Profile Picture"), and securely change account passwords with live `<PasswordStrength>` validation and email OTP verification via `PasswordOtpModal`. Linked from the user profile card in the `AdminSidebar.tsx` footer. |
@@ -320,6 +321,9 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `GET /api/v1/admin/reports` | Paginated admin view of all reports with filters |
 | `PUT /api/v1/admin/reports/{id}/approve` | Approve report, auto-generates flood avoidance zone polygon |
 | `POST /api/v1/admin/reports/{id}/reject` | Reject report with a structured reason, moderation outcome, trust update, and reporter notification |
+| `GET /api/v1/admin/flood-events` | Admin-only ordered list of verified Flood Events for the Flood History & Analytics entry surface |
+| `GET /api/v1/admin/flood-events/history` | Admin-only filtered historical event records, including isolated historic zone geometry, locations, and server-calculated evidence metrics |
+| `GET /api/v1/admin/flood-events/{id}/history-detail` | Admin-only full historical Flood Event detail: event metrics, locations, event-owned zones, linked original reports, and readable incident timeline |
 | `GET /api/v1/admin/flood-events/{id}/summary` | Admin-only server-calculated event duration, evidence, zone, location, peak, and status metrics |
 | `POST /api/v1/admin/zones` | Create official flood avoidance zone (multipart `FormData` with JSON `body` and `media` files) |
 | `GET /api/v1/admin/zones/{id}` | Retrieve the current shared zone before resuming an account-private Edit Zone draft |

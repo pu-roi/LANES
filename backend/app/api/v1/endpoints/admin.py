@@ -286,6 +286,135 @@ def get_flood_event_summary(
     return get_event_metrics(db=db, event=event)
 
 
+@router.get("/flood-events", response_model=List[schemas.FloodEventResponse])
+def list_flood_events(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> list[models.FloodEvent]:
+    return db.query(models.FloodEvent).order_by(models.FloodEvent.verified_at.desc()).all()
+
+
+@router.get("/flood-events/history")
+def list_flood_event_history(
+    status_filter: str = "all",
+    severity: Optional[str] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    barangay: Optional[str] = None,
+    road: Optional[str] = None,
+    search: Optional[str] = None,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> list[dict[str, Any]]:
+    """Return filtered, admin-only historical records with isolated event map data."""
+    if limit < 1 or limit > 250:
+        raise HTTPException(status_code=422, detail="Limit must be between 1 and 250")
+    if status_filter != "all":
+        try:
+            status_value = models.FloodEventStatus(status_filter)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail="Invalid Flood Event status") from exc
+    else:
+        status_value = None
+    if severity:
+        try:
+            severity_value = models.ReportSeverity(severity)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail="Invalid Flood Event severity") from exc
+    else:
+        severity_value = None
+
+    query = db.query(models.FloodEvent)
+    if status_value:
+        query = query.filter(models.FloodEvent.status == status_value)
+    if severity_value:
+        query = query.filter(models.FloodEvent.peak_severity == severity_value)
+    if date_from:
+        query = query.filter(models.FloodEvent.verified_at >= date_from)
+    if date_to:
+        query = query.filter(models.FloodEvent.verified_at <= date_to)
+    if barangay or road or search:
+        query = query.join(models.FloodEventLocation)
+        location_filters = []
+        if barangay:
+            location_filters.append(
+                (models.FloodEventLocation.location_type == models.FloodEventLocationType.BARANGAY)
+                & models.FloodEventLocation.display_name.ilike(f"%{barangay.strip()}%")
+            )
+        if road:
+            location_filters.append(
+                (models.FloodEventLocation.location_type == models.FloodEventLocationType.ROAD)
+                & models.FloodEventLocation.display_name.ilike(f"%{road.strip()}%")
+            )
+        if search:
+            pattern = f"%{search.strip()}%"
+            location_filters.extend([
+                models.FloodEventLocation.display_name.ilike(pattern),
+                models.FloodEventLocation.normalized_name.ilike(pattern),
+            ])
+        query = query.filter(or_(*location_filters))
+
+    events = query.order_by(models.FloodEvent.verified_at.desc()).distinct().limit(limit).all()
+    records: list[dict[str, Any]] = []
+    for event in events:
+        locations = db.query(models.FloodEventLocation).filter(
+            models.FloodEventLocation.event_id == event.id
+        ).order_by(models.FloodEventLocation.location_type, models.FloodEventLocation.display_name).all()
+        zones = db.query(models.FloodAvoidanceZone).filter(
+            models.FloodAvoidanceZone.event_id == event.id
+        ).order_by(models.FloodAvoidanceZone.created_at.asc()).all()
+        records.append({
+            **schemas.FloodEventResponse.model_validate(event).model_dump(mode="json"),
+            **get_event_metrics(db=db, event=event),
+            "locations": [
+                schemas.FloodEventLocationResponse.model_validate(location).model_dump(mode="json")
+                for location in locations
+            ],
+            # These are event-owned historic copies, never the live routing source.
+            "zones": [
+                schemas.FloodAvoidanceZoneResponse.model_validate(zone).model_dump(mode="json")
+                for zone in zones
+            ],
+        })
+    return records
+
+
+@router.get("/flood-events/{event_id}/history-detail")
+def get_flood_event_history_detail(
+    event_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> dict[str, Any]:
+    """Return the staff-only event detail, evidence, and readable lifecycle timeline."""
+    event = db.get(models.FloodEvent, event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Flood Event not found")
+
+    locations = db.query(models.FloodEventLocation).filter(
+        models.FloodEventLocation.event_id == event.id
+    ).order_by(models.FloodEventLocation.location_type, models.FloodEventLocation.display_name).all()
+    zones = db.query(models.FloodAvoidanceZone).filter(
+        models.FloodAvoidanceZone.event_id == event.id
+    ).order_by(models.FloodAvoidanceZone.created_at.asc()).all()
+    reports = db.query(models.FloodReport).filter(
+        models.FloodReport.event_id == event.id,
+        models.FloodReport.deleted_at.is_(None),
+    ).order_by(models.FloodReport.created_at.asc()).all()
+    timeline = db.query(models.FloodEventTimelineEntry).filter(
+        models.FloodEventTimelineEntry.event_id == event.id
+    ).order_by(models.FloodEventTimelineEntry.occurred_at.asc()).all()
+
+    return {
+        **schemas.FloodEventResponse.model_validate(event).model_dump(mode="json"),
+        **get_event_metrics(db=db, event=event),
+        "locations": [schemas.FloodEventLocationResponse.model_validate(location).model_dump(mode="json") for location in locations],
+        "zones": [schemas.FloodAvoidanceZoneResponse.model_validate(zone).model_dump(mode="json") for zone in zones],
+        "reports": [schemas.FloodReportResponse.model_validate(report).model_dump(mode="json") for report in reports],
+        "timeline": [schemas.FloodEventTimelineEntryResponse.model_validate(entry).model_dump(mode="json") for entry in timeline],
+    }
+
+
 @router.post("/reports/{report_id}/approve", response_model=schemas.FloodReportResponse)
 async def approve_report(
     report_id: int,

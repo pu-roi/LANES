@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   ClipboardList,
   Flag,
+  History,
   Archive,
   Database,
   Settings,
@@ -24,15 +25,16 @@ import { Button } from "@/shared/ui";
 import { useSidebarStore } from "@/shared/stores/sidebarStore";
 
 const navItems = [
-  { name: "Dashboard",          href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Spatial Operations", href: "/admin/map",       icon: Map },
-  { name: "User Registry",      href: "/admin/users",     icon: Users },
-  { name: "Roles",              href: "/admin/roles",     icon: ShieldCheck },
-  { name: "Audit Trail",        href: "/admin/audit",     icon: ClipboardList },
-  { name: "Moderation Center",  href: "/admin/moderation",icon: Flag },
-  { name: "Archive Center",     href: "/admin/archive",   icon: Archive },
-  { name: "Data Management",    href: "/admin/data",      icon: Database },
-  { name: "System Settings",    href: "/admin/settings",  icon: Settings },
+  { name: "Dashboard",                 href: "/admin/dashboard",     icon: LayoutDashboard },
+  { name: "Spatial Operations",        href: "/admin/map",           icon: Map },
+  { name: "Moderation Center",         href: "/admin/moderation",    icon: Flag },
+  { name: "Flood History & Analytics", href: "/admin/flood-history", icon: History },
+  { name: "User Registry",             href: "/admin/users",         icon: Users },
+  { name: "Roles",                     href: "/admin/roles",         icon: ShieldCheck },
+  { name: "Audit Trail",               href: "/admin/audit",         icon: ClipboardList },
+  { name: "Archive Center",            href: "/admin/archive",       icon: Archive },
+  { name: "Data Management",           href: "/admin/data",          icon: Database },
+  { name: "System Settings",           href: "/admin/settings",      icon: Settings },
 ];
 
 export default function AdminSidebar() {
@@ -73,7 +75,7 @@ export default function AdminSidebar() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 py-4 flex flex-col gap-1.5 overflow-hidden px-2">
+        <nav className="flex-1 py-4 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden px-2">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
