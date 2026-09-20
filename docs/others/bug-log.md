@@ -1,9 +1,39 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 20, 2026, 11:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 1:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-050] Unique Constraint Collision When Re-creating Soft-Deleted User Accounts & Unhandled 500 Banner
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Backend / Admin / Database / User Lifecycle
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When an administrator attempted to create a new user account in the User Registry (`POST /api/v1/admin/users`) with an email or username that belonged to a previously soft-deleted/archived user, the backend crashed with an unhandled `500 Internal Server Error` (`psycopg.errors.UniqueViolation: duplicate key value violates unique constraint "ix_users_email"`), and the frontend showed a red inline banner `"Operation Refused - Internal Server Error"`.
+
+#### 2. Root Cause Analysis (RCA)
+1. Soft-deletion in LANES sets `deleted_at = datetime.utcnow()` without physically deleting the user row in PostgreSQL to preserve activity history.
+2. The `users` table has global `UNIQUE` indexes on `email` (`ix_users_email`) and `username` (`ix_users_username`).
+3. The user creation handler checked `crud.get_user_by_email()`, which only queries active accounts (`deleted_at IS NULL`). When the new user record was inserted, PostgreSQL rejected the duplicate key.
+4. The endpoint lacked an `IntegrityError` rollback handler, causing FastAPI to throw an unhandled 500 error.
+5. In the frontend `UsersPage.tsx`, mutation failures triggered a raw inline error banner instead of utilizing the shared toast system (`useToast`).
+
+#### 3. Solution & Architectural Strategy
+1. **Archive Purge & Recreation**: Updated `create_admin_user` in `admin.py` to identify any soft-deleted records holding the clean email or username and purge them via `crud.hard_delete_user()` before inserting the new user.
+2. **Safe Commit & Conflict Handling**: Wrapped database commits in a `try...except IntegrityError` block with `db.rollback()`, returning a structured `409 Conflict` if duplicate values occur.
+3. **Shared Toast UI**: Removed the inline `Operation Refused` alert banner in `UsersPage.tsx` and connected all user mutation callbacks to `toast.success` and `toast.error`.
+4. **Archive Management**: Added `restoreUser` (`POST /api/v1/admin/users/{user_id}/restore`) and `hardDeleteUser` (`DELETE /api/v1/admin/users/{user_id}/permanent`) endpoints.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Added stale archive purge, `IntegrityError` rollback, and user restore/permanent delete endpoints.
+- `frontend/src/features/admin/adminApi.ts`: Added `restoreUser` and `hardDeleteUser` API callers.
+- `frontend/src/features/admin/UsersPage.tsx`: Removed inline `Operation Refused` banner and wired mutations to `useToast`.
 
 ---
 

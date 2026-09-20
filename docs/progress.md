@@ -1,7 +1,26 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 1:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+---
+
+### Capstone Phase 34: 30-Day Archive Retention Lifecycle, Auto-Purge Worker, Delete Controls & User Self-Deletion (🟢 COMPLETED)
+- [x] **Automatic 30-Day Archive Retention & Background Worker (`retention_service.py`, `main.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Implemented automated cleanup service purging soft-deleted records older than 30 days (`users`, `community_posts`, `flood_reports`, `flood_avoidance_zones`).
+  - Integrated periodic background task in FastAPI lifespan that runs daily without blocking API requests or database connections.
+  - Added on-demand administrator trigger endpoint `POST /api/v1/admin/archive/purge-expired`.
+- [x] **User Account Restoration & Permanent Purge Controls (`admin.py`, `adminApi.ts`, `ArchivePage.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added dedicated endpoints `POST /api/v1/admin/users/{user_id}/restore` and `DELETE /api/v1/admin/users/{user_id}/permanent`.
+  - Added explicit "Restore User" and "Delete Permanently" actions with typed confirmation in Archive Center.
+  - Added color-coded 30-day countdown badges indicating remaining days before permanent auto-purge.
+- [x] **Public User Self-Deletion Danger Zone (`users.py`, `auth.py`, `ProfileView.tsx`, `useProfile.ts`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Added `DELETE /api/v1/users/me` endpoint allowing citizens to deactivate their own accounts.
+  - Added Danger Zone in Profile Settings with confirmation modal requiring typed `"DELETE"` verification.
+  - Integrated 30-day reactivation grace period: logging in within 30 days automatically restores the deactivated account with welcome-back notification.
+- [x] **Soft-Deleted User Re-creation Conflict Mitigation (`admin.py`, `UsersPage.tsx`, [`BUG-050`])** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Resolved `psycopg.errors.UniqueViolation` when re-creating accounts previously archived by purging stale archived records prior to user insertion.
+  - Replaced raw inline error banners with shared toast system (`useToast`).
 
 ---
 
@@ -18,32 +37,11 @@
 
 | # | Milestone | Status | Key Features Delivered |
 |---|-----------|--------|------------------------|
+| 34 | 30-Day Archive Retention Lifecycle, Auto-Purge Worker, Delete Controls & User Self-Deletion | Completed | Automatic 30-day retention countdown and daily background purge worker (`retention_service.py`), explicit user account restoration (`POST /admin/users/{id}/restore`) and permanent purge (`DELETE /admin/users/{id}/permanent`), manual on-demand purge trigger (`POST /admin/archive/purge-expired`), public user self-deletion Danger Zone modal (`DELETE /users/me`) with 30-day login grace period, and unique constraint conflict mitigation ([`BUG-050`]) |
+| 33 | Flood Event Lifecycle Foundation & Historical Tracking | In Progress | Verified Flood Event persistence model, server-owned duration/evidence metrics, idempotent report operations, and staff Moderation Center queue |
 | 32 | Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing | Completed | Unified compact net score vote pill (`▲ Net Score ▼`), instant 0ms optimistic updates with tri-state transitions and flip mechanics across Feed, Post Detail, and Profile, authoritative `VoteResponse` backend synchronization, and clean built-in disaster/civic recency duration (72h / 3 days) with graceful fallback |
 | 31 | Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening | Completed | Google Cloud Build CI/CD pipeline automation (`cloudbuild.yaml`), automated Alembic database migration execution via Cloud Run Job (`lanes-migration --wait`) before web service rollout, and Cloud Logging option hardening (`CLOUD_LOGGING_ONLY`) |
 | 30 | Community Feed & Profile Post Tab Spaced Card UI Redesign | Completed | Replaced dividing lines with standalone card architecture (`space-y-3 sm:space-y-4`), mobile margin padding (`px-3 sm:px-0`), Profile post tab de-nesting, and post count badge |
-
----
-
-### Capstone Phase 32: Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing (🟢 COMPLETED)
-- [x] **Reddit-Style Unified Vote Pill (`PostItem.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
-  - Consolidates the upvote arrow, net score, and downvote arrow into a unified compact pill: `▲ Net Score ▼`.
-  - Added active state highlight styling: subtle blue tint and filled blue arrow when upvoted; subtle rose tint and filled rose arrow when downvoted.
-  - Retained full precision breakdown (`X upvotes, Y downvotes`) in the native hover tooltip.
-  - Enhanced horizontal space efficiency on narrow mobile screens (360px).
-- [x] **True Optimistic UI Updates & Error Rollbacks (`FeedPage.tsx`, `PostDetailPage.tsx`, `ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
-  - Implemented `onMutate` optimistic state transitions in TanStack Query `useMutation` across Feed, Post Detail modal, and Profile post views.
-  - Applies instant score calculation in 0ms (fresh vote $+1$/$-1$, flip $\pm 2$, and un-vote toggle).
-  - Rolls back to snapshot and prompts user on network failure or session expiration.
-  - Eliminates the previous 50-post feed re-fetch lag after voting.
-- [x] **Clean Built-in Disaster/Civic Recency Windowing (`FeedPage.tsx`, `feed.py`, `crud/feed.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
-  - Maintained a clean social media interface without unnecessary UI button clutter by embedding the 72-hour (3-day) DRRMO flood lifecycle directly into the Recent feed query.
-  - Implemented automatic fallback to latest posts if no items exist in the 72h window, ensuring the feed is never an empty screen.
-- [x] **Authoritative Backend Voting Response (`schemas/feed.py`, `crud/interaction.py`, `endpoints/feed.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
-  - Defined `VoteResponse` Pydantic model (`post_id`, `upvotes`, `downvotes`, `net_score`, `user_interaction`).
-  - Added `get_post_vote_summary` in `crud/interaction.py` to return the updated authoritative counts directly in `POST /feed/{post_id}/vote`.
-  - Added unit test suite `tests/test_feed_voting.py` verifying schema contracts.
-
-### Capstone Phase 31: Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening (🟢 COMPLETED)
 | 29 | Archive Center Redesign, Spatial Avoidance Zones Archive, Admin Removal Notifications & Media Gallery | Completed | Complete Archive Center overhaul (Users, Spatial Data [Reports/Zones], Archived Posts [Deleted/Hidden]), community post soft-deletion on feed, admin removal reason modal with in-app author notifications, avoidance zone media gallery, PostGIS/SSE zone restore & purge, and typed 'DELETE' permanent purge protection |
 | 28 | Database Connection Pool Resilience, Profile Photo Management & Dev UX Optimization | Completed | Ephemeral DB sessions for SSE streaming (/sync & /sse), NullPool/QueuePool connection starvation resolution, full profile picture viewer modal & Cloudinary upload pipeline, optimistic privacy toggle sync, and Next.js dev indicator cleanup |
 | 27 | Edit Flood Zone Geometry Switching, TerraDraw Collision Hardening & Production Weather Insights | Completed | Non-destructive mode switching (Line ↔ Polygon), Option 2 reference map styling, TerraDraw source collision resolution (Source 'td-polygon' already exists), BaseMap MapTiler 403 reload throttling, and production AI Weather Insights gateway routing on Firebase App Hosting |
@@ -77,6 +75,25 @@
 ---
 
 ## Capstone Roadmap - Delivered Phases
+
+### Capstone Phase 32: Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing (🟢 COMPLETED)
+- [x] **Reddit-Style Unified Vote Pill (`PostItem.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Consolidates the upvote arrow, net score, and downvote arrow into a unified compact pill: `▲ Net Score ▼`.
+  - Added active state highlight styling: subtle blue tint and filled blue arrow when upvoted; subtle rose tint and filled rose arrow when downvoted.
+  - Retained full precision breakdown (`X upvotes, Y downvotes`) in the native hover tooltip.
+  - Enhanced horizontal space efficiency on narrow mobile screens (360px).
+- [x] **True Optimistic UI Updates & Error Rollbacks (`FeedPage.tsx`, `PostDetailPage.tsx`, `ProfileView.tsx`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Implemented `onMutate` optimistic state transitions in TanStack Query `useMutation` across Feed, Post Detail modal, and Profile post views.
+  - Applies instant score calculation in 0ms (fresh vote $+1$/$-1$, flip $\pm 2$, and un-vote toggle).
+  - Rolls back to snapshot and prompts user on network failure or session expiration.
+  - Eliminates the previous 50-post feed re-fetch lag after voting.
+- [x] **Clean Built-in Disaster/Civic Recency Windowing (`FeedPage.tsx`, `feed.py`, `crud/feed.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Maintained a clean social media interface without unnecessary UI button clutter by embedding the 72-hour (3-day) DRRMO flood lifecycle directly into the Recent feed query.
+  - Implemented automatic fallback to latest posts if no items exist in the 72h window, ensuring the feed is never an empty screen.
+- [x] **Authoritative Backend Voting Response (`schemas/feed.py`, `crud/interaction.py`, `endpoints/feed.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Defined `VoteResponse` Pydantic model (`post_id`, `upvotes`, `downvotes`, `net_score`, `user_interaction`).
+  - Added `get_post_vote_summary` in `crud/interaction.py` to return the updated authoritative counts directly in `POST /feed/{post_id}/vote`.
+  - Added unit test suite `tests/test_feed_voting.py` verifying schema contracts.
 
 ### Capstone Phase 31: Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening (🟢 COMPLETED)
 - [x] **Automated Database Migration via Cloud Run Job (`cloudbuild.yaml`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):

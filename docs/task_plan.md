@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 1:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
@@ -130,6 +130,13 @@ Official admin-created Flood Zone ───────────────�
 - [ ] **Analytics gate:** Citywide totals use distinct Flood Events; barangay/road recurrence handles multi-location events correctly; report volume is visibly separate from event count.
 - [ ] **UX gate:** Spatial Operations, Moderation Center, Archive Center, Audit Trail, and Flood History & Analytics each have one clear purpose with no duplicate moderation actions; desktop and mobile flows are verified.
 - [ ] **Quality gate:** Migration, backend tests, frontend checks, security/authorization review, and documentation synchronization are complete before marking the phase delivered.
+
+### Capstone Phase 34: 30-Day Archive Retention Lifecycle, Auto-Purge Worker, Delete Controls & User Self-Deletion (🟢 COMPLETED)
+> **Focus:** Automatic 30-day retention countdown and background purge worker (`retention_service.py`), explicit user account restoration (`POST /admin/users/{id}/restore`) and permanent purge (`DELETE /admin/users/{id}/permanent`), manual on-demand purge trigger (`POST /admin/archive/purge-expired`), public user self-deletion Danger Zone modal (`DELETE /users/me`) with 30-day login grace period, and unique constraint conflict mitigation ([`BUG-050`]). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> - [x] **Automatic 30-Day Archive Retention & Background Worker (`retention_service.py`, `main.py`)**: Daily background worker in FastAPI lifespan and on-demand purge trigger for records soft-deleted >30 days.
+> - [x] **Archive Center User Account Restoration & Permanent Purge Controls (`admin.py`, `ArchivePage.tsx`)**: Explicit restore and permanent deletion buttons with typed `"DELETE"` safety modal and 30-day countdown badges.
+> - [x] **Public User Self-Deletion & 30-Day Login Reactivation (`users.py`, `auth.py`, `ProfileView.tsx`)**: User self-deactivation Danger Zone with typed verification and automatic restoration upon login within 30 days.
+> - [x] **Soft-Deleted User Re-creation Conflict Mitigation (`admin.py`, `UsersPage.tsx`, [`BUG-050`])**: Purging stale soft-deleted accounts before new user insertion to avoid unique constraint violations and using toast notifications.
 
 ### Capstone Phase 32: Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing (🟢 COMPLETED)
 > **Focus:** Modernizing Community Feed voting mechanics to follow Reddit-style interaction standards (`▲ Net Score ▼`), implementing instant 0ms optimistic UI updates with automatic error rollbacks across Feed, Post Detail, and Profile, returning authoritative `VoteResponse` counts from FastAPI backend to eliminate 50-post re-fetch waste, and introducing DRRMO flood disaster life-cycle recency filtering with interactive time span pills (`Last 24 Hours`, `Last 3 Days` [Default], `All Time`). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

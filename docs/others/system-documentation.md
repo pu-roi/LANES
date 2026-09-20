@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 1:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -189,7 +189,7 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Hazard Reports** (submitted user reports with severity and approval status), **Community Posts** (user's authored community feed posts rendered as standalone spaced cards with post count indicator badge and unboxed background styling), and **Settings** (instant optimistic privacy toggles for profile visibility, full name display, and hide profile picture). Includes an interactive avatar header with click-to-preview high-resolution modal, Cloudinary photo upload with loading spinner, and remove picture actions. |
+| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Hazard Reports** (submitted user reports with severity and approval status), **Community Posts** (user's authored community feed posts rendered as standalone spaced cards with post count indicator badge and unboxed background styling), and **Settings** (instant optimistic privacy toggles for profile visibility, full name display, hide profile picture, and account Danger Zone for self-deletion with 30-day grace period). Includes an interactive avatar header with click-to-preview high-resolution modal, Cloudinary photo upload with loading spinner, and remove picture actions. |
 | `SavedRoutesList.tsx` | `src/features/profile/SavedRoutesList.tsx` — Sub-component inside ProfileView that lists the user's saved map places with their custom icons and addresses, and a delete button for each. |
 
 ### Backend Calls from This Page
@@ -198,6 +198,7 @@ These files are **always present** regardless of which page you are on.
 |----------|---------|
 | `GET /api/v1/users/me` | Load current user's full profile data |
 | `PATCH /api/v1/users/me/profile` | Update profile fields and privacy toggles |
+| `DELETE /api/v1/users/me` | Self-deactivate account with a 30-day recovery grace period |
 | `POST /api/v1/users/me/avatar` | Upload and attach a profile picture to Cloudinary |
 | `DELETE /api/v1/users/me/avatar` | Remove the custom profile picture and revert to initial avatar |
 | `PUT /api/v1/users/me/password` | Change password (requires current password) |
@@ -303,7 +304,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
 | `/admin/moderation` | `ModerationCenterPage.tsx`, `components/FloodModerationQueue.tsx` | Staff-only tabbed Community Post and Flood Report tracking using the shared underline `Tabs` component. Flood cases show their outcome/context and filters, then provide a single **Review on Map** handoff; no spatial approval/rejection controls are duplicated here. The responsive action area remains clear of the mobile bottom navigation. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
-| `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with three primary tabs: **Archived Users** (soft-deleted commuter accounts with status toggles), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). |
+| `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with 30-day auto-purge retention lifecycle across three primary tabs: **Archived Users** (soft-deleted commuter accounts with 30-day countdown badge, restore action, and typed `"DELETE"` permanent purge), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). Includes on-demand manual trigger to purge expired records. |
 
 > **Flood Event lifecycle update (Phase 33):** `/admin/map` remains the only operational moderation workspace. `RejectFloodReportModal` requires a structured reason, keeps rejected evidence out of Archive Center, and notifies the submitting user through the existing bell without disclosing internal notes. Approving/merging a report or directly creating an official zone creates or links a verified Flood Event; server services calculate event metrics, record readable zone/severity timeline entries, and end the event when its final live zone ends.
 
@@ -326,6 +327,9 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `GET /api/v1/admin/moderation/flood-reports` | Admin-only Flood Report moderation cases with status, source, date, location, reporter, and rejection-reason filters; provides safe map-focus coordinates |
 | `GET /api/v1/admin/users` | All users with role and profile info |
 | `PUT /api/v1/admin/users/{id}` | Update user role or active status |
+| `POST /api/v1/admin/users/{id}/restore` | Restore a soft-deleted/archived user account and profile |
+| `DELETE /api/v1/admin/users/{id}/permanent` | Permanently hard-delete a user account and profile |
+| `POST /api/v1/admin/archive/purge-expired` | Manually execute 30-day auto-purge on expired archived users, posts, reports, and zones |
 | `GET /api/v1/admin/roles` | All roles with their permission matrices |
 | `POST /api/v1/admin/roles` | Create a new role |
 | `PUT /api/v1/admin/roles/{id}` | Update role permissions |
@@ -338,17 +342,6 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `PUT /api/v1/admin/zones/{id}` | Update zone geometry, status, or expiry |
 | `DELETE /api/v1/admin/zones/{id}` | Permanently delete a zone |
 | `POST /api/v1/admin/reports/{id}/restore` | Restore a genuinely soft-deleted flood report; rejected reports remain a durable moderation outcome |
-| `DELETE /api/v1/admin/reports/{id}/permanent` | Permanently hard-delete a flood report from the archive |
-| `POST /api/v1/admin/zones/{id}/restore` | Reactivate a deactivated or expired avoidance zone |
-| `DELETE /api/v1/admin/zones/{id}/permanent` | Permanently hard-delete an avoidance zone from the archive |
-| `GET /api/v1/admin/posts/archived` | Paginated soft-deleted and hidden community posts with search and filter |
-| `POST /api/v1/admin/posts/{id}/restore` | Restore soft-deleted or hidden post back to the public community feed |
-| `DELETE /api/v1/admin/posts/{id}/permanent` | Permanently hard-delete a community post from the database |
-
----
-
-## 11. Backend API Reference
-
 **Base URL:** `http://localhost:8000/api/v1`
 **Framework:** FastAPI (Python) with SQLAlchemy 2.x ORM
 **Authentication:** JWT Bearer tokens — stored in `localStorage` on the frontend, sent as `Authorization: Bearer <token>` header
@@ -385,6 +378,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |
 | **Weather Proxy** | Fetches data from the OpenWeatherMap API, transforms and caches the response, and serves it to the frontend |
 | **SSE Broadcaster & LiveSync** | Pushes real-time notification events, active zone changes, and cache invalidations to connected clients via Server-Sent Events. Centralized in `sse.ts` to stream directly from FastAPI port 8000 in dev/LAN environments to bypass dev proxy response buffering, with unconditional unmount cleanup in `useLiveSync.ts` avoiding zombie reconnect loops. The backend `/sync/stream` polls using a short-lived worker-thread SQLAlchemy session per snapshot, so an open stream does not retain a database-pool connection. |
+| **Data Retention & Auto-Purge Service (`retention_service.py`)** | Executes daily periodic background tasks and on-demand triggers to permanently purge soft-deleted users, posts, reports, and zones that exceed the 30-day retention window |
 | **Hotline Aggregator** | Fetches and parses national and Pasig emergency contact pages, normalizes phone numbers for `tel:` links, and caches results for one hour |
 
 ---
