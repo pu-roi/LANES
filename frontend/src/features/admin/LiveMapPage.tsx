@@ -32,6 +32,7 @@ import { PendingReportsPanel } from "./components/PendingReportsPanel";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
+import { RejectFloodReportModal } from "./components/RejectFloodReportModal";
 import { CreateOfficialZonePanel } from "./components/CreateOfficialZonePanel";
 import type { ZoneSubmissionItem } from "./components/zones";
 import { MergeWorkspacePanel } from "./components/merge/MergeWorkspacePanel";
@@ -208,6 +209,7 @@ export default function LiveMapPage() {
   const [selectedContributorId, setSelectedContributorId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
+  const [rejectionReport, setRejectionReport] = useState<FloodReport | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
   const [editingZone, setEditingZone] = useState<AvoidanceZone | null>(null);
   const previousAdminId = useRef<string | null>(null);
@@ -623,12 +625,14 @@ export default function LiveMapPage() {
   });
 
   const rejectMutation = useMutation({
-    mutationFn: (id: number) => rejectReport(id),
-    onSuccess: (_data, id) => {
+    mutationFn: ({ id, payload }: { id: number; payload: Parameters<typeof rejectReport>[1] }) => rejectReport(id, payload),
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["adminPendingReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
-      setSelectedReportId((current) => current === id ? null : current);
-      toast.success("Report Rejected", `Flood report #${id} has been rejected and moved to the Archive Center.`);
+      setSelectedReportId((current) => current === variables.id ? null : current);
+      setRejectionReport(null);
+      setInfoModalReport(null);
+      toast.success("Report Rejected", `Flood report #${variables.id} was retained in internal moderation history.`);
     },
     onError: (err: any) => {
       toast.error("Rejection Failed", err?.response?.data?.detail || err?.message || "Could not reject report.");
@@ -826,7 +830,7 @@ export default function LiveMapPage() {
               setSelectedReportId={handleReportFocusChange}
               onInfoClick={(r) => setInfoModalReport(r)}
               onOpenMergeWorkspace={openMergeWorkspace}
-              rejectMutation={rejectMutation}
+              onRequestReject={setRejectionReport}
               approveMutation={approveMutation}
             />
           )}
@@ -1318,17 +1322,27 @@ export default function LiveMapPage() {
           }
         }}
         onApprove={(id) => {
-          approveMutation.mutate({ id, payload: { action: "ISOLATE" } });
+          approveMutation.mutate({ id, payload: { action: "CREATE_NEW" } });
           setInfoModalReport(null);
         }}
         onReject={(id) => {
-          rejectMutation.mutate(id);
+          const report = pendingReports?.find((item) => item.id === id) ?? infoModalReport;
+          setRejectionReport(report);
           setInfoModalReport(null);
         }}
         isApproveLoading={approveMutation.isPending}
         isRejectLoading={rejectMutation.isPending}
         onOpenMedia={(urls, idx) => {
           if (urls[idx]) window.open(urls[idx], "_blank");
+        }}
+      />
+      <RejectFloodReportModal
+        report={rejectionReport}
+        isOpen={rejectionReport !== null}
+        isSubmitting={rejectMutation.isPending}
+        onClose={() => setRejectionReport(null)}
+        onSubmit={(payload) => {
+          if (rejectionReport) rejectMutation.mutate({ id: rejectionReport.id, payload });
         }}
       />
       </div>

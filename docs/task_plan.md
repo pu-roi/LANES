@@ -1,15 +1,135 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 19, 2026, 1:40 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ---
 
 ## Backlog
 
-- [ ] (Empty for now)
+- [ ] **Capstone Phase 33 — Flood Event History, Records & City Planning Analytics**: In progress. The approved Flood Event persistence model and migration are deployed; verified official zones and approved reports now create/link events, structured rejection stays outside Archive Center, final-zone deactivation ends the event, and the staff Flood Report Moderation tracking tab is available. Historical records and planning analytics remain planned.
 
 ## Active Sprint (Next Feature)
+
+### Capstone Phase 33: Flood Event History, Records & City Planning Analytics (🟡 IN PROGRESS)
+> **Focus:** Preserve verified flooding as durable, city-useful historical Flood Events rather than recycle-bin records; retain original reports, evidence, locations, and zone changes; enable trustworthy event-based analytics for DRRMO/city planning; and keep live operational moderation, Archive Center, Moderation Center, and Audit Trail clearly separated. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+#### 1. Product Decisions Locked During Feature Discovery
+
+- **Flood Event is the permanent historical unit:** A `FloodAvoidanceZone` is a temporary operational routing barrier. When a verified flood begins, LANES creates or links to a durable Flood Event. When the last linked zone is deactivated, that event is marked **ended** and remains permanently available to authorized administrators.
+- **Official zones create events automatically:** An administrator-created official zone is already trusted and becomes active on the map immediately. It must also create a Flood Event even when there are no public reports, because it represents an official DRRMO operational decision.
+- **Deactivation has one business meaning:** Admin deactivation means the flood has ended. The linked Flood Event receives an ended timestamp and a calculated verified duration. If flooding is later verified again—even on the same road—it creates a **new** Flood Event. Recurrence is discovered through analytics; closed events are not silently reopened.
+- **Related reports are supporting evidence, not duplicates:** Multiple independent reports from people in the same area/time are corroborating observations for one Flood Event. They remain untouched as individual records and may increase confidence/report volume, but they must not multiply the number of flood events in citywide, barangay, or road rankings. Reserve “duplicate” for an actual accidental re-submission of the same report.
+- **True but related reports are merged/linked, never rejected:** A report confirmed to describe the same active event is approved as a supporting contributor and linked to the event/zone. It preserves its reporter, timestamp, original text, location, media, survey answers, and trust-credit behavior.
+- **Rejection is not archival:** A rejected report is a staff moderation outcome, not deleted historical flood evidence. It must leave the live map/queue and be excluded from Flood Event analytics. It remains discoverable to authorized staff through Flood Report Moderation with a structured reason and any applicable internal note.
+- **Structured rejection reasons are required:** The Spatial Operations rejection confirmation must require a reason such as `insufficient_evidence`, `incorrect_location_or_details`, `false_spam_or_malicious`, `outside_coverage_area`, or `withdrawn`; `other` requires a written note. A report that supports an existing event follows the merge/link path rather than rejection.
+- **Multiple affected locations are first-class:** A single Flood Event may affect multiple roads/streets and cross barangay boundaries. Analytics must never force it into a single location string.
+- **Admin-only historical intelligence:** The new **Flood History & Analytics** route belongs only in the Admin Panel. It must never be exposed through the public map or Community Feed. The existing map quick-insights panel remains unchanged for users who only need a short summary.
+- **One focused historical page:** The new page uses two primary tabs: (1) **Overview & Analytics** for dashboard-style bento summaries and charts; (2) **Flood Event Records** for a synchronized historical map and searchable records list. On desktop the map and list appear side by side; on mobile they stack or switch safely without a fixed navigation overlap.
+- **No duplicate moderation workspace:** Spatial Operations remains the only place that approves, merges, rejects, edits, or deactivates flood information because these decisions require map context. Moderation Center becomes the staff tracking/entry surface: its Flood Report Moderation tab links an item to Spatial Operations for review rather than duplicating action controls.
+- **Moderation Center and Audit Trail have distinct jobs:** Moderation Center organizes report cases/outcomes. Audit Trail remains the admin-only accountability record of what administrators did across the system. A Flood Event shows a readable incident timeline, not a raw technical audit log.
+- **Public condition updates are deferred:** A future public feature may allow “still active,” “worsening,” “receding,” or “road appears clear” submissions with optional evidence. It must create a staff review signal only; it must never automatically deactivate a zone. This feature is explicitly outside the current admin-focused phase.
+
+#### 2. Target Data and Lifecycle Contract
+
+```text
+Public / imported Flood Report ──> Pending moderation
+                                   │
+                                   ├─> Reject with a structured reason
+                                   │    └─> Flood Report Moderation history only
+                                   │        (not Archive Center; excluded from event analytics)
+                                   │
+                                   ├─> Approve or merge/link as supporting evidence
+                                   │    └─> Verified Flood Event ──> one or more live Flood Zones
+                                   │                                  │
+Official admin-created Flood Zone ────────────────────────────────────────────┘
+                                                                       │
+                                               Admin deactivates final live zone
+                                                                       │
+                                                                       v
+                                                    Ended Flood Event / Historical Record
+                                                    (records + event analytics + planning exports)
+```
+
+- **Archive Center is a recycle-bin/recovery tool only:** Keep it for genuinely soft-deleted users, posts, and intentionally archived/deleted records that may be restored or permanently purged. Do not send ended Flood Events or normal zone deactivations there.
+- **Live map only contains operational hazards:** Pending report geometry is visible only for admin verification. Active zones are visible to routing and map consumers. Ended events are absent from active routing layers.
+- **Historical records are evidence-preserving:** An event links to original reports and official zones; it does not denormalize/copy all reporter identity, media, raw descriptions, or survey data into one oversized event row. This protects 3NF integrity and lets staff open the original source record.
+- **Time semantics:** Persist both the earliest linked report timestamp (community detection signal) and the official verification/first-zone timestamp (operational response signal), plus the final-zone deactivation timestamp (official end). Duration is measured from verified start to official end; the UI may display all three timestamps distinctly.
+- **Severity semantics:** Event-level analytics use the highest **verified** severity/depth reached during the event (peak severity), not merely the last report submitted. Receding conditions do not erase the risk peak.
+- **Counting semantics:** Citywide totals count distinct Flood Events once. Barangay and road analyses count an event once for each affected barangay/road. Supporting-report count, reporter count, and media count are separate evidence/confidence metrics and never inflate flood-event recurrence rankings.
+
+#### 3. Phased Delivery Plan
+
+##### Phase 33.1 — Lifecycle Audit, Contract, and Migration Design
+- [x] Audit every current report/zone lifecycle path: approval, intelligent merge, direct official-zone creation, report rejection, archive/restore, zone deactivation, expiration, restoration, and permanent deletion.
+- [x] Replace the current conceptual coupling of `rejected` with `deleted_at` in the proposed lifecycle contract. Define explicit moderation and historical states before changing persistence.
+- [x] Confirm schema design with the human developer **before** modifying SQLAlchemy models or generating Alembic migrations, as required by project rules.
+- [x] Produce a reviewed 3NF ERD/migration design covering at minimum: `flood_events`, event-to-report relationships, event-to-zone relationships or zone event ownership, normalized event locations (road/barangay/city and optional geometry), structured report-rejection outcome fields/history, and event timeline entries/snapshots.
+- [x] Define indexes for event status/time filters, event locations, report/zone foreign keys, and PostGIS geometry queries. Confirm GIST indexes and SRID 4326 policy for any new spatial fields.
+- [x] Define legacy-data handling: do not silently reinterpret past archived zones/rejected reports as verified history. Provide a deliberate backfill/classification policy and document any records that cannot be safely migrated.
+
+##### Phase 33.2 — Verified Flood Event Domain Model and Services
+- [x] Add the approved models, typed Pydantic schemas, CRUD functions, and service-layer orchestration only after schema approval.
+- [x] Implement transactional event creation from: (a) approved/merged reports that create a new operational zone and (b) direct official admin-zone creation.
+- [x] Support one event with many original reports, many zones, many affected roads, and many barangays; preserve current report-to-zone contributor relationships where needed for live operations.
+- [x] Implement verified event start, official zone-created, final deactivation/end, duration, peak verified severity/depth, evidence counts, and status calculation in server services—not in Next.js.
+- [x] Prevent accidental duplicate event creation during repeated requests, retries, or merges through explicit idempotent/transactional rules.
+- [x] Keep all protected reads/writes admin-authorized with `Depends(get_current_user)`/role checks and ensure user-specific report evidence cannot be exposed through an IDOR path.
+
+##### Phase 33.3 — Flood Report Moderation Outcomes and Spatial Operations Handoff
+- [x] Add a rejection confirmation modal to `/admin/map` → Pending Flood Reports. It must show key evidence/context and require a structured rejection reason; require an internal explanation when the reason is `other`.
+- [x] Preserve the existing map-first verification workflow. Do not create direct approve/reject controls in a second page.
+- [x] Clearly present related true reports as **supporting reports** or **corroborating reports** in merge review; avoid calling them duplicates in the operator UI.
+- [x] Keep merge/link as the correct path for true reports about the same event. Preserve individual evidence, original wording, geometry, timestamps, contributors, and relevant trust credit.
+- [x] Record readable event-timeline entries for report linkage, official-zone creation, zone expansion/edit, verified severity/depth change, and final deactivation. Keep technical actor/IP/detail information in Audit Trail.
+- [x] Update active-zone deactivation so it ends the event only when the event has no remaining active zones. Define an explicit service rule for expiry-driven deactivation that matches the same end semantics.
+
+##### Phase 33.4 — Moderation Center Flood Report Tab
+- [x] Extend the existing staff-only Moderation Center with clear top-level/tabbed separation between Community Post Reports and Flood Report Moderation.
+- [x] Show flood moderation status, submitted report context, structured rejection reason, resolution timestamp, and assigned/acting administrator where appropriate.
+- [x] Provide a single **Review on Map** action that opens/focuses the relevant item in Spatial Operations. This is navigation/context handoff only, not a second spatial moderation workspace.
+- [x] Include filters for pending, approved/linked, rejected, date, location, reporter/source, and rejection reason as supported by final data design.
+- [x] Keep rejected reports out of the live routing map and Flood Event analytics while retaining them for internal moderation-quality review.
+
+##### Phase 33.5 — Admin-only Flood History & Analytics Information Architecture
+- [ ] Add an admin-protected sidebar route named **Flood History & Analytics**. Do not add a public-map link or change the existing public quick-insights panel.
+- [ ] Build the **Overview & Analytics** tab as an at-a-glance dashboard, using bento cards and charts without duplicating the same figures in a second vertical section.
+- [ ] Build the **Flood Event Records** tab with synchronized filters, historical MapLibre layers, and a searchable event table/list. Desktop layout: map and list side by side. Mobile layout: safely stacked or explicitly switchable map/list views with safe-area-aware bottom spacing.
+- [ ] Reuse the shared `BaseMap` and feature-based map hooks; create separate historical sources/layers from the active zone/routing layers so history never contaminates live navigation.
+- [ ] Selecting a map feature selects the corresponding list row; selecting a row focuses the event on the map. Filter controls include date range, barangay, road/street, severity, status, and recurrence-related filters agreed during implementation.
+- [ ] Provide an event-detail drawer/modal that keeps the administrator in context. It includes official event summary, affected places, source zones, readable incident timeline, evidence counts, and a compact supporting-reports table. Each report has a **View** action opening full original details: reporter, timestamps, description, exact geometry, media, passability/hidden-hazard survey, and moderation outcome.
+
+##### Phase 33.6 — Event-Based Planning Analytics and Exports
+- [ ] Replace/augment report-count-only historical analytics with event-based aggregation queries. Existing quick insights may remain a simple summary, but Flood History & Analytics must use the distinct-event counting rules above.
+- [ ] Deliver city-planning metrics: total ended events, recurring barangays, most frequently affected roads/streets, peak severity distribution, event duration distribution/average, events over time, and supporting-report volume as a separate confidence signal.
+- [ ] Use a historical map visual appropriate to the selected question (event footprints/clusters/recurrence), with accessible non-color indicators and understandable legends. Do not imply that intensity is exact flood depth when it represents event frequency.
+- [ ] Permit authorized CSV/JSON export of filtered event records and aggregate analytics for city planning/offline reporting. Separate report-level evidence exports from aggregate event analytics and keep personally sensitive fields out of default planning exports.
+- [ ] Define labels/tooltips that distinguish **Flood Events**, **supporting reports**, **active zones**, **peak verified severity**, and **official duration** so administrators do not mistake evidence count for incident count.
+
+##### Phase 33.7 — Safety, Data Quality, and Verification
+- [ ] Write backend tests for: event creation from official zones; event creation/linking from approved reports; related supporting reports; peak-severity calculation; multi-road/multi-barangay relationships; final-zone deactivation ending an event; new verified flooding creating a new event; rejection-reason validation; analytics counting rules; and authorization/IDOR protection.
+- [ ] Write UI tests/manual test scripts for the rejection modal, merge/link language, Moderation Center → Spatial Operations handoff, records filters, synchronized map/list selection, event detail report **View** action, desktop layout, and mobile layout.
+- [ ] Test Alembic migrations cleanly with `alembic upgrade head` and document all model/schema migration effects before release.
+- [ ] Perform a privacy/security review: no public access to Flood History & Analytics; no reporter/private evidence leakage in aggregate analytics or exports; Audit Trail remains append-only; no swallowed server or UI errors.
+- [ ] Update system documentation, database design plan, feature reference when warranted, progress tracker after actual delivery, and architectural decisions only for confirmed major architecture changes.
+
+#### 4. Explicit Non-Goals for This Phase
+
+- [ ] Do not build the public “Update flood conditions” workflow yet. Record it as a future feature requiring rate limits, one-open-update/cooldown rules, evidence handling, and staff confirmation.
+- [ ] Do not let a public report automatically create, end, reactivate, or alter a live routing zone/event.
+- [ ] Do not expose admin historical records, reporter identities, unredacted evidence, or planning exports to public users.
+- [ ] Do not use Archive Center as the home for ended verified Flood Events or ordinary deactivated zones.
+- [ ] Do not hard-delete, overwrite, merge, or mutate original crowdsourced reports merely because they support the same Flood Event.
+- [ ] Do not treat raw audit-log rows as the readable historical flood timeline.
+
+#### 5. Delivery Gates and Definition of Done
+
+- [ ] **Product gate:** The developer explicitly approves the proposed schema/migration design before data models change.
+- [ ] **Operational gate:** An admin can create/verify a live zone, observe its associated Flood Event, deactivate the last active zone, and find the ended event in Flood History & Analytics—not Archive Center.
+- [ ] **Integrity gate:** A true supporting report is linked to the event without creating a second incident; an invalid report is rejected with a structured reason and remains in staff moderation history only.
+- [ ] **Analytics gate:** Citywide totals use distinct Flood Events; barangay/road recurrence handles multi-location events correctly; report volume is visibly separate from event count.
+- [ ] **UX gate:** Spatial Operations, Moderation Center, Archive Center, Audit Trail, and Flood History & Analytics each have one clear purpose with no duplicate moderation actions; desktop and mobile flows are verified.
+- [ ] **Quality gate:** Migration, backend tests, frontend checks, security/authorization review, and documentation synchronization are complete before marking the phase delivered.
 
 ### Capstone Phase 32: Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing (🟢 COMPLETED)
 > **Focus:** Modernizing Community Feed voting mechanics to follow Reddit-style interaction standards (`▲ Net Score ▼`), implementing instant 0ms optimistic UI updates with automatic error rollbacks across Feed, Post Detail, and Profile, returning authoritative `VoteResponse` counts from FastAPI backend to eliminate 50-post re-fetch waste, and introducing DRRMO flood disaster life-cycle recency filtering with interactive time span pills (`Last 24 Hours`, `Last 3 Days` [Default], `All Time`). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

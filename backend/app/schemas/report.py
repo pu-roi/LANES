@@ -1,7 +1,7 @@
 from datetime import datetime
 import struct
 from typing import Any, Literal, Optional, Union
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from geoalchemy2.elements import WKBElement
 
 from app.schemas.common import (
@@ -18,7 +18,7 @@ from app.schemas.common import (
 )
 
 
-from app.models.report import ReportSource, ReportSeverity, ReportStatus, HazardPresence
+from app.models.report import ReportSource, ReportSeverity, ReportStatus, HazardPresence, ReportRejectionReason
 
 class SurveyData(BaseModel):
     passable_vehicles: Optional[str] = None
@@ -63,6 +63,7 @@ class FloodReportResponse(FloodReportBase):
     updated_at: datetime
     approved_at: Optional[datetime] = None
     zone_id: Optional[int] = None
+    event_id: Optional[int] = None
     survey: Optional[SurveyDataResponse] = None
     reporter_name: Optional[str] = "System"
     reporter_username: Optional[str] = None
@@ -185,6 +186,7 @@ class ZoneContributorResponse(BaseModel):
 class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     id: int
     report_id: Optional[int] = None
+    event_id: Optional[int] = None
     curated_by_admin_id: Optional[int] = None
     name: Optional[str] = None
     severity_override: Optional[ReportSeverity] = None
@@ -278,9 +280,20 @@ class ApproveReportRequest(BaseModel):
     target_zone_id: Optional[int] = None
     custom_geometry: Optional[PolygonGeometry] = None
     buffer_radius: Optional[float] = None
-    severity: Optional[str] = None
+    severity: Optional[ReportSeverity] = None
     depth: Optional[str] = None
     admin_notes: Optional[str] = None
+
+
+class RejectFloodReportRequest(BaseModel):
+    reason: ReportRejectionReason
+    internal_note: Optional[str] = None
+
+    @model_validator(mode="after")
+    def require_note_for_other(self) -> "RejectFloodReportRequest":
+        if self.reason == ReportRejectionReason.OTHER and not (self.internal_note and self.internal_note.strip()):
+            raise ValueError("An internal note is required when rejection reason is 'other'.")
+        return self
 
 
 class NearbyZoneResponse(BaseModel):
@@ -309,6 +322,15 @@ class AvoidanceZoneUpdateRequest(BaseModel):
 
 class MergePendingReportsRequest(BaseModel):
     report_ids: list[int]
+
+    @field_validator("report_ids")
+    @classmethod
+    def require_unique_report_ids(cls, value: list[int]) -> list[int]:
+        if not value:
+            raise ValueError("Select at least one pending report to merge.")
+        if len(value) != len(set(value)):
+            raise ValueError("A report can be selected only once per batch merge.")
+        return value
 
 
 class MergePendingReportsResponse(BaseModel):

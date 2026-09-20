@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 19, 2026, 2:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -301,9 +301,11 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
-| `/admin/moderation` | `ModerationCenterPage.tsx` | Staff-only Community Post moderation queue. Open reports are grouped into one case per post and can be dismissed, warned, or soft-hidden. The responsive action area remains clear of the mobile bottom navigation. |
+| `/admin/moderation` | `ModerationCenterPage.tsx`, `components/FloodModerationQueue.tsx` | Staff-only tabbed Community Post and Flood Report tracking using the shared underline `Tabs` component. Flood cases show their outcome/context and filters, then provide a single **Review on Map** handoff; no spatial approval/rejection controls are duplicated here. The responsive action area remains clear of the mobile bottom navigation. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
 | `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with three primary tabs: **Archived Users** (soft-deleted commuter accounts with status toggles), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). |
+
+> **Flood Event lifecycle update (Phase 33):** `/admin/map` remains the only operational moderation workspace. `RejectFloodReportModal` requires a structured reason, keeps rejected evidence out of Archive Center, and notifies the submitting user through the existing bell without disclosing internal notes. Approving/merging a report or directly creating an official zone creates or links a verified Flood Event; server services calculate event metrics, record readable zone/severity timeline entries, and end the event when its final live zone ends.
 
 ### Backend Calls (Admin)
 
@@ -311,7 +313,8 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 |----------|---------|
 | `GET /api/v1/admin/reports` | Paginated admin view of all reports with filters |
 | `PUT /api/v1/admin/reports/{id}/approve` | Approve report, auto-generates flood avoidance zone polygon |
-| `PUT /api/v1/admin/reports/{id}/reject` | Reject report with a reason (updates trust score) |
+| `POST /api/v1/admin/reports/{id}/reject` | Reject report with a structured reason, moderation outcome, trust update, and reporter notification |
+| `GET /api/v1/admin/flood-events/{id}/summary` | Admin-only server-calculated event duration, evidence, zone, location, peak, and status metrics |
 | `POST /api/v1/admin/zones` | Create official flood avoidance zone (multipart `FormData` with JSON `body` and `media` files) |
 | `GET /api/v1/admin/zones/{id}` | Retrieve the current shared zone before resuming an account-private Edit Zone draft |
 | `PUT /api/v1/admin/zones/{id}` | Update existing avoidance zone metadata, depth, severity, passability, and notes |
@@ -320,6 +323,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `POST /api/v1/admin/reports/merge` | Multi-report merge into a new or existing avoidance zone |
 | `GET /api/v1/admin/moderation/reports` | Staff-only list of open (or resolved) Community Post moderation cases, grouped by post |
 | `POST /api/v1/admin/moderation/posts/{id}/resolve` | Atomically dismiss, warn, or soft-hide a Community Post and resolve all its open reports |
+| `GET /api/v1/admin/moderation/flood-reports` | Admin-only Flood Report moderation cases with status, source, date, location, reporter, and rejection-reason filters; provides safe map-focus coordinates |
 | `GET /api/v1/admin/users` | All users with role and profile info |
 | `PUT /api/v1/admin/users/{id}` | Update user role or active status |
 | `GET /api/v1/admin/roles` | All roles with their permission matrices |
@@ -333,7 +337,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `POST /api/v1/admin/zones` | Manually create a new zone polygon |
 | `PUT /api/v1/admin/zones/{id}` | Update zone geometry, status, or expiry |
 | `DELETE /api/v1/admin/zones/{id}` | Permanently delete a zone |
-| `POST /api/v1/admin/reports/{id}/restore` | Restore rejected or soft-deleted flood report back to pending moderation |
+| `POST /api/v1/admin/reports/{id}/restore` | Restore a genuinely soft-deleted flood report; rejected reports remain a durable moderation outcome |
 | `DELETE /api/v1/admin/reports/{id}/permanent` | Permanently hard-delete a flood report from the archive |
 | `POST /api/v1/admin/zones/{id}/restore` | Reactivate a deactivated or expired avoidance zone |
 | `DELETE /api/v1/admin/zones/{id}/permanent` | Permanently hard-delete an avoidance zone from the archive |

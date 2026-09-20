@@ -47,6 +47,7 @@ export interface FloodReport {
   media_urls?: string[];
   status: "pending" | "approved" | "rejected";
   zone_id?: number | null;
+  event_id?: number | null;
   barangay?: string | null;
   city?: string | null;
   human_readable_location?: string | null;
@@ -72,6 +73,11 @@ export interface ApproveReportPayload {
   buffer_radius?: number;
   severity?: string;
   depth?: string;
+}
+
+export interface RejectFloodReportPayload {
+  reason: "insufficient_evidence" | "incorrect_location_or_details" | "false_spam_or_malicious" | "outside_coverage_area" | "withdrawn" | "other";
+  internal_note?: string;
 }
 
 export interface NearbyZone {
@@ -153,8 +159,8 @@ export async function approveReport(reportId: number, payload?: ApproveReportPay
   return apiClient.post<FloodReport>(`/admin/reports/${reportId}/approve`, payload || { action: "CREATE_NEW" });
 }
 
-export async function rejectReport(reportId: number): Promise<FloodReport> {
-  return apiClient.post<FloodReport>(`/admin/reports/${reportId}/reject`, {});
+export async function rejectReport(reportId: number, payload: RejectFloodReportPayload): Promise<FloodReport> {
+  return apiClient.post<FloodReport>(`/admin/reports/${reportId}/reject`, payload);
 }
 
 export async function restoreReport(reportId: number): Promise<FloodReport> {

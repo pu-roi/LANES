@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 17, 2026, 1:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -372,3 +372,24 @@ We needed a way to submit multiple disconnected or connected reports in one go, 
 - [`frontend/src/features/admin/components/ZoneDataEditorForm.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/ZoneDataEditorForm.tsx) — Rewritten with visual depth picker, survey isolation props, and buffer slider removal.
 - [`frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/zones/OfficialZoneDrawer.tsx) — Main modularized drawer supporting create & edit modes, media upload, and standalone Survey & Description sections.
 - [`frontend/src/features/admin/components/zones/subcomponents/`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/zones/subcomponents/) — Extracted `GeometryModeSelector.tsx`, `RoadSegmentPicker.tsx`, and `DraftZoneCart.tsx`.
+
+---
+
+## 19. Verified Flood Event History as the Permanent Incident Unit
+**Date:** September 2026
+**Decision:** Keep temporary routing zones and individual reports operationally distinct from a durable, admin-only Flood Event record. A verified report or official zone opens one event; corroborating reports link to that event; the final live zone ending closes it without moving the event into Archive Center.
+
+**Context:**
+The previous lifecycle could treat rejected reports and ended zones as recycle-bin records, while multiple reports about one incident had no durable common identity. That made event duration, recurrence, evidence confidence, and city-planning analytics unreliable.
+
+**Architectural Shifts & Technical Strategy:**
+1. Added normalized `flood_events`, `flood_event_locations`, `flood_report_moderation_outcomes`, and `flood_event_timeline_entries` tables with indexed event ownership and PostGIS-compatible location design.
+2. Centralized multi-table transitions in `flood_event_service.py`, including event creation, supporting-report linkage, structured rejection, final-zone ending, server-calculated metrics, timeline snapshots, and idempotent retries.
+3. Kept all historical reads admin-protected. The Moderation Center tracks outcomes and hands spatial decisions back to Spatial Operations; it does not duplicate map actions.
+4. Reused the shared underline `Tabs` component for the Moderation Center’s Community and Flood Report queues so staff navigation follows the established admin UI system.
+
+**Files Modified:**
+- [`backend/app/services/flood_event_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/flood_event_service.py) — Transactional event lifecycle and metrics.
+- [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — Protected moderation/event summary endpoints and lifecycle handoffs.
+- [`frontend/src/features/admin/ModerationCenterPage.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/ModerationCenterPage.tsx) — Shared tabbed moderation navigation.
+- [`frontend/src/features/admin/components/FloodModerationQueue.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/FloodModerationQueue.tsx) — Filtered staff tracking surface.

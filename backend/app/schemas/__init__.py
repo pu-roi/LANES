@@ -6,7 +6,7 @@ from app.schemas.report import (
     FloodAvoidanceZoneCreateOfficial, FloodAvoidanceZoneUpdate,
     FloodReportsPaginatedResponse, AdminDashboardStats,
     FloodAvoidanceZonesPaginatedResponse, AvoidanceZoneDeactivateBulkRequest,
-    AvoidanceZoneUpdateRequest, ApproveReportRequest, NearbyZoneResponse,
+    AvoidanceZoneUpdateRequest, ApproveReportRequest, RejectFloodReportRequest, NearbyZoneResponse,
     MergePendingReportsRequest, MergePendingReportsResponse,
     MergeConflict, MergeCandidateItem, MergeCandidatesListResponse,
     MergedZoneFinalData, MergeReportsRequest, MergeReportsResponse
@@ -34,3 +34,7 @@ from app.schemas.profile import ProfileBase, ProfileCreate, ProfileResponse, Pro
 from app.schemas.address import AddressBase, AddressCreate, AddressResponse, AddressUpdate
 from app.schemas.otp import OTPVerificationBase, OTPVerificationCreate, OTPVerificationResponse
 from app.schemas.contact import ContactMessageCreate, ContactMessageResponse
+from app.schemas.flood_event import (
+    FloodEventLocationResponse, FloodEventResponse, FloodEventTimelineEntryResponse,
+    FloodReportModerationOutcomeResponse,
+)

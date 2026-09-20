@@ -141,11 +141,19 @@ def test_batch_merge_pending_endpoint():
             db.add(profile_c)
             db.commit()
 
-        # Create active avoidance zone
+        # Create an active event-enabled avoidance zone. Batch merging is only
+        # allowed into verified events so the evidence has permanent history.
         zone_poly = "SRID=4326;POLYGON((121.07 14.58, 121.08 14.58, 121.08 14.59, 121.07 14.59, 121.07 14.58))"
+        event = models.FloodEvent(
+            status=models.FloodEventStatus.ACTIVE,
+            peak_severity=models.ReportSeverity.HIGH,
+        )
+        db.add(event)
+        db.flush()
         target_zone = models.FloodAvoidanceZone(
             geometry=WKTElement(zone_poly, srid=4326),
             is_active=True,
+            event_id=event.id,
         )
         db.add(target_zone)
         db.commit()
@@ -191,13 +199,36 @@ def test_batch_merge_pending_endpoint():
         db.refresh(rep_b)
         assert rep_a.status == models.ReportStatus.APPROVED
         assert rep_a.zone_id == target_zone.id
+        assert rep_a.event_id == event.id
         assert rep_b.status == models.ReportStatus.APPROVED
         assert rep_b.zone_id == target_zone.id
+        assert rep_b.event_id == event.id
+        assert (
+            db.query(models.FloodReportModerationOutcome)
+            .filter(models.FloodReportModerationOutcome.event_id == event.id)
+            .count()
+            == 2
+        )
+
+        # A transport retry must not create duplicate outcomes or re-credit users.
+        retry_resp = client.post(
+            f"/api/v1/admin/zones/{target_zone.id}/merge-pending",
+            json={"report_ids": [rep_a.id, rep_b.id]}
+        )
+        assert retry_resp.status_code == 200
+        assert retry_resp.json()["merged_count"] == 2
+        assert (
+            db.query(models.FloodReportModerationOutcome)
+            .filter(models.FloodReportModerationOutcome.event_id == event.id)
+            .count()
+            == 2
+        )
 
         # Clean up
         db.delete(rep_a)
         db.delete(rep_b)
         db.delete(target_zone)
+        db.delete(event)
         db.delete(user_c.profile)
         db.delete(user_c)
         db.commit()

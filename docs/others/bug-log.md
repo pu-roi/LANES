@@ -1,9 +1,36 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 19, 2026, 2:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 20, 2026, 11:05 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-049] Rejected Flood Reports Did Not Notify Their Submitter
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 20, 2026
+- **Affected Area**: Backend / Notifications / Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Rejecting a Flood Report removed it from the live moderation queue but did not create an in-app notification, leaving the reporter without a decision in the existing notification bell.
+
+#### 2. Root Cause Analysis (RCA)
+
+The structured rejection service wrote the report state and staff moderation outcome only; unlike Community Post moderation, it did not add a `Notification` in the same transaction.
+
+#### 3. Solution & Architectural Strategy
+
+The rejection service now creates a `SYSTEM` notification atomically with the outcome and trust update. It includes the selected rejection reason but deliberately excludes the internal staff note from both the message and payload.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/flood_event_service.py`: Adds the reporter notification to the rejection transaction.
+- `frontend/src/features/admin/components/RejectFloodReportModal.tsx`: Explains the user-notification and staff-note privacy behavior before confirmation.
+- `backend/tests/test_spatial_archive.py`: Verifies the notification payload and privacy boundary.
 
 ---
 

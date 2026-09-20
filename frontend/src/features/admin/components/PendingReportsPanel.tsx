@@ -13,7 +13,7 @@ interface PendingReportsPanelProps {
   setSelectedReportId: (id: number | null) => void;
   onInfoClick: (report: FloodReport) => void;
   onOpenMergeWorkspace: (report: FloodReport) => void;
-  rejectMutation: UseMutationResult<FloodReport, Error, number, unknown>;
+  onRequestReject: (report: FloodReport) => void;
   approveMutation: UseMutationResult<FloodReport, Error, { id: number; payload?: ApproveReportPayload }, unknown>;
 }
 
@@ -25,7 +25,7 @@ export function PendingReportsPanel({
   setSelectedReportId,
   onInfoClick,
   onOpenMergeWorkspace,
-  rejectMutation,
+  onRequestReject,
   approveMutation,
 }: PendingReportsPanelProps) {
 
@@ -163,8 +163,7 @@ export function PendingReportsPanel({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => rejectMutation.mutate(report.id)}
-                disabled={rejectMutation.isPending}
+                onClick={() => onRequestReject(report)}
                 className="h-7 text-xs px-2.5 text-gray-600 hover:bg-gray-100 rounded-lg"
               >
                 <X className="w-3.5 h-3.5 mr-1 text-red-500" /> Reject

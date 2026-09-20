@@ -27,11 +27,12 @@ client = TestClient(app)
 
 def test_spatial_report_archive_lifecycle(db_session: Session):
     admin = override_get_current_active_admin(db_session)
+    notification_id = None
     
     # 1. Create a test pending report
     report = models.FloodReport(
         raw_text="Test flood for archive lifecycle",
-        source=ReportSource.CITIZEN,
+        source=ReportSource.USER_REPORT,
         severity=ReportSeverity.HIGH,
         status=ReportStatus.PENDING,
         user_id=admin.id
@@ -43,41 +44,61 @@ def test_spatial_report_archive_lifecycle(db_session: Session):
 
     try:
         # 2. Reject the report via admin endpoint
-        reject_resp = client.post(f"/api/v1/admin/reports/{report_id}/reject")
+        reject_resp = client.post(
+            f"/api/v1/admin/reports/{report_id}/reject",
+            json={"reason": "insufficient_evidence"},
+        )
         assert reject_resp.status_code == 200
         rejected_data = reject_resp.json()
         assert rejected_data["status"] == "rejected"
 
-        # Verify deleted_at is set in database
+        # Rejection is a moderation outcome, not an archive operation.
         db_session.expire_all()
         reloaded = db_session.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
-        assert reloaded.deleted_at is not None
+        assert reloaded.deleted_at is None
         assert reloaded.status == ReportStatus.REJECTED
+        outcome = db_session.query(models.FloodReportModerationOutcome).filter(
+            models.FloodReportModerationOutcome.report_id == report_id
+        ).one()
+        assert outcome.rejection_reason.value == "insufficient_evidence"
+        notification = next(
+            notification
+            for notification in db_session.query(models.Notification).filter(
+                models.Notification.user_id == admin.id
+            ).all()
+            if notification.payload.get("report_id") == report_id
+        )
+        notification_id = notification.id
+        assert notification.payload["action"] == "flood_report_rejected"
+        assert notification.payload["rejection_reason"] == "insufficient_evidence"
+        assert "internal" not in notification.message.lower()
 
-        # 3. Verify it appears in archived reports query
+        flood_moderation_resp = client.get(
+            "/api/v1/admin/moderation/flood-reports?status_filter=rejected&rejection_reason=insufficient_evidence"
+        )
+        assert flood_moderation_resp.status_code == 200
+        moderation_case = next(case for case in flood_moderation_resp.json() if case["report_id"] == report_id)
+        assert moderation_case["resolution"] == "rejected"
+        assert moderation_case["rejection_reason"] == "insufficient_evidence"
+        assert moderation_case["acting_admin"] == admin.username
+
+        # 3. Verify it remains outside Archive Center and visible to staff by status.
         archived_resp = client.get("/api/v1/admin/reports/all?archived=true")
         assert archived_resp.status_code == 200
         archived_ids = [r["id"] for r in archived_resp.json()["reports"]]
-        assert report_id in archived_ids
+        assert report_id not in archived_ids
 
-        # Verify it does NOT appear in active reports query
-        active_resp = client.get("/api/v1/admin/reports/all?archived=false")
-        assert active_resp.status_code == 200
-        active_ids = [r["id"] for r in active_resp.json()["reports"]]
-        assert report_id not in active_ids
+        moderation_resp = client.get("/api/v1/admin/reports/all?archived=false&status=rejected")
+        assert moderation_resp.status_code == 200
+        moderation_ids = [r["id"] for r in moderation_resp.json()["reports"]]
+        assert report_id in moderation_ids
 
-        # 4. Restore the report
+        # 4. A rejected report cannot be "restored" because it was never archived.
         restore_resp = client.post(f"/api/v1/admin/reports/{report_id}/restore")
-        assert restore_resp.status_code == 200
-        restored_data = restore_resp.json()
-        assert restored_data["status"] == "pending"
+        assert restore_resp.status_code == 404
 
-        db_session.expire_all()
-        restored = db_session.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
-        assert restored.deleted_at is None
-        assert restored.status == ReportStatus.PENDING
-
-        # 5. Permanently delete the report
+        # 5. A non-event-linked rejected report can still be permanently deleted
+        # through the explicit recovery/retention workflow.
         perm_resp = client.delete(f"/api/v1/admin/reports/{report_id}/permanent")
         assert perm_resp.status_code == 200
 
@@ -87,6 +108,8 @@ def test_spatial_report_archive_lifecycle(db_session: Session):
 
     finally:
         # Cleanup
+        if notification_id is not None:
+            db_session.query(models.Notification).filter(models.Notification.id == notification_id).delete()
         db_session.query(models.FloodReport).filter(models.FloodReport.id == report_id).delete()
         db_session.commit()
 

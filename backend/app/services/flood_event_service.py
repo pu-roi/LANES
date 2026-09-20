@@ -1,0 +1,423 @@
+"""Transactional lifecycle services for verified Flood Events.
+
+Route handlers delegate here so event history, operational zones, report outcomes,
+and reporter trust are updated as one server-side unit of work.
+"""
+
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Any, Optional
+
+from sqlalchemy import func
+from sqlalchemy.orm import Session
+
+from app import models, schemas
+from app.crud.report import create_flood_avoidance_zone, credit_user_verified_report, penalize_user_rejected_report
+from app.models.notification import Notification, NotificationType
+
+
+_SEVERITY_ORDER = {
+    models.ReportSeverity.LOW: 1,
+    models.ReportSeverity.MEDIUM: 2,
+    models.ReportSeverity.HIGH: 3,
+    models.ReportSeverity.EXTREME: 4,
+}
+
+_REJECTION_NOTIFICATION_REASONS = {
+    models.ReportRejectionReason.INSUFFICIENT_EVIDENCE: "insufficient supporting evidence",
+    models.ReportRejectionReason.INCORRECT_LOCATION_OR_DETAILS: "incorrect location or details",
+    models.ReportRejectionReason.FALSE_SPAM_OR_MALICIOUS: "a report classified as false, spam, or malicious",
+    models.ReportRejectionReason.OUTSIDE_COVERAGE_AREA: "outside the current coverage area",
+    models.ReportRejectionReason.WITHDRAWN: "a withdrawn report",
+    models.ReportRejectionReason.OTHER: "the review details provided by the moderation team",
+}
+
+
+def _severity_value(value: models.ReportSeverity | str) -> models.ReportSeverity:
+    return value if isinstance(value, models.ReportSeverity) else models.ReportSeverity(value)
+
+
+def _is_more_severe(candidate: models.ReportSeverity, current: models.ReportSeverity) -> bool:
+    return _SEVERITY_ORDER[candidate] > _SEVERITY_ORDER[current]
+
+
+def _append_timeline(
+    db: Session,
+    event_id: int,
+    entry_type: str,
+    summary: str,
+    snapshot_json: Optional[dict[str, Any]] = None,
+    occurred_at: Optional[datetime] = None,
+) -> None:
+    db.add(models.FloodEventTimelineEntry(
+        event_id=event_id,
+        entry_type=entry_type,
+        summary=summary,
+        snapshot_json=snapshot_json,
+        occurred_at=occurred_at or datetime.utcnow(),
+    ))
+
+
+def _record_report_location_rows(db: Session, event: models.FloodEvent, report: models.FloodReport) -> None:
+    locations = (
+        (models.FloodEventLocationType.ROAD, report.human_readable_location),
+        (models.FloodEventLocationType.BARANGAY, report.barangay),
+        (models.FloodEventLocationType.CITY, report.city),
+    )
+    for location_type, name in locations:
+        if not name or not name.strip():
+            continue
+        normalized_name = " ".join(name.split()).casefold()
+        exists = db.query(models.FloodEventLocation.id).filter(
+            models.FloodEventLocation.event_id == event.id,
+            models.FloodEventLocation.location_type == location_type,
+            models.FloodEventLocation.normalized_name == normalized_name,
+        ).first()
+        if not exists:
+            db.add(models.FloodEventLocation(
+                event_id=event.id,
+                location_type=location_type,
+                display_name=" ".join(name.split()),
+                normalized_name=normalized_name,
+            ))
+
+
+def get_event_metrics(
+    db: Session,
+    event: models.FloodEvent,
+    now: Optional[datetime] = None,
+) -> dict[str, Any]:
+    """Calculate durable event metrics on the server for admin history views."""
+    as_of = now or datetime.utcnow()
+    active_zone_count = db.query(models.FloodAvoidanceZone.id).filter(
+        models.FloodAvoidanceZone.event_id == event.id,
+        models.FloodAvoidanceZone.is_active.is_(True),
+        (models.FloodAvoidanceZone.expires_at.is_(None)) | (models.FloodAvoidanceZone.expires_at > as_of),
+    ).count()
+    end_time = event.ended_at or as_of
+    duration_seconds = max(0, int((end_time - event.verified_at).total_seconds()))
+    return {
+        "event_id": event.id,
+        "status": event.status.value,
+        "verified_at": event.verified_at,
+        "ended_at": event.ended_at,
+        "duration_seconds": duration_seconds,
+        "evidence_count": db.query(models.FloodReport.id).filter(
+            models.FloodReport.event_id == event.id,
+            models.FloodReport.status == models.ReportStatus.APPROVED,
+            models.FloodReport.deleted_at.is_(None),
+        ).count(),
+        "supporting_report_count": db.query(models.FloodReport.id).filter(
+            models.FloodReport.event_id == event.id,
+            models.FloodReport.status == models.ReportStatus.APPROVED,
+            models.FloodReport.deleted_at.is_(None),
+            models.FloodReport.zone_id.is_not(None),
+        ).count(),
+        "zone_count": db.query(models.FloodAvoidanceZone.id).filter(
+            models.FloodAvoidanceZone.event_id == event.id,
+        ).count(),
+        "active_zone_count": active_zone_count,
+        "location_count": db.query(models.FloodEventLocation.id).filter(
+            models.FloodEventLocation.event_id == event.id,
+        ).count(),
+        "peak_severity": event.peak_severity.value,
+        "peak_depth": event.peak_depth,
+    }
+
+
+def record_zone_update(
+    db: Session,
+    zone: models.FloodAvoidanceZone,
+    changes: dict[str, Any],
+    commit: bool = True,
+) -> None:
+    """Append a readable snapshot when staff change an event-owned zone."""
+    if not zone.event_id:
+        return
+    event = zone.flood_event or db.get(models.FloodEvent, zone.event_id)
+    if not event:
+        raise ValueError("The zone references a Flood Event that no longer exists.")
+    occurred_at = datetime.utcnow()
+    severity = zone.severity_override
+    if severity and _is_more_severe(_severity_value(severity), _severity_value(event.peak_severity)):
+        event.peak_severity = _severity_value(severity)
+        event.peak_depth = zone.depth_override
+        _append_timeline(
+            db, event.id, "severity_peak_changed",
+            "Verified event peak severity increased from an official zone update.",
+            {"peak_severity": event.peak_severity.value, "peak_depth": event.peak_depth}, occurred_at,
+        )
+    _append_timeline(
+        db, event.id, "zone_updated", "Official flood zone details were updated.",
+        {"zone_id": zone.id, "changes": changes}, occurred_at,
+    )
+    if commit:
+        db.commit()
+        db.refresh(zone)
+
+
+def create_verified_event_with_zone(
+    db: Session,
+    zone_input: schemas.FloodAvoidanceZoneCreate,
+    peak_severity: models.ReportSeverity | str,
+    peak_depth: Optional[str],
+    acted_by_user_id: int,
+    source_report: Optional[models.FloodReport] = None,
+    zone_snapshot: Optional[dict[str, Any]] = None,
+    zone_attributes: Optional[dict[str, Any]] = None,
+) -> tuple[models.FloodEvent, models.FloodAvoidanceZone]:
+    """Create a verified event and its first operational zone atomically."""
+    if source_report and source_report.event_id is not None:
+        existing_event = db.get(models.FloodEvent, source_report.event_id)
+        existing_zone = db.get(models.FloodAvoidanceZone, source_report.zone_id) if source_report.zone_id else None
+        if existing_event and existing_zone:
+            return existing_event, existing_zone
+        raise ValueError("The report has an incomplete existing Flood Event link and cannot be re-approved.")
+    severity = _severity_value(peak_severity)
+    verified_at = datetime.utcnow()
+    try:
+        event = models.FloodEvent(
+            status=models.FloodEventStatus.ACTIVE,
+            first_reported_at=source_report.created_at if source_report else None,
+            verified_at=verified_at,
+            peak_severity=severity,
+            peak_depth=peak_depth,
+        )
+        db.add(event)
+        db.flush()
+
+        zone = create_flood_avoidance_zone(db, zone_input, event_id=event.id, commit=False)
+        for attribute, value in (zone_attributes or {}).items():
+            setattr(zone, attribute, value)
+        if source_report:
+            source_report.event_id = event.id
+            source_report.zone_id = zone.id
+            source_report.status = models.ReportStatus.APPROVED
+            source_report.approved_at = verified_at
+            _record_report_location_rows(db, event, source_report)
+            db.add(models.FloodReportModerationOutcome(
+                report_id=source_report.id,
+                outcome=models.ReportModerationOutcomeType.APPROVED,
+                event_id=event.id,
+                zone_id=zone.id,
+                acted_by_user_id=acted_by_user_id,
+                acted_at=verified_at,
+            ))
+            if source_report.user_id:
+                credit_user_verified_report(db, source_report.user_id, commit=False)
+
+        _append_timeline(
+            db,
+            event.id,
+            "event_verified",
+            "Flood event verified and opened for live operations.",
+            {"peak_severity": severity.value, "peak_depth": peak_depth},
+            verified_at,
+        )
+        _append_timeline(
+            db,
+            event.id,
+            "zone_created",
+            "Official flood zone created for this event.",
+            {"zone_id": zone.id, **(zone_snapshot or {})},
+            verified_at,
+        )
+        db.commit()
+        db.refresh(event)
+        db.refresh(zone)
+        return event, zone
+    except Exception:
+        db.rollback()
+        raise
+
+
+def initialize_verified_event_for_zone(
+    db: Session,
+    zone: models.FloodAvoidanceZone,
+    peak_severity: models.ReportSeverity | str,
+    peak_depth: Optional[str],
+) -> models.FloodEvent:
+    """Attach a newly-created operational zone to its first Flood Event.
+
+    This helper intentionally does not commit so callers that build a custom
+    merged zone can persist the zone, event, and first supporting report in one
+    transaction.
+    """
+    if zone.event_id is not None:
+        raise ValueError("The zone is already linked to a Flood Event.")
+    severity = _severity_value(peak_severity)
+    verified_at = datetime.utcnow()
+    event = models.FloodEvent(
+        status=models.FloodEventStatus.ACTIVE,
+        verified_at=verified_at,
+        peak_severity=severity,
+        peak_depth=peak_depth,
+    )
+    db.add(event)
+    db.flush()
+    zone.event_id = event.id
+    _append_timeline(
+        db, event.id, "event_verified", "Flood event verified and opened for live operations.",
+        {"peak_severity": severity.value, "peak_depth": peak_depth}, verified_at,
+    )
+    _append_timeline(
+        db, event.id, "zone_created", "Official flood zone created for this event.",
+        {"zone_id": zone.id}, verified_at,
+    )
+    return event
+
+
+def link_supporting_report(
+    db: Session,
+    report: models.FloodReport,
+    event: models.FloodEvent,
+    zone: models.FloodAvoidanceZone,
+    acted_by_user_id: int,
+    commit: bool = True,
+) -> models.FloodReport:
+    """Approve a corroborating report without creating another event."""
+    if zone.event_id != event.id:
+        raise ValueError("The target zone does not belong to the target flood event.")
+    if report.event_id == event.id and report.status == models.ReportStatus.APPROVED:
+        return report
+    if report.status != models.ReportStatus.PENDING:
+        raise ValueError("Only pending reports can be linked as supporting evidence.")
+
+    try:
+        acted_at = datetime.utcnow()
+        report.event_id = event.id
+        report.zone_id = zone.id
+        report.status = models.ReportStatus.APPROVED
+        report.approved_at = acted_at
+        if event.first_reported_at is None or report.created_at < event.first_reported_at:
+            event.first_reported_at = report.created_at
+        report_severity = _severity_value(report.severity)
+        if _is_more_severe(report_severity, _severity_value(event.peak_severity)):
+            event.peak_severity = report_severity
+            event.peak_depth = report.depth
+            _append_timeline(
+                db, event.id, "severity_peak_changed",
+                "Verified event peak severity increased from supporting evidence.",
+                {"peak_severity": report_severity.value, "peak_depth": report.depth}, acted_at,
+            )
+        _record_report_location_rows(db, event, report)
+        db.add(models.FloodReportModerationOutcome(
+            report_id=report.id,
+            outcome=models.ReportModerationOutcomeType.LINKED,
+            event_id=event.id,
+            zone_id=zone.id,
+            acted_by_user_id=acted_by_user_id,
+            acted_at=acted_at,
+        ))
+        _append_timeline(
+            db, event.id, "report_linked", "Supporting flood report linked to this event.",
+            {"report_id": report.id, "zone_id": zone.id}, acted_at,
+        )
+        if report.user_id:
+            credit_user_verified_report(db, report.user_id, commit=False)
+        if commit:
+            db.commit()
+            db.refresh(report)
+        return report
+    except Exception:
+        db.rollback()
+        raise
+
+
+def reject_report(
+    db: Session,
+    report: models.FloodReport,
+    rejection_reason: models.ReportRejectionReason,
+    internal_note: Optional[str],
+    acted_by_user_id: int,
+) -> models.FloodReport:
+    """Record a structured moderation rejection without archiving evidence."""
+    if rejection_reason == models.ReportRejectionReason.OTHER and not (internal_note and internal_note.strip()):
+        raise ValueError("An internal note is required when rejection reason is 'other'.")
+    if report.status == models.ReportStatus.REJECTED:
+        return report
+    if report.status != models.ReportStatus.PENDING:
+        raise ValueError("Only pending reports can be rejected.")
+    try:
+        acted_at = datetime.utcnow()
+        report.status = models.ReportStatus.REJECTED
+        db.add(models.FloodReportModerationOutcome(
+            report_id=report.id,
+            outcome=models.ReportModerationOutcomeType.REJECTED,
+            rejection_reason=rejection_reason,
+            internal_note=internal_note.strip() if internal_note else None,
+            acted_by_user_id=acted_by_user_id,
+            acted_at=acted_at,
+        ))
+        if report.user_id:
+            penalize_user_rejected_report(db, report.user_id, commit=False)
+            # The reporter receives the decision and its structured public
+            # reason in the existing notification bell. Staff-only notes must
+            # never be included in this payload or message.
+            db.add(Notification(
+                user_id=report.user_id,
+                type=NotificationType.SYSTEM,
+                message=(
+                    "Your flood report was reviewed and was not added to the live map "
+                    f"because it had {_REJECTION_NOTIFICATION_REASONS[rejection_reason]}."
+                ),
+                payload={
+                    "report_id": report.id,
+                    "action": "flood_report_rejected",
+                    "rejection_reason": rejection_reason.value,
+                },
+            ))
+        db.commit()
+        db.refresh(report)
+        return report
+    except Exception:
+        db.rollback()
+        raise
+
+
+def deactivate_zone_and_end_event_if_final(
+    db: Session,
+    zone: models.FloodAvoidanceZone,
+    occurred_at: Optional[datetime] = None,
+) -> models.FloodAvoidanceZone:
+    """Deactivate one zone and end the event only when no live zones remain."""
+    occurred_at = occurred_at or datetime.utcnow()
+    if not zone.is_active:
+        return zone
+    try:
+        zone.is_active = False
+        event = zone.flood_event
+        if event:
+            remaining = db.query(models.FloodAvoidanceZone.id).filter(
+                models.FloodAvoidanceZone.event_id == event.id,
+                models.FloodAvoidanceZone.id != zone.id,
+                models.FloodAvoidanceZone.is_active.is_(True),
+                (models.FloodAvoidanceZone.expires_at.is_(None)) | (models.FloodAvoidanceZone.expires_at > occurred_at),
+            ).first()
+            if not remaining:
+                event.status = models.FloodEventStatus.ENDED
+                event.ended_at = occurred_at
+                _append_timeline(
+                    db, event.id, "event_ended", "All live flood zones for this event have ended.",
+                    {"final_zone_id": zone.id}, occurred_at,
+                )
+        db.commit()
+        db.refresh(zone)
+        return zone
+    except Exception:
+        db.rollback()
+        raise
+
+
+def expire_due_zones(db: Session, now: Optional[datetime] = None) -> int:
+    """End all due zones through the same lifecycle path as manual deactivation."""
+    cutoff = now or datetime.utcnow()
+    due_zones = db.query(models.FloodAvoidanceZone).filter(
+        models.FloodAvoidanceZone.is_active.is_(True),
+        models.FloodAvoidanceZone.expires_at.is_not(None),
+        models.FloodAvoidanceZone.expires_at <= cutoff,
+    ).all()
+    for zone in due_zones:
+        deactivate_zone_and_end_event_if_final(db=db, zone=zone, occurred_at=cutoff)
+    return len(due_zones)

@@ -4,16 +4,116 @@ from typing import List, Any, Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from app import crud, models, schemas
 from app.api import deps
 from app.core.database import get_db
 from app.models.post import CommunityPost, CommunityPostReport
 from app.models.notification import Notification, NotificationType
+from app.services.flood_event_service import (
+    create_verified_event_with_zone,
+    deactivate_zone_and_end_event_if_final,
+    get_event_metrics,
+    initialize_verified_event_for_zone,
+    link_supporting_report,
+    record_zone_update,
+    reject_report as reject_report_with_outcome,
+)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+
+@router.get("/moderation/flood-reports")
+def get_flood_report_moderation_cases(
+    status_filter: str = "all",
+    source: Optional[str] = None,
+    location: Optional[str] = None,
+    reporter: Optional[str] = None,
+    rejection_reason: Optional[str] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> list[dict]:
+    """List internal flood-report moderation cases without duplicating map actions."""
+    allowed_statuses = {"all", *(status.value for status in models.ReportStatus)}
+    if status_filter not in allowed_statuses:
+        raise HTTPException(status_code=422, detail="Invalid flood report moderation status")
+    allowed_reasons = {reason.value for reason in models.ReportRejectionReason}
+    if rejection_reason and rejection_reason not in allowed_reasons:
+        raise HTTPException(status_code=422, detail="Invalid rejection reason")
+    if limit < 1 or limit > 250:
+        raise HTTPException(status_code=422, detail="Limit must be between 1 and 250")
+
+    query = db.query(models.FloodReport).filter(models.FloodReport.deleted_at.is_(None))
+    if status_filter != "all":
+        query = query.filter(models.FloodReport.status == status_filter)
+    if source:
+        try:
+            query = query.filter(models.FloodReport.source == models.ReportSource(source))
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail="Invalid report source") from exc
+    if date_from:
+        query = query.filter(models.FloodReport.created_at >= date_from)
+    if date_to:
+        query = query.filter(models.FloodReport.created_at <= date_to)
+    if location:
+        pattern = f"%{location.strip()}%"
+        query = query.filter(or_(
+            models.FloodReport.human_readable_location.ilike(pattern),
+            models.FloodReport.barangay.ilike(pattern),
+            models.FloodReport.city.ilike(pattern),
+        ))
+    if reporter:
+        query = query.join(models.User, models.FloodReport.user_id == models.User.id).filter(
+            models.User.username.ilike(f"%{reporter.strip()}%")
+        )
+    if rejection_reason:
+        query = query.filter(models.FloodReport.moderation_outcomes.any(
+            models.FloodReportModerationOutcome.rejection_reason == rejection_reason
+        ))
+
+    reports = query.order_by(models.FloodReport.created_at.desc()).limit(limit).all()
+    cases: list[dict] = []
+    for report in reports:
+        outcome = (
+            db.query(models.FloodReportModerationOutcome)
+            .filter(models.FloodReportModerationOutcome.report_id == report.id)
+            .order_by(models.FloodReportModerationOutcome.acted_at.desc(), models.FloodReportModerationOutcome.id.desc())
+            .first()
+        )
+        acting_admin = db.get(models.User, outcome.acted_by_user_id) if outcome and outcome.acted_by_user_id else None
+        reporter_user = db.get(models.User, report.user_id) if report.user_id else None
+        longitude = latitude = None
+        if report.geometry is not None:
+            longitude, latitude = db.query(
+                func.ST_X(func.ST_Centroid(report.geometry)),
+                func.ST_Y(func.ST_Centroid(report.geometry)),
+            ).one()
+        cases.append({
+            "report_id": report.id,
+            "status": report.status.value,
+            "source": report.source.value,
+            "raw_text": report.raw_text,
+            "severity": report.severity.value,
+            "depth": report.depth,
+            "submitted_at": report.created_at,
+            "location": ", ".join(part for part in [report.human_readable_location, report.barangay, report.city] if part) or None,
+            "reporter": reporter_user.username if reporter_user else "System",
+            "event_id": report.event_id,
+            "zone_id": report.zone_id,
+            "resolution": outcome.outcome.value if outcome else None,
+            "rejection_reason": outcome.rejection_reason.value if outcome and outcome.rejection_reason else None,
+            "internal_note": outcome.internal_note if outcome else None,
+            "resolved_at": outcome.acted_at if outcome else None,
+            "acting_admin": acting_admin.username if acting_admin else None,
+            "latitude": latitude,
+            "longitude": longitude,
+        })
+    return cases
 
 @router.get("/moderation/reports")
 def get_community_post_reports(
@@ -160,6 +260,19 @@ def get_pending_reports(
     return crud.get_pending_flood_reports(db=db, skip=skip, limit=limit)
 
 
+@router.get("/flood-events/{event_id}/summary")
+def get_flood_event_summary(
+    event_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> dict[str, Any]:
+    """Return admin-only server-calculated lifecycle metrics for one Flood Event."""
+    event = db.get(models.FloodEvent, event_id)
+    if not event:
+        raise HTTPException(status_code=404, detail="Flood Event not found")
+    return get_event_metrics(db=db, event=event)
+
+
 @router.post("/reports/{report_id}/approve", response_model=schemas.FloodReportResponse)
 async def approve_report(
     report_id: int,
@@ -178,13 +291,12 @@ async def approve_report(
     report = crud.get_flood_report(db, report_id=report_id)
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    
-    # 1. Update report status and timestamp
-    report.status = models.ReportStatus.APPROVED
-    report.approved_at = datetime.utcnow()
-
-    db.commit()
-    db.refresh(report)
+    # A completed report carries its immutable event/zone association. Returning
+    # it makes client retries safe without creating a second Flood Event.
+    if report.status == models.ReportStatus.APPROVED and report.event_id and report.zone_id:
+        return report
+    if report.status != models.ReportStatus.PENDING:
+        raise HTTPException(status_code=409, detail="Only pending reports can be approved.")
 
     # 2. Reverse Geocoding via Photon if barangay is missing
     if not report.barangay and report.geometry is not None:
@@ -204,8 +316,7 @@ async def approve_report(
                             barangay = props.get("district") or props.get("locality") or props.get("city")
                             if barangay:
                                 report.barangay = barangay
-                                db.commit()
-                                db.refresh(report)
+                                db.flush()
         except Exception as e:
             print(f"Photon reverse geocode failed: {e}")
 
@@ -213,25 +324,48 @@ async def approve_report(
     action = body.action if body else "CREATE_NEW"
     target_zone = None
 
+    if action not in {"CREATE_NEW", "MERGE"}:
+        raise HTTPException(status_code=422, detail="Unsupported report approval action.")
+
     if action == "MERGE" and body and body.target_zone_id:
         # Merge report into existing active zone
         target_zone = db.query(models.FloodAvoidanceZone).filter(
             models.FloodAvoidanceZone.id == body.target_zone_id
         ).first()
-        if target_zone:
-            report.zone_id = target_zone.id
-            if body.custom_geometry:
-                geojson_str = body.custom_geometry.model_dump_json()
-                target_zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
-                target_zone.curated_by_admin_id = current_user.id
-            if body.severity:
-                target_zone.severity_override = body.severity
-            if body.depth:
-                target_zone.depth_override = body.depth
-            if body.admin_notes:
-                target_zone.admin_notes = body.admin_notes
-            db.commit()
-            db.refresh(target_zone)
+        if not target_zone:
+            raise HTTPException(status_code=404, detail="Target avoidance zone not found")
+        if not target_zone.is_active or target_zone.event_id is None:
+            raise HTTPException(
+                status_code=409,
+                detail="Select an active event-enabled zone, or create a new verified event.",
+            )
+        if body.custom_geometry:
+            geojson_str = body.custom_geometry.model_dump_json()
+            target_zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
+            target_zone.curated_by_admin_id = current_user.id
+        if body.severity:
+            target_zone.severity_override = body.severity
+        if body.depth:
+            target_zone.depth_override = body.depth
+        if body.admin_notes:
+            target_zone.admin_notes = body.admin_notes
+        try:
+            zone_changes = {
+                key: value
+                for key, value in body.model_dump(exclude_none=True, mode="json").items()
+                if key in {"custom_geometry", "severity", "depth", "admin_notes"}
+            }
+            if zone_changes:
+                record_zone_update(db=db, zone=target_zone, changes=zone_changes, commit=False)
+            link_supporting_report(
+                db=db,
+                report=report,
+                event=target_zone.flood_event,
+                zone=target_zone,
+                acted_by_user_id=current_user.id,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
     else:
         # Action is CREATE_NEW
         if body and body.custom_geometry:
@@ -242,15 +376,19 @@ async def approve_report(
                 curated_by_admin_id=current_user.id,
                 is_active=True
             )
-            target_zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
-            if body.severity:
-                target_zone.severity_override = body.severity
-            if body.depth:
-                target_zone.depth_override = body.depth
-            if body.admin_notes:
-                target_zone.admin_notes = body.admin_notes
-            db.commit()
-            db.refresh(target_zone)
+            _, target_zone = create_verified_event_with_zone(
+                db=db,
+                zone_input=zone_in,
+                peak_severity=body.severity if body and body.severity else report.severity,
+                peak_depth=body.depth if body and body.depth else report.depth,
+                acted_by_user_id=current_user.id,
+                source_report=report,
+                zone_attributes={
+                    "severity_override": body.severity if body else None,
+                    "depth_override": body.depth if body else None,
+                    "admin_notes": body.admin_notes if body else None,
+                },
+            )
         elif report.geometry is not None:
             # Auto-calculate buffer polygon via PostGIS
             geom_type = db.query(func.ST_GeometryType(report.geometry)).scalar()
@@ -299,19 +437,22 @@ async def approve_report(
                     geometry=polygon,
                     is_active=True
                 )
-                target_zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
-                if body and body.severity:
-                    target_zone.severity_override = body.severity
-                if body and body.depth:
-                    target_zone.depth_override = body.depth
-                if body and body.admin_notes:
-                    target_zone.admin_notes = body.admin_notes
-                db.commit()
-                db.refresh(target_zone)
+                _, target_zone = create_verified_event_with_zone(
+                    db=db,
+                    zone_input=zone_in,
+                    peak_severity=body.severity if body and body.severity else report.severity,
+                    peak_depth=body.depth if body and body.depth else report.depth,
+                    acted_by_user_id=current_user.id,
+                    source_report=report,
+                    zone_attributes={
+                        "severity_override": body.severity if body else None,
+                        "depth_override": body.depth if body else None,
+                        "admin_notes": body.admin_notes if body else None,
+                    },
+                )
 
-    # 4. Award Trust Score & Verification credit to reporter
-    if report.user_id:
-        crud.credit_user_verified_report(db, user_id=report.user_id)
+    if not target_zone:
+        raise HTTPException(status_code=422, detail="A valid geometry is required to create an official flood zone.")
 
     # 5. Audit Trail Logging
     client_ip = request.client.host if request.client else None
@@ -385,13 +526,31 @@ async def merge_reports(
     Requires admin privileges.
     """
     all_report_ids = list(dict.fromkeys([payload.primary_report_id] + payload.merged_report_ids))
-    reports = db.query(models.FloodReport).filter(
+    matched_reports = db.query(models.FloodReport).filter(
         models.FloodReport.id.in_(all_report_ids),
-        models.FloodReport.deleted_at.is_(None)
+        models.FloodReport.deleted_at.is_(None),
     ).all()
 
-    if not reports:
-        raise HTTPException(status_code=404, detail="No matching reports found to merge")
+    if len(matched_reports) != len(all_report_ids):
+        raise HTTPException(status_code=409, detail="All selected reports must still be available for merge.")
+
+    completed_zone_ids = {report.zone_id for report in matched_reports if report.status == models.ReportStatus.APPROVED and report.event_id and report.zone_id}
+    if len(completed_zone_ids) == 1 and len(completed_zone_ids) == len({report.zone_id for report in matched_reports}):
+        completed_zone_id = completed_zone_ids.pop()
+        if payload.target_zone_id is None or payload.target_zone_id == completed_zone_id:
+            completed_zone = db.get(models.FloodAvoidanceZone, completed_zone_id)
+            if completed_zone:
+                return schemas.MergeReportsResponse(
+                    message="Selected reports are already linked to this verified Flood Event.",
+                    zone_id=completed_zone.id,
+                    zone_name=completed_zone.name,
+                    merged_count=len(matched_reports),
+                    awarded_user_ids=[],
+                )
+
+    if any(report.status != models.ReportStatus.PENDING for report in matched_reports):
+        raise HTTPException(status_code=409, detail="All selected reports must still be pending and available for merge.")
+    reports = matched_reports
 
     final = payload.final_data
     target_zone = None
@@ -404,6 +563,8 @@ async def merge_reports(
         ).first()
         if not target_zone:
             raise HTTPException(status_code=404, detail=f"Target avoidance zone #{payload.target_zone_id} not found")
+        if not target_zone.is_active or target_zone.event_id is None:
+            raise HTTPException(status_code=409, detail="Select an active event-enabled zone, or create a new verified event.")
     else:
         # Create a new FloodAvoidanceZone
         created_new_zone = True
@@ -449,8 +610,16 @@ async def merge_reports(
             is_active=True
         )
         db.add(target_zone)
-        db.commit()
-        db.refresh(target_zone)
+        db.flush()
+        try:
+            initialize_verified_event_for_zone(
+                db=db,
+                zone=target_zone,
+                peak_severity=final.severity,
+                peak_depth=final.depth,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
     else:
         target_zone.curated_by_admin_id = current_user.id
         target_zone.geometry = final_poly_geom
@@ -467,20 +636,30 @@ async def merge_reports(
         if final.admin_notes:
             target_zone.admin_notes = final.admin_notes
         target_zone.is_active = True
+        db.flush()
+        record_zone_update(
+            db=db,
+            zone=target_zone,
+            changes={"merge_report_ids": all_report_ids, "official_overrides": final.model_dump(mode="json")},
+            commit=False,
+        )
+
+    # 4. Link all reports as corroborating evidence without creating duplicate events.
+    awarded_user_ids = list(dict.fromkeys(report.user_id for report in reports if report.user_id))
+    try:
+        for report in reports:
+            link_supporting_report(
+                db=db,
+                report=report,
+                event=target_zone.flood_event,
+                zone=target_zone,
+                acted_by_user_id=current_user.id,
+                commit=False,
+            )
         db.commit()
         db.refresh(target_zone)
-
-    # 4. Attach all reports to zone, approve them, and credit trust scores
-    awarded_user_ids = []
-    for report in reports:
-        report.zone_id = target_zone.id
-        report.status = models.ReportStatus.APPROVED
-        report.approved_at = datetime.utcnow()
-        if report.user_id and report.user_id not in awarded_user_ids:
-            crud.credit_user_verified_report(db, user_id=report.user_id)
-            awarded_user_ids.append(report.user_id)
-
-    db.commit()
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
     # 5. Audit Trail Logging
     client_ip = request.client.host if request.client else None
@@ -564,6 +743,7 @@ def get_nearby_zones(
 async def reject_report(
     report_id: int,
     request: Request,
+    payload: schemas.RejectFloodReportRequest,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> Any:
@@ -575,7 +755,16 @@ async def reject_report(
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
     
-    updated_report = crud.update_flood_report_status(db, report_id=report_id, status="rejected")
+    try:
+        updated_report = reject_report_with_outcome(
+            db=db,
+            report=report,
+            rejection_reason=payload.reason,
+            internal_note=payload.internal_note,
+            acted_by_user_id=current_user.id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
         db,
@@ -584,7 +773,11 @@ async def reject_report(
             action_type="REJECT_REPORT",
             target_table="flood_reports",
             target_id=report_id,
-            metadata_json={"report_id": report_id, "reason": "Admin manual rejection"},
+            metadata_json={
+                "report_id": report_id,
+                "reason": payload.reason.value,
+                "internal_note": payload.internal_note,
+            },
             ip_address=client_ip
         )
     )
@@ -687,7 +880,10 @@ async def permanent_delete_report(
     Permanently delete (hard-delete) a flood report from the archive.
     Requires admin privileges.
     """
-    success = crud.hard_delete_flood_report(db, report_id=report_id)
+    try:
+        success = crud.hard_delete_flood_report(db, report_id=report_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     if not success:
         raise HTTPException(status_code=404, detail="Report not found")
     
@@ -802,9 +998,10 @@ async def deactivate_zone(
     Deactivate a single flood avoidance zone (detour).
     Requires admin privileges.
     """
-    zone = crud.deactivate_flood_avoidance_zone(db=db, zone_id=zone_id)
+    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
+    zone = deactivate_zone_and_end_event_if_final(db=db, zone=zone)
 
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
@@ -841,6 +1038,9 @@ async def restore_zone(
     Restore a deactivated avoidance zone back to active.
     Requires admin privileges.
     """
+    existing_zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if existing_zone and existing_zone.flood_event and existing_zone.flood_event.status == models.FloodEventStatus.ENDED:
+        raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
     zone = crud.restore_flood_avoidance_zone(db=db, zone_id=zone_id)
     if not zone:
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
@@ -878,7 +1078,10 @@ async def permanent_delete_zone(
     Permanently delete (hard-delete) an avoidance zone from the archive.
     Requires admin privileges.
     """
-    success = crud.hard_delete_flood_avoidance_zone(db, zone_id=zone_id)
+    try:
+        success = crud.hard_delete_flood_avoidance_zone(db, zone_id=zone_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     if not success:
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
 
@@ -916,9 +1119,23 @@ async def update_zone(
     Update detour zone settings (is_active, expires_at).
     Requires admin privileges.
     """
-    zone = crud.update_flood_avoidance_zone(db=db, zone_id=zone_id, update_data=payload)
-    if not zone:
+    existing_zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if not existing_zone:
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
+    if payload.is_active is True and existing_zone.flood_event and existing_zone.flood_event.status == models.FloodEventStatus.ENDED:
+        raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
+    if payload.is_active is False:
+        if payload.expires_at is not None:
+            existing_zone.expires_at = payload.expires_at
+        zone = deactivate_zone_and_end_event_if_final(db=db, zone=existing_zone)
+    else:
+        zone = crud.update_flood_avoidance_zone(db=db, zone_id=zone_id, update_data=payload)
+        if zone.event_id:
+            record_zone_update(
+                db=db,
+                zone=zone,
+                changes=payload.model_dump(exclude_none=True, mode="json"),
+            )
 
     client_ip = request.client.host if request.client else None
     
@@ -967,9 +1184,10 @@ async def archive_zone(
     Archive (soft-delete / deactivate) a flood avoidance zone.
     Requires admin privileges.
     """
-    zone = crud.deactivate_flood_avoidance_zone(db=db, zone_id=zone_id)
+    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
+    zone = deactivate_zone_and_end_event_if_final(db=db, zone=zone)
 
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
@@ -1005,6 +1223,9 @@ async def restore_zone(
     Restore an archived (deactivated) flood avoidance zone.
     Requires admin privileges.
     """
+    existing_zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
+    if existing_zone and existing_zone.flood_event and existing_zone.flood_event.status == models.FloodEventStatus.ENDED:
+        raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
     zone = crud.update_flood_avoidance_zone(db=db, zone_id=zone_id, update_data=schemas.AvoidanceZoneUpdateRequest(is_active=True))
     if not zone:
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
@@ -1043,7 +1264,12 @@ async def deactivate_zones_bulk(
     Deactivate multiple flood avoidance zones (detours) in bulk.
     Requires admin privileges.
     """
-    count = crud.deactivate_flood_avoidance_zones_bulk(db=db, zone_ids=payload.zone_ids)
+    zones = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id.in_(payload.zone_ids)).all()
+    count = 0
+    for zone in zones:
+        if zone.is_active:
+            deactivate_zone_and_end_event_if_final(db=db, zone=zone)
+            count += 1
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
         db,
@@ -1289,33 +1515,69 @@ async def merge_pending_into_zone(
 ) -> Any:
     """
     Batch-approve a list of pending flood reports and merge them all into an
-    existing active avoidance zone. Credits +5 trust score to each reporter.
-    Requires admin privileges.
+    existing active avoidance zone. The zone must belong to an active Flood
+    Event so every approved report receives an event link and an immutable
+    moderation outcome. Requires admin privileges.
     """
     target_zone = db.query(models.FloodAvoidanceZone).filter(
         models.FloodAvoidanceZone.id == zone_id
     ).first()
     if not target_zone:
         raise HTTPException(status_code=404, detail="Target avoidance zone not found")
+    if not target_zone.is_active or not target_zone.event_id:
+        raise HTTPException(
+            status_code=409,
+            detail="Select an active event-enabled zone, or create a new Flood Event first.",
+        )
 
-    merged_count = 0
-    for report_id in payload.report_ids:
-        report = crud.get_flood_report(db, report_id=report_id)
-        if not report or report.status != models.ReportStatus.PENDING:
-            continue
+    target_event = db.get(models.FloodEvent, target_zone.event_id)
+    if not target_event or target_event.status != models.FloodEventStatus.ACTIVE:
+        raise HTTPException(status_code=409, detail="The target Flood Event is no longer active.")
 
-        # Approve and link report to zone
-        report.status = models.ReportStatus.APPROVED
-        report.approved_at = datetime.utcnow()
-        report.zone_id = target_zone.id
+    reports = [crud.get_flood_report(db, report_id=report_id) for report_id in payload.report_ids]
+    if all(
+        report
+        and report.status == models.ReportStatus.APPROVED
+        and report.event_id == target_event.id
+        and report.zone_id == target_zone.id
+        for report in reports
+    ):
+        return schemas.MergePendingReportsResponse(
+            message=f"Selected reports are already linked to Zone #{zone_id}",
+            merged_count=len(reports),
+            zone_id=zone_id,
+        )
+    invalid_ids = [
+        report_id
+        for report_id, report in zip(payload.report_ids, reports)
+        if not report or report.status != models.ReportStatus.PENDING or report.deleted_at is not None
+    ]
+    if invalid_ids:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Only pending, non-archived reports can be merged. Invalid report IDs: {invalid_ids}",
+        )
+
+    try:
+        for report in reports:
+            link_supporting_report(
+                db=db,
+                report=report,
+                event=target_event,
+                zone=target_zone,
+                acted_by_user_id=current_user.id,
+                commit=False,
+            )
         db.commit()
-        db.refresh(report)
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(status_code=409, detail=str(exc))
+    except Exception:
+        db.rollback()
+        logger.exception("Unable to batch-merge reports into zone %s", zone_id)
+        raise HTTPException(status_code=500, detail="Unable to merge reports. No changes were saved.")
 
-        # Award trust score to the reporter
-        if report.user_id:
-            crud.credit_user_verified_report(db, user_id=report.user_id)
-
-        merged_count += 1
+    merged_count = len(reports)
 
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
@@ -1407,30 +1669,40 @@ async def create_official_zone(
             logger.error("Unexpected buffered official-zone geometry type: %s", buffered_geometry.get("type"))
             raise HTTPException(status_code=422, detail="The road segment could not be converted into an avoidance zone.")
 
-    zone_in = schemas.FloodAvoidanceZoneCreate(
-        geometry=zone_geometry,
-        source_geometry=source_geometry,
-        curated_by_admin_id=current_user.id,
-        is_active=payload.is_active
-    )
-    zone = crud.create_flood_avoidance_zone(db, zone=zone_in)
-
-    # Upload media files to Cloudinary
     media_urls: List[str] = []
     for file in media:
         url = upload_image(file)
         if url:
             media_urls.append(url)
 
-    zone.name = payload.name
-    zone.severity_override = payload.severity_override
-    zone.depth_override = payload.depth_override
-    zone.passable_vehicles_override = payload.passable_vehicles_override
-    zone.hidden_hazards_override = payload.hidden_hazards_override
-    zone.admin_notes = payload.admin_notes
-    zone.media_urls = media_urls if media_urls else None
-    db.commit()
-    db.refresh(zone)
+    zone_in = schemas.FloodAvoidanceZoneCreate(
+        geometry=zone_geometry,
+        source_geometry=source_geometry,
+        curated_by_admin_id=current_user.id,
+        is_active=payload.is_active
+    )
+    _, zone = create_verified_event_with_zone(
+        db=db,
+        zone_input=zone_in,
+        peak_severity=payload.severity_override,
+        peak_depth=payload.depth_override,
+        acted_by_user_id=current_user.id,
+        zone_attributes={
+            "name": payload.name,
+            "severity_override": payload.severity_override,
+            "depth_override": payload.depth_override,
+            "passable_vehicles_override": payload.passable_vehicles_override,
+            "hidden_hazards_override": payload.hidden_hazards_override,
+            "admin_notes": payload.admin_notes,
+            "media_urls": media_urls or None,
+        },
+        zone_snapshot={
+            "name": payload.name,
+            "severity_override": payload.severity_override.value,
+            "depth_override": payload.depth_override,
+            "source_geometry_type": source_geometry.type if source_geometry else None,
+        },
+    )
 
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
@@ -1464,6 +1736,8 @@ def get_zone(
     zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
+    if body.is_active is True and zone.flood_event and zone.flood_event.status == models.FloodEventStatus.ENDED:
+        raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
     return _attach_report_media(zone)
 
 
@@ -1494,8 +1768,6 @@ async def update_zone(
         zone.passable_vehicles_override = body.passable_vehicles_override
     if body.hidden_hazards_override is not None:
         zone.hidden_hazards_override = body.hidden_hazards_override
-    if body.is_active is not None:
-        zone.is_active = body.is_active
     if body.geometry is not None:
         if body.geometry.type in {"LineString", "MultiLineString"}:
             # Preserve the exact routed centreline for later editing while the
@@ -1520,8 +1792,17 @@ async def update_zone(
             zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(body.geometry.model_dump_json()), 4326)
             zone.source_geometry = None
 
-    db.commit()
-    db.refresh(zone)
+    changes = body.model_dump(exclude_none=True, mode="json")
+    if body.is_active is False:
+        zone = deactivate_zone_and_end_event_if_final(db=db, zone=zone)
+    else:
+        if body.is_active is True:
+            zone.is_active = True
+        if zone.event_id:
+            record_zone_update(db=db, zone=zone, changes=changes)
+        else:
+            db.commit()
+            db.refresh(zone)
     
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
