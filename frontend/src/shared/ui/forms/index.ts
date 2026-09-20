@@ -2,6 +2,8 @@ export { Button } from "./Button";
 export type { ButtonProps } from "./Button";
 export { Input } from "./Input";
 export type { InputProps } from "./Input";
+export { AutocompleteInput } from "./AutocompleteInput";
+export type { AutocompleteInputProps } from "./AutocompleteInput";
 export { NumberInput } from "./NumberInput";
 export * from "./Select";
 export * from "./MultiSelect";

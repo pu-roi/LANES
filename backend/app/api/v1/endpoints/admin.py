@@ -1373,18 +1373,46 @@ def create_admin_user(
     Create a new user (usually a sub-admin/moderator) with a specific role.
     Requires admin privileges.
     """
-    user = crud.get_user_by_email(db, email=payload.email)
-    if user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    user = crud.get_user_by_username(db, username=payload.username)
-    if user:
-        raise HTTPException(status_code=400, detail="Username already registered")
+    clean_email = payload.email.strip().lower()
+    clean_username = payload.username.strip().lower()
+
+    # 1. Check if an active account already uses this email or username
+    active_email_user = db.query(models.User).filter(
+        func.lower(models.User.email) == clean_email,
+        models.User.deleted_at.is_(None)
+    ).first()
+    if active_email_user:
+        raise HTTPException(status_code=400, detail="Email is already registered by an active account.")
+
+    active_username_user = db.query(models.User).filter(
+        func.lower(models.User.username) == clean_username,
+        models.User.deleted_at.is_(None)
+    ).first()
+    if active_username_user:
+        raise HTTPException(status_code=400, detail="Username is already taken by an active account.")
+
+    # 2. If an archived/soft-deleted user exists with this email or username, purge it so the new account can be created cleanly
+    archived_users = db.query(models.User).filter(
+        (func.lower(models.User.email) == clean_email) | (func.lower(models.User.username) == clean_username),
+        models.User.deleted_at.is_not(None)
+    ).all()
+    for arch_user in archived_users:
+        crud.hard_delete_user(db, arch_user.id)
 
     # Set is_active to True to skip OTP
     payload.is_active = True
-    new_user = crud.create_user(db=db, user=payload)
-    
+    payload.email = clean_email
+    payload.username = clean_username
+
+    try:
+        new_user = crud.create_user(db=db, user=payload)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="An account with this email or username already exists.")
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to create user account. Please try again.")
+
     client_ip = request.client.host if request.client else None
     crud.create_audit_log(
         db,
@@ -1480,6 +1508,121 @@ def delete_admin_user(
         )
     )
     return {"message": "User deleted successfully"}
+
+
+@router.post("/users/{user_id}/restore", response_model=schemas.UserResponse)
+@router.patch("/users/{user_id}/restore", response_model=schemas.UserResponse)
+def restore_archived_user(
+    user_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Restore an archived / soft-deleted user back to active users.
+    Requires admin privileges.
+    """
+    user = db.query(models.User).filter(models.User.id == user_id, models.User.deleted_at.is_not(None)).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Archived user not found")
+
+    # Check if another active account now uses this email or username
+    conflict = db.query(models.User).filter(
+        ((func.lower(models.User.email) == user.email.lower()) | (func.lower(models.User.username) == user.username.lower())),
+        models.User.deleted_at.is_(None),
+        models.User.id != user.id
+    ).first()
+    if conflict:
+        raise HTTPException(
+            status_code=409,
+            detail="Cannot restore: another active account already uses this email or username."
+        )
+
+    user.deleted_at = None
+    db.commit()
+    db.refresh(user)
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="RESTORE_USER",
+            target_table="users",
+            target_id=user_id,
+            metadata_json={"target_username": user.username},
+            ip_address=client_ip
+        )
+    )
+    return user
+
+
+@router.delete("/users/{user_id}/permanent")
+def hard_delete_user_account(
+    user_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Permanently delete (hard-delete) a user account from the database.
+    Requires admin privileges.
+    """
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    target_username = user.username
+    success = crud.hard_delete_user(db=db, user_id=user_id)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to permanently delete user")
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="HARD_DELETE_USER",
+            target_table="users",
+            target_id=user_id,
+            metadata_json={"target_username": target_username},
+            ip_address=client_ip
+        )
+    )
+    return {"message": "User permanently deleted", "id": user_id}
+
+
+@router.post("/archive/purge-expired")
+def trigger_purge_expired_archive(
+    request: Request,
+    retention_days: int = 30,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Any:
+    """
+    Manually trigger permanent deletion of soft-deleted/archived records older than retention_days.
+    Requires admin privileges.
+    """
+    from app.services.retention_service import purge_expired_archived_records
+    results = purge_expired_archived_records(db=db, retention_days=retention_days)
+
+    client_ip = request.client.host if request.client else None
+    crud.create_audit_log(
+        db,
+        audit_in=schemas.AuditLogCreate(
+            admin_id=current_user.id,
+            action_type="PURGE_EXPIRED_ARCHIVE",
+            target_table="archive",
+            target_id=None,
+            metadata_json={"retention_days": retention_days, "purged": results},
+            ip_address=client_ip
+        )
+    )
+    return {"message": "Expired archive purge completed successfully.", "results": results}
+
 
 
 @router.get("/audit-logs", response_model=schemas.AuditLogsPaginatedResponse)

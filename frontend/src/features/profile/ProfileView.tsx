@@ -28,6 +28,7 @@ export default function ProfileView() {
     updateProfile, isUpdatingProfile, 
     uploadAvatar, isUploadingAvatar,
     removeAvatar, isRemovingAvatar,
+    deleteAccount, isDeletingAccount,
     myReports, isLoadingReports, 
     myPosts, isLoadingPosts 
   } = useProfile();
@@ -48,6 +49,8 @@ export default function ProfileView() {
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const [showViewAvatarModal, setShowViewAvatarModal] = useState(false);
   const [showRemoveAvatarConfirm, setShowRemoveAvatarConfirm] = useState(false);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -312,6 +315,24 @@ export default function ProfileView() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteAccount();
+      setShowDeleteAccountModal(false);
+      success(
+        "Account Deactivated",
+        "Your account has been deactivated. You have a 30-day grace period to log back in before your profile is permanently deleted."
+      );
+      logout();
+      router.push("/login");
+    } catch (err: any) {
+      showError(
+        "Deactivation Failed",
+        err?.response?.data?.detail || err?.message || "Failed to deactivate account."
+      );
+    }
+  };
+
   const slideVariants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 20 : -20,
@@ -510,6 +531,7 @@ export default function ProfileView() {
           </div>
           <EditProfileForm 
             initialProfile={profile} 
+            initialUsername={user?.username || ""}
             isUpdating={isUpdatingProfile} 
             onSubmit={handleEditProfileSubmit} 
             onCancel={() => setIsEditingProfile(false)} 
@@ -589,12 +611,37 @@ export default function ProfileView() {
             </div>
           </div>
           
+          {/* Danger Zone */}
+          <div className="pt-6 border-t border-red-100">
+            <h4 className="text-sm font-semibold text-red-600 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4" /> Danger Zone
+            </h4>
+            <div className="p-4 sm:p-5 rounded-2xl border border-red-200 bg-red-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="max-w-md">
+                <p className="font-semibold text-red-950 text-sm sm:text-base">Delete Profile & Account</p>
+                <p className="text-xs sm:text-sm text-red-700/80 mt-1 leading-relaxed">
+                  Deactivating your account will hide your profile and reports. You will have a <span className="font-semibold text-red-900">30-day grace period</span> to log back in and restore your account before it is permanently deleted.
+                </p>
+              </div>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setDeleteConfirmationText("");
+                  setShowDeleteAccountModal(true);
+                }}
+                className="shrink-0 flex items-center gap-2 rounded-xl text-xs sm:text-sm"
+              >
+                <Trash2 className="w-4 h-4" /> Delete Account
+              </Button>
+            </div>
+          </div>
+
           {/* Account Actions */}
           <div className="pt-4 mt-8 border-t border-slate-100 lg:hidden">
             <Button
-              variant="danger"
+              variant="outline"
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-full"
+              className="w-full text-slate-700 border-slate-200"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Log Out
@@ -994,6 +1041,67 @@ export default function ProfileView() {
         onConfirm={handleRemoveAvatar}
         onCancel={() => setShowRemoveAvatarConfirm(false)}
       />
+
+      {/* Delete Account Confirmation Modal */}
+      <Modal
+        isOpen={showDeleteAccountModal}
+        onClose={() => setShowDeleteAccountModal(false)}
+        title="Confirm Account Deletion"
+        size="md"
+      >
+        <div className="space-y-4">
+          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm leading-relaxed">
+            <p className="font-semibold flex items-center gap-1.5 mb-1">
+              <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+              Are you sure you want to delete your profile?
+            </p>
+            <p className="text-xs text-red-700">
+              Your account will be immediately deactivated and scheduled for permanent deletion in <strong>30 days</strong>. If you change your mind, simply log in again within 30 days to reactivate your account.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              Type <span className="font-mono font-bold text-red-600">DELETE</span> to confirm:
+            </label>
+            <input
+              type="text"
+              value={deleteConfirmationText}
+              onChange={(e) => setDeleteConfirmationText(e.target.value)}
+              placeholder="DELETE"
+              className="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-gray-900 bg-white"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteAccountModal(false)}
+              disabled={isDeletingAccount}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              disabled={deleteConfirmationText !== "DELETE" || isDeletingAccount}
+              onClick={handleDeleteAccount}
+              className="gap-1.5"
+            >
+              {isDeletingAccount ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Deactivating...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-4 h-4" />
+                  Deactivate & Schedule Deletion
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

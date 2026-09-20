@@ -490,7 +490,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       return;
     }
     const severity = selectedOption.severity;
-    const depth = selectedOption.label;
+    const depth = selectedOption.id;
 
     const newDraft = {
       id: editingDraft?.id ?? Math.random().toString(36).substring(7),
@@ -528,7 +528,9 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setStartInput(draft.startLabel || "");
     setEndInput(draft.endLabel || "");
     setDescription(draft.description);
-    const option = VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth) || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
+    const option = VISUAL_OPTIONS.find((item) => item.id === draft.depth)
+      || VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth)
+      || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
     setVisualOption(option?.id ?? null);
     setPassableVehicles(draft.passableVehicles || []);
     setHiddenHazards(draft.hiddenHazards || null);
@@ -619,7 +621,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         createFormData({
           description: description,
           severity: selectedOption.severity,
-          depth: selectedOption.label,
+          depth: selectedOption.id,
           humanReadableLocation: currentHint,
           isPublic: isPublic,
           isBidirectional: isBidirectional,

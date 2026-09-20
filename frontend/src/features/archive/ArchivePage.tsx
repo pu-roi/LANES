@@ -11,6 +11,9 @@ import {
   hardDeleteReport,
   restoreZone,
   hardDeleteZone,
+  restoreUser,
+  hardDeleteUser,
+  purgeExpiredArchiveRecords,
   getArchivedPosts,
   restorePost,
   hardDeletePost,
@@ -202,6 +205,72 @@ export default function ArchivePage() {
     },
   });
 
+  const restoreUserMutation = useMutation({
+    mutationFn: (id: number) => restoreUser(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["archivedUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+      toast.success("User Restored", `User @${data.username} has been restored successfully.`);
+    },
+    onError: (err: any) => {
+      toast.error("Restore Failed", err?.response?.data?.detail || err?.message || "Could not restore user account.");
+    },
+  });
+
+  const hardDeleteUserMutation = useMutation({
+    mutationFn: (id: number) => hardDeleteUser(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["archivedUsers"] });
+      toast.success("User Deleted", `User was permanently deleted from the database.`);
+      setHardDeleteTarget(null);
+    },
+    onError: (err: any) => {
+      toast.error("Delete Failed", err?.response?.data?.detail || err?.message || "Could not delete user account.");
+    },
+  });
+
+  const purgeExpiredMutation = useMutation({
+    mutationFn: () => purgeExpiredArchiveRecords(30),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["archivedUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["archivedReports"] });
+      queryClient.invalidateQueries({ queryKey: ["archivedZones"] });
+      queryClient.invalidateQueries({ queryKey: ["archivedPosts"] });
+      queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
+      toast.success("Auto-Purge Completed", `Purged ${data.results.total} records older than 30 days.`);
+    },
+    onError: (err: any) => {
+      toast.error("Purge Failed", err?.response?.data?.detail || err?.message || "Failed to purge expired records.");
+    },
+  });
+
+  const getRetentionBadge = (archivedDateStr?: string | null) => {
+    if (!archivedDateStr) {
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600">
+          30-day retention
+        </span>
+      );
+    }
+    const archivedDate = new Date(archivedDateStr);
+    const now = new Date();
+    const elapsedDays = Math.floor((now.getTime() - archivedDate.getTime()) / (1000 * 60 * 60 * 24));
+    const remainingDays = Math.max(0, 30 - elapsedDays);
+
+    if (remainingDays <= 3) {
+      return (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-100 text-red-700 border border-red-200">
+          Auto-purges in {remainingDays} {remainingDays === 1 ? "day" : "days"}
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+        Auto-purges in {remainingDays} days
+      </span>
+    );
+  };
+
   const handleExecuteHardDelete = () => {
     if (!hardDeleteTarget) return;
     if (hardDeleteTarget.type === "report") {
@@ -210,10 +279,16 @@ export default function ArchivePage() {
       hardDeleteZoneMutation.mutate(hardDeleteTarget.id);
     } else if (hardDeleteTarget.type === "post") {
       hardDeletePostMutation.mutate(hardDeleteTarget.id);
+    } else if (hardDeleteTarget.type === "user") {
+      hardDeleteUserMutation.mutate(hardDeleteTarget.id);
     }
   };
 
-  const isHardDeleteLoading = hardDeleteReportMutation.isPending || hardDeleteZoneMutation.isPending || hardDeletePostMutation.isPending;
+  const isHardDeleteLoading =
+    hardDeleteReportMutation.isPending ||
+    hardDeleteZoneMutation.isPending ||
+    hardDeletePostMutation.isPending ||
+    hardDeleteUserMutation.isPending;
 
   // Pagination & Counts
   const users = usersData?.users || [];
@@ -302,10 +377,47 @@ export default function ArchivePage() {
     },
     {
       key: "status",
-      title: "Status",
+      title: "Retention / Lifecycle",
       sortable: false,
       className: "whitespace-nowrap text-center",
-      render: () => <span className="text-xs text-red-600 font-semibold">Soft-Deleted</span>,
+      render: (user) => getRetentionBadge(user.deleted_at),
+    },
+    {
+      key: "actions",
+      title: "Actions",
+      sortable: false,
+      className: "whitespace-nowrap text-right",
+      render: (user) => (
+        <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => restoreUserMutation.mutate(user.id)}
+            disabled={restoreUserMutation.isPending}
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            title="Restore User Account"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            Restore
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setHardDeleteTarget({
+                type: "user",
+                id: user.id,
+                name: `User @${user.username} (${user.email})`,
+              })
+            }
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-red-200 text-red-600 hover:bg-red-50"
+            title="Permanently Delete"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            Delete
+          </Button>
+        </div>
+      ),
     },
   ];
 
@@ -357,14 +469,10 @@ export default function ArchivePage() {
     },
     {
       key: "status",
-      title: "Reason",
+      title: "Retention / Lifecycle",
       sortable: false,
       className: "whitespace-nowrap text-center",
-      render: (report) => (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
-          {report.status === "rejected" ? "Rejected by Admin" : "Archived"}
-        </span>
-      ),
+      render: (report) => getRetentionBadge(report.updated_at),
     },
     {
       key: "actions",
@@ -388,7 +496,7 @@ export default function ArchivePage() {
             size="sm"
             onClick={() => restoreReportMutation.mutate(report.id)}
             disabled={restoreReportMutation.isPending}
-            className="h-7 px-2 text-xs rounded-lg gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
             title="Restore to Pending Moderation Queue"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -404,10 +512,11 @@ export default function ArchivePage() {
                 name: `Report #${report.id}`,
               })
             }
-            className="h-7 px-2 text-xs rounded-lg gap-1 border-red-200 text-red-600 hover:bg-red-50"
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-red-200 text-red-600 hover:bg-red-50"
             title="Permanently Delete"
           >
             <Trash2 className="w-3.5 h-3.5" />
+            Delete
           </Button>
         </div>
       ),
@@ -457,11 +566,11 @@ export default function ArchivePage() {
       },
     },
     {
-      key: "created_at",
-      title: "Created At",
-      sortable: true,
-      className: "whitespace-nowrap text-xs text-gray-500",
-      render: (zone) => format(new Date(zone.created_at), "MMM d, yyyy"),
+      key: "status",
+      title: "Retention / Lifecycle",
+      sortable: false,
+      className: "whitespace-nowrap text-center",
+      render: (zone) => getRetentionBadge(zone.expires_at || zone.created_at),
     },
     {
       key: "actions",
@@ -485,7 +594,7 @@ export default function ArchivePage() {
             size="sm"
             onClick={() => restoreZoneMutation.mutate(zone.id)}
             disabled={restoreZoneMutation.isPending}
-            className="h-7 px-2 text-xs rounded-lg gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-blue-200 text-blue-600 hover:bg-blue-50"
             title="Reactivate Avoidance Zone"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -501,10 +610,11 @@ export default function ArchivePage() {
                 name: `Zone #${zone.id} (${zone.name || "Avoidance Zone"})`,
               })
             }
-            className="h-7 px-2 text-xs rounded-lg gap-1 border-red-200 text-red-600 hover:bg-red-50"
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-red-200 text-red-600 hover:bg-red-50"
             title="Permanently Delete"
           >
             <Trash2 className="w-3.5 h-3.5" />
+            Delete
           </Button>
         </div>
       ),
@@ -600,6 +710,13 @@ export default function ArchivePage() {
       ),
     },
     {
+      key: "retention",
+      title: "Retention / Lifecycle",
+      sortable: false,
+      className: "whitespace-nowrap text-center",
+      render: (post: ArchivedPost) => getRetentionBadge(post.deleted_at || post.hidden_at),
+    },
+    {
       key: "location",
       title: "Location",
       sortable: false,
@@ -628,7 +745,7 @@ export default function ArchivePage() {
             size="sm"
             onClick={() => restorePostMutation.mutate(post.id)}
             disabled={restorePostMutation.isPending}
-            className="h-7 px-2 text-xs rounded-lg gap-1 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
             title="Restore Post to Feed"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -644,10 +761,11 @@ export default function ArchivePage() {
                 name: `Post #${post.id} by ${post.author_name}`,
               })
             }
-            className="h-7 px-2 text-xs rounded-lg gap-1 border-red-200 text-red-600 hover:bg-red-50"
+            className="h-7 px-2.5 text-xs rounded-lg gap-1 border-red-200 text-red-600 hover:bg-red-50"
             title="Permanently Delete"
           >
             <Trash2 className="w-3.5 h-3.5" />
+            Delete
           </Button>
         </div>
       ),
@@ -664,17 +782,29 @@ export default function ArchivePage() {
             Archive Center
           </h1>
           <p className="text-gray-500 text-sm mt-1">
-            Browse soft-deleted records, rejected flood hazards, and deactivated detour zones for audit and recovery.
+            Browse soft-deleted records, rejected flood hazards, and deactivated detour zones for audit and recovery. Records older than 30 days are automatically purged.
           </p>
         </div>
-        <Button
-          onClick={handleRefresh}
-          variant="outline"
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 rounded-xl"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2.5">
+          <Button
+            onClick={() => purgeExpiredMutation.mutate()}
+            disabled={purgeExpiredMutation.isPending}
+            variant="outline"
+            className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 rounded-xl"
+            title="Manually purge records older than 30 days"
+          >
+            <Trash2 className="w-4 h-4" />
+            {purgeExpiredMutation.isPending ? "Purging Expired..." : "Purge Expired (30d+)"}
+          </Button>
+          <Button
+            onClick={handleRefresh}
+            variant="outline"
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 rounded-xl"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Main Navigation Tabs */}

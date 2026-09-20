@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronRight, ChevronLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { toNameCase } from "@/lib/utils";
 
 // Metro Manila constant
 const METRO_MANILA_CODE = "130000000";
@@ -182,8 +183,10 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
     const emailPrefix = profile.email.split("@")[0].toLowerCase().replace(/[^a-zA-Z0-9._]/g, "");
     const suggestedUsername = emailPrefix.length >= 3 ? emailPrefix : "user";
 
-    const firstName = profile.given_name || (profile.name ? profile.name.split(" ")[0] : "");
-    const lastName = profile.family_name || (profile.name && profile.name.includes(" ") ? profile.name.split(" ").slice(1).join(" ") : "");
+    const rawFirstName = profile.given_name || (profile.name ? profile.name.split(" ")[0] : "");
+    const rawLastName = profile.family_name || (profile.name && profile.name.includes(" ") ? profile.name.split(" ").slice(1).join(" ") : "");
+    const firstName = toNameCase(rawFirstName);
+    const lastName = toNameCase(rawLastName);
 
     setFormData((prev) => ({
       ...prev,
@@ -340,7 +343,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
 
     if (section === "profile") {
       if (field === "first_name" || field === "last_name") {
-        finalValue = value.replace(/(?:^|\s)[a-z]/g, (char: string) => char.toUpperCase());
+        finalValue = toNameCase(value);
       } else if (field === "middle_initial") {
         const prevVal = formData.profile.middle_initial || "";
         const rawLetters = value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 3);
@@ -851,8 +854,11 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                         labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="Juan" 
                         required
+                        autoCapitalize="words"
+                        autoComplete="given-name"
                         value={formData.profile.first_name} 
                         onChange={e => handleChange("profile", "first_name", e.target.value)}
+                        onBlur={e => handleChange("profile", "first_name", e.target.value.trim())}
                       />
                     </div>
                     <div className="flex-1">
@@ -861,8 +867,11 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
                         labelClassName="text-white lg:text-slate-700 font-semibold drop-shadow-sm"
                         placeholder="Dela Cruz" 
                         required
+                        autoCapitalize="words"
+                        autoComplete="family-name"
                         value={formData.profile.last_name} 
                         onChange={e => handleChange("profile", "last_name", e.target.value)}
+                        onBlur={e => handleChange("profile", "last_name", e.target.value.trim())}
                       />
                     </div>
                   </div>

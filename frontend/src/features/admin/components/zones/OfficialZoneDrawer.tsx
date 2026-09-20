@@ -1013,6 +1013,10 @@ export function OfficialZoneDrawer({
       error("Missing Geometry", "Please define a road segment or draw a shape on the map first.");
       return;
     }
+    if (!editorValues.depth) {
+      error("Flood Depth Required", "Select the observed flood depth before adding this official zone.");
+      return;
+    }
 
     const newDraft: ZoneDraftItem = {
       id: editingDraft?.id ?? Math.random().toString(36).substring(7),
@@ -1056,6 +1060,12 @@ export function OfficialZoneDrawer({
   // Handle Submit (Create mode or Edit mode)
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    const missingDraftDepth = drafts.some((draft) => !draft.depth);
+    const missingCurrentDepth = Boolean(currentGeometry) && !editorValues.depth;
+    if (missingDraftDepth || missingCurrentDepth || (isEditMode && !editorValues.depth)) {
+      error("Flood Depth Required", "Select a flood depth for every official zone before publishing.");
+      return;
+    }
     setIsSubmitting(true);
     suppressEditDraftSave.current = true;
 

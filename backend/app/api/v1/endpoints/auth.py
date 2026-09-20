@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Response, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -27,11 +28,44 @@ def login_access_token(
 ) -> Any:
     """
     OAuth2 compatible token login, get an access token for future requests.
+    Supports 30-day grace period reactivation for soft-deleted accounts.
     """
     client_ip = request.client.host if request.client else None
     user = crud.get_user_by_username(db, username=form_data.username)
     if not user:
         user = crud.get_user_by_email(db, email=form_data.username)
+
+    # Check if this is an archived account within the 30-day grace period
+    if not user:
+        clean_name = form_data.username.strip().lower()
+        archived_user = db.query(models.User).filter(
+            (func.lower(models.User.username) == clean_name) |
+            (func.lower(models.User.email) == clean_name),
+            models.User.deleted_at.is_not(None)
+        ).first()
+
+        if archived_user and security.verify_password(form_data.password, archived_user.hashed_password):
+            if datetime.utcnow() <= archived_user.deleted_at + timedelta(days=30):
+                # Reactivate user account within the 30-day grace period
+                archived_user.deleted_at = None
+                archived_user.is_active = True
+                db.commit()
+                db.refresh(archived_user)
+                user = archived_user
+                crud.create_audit_log(
+                    db,
+                    audit_in=schemas.AuditLogCreate(
+                        admin_id=user.id,
+                        action_type="USER_ACCOUNT_REACTIVATED",
+                        target_table="users",
+                        target_id=user.id,
+                        metadata_json={
+                            "username": user.username,
+                            "reason": "Account reactivated via login during 30-day grace period"
+                        },
+                        ip_address=client_ip
+                    )
+                )
         
     if not user:
         crud.create_audit_log(

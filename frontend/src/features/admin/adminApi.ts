@@ -203,11 +203,6 @@ export async function getReportsByLocation(reportId: number): Promise<FloodRepor
   }
 }
 
-export interface PolygonGeometry {
-  type: "Polygon";
-  coordinates: [number, number][][];
-}
-
 export interface ZoneContributor {
   report_id: number;
   reporter_name: string;
@@ -331,6 +326,7 @@ export interface UserRecord {
   role: RoleRecord;
   is_active: boolean;
   created_at: string;
+  deleted_at?: string | null;
 }
 
 export interface PaginatedUsersResponse {
@@ -380,6 +376,18 @@ export async function deleteUser(userId: number): Promise<{ message: string }> {
   return apiClient.request<{ message: string }>(`/admin/users/${userId}`, { method: "DELETE" });
 }
 
+export async function restoreUser(userId: number): Promise<UserRecord> {
+  return apiClient.post<UserRecord>(`/admin/users/${userId}/restore`, {});
+}
+
+export async function hardDeleteUser(userId: number): Promise<{ message: string; id: number }> {
+  return apiClient.delete<{ message: string; id: number }>(`/admin/users/${userId}/permanent`);
+}
+
+export async function purgeExpiredArchiveRecords(retentionDays: number = 30): Promise<{ message: string; results: any }> {
+  return apiClient.post<{ message: string; results: any }>(`/admin/archive/purge-expired?retention_days=${retentionDays}`, {});
+}
+
 export interface AuditLogRecord {
   id: number;
   admin_id: number | null;
@@ -417,6 +425,7 @@ export async function getAuditLogs(
 
   return apiClient.get<PaginatedAuditLogsResponse>(`/admin/audit-logs?${params.toString()}`);
 }
+
 export interface RoleRecord {
   id: number;
   name: string;

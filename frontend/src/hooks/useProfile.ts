@@ -16,8 +16,10 @@ export function useProfile() {
       const previousUser = queryClient.getQueryData(['auth-user']);
       queryClient.setQueryData(['auth-user'], (oldUser: any) => {
         if (!oldUser) return oldUser;
+        const updatedUsername = newData.username || oldUser.username;
         return {
           ...oldUser,
+          username: updatedUsername,
           profile: {
             ...(oldUser.profile || {}),
             ...newData,
@@ -31,14 +33,21 @@ export function useProfile() {
         queryClient.setQueryData(['auth-user'], context.previousUser);
       }
     },
-    onSuccess: (updatedProfile: any) => {
+    onSuccess: (result: any) => {
       queryClient.setQueryData(['auth-user'], (oldUser: any) => {
         if (!oldUser) return oldUser;
+        if (result && result.username && result.role) {
+          return {
+            ...oldUser,
+            ...result,
+            profile: result.profile || oldUser.profile,
+          };
+        }
         return {
           ...oldUser,
           profile: {
             ...(oldUser.profile || {}),
-            ...updatedProfile,
+            ...result,
           },
         };
       });
@@ -112,6 +121,16 @@ export function useProfile() {
     enabled: !!user?.id,
   });
 
+  const deleteAccountMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.delete('/users/me');
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.clear();
+    },
+  });
+
   return {
     updateProfile: updateProfileMutation.mutateAsync,
     isUpdatingProfile: updateProfileMutation.isPending,
@@ -119,6 +138,8 @@ export function useProfile() {
     isUploadingAvatar: uploadAvatarMutation.isPending,
     removeAvatar: removeAvatarMutation.mutateAsync,
     isRemovingAvatar: removeAvatarMutation.isPending,
+    deleteAccount: deleteAccountMutation.mutateAsync,
+    isDeletingAccount: deleteAccountMutation.isPending,
     myReports,
     isLoadingReports,
     myPosts,

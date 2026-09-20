@@ -65,3 +65,17 @@ export function getBearing(start: [number, number], end: [number, number]): numb
   const brng = toDeg(Math.atan2(y, x));
   return Math.round((brng + 360) % 360);
 }
+
+/**
+ * Automatically converts a name to proper name casing (Title Case).
+ * Capitalizes the first letter of each word/token while lowercasing the rest.
+ * Correctly handles spaces, hyphens, apostrophes, and accented/Unicode characters.
+ * E.g., "juan dela cruz" -> "Juan Dela Cruz", "MARY-JANE" -> "Mary-Jane", "o'connor" -> "O'Connor"
+ */
+export function toNameCase(name: string): string {
+  if (!name) return "";
+  return name.replace(/\p{L}+/gu, (word) => {
+    return word.charAt(0).toLocaleUpperCase() + word.slice(1).toLocaleLowerCase();
+  });
+}
+
