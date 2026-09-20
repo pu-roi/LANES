@@ -313,23 +313,107 @@ export default function AuditTrailPage() {
         </div>
       ) : (
         <div className={`transition-opacity duration-150 ${isPlaceholderData ? "opacity-60" : "opacity-100"}`}>
-          <DataTable
-            columns={auditColumns}
-            data={logs}
-            keyExtractor={(log) => log.id}
-            pagination={{ page, totalPages, onPageChange: setPage, disabled: isPlaceholderData }}
-            emptyState={
-              <div className="flex flex-col items-center justify-center py-16 gap-3 text-center px-4">
-                <div className="p-3 bg-gray-50 rounded-full">
-                  <Shield className="w-8 h-8 text-gray-400" />
+          <div className="hidden md:block">
+            <DataTable
+              columns={auditColumns}
+              data={logs}
+              keyExtractor={(log) => log.id}
+              pagination={{ page, totalPages, onPageChange: setPage, disabled: isPlaceholderData }}
+              emptyState={
+                <div className="flex flex-col items-center justify-center py-16 gap-3 text-center px-4">
+                  <div className="p-3 bg-gray-50 rounded-full">
+                    <Shield className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-gray-800 font-bold text-lg">No Audit Records Found</h3>
+                  <p className="text-sm text-gray-500 max-w-sm">
+                    We couldn't find any system audit trail events matching your current filter settings.
+                  </p>
                 </div>
-                <h3 className="text-gray-800 font-bold text-lg">No Audit Records Found</h3>
-                <p className="text-sm text-gray-500 max-w-sm">
+              }
+            />
+          </div>
+
+          <div className="md:hidden space-y-3">
+            {logs.length === 0 ? (
+              <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-16 text-center shadow-sm">
+                <div className="rounded-full bg-gray-50 p-3">
+                  <Shield className="h-8 w-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800">No Audit Records Found</h3>
+                <p className="max-w-sm text-sm text-gray-500">
                   We couldn't find any system audit trail events matching your current filter settings.
                 </p>
               </div>
-            }
-          />
+            ) : (
+              logs.map((log) => {
+                const badge = ACTION_BADGES[log.action_type] || {
+                  bg: "bg-gray-50 border-gray-200",
+                  text: "text-gray-700",
+                  label: log.action_type,
+                  module: "System Component",
+                };
+
+                return (
+                  <article key={log.id} className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
+                          <Calendar className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+                          <span className="truncate">{new Date(log.created_at).toLocaleString()}</span>
+                        </p>
+                        <p className="mt-2 truncate text-sm font-semibold text-gray-900">
+                          {log.admin?.username || "System / Anonymous"}
+                        </p>
+                      </div>
+                      <span className={`inline-flex max-w-[52%] shrink-0 items-center rounded-full border px-2 py-1 text-right text-[10px] font-bold leading-tight ${badge.bg} ${badge.text}`}>
+                        {badge.label}
+                      </span>
+                    </div>
+
+                    <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 border-t border-gray-100 pt-3 text-xs">
+                      <div className="min-w-0">
+                        <dt className="font-semibold uppercase tracking-wide text-gray-400">Module</dt>
+                        <dd className="mt-0.5 truncate font-medium text-gray-700">{badge.module}</dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="font-semibold uppercase tracking-wide text-gray-400">Target</dt>
+                        <dd className="mt-0.5 truncate font-medium text-gray-700">
+                          {log.target_id ? `${log.target_table} #${log.target_id}` : "-"}
+                        </dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="font-semibold uppercase tracking-wide text-gray-400">Origin IP</dt>
+                        <dd className="mt-0.5 flex min-w-0 items-center gap-1 truncate font-medium text-gray-700">
+                          <Globe className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+                          <span className="truncate">{log.ip_address || "-"}</span>
+                        </dd>
+                      </div>
+                      <div className="flex items-end justify-end">
+                        <Button
+                          onClick={() => setInspectLog(log)}
+                          variant="outline"
+                          size="sm"
+                          className="h-9 w-full justify-center gap-1.5 text-xs text-gray-600 hover:text-gray-900"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          Inspect
+                        </Button>
+                      </div>
+                    </dl>
+                  </article>
+                );
+              })
+            )}
+
+            {logs.length > 0 && (
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                disabled={isPlaceholderData}
+              />
+            )}
+          </div>
         </div>
       )}
 

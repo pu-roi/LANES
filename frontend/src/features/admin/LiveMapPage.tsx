@@ -193,6 +193,7 @@ export default function LiveMapPage() {
 
   // Responsive viewport check
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+  const [isMobileMapVisible, setIsMobileMapVisible] = useState(false);
 
   // DRAWER WIDTH: Consistent standard width across secondary workspace panels
   const DRAWER_WIDTH = 440;
@@ -759,11 +760,11 @@ export default function LiveMapPage() {
       />
       <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
         {/* LEFT PANEL: Moderation & Zones Sidebar */}
-        <div className={`${isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "hidden" : "flex"} relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex-col bg-white border-r border-slate-200 h-[50vh] md:flex md:h-full z-40 shadow-sm`}>
+        <div className={`${isMobile && (isMergeDrawerOpen && isMergeMobileMapVisible || isMobileMapVisible) ? "hidden" : "flex"} relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex-col bg-white border-r border-slate-200 h-full md:flex md:h-full z-40 shadow-sm`}>
           
           {/* Mode Switcher Tabs Header */}
-          <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex items-center justify-between gap-2">
-            <div className="flex-1">
+          <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
+            <div className="min-w-0 w-full md:flex-1">
               <Tabs<"pending" | "zones">
                 tabs={[
                   {
@@ -787,15 +788,32 @@ export default function LiveMapPage() {
               />
             </div>
 
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => { refetchPending(); refetchList(); refetchMap(); }}
-              className="h-9 px-2.5 rounded-xl shrink-0 bg-white"
-              title="Refresh list"
-            >
-              <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
-            </Button>
+            <div className="flex w-full gap-2 md:w-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => { refetchPending(); refetchList(); refetchMap(); }}
+                className="h-9 flex-1 rounded-xl bg-white md:flex-none md:px-2.5"
+                title="Refresh list"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
+                <span className="ml-1.5 md:hidden">Refresh</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsMobileMapVisible(true);
+                  window.setTimeout(() => mapInstance?.resize(), 0);
+                }}
+                className="h-9 flex-1 rounded-xl bg-white md:hidden"
+                title="Open map"
+                aria-label="Open map"
+              >
+                <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                <span className="ml-1.5">View map</span>
+              </Button>
+            </div>
           </div>
 
           {/* TAB 1: PENDING REPORTS (MODERATION QUEUE) */}
@@ -1173,7 +1191,7 @@ export default function LiveMapPage() {
       </AnimatePresence>
 
       {/* RIGHT PANEL: Live Map View */}
-      <div className={`flex-1 relative ${isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "h-full" : "h-[50vh]"} md:h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
+      <div className={`${isMobile && !isMergeDrawerOpen && !isMobileMapVisible ? "hidden" : "flex"} flex-1 relative h-full md:flex bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
         <BaseMap 
           actionControls={handleActionControls}
           onMapInit={handleMapInit}
@@ -1227,6 +1245,18 @@ export default function LiveMapPage() {
             </div>
           )}
         </BaseMap>
+        {isMobile && !isMergeDrawerOpen && isMobileMapVisible && (
+          <Button
+            type="button"
+            onClick={() => {
+              setIsMobileMapVisible(false);
+              window.setTimeout(() => mapInstance?.resize(), 0);
+            }}
+            className="fixed bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-900 px-4 text-xs text-white shadow-xl hover:bg-slate-800 md:hidden"
+          >
+            <ArrowRight className="mr-1.5 h-4 w-4 rotate-180" /> Operations
+          </Button>
+        )}
       </div>
 
       {/* Confirmation Modal for Single Deactivation */}

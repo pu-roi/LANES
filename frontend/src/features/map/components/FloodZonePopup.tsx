@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { format } from "date-fns";
-import { Clock, Ruler, Car, EyeOff, ShieldCheck, User, Users, ChevronDown, ChevronUp, Shield } from "lucide-react";
+import { Clock, Ruler, Car, EyeOff, ShieldCheck, User, Users, ChevronDown, ChevronUp, Shield, X } from "lucide-react";
+import { Modal } from "@/shared/ui";
 
 interface FloodZonePopupProps {
   properties: any;
   onToggleExpand?: () => void;
+  compact?: boolean;
+  drawer?: boolean;
+  modal?: boolean;
+  onClose?: () => void;
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
@@ -14,7 +19,7 @@ const SEVERITY_COLORS: Record<string, string> = {
   extreme: "#ef4444",
 };
 
-export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onToggleExpand }) => {
+export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onToggleExpand, compact = false, drawer = false, modal = false, onClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const {
@@ -87,11 +92,41 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
       ? passable_vehicles.split(",").map((v: string) => v.trim()).filter(Boolean)
       : [];
 
-  return (
-    <div className="flex flex-col w-full font-sans bg-white rounded-2xl overflow-hidden pointer-events-auto border-x border-b border-slate-200/80">
+  const popupContent = (
+    <>
+      {drawer && (
+        <div
+          className="fixed inset-0 z-[99] bg-slate-950/35 backdrop-blur-[2px]"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      <div
+        className={`flex flex-col w-full font-sans bg-white overflow-hidden pointer-events-auto border-slate-200/80 ${compact ? "flood-zone-popup-compact" : ""} ${drawer ? "fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[100] max-h-[calc(100vh-5rem-env(safe-area-inset-bottom,0px))] rounded-t-2xl border-t shadow-[0_-8px_30px_rgba(0,0,0,0.16)]" : "rounded-2xl border-x border-b"}`}
+        onClick={drawer ? (e) => e.stopPropagation() : undefined}
+      >
+        {drawer && (
+          <>
+            <div className="flex shrink-0 justify-center py-2.5">
+              <div className="h-1.5 w-12 rounded-full bg-slate-300" />
+            </div>
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 pb-3">
+              <h2 className="text-base font-bold text-slate-900">Active Flood Zone</h2>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
+                aria-label="Close flood details"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </>
+        )}
+        <div className={drawer ? "min-h-0 overflow-y-auto overscroll-contain" : undefined}>
       {/* Header */}
       <div 
-        className="px-4 py-3 select-none flex flex-col gap-1.5 rounded-t-2xl"
+        className={`px-4 py-3 select-none flex flex-col gap-1.5 rounded-t-2xl ${compact ? "popup-header-compact" : ""}`}
         style={{ backgroundColor: color, color: "#ffffff" }}
       >
         {/* Top Row: Severity + Status Badge */}
@@ -120,10 +155,10 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
         </div>
       </div>
 
-      <div className="p-4">
+      <div className={`p-4 ${compact ? "popup-body-compact" : ""}`}>
         {/* Description */}
         {report_text && report_text !== "null" && (
-          <div className="text-sm text-gray-700 mb-4 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-100 italic">
+          <div className={`text-sm text-gray-700 mb-4 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-100 italic ${compact ? "popup-description-compact" : ""}`}>
             "{report_text}"
           </div>
         )}
@@ -179,7 +214,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
       </div>
 
       {/* Footer (Reporter & Contributors) */}
-      <div className="border-t border-gray-100 bg-gray-50/90 px-4 py-3 flex flex-col gap-2">
+      <div className={`border-t border-gray-100 bg-gray-50/90 px-4 py-3 flex flex-col gap-2 ${compact ? "popup-footer-compact" : ""}`}>
         <div 
           onClick={() => {
             if (hasMultipleContributors) {
@@ -261,6 +296,18 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
           </div>
         )}
       </div>
-    </div>
+      </div>
+      </div>
+    </>
   );
+
+  if (modal) {
+    return (
+      <Modal isOpen={true} onClose={onClose || (() => undefined)} title="Active Flood Zone" bare>
+        {popupContent}
+      </Modal>
+    );
+  }
+
+  return popupContent;
 };
