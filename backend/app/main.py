@@ -56,10 +56,22 @@ async def lifespan(app: FastAPI):
                 print("Default admin user created (admin/admin).")
         finally:
             db.close()
-
     except Exception as e:
         print(f"Warning: Could not create database tables or seed data on startup ({e}). Continuing startup...")
-    yield
+
+    # Start 30-day archive retention background purge worker
+    import asyncio
+    from app.services.retention_service import run_periodic_retention_purge
+    retention_task = asyncio.create_task(run_periodic_retention_purge(interval_seconds=86400, retention_days=30))
+
+    try:
+        yield
+    finally:
+        retention_task.cancel()
+        try:
+            await retention_task
+        except asyncio.CancelledError:
+            pass
 
 
 app = FastAPI(

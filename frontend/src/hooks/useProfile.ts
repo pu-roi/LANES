@@ -16,8 +16,10 @@ export function useProfile() {
       const previousUser = queryClient.getQueryData(['auth-user']);
       queryClient.setQueryData(['auth-user'], (oldUser: any) => {
         if (!oldUser) return oldUser;
+        const updatedUsername = newData.username || oldUser.username;
         return {
           ...oldUser,
+          username: updatedUsername,
           profile: {
             ...(oldUser.profile || {}),
             ...newData,
@@ -31,14 +33,21 @@ export function useProfile() {
         queryClient.setQueryData(['auth-user'], context.previousUser);
       }
     },
-    onSuccess: (updatedProfile: any) => {
+    onSuccess: (result: any) => {
       queryClient.setQueryData(['auth-user'], (oldUser: any) => {
         if (!oldUser) return oldUser;
+        if (result && result.username && result.role) {
+          return {
+            ...oldUser,
+            ...result,
+            profile: result.profile || oldUser.profile,
+          };
+        }
         return {
           ...oldUser,
           profile: {
             ...(oldUser.profile || {}),
-            ...updatedProfile,
+            ...result,
           },
         };
       });
@@ -112,6 +121,33 @@ export function useProfile() {
     enabled: !!user?.id,
   });
 
+  const deleteAccountMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiClient.delete('/users/me');
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.clear();
+    },
+  });
+
+  const requestPasswordOtpMutation = useMutation({
+    mutationFn: async (payload: { current_password: string }) => {
+      const response = await apiClient.post<{ message: string; cooldown_seconds: number; email: string }>(
+        '/users/me/password/request-otp',
+        payload
+      );
+      return response;
+    },
+  });
+
+  const changePasswordMutation = useMutation({
+    mutationFn: async (payload: { current_password: string; new_password: string; otp_code: string }) => {
+      const response = await apiClient.put('/users/me/password', payload);
+      return response;
+    },
+  });
+
   return {
     updateProfile: updateProfileMutation.mutateAsync,
     isUpdatingProfile: updateProfileMutation.isPending,
@@ -119,9 +155,16 @@ export function useProfile() {
     isUploadingAvatar: uploadAvatarMutation.isPending,
     removeAvatar: removeAvatarMutation.mutateAsync,
     isRemovingAvatar: removeAvatarMutation.isPending,
+    deleteAccount: deleteAccountMutation.mutateAsync,
+    isDeletingAccount: deleteAccountMutation.isPending,
+    requestPasswordOtp: requestPasswordOtpMutation.mutateAsync,
+    isRequestingPasswordOtp: requestPasswordOtpMutation.isPending,
+    changePassword: changePasswordMutation.mutateAsync,
+    isChangingPassword: changePasswordMutation.isPending,
     myReports,
     isLoadingReports,
     myPosts,
     isLoadingPosts,
   };
 }
+

@@ -28,7 +28,7 @@ def get_pending_flood_reports(db: Session, skip: int = 0, limit: int = 100) -> L
     ).offset(skip).limit(limit).all()
 
 
-def credit_user_verified_report(db: Session, user_id: int) -> None:
+def credit_user_verified_report(db: Session, user_id: int, commit: bool = True) -> None:
     """
     Increments reports_approved and recalculates accuracy_rate and trust_score for a user.
     Rule: +5 Trust Score (capped at 100).
@@ -42,10 +42,11 @@ def credit_user_verified_report(db: Session, user_id: int) -> None:
         total_graded = user.profile.reports_approved + user.profile.reports_rejected
         if total_graded > 0:
             user.profile.accuracy_rate = round((user.profile.reports_approved / total_graded) * 100.0, 1)
-        db.commit()
+        if commit:
+            db.commit()
 
 
-def penalize_user_rejected_report(db: Session, user_id: int) -> None:
+def penalize_user_rejected_report(db: Session, user_id: int, commit: bool = True) -> None:
     """
     Increments reports_rejected and recalculates accuracy_rate and trust_score for a user.
     Rule: -10 Trust Score (minimum 0).
@@ -57,17 +58,14 @@ def penalize_user_rejected_report(db: Session, user_id: int) -> None:
         total_graded = user.profile.reports_approved + user.profile.reports_rejected
         if total_graded > 0:
             user.profile.accuracy_rate = round((user.profile.reports_approved / total_graded) * 100.0, 1)
-        db.commit()
+        if commit:
+            db.commit()
 
 
 def update_flood_report_status(db: Session, report_id: int, status: str) -> Optional[models.FloodReport]:
     report = get_flood_report(db, report_id)
     if report:
         report.status = status
-        if status == "rejected":
-            report.deleted_at = datetime.utcnow()
-            if report.user_id:
-                penalize_user_rejected_report(db, report.user_id)
         db.commit()
         db.refresh(report)
     return report
@@ -86,23 +84,11 @@ def archive_flood_report(db: Session, report_id: int) -> Optional[models.FloodRe
 
 def restore_flood_report(db: Session, report_id: int) -> Optional[models.FloodReport]:
     report = db.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
-    if report and (report.deleted_at is not None or report.status == "rejected"):
-        was_rejected = (report.status == "rejected")
-        report.deleted_at = None
-        if was_rejected:
-            report.status = "pending"
-            if report.user_id:
-                user = db.query(models.User).filter(models.User.id == report.user_id).first()
-                if user and user.profile:
-                    user.profile.reports_rejected = max(0, user.profile.reports_rejected - 1)
-                    user.profile.trust_score = min(100, user.profile.trust_score + 10)
-                    total_graded = user.profile.reports_approved + user.profile.reports_rejected
-                    if total_graded > 0:
-                        user.profile.accuracy_rate = round((user.profile.reports_approved / total_graded) * 100.0, 1)
-                    else:
-                        user.profile.accuracy_rate = 100.0
-        db.commit()
-        db.refresh(report)
+    if not report or report.deleted_at is None:
+        return None
+    report.deleted_at = None
+    db.commit()
+    db.refresh(report)
     return report
 
 
@@ -110,6 +96,8 @@ def hard_delete_flood_report(db: Session, report_id: int) -> bool:
     report = db.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
     if not report:
         return False
+    if report.event_id is not None:
+        raise ValueError("Flood reports linked to a verified event cannot be permanently deleted.")
     from app.models.post import CommunityPost
     db.query(CommunityPost).filter(CommunityPost.flood_report_id == report_id).update({CommunityPost.flood_report_id: None})
     db.delete(report)
@@ -207,7 +195,12 @@ def get_nearby_active_avoidance_zones(
     return nearby
 
 
-def create_flood_avoidance_zone(db: Session, zone: schemas.FloodAvoidanceZoneCreate) -> models.FloodAvoidanceZone:
+def create_flood_avoidance_zone(
+    db: Session,
+    zone: schemas.FloodAvoidanceZoneCreate,
+    event_id: Optional[int] = None,
+    commit: bool = True,
+) -> models.FloodAvoidanceZone:
     # Convert Pydantic PolygonGeometry to GeoJSON string for direct PostGIS parsing
     geojson_str = zone.geometry.model_dump_json()
     geometry_clause = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
@@ -223,11 +216,11 @@ def create_flood_avoidance_zone(db: Session, zone: schemas.FloodAvoidanceZoneCre
         source_geometry=source_geometry_clause,
         is_active=zone.is_active,
         expires_at=zone.expires_at,
-        curated_by_admin_id=zone.curated_by_admin_id
+        curated_by_admin_id=zone.curated_by_admin_id,
+        event_id=event_id,
     )
     db.add(db_zone)
-    db.commit()
-    db.refresh(db_zone)
+    db.flush()
 
     if zone.report_id:
         db_report = db.query(models.FloodReport).filter(models.FloodReport.id == zone.report_id).first()
@@ -235,8 +228,9 @@ def create_flood_avoidance_zone(db: Session, zone: schemas.FloodAvoidanceZoneCre
             db_report.zone_id = db_zone.id
             db_report.status = models.ReportStatus.APPROVED
             db_report.approved_at = datetime.utcnow()
-            db.commit()
-            db.refresh(db_zone)
+    if commit:
+        db.commit()
+        db.refresh(db_zone)
 
     return db_zone
 
@@ -259,14 +253,9 @@ def get_all_flood_reports_filtered(
     Returns a tuple of (reports, total_count).
     """
     if archived:
-        query = db.query(models.FloodReport).filter(
-            or_(models.FloodReport.deleted_at.is_not(None), models.FloodReport.status == "rejected")
-        )
+        query = db.query(models.FloodReport).filter(models.FloodReport.deleted_at.is_not(None))
     else:
-        query = db.query(models.FloodReport).filter(
-            models.FloodReport.deleted_at.is_(None),
-            models.FloodReport.status != "rejected"
-        )
+        query = db.query(models.FloodReport).filter(models.FloodReport.deleted_at.is_(None))
 
     if status and status != "all":
         query = query.filter(models.FloodReport.status == status)
@@ -363,6 +352,7 @@ def get_all_avoidance_zones_filtered(
     query = db.query(models.FloodAvoidanceZone)
     if archived:
         query = query.filter(
+            models.FloodAvoidanceZone.event_id.is_(None),
             or_(
                 models.FloodAvoidanceZone.is_active == False,
                 (models.FloodAvoidanceZone.expires_at.is_not(None)) & (models.FloodAvoidanceZone.expires_at <= func.now())
@@ -412,6 +402,8 @@ def hard_delete_flood_avoidance_zone(db: Session, zone_id: int) -> bool:
     zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         return False
+    if zone.event_id is not None:
+        raise ValueError("Flood zones linked to a verified event cannot be permanently deleted.")
     db.query(models.FloodReport).filter(models.FloodReport.zone_id == zone_id).update({models.FloodReport.zone_id: None})
     db.delete(zone)
     db.commit()

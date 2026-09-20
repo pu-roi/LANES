@@ -1,7 +1,7 @@
 from datetime import datetime
 import struct
 from typing import Any, Literal, Optional, Union
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from geoalchemy2.elements import WKBElement
 
 from app.schemas.common import (
@@ -18,7 +18,8 @@ from app.schemas.common import (
 )
 
 
-from app.models.report import ReportSource, ReportSeverity, ReportStatus, HazardPresence
+from app.models.report import ReportSource, ReportSeverity, ReportStatus, HazardPresence, ReportRejectionReason
+from app.services.flood_depth import normalize_flood_depth, severity_for_flood_depth
 
 class SurveyData(BaseModel):
     passable_vehicles: Optional[str] = None
@@ -40,6 +41,17 @@ class FloodReportBase(BaseModel):
     city: Optional[str] = None
     is_public: bool = False
     is_bidirectional: bool = False
+
+    @field_validator("depth", mode="before")
+    @classmethod
+    def normalize_depth(cls, value: Optional[str]) -> Optional[str]:
+        return normalize_flood_depth(value)
+
+    @model_validator(mode="after")
+    def validate_depth_matches_severity(self) -> "FloodReportBase":
+        if self.depth is not None and severity_for_flood_depth(self.depth) != self.severity:
+            raise ValueError("Severity must match the selected flood depth.")
+        return self
 
 
 class FloodReportCreate(FloodReportBase):
@@ -63,6 +75,7 @@ class FloodReportResponse(FloodReportBase):
     updated_at: datetime
     approved_at: Optional[datetime] = None
     zone_id: Optional[int] = None
+    event_id: Optional[int] = None
     survey: Optional[SurveyDataResponse] = None
     reporter_name: Optional[str] = "System"
     reporter_username: Optional[str] = None
@@ -130,17 +143,36 @@ class FloodAvoidanceZoneUpdate(BaseModel):
     # centrelines are accepted here and buffered by the secured admin route.
     geometry: Optional[Union[LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
 
+    @field_validator("depth_override", mode="before")
+    @classmethod
+    def normalize_depth_override(cls, value: Optional[str]) -> Optional[str]:
+        return normalize_flood_depth(value)
+
 class FloodAvoidanceZoneCreateOfficial(BaseModel):
     name: Optional[str] = None
     # Create Zone accepts road-following lines as well as hand-drawn areas.
     # The official-zone endpoint buffers line geometries into persisted polygons.
     geometry: Union[LineStringGeometry, MultiLineStringGeometry, PolygonGeometry, MultiPolygonGeometry]
     severity_override: ReportSeverity
-    depth_override: Optional[str] = None
+    depth_override: str
     passable_vehicles_override: Optional[str] = None
     hidden_hazards_override: Optional[str] = None
     admin_notes: Optional[str] = None
     is_active: bool = True
+
+    @field_validator("depth_override", mode="before")
+    @classmethod
+    def normalize_depth_override(cls, value: str) -> str:
+        normalized = normalize_flood_depth(value)
+        if normalized is None:
+            raise ValueError("Depth is required for an official flood zone.")
+        return normalized
+
+    @model_validator(mode="after")
+    def validate_depth_matches_severity(self) -> "FloodAvoidanceZoneCreateOfficial":
+        if severity_for_flood_depth(self.depth_override) != self.severity_override:
+            raise ValueError("Severity must match the selected flood depth.")
+        return self
 
 
 class ZoneContributorResponse(BaseModel):
@@ -185,6 +217,7 @@ class ZoneContributorResponse(BaseModel):
 class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     id: int
     report_id: Optional[int] = None
+    event_id: Optional[int] = None
     curated_by_admin_id: Optional[int] = None
     name: Optional[str] = None
     severity_override: Optional[ReportSeverity] = None
@@ -278,9 +311,31 @@ class ApproveReportRequest(BaseModel):
     target_zone_id: Optional[int] = None
     custom_geometry: Optional[PolygonGeometry] = None
     buffer_radius: Optional[float] = None
-    severity: Optional[str] = None
+    severity: Optional[ReportSeverity] = None
     depth: Optional[str] = None
     admin_notes: Optional[str] = None
+
+    @field_validator("depth", mode="before")
+    @classmethod
+    def normalize_depth(cls, value: Optional[str]) -> Optional[str]:
+        return normalize_flood_depth(value)
+
+    @model_validator(mode="after")
+    def validate_depth_matches_severity(self) -> "ApproveReportRequest":
+        if self.depth is not None and self.severity is not None and severity_for_flood_depth(self.depth) != self.severity:
+            raise ValueError("Severity must match the selected flood depth.")
+        return self
+
+
+class RejectFloodReportRequest(BaseModel):
+    reason: ReportRejectionReason
+    internal_note: Optional[str] = None
+
+    @model_validator(mode="after")
+    def require_note_for_other(self) -> "RejectFloodReportRequest":
+        if self.reason == ReportRejectionReason.OTHER and not (self.internal_note and self.internal_note.strip()):
+            raise ValueError("An internal note is required when rejection reason is 'other'.")
+        return self
 
 
 class NearbyZoneResponse(BaseModel):
@@ -309,6 +364,15 @@ class AvoidanceZoneUpdateRequest(BaseModel):
 
 class MergePendingReportsRequest(BaseModel):
     report_ids: list[int]
+
+    @field_validator("report_ids")
+    @classmethod
+    def require_unique_report_ids(cls, value: list[int]) -> list[int]:
+        if not value:
+            raise ValueError("Select at least one pending report to merge.")
+        if len(value) != len(set(value)):
+            raise ValueError("A report can be selected only once per batch merge.")
+        return value
 
 
 class MergePendingReportsResponse(BaseModel):
@@ -366,12 +430,27 @@ class MergeCandidatesListResponse(BaseModel):
 class MergedZoneFinalData(BaseModel):
     name: Optional[str] = None
     severity: str
-    depth: Optional[str] = None
+    depth: str
     passable_vehicles: Optional[str] = None
     hidden_hazards: Optional[str] = None
     is_bidirectional: bool = False
     geometry: Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]
     admin_notes: Optional[str] = None
+
+    @field_validator("depth", mode="before")
+    @classmethod
+    def normalize_depth(cls, value: str) -> str:
+        normalized = normalize_flood_depth(value)
+        if normalized is None:
+            raise ValueError("Depth is required for a verified flood zone.")
+        return normalized
+
+    @model_validator(mode="after")
+    def validate_depth_matches_severity(self) -> "MergedZoneFinalData":
+        expected = severity_for_flood_depth(self.depth)
+        if self.severity != expected.value:
+            raise ValueError("Severity must match the selected flood depth.")
+        return self
     merge_rationale: Optional[str] = None
     buffer_radius: Optional[float] = 25.0
 

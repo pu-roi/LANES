@@ -9,9 +9,10 @@ interface ModalProps {
   children: ReactNode;
   size?: "sm" | "md";
   blurBackdrop?: boolean;
+  bare?: boolean;
 }
 
-export function Modal({ isOpen, onClose, title, children, size = "md", blurBackdrop = true }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, size = "md", blurBackdrop = true, bare = false }: ModalProps) {
   if (!isOpen) return null;
 
   return createPortal(
@@ -24,18 +25,21 @@ export function Modal({ isOpen, onClose, title, children, size = "md", blurBackd
       
       {/* Dialog */}
       <div className={cn(
-        "relative z-10 w-full bg-white text-gray-900 rounded-xl shadow-2xl transform scale-100 transition-all",
-        size === "sm" ? "max-w-[18rem] p-4" : "max-w-md p-6"
+        "relative z-10 w-full text-gray-900 transform scale-100 transition-all",
+        bare ? "max-w-md" : "bg-white rounded-xl shadow-2xl",
+        !bare && (size === "sm" ? "max-w-[18rem] p-4" : "max-w-md p-6")
       )}>
-        <div className={cn("flex items-center justify-between", size === "sm" ? "mb-3" : "mb-4")}>
-          <h2 className={cn("font-bold text-gray-900", size === "sm" ? "text-lg" : "text-xl")}>{title}</h2>
-          <button 
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-700 transition"
-          >
-            ✕
-          </button>
-        </div>
+        {!bare && (
+          <div className={cn("flex items-center justify-between", size === "sm" ? "mb-3" : "mb-4")}>
+            <h2 className={cn("font-bold text-gray-900", size === "sm" ? "text-lg" : "text-xl")}>{title}</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-700 transition"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         <div>
           {children}
         </div>

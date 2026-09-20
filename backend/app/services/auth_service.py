@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from app.crud import otp as crud_otp
 from app.schemas.otp import OTPVerificationCreate
-from app.services.email_service import send_otp_email_async, send_password_reset_email_async
+from app.services.email_service import send_otp_email_async, send_password_reset_email_async, send_password_change_otp_email_async
 import bcrypt
 
 def get_otp_hash(otp_code: str) -> str:
@@ -92,6 +92,43 @@ async def generate_and_send_password_reset_otp(db: Session, email: str) -> tuple
         return False, err, next_cooldown
         
     return True, "", next_cooldown
+
+
+async def generate_and_send_password_change_otp(db: Session, email: str) -> tuple[bool, str, int]:
+    """
+    Generate a 6-digit OTP for confirming a password change, hash it, store it in the database,
+    and send it via the password change email template.
+    Checks progressive cooldown eligibility before generating.
+    Returns (success, error_or_message, next_cooldown_seconds)
+    """
+    eligible, wait_seconds, cooldown_seconds = crud_otp.check_resend_eligibility(db, email)
+    if not eligible:
+        if wait_seconds >= 60:
+            minutes = (wait_seconds + 59) // 60
+            err_msg = f"Please wait {minutes} minute(s) before requesting another code. Please check your spam folder."
+        else:
+            err_msg = f"Please wait {wait_seconds} second(s) before requesting another code."
+        return False, err_msg, wait_seconds
+
+    code = generate_otp_code()
+    hashed_code = get_otp_hash(code)
+    
+    expires_at = datetime.utcnow() + timedelta(minutes=5)
+    
+    otp_in = OTPVerificationCreate(
+        email=email,
+        otp_code=hashed_code,
+        expires_at=expires_at
+    )
+    
+    _, next_cooldown = crud_otp.create_otp(db, otp_in)
+    
+    success, err = await send_password_change_otp_email_async(to_email=email, otp_code=code)
+    if not success:
+        return False, err, next_cooldown
+        
+    return True, "", next_cooldown
+
 
 
 def validate_otp(db: Session, email: str, plain_otp: str) -> dict:

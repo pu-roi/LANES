@@ -7,7 +7,7 @@ import { useMapContext } from "@/features/map/MapContext";
 interface ReportFabProps {
   /** Whether the FAB action menu is currently expanded. */
   isMenuOpen: boolean;
-  /** Whether the flood report panel is expanded (not collapsed). */
+  /** Whether an overlaid mobile panel is expanded (not collapsed). */
   isPanelExpanded: boolean;
   /** Callback when the FAB is clicked. */
   onClick: () => void;

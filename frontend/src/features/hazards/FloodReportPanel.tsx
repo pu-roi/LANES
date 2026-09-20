@@ -77,16 +77,16 @@ const VISUAL_OPTIONS: {
   id: ReportVisualOption;
   severity: Severity;
   label: string;
-  description: string;
+  description?: string;
 }[] = [
-  { id: "gutter", severity: "low", label: "Gutter", description: "8 inches" },
-  { id: "half-knee", severity: "low", label: "Half-Knee", description: "10 inches" },
-  { id: "half-tire", severity: "medium", label: "Half-Tire", description: "13 inches" },
-  { id: "knee", severity: "medium", label: "Knee", description: "19 inches" },
-  { id: "tires", severity: "high", label: "Tires", description: "26 inches" },
-  { id: "waist", severity: "high", label: "Waist", description: "37 inches" },
-  { id: "chest", severity: "high", label: "Chest", description: "45 inches" },
-  { id: "neck", severity: "extreme", label: "Neck & Above", description: "Danger" },
+  { id: "gutter", severity: "low", label: "Gutter" },
+  { id: "half-knee", severity: "low", label: "Half-Knee" },
+  { id: "half-tire", severity: "medium", label: "Half-Tire" },
+  { id: "knee", severity: "medium", label: "Knee" },
+  { id: "tires", severity: "high", label: "Tires" },
+  { id: "waist", severity: "high", label: "Waist" },
+  { id: "chest", severity: "high", label: "Chest" },
+  { id: "neck", severity: "extreme", label: "Neck & Above" },
 ];
 
 function formatFileSize(bytes: number) {
@@ -490,7 +490,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       return;
     }
     const severity = selectedOption.severity;
-    const depth = selectedOption.label;
+    const depth = selectedOption.id;
 
     const newDraft = {
       id: editingDraft?.id ?? Math.random().toString(36).substring(7),
@@ -528,7 +528,9 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setStartInput(draft.startLabel || "");
     setEndInput(draft.endLabel || "");
     setDescription(draft.description);
-    const option = VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth) || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
+    const option = VISUAL_OPTIONS.find((item) => item.id === draft.depth)
+      || VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth)
+      || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
     setVisualOption(option?.id ?? null);
     setPassableVehicles(draft.passableVehicles || []);
     setHiddenHazards(draft.hiddenHazards || null);
@@ -619,7 +621,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         createFormData({
           description: description,
           severity: selectedOption.severity,
-          depth: selectedOption.label,
+          depth: selectedOption.id,
           humanReadableLocation: currentHint,
           isPublic: isPublic,
           isBidirectional: isBidirectional,
@@ -940,7 +942,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                   >
                     <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10", SEVERITY_DOT_COLORS[opt.severity])}></div>
                     <span>{opt.label}</span>
-                    <span className="font-normal text-[10px] opacity-75">{opt.description}</span>
+                {opt.description && <span className="font-normal text-[10px] opacity-75">{opt.description}</span>}
                   </button>
                 );
               })}

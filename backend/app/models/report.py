@@ -35,6 +35,67 @@ class HazardPresence(str, enum.Enum):
     UNSURE = "unsure"
 
 
+class FloodEventStatus(str, enum.Enum):
+    ACTIVE = "active"
+    ENDED = "ended"
+
+
+class FloodEventLocationType(str, enum.Enum):
+    ROAD = "road"
+    BARANGAY = "barangay"
+    CITY = "city"
+
+
+class ReportModerationOutcomeType(str, enum.Enum):
+    APPROVED = "approved"
+    LINKED = "linked"
+    REJECTED = "rejected"
+
+
+class ReportRejectionReason(str, enum.Enum):
+    INSUFFICIENT_EVIDENCE = "insufficient_evidence"
+    INCORRECT_LOCATION_OR_DETAILS = "incorrect_location_or_details"
+    FALSE_SPAM_OR_MALICIOUS = "false_spam_or_malicious"
+    OUTSIDE_COVERAGE_AREA = "outside_coverage_area"
+    WITHDRAWN = "withdrawn"
+    OTHER = "other"
+
+
+class FloodEvent(Base):
+    """Permanent verified flooding incident used for admin-only history and analytics."""
+
+    __tablename__ = "flood_events"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    status: Mapped[FloodEventStatus] = mapped_column(
+        Enum(FloodEventStatus, native_enum=False, length=20, values_callable=lambda x: [e.value for e in x]),
+        default=FloodEventStatus.ACTIVE,
+        nullable=False,
+        index=True,
+    )
+    first_reported_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    verified_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    ended_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    peak_severity: Mapped[ReportSeverity] = mapped_column(
+        Enum(ReportSeverity, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+    )
+    peak_depth: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    reports: Mapped[List["FloodReport"]] = relationship("FloodReport", back_populates="flood_event")
+    zones: Mapped[List["FloodAvoidanceZone"]] = relationship("FloodAvoidanceZone", back_populates="flood_event")
+    locations: Mapped[List["FloodEventLocation"]] = relationship(
+        "FloodEventLocation", back_populates="flood_event", cascade="all, delete-orphan"
+    )
+    timeline_entries: Mapped[List["FloodEventTimelineEntry"]] = relationship(
+        "FloodEventTimelineEntry", back_populates="flood_event", cascade="all, delete-orphan"
+    )
+
+
 class FloodReport(Base):
     """
     FloodReport model representing incoming Taglish flood feeds or manual user alerts.
@@ -70,6 +131,11 @@ class FloodReport(Base):
         nullable=True,
         index=True
     )
+    event_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("flood_events.id", ondelete="RESTRICT"),
+        nullable=True,
+        index=True,
+    )
     
     # PostGIS Geometry column for generic geometry (Point or LineString) (SRID 4326 = WGS 84 coordinate system)
     geometry: Mapped[Any] = mapped_column(
@@ -88,6 +154,7 @@ class FloodReport(Base):
         back_populates="reports",
         foreign_keys=[zone_id]
     )
+    flood_event: Mapped[Optional["FloodEvent"]] = relationship("FloodEvent", back_populates="reports")
     locations: Mapped[List["FloodReportLocation"]] = relationship(
         "FloodReportLocation",
         back_populates="report",
@@ -108,6 +175,9 @@ class FloodReport(Base):
         back_populates="report",
         cascade="all, delete-orphan",
         uselist=False
+    )
+    moderation_outcomes: Mapped[List["FloodReportModerationOutcome"]] = relationship(
+        "FloodReportModerationOutcome", back_populates="report", cascade="all, delete-orphan"
     )
 
     @property
@@ -181,6 +251,11 @@ class FloodAvoidanceZone(Base):
         nullable=True,
         index=True
     )
+    event_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("flood_events.id", ondelete="RESTRICT"),
+        nullable=True,
+        index=True,
+    )
     
     # PostGIS Geometry column for polygonal boundaries representing avoidance buffer areas
     geometry: Mapped[Any] = mapped_column(
@@ -216,6 +291,7 @@ class FloodAvoidanceZone(Base):
 
     # Relationships
     reports: Mapped[List["FloodReport"]] = relationship("FloodReport", back_populates="avoidance_zone")
+    flood_event: Mapped[Optional["FloodEvent"]] = relationship("FloodEvent", back_populates="zones")
     curated_by_admin: Mapped[Optional["User"]] = relationship("User", foreign_keys=[curated_by_admin_id])
 
     @property
@@ -351,3 +427,72 @@ class FloodAvoidanceZone(Base):
                 "geometry": r.geometry,
             })
         return contribs
+
+
+class FloodEventLocation(Base):
+    """Normalized road, barangay, or city affected by a verified Flood Event."""
+
+    __tablename__ = "flood_event_locations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    event_id: Mapped[int] = mapped_column(ForeignKey("flood_events.id", ondelete="CASCADE"), index=True)
+    location_type: Mapped[FloodEventLocationType] = mapped_column(
+        Enum(FloodEventLocationType, native_enum=False, length=20, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+    )
+    display_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    normalized_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    geometry: Mapped[Optional[Any]] = mapped_column(
+        Geometry(geometry_type="GEOMETRY", srid=4326, spatial_index=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    flood_event: Mapped["FloodEvent"] = relationship("FloodEvent", back_populates="locations")
+
+
+class FloodReportModerationOutcome(Base):
+    """Append-only administrative outcome history for a FloodReport."""
+
+    __tablename__ = "flood_report_moderation_outcomes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    report_id: Mapped[int] = mapped_column(ForeignKey("flood_reports.id", ondelete="CASCADE"), index=True)
+    outcome: Mapped[ReportModerationOutcomeType] = mapped_column(
+        Enum(ReportModerationOutcomeType, native_enum=False, length=20, values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+    )
+    rejection_reason: Mapped[Optional[ReportRejectionReason]] = mapped_column(
+        Enum(ReportRejectionReason, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]),
+        nullable=True,
+    )
+    internal_note: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
+    event_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("flood_events.id", ondelete="RESTRICT"), nullable=True, index=True
+    )
+    zone_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("flood_avoidance_zones.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    acted_by_user_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    acted_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    report: Mapped["FloodReport"] = relationship("FloodReport", back_populates="moderation_outcomes")
+
+
+class FloodEventTimelineEntry(Base):
+    """Readable incident timeline entry; technical details stay in AuditLog."""
+
+    __tablename__ = "flood_event_timeline_entries"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    event_id: Mapped[int] = mapped_column(ForeignKey("flood_events.id", ondelete="CASCADE"), index=True)
+    entry_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    summary: Mapped[str] = mapped_column(String(500), nullable=False)
+    snapshot_json: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+
+    flood_event: Mapped["FloodEvent"] = relationship("FloodEvent", back_populates="timeline_entries")

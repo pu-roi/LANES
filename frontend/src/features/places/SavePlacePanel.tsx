@@ -5,6 +5,7 @@ import { Panel } from "@/shared/ui";
 import { Input } from "@/shared/ui";
 import { Button } from "@/shared/ui";
 import { Select } from "@/shared/ui";
+import { ConfirmDialog } from "@/shared/ui";
 import { MapPin, Home, Briefcase, GraduationCap, Building, Star, Coffee, Heart, Crosshair, User, Trash2, Plus, Navigation, Pin, ChevronUp, ChevronDown } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
@@ -69,6 +70,7 @@ export function SavePlacePanel() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [placeToDelete, setPlaceToDelete] = useState<SavedPlace | null>(null);
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const hasHydratedSavePlaceDraft = useRef(false);
 
@@ -246,12 +248,15 @@ export function SavePlacePanel() {
     }
   };
 
-  const handleDelete = async (placeId: number, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDelete = async () => {
+    if (!placeToDelete) return;
+
+    const placeId = placeToDelete.id;
     setDeletingId(placeId);
     try {
       await savedPlacesApi.deleteSavedPlace(placeId);
       setSavedPlaces(savedPlaces.filter((p: SavedPlace) => p.id !== placeId));
+      setPlaceToDelete(null);
       success("Deleted", "Saved place removed");
     } catch (err: any) {
       showError("Error", err.response?.data?.detail || "Failed to delete saved place");
@@ -607,9 +612,12 @@ export function SavePlacePanel() {
                         </button>
                         <button
                           type="button"
-                          onClick={(e) => handleDelete(place.id, e)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPlaceToDelete(place);
+                          }}
                           disabled={deletingId === place.id}
-                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="flex h-10 w-10 items-center justify-center rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
                           title="Delete place"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -623,6 +631,23 @@ export function SavePlacePanel() {
           )}
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={placeToDelete !== null}
+        title="Delete saved place?"
+        message={
+          <p>
+            Remove <strong>{placeToDelete?.name}</strong> from your saved places?
+          </p>
+        }
+        confirmLabel="Delete"
+        cancelLabel="Keep place"
+        onConfirm={handleDelete}
+        onCancel={() => setPlaceToDelete(null)}
+        variant="destructive"
+        isLoading={deletingId !== null}
+        size="sm"
+      />
     </Panel>
   );
 }

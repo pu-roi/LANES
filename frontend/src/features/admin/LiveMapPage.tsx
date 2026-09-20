@@ -7,7 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { 
   getZone, getZones, deactivateZone, deactivateZonesBulk, AvoidanceZone,
-  getPendingReports, approveReport, rejectReport,
+  getPendingReports, getReportForSpatialReview, approveReport, rejectReport,
   createOfficialZone,
   FloodReport
 } from "./adminApi";
@@ -32,6 +32,7 @@ import { PendingReportsPanel } from "./components/PendingReportsPanel";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
 import { ReportDetailsModal } from "./components/ReportDetailsModal";
+import { RejectFloodReportModal } from "./components/RejectFloodReportModal";
 import { CreateOfficialZonePanel } from "./components/CreateOfficialZonePanel";
 import type { ZoneSubmissionItem } from "./components/zones";
 import { MergeWorkspacePanel } from "./components/merge/MergeWorkspacePanel";
@@ -193,6 +194,7 @@ export default function LiveMapPage() {
 
   // Responsive viewport check
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+  const [isMobileMapVisible, setIsMobileMapVisible] = useState(false);
 
   // DRAWER WIDTH: Consistent standard width across secondary workspace panels
   const DRAWER_WIDTH = 440;
@@ -207,6 +209,7 @@ export default function LiveMapPage() {
   const [selectedContributorId, setSelectedContributorId] = useState<number | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
+  const [rejectionReport, setRejectionReport] = useState<FloodReport | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
   const [editingZone, setEditingZone] = useState<AvoidanceZone | null>(null);
   const previousAdminId = useRef<string | null>(null);
@@ -276,6 +279,13 @@ export default function LiveMapPage() {
     queryFn: getPendingReports,
     refetchInterval: 10000,
   });
+  const focusedReportId = Number(searchParams.get("focus_report_id")) || null;
+  const { data: focusedModerationReport } = useQuery({
+    queryKey: ["adminFocusedModerationReport", focusedReportId],
+    queryFn: () => getReportForSpatialReview(focusedReportId!),
+    enabled: focusedReportId !== null,
+    retry: 1,
+  });
 
   // Track last focused query to avoid duplicate re-flying
   const lastFocusedParamRef = useRef<string | null>(null);
@@ -290,16 +300,21 @@ export default function LiveMapPage() {
     const latStr = searchParams.get("lat");
     const lngStr = searchParams.get("lng");
     const zoomStr = searchParams.get("zoom");
+    const reviewToken = searchParams.get("review_token");
 
-    const queryKey = `${focusId}_${tabParam}_${latStr}_${lngStr}`;
+    const queryKey = `${focusId}_${tabParam}_${latStr}_${lngStr}_${reviewToken}`;
     if (!focusId && !latStr && !lngStr) return;
+
+    // A Moderation Center handoff needs the selected report's geometry before
+    // it can be isolated. Do not mark the URL as handled while that query is
+    // still loading; otherwise the follow-up render has nothing left to focus.
+    if (focusId && !focusedModerationReport) return;
 
     if (tabParam === "zones" || tabParam === "pending") {
       setActiveTab(tabParam);
     }
 
     if (lastFocusedParamRef.current === queryKey) return;
-    lastFocusedParamRef.current = queryKey;
 
     const executeFocus = () => {
       // 1. Direct coordinates passed from Reports Page
@@ -315,15 +330,16 @@ export default function LiveMapPage() {
       // 2. Select report / zone in state
       if (focusId) {
         const idNum = Number(focusId);
-        const targetPending = pendingReports?.find((r) => r.id === idNum);
-        if (targetPending) {
+        const targetReport = focusedModerationReport?.id === idNum ? focusedModerationReport : null;
+        if (targetReport) {
           setActiveTab("pending");
           setSelectedReportId(idNum);
           setIsolatedReportId(idNum);
 
-          if (targetPending.geometry && (!latStr || !lngStr)) {
-            flyToFeature(mapInstance, targetPending.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
+          if (targetReport.geometry && (!latStr || !lngStr)) {
+            flyToFeature(mapInstance, targetReport.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
           }
+          lastFocusedParamRef.current = queryKey;
         } else {
           const targetZone = (mapZones || []).find(
             (z: any) => z.report_id === idNum || (z.contributors || []).some((c: any) => c.report_id === idNum)
@@ -334,15 +350,18 @@ export default function LiveMapPage() {
             if (targetZone.geometry && (!latStr || !lngStr)) {
               flyToFeature(mapInstance, targetZone.geometry, targetZone.report_geometry, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
             }
+            lastFocusedParamRef.current = queryKey;
           }
         }
+      } else {
+        lastFocusedParamRef.current = queryKey;
       }
     };
 
     // Small delay ensures MapLibre terrain and canvas resizing are settled
     const timer = setTimeout(executeFocus, 250);
     return () => clearTimeout(timer);
-  }, [searchParams, pendingReports, mapZones, mapInstance, isLoaded]);
+  }, [searchParams, focusedModerationReport, mapZones, mapInstance, isLoaded]);
 
   const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
     queryKey: ["adminZones", page, activeOnly],
@@ -426,7 +445,9 @@ export default function LiveMapPage() {
   // Ordinary report selection never changes the queue or guesses which reports are related.
   // Map spotlight is scoped to the explicit intelligent merge workflow.
   const filteredPendingReports = pendingReports || [];
-  const mapPendingReports = isMergeDrawerOpen && mergingReport
+  const mapPendingReports = focusedModerationReport && isolatedReportId === focusedModerationReport.id
+    ? [focusedModerationReport]
+    : isMergeDrawerOpen && mergingReport
     ? filteredPendingReports.filter((report) => report.id === mergingReport.id)
     : filteredPendingReports;
 
@@ -434,18 +455,19 @@ export default function LiveMapPage() {
   // When an existing zone is being edited, exclude it from the solid active zones layer so
   // that its baseline is represented exclusively by the preview layer (orange dashed line).
   const visibleMapZones = useMemo(() => {
+    if (isolatedReportId !== null) return [];
     if (isEditZoneDrawerOpen && editingZone) {
       return (mapZones || []).filter((z: AvoidanceZone) => z.id !== editingZone.id);
     }
     return mapZones;
-  }, [isEditZoneDrawerOpen, editingZone, mapZones]);
+  }, [isEditZoneDrawerOpen, editingZone, isolatedReportId, mapZones]);
 
   useCityBoundaries(mapInstance, isLoaded);
   useFloodZonesLayer(
     mapInstance,
     isLoaded,
     visibleMapZones,
-    false,
+    isMobile,
     activeTab,
     selectedZoneId,
     setSelectedZoneId,
@@ -459,7 +481,8 @@ export default function LiveMapPage() {
     activeTab, 
     handleReportFocusChange,
     selectedReportId,
-    isolatedReportId
+    isolatedReportId,
+    isMobile
   );
   useMergePreviewLayer({
     map: mapInstance,
@@ -471,8 +494,6 @@ export default function LiveMapPage() {
   });
 
   const pathname = usePathname();
-
-  // Resize map canvas whenever returning to the spatial operations tab
   useEffect(() => {
     if (mapInstance && isLoaded && pathname === "/admin/map") {
       setTimeout(() => {
@@ -623,12 +644,14 @@ export default function LiveMapPage() {
   });
 
   const rejectMutation = useMutation({
-    mutationFn: (id: number) => rejectReport(id),
-    onSuccess: (_data, id) => {
+    mutationFn: ({ id, payload }: { id: number; payload: Parameters<typeof rejectReport>[1] }) => rejectReport(id, payload),
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["adminPendingReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
-      setSelectedReportId((current) => current === id ? null : current);
-      toast.success("Report Rejected", `Flood report #${id} has been rejected and moved to the Archive Center.`);
+      setSelectedReportId((current) => current === variables.id ? null : current);
+      setRejectionReport(null);
+      setInfoModalReport(null);
+      toast.success("Report Rejected", `Flood report #${variables.id} was retained in internal moderation history.`);
     },
     onError: (err: any) => {
       toast.error("Rejection Failed", err?.response?.data?.detail || err?.message || "Could not reject report.");
@@ -760,11 +783,11 @@ export default function LiveMapPage() {
       />
       <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
         {/* LEFT PANEL: Moderation & Zones Sidebar */}
-        <div className={`${isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "hidden" : "flex"} relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex-col bg-white border-r border-slate-200 h-[50vh] md:flex md:h-full z-40 shadow-sm`}>
+        <div className={`${isMobile && (isMergeDrawerOpen && isMergeMobileMapVisible || isMobileMapVisible) ? "hidden" : "flex"} relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex-col bg-white border-r border-slate-200 h-full md:flex md:h-full z-40 shadow-sm`}>
           
           {/* Mode Switcher Tabs Header */}
-          <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex items-center justify-between gap-2">
-            <div className="flex-1">
+          <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
+            <div className="min-w-0 w-full md:flex-1">
               <Tabs<"pending" | "zones">
                 tabs={[
                   {
@@ -788,15 +811,32 @@ export default function LiveMapPage() {
               />
             </div>
 
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => { refetchPending(); refetchList(); refetchMap(); }}
-              className="h-9 px-2.5 rounded-xl shrink-0 bg-white"
-              title="Refresh list"
-            >
-              <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
-            </Button>
+            <div className="flex w-full gap-2 md:w-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => { refetchPending(); refetchList(); refetchMap(); }}
+                className="h-9 flex-1 rounded-xl bg-white md:flex-none md:px-2.5"
+                title="Refresh list"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
+                <span className="ml-1.5 md:hidden">Refresh</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsMobileMapVisible(true);
+                  window.setTimeout(() => mapInstance?.resize(), 0);
+                }}
+                className="h-9 flex-1 rounded-xl bg-white md:hidden"
+                title="Open map"
+                aria-label="Open map"
+              >
+                <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                <span className="ml-1.5">View map</span>
+              </Button>
+            </div>
           </div>
 
           {/* TAB 1: PENDING REPORTS (MODERATION QUEUE) */}
@@ -809,7 +849,7 @@ export default function LiveMapPage() {
               setSelectedReportId={handleReportFocusChange}
               onInfoClick={(r) => setInfoModalReport(r)}
               onOpenMergeWorkspace={openMergeWorkspace}
-              rejectMutation={rejectMutation}
+              onRequestReject={setRejectionReport}
               approveMutation={approveMutation}
             />
           )}
@@ -1174,7 +1214,7 @@ export default function LiveMapPage() {
       </AnimatePresence>
 
       {/* RIGHT PANEL: Live Map View */}
-      <div className={`flex-1 relative ${isMobile && isMergeDrawerOpen && isMergeMobileMapVisible ? "h-full" : "h-[50vh]"} md:h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
+      <div className={`${isMobile && !isMergeDrawerOpen && !isMobileMapVisible ? "hidden" : "flex"} flex-1 relative h-full md:flex bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
         <BaseMap 
           actionControls={handleActionControls}
           onMapInit={handleMapInit}
@@ -1228,6 +1268,18 @@ export default function LiveMapPage() {
             </div>
           )}
         </BaseMap>
+        {isMobile && !isMergeDrawerOpen && isMobileMapVisible && (
+          <Button
+            type="button"
+            onClick={() => {
+              setIsMobileMapVisible(false);
+              window.setTimeout(() => mapInstance?.resize(), 0);
+            }}
+            className="fixed bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-900 px-4 text-xs text-white shadow-xl hover:bg-slate-800 md:hidden"
+          >
+            <ArrowRight className="mr-1.5 h-4 w-4 rotate-180" /> Operations
+          </Button>
+        )}
       </div>
 
       {/* Confirmation Modal for Single Deactivation */}
@@ -1289,17 +1341,27 @@ export default function LiveMapPage() {
           }
         }}
         onApprove={(id) => {
-          approveMutation.mutate({ id, payload: { action: "ISOLATE" } });
+          approveMutation.mutate({ id, payload: { action: "CREATE_NEW" } });
           setInfoModalReport(null);
         }}
         onReject={(id) => {
-          rejectMutation.mutate(id);
+          const report = pendingReports?.find((item) => item.id === id) ?? infoModalReport;
+          setRejectionReport(report);
           setInfoModalReport(null);
         }}
         isApproveLoading={approveMutation.isPending}
         isRejectLoading={rejectMutation.isPending}
         onOpenMedia={(urls, idx) => {
           if (urls[idx]) window.open(urls[idx], "_blank");
+        }}
+      />
+      <RejectFloodReportModal
+        report={rejectionReport}
+        isOpen={rejectionReport !== null}
+        isSubmitting={rejectMutation.isPending}
+        onClose={() => setRejectionReport(null)}
+        onSubmit={(payload) => {
+          if (rejectionReport) rejectMutation.mutate({ id: rejectionReport.id, payload });
         }}
       />
       </div>

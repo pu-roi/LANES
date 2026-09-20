@@ -1,9 +1,131 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 19, 2026, 2:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-052] Repeated Flood Moderation Map Review Did Not Re-focus the Report
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Moderation Center / Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Reviewing a Flood Report could fail after returning from Spatial Operations, and approved/rejected moderation records were not available to the pending-only map query.
+
+#### 2. Root Cause Analysis (RCA)
+
+The map cached an identical focus URL and only searched its pending-report dataset.
+
+#### 3. Solution & Architectural Strategy
+
+Each handoff has a fresh review token. Spatial Operations retrieves the exact admin-authorized report, renders only that report, and clears active-zone data while focused.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/api/v1/endpoints/admin.py`, `frontend/src/features/admin/adminApi.ts`, `frontend/src/features/admin/LiveMapPage.tsx`, `frontend/src/features/admin/components/FloodModerationQueue.tsx`
+
+---
+
+### [BUG-051] Admin-Created Accounts Encounter 404 Not Found on Profile Edit & Missing Admin Profile Management
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Backend / User Profile / Admin Panel / Identity Lifecycle
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When an account was created via the Admin Panel's Account Registry modal (`POST /api/v1/admin/users`) (such as user `roicambe`), visiting their profile and attempting to update profile details failed with `404 Not Found` (`Profile not found`). Furthermore, Super Admins (restricted from public routes by `NavigationWrapper.tsx`) had no interface within the Admin Panel to edit their personal information, manage their avatar, or update their password.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Uninstantiated Profile Model**: The admin user creation handler in `backend/app/api/v1/endpoints/admin.py` called `crud.create_user()`, which only inserted a row into the `users` table without initializing a row in the `profiles` table.
+2. **Missing Self-Healing Fallback**: `PATCH /api/v1/users/me/profile` assumed `current_user.profile` always existed, raising `HTTPException(404, detail="Profile not found")`. Avatar upload and delete endpoints had the same limitation.
+3. **Database Not-Null Constraints**: The PostgreSQL `profiles` table schema specifies `NOT NULL` for `first_name` and `last_name`. Any naive fallback creation without default string values caused a `psycopg.errors.NotNullViolation`.
+4. **Admin Route Separation**: Because Super Admins are restricted from public routes like `/profile`, administrative staff needed an integrated profile management hub directly within the Admin Panel (`/admin/*`).
+
+#### 3. Solution & Architectural Strategy
+1. **Auto-Provisioning on Creation**: Updated `create_admin_user` in `admin.py` to automatically instantiate and commit `models.Profile(user_id=new_user.id, first_name=new_user.username, last_name="", display_full_name=True, is_public=True)`.
+2. **Self-Healing Token & Profile Handlers**:
+   - Updated `POST /api/v1/auth/test-token` to detect missing profiles and auto-provision them on session validation, instantaneously healing existing accounts like `roicambe`.
+   - Added self-healing fallback to `PATCH /api/v1/users/me/profile`, `POST /api/v1/users/me/avatar`, and `DELETE /api/v1/users/me/avatar` with proper `first_name=current_user.username` defaults.
+3. **Native Admin Profile Management**:
+   - Created `AdminProfilePage.tsx` at `/admin/profile` mirroring the public profile design (custom cover color banner with color picker, avatar upload/view/remove, and personal/address info via `EditProfileForm`).
+   - Added password change capability (`PUT /api/v1/users/me/password`) with current password verification and live `<PasswordStrength>` validation.
+   - Updated `AdminSidebar.tsx` with a staff user profile link card in the footer showing avatar, name, and staff role.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Auto-provisioned `Profile` on admin user creation.
+- `backend/app/api/v1/endpoints/auth.py`: Auto-heal missing profile in `test-token` endpoint.
+- `backend/app/api/v1/endpoints/users.py`: Self-healing fallback in profile/avatar endpoints; added `PUT /api/v1/users/me/password`.
+- `backend/app/schemas/user.py` & `backend/app/schemas/__init__.py`: Added `PasswordChangeRequest` schema.
+- `backend/tests/test_admin_profile.py`: Pytest suite verifying self-healing and password change.
+- `frontend/src/features/admin/AdminProfilePage.tsx`: Dedicated admin profile page component.
+- `frontend/src/app/admin/profile/page.tsx`: Page route for `/admin/profile`.
+- `frontend/src/features/navigation/AdminSidebar.tsx`: Profile link card in sidebar footer.
+- `frontend/src/features/admin/AdminLayout.tsx`: Zero padding for `/admin/profile` layout.
+- `frontend/src/hooks/useProfile.ts`: Added `changePassword` mutation.
+
+---
+
+### [BUG-050] Unique Constraint Collision When Re-creating Soft-Deleted User Accounts & Unhandled 500 Banner
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Backend / Admin / Database / User Lifecycle
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When an administrator attempted to create a new user account in the User Registry (`POST /api/v1/admin/users`) with an email or username that belonged to a previously soft-deleted/archived user, the backend crashed with an unhandled `500 Internal Server Error` (`psycopg.errors.UniqueViolation: duplicate key value violates unique constraint "ix_users_email"`), and the frontend showed a red inline banner `"Operation Refused - Internal Server Error"`.
+
+#### 2. Root Cause Analysis (RCA)
+1. Soft-deletion in LANES sets `deleted_at = datetime.utcnow()` without physically deleting the user row in PostgreSQL to preserve activity history.
+2. The `users` table has global `UNIQUE` indexes on `email` (`ix_users_email`) and `username` (`ix_users_username`).
+3. The user creation handler checked `crud.get_user_by_email()`, which only queries active accounts (`deleted_at IS NULL`). When the new user record was inserted, PostgreSQL rejected the duplicate key.
+4. The endpoint lacked an `IntegrityError` rollback handler, causing FastAPI to throw an unhandled 500 error.
+5. In the frontend `UsersPage.tsx`, mutation failures triggered a raw inline error banner instead of utilizing the shared toast system (`useToast`).
+
+#### 3. Solution & Architectural Strategy
+1. **Archive Purge & Recreation**: Updated `create_admin_user` in `admin.py` to identify any soft-deleted records holding the clean email or username and purge them via `crud.hard_delete_user()` before inserting the new user.
+2. **Safe Commit & Conflict Handling**: Wrapped database commits in a `try...except IntegrityError` block with `db.rollback()`, returning a structured `409 Conflict` if duplicate values occur.
+3. **Shared Toast UI**: Removed the inline `Operation Refused` alert banner in `UsersPage.tsx` and connected all user mutation callbacks to `toast.success` and `toast.error`.
+4. **Archive Management**: Added `restoreUser` (`POST /api/v1/admin/users/{user_id}/restore`) and `hardDeleteUser` (`DELETE /api/v1/admin/users/{user_id}/permanent`) endpoints.
+
+#### 4. Files Modified / What Changed
+- `backend/app/api/v1/endpoints/admin.py`: Added stale archive purge, `IntegrityError` rollback, and user restore/permanent delete endpoints.
+- `frontend/src/features/admin/adminApi.ts`: Added `restoreUser` and `hardDeleteUser` API callers.
+- `frontend/src/features/admin/UsersPage.tsx`: Removed inline `Operation Refused` banner and wired mutations to `useToast`.
+
+---
+
+### [BUG-049] Rejected Flood Reports Did Not Notify Their Submitter
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 20, 2026
+- **Affected Area**: Backend / Notifications / Spatial Operations
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Rejecting a Flood Report removed it from the live moderation queue but did not create an in-app notification, leaving the reporter without a decision in the existing notification bell.
+
+#### 2. Root Cause Analysis (RCA)
+
+The structured rejection service wrote the report state and staff moderation outcome only; unlike Community Post moderation, it did not add a `Notification` in the same transaction.
+
+#### 3. Solution & Architectural Strategy
+
+The rejection service now creates a `SYSTEM` notification atomically with the outcome and trust update. It includes the selected rejection reason but deliberately excludes the internal staff note from both the message and payload.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/flood_event_service.py`: Adds the reporter notification to the rejection transaction.
+- `frontend/src/features/admin/components/RejectFloodReportModal.tsx`: Explains the user-notification and staff-note privacy behavior before confirmation.
+- `backend/tests/test_spatial_archive.py`: Verifies the notification payload and privacy boundary.
 
 ---
 
@@ -36,6 +158,37 @@ How the issue was addressed, why this approach was selected, and how edge cases 
 ---
 
 ## 🗂️ Bug Log Entries
+
+### [BUG-048] ReferenceError `isTouchDevice is not defined` on Admin Map Zone & Pending Report Hover/Click
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 19, 2026
+- **Affected Area**: Frontend / Map Engine / Admin Portal
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+When navigating to `/admin/map` and hovering over or clicking a pending flood report or avoidance zone on the MapLibre canvas, the client application threw an uncaught runtime exception in the browser console:
+```text
+[browser] Uncaught ReferenceError: isTouchDevice is not defined
+    at usePendingReportsLayer.useEffect.handlePopupOpen (src\features\map\hooks\usePendingReportsLayer.ts:309:78)
+    at usePendingReportsLayer.useEffect.handleMouseEnterOrMove (src\features\map\hooks\usePendingReportsLayer.ts:347:9)
+```
+This crashed popup rendering for pending reports and prevented administrators from inspecting report details directly on the spatial map.
+
+#### 2. Root Cause Analysis (RCA)
+1. **Missing Parameter in Hook Signature**: In `usePendingReportsLayer.ts`, popup rendering logic was adapted from `useFloodZonesLayer.ts` to render `FloodZonePopup` and handle hover/click timers. However, `isTouchDevice` was referenced in the hook without being declared in the function arguments or initialized in scope.
+2. **Missing Touch Propagation in Admin Map**: `LiveMapPage.tsx` was computing `isMobile` via `useMediaQuery("(max-width: 640px), (pointer: coarse)")`, but passed hardcoded `false` into `useFloodZonesLayer` and did not pass touch state to `usePendingReportsLayer`.
+
+#### 3. Solution & Architectural Strategy
+1. **Parametric Touch Support**: Added `isTouchDevice: boolean = false` to `usePendingReportsLayer` parameter list and its `useEffect` dependency array.
+2. **Touch-Aware Hover & Click Protocol**: Updated `handleMouseEnterOrMove`, `handleMouseLeave`, and `handleLayerClick` inside `usePendingReportsLayer.ts` to disable hover dwell timers on touch devices while cleanly opening the popup on click/tap, mirroring `useFloodZonesLayer.ts`.
+3. **Propagate Responsive State**: Passed `isMobile` from `useMediaQuery` into both `useFloodZonesLayer` and `usePendingReportsLayer` in `LiveMapPage.tsx`.
+
+#### 4. Files Modified / What Changed
+- `frontend/src/features/map/hooks/usePendingReportsLayer.ts`: Added `isTouchDevice` parameter, touch-aware event listeners, and robust popup cleanup.
+- `frontend/src/features/admin/LiveMapPage.tsx`: Connected `isMobile` to `useFloodZonesLayer` and `usePendingReportsLayer`.
+
+---
 
 ### [BUG-047] Community Feed Voting Desynchronization, Incomplete Flip Delta & Full Feed Re-fetch Lag
 - **Status**: Resolved

@@ -1,9 +1,11 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, EyeOff, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, CloudRain, EyeOff, MessageSquare, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
-import { Button, Card, CardContent, Skeleton, useToast } from "@/shared/ui";
+import { Button, Card, CardContent, Skeleton, Tabs, useToast } from "@/shared/ui";
+import { FloodModerationQueue } from "./components/FloodModerationQueue";
 
 type Report = {
   id: number;
@@ -26,6 +28,7 @@ const reasonLabel: Record<string, string> = {
 export default function ModerationCenterPage() {
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [activeTab, setActiveTab] = useState<"community" | "flood">("community");
   const reports = useQuery({
     queryKey: ["moderation-reports"],
     queryFn: () => apiClient.get<Report[]>("/admin/moderation/reports"),
@@ -49,14 +52,27 @@ export default function ModerationCenterPage() {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Moderation Center</h1>
-        <p className="text-gray-500 text-sm mt-1">Review private Community Post reports. Future report types will appear here.</p>
+        <p className="text-gray-500 text-sm mt-1">Track Community and Flood Report cases. Flood decisions stay in Spatial Operations.</p>
       </div>
-      <Button onClick={() => reports.refetch()} variant="outline" className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+      <Button onClick={() => activeTab === "community" ? reports.refetch() : queryClient.invalidateQueries({ queryKey: ["flood-moderation-cases"] })} variant="outline" className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
         <RefreshCw className="w-4 h-4" />
         Refresh
       </Button>
     </div>
 
+    <Tabs<"community" | "flood">
+      tabs={[
+        { id: "community", label: "Community Post Reports", icon: MessageSquare },
+        { id: "flood", label: "Flood Report Moderation", icon: CloudRain },
+      ]}
+      activeTab={activeTab}
+      onChange={setActiveTab}
+      variant="underline"
+      layoutId="moderation-center-tabs"
+      className="w-full"
+    />
+
+    {activeTab === "community" && <>
     {reports.isLoading && (
       <Card className="shadow-sm">
         <CardContent className="space-y-3 py-5">
@@ -107,5 +123,7 @@ export default function ModerationCenterPage() {
         </CardContent>
       </Card>
     ))}
+    </>}
+    {activeTab === "flood" && <FloodModerationQueue />}
   </div>;
 }

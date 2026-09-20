@@ -8,10 +8,11 @@ import {
   ShieldCheck, AlertTriangle, FileText, 
   MessageSquare, Settings, CheckCircle, 
   XCircle, Loader2, Edit3, LogOut, Eye, EyeOff,
-  Upload, Trash2
+  Upload, Trash2, Lock, KeyRound
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ColorPicker } from "@/shared/ui";
+import { ColorPicker, Input } from "@/shared/ui";
+import { PasswordStrength } from "@/shared/ui/forms/PasswordStrength";
 import { EditProfileForm } from "./components/EditProfileForm";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -21,6 +22,7 @@ import { PostDetailPage } from "../feed/PostDetailPage";
 import { LeftSidebar } from "../feed/LeftSidebar";
 import { RightSidebar } from "../feed/RightSidebar";
 import { useToast, Button, Tabs, TabContentPanel, Modal, ConfirmDialog } from "@/shared/ui";
+import PasswordOtpModal from "./components/PasswordOtpModal";
 
 export default function ProfileView() {
   const { user, isLoading: authLoading, logout } = useAuth();
@@ -28,6 +30,9 @@ export default function ProfileView() {
     updateProfile, isUpdatingProfile, 
     uploadAvatar, isUploadingAvatar,
     removeAvatar, isRemovingAvatar,
+    deleteAccount, isDeletingAccount,
+    requestPasswordOtp, isRequestingPasswordOtp,
+    changePassword, isChangingPassword,
     myReports, isLoadingReports, 
     myPosts, isLoadingPosts 
   } = useProfile();
@@ -48,10 +53,23 @@ export default function ProfileView() {
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
   const [showViewAvatarModal, setShowViewAvatarModal] = useState(false);
   const [showRemoveAvatarConfirm, setShowRemoveAvatarConfirm] = useState(false);
+  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState("");
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [viewingPostId, setViewingPostId] = useState<number | null>(null);
+  const [showPasswordOtpModal, setShowPasswordOtpModal] = useState(false);
+  const [passwordOtpCooldown, setPasswordOtpCooldown] = useState(60);
+
+  // Password Change State
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -312,6 +330,72 @@ export default function ProfileView() {
     }
   };
 
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError("");
+
+    if (!currentPassword) {
+      setPasswordError("Please enter your current password.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters long.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      const res = await requestPasswordOtp({ current_password: currentPassword });
+      setPasswordOtpCooldown(res.cooldown_seconds || 60);
+      setShowPasswordOtpModal(true);
+      success("Verification Code Sent", "We sent a 6-digit confirmation code to your email address.");
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail || err?.message || "Failed to send verification code.";
+      setPasswordError(detail);
+      showError("Verification Failed", detail);
+    }
+  };
+
+  const handleVerifyPasswordOtp = async (code: string) => {
+    await changePassword({
+      current_password: currentPassword,
+      new_password: newPassword,
+      otp_code: code,
+    });
+    success("Password Updated", "Your password has been changed successfully.");
+    setShowPasswordOtpModal(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
+
+  const handleResendPasswordOtp = async () => {
+    const res = await requestPasswordOtp({ current_password: currentPassword });
+    success("Code Resent", "A new 6-digit confirmation code has been sent to your email.");
+    return res.cooldown_seconds || 60;
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteAccount();
+      setShowDeleteAccountModal(false);
+      success(
+        "Account Deactivated",
+        "Your account has been deactivated. You have a 30-day grace period to log back in before your profile is permanently deleted."
+      );
+      logout();
+      router.push("/login");
+    } catch (err: any) {
+      showError(
+        "Deactivation Failed",
+        err?.response?.data?.detail || err?.message || "Failed to deactivate account."
+      );
+    }
+  };
+
   const slideVariants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 20 : -20,
@@ -510,6 +594,7 @@ export default function ProfileView() {
           </div>
           <EditProfileForm 
             initialProfile={profile} 
+            initialUsername={user?.username || ""}
             isUpdating={isUpdatingProfile} 
             onSubmit={handleEditProfileSubmit} 
             onCancel={() => setIsEditingProfile(false)} 
@@ -588,13 +673,170 @@ export default function ProfileView() {
               </div>
             </div>
           </div>
+
+          {/* Security / Change Password */}
+          <div className="pt-6 border-t border-slate-100">
+            <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <KeyRound className="w-4 h-4 text-blue-600" /> Security & Password
+            </h4>
+            <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white">
+              <form onSubmit={handlePasswordChange} className="space-y-4 max-w-lg">
+                {passwordError && (
+                  <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
+                    <span>{passwordError}</span>
+                  </div>
+                )}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                    Current Password
+                  </label>
+                  <Input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
+                    required
+                    rightIcon={
+                      <button
+                        type="button"
+                        onMouseDown={() => setShowCurrentPassword(true)}
+                        onMouseUp={() => setShowCurrentPassword(false)}
+                        onMouseLeave={() => setShowCurrentPassword(false)}
+                        onTouchStart={() => setShowCurrentPassword(true)}
+                        onTouchEnd={() => setShowCurrentPassword(false)}
+                        onTouchCancel={() => setShowCurrentPassword(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
+                        tabIndex={-1}
+                        aria-label="Hold to view current password"
+                        title="Hold to view current password"
+                      >
+                        {showCurrentPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                    New Password
+                  </label>
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    required
+                    rightIcon={
+                      <button
+                        type="button"
+                        onMouseDown={() => setShowNewPassword(true)}
+                        onMouseUp={() => setShowNewPassword(false)}
+                        onMouseLeave={() => setShowNewPassword(false)}
+                        onTouchStart={() => setShowNewPassword(true)}
+                        onTouchEnd={() => setShowNewPassword(false)}
+                        onTouchCancel={() => setShowNewPassword(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
+                        tabIndex={-1}
+                        aria-label="Hold to view new password"
+                        title="Hold to view new password"
+                      >
+                        {showNewPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+                    }
+                  />
+                  <div className="mt-1.5">
+                    <PasswordStrength password={newPassword} />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                    Confirm New Password
+                  </label>
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Re-enter new password"
+                    required
+                    rightIcon={
+                      <button
+                        type="button"
+                        onMouseDown={() => setShowConfirmPassword(true)}
+                        onMouseUp={() => setShowConfirmPassword(false)}
+                        onMouseLeave={() => setShowConfirmPassword(false)}
+                        onTouchStart={() => setShowConfirmPassword(true)}
+                        onTouchEnd={() => setShowConfirmPassword(false)}
+                        onTouchCancel={() => setShowConfirmPassword(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none select-none cursor-pointer p-1"
+                        tabIndex={-1}
+                        aria-label="Hold to view confirm password"
+                        title="Hold to view confirm password"
+                      >
+                        {showConfirmPassword ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4" />}
+                      </button>
+                    }
+                  />
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <Button
+                    type="submit"
+                    disabled={isChangingPassword || isRequestingPasswordOtp}
+                    className="rounded-xl px-5 text-xs sm:text-sm flex items-center gap-2"
+                  >
+                    {isRequestingPasswordOtp ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Sending Code...
+                      </>
+                    ) : isChangingPassword ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-3.5 h-3.5" />
+                        Update Password
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
           
+          {/* Danger Zone */}
+          <div className="pt-6 border-t border-red-100">
+            <h4 className="text-sm font-semibold text-red-600 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4" /> Danger Zone
+            </h4>
+            <div className="p-4 sm:p-5 rounded-2xl border border-red-200 bg-red-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="max-w-md">
+                <p className="font-semibold text-red-950 text-sm sm:text-base">Delete Profile & Account</p>
+                <p className="text-xs sm:text-sm text-red-700/80 mt-1 leading-relaxed">
+                  Deactivating your account will hide your profile and reports. You will have a <span className="font-semibold text-red-900">30-day grace period</span> to log back in and restore your account before it is permanently deleted.
+                </p>
+              </div>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setDeleteConfirmationText("");
+                  setShowDeleteAccountModal(true);
+                }}
+                className="shrink-0 flex items-center gap-2 rounded-xl text-xs sm:text-sm"
+              >
+                <Trash2 className="w-4 h-4" /> Delete Account
+              </Button>
+            </div>
+          </div>
+
           {/* Account Actions */}
           <div className="pt-4 mt-8 border-t border-slate-100 lg:hidden">
             <Button
-              variant="danger"
+              variant="outline"
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-full"
+              className="w-full text-slate-700 border-slate-200"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Log Out
@@ -755,11 +997,19 @@ export default function ProfileView() {
             </div>
             
             <div className="flex-1 text-center sm:text-left mt-1 sm:mt-4">
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
-                {(profile.first_name && (profile.display_full_name !== false)) 
-                  ? `${profile.first_name} ${profile.last_name}` 
-                  : user.username}
-              </h1>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+                  {(profile.first_name && (profile.display_full_name !== false)) 
+                    ? `${profile.first_name} ${profile.last_name}` 
+                    : user.username}
+                </h1>
+                {user.role?.name && user.role?.name !== "Commuter" && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    {user.role.name}
+                  </span>
+                )}
+              </div>
               <p className="text-xs sm:text-sm text-slate-500 flex items-center justify-center sm:justify-start gap-1.5 mt-1">
                 <Calendar className="w-3.5 h-3.5" /> Joined {joinedDate}
               </p>
@@ -994,6 +1244,78 @@ export default function ProfileView() {
         onConfirm={handleRemoveAvatar}
         onCancel={() => setShowRemoveAvatarConfirm(false)}
       />
+
+      {/* Delete Account Confirmation Modal */}
+      <Modal
+        isOpen={showDeleteAccountModal}
+        onClose={() => setShowDeleteAccountModal(false)}
+        title="Confirm Account Deletion"
+        size="md"
+      >
+        <div className="space-y-4">
+          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm leading-relaxed">
+            <p className="font-semibold flex items-center gap-1.5 mb-1">
+              <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+              Are you sure you want to delete your profile?
+            </p>
+            <p className="text-xs text-red-700">
+              Your account will be immediately deactivated and scheduled for permanent deletion in <strong>30 days</strong>. If you change your mind, simply log in again within 30 days to reactivate your account.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              Type <span className="font-mono font-bold text-red-600">DELETE</span> to confirm:
+            </label>
+            <input
+              type="text"
+              value={deleteConfirmationText}
+              onChange={(e) => setDeleteConfirmationText(e.target.value)}
+              placeholder="DELETE"
+              className="w-full px-3.5 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 font-mono text-gray-900 bg-white"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteAccountModal(false)}
+              disabled={isDeletingAccount}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              disabled={deleteConfirmationText !== "DELETE" || isDeletingAccount}
+              onClick={handleDeleteAccount}
+              className="gap-1.5"
+            >
+              {isDeletingAccount ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Deactivating...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-4 h-4" />
+                  Deactivate & Schedule Deletion
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Email OTP Verification Modal for Password Update */}
+      <PasswordOtpModal
+        isOpen={showPasswordOtpModal}
+        onClose={() => setShowPasswordOtpModal(false)}
+        email={user?.email || ""}
+        onVerify={handleVerifyPasswordOtp}
+        onResendOtp={handleResendPasswordOtp}
+        initialCooldown={passwordOtpCooldown}
+      />
     </div>
   );
 }
+

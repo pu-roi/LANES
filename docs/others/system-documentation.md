@@ -1,6 +1,7 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 19, 2026, 2:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:09 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
 
@@ -189,7 +190,8 @@ These files are **always present** regardless of which page you are on.
 
 | File | What You See |
 |------|-------------|
-| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Hazard Reports** (submitted user reports with severity and approval status), **Community Posts** (user's authored community feed posts rendered as standalone spaced cards with post count indicator badge and unboxed background styling), and **Settings** (instant optimistic privacy toggles for profile visibility, full name display, and hide profile picture). Includes an interactive avatar header with click-to-preview high-resolution modal, Cloudinary photo upload with loading spinner, and remove picture actions. |
+| `ProfileView.tsx` | `src/features/profile/ProfileView.tsx` — The full profile page split into tabs: **Personal Info** (name, contact, birthdate, address form), **Hazard Reports** (submitted user reports with severity and approval status), **Community Posts** (user's authored community feed posts rendered as standalone spaced cards with post count indicator badge and unboxed background styling), and **Settings** (instant optimistic privacy toggles for profile visibility, full name display, hide profile picture, secure password change with email OTP verification, and account Danger Zone for self-deletion with 30-day grace period). Includes an interactive avatar header with click-to-preview high-resolution modal, Cloudinary photo upload with loading spinner, and remove picture actions. |
+| `PasswordOtpModal.tsx` | `src/features/profile/components/PasswordOtpModal.tsx` — Reusable security dialog with 6-box zero-click auto-submitting numeric OTP inputs, auto-focus, clipboard paste handling, resend countdown ticker, and inline verification errors for password update authorization. |
 | `SavedRoutesList.tsx` | `src/features/profile/SavedRoutesList.tsx` — Sub-component inside ProfileView that lists the user's saved map places with their custom icons and addresses, and a delete button for each. |
 
 ### Backend Calls from This Page
@@ -198,13 +200,16 @@ These files are **always present** regardless of which page you are on.
 |----------|---------|
 | `GET /api/v1/users/me` | Load current user's full profile data |
 | `PATCH /api/v1/users/me/profile` | Update profile fields and privacy toggles |
+| `DELETE /api/v1/users/me` | Self-deactivate account with a 30-day recovery grace period |
 | `POST /api/v1/users/me/avatar` | Upload and attach a profile picture to Cloudinary |
 | `DELETE /api/v1/users/me/avatar` | Remove the custom profile picture and revert to initial avatar |
-| `PUT /api/v1/users/me/password` | Change password (requires current password) |
+| `POST /api/v1/users/me/password/request-otp` | Validate current password and send 6-digit confirmation OTP to email |
+| `PUT /api/v1/users/me/password` | Change password (requires current password and verified email OTP code) |
 | `POST /api/v1/auth/request-otp` | Send OTP to email for re-verification |
 | `POST /api/v1/auth/verify-otp` | Verify an OTP code |
 | `GET /api/v1/users/me/places` | Load saved places list |
 | `DELETE /api/v1/users/me/places/{id}` | Delete a saved place bookmark |
+
 
 ---
 
@@ -301,9 +306,13 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
-| `/admin/moderation` | `ModerationCenterPage.tsx` | Staff-only Community Post moderation queue. Open reports are grouped into one case per post and can be dismissed, warned, or soft-hidden. The responsive action area remains clear of the mobile bottom navigation. |
+| `/admin/moderation` | `ModerationCenterPage.tsx`, `components/FloodModerationQueue.tsx` | Staff-only tabbed Community Post and Flood Report tracking using the shared underline `Tabs` component. Flood cases show their outcome/context and filters, then provide a single **Review on Map** handoff; no spatial approval/rejection controls are duplicated here. The responsive action area remains clear of the mobile bottom navigation. |
+| `/admin/flood-history` | `flood-history/page.tsx`, `features/flood-history/*` | Admin-only Flood History & Analytics uses shared cards and tabs for its overview, plus a separate historical `BaseMap` source/layer set for Flood Event Records. Protected server filters drive a synchronized desktop map/list and a mobile-safe map/list switcher; staff can inspect the event timeline and then the unmodified original supporting-report evidence without entering Spatial Operations. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
-| `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with three primary tabs: **Archived Users** (soft-deleted commuter accounts with status toggles), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). |
+| `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with 30-day auto-purge retention lifecycle across three primary tabs: **Archived Users** (soft-deleted commuter accounts with 30-day countdown badge, restore action, and typed `"DELETE"` permanent purge), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). Includes on-demand manual trigger to purge expired records. |
+| `/admin/profile` | `AdminProfilePage.tsx` | Native Admin Profile hub matching public profile design. Super Admins, DRRM Officers, and Moderators can edit personal details, phone number, birthdate, and PSGC address, change account cover banner color, upload or remove avatar images, toggle privacy preferences ("Display Full Name", "Hide Profile Picture"), and securely change account passwords with live `<PasswordStrength>` validation and email OTP verification via `PasswordOtpModal`. Linked from the user profile card in the `AdminSidebar.tsx` footer. |
+
+> **Flood Event lifecycle update (Phase 33):** `/admin/map` remains the only operational moderation workspace. `RejectFloodReportModal` requires a structured reason, keeps rejected evidence out of Archive Center, and notifies the submitting user through the existing bell without disclosing internal notes. Approving/merging a report or directly creating an official zone creates or links a verified Flood Event; server services calculate event metrics, record readable zone/severity timeline entries, and end the event when its final live zone ends.
 
 ### Backend Calls (Admin)
 
@@ -311,7 +320,11 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 |----------|---------|
 | `GET /api/v1/admin/reports` | Paginated admin view of all reports with filters |
 | `PUT /api/v1/admin/reports/{id}/approve` | Approve report, auto-generates flood avoidance zone polygon |
-| `PUT /api/v1/admin/reports/{id}/reject` | Reject report with a reason (updates trust score) |
+| `POST /api/v1/admin/reports/{id}/reject` | Reject report with a structured reason, moderation outcome, trust update, and reporter notification |
+| `GET /api/v1/admin/flood-events` | Admin-only ordered list of verified Flood Events for the Flood History & Analytics entry surface |
+| `GET /api/v1/admin/flood-events/history` | Admin-only filtered historical event records, including isolated historic zone geometry, locations, and server-calculated evidence metrics |
+| `GET /api/v1/admin/flood-events/{id}/history-detail` | Admin-only full historical Flood Event detail: event metrics, locations, event-owned zones, linked original reports, and readable incident timeline |
+| `GET /api/v1/admin/flood-events/{id}/summary` | Admin-only server-calculated event duration, evidence, zone, location, peak, and status metrics |
 | `POST /api/v1/admin/zones` | Create official flood avoidance zone (multipart `FormData` with JSON `body` and `media` files) |
 | `GET /api/v1/admin/zones/{id}` | Retrieve the current shared zone before resuming an account-private Edit Zone draft |
 | `PUT /api/v1/admin/zones/{id}` | Update existing avoidance zone metadata, depth, severity, passability, and notes |
@@ -320,8 +333,13 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `POST /api/v1/admin/reports/merge` | Multi-report merge into a new or existing avoidance zone |
 | `GET /api/v1/admin/moderation/reports` | Staff-only list of open (or resolved) Community Post moderation cases, grouped by post |
 | `POST /api/v1/admin/moderation/posts/{id}/resolve` | Atomically dismiss, warn, or soft-hide a Community Post and resolve all its open reports |
+| `GET /api/v1/admin/moderation/flood-reports` | Admin-only Flood Report moderation cases with status, source, date, location, reporter, and rejection-reason filters; provides safe map-focus coordinates |
+| `GET /api/v1/admin/reports/detail/{report_id}` | Admin-only full report read for a focused Spatial Operations review, including approved and rejected reports retained in moderation history |
 | `GET /api/v1/admin/users` | All users with role and profile info |
 | `PUT /api/v1/admin/users/{id}` | Update user role or active status |
+| `POST /api/v1/admin/users/{id}/restore` | Restore a soft-deleted/archived user account and profile |
+| `DELETE /api/v1/admin/users/{id}/permanent` | Permanently hard-delete a user account and profile |
+| `POST /api/v1/admin/archive/purge-expired` | Manually execute 30-day auto-purge on expired archived users, posts, reports, and zones |
 | `GET /api/v1/admin/roles` | All roles with their permission matrices |
 | `POST /api/v1/admin/roles` | Create a new role |
 | `PUT /api/v1/admin/roles/{id}` | Update role permissions |
@@ -333,17 +351,9 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `POST /api/v1/admin/zones` | Manually create a new zone polygon |
 | `PUT /api/v1/admin/zones/{id}` | Update zone geometry, status, or expiry |
 | `DELETE /api/v1/admin/zones/{id}` | Permanently delete a zone |
-| `POST /api/v1/admin/reports/{id}/restore` | Restore rejected or soft-deleted flood report back to pending moderation |
-| `DELETE /api/v1/admin/reports/{id}/permanent` | Permanently hard-delete a flood report from the archive |
-| `POST /api/v1/admin/zones/{id}/restore` | Reactivate a deactivated or expired avoidance zone |
-| `DELETE /api/v1/admin/zones/{id}/permanent` | Permanently hard-delete an avoidance zone from the archive |
-| `GET /api/v1/admin/posts/archived` | Paginated soft-deleted and hidden community posts with search and filter |
-| `POST /api/v1/admin/posts/{id}/restore` | Restore soft-deleted or hidden post back to the public community feed |
-| `DELETE /api/v1/admin/posts/{id}/permanent` | Permanently hard-delete a community post from the database |
-
----
-
-## 11. Backend API Reference
+| `POST /api/v1/admin/reports/{id}/restore` | Restore a genuinely soft-deleted flood report; rejected reports remain a durable moderation outcome |
+| `POST /api/v1/users/me/password/request-otp` | Validate current password and dispatch 6-digit confirmation OTP to user email |
+| `PUT /api/v1/users/me/password` | Verify current password and email OTP code, and update account password with password complexity validation |
 
 **Base URL:** `http://localhost:8000/api/v1`
 **Framework:** FastAPI (Python) with SQLAlchemy 2.x ORM
@@ -381,6 +391,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |
 | **Weather Proxy** | Fetches data from the OpenWeatherMap API, transforms and caches the response, and serves it to the frontend |
 | **SSE Broadcaster & LiveSync** | Pushes real-time notification events, active zone changes, and cache invalidations to connected clients via Server-Sent Events. Centralized in `sse.ts` to stream directly from FastAPI port 8000 in dev/LAN environments to bypass dev proxy response buffering, with unconditional unmount cleanup in `useLiveSync.ts` avoiding zombie reconnect loops. The backend `/sync/stream` polls using a short-lived worker-thread SQLAlchemy session per snapshot, so an open stream does not retain a database-pool connection. |
+| **Data Retention & Auto-Purge Service (`retention_service.py`)** | Executes daily periodic background tasks and on-demand triggers to permanently purge soft-deleted users, posts, reports, and zones that exceed the 30-day retention window |
 | **Hotline Aggregator** | Fetches and parses national and Pasig emergency contact pages, normalizes phone numbers for `tel:` links, and caches results for one hour |
 
 ---

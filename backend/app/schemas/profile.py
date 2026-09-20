@@ -12,6 +12,16 @@ class ProfileBase(BaseModel):
     contact_number: Optional[str] = None
     birthdate: Optional[date] = None
 
+    @field_validator("first_name", "last_name", mode="before")
+    @classmethod
+    def normalize_name_casing(cls, v):
+        if not v:
+            return v
+        s = str(v).strip()
+        if not s:
+            return s
+        return re.sub(r"[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+", lambda m: m.group(0).capitalize(), s)
+
     @field_validator("middle_initial", mode="before")
     @classmethod
     def normalize_middle_initial(cls, v):
@@ -38,10 +48,21 @@ class ProfileCreate(ProfileBase):
 from app.schemas.address import AddressUpdate, AddressResponse
 
 class ProfileUpdate(BaseModel):
+    username: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     middle_initial: Optional[str] = None
     suffix: Optional[str] = None
+
+    @field_validator("first_name", "last_name", mode="before")
+    @classmethod
+    def normalize_name_casing(cls, v):
+        if not v:
+            return v
+        s = str(v).strip()
+        if not s:
+            return s
+        return re.sub(r"[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]+", lambda m: m.group(0).capitalize(), s)
 
     @field_validator("middle_initial", mode="before")
     @classmethod

@@ -27,6 +27,7 @@ import {
 const LIMIT = 10;
 
 export default function UsersPage() {
+  const toast = useToast();
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -52,8 +53,6 @@ export default function UsersPage() {
   const [editRoleUser, setEditRoleUser] = useState<UserRecord | null>(null);
   const [editRoleSelected, setEditRoleSelected] = useState<number>(4);
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const { data, isLoading, refetch, isPlaceholderData } = useQuery({
     queryKey: ["adminUsers", page, search, role],
     queryFn: () => getUsers(page, LIMIT, search, role),
@@ -64,14 +63,14 @@ export default function UsersPage() {
   const toggleStatusMutation = useMutation({
     mutationFn: ({ id, is_active }: { id: number; is_active: boolean }) => 
       updateUserStatus(id, is_active),
-    onSuccess: () => {
+    onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setStatusUser(null);
-      setErrorMessage(null);
+      toast.success("Status Updated", `User #${updated.id} account status has been updated.`);
     },
     onError: (err: any) => {
-      setErrorMessage(err.message || "Failed to update user status");
+      toast.error("Status Update Failed", err?.response?.data?.detail || err?.message || "Failed to update user status");
     }
   });
 
@@ -81,10 +80,10 @@ export default function UsersPage() {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setDeleteId(null);
-      setErrorMessage(null);
+      toast.success("User Archived", "User account has been archived and moved to Archive Center.");
     },
     onError: (err: any) => {
-      setErrorMessage(err.message || "Failed to delete user account");
+      toast.error("Archive Failed", err?.response?.data?.detail || err?.message || "Failed to delete user account");
     }
   });
 
@@ -95,10 +94,10 @@ export default function UsersPage() {
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setShowCreateUser(false);
       setCreateUserForm({ username: "", email: "", password: "", role_id: 4 });
-      setErrorMessage(null);
+      toast.success("User Created", "New user account created successfully.");
     },
     onError: (err: any) => {
-      setErrorMessage(err.message || "Failed to create user");
+      toast.error("Creation Failed", err?.response?.data?.detail || err?.message || "Failed to create user");
     }
   });
 
@@ -107,10 +106,10 @@ export default function UsersPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       setEditRoleUser(null);
-      setErrorMessage(null);
+      toast.success("Role Updated", "User role has been updated successfully.");
     },
     onError: (err: any) => {
-      setErrorMessage(err.message || "Failed to update user role");
+      toast.error("Role Update Failed", err?.response?.data?.detail || err?.message || "Failed to update user role");
     }
   });
 
@@ -255,23 +254,6 @@ export default function UsersPage() {
           </Button>
         </div>
       </div>
-
-      {/* Error Alert Banner */}
-      {errorMessage && (
-        <div className="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-200 text-red-800 text-sm">
-          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-          <div>
-            <h5 className="font-bold">Operation Refused</h5>
-            <p className="mt-0.5">{errorMessage}</p>
-          </div>
-          <button 
-            onClick={() => setErrorMessage(null)} 
-            className="ml-auto font-bold hover:text-red-900"
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
 
       {/* Tabs */}
       <Tabs

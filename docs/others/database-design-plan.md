@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 18, 2026, 7:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -294,7 +294,8 @@ erDiagram
 | `city` | `VARCHAR(100)` | Nullable, Index | City or municipality resolved via reverse geocoding. | Enables multi-city support across Metro Manila / nationwide. |
 | `is_public` | `BOOLEAN` | Default: `FALSE` | Toggle indicating if the user consented to share this report on the Community Feed. | Ensures privacy compliance before making reports visible to all users. |
 | `severity` | `VARCHAR(50)` | NOT NULL | Classified risk level of the flood. Allowed: `'low'`, `'medium'`, `'high'`, `'extreme'`. | Directly determines detour routing weights and map visual color-coding. |
-| `status` | `VARCHAR(50)` | Default: `'pending'` | Moderation queue status. Allowed: `'pending'`, `'approved'`, `'rejected'`. | Approved reports automatically generate detours; rejected reports are archived. |
+| `status` | `VARCHAR(50)` | Default: `'pending'` | Moderation queue status. Allowed: `'pending'`, `'approved'`, `'rejected'`. | Approved reports link to a verified Flood Event; rejected reports remain internal moderation records, not archived evidence. |
+| `event_id` | `INTEGER` | Nullable FK (`RESTRICT`), Index | Verified Flood Event supported by this approved report. | Keeps evidence distinct from incident counts and blocks deletion that would break verified history. |
 | `geometry` | `GEOMETRY(Geometry, 4326)` | Spatial Index (GIST) | Latitude and longitude GPS coordinates. | **Performance:** Uses a GIST index. Essential for finding nearby flood reports quickly without doing expensive math on every record. |
 | `deleted_at` | `TIMESTAMP` | Nullable | Soft-delete marker for the Archive Center. | If set, the report is moved to the Archive Center and hidden from the public feed. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Timestamp of when the report was ingested. | Used to determine report freshness (old reports are automatically archived). |
@@ -322,6 +323,13 @@ erDiagram
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Creation timestamp. |
 | `updated_at` | `TIMESTAMP` | Default: UTC Now | Latest zone metadata update, used as the optimistic baseline for account-private Edit Zone drafts. |
 | `expires_at` | `TIMESTAMP` | Nullable | When the detour naturally expires. |
+| `event_id` | `INTEGER` | Nullable FK (`RESTRICT`), composite index with `is_active` | Permanent Flood Event that owns this operational zone. | Separates live routing state from historical incident identity. |
+
+### Flood Event History Tables
+
+`flood_events` is the permanent verified incident record (`active` or `ended`) with community-report, official-verification, and official-end timestamps plus the peak verified severity/depth. `flood_event_locations` stores normalized road, barangay, and city rows with a unique `(event_id, location_type, normalized_name)` key and an optional SRID-4326 GIST-indexed geometry.
+
+`flood_report_moderation_outcomes` is append-only staff outcome history. Rejections require a structured reason, and `other` requires an internal note. `flood_event_timeline_entries` is the readable event chronology with snapshot JSON; it is intentionally separate from `audit_logs`, which retains technical actor/IP accountability.
 
 ### Table I: `audit_logs`
 **Description:** An append-only security log recording administrative actions.

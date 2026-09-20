@@ -14,6 +14,7 @@ export interface CreateOfficialZonePanelProps {
   onZoneUpdated?: () => void;
   onSwitchWorkspace?: () => void;
   switchWorkspaceLabel?: string;
+  onShowMap?: () => void;
 }
 
 export function CreateOfficialZonePanel({
@@ -25,6 +26,7 @@ export function CreateOfficialZonePanel({
   onZoneUpdated,
   onSwitchWorkspace,
   switchWorkspaceLabel,
+  onShowMap,
 }: CreateOfficialZonePanelProps) {
   return (
     <OfficialZoneDrawer
@@ -36,6 +38,7 @@ export function CreateOfficialZonePanel({
       onZoneUpdated={onZoneUpdated}
       onSwitchWorkspace={onSwitchWorkspace}
       switchWorkspaceLabel={switchWorkspaceLabel}
+      onShowMap={onShowMap}
     />
   );
 }
