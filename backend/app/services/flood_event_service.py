@@ -6,10 +6,11 @@ and reporter trust are updated as one server-side unit of work.
 
 from __future__ import annotations
 
+from collections import Counter, defaultdict
 from datetime import datetime
 from typing import Any, Optional
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -124,6 +125,248 @@ def get_event_metrics(
         "peak_severity": event.peak_severity.value,
         "peak_depth": event.peak_depth,
     }
+
+
+def build_flood_event_history_query(
+    db: Session,
+    *,
+    status_filter: str = "all",
+    severity: Optional[str] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    barangay: Optional[str] = None,
+    road: Optional[str] = None,
+    search: Optional[str] = None,
+) -> Any:
+    """Build one authorized-event query for history, planning, and exports.
+
+    A Flood Event is deliberately the aggregation unit here.  Reports are only
+    consulted later as a separate confidence signal, so repeated reports can
+    never inflate recurrence or duration analytics.
+    """
+    try:
+        status_value = None if status_filter == "all" else models.FloodEventStatus(status_filter)
+    except ValueError as exc:
+        raise ValueError("Invalid Flood Event status") from exc
+    try:
+        severity_value = models.ReportSeverity(severity) if severity else None
+    except ValueError as exc:
+        raise ValueError("Invalid Flood Event severity") from exc
+
+    query = db.query(models.FloodEvent)
+    if status_value:
+        query = query.filter(models.FloodEvent.status == status_value)
+    if severity_value:
+        query = query.filter(models.FloodEvent.peak_severity == severity_value)
+    if date_from:
+        query = query.filter(models.FloodEvent.verified_at >= date_from)
+    if date_to:
+        query = query.filter(models.FloodEvent.verified_at <= date_to)
+
+    barangay_term = barangay.strip() if barangay else ""
+    road_term = road.strip() if road else ""
+    search_term = search.strip() if search else ""
+    if barangay_term or road_term or search_term:
+        location_filters = []
+        if barangay_term:
+            location_filters.append(
+                (models.FloodEventLocation.location_type == models.FloodEventLocationType.BARANGAY)
+                & models.FloodEventLocation.display_name.ilike(f"%{barangay_term}%")
+            )
+        if road_term:
+            location_filters.append(
+                (models.FloodEventLocation.location_type == models.FloodEventLocationType.ROAD)
+                & models.FloodEventLocation.display_name.ilike(f"%{road_term}%")
+            )
+        if search_term:
+            pattern = f"%{search_term}%"
+            location_filters.extend([
+                models.FloodEventLocation.display_name.ilike(pattern),
+                models.FloodEventLocation.normalized_name.ilike(pattern),
+            ])
+        query = query.join(models.FloodEventLocation).filter(or_(*location_filters)).distinct()
+    return query
+
+
+def _event_report_counts(db: Session, event_ids: list[int]) -> dict[int, int]:
+    """Return approved, non-deleted report volume by event without user details."""
+    if not event_ids:
+        return {}
+    rows = (
+        db.query(models.FloodReport.event_id, func.count(models.FloodReport.id))
+        .filter(
+            models.FloodReport.event_id.in_(event_ids),
+            models.FloodReport.status == models.ReportStatus.APPROVED,
+            models.FloodReport.deleted_at.is_(None),
+        )
+        .group_by(models.FloodReport.event_id)
+        .all()
+    )
+    return {event_id: int(count) for event_id, count in rows if event_id is not None}
+
+
+def _event_locations(db: Session, event_ids: list[int]) -> dict[int, list[models.FloodEventLocation]]:
+    if not event_ids:
+        return {}
+    locations_by_event: dict[int, list[models.FloodEventLocation]] = defaultdict(list)
+    locations = (
+        db.query(models.FloodEventLocation)
+        .filter(models.FloodEventLocation.event_id.in_(event_ids))
+        .order_by(models.FloodEventLocation.location_type, models.FloodEventLocation.display_name)
+        .all()
+    )
+    for location in locations:
+        locations_by_event[location.event_id].append(location)
+    return locations_by_event
+
+
+def get_flood_event_planning_analytics(
+    db: Session,
+    events: list[models.FloodEvent],
+) -> dict[str, Any]:
+    """Calculate city-planning metrics using distinct verified Flood Events.
+
+    Returned report numbers are an explicitly separate corroboration/confidence
+    signal.  Rejected and deleted reports have no place in this aggregation.
+    """
+    event_ids = [event.id for event in events]
+    report_counts = _event_report_counts(db, event_ids)
+    locations_by_event = _event_locations(db, event_ids)
+    severity_counts = Counter(event.peak_severity.value for event in events)
+    daily_counts = Counter(event.verified_at.date().isoformat() for event in events)
+    verification_pattern = Counter((event.verified_at.weekday(), event.verified_at.hour) for event in events)
+    barangay_counts: Counter[str] = Counter()
+    road_counts: Counter[str] = Counter()
+    duration_minutes: list[int] = []
+
+    for event in events:
+        if event.status == models.FloodEventStatus.ENDED and event.ended_at:
+            duration_minutes.append(max(0, int((event.ended_at - event.verified_at).total_seconds() // 60)))
+        # Each normalized place is only counted once per event even if the
+        # event gathered multiple corroborating reports from that place.
+        seen_places: set[tuple[models.FloodEventLocationType, str]] = set()
+        for location in locations_by_event.get(event.id, []):
+            place_key = (location.location_type, location.normalized_name)
+            if place_key in seen_places:
+                continue
+            seen_places.add(place_key)
+            if location.location_type == models.FloodEventLocationType.BARANGAY:
+                barangay_counts[location.display_name] += 1
+            elif location.location_type == models.FloodEventLocationType.ROAD:
+                road_counts[location.display_name] += 1
+
+    duration_buckets = {
+        "under_1_hour": 0,
+        "1_to_3_hours": 0,
+        "3_to_6_hours": 0,
+        "over_6_hours": 0,
+    }
+    for minutes in duration_minutes:
+        if minutes < 60:
+            duration_buckets["under_1_hour"] += 1
+        elif minutes < 180:
+            duration_buckets["1_to_3_hours"] += 1
+        elif minutes < 360:
+            duration_buckets["3_to_6_hours"] += 1
+        else:
+            duration_buckets["over_6_hours"] += 1
+
+    def top_places(counts: Counter[str]) -> list[dict[str, Any]]:
+        return [
+            {"name": name, "event_count": count}
+            for name, count in counts.most_common(10)
+        ]
+
+    total_reports = sum(report_counts.values())
+    report_day_counts: Counter[str] = Counter()
+    if event_ids:
+        approved_reports = (
+            db.query(models.FloodReport)
+            .filter(
+                models.FloodReport.event_id.in_(event_ids),
+                models.FloodReport.status == models.ReportStatus.APPROVED,
+                models.FloodReport.deleted_at.is_(None),
+            )
+            .all()
+        )
+        for report in approved_reports:
+            report_day_counts[(report.approved_at or report.created_at).date().isoformat()] += 1
+    ended_count = sum(event.status == models.FloodEventStatus.ENDED for event in events)
+    return {
+        "total_events": len(events),
+        "ended_events": ended_count,
+        "active_events": len(events) - ended_count,
+        "peak_severity_distribution": [
+            {"severity": severity, "event_count": severity_counts[severity]}
+            for severity in ("low", "medium", "high", "extreme")
+        ],
+        "duration": {
+            "ended_event_count": len(duration_minutes),
+            "average_minutes": round(sum(duration_minutes) / len(duration_minutes), 1) if duration_minutes else None,
+            "distribution": [
+                {"bucket": "Under 1 hour", "event_count": duration_buckets["under_1_hour"]},
+                {"bucket": "1–3 hours", "event_count": duration_buckets["1_to_3_hours"]},
+                {"bucket": "3–6 hours", "event_count": duration_buckets["3_to_6_hours"]},
+                {"bucket": "Over 6 hours", "event_count": duration_buckets["over_6_hours"]},
+            ],
+        },
+        "events_over_time": [
+            {"date": date, "event_count": count}
+            for date, count in sorted(daily_counts.items())
+        ],
+        "approved_reports_over_time": [
+            {"date": date, "report_count": count}
+            for date, count in sorted(report_day_counts.items())
+        ],
+        "verification_pattern": [
+            {"weekday": weekday, "hour": hour, "event_count": count}
+            for (weekday, hour), count in sorted(verification_pattern.items())
+        ],
+        "recurring_barangays": top_places(barangay_counts),
+        "frequently_affected_roads": top_places(road_counts),
+        "supporting_report_volume": {
+            "approved_report_count": total_reports,
+            "average_per_event": round(total_reports / len(events), 1) if events else 0,
+        },
+        "definitions": {
+            "flood_events": "Distinct verified incidents. Repeated reports for one incident count once.",
+            "supporting_reports": "Approved, non-deleted reports linked to the selected Flood Events; a confidence signal, not an event count.",
+            "peak_verified_severity": "The highest verified severity recorded for each Flood Event.",
+            "official_duration": "Time from event verification until the final active zone ended. Active events are excluded from duration averages.",
+            "verification_pattern": "Verified Flood Events by UTC day and hour. This shows verification timing, not when floodwater first began.",
+        },
+    }
+
+
+def serialize_flood_event_planning_records(
+    db: Session,
+    events: list[models.FloodEvent],
+) -> list[dict[str, Any]]:
+    """Create privacy-safe event rows for planning exports, never raw evidence."""
+    event_ids = [event.id for event in events]
+    report_counts = _event_report_counts(db, event_ids)
+    locations_by_event = _event_locations(db, event_ids)
+    rows: list[dict[str, Any]] = []
+    for event in events:
+        locations = locations_by_event.get(event.id, [])
+        rows.append({
+            "event_id": event.id,
+            "status": event.status.value,
+            "first_reported_at": event.first_reported_at,
+            "verified_at": event.verified_at,
+            "ended_at": event.ended_at,
+            "peak_verified_severity": event.peak_severity.value,
+            "peak_depth_label": event.peak_depth,
+            "official_duration_minutes": (
+                max(0, int((event.ended_at - event.verified_at).total_seconds() // 60))
+                if event.status == models.FloodEventStatus.ENDED and event.ended_at else None
+            ),
+            "approved_supporting_report_count": report_counts.get(event.id, 0),
+            "barangays": "; ".join(location.display_name for location in locations if location.location_type == models.FloodEventLocationType.BARANGAY),
+            "roads": "; ".join(location.display_name for location in locations if location.location_type == models.FloodEventLocationType.ROAD),
+            "cities": "; ".join(location.display_name for location in locations if location.location_type == models.FloodEventLocationType.CITY),
+        })
+    return rows
 
 
 def record_zone_update(

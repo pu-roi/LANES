@@ -1,11 +1,15 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.services.flood_event_service import (
     create_verified_event_with_zone,
     deactivate_zone_and_end_event_if_final,
+    get_flood_event_planning_analytics,
     get_event_metrics,
     record_zone_update,
+    serialize_flood_event_planning_records,
 )
 
 
@@ -118,3 +122,54 @@ def test_event_metrics_zone_timeline_and_create_retry_are_server_owned(db_sessio
         if event is not None:
             db_session.query(models.FloodEvent).filter(models.FloodEvent.id == event.id).delete()
         db_session.commit()
+
+
+def test_planning_analytics_count_distinct_events_and_keep_reports_separate(db_session: Session) -> None:
+    verified_at = datetime.utcnow() - timedelta(days=2)
+    ended_event = models.FloodEvent(
+        status=models.FloodEventStatus.ENDED,
+        verified_at=verified_at,
+        ended_at=verified_at + timedelta(hours=2),
+        peak_severity=models.ReportSeverity.HIGH,
+    )
+    active_event = models.FloodEvent(
+        status=models.FloodEventStatus.ACTIVE,
+        verified_at=verified_at + timedelta(days=1),
+        peak_severity=models.ReportSeverity.MEDIUM,
+    )
+    try:
+        db_session.add_all([ended_event, active_event])
+        db_session.flush()
+        db_session.add_all([
+            models.FloodEventLocation(event_id=ended_event.id, location_type=models.FloodEventLocationType.BARANGAY, display_name="San Antonio", normalized_name="san antonio"),
+            models.FloodEventLocation(event_id=active_event.id, location_type=models.FloodEventLocationType.BARANGAY, display_name="San Antonio", normalized_name="san antonio"),
+            models.FloodEventLocation(event_id=ended_event.id, location_type=models.FloodEventLocationType.ROAD, display_name="Example Road", normalized_name="example road"),
+            models.FloodReport(event_id=ended_event.id, raw_text="First corroborating report", source=models.ReportSource.USER_REPORT, severity=models.ReportSeverity.HIGH, status=models.ReportStatus.APPROVED),
+            models.FloodReport(event_id=ended_event.id, raw_text="Second corroborating report", source=models.ReportSource.USER_REPORT, severity=models.ReportSeverity.HIGH, status=models.ReportStatus.APPROVED),
+        ])
+        db_session.commit()
+
+        analytics = get_flood_event_planning_analytics(db_session, [ended_event, active_event])
+        assert analytics["total_events"] == 2
+        assert analytics["ended_events"] == 1
+        assert analytics["supporting_report_volume"]["approved_report_count"] == 2
+        assert analytics["supporting_report_volume"]["average_per_event"] == 1
+        assert analytics["duration"]["average_minutes"] == 120
+        assert sum(entry["report_count"] for entry in analytics["approved_reports_over_time"]) == 2
+        assert sum(entry["event_count"] for entry in analytics["verification_pattern"]) == 2
+        assert analytics["recurring_barangays"] == [{"name": "San Antonio", "event_count": 2}]
+        assert analytics["frequently_affected_roads"] == [{"name": "Example Road", "event_count": 1}]
+
+        export_rows = serialize_flood_event_planning_records(db_session, [ended_event, active_event])
+        ended_row = next(row for row in export_rows if row["event_id"] == ended_event.id)
+        assert ended_row["approved_supporting_report_count"] == 2
+        assert "raw_text" not in ended_row
+        assert "user_id" not in ended_row
+    finally:
+        db_session.rollback()
+        event_ids = [event_id for event_id in [ended_event.id, active_event.id] if event_id is not None]
+        if event_ids:
+            db_session.query(models.FloodReport).filter(models.FloodReport.event_id.in_(event_ids)).delete(synchronize_session=False)
+            db_session.query(models.FloodEventLocation).filter(models.FloodEventLocation.event_id.in_(event_ids)).delete(synchronize_session=False)
+            db_session.query(models.FloodEvent).filter(models.FloodEvent.id.in_(event_ids)).delete(synchronize_session=False)
+            db_session.commit()

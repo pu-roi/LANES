@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 5:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 2:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -20,7 +20,7 @@
 
 ## Backlog
 
-- [ ] **Capstone Phase 33 — Flood Event History, Records & City Planning Analytics**: In progress. The approved Flood Event persistence model and migration are deployed; verified official zones and approved reports now create/link events, structured rejection stays outside Archive Center, final-zone deactivation ends the event, and the staff Flood Report Moderation and Flood Event Records workspaces are available. City-planning analytics and exports remain planned.
+- [ ] **Capstone Phase 33 — Flood Event History, Records & City Planning Analytics**: In progress. The approved Flood Event persistence model and migration are deployed; verified official zones and approved reports now create/link events, structured rejection stays outside Archive Center, final-zone deactivation ends the event, and the staff Flood History workspace now includes distinct-event city-planning analytics and privacy-safe exports. Safety and release verification remain.
 
 ## Active Sprint (Next Feature)
 
@@ -115,11 +115,11 @@ Official admin-created Flood Zone ───────────────�
 - [x] Provide an event-detail drawer/modal that keeps the administrator in context. It includes official event summary, affected places, source zones, readable incident timeline, evidence counts, and a compact supporting-reports table. Each report has a **View** action opening full original details: reporter, timestamps, description, exact geometry, media, passability/hidden-hazard survey, and moderation outcome. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ##### Phase 33.6 — Event-Based Planning Analytics and Exports
-- [ ] Replace/augment report-count-only historical analytics with event-based aggregation queries. Existing quick insights may remain a simple summary, but Flood History & Analytics must use the distinct-event counting rules above.
-- [ ] Deliver city-planning metrics: total ended events, recurring barangays, most frequently affected roads/streets, peak severity distribution, event duration distribution/average, events over time, and supporting-report volume as a separate confidence signal.
-- [ ] Use a historical map visual appropriate to the selected question (event footprints/clusters/recurrence), with accessible non-color indicators and understandable legends. Do not imply that intensity is exact flood depth when it represents event frequency.
-- [ ] Permit authorized CSV/JSON export of filtered event records and aggregate analytics for city planning/offline reporting. Separate report-level evidence exports from aggregate event analytics and keep personally sensitive fields out of default planning exports.
-- [ ] Define labels/tooltips that distinguish **Flood Events**, **supporting reports**, **active zones**, **peak verified severity**, and **official duration** so administrators do not mistake evidence count for incident count.
+- [x] Replace/augment report-count-only historical analytics with event-based aggregation queries. Existing quick insights remain a simple summary, while Flood History & Analytics uses the distinct-event counting rules above. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Deliver city-planning metrics: total ended events, recurring barangays, most frequently affected roads/streets, peak severity distribution, event duration distribution/average, events over time, and supporting-report volume as a separate confidence signal. The responsive chart treatment now uses an event/report combination trend, severity doughnut, duration columns, recurrence rankings, and a UTC verification-pattern heatmap. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Use a historical map visual appropriate to the selected question (event footprints/clusters/recurrence), with accessible non-color indicators and understandable legends. The map labels peak verified severity and explicitly does not imply exact depth or event frequency. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Permit authorized CSV/JSON export of filtered event records and aggregate analytics for city planning/offline reporting. The default planning exports exclude reporter identity, raw report text, exact report geometry, and media; full evidence remains only in the protected event-detail view. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Define labels/tooltips that distinguish **Flood Events**, **supporting reports**, **active zones**, **peak verified severity**, and **official duration** so administrators do not mistake evidence count for incident count. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ##### Phase 33.7 — Safety, Data Quality, and Verification
 - [ ] Write backend tests for: event creation from official zones; event creation/linking from approved reports; related supporting reports; peak-severity calculation; multi-road/multi-barangay relationships; final-zone deactivation ending an event; new verified flooding creating a new event; rejection-reason validation; analytics counting rules; and authorization/IDOR protection.

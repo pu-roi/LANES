@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 21, 2026, 5:26 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 2:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -50,6 +50,7 @@
 
 ### Current Delivery — Capstone Phase 33 Flood Event Lifecycle Foundation (🟡 IN PROGRESS)
 
+- [x] **Phase 33.6 event-based planning analytics and exports** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added admin-only distinct-Flood-Event aggregation for recurrence, roads, peak severity, official durations, verified-event/report time series, UTC verification timing, and separate approved-report volume; delivered filtered CSV/JSON planning exports that deliberately omit reporter identity, raw evidence, exact report geometry, and media. Recharts now presents a responsive trend/evidence combination chart, severity doughnut, duration columns, recurrence rankings, and an accessible timing heatmap; the historical map legend explains peak severity in text and marks selected events with an outline rather than relying on color alone.
 - [x] **Phase 33.5 Flood Event Records workspace** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): delivered a separate historical `BaseMap` source/layer set, synchronized map/list selection and map focus, server-backed date/place/severity/status filters, an accessible severity legend, mobile map/list switcher with safe-area spacing, and in-context event/report evidence views. Historical geometry remains isolated from active routing zones.
 - [x] **Phase 33.5 protected history-read foundation** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added admin-only filtered Flood Event history and full evidence/timeline detail reads, used by the completed Records workspace without exposing active routing data.
 - [x] **Phase 33.5 Flood History & Analytics entry surface** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added protected `/admin/flood-history` navigation, a server-owned Flood Event list read, responsive Overview metrics, and an initial Flood Event Records list with mobile-safe bottom spacing.
@@ -67,7 +68,7 @@
 |---|-----------|--------|------------------------|
 | 35 | Admin Profile Management, Self-Healing Profile Provisioning & Secure Password Updates | Completed | Native Admin Profile hub (`/admin/profile`, `AdminProfilePage.tsx`) with cover color banner, avatar management, and address configuration; auto-provisioning of `Profile` in `create_admin_user`; self-healing fallback in `test-token` and `users/me/profile` ([`BUG-051`]); secure password update endpoint (`PUT /users/me/password`) with live `<PasswordStrength>` meter; and user profile card in `AdminSidebar.tsx` footer |
 | 34 | 30-Day Archive Retention Lifecycle, Auto-Purge Worker, Delete Controls & User Self-Deletion | Completed | Automatic 30-day retention countdown and daily background purge worker (`retention_service.py`), explicit user account restoration (`POST /admin/users/{id}/restore`) and permanent purge (`DELETE /admin/users/{id}/permanent`), manual on-demand purge trigger (`POST /admin/archive/purge-expired`), public user self-deletion Danger Zone modal (`DELETE /users/me`) with 30-day login grace period, and unique constraint conflict mitigation ([`BUG-050`]) |
-| 33 | Flood Event Lifecycle Foundation & Historical Tracking | In Progress | Verified Flood Event persistence model, server-owned duration/evidence metrics, idempotent report operations, staff Moderation Center queue, and protected Flood Event Records map/list workspace; city-planning analytics and exports remain next |
+| 33 | Flood Event Lifecycle Foundation & Historical Tracking | In Progress | Verified Flood Event persistence model, server-owned duration/evidence metrics, idempotent report operations, staff Moderation Center queue, protected Flood Event Records map/list workspace, and distinct-event city-planning analytics with privacy-safe CSV/JSON exports; final safety and release verification remains |
 | 32 | Reddit-Style Community Feed Voting Engine, True Optimistic UI & Disaster Recency Windowing | Completed | Unified compact net score vote pill (`▲ Net Score ▼`), instant 0ms optimistic updates with tri-state transitions and flip mechanics across Feed, Post Detail, and Profile, authoritative `VoteResponse` backend synchronization, and clean built-in disaster/civic recency duration (72h / 3 days) with graceful fallback |
 | 31 | Automated Cloud Run Database Migration CI/CD Pipeline & Cloud Logging Hardening | Completed | Google Cloud Build CI/CD pipeline automation (`cloudbuild.yaml`), automated Alembic database migration execution via Cloud Run Job (`lanes-migration --wait`) before web service rollout, and Cloud Logging option hardening (`CLOUD_LOGGING_ONLY`) |
 | 30 | Community Feed & Profile Post Tab Spaced Card UI Redesign | Completed | Replaced dividing lines with standalone card architecture (`space-y-3 sm:space-y-4`), mobile margin padding (`px-3 sm:px-0`), Profile post tab de-nesting, and post count badge |
