@@ -49,7 +49,7 @@ def test_spatial_moderation_merging_and_trust_scores():
             user_id=user_a.id,
             raw_text="Ortigas flood report A",
             source=models.ReportSource.USER_REPORT,
-            severity=models.ReportSeverity.MEDIUM,
+            severity=models.ReportSeverity.LOW,
             depth="Gutter",
             status=models.ReportStatus.PENDING,
             barangay="Ugong",
@@ -114,9 +114,19 @@ def test_spatial_moderation_merging_and_trust_scores():
         assert zone.severity == "high"
 
         # 7. Cleanup
+        event_id = rep1.event_id
+        db.query(models.FloodReportModerationOutcome).filter(
+            models.FloodReportModerationOutcome.report_id.in_([rep1.id, rep2.id])
+        ).delete(synchronize_session=False)
         db.delete(rep1)
         db.delete(rep2)
         db.delete(zone)
+        if event_id:
+            db.query(models.FloodEventTimelineEntry).filter_by(event_id=event_id).delete(synchronize_session=False)
+            db.query(models.FloodEventLocation).filter_by(event_id=event_id).delete(synchronize_session=False)
+            event_obj = db.get(models.FloodEvent, event_id)
+            if event_obj:
+                db.delete(event_obj)
         db.delete(user_a.profile)
         db.delete(user_b.profile)
         db.delete(user_a)
@@ -225,9 +235,12 @@ def test_batch_merge_pending_endpoint():
         )
 
         # Clean up
+        db.query(models.FloodReportModerationOutcome).filter_by(event_id=event.id).delete(synchronize_session=False)
         db.delete(rep_a)
         db.delete(rep_b)
         db.delete(target_zone)
+        db.query(models.FloodEventTimelineEntry).filter_by(event_id=event.id).delete(synchronize_session=False)
+        db.query(models.FloodEventLocation).filter_by(event_id=event.id).delete(synchronize_session=False)
         db.delete(event)
         db.delete(user_c.profile)
         db.delete(user_c)

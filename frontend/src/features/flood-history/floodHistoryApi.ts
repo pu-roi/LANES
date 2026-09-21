@@ -15,9 +15,19 @@ export interface FloodEventZone {
   id: number;
   geometry: PolygonGeometry | string | null;
   created_at: string;
+  updated_at?: string;
   is_active: boolean;
   severity: string;
   depth?: string | null;
+  passable_vehicles?: string | null;
+  hidden_hazards?: string | null;
+}
+
+/** A display-only request to focus historic geometry; it never reaches live routing. */
+export interface HistoricalMapFocusTarget {
+  eventId: number;
+  geometry?: unknown;
+  label: string;
 }
 
 export interface FloodEventTimelineEntry {
@@ -35,6 +45,7 @@ export interface FloodEventRecord {
   ended_at: string | null;
   peak_severity: "low" | "medium" | "high" | "extreme";
   peak_depth: string | null;
+  duration_seconds?: number;
   duration_minutes?: number | null;
   supporting_report_count?: number;
   reporter_count?: number;

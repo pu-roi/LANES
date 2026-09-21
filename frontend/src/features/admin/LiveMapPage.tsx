@@ -11,7 +11,7 @@ import {
   createOfficialZone,
   FloodReport
 } from "./adminApi";
-import { Button, Modal, Pagination, Tabs, useToast } from "@/shared/ui";
+import { Button, FloodReportDetailsModal, Modal, Pagination, Tabs, useToast } from "@/shared/ui";
 import BaseMap from "@/shared/ui/map/BaseMap";
 import { useCityBoundaries } from "@/features/map/hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "@/features/map/hooks/useFloodZonesLayer";
@@ -31,7 +31,6 @@ import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { PendingReportsPanel } from "./components/PendingReportsPanel";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
-import { ReportDetailsModal } from "./components/ReportDetailsModal";
 import { RejectFloodReportModal } from "./components/RejectFloodReportModal";
 import { CreateOfficialZonePanel } from "./components/CreateOfficialZonePanel";
 import type { ZoneSubmissionItem } from "./components/zones";
@@ -1329,7 +1328,7 @@ export default function LiveMapPage() {
       </Modal>
 
       {/* Report Details Modal (Triggered by Info button) */}
-      <ReportDetailsModal
+      <FloodReportDetailsModal
         report={infoModalReport}
         isOpen={infoModalReport !== null}
         onClose={() => setInfoModalReport(null)}
@@ -1351,9 +1350,6 @@ export default function LiveMapPage() {
         }}
         isApproveLoading={approveMutation.isPending}
         isRejectLoading={rejectMutation.isPending}
-        onOpenMedia={(urls, idx) => {
-          if (urls[idx]) window.open(urls[idx], "_blank");
-        }}
       />
       <RejectFloodReportModal
         report={rejectionReport}

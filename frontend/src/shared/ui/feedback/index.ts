@@ -1,4 +1,8 @@
 export { Modal } from "./Modal";
+export { FloodReportDetailsModal } from "./FloodReportDetailsModal";
+export type { FloodReportDetails, FloodReportDetailsGeometry } from "./FloodReportDetailsModal";
+export { FloodZoneDetailsModal } from "./FloodZoneDetailsModal";
+export type { FloodZoneDetails, FloodZoneContributorDetails } from "./FloodZoneDetailsModal";
 export * from "./ConfirmDialog";
 export * from "./Toast";
 export { LoadingOverlay } from "./LoadingOverlay";

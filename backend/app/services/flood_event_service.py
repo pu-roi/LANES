@@ -7,8 +7,9 @@ and reporter trust are updated as one server-side unit of work.
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Optional
+from zoneinfo import ZoneInfo
 
 from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
@@ -41,6 +42,11 @@ def _severity_value(value: models.ReportSeverity | str) -> models.ReportSeverity
 
 def _is_more_severe(candidate: models.ReportSeverity, current: models.ReportSeverity) -> bool:
     return _SEVERITY_ORDER[candidate] > _SEVERITY_ORDER[current]
+
+
+def _as_manila_time(value: datetime) -> datetime:
+    """Treat legacy-naive persistence timestamps as UTC before staff display aggregation."""
+    return (value if value.tzinfo else value.replace(tzinfo=UTC)).astimezone(ZoneInfo("Asia/Manila"))
 
 
 def _append_timeline(
@@ -98,23 +104,32 @@ def get_event_metrics(
     ).count()
     end_time = event.ended_at or as_of
     duration_seconds = max(0, int((end_time - event.verified_at).total_seconds()))
+    approved_reports_filter = (
+        models.FloodReport.event_id == event.id,
+        models.FloodReport.status == models.ReportStatus.APPROVED,
+        models.FloodReport.deleted_at.is_(None),
+    )
     return {
         "event_id": event.id,
         "status": event.status.value,
         "verified_at": event.verified_at,
         "ended_at": event.ended_at,
         "duration_seconds": duration_seconds,
+        "duration_minutes": (
+            duration_seconds // 60
+            if event.status == models.FloodEventStatus.ENDED and event.ended_at else None
+        ),
         "evidence_count": db.query(models.FloodReport.id).filter(
-            models.FloodReport.event_id == event.id,
-            models.FloodReport.status == models.ReportStatus.APPROVED,
-            models.FloodReport.deleted_at.is_(None),
+            *approved_reports_filter,
         ).count(),
         "supporting_report_count": db.query(models.FloodReport.id).filter(
-            models.FloodReport.event_id == event.id,
-            models.FloodReport.status == models.ReportStatus.APPROVED,
-            models.FloodReport.deleted_at.is_(None),
+            *approved_reports_filter,
             models.FloodReport.zone_id.is_not(None),
         ).count(),
+        "reporter_count": int(db.query(func.count(func.distinct(models.FloodReport.user_id))).filter(
+            *approved_reports_filter,
+            models.FloodReport.user_id.is_not(None),
+        ).scalar() or 0),
         "zone_count": db.query(models.FloodAvoidanceZone.id).filter(
             models.FloodAvoidanceZone.event_id == event.id,
         ).count(),
@@ -234,7 +249,13 @@ def get_flood_event_planning_analytics(
     locations_by_event = _event_locations(db, event_ids)
     severity_counts = Counter(event.peak_severity.value for event in events)
     daily_counts = Counter(event.verified_at.date().isoformat() for event in events)
-    verification_pattern = Counter((event.verified_at.weekday(), event.verified_at.hour) for event in events)
+    verification_pattern = Counter(
+        (
+            _as_manila_time(event.verified_at).weekday(),
+            _as_manila_time(event.verified_at).hour,
+        )
+        for event in events
+    )
     barangay_counts: Counter[str] = Counter()
     road_counts: Counter[str] = Counter()
     duration_minutes: list[int] = []
@@ -333,7 +354,7 @@ def get_flood_event_planning_analytics(
             "supporting_reports": "Approved, non-deleted reports linked to the selected Flood Events; a confidence signal, not an event count.",
             "peak_verified_severity": "The highest verified severity recorded for each Flood Event.",
             "official_duration": "Time from event verification until the final active zone ended. Active events are excluded from duration averages.",
-            "verification_pattern": "Verified Flood Events by UTC day and hour. This shows verification timing, not when floodwater first began.",
+            "verification_pattern": "Verified Flood Events by Asia/Manila day and hour. This shows verification timing, not when floodwater first began.",
         },
     }
 
