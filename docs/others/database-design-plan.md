@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 22, 2026, 1:19 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -80,6 +80,7 @@ erDiagram
         string source_url "Nullable URL link to the original article/post"
         string severity "Risk level: low, medium, high, extreme"
         string status "Moderation: pending, approved, rejected"
+        int event_id FK "Nullable verified Flood Event reference"
         string image_url "Optional photo evidence"
         string human_readable_location "Normalized landmark"
         string barangay "Cleaned barangay name"
@@ -103,9 +104,43 @@ erDiagram
         geometry geometry "PostGIS Polygon boundaries (SRID 4326)"
         source_geometry geometry "Nullable original admin road centreline"
         boolean is_active "Status toggle for routing engine"
+        int event_id FK "Nullable verified Flood Event reference"
         datetime created_at "UTC timestamp of generation"
         datetime updated_at "UTC timestamp of latest metadata update"
         datetime expires_at "Nullable UTC expiry limit"
+    }
+
+    flood_events {
+        int id PK "Durable verified incident identifier"
+        string status "active or ended"
+        datetime first_reported_at "Nullable first linked report time"
+        datetime verified_at "Official verification time"
+        datetime ended_at "Nullable final-zone end time"
+        string peak_severity "Highest verified severity"
+        string peak_depth "Nullable highest verified water level"
+    }
+
+    flood_event_locations {
+        int id PK "Normalized affected-place identifier"
+        int event_id FK "Cascade reference to flood_events"
+        string location_type "road, barangay, or city"
+        string normalized_name "Per-event normalized place key"
+    }
+
+    flood_report_moderation_outcomes {
+        int id PK "Append-only moderation outcome"
+        int report_id FK "Cascade reference to flood_reports"
+        int event_id FK "Nullable verified Flood Event reference"
+        int zone_id FK "Nullable official zone reference"
+        string outcome "approved, linked, or rejected"
+    }
+
+    flood_event_timeline_entries {
+        int id PK "Readable incident-history entry"
+        int event_id FK "Cascade reference to flood_events"
+        string entry_type "Lifecycle event type"
+        jsonb snapshot_json "Historical display snapshot, not a live relation"
+        datetime occurred_at "UTC event timestamp"
     }
 
     audit_logs {
@@ -197,6 +232,11 @@ erDiagram
     users ||--o{ notifications : "receives"
     flood_reports ||--o{ flood_report_locations : "maps to"
     flood_reports ||--o{ flood_avoidance_zones : "generates"
+    flood_events ||--o{ flood_reports : "is supported by"
+    flood_events ||--o{ flood_avoidance_zones : "owns"
+    flood_events ||--o{ flood_event_locations : "affects"
+    flood_events ||--o{ flood_event_timeline_entries : "records"
+    flood_reports ||--o{ flood_report_moderation_outcomes : "receives"
     flood_reports ||--o| flood_report_surveys : "contains"
     flood_reports ||--o| community_posts : "shared as"
     community_posts ||--o{ post_interactions : "receives"
@@ -295,7 +335,7 @@ erDiagram
 | `is_public` | `BOOLEAN` | Default: `FALSE` | Toggle indicating if the user consented to share this report on the Community Feed. | Ensures privacy compliance before making reports visible to all users. |
 | `severity` | `VARCHAR(50)` | NOT NULL | Classified risk level of the flood. Allowed: `'low'`, `'medium'`, `'high'`, `'extreme'`. | Directly determines detour routing weights and map visual color-coding. |
 | `status` | `VARCHAR(50)` | Default: `'pending'` | Moderation queue status. Allowed: `'pending'`, `'approved'`, `'rejected'`. | Approved reports link to a verified Flood Event; rejected reports remain internal moderation records, not archived evidence. |
-| `event_id` | `INTEGER` | Nullable FK (`RESTRICT`), Index | Verified Flood Event supported by this approved report. | Keeps evidence distinct from incident counts and blocks deletion that would break verified history. |
+| `event_id` | `INTEGER` | Nullable FK (`RESTRICT`), Index | Verified Flood Event supported by this approved report. | Keeps evidence distinct from incident counts. The foreign key protects the referenced event from deletion; it does not by itself prevent a report from being removed or require an origin report. |
 | `geometry` | `GEOMETRY(Geometry, 4326)` | Spatial Index (GIST) | Latitude and longitude GPS coordinates. | **Performance:** Uses a GIST index. Essential for finding nearby flood reports quickly without doing expensive math on every record. |
 | `deleted_at` | `TIMESTAMP` | Nullable | Soft-delete marker for the Archive Center. | If set, the report is moved to the Archive Center and hidden from the public feed. |
 | `created_at` | `TIMESTAMP` | Default: UTC Now | Timestamp of when the report was ingested. | Used to determine report freshness (old reports are automatically archived). |
@@ -332,6 +372,22 @@ erDiagram
 `flood_report_moderation_outcomes` is append-only staff outcome history. Rejections require a structured reason, and `other` requires an internal note. `flood_event_timeline_entries` is the readable event chronology with snapshot JSON; it is intentionally separate from `audit_logs`, which retains technical actor/IP accountability.
 
 **Historical analytics contract:** planning analytics query `flood_events` as the primary aggregation relation. `flood_event_locations` contributes each normalized road or barangay at most once per event; approved `flood_reports` are counted only as a separately named corroboration measure. No analytics table duplicates raw evidence, reporter identity, media, or exact report geometry.
+
+#### Cloud SQL Integrity Finding and Required Hardening (Investigating)
+
+On September 22, 2026, Cloud SQL verification found active Flood Events **#6** and **#8** whose timeline snapshots reference reports/zones that no longer exist (`#30`/`#22` and `#36`/`#25`, respectively). Both events therefore return zero linked reports and zero linked zones in Flood History. Timeline `snapshot_json` preserves display identifiers but has no foreign-key relationship to those source records, so it cannot guarantee that a referenced report or zone remains available.
+
+The currently deployed nullable `flood_reports.event_id` and `flood_avoidance_zones.event_id` columns allow an event to exist without either relationship. They also permit direct official-zone creation to create an event without an admin-origin report. This conflicts with the approved product rule: every Flood Event must retain exactly one origin report—submitted by a user, created by an administrator, or created by a future AI ingestion path—and may retain many supporting reports.
+
+**Required design before a schema migration (not implemented yet):**
+
+- Introduce a normalized event-to-report association that records the relationship role (`origin` or `supporting`), preserves the report's source (`user_report`, `admin_official`, or future `ai`), and prevents one report from being assigned to multiple events unintentionally.
+- Enforce exactly one origin relationship per event with a unique partial index plus a deferred integrity check; ordinary supporting reports remain one-to-many.
+- Require every active official zone to belong to one Flood Event, and require an active Flood Event to retain at least one active official zone. Use transactional service validation and a deferred database check/trigger where cross-row enforcement is required.
+- Restrict deletion of a report or zone still linked as origin/supporting evidence. Historical deactivation ends the event; it must not erase its evidence relationship.
+- Before enabling the stricter constraints, classify/backfill existing orphaned events. When source evidence is genuinely absent, staff must explicitly rebuild an official origin report/zone or mark the event invalid/ended; never silently invent or relink evidence.
+
+This hardening requires human approval before any SQLAlchemy model or Alembic migration change. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### First-Party Visitor Analytics Table
 
@@ -478,7 +534,7 @@ erDiagram
 When designing relational schemas, handling deletion cascades is critical to preventing orphaned rows and data loss:
 
 1. **`ON DELETE CASCADE` (Used for Locations, Surveys, Detours, Comments, Interactions, Profiles, Addresses):**
-   * If a `flood_report` is deleted, its child zones (`flood_avoidance_zones`), locations, surveys, comments, and interactions are automatically deleted. This prevents orphaned rows.
+   * If a `flood_report` is deleted, its child zones (`flood_avoidance_zones`), locations, surveys, comments, and interactions are automatically deleted. This prevents child rows from being orphaned, but it can leave a separately stored Flood Event/timeline snapshot without its originating evidence when the event links are nullable. The hardening design above addresses that historical-integrity gap.
    * If a `user` is deleted, their `profile` and `address` cascade drop.
 2. **`ON DELETE SET NULL` (Used for Audit Logs, Report Authors, Settings):**
    * If an administrator or user account is deleted, the user_id fields in reports, settings, or audit logs are set to `NULL`. **The core data is preserved.**

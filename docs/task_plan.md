@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 5:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 22, 2026, 1:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -121,11 +121,11 @@ Official admin-created Flood Zone ───────────────�
   - [x] Establish protected server reads for filtered historic event records and a single event’s full evidence/timeline detail; this does not complete the Records workspace UI. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Reuse the shared `BaseMap` and feature-based map hooks; create separate historical sources/layers from the active zone/routing layers so history never contaminates live navigation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Selecting a map feature selects the corresponding list row; selecting a row focuses the event on the map. Filter controls include date range, barangay, road/street, severity, status, and recurrence-related filters agreed during implementation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [x] Provide an event-detail drawer/modal that keeps the administrator in context. It includes official event summary, affected places, source zones, readable incident timeline, evidence counts, and a compact supporting-reports table. Each report has a **View** action opening full original details: reporter, timestamps, description, exact geometry, media, passability/hidden-hazard survey, and moderation outcome. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Provide an event-detail modal that keeps the administrator in context with **Overview**, **Official History**, and **Reports** tabs. It includes lifecycle/peak/affected-place summary, source zones, a readable incident timeline, and every report linked to the event. Reports uses the shared original-evidence view as responsive master-detail: desktop keeps the list beside a right-hand sliding detail panel; mobile replaces the list with the selected report and a Back to reports action. The shared view retains reporter, timestamps, description, geometry, bidirectional coverage, media, passability/hidden-hazard survey, and moderation outcome. Event, zone, and report actions focus only the historical map. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ##### Phase 33.6 — Event-Based Planning Analytics and Exports
 - [x] Replace/augment report-count-only historical analytics with event-based aggregation queries. Existing quick insights remain a simple summary, while Flood History & Analytics uses the distinct-event counting rules above. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [x] Deliver city-planning metrics: total ended events, recurring barangays, most frequently affected roads/streets, peak severity distribution, event duration distribution/average, events over time, and supporting-report volume as a separate confidence signal. The responsive chart treatment now uses an event/report combination trend, severity doughnut, duration columns, recurrence rankings, and a UTC verification-pattern heatmap. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Deliver city-planning metrics: total ended events, recurring barangays, most frequently affected roads/streets, peak severity distribution, event duration distribution/average, events over time, and supporting-report volume as a separate confidence signal. The responsive chart treatment now uses an event/report combination trend, severity doughnut, duration columns, recurrence rankings, and a Philippine-time verification-pattern heatmap. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
   - [x] Use compact shared cards, smaller graph typography, consistent grid/tooltip treatment, and the admin dashboard's primary blue for non-severity visualizations. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Use a historical map visual appropriate to the selected question (event footprints/clusters/recurrence), with accessible non-color indicators and understandable legends. The map labels peak verified severity and explicitly does not imply exact depth or event frequency. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Permit authorized CSV/JSON export of filtered event records and aggregate analytics for city planning/offline reporting. The default planning exports exclude reporter identity, raw report text, exact report geometry, and media; full evidence remains only in the protected event-detail view. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
@@ -140,6 +140,12 @@ Official admin-created Flood Zone ───────────────�
 
 > **Delivery status ([@roicambe](https://github.com/roicambe) (Roi Cambe), September 21, 2026):** Phase 33.7 is complete: lifecycle and authorization coverage, the desktop/mobile verification script, privacy/security review, migration documentation, and deployment validation are recorded for release.
 
+##### Phase 33.8 — Cloud SQL Historical Evidence Integrity Remediation (🔴 BLOCKED: schema/data approval required)
+- [x] Verify the production data issue read-only: active Events #6 and #8 have timeline snapshots for missing reports/zones, so Flood History correctly returns zero current links. Record the investigation as [BUG-055]. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Obtain explicit approval for the normalized origin/supporting report relationship and its migration/backfill policy before changing SQLAlchemy models or Alembic migrations.
+- [ ] Classify each existing orphaned event with staff: rebuild an administrator-origin report/zone only where official evidence exists, otherwise end/mark invalid. Never fabricate or silently relink source evidence.
+- [ ] Enforce exactly one origin report per Flood Event; require each active event to retain an active official zone; restrict deletion of linked historical evidence; add focused service, migration, and Cloud SQL verification coverage.
+
 #### 4. Explicit Non-Goals for This Phase
 
 - [ ] Do not build the public “Update flood conditions” workflow yet. Record it as a future feature requiring rate limits, one-open-update/cooldown rules, evidence handling, and staff confirmation.
@@ -153,10 +159,10 @@ Official admin-created Flood Zone ───────────────�
 
 - [x] **Product gate:** The developer explicitly approves the proposed schema/migration design before data models change.
 - [x] **Operational gate:** An admin can create/verify a live zone, observe its associated Flood Event, deactivate the last active zone, and find the ended event in Flood History & Analytics—not Archive Center.
-- [x] **Integrity gate:** A true supporting report is linked to the event without creating a second incident; an invalid report is rejected with a structured reason and remains in staff moderation history only.
+- [ ] **Integrity gate:** A true supporting report is linked to the event without creating a second incident; an invalid report is rejected with a structured reason and remains in staff moderation history only; every active event retains exactly one origin report and at least one active official zone. Reopened by [BUG-055].
 - [x] **Analytics gate:** Citywide totals use distinct Flood Events; barangay/road recurrence handles multi-location events correctly; report volume is visibly separate from event count.
 - [x] **UX gate:** Spatial Operations, Moderation Center, Archive Center, Audit Trail, and Flood History & Analytics each have one clear purpose with no duplicate moderation actions; desktop and mobile flows are verified.
-- [x] **Quality gate:** Migration, backend tests, frontend checks, security/authorization review, and documentation synchronization are complete before marking the phase delivered.
+- [ ] **Quality gate:** Migration, backend tests, frontend checks, security/authorization review, Cloud SQL integrity remediation, and documentation synchronization are complete before marking the phase delivered. Reopened by [BUG-055].
 
 ### Capstone Phase 34: 30-Day Archive Retention Lifecycle, Auto-Purge Worker, Delete Controls & User Self-Deletion (🟢 COMPLETED)
 > **Focus:** Automatic 30-day retention countdown and background purge worker (`retention_service.py`), explicit user account restoration (`POST /admin/users/{id}/restore`) and permanent purge (`DELETE /admin/users/{id}/permanent`), manual on-demand purge trigger (`POST /admin/archive/purge-expired`), public user self-deletion Danger Zone modal (`DELETE /users/me`) with 30-day login grace period, and unique constraint conflict mitigation ([`BUG-050`]). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

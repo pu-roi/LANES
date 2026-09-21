@@ -4,10 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { AlertTriangle, CheckCircle2, Flag, Info, MapPin } from "lucide-react";
-import { ReportDetailsModal } from "./ReportDetailsModal";
 import type { FloodReport } from "../adminApi";
 import { apiClient } from "@/lib/apiClient";
-import { AutocompleteInput, Button, Card, CardContent, DatePicker, LocationAutocomplete, Select, Skeleton } from "@/shared/ui";
+import { AutocompleteInput, Button, Card, CardContent, DatePicker, FloodReportDetailsModal, LocationAutocomplete, Select, Skeleton } from "@/shared/ui";
 
 type FloodModerationCase = {
   report_id: number;
@@ -108,6 +107,6 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
       {caseItem.status === "rejected" && <div className="mt-4 rounded-lg border border-rose-100 bg-rose-50 p-3 text-sm text-rose-900"><p><span className="font-semibold">Reason:</span> {caseItem.rejection_reason ? rejectionLabels[caseItem.rejection_reason] : "Not recorded"}</p>{caseItem.internal_note && <p className="mt-1"><span className="font-semibold">Internal note:</span> {caseItem.internal_note}</p>}</div>}
       {caseItem.resolved_at && <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-500"><CheckCircle2 className="h-4 w-4 text-emerald-600" />{caseItem.resolution === "linked" ? "Linked" : "Resolved"} {new Date(caseItem.resolved_at).toLocaleString()}{caseItem.acting_admin ? ` by ${caseItem.acting_admin}` : ""}</p>}
     </CardContent></Card>)}
-    <ReportDetailsModal report={detailCase ? ({ id: detailCase.report_id, status: detailCase.status, source: detailCase.source, raw_text: detailCase.raw_text, severity: detailCase.severity, depth: detailCase.depth, created_at: detailCase.submitted_at, updated_at: detailCase.submitted_at, human_readable_location: detailCase.location, reporter_username: detailCase.reporter } as FloodReport) : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => router.push(`/admin/map?focus_report_id=${report.id}&tab=pending&review_token=${nextReviewToken()}`)} />
+    <FloodReportDetailsModal report={detailCase ? ({ id: detailCase.report_id, status: detailCase.status, source: detailCase.source, raw_text: detailCase.raw_text, severity: detailCase.severity, depth: detailCase.depth, created_at: detailCase.submitted_at, updated_at: detailCase.submitted_at, human_readable_location: detailCase.location, reporter_username: detailCase.reporter } as FloodReport) : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => router.push(`/admin/map?focus_report_id=${report.id}&tab=pending&review_token=${nextReviewToken()}`)} />
   </div>;
 }

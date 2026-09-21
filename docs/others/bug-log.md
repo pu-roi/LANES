@@ -1,9 +1,35 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 22, 2026, 1:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-055] Cloud SQL Flood Events Can Outlive Their Origin Evidence
+- **Status**: Investigating
+- **Severity**: High
+- **Date Reported**: September 22, 2026
+- **Affected Area**: Cloud SQL / Flood Event Lifecycle / Flood History & Analytics
+- **Author / Investigator**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Flood History shows active Flood Events #6 and #8 with zero linked reports and zero official zones, despite timeline entries that reference reports/zones #30/#22 and #36/#25. The event detail is accurate about the current links, but it exposes records that no longer meet the product rule that every Flood Event retains an origin report and an active event retains an official zone.
+
+#### 2. Root Cause Analysis (RCA)
+
+Read-only Cloud SQL inspection confirmed that the referenced reports and zones no longer exist, while the events and their `flood_event_timeline_entries.snapshot_json` references remain. `snapshot_json` is a historical display snapshot rather than a foreign-key relationship. The deployed `flood_reports.event_id` and `flood_avoidance_zones.event_id` links are nullable, so they do not require an event to retain evidence or a zone. The direct official-zone path can also create an event with no administrator-origin report.
+
+#### 3. Solution & Architectural Strategy
+
+Before any schema change, classify the existing orphaned events with staff. A missing source record must be explicitly rebuilt as an administrator-origin report/zone or the event must be ended/marked invalid; no automated process may invent or silently relink evidence. Then introduce a normalized origin/supporting report relationship with one origin per event, restrict deletion of linked evidence, and enforce the active-event/active-zone invariant transactionally with deferred database validation where cross-row constraints are needed.
+
+#### 4. Files Modified / What Changed
+
+- `docs/others/database-design-plan.md`: Added the observed Cloud SQL state, the current nullable-link limitation, and the proposed migration-safe integrity design.
+- `docs/task_plan.md`, `docs/progress.md`, `docs/others/system-documentation.md`: Marked Phase 33 integrity remediation as pending and documented the staff-facing limitation.
 
 ---
 

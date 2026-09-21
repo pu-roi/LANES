@@ -3,11 +3,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import maplibregl, { type Map } from "maplibre-gl";
 import BaseMap from "@/shared/ui/map/BaseMap";
-import type { FloodEventRecord } from "./floodHistoryApi";
+import type { FloodEventRecord, HistoricalMapFocusTarget } from "./floodHistoryApi";
 
 const SOURCE_ID = "historical-flood-events-source";
 const FILL_LAYER_ID = "historical-flood-events-fill";
 const OUTLINE_LAYER_ID = "historical-flood-events-outline";
+const FOCUS_SOURCE_ID = "historical-flood-focus-source";
+const FOCUS_FILL_LAYER_ID = "historical-flood-focus-fill";
+const FOCUS_LINE_LAYER_ID = "historical-flood-focus-line";
+const FOCUS_POINT_LAYER_ID = "historical-flood-focus-point";
 
 function geometryForZone(value: unknown): GeoJSON.Geometry | null {
   if (!value) return null;
@@ -33,7 +37,7 @@ function buildCollection(events: FloodEventRecord[]): GeoJSON.FeatureCollection 
 
 interface HistoricalEventsMapProps { events: FloodEventRecord[]; selectedEventId: number | null; onSelectEvent: (eventId: number) => void; }
 
-export function HistoricalEventsMap({ events, selectedEventId, onSelectEvent }: HistoricalEventsMapProps) {
+export function HistoricalEventsMap({ events, selectedEventId, onSelectEvent, focusTarget }: HistoricalEventsMapProps & { focusTarget: HistoricalMapFocusTarget | null }) {
   const mapRef = useRef<Map | null>(null);
   const [isReady, setIsReady] = useState(false);
   const renderEvents = useCallback(() => {
@@ -47,11 +51,24 @@ export function HistoricalEventsMap({ events, selectedEventId, onSelectEvent }: 
     if (!map.getLayer(OUTLINE_LAYER_ID)) map.addLayer({ id: OUTLINE_LAYER_ID, type: "line", source: SOURCE_ID, paint: { "line-color": ["case", ["get", "is_selected"], "#0f172a", "#475569"], "line-width": ["case", ["get", "is_selected"], 3, 1.5], "line-opacity": 0.9 } });
   }, [events, selectedEventId]);
 
+  const renderFocus = useCallback(() => {
+    const map = mapRef.current;
+    if (!map || !map.isStyleLoaded()) return;
+    const geometry = geometryForZone(focusTarget?.geometry);
+    const data: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: geometry ? [{ type: "Feature", properties: { label: focusTarget?.label ?? "Historical detail" }, geometry }] : [] };
+    const source = map.getSource(FOCUS_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+    if (source) source.setData(data); else map.addSource(FOCUS_SOURCE_ID, { type: "geojson", data });
+    if (!map.getLayer(FOCUS_FILL_LAYER_ID)) map.addLayer({ id: FOCUS_FILL_LAYER_ID, type: "fill", source: FOCUS_SOURCE_ID, filter: ["==", ["geometry-type"], "Polygon"], paint: { "fill-color": "#2563eb", "fill-opacity": 0.16 } });
+    if (!map.getLayer(FOCUS_LINE_LAYER_ID)) map.addLayer({ id: FOCUS_LINE_LAYER_ID, type: "line", source: FOCUS_SOURCE_ID, paint: { "line-color": "#1d4ed8", "line-width": 4, "line-opacity": 0.95 } });
+    if (!map.getLayer(FOCUS_POINT_LAYER_ID)) map.addLayer({ id: FOCUS_POINT_LAYER_ID, type: "circle", source: FOCUS_SOURCE_ID, filter: ["==", ["geometry-type"], "Point"], paint: { "circle-radius": 8, "circle-color": "#2563eb", "circle-stroke-width": 3, "circle-stroke-color": "#ffffff" } });
+  }, [focusTarget]);
+
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !isReady) return;
     renderEvents();
-    const onStyleLoad = () => renderEvents();
+    renderFocus();
+    const onStyleLoad = () => { renderEvents(); renderFocus(); };
     const selectFeature = (event: maplibregl.MapLayerMouseEvent) => {
       const id = Number(event.features?.[0]?.properties?.event_id);
       if (id) onSelectEvent(id);
@@ -70,8 +87,8 @@ export function HistoricalEventsMap({ events, selectedEventId, onSelectEvent }: 
       map.off("mouseenter", FILL_LAYER_ID, showPointer);
       map.off("mouseleave", FILL_LAYER_ID, clearPointer);
     };
-  }, [isReady, onSelectEvent, renderEvents]);
-  useEffect(() => { const map = mapRef.current; const selected = events.find((event) => event.id === selectedEventId); if (!map || !selected || !isReady) return; const points = selected.zones.flatMap((zone) => coordinatesOf((geometryForZone(zone.geometry) as GeoJSON.Geometry & { coordinates?: unknown } | null)?.coordinates)); if (!points.length) return; const bounds = points.slice(1).reduce((next, point) => next.extend(point), new maplibregl.LngLatBounds(points[0], points[0])); map.fitBounds(bounds, { padding: 56, maxZoom: 16, duration: 700 }); }, [events, isReady, selectedEventId]);
+  }, [isReady, onSelectEvent, renderEvents, renderFocus]);
+  useEffect(() => { const map = mapRef.current; const selected = events.find((event) => event.id === selectedEventId); if (!map || !selected || !isReady) return; const focusGeometry = geometryForZone(focusTarget?.geometry); const points = focusGeometry ? coordinatesOf((focusGeometry as GeoJSON.Geometry & { coordinates?: unknown }).coordinates) : selected.zones.flatMap((zone) => coordinatesOf((geometryForZone(zone.geometry) as GeoJSON.Geometry & { coordinates?: unknown } | null)?.coordinates)); if (!points.length) return; const bounds = points.slice(1).reduce((next, point) => next.extend(point), new maplibregl.LngLatBounds(points[0], points[0])); map.fitBounds(bounds, { padding: 56, maxZoom: 16, duration: 700 }); }, [events, focusTarget, isReady, selectedEventId]);
 
   const handleMapLoad = useCallback((map: Map) => { mapRef.current = map; setIsReady(true); }, []);
 

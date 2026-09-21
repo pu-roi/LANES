@@ -22,7 +22,7 @@ import {
   AvoidanceZone,
   ArchivedPost,
 } from "@/features/admin/adminApi";
-import { Button, Tabs, Input, DataTable, Column, useToast } from "@/shared/ui";
+import { Button, Tabs, Input, DataTable, Column, FloodReportDetailsModal, FloodZoneDetailsModal, useToast } from "@/shared/ui";
 import {
   Loader2,
   Archive,
@@ -39,8 +39,6 @@ import {
   MessageSquare,
   EyeOff,
 } from "lucide-react";
-import { ReportDetailsModal } from "@/features/admin/components/ReportDetailsModal";
-import { ZoneDetailsModal } from "./components/ZoneDetailsModal";
 import { PostDetailsModal } from "./components/PostDetailsModal";
 import { TypedDeleteModal } from "./components/TypedDeleteModal";
 
@@ -1044,25 +1042,19 @@ export default function ArchivePage() {
       )}
 
       {/* Details Modals */}
-      <ReportDetailsModal
+      <FloodReportDetailsModal
         report={detailsReport}
         isOpen={detailsReport !== null}
         onClose={() => setDetailsReport(null)}
-        onViewOnMap={() => {}}
         onApprove={() => {
           if (detailsReport) {
             restoreReportMutation.mutate(detailsReport.id);
           }
         }}
         isApproveLoading={restoreReportMutation.isPending}
-        onOpenMedia={(urls, idx) => {
-          if (urls && urls[idx]) {
-            window.open(urls[idx], "_blank");
-          }
-        }}
       />
 
-      <ZoneDetailsModal
+      <FloodZoneDetailsModal
         zone={detailsZone}
         isOpen={detailsZone !== null}
         onClose={() => setDetailsZone(null)}

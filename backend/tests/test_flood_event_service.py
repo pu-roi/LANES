@@ -156,6 +156,8 @@ def test_event_metrics_zone_timeline_and_create_retry_are_server_owned(db_sessio
         metrics = get_event_metrics(db_session, event)
         assert metrics["evidence_count"] == 2
         assert metrics["supporting_report_count"] == 2
+        assert metrics["reporter_count"] == 0
+        assert metrics["duration_minutes"] is None
         assert metrics["active_zone_count"] == 1
         assert metrics["location_count"] == 4
         assert metrics["peak_severity"] == "extreme"
