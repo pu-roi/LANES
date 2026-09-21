@@ -21,7 +21,6 @@ import {
   BarChart4,
   XCircle
 } from "lucide-react";
-import { Card, CardContent } from "@/shared/ui";
 
 export default function DashboardPage() {
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; date: string; count: number } | null>(null);
@@ -88,34 +87,34 @@ export default function DashboardPage() {
     {
       title: "Active Detours",
       value: stats?.total_active_zones ?? 0,
-      description: "Avoidance zones active",
+      description: "Live avoidance zones",
       icon: Map,
       iconClassName: "bg-blue-50 text-blue-600",
       href: "/admin/map?tab=zones",
-      actionText: "Manage zones"
+      actionText: "View detours"
     },
     {
-      title: "Today's Approvals",
+      title: "Approved Today",
       value: stats?.total_approved_today ?? 0,
-      description: "Routes adjusted today",
+      description: "Citizen reports verified",
       icon: CalendarCheck,
       iconClassName: "bg-emerald-50 text-emerald-600",
-      href: "/admin/map?tab=pending",
-      actionText: "View approved"
+      href: "/admin/map?tab=approved",
+      actionText: "Verified log"
     },
     {
-      title: "Today's Rejections",
+      title: "Rejected Today",
       value: stats?.total_rejected_today ?? 0,
-      description: "Flood reports resolved today",
+      description: "Dismissed or invalid reports",
       icon: XCircle,
       iconClassName: "bg-rose-50 text-rose-600",
       href: "/admin/moderation?tab=flood&status=rejected",
-      actionText: "View rejections"
+      actionText: "Moderation review"
     },
     {
-      title: "Total User Accounts",
+      title: "Registered Users",
       value: stats?.total_users ?? 0,
-      description: "Registered in system",
+      description: "Active system accounts",
       icon: Users,
       iconClassName: "bg-indigo-50 text-indigo-600",
       href: "/admin/users",
@@ -177,48 +176,48 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* Charts Grid */}
+      {/* Charts & Operations Bento Grid */}
       {chartsData && (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {/* Row 1, Col 1: Unique Visitors */}
           {visitorAnalytics && (
-            <Card id="visitor-analytics" className="shadow-sm md:col-span-2 lg:col-span-1">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                      <Users className="h-4 w-4 text-blue-600" />
-                      Unique Visitors
-                    </h2>
-                    <p className="mt-1 text-xs text-slate-500">Daily unique browsers or signed-in accounts, UTC.</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xl font-extrabold text-slate-900">{visitorAnalytics.total_unique_visitors}</p>
-                    <p className="text-[11px] text-slate-500">tracked total</p>
-                  </div>
+            <div id="visitor-analytics" className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900 flex items-center gap-2">
+                    <Users className="h-4 w-4 text-blue-600" />
+                    Unique Visitors
+                  </h2>
+                  <p className="mt-1 text-xs text-gray-400">Daily unique browsers or signed-in accounts, UTC.</p>
                 </div>
-                <figure className="mt-4" aria-label="Daily unique visitors over the last 30 days">
-                  <ResponsiveContainer width="100%" height={220}>
-                    <AreaChart data={visitorTrend} margin={{ top: 6, right: 8, left: -18, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="visitorAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.28} />
-                          <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.02} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
-                      <XAxis dataKey="label" minTickGap={28} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                      <YAxis allowDecimals={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                      <Tooltip contentStyle={{ backgroundColor: "#0f172a", border: "1px solid #1e293b", borderRadius: 8, color: "#fff", fontSize: 12 }} labelFormatter={(_, payload) => payload?.[0]?.payload.date ?? ""} />
-                      <Area type="monotone" dataKey="unique_visitors" name="Unique visitors" stroke="#2563eb" strokeWidth={2.5} fill="url(#visitorAreaGradient)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                  <figcaption className="sr-only">Daily unique visitor counts for the last 30 UTC days.</figcaption>
-                </figure>
-              </CardContent>
-            </Card>
+                <div className="text-right">
+                  <p className="text-xl font-extrabold text-gray-900">{visitorAnalytics.total_unique_visitors}</p>
+                  <p className="text-[11px] text-gray-400">tracked total</p>
+                </div>
+              </div>
+              <figure className="relative h-48 w-full" aria-label="Daily unique visitors over the last 30 days">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={visitorTrend} margin={{ top: 6, right: 8, left: -18, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="visitorAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.28} />
+                        <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
+                    <XAxis dataKey="label" minTickGap={28} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                    <YAxis allowDecimals={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                    <Tooltip contentStyle={{ backgroundColor: "#0f172a", border: "1px solid #1e293b", borderRadius: 8, color: "#fff", fontSize: 12 }} labelFormatter={(_, payload) => payload?.[0]?.payload.date ?? ""} />
+                    <Area type="monotone" dataKey="unique_visitors" name="Unique visitors" stroke="#2563eb" strokeWidth={2.5} fill="url(#visitorAreaGradient)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+                <figcaption className="sr-only">Daily unique visitor counts for the last 30 UTC days.</figcaption>
+              </figure>
+            </div>
           )}
-          {/* Reports Timeline (Line Chart) */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4 relative flex flex-col justify-between md:col-span-2 lg:col-span-1">
+
+          {/* Row 1, Col 2: Reports Timeline (Line Chart) */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4 relative flex flex-col justify-between">
             <div className="flex justify-between items-center">
               <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-blue-600" />
@@ -273,8 +272,8 @@ export default function DashboardPage() {
                     {/* Gradients */}
                     <defs>
                       <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+                        <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.25} />
+                        <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
 
@@ -283,19 +282,19 @@ export default function DashboardPage() {
                       const y = paddingY + chartHeight * ratio;
                       const val = Math.round(maxCount * (1 - ratio));
                       return (
-                        <g key={idx} className="opacity-40">
+                        <g key={idx}>
                           <line
                             x1={paddingX}
                             y1={y}
                             x2={width - paddingX}
                             y2={y}
-                            stroke="#e2e8f0"
+                            stroke="#f1f5f9"
+                            strokeDasharray={idx === 4 ? "0" : "3 3"}
                             strokeWidth="1"
-                            strokeDasharray="4 4"
                           />
                           <text
                             x={paddingX - 8}
-                            y={y + 4}
+                            y={y + 3}
                             textAnchor="end"
                             className="text-[9px] fill-gray-400 font-semibold"
                           >
@@ -377,8 +376,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Severity Distribution (Pie / Donut Chart) */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4 md:col-span-1 lg:col-span-1">
+          {/* Row 1, Col 3: Severity Distribution (Pie / Donut Chart) */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
               <PieChart className="w-4 h-4 text-blue-600" />
               Severity Breakdown
@@ -462,8 +461,8 @@ export default function DashboardPage() {
             })()}
           </div>
 
-          {/* Top barangays (Horizontal Bar Graph) */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4 md:col-span-1 lg:col-span-1">
+          {/* Row 2, Col 1: Top barangays (Horizontal Bar Graph) */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
               <BarChart4 className="w-4 h-4 text-blue-600" />
               Top 5 Most Flooded Barangays
@@ -510,101 +509,110 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
+
+          {/* Row 2, Col 2: System Health Check */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
+            <div>
+              <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                <Activity className="w-4 h-4 text-blue-600" />
+                System Health Check
+              </h2>
+              <p className="text-xs text-gray-400 mt-1">Real-time status of critical infrastructure services.</p>
+            </div>
+            
+            <div className="space-y-3 flex-1 flex flex-col justify-center">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50/70 border border-slate-100">
+                <span className="text-xs font-semibold text-gray-700 flex items-center gap-2.5">
+                  <Database className="w-4 h-4 text-blue-600" />
+                  Spatial Database
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-xs font-bold text-emerald-600 capitalize">
+                    {stats?.database_status || "connected"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50/70 border border-slate-100">
+                <span className="text-xs font-semibold text-gray-700 flex items-center gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-blue-600" />
+                  Auth Token Validator
+                </span>
+                <span className="text-xs font-bold text-emerald-600">
+                  ACTIVE
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50/70 border border-slate-100">
+                <span className="text-xs font-semibold text-gray-700 flex items-center gap-2.5">
+                  <Map className="w-4 h-4 text-blue-600" />
+                  OSRM Detour Service
+                </span>
+                <span className="text-xs font-bold text-emerald-600">
+                  OPERATIONAL
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2, Col 3: Quick Administration Tasks */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col justify-between space-y-4">
+            <div>
+              <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
+                <CheckSquare className="w-4 h-4 text-blue-600" />
+                Quick Administration Tasks
+              </h2>
+              <p className="text-xs text-gray-400 mt-1">Direct shortcuts for operational workflows.</p>
+            </div>
+
+            <div className="space-y-3 flex-1 flex flex-col justify-center">
+              <Link 
+                href="/admin/map?tab=zones"
+                className="p-3.5 border border-gray-100 hover:border-blue-200 hover:bg-blue-50/30 rounded-xl flex items-center justify-between gap-3 transition-all duration-200 group"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600 shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <Map className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xs font-bold text-gray-900 group-hover:text-blue-700 transition-colors truncate">
+                      Explore Live Detour Map
+                    </h3>
+                    <p className="text-[11px] text-gray-400 mt-0.5 truncate">
+                      Inspect routing detours inside Pasig City.
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+              </Link>
+
+              <Link 
+                href="/admin/map?tab=pending"
+                className="p-3.5 border border-gray-100 hover:border-amber-200 hover:bg-amber-50/30 rounded-xl flex items-center justify-between gap-3 transition-all duration-200 group"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="p-2.5 bg-amber-50 rounded-xl text-amber-600 shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                    <AlertTriangle className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xs font-bold text-gray-900 group-hover:text-amber-700 transition-colors truncate">
+                      Review Pending Reports
+                    </h3>
+                    <p className="text-[11px] text-gray-400 mt-0.5 truncate">
+                      Decide on pending citizen feeds and alerts.
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+              </Link>
+            </div>
+          </div>
         </div>
       )}
-
-      {/* System Status & Quick Actions */}
-      <div className="grid gap-6 md:grid-cols-3">
-        {/* System Health Status */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6 md:col-span-1">
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
-            <Activity className="w-4 h-4 text-blue-600" />
-            System Health Check
-          </h2>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <span className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                <Database className="w-4 h-4 text-gray-400" />
-                Spatial Database
-              </span>
-              <div className="flex items-center gap-1.5">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <span className="text-xs font-bold text-emerald-600 capitalize">
-                  {stats?.database_status || "connected"}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <span className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-gray-400" />
-                Auth Token Validator
-              </span>
-              <span className="text-xs font-bold text-emerald-600">
-                ACTIVE
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                <Map className="w-4 h-4 text-gray-400" />
-                OSRM Detour Service
-              </span>
-              <span className="text-xs font-bold text-emerald-600">
-                OPERATIONAL
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Launch Panel */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-6 md:col-span-2">
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2">
-            <CheckSquare className="w-4 h-4 text-blue-600" />
-            Quick Administration Tasks
-          </h2>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Link 
-              href="/admin/map?tab=zones"
-              className="p-4 border border-gray-100 hover:border-blue-100 hover:bg-blue-50/20 rounded-xl flex items-start gap-4 transition-all duration-200 group"
-            >
-              <div className="p-2.5 bg-blue-50 rounded-xl text-blue-600">
-                <Map className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">
-                  Explore Live Detour Map
-                </h3>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Inspect the map and live routing detours inside Pasig City.
-                </p>
-              </div>
-            </Link>
-
-            <Link 
-              href="/admin/map?tab=pending"
-              className="p-4 border border-gray-100 hover:border-amber-100 hover:bg-amber-50/20 rounded-xl flex items-start gap-4 transition-all duration-200 group"
-            >
-              <div className="p-2.5 bg-amber-50 rounded-xl text-amber-600">
-                <AlertTriangle className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 group-hover:text-amber-700 transition-colors">
-                  Review Pending Reports
-                </h3>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Decide on pending citizen feeds and social alerts.
-                </p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Request, HTTPException, status
+from fastapi import APIRouter, Depends, Request, Response, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 import datetime
@@ -39,6 +39,7 @@ def get_public_stats(db: Session = Depends(get_db)) -> schemas.PublicStatsRespon
 @limiter.limit("30/minute")
 def record_public_visit(
     request: Request,
+    response: Response,
     payload: schemas.VisitorActivityRequest,
     db: Session = Depends(get_db),
     current_user: Optional[models.User] = Depends(deps.get_current_user_optional),
@@ -67,6 +68,7 @@ def record_public_visit(
 @limiter.limit("5/minute")
 async def send_contact_message(
     request: Request,
+    response: Response,
     payload: schemas.ContactMessageCreate
 ):
     """
@@ -87,4 +89,3 @@ async def send_contact_message(
         "success": True,
         "message": "Your message has been sent successfully. We will get back to you soon!"
     }
-

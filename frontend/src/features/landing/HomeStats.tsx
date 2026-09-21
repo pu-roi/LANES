@@ -60,7 +60,7 @@ export function HomeStats() {
         if (!cancelled) setStats(data);
       } catch (err: unknown) {
         if (!cancelled) {
-          showError("Visitor Tracking Error", errorMessage(err, "Failed to update visitor statistics"));
+          console.warn("Visitor telemetry could not be recorded:", err);
           await fetchStats();
         }
       } finally {

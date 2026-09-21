@@ -83,6 +83,32 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# Define allowed origins for CORS.
+# Allows local Next.js development server and LAN mobile devices
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://navlanes.live",
+    "https://www.navlanes.live",
+]
+
+import re
+ORIGIN_REGEX = re.compile(
+    r"^(https?://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):3000|https://.*\.vercel\.app|https://.*\.navlanes\.live|https://.*\.hosted\.app|https://.*\.web\.app|https://.*\.firebaseapp\.com)$"
+)
+
+def get_cors_headers(request: Request) -> dict:
+    origin = request.headers.get("origin")
+    if not origin:
+        return {}
+    if origin in origins or ORIGIN_REGEX.match(origin):
+        return {
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Credentials": "true",
+        }
+    return {}
+
+
 @app.exception_handler(ResponseValidationError)
 async def validation_exception_handler(request: Request, exc: ResponseValidationError):
     import traceback
@@ -93,6 +119,7 @@ async def validation_exception_handler(request: Request, exc: ResponseValidation
     return JSONResponse(
         status_code=500,
         content={"detail": "Response Validation Error", "errors": safe_errors},
+        headers=get_cors_headers(request),
     )
 
 
@@ -101,11 +128,14 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     from fastapi import HTTPException as FastApiHTTPException
     from starlette.exceptions import HTTPException as StarletteHTTPException
 
+    cors_headers = get_cors_headers(request)
     if isinstance(exc, (FastApiHTTPException, StarletteHTTPException)):
+        headers = dict(getattr(exc, "headers", None) or {})
+        headers.update(cors_headers)
         return JSONResponse(
             status_code=exc.status_code,
             content={"detail": exc.detail},
-            headers=getattr(exc, "headers", None),
+            headers=headers,
         )
 
     import traceback
@@ -114,18 +144,9 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
         content={"detail": "Internal Server Error"},
+        headers=cors_headers,
     )
 
-
-
-# Define allowed origins for CORS.
-# Allows local Next.js development server and LAN mobile devices
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://navlanes.live",
-    "https://www.navlanes.live",
-]
 
 app.add_middleware(
     CORSMiddleware,
