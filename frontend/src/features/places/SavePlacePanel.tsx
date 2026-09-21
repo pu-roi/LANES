@@ -15,7 +15,7 @@ import { savedPlacesApi, SavedPlace } from "./savedPlacesApi";
 import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/shared/ui";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 const MAX_SAVED_PLACES = 10;
@@ -58,7 +58,10 @@ export function SavePlacePanel() {
     setSavePlaceIcon: setIcon,
     isAnalyticsOpen,
     lastOpenedLeftPanel,
+    setActivePanel,
   } = useMapContext();
+
+  const router = useRouter();
 
   const { isAuthenticated } = useAuth();
   const { error: showError, success } = useToast();
@@ -109,7 +112,7 @@ export function SavePlacePanel() {
     localStorage.setItem("lanes_save_place_draft", JSON.stringify({ name, address, coords, icon }));
   }, [address, coords, icon, name]);
 
-  // Sync active tab with URL query param if present
+  // Sync active tab and panel with URL query param if present
   useEffect(() => {
     const tabParam = searchParams.get("tab");
     if (tabParam === "list") {
@@ -117,7 +120,11 @@ export function SavePlacePanel() {
     } else if (tabParam === "add") {
       setActiveTab("add");
     }
-  }, [searchParams]);
+    if (searchParams.get("panel") === "saveplace") {
+      setIsSavePlacePanelOpen(true);
+      setActivePanel("save_place");
+    }
+  }, [searchParams, setIsSavePlacePanelOpen, setActivePanel]);
 
   // Reset to expanded when opened
   useEffect(() => {
@@ -332,10 +339,14 @@ export function SavePlacePanel() {
       isOpen={isSavePlacePanelOpen}
       onClose={() => {
         setIsSavePlacePanelOpen(false);
+        setActivePanel(null);
         setDraftSavePlaceCoords(null);
         if (isPickingOnMap && activePoint === "save_place_location") {
           setIsPickingOnMap(false);
           setActivePoint(null);
+        }
+        if (searchParams.get("panel") === "saveplace") {
+          router.replace("/map", { scroll: false });
         }
       }}
       isCollapsed={isPanelCollapsed}

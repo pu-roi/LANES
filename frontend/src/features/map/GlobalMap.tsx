@@ -95,16 +95,24 @@ function MapLayout() {
   }, [isAuthenticated, setSavedPlaces]);
 
   // -- Event Handlers --
-  // Automatically open the report panel if navigated with ?action=report
+  // Automatically open the report panel if navigated with ?action=report, or saveplace with ?panel=saveplace
   useEffect(() => {
-    if (searchParams.get("action") === "report") {
+    const action = searchParams.get("action");
+    const panel = searchParams.get("panel");
+
+    if (action === "report") {
       setIsReportPanelOpen(true);
       setActivePanel("flood");
-    } else if (searchParams.get("action") === "pickPostLocation") {
+    } else if (action === "pickPostLocation") {
       setIsPickingOnMap(true);
       setActivePoint("post_location");
+    } else if (panel === "saveplace") {
+      setIsSavePlacePanelOpen(true);
+      setActivePanel("save_place");
+    } else if (panel === "analytics") {
+      setIsAnalyticsOpen(true);
     }
-  }, [searchParams, setIsReportPanelOpen, setActivePanel, setIsPickingOnMap, setActivePoint]);
+  }, [searchParams, setIsReportPanelOpen, setIsSavePlacePanelOpen, setIsAnalyticsOpen, setActivePanel, setIsPickingOnMap, setActivePoint]);
 
   // Keep the FAB beneath whichever mobile panel is currently expanded.
   const isPanelExpanded = (isReportPanelOpen && activePanel === "flood") || isAnalyticsOpen || isSavePlacePanelOpen || (isMobile && activePanel === "route");
@@ -117,6 +125,14 @@ function MapLayout() {
     setIsReportPanelOpen(true);
     setActivePanel("flood");
     setIsMenuOpen(false);
+  };
+
+  const handleCloseFloodReport = () => {
+    setIsReportPanelOpen(false);
+    setActivePanel(null);
+    if (searchParams.get("action") === "report") {
+      router.replace("/map", { scroll: false });
+    }
   };
 
   const handleSelectSavePlace = () => {
@@ -203,8 +219,8 @@ function MapLayout() {
       {!pathname.startsWith('/admin') && pathname !== "/analytics" && (
         <>
           <FloodReportPanel
-            isOpen={isMobile ? isReportPanelOpen : true}
-            onClose={() => setIsReportPanelOpen(false)}
+            isOpen={isMobile ? (isReportPanelOpen && activePanel === "flood") : true}
+            onClose={handleCloseFloodReport}
           />
           <RoutePanel />
         </>
