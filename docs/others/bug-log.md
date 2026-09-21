@@ -1,9 +1,47 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 22, 2026, 1:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 22, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-056] Mobile Map Panels Rendered Incorrectly from Feed Navigation and Allowed Re-Opening of Dismissed Report Panels
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 22, 2026
+- **Affected Area**: Mobile Navigation / Global Map Panels / Saved Places / Flood Reporting
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+On mobile/small screens:
+1. When navigating from the Community Feed drawer menu by tapping "Add a Place" (`/map?panel=saveplace&tab=add`), the Flood Report panel opened instead of (or rendered directly over) the Save Place panel.
+2. After submitting a flood report or sliding down/dismissing the report panel on mobile and navigating to another view, returning to the map page caused the Flood Report panel to re-open automatically.
+
+#### 2. Root Cause Analysis (RCA)
+
+- **Panel Mutual Exclusivity**: `setIsSavePlacePanelOpen(true)` in `MapContext.tsx` closed Analytics, but failed to call `setIsReportPanelOpenState(false)` and did not set `activePanelState("save_place")`. Because `FloodReportPanel` was rendered after `SavePlacePanel` in `GlobalMap.tsx` with identical fixed positioning and `z-40`, the flood report panel completely occluded the save place panel.
+- **Persistent URL Query Parameters**: Navigating with `?action=report` was never sanitized upon closing or successfully submitting a report. When returning to the map, `searchParams.get("action") === "report"` re-triggered the `useEffect` in `GlobalMap.tsx`, opening the report panel repeatedly.
+- **Mobile Dismissal & Gesture Limitations**: In `Panel.tsx`, the header close button (`X`) was wrapped in `{!isMobile && ...}`, leaving mobile bottom-sheets with no dedicated close button. Additionally, `onDragEnd` required an excessive drag threshold (`offset.y > 60`) without velocity checking, causing quick swipe-down dismiss gestures to bounce back open instead of triggering `onClose()`.
+- **Client Media Query Mount Lag**: `useMediaQuery` initialized its boolean match state to `false`, causing temporary flash-evaluations of mobile components as desktop layouts during initial client hydration.
+
+#### 3. Solution & Architectural Strategy
+
+- Enforced strict mutual exclusivity in `MapContext.tsx`: opening Save Place now explicitly closes Flood Report and Analytics while switching `activePanel` to `"save_place"`.
+- Synchronized query parameter handling in `GlobalMap.tsx` and `SavePlacePanel.tsx` for `panel=saveplace`, and added URL query parameter cleanup via `router.replace('/map', { scroll: false })` whenever `action=report` or `panel=saveplace` panels are dismissed or submitted.
+- Bound mobile `FloodReportPanel` rendering strictly to `isOpen={isMobile ? (isReportPanelOpen && activePanel === "flood") : true}`.
+- Added a dedicated mobile header close button in `Panel.tsx` and enabled velocity-based drag dismissal (`offset.y > 60 || velocity.y > 250`).
+- Updated `useMediaQuery` to initialize synchronously from `window.matchMedia(query).matches` on the client.
+
+#### 4. Files Modified / What Changed
+
+- `frontend/src/features/map/MapContext.tsx`: Updated `setIsSavePlacePanelOpen` and `setIsReportPanelOpen` to guarantee mutual exclusivity and `activePanel` state transitions.
+- `frontend/src/features/map/GlobalMap.tsx`: Handled `panel=saveplace`, cleaned up `action=report` on close, and restricted mobile `FloodReportPanel` `isOpen` to `activePanel === "flood"`.
+- `frontend/src/features/places/SavePlacePanel.tsx`: Connected `setActivePanel` state and cleaned `panel=saveplace` URL search param on panel close.
+- `frontend/src/shared/ui/layout/Panel.tsx`: Added mobile close (`X`) button and velocity-aware swipe-down dismissal.
+- `frontend/src/hooks/useMediaQuery.ts`: Synchronized initial match state on client and added standard media query change listeners.
 
 ---
 

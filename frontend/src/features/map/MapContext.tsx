@@ -178,8 +178,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const setIsSavePlacePanelOpen = useCallback((open: boolean) => {
     setIsSavePlacePanelOpenState(open);
     if (open) {
+      setIsReportPanelOpenState(false);
       setIsAnalyticsOpenState(false);
+      setActivePanelState("save_place");
       setLastOpenedLeftPanel("save_place");
+    } else {
+      setActivePanelState((prev) => (prev === "save_place" ? null : prev));
     }
   }, []);
   
@@ -323,6 +327,9 @@ export function MapProvider({ children }: { children: ReactNode }) {
       setIsAnalyticsOpenState(false);
       setIsAnalyticsCollapsedState(false);
       setIsSavePlacePanelOpenState(false);
+      setActivePanelState("flood");
+    } else {
+      setActivePanelState((prev) => (prev === "flood" ? null : prev));
     }
   }, []);
 

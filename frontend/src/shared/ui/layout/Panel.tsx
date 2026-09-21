@@ -143,6 +143,20 @@ export function Panel({
       </div>
       <div className="flex items-center gap-1 shrink-0 ml-2">
         {headerActions}
+        {isMobile && onClose && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="p-1 hover:bg-gray-100 active:bg-gray-200 rounded-md transition-colors text-gray-500"
+            title="Close panel"
+            aria-label="Close panel"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
         {!isMobile && (
           <>
             {showDesktopClose && onClose && (
@@ -203,13 +217,12 @@ export function Panel({
             dragConstraints={{ top: 0, bottom: 600 }}
             dragElastic={0.2}
             onDragEnd={(e, info) => {
-              if (info.offset.y > 60 && !isCollapsed) {
+              if ((info.offset.y > 60 || info.velocity.y > 250) && onClose) {
+                onClose();
+              } else if (info.offset.y > 60 && !isCollapsed) {
                 onCollapseToggle();
               } else if (info.offset.y < -60 && isCollapsed) {
                 onCollapseToggle();
-              }
-              if (info.offset.y > 60 && onClose) {
-                onClose();
               }
             }}
             initial={{ y: "100%" }}
