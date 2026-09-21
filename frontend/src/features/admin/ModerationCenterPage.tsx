@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AlertTriangle, CloudRain, EyeOff, MessageSquare, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 import { Button, Card, CardContent, Skeleton, Tabs, useToast } from "@/shared/ui";
@@ -28,7 +29,8 @@ const reasonLabel: Record<string, string> = {
 export default function ModerationCenterPage() {
   const queryClient = useQueryClient();
   const toast = useToast();
-  const [activeTab, setActiveTab] = useState<"community" | "flood">("community");
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState<"community" | "flood">(() => searchParams.get("tab") === "flood" ? "flood" : "community");
   const reports = useQuery({
     queryKey: ["moderation-reports"],
     queryFn: () => apiClient.get<Report[]>("/admin/moderation/reports"),
@@ -124,6 +126,6 @@ export default function ModerationCenterPage() {
       </Card>
     ))}
     </>}
-    {activeTab === "flood" && <FloodModerationQueue />}
+    {activeTab === "flood" && <FloodModerationQueue initialStatus={searchParams.get("status") === "rejected" ? "rejected" : "all"} />}
   </div>;
 }

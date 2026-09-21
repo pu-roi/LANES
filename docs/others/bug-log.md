@@ -1,9 +1,64 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 21, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-054] Site Visitor Counter Reported Page Loads Rather Than Reliable Visitors
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Landing Page / Admin Dashboard Analytics
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The landing-page visitor number was a single mutable counter. It trusted a boolean browser flag, had no daily trend, could not deduplicate signed-in users across devices, and offered no distinction between a legitimate visible browser and a known automated client.
+
+#### 2. Root Cause Analysis (RCA)
+
+`visitor_counts` stored only an accumulated integer. The browser set its local “visited” flag before knowing whether the counter request succeeded, while the server had no pseudonymous identifier or time dimension with which to deduplicate activity.
+
+#### 3. Solution & Architectural Strategy
+
+Added first-party daily visitor measurement. The browser creates one UUID in local storage only after it becomes visible; FastAPI immediately HMAC-hashes it and stores only the hash, date, timestamps, and an optional account reference. Aggregate reads count an account once across browsers when known, otherwise a browser hash once. Known bot user agents are rejected and rate limiting protects the intake endpoint. No IP address, location, browser fingerprint, or raw UUID is persisted.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/models/audit.py`, `services/visitor_analytics_service.py`, and migration `c9f3e7a6b210`: introduced indexed, daily pseudonymous visitor records and aggregate queries.
+- `backend/app/api/v1/endpoints/public.py`, `admin.py`, and typed visitor schemas: added public recording/read behavior and a protected visitor-trend endpoint.
+- `frontend/src/features/landing/HomeStats.tsx`, `features/admin/DashboardPage.tsx`, and `features/admin/adminApi.ts`: use the new tracker and show a responsive 30-day administrator chart.
+- `backend/tests/test_visitor_analytics.py`, `test_visitor_analytics_authorization.py`: cover identifier hashing, bot filtering, and route authorization.
+
+---
+
+### [BUG-053] Flood History Workspace Drifted from the Admin Visual System
+- **Status**: Resolved
+- **Severity**: Medium
+- **Date Reported / Resolved**: September 21, 2026
+- **Affected Area**: Admin Panel / Flood History & Analytics
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Flood History & Analytics used raw selects, inputs, native date fields, and an independently styled mobile switcher. Its cards and chart typography were noticeably larger than the Admin Dashboard, and non-severity charts introduced conflicting teal and indigo accents. The first shared-date-picker pass also placed visible labels above only the two date fields, causing those controls to drop below the rest of the desktop filter row.
+
+#### 2. Root Cause Analysis (RCA)
+
+The Phase 33 workspace was delivered incrementally around its protected data behavior without a final pass against the shared UI library and the Admin Dashboard graph treatment.
+
+#### 3. Solution & Architectural Strategy
+
+Replaced the filter and view controls with shared components, exposed an accessible label on the reusable shared `Select`, and made chart cards more compact. Non-severity charts now share the dashboard's primary blue, subtle dashed grids, and dark tooltips; severity colors remain semantic. The shared `DatePicker` now accepts an in-field empty display and accessible label, so the From/To controls are identifiable without increasing their grid-row height.
+
+#### 4. Files Modified / What Changed
+
+- `frontend/src/features/flood-history/FloodEventAnalytics.tsx`, `FloodEventRecords.tsx`, `FloodEventVisualizations.tsx`: standardized controls, compacted the dashboard, and aligned visual tokens.
+- `frontend/src/shared/ui/forms/Select.tsx`, `DatePicker.tsx`: added optional accessible labels; DatePicker also supports compact in-field empty text for aligned date-range controls.
+- `frontend/tests/flood-history.spec.ts`: updated the records-filter smoke test for the shared-select interaction.
 
 ---
 

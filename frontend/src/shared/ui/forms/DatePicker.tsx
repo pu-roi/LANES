@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 
 export interface DatePickerProps {
   label?: string;
+  emptyDisplay?: string;
+  ariaLabel?: string;
   value: string; // YYYY-MM-DD format expected
   onChange: (e: { target: { value: string } }) => void;
   className?: string;
@@ -27,7 +29,11 @@ const MONTH_ABBRS = [
 ];
 
 // Custom date input — renders typed digits dark, placeholder chars light gray
-function DateDisplay({ digits }: { digits: string }) {
+function DateDisplay({ digits, emptyDisplay }: { digits: string; emptyDisplay?: string }) {
+  if (!digits && emptyDisplay) {
+    return <div className="flex items-center text-sm select-none"><span className="text-gray-400">{emptyDisplay}</span></div>;
+  }
+
   const ph = (char: string, slot: number) => (
     <span key={`ph-${slot}`} className="text-gray-400">{char}</span>
   );
@@ -68,7 +74,7 @@ function getCursorValue(digits: string): string {
 }
 
 export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
-  ({ label, value, onChange, className, disabled, required, labelClassName, align = "left" }, ref) => {
+  ({ label, emptyDisplay, ariaLabel, value, onChange, className, disabled, required, labelClassName, align = "left" }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const hiddenInputRef = useRef<HTMLInputElement>(null);
@@ -303,7 +309,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
         >
           <div className="flex-1 relative">
             {/* Display layer — colored digits + gray placeholders */}
-            <DateDisplay digits={digits} />
+            <DateDisplay digits={digits} emptyDisplay={emptyDisplay} />
             {/* Overlay input — transparent text, native dark caret */}
             <input
               ref={hiddenInputRef}
@@ -314,6 +320,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
               onKeyDown={handleKeyDown}
               onFocus={() => setIsFocused(true)}
               onBlur={() => { if (!isOpen) setIsFocused(false); }}
+              aria-label={ariaLabel || label || emptyDisplay}
               disabled={disabled}
               style={{
                 position: 'absolute',

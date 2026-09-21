@@ -10,7 +10,7 @@ from app.models.report import (
     ReportSource, ReportSeverity, ReportStatus, FloodEventStatus,
     FloodEventLocationType, ReportModerationOutcomeType, ReportRejectionReason,
 )
-from app.models.audit import AuditLog
+from app.models.audit import AuditLog, VisitorDailyVisit
 from app.models.setting import SystemSetting
 from app.models.interaction import PostInteraction, CommentInteraction
 from app.models.comment import Comment

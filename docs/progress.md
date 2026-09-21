@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -50,6 +50,9 @@
 
 ### Capstone Phase 33: Flood Event Lifecycle Foundation & Historical Tracking (🟢 COMPLETED)
 
+- [x] **Privacy-preserving first-party visitor analytics** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): replaced the mutable landing-page counter with daily HMAC-pseudonymous browser activity, optional account-level aggregate deduplication, known-bot filtering, and rate limiting. The Admin Dashboard now has a compact responsive 30-day unique-visitor graph and a Today card; it never stores IP addresses, raw browser IDs, fingerprints, or location data.
+- [x] **Today’s Flood Report rejection summary** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): exposed the existing admin-authorized `total_rejected_today` metric as a responsive Dashboard card. Its action opens Flood Report Moderation with the Rejected filter selected, keeping historical moderation review in its dedicated workspace.
+- [x] **Flood History visual-system consistency** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): aligned the planning dashboard and event-record filter treatment with the admin dashboard's compact blue-led graph language; replaced raw controls with shared `Input`, `Select`, `DatePicker`, `Button`, `Card`, and `Tabs` components; tightened chart/card density; and retained the desktop map/list and mobile switcher behavior.
 - [x] **Phase 33.7 safety and verification** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): delivered Playwright desktop/mobile smoke-test infrastructure without checked-in credentials, lifecycle and protected-route authorization coverage, a repeatable release script, and a static privacy/security review. The verified migration and release checklist are recorded in `docs/flood-history-verification.md`.
 - [x] **Phase 33.6 event-based planning analytics and exports** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added admin-only distinct-Flood-Event aggregation for recurrence, roads, peak severity, official durations, verified-event/report time series, UTC verification timing, and separate approved-report volume; delivered filtered CSV/JSON planning exports that deliberately omit reporter identity, raw evidence, exact report geometry, and media. Recharts now presents a responsive trend/evidence combination chart, severity doughnut, duration columns, recurrence rankings, and an accessible timing heatmap; the historical map legend explains peak severity in text and marks selected events with an outline rather than relying on color alone.
 - [x] **Phase 33.5 Flood Event Records workspace** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): delivered a separate historical `BaseMap` source/layer set, synchronized map/list selection and map focus, server-backed date/place/severity/status filters, an accessible severity legend, mobile map/list switcher with safe-area spacing, and in-context event/report evidence views. Historical geometry remains isolated from active routing zones.

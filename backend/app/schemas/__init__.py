@@ -38,3 +38,7 @@ from app.schemas.flood_event import (
     FloodEventLocationResponse, FloodEventResponse, FloodEventTimelineEntryResponse,
     FloodReportModerationOutcomeResponse,
 )
+from app.schemas.visitor import (
+    AdminVisitorAnalyticsResponse, PublicStatsResponse, VisitorActivityRequest,
+    VisitorActivityResponse, VisitorTrendDay,
+)
