@@ -20,10 +20,14 @@ def clear_and_reseed_db():
         
         # Delete in topological / foreign-key order
         tables_to_delete = [
-            "flood_avoidance_zones",
+            "flood_report_moderation_outcomes",
             "flood_report_locations",
             "flood_report_surveys",
             "flood_reports",
+            "flood_avoidance_zones",
+            "flood_event_timeline_entries",
+            "flood_event_locations",
+            "flood_events",
             "post_interactions",
             "comment_interactions",
             "comments",
