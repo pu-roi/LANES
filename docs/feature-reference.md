@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 21, 2026, 2:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -284,6 +284,7 @@ This document serves as the central technical reference for all currently implem
     3. **Comparative Metric Cards:** Computes average severity indices, verification rates, and hourly incident frequency for DRRMO operational debriefs.
     4. **Commuter & Admin Perspectives:** Commuters access localized hazard summaries on the map, while administrators access comprehensive spatial heatmaps and drill-down metrics in the dedicated Analytics portal.
     5. **Verified-event counting contract:** Flood History & Analytics uses distinct verified Flood Events for incident totals; supporting reports remain a separate evidence/confidence metric and cannot inflate recurrence rankings. Its planning dashboard shows recurrence, roads, peak verified severity, official duration, and verification time-series data from admin-only server aggregations.
+    6. **Protected history and planning boundary:** The dedicated `/admin/flood-history` workspace keeps historical MapLibre event footprints separate from live routing zones. Filtered CSV/JSON planning exports contain event-level data only; raw report text, reporter identity, exact report geometry, and media remain in the authorized event-detail view.
 *   **Access & Roles:** Commuters (public summary); Administrators & DRRM officers (full spatial analytics dashboard).
 *   **Related Components:**
     *   **Frontend:** [AnalyticsDashboard.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/AnalyticsDashboard.tsx), [AnalyticsPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/analytics/AnalyticsPanel.tsx), [MapCanvas.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/map/MapCanvas.tsx), [LiveMapPage.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/admin/LiveMapPage.tsx), [FloodEventAnalytics.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/FloodEventAnalytics.tsx), [FloodEventVisualizations.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/FloodEventVisualizations.tsx), and [FloodEventRecords.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/FloodEventRecords.tsx) with its isolated `HistoricalEventsMap` layer.

@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 2:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -121,12 +121,14 @@ Official admin-created Flood Zone ───────────────�
 - [x] Permit authorized CSV/JSON export of filtered event records and aggregate analytics for city planning/offline reporting. The default planning exports exclude reporter identity, raw report text, exact report geometry, and media; full evidence remains only in the protected event-detail view. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Define labels/tooltips that distinguish **Flood Events**, **supporting reports**, **active zones**, **peak verified severity**, and **official duration** so administrators do not mistake evidence count for incident count. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
-##### Phase 33.7 — Safety, Data Quality, and Verification
-- [ ] Write backend tests for: event creation from official zones; event creation/linking from approved reports; related supporting reports; peak-severity calculation; multi-road/multi-barangay relationships; final-zone deactivation ending an event; new verified flooding creating a new event; rejection-reason validation; analytics counting rules; and authorization/IDOR protection.
-- [ ] Write UI tests/manual test scripts for the rejection modal, merge/link language, Moderation Center → Spatial Operations handoff, records filters, synchronized map/list selection, event detail report **View** action, desktop layout, and mobile layout.
-- [ ] Test Alembic migrations cleanly with `alembic upgrade head` and document all model/schema migration effects before release.
-- [ ] Perform a privacy/security review: no public access to Flood History & Analytics; no reporter/private evidence leakage in aggregate analytics or exports; Audit Trail remains append-only; no swallowed server or UI errors.
-- [ ] Update system documentation, database design plan, feature reference when warranted, progress tracker after actual delivery, and architectural decisions only for confirmed major architecture changes.
+##### Phase 33.7 — Safety, Data Quality, and Verification (🟢 COMPLETED)
+  - [x] Write backend tests for: event creation from official zones; event creation/linking from approved reports; related supporting reports; peak-severity calculation; multi-road/multi-barangay relationships; final-zone deactivation ending an event; new verified flooding creating a new event; rejection-reason validation; analytics counting rules; and authorization/IDOR protection.
+  - [x] Write UI tests/manual test scripts for the rejection modal, merge/link language, Moderation Center → Spatial Operations handoff, records filters, synchronized map/list selection, event detail report **View** action, desktop layout, and mobile layout.
+  - [x] Test Alembic migrations cleanly with `alembic upgrade head` and document all model/schema migration effects before release.
+  - [x] Perform a privacy/security review: no public access to Flood History & Analytics; no reporter/private evidence leakage in aggregate analytics or exports; Audit Trail remains append-only; no swallowed server or UI errors.
+  - [x] Update system documentation, database design plan, feature reference when warranted, progress tracker after actual delivery, and architectural decisions only for confirmed major architecture changes.
+
+> **Delivery status ([@roicambe](https://github.com/roicambe) (Roi Cambe), September 21, 2026):** Phase 33.7 is complete: lifecycle and authorization coverage, the desktop/mobile verification script, privacy/security review, migration documentation, and deployment validation are recorded for release.
 
 #### 4. Explicit Non-Goals for This Phase
 
@@ -139,12 +141,12 @@ Official admin-created Flood Zone ───────────────�
 
 #### 5. Delivery Gates and Definition of Done
 
-- [ ] **Product gate:** The developer explicitly approves the proposed schema/migration design before data models change.
-- [ ] **Operational gate:** An admin can create/verify a live zone, observe its associated Flood Event, deactivate the last active zone, and find the ended event in Flood History & Analytics—not Archive Center.
-- [ ] **Integrity gate:** A true supporting report is linked to the event without creating a second incident; an invalid report is rejected with a structured reason and remains in staff moderation history only.
-- [ ] **Analytics gate:** Citywide totals use distinct Flood Events; barangay/road recurrence handles multi-location events correctly; report volume is visibly separate from event count.
-- [ ] **UX gate:** Spatial Operations, Moderation Center, Archive Center, Audit Trail, and Flood History & Analytics each have one clear purpose with no duplicate moderation actions; desktop and mobile flows are verified.
-- [ ] **Quality gate:** Migration, backend tests, frontend checks, security/authorization review, and documentation synchronization are complete before marking the phase delivered.
+- [x] **Product gate:** The developer explicitly approves the proposed schema/migration design before data models change.
+- [x] **Operational gate:** An admin can create/verify a live zone, observe its associated Flood Event, deactivate the last active zone, and find the ended event in Flood History & Analytics—not Archive Center.
+- [x] **Integrity gate:** A true supporting report is linked to the event without creating a second incident; an invalid report is rejected with a structured reason and remains in staff moderation history only.
+- [x] **Analytics gate:** Citywide totals use distinct Flood Events; barangay/road recurrence handles multi-location events correctly; report volume is visibly separate from event count.
+- [x] **UX gate:** Spatial Operations, Moderation Center, Archive Center, Audit Trail, and Flood History & Analytics each have one clear purpose with no duplicate moderation actions; desktop and mobile flows are verified.
+- [x] **Quality gate:** Migration, backend tests, frontend checks, security/authorization review, and documentation synchronization are complete before marking the phase delivered.
 
 ### Capstone Phase 34: 30-Day Archive Retention Lifecycle, Auto-Purge Worker, Delete Controls & User Self-Deletion (🟢 COMPLETED)
 > **Focus:** Automatic 30-day retention countdown and background purge worker (`retention_service.py`), explicit user account restoration (`POST /admin/users/{id}/restore`) and permanent purge (`DELETE /admin/users/{id}/permanent`), manual on-demand purge trigger (`POST /admin/archive/purge-expired`), public user self-deletion Danger Zone modal (`DELETE /users/me`) with 30-day login grace period, and unique constraint conflict mitigation ([`BUG-050`]). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 21, 2026, 2:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 2:53 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -21,6 +21,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Asynchronous state management, caching, background synchronization, and automatic revalidation (configured with staleTime: 0 for instant revalidation on mount/navigation).
 * **Data Visualization:** **Recharts & react-is**
   * *Role:* React-native, responsive SVG charts for the protected Flood History & Analytics dashboard, including trend/evidence combination charts, severity doughnuts, duration distributions, and recurrence rankings.
+* **End-to-End Testing:** **Playwright**
+  * *Role:* Credential-free, configurable Chromium smoke coverage for protected admin flows at desktop and mobile viewports. Authenticated browser state is supplied locally at test time and never committed.
 * **Real-time Event Signaling:** **Server-Sent Events (SSE)**  
   * *Role:* Maintaining a unidirectional persistent connection to the backend to receive instant cache invalidation signals and trigger reactive refetching. More mobile-friendly than WebSockets.
 * **Animations & Micro-interactions:** **Framer Motion**  

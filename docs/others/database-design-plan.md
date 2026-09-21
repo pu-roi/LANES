@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -330,6 +330,8 @@ erDiagram
 `flood_events` is the permanent verified incident record (`active` or `ended`) with community-report, official-verification, and official-end timestamps plus the peak verified severity/depth. `flood_event_locations` stores normalized road, barangay, and city rows with a unique `(event_id, location_type, normalized_name)` key and an optional SRID-4326 GIST-indexed geometry.
 
 `flood_report_moderation_outcomes` is append-only staff outcome history. Rejections require a structured reason, and `other` requires an internal note. `flood_event_timeline_entries` is the readable event chronology with snapshot JSON; it is intentionally separate from `audit_logs`, which retains technical actor/IP accountability.
+
+**Historical analytics contract:** planning analytics query `flood_events` as the primary aggregation relation. `flood_event_locations` contributes each normalized road or barangay at most once per event; approved `flood_reports` are counted only as a separately named corroboration measure. No analytics table duplicates raw evidence, reporter identity, media, or exact report geometry.
 
 ### Table I: `audit_logs`
 **Description:** An append-only security log recording administrative actions.
