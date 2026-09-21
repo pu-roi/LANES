@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -11,7 +11,9 @@
 - [x] **First-Party Visitor Analytics Integrity** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - [x] Replaced the old page-load counter with a 3NF daily-visitor table holding only an HMAC of a browser-generated UUID, UTC day/timestamps, and an optional account reference.
   - [x] Count authenticated accounts once across browsers in aggregate reads; otherwise count an anonymous browser once per day. Reject known bot user agents and rate-limit recording without using IP addresses or browser fingerprinting.
-  - [x] Added a protected 30-day visitor trend and responsive Admin Dashboard card/graph. The landing page records only after it is visible and surfaces tracking failures through the existing toast system.
+  - [x] Added a protected 30-day visitor trend and responsive Admin Dashboard card/graph. The landing page records only after it is visible and degrades silently on telemetry errors without intrusive visitor toasts.
+  - [x] Unified Admin Dashboard bento grid: aligned System Health Check and Quick Administration Tasks beside Top 5 Most Flooded Barangays, eliminating dead space and unifying the 3-column layout.
+  - [x] Resolved visitor tracking 500 error by adding `response: Response` to slowapi-rate-limited public endpoints and preserved CORS headers in backend unhandled exception handlers.
 
 - [x] **Capstone Phase 35 — Admin Profile Management, Self-Healing Profile Provisioning & Secure Password Updates** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - [x] Fixed `404 Profile not found` for admin-created accounts by automatically provisioning a linked `models.Profile` on user creation (`POST /api/v1/admin/users`) ([`BUG-051`]).

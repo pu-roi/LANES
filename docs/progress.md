@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -50,6 +50,7 @@
 
 ### Capstone Phase 33: Flood Event Lifecycle Foundation & Historical Tracking (🟢 COMPLETED)
 
+- [x] **Admin Dashboard bento grid alignment** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): restructured the overview bento layout so that System Health Check and Quick Administration Tasks sit beside Top 5 Most Flooded Barangays in Row 2, completely eliminating dead whitespace on desktop and establishing a balanced 2x3 grid across all breakpoints.
 - [x] **Privacy-preserving first-party visitor analytics** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): replaced the mutable landing-page counter with daily HMAC-pseudonymous browser activity, optional account-level aggregate deduplication, known-bot filtering, and rate limiting. The Admin Dashboard now has a compact responsive 30-day unique-visitor graph and a Today card; it never stores IP addresses, raw browser IDs, fingerprints, or location data.
 - [x] **Today’s Flood Report rejection summary** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): exposed the existing admin-authorized `total_rejected_today` metric as a responsive Dashboard card. Its action opens Flood Report Moderation with the Rejected filter selected, keeping historical moderation review in its dedicated workspace.
 - [x] **Flood History visual-system consistency** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): aligned the planning dashboard and event-record filter treatment with the admin dashboard's compact blue-led graph language; replaced raw controls with shared `Input`, `Select`, `DatePicker`, `Button`, `Card`, and `Tabs` components; tightened chart/card density; and retained the desktop map/list and mobile switcher behavior.
