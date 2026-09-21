@@ -18,8 +18,20 @@ def clear_and_reseed_db():
     try:
         print("Connecting to database and clearing existing data...", flush=True)
         
+        # Unlink circular / self references first
+        try:
+            db.execute(text("UPDATE flood_reports SET zone_id = NULL, event_id = NULL;"))
+            db.execute(text("UPDATE flood_avoidance_zones SET event_id = NULL;"))
+            db.flush()
+        except Exception:
+            pass
+
         # Delete in topological / foreign-key order
         tables_to_delete = [
+            "post_interactions",
+            "comment_interactions",
+            "comments",
+            "community_posts",
             "flood_report_moderation_outcomes",
             "flood_report_locations",
             "flood_report_surveys",
@@ -28,10 +40,6 @@ def clear_and_reseed_db():
             "flood_event_timeline_entries",
             "flood_event_locations",
             "flood_events",
-            "post_interactions",
-            "comment_interactions",
-            "comments",
-            "community_posts",
             "saved_places",
             "notifications",
             "addresses",
