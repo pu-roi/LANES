@@ -1,8 +1,11 @@
+import csv
+import io
 import json
 import logging
 from typing import List, Any, Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func, or_
 
@@ -12,13 +15,16 @@ from app.core.database import get_db
 from app.models.post import CommunityPost, CommunityPostReport
 from app.models.notification import Notification, NotificationType
 from app.services.flood_event_service import (
+    build_flood_event_history_query,
     create_verified_event_with_zone,
     deactivate_zone_and_end_event_if_final,
+    get_flood_event_planning_analytics,
     get_event_metrics,
     initialize_verified_event_for_zone,
     link_supporting_report,
     record_zone_update,
     reject_report as reject_report_with_outcome,
+    serialize_flood_event_planning_records,
 )
 
 router = APIRouter()
@@ -310,52 +316,21 @@ def list_flood_event_history(
     """Return filtered, admin-only historical records with isolated event map data."""
     if limit < 1 or limit > 250:
         raise HTTPException(status_code=422, detail="Limit must be between 1 and 250")
-    if status_filter != "all":
-        try:
-            status_value = models.FloodEventStatus(status_filter)
-        except ValueError as exc:
-            raise HTTPException(status_code=422, detail="Invalid Flood Event status") from exc
-    else:
-        status_value = None
-    if severity:
-        try:
-            severity_value = models.ReportSeverity(severity)
-        except ValueError as exc:
-            raise HTTPException(status_code=422, detail="Invalid Flood Event severity") from exc
-    else:
-        severity_value = None
+    try:
+        query = build_flood_event_history_query(
+            db,
+            status_filter=status_filter,
+            severity=severity,
+            date_from=date_from,
+            date_to=date_to,
+            barangay=barangay,
+            road=road,
+            search=search,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-    query = db.query(models.FloodEvent)
-    if status_value:
-        query = query.filter(models.FloodEvent.status == status_value)
-    if severity_value:
-        query = query.filter(models.FloodEvent.peak_severity == severity_value)
-    if date_from:
-        query = query.filter(models.FloodEvent.verified_at >= date_from)
-    if date_to:
-        query = query.filter(models.FloodEvent.verified_at <= date_to)
-    if barangay or road or search:
-        query = query.join(models.FloodEventLocation)
-        location_filters = []
-        if barangay:
-            location_filters.append(
-                (models.FloodEventLocation.location_type == models.FloodEventLocationType.BARANGAY)
-                & models.FloodEventLocation.display_name.ilike(f"%{barangay.strip()}%")
-            )
-        if road:
-            location_filters.append(
-                (models.FloodEventLocation.location_type == models.FloodEventLocationType.ROAD)
-                & models.FloodEventLocation.display_name.ilike(f"%{road.strip()}%")
-            )
-        if search:
-            pattern = f"%{search.strip()}%"
-            location_filters.extend([
-                models.FloodEventLocation.display_name.ilike(pattern),
-                models.FloodEventLocation.normalized_name.ilike(pattern),
-            ])
-        query = query.filter(or_(*location_filters))
-
-    events = query.order_by(models.FloodEvent.verified_at.desc()).distinct().limit(limit).all()
+    events = query.order_by(models.FloodEvent.verified_at.desc()).limit(limit).all()
     records: list[dict[str, Any]] = []
     for event in events:
         locations = db.query(models.FloodEventLocation).filter(
@@ -378,6 +353,126 @@ def list_flood_event_history(
             ],
         })
     return records
+
+
+@router.get("/flood-events/analytics")
+def get_flood_event_analytics(
+    status_filter: str = "all",
+    severity: Optional[str] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    barangay: Optional[str] = None,
+    road: Optional[str] = None,
+    search: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> dict[str, Any]:
+    """Return filtered city-planning analytics where one Flood Event counts once."""
+    try:
+        events = build_flood_event_history_query(
+            db,
+            status_filter=status_filter,
+            severity=severity,
+            date_from=date_from,
+            date_to=date_to,
+            barangay=barangay,
+            road=road,
+            search=search,
+        ).order_by(models.FloodEvent.verified_at.asc()).all()
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return get_flood_event_planning_analytics(db, events)
+
+
+@router.get("/flood-events/export")
+def export_flood_event_planning_data(
+    export_type: str = "records",
+    export_format: str = "csv",
+    status_filter: str = "all",
+    severity: Optional[str] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    barangay: Optional[str] = None,
+    road: Optional[str] = None,
+    search: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> Response:
+    """Export safe planning data only; raw reports and reporter identity stay internal."""
+    if export_type not in {"records", "analytics"}:
+        raise HTTPException(status_code=422, detail="Export type must be records or analytics")
+    if export_format not in {"csv", "json"}:
+        raise HTTPException(status_code=422, detail="Export format must be csv or json")
+    try:
+        events = build_flood_event_history_query(
+            db,
+            status_filter=status_filter,
+            severity=severity,
+            date_from=date_from,
+            date_to=date_to,
+            barangay=barangay,
+            road=road,
+            search=search,
+        ).order_by(models.FloodEvent.verified_at.desc()).all()
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    payload: Any = (
+        serialize_flood_event_planning_records(db, events)
+        if export_type == "records"
+        else get_flood_event_planning_analytics(db, events)
+    )
+    filename = f"lanes_flood_event_{export_type}.{export_format}"
+    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+    if export_format == "json":
+        return Response(
+            content=json.dumps(payload, default=str, indent=2),
+            media_type="application/json",
+            headers=headers,
+        )
+
+    output = io.StringIO()
+
+    def safe_csv_cell(value: Any) -> Any:
+        """Prevent spreadsheet applications from interpreting exported text as a formula."""
+        if isinstance(value, str) and value.lstrip().startswith(("=", "+", "-", "@")):
+            return f"'{value}"
+        return value
+
+    if export_type == "records":
+        rows: list[dict[str, Any]] = payload
+        fieldnames = list(rows[0].keys()) if rows else [
+            "event_id", "status", "first_reported_at", "verified_at", "ended_at",
+            "peak_verified_severity", "peak_depth_label", "official_duration_minutes",
+            "approved_supporting_report_count", "barangays", "roads", "cities",
+        ]
+        writer = csv.DictWriter(output, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows([
+            {fieldname: safe_csv_cell(row.get(fieldname)) for fieldname in fieldnames}
+            for row in rows
+        ])
+    else:
+        # CSV analytics is intentionally a compact metric/value table, while
+        # JSON retains the full time-series and distribution structure.
+        writer = csv.writer(output)
+        writer.writerow(["metric", "value"])
+        for metric in ("total_events", "ended_events", "active_events"):
+            writer.writerow([safe_csv_cell(metric), safe_csv_cell(payload[metric])])
+        writer.writerow(["approved_supporting_report_count", safe_csv_cell(payload["supporting_report_volume"]["approved_report_count"])])
+        writer.writerow(["average_reports_per_event", safe_csv_cell(payload["supporting_report_volume"]["average_per_event"])])
+        writer.writerow(["average_official_duration_minutes", safe_csv_cell(payload["duration"]["average_minutes"])])
+        for entry in payload["peak_severity_distribution"]:
+            writer.writerow([f"peak_severity_{safe_csv_cell(entry['severity'])}", safe_csv_cell(entry["event_count"])])
+        for entry in payload["duration"]["distribution"]:
+            writer.writerow([f"duration_{safe_csv_cell(entry['bucket'])}", safe_csv_cell(entry["event_count"])])
+        for entry in payload["events_over_time"]:
+            writer.writerow([f"events_verified_{safe_csv_cell(entry['date'])}", safe_csv_cell(entry["event_count"])])
+        for entry in payload["recurring_barangays"]:
+            writer.writerow([f"recurring_barangay_{safe_csv_cell(entry['name'])}", safe_csv_cell(entry["event_count"])])
+        for entry in payload["frequently_affected_roads"]:
+            writer.writerow([f"frequently_affected_road_{safe_csv_cell(entry['name'])}", safe_csv_cell(entry["event_count"])])
+    return Response(content=output.getvalue(), media_type="text/csv", headers=headers)
 
 
 @router.get("/flood-events/{event_id}/history-detail")

@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 20, 2026, 11:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -393,3 +393,29 @@ The previous lifecycle could treat rejected reports and ended zones as recycle-b
 - [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — Protected moderation/event summary endpoints and lifecycle handoffs.
 - [`frontend/src/features/admin/ModerationCenterPage.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/ModerationCenterPage.tsx) — Shared tabbed moderation navigation.
 - [`frontend/src/features/admin/components/FloodModerationQueue.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/admin/components/FloodModerationQueue.tsx) — Filtered staff tracking surface.
+
+---
+
+## 20. Flood Event as the Sole Historical Analytics Unit and Export Boundary
+**Date:** September 2026
+**Decision:** Use one distinct verified Flood Event as the unit for historical planning analytics, recurrence, severity, duration, and event-time trends. Treat approved reports only as a separately labelled corroboration signal; expose original evidence solely through the authorized event-detail route, never in planning aggregates or default exports.
+
+**Context:**
+One flooding incident can generate several public reports and one or more temporary routing zones. Counting those operational and evidence records directly would multiply one real-world incident in city-planning charts. Conversely, an export containing raw reports, reporter identity, media, or precise report geometry would turn a staff planning tool into an unnecessary privacy exposure.
+
+**Reasoning:**
+1. **Analytical integrity:** Event ownership provides one stable historical identity regardless of how many reports support it or how many live-zone adjustments occur. Rejected and deleted reports are excluded, and normalized locations are counted once per event.
+2. **Operational separation:** Live avoidance zones remain the routing source of truth. Historical map layers are isolated from active routing layers, so selecting or filtering history cannot alter navigation behavior.
+3. **Privacy by default:** Analytics and CSV/JSON planning exports provide event-level dates, status, peak severity, duration, normalized places, and aggregate supporting-report counts only. Full source evidence remains available to authorized staff in context.
+4. **Comprehensible visual semantics:** The dashboard labels the combination chart's event and report series separately, uses a peak-severity doughnut, official-duration distribution, ranked recurrence views, and an accessible timing heatmap. These views answer distinct planning questions without treating color or evidence volume as incident frequency.
+
+**Consequences:**
+- `/admin/flood-history` is an admin-only planning and records workspace, not a public incident feed or an Archive Center substitute.
+- `build_flood_event_history_query` is shared by history, analytics, and export paths so filters resolve the same authorized event set.
+- New historical metrics must preserve the one-event-one-count contract and document any non-event confidence measure explicitly.
+
+**Files Modified:**
+- [`backend/app/services/flood_event_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/flood_event_service.py) — Shared event query, distinct-event planning aggregation, and privacy-safe event record serialization.
+- [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — Admin-protected analytics and CSV/JSON export endpoints.
+- [`frontend/src/features/flood-history/FloodEventAnalytics.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/FloodEventAnalytics.tsx) and [`FloodEventVisualizations.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/FloodEventVisualizations.tsx) — Responsive analytics, filter, export, and error-state presentation.
+- [`frontend/src/features/flood-history/HistoricalEventsMap.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/HistoricalEventsMap.tsx) — Historical-only event footprint layers and accessible severity/selection legend.

@@ -7,7 +7,8 @@
     "build": "dotenvx run -f .env.local -- next build --webpack",
     "start": "dotenvx run -f .env.local -- next start -H 0.0.0.0",
     "prod": "npm run build && npm start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
@@ -31,7 +32,9 @@
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.7.0",
     "react-imask": "^7.6.1",
+    "react-is": "19.2.4",
     "react-zoom-pan-pinch": "^4.0.3",
+    "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "terra-draw": "^1.32.3",
     "terra-draw-maplibre-gl-adapter": "^1.4.1",
@@ -40,6 +43,7 @@
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^2.21.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
