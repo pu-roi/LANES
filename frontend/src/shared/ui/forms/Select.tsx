@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect, forwardRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Check } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export interface SelectOption {
@@ -19,10 +18,11 @@ export interface SelectProps {
   error?: string;
   placeholder?: string;
   className?: string;
+  ariaLabel?: string;
 }
 
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
-  ({ options, value, onChange, label, error, placeholder, className = "" }, ref) => {
+  ({ options, value, onChange, label, error, placeholder, className = "", ariaLabel }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
@@ -79,6 +79,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label={ariaLabel || label}
             className={`
               w-full flex items-center justify-between rounded-lg border bg-white px-3 py-2 text-sm text-gray-900 
               shadow-sm outline-none transition-all duration-200

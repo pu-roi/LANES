@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getDashboardStats, getDashboardCharts } from "./adminApi";
-import { Card } from "@/shared/ui";
+import { getDashboardStats, getDashboardCharts, getVisitorAnalytics } from "./adminApi";
 import Link from "next/link";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { 
   Loader2, 
   AlertTriangle, 
@@ -19,12 +19,12 @@ import {
   TrendingUp,
   PieChart,
   BarChart4,
-  Clock
+  XCircle
 } from "lucide-react";
+import { Card, CardContent } from "@/shared/ui";
 
 export default function DashboardPage() {
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; date: string; count: number } | null>(null);
-  const [hoveredSlice, setHoveredSlice] = useState<{ severity: string; count: number; percentage: number } | null>(null);
   const [hoveredBar, setHoveredBar] = useState<number | null>(null);
   const [timelineFilter, setTimelineFilter] = useState<7 | 30>(7);
 
@@ -40,8 +40,19 @@ export default function DashboardPage() {
     refetchInterval: 30000, // auto-refresh charts every 30s
   });
 
-  const isLoading = isStatsLoading || isChartsLoading;
-  const error = statsError || chartsError;
+  const { data: visitorAnalytics, isLoading: isVisitorsLoading, error: visitorsError } = useQuery({
+    queryKey: ["adminVisitorAnalytics"],
+    queryFn: () => getVisitorAnalytics(),
+    refetchInterval: 30000,
+  });
+
+  const visitorTrend = useMemo(() => visitorAnalytics?.daily_unique_visitors.map((entry) => ({
+    ...entry,
+    label: new Date(`${entry.date}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" }),
+  })) ?? [], [visitorAnalytics]);
+
+  const isLoading = isStatsLoading || isChartsLoading || isVisitorsLoading;
+  const error = statsError || chartsError || visitorsError;
 
   if (isLoading) {
     return (
@@ -70,7 +81,7 @@ export default function DashboardPage() {
       value: stats?.total_pending_reports ?? 0,
       description: "Needs admin review",
       icon: AlertTriangle,
-      color: "amber",
+      iconClassName: "bg-amber-50 text-amber-600",
       href: "/admin/map?tab=pending",
       actionText: "Review queue"
     },
@@ -79,7 +90,7 @@ export default function DashboardPage() {
       value: stats?.total_active_zones ?? 0,
       description: "Avoidance zones active",
       icon: Map,
-      color: "blue",
+      iconClassName: "bg-blue-50 text-blue-600",
       href: "/admin/map?tab=zones",
       actionText: "Manage zones"
     },
@@ -88,18 +99,36 @@ export default function DashboardPage() {
       value: stats?.total_approved_today ?? 0,
       description: "Routes adjusted today",
       icon: CalendarCheck,
-      color: "emerald",
+      iconClassName: "bg-emerald-50 text-emerald-600",
       href: "/admin/map?tab=pending",
       actionText: "View approved"
+    },
+    {
+      title: "Today's Rejections",
+      value: stats?.total_rejected_today ?? 0,
+      description: "Flood reports resolved today",
+      icon: XCircle,
+      iconClassName: "bg-rose-50 text-rose-600",
+      href: "/admin/moderation?tab=flood&status=rejected",
+      actionText: "View rejections"
     },
     {
       title: "Total User Accounts",
       value: stats?.total_users ?? 0,
       description: "Registered in system",
       icon: Users,
-      color: "indigo",
+      iconClassName: "bg-indigo-50 text-indigo-600",
       href: "/admin/users",
       actionText: "Manage users"
+    },
+    {
+      title: "Today's Visitors",
+      value: visitorAnalytics?.visitors_today ?? 0,
+      description: "Unique browsers or accounts",
+      icon: Users,
+      iconClassName: "bg-sky-50 text-sky-600",
+      href: "#visitor-analytics",
+      actionText: "View trend"
     }
   ];
 
@@ -114,7 +143,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Cards Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {metricCards.map((card) => {
           const Icon = card.icon;
           return (
@@ -125,7 +154,7 @@ export default function DashboardPage() {
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
                   <span className="text-sm font-semibold text-gray-400">{card.title}</span>
-                  <div className={`p-2.5 rounded-xl bg-${card.color}-50 text-${card.color}-600`}>
+                  <div className={`p-2.5 rounded-xl ${card.iconClassName}`}>
                     <Icon className="w-5 h-5" />
                   </div>
                 </div>
@@ -150,7 +179,44 @@ export default function DashboardPage() {
 
       {/* Charts Grid */}
       {chartsData && (
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {visitorAnalytics && (
+            <Card id="visitor-analytics" className="shadow-sm md:col-span-2 lg:col-span-1">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                      <Users className="h-4 w-4 text-blue-600" />
+                      Unique Visitors
+                    </h2>
+                    <p className="mt-1 text-xs text-slate-500">Daily unique browsers or signed-in accounts, UTC.</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-extrabold text-slate-900">{visitorAnalytics.total_unique_visitors}</p>
+                    <p className="text-[11px] text-slate-500">tracked total</p>
+                  </div>
+                </div>
+                <figure className="mt-4" aria-label="Daily unique visitors over the last 30 days">
+                  <ResponsiveContainer width="100%" height={220}>
+                    <AreaChart data={visitorTrend} margin={{ top: 6, right: 8, left: -18, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="visitorAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.28} />
+                          <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.02} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
+                      <XAxis dataKey="label" minTickGap={28} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                      <YAxis allowDecimals={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                      <Tooltip contentStyle={{ backgroundColor: "#0f172a", border: "1px solid #1e293b", borderRadius: 8, color: "#fff", fontSize: 12 }} labelFormatter={(_, payload) => payload?.[0]?.payload.date ?? ""} />
+                      <Area type="monotone" dataKey="unique_visitors" name="Unique visitors" stroke="#2563eb" strokeWidth={2.5} fill="url(#visitorAreaGradient)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                  <figcaption className="sr-only">Daily unique visitor counts for the last 30 UTC days.</figcaption>
+                </figure>
+              </CardContent>
+            </Card>
+          )}
           {/* Reports Timeline (Line Chart) */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm space-y-4 relative flex flex-col justify-between md:col-span-2 lg:col-span-1">
             <div className="flex justify-between items-center">
@@ -266,7 +332,7 @@ export default function DashboardPage() {
                         stroke="#3b82f6"
                         strokeWidth="2"
                         className="cursor-pointer transition-all duration-150"
-                        onMouseEnter={(e) => {
+                        onMouseEnter={() => {
                           setHoveredPoint({
                             x: p.x,
                             y: p.y,

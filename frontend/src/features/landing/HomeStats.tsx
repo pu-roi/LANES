@@ -10,31 +10,83 @@ interface PublicStats {
   total_visitors: number;
 }
 
+interface VisitorActivityResponse extends PublicStats {
+  recorded: boolean;
+}
+
+const VISITOR_ID_STORAGE_KEY = "lanes_visitor_id";
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function getOrCreateVisitorId(): string {
+  const existingId = localStorage.getItem(VISITOR_ID_STORAGE_KEY);
+  if (existingId && UUID_PATTERN.test(existingId)) return existingId;
+
+  const visitorId = crypto.randomUUID();
+  localStorage.setItem(VISITOR_ID_STORAGE_KEY, visitorId);
+  return visitorId;
+}
+
+function errorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error && error.message ? error.message : fallback;
+}
+
 export function HomeStats() {
-  const toast = useToast();
+  const { error: showError } = useToast();
   const [stats, setStats] = useState<PublicStats>({ daily_verified_reports: 0, total_visitors: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+    let trackingStarted = false;
+
     async function fetchStats() {
       try {
-        const hasVisited = localStorage.getItem("lanes_has_visited");
-        const shouldIncrement = !hasVisited;
-        
-        if (shouldIncrement) {
-          localStorage.setItem("lanes_has_visited", "true");
-        }
-
-        const data = await apiClient.get<PublicStats>(`/public/stats?increment=${shouldIncrement}`);
-        setStats(data);
-      } catch (err: any) {
-        toast.error("Stats Error", err.message || "Failed to fetch public stats");
+        const data = await apiClient.get<PublicStats>("/public/stats");
+        if (!cancelled) setStats(data);
+      } catch (err: unknown) {
+        if (!cancelled) showError("Stats Error", errorMessage(err, "Failed to fetch public stats"));
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
-    fetchStats();
-  }, []);
+
+    async function trackVisibleVisit() {
+      if (trackingStarted) return;
+      trackingStarted = true;
+      try {
+        const data = await apiClient.post<VisitorActivityResponse>("/public/visits", {
+          visitor_id: getOrCreateVisitorId(),
+        });
+        if (!cancelled) setStats(data);
+      } catch (err: unknown) {
+        if (!cancelled) {
+          showError("Visitor Tracking Error", errorMessage(err, "Failed to update visitor statistics"));
+          await fetchStats();
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        void trackVisibleVisit();
+      }
+    };
+
+    if (document.visibilityState === "visible") {
+      void trackVisibleVisit();
+    } else {
+      void fetchStats();
+      document.addEventListener("visibilitychange", onVisibilityChange);
+    }
+
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [showError]);
 
   return (
     <div className="p-2 flex items-center justify-center gap-10 h-full">

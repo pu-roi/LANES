@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AlertTriangle, CheckCircle2, Flag, Info, MapPin } from "lucide-react";
 import { ReportDetailsModal } from "./ReportDetailsModal";
 import type { FloodReport } from "../adminApi";
@@ -49,9 +49,10 @@ const severityStyles: Record<string, string> = {
   high: "bg-orange-100 text-orange-800", extreme: "bg-red-100 text-red-800",
 };
 
-export function FloodModerationQueue() {
+export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?: "all" | FloodModerationCase["status"] }) {
   const router = useRouter();
-  const [status, setStatus] = useState<"all" | FloodModerationCase["status"]>("all");
+  const reviewToken = useRef(0);
+  const [status, setStatus] = useState<"all" | FloodModerationCase["status"]>(initialStatus);
   const [location, setLocation] = useState("");
   const [reporter, setReporter] = useState("");
   const [reason, setReason] = useState("");
@@ -73,9 +74,10 @@ export function FloodModerationQueue() {
     },
   });
   const reporterSuggestions = [...new Set((cases.data || []).map((caseItem) => caseItem.reporter).filter((name) => name && name !== "System"))];
+  const nextReviewToken = () => String(++reviewToken.current);
 
   const reviewOnMap = (caseItem: FloodModerationCase) => {
-    const params = new URLSearchParams({ focus_report_id: String(caseItem.report_id), tab: "pending", review_token: String(Date.now()) });
+    const params = new URLSearchParams({ focus_report_id: String(caseItem.report_id), tab: "pending", review_token: nextReviewToken() });
     if (caseItem.latitude != null && caseItem.longitude != null) {
       params.set("lat", String(caseItem.latitude));
       params.set("lng", String(caseItem.longitude));
@@ -106,6 +108,6 @@ export function FloodModerationQueue() {
       {caseItem.status === "rejected" && <div className="mt-4 rounded-lg border border-rose-100 bg-rose-50 p-3 text-sm text-rose-900"><p><span className="font-semibold">Reason:</span> {caseItem.rejection_reason ? rejectionLabels[caseItem.rejection_reason] : "Not recorded"}</p>{caseItem.internal_note && <p className="mt-1"><span className="font-semibold">Internal note:</span> {caseItem.internal_note}</p>}</div>}
       {caseItem.resolved_at && <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-500"><CheckCircle2 className="h-4 w-4 text-emerald-600" />{caseItem.resolution === "linked" ? "Linked" : "Resolved"} {new Date(caseItem.resolved_at).toLocaleString()}{caseItem.acting_admin ? ` by ${caseItem.acting_admin}` : ""}</p>}
     </CardContent></Card>)}
-    <ReportDetailsModal report={detailCase ? ({ id: detailCase.report_id, status: detailCase.status, source: detailCase.source, raw_text: detailCase.raw_text, severity: detailCase.severity, depth: detailCase.depth, created_at: detailCase.submitted_at, updated_at: detailCase.submitted_at, human_readable_location: detailCase.location, reporter_username: detailCase.reporter } as FloodReport) : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => router.push(`/admin/map?focus_report_id=${report.id}&tab=pending&review_token=${Date.now()}`)} />
+    <ReportDetailsModal report={detailCase ? ({ id: detailCase.report_id, status: detailCase.status, source: detailCase.source, raw_text: detailCase.raw_text, severity: detailCase.severity, depth: detailCase.depth, created_at: detailCase.submitted_at, updated_at: detailCase.submitted_at, human_readable_location: detailCase.location, reporter_username: detailCase.reporter } as FloodReport) : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => router.push(`/admin/map?focus_report_id=${report.id}&tab=pending&review_token=${nextReviewToken()}`)} />
   </div>;
 }

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, Request, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -5,19 +7,19 @@ import datetime
 
 from app.core.database import get_db
 from app.models.report import FloodReport, ReportStatus
-from app.models.audit import VisitorCount
 from app.core.limiter import limiter
-from app import schemas
+from app import models, schemas
 from app.services.email_service import send_contact_email_async
+from app.services.visitor_analytics_service import get_visitor_summary, record_visitor_activity
+from app.api import deps
 
 router = APIRouter()
 
 @router.get("/stats")
-def get_public_stats(increment: bool = False, db: Session = Depends(get_db)):
+def get_public_stats(db: Session = Depends(get_db)) -> schemas.PublicStatsResponse:
     """
     Retrieve public statistics for the landing page.
-    Includes daily verified flood reports and total site visitors.
-    Accepts an 'increment' boolean to conditionally increment the visitor count.
+    Includes daily verified flood reports and deduplicated first-party visitors.
     """
     # 1. Daily Verified Reports
     today = datetime.datetime.utcnow().date()
@@ -26,23 +28,39 @@ def get_public_stats(increment: bool = False, db: Session = Depends(get_db)):
         func.date(FloodReport.created_at) == today
     ).count()
     
-    visitor_record = db.query(VisitorCount).first()
-    if not visitor_record:
-        visitor_record = VisitorCount(total_visitors=0)
-        db.add(visitor_record)
-        db.commit()
-        db.refresh(visitor_record)
-        
-    # Increment visitor count ONLY if requested by the frontend
-    if increment:
-        visitor_record.total_visitors += 1
-        db.commit()
-        db.refresh(visitor_record)
-
+    visitor_summary = get_visitor_summary(db)
     return {
         "daily_verified_reports": daily_verified_reports,
-        "total_visitors": visitor_record.total_visitors
+        "total_visitors": visitor_summary["total_unique_visitors"],
     }
+
+
+@router.post("/visits", response_model=schemas.VisitorActivityResponse)
+@limiter.limit("30/minute")
+def record_public_visit(
+    request: Request,
+    payload: schemas.VisitorActivityRequest,
+    db: Session = Depends(get_db),
+    current_user: Optional[models.User] = Depends(deps.get_current_user_optional),
+) -> schemas.VisitorActivityResponse:
+    """Record a visible first-party visit without IP or fingerprint-based identity."""
+    recorded = record_visitor_activity(
+        db,
+        visitor_id=payload.visitor_id,
+        user_id=current_user.id if current_user else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+    visitor_summary = get_visitor_summary(db)
+    today = datetime.datetime.utcnow().date()
+    daily_verified_reports = db.query(FloodReport).filter(
+        FloodReport.status == ReportStatus.APPROVED,
+        func.date(FloodReport.created_at) == today,
+    ).count()
+    return schemas.VisitorActivityResponse(
+        daily_verified_reports=daily_verified_reports,
+        total_visitors=visitor_summary["total_unique_visitors"],
+        recorded=recorded,
+    )
 
 
 @router.post("/contact", response_model=schemas.ContactMessageResponse)

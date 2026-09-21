@@ -26,6 +26,7 @@ from app.services.flood_event_service import (
     reject_report as reject_report_with_outcome,
     serialize_flood_event_planning_records,
 )
+from app.services.visitor_analytics_service import get_visitor_analytics
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -1196,6 +1197,15 @@ def get_dashboard_charts(
     Requires admin privileges.
     """
     return crud.get_admin_dashboard_charts(db=db)
+
+
+@router.get("/dashboard/visitors", response_model=schemas.AdminVisitorAnalyticsResponse)
+def get_dashboard_visitor_analytics(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_admin),
+) -> schemas.AdminVisitorAnalyticsResponse:
+    """Return privacy-preserving, de-duplicated visitor trends for administrators."""
+    return schemas.AdminVisitorAnalyticsResponse.model_validate(get_visitor_analytics(db))
 
 
 @router.get("/zones/all", response_model=schemas.FloodAvoidanceZonesPaginatedResponse)

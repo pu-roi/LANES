@@ -520,6 +520,16 @@ export async function getDashboardCharts(): Promise<DashboardChartsData> {
   return apiClient.get<DashboardChartsData>('/admin/dashboard/charts');
 }
 
+export interface VisitorAnalytics {
+  total_unique_visitors: number;
+  visitors_today: number;
+  daily_unique_visitors: { date: string; unique_visitors: number }[];
+}
+
+export async function getVisitorAnalytics(): Promise<VisitorAnalytics> {
+  return apiClient.get<VisitorAnalytics>("/admin/dashboard/visitors");
+}
+
 export async function updateZoneExpiration(zoneId: number, expiresAt: string | null): Promise<AvoidanceZone> {
   return apiClient.request<AvoidanceZone>(`/admin/zones/${zoneId}`, {
     method: 'PATCH',

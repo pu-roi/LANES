@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -332,6 +332,10 @@ erDiagram
 `flood_report_moderation_outcomes` is append-only staff outcome history. Rejections require a structured reason, and `other` requires an internal note. `flood_event_timeline_entries` is the readable event chronology with snapshot JSON; it is intentionally separate from `audit_logs`, which retains technical actor/IP accountability.
 
 **Historical analytics contract:** planning analytics query `flood_events` as the primary aggregation relation. `flood_event_locations` contributes each normalized road or barangay at most once per event; approved `flood_reports` are counted only as a separately named corroboration measure. No analytics table duplicates raw evidence, reporter identity, media, or exact report geometry.
+
+### First-Party Visitor Analytics Table
+
+`visitor_daily_visits` is a 3NF daily fact table with a unique `(visit_date, visitor_hash)` constraint. `visitor_hash` is a server-side HMAC-SHA256 value derived from a browser-generated UUID, so LANES never persists the source UUID, IP address, device fingerprint, or location. `user_id` is nullable with `ON DELETE SET NULL`; aggregate queries use it only to count a signed-in account once across browsers, while anonymous activity remains a unique browser estimate. The table is indexed by date, hash, and account to support the protected 30-day dashboard trend without exposing individual activity.
 
 ### Table I: `audit_logs`
 **Description:** An append-only security log recording administrative actions.

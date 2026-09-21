@@ -1,12 +1,17 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
 
 ## Completed Sprints
+
+- [x] **First-Party Visitor Analytics Integrity** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - [x] Replaced the old page-load counter with a 3NF daily-visitor table holding only an HMAC of a browser-generated UUID, UTC day/timestamps, and an optional account reference.
+  - [x] Count authenticated accounts once across browsers in aggregate reads; otherwise count an anonymous browser once per day. Reject known bot user agents and rate-limit recording without using IP addresses or browser fingerprinting.
+  - [x] Added a protected 30-day visitor trend and responsive Admin Dashboard card/graph. The landing page records only after it is visible and surfaces tracking failures through the existing toast system.
 
 - [x] **Capstone Phase 35 — Admin Profile Management, Self-Healing Profile Provisioning & Secure Password Updates** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - [x] Fixed `404 Profile not found` for admin-created accounts by automatically provisioning a linked `models.Profile` on user creation (`POST /api/v1/admin/users`) ([`BUG-051`]).
@@ -104,11 +109,13 @@ Official admin-created Flood Zone ───────────────�
   - The handoff must fetch the exact selected report regardless of moderation state, isolate it from all active zones and other reports, and accept a fresh review token so repeat visits re-focus the map.
 - [x] Include filters for pending, approved/linked, rejected, date, location, reporter/source, and rejection reason as supported by final data design.
 - [x] Keep rejected reports out of the live routing map and Flood Event analytics while retaining them for internal moderation-quality review.
+  - [x] Surface today’s rejected-report count on the Admin Dashboard and link it directly to the pre-filtered Flood Report Moderation view. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ##### Phase 33.5 — Admin-only Flood History & Analytics Information Architecture
 - [x] Add an admin-protected sidebar route named **Flood History & Analytics**. Do not add a public-map link or change the existing public quick-insights panel. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Build the initial **Overview & Analytics** at-a-glance bento dashboard without duplicating its metrics in a second vertical section. Chart expansion will follow the historical records/map data slice. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Build the **Flood Event Records** tab with synchronized filters, historical MapLibre layers, and a searchable event table/list. Desktop layout: map and list side by side. Mobile layout: safely stacked or explicitly switchable map/list views with safe-area-aware bottom spacing. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+  - [x] Standardize the analytics and records controls on the shared UI library, and match the established admin dashboard's compact blue-led chart/card treatment without changing historical data semantics. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
   - [x] Establish protected server reads for filtered historic event records and a single event’s full evidence/timeline detail; this does not complete the Records workspace UI. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Reuse the shared `BaseMap` and feature-based map hooks; create separate historical sources/layers from the active zone/routing layers so history never contaminates live navigation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Selecting a map feature selects the corresponding list row; selecting a row focuses the event on the map. Filter controls include date range, barangay, road/street, severity, status, and recurrence-related filters agreed during implementation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
@@ -117,6 +124,7 @@ Official admin-created Flood Zone ───────────────�
 ##### Phase 33.6 — Event-Based Planning Analytics and Exports
 - [x] Replace/augment report-count-only historical analytics with event-based aggregation queries. Existing quick insights remain a simple summary, while Flood History & Analytics uses the distinct-event counting rules above. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Deliver city-planning metrics: total ended events, recurring barangays, most frequently affected roads/streets, peak severity distribution, event duration distribution/average, events over time, and supporting-report volume as a separate confidence signal. The responsive chart treatment now uses an event/report combination trend, severity doughnut, duration columns, recurrence rankings, and a UTC verification-pattern heatmap. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+  - [x] Use compact shared cards, smaller graph typography, consistent grid/tooltip treatment, and the admin dashboard's primary blue for non-severity visualizations. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Use a historical map visual appropriate to the selected question (event footprints/clusters/recurrence), with accessible non-color indicators and understandable legends. The map labels peak verified severity and explicitly does not imply exact depth or event frequency. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Permit authorized CSV/JSON export of filtered event records and aggregate analytics for city planning/offline reporting. The default planning exports exclude reporter identity, raw report text, exact report geometry, and media; full evidence remains only in the protected event-detail view. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Define labels/tooltips that distinguish **Flood Events**, **supporting reports**, **active zones**, **peak verified severity**, and **official duration** so administrators do not mistake evidence count for incident count. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

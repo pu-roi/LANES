@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 21, 2026, 2:53 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 21, 2026, 5:12 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -300,14 +300,14 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | Route | File | What It Does |
 |-------|------|-------------|
 | `/admin` | `AdminDashboard.tsx` | Entry landing — shows role-based nav links and a summary stats row (total users, reports, active zones). |
-| `/admin/dashboard` | `DashboardPage.tsx` | Overview cards: total users, reports filed today, currently active flood zones. Recent activity feed and quick action shortcuts. |
+| `/admin/dashboard` | `DashboardPage.tsx` | Responsive overview cards for pending reports, active detours, today’s approvals, today’s Flood Report rejections, accounts, and privacy-preserving daily unique visitors. It also shows a compact 30-day visitor trend. The rejection action opens the Flood Report Moderation workspace with rejected cases selected. |
 | `/admin/map` | `LiveMapPage.tsx` | Full-screen admin map & spatial operations view (persistently mounted in `AdminLayout`). Pane 1 contains `PendingReportsPanel` and `ActiveZonesPanel`; Pane 2 shows one of Create Zone, Review Merge, or amber Edit Zone at a time. Pending Reports and Active Zones keep independent current selections. Returning to a tab flies to that tab's selected report or zone only; toggling the selected card or map feature off clears its selection and prevents a later tab switch from moving the map. Create and Edit are separate resumable sessions: the blue Create Zone bookmark retains its account-private draft, while the amber Edit Zone bookmark retains its selected zone and per-admin edit draft; neither replaces or discards the other. Create Zone is always the first desktop handle. Merge and Edit appear only after being opened and are arranged most-recent-first directly below it; switching keeps their component state and scroll position, while explicit Close removes the matching workspace rather than leaving a collapsed handle. The Edit close control is available on desktop and mobile and retains its discard confirmation. Review Merge remains independently resumable. On mobile, Active Zones exposes Create Zone and the shared drawer header can switch to the other available workspace. Normal report focus is neutral. **Review Merge Suggestions** starts a persistent merge session with explicit candidate checkboxes, in-card match evidence, a field comparison matrix, selected-only conflicts, reusable road/Terra Draw editing, confirmation, and primary/candidate/proposed map previews. `zoneDraftStorage.ts` restores Create Zone's active workspace and editable queued drafts. Edit Zone restores only a dirty per-admin draft after fetching the current zone; unchanged and legacy baseline copies are removed silently. It can replace a validated road centreline or reopen the final saved area polygon for Terra Draw vertex editing. A road update stores the new source line and regenerated 25-metre operational buffer; an area update stores the exact polygon and clears obsolete source geometry. It also includes `ReportDetailsModal`, the 400ms `FloodZonePopup` hover engine, and one shared `OfficialZoneDrawer` implementation with `GeometryModeSelector`, `RoadSegmentPicker`, `DraftZoneCart`, five aligned form sections, and Cloudinary media upload. |
 | `/admin/users` | `UsersPage.tsx` | Searchable table of all registered users. Admin can filter by role, view trust scores, activate or deactivate accounts, and reassign roles. |
 | `/admin/roles` | `RolesPage.tsx` | Role management. Create new roles with a granular permission matrix (view / manage / full per module). Edit or delete existing roles. |
 | `/admin/data` | `DataManagementPage.tsx` | Data import/export tools. Upload flood report CSVs, export reports as JSON or CSV, and inspect raw PostGIS geometry for any record. |
 | `/admin/audit` | `AuditTrailPage.tsx` | Chronological log of all admin actions — who did what, when, and on which record. Filterable by admin user, action type, and date range. |
-| `/admin/moderation` | `ModerationCenterPage.tsx`, `components/FloodModerationQueue.tsx` | Staff-only tabbed Community Post and Flood Report tracking using the shared underline `Tabs` component. Flood cases show their outcome/context and filters, then provide a single **Review on Map** handoff; no spatial approval/rejection controls are duplicated here. The responsive action area remains clear of the mobile bottom navigation. |
-| `/admin/flood-history` | `flood-history/page.tsx`, `features/flood-history/*` | Admin-only Flood History & Analytics has a server-calculated distinct-event planning dashboard plus a separate historical `BaseMap` source/layer set for Flood Event Records. Its responsive Recharts visuals include a verified-event/approved-report combination trend, severity doughnut, duration columns, recurrence rankings, and a UTC verification-pattern heatmap with per-cell text labels. Protected filters drive recurrence, roads, peak severity, official duration, and time-series analytics; authorized users can download filtered planning records or aggregate analytics as CSV/JSON without reporter identity, raw evidence, report geometry, or media. The records tab retains synchronized desktop map/list and a mobile-safe map/list switcher, with full original evidence available only in protected event detail. |
+| `/admin/moderation` | `ModerationCenterPage.tsx`, `components/FloodModerationQueue.tsx` | Staff-only tabbed Community Post and Flood Report tracking using the shared underline `Tabs` component. The Dashboard may deep-link to the Flood tab with rejected cases preselected. Flood cases show their outcome/context and filters, then provide a single **Review on Map** handoff; no spatial approval/rejection controls are duplicated here. The responsive action area remains clear of the mobile bottom navigation. |
+| `/admin/flood-history` | `flood-history/page.tsx`, `features/flood-history/*` | Admin-only Flood History & Analytics has a server-calculated distinct-event planning dashboard plus a separate historical `BaseMap` source/layer set for Flood Event Records. Its responsive Recharts visuals include a verified-event/approved-report combination trend, severity doughnut, duration columns, recurrence rankings, and a UTC verification-pattern heatmap with per-cell text labels. Compact shared `Card`, `Button`, `Input`, `Select`, `DatePicker`, and `Tabs` components keep its filters, cards, controls, desktop/mobile map-list presentation, and blue-led non-severity graphs visually consistent with the Admin Dashboard. Protected filters drive recurrence, roads, peak severity, official duration, and time-series analytics; authorized users can download filtered planning records or aggregate analytics as CSV/JSON without reporter identity, raw evidence, report geometry, or media. Full original evidence remains only in protected event detail. |
 | `/admin/settings` | `SystemSettingsPage.tsx` | Key-value configuration editor for runtime settings (e.g., flood zone expiry duration in hours, severity thresholds). |
 | `/admin/archive` | `ArchivePage.tsx` | Centralized Archive Center with 30-day auto-purge retention lifecycle across three primary tabs: **Archived Users** (soft-deleted commuter accounts with 30-day countdown badge, restore action, and typed `"DELETE"` permanent purge), **Spatial Data** (dual sub-tabs for soft-deleted/rejected Flood Reports and deactivated/expired Avoidance Zones with detail inspection, Attached Media & Evidence photo/video gallery, reactivation, and typed `"DELETE"` permanent deletion), and **Archived Posts** (dual sub-tabs for Community Feed posts soft-deleted by authors/admins and posts hidden by moderators with full media/author inspection, feed restoration, and typed `"DELETE"` permanent deletion). Includes on-demand manual trigger to purge expired records. |
 | `/admin/profile` | `AdminProfilePage.tsx` | Native Admin Profile hub matching public profile design. Super Admins, DRRM Officers, and Moderators can edit personal details, phone number, birthdate, and PSGC address, change account cover banner color, upload or remove avatar images, toggle privacy preferences ("Display Full Name", "Hide Profile Picture"), and securely change account passwords with live `<PasswordStrength>` validation and email OTP verification via `PasswordOtpModal`. Linked from the user profile card in the `AdminSidebar.tsx` footer. |
@@ -327,6 +327,9 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `GET /api/v1/admin/flood-events/export` | Admin-only CSV/JSON export of filtered planning event records or aggregate analytics; default exports omit reporter identity, raw text, exact report geometry, and media |
 | `GET /api/v1/admin/flood-events/{id}/history-detail` | Admin-only full historical Flood Event detail: event metrics, locations, event-owned zones, linked original reports, and readable incident timeline |
 | `GET /api/v1/admin/flood-events/{id}/summary` | Admin-only server-calculated event duration, evidence, zone, location, peak, and status metrics |
+| `GET /api/v1/admin/dashboard/visitors` | Admin-only 30-day first-party unique-visitor trend and current/lifetime aggregate totals; never returns visitor identifiers |
+| `GET /api/v1/public/stats` | Public landing statistics, including the deduplicated first-party visitor total |
+| `POST /api/v1/public/visits` | Records one visible browser’s daily visit from an opaque UUID after server-side HMAC hashing; known bots are rejected and no IP or fingerprint is stored |
 | `POST /api/v1/admin/zones` | Create official flood avoidance zone (multipart `FormData` with JSON `body` and `media` files) |
 | `GET /api/v1/admin/zones/{id}` | Retrieve the current shared zone before resuming an account-private Edit Zone draft |
 | `PUT /api/v1/admin/zones/{id}` | Update existing avoidance zone metadata, depth, severity, passability, and notes |
@@ -705,12 +708,26 @@ Immutable trail of all admin actions for accountability and debugging.
 
 ### `visitor_counts`
 
-Single-row running total counter for landing page visit tracking.
+Legacy single-row landing counter retained only for historical database compatibility. The application no longer reads or updates it.
 
 | Column | Type | Description |
 |--------|------|-------------|
 | `id` | Integer, PK | Always 1 (this table has exactly one row) |
 | `total_visitors` | Integer | Cumulative count of landing page visits since deployment |
+
+---
+
+### `visitor_daily_visits`
+
+First-party analytics rows used to calculate daily and lifetime unique visitors. A row is unique per UTC date and pseudonymous browser hash; it never stores raw browser IDs, IP addresses, fingerprints, or location.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer, PK | Surrogate identifier |
+| `visitor_hash` | String(64), indexed | HMAC-SHA256 of the browser-generated UUID; raw UUID is never persisted |
+| `visit_date` | Date, indexed | UTC calendar day, unique with `visitor_hash` |
+| `user_id` | FK → users.id, nullable | Optional signed-in account; aggregates collapse its browsers into one account visitor and becomes null if that user is deleted |
+| `first_seen_at` / `last_seen_at` | DateTime | UTC activity timestamps for the day |
 
 ---
 
@@ -746,6 +763,7 @@ roles ──< users ──< profiles ──< addresses
 
 otp_verifications  (standalone, keyed by email)
 visitor_counts     (singleton table)
+visitor_daily_visits ──> users (optional account attribution)
 system_settings    (key-value store)
 ```
 
