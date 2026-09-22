@@ -1,5 +1,5 @@
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Any
 from sqlalchemy import String, Integer, Boolean, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -73,17 +73,17 @@ class FloodEvent(Base):
         nullable=False,
         index=True,
     )
-    first_reported_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
-    verified_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    ended_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    first_reported_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    verified_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    ended_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     peak_severity: Mapped[ReportSeverity] = mapped_column(
         Enum(ReportSeverity, native_enum=False, length=50, values_callable=lambda x: [e.value for e in x]),
         nullable=False,
     )
     peak_depth: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False
     )
 
     reports: Mapped[List["FloodReport"]] = relationship("FloodReport", back_populates="flood_event")
@@ -143,10 +143,10 @@ class FloodReport(Base):
         nullable=True
     )
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
-    approved_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    approved_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Relationships
     avoidance_zone: Mapped[Optional["FloodAvoidanceZone"]] = relationship(
@@ -271,13 +271,13 @@ class FloodAvoidanceZone(Base):
     )
     
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
     )
-    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Admin Overrides for Official DRRMO Zone Data & Merging
     name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
@@ -445,9 +445,9 @@ class FloodEventLocation(Base):
     geometry: Mapped[Optional[Any]] = mapped_column(
         Geometry(geometry_type="GEOMETRY", srid=4326, spatial_index=True), nullable=True
     )
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False
     )
 
     flood_event: Mapped["FloodEvent"] = relationship("FloodEvent", back_populates="locations")
@@ -478,7 +478,7 @@ class FloodReportModerationOutcome(Base):
     acted_by_user_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
     )
-    acted_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    acted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
     report: Mapped["FloodReport"] = relationship("FloodReport", back_populates="moderation_outcomes")
 
@@ -491,7 +491,7 @@ class FloodEventTimelineEntry(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     event_id: Mapped[int] = mapped_column(ForeignKey("flood_events.id", ondelete="CASCADE"), index=True)
     entry_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    occurred_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     summary: Mapped[str] = mapped_column(String(500), nullable=False)
     snapshot_json: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
 

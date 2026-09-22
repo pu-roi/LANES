@@ -1,9 +1,69 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 22, 2026, 2:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 22, 2026, 11:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-057] All Timestamps Displayed 8 Hours Behind Philippine Local Time (UTC Naive Datetime Misinterpretation)
+- **Status**: Resolved
+- **Severity**: High
+- **Date Reported / Resolved**: September 22, 2026
+- **Affected Area**: Backend / Frontend / Timestamps / Timezone Handling (All Modules)
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Flood reports, avoidance zones, audit log entries, user profiles, flood event records, and all other timestamp fields across the platform displayed times that were exactly 8 hours behind the actual Philippine local time (UTC+8 / Asia/Manila). For example, a flood report submitted at 10:00 AM Philippine Standard Time (PST) appeared in the Pending Reports Panel, Active Zones Panel, Flood Event Records, Audit Trail, and FloodZone Popup as 2:00 AM.
+
+#### 2. Root Cause Analysis (RCA)
+
+A two-layer timezone misinterpretation chain:
+
+1. **Backend — Naive UTC Storage Without `Z` Suffix**: All SQLAlchemy models used `default=datetime.utcnow` to store creation and update timestamps in the PostgreSQL database as naive UTC `datetime` objects (no `tzinfo`). When Pydantic serialized these into JSON for the API response, it produced strings in the format `"2026-09-22T02:54:00"` — an ISO 8601 string **without** any timezone indicator (`Z` or `+HH:MM`).
+
+2. **Frontend — JavaScript `new Date()` Local-Time Interpretation**: Per the ECMA-262 specification, when `new Date()` parses an ISO date-time string that lacks a UTC offset suffix, it treats the string as **local time**, not UTC. In Philippine browsers (Asia/Manila, UTC+8), `new Date("2026-09-22T02:54:00")` is interpreted as 2:54 AM Philippine local time (which equals 6:54 PM UTC the day before), producing a display that is 8 hours behind the stored UTC value. All `toLocaleDateString`, `Intl.DateTimeFormat`, and `new Date()` calls in every date-displaying component were affected.
+
+#### 3. Solution & Architectural Strategy
+
+**Two-pronged fix — backend serializer + frontend parser utility:**
+
+1. **Backend `serialize_utc_datetime` Centralised Helper** (`backend/app/schemas/common.py`): Created a shared `serialize_utc_datetime(dt)` function that appends `"Z"` to any naive `datetime` ISO string (no `tzinfo`), and leaves timezone-aware datetimes unchanged. This causes FastAPI/Pydantic to emit `"2026-09-22T02:54:00Z"`, unambiguously signaling UTC to all downstream consumers.
+
+2. **Schema-Wide `@field_serializer` Application**: Applied `@field_serializer` decorators calling `serialize_utc_datetime` to every `datetime` field across all Pydantic response schemas: `FloodReportResponse`, `FloodAvoidanceZoneResponse`, `ZoneContributorResponse`, `NearbyZoneResponse`, `MergeCandidateItem`, `AuditLogResponse`, `FloodEventResponse`, `FloodEventTimelineEntry`, `RoleResponse`, `SavedPlaceResponse`, `UserResponse`, and all related schemas in `backend/app/schemas/__init__.py`.
+
+3. **Frontend `parseUtcDate` Utility** (`frontend/src/lib/utils.ts`): Added `parseUtcDate(input)` — a safe date parser that checks whether the input string contains a `Z` or explicit `+/-HH:MM` offset. If absent, it appends `"Z"` before passing to `new Date()`, guaranteeing the browser always treats the timestamp as UTC. Existing `formatCommentTime` was updated to use `parseUtcDate` internally.
+
+4. **Component-Wide Frontend Update**: Every component that rendered timestamps from API responses was updated to use `parseUtcDate` before passing to `new Date()`, `Intl.DateTimeFormat`, or `toLocaleDateString`, ensuring correct UTC→Asia/Manila conversion for display.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/schemas/common.py`: Added `serialize_utc_datetime(dt)` helper function.
+- `backend/app/schemas/report.py`: Added `@field_serializer` for `FloodReportResponse`, `FloodAvoidanceZoneResponse`, `ZoneContributorResponse`, `NearbyZoneResponse`, `MergeCandidateItem` datetime fields.
+- `backend/app/schemas/audit.py`: Added `@field_serializer` for `AuditLogResponse.created_at`.
+- `backend/app/schemas/flood_event.py`: Added `@field_serializer` for `FloodEventResponse` and `FloodEventTimelineEntry` datetime fields.
+- `backend/app/schemas/role.py`: Added `@field_serializer` for `RoleResponse` datetime fields.
+- `backend/app/schemas/saved_place.py`: Added `@field_serializer` for `SavedPlaceResponse` datetime fields.
+- `backend/app/schemas/user.py`: Added `@field_serializer` for `UserResponse` datetime fields.
+- `backend/app/schemas/__init__.py`: Re-exported `serialize_utc_datetime` from the schemas package.
+- `backend/app/api/v1/endpoints/admin.py`: Replaced inline `datetime.now()` / `datetime.utcnow()` usages with `serialize_utc_datetime`-compatible defaults in admin zone creation.
+- `frontend/src/lib/utils.ts`: Added `parseUtcDate()` utility and updated `formatCommentTime` to use it.
+- `frontend/src/features/admin/AuditTrailPage.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/admin/components/ActiveZonesPanel.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/admin/components/MergeReportsModal.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/admin/components/PendingReportsPanel.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/admin/components/merge/ReportComparisonCard.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/admin/components/merge/ReportComparisonMatrix.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/flood-history/FloodEventDetailModal.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/flood-history/FloodEventDetailsTabs.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/flood-history/FloodEventRecords.tsx`: Updated `formatDate` to use `parseUtcDate`.
+- `frontend/src/features/map/components/FloodZonePopup.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/features/profile/ProfileView.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/shared/ui/feedback/FloodReportDetailsModal.tsx`: Updated date display to use `parseUtcDate`.
+- `frontend/src/shared/ui/feedback/FloodZoneDetailsModal.tsx`: Updated date display to use `parseUtcDate`.
+- `backend/tests/test_datetime_timezone_serialization.py`: [NEW] Added automated Pytest suite verifying `serialize_utc_datetime` outputs ISO strings with `Z` suffix for naive datetimes and preserves offsets for aware datetimes.
 
 ---
 

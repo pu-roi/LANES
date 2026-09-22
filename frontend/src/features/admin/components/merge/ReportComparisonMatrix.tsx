@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { parseUtcDate } from "@/lib/utils";
 import { format } from "date-fns";
 import type { FloodReport, MergeCandidateItem } from "../../adminApi";
 
@@ -27,7 +28,7 @@ function valueFor(report: ComparableReport, field: string): React.ReactNode {
     case "trust":
       return report.reporter_trust_score == null ? "Not available" : `${Math.round(report.reporter_trust_score)}%`;
     case "submitted":
-      return timestamp ? format(new Date(timestamp), "MMM d, yyyy · h:mm a") : "Not available";
+      return timestamp ? format(parseUtcDate(timestamp) || new Date(timestamp), "MMM d, yyyy · h:mm a") : "Not available";
     case "location":
       return report.road_name || report.human_readable_location || [report.barangay, report.city].filter(Boolean).join(", ") || "Not available";
     case "severity":

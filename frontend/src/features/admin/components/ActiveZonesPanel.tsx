@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/shared/ui";
 import { Pagination } from "@/shared/ui";
 import type { AvoidanceZone } from "@/features/admin/adminApi";
+import { parseUtcDate } from "@/lib/utils";
 
 interface ActiveZonesPanelProps {
   activeOnly: boolean;
@@ -210,7 +211,7 @@ export function ActiveZonesPanel({
                 <div className="flex flex-col gap-1.5 text-xs text-gray-600 pl-7 mb-3">
                   <div className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-gray-400" />
-                    Created: {new Date(zone.created_at).toLocaleDateString()} {new Date(zone.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    Created: {parseUtcDate(zone.created_at)?.toLocaleDateString()} {parseUtcDate(zone.created_at)?.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                   </div>
 
                   {/* Reporter Tag with Expandable Multiple Contributor Accordion */}
@@ -304,7 +305,7 @@ export function ActiveZonesPanel({
                                             </span>
                                           )}
                                           <span className="text-[10px] text-slate-400 font-medium">
-                                            {new Date(c.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            {parseUtcDate(c.created_at)?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                           </span>
                                         </div>
                                       </div>

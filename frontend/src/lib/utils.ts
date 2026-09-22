@@ -6,6 +6,28 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Safely parses a date string, timestamp, or Date object as UTC.
+ * If given an ISO-like date string without an explicit timezone suffix
+ * (no 'Z' and no '+/-HH:mm'), appends 'Z' to prevent browsers from
+ * erroneously parsing UTC timestamps as local time (ECMA-262).
+ */
+export function parseUtcDate(input: string | Date | number | null | undefined): Date | null {
+  if (input === null || input === undefined || input === "") return null;
+  if (input instanceof Date) return isNaN(input.getTime()) ? null : input;
+  if (typeof input === "number") {
+    const d = new Date(input);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  const str = input.trim();
+  if (!str) return null;
+  // If string already has Z or explicit offset (+HH:MM or -HH:MM), parse directly
+  const hasTimezone = str.endsWith("Z") || /[+-]\d{2}:\d{2}$/.test(str) || /[+-]\d{4}$/.test(str);
+  const normalizedStr = hasTimezone ? str : `${str}Z`;
+  const parsed = new Date(normalizedStr);
+  return isNaN(parsed.getTime()) ? new Date(str) : parsed;
+}
+
+/**
  * Formats a comment timestamp into a compact, human-readable string.
  *
  * Rules:
@@ -20,13 +42,7 @@ export function cn(...inputs: ClassValue[]) {
  * We append "Z" if the string has no offset so Date parses it correctly.
  */
 export function formatCommentTime(dateStr: string): string {
-  // Ensure UTC parsing — append Z if no timezone info present
-  const utcStr =
-    dateStr.endsWith("Z") || /[+-]\d{2}:\d{2}$/.test(dateStr)
-      ? dateStr
-      : dateStr + "Z";
-
-  const date = new Date(utcStr);
+  const date = parseUtcDate(dateStr) ?? new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffSec = Math.floor(diffMs / 1000);

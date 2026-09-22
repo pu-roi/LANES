@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Any
 import enum
 from sqlalchemy import Integer, String, DateTime, ForeignKey, Boolean, Enum
@@ -28,7 +28,7 @@ class Notification(Base):
     payload: Mapped[Any] = mapped_column(JSONB, nullable=False, default=dict)
     
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     # Relationships
     user: Mapped["User"] = relationship("User")

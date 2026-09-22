@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import enum
 from sqlalchemy import Integer, String, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,7 +21,7 @@ class PostInteraction(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     post_id: Mapped[int] = mapped_column(ForeignKey("community_posts.id", ondelete="CASCADE"), index=True)
     interaction_type: Mapped[InteractionType] = mapped_column(Enum(InteractionType, native_enum=True, name="interactiontype_enum"))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     # Relationships
     user: Mapped["User"] = relationship("User")
@@ -37,7 +37,7 @@ class CommentInteraction(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     comment_id: Mapped[int] = mapped_column(ForeignKey("comments.id", ondelete="CASCADE"), index=True)
     interaction_type: Mapped[InteractionType] = mapped_column(Enum(InteractionType, native_enum=True, name="interactiontype_enum"))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     # Relationships
     user: Mapped["User"] = relationship("User")

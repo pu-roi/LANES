@@ -1,6 +1,7 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
 from datetime import datetime
 from typing import Optional
+from app.schemas.common import serialize_utc_datetime
 
 class SavedPlaceBase(BaseModel):
     name: str = Field(..., max_length=50, description="Name of the saved place (e.g. Home, Work)")
@@ -27,3 +28,7 @@ class SavedPlaceResponse(SavedPlaceBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("created_at")
+    def serialize_place_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)

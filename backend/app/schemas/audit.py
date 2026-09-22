@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional, Any
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
+from app.schemas.common import serialize_utc_datetime
 from app.schemas.user import UserResponse
 
 
@@ -23,6 +24,10 @@ class AuditLogResponse(AuditLogBase):
     admin: Optional[UserResponse] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("created_at")
+    def serialize_audit_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)
 
 
 class AuditLogsPaginatedResponse(BaseModel):

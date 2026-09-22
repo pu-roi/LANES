@@ -1,3 +1,4 @@
+import { parseUtcDate } from "@/lib/utils";
 "use client";
 
 import { useMemo, useState } from "react";
@@ -9,7 +10,7 @@ import { HistoricalEventsMap } from "./HistoricalEventsMap";
 import { getFloodEventHistory, type FloodEventRecord, type FloodHistoryFilters, type HistoricalMapFocusTarget } from "./floodHistoryApi";
 
 const initialFilters: FloodHistoryFilters = { status: "all", severity: "", dateFrom: "", dateTo: "", barangay: "", road: "", search: "" };
-const formatDate = (value: string | null | undefined) => value ? new Intl.DateTimeFormat("en-PH", { timeZone: "Asia/Manila", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(value)) : "—";
+const formatDate = (value: string | null | undefined) => value ? new Intl.DateTimeFormat("en-PH", { timeZone: "Asia/Manila", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(parseUtcDate(value) || new Date(value)) : "—";
 const formatDuration = (minutes: number | null | undefined) => minutes === null || minutes === undefined ? "Ongoing" : minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 const places = (event: FloodEventRecord) => event.locations.map((location) => location.display_name).join(" · ") || "Location not recorded";
 

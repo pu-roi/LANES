@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { format } from "date-fns";
+import { parseUtcDate } from "@/lib/utils";
 import { Clock, Ruler, Car, EyeOff, ShieldCheck, User, Users, ChevronDown, ChevronUp, Shield, X } from "lucide-react";
 import { Modal } from "@/shared/ui";
 
@@ -71,7 +72,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
   let reportedText = "Unknown";
   if (created_at) {
     try {
-      reportedText = format(new Date(created_at), "MMM d, h:mm a");
+      reportedText = format(parseUtcDate(created_at) || new Date(created_at), "MMM d, h:mm a");
     } catch (e) {}
   }
 
@@ -280,7 +281,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
                   <div className="flex items-center justify-between font-semibold text-slate-800 text-[10px]">
                     <span className="truncate max-w-[150px]">{c.reporter_name}</span>
                     <span className="text-[9px] text-slate-400">
-                      {new Date(c.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {parseUtcDate(c.created_at)?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   <p className="text-slate-600 text-[10px] italic line-clamp-2">

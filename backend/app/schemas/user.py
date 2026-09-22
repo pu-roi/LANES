@@ -16,6 +16,8 @@ class UserCreate(UserBase):
 
 
 from typing import Optional
+from pydantic import field_serializer
+from app.schemas.common import serialize_utc_datetime
 from app.schemas.profile import ProfileResponse
 
 class UserResponse(UserBase):
@@ -27,6 +29,10 @@ class UserResponse(UserBase):
     profile: Optional[ProfileResponse] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("created_at")
+    def serialize_user_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)
 
 
 class UsersPaginatedResponse(BaseModel):

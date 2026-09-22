@@ -1,6 +1,19 @@
 import struct
-from typing import List, Any
+from datetime import datetime
+from typing import List, Any, Optional
 from pydantic import BaseModel
+
+
+def serialize_utc_datetime(dt: Optional[datetime]) -> Optional[str]:
+    """
+    Serializes a datetime to an ISO-8601 string with a 'Z' suffix if timezone is absent,
+    ensuring standard UTC interpretation by client browsers.
+    """
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.isoformat() + "Z"
+    return dt.isoformat()
 
 # ==========================================
 # 1. EWKB Binary Geometry Parsers

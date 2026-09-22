@@ -1,3 +1,4 @@
+import { parseUtcDate } from "@/lib/utils";
 "use client";
 
 /**
@@ -272,7 +273,7 @@ export function MergeReportsModal({
         </div>
         <div className="flex items-center gap-2">
           <Clock className="w-3.5 h-3.5 text-slate-400" />
-          <span>Reported {new Date(report.created_at).toLocaleString()}</span>
+          <span>Reported {parseUtcDate(report.created_at)?.toLocaleString()}</span>
         </div>
       </div>
 
@@ -352,7 +353,7 @@ export function MergeReportsModal({
               </div>
               <div className="text-[10px] text-slate-400">
                 {zone.report_count} report{zone.report_count !== 1 ? "s" : ""} linked ·{" "}
-                {new Date(zone.created_at).toLocaleDateString()}
+                {parseUtcDate(zone.created_at)?.toLocaleDateString()}
               </div>
             </button>
           ))}

@@ -1,3 +1,4 @@
+import { parseUtcDate } from "@/lib/utils";
 "use client";
 
 import { useState, useEffect } from "react";
@@ -114,7 +115,7 @@ export default function AuditTrailPage() {
         <div className="flex justify-center items-center gap-2 whitespace-nowrap">
           <Calendar className="w-4 h-4 text-gray-400" />
           <span className="text-sm font-medium text-gray-700">
-            {new Date(log.created_at).toLocaleString()}
+            {parseUtcDate(log.created_at)?.toLocaleString()}
           </span>
         </div>
       )
@@ -429,7 +430,7 @@ export default function AuditTrailPage() {
               <div>
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Timestamp</p>
                 <p className="font-semibold text-gray-800 mt-0.5">
-                  {new Date(inspectLog.created_at).toLocaleString()}
+                  {parseUtcDate(inspectLog.created_at)?.toLocaleString()}
                 </p>
               </div>
               <div>

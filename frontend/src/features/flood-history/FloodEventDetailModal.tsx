@@ -1,3 +1,4 @@
+import { parseUtcDate } from "@/lib/utils";
 "use client";
 
 import { useEffect, useState } from "react";
@@ -10,7 +11,7 @@ import type { FloodReport } from "@/features/admin/adminApi";
 import type { HistoricalMapFocusTarget } from "./floodHistoryApi";
 import { FloodEventDetailsTabs } from "./FloodEventDetailsTabs";
 
-const formatDate = (value: string | null | undefined) => value ? new Intl.DateTimeFormat("en-PH", { timeZone: "Asia/Manila", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(value)) : "Not recorded";
+const formatDate = (value: string | null | undefined) => value ? new Intl.DateTimeFormat("en-PH", { timeZone: "Asia/Manila", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(parseUtcDate(value) || new Date(value)) : "Not recorded";
 const formatDuration = (minutes?: number | null) => minutes == null ? "In progress" : minutes >= 60 ? `${Math.floor(minutes / 60)}h ${minutes % 60}m` : `${minutes}m`;
 const timelineLabel = (type: string) => ({ event_verified: "Flood event verified", zone_created: "Official flood zone created", zone_updated: "Official flood zone updated", severity_peak_changed: "Peak severity updated", report_linked: "Supporting report linked", event_ended: "Flood event ended" }[type] ?? type.replaceAll("_", " "));
 const reportLocation = (report: FloodReport) => [report.barangay, report.road_name || report.human_readable_location].filter(Boolean).join(" · ") || "Location not recorded";

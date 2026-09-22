@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from sqlalchemy import String, Integer, DateTime, ForeignKey, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -27,7 +27,7 @@ class SavedPlace(Base):
     # Spatial column for future proximity queries
     geometry = mapped_column(Geometry("POINT", srid=4326, spatial_index=True))
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="saved_places")
