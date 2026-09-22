@@ -1,5 +1,6 @@
-import { parseUtcDate } from "@/lib/utils";
 "use client";
+
+import { parseUtcDate } from "@/lib/utils";
 
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";

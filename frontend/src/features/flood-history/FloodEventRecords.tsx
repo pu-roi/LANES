@@ -1,5 +1,6 @@
-import { parseUtcDate } from "@/lib/utils";
 "use client";
+
+import { parseUtcDate } from "@/lib/utils";
 
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
