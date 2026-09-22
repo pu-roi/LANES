@@ -3,7 +3,7 @@ import io
 import json
 import logging
 from typing import List, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
@@ -182,7 +182,7 @@ async def resolve_community_post_reports(
     reports = db.query(CommunityPostReport).filter(CommunityPostReport.post_id == post_id, CommunityPostReport.status == "open").all()
     if not reports:
         raise HTTPException(status_code=404, detail="No open reports for this post")
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     if payload.action == "hide":
         post.hidden_at, post.hidden_by_user_id = now, current_user.id
     for report in reports:

@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.crud import otp as crud_otp
 from app.schemas.otp import OTPVerificationCreate
@@ -40,7 +40,7 @@ async def generate_and_send_otp(db: Session, email: str) -> tuple[bool, str, int
     hashed_code = get_otp_hash(code)
     
     # 5 minutes expiry per user requirement
-    expires_at = datetime.utcnow() + timedelta(minutes=5)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
     
     otp_in = OTPVerificationCreate(
         email=email,
@@ -77,7 +77,7 @@ async def generate_and_send_password_reset_otp(db: Session, email: str) -> tuple
     code = generate_otp_code()
     hashed_code = get_otp_hash(code)
     
-    expires_at = datetime.utcnow() + timedelta(minutes=5)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
     
     otp_in = OTPVerificationCreate(
         email=email,
@@ -113,7 +113,7 @@ async def generate_and_send_password_change_otp(db: Session, email: str) -> tupl
     code = generate_otp_code()
     hashed_code = get_otp_hash(code)
     
-    expires_at = datetime.utcnow() + timedelta(minutes=5)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
     
     otp_in = OTPVerificationCreate(
         email=email,
@@ -136,7 +136,7 @@ def validate_otp(db: Session, email: str, plain_otp: str) -> dict:
     Validates an OTP against all active unexpired codes for the email (grace window).
     Returns dict: {"status": "SUCCESS"|"EXPIRED"|"INVALID"|"LOCKED", "message": str, "attempts_left": int}
     """
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     active_otps = crud_otp.get_active_otps(db, email)
     
     if not active_otps:

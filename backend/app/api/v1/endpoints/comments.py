@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.core.database import get_db
 from app.api.deps import get_current_user, get_current_user_optional
@@ -208,7 +208,7 @@ def edit_comment(
         raise HTTPException(status_code=400, detail="Cannot edit a deleted comment")
 
     comment.content = edit_in.content
-    comment.edited_at = datetime.utcnow()
+    comment.edited_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(comment)
 

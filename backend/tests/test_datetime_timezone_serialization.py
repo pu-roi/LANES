@@ -96,3 +96,23 @@ def test_audit_log_response_utc_serialization():
     )
     dumped = audit.model_dump(mode="json")
     assert dumped["created_at"] == "2026-09-22T02:54:00Z"
+
+
+def test_ensure_utc_and_aware_naive_subtraction():
+    from datetime import timezone
+    from app.schemas.common import ensure_utc
+
+    naive = datetime(2026, 9, 22, 2, 54, 0)
+    aware = datetime(2026, 9, 22, 3, 54, 0, tzinfo=timezone.utc)
+
+    # ensure_utc attaches UTC to naive without altering timezone
+    ensured_naive = ensure_utc(naive)
+    assert ensured_naive.tzinfo == timezone.utc
+
+    # Subtracting aware and ensure_utc(naive) must succeed without TypeError
+    diff = aware - ensured_naive
+    assert int(diff.total_seconds()) == 3600
+
+    # None returns None safely
+    assert ensure_utc(None) is None
+

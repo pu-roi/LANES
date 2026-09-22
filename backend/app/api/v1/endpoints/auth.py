@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Response, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from app import crud, models, schemas
+from app.schemas.common import ensure_utc
 from app.api import deps
 from app.core import security
 from app.core.config import settings
@@ -45,7 +46,7 @@ def login_access_token(
         ).first()
 
         if archived_user and security.verify_password(form_data.password, archived_user.hashed_password):
-            if datetime.utcnow() <= archived_user.deleted_at + timedelta(days=30):
+            if datetime.now(timezone.utc) <= ensure_utc(archived_user.deleted_at) + timedelta(days=30):
                 # Reactivate user account within the 30-day grace period
                 archived_user.deleted_at = None
                 archived_user.is_active = True
@@ -102,7 +103,7 @@ def login_access_token(
         raise HTTPException(status_code=400, detail="Incorrect username or password")
         
     if not user.is_active:
-        if datetime.utcnow() > user.created_at + timedelta(minutes=10):
+        if datetime.now(timezone.utc) > ensure_utc(user.created_at) + timedelta(minutes=10):
             crud.hard_delete_user(db, user.id)
             raise HTTPException(status_code=400, detail="Registration expired. Please register again.")
             

@@ -22,7 +22,7 @@ def get_public_stats(db: Session = Depends(get_db)) -> schemas.PublicStatsRespon
     Includes daily verified flood reports and deduplicated first-party visitors.
     """
     # 1. Daily Verified Reports
-    today = datetime.datetime.utcnow().date()
+    today = datetime.datetime.now(datetime.timezone.utc).date()
     daily_verified_reports = db.query(FloodReport).filter(
         FloodReport.status == ReportStatus.APPROVED,
         func.date(FloodReport.created_at) == today
@@ -52,7 +52,7 @@ def record_public_visit(
         user_agent=request.headers.get("user-agent"),
     )
     visitor_summary = get_visitor_summary(db)
-    today = datetime.datetime.utcnow().date()
+    today = datetime.datetime.now(datetime.timezone.utc).date()
     daily_verified_reports = db.query(FloodReport).filter(
         FloodReport.status == ReportStatus.APPROVED,
         func.date(FloodReport.created_at) == today,

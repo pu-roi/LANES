@@ -12,7 +12,7 @@ from app.schemas.report import (
     MergedZoneFinalData, MergeReportsRequest, MergeReportsResponse
 )
 from app.schemas.route import RouteRequest, RouteResponse, LineStringGeometry, RouteOption, MultiRouteResponse, FloodExposure, BlockedRouteBaseline
-from app.schemas.common import PointGeometry, PolygonGeometry, serialize_utc_datetime
+from app.schemas.common import PointGeometry, PolygonGeometry, serialize_utc_datetime, ensure_utc
 from app.schemas.auth import (
     Token, TokenPayload, GoogleAuthRequest, GoogleAuthResponse,
     PasswordResetRequest, PasswordResetVerifyRequest, PasswordResetVerifyResponse, PasswordResetConfirm

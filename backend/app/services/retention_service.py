@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Any
 from sqlalchemy.orm import Session
 
@@ -15,7 +15,7 @@ def purge_expired_archived_records(db: Session, retention_days: int = 30) -> Dic
     Permanently deletes records that have been soft-deleted or archived
     for longer than `retention_days` (default 30 days).
     """
-    threshold = datetime.utcnow() - timedelta(days=retention_days)
+    threshold = datetime.now(timezone.utc) - timedelta(days=retention_days)
     purged_counts = {
         "users": 0,
         "posts": 0,

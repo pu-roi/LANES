@@ -1,6 +1,6 @@
 """Privacy-preserving visitor measurement for LANES' own first-party analytics."""
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 import hashlib
 import hmac
 from typing import Optional
@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.audit import VisitorDailyVisit
+from app.schemas.common import ensure_utc
 
 
 _AUTOMATED_USER_AGENT_MARKERS = (
@@ -46,7 +47,7 @@ def record_visitor_activity(
     if is_automated_user_agent(user_agent):
         return False
 
-    recorded_at = now or datetime.utcnow()
+    recorded_at = ensure_utc(now) or datetime.now(timezone.utc)
     visitor_hash = hash_visitor_identifier(visitor_id)
     visit_date = recorded_at.date()
     visit = (
@@ -86,7 +87,7 @@ def _logical_visitor_key():
 
 def get_visitor_summary(db: Session, *, today: Optional[date] = None) -> dict[str, int]:
     """Return de-duplicated lifetime and current-day first-party visitor counts."""
-    current_day = today or datetime.utcnow().date()
+    current_day = today or datetime.now(timezone.utc).date()
     visitor_key = _logical_visitor_key()
     total_unique_visitors = db.query(func.count(func.distinct(visitor_key))).scalar() or 0
     visitors_today = (
@@ -108,7 +109,7 @@ def get_visitor_analytics(
     today: Optional[date] = None,
 ) -> dict:
     """Return a gap-free daily trend for the protected administrator dashboard."""
-    current_day = today or datetime.utcnow().date()
+    current_day = today or datetime.now(timezone.utc).date()
     start_day = current_day - timedelta(days=days - 1)
     visitor_key = _logical_visitor_key()
     rows = (
