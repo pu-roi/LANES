@@ -1,9 +1,10 @@
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import func, or_
 
 from app import models, schemas
+from app.schemas.common import ensure_utc
 
 
 def get_flood_report(db: Session, report_id: int) -> Optional[models.FloodReport]:
@@ -72,11 +73,10 @@ def update_flood_report_status(db: Session, report_id: int, status: str) -> Opti
 
 
 def archive_flood_report(db: Session, report_id: int) -> Optional[models.FloodReport]:
-    from datetime import datetime
     # Use direct query to include already deleted items if necessary, or just rely on get which filters by deleted_at is None
     report = db.query(models.FloodReport).filter(models.FloodReport.id == report_id).first()
     if report and report.deleted_at is None:
-        report.deleted_at = datetime.utcnow()
+        report.deleted_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(report)
     return report
@@ -227,7 +227,7 @@ def create_flood_avoidance_zone(
         if db_report:
             db_report.zone_id = db_zone.id
             db_report.status = models.ReportStatus.APPROVED
-            db_report.approved_at = datetime.utcnow()
+            db_report.approved_at = datetime.now(timezone.utc)
     if commit:
         db.commit()
         db.refresh(db_zone)
@@ -287,8 +287,8 @@ def get_admin_dashboard_stats(db: Session) -> dict:
     Get aggregated dashboard stats for administrators.
     """
     from datetime import datetime, time
-    now = datetime.utcnow()
-    start_of_today = datetime.combine(now.date(), time.min)
+    now = datetime.now(timezone.utc)
+    start_of_today = datetime.combine(now.date(), time.min, tzinfo=timezone.utc)
 
     total_pending = db.query(models.FloodReport).filter(
         models.FloodReport.status == "pending",
@@ -391,7 +391,7 @@ def restore_flood_avoidance_zone(db: Session, zone_id: int) -> Optional[models.F
     if not zone:
         return None
     zone.is_active = True
-    if zone.expires_at and zone.expires_at <= datetime.utcnow():
+    if zone.expires_at and ensure_utc(zone.expires_at) <= datetime.now(timezone.utc):
         zone.expires_at = None
     db.commit()
     db.refresh(zone)
@@ -453,7 +453,7 @@ def get_admin_dashboard_charts(db: Session) -> dict:
             severity_data[sev] = 0
 
     # 2. Reports Over Time (Last 30 Days)
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     # Group by date part using func.date (compatible with SQLite/Postgres)
     timeline_stats = db.query(
         func.date(models.FloodReport.created_at).label("day"),
@@ -474,7 +474,7 @@ def get_admin_dashboard_charts(db: Session) -> dict:
 
     timeline_data = []
     for i in range(30):
-        day_date = (datetime.utcnow() - timedelta(days=29 - i)).date()
+        day_date = (datetime.now(timezone.utc) - timedelta(days=29 - i)).date()
         day_str = day_date.isoformat()
         timeline_data.append({
             "date": day_str,

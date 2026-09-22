@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List, Tuple
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -71,7 +71,7 @@ def get_post_edit_history(db: Session, post_id: int) -> list[CommunityPostEditHi
 def soft_delete_post(db: Session, post_id: int, deleted_by_user_id: Optional[int] = None) -> Optional[CommunityPost]:
     db_post = db.query(CommunityPost).filter(CommunityPost.id == post_id).first()
     if db_post:
-        db_post.deleted_at = datetime.utcnow()
+        db_post.deleted_at = datetime.now(timezone.utc)
         db_post.deleted_by_user_id = deleted_by_user_id
         db.commit()
         db.refresh(db_post)

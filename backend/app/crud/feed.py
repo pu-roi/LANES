@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from sqlalchemy import func, case, text, Float, String, and_, or_
 from app.models.report import FloodReport
@@ -31,7 +31,7 @@ def get_feed_posts(
     if author_id:
         base_query = base_query.filter(CommunityPost.user_id == author_id)
     if time_window_hours is not None:
-        cutoff = datetime.utcnow() - timedelta(hours=time_window_hours)
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=time_window_hours)
         base_query = base_query.filter(CommunityPost.created_at >= cutoff)
 
     # Subqueries for upvotes and downvotes

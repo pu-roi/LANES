@@ -149,8 +149,8 @@ def update_user_status(db: Session, user_id: int, is_active: bool) -> Optional[m
 def delete_user(db: Session, user_id: int) -> bool:
     user = get_user(db, user_id)
     if user:
-        from datetime import datetime
-        user.deleted_at = datetime.utcnow()
+        from datetime import datetime, timezone
+        user.deleted_at = datetime.now(timezone.utc)
         db.commit()
         return True
     return False

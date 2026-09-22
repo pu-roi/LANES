@@ -202,8 +202,8 @@ def delete_current_user_account(
     Self-deactivation / soft deletion of the current user's profile and account.
     Initiates a 30-day grace period before permanent automatic purge.
     """
-    from datetime import datetime
-    current_user.deleted_at = datetime.utcnow()
+    from datetime import datetime, timezone
+    current_user.deleted_at = datetime.now(timezone.utc)
     current_user.is_active = False
     db.commit()
 

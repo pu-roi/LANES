@@ -1,14 +1,15 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from app.models.otp import OTPVerification
 from app.schemas.otp import OTPVerificationCreate
+from app.schemas.common import ensure_utc
 
 COOLDOWN_TIERS = [60, 180, 300]  # 1 min -> 3 mins -> 5 mins
 
 def get_active_otps(db: Session, email: str) -> List[OTPVerification]:
     """Returns all active, unverified, unexpired OTPs for this email, newest first."""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     return db.query(OTPVerification).filter(
         OTPVerification.email == email,
         OTPVerification.is_verified == False,
@@ -21,7 +22,7 @@ def check_resend_eligibility(db: Session, email: str) -> tuple[bool, int, int]:
     Checks if a new OTP can be requested for this email.
     Returns: (is_eligible, wait_seconds_remaining, next_cooldown_duration)
     """
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     active_otps = get_active_otps(db, email)
     
     # Check if locked out from too many failed attempts (>= 5 attempts across recent codes)
@@ -29,7 +30,7 @@ def check_resend_eligibility(db: Session, email: str) -> tuple[bool, int, int]:
     if recent_attempts >= 5:
         # Check time since last attempt or newest OTP
         if active_otps:
-            lockout_expiry = active_otps[0].created_at + timedelta(minutes=5)
+            lockout_expiry = ensure_utc(active_otps[0].created_at) + timedelta(minutes=5)
             if now < lockout_expiry:
                 remaining_lockout = int((lockout_expiry - now).total_seconds())
                 return False, remaining_lockout, 300
@@ -43,7 +44,7 @@ def check_resend_eligibility(db: Session, email: str) -> tuple[bool, int, int]:
     tier_idx = min(resend_count - 1, len(COOLDOWN_TIERS) - 1)
     cooldown_required = COOLDOWN_TIERS[tier_idx]
     
-    seconds_passed = (now - latest_otp.created_at).total_seconds()
+    seconds_passed = (now - ensure_utc(latest_otp.created_at)).total_seconds()
     if seconds_passed < cooldown_required:
         wait_remaining = int(cooldown_required - seconds_passed)
         return False, wait_remaining, cooldown_required
@@ -59,7 +60,7 @@ def create_otp(db: Session, otp_in: OTPVerificationCreate) -> tuple[OTPVerificat
     Purges older codes beyond the 3-code grace window.
     Returns (db_otp, next_cooldown_seconds)
     """
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     # Delete expired or verified OTPs
     db.query(OTPVerification).filter(
         OTPVerification.email == otp_in.email,
@@ -112,7 +113,7 @@ def increment_otp_attempts(db: Session, email: str) -> int:
 
 def mark_all_otps_verified(db: Session, email: str) -> None:
     """Marks verified and invalidates other pending OTPs for the email."""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     active_otps = get_active_otps(db, email)
     for otp in active_otps:
         otp.is_verified = True
@@ -126,7 +127,7 @@ def delete_otp(db: Session, email: str) -> None:
 
 def is_email_verified(db: Session, email: str) -> bool:
     """Checks if the email has a verified OTP within the last 30 minutes."""
-    cutoff = datetime.utcnow() - timedelta(minutes=30)
+    cutoff = datetime.now(timezone.utc) - timedelta(minutes=30)
     otp = db.query(OTPVerification).filter(
         OTPVerification.email == email,
         OTPVerification.is_verified == True,

@@ -3,7 +3,7 @@ import csv
 import json
 import uuid
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from sqlalchemy.orm import Session
 
@@ -22,7 +22,7 @@ if not os.path.exists(EXPORT_DIR):
 
 def export_reports(db: Session, format: str = "csv") -> str:
     reports = db.query(models.FloodReport).all()
-    filename = f"reports_export_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+    filename = f"reports_export_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
     
     if format.lower() == "json":
         filepath = os.path.join(EXPORT_DIR, f"{filename}.json")
@@ -61,7 +61,7 @@ def export_reports(db: Session, format: str = "csv") -> str:
 
 def export_zones(db: Session, format: str = "csv") -> str:
     zones = db.query(models.FloodAvoidanceZone).all()
-    filename = f"zones_export_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+    filename = f"zones_export_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}"
     
     if format.lower() == "json":
         filepath = os.path.join(EXPORT_DIR, f"{filename}.json")
@@ -136,7 +136,7 @@ def create_backup(user_id: int) -> schemas.BackupFile:
         "id": backup_id,
         "name": filename,
         "created_by": str(user_id),
-        "created_at": datetime.utcnow().isoformat()
+        "created_at": datetime.now(timezone.utc).isoformat()
     }
     with open(meta_path, "w") as f:
         json.dump(meta, f)
@@ -145,7 +145,7 @@ def create_backup(user_id: int) -> schemas.BackupFile:
         id=backup_id,
         name=filename,
         size_bytes=stat.st_size,
-        created_at=datetime.utcnow(),
+        created_at=datetime.now(timezone.utc),
         created_by=str(user_id)
     )
 
