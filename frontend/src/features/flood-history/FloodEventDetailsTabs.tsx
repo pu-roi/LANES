@@ -31,7 +31,7 @@ export function FloodEventDetailsTabs({ activeTab, data, onChangeTab, onFocusHis
     { id: "reports", label: `Reports (${data.reports.length})`, icon: Users },
   ];
 
-  return <div className="space-y-5">
+  return <div className={activeTab === "reports" ? "space-y-5 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:space-y-0 lg:gap-5" : "space-y-5"}>
     <Tabs tabs={tabItems} activeTab={activeTab} onChange={(tab) => onChangeTab(tab as DetailTab)} variant="pills" fullWidth layoutId="flood-event-detail-tabs" />
     {activeTab === "overview" && <Overview data={data} onFocusHistoricalMap={onFocusHistoricalMap} />}
     {activeTab === "official-history" && <OfficialHistory data={data} onFocusHistoricalMap={onFocusHistoricalMap} />}
@@ -68,7 +68,7 @@ function SupportingReports({ data, onFocusHistoricalMap }: Pick<FloodEventDetail
   const [selectedReport, setSelectedReport] = useState<FloodReport | null>(null);
   const reportCount = data.reports.length;
 
-  return <section>
+  return <section className="lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
     <div className="flex flex-wrap items-end justify-between gap-2">
       <div>
         <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400"><FileText className="size-3.5 text-slate-500" />Reports linked to this event</h3>
@@ -77,7 +77,7 @@ function SupportingReports({ data, onFocusHistoricalMap }: Pick<FloodEventDetail
       {reportCount > 0 && <span className="text-xs font-semibold text-slate-500">{reportCount} report{reportCount === 1 ? "" : "s"}</span>}
     </div>
 
-    {reportCount === 0 ? <p className="mt-3 rounded-xl border border-slate-200/70 bg-slate-50/40 p-5 text-sm text-slate-500">No reports are linked to this event. Historical event records should retain their originating report when one was used to create the incident.</p> : <div className="mt-3 min-h-[32rem] overflow-hidden rounded-xl border border-slate-200/70 bg-slate-50/40 lg:grid lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)]">
+    {reportCount === 0 ? <p className="mt-3 rounded-xl border border-slate-200/70 bg-slate-50/40 p-5 text-sm text-slate-500">No reports are linked to this event. Historical event records should retain their originating report when one was used to create the incident.</p> : <div className="mt-3 min-h-[32rem] overflow-hidden rounded-xl border border-slate-200/70 bg-slate-50/40 lg:min-h-0 lg:flex-1 lg:grid lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)]">
       <div className={selectedReport ? "hidden min-h-0 overflow-y-auto lg:block" : "min-h-0 overflow-y-auto"}>
         <div className="divide-y divide-slate-100 px-4">{data.reports.map((report, index) => <article key={report.id} className={`py-4 ${selectedReport?.id === report.id ? "bg-blue-50/70 -mx-4 px-4" : ""}`}>
           <div className="flex items-start justify-between gap-3">
@@ -92,8 +92,8 @@ function SupportingReports({ data, onFocusHistoricalMap }: Pick<FloodEventDetail
         </article>)}</div>
       </div>
 
-      <div className={selectedReport ? "min-h-[32rem] bg-white" : "hidden min-h-[32rem] border-l border-slate-200 bg-white lg:flex lg:items-center lg:justify-center"}>
-        {selectedReport ? <div className="h-full min-h-[32rem]">
+      <div className={selectedReport ? "min-h-[32rem] bg-white lg:min-h-0" : "hidden min-h-[32rem] border-l border-slate-200 bg-white lg:flex lg:min-h-0 lg:items-center lg:justify-center"}>
+        {selectedReport ? <div className="h-full min-h-[32rem] lg:min-h-0">
           <div className="border-b border-slate-100 p-2 lg:hidden"><Button className="gap-1.5" onClick={() => setSelectedReport(null)} size="sm" variant="ghost"><ChevronLeft className="size-4" />Back to reports</Button></div>
           <FloodReportDetailsModal isOpen onClose={() => setSelectedReport(null)} onViewOnMap={(report) => onFocusHistoricalMap({ eventId: data.id, geometry: report.geometry, label: `Flood Report #${report.id}` })} presentation="panel" report={selectedReport} />
         </div> : <p className="max-w-xs text-center text-sm text-slate-500">Select a report to inspect its original survey, reporter, evidence media, and mapped location.</p>}
