@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Dict, Any, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
+from app.schemas.common import serialize_utc_datetime
 
 
 class RoleBase(BaseModel):
@@ -23,3 +24,7 @@ class RoleResponse(RoleBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("created_at")
+    def serialize_role_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)

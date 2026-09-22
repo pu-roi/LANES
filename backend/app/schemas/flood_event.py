@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
+from app.schemas.common import serialize_utc_datetime
 from app.models.report import (
     FloodEventLocationType,
     FloodEventStatus,
@@ -21,6 +22,10 @@ class FloodEventLocationResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer("created_at")
+    def serialize_location_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)
+
 
 class FloodEventTimelineEntryResponse(BaseModel):
     id: int
@@ -30,6 +35,10 @@ class FloodEventTimelineEntryResponse(BaseModel):
     snapshot_json: Optional[dict[str, Any]] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("occurred_at")
+    def serialize_timeline_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)
 
 
 class FloodEventResponse(BaseModel):
@@ -45,6 +54,10 @@ class FloodEventResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer("first_reported_at", "verified_at", "ended_at", "created_at", "updated_at")
+    def serialize_event_datetimes(self, dt: Optional[datetime], _info):
+        return serialize_utc_datetime(dt)
+
 
 class FloodReportModerationOutcomeResponse(BaseModel):
     id: int
@@ -58,3 +71,7 @@ class FloodReportModerationOutcomeResponse(BaseModel):
     acted_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("acted_at")
+    def serialize_outcome_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)

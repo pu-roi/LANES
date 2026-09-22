@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui";
 import { Select } from "@/shared/ui";
 import type { ApproveReportPayload, FloodReport } from "../adminApi";
 import { UseMutationResult } from "@tanstack/react-query";
+import { parseUtcDate } from "@/lib/utils";
 
 interface PendingReportsPanelProps {
   pendingLoading: boolean;
@@ -124,7 +125,7 @@ export function PendingReportsPanel({
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] text-gray-400 font-medium">
-                  {new Date(report.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  {parseUtcDate(report.created_at)?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) ?? ""}
                 </span>
                 <button
                   type="button"

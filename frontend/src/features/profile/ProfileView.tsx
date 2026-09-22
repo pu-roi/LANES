@@ -1,3 +1,4 @@
+import { parseUtcDate } from "@/lib/utils";
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -216,10 +217,11 @@ export default function ProfileView() {
   }
 
   const profile = user.profile || {};
-  const joinedDate = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date(user.created_at));
+  const joinedDate = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(parseUtcDate(user.created_at) || new Date(user.created_at));
   
   const formatDate = (dateStr: string) => {
-    return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(dateStr));
+    const d = parseUtcDate(dateStr) || new Date(dateStr);
+    return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(d);
   };
 
   const handleSaveColor = async (newColor: string) => {

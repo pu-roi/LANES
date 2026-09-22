@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { parseUtcDate } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { MapPin, Clock, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -53,7 +54,7 @@ export function ReportComparisonCard({
   const createdAt = "created_at" in report ? report.created_at : report.reported_at;
 
   const timeAgo = createdAt 
-    ? formatDistanceToNow(new Date(createdAt), { addSuffix: true }) 
+    ? formatDistanceToNow(parseUtcDate(createdAt) || new Date(createdAt), { addSuffix: true }) 
     : "Recently";
 
   return (

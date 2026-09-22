@@ -1,7 +1,7 @@
 from datetime import datetime
 import struct
 from typing import Any, Literal, Optional, Union
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, field_serializer, field_validator, model_validator
 from geoalchemy2.elements import WKBElement
 
 from app.schemas.common import (
@@ -15,6 +15,7 @@ from app.schemas.common import (
     parse_ewkb_linestring,
     parse_ewkb_multilinestring,
     parse_ewkb_polygon,
+    serialize_utc_datetime,
 )
 
 
@@ -83,6 +84,10 @@ class FloodReportResponse(FloodReportBase):
     reporter_trust_score: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("created_at", "updated_at", "approved_at")
+    def serialize_report_datetimes(self, dt: Optional[datetime], _info):
+        return serialize_utc_datetime(dt)
 
     @field_validator("media_urls", mode="before")
     @classmethod
@@ -189,6 +194,10 @@ class ZoneContributorResponse(BaseModel):
     geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer("created_at")
+    def serialize_contributor_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)
+
     @field_validator("geometry", mode="before")
     @classmethod
     def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry]]:
@@ -250,6 +259,10 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     contributors: list[ZoneContributorResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("created_at", "updated_at", "expires_at")
+    def serialize_zone_datetimes(self, dt: Optional[datetime], _info):
+        return serialize_utc_datetime(dt)
 
     @field_validator("geometry", mode="before")
     @classmethod
@@ -347,6 +360,10 @@ class NearbyZoneResponse(BaseModel):
     geometry: PolygonGeometry
     report_count: int = 1
 
+    @field_serializer("created_at")
+    def serialize_nearby_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)
+
 
 class FloodAvoidanceZonesPaginatedResponse(BaseModel):
     zones: list[FloodAvoidanceZoneResponse]
@@ -416,6 +433,10 @@ class MergeCandidateItem(BaseModel):
     road_class: Optional[str] = None
     corridor_overlap_ratio: Optional[float] = None
     conflicts: list[MergeConflict] = []
+
+    @field_serializer("reported_at")
+    def serialize_candidate_datetimes(self, dt: datetime, _info):
+        return serialize_utc_datetime(dt)
 
 
 class MergeCandidatesListResponse(BaseModel):
