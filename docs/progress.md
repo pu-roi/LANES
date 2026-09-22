@@ -1,8 +1,14 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 22, 2026, 1:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 23, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+---
+
+### Pasig Flood-History Dataset Preparation (🟢 COMPLETED)
+- [x] **Reproducible historical flood-data cleaner** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added a standard-library pipeline that converts the 2020–2025 DRRMO CSV into 726 traceable records, preserves raw location and depth evidence, normalizes safe whitespace/administrative aliases, and extracts explicit centimeter ranges without geocoding or merging events.
+- [x] **PSA/PSGC barangay validation and quality gates** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added the 30-barangay Pasig reference with PSGC codes, resolves San Miguel and safe aliases, and records reviewed corrections for `Maybunnga` → Maybunga and `Pala` → Palatiw. Dedicated pytest coverage verifies the row/year totals, normalization, depth parsing, and output traceability.
 
 ---
 
