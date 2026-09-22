@@ -1,5 +1,6 @@
-import { parseUtcDate } from "@/lib/utils";
 "use client";
+
+import { parseUtcDate } from "@/lib/utils";
 
 /**
  * MergeReportsModal
