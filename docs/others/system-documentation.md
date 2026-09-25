@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 24, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -392,7 +392,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | Service | What It Does |
 |---------|-------------|
 | **NLP Location Extractor** | Uses spaCy to parse Taglish flood report text and extract barangay/street location names, storing them in `flood_report_locations` |
-| **RSS News Discovery** | `news_sources.py`, `news_feed_service.py`, and `news_discovery_service.py` read a 51-publisher candidate registry, parse bounded RSS/Atom feeds, and shortlist likely Pasig flood articles. `crud/news.py` saves conditional feed checkpoints and article evidence in three approved tables. Six feeds are enabled locally. The migration is not yet applied to a live database; no scheduled job or public-zone action exists. |
+| **RSS News Discovery** | `news_sources.py`, `news_feed_service.py`, and `news_discovery_service.py` read a 51-publisher candidate registry, parse bounded RSS/Atom feeds, and shortlist likely Pasig flood articles. `crud/news.py` saves conditional feed checkpoints and article evidence in three Cloud SQL tables. Six feeds are enabled; `lanes-news-discovery` runs on Cloud Run every three hours through Cloud Scheduler. Staff-only endpoints expose feed health and pending evidence. No discovered article automatically creates a public zone or changes routing. |
 | **Routing Engine Proxy** | Uses Valhalla (primary) or OpenRouteService (secondary) only to generate candidates. The shared FastAPI flood policy evaluates candidate geometry against active `flood_avoidance_zones`, blocks medium exposure for light/Bike-Motorcycle and Red/Extreme exposure for every public profile; Orange/High is a strongly cautioned 40% fallback only for Walking. It ranks up to four distinct legal routes and reports deterministic exposure details. |
 | **Zone Deduplication** | When a new flood report is approved near an existing active zone (within a configurable buffer distance), it is linked to that zone instead of creating a new duplicate polygon |
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |

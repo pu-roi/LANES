@@ -1,25 +1,21 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
 ---
 
-## 🛠️ Current Features
+## 🛠️ Feature Reference (Current and Planned)
 
-### 1. Bilingual Taglish NLP Ingestion & Named Entity Recognition (NER)
+### 1. Bilingual Taglish NLP Ingestion & Named Entity Recognition (NER) — In Progress
 *   **Purpose:** Bypasses the need for expensive physical IoT sensors by converting raw, informal text reports from public channels into structured geospatial hazards.
-*   **What it does:** Extracts location tokens (street names, landmarks) and classifies flood depth indicators from conversational, bilingual Taglish text feeds (e.g., *"Baha sa may Caruncho Ave, lagpas tuhod"*).
-*   **How it works:**
-    1. Normalizes raw text inputs (lowercasing, punctuation stripping).
-    2. Runs a custom-trained **spaCy Named Entity Recognition (NER)** sequence-labeling pipeline to identify geographic tokens.
-    3. Matches extracted depth entities (e.g., *tuhod*, *dibdib*) against a rule-based dictionary to map Taglish colloquialisms to standardized severity metrics (Low, Moderate, High, Extreme).
-    4. Automatically scores the parsing reliability with two metrics: `location_confidence` and `severity_confidence`.
-*   **Access & Roles:** Public users can submit reports; DRRM officers review and validate the outputs.
+*   **Current state:** Trusted RSS discovery, source evidence, database storage, and staff-only candidate reads are deployed. Six verified feeds are polled every three hours; no NER extraction or AI-suggested map zone is deployed.
+*   **Planned extraction:** Evaluate a CPU Tagalog spaCy NER baseline, combine it with Pasig place aliases and flood-depth/status rules, preserve source sentences, and score uncertain locations for staff review.
+*   **Access & Roles:** Public users can submit manual reports; staff can inspect discovered news evidence. AI-derived locations and moderation decisions remain future work.
 *   **Related Components:**
     *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (for manual text submission and incident reporting).
-    *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) endpoint (`POST /api/v1/reports`), `app.services.spacy` pipelines.
+    *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) handles manual reports; `admin_news.py` and the `news_*` services handle RSS evidence. The planned NLP service does not exist yet.
 
 ---
 

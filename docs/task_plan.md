@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 25, 2026, 10:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -12,9 +12,9 @@
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery, Taglish Extraction & Admin-Reviewed Map Suggestions (🟡 IN PROGRESS)
 > **Focus:** Build a defense-ready, server-side assistant that discovers recent flood reports from approved public news sources, extracts Filipino/English/Taglish flood evidence, ranks a likely Pasig map location using the cleaned DRRMO history and map context, and presents every result for administrator review before it can affect an official flood zone or routing. It is decision support, not automatic public reporting or routing activation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
-**Current next task:** Deploy and manually verify a dedicated RSS Cloud Run job before enabling Cloud Scheduler. Continue with event grouping and NER after the discovery pipeline is reliable.
+**Current next task:** Verify calamanCy's CPU Tagalog NER baseline and implement Taglish flood extraction against preserved article evidence. Event grouping, location ranking, and admin review follow.
 
-> **RSS implementation status:** The [RSS news discovery plan](others/rss-news-discovery-plan.md) records all 50 Feedspot candidates plus News5. Six publisher feeds are enabled after local checks; others can be added through the registry. The approved three-table storage model, migration, checkpoint-aware collection, and staff trigger are implemented in code. The migration and two collector runs passed against local development PostGIS on September 25; Cloud SQL migration, Cloud Run network/scheduling, event grouping, and NER remain pending. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+> **RSS implementation status:** The [RSS news discovery plan](others/rss-news-discovery-plan.md) records 50 Feedspot candidates plus News5. Six verified feeds are enabled. The approved migration passed in development and in the production Cloud Build migration job; the dedicated `lanes-news-discovery` Cloud Run job completed two manual runs and one Scheduler-triggered run. `lanes-news-discovery-every-3-hours` is enabled in `asia-east1`. No sampled live article matched the Pasig flood shortlist, and event grouping, NER, location ranking, and admin review remain pending. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 #### 1. Historical Location Input (Completed)
 
@@ -25,7 +25,8 @@
 - [x] Build a configurable 51-publisher research registry, bounded RSS/Atom parser, live feed probe, basic Pasig flood shortlist, staff-authenticated source/probe API, and one-run local discovery command. Verify six current feeds directly and cover parsing, source safety, deduplication, and auth with offline tests. This is the local collection slice; it does not persist candidates or run on a schedule. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Design and approve three durable feed/article/provenance tables; implement SQLAlchemy models, Alembic migration, conditional checkpoints, URL/GUID deduplication, a staff-only evidence list and trigger, and offline retry tests. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Apply migration against local development PostGIS and run the persistent collector twice: six healthy checkpoints, three conditional `304` responses on the repeat pass, and no current Pasig flood candidates in the sampled feeds. The 12 RSS tests pass; a mocked article run against the same PostGIS database retained one article and one provenance row across two runs, then removed the synthetic records. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [ ] Deploy and manually verify a dedicated Cloud Run job before enabling Cloud Scheduler; verify the production migration and feed access separately.
+- [x] Verify the production migration job, deploy `lanes-news-discovery`, confirm two manual runs parse all six enabled feeds with persisted `304` checkpoints, and verify a Scheduler-triggered run. The three-hour schedule is enabled with job-scoped invoker access. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Add RSS job image updates to the backend release process before changing collector code again; the current `cloudbuild.yaml` deploys `lanes-api` and `lanes-migration` but does not refresh `lanes-news-discovery`.
 - [ ] Build a server-side, on-demand or scheduled discovery service using public publisher RSS feeds and a flood-keyword feed such as Google News RSS. Search Filipino, English, and Taglish terms (“baha,” “flood,” “lubog,” “pagbaha,” “lagpas tuhod”) with Pasig place terms.
 - [ ] Investigate ABS-CBN, GMA News, News5, Inquirer, and Rappler first, while keeping the Feedspot 50 as candidate publishers. Enable any publisher only after verifying its identity, feed, article domains, and access method. Apply the resulting publisher-domain allowlist before article retrieval; fetch publicly accessible pages respectfully when the feed lacks full text. Do not bypass paywalls, bot protections, rate limits, or source restrictions.
 - [ ] Define the candidate fields during implementation: source/canonical URL, publisher, title, byline when available, publication/fetch times, captured text, flood-relevance score, evidence sentences, extracted places, canonical depth, flood condition, ranked location candidates, confidence, and review state.

@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 24, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -56,8 +56,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Securing API endpoints via JSON Web Tokens, cryptographically signing tokens, and securely hashing user passwords for role-based access control.
 * **Transactional Email & Communication:** **Resend REST API & httpx**
   * *Role:* Generating async HTTP requests to the Resend API (from `Lanes <noreply@navlanes.live>`) to securely dispatch 6-digit One-Time Password verification codes to user emails during account onboarding/password recovery, as well as delivering commuter messages from the /about contact form to official project inboxes (lanes@navlanes.live, navlanes.live@gmail.com).
-* **RSS News Discovery (local slice):** **httpx + Python standard-library XML/HTML parsers**
-  * *Role:* Polling reviewed publisher feeds, parsing bounded RSS/Atom responses, shortlisting Pasig flood entries, and retrieving accessible public article text. Six feeds are enabled locally; SQLAlchemy/PostgreSQL evidence storage is implemented in code, while Cloud Run scheduling and live migration verification are pending. No new Python package was added.
+* **RSS News Discovery:** **httpx + Python standard-library XML/HTML parsers + Cloud Run Jobs + Cloud Scheduler**
+  * *Role:* Polling six verified publisher feeds every three hours in `asia-east1`, parsing bounded RSS/Atom responses, shortlisting Pasig flood entries, and storing source evidence in three migrated Cloud SQL tables. The staff-only API exposes feed health and pending candidates. No new Python package was added; NLP/NER remains future work.
 * **Image Processing & Storage:** **Cloudinary Python SDK**  
   * *Role:* Managing direct upload, scaling (down to 1024px), and WebP format compression of user-submitted flood evidence photos to a dedicated cloud CDN, ensuring lightweight database records and fast frontend loading.
 * **NLP & Information Extraction:** **spaCy**  
