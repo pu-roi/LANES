@@ -1,13 +1,13 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 25, 2026, 10:16 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
 
 ### Capstone Phase 36: RSS News Discovery (🟡 IN PROGRESS)
-- [x] **Local PostGIS migration and persistent RSS verification** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): applied Alembic revision `a83c1d4e7b92` to development PostGIS, confirmed it is head, and completed two persisted collector runs across six enabled feeds. Six checkpoint rows remained healthy; three feeds returned conditional `304` on the repeat run. No sampled entry met the Pasig flood filter, so live article-row deduplication remains unverified; the fixture test covers one retained article across repeated runs. All 12 focused RSS tests passed. Cloud SQL and the dedicated Cloud Run job remain unverified.
+- [x] **Local PostGIS migration and persistent RSS verification** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): applied Alembic revision `a83c1d4e7b92` to development PostGIS, confirmed it is head, and completed two persisted collector runs across six enabled feeds. Six checkpoint rows remained healthy; three feeds returned conditional `304` on the repeat run. No sampled live entry met the Pasig flood filter; a mocked article against the same PostGIS database retained one article and provenance row across two runs, then the synthetic records were removed. All 12 focused RSS tests passed. Cloud SQL and the dedicated Cloud Run job remain unverified.
 - [x] **Approved durable evidence storage implemented in code** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added the three approved SQLAlchemy tables and Alembic revision, per-feed ETag/Last-Modified checkpoints, persistent article and GUID provenance deduplication, a staff-only candidate list and on-demand run, and a dry-run CLI option. A PostgreSQL advisory lock serializes the same feed across concurrent runs. No Cloud Run job, scheduler, NER, or map-zone activation was added.
 - [x] **Configurable publisher registry and direct feed pilot** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): recorded 50 Feedspot candidates plus News5, verified six recent publisher feeds locally (GMA, Inquirer, Rappler, Philstar, BusinessWorld, Interaksyon), and kept other candidates disabled pending checks. The source loader validates HTTPS feed URLs and publisher article domains.
 - [x] **RSS/Atom probe and initial Pasig flood discovery** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): added bounded HTTP/XML retrieval, explicit per-source errors, a one-run command, staff-only source listing/probing, broad Taglish flood/place shortlisting, safe public article retrieval with metadata-only fallback, and within-run deduplication. Scheduling remains Phase 36 work.

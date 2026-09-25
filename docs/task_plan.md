@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 25, 2026, 10:16 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -24,7 +24,7 @@
 
 - [x] Build a configurable 51-publisher research registry, bounded RSS/Atom parser, live feed probe, basic Pasig flood shortlist, staff-authenticated source/probe API, and one-run local discovery command. Verify six current feeds directly and cover parsing, source safety, deduplication, and auth with offline tests. This is the local collection slice; it does not persist candidates or run on a schedule. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Design and approve three durable feed/article/provenance tables; implement SQLAlchemy models, Alembic migration, conditional checkpoints, URL/GUID deduplication, a staff-only evidence list and trigger, and offline retry tests. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [x] Apply migration against local development PostGIS and run the persistent collector twice: six healthy checkpoints, three conditional `304` responses on the repeat pass, and no current Pasig flood candidates in the sampled feeds. The 12 RSS tests pass; fixture coverage verifies article persistence and deduplication. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Apply migration against local development PostGIS and run the persistent collector twice: six healthy checkpoints, three conditional `304` responses on the repeat pass, and no current Pasig flood candidates in the sampled feeds. The 12 RSS tests pass; a mocked article run against the same PostGIS database retained one article and one provenance row across two runs, then removed the synthetic records. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [ ] Deploy and manually verify a dedicated Cloud Run job before enabling Cloud Scheduler; verify the production migration and feed access separately.
 - [ ] Build a server-side, on-demand or scheduled discovery service using public publisher RSS feeds and a flood-keyword feed such as Google News RSS. Search Filipino, English, and Taglish terms (“baha,” “flood,” “lubog,” “pagbaha,” “lagpas tuhod”) with Pasig place terms.
 - [ ] Investigate ABS-CBN, GMA News, News5, Inquirer, and Rappler first, while keeping the Feedspot 50 as candidate publishers. Enable any publisher only after verifying its identity, feed, article domains, and access method. Apply the resulting publisher-domain allowlist before article retrieval; fetch publicly accessible pages respectfully when the feed lacks full text. Do not bypass paywalls, bot protections, rate limits, or source restrictions.
