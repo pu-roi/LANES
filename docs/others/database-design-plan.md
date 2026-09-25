@@ -1,12 +1,12 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 24, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
-## Phase 36 RSS evidence storage (approved; migration pending live application)
+## Phase 36 RSS evidence storage (approved and migrated)
 
-Revision `a83c1d4e7b92` defines exactly three new tables. Publisher configuration remains in `backend/app/news_sources.json`; `source_id` is the stable registry key. The local PostgreSQL port was unavailable during implementation, so the generated PostgreSQL migration SQL was inspected and an in-memory persistence test passed, but `alembic upgrade head` has not yet been verified against a live database.
+Revision `a83c1d4e7b92` defines exactly three new tables. Publisher configuration remains in `backend/app/news_sources.json`; `source_id` is the stable registry key. `alembic upgrade head` passed against development PostGIS on September 25, 2026, and the production Cloud Build migration job completed successfully before deploying the API. Two production collector runs and a Scheduler-triggered run then used the migrated Cloud SQL tables.
 
 | Table | Columns and constraints | Purpose |
 |---|---|---|
