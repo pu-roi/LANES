@@ -64,9 +64,16 @@ docs/others/*
 !docs/others/vehicle-passability.md
 !docs/others/database-design-plan.md
 !docs/others/bug-log.md
+!docs/others/rss-news-discovery-plan.md
 
 # Large data files
 data/
+!/data/
+/data/*
+!/data/Flooded_Areas_Pasig_City_2020_2025_EDITED.xlsx
+!/data/Flooded_Areas_Pasig_City_2020_2025_EDITED_ver2.csv
+!/data/pasig_barangay_reference.csv
+!/data/flooded_areas_pasig_clean.csv
 *.mbtiles
 *.sqlite
 *.sqlite3

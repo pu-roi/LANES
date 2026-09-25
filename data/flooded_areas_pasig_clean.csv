@@ -1,0 +1,838 @@
+source_year,source_record_no,barangay_raw,barangay_canonical,barangay_psgc_10_digit_code,barangay_status,barangay_review_reason,street_raw,street_normalized,landmark_raw,landmark_normalized,water_level_raw,depth_min_cm,depth_max_cm,depth_parse_status
+2020,1,Manggahan,Manggahan,1381200011,exact,,Magsaysay St.,Magsaysay St.,Teachers Village,Teachers Village,3-4 inches,7.62,10.16,parsed
+2020,2,Manggahan,Manggahan,1381200011,exact,,MRR,MRR,Soliven Ave.,Soliven Ave.,2-3 inches,5.08,7.62,parsed
+2020,3,Manggahan,Manggahan,1381200011,exact,,Ortigas Ave.,Ortigas Ave.,Soliven Ave.,Soliven Ave.,3-4 inches,7.62,10.16,parsed
+2020,4,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,1st St.,1st St.,DMA Comp.,DMA Comp.,12 inches,30.48,30.48,parsed
+2020,5,Kapitolyo,Kapitolyo,1381200009,exact,,"West Capitol
+Drive/Shaw",West Capitol Drive/Shaw,"infront of Petron
+and Mercury Drug",infront of Petron and Mercury Drug,6-10 inches,15.24,25.40,parsed
+2020,6,San Miguel,San Miguel,1381200022,exact,,"Lupang Pari
+Eusebio Ave.",Lupang Pari Eusebio Ave.,,,12 inches,30.48,30.48,parsed
+2020,7,Manggahan,Manggahan,1381200011,exact,,M.L. Quezon St.,M.L. Quezon St.,,,2-3 inches,5.08,7.62,parsed
+2020,8,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,infront of GSIS,infront of GSIS,2-3 inches,5.08,7.62,parsed
+2020,9,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,2-3 inches,5.08,7.62,parsed
+2020,10,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,,,2-3 inches,5.08,7.62,parsed
+2020,11,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Pasig Mega Market,Pasig Mega Market,3 inches,7.62,7.62,parsed
+2020,12,Manggahan,Manggahan,1381200011,exact,,Pres. Quezon St.,Pres. Quezon St.,corner Peras St.,corner Peras St.,5 inches,12.70,12.70,parsed
+2020,13,Manggahan,Manggahan,1381200011,exact,,Soliven Ave.,Soliven Ave.,corner PGPV St.,corner PGPV St.,12 inches,30.48,30.48,parsed
+2020,14,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Eusebio Ave.,Eusebio Ave.,Block 19,Block 19,3-4 inches,7.62,10.16,parsed
+2020,15,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Caliwag,Caliwag,,,12 inches,30.48,30.48,parsed
+2020,16,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Bagong Anyo,Bagong Anyo,Morales comp,Morales comp,4 Inches,10.16,10.16,parsed
+2020,17,Sumilang,Sumilang,1381200028,exact,,Katwiran,Katwiran,,,2 Inches,5.08,5.08,parsed
+2020,18,Sumilang,Sumilang,1381200028,exact,,Magtangol,Magtangol,,,2 Inches,5.08,5.08,parsed
+2020,19,Sumilang,Sumilang,1381200028,exact,,Dakila,Dakila,,,2 Inches,5.08,5.08,parsed
+2020,20,Sumilang,Sumilang,1381200028,exact,,Kalayaan,Kalayaan,,,1 Inches,2.54,2.54,parsed
+2020,21,Sumilang,Sumilang,1381200028,exact,,Dos De Julio,Dos De Julio,,,1 Inches,2.54,2.54,parsed
+2020,22,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Corner F. Manalo,Corner F. Manalo,5 inches,12.70,12.70,parsed
+2020,23,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,E. Santos,E. Santos,,,5 inches,12.70,12.70,parsed
+2020,24,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Centennial 2,Centennial 2,,,2 Inches,5.08,5.08,parsed
+2020,25,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,,,6 Inches,15.24,15.24,parsed
+2020,26,San Joaquin,San Joaquin,1381200020,exact,,Villa Capistrano,Villa Capistrano,,,3 to 5 Inches,7.62,12.70,parsed
+2020,27,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Catalino St.,Catalino St.,,,3 to 4 inches,7.62,10.16,parsed
+2020,28,San Miguel,San Miguel,1381200022,exact,,JRA Coumpound,JRA Coumpound,,,5 inches,12.70,12.70,parsed
+2020,29,Malinao,Malinao,1381200010,exact,,141 A. Luna St.,141 A. Luna St.,,,5 inches,12.70,12.70,parsed
+2020,30,Santolan,Santolan,1381200027,exact,,Squarte Garden,Squarte Garden,,,5-6 feet,152.40,182.88,parsed
+2020,31,Bambang,Bambang,1381200003,exact,,Kapitolyo Homes,Kapitolyo Homes,,,5 inches,12.70,12.70,parsed
+2020,32,Palatiw,Palatiw,1381200014,exact,,N. Cruz St.,N. Cruz St.,,,12 inches,30.48,30.48,parsed
+2020,33,Maybunga,Maybunga,1381200012,exact,,C. Raymundo Ave,C. Raymundo Ave,,,1 Feet,30.48,30.48,parsed
+2020,34,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,,,12 inches,30.48,30.48,parsed
+2020,35,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Villa Alegre,Villa Alegre,,,12 inches,30.48,30.48,parsed
+2020,36,Manggahan,Manggahan,1381200011,exact,,Kaginhawaan St,Kaginhawaan St,,,2 Feet,60.96,60.96,parsed
+2020,37,Pineda,Pineda,1381200016,exact,,Pasig Boulevard St.,Pasig Boulevard St.,,,12 inches,30.48,30.48,parsed
+2020,38,Manggahan,Manggahan,1381200011,exact,,Teachers Village St,Teachers Village St,,,12 inches,30.48,30.48,parsed
+2020,39,Manggahan,Manggahan,1381200011,exact,,Magsaysay St.,Magsaysay St.,,,12 inches,30.48,30.48,parsed
+2020,40,Manggahan,Manggahan,1381200011,exact,,Kaginhawaan St,Kaginhawaan St,,,12 inches,30.48,30.48,parsed
+2020,41,Manggahan,Manggahan,1381200011,exact,,MOA comp.,MOA comp.,,,12 inches,30.48,30.48,parsed
+2020,42,Manggahan,Manggahan,1381200011,exact,,Karangalan St.,Karangalan St.,,,12 inches,30.48,30.48,parsed
+2020,43,Manggahan,Manggahan,1381200011,exact,,Gomez St.,Gomez St.,,,5 to 6 Inches,12.70,15.24,parsed
+2020,44,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Pinalad Road,Pinalad Road,,,,,,missing
+2020,45,Kapasigan,Kapasigan,1381200008,exact,,Plaza Bonifacio,Plaza Bonifacio,,,,,,missing
+2020,46,Sumilang,Sumilang,1381200028,exact,,Katwiran,Katwiran,,,,,,missing
+2020,47,Sumilang,Sumilang,1381200028,exact,,Dos De Julio,Dos De Julio,,,,,,missing
+2021,1,Manggahan,Manggahan,1381200011,exact,,Magsaysay St.,Magsaysay St.,Teachers Village,Teachers Village,3-4 inches,7.62,10.16,parsed
+2021,2,Manggahan,Manggahan,1381200011,exact,,MRR,MRR,Soliven Ave.,Soliven Ave.,2-3 inches,5.08,7.62,parsed
+2021,3,Manggahan,Manggahan,1381200011,exact,,Ortigas Ave.,Ortigas Ave.,Soliven Ave.,Soliven Ave.,3-4 inches,7.62,10.16,parsed
+2021,4,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,1st St.,1st St.,DMA Comp.,DMA Comp.,12 inches,30.48,30.48,parsed
+2021,5,Kapitolyo,Kapitolyo,1381200009,exact,,"West Capitol
+Drive/Shaw",West Capitol Drive/Shaw,"infront of Petron
+and Mercury Drug",infront of Petron and Mercury Drug,6-10 inches,15.24,25.40,parsed
+2021,6,San Miguel,San Miguel,1381200022,exact,,"Lupang Pari
+Eusebio Ave.",Lupang Pari Eusebio Ave.,,,12 inches,30.48,30.48,parsed
+2021,7,Manggahan,Manggahan,1381200011,exact,,M.L. Quezon St.,M.L. Quezon St.,,,2-3 inches,5.08,7.62,parsed
+2021,8,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,infront of GSIS,infront of GSIS,2-3 inches,5.08,7.62,parsed
+2021,9,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,2-3 inches,5.08,7.62,parsed
+2021,10,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,,,2-3 inches,5.08,7.62,parsed
+2021,11,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Pasig Mega Market,Pasig Mega Market,3 inches,7.62,7.62,parsed
+2021,12,Manggahan,Manggahan,1381200011,exact,,Pres. Quezon St.,Pres. Quezon St.,corner Peras St.,corner Peras St.,5 inches,12.70,12.70,parsed
+2021,13,Manggahan,Manggahan,1381200011,exact,,Soliven Ave.,Soliven Ave.,corner PGPV St.,corner PGPV St.,12 inches,30.48,30.48,parsed
+2021,14,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Eusebio Ave.,Eusebio Ave.,Block 19,Block 19,3-4 inches,7.62,10.16,parsed
+2021,15,Kalawaan,Kalawaan,1381200007,exact,,Elisco Road,Elisco Road,,,6 inches,15.24,15.24,parsed
+2021,16,Kalawaan,Kalawaan,1381200007,exact,,Sixto Cuevas St.,Sixto Cuevas St.,,,6 inches,15.24,15.24,parsed
+2021,17,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,Lifehomes,Lifehomes,2-4 inches,5.08,10.16,parsed
+2021,18,Bagong Ilog,Bagong Ilog,1381200001,exact,,F. Intalan St.,F. Intalan St.,corner Aurellana St.,corner Aurellana St.,2 inches,5.08,5.08,parsed
+2021,19,Pineda,Pineda,1381200016,exact,,Purok 4,Purok 4,Mabanta Compound,Mabanta Compound,6 inches,15.24,15.24,parsed
+2021,20,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,2 inches,5.08,5.08,parsed
+2021,21,Maybunga,Maybunga,1381200012,exact,,Jenny's Ave.,Jenny's Ave.,,,2-4 inches,5.08,10.16,parsed
+2021,22,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,,,2-4 inches,5.08,10.16,parsed
+2021,23,Rosario,Rosario,1381200017,exact,,Ciudad Grande,Ciudad Grande,,,4-5 Inches,10.16,12.70,parsed
+2021,24,Dela Paz,Dela Paz,1381200006,exact,,Daisy St.,Daisy St.,,,6 inches,15.24,15.24,parsed
+2021,25,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,,,12 inches,30.48,30.48,parsed
+2021,26,Manggahan,Manggahan,1381200011,exact,,Metroville,Metroville,St. Mary,St. Mary,2-3 inches,5.08,7.62,parsed
+2021,27,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Riverside,Riverside,,,3 inches,7.62,7.62,parsed
+2021,28,Manggahan,Manggahan,1381200011,exact,,St. Joseph,St. Joseph,Metroville,Metroville,2-3 inches,5.08,7.62,parsed
+2021,29,San Antonio,San Antonio,1381200019,exact,,Meralco Ave.,Meralco Ave.,"intersection near Red
+Cross",intersection near Red Cross,6-7 inches,15.24,17.78,parsed
+2021,30,San Joaquin,San Joaquin,1381200020,exact,,Villa Capistrano,Villa Capistrano,Garden,Garden,15 inches,38.10,38.10,parsed
+2021,31,San Joaquin,San Joaquin,1381200020,exact,,Villa Munsod,Villa Munsod,,,1.5 meters,150.00,150.00,parsed
+2021,32,Oranbo,Oranbo,1381200013,exact,,Meralco Ave.,Meralco Ave.,DEPED,DEPED,2-3 inches,5.08,7.62,parsed
+2021,33,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,Chinese School,Chinese School,5-6 inches,12.70,15.24,parsed
+2021,34,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,Meralco,Meralco,5 inches,12.70,12.70,parsed
+2021,35,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Palmdale,Palmdale,2-3 inches,5.08,7.62,parsed
+2021,36,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Eusebio Road,Eusebio Road,Blk 19,Blk 19,2-3 inches,5.08,7.62,parsed
+2021,37,Manggahan,Manggahan,1381200011,exact,,Imelda Ave.,Imelda Ave.,Metroville,Metroville,6-8 inches,15.24,20.32,parsed
+2021,38,Manggahan,Manggahan,1381200011,exact,,St. Mary St.,St. Mary St.,Metroville,Metroville,3-4 inches,7.62,10.16,parsed
+2021,39,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,"corner San Agustin
+Ave.",corner San Agustin Ave.,2 inches,5.08,5.08,parsed
+2021,40,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Villa Cuana,Villa Cuana,3 inches,7.62,7.62,parsed
+2021,41,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Arrezo,Arrezo,3 inches,7.62,7.62,parsed
+2021,42,San Joaquin,San Joaquin,1381200020,exact,,Villa Munsod 2,Villa Munsod 2,,,5 meters,500.00,500.00,parsed
+2021,43,Rosario,Rosario,1381200017,exact,,Paraluman St.,Paraluman St.,Doña Damiana Subd.,Doña Damiana Subd.,6 inches,15.24,15.24,parsed
+2021,44,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Gahit St.,Gahit St.,3-5 inches,7.62,12.70,parsed
+2021,45,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,,,1 foot,30.48,30.48,parsed
+2021,46,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,CHI,CHI,4-5 Inches,10.16,12.70,parsed
+2021,47,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,looban,looban,6-7 inches,15.24,17.78,parsed
+2021,48,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,M.H. Del Pilar St.,M.H. Del Pilar St.,Catleya,Catleya,3-4 inches,7.62,10.16,parsed
+2021,49,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Lianas,Lianas,12-15 inches,30.48,38.10,parsed
+2021,50,San Joaquin,San Joaquin,1381200020,exact,,Villa Capistrano,Villa Capistrano,,,6-8 inches,15.24,20.32,parsed
+2021,51,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Callos Compound,Callos Compound,,,10-15 inches,25.40,38.10,parsed
+2021,52,Manggahan,Manggahan,1381200011,exact,,Imelda Ave.,Imelda Ave.,Mcdo and Jollibee,Mcdo and Jollibee,6-7 inches,15.24,17.78,parsed
+2021,53,Manggahan,Manggahan,1381200011,exact,,Buenos Aires,Buenos Aires,Market,Market,10-15 inches,25.40,38.10,parsed
+2021,54,Bagong Ilog,Bagong Ilog,1381200001,exact,,F. Intalan St.,F. Intalan St.,,,2-3 inches,5.08,7.62,parsed
+2021,55,Santolan,Santolan,1381200027,exact,,"Amang Rodriguez
+Ave.",Amang Rodriguez Ave.,going to ilaya Rosario,going to ilaya Rosario,2-3 inches,5.08,7.62,parsed
+2021,56,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Tawi-Tawi Comp.,Tawi-Tawi Comp.,,,5-6 inches,12.70,15.24,parsed
+2021,57,Manggahan,Manggahan,1381200011,exact,,Rome St.,Rome St.,Greenpark Ville,Greenpark Ville,25-30 inches,63.50,76.20,parsed
+2021,58,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Ilugin,Ilugin,riverside,riverside,8-10 inches,20.32,25.40,parsed
+2021,59,Ugong,Ugong,1381200029,exact,,F. Legaspi St.,F. Legaspi St.,,,4-6 inches,10.16,15.24,parsed
+2021,60,Manggahan,Manggahan,1381200011,exact,,Karangalan Village,Karangalan Village,,,2-3 inches,5.08,7.62,parsed
+2021,61,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,Parkwood Phase 1,Parkwood Phase 1,4-5 Inches,10.16,12.70,parsed
+2021,62,Rosario,Rosario,1381200017,exact,,C. Raymundo Ave.,C. Raymundo Ave.,Eastside Manor,Eastside Manor,4-5 inches,10.16,12.70,parsed
+2021,63,Maybunga,Maybunga,1381200012,exact,,Jenny's Ave.,Jenny's Ave.,corner F. Legaspi,corner F. Legaspi,4-5 Inches,10.16,12.70,parsed
+2021,64,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Willa Rey Road 1,Willa Rey Road 1,,,,,,missing
+2021,65,San Joaquin,San Joaquin,1381200020,exact,,Villa Concio,Villa Concio,,,4-5 Inches,10.16,12.70,parsed
+2021,66,San Joaquin,San Joaquin,1381200020,exact,,San Bernardo,San Bernardo,,,12 inches,30.48,30.48,parsed
+2021,67,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,,,7-8 inches,17.78,20.32,parsed
+2021,68,Dela Paz,Dela Paz,1381200006,exact,,Kalusugan St.,Kalusugan St.,covered court,covered court,12-15 inches,30.48,38.10,parsed
+2021,69,Rosario,Rosario,1381200017,exact,,St. Joseph,St. Joseph,DABA Compound,DABA Compound,24 inches,60.96,60.96,parsed
+2021,70,Manggahan,Manggahan,1381200011,exact,,Kabutihan St.,Kabutihan St.,,,3 feet,91.44,91.44,parsed
+2021,71,Manggahan,Manggahan,1381200011,exact,,Karangalan Village,Karangalan Village,Kayamanan St.,Kayamanan St.,24 inches,60.96,60.96,parsed
+2021,72,Dela Paz,Dela Paz,1381200006,exact,,F. Mariano St.,F. Mariano St.,"Dela Paz Pumping
+Station",Dela Paz Pumping Station,12 inches,30.48,30.48,parsed
+2021,73,Manggahan,Manggahan,1381200011,exact,,Magsaysay St.,Magsaysay St.,,,2-3 inches,5.08,7.62,parsed
+2021,74,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,Mercedes Village,Mercedes Village,2 feet,60.96,60.96,parsed
+2021,75,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,11th Ave.,11th Ave.,Riverside Village,Riverside Village,4 feet,121.92,121.92,parsed
+2021,76,Dela Paz,Dela Paz,1381200006,exact,,F. Mariano St.,F. Mariano St.,near creek,near creek,5-6 inches,12.70,15.24,parsed
+2021,77,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,A. Esguerra St.,A. Esguerra St.,,,,,,missing
+2021,78,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Bautista
+Compound",Bautista Compound,,,,,,missing
+2021,79,Sta. Rosa,Santa Rosa,1381200025,normalized_alias,,P. Burgos Ext.,P. Burgos Ext.,Morelos Compound,Morelos Compound,1-2 inches,2.54,5.08,parsed
+2021,80,Palatiw,Palatiw,1381200014,exact,,Caruncho Ave.,Caruncho Ave.,Lianas,Lianas,3-4 inches,7.62,10.16,parsed
+2021,81,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,"corner San Agustin
+Ave.",corner San Agustin Ave.,2-3 inches,5.08,7.62,parsed
+2021,82,Caniogan,Caniogan,1381200005,exact,,C. Raymundo Ave.,C. Raymundo Ave.,C. Dela Paz,C. Dela Paz,6-8 inches,15.24,20.32,parsed
+2021,83,San Joaquin,San Joaquin,1381200020,exact,,Villa Munsod,Villa Munsod,,,2-3 inches,5.08,7.62,parsed
+2021,84,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,Front of Meralco,Front of Meralco,4-5 Inches,10.16,12.70,parsed
+2021,85,San Miguel,San Miguel,1381200022,exact,,Sandoval Ave.,Sandoval Ave.,DiviMart,DiviMart,5 inches,12.70,12.70,parsed
+2021,86,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,,,,missing
+2022,1,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Bagong Anyo,Bagong Anyo,corner Bautista,corner Bautista,5 inches,12.70,12.70,parsed
+2022,2,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Liamson
+Subdivision",Liamson Subdivision,,,2-3 inches,5.08,7.62,parsed
+2022,3,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,2-3 inches,5.08,7.62,parsed
+2022,4,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Dahlia St.,Dahlia St.,,,4 inches,10.16,10.16,parsed
+2022,5,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,infront of City Hall,infront of City Hall,3 inches,7.62,7.62,parsed
+2022,6,Sto. Tomas,Santo Tomas,1381200026,normalized_alias,,"Concha Lane Purok
+5",Concha Lane Purok 5,Dulo,Dulo,3-4 inches,7.62,10.16,parsed
+2022,7,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Ortigas Ave.,Ortigas Ave.,"infront of Lucky Gold
+Plaza",infront of Lucky Gold Plaza,,,,missing
+2022,8,San Nicolas,San Nicolas,1381200023,exact,,F. Soriano,F. Soriano,"infront of
+impounding",infront of impounding,,,,missing
+2022,9,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Tantanco St.,Tantanco St.,,,3-4 inches,7.62,10.16,parsed
+2022,10,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Bagong Anyo St.,Bagong Anyo St.,,,3-4 inches,7.62,10.16,parsed
+2022,11,Manggahan,Manggahan,1381200011,exact,,Sampaguita St.,Sampaguita St.,,,6-8 inches,15.24,20.32,parsed
+2022,12,San Miguel,San Miguel,1381200022,exact,,Villa Eusebio,Villa Eusebio,,,4-5 inches,10.16,12.70,parsed
+2022,13,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Marietta Romeo
+Village",Marietta Romeo Village,,,2-3 inches,5.08,7.62,parsed
+2022,14,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Kenneth Road,Kenneth Road,Ginebra St.,Ginebra St.,4-6 inches,10.16,15.24,parsed
+2022,15,Manggahan,Manggahan,1381200011,exact,,Teachers Village,Teachers Village,,,3-5 inches,7.62,12.70,parsed
+2022,16,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Nagpayong,Nagpayong,,,1 foot,30.48,30.48,parsed
+2022,17,Manggahan,Manggahan,1381200011,exact,,Greenpark,Greenpark,,,2 feet,60.96,60.96,parsed
+2022,18,Rosario,Rosario,1381200017,exact,,"Doña Juliana
+Village",Doña Juliana Village,,,3-5 inches,7.62,12.70,parsed
+2022,19,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Azucenia St.,Azucenia St.,,,6-8 inches,15.24,20.32,parsed
+2022,20,Rosario,Rosario,1381200017,exact,,Ciudad Grande,Ciudad Grande,,,5-7 inches,12.70,17.78,parsed
+2022,21,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,"corner San Agustin
+Ave.",corner San Agustin Ave.,3-4 inches,7.62,10.16,parsed
+2022,22,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Eireen St.,Eireen St.,,,5-6 inches,12.70,15.24,parsed
+2022,23,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,2-3 inches,5.08,7.62,parsed
+2022,24,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Countryside Ave.,Countryside Ave.,1st St.,1st St.,3-4 inches,7.62,10.16,parsed
+2022,25,Rosario,Rosario,1381200017,exact,,Dabba Compound,Dabba Compound,,,2-3 inches,5.08,7.62,parsed
+2022,26,San Miguel,San Miguel,1381200022,exact,,"Arboleda
+Compound",Arboleda Compound,,,10-12 inches,25.40,30.48,parsed
+2022,27,Dela Paz,Dela Paz,1381200006,exact,,Karangalan,Karangalan,Sto. Niño Elem,Sto. Niño Elem,2 feet,60.96,60.96,parsed
+2022,28,Manggahan,Manggahan,1381200011,exact,,St. Mary St.,St. Mary St.,,,2-3 inches,5.08,7.62,parsed
+2022,29,Manggahan,Manggahan,1381200011,exact,,St. Joseph St.,St. Joseph St.,,,3-4 inches,7.62,10.16,parsed
+2022,30,San Jose,San Jose,1381200021,exact,,Plaza Rizal,Plaza Rizal,,,3-4 inches,7.62,10.16,parsed
+2022,31,Sto. Tomas,Santo Tomas,1381200026,normalized_alias,,Concha Lane,Concha Lane,,,2 inches,5.08,5.08,parsed
+2022,32,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,,,2-4 inches,5.08,10.16,parsed
+2022,33,Manggahan,Manggahan,1381200011,exact,,Pasig Greenpark,Pasig Greenpark,,,2-3 feet,60.96,91.44,parsed
+2022,34,Manggahan,Manggahan,1381200011,exact,,Pres. Quezon St.,Pres. Quezon St.,Peras St.,Peras St.,2-3 inches,5.08,7.62,parsed
+2022,35,Manggahan,Manggahan,1381200011,exact,,Teachers Village,Teachers Village,,,1-2 inches,2.54,5.08,parsed
+2022,36,Manggahan,Manggahan,1381200011,exact,,Pasig Greenpark,Pasig Greenpark,Darwin St.,Darwin St.,2 inches,5.08,5.08,parsed
+2022,37,Dela Paz,Dela Paz,1381200006,exact,,Marcos Highway,Marcos Highway,,,12 inches,30.48,30.48,parsed
+2022,38,Manggahan,Manggahan,1381200011,exact,,Karikitan St.,Karikitan St.,,,2-3 inches,5.08,7.62,parsed
+2022,39,Manggahan,Manggahan,1381200011,exact,,Mansanas St.,Mansanas St.,,,3-5 inches,7.62,12.70,parsed
+2022,40,Manggahan,Manggahan,1381200011,exact,,Labanos Ext.,Labanos Ext.,,,3-5 inches,7.62,12.70,parsed
+2022,41,Dela Paz,Dela Paz,1381200006,exact,,"Emerald Valle
+Homes",Emerald Valle Homes,,,12 inches,30.48,30.48,parsed
+2022,42,Manggahan,Manggahan,1381200011,exact,,Pipino St.,Pipino St.,,,3-5 inches,7.62,12.70,parsed
+2022,43,Manggahan,Manggahan,1381200011,exact,,Lansones Ext.,Lansones Ext.,,,3-5 inches,7.62,12.70,parsed
+2022,44,Manggahan,Manggahan,1381200011,exact,,Teachers Village,Teachers Village,,,3-5 inches,7.62,12.70,parsed
+2022,45,Manggahan,Manggahan,1381200011,exact,,Metroville,Metroville,,,3-5 inches,7.62,12.70,parsed
+2022,46,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,"corner Urbano
+Velasco Ave.",corner Urbano Velasco Ave.,2-3 inches,5.08,7.62,parsed
+2022,47,Manggahan,Manggahan,1381200011,exact,,"Pres. Quezon St.
+Napico",Pres. Quezon St. Napico,,,3-4 inches,7.62,10.16,parsed
+2022,48,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"along Sandoval
+Ave.",along Sandoval Ave.,,,3-4 inches,7.62,10.16,parsed
+2022,49,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,infront of City Hall,infront of City Hall,3-6 inches,7.62,15.24,parsed
+2022,50,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Mega Parking 1,Mega Parking 1,5 inches,12.70,12.70,parsed
+2022,51,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Nagpayong,Nagpayong,Camachile St.,Camachile St.,leg deep,,,unparsed
+2022,52,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,corner N. Cruz,corner N. Cruz,2 inches,5.08,5.08,parsed
+2022,53,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Capistrano St.,Capistrano St.,,,2 inches,5.08,5.08,parsed
+2022,54,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,SRS,SRS,,,,missing
+2022,55,Manggahan,Manggahan,1381200011,exact,,Pres. Quezon St.,Pres. Quezon St.,,,2-3 inches,5.08,7.62,parsed
+2022,56,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,,,2 inches,5.08,5.08,parsed
+2022,57,Malinao,Malinao,1381200010,exact,,F. Antonio St.,F. Antonio St.,,,5 inches,12.70,12.70,parsed
+2022,58,Pala,Palatiw,1381200014,corrected_manual,,F. Soriano,F. Soriano,,,2-3 inches,5.08,7.62,parsed
+2022,59,Bagong Ilog,Bagong Ilog,1381200001,exact,,F. Intalan St.,F. Intalan St.,,,2 inches,5.08,5.08,parsed
+2022,60,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"along Sandoval
+Ave.",along Sandoval Ave.,,,2-5 inches,5.08,12.70,parsed
+2022,61,Kalawaan,Kalawaan,1381200007,exact,,Mangga St.,Mangga St.,,,7-10 inches,17.78,25.40,parsed
+2022,62,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,infront of City Hall,infront of City Hall,3-5 inches,7.62,12.70,parsed
+2022,63,Kapitolyo,Kapitolyo,1381200009,exact,,Shaw Blvd.,Shaw Blvd.,,,3-5 inches,7.62,12.70,parsed
+2022,64,Sagad,Sagad,1381200018,exact,,"along C. Raymundo
+Ave.",along C. Raymundo Ave.,up to Maybunga,up to Maybunga,8 inches,20.32,20.32,parsed
+2022,65,Sto. Tomas,Santo Tomas,1381200026,normalized_alias,,V. Baltazar St.,V. Baltazar St.,,,3-5 inches,7.62,12.70,parsed
+2022,66,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,Balsangcat,Balsangcat,12 inches,30.48,30.48,parsed
+2022,67,Manggahan,Manggahan,1381200011,exact,,Peras St.,Peras St.,"corner Pres. Quezon
+St.",corner Pres. Quezon St.,3-4 inches,7.62,10.16,parsed
+2022,68,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Kenneth Road,Kenneth Road,Blk. 19,Blk. 19,5-7 inches,12.70,17.78,parsed
+2022,69,Palatiw,Palatiw,1381200014,exact,,F. Soriano,F. Soriano,,,3-5 inches,7.62,12.70,parsed
+2022,70,Rosario,Rosario,1381200017,exact,,Jenny's Ext.,Jenny's Ext.,,,5-8 inches,12.70,20.32,parsed
+2022,71,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,PS Bank,PS Bank,10 inches,25.40,25.40,parsed
+2022,72,Sumilang,Sumilang,1381200028,exact,,along Dos De Julio,along Dos De Julio,,,5 inches,12.70,12.70,parsed
+2022,73,Buting,Buting,1381200004,exact,,Tantanco St.,Tantanco St.,,,12-15 inches,30.48,38.10,parsed
+2022,74,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Bautista/Liamson,Bautista/Liamson,,,,,,missing
+2022,75,Sto. Tomas,Santo Tomas,1381200026,normalized_alias,,Villa Rosa,Villa Rosa,Basketball Court,Basketball Court,4-6 inches,10.16,15.24,parsed
+2022,76,Manggahan,Manggahan,1381200011,exact,,Soliven Ave.,Soliven Ave.,Greenpark,Greenpark,12-15 inches,30.48,38.10,parsed
+2022,77,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,Dabba Comp.,Dabba Comp.,2-3 inches,5.08,7.62,parsed
+2022,78,Caniogan,Caniogan,1381200005,exact,,Pag-Asa St.,Pag-Asa St.,,,,,,missing
+2022,79,Kalawaan,Kalawaan,1381200007,exact,,Axis Road,Axis Road,corner Elisco,corner Elisco,,,,missing
+2022,80,Malinao,Malinao,1381200010,exact,,G. Raymundo St.,G. Raymundo St.,,,,,,missing
+2022,81,San Miguel,San Miguel,1381200022,exact,,Eusebio Ave.,Eusebio Ave.,Villa Eusebio,Villa Eusebio,,,,missing
+2022,82,San Miguel,San Miguel,1381200022,exact,,Sandoval Ave.,Sandoval Ave.,Grand Monaco,Grand Monaco,,,,missing
+2022,83,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,Tambakan 1,Tambakan 1,,,,missing
+2022,84,San Miguel,San Miguel,1381200022,exact,,Victoria Road,Victoria Road,,,,,,missing
+2022,85,San Miguel,San Miguel,1381200022,exact,,Tambakan 2,Tambakan 2,,,,,,missing
+2022,86,San Miguel,San Miguel,1381200022,exact,,Dr. Pilapil St.,Dr. Pilapil St.,Purok 1,Purok 1,,,,missing
+2022,87,Palatiw,Palatiw,1381200014,exact,,San Agustin Ave.,San Agustin Ave.,,,,,,missing
+2022,88,Maybunga,Maybunga,1381200012,exact,,Parkwood,Parkwood,,,2 feet,60.96,60.96,parsed
+2022,89,Manggahan,Manggahan,1381200011,exact,,Metroville,Metroville,PSP Ave.,PSP Ave.,3-5 inches,7.62,12.70,parsed
+2022,90,Manggahan,Manggahan,1381200011,exact,,Metroville,Metroville,St. Joseph,St. Joseph,2-4 inches,5.08,10.16,parsed
+2022,91,Manggahan,Manggahan,1381200011,exact,,Metroville,Metroville,Jesus St.,Jesus St.,5 inches,12.70,12.70,parsed
+2022,92,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Meat Section,Meat Section,8 inches,20.32,20.32,parsed
+2022,93,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,Halamanan,Halamanan,4 inches,10.16,10.16,parsed
+2022,94,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Power Fil,Power Fil,2-3 inches,5.08,7.62,parsed
+2022,95,Sagad,Sagad,1381200018,exact,,E. Angeles St.,E. Angeles St.,"Sagad Elementary
+School",Sagad Elementary School,2-3 inches,5.08,7.62,parsed
+2022,96,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,intersection,intersection,2-3 inches,5.08,7.62,parsed
+2022,97,Bambang,Bambang,1381200003,exact,,E. Jacinto St.,E. Jacinto St.,,,1 inch,2.54,2.54,parsed
+2022,98,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,infront of City Hall,infront of City Hall,2-3 inches,5.08,7.62,parsed
+2022,99,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,corner Market Ave.,corner Market Ave.,2-3 inches,5.08,7.62,parsed
+2022,100,Bambang,Bambang,1381200003,exact,,F. Manalo St.,F. Manalo St.,"along Iglesia to St.
+Gerard",along Iglesia to St. Gerard,2-3 inches,5.08,7.62,parsed
+2022,101,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,747,747,3-5 inches,7.62,12.70,parsed
+2022,102,Sumilang,Sumilang,1381200028,exact,,Dos De Julio St.,Dos De Julio St.,infront of Brgy. Hall,infront of Brgy. Hall,4-5 inches,10.16,12.70,parsed
+2022,103,Manggahan,Manggahan,1381200011,exact,,Pres. Quezon St.,Pres. Quezon St.,corner Peras St.,corner Peras St.,2-5 inches,5.08,12.70,parsed
+2022,104,Ugong,Ugong,1381200029,exact,,F. Legaspi St.,F. Legaspi St.,,,2-3 inches,5.08,7.62,parsed
+2022,105,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,SRS,SRS,1-2 inches,2.54,5.08,parsed
+2022,106,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,,,2-3 inches,5.08,7.62,parsed
+2022,107,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,,,,,,missing
+2022,108,Manggahan,Manggahan,1381200011,exact,,Taniman Ave.,Taniman Ave.,,,,,,missing
+2022,109,San Antonio,San Antonio,1381200019,exact,,Meralco Ave.,Meralco Ave.,,,,,,missing
+2022,110,Manggahan,Manggahan,1381200011,exact,,Peras St.,Peras St.,"corner Pres. Quezon
+St.",corner Pres. Quezon St.,2-3 inches,5.08,7.62,parsed
+2022,112,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,"likod ng De Castro
+Elementary School",likod ng De Castro Elementary School,3-4 inches,7.62,10.16,parsed
+2022,113,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Morales,Morales,,,5 inches,12.70,12.70,parsed
+2022,114,Dela Paz,Dela Paz,1381200006,exact,,Camayanan St.,Camayanan St.,,,1-2 inches,2.54,5.08,parsed
+2022,115,Rosario,Rosario,1381200017,exact,,Dabba Compound,Dabba Compound,Bathaluman St.,Bathaluman St.,19 inches,48.26,48.26,parsed
+2022,117,Kalawaan,Kalawaan,1381200007,exact,,Axis Road,Axis Road,,,2-3 inches,5.08,7.62,parsed
+2022,119,Manggahan,Manggahan,1381200011,exact,,Sampaguita St.,Sampaguita St.,,,,,,missing
+2022,120,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Bagong Anyo St.,Bagong Anyo St.,,,5 inches,12.70,12.70,parsed
+2022,121,Maybunga,Maybunga,1381200012,exact,,"Dr. Sixto Antonio
+Ave.",Dr. Sixto Antonio Ave.,#432,#432,8-9 inches,20.32,22.86,parsed
+2022,122,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Morales
+Compound",Morales Compound,,,2-3 inches,5.08,7.62,parsed
+2022,123,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Metropolis,Metropolis,"Metropolis Kanan
+Metropolis Gate
+Burmingham St.",Metropolis Kanan Metropolis Gate Burmingham St.,12 inches,30.48,30.48,parsed
+2022,124,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,Sacred Heart,Sacred Heart,12 inches,30.48,30.48,parsed
+2022,125,Kapasigan,Kapasigan,1381200008,exact,,"Dr. Sixto Antonio
+Ave.",Dr. Sixto Antonio Ave.,corner Dr. Pilapil St.,corner Dr. Pilapil St.,3-4 inches,7.62,10.16,parsed
+2022,126,Bagong Ilog,Bagong Ilog,1381200001,exact,,Pasig Boulevard,Pasig Boulevard,infront of RMC,infront of RMC,4-6 inches,10.16,15.24,parsed
+2022,127,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,Sacred Heart,Sacred Heart,4-6 inches,10.16,15.24,parsed
+2022,128,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,"near SRS
+Supermarket",near SRS Supermarket,3-5 inches,7.62,12.70,parsed
+2022,129,San Miguel,San Miguel,1381200022,exact,,Teachers Village,Teachers Village,,,3-4 inches,7.62,10.16,parsed
+2022,130,Santolan,Santolan,1381200027,exact,,"Amang Rodriguez
+Ave.",Amang Rodriguez Ave.,Ilaya,Ilaya,,,,missing
+2022,131,Malinao,Malinao,1381200010,exact,,G. Raymundo,G. Raymundo,,,2-3 inches,5.08,7.62,parsed
+2022,132,Palatiw,Palatiw,1381200014,exact,,F. Soriano St.,F. Soriano St.,,,,,,missing
+2022,133,Manggahan,Manggahan,1381200011,exact,,Karangalan Village,Karangalan Village,Karikitan St.,Karikitan St.,2-3 inches,5.08,7.62,parsed
+2022,134,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,infront of Parkwood,infront of Parkwood,2-3 inches,5.08,7.62,parsed
+2022,135,Rosario,Rosario,1381200017,exact,,Jenny's Ave.,Jenny's Ave.,Greenland,Greenland,3 inches,7.62,7.62,parsed
+2022,136,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,corner Jasmin,corner Jasmin,,,,missing
+2022,137,Manggahan,Manggahan,1381200011,exact,,PSP Metroville,PSP Metroville,,,8-10 inches,20.32,25.40,parsed
+2022,138,Manggahan,Manggahan,1381200011,exact,,St. Mary St.,St. Mary St.,,,6-8 inches,15.24,20.32,parsed
+2022,139,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,"Arko ng
+Pinagbuhatan",Arko ng Pinagbuhatan,2-3 inches,5.08,7.62,parsed
+2022,140,Sumilang,Sumilang,1381200028,exact,,Magtanggol St.,Magtanggol St.,,,,,,missing
+2022,141,Manggahan,Manggahan,1381200011,exact,,Pres. Quezon St.,Pres. Quezon St.,corner Peras St.,corner Peras St.,3-4 inches,7.62,10.16,parsed
+2022,142,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,,,3-4 inches,7.62,10.16,parsed
+2022,143,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,10-12 inches,25.40,30.48,parsed
+2022,144,Maybunga,Maybunga,1381200012,exact,,Market Ave.,Market Ave.,corner F. Legaspi St.,corner F. Legaspi St.,10-12 inches,25.40,30.48,parsed
+2022,145,Buting,Buting,1381200004,exact,,G. Bunye St.,G. Bunye St.,corner A. Flores St.,corner A. Flores St.,2-3 inches,5.08,7.62,parsed
+2023,1,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,corner Market Ave.,corner Market Ave.,1-2 inches,2.54,5.08,parsed
+2023,2,Manggahan,Manggahan,1381200011,exact,,M.L. Quezon St.,M.L. Quezon St.,,,3-4 inches,7.62,10.16,parsed
+2023,3,Bagong Ilog,Bagong Ilog,1381200001,exact,,M. Flores St.,M. Flores St.,URC,URC,,,,missing
+2023,4,Oranbo,Oranbo,1381200013,exact,,Henry Javier St.,Henry Javier St.,corner Meralco Ave.,corner Meralco Ave.,,,,missing
+2023,5,Buting,Buting,1381200004,exact,,G. Conching St.,G. Conching St.,,,3-4 inches,7.62,10.16,parsed
+2023,6,Sto. Tomas,Santo Tomas,1381200026,normalized_alias,,Villa San Juan,Villa San Juan,,,2-3 inches,5.08,7.62,parsed
+2023,7,Pineda,Pineda,1381200016,exact,,F. Banaag St.,F. Banaag St.,"infront of Pineda
+Elem. School",infront of Pineda Elem. School,12 inches,30.48,30.48,parsed
+2023,8,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,"going C. Raymundo
+Ave.",going C. Raymundo Ave.,2-4 inches,5.08,10.16,parsed
+2023,9,Bagong Ilog,Bagong Ilog,1381200001,exact,,Pasig Boulevard,Pasig Boulevard,Mejia St.,Mejia St.,2-3 inches,5.08,7.62,parsed
+2023,10,Malinao,Malinao,1381200010,exact,,Farmers St.,Farmers St.,near NOVO,near NOVO,2-3 inches,5.08,7.62,parsed
+2023,11,Malinao,Malinao,1381200010,exact,,Market Ave.,Market Ave.,infront of Jolibee,infront of Jolibee,3-4 inches,7.62,10.16,parsed
+2023,12,Palatiw,Palatiw,1381200014,exact,,F. Soriano St.,F. Soriano St.,likod ng Lianas,likod ng Lianas,3-5 inches,7.62,12.70,parsed
+2023,13,Kalawaan,Kalawaan,1381200007,exact,,Elisco Road,Elisco Road,corner Visitacion St.,corner Visitacion St.,5-7 inches,12.70,17.78,parsed
+2023,14,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,FCM,FCM,3-4 inches,7.62,10.16,parsed
+2023,15,Bambang,Bambang,1381200003,exact,,F. Manalo St.,F. Manalo St.,corner J. Pueblo St.,corner J. Pueblo St.,4-6 inches,10.16,15.24,parsed
+2023,16,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Nagpayong II,Nagpayong II,Block 19,Block 19,2-3 inches,5.08,7.62,parsed
+2023,17,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,"Vicinity of Pasig City
+Hall",Vicinity of Pasig City Hall,2-4 inches,5.08,10.16,parsed
+2023,18,Palatiw,Palatiw,1381200014,exact,,Market Ave.,Market Ave.,corner E. Santos St.,corner E. Santos St.,3-5 inches,7.62,12.70,parsed
+2023,19,Bagong Ilog,Bagong Ilog,1381200001,exact,,Kawilihan Village,Kawilihan Village,"Kagandahan St. and
+Kabutihan St.",Kagandahan St. and Kabutihan St.,3-6 inches,7.62,15.24,parsed
+2023,20,Palatiw,Palatiw,1381200014,exact,,Caruncho Ave.,Caruncho Ave.,PCP,PCP,3-4 inches,7.62,10.16,parsed
+2023,21,Sta. Cruz,Santa Cruz,1381200024,normalized_alias,,Capt. Ato St.,Capt. Ato St.,Purok 5 and 6,Purok 5 and 6,10 inches,25.40,25.40,parsed
+2023,22,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,R. Cruz St.,R. Cruz St.,"corner Urbano
+Velasco",corner Urbano Velasco,12 inches,30.48,30.48,parsed
+2023,23,Bagong Ilog,Bagong Ilog,1381200001,exact,,F. Intalan St.,F. Intalan St.,,,36 inches,91.44,91.44,parsed
+2023,24,Bagong Ilog,Bagong Ilog,1381200001,exact,,San Roque St.,San Roque St.,,,36 inches,91.44,91.44,parsed
+2023,25,Bagong Ilog,Bagong Ilog,1381200001,exact,,Victorino St.,Victorino St.,,,36 inches,91.44,91.44,parsed
+2023,26,Bagong Ilog,Bagong Ilog,1381200001,exact,,Santiago St.,Santiago St.,,,36 inches,91.44,91.44,parsed
+2023,27,Bagong Ilog,Bagong Ilog,1381200001,exact,,Ikong St.,Ikong St.,,,36 inches,91.44,91.44,parsed
+2023,28,Bagong Ilog,Bagong Ilog,1381200001,exact,,M. Flores St.,M. Flores St.,,,36 inches,91.44,91.44,parsed
+2023,29,Bambang,Bambang,1381200003,exact,,Pio Alvarez St.,Pio Alvarez St.,,,3-6 inches,7.62,15.24,parsed
+2023,30,Sumilang,Sumilang,1381200028,exact,,Kalayaan St.,Kalayaan St.,,,4-6 inches,10.16,15.24,parsed
+2023,31,Sta. Cruz,Santa Cruz,1381200024,normalized_alias,,Capt. Ato St.,Capt. Ato St.,,,4-6 inches,10.16,15.24,parsed
+2023,32,Palatiw,Palatiw,1381200014,exact,,"Caruncho
+Compound",Caruncho Compound,Jocson Ville,Jocson Ville,4-5 inches,10.16,12.70,parsed
+2023,33,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,PCP Substation,PCP Substation,4-6 inches,10.16,15.24,parsed
+2023,34,Kapasigan,Kapasigan,1381200008,exact,,Dr. Pilapil St.,Dr. Pilapil St.,"corner Dr. Sixto
+Antonio Ave.",corner Dr. Sixto Antonio Ave.,2-3 inches,5.08,7.62,parsed
+2023,35,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,infront of Meralco,infront of Meralco,2-3 inches,5.08,7.62,parsed
+2023,36,Palatiw,Palatiw,1381200014,exact,,Caruncho Ave.,Caruncho Ave.,Near Phantom Base,Near Phantom Base,2-3 inches,5.08,7.62,parsed
+2023,37,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,corner San Agustin,corner San Agustin,3 inches,7.62,7.62,parsed
+2023,38,Manggahan,Manggahan,1381200011,exact,,M.L. Quezon St.,M.L. Quezon St.,,,3-5 inches,7.62,12.70,parsed
+2023,39,Manggahan,Manggahan,1381200011,exact,,Karangalan,Karangalan,San Lorenzo Elem.,San Lorenzo Elem.,4-5 inches,10.16,12.70,parsed
+2023,40,Pineda,Pineda,1381200016,exact,,F. Banaag St.,F. Banaag St.,Pineda Elem.,Pineda Elem.,18-29 inches,45.72,73.66,parsed
+2023,41,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,,,3-4 inches,7.62,10.16,parsed
+2023,42,Pineda,Pineda,1381200016,exact,,F. Banaag St.,F. Banaag St.,Pineda Elem.,Pineda Elem.,,,,missing
+2023,43,Caniogan,Caniogan,1381200005,exact,,C. Raymundo Ave.,C. Raymundo Ave.,"corner Mercedez
+Ave.",corner Mercedez Ave.,5-6 inches,12.70,15.24,parsed
+2023,44,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,infront of Meralco,infront of Meralco,7-8 inches,17.78,20.32,parsed
+2023,45,Bagong Ilog,Bagong Ilog,1381200001,exact,,M. Flores St.,M. Flores St.,Talipapa,Talipapa,4-5 inches,10.16,12.70,parsed
+2023,46,Kapitolyo,Kapitolyo,1381200009,exact,,Shaw Blvd.,Shaw Blvd.,corner Capitol Circle,corner Capitol Circle,4-5 inches,10.16,12.70,parsed
+2023,47,Kapitolyo,Kapitolyo,1381200009,exact,,Shaw Blvd.,Shaw Blvd.,corener Pioneer St.,corener Pioneer St.,4-5 inches,10.16,12.70,parsed
+2023,48,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,1 foot,30.48,30.48,parsed
+2023,49,Oranbo,Oranbo,1381200013,exact,,St. Francis,St. Francis,,,3-5 inches,7.62,12.70,parsed
+2023,50,Oranbo,Oranbo,1381200013,exact,,St. Joseph,St. Joseph,,,,,,missing
+2023,51,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,"corenr Mercedez
+Ave.",corenr Mercedez Ave.,,,,missing
+2023,52,Bagong Ilog,Bagong Ilog,1381200001,exact,,Dr. M. Flores St.,Dr. M. Flores St.,,,1-2 inches,2.54,5.08,parsed
+2023,53,Sta. Cruz,Santa Cruz,1381200024,normalized_alias,,Riverside,Riverside,Soldiers Village,Soldiers Village,15-20 inches,38.10,50.80,parsed
+2023,54,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,Chinese School,Chinese School,2-4 inches,5.08,10.16,parsed
+2023,55,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Sta. Rita Homes,Sta. Rita Homes,3 inches,7.62,7.62,parsed
+2023,56,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,4-5 inches,10.16,12.70,parsed
+2023,57,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,infront of Jolibee,infront of Jolibee,4-5 inches,10.16,12.70,parsed
+2023,58,Kapasigan,Kapasigan,1381200008,exact,,A. Mabini St.,A. Mabini St.,"infront of Security
+Bank",infront of Security Bank,2-3 inches,5.08,7.62,parsed
+2023,59,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,"Mutya ng Pasig Mega
+Market",Mutya ng Pasig Mega Market,,,,missing
+2023,60,Kapitolyo,Kapitolyo,1381200009,exact,,West Capitol Drive,West Capitol Drive,,,2-4 inches,5.08,10.16,parsed
+2023,61,Palatiw,Palatiw,1381200014,exact,,San Agustin Ave.,San Agustin Ave.,,,2-4 inches,5.08,10.16,parsed
+2023,62,Malinao,Malinao,1381200010,exact,,G. Raymundo St.,G. Raymundo St.,,,3-4 inches,7.62,10.16,parsed
+2023,63,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,,,3-4 inches,7.62,10.16,parsed
+2023,64,Palatiw,Palatiw,1381200014,exact,,N. Cruz St.,N. Cruz St.,,,3-4 inches,7.62,10.16,parsed
+2023,65,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Ilugin,Ilugin,,,8-10 inches,20.32,25.40,parsed
+2023,66,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,corner Pasig Blvd.,corner Pasig Blvd.,3-4 inches,7.62,10.16,parsed
+2023,67,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,San Mateo Bank,San Mateo Bank,2-3 inches,5.08,7.62,parsed
+2023,68,Kapitolyo,Kapitolyo,1381200009,exact,,Shaw Blvd.,Shaw Blvd.,corner Pioneer St.,corner Pioneer St.,4 inches,10.16,10.16,parsed
+2023,69,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,corner Market Ave.,corner Market Ave.,4-5 inches,10.16,12.70,parsed
+2023,70,San Miguel,San Miguel,1381200022,exact,,Market Ave.,Market Ave.,Chinese School,Chinese School,4-5 inches,10.16,12.70,parsed
+2023,71,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,Meralco,Meralco,7-8 inches,17.78,20.32,parsed
+2023,72,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,"Greenwoods
+Entrance",Greenwoods Entrance,4-5 inches,10.16,12.70,parsed
+2023,73,San Miguel,San Miguel,1381200022,exact,,Sandoval Ave.,Sandoval Ave.,Sandoval Divimart,Sandoval Divimart,4-5 inches,10.16,12.70,parsed
+2023,74,Palatiw,Palatiw,1381200014,exact,,F. Soriano St.,F. Soriano St.,likod ng Lianas,likod ng Lianas,4-5 inches,10.16,12.70,parsed
+2023,75,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Molave Compound,Molave Compound,,,3-5 inches,7.62,12.70,parsed
+2023,76,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,"going C. Raymundo
+Ave.",going C. Raymundo Ave.,3-4 inches,7.62,10.16,parsed
+2023,77,Caniogan,Caniogan,1381200005,exact,,Pag-asa St.,Pag-asa St.,,,3-4 inches,7.62,10.16,parsed
+2023,78,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Villa Cuana,Villa Cuana,,,2-3 inches,5.08,7.62,parsed
+2023,79,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,,,3-5 inches,7.62,12.70,parsed
+2023,80,Caniogan,Caniogan,1381200005,exact,,C. Raymundo Ave.,C. Raymundo Ave.,Toby's,Toby's,2-4 inches,5.08,10.16,parsed
+2023,81,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,,,2-3 inches,5.08,7.62,parsed
+2023,82,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,Meralco,Meralco,4-5 inches,10.16,12.70,parsed
+2023,83,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,"halamanan and San
+Mateo Bank",halamanan and San Mateo Bank,3-4 inches,7.62,10.16,parsed
+2023,84,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,Service Road,Service Road,3-4 inches,7.62,10.16,parsed
+2023,85,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,"infront of EastWest
+Bank",infront of EastWest Bank,2-3 inches,5.08,7.62,parsed
+2023,86,Bagong Ilog,Bagong Ilog,1381200001,exact,,Pasig Boulevard,Pasig Boulevard,Talipapa,Talipapa,4-5 inches,10.16,12.70,parsed
+2023,87,San Miguel,San Miguel,1381200022,exact,,Sandoval Ave.,Sandoval Ave.,Divimart,Divimart,4-5 inches,10.16,12.70,parsed
+2023,88,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,infront of Yamaha,infront of Yamaha,3-4 inches,7.62,10.16,parsed
+2023,89,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,Meralco,Meralco,4-5 inches,10.16,12.70,parsed
+2023,90,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,Villa Eusebio,Villa Eusebio,4-5 inches,10.16,12.70,parsed
+2023,91,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Kenneth Road,Kenneth Road,Block 19,Block 19,1-3 inches,2.54,7.62,parsed
+2023,92,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,Charitos,Charitos,4-5 inches,10.16,12.70,parsed
+2023,93,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Greenwoods Entrance,Greenwoods Entrance,3-4 inches,7.62,10.16,parsed
+2023,94,Pineda,Pineda,1381200016,exact,,Sta. Monica St.,Sta. Monica St.,Multipurpose Hall,Multipurpose Hall,2-3 inches,5.08,7.62,parsed
+2023,95,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Revolving Tower,Revolving Tower,3-4 inches,7.62,10.16,parsed
+2023,96,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,Robinsons,Robinsons,2-3 inches,5.08,7.62,parsed
+2023,97,Caniogan,Caniogan,1381200005,exact,,C. Raymundo Ave.,C. Raymundo Ave.,Mcdo,Mcdo,2-3 inches,5.08,7.62,parsed
+2023,98,Manggahan,Manggahan,1381200011,exact,,Magsaysay St.,Magsaysay St.,MLQ,MLQ,2-3 inches,5.08,7.62,parsed
+2023,99,Manggahan,Manggahan,1381200011,exact,,Napico,Napico,Peras St.,Peras St.,,,,missing
+2023,100,Manggahan,Manggahan,1381200011,exact,,Napico,Napico,Sitaw St.,Sitaw St.,,,,missing
+2023,101,Manggahan,Manggahan,1381200011,exact,,Soliven St.,Soliven St.,,,3 inches,7.62,7.62,parsed
+2023,102,Dela Paz,Dela Paz,1381200006,exact,,F. Mariano,F. Mariano,Katapatan St.,Katapatan St.,12 inches,30.48,30.48,parsed
+2023,103,Dela Paz,Dela Paz,1381200006,exact,,Karangalan Village,Karangalan Village,Kalakasan St.,Kalakasan St.,8-12 inches,20.32,30.48,parsed
+2023,104,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,Market,Market,3-5 inches,7.62,12.70,parsed
+2023,105,Dela Paz,Dela Paz,1381200006,exact,,Kabutihan St.,Kabutihan St.,,,3-5 inches,7.62,12.70,parsed
+2023,106,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,Meralco,Meralco,,,,missing
+2023,107,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,Meralco,Meralco,2-3 inches,5.08,7.62,parsed
+2023,108,Palatiw,Palatiw,1381200014,exact,,Caruncho Ave.,Caruncho Ave.,Mang Inasal,Mang Inasal,2-3 inches,5.08,7.62,parsed
+2023,109,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,MPMM,MPMM,2-3 inches,5.08,7.62,parsed
+2023,110,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,infront of City Hall,infront of City Hall,9-10 inches,22.86,25.40,parsed
+2023,111,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Mang Inasal,Mang Inasal,2-3 inches,5.08,7.62,parsed
+2023,112,Palatiw,Palatiw,1381200014,exact,,San Agustin Ave.,San Agustin Ave.,Angel's Burger,Angel's Burger,2-3 inches,5.08,7.62,parsed
+2023,113,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Sports Complex,Sports Complex,2-3 inches,5.08,7.62,parsed
+2023,114,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,,,2-3 inches,5.08,7.62,parsed
+2023,115,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,Petron,Petron,2-4 inches,5.08,10.16,parsed
+2023,116,San Jose,San Jose,1381200021,exact,,Plaza Rizal,Plaza Rizal,,,2-3 inches,5.08,7.62,parsed
+2023,117,San Miguel,San Miguel,1381200022,exact,,Asuncion St.,Asuncion St.,,,2-3 inches,5.08,7.62,parsed
+2023,118,San Miguel,San Miguel,1381200022,exact,,Victori Road,Victori Road,,,4-5 inches,10.16,12.70,parsed
+2023,119,San Miguel,San Miguel,1381200022,exact,,Sandoval Ave.,Sandoval Ave.,Tambakan,Tambakan,4-5 inches,10.16,12.70,parsed
+2023,120,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Kenneth Road,Kenneth Road,Block 19,Block 19,2-7 inches,5.08,17.78,parsed
+2023,121,Kapitolyo,Kapitolyo,1381200009,exact,,United St.,United St.,corner Sheridan St.,corner Sheridan St.,4-5 inches,10.16,12.70,parsed
+2023,122,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,PCGH,PCGH,4-7 inches,10.16,17.78,parsed
+2024,1,Oranbo,Oranbo,1381200013,exact,,Henry Javier St.,Henry Javier St.,Corner Meralco Ave.,Corner Meralco Ave.,2-3 inches,5.08,7.62,parsed
+2024,2,Dela Paz,Dela Paz,1381200006,exact,,Karangalan,Karangalan,Phase 2A,Phase 2A,2-3 inches,5.08,7.62,parsed
+2024,3,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,,,2-3 inches,5.08,7.62,parsed
+2024,4,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,,,3-4 inches,7.62,10.16,parsed
+2024,5,Palatiw,Palatiw,1381200014,exact,,F. Soriano St.,F. Soriano St.,Lianas,Lianas,3 inches,7.62,7.62,parsed
+2024,6,Dela Paz,Dela Paz,1381200006,exact,,Karangalan Village,Karangalan Village,,,4-5 inches,10.16,12.70,parsed
+2024,7,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,5-6 inches,12.70,15.24,parsed
+2024,8,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,,,3 inches,7.62,7.62,parsed
+2024,9,Kalawaan,Kalawaan,1381200007,exact,,Elisco Road,Elisco Road,,,3-4 inches,7.62,10.16,parsed
+2024,10,Kalawaan,Kalawaan,1381200007,exact,,Paulino St.,Paulino St.,,,2-3 inches,5.08,7.62,parsed
+2024,11,Bambang,Bambang,1381200003,exact,,Villa Alfonso,Villa Alfonso,corner Villa Antonio,corner Villa Antonio,1 foot,30.48,30.48,parsed
+2024,12,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,corner Urbano Velasco,corner Urbano Velasco,5 inches,12.70,12.70,parsed
+2024,13,Ugong,Ugong,1381200029,exact,,C5 Road,C5 Road,corner Canley Road,corner Canley Road,3-4 inches,7.62,10.16,parsed
+2024,14,Kalawaan,Kalawaan,1381200007,exact,,P. Tuazon St.,P. Tuazon St.,PCIST,PCIST,2-3 inches,5.08,7.62,parsed
+2024,15,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,Mejia St.,Mejia St.,3-4 inches,7.62,10.16,parsed
+2024,16,San Miguel,San Miguel,1381200022,exact,,Asuncsion St.,Asuncsion St.,to Maxville,to Maxville,3-4 inches,7.62,10.16,parsed
+2024,17,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,Talipapa,Talipapa,3-4 inches,7.62,10.16,parsed
+2024,18,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,Burger King,Burger King,3-4 inches,7.62,10.16,parsed
+2024,19,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Infront of City Hall,Infront of City Hall,4-5 inches,10.16,12.70,parsed
+2024,20,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Molave St.,Molave St.,City Jail,City Jail,10-12 inches,25.40,30.48,parsed
+2024,21,Sto. Tomas,Santo Tomas,1381200026,normalized_alias,,F. Manalo St.,F. Manalo St.,corner E. Santos,corner E. Santos,3-4 inches,7.62,10.16,parsed
+2024,22,Caniogan,Caniogan,1381200005,exact,,A. Flores St.,A. Flores St.,,,13 inches,33.02,33.02,parsed
+2024,23,Rosario,Rosario,1381200017,exact,,C. Raymundo Ave.,C. Raymundo Ave.,Corner Bernal St.,Corner Bernal St.,4 inches,10.16,10.16,parsed
+2024,24,Manggahan,Manggahan,1381200011,exact,,Greenpark,Greenpark,,,10 inches,25.40,25.40,parsed
+2024,25,Pineda,Pineda,1381200016,exact,,F. Banaag St.,F. Banaag St.,Pineda Elem. School,Pineda Elem. School,12-15 inches,30.48,38.10,parsed
+2024,26,Maybunga,Maybunga,1381200012,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,12-15 inches,30.48,38.10,parsed
+2024,27,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Bolante 1,Bolante 1,,,12 inches,30.48,30.48,parsed
+2024,28,Bambang,Bambang,1381200003,exact,,Pio Alvarez St.,Pio Alvarez St.,,,4 inches,10.16,10.16,parsed
+2024,29,Bambang,Bambang,1381200003,exact,,E. Jacinto St.,E. Jacinto St.,,,3-5 inches,7.62,12.70,parsed
+2024,30,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Damayan Court,Damayan Court,12 inches,30.48,30.48,parsed
+2024,31,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Molave St.,Molave St.,,,5 inches,12.70,12.70,parsed
+2024,32,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Ilugin,Ilugin,,,5 inches,12.70,12.70,parsed
+2024,33,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,M.C. Guinto St.,M.C. Guinto St.,,,5 inches,12.70,12.70,parsed
+2024,34,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Jasmin St.,Jasmin St.,,,5 inches,12.70,12.70,parsed
+2024,35,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Arrezo,Arrezo,5 inches,12.70,12.70,parsed
+2024,36,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,,,5 inches,12.70,12.70,parsed
+2024,37,Sagad,Sagad,1381200018,exact,,E. Angeles St.,E. Angeles St.,C. Raymundo,C. Raymundo,2-3 inches,5.08,7.62,parsed
+2024,38,Rosario,Rosario,1381200017,exact,,Greenland,Greenland,Saturn St.,Saturn St.,5 inches,12.70,12.70,parsed
+2024,39,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,corner Tramo,corner Tramo,12 inches,30.48,30.48,parsed
+2024,40,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,12 inches,30.48,30.48,parsed
+2024,41,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,corner C. Raymundo,corner C. Raymundo,12 inches,30.48,30.48,parsed
+2024,42,Ugong,Ugong,1381200029,exact,,C5 Road,C5 Road,,,15 inches,38.10,38.10,parsed
+2024,43,Dela Paz,Dela Paz,1381200006,exact,,Aguho St.,Aguho St.,,,3 inches,7.62,7.62,parsed
+2024,44,Manggahan,Manggahan,1381200011,exact,,Kaimito St.,Kaimito St.,,,9-10 inches,22.86,25.40,parsed
+2024,45,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Kenneth Road,Kenneth Road,,,9-10 inches,22.86,25.40,parsed
+2024,46,Santolan,Santolan,1381200027,exact,,Matahimik St.,Matahimik St.,,,5 inches,12.70,12.70,parsed
+2024,47,Sta. Cruz,Santa Cruz,1381200024,normalized_alias,,Capt. Ato St.,Capt. Ato St.,,,7 inches,17.78,17.78,parsed
+2024,48,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Royal Villas,Royal Villas,10 inches,25.40,25.40,parsed
+2024,49,San Miguel,San Miguel,1381200022,exact,,Teachers Village,Teachers Village,,,6 inches,15.24,15.24,parsed
+2024,50,Santolan,Santolan,1381200027,exact,,Amang Rodriguez,Amang Rodriguez,,,8 inches,20.32,20.32,parsed
+2024,51,Bagong Ilog,Bagong Ilog,1381200001,exact,,L. Intalan St.,L. Intalan St.,,,6-7 inches,15.24,17.78,parsed
+2024,52,Rosario,Rosario,1381200017,exact,,Dabba,Dabba,Paraluman St.,Paraluman St.,4 feet,121.92,121.92,parsed
+2024,53,Manggahan,Manggahan,1381200011,exact,,Soliven Ave.,Soliven Ave.,Greenpark,Greenpark,2-3 feet,60.96,91.44,parsed
+2024,54,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,De Castro St.,De Castro St.,,,12-15 inches,30.48,38.10,parsed
+2024,55,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Metrogreen,Metrogreen,,,5 inches,12.70,12.70,parsed
+2024,56,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Morales
+Compound",Morales Compound,,,5 inches,12.70,12.70,parsed
+2024,57,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Maxville XI,Maxville XI,,,5 inches,12.70,12.70,parsed
+2024,58,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Tawi-Tawi St.,Tawi-Tawi St.,,,18 inches,45.72,45.72,parsed
+2024,59,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,Rosario Church,Rosario Church,5-8 inches,12.70,20.32,parsed
+2024,60,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,"going to Riverside
+Sta. Lucia",going to Riverside Sta. Lucia,5-8 inches,12.70,20.32,parsed
+2024,61,Bagong Ilog,Bagong Ilog,1381200001,exact,,Sgt. Pascua St.,Sgt. Pascua St.,Tawiran,Tawiran,2-3 inches,5.08,7.62,parsed
+2024,62,San Miguel,San Miguel,1381200022,exact,,Maxville 6 and 7,Maxville 6 and 7,,,12-14 inches,30.48,35.56,parsed
+2024,63,Bambang,Bambang,1381200003,exact,,F. Manalo St.,F. Manalo St.,,,2-3 inches,5.08,7.62,parsed
+2024,64,Dela Paz,Dela Paz,1381200006,exact,,Imelda Ave.,Imelda Ave.,Karangalan,Karangalan,4 feet,121.92,121.92,parsed
+2024,65,San Miguel,San Miguel,1381200022,exact,,Sandoval Ave.,Sandoval Ave.,Divi Mart,Divi Mart,,,,missing
+2024,66,Sto. Tomas,Santo Tomas,1381200026,normalized_alias,,M.H. Del Pilar St.,M.H. Del Pilar St.,"Tomasito Motor
+Parts",Tomasito Motor Parts,3-4 inches,7.62,10.16,parsed
+2024,67,Manggahan,Manggahan,1381200011,exact,,Kapitagan St.,Kapitagan St.,"San Lorenzo Elem.
+School",San Lorenzo Elem. School,1 foot,30.48,30.48,parsed
+2024,68,Palatiw,Palatiw,1381200014,exact,,N. Cruz,N. Cruz,,,5 inches,12.70,12.70,parsed
+2024,69,San Miguel,San Miguel,1381200022,exact,,Dr. Pilapil St.,Dr. Pilapil St.,,,2-4 inches,5.08,10.16,parsed
+2024,70,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,St. Joseph,St. Joseph,2-3 inches,5.08,7.62,parsed
+2024,71,Maybunga,Maybunga,1381200012,exact,,F. Legaspi St.,F. Legaspi St.,Rave,Rave,5 inches,12.70,12.70,parsed
+2024,72,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Riverside,Riverside,10 St.,10 St.,4 feet,121.92,121.92,parsed
+2024,73,Manggahan,Manggahan,1381200011,exact,,Karangalan,Karangalan,Kaginhawaan St.,Kaginhawaan St.,2 feet,60.96,60.96,parsed
+2024,74,Ugong,Ugong,1381200029,exact,,C5 Road,C5 Road,corner Eagle St.,corner Eagle St.,,,,missing
+2024,75,Rosario,Rosario,1381200017,exact,,Doña Juana Subd.,Doña Juana Subd.,Topaz St.,Topaz St.,15 inches,38.10,38.10,parsed
+2024,76,Santolan,Santolan,1381200027,exact,,Doroteo Ext.,Doroteo Ext.,,,4 feet,121.92,121.92,parsed
+2024,77,Rosario,Rosario,1381200017,exact,,Bernal St.,Bernal St.,Corner C. Raymundo,Corner C. Raymundo,2-3 inches,5.08,7.62,parsed
+2024,78,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,corner GSIS,corner GSIS,2-3 inches,5.08,7.62,parsed
+2024,79,Pineda,Pineda,1381200016,exact,,F. Banaag St.,F. Banaag St.,Pineda Elem. School,Pineda Elem. School,2-3 inches,5.08,7.62,parsed
+2024,80,Kapitolyo,Kapitolyo,1381200009,exact,,Shaw Blvd.,Shaw Blvd.,corner Pioneer,corner Pioneer,3 inches,7.62,7.62,parsed
+2024,81,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,Corner Canley Road,Corner Canley Road,4-5 inches,10.16,12.70,parsed
+2024,82,Manggahan,Manggahan,1381200011,exact,,Amang Rodriguez,Amang Rodriguez,corner PSP Ave.,corner PSP Ave.,4-5 inches,10.16,12.70,parsed
+2024,83,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,Villa Eusebio,Villa Eusebio,6 inches,15.24,15.24,parsed
+2024,84,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,,,6 inches,15.24,15.24,parsed
+2024,85,Manggahan,Manggahan,1381200011,exact,,Amang Rodriguez,Amang Rodriguez,"from St. Camillus
+Hospital to Sumisho",from St. Camillus Hospital to Sumisho,3-4 inches,7.62,10.16,parsed
+2024,86,Manggahan,Manggahan,1381200011,exact,,Amsterdam St.,Amsterdam St.,corner Washington,corner Washington,4-5 inches,10.16,12.70,parsed
+2024,87,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,corner Acacia,corner Acacia,2-3 inches,5.08,7.62,parsed
+2024,88,Dela Paz,Dela Paz,1381200006,exact,,F. Mariano St.,F. Mariano St.,Yap Compound,Yap Compound,2 feet,60.96,60.96,parsed
+2024,89,Manggahan,Manggahan,1381200011,exact,,Karangalan Village,Karangalan Village,,,2 Feet,60.96,60.96,parsed
+2024,90,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Greenwoods,Greenwoods,4-5 inches,10.16,12.70,parsed
+2024,91,Dela Paz,Dela Paz,1381200006,exact,,F. Mariano St.,F. Mariano St.,,,2 feet,60.96,60.96,parsed
+2024,92,Santolan,Santolan,1381200027,exact,,Sgt. De Leon St.,Sgt. De Leon St.,Corner Natasha St.,Corner Natasha St.,2 feet,60.96,60.96,parsed
+2024,93,Santolan,Santolan,1381200027,exact,,Pinagbuklod,Pinagbuklod,Tawiran,Tawiran,2 feet,60.96,60.96,parsed
+2024,94,Rosario,Rosario,1381200017,exact,,Doña Andrea,Doña Andrea,Dream Flower,Dream Flower,2 feet,60.96,60.96,parsed
+2024,95,Rosario,Rosario,1381200017,exact,,Doña Damiana,Doña Damiana,Paraluman St.,Paraluman St.,2 feet,60.96,60.96,parsed
+2024,96,Rosario,Rosario,1381200017,exact,,Doña Damiana,Doña Damiana,Luwalhati St.,Luwalhati St.,2 feet,60.96,60.96,parsed
+2024,97,Manggahan,Manggahan,1381200011,exact,,Karangalan Village,Karangalan Village,Gate 5,Gate 5,2 feet,60.96,60.96,parsed
+2024,98,Santolan,Santolan,1381200027,exact,,Doroteo,Doroteo,Doroteo Court,Doroteo Court,2 feet,60.96,60.96,parsed
+2024,99,Santolan,Santolan,1381200027,exact,,Tawiran St.,Tawiran St.,Tawiran Bangkaan,Tawiran Bangkaan,2 feet,60.96,60.96,parsed
+2024,100,Santolan,Santolan,1381200027,exact,,Dado Compound,Dado Compound,,,2 feet,60.96,60.96,parsed
+2024,101,Santolan,Santolan,1381200027,exact,,Rafael Cruz St.,Rafael Cruz St.,,,2 feet,60.96,60.96,parsed
+2024,102,Santolan,Santolan,1381200027,exact,,Victorino St.,Victorino St.,,,2 feet,60.96,60.96,parsed
+2024,103,Manggahan,Manggahan,1381200011,exact,,Karangalan Village,Karangalan Village,near Sto. Niño Elem.,near Sto. Niño Elem.,3 feet,91.44,91.44,parsed
+2025,1,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,3-4 inches,7.62,10.16,parsed
+2025,2,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Bautista
+Compound",Bautista Compound,,,12 inches,30.48,30.48,parsed
+2025,3,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,,,2-3 inches,5.08,7.62,parsed
+2025,4,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,,,3-5 inches,7.62,12.70,parsed
+2025,5,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Petro Gazz,Petro Gazz,3-4 inches,7.62,10.16,parsed
+2025,6,San Nicolas,San Nicolas,1381200023,exact,,F. Manalo St.,F. Manalo St.,infront of City Hall,infront of City Hall,2-3 inches,5.08,7.62,parsed
+2025,7,Kapitolyo,Kapitolyo,1381200009,exact,,East Capitol Drive,East Capitol Drive,infront of Meralco,infront of Meralco,3-5 inches,7.62,12.70,parsed
+2025,8,Manggahan,Manggahan,1381200011,exact,,Karikitan St.,Karikitan St.,"corner Kabayanihan
+St.",corner Kabayanihan St.,3-5 inches,7.62,12.70,parsed
+2025,9,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,,,3-5 inches,7.62,12.70,parsed
+2025,10,Manggahan,Manggahan,1381200011,exact,,Kaimito St.,Kaimito St.,,,3-5 inches,7.62,12.70,parsed
+2025,11,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,3-5 inches,7.62,12.70,parsed
+2025,12,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,Jollibee,Jollibee,3-5 inches,7.62,12.70,parsed
+2025,13,Sumilang,Sumilang,1381200028,exact,,Dr. Garcia St.,Dr. Garcia St.,,,2-3 inches,5.08,7.62,parsed
+2025,14,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Royal Villa,Royal Villa,10 inches,25.40,25.40,parsed
+2025,15,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Pinalad Road,Pinalad Road,Camachile St.,Camachile St.,10 inches,25.40,25.40,parsed
+2025,16,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Villa Cuana,Villa Cuana,,,2-3 inches,5.08,7.62,parsed
+2025,17,Kalawaan,Kalawaan,1381200007,exact,,P. Visitacion St.,P. Visitacion St.,corner Elisco Road,corner Elisco Road,2-3 inches,5.08,7.62,parsed
+2025,18,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Riverside,Riverside,"9th St. corner 10th
+St.",9th St. corner 10th St.,12 inches,30.48,30.48,parsed
+2025,19,Dela Paz,Dela Paz,1381200006,exact,,Yap Compound,Yap Compound,Katipiran St.,Katipiran St.,4-5 inches,10.16,12.70,parsed
+2025,20,Dela Paz,Dela Paz,1381200006,exact,,K118,K118,,,4-5 inches,10.16,12.70,parsed
+2025,21,Dela Paz,Dela Paz,1381200006,exact,,Karangalan,Karangalan,Kabutihan Road,Kabutihan Road,4-5 inches,10.16,12.70,parsed
+2025,22,San Joaquin,San Joaquin,1381200020,exact,,Villa Capistrano,Villa Capistrano,Garden Area,Garden Area,2-3 inches,5.08,7.62,parsed
+2025,23,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,2-3 inches,5.08,7.62,parsed
+2025,24,Kalawaan,Kalawaan,1381200007,exact,,Elisco Road,Elisco Road,going to Visitacion,going to Visitacion,11 inches,27.94,27.94,parsed
+2025,25,Caniogan,Caniogan,1381200005,exact,,"Dr. Sixto Antonio
+Ave.",Dr. Sixto Antonio Ave.,Rizal High School,Rizal High School,3-5 inches,7.62,12.70,parsed
+2025,26,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,M. Eusebio Damayan,M. Eusebio Damayan,8 inches,20.32,20.32,parsed
+2025,27,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Urbano Velasco,Urbano Velasco,corner Acacia,corner Acacia,3 inches,7.62,7.62,parsed
+2025,28,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Urbano Velasco,Urbano Velasco,corner Esguerra St.,corner Esguerra St.,3 inches,7.62,7.62,parsed
+2025,29,Manggahan,Manggahan,1381200011,exact,,Pipino Ext.,Pipino Ext.,,,5 inches,12.70,12.70,parsed
+2025,30,Manggahan,Manggahan,1381200011,exact,,Labanos St.,Labanos St.,,,5 inches,12.70,12.70,parsed
+2025,31,Manggahan,Manggahan,1381200011,exact,,Mansanas St.,Mansanas St.,,,5 inches,12.70,12.70,parsed
+2025,32,Manggahan,Manggahan,1381200011,exact,,Guyabano St.,Guyabano St.,,,5 inches,12.70,12.70,parsed
+2025,33,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Nagpayong,Nagpayong,Mulawin St.,Mulawin St.,5 inches,12.70,12.70,parsed
+2025,34,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,Villa Eusebio,Villa Eusebio,1 inch,2.54,2.54,parsed
+2025,35,Dela Paz,Dela Paz,1381200006,exact,,Karangalan,Karangalan,Phase 2,Phase 2,12 inches,30.48,30.48,parsed
+2025,36,Kalawaan,Kalawaan,1381200007,exact,,Resettlement,Resettlement,,,4-7 inches,10.16,17.78,parsed
+2025,37,Malinao,Malinao,1381200010,exact,,G. Raymundo St.,G. Raymundo St.,,,2-3 inches,5.08,7.62,parsed
+2025,38,Santolan,Santolan,1381200027,exact,,"Sta. Lucia
+Subdivision",Sta. Lucia Subdivision,,,7-10 inches,17.78,25.40,parsed
+2025,39,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Callos Compound,Callos Compound,,,2 feet,60.96,60.96,parsed
+2025,40,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Hugo Compound,Hugo Compound,,,1 foot,30.48,30.48,parsed
+2025,41,Manggahan,Manggahan,1381200011,exact,,Capetown St.,Capetown St.,corner Rome St.,corner Rome St.,5 inches,12.70,12.70,parsed
+2025,42,Manggahan,Manggahan,1381200011,exact,,Soliven Ave.,Soliven Ave.,corner Kingston,corner Kingston,5 inches,12.70,12.70,parsed
+2025,43,Manggahan,Manggahan,1381200011,exact,,Panama St.,Panama St.,corner Stockholm,corner Stockholm,5 inches,12.70,12.70,parsed
+2025,44,Manggahan,Manggahan,1381200011,exact,,Paris St.,Paris St.,corner Soliven Ave.,corner Soliven Ave.,5 inches,12.70,12.70,parsed
+2025,45,Manggahan,Manggahan,1381200011,exact,,Prague St.,Prague St.,,,10 inches,25.40,25.40,parsed
+2025,46,Manggahan,Manggahan,1381200011,exact,,Rome St.,Rome St.,corner Prague St.,corner Prague St.,10 inches,25.40,25.40,parsed
+2025,47,Manggahan,Manggahan,1381200011,exact,,Washington St.,Washington St.,Iglesia,Iglesia,10 inches,25.40,25.40,parsed
+2025,48,Manggahan,Manggahan,1381200011,exact,,Guatemala St.,Guatemala St.,corner Rome St.,corner Rome St.,10 inches,25.40,25.40,parsed
+2025,49,Manggahan,Manggahan,1381200011,exact,,Kabayanihan St.,Kabayanihan St.,corner Karikitan St.,corner Karikitan St.,15 inches,38.10,38.10,parsed
+2025,50,Manggahan,Manggahan,1381200011,exact,,Athens St.,Athens St.,corner Guatemala St.,corner Guatemala St.,10 inches,25.40,25.40,parsed
+2025,51,Dela Paz,Dela Paz,1381200006,exact,,Karangalan,Karangalan,Phase 2,Phase 2,18 inches,45.72,45.72,parsed
+2025,52,Kalawaan,Kalawaan,1381200007,exact,,Resettlement,Resettlement,,,4-7 inches,10.16,17.78,parsed
+2025,53,Santolan,Santolan,1381200027,exact,,Masikap St.,Masikap St.,,,5 inches,12.70,12.70,parsed
+2025,54,Santolan,Santolan,1381200027,exact,,Sgt. De Leon St.,Sgt. De Leon St.,,,5 inches,12.70,12.70,parsed
+2025,55,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Taw-Tawi St.,Taw-Tawi St.,,,15 inches,38.10,38.10,parsed
+2025,56,Manggahan,Manggahan,1381200011,exact,,Karangalan,Karangalan,Metroville,Metroville,15 inches,38.10,38.10,parsed
+2025,57,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Morales
+Compound",Morales Compound,5th St.,5th St.,3-4 inches,7.62,10.16,parsed
+2025,58,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Bautista
+Compound",Bautista Compound,,,3-4 inches,7.62,10.16,parsed
+2025,59,Maybunnga,Maybunga,1381200012,corrected_typo,,Westbank Road,Westbank Road,,,13 inches,33.02,33.02,parsed
+2025,60,Santolan,Santolan,1381200027,exact,,Sgt. De Leon St.,Sgt. De Leon St.,,,15 inches,38.10,38.10,parsed
+2025,61,Santolan,Santolan,1381200027,exact,,Masikap St.,Masikap St.,Bangkaan,Bangkaan,5 inches,12.70,12.70,parsed
+2025,62,Santolan,Santolan,1381200027,exact,,Doroteo St.,Doroteo St.,,,15 inches,38.10,38.10,parsed
+2025,63,Santolan,Santolan,1381200027,exact,,Marcelino St.,Marcelino St.,,,15 inches,38.10,38.10,parsed
+2025,64,Santolan,Santolan,1381200027,exact,,Rafael Cruz St.,Rafael Cruz St.,,,5 inches,12.70,12.70,parsed
+2025,65,Santolan,Santolan,1381200027,exact,,Victorino St.,Victorino St.,,,5 inches,12.70,12.70,parsed
+2025,66,Ugong,Ugong,1381200029,exact,,C. Santos St.,C. Santos St.,,,5 inches,12.70,12.70,parsed
+2025,67,Manggahan,Manggahan,1381200011,exact,,K16,K16,,,1 foot,30.48,30.48,parsed
+2025,68,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Bagong Anyo St.,Bagong Anyo St.,,,4-5 inches,10.16,12.70,parsed
+2025,69,Manggahan,Manggahan,1381200011,exact,,Stockholm St.,Stockholm St.,,,2-3 inches,5.08,7.62,parsed
+2025,70,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Metropolis 1,Metropolis 1,,,2 feet,60.96,60.96,parsed
+2025,71,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Metropolis 2,Metropolis 2,,,2 feet,60.96,60.96,parsed
+2025,72,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Rosario Village,Rosario Village,,,2 feet,60.96,60.96,parsed
+2025,73,Rosario,Rosario,1381200017,exact,,"Rosario Village
+TRAMO",Rosario Village TRAMO,,,14 inches,35.56,35.56,parsed
+2025,74,Manggahan,Manggahan,1381200011,exact,,"Amang Rodriguez
+Ave.",Amang Rodriguez Ave.,Brgy. Hall,Brgy. Hall,24 inches,60.96,60.96,parsed
+2025,75,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,2 feet,60.96,60.96,parsed
+2025,76,Manggahan,Manggahan,1381200011,exact,,Kaginhawaan St.,Kaginhawaan St.,corner Karikitan St.,corner Karikitan St.,4-5 inches,10.16,12.70,parsed
+2025,77,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,,,4-5 inches,10.16,12.70,parsed
+2025,78,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Metro Green
+Village",Metro Green Village,Hawk St.,Hawk St.,3-4 inches,7.62,10.16,parsed
+2025,79,Rosario,Rosario,1381200017,exact,,DABA St.,DABA St.,,,2 feet,60.96,60.96,parsed
+2025,80,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,De Castro,De Castro,Rosal St.,Rosal St.,2-3 inches,5.08,7.62,parsed
+2025,81,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,De Castro,De Castro,Dahlia St.,Dahlia St.,4 inches,10.16,10.16,parsed
+2025,82,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Bagong Anyo St.,Bagong Anyo St.,,,3 feet,91.44,91.44,parsed
+2025,83,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Azucena St.,Azucena St.,,,3 feet,91.44,91.44,parsed
+2025,84,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Liro St.,Liro St.,,,6-10 inches,15.24,25.40,parsed
+2025,85,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,St. Jude St.,St. Jude St.,Thaddeus,Thaddeus,4-5 feet,121.92,152.40,parsed
+2025,86,Sagad,Sagad,1381200018,exact,,Dr. Pilapil St.,Dr. Pilapil St.,going to San Miguel,going to San Miguel,5 inches,12.70,12.70,parsed
+2025,87,Sagad,Sagad,1381200018,exact,,Feliciano St.,Feliciano St.,corner E. Angeles St.,corner E. Angeles St.,2 feet,60.96,60.96,parsed
+2025,88,Sagad,Sagad,1381200018,exact,,Villa Roman,Villa Roman,,,6 inches,15.24,15.24,parsed
+2025,89,Maybunga,Maybunga,1381200012,exact,,"Parkwood
+Executive Village",Parkwood Executive Village,Phase 4B,Phase 4B,2 feet,60.96,60.96,parsed
+2025,90,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,Balsangkat HC,Balsangkat HC,,,,missing
+2025,91,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Ilang-Ilang St.,Ilang-Ilang St.,,,5 inches,12.70,12.70,parsed
+2025,92,Bagong Ilog,Bagong Ilog,1381200001,exact,,A. Bonifacio St.,A. Bonifacio St.,dulo,dulo,5 inches,12.70,12.70,parsed
+2025,93,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Roberto Antonio
+St.",Roberto Antonio St.,,,15 inches,38.10,38.10,parsed
+2025,94,Manggahan,Manggahan,1381200011,exact,,Washington St.,Washington St.,Iglesia ni Cristo,Iglesia ni Cristo,5 inches,12.70,12.70,parsed
+2025,95,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Marieta Romeo
+Village",Marieta Romeo Village,,,15 inches,38.10,38.10,parsed
+2025,96,Rosario,Rosario,1381200017,exact,,Victoria Ville,Victoria Ville,,,5 inches,12.70,12.70,parsed
+2025,97,Maybunga,Maybunga,1381200012,exact,,Damayan Homes,Damayan Homes,,,15 inches,38.10,38.10,parsed
+2025,98,Maybunga,Maybunga,1381200012,exact,,"San Antonio Abad
+Subd.",San Antonio Abad Subd.,,,5 inches,12.70,12.70,parsed
+2025,99,Maybunga,Maybunga,1381200012,exact,,Jenny's Ave.,Jenny's Ave.,"Pasig Millenium
+Garden",Pasig Millenium Garden,2-3 inches,5.08,7.62,parsed
+2025,100,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Mabuhay St.,Mabuhay St.,,,4 feet,121.92,121.92,parsed
+2025,101,Rosario,Rosario,1381200017,exact,,Greenland Village,Greenland Village,Moon St.,Moon St.,5 inches,12.70,12.70,parsed
+2025,102,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Arnel IV Subd.,Arnel IV Subd.,,,3 feet,91.44,91.44,parsed
+2025,103,Manggahan,Manggahan,1381200011,exact,,Kabayanihan St.,Kabayanihan St.,corner Karikitan St.,corner Karikitan St.,14 inches,35.56,35.56,parsed
+2025,104,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,corner Pasig Blvd.,corner Pasig Blvd.,2-3 inches,5.08,7.62,parsed
+2025,105,Bambang,Bambang,1381200003,exact,,Dr. Garcia St.,Dr. Garcia St.,,,3-4 inches,7.62,10.16,parsed
+2025,106,San Joaquin,San Joaquin,1381200020,exact,,A. Policarpio St.,A. Policarpio St.,,,15 inches,38.10,38.10,parsed
+2025,107,Sta. Cruz,Santa Cruz,1381200024,normalized_alias,,Purok 6-7,Purok 6-7,Callejon 2,Callejon 2,3 inches,7.62,7.62,parsed
+2025,108,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Rosario Village
+TRAMO",Rosario Village TRAMO,,,10 inches,25.40,25.40,parsed
+2025,109,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,St. Jude St.,St. Jude St.,Thaddeus,Thaddeus,2 inches,5.08,5.08,parsed
+2025,110,Dela Paz,Dela Paz,1381200006,exact,,Yap Compound,Yap Compound,Katipiran St.,Katipiran St.,2 feet,60.96,60.96,parsed
+2025,111,Rosario,Rosario,1381200017,exact,,Dabba,Dabba,SM East Ortigas,SM East Ortigas,1-2 inches,2.54,5.08,parsed
+2025,112,Maybunga,Maybunga,1381200012,exact,,Westbank Road,Westbank Road,,,6 feet,182.88,182.88,parsed
+2025,113,Maybunga,Maybunga,1381200012,exact,,Damayan Homes,Damayan Homes,,,1 inch,2.54,2.54,parsed
+2025,114,Malinao,Malinao,1381200010,exact,,G. Raymundo St.,G. Raymundo St.,corner F. Antonio St.,corner F. Antonio St.,2 feet,60.96,60.96,parsed
+2025,115,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,MVSM Bank,MVSM Bank,1-2 inches,2.54,5.08,parsed
+2025,116,Dela Paz,Dela Paz,1381200006,exact,,"Phase 2A
+Karangalan Village",Phase 2A Karangalan Village,Blk 48 Lot 7 K113,Blk 48 Lot 7 K113,2 feet,60.96,60.96,parsed
+2025,117,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,,,4-5 inches,10.16,12.70,parsed
+2025,118,Manggahan,Manggahan,1381200011,exact,,Kaginhawaan St.,Kaginhawaan St.,to Kaunlaran St.,to Kaunlaran St.,5 inches,12.70,12.70,parsed
+2025,119,Manggahan,Manggahan,1381200011,exact,,Kaunlaran St.,Kaunlaran St.,,,5 inches,12.70,12.70,parsed
+2025,120,Manggahan,Manggahan,1381200011,exact,,Trinidad Homes,Trinidad Homes,1st St.,1st St.,5 inches,12.70,12.70,parsed
+2025,121,Manggahan,Manggahan,1381200011,exact,,Trinidad Homes,Trinidad Homes,2nd St.,2nd St.,5 inches,12.70,12.70,parsed
+2025,122,Manggahan,Manggahan,1381200011,exact,,Kabayanihan St.,Kabayanihan St.,corner Karikitan St.,corner Karikitan St.,5 inches,12.70,12.70,parsed
+2025,123,Manggahan,Manggahan,1381200011,exact,,Imelda Ave.,Imelda Ave.,Buenas Market,Buenas Market,2 inches,5.08,5.08,parsed
+2025,124,Manggahan,Manggahan,1381200011,exact,,Metroville,Metroville,going to Felix Ave.,going to Felix Ave.,5 inches,12.70,12.70,parsed
+2025,125,Rosario,Rosario,1381200017,exact,,Dabba,Dabba,Paraluman St.,Paraluman St.,2 feet,60.96,60.96,parsed
+2025,126,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Sandoval Ave.,Sandoval Ave.,corner Kenneth Road,corner Kenneth Road,2-3 inches,5.08,7.62,parsed
+2025,127,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Riverside Village,Riverside Village,,,4-5 feet,121.92,152.40,parsed
+2025,128,San Joaquin,San Joaquin,1381200020,exact,,A. Policarpio St.,A. Policarpio St.,,,2-3 inches,5.08,7.62,parsed
+2025,129,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Hugo Compound,Hugo Compound,,,1-2 inches,2.54,5.08,parsed
+2025,130,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Tawi-Tawi St.,Tawi-Tawi St.,,,15 inches,38.10,38.10,parsed
+2025,131,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Riverside Village,Riverside Village,9th St.,9th St.,2 feet,60.96,60.96,parsed
+2025,132,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Riverside Village,Riverside Village,10th St.,10th St.,2 feet,60.96,60.96,parsed
+2025,133,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Tawi-Tawi St.,Tawi-Tawi St.,,,1 inch,2.54,2.54,parsed
+2025,134,Palatiw,Palatiw,1381200014,exact,,M.H. Del Pilar St.,M.H. Del Pilar St.,Villa Sula,Villa Sula,5 inches,12.70,12.70,parsed
+2025,135,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,10th Ave.,10th Ave.,,,5-8 inches,12.70,20.32,parsed
+2025,136,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,11th Ave.,11th Ave.,,,5-8 inches,12.70,20.32,parsed
+2025,137,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Callos Compound,Callos Compound,,,5-10 inches,12.70,25.40,parsed
+2025,138,Sumilang,Sumilang,1381200028,exact,,Dos De Julio St.,Dos De Julio St.,,,7 inches,17.78,17.78,parsed
+2025,139,Sumilang,Sumilang,1381200028,exact,,Katwiran St.,Katwiran St.,,,7 inches,17.78,17.78,parsed
+2025,140,Sumilang,Sumilang,1381200028,exact,,Kalayaan St.,Kalayaan St.,,,7 inches,17.78,17.78,parsed
+2025,141,Sumilang,Sumilang,1381200028,exact,,Magtanggol St.,Magtanggol St.,,,7 inches,17.78,17.78,parsed
+2025,142,Bagong Ilog,Bagong Ilog,1381200001,exact,,Sgt. Pascua St.,Sgt. Pascua St.,,,7 inches,17.78,17.78,parsed
+2025,143,Sumilang,Sumilang,1381200028,exact,,Katwiran St.,Katwiran St.,,,2-3 inches,5.08,7.62,parsed
+2025,144,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Royal Village,Royal Village,3-5 inches,7.62,12.70,parsed
+2025,145,Sumilang,Sumilang,1381200028,exact,,Kalayaan St.,Kalayaan St.,Dr. Sixto Elem,Dr. Sixto Elem,3-5 inches,7.62,12.70,parsed
+2025,146,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Acacia St.,Acacia St.,3-5 inches,7.62,12.70,parsed
+2025,147,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,Esguerra St.,Esguerra St.,5 inches,12.70,12.70,parsed
+2025,148,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Kaunlaran St.,Kaunlaran St.,"Rosario 5 and 6
+tennis court",Rosario 5 and 6 tennis court,5 inches,12.70,12.70,parsed
+2025,149,Malinao,Malinao,1381200010,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,"going to
+Pinagbuhatan",going to Pinagbuhatan,6-7 inches,15.24,17.78,parsed
+2025,150,Palatiw,Palatiw,1381200014,exact,,E. Santos St.,E. Santos St.,Balsancat,Balsancat,11 inches,27.94,27.94,parsed
+2025,151,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,,,2-3 inches,5.08,7.62,parsed
+2025,152,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,PCGH,PCGH,5 inches,12.70,12.70,parsed
+2025,153,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Immaculada,Immaculada,3-4 inches,7.62,10.16,parsed
+2025,154,Bagong Ilog,Bagong Ilog,1381200001,exact,,Sgt. Pascua,Sgt. Pascua,,,,,,missing
+2025,155,Kalawaan,Kalawaan,1381200007,exact,,Dalandan St.,Dalandan St.,Resettlement,Resettlement,2-3 inches,5.08,7.62,parsed
+2025,156,Kalawaan,Kalawaan,1381200007,exact,,Ismar,Ismar,,,2-3 inches,5.08,7.62,parsed
+2025,157,Bagong Ilog,Bagong Ilog,1381200001,exact,,Sgt. Pascua,Sgt. Pascua,Pook Maligaya,Pook Maligaya,4-5 inches,10.16,12.70,parsed
+2025,158,Bagong Ilog,Bagong Ilog,1381200001,exact,,R. Valdez St.,R. Valdez St.,,,4-5 inches,10.16,12.70,parsed
+2025,159,Bagong Ilog,Bagong Ilog,1381200001,exact,,B. Tatco St.,B. Tatco St.,,,4-5 inches,10.16,12.70,parsed
+2025,160,Bagong Ilog,Bagong Ilog,1381200001,exact,,A. Flores,A. Flores,Ilaya,Ilaya,4-5 inches,10.16,12.70,parsed
+2025,161,Bagong Ilog,Bagong Ilog,1381200001,exact,,Joe Borris St.,Joe Borris St.,,,4-5 inches,10.16,12.70,parsed
+2025,162,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,Global Oil,Global Oil,4-5 inches,10.16,12.70,parsed
+2025,163,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Morales
+Compound",Morales Compound,,,,,,missing
+2025,164,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,"Urbano Velasco
+Ave.",Urbano Velasco Ave.,,,5 inches,12.70,12.70,parsed
+2025,165,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Caliwag St.,Caliwag St.,,,5 inches,12.70,12.70,parsed
+2025,166,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Acacia St.,Acacia St.,,,5 inches,12.70,12.70,parsed
+2025,167,Ugong,Ugong,1381200029,exact,,C5 Road,C5 Road,Hypermarket,Hypermarket,5 inches,12.70,12.70,parsed
+2025,168,Ugong,Ugong,1381200029,exact,,Meralco Ave.,Meralco Ave.,The Alexandra,The Alexandra,2-3 inches,5.08,7.62,parsed
+2025,169,Santolan,Santolan,1381200027,exact,,R. Cruz St.,R. Cruz St.,5th St.,5th St.,12 inches,30.48,30.48,parsed
+2025,170,Santolan,Santolan,1381200027,exact,,"Amang Rodriguez
+Ave.",Amang Rodriguez Ave.,Mirea Residence,Mirea Residence,2-3 inches,5.08,7.62,parsed
+2025,171,Dela Paz,Dela Paz,1381200006,exact,,Kalusugan St.,Kalusugan St.,,,12 inches,30.48,30.48,parsed
+2025,172,Dela Paz,Dela Paz,1381200006,exact,,Kalakasan St.,Kalakasan St.,,,12 inches,30.48,30.48,parsed
+2025,173,Dela Paz,Dela Paz,1381200006,exact,,Kayamanan St.,Kayamanan St.,,,12 inches,30.48,30.48,parsed
+2025,174,Dela Paz,Dela Paz,1381200006,exact,,Kalikasan St.,Kalikasan St.,,,12 inches,30.48,30.48,parsed
+2025,175,Dela Paz,Dela Paz,1381200006,exact,,Kabutihan St.,Kabutihan St.,,,12 inches,30.48,30.48,parsed
+2025,176,Manggahan,Manggahan,1381200011,exact,,"Amang Rodriguez
+Ave.",Amang Rodriguez Ave.,Pasig Green Park,Pasig Green Park,4-5 inches,10.16,12.70,parsed
+2025,177,Santolan,Santolan,1381200027,exact,,Mejico St.,Mejico St.,corner Pasco,corner Pasco,12 inches,30.48,30.48,parsed
+2025,178,Santolan,Santolan,1381200027,exact,,Gabriel St.,Gabriel St.,1st St.,1st St.,12 inches,30.48,30.48,parsed
+2025,179,Santolan,Santolan,1381200027,exact,,Mejico St.,Mejico St.,corner Evangelista,corner Evangelista,12 inches,30.48,30.48,parsed
+2025,180,Santolan,Santolan,1381200027,exact,,Buenmar St.,Buenmar St.,,,12 inches,30.48,30.48,parsed
+2025,181,Santolan,Santolan,1381200027,exact,,Sta. Lucia St.,Sta. Lucia St.,corner Sto. Tomas St.,corner Sto. Tomas St.,12 inches,30.48,30.48,parsed
+2025,182,Santolan,Santolan,1381200027,exact,,Sto. Tomas St.,Sto. Tomas St.,corner Dumandan,corner Dumandan,12 inches,30.48,30.48,parsed
+2025,183,Santolan,Santolan,1381200027,exact,,Sgt. De Leon St.,Sgt. De Leon St.,,,12 inches,30.48,30.48,parsed
+2025,184,Santolan,Santolan,1381200027,exact,,Andres St.,Andres St.,,,12 inches,30.48,30.48,parsed
+2025,185,Santolan,Santolan,1381200027,exact,,Sta. Lucia St.,Sta. Lucia St.,corner F. Pasco,corner F. Pasco,12 inches,30.48,30.48,parsed
+2025,186,San Joaquin,San Joaquin,1381200020,exact,,Elisco Road,Elisco Road,,,5 inches,12.70,12.70,parsed
+2025,187,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Urbano Velasco,Urbano Velasco,corner Acacia,corner Acacia,2-3 inches,5.08,7.62,parsed
+2025,188,Palatiw,Palatiw,1381200014,exact,,E. Santos,E. Santos,interior,interior,1 inch,2.54,2.54,parsed
+2025,189,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Urbano Velasco,Urbano Velasco,Royal Villa,Royal Villa,5 inches,12.70,12.70,parsed
+2025,190,Sumilang,Sumilang,1381200028,exact,,Dos De Julio,Dos De Julio,,,2-5 inches,5.08,12.70,parsed
+2025,191,Pinagbuhatan,Pinagbuhatan,1381200015,exact,,Esguerra St.,Esguerra St.,,,1 inch,2.54,2.54,parsed
+2025,192,Manggahan,Manggahan,1381200011,exact,,Monggo St.,Monggo St.,,,2-3 inches,5.08,7.62,parsed
+2025,193,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,Champaca St.,Champaca St.,De Castro Elem.,De Castro Elem.,2-3 inches,5.08,7.62,parsed
+2025,194,Rosario,Rosario,1381200017,exact,,Ortigas Ext.,Ortigas Ext.,Doña Juana,Doña Juana,,,,missing
+2025,195,San Miguel,San Miguel,1381200022,exact,,Mercedes Ave.,Mercedes Ave.,cor. Market Ave.,cor. Market Ave.,5 inches,12.70,12.70,parsed
+2025,196,Bagong Ilog,Bagong Ilog,1381200001,exact,,Pasig Blvd.,Pasig Blvd.,,,5 inches,12.70,12.70,parsed
+2025,197,San Nicolas,San Nicolas,1381200023,exact,,Caruncho Ave.,Caruncho Ave.,Lianas,Lianas,2-3 inches,5.08,7.62,parsed
+2025,198,Manggahan,Manggahan,1381200011,exact,,Taniman Ave.,Taniman Ave.,Ampalaya St.,Ampalaya St.,3-4 inches,7.62,10.16,parsed
+2025,199,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Bautista
+Compound",Bautista Compound,,,15 cm,15.00,15.00,parsed
+2025,200,Maybunga,Maybunga,1381200012,exact,,"San Antonio Abad
+Subd.",San Antonio Abad Subd.,Kamagong St.,Kamagong St.,12 inches,30.48,30.48,parsed
+2025,201,Sta. Lucia,Santa Lucia,1381200030,normalized_alias,,"Morales
+Compound",Morales Compound,,,,,,missing
+2025,202,San Miguel,San Miguel,1381200022,exact,,Lupang Pari,Lupang Pari,,,5 inches,12.70,12.70,parsed
+2025,203,San Nicolas,San Nicolas,1381200023,exact,,F. Manalo St.,F. Manalo St.,"infront of old City
+Hall",infront of old City Hall,3-4 inches,7.62,10.16,parsed
+2025,204,Caniogan,Caniogan,1381200005,exact,,C. Dela Paz St.,C. Dela Paz St.,,,15 inches,38.10,38.10,parsed
+2025,205,Bagong Ilog,Bagong Ilog,1381200001,exact,,C5 Road,C5 Road,cor. Canley Road,cor. Canley Road,5 inches,12.70,12.70,parsed
+2025,206,Manggahan,Manggahan,1381200011,exact,,Ilang-Ilang St.,Ilang-Ilang St.,,,5 inches,12.70,12.70,parsed
+2025,207,Rosario,Rosario,1381200017,exact,,Bathaluman St.,Bathaluman St.,,,2-3 inches,5.08,7.62,parsed
+2025,208,Rosario,Rosario,1381200017,exact,,C. Raymundo Ave.,C. Raymundo Ave.,cor. Bernal St.,cor. Bernal St.,2-3 inches,5.08,7.62,parsed
+2025,209,Manggahan,Manggahan,1381200011,exact,,Pipino St.,Pipino St.,,,5 inches,12.70,12.70,parsed
+2025,210,Manggahan,Manggahan,1381200011,exact,,Labanos St.,Labanos St.,,,5 inches,12.70,12.70,parsed
+2025,211,Kalawaan,Kalawaan,1381200007,exact,,Elisco Road,Elisco Road,,,2-3 inches,5.08,7.62,parsed
+2025,212,Manggahan,Manggahan,1381200011,exact,,Mansanas St.,Mansanas St.,,,5 inches,12.70,12.70,parsed
+2025,213,San Nicolas,San Nicolas,1381200023,exact,,Market Ave.,Market Ave.,"infront of Mang
+Inasal",infront of Mang Inasal,2-3 inches,5.08,7.62,parsed
+2025,214,Manggahan,Manggahan,1381200011,exact,,Kapitagan St.,Kapitagan St.,,,3-4 inches,7.62,10.16,parsed
+2025,215,Manggahan,Manggahan,1381200011,exact,,Sampaguita St.,Sampaguita St.,,,3-4 inches,7.62,10.16,parsed
+2025,216,Bagong Ilog,Bagong Ilog,1381200001,exact,,Sgt. Pascua St.,Sgt. Pascua St.,Tawiran,Tawiran,2-3 inches,5.08,7.62,parsed
+2025,217,Bagong Ilog,Bagong Ilog,1381200001,exact,,Sgt. Pascua St.,Sgt. Pascua St.,Pook Maligaya,Pook Maligaya,2-3 inches,5.08,7.62,parsed
+2025,218,Bagong Ilog,Bagong Ilog,1381200001,exact,,R. Valdez St.,R. Valdez St.,,,2-3 inches,5.08,7.62,parsed
+2025,219,Bagong Ilog,Bagong Ilog,1381200001,exact,,Sgt. G. Santos St.,Sgt. G. Santos St.,,,2-3 inches,5.08,7.62,parsed
+2025,220,Manggahan,Manggahan,1381200011,exact,,Greenpark Village,Greenpark Village,Copenhagen St.,Copenhagen St.,3-4 inches,7.62,10.16,parsed
+2025,221,Manggahan,Manggahan,1381200011,exact,,Greenpark Village,Greenpark Village,Kingstone St.,Kingstone St.,3-4 inches,7.62,10.16,parsed
+2025,222,Bagong Ilog,Bagong Ilog,1381200001,exact,,B. Tatco St.,B. Tatco St.,,,2-3 inches,5.08,7.62,parsed
+2025,223,Bagong Ilog,Bagong Ilog,1381200001,exact,,A. Flores St.,A. Flores St.,Ilaya,Ilaya,3-5 inches,7.62,12.70,parsed
+2025,224,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,Villa Eusebio,Villa Eusebio,2-3 inches,5.08,7.62,parsed
+2025,225,San Miguel,San Miguel,1381200022,exact,,M. Eusebio Ave.,M. Eusebio Ave.,RTU,RTU,8 inches,20.32,20.32,parsed
+2025,226,Caniogan,Caniogan,1381200005,exact,,Pag-Asa St.,Pag-Asa St.,,,5 inches,12.70,12.70,parsed
