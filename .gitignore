@@ -64,6 +64,7 @@ docs/others/*
 !docs/others/vehicle-passability.md
 !docs/others/database-design-plan.md
 !docs/others/bug-log.md
+!docs/others/rss-news-discovery-plan.md
 
 # Large data files
 data/

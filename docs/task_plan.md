@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 23, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 25, 2026, 10:16 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -12,49 +12,57 @@
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery, Taglish Extraction & Admin-Reviewed Map Suggestions (🟡 IN PROGRESS)
 > **Focus:** Build a defense-ready, server-side assistant that discovers recent flood reports from approved public news sources, extracts Filipino/English/Taglish flood evidence, ranks a likely Pasig map location using the cleaned DRRMO history and map context, and presents every result for administrator review before it can affect an official flood zone or routing. It is decision support, not automatic public reporting or routing activation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
-#### 1. Scope and Product Contract
+**Current next task:** Deploy and manually verify a dedicated RSS Cloud Run job before enabling Cloud Scheduler. Continue with event grouping and NER after the discovery pipeline is reliable.
 
-- [ ] Define one canonical AI candidate contract: source/canonical URL, publisher, title, publication/fetch times, captured text, flood-relevance score, evidence sentences, extracted places, canonical depth, condition, ranked location candidates, confidence, and review state.
-- [ ] Keep extracted flood condition (active, rising, receding, subsided, unknown) separate from admin moderation (pending, approved, rejected); neither state alone activates routing.
-- [ ] Preserve existing manual-report depth labels and routing behavior. Translate phrases such as “lagpas tuhod” and “hanggang baywang” internally to existing canonical depth/severity values.
-- [ ] Limit the MVP to Pasig and a trusted publisher allowlist. Facebook/social media is out of scope without permitted API access or administrator-supplied public text/link.
+> **RSS implementation status:** The [RSS news discovery plan](others/rss-news-discovery-plan.md) records all 50 Feedspot candidates plus News5. Six publisher feeds are enabled after local checks; others can be added through the registry. The approved three-table storage model, migration, checkpoint-aware collection, and staff trigger are implemented in code. The migration and two collector runs passed against local development PostGIS on September 25; Cloud SQL migration, Cloud Run network/scheduling, event grouping, and NER remain pending. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
-#### 2. Trusted Discovery and Source Evidence
+#### 1. Historical Location Input (Completed)
 
-- [ ] Implement server-side scheduled or on-demand discovery using publisher RSS feeds or publicly accessible article pages at a respectful rate. Do not bypass paywalls, bot protections, rate limits, or source restrictions.
-- [ ] Search Filipino, English, and Taglish flood terms (“baha,” “flood,” “lubog,” “pagbaha,” “lagpas tuhod”) with Pasig place terms; apply the publisher allowlist before full-text processing.
+- [x] Clean the 2020–2025 Pasig DRRMO CSV into [726 traceable historical records](../data/flooded_areas_pasig_clean.csv), with the raw CSV, original workbook, and PSGC barangay reference preserved in `data/`. This dataset is a location prior; it has no coordinates and is not NER training text. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+#### 2. Trusted News Discovery and Source Evidence (In Progress)
+
+- [x] Build a configurable 51-publisher research registry, bounded RSS/Atom parser, live feed probe, basic Pasig flood shortlist, staff-authenticated source/probe API, and one-run local discovery command. Verify six current feeds directly and cover parsing, source safety, deduplication, and auth with offline tests. This is the local collection slice; it does not persist candidates or run on a schedule. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Design and approve three durable feed/article/provenance tables; implement SQLAlchemy models, Alembic migration, conditional checkpoints, URL/GUID deduplication, a staff-only evidence list and trigger, and offline retry tests. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Apply migration against local development PostGIS and run the persistent collector twice: six healthy checkpoints, three conditional `304` responses on the repeat pass, and no current Pasig flood candidates in the sampled feeds. The 12 RSS tests pass; fixture coverage verifies article persistence and deduplication. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Deploy and manually verify a dedicated Cloud Run job before enabling Cloud Scheduler; verify the production migration and feed access separately.
+- [ ] Build a server-side, on-demand or scheduled discovery service using public publisher RSS feeds and a flood-keyword feed such as Google News RSS. Search Filipino, English, and Taglish terms (“baha,” “flood,” “lubog,” “pagbaha,” “lagpas tuhod”) with Pasig place terms.
+- [ ] Investigate ABS-CBN, GMA News, News5, Inquirer, and Rappler first, while keeping the Feedspot 50 as candidate publishers. Enable any publisher only after verifying its identity, feed, article domains, and access method. Apply the resulting publisher-domain allowlist before article retrieval; fetch publicly accessible pages respectfully when the feed lacks full text. Do not bypass paywalls, bot protections, rate limits, or source restrictions.
+- [ ] Define the candidate fields during implementation: source/canonical URL, publisher, title, byline when available, publication/fetch times, captured text, flood-relevance score, evidence sentences, extracted places, canonical depth, flood condition, ranked location candidates, confidence, and review state.
 - [ ] Preserve canonical URL, publisher/domain, title, byline when available, publication/fetch times, retrieved text, and evidence excerpts for staff review.
 - [ ] Deduplicate re-fetches and syndications by canonical URL and normalized title/content fingerprint; make retries idempotent and surface partial fetch failures.
+- [ ] Keep Facebook ingestion outside the automated MVP; permit administrator-supplied public post text/link as a manual input path. Do not make paid APIs or Facebook access a defense dependency.
 
 #### 3. Taglish Extraction and Normalization
 
-- [ ] Evaluate a Filipino/Tagalog-capable open-source NER baseline and its license; pair general location entities with LANES rules and a Pasig gazetteer instead of training a model from scratch.
+- [ ] Verify the license, compatibility, and CPU behavior of calamanCy's Tagalog spaCy NER model, then integrate it as the baseline for general location entities. Pair it with LANES rules and a Pasig gazetteer instead of training a model from scratch.
 - [ ] Extract evidence for city, barangay, road/street, landmark, numeric or language-based depth, flood condition, event date/time, publisher, and supporting sentences.
 - [ ] Normalize aliases (for example, “Brgy.”/“Barangay,” “Sta.”/“Santa”) to PSGC-backed canonical barangays while preserving source wording. Keep ambiguous matches unresolved instead of guessing.
 - [ ] Map Taglish phrases and explicit measurements to the established depth/severity scale with explainable rules; ambiguous wording stays unknown for staff review.
+- [ ] Keep extracted flood condition (active, rising, receding, subsided, unknown) separate from admin moderation (pending, approved, rejected). Preserve existing manual-report depth labels and routing behavior; translate Taglish depth phrases internally to the existing values.
 
 #### 4. Pasig Location Ranking and Suggested Geometry
 
-- [ ] Use [the cleaned DRRMO history](../data/flooded_areas_pasig_clean.csv) as a historical location prior, retaining the raw export and PSGC reference as traceable evidence. The cleaned data has no coordinates and does not itself create map zones.
-- [ ] Resolve extracted places against Pasig barangays, road geometry, landmarks, and article context. Rank exact road/place matches above barangay-only matches and show score rationale.
-- [ ] Use historical recurrence and permitted hazard layers only as location-ranking signals, not as proof of a currently flooded road.
+- [ ] Build a Pasig gazetteer and rank extracted places using the cleaned DRRMO history, PSGC barangays, OSM roads/landmarks, and article context. Link place names to map geometry; rank exact road/landmark combinations above barangay-only matches and show the score rationale.
+- [ ] Use historical recurrence and available NOAH/LiPAD/Phil-LiDAR hazard layers as location-ranking signals. Return-period hazard scenarios do not establish that a street is currently flooded.
 - [ ] Return point/road/area geometry only when evidence supports it; otherwise mark location unresolved and require staff map selection/editing.
 
 #### 5. Staff Review, Persistence, and Safety
 
-- [ ] Add an admin-only review surface or extend Spatial Operations so staff can inspect source evidence, extracted fields, ranking rationale, and proposed geometry; allow correction, approval, rejection, or deferral with an audit record.
+- [ ] Add an admin-only pending AI-ingestion review surface or reuse the current moderation queue so staff can inspect source evidence, extracted fields, ranking rationale, and proposed geometry; allow correction, approval, rejection, or deferral with an audit record.
 - [ ] On approval, use existing server-side moderation services to create/link the verified Flood Event and official zone. Pending or rejected candidates must not affect the public map, routing, analytics, or citizen notifications.
 - [ ] Obtain explicit schema approval before adding/changing SQLAlchemy models, Alembic migrations, or Cloud SQL tables. Preserve source provenance and account for the unresolved Phase 33 integrity work.
 - [ ] Protect ingestion/review endpoints with staff-role checks, rate limits, surfaced errors, and IDOR protections.
 
-#### 6. One-Week Delivery Order
+#### 6. Agreed Delivery Order
 
-- [ ] **Day 1:** Set the candidate contract, publisher policy, Pasig gazetteer input, and representative language fixtures.
-- [ ] **Day 2:** Implement discovery, allowlist filtering, evidence capture, and deduplication with mockable tests.
-- [ ] **Days 3–4:** Integrate NER baseline and LANES rules; test depth/status normalization and evidence extraction.
-- [ ] **Day 5:** Implement location ranking from the historical dataset and map geometry; cover resolved, ambiguous, and no-match cases.
-- [ ] **Day 6:** Connect admin review to the existing official-zone/event workflow; confirm pending/rejected candidates cannot alter routing.
-- [ ] **Day 7:** Run backend tests, desktop/mobile review checks, authorization/source-policy review, and a fixture-based defense demo; document limitations and manual fallback.
+- [x] Clean the DRRMO CSV into a usable Pasig historical location-prior dataset. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Build trusted-source server-side article discovery, filtering, evidence capture, and deduplication. Define the candidate fields and representative fixtures within this task.
+- [ ] Integrate the verified calamanCy CPU Tagalog NER baseline.
+- [ ] Add flood-specific Filipino/Taglish rules and map extracted depth/status to the existing canonical values.
+- [ ] Rank candidate Pasig road segments or areas using the historical dataset, OSM place geometry, article context, and available hazard layers; show ambiguity and confidence.
+- [ ] Add pending AI-ingestion review or reuse moderation, then connect approved candidates to the existing official-zone/event workflow.
+- [ ] Test with real recent permitted articles and representative fixtures; show source evidence for every suggested location and verify the desktop/mobile review flow, authorization, and non-activation of pending/rejected candidates.
 
 #### 7. Definition of Done
 

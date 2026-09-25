@@ -1,8 +1,20 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 22, 2026, 1:19 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 24, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
+
+## Phase 36 RSS evidence storage (approved; migration pending live application)
+
+Revision `a83c1d4e7b92` defines exactly three new tables. Publisher configuration remains in `backend/app/news_sources.json`; `source_id` is the stable registry key. The local PostgreSQL port was unavailable during implementation, so the generated PostgreSQL migration SQL was inspected and an in-memory persistence test passed, but `alembic upgrade head` has not yet been verified against a live database.
+
+| Table | Columns and constraints | Purpose |
+|---|---|---|
+| `news_feed_checkpoints` | Integer PK; `source_id` varchar(100); unique `feed_url` text; nullable `etag`, `last_modified`, `last_checked_at`, `last_success_at`, `last_error` | Conditional polling and feed health across runs. |
+| `news_articles` | Integer PK; unique `canonical_url` text; `publisher_source_id` varchar(100); title, excerpt, optional publication/fetch times, first/last seen times, nullable article text/error, SHA-256 content fingerprint, review state | One article evidence record per URL, including metadata-only leads. |
+| `news_article_feed_entries` | Integer PK; `article_id` FK to `news_articles.id` with cascade delete and index; source ID, feed URL, feed GUID, first/last seen times, optional JSONB metadata; unique `(source_id, feed_url, feed_guid)` | Separate feed-entry provenance from the article body to avoid duplicate article storage. |
+
+No news table references or activates `flood_reports`, `flood_events`, or `flood_avoidance_zones`. Any later NER or event grouping schema requires separate approval.
 
 ---
 

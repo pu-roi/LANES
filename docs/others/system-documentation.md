@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 22, 2026, 1:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 24, 2026, 10:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -382,6 +382,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `sync.py` | `/sync` | Authenticated users (offline support) |
 | `hotlines.py` | `/hotlines` | Public |
 | `admin.py` | `/admin` | Staff roles only (non-Commuter) |
+| `admin_news.py` | `/admin/news` | Staff roles only (non-Commuter); `GET /sources` lists publishers, `POST /sources/{source_id}/probe` checks one feed, `GET /feeds` shows persisted feed health, `GET /candidates` lists pending evidence with provenance, and rate-limited `POST /runs` collects it |
 | `roles.py` | `/roles` | Staff roles only |
 | `data.py` | `/data` | Staff roles only |
 | `settings.py` | `/settings` | Staff roles only |
@@ -391,6 +392,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | Service | What It Does |
 |---------|-------------|
 | **NLP Location Extractor** | Uses spaCy to parse Taglish flood report text and extract barangay/street location names, storing them in `flood_report_locations` |
+| **RSS News Discovery** | `news_sources.py`, `news_feed_service.py`, and `news_discovery_service.py` read a 51-publisher candidate registry, parse bounded RSS/Atom feeds, and shortlist likely Pasig flood articles. `crud/news.py` saves conditional feed checkpoints and article evidence in three approved tables. Six feeds are enabled locally. The migration is not yet applied to a live database; no scheduled job or public-zone action exists. |
 | **Routing Engine Proxy** | Uses Valhalla (primary) or OpenRouteService (secondary) only to generate candidates. The shared FastAPI flood policy evaluates candidate geometry against active `flood_avoidance_zones`, blocks medium exposure for light/Bike-Motorcycle and Red/Extreme exposure for every public profile; Orange/High is a strongly cautioned 40% fallback only for Walking. It ranks up to four distinct legal routes and reports deterministic exposure details. |
 | **Zone Deduplication** | When a new flood report is approved near an existing active zone (within a configurable buffer distance), it is linked to that zone instead of creating a new duplicate polygon |
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |
@@ -406,6 +408,12 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 **Database:** PostgreSQL with PostGIS extension
 **ORM:** SQLAlchemy 2.x + GeoAlchemy2 for spatial columns
 **Migration tool:** Alembic
+
+---
+
+### News discovery evidence tables (migration `a83c1d4e7b92`)
+
+These three tables are defined in code and await application to PostgreSQL. `news_feed_checkpoints` stores each feed URL, source ID, ETag, Last-Modified value, check/success times, and last error. `news_articles` keeps a unique canonical article URL, publisher source ID, title, excerpt, publication/fetch/seen times, optional public text or retrieval error, content fingerprint, and pending review state. `news_article_feed_entries` links each article to a source/feed URL/GUID with first/last seen times and optional JSONB metadata; the source, feed URL, and GUID combination is unique. The foreign key cascades only when a stored article is deleted. These records do not create Flood Reports, Flood Events, or map zones.
 
 ---
 

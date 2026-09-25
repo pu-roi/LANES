@@ -1,0 +1,570 @@
+{
+  "sources": [
+    {
+      "id": "feedspot-01",
+      "publisher": "GMA News Online",
+      "article_domains": [
+        "gmanetwork.com"
+      ],
+      "feed_urls": [
+        "https://data.gmanetwork.com/gno/rss/news/feed.xml"
+      ],
+      "verified_at": "2026-09-24",
+      "enabled": true
+    },
+    {
+      "id": "feedspot-02",
+      "publisher": "INQUIRER.net",
+      "article_domains": [
+        "inquirer.net"
+      ],
+      "feed_urls": [
+        "https://www.inquirer.net/fullfeed/"
+      ],
+      "verified_at": "2026-09-24",
+      "enabled": true
+    },
+    {
+      "id": "feedspot-03",
+      "publisher": "Rappler",
+      "article_domains": [
+        "rappler.com"
+      ],
+      "feed_urls": [
+        "https://www.rappler.com/feed/"
+      ],
+      "verified_at": "2026-09-24",
+      "enabled": true
+    },
+    {
+      "id": "feedspot-04",
+      "publisher": "ABS-CBN",
+      "article_domains": [
+        "abs-cbn.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-05",
+      "publisher": "Philstar.com",
+      "article_domains": [
+        "philstar.com"
+      ],
+      "feed_urls": [
+        "https://www.philstar.com/rss/headlines"
+      ],
+      "verified_at": "2026-09-24",
+      "enabled": true
+    },
+    {
+      "id": "feedspot-06",
+      "publisher": "Manila Bulletin",
+      "article_domains": [
+        "mb.com.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-07",
+      "publisher": "BusinessWorld",
+      "article_domains": [
+        "bworldonline.com"
+      ],
+      "feed_urls": [
+        "https://www.bworldonline.com/feed/"
+      ],
+      "verified_at": "2026-09-24",
+      "enabled": true
+    },
+    {
+      "id": "feedspot-08",
+      "publisher": "SunStar Philippines",
+      "article_domains": [
+        "sunstar.com.ph"
+      ],
+      "feed_urls": [
+        "https://www.sunstar.com.ph/rssFeed/selected"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-09",
+      "publisher": "The Manila Times",
+      "article_domains": [
+        "manilatimes.net"
+      ],
+      "feed_urls": [
+        "https://www.manilatimes.net/rssfeed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-10",
+      "publisher": "Manila Standard",
+      "article_domains": [
+        "manilastandard.net"
+      ],
+      "feed_urls": [
+        "https://manilastandard.net/feed/all"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-11",
+      "publisher": "BusinessMirror",
+      "article_domains": [
+        "businessmirror.com.ph"
+      ],
+      "feed_urls": [
+        "https://businessmirror.com.ph/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-12",
+      "publisher": "PTV News",
+      "article_domains": [
+        "ptvnews.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-13",
+      "publisher": "The Daily Tribune",
+      "article_domains": [
+        "tribune.net.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-14",
+      "publisher": "Interaksyon",
+      "article_domains": [
+        "interaksyon.philstar.com"
+      ],
+      "feed_urls": [
+        "https://interaksyon.philstar.com/feed/"
+      ],
+      "verified_at": "2026-09-24",
+      "enabled": true
+    },
+    {
+      "id": "feedspot-15",
+      "publisher": "Malaya Business Insight",
+      "article_domains": [
+        "malaya.com.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-16",
+      "publisher": "Mindanao Times",
+      "article_domains": [
+        "mindanaotimes.com.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-17",
+      "publisher": "MindaNews",
+      "article_domains": [
+        "mindanews.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-18",
+      "publisher": "Davao Today",
+      "article_domains": [
+        "davaotoday.com"
+      ],
+      "feed_urls": [
+        "https://davaotoday.com/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-19",
+      "publisher": "Panay News",
+      "article_domains": [
+        "panaynews.net"
+      ],
+      "feed_urls": [
+        "https://www.panaynews.net/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-20",
+      "publisher": "Visayan Daily Star",
+      "article_domains": [
+        "visayandailystar.com"
+      ],
+      "feed_urls": [
+        "https://visayandailystar.com/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-21",
+      "publisher": "Cebu Daily News",
+      "article_domains": [
+        "cebudailynews.inquirer.net"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-22",
+      "publisher": "Punto! Central Luzon",
+      "article_domains": [
+        "punto.com.ph"
+      ],
+      "feed_urls": [
+        "https://punto.com.ph/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-23",
+      "publisher": "The Bohol Chronicle",
+      "article_domains": [
+        "boholchronicle.com.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-24",
+      "publisher": "Sunday Punch",
+      "article_domains": [
+        "punch.dagupan.com"
+      ],
+      "feed_urls": [
+        "https://punch.dagupan.com/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-25",
+      "publisher": "SubicBayNews",
+      "article_domains": [
+        "subicbaynews.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-26",
+      "publisher": "Philippine Information Agency News",
+      "article_domains": [
+        "pia.gov.ph"
+      ],
+      "feed_urls": [
+        "https://pia.gov.ph/news/feed.rss"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-27",
+      "publisher": "Northern Dispatch",
+      "article_domains": [
+        "nordis.net"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-28",
+      "publisher": "Al Jazeera: Philippines",
+      "article_domains": [
+        "aljazeera.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-29",
+      "publisher": "AP News: Philippines",
+      "article_domains": [
+        "apnews.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-30",
+      "publisher": "Abante News Online",
+      "article_domains": [
+        "abante.com.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-31",
+      "publisher": "Abante Tonite",
+      "article_domains": [
+        "tonite.abante.com.ph"
+      ],
+      "feed_urls": [
+        "https://tonite.abante.com.ph/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-32",
+      "publisher": "Tempo",
+      "article_domains": [
+        "tempo.com.ph"
+      ],
+      "feed_urls": [
+        "https://tempo.com.ph/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-33",
+      "publisher": "Philnews.ph",
+      "article_domains": [
+        "philnews.ph"
+      ],
+      "feed_urls": [
+        "https://philnews.ph/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-34",
+      "publisher": "The Summit Express",
+      "article_domains": [
+        "thesummitexpress.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-35",
+      "publisher": "Metro Cebu News",
+      "article_domains": [
+        "metrocebu.news"
+      ],
+      "feed_urls": [
+        "https://metrocebu.news/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-36",
+      "publisher": "Wow-Cordillera",
+      "article_domains": [
+        "wowcordillera.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-37",
+      "publisher": "Journal Online",
+      "article_domains": [
+        "journal.com.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-38",
+      "publisher": "Metropoler",
+      "article_domains": [
+        "metropoler.net"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-39",
+      "publisher": "Our Daily News Online",
+      "article_domains": [
+        "ourdailynewsonline.com"
+      ],
+      "feed_urls": [
+        "https://ourdailynewsonline.com/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-40",
+      "publisher": "Current PH",
+      "article_domains": [
+        "currentph.com"
+      ],
+      "feed_urls": [
+        "https://currentph.com/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-41",
+      "publisher": "Filipino News NZ",
+      "article_domains": [
+        "filipinonews.nz"
+      ],
+      "feed_urls": [
+        "https://filipinonews.nz/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-42",
+      "publisher": "The Asian Journal USA",
+      "article_domains": [
+        "asianjournalusa.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-43",
+      "publisher": "Unbox PH",
+      "article_domains": [
+        "unbox.ph"
+      ],
+      "feed_urls": [
+        "https://unbox.ph/feed/",
+        "https://www.unbox.ph/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-44",
+      "publisher": "TechPinas",
+      "article_domains": [
+        "techpinas.com"
+      ],
+      "feed_urls": [
+        "https://feeds.feedburner.com/Techpinas"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-45",
+      "publisher": "Esquire Philippines",
+      "article_domains": [
+        "esquiremag.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-46",
+      "publisher": "Female Network",
+      "article_domains": [
+        "femalenetwork.com"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-47",
+      "publisher": "Eagle News",
+      "article_domains": [
+        "eaglenews.ph"
+      ],
+      "feed_urls": [
+        "https://www.eaglenews.ph/feed/"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-48",
+      "publisher": "One News",
+      "article_domains": [
+        "onenews.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-49",
+      "publisher": "Philippine Entertainment Portal",
+      "article_domains": [
+        "pep.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "feedspot-50",
+      "publisher": "Philippine News Agency",
+      "article_domains": [
+        "pna.gov.ph"
+      ],
+      "feed_urls": [
+        "https://www.pna.gov.ph/latest.rss"
+      ],
+      "verified_at": null,
+      "enabled": false
+    },
+    {
+      "id": "news5",
+      "publisher": "News5",
+      "article_domains": [
+        "news.tv5.com.ph",
+        "news5.com.ph"
+      ],
+      "feed_urls": [],
+      "verified_at": null,
+      "enabled": false
+    }
+  ]
+}
