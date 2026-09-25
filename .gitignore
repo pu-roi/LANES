@@ -74,6 +74,8 @@ data/
 !/data/Flooded_Areas_Pasig_City_2020_2025_EDITED_ver2.csv
 !/data/pasig_barangay_reference.csv
 !/data/flooded_areas_pasig_clean.csv
+!/data/taglish_flood_eval_set.json
+!/data/philippines_psgc_reference.csv
 *.mbtiles
 *.sqlite
 *.sqlite3

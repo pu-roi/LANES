@@ -19,10 +19,11 @@ Developed in partial fulfillment of the requirements for the degree of **Bachelo
 
 ## 📖 Documentation Index
 
-* **For AI Agents & Developers:** [`AGENTS.md`](file:///e:/Files/Documents/GitHub/LANES/AGENTS.md) contains all collaboration protocols, operational boundaries, and coding standards. **AI agents must consult this file for interaction rules.**
-* **For System Architecture:** [`DESIGN.md`](file:///e:/Files/Documents/GitHub/LANES/DESIGN.md) serves as the single source of truth for technical design, database schemas, processing flows, and non-functional requirements.
-* **For Architecture Decisions:** [`docs/decisions.md`](file:///d:/Documents/Github/LANES/docs/decisions.md) tracks major technical decisions and historical shifts.
-* **For Technical Blueprint:** [`docs/tech-stack.md`](file:///d:/Documents/Github/LANES/docs/tech-stack.md) details all components of the technology stack.
+* **Documentation directory:** [`docs/README.md`](docs/README.md) lists the current references, plans, guides, research, and capstone materials.
+* **For AI Agents & Developers:** [`AGENTS.md`](AGENTS.md) contains all collaboration protocols, operational boundaries, and coding standards. **AI agents must consult this file for interaction rules.**
+* **For System Architecture:** [`DESIGN.md`](DESIGN.md) serves as the single source of truth for technical design, database schemas, processing flows, and non-functional requirements.
+* **For Architecture Decisions:** [`docs/decisions.md`](docs/decisions.md) tracks major technical decisions and historical shifts.
+* **For Technical Blueprint:** [`docs/tech-stack.md`](docs/tech-stack.md) details all components of the technology stack.
 
 ---
 

@@ -63,6 +63,25 @@ def likely_pasig_flood(entry: NewsEntry) -> bool:
     return bool(FLOOD_TERMS.search(text) and any(pattern.search(text) for pattern in PLACE_TERMS))
 
 
+def likely_philippine_flood(entry: NewsEntry) -> bool:
+    """Broad nationwide flood detection across Luzon, Visayas, and Mindanao."""
+    text = f"{entry.title} {entry.excerpt}"
+    if not FLOOD_TERMS.search(text):
+        return False
+    if likely_pasig_flood(entry):
+        return True
+    from app.services.philippine_location_service import get_philippine_location_service
+    loc_service = get_philippine_location_service()
+    lower_text = text.lower()
+    for prov in loc_service.provinces:
+        if len(prov) >= 4 and re.search(rf"\b{re.escape(prov)}\b", lower_text):
+            return True
+    for city in loc_service.cities:
+        if len(city) >= 4 and re.search(rf"\b{re.escape(city)}\b", lower_text):
+            return True
+    return False
+
+
 class _ArticleParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
@@ -155,7 +174,7 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
                 )
                 if ((entry.published_at is not None and
                          entry.published_at < datetime.now(timezone.utc) - MAX_NEWS_AGE) or
-                        not likely_pasig_flood(entry)):
+                        not likely_philippine_flood(entry)):
                     continue
                 existing = news_crud.get_article(db, entry.article_url) if db is not None else None
                 normalized = " ".join(re.findall(r"\w+", f"{entry.title} {entry.excerpt}".casefold()))
