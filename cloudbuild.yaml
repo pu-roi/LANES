@@ -55,5 +55,18 @@ steps:
       - '--region'
       - 'asia-east1'
 
+  # 5. Automatically deploy the new image to news discovery Cloud Run job
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'jobs'
+      - 'deploy'
+      - 'lanes-news-discovery'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
+      - '--region'
+      - 'asia-east1'
+
 images:
   - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'

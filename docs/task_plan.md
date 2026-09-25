@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 26, 2026, 3:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -28,14 +28,14 @@
 - [x] Design and approve three durable feed/article/provenance tables; implement SQLAlchemy models, Alembic migration, conditional checkpoints, URL/GUID deduplication, a staff-only evidence list and trigger, and offline retry tests. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Apply migration against local development PostGIS and run the persistent collector twice: six healthy checkpoints, three conditional `304` responses on the repeat pass, and no current Pasig flood candidates in the sampled feeds. The 12 RSS tests pass; a mocked article run against the same PostGIS database retained one article and one provenance row across two runs, then removed the synthetic records. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Verify the production migration job, deploy `lanes-news-discovery`, confirm two manual runs parse all six enabled feeds with persisted `304` checkpoints, and verify a Scheduler-triggered run. The three-hour schedule is enabled with job-scoped invoker access. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [ ] Add RSS job image updates to the backend release process before changing collector code again; the current `cloudbuild.yaml` deploys `lanes-api` and `lanes-migration` but does not refresh `lanes-news-discovery`.
+- [x] Add RSS job image updates to the backend release process before changing collector code again; added Step 5 to `cloudbuild.yaml` deploying the built image to `lanes-news-discovery` in `asia-east1`. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [ ] Add an on-demand or scheduled flood-keyword lead source such as Google News RSS, searching Filipino, English, and Taglish terms (“baha,” “flood,” “lubog,” “pagbaha,” “lagpas tuhod”) with Philippine province, city, and municipality terms when useful. Keep publisher-domain verification before article retrieval.
-- [ ] Replace the deployed Pasig-only shortlist with a Philippines-wide relevance filter. A headline or excerpt without a recognized place can remain a candidate for full-text extraction or staff review; do not silently discard reports about other Philippine cities.
-- [ ] Investigate ABS-CBN, GMA News, News5, Inquirer, and Rappler first, while keeping the Feedspot 50 as candidate publishers. Enable any publisher only after verifying its identity, feed, article domains, and access method. Apply the resulting publisher-domain allowlist before article retrieval; fetch publicly accessible pages respectfully when the feed lacks full text. Do not bypass paywalls, bot protections, rate limits, or source restrictions.
-- [ ] Define the candidate fields during implementation: source/canonical URL, publisher, title, byline when available, publication/fetch times, captured text, flood-relevance score, evidence sentences, extracted places, canonical depth, flood condition, ranked location candidates, confidence, and review state.
-- [ ] Preserve canonical URL, publisher/domain, title, byline when available, publication/fetch times, retrieved text, and evidence excerpts for staff review.
+- [x] Replace the deployed Pasig-only shortlist with a Philippines-wide relevance filter in `likely_philippine_flood`. Evaluates Philippine provinces and cities nationwide across Luzon, Visayas, and Mindanao, filters out explicit international events, and retains headlines without a recognized place for full-text extraction/review. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Investigate ABS-CBN, GMA News, News5, Inquirer, and Rappler first, while keeping the Feedspot 50 as candidate publishers. ABS-CBN blocks automated RSS with HTTP 403 / Cloudflare bot protection; News5 feed timed out. GMA News, Inquirer, Rappler, Philstar, Manila Bulletin, and SunStar are active and verified. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Define the candidate fields during implementation: source/canonical URL, publisher, title, byline when available, publication/fetch times, captured text, flood-relevance score, evidence sentences, extracted places, canonical depth, flood condition, ranked location candidates, confidence, and review state. (Cross-section task; deferred to Section 5 moderation/review UI).
+- [ ] Preserve canonical URL, publisher/domain, title, byline when available, publication/fetch times, retrieved text, and evidence excerpts for staff review. (Cross-section task; deferred to Section 5 moderation/review UI).
 - [ ] Deduplicate re-fetches and syndications by canonical URL and normalized title/content fingerprint; make retries idempotent and surface partial fetch failures.
-- [ ] Keep Facebook ingestion outside the automated MVP; permit administrator-supplied public post text/link as a manual input path. Do not make paid APIs or Facebook access a defense dependency.
+- [x] Keep Facebook ingestion outside the automated MVP; permit administrator-supplied public post text/link as a manual input path. Implemented `POST /api/v1/admin/news/manual-candidate` allowing staff to submit DRRMO announcements, citizen social posts, or links directly into the ingestion pipeline without paid APIs. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 #### 3. Taglish NLP Extraction and Normalization (Pasig baseline completed; nationwide coverage pending)
 

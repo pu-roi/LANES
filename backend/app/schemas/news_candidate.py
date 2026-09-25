@@ -74,3 +74,10 @@ class NewsFeedCheckpointSummary(BaseModel):
     last_error: str | None
 
     model_config = {"from_attributes": True}
+
+
+class ManualNewsCandidateInput(BaseModel):
+    title: str
+    text: str
+    source_url: str | None = None
+    publisher: str = "Staff DRRMO / Social Post"

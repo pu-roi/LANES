@@ -1,12 +1,18 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 26, 2026, 3:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
 
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery & Taglish Extraction (🟡 IN PROGRESS)
+- [x] **Section 2 Discovery Hardening: Release-Time Cloud Run Deployment, Broad Nationwide Relevance Filter, Broadcaster Investigation & Manual Staff Ingestion** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - Updated `cloudbuild.yaml` release automation to deploy the built backend container image to the `lanes-news-discovery` Cloud Run job in `asia-east1`, preventing release desynchronization.
+  - Enhanced `likely_philippine_flood` in `backend/app/services/news_discovery_service.py` to evaluate Philippine places nationwide, filter out explicit international events, and preserve flood headlines lacking recognized places for full-text extraction/review.
+  - Investigated broadcaster RSS endpoints: documented that ABS-CBN blocks automated RSS with HTTP 403 / Cloudflare bot protection and News5 times out, confirming 6 enabled and verified active broadsheets (GMA, INQUIRER, Rappler, Philstar, Manila Bulletin, SunStar).
+  - Implemented `POST /api/v1/admin/news/manual-candidate` in `backend/app/api/v1/endpoints/admin_news.py` allowing administrators to paste DRRMO Facebook posts, citizen social posts, or news links directly into the pending news ingestion pipeline without requiring paid APIs.
+  - Added unit and API tests in `backend/tests/test_news_discovery.py` (13/13 passing, 42/42 across Phase 36).
 - [x] **Smart Auto-Activation Engine, Gemini 1.5 Flash Double-Check Auditor, OpenStreetMap Way Buffering, and Nationwide Geometry Service (`nationwide_geometry_service.py`, `news_auto_ingestion_service.py`, `hybrid_extraction_service.py`)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Architected explicit division of labor: primary Taglish rules + 43,778 PSGC grounding lead detection; Gemini 1.5 Flash acts strictly in a supporting auditor role to double-check candidate claims before activation.
   - Implemented Smart Auto-Activation (Option 2): When active flooding with canonical depth and exact road/landmark is verified by primary rules and confirmed by Gemini auditor (>=95% confidence), `NewsAutoIngestionService` creates the verified `FloodReport`, official `FloodEvent`, and operational `FloodAvoidanceZone` atomically in PostGIS and Valhalla routing without admin delay.

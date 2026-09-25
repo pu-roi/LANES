@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 26, 2026, 1:59 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -382,7 +382,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `sync.py` | `/sync` | Authenticated users (offline support) |
 | `hotlines.py` | `/hotlines` | Public |
 | `admin.py` | `/admin` | Staff roles only (non-Commuter) |
-| `admin_news.py` | `/admin/news` | Staff roles only (non-Commuter); `GET /sources` lists publishers, `POST /sources/{source_id}/probe` checks one feed, `GET /feeds` shows persisted feed health, `GET /candidates` lists pending evidence with provenance, and rate-limited `POST /runs` collects it |
+| `admin_news.py` | `/admin/news` | Staff roles only (non-Commuter); `GET /sources` lists publishers, `POST /sources/{source_id}/probe` checks one feed, `GET /feeds` shows persisted feed health, `GET /candidates` lists pending evidence with provenance, rate-limited `POST /runs` collects it, and `POST /manual-candidate` permits manual staff submission of social media / DRRMO flood alerts |
 | `roles.py` | `/roles` | Staff roles only |
 | `data.py` | `/data` | Staff roles only |
 | `settings.py` | `/settings` | Staff roles only |
