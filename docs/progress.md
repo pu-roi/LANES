@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 26, 2026, 10:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 2:25 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -9,9 +9,11 @@
 ### Capstone Phase 38: Interactive MMDA Flood Gauge Visual & Vehicle Clearance Rules (🟢 COMPLETED)
 - [x] **Interactive Split-View MMDA Flood Gauge with Reference Human Silhouette & Dual-Screen Support** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - **Interactive Human Silhouette (`FloodGaugeSilhouette.tsx`)**:
-    - Engineered inline SVG human silhouette calibrated to 165 cm (5'5") reference height according to DOST-FNRI adult Filipino standards and MMDA flood classifications.
+    - Engineered inline SVG modern commuter silhouette calibrated to 165 cm (5'5") reference height according to DOST-FNRI adult Filipino standards and MMDA flood classifications.
+    - Implemented flat soles firmly planted on the ground baseline ($y=415.0$), eliminating floating/awkward foot contours, with a comfortable, natural, and comfortably bulky build.
+    - Calibrated 50/50 Golden Ratio anatomical inseam ($y=230.0$), achieving balanced thigh/calf proportions and natural mid-thigh relaxed arm hang.
     - Features Framer Motion spring physics (`stiffness: 120, damping: 18`) to smoothly raise and lower water fill clipped to the human silhouette (`clipPath`).
-    - Integrated vertical centimeter depth ruler (0 to 165 cm) with active depth ticks, animated dashed reference line at water surface, dynamic depth label bubble with dual-unit measurements, and DOST-FNRI calibration badge.
+    - Upgraded high-visibility depth callout badge ($120\text{px} \times 44\text{px}$, bold 12.5px title, 11px measurement, subtle drop shadow) positioned clear of the figure, paired with a prominent centimeter depth ruler (0 to 165 cm) with active bold ticks and DOST-FNRI calibration badge.
   - **Interactive Depth & Vehicle Clearance Table (`FloodGaugeTable.tsx`)**:
     - Interactive 8-level MMDA depth table mapping each canonical level (`gutter`, `half-knee`, `half-tire`, `knee`, `tires`, `waist`, `chest`, `neck`) to severity color tokens and dual-unit measurements (`inches` and `meters`).
     - Features expandable vehicle accessibility badges (`PATV` Passable to All, `NPLV` Heavy Only, `NPATV` Impassable) revealing detailed vehicle routing clearance guidelines on hover (desktop) or tap (mobile).
