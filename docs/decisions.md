@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 21, 2026, 3:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 3:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -419,3 +419,32 @@ One flooding incident can generate several public reports and one or more tempor
 - [`backend/app/api/v1/endpoints/admin.py`](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/admin.py) — Admin-protected analytics and CSV/JSON export endpoints.
 - [`frontend/src/features/flood-history/FloodEventAnalytics.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/FloodEventAnalytics.tsx) and [`FloodEventVisualizations.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/FloodEventVisualizations.tsx) — Responsive analytics, filter, export, and error-state presentation.
 - [`frontend/src/features/flood-history/HistoricalEventsMap.tsx`](file:///d:/Documents/Github/LANES/frontend/src/features/flood-history/HistoricalEventsMap.tsx) — Historical-only event footprint layers and accessible severity/selection legend.
+
+---
+
+## 21. Smart Auto-Activation and Supporting LLM Auditor Architecture for Trusted News
+**Date:** September 2026  
+**Decision:** Adopt Option 2 (Smart Auto-Activation) where complete flood reports from verified Philippine news sources are automatically approved directly into live Valhalla routing avoidance zones and official PostGIS flood events without admin bottleneck. Gemini 1.5 Flash is strictly confined to a Supporting Auditor / Double-Check role to verify claims rather than hallucinating from scratch; receded waters ("humupa na") and forecasts ("posibleng bahain") are strictly suppressed with zero created avoidance zones.
+
+**Context:**
+The previous workflow required administrators to manually inspect and approve every single ingested flood candidate before any avoidance zone or event could be created. Because news reports from accredited publishers (GMA News, Inquirer, Rappler, SunStar, etc.) are already vetted public intelligence, this manual queue created unnecessary delays during live flash-flood emergencies. Simultaneously, relying on an LLM to parse entire articles from scratch created hallucination risks and latency.
+
+**Architectural Shifts & Technical Strategy:**
+1. **Explicit Division of Labor:** Deterministic Taglish rules and the 43,778 official PSA PSGC reference dataset (`philippine_location_service.py`) act as the lead extractor for place and canonical depth (`gutter`..`neck`). Gemini 1.5 Flash acts strictly as a double-check auditor, answering targeted verification queries on the candidate claim and evidence sentence.
+2. **Smart Auto-Activation Engine:** [`news_auto_ingestion_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/news_auto_ingestion_service.py) automatically provisions the approved `FloodReport`, official `FloodEvent`, and operational `FloodAvoidanceZone` atomically when confidence reaches $\ge 95\%$ and depth, road, and active status are confirmed.
+3. **Safety Suppression Gates:** News reports indicating that floodwaters have already subsided or receded (*"humupa na"*) or statements that are merely future weather predictions (*"posibleng bahain"*) are strictly suppressed, creating zero avoidance zones and keeping passable roads open.
+4. **Nationwide Geometry Service:** [`nationwide_geometry_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/nationwide_geometry_service.py) constructs authoritative 50m road corridor polygons and circular buffer polygons (GeoJSON SRID 4326) across Luzon, Visayas, and Mindanao without hardcoded place lists in Python source code.
+
+**Consequences:**
+- Complete active flood reports update the live map and Valhalla routing avoidance instantly without waiting for an administrator.
+- Zero risk of closing dry roads due to old receded flood reports or weather forecasts.
+- Ambiguous or city-level only reports remain enqueued in the staff review queue with pre-computed candidate geometry for 1-click verification.
+- Completely adheres to existing 3NF database schemas with zero schema migrations required.
+
+**Files Created / Modified:**
+- [`backend/app/services/hybrid_extraction_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/hybrid_extraction_service.py) — 4-tier hybrid ensemble with Gemini 1.5 Flash supporting auditor.
+- [`backend/app/services/nationwide_geometry_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/nationwide_geometry_service.py) — Nationwide hierarchy resolution, 50m corridor polygon generation, and city safety guards.
+- [`backend/app/services/news_auto_ingestion_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/news_auto_ingestion_service.py) — Smart Auto-Activation transaction engine.
+- [`backend/app/services/philippine_location_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/philippine_location_service.py) — Official PSA PSGC dataset index (43,778 records).
+- [`docs/plans/smart-auto-activation-and-hybrid-nlp-plan.md`](file:///d:/Documents/Github/LANES/docs/plans/smart-auto-activation-and-hybrid-nlp-plan.md) — Authoritative plan and architecture documentation.
+- Test suites: [`test_hybrid_extraction_service.py`](file:///d:/Documents/Github/LANES/backend/tests/test_hybrid_extraction_service.py), [`test_nationwide_geometry.py`](file:///d:/Documents/Github/LANES/backend/tests/test_nationwide_geometry.py), [`test_news_auto_ingestion.py`](file:///d:/Documents/Github/LANES/backend/tests/test_news_auto_ingestion.py) — 45/45 passing tests.

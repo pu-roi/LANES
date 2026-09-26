@@ -14,8 +14,8 @@ from sqlalchemy.orm import Session
 from app.api import deps
 from app.main import app
 from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint
-from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_pasig_flood
-from app.services.news_feed_service import parse_feed, probe_feed
+from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_pasig_flood, likely_philippine_flood
+from app.services.news_feed_service import NewsEntry, parse_feed, probe_feed
 from app.services.news_sources import NewsSource, load_news_sources
 
 
@@ -61,6 +61,20 @@ def test_rss_and_atom_parse_publisher_links_and_dates() -> None:
     assert len(parsed) == 1
     assert parsed[0].feed_id == "a-1"
     assert parsed[0].published_at.isoformat() == "2026-09-24T03:00:00+00:00"
+
+
+def test_philippine_flood_filter_handles_nationwide_and_excludes_international() -> None:
+    base = NewsEntry("example", "Example News", FEED_URL, "id-1", "", "", ARTICLE_URL, None)
+    # Nationwide city outside Pasig
+    assert likely_philippine_flood(replace(base, title="Heavy flooding hits Cebu City", excerpt="Several streets impassable"))
+    assert likely_philippine_flood(replace(base, title="Baha sa Davao Oriental", excerpt="Ulan nagdulot ng pagbaha"))
+    # Headline without explicit place (retained for full-text extraction)
+    assert likely_philippine_flood(replace(base, title="Ilang lansangan lubog sa baha dahil sa habagat", excerpt="Motorista pinag-iingat"))
+    # Explicit international flood without PH place (excluded)
+    assert not likely_philippine_flood(replace(base, title="Deadly flood hits Spain", excerpt="Valencia submerged in floodwater"))
+    assert not likely_philippine_flood(replace(base, title="Flash floods in Florida kill 3", excerpt="Heavy rainfall inundates roads"))
+    # Non-flood article (excluded)
+    assert not likely_philippine_flood(replace(base, title="PBA finals game 7 schedule", excerpt="Sports update"))
 
 
 def test_external_article_url_and_xml_entity_are_rejected() -> None:
@@ -169,6 +183,7 @@ def test_staff_source_api_requires_authentication_and_lists_all_candidates() -> 
         assert client.get("/api/v1/admin/news/feeds").status_code == 401
         assert client.get("/api/v1/admin/news/candidates").status_code == 401
         assert client.post("/api/v1/admin/news/runs").status_code == 401
+        assert client.post("/api/v1/admin/news/manual-candidate", json={"title": "Test", "text": "Baha"}).status_code == 401
         app.dependency_overrides[deps.get_current_active_admin] = lambda: object()
         try:
             response = client.get("/api/v1/admin/news/sources")
@@ -176,6 +191,16 @@ def test_staff_source_api_requires_authentication_and_lists_all_candidates() -> 
             assert len(response.json()) == 51
             assert sum(item["enabled"] for item in response.json()) == 6
             assert client.post("/api/v1/admin/news/sources/news5/probe").status_code == 422
+            manual = client.post("/api/v1/admin/news/manual-candidate", json={
+                "title": "Baha sa Ortigas",
+                "text": "Lagpas tuhod ang baha sa Ortigas Avenue dahil sa malakas na ulan.",
+                "source_url": "https://facebook.com/drrmo/posts/12345"
+            })
+            assert manual.status_code == 200
+            assert manual.json()["title"] == "Baha sa Ortigas"
+            assert manual.json()["publisher_source_id"] == "Staff DRRMO / Social Post"
+            assert manual.json()["canonical_url"] == "https://facebook.com/drrmo/posts/12345"
+            assert manual.json()["review_state"] == "pending"
         finally:
             app.dependency_overrides.clear()
 

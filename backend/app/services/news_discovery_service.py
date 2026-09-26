@@ -63,6 +63,53 @@ def likely_pasig_flood(entry: NewsEntry) -> bool:
     return bool(FLOOD_TERMS.search(text) and any(pattern.search(text) for pattern in PLACE_TERMS))
 
 
+INTERNATIONAL_LOCATIONS = re.compile(
+    r"\b(?:Spain|Bangladesh|Florida|Texas|California|China|Japan|India|Pakistan|"
+    r"Nepal|Germany|UK|United Kingdom|Europe|US|USA|United States|Taiwan|Myanmar|"
+    r"Indonesia|Malaysia|Thailand|Vietnam|Australia|Brazil|Canada|Italy|France|Greece)\b",
+    re.I,
+)
+
+
+def likely_philippine_flood(entry: NewsEntry) -> bool:
+    """Nationwide flood detection across Luzon, Visayas, and Mindanao.
+    
+    A headline or excerpt containing flood terms without a recognized place remains a candidate
+    for full-text extraction and staff review, while explicit non-Philippine international stories
+    are filtered out.
+    """
+    text = f"{entry.title} {entry.excerpt}"
+    if not FLOOD_TERMS.search(text):
+        return False
+    if likely_pasig_flood(entry):
+        return True
+
+    # If an international location is explicitly mentioned without explicit Philippine country markers, filter it out.
+    if INTERNATIONAL_LOCATIONS.search(text) and not re.search(r"\b(?:Philippines|Pilipinas|PH)\b", text, re.I):
+        return False
+
+    from app.services.philippine_location_service import get_philippine_location_service
+    loc_service = get_philippine_location_service()
+    lower_text = text.lower()
+
+    has_ph_place = False
+    for prov in loc_service.provinces:
+        if len(prov) >= 4 and re.search(rf"\b{re.escape(prov)}\b", lower_text):
+            has_ph_place = True
+            break
+    if not has_ph_place:
+        for city in loc_service.cities:
+            if len(city) >= 4 and re.search(rf"\b{re.escape(city)}\b", lower_text):
+                has_ph_place = True
+                break
+
+    if has_ph_place:
+        return True
+
+    # Otherwise, from an approved Philippine news publisher, keep as candidate for full-text extraction.
+    return True
+
+
 class _ArticleParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
@@ -155,7 +202,7 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
                 )
                 if ((entry.published_at is not None and
                          entry.published_at < datetime.now(timezone.utc) - MAX_NEWS_AGE) or
-                        not likely_pasig_flood(entry)):
+                        not likely_philippine_flood(entry)):
                     continue
                 existing = news_crud.get_article(db, entry.article_url) if db is not None else None
                 normalized = " ".join(re.findall(r"\w+", f"{entry.title} {entry.excerpt}".casefold()))

@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -382,7 +382,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 | `sync.py` | `/sync` | Authenticated users (offline support) |
 | `hotlines.py` | `/hotlines` | Public |
 | `admin.py` | `/admin` | Staff roles only (non-Commuter) |
-| `admin_news.py` | `/admin/news` | Staff roles only (non-Commuter); `GET /sources` lists publishers, `POST /sources/{source_id}/probe` checks one feed, `GET /feeds` shows persisted feed health, `GET /candidates` lists pending evidence with provenance, and rate-limited `POST /runs` collects it |
+| `admin_news.py` | `/admin/news` | Staff roles only (non-Commuter); `GET /sources` lists publishers, `POST /sources/{source_id}/probe` checks one feed, `GET /feeds` shows persisted feed health, `GET /candidates` lists pending evidence with provenance, rate-limited `POST /runs` collects it, and `POST /manual-candidate` permits manual staff submission of social media / DRRMO flood alerts |
 | `roles.py` | `/roles` | Staff roles only |
 | `data.py` | `/data` | Staff roles only |
 | `settings.py` | `/settings` | Staff roles only |
@@ -391,8 +391,8 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 
 | Service | What It Does |
 |---------|-------------|
-| **NLP Location Extractor** | Uses spaCy to parse Taglish flood report text and extract barangay/street location names, storing them in `flood_report_locations` |
-| **RSS News Discovery** | `news_sources.py`, `news_feed_service.py`, and `news_discovery_service.py` read a 51-publisher candidate registry, parse bounded RSS/Atom feeds, and shortlist likely Pasig flood articles. `crud/news.py` saves conditional feed checkpoints and article evidence in three Cloud SQL tables. Six feeds are enabled; `lanes-news-discovery` runs on Cloud Run every three hours through Cloud Scheduler. Staff-only endpoints expose feed health and pending evidence. No discovered article automatically creates a public zone or changes routing. |
+| **Taglish Flood Extraction (local prototype)** | `taglish_extraction_service.py` uses rules and a Pasig place list to extract source-linked place mentions, canonical depth, flood condition, and event time. It has not been deployed or connected to `flood_report_locations`, official zones, or routing. Nationwide place coverage and location ranking are planned; calamanCy/spaCy is not the active extractor. |
+| **RSS News Discovery** | `news_sources.py`, `news_feed_service.py`, and `news_discovery_service.py` read a 51-publisher candidate registry and parse bounded RSS/Atom feeds. The deployed shortlist currently requires Pasig flood terms. `crud/news.py` saves conditional feed checkpoints and article evidence in three Cloud SQL tables. Six feeds are enabled; `lanes-news-discovery` runs on Cloud Run every three hours through Cloud Scheduler. Staff-only endpoints expose feed health and pending evidence. Phase 36 expands the shortlist to floods anywhere in the Philippines. No discovered article automatically creates a public zone or changes routing. |
 | **Routing Engine Proxy** | Uses Valhalla (primary) or OpenRouteService (secondary) only to generate candidates. The shared FastAPI flood policy evaluates candidate geometry against active `flood_avoidance_zones`, blocks medium exposure for light/Bike-Motorcycle and Red/Extreme exposure for every public profile; Orange/High is a strongly cautioned 40% fallback only for Walking. It ranks up to four distinct legal routes and reports deterministic exposure details. |
 | **Zone Deduplication** | When a new flood report is approved near an existing active zone (within a configurable buffer distance), it is linked to that zone instead of creating a new duplicate polygon |
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |

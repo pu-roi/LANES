@@ -1,0 +1,1214 @@
+[
+  {
+    "id": 1,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Binaha ang Barangay Maybunga sa Pasig City, abot-tuhod ang tubig kaninang 2:00 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay Maybunga",
+        "canonical_barangay": "Maybunga",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 2:00 PM"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Flooding along C. Raymundo Avenue in Rosario, Pasig has reached knee-deep level as of 3:30 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Rosario",
+        "canonical_barangay": "Rosario",
+        "place_type": "barangay",
+        "expected_depth_raw": "knee-deep",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": "as of 3:30 PM"
+      },
+      {
+        "raw_place_name": "C. Raymundo Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "knee-deep",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": "as of 3:30 PM"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Grabe ang flood sa Kapasigan, lagpas baywang na kaninang tanghali dahil sa walang tigil na ulan.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Kapasigan",
+        "canonical_barangay": "Kapasigan",
+        "place_type": "barangay",
+        "expected_depth_raw": "lagpas baywang",
+        "expected_depth_canonical": "waist",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang tanghali"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "language": "filipino",
+    "category": "negated",
+    "text": "Walang baha sa Barangay Kapitolyo at nananatiling passable sa lahat ng uri ng sasakyan.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": true,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay Kapitolyo",
+        "canonical_barangay": "Kapitolyo",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "language": "english",
+    "category": "negated",
+    "text": "Pasig City DRRMO reported no flooding along Ortigas Avenue despite heavy rainfall.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": true,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Ortigas Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "language": "taglish",
+    "category": "negated",
+    "text": "Hindi binaha ang Dela Paz, totally passable ang mga kalsada kaninang 10:00 AM.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": true,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Dela Paz",
+        "canonical_barangay": "Dela Paz",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": "kaninang 10:00 AM"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "language": "filipino",
+    "category": "forecast",
+    "text": "Babala ng PAGASA: Posibleng bahain ang mababang lugar sa Santolan at Manggahan mamayang gabi.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": false,
+    "expected_is_forecast": true,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Santolan",
+        "canonical_barangay": "Santolan",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": "mamayang gabi"
+      },
+      {
+        "raw_place_name": "Manggahan",
+        "canonical_barangay": "Manggahan",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": "mamayang gabi"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "language": "english",
+    "category": "forecast",
+    "text": "A flash flood warning has been issued for low-lying areas in Pasig City later tonight.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": false,
+    "expected_is_forecast": true,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Pasig City",
+        "canonical_barangay": null,
+        "place_type": "city",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": "later tonight"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "language": "filipino",
+    "category": "historical",
+    "text": "Noong nakaraang taon sa Bagyong Carina, nalubog sa abot-leeg na baha ang Barangay Malinao.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": true,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay Malinao",
+        "canonical_barangay": "Malinao",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-leeg",
+        "expected_depth_canonical": "neck",
+        "expected_condition": "active",
+        "expected_time_raw": "Noong nakaraang taon"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "language": "english",
+    "category": "historical",
+    "text": "During Typhoon Ondoy in 2009, severe chest-deep flooding hit parts of Caniogan.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": true,
+    "expected_claims": [
+      {
+        "raw_place_name": "Caniogan",
+        "canonical_barangay": "Caniogan",
+        "place_type": "barangay",
+        "expected_depth_raw": "chest-deep",
+        "expected_depth_canonical": "chest",
+        "expected_condition": "active",
+        "expected_time_raw": "in 2009"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Gutter deep ang flood water sa tapat ng Pasig City Hall kaninang 8 AM, pero passable pa.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Pasig City Hall",
+        "canonical_barangay": null,
+        "place_type": "landmark",
+        "expected_depth_raw": "Gutter deep",
+        "expected_depth_canonical": "gutter",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 8 AM"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Umapaw ang ilog sa San Joaquin, abot-sakong ang baha sa mga eskinita.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "San Joaquin",
+        "canonical_barangay": "San Joaquin",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-sakong",
+        "expected_depth_canonical": "gutter",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Lampas sakong na ang tubig sa kanto ng Caruncho Avenue sa Malinao kaninang 11:00 AM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Malinao",
+        "canonical_barangay": "Malinao",
+        "place_type": "barangay",
+        "expected_depth_raw": "Lampas sakong",
+        "expected_depth_canonical": "half-knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 11:00 AM"
+      },
+      {
+        "raw_place_name": "Caruncho Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "Lampas sakong",
+        "expected_depth_canonical": "half-knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 11:00 AM"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Water levels reached calf-deep in Barangay Bagong Ilog following torrential rains.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay Bagong Ilog",
+        "canonical_barangay": "Bagong Ilog",
+        "place_type": "barangay",
+        "expected_depth_raw": "calf-deep",
+        "expected_depth_canonical": "half-knee",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Half-tire deep ang baha sa Sandoval Avenue sa Pinagbuhatan, hirap ang maliliit na sasakyan.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Pinagbuhatan",
+        "canonical_barangay": "Pinagbuhatan",
+        "place_type": "barangay",
+        "expected_depth_raw": "Half-tire deep",
+        "expected_depth_canonical": "half-tire",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      },
+      {
+        "raw_place_name": "Sandoval Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "Half-tire deep",
+        "expected_depth_canonical": "half-tire",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Kalahati ng gulong na ang baha sa kalsada sa Buting simula kaninang 1:00 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Buting",
+        "canonical_barangay": "Buting",
+        "place_type": "barangay",
+        "expected_depth_raw": "Kalahati ng gulong",
+        "expected_depth_canonical": "half-tire",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 1:00 PM"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Abot-gulong ang baha sa Mercedes Avenue, San Miguel kaninang 4:00 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "San Miguel",
+        "canonical_barangay": "San Miguel",
+        "place_type": "barangay",
+        "expected_depth_raw": "Abot-gulong",
+        "expected_depth_canonical": "tires",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 4:00 PM"
+      },
+      {
+        "raw_place_name": "Mercedes Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "Abot-gulong",
+        "expected_depth_canonical": "tires",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 4:00 PM"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Floods have risen to tire-deep levels in Bambang, making roads impassable to light vehicles.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Bambang",
+        "canonical_barangay": "Bambang",
+        "place_type": "barangay",
+        "expected_depth_raw": "tire-deep",
+        "expected_depth_canonical": "tires",
+        "expected_condition": "rising",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Lubog sa abot-dibdib na baha ang ilang bahagi ng Brgy. Kalawaan dahil sa ulan.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Brgy. Kalawaan",
+        "canonical_barangay": "Kalawaan",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-dibdib",
+        "expected_depth_canonical": "chest",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Patuloy na tumataas ang flood sa Sta. Lucia, lagpas leeg na sa may creek area.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Sta. Lucia",
+        "canonical_barangay": "Santa Lucia",
+        "place_type": "barangay",
+        "expected_depth_raw": "lagpas leeg",
+        "expected_depth_canonical": "neck",
+        "expected_condition": "rising",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Bumababa na ang baha sa Barangay Palatiw, mula tuhod ay naging gutter deep na lang kaninang 5 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay Palatiw",
+        "canonical_barangay": "Palatiw",
+        "place_type": "barangay",
+        "expected_depth_raw": "gutter deep",
+        "expected_depth_canonical": "gutter",
+        "expected_condition": "receding",
+        "expected_time_raw": "kaninang 5 PM"
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Nagsisimula nang humupa ang baha sa Amang Rodriguez Avenue sa Manggahan as of 4:00 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Manggahan",
+        "canonical_barangay": "Manggahan",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "receding",
+        "expected_time_raw": "as of 4:00 PM"
+      },
+      {
+        "raw_place_name": "Amang Rodriguez Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "receding",
+        "expected_time_raw": "as of 4:00 PM"
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Humupa na ang baha sa Sagad kaninang alas-sais ng gabi at muling binuksan ang daan.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Sagad",
+        "canonical_barangay": "Sagad",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "subsided",
+        "expected_time_raw": "kaninang alas-sais ng gabi"
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Floodwaters have completely subsided along Shaw Boulevard in San Antonio, Pasig.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "San Antonio",
+        "canonical_barangay": "San Antonio",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "subsided",
+        "expected_time_raw": null
+      },
+      {
+        "raw_place_name": "Shaw Boulevard",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "subsided",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "language": "taglish",
+    "category": "ambiguous_depth",
+    "text": "May baha sa Ugong bandang 1 to 2 feet ang taas kaninang umaga.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Ugong",
+        "canonical_barangay": "Ugong",
+        "place_type": "barangay",
+        "expected_depth_raw": "1 to 2 feet",
+        "expected_depth_canonical": null,
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang umaga"
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "language": "filipino",
+    "category": "ambiguous_depth",
+    "text": "Naranasan ang mataas na pagbaha sa Barangay San Nicolas dahil sa baradong kanal.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay San Nicolas",
+        "canonical_barangay": "San Nicolas",
+        "place_type": "barangay",
+        "expected_depth_raw": "mataas na pagbaha",
+        "expected_depth_canonical": null,
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "language": "english",
+    "category": "ambiguous_depth",
+    "text": "Authorities measured flood depth at approximately 45 centimeters in Santa Cruz, Pasig.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Santa Cruz",
+        "canonical_barangay": "Santa Cruz",
+        "place_type": "barangay",
+        "expected_depth_raw": "45 centimeters",
+        "expected_depth_canonical": null,
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "language": "filipino",
+    "category": "multi_location",
+    "text": "Lubog sa abot-tuhod na baha ang Bagong Katipunan habang nananatiling walang baha sa Pineda kaninang 1 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Bagong Katipunan",
+        "canonical_barangay": "Bagong Katipunan",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 1 PM"
+      },
+      {
+        "raw_place_name": "Pineda",
+        "canonical_barangay": "Pineda",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": "kaninang 1 PM"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "language": "english",
+    "category": "multi_location",
+    "text": "Flood hit Santo Tomas at knee-deep levels, whereas Oranbo reported receding water.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Santo Tomas",
+        "canonical_barangay": "Santo Tomas",
+        "place_type": "barangay",
+        "expected_depth_raw": "knee-deep",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      },
+      {
+        "raw_place_name": "Oranbo",
+        "canonical_barangay": "Oranbo",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "receding",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "language": "taglish",
+    "category": "multi_location",
+    "text": "Binaha sa Sumilang kaninang 3 PM abot-baywang, pero sa San Jose ay gutter-deep lang.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Sumilang",
+        "canonical_barangay": "Sumilang",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-baywang",
+        "expected_depth_canonical": "waist",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 3 PM"
+      },
+      {
+        "raw_place_name": "San Jose",
+        "canonical_barangay": "San Jose",
+        "place_type": "barangay",
+        "expected_depth_raw": "gutter-deep",
+        "expected_depth_canonical": "gutter",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 3 PM"
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Binaha ang Sta. Rosa sa Pasig, lampas tuhod ang tubig sa ilang kabahayan kaninang umaga.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Sta. Rosa",
+        "canonical_barangay": "Santa Rosa",
+        "place_type": "barangay",
+        "expected_depth_raw": "lampas tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang umaga"
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Tumataas ang baha sa Maybunnga malapit sa floodway, abot-baywang na.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Maybunnga",
+        "canonical_barangay": "Maybunga",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-baywang",
+        "expected_depth_canonical": "waist",
+        "expected_condition": "rising",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Sa Barangay Palatiw, abot-tuhod ang naitalang pagbaha sa may palengke.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay Palatiw",
+        "canonical_barangay": "Palatiw",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Abot-leeg ang baha sa mababang parte ng Santolan dahil sa pag-apaw ng Marikina River kaninang 6:00 AM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Santolan",
+        "canonical_barangay": "Santolan",
+        "place_type": "barangay",
+        "expected_depth_raw": "Abot-leeg",
+        "expected_depth_canonical": "neck",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 6:00 AM"
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Flooding along Eusebio Avenue in San Miguel reached half-tire levels around 2 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "San Miguel",
+        "canonical_barangay": "San Miguel",
+        "place_type": "barangay",
+        "expected_depth_raw": "half-tire",
+        "expected_depth_canonical": "half-tire",
+        "expected_condition": "active",
+        "expected_time_raw": "around 2 PM"
+      },
+      {
+        "raw_place_name": "Eusebio Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "half-tire",
+        "expected_depth_canonical": "half-tire",
+        "expected_condition": "active",
+        "expected_time_raw": "around 2 PM"
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Sobrang lubog sa baha ang Pasig Mega Market sa San Nicolas, lagpas tuhod na.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "San Nicolas",
+        "canonical_barangay": "San Nicolas",
+        "place_type": "barangay",
+        "expected_depth_raw": "lagpas tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      },
+      {
+        "raw_place_name": "Pasig Mega Market",
+        "canonical_barangay": null,
+        "place_type": "landmark",
+        "expected_depth_raw": "lagpas tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Nalubog sa baha ang Ilaya Street sa Buting matapos ang malakas na pag-ulan.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Buting",
+        "canonical_barangay": "Buting",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "active",
+        "expected_time_raw": null
+      },
+      {
+        "raw_place_name": "Ilaya Street",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Vehicles are stranded as floodwaters remain chest-deep along Dr. Sixto Antonio Avenue in Caniogan.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Caniogan",
+        "canonical_barangay": "Caniogan",
+        "place_type": "barangay",
+        "expected_depth_raw": "chest-deep",
+        "expected_depth_canonical": "chest",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      },
+      {
+        "raw_place_name": "Dr. Sixto Antonio Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "chest-deep",
+        "expected_depth_canonical": "chest",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "language": "taglish",
+    "category": "negated",
+    "text": "Clear na sa baha ang Julia Vargas Avenue sa San Antonio as of 1:30 PM.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": true,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "San Antonio",
+        "canonical_barangay": "San Antonio",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "subsided",
+        "expected_time_raw": "as of 1:30 PM"
+      },
+      {
+        "raw_place_name": "Julia Vargas Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "subsided",
+        "expected_time_raw": "as of 1:30 PM"
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "language": "filipino",
+    "category": "negated",
+    "text": "Mariing itinanggi ng barangay na may baha sa Dela Paz ngayong araw.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": true,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Dela Paz",
+        "canonical_barangay": "Dela Paz",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": "ngayong araw"
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "language": "english",
+    "category": "forecast",
+    "text": "Residents in Barangay Pinagbuhatan were advised to prepare for potential flooding this afternoon.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": false,
+    "expected_is_forecast": true,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Barangay Pinagbuhatan",
+        "canonical_barangay": "Pinagbuhatan",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "unknown",
+        "expected_time_raw": "this afternoon"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "language": "filipino",
+    "category": "historical",
+    "text": "Taong 2020 nang huling makaranas ng abot-bubong na pagbaha ang Ilaya sa Bambang.",
+    "expected_flood_mentioned": false,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": true,
+    "expected_claims": [
+      {
+        "raw_place_name": "Bambang",
+        "canonical_barangay": "Bambang",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-bubong",
+        "expected_depth_canonical": null,
+        "expected_condition": "active",
+        "expected_time_raw": "Taong 2020"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Baha update: Tumataas na naman ang tubig sa Caniogan bandang 4:15 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Caniogan",
+        "canonical_barangay": "Caniogan",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "rising",
+        "expected_time_raw": "bandang 4:15 PM"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Receding floodwaters observed in Kapitolyo, now down to gutter level at 6 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Kapitolyo",
+        "canonical_barangay": "Kapitolyo",
+        "place_type": "barangay",
+        "expected_depth_raw": "gutter level",
+        "expected_depth_canonical": "gutter",
+        "expected_condition": "receding",
+        "expected_time_raw": "at 6 PM"
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "language": "filipino",
+    "category": "out_of_pasig",
+    "text": "Nalubog sa baha ang España Boulevard sa Maynila, abot-tuhod kaninang umaga.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Maynila",
+        "canonical_barangay": null,
+        "place_type": "city",
+        "expected_depth_raw": "abot-tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang umaga"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "language": "english",
+    "category": "out_of_pasig",
+    "text": "Severe flooding was reported in Quezon City along Commonwealth Avenue reaching waist-deep.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Quezon City",
+        "canonical_barangay": null,
+        "place_type": "city",
+        "expected_depth_raw": "waist-deep",
+        "expected_depth_canonical": "waist",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "language": "taglish",
+    "category": "metadata_only",
+    "text": "BREAKING: Bagong Ilog sa Pasig binaha kaninang tanghali, abot-tuhod ang tubig.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Bagong Ilog",
+        "canonical_barangay": "Bagong Ilog",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-tuhod",
+        "expected_depth_canonical": "knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang tanghali"
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "language": "filipino",
+    "category": "active_flood",
+    "text": "Lubog ang kanto ng F. Manalo Street sa Bambang kaninang 11:30 AM, abot-sakong ang tubig.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Bambang",
+        "canonical_barangay": "Bambang",
+        "place_type": "barangay",
+        "expected_depth_raw": "abot-sakong",
+        "expected_depth_canonical": "gutter",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 11:30 AM"
+      },
+      {
+        "raw_place_name": "F. Manalo Street",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "abot-sakong",
+        "expected_depth_canonical": "gutter",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 11:30 AM"
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "language": "english",
+    "category": "active_flood",
+    "text": "Floodwaters along Market Avenue in Palatiw have reached tire-deep as heavy downpour persists.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "Palatiw",
+        "canonical_barangay": "Palatiw",
+        "place_type": "barangay",
+        "expected_depth_raw": "tire-deep",
+        "expected_depth_canonical": "tires",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      },
+      {
+        "raw_place_name": "Market Avenue",
+        "canonical_barangay": null,
+        "place_type": "street",
+        "expected_depth_raw": "tire-deep",
+        "expected_depth_canonical": "tires",
+        "expected_condition": "active",
+        "expected_time_raw": null
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "language": "taglish",
+    "category": "active_flood",
+    "text": "Wala nang baha sa San Nicolas pero sa tapat ng Sto. Tomas ay abot-half knee pa rin kaninang 3 PM.",
+    "expected_flood_mentioned": true,
+    "expected_is_negated": false,
+    "expected_is_forecast": false,
+    "expected_is_historical": false,
+    "expected_claims": [
+      {
+        "raw_place_name": "San Nicolas",
+        "canonical_barangay": "San Nicolas",
+        "place_type": "barangay",
+        "expected_depth_raw": null,
+        "expected_depth_canonical": null,
+        "expected_condition": "subsided",
+        "expected_time_raw": "kaninang 3 PM"
+      },
+      {
+        "raw_place_name": "Sto. Tomas",
+        "canonical_barangay": "Santo Tomas",
+        "place_type": "barangay",
+        "expected_depth_raw": "half knee",
+        "expected_depth_canonical": "half-knee",
+        "expected_condition": "active",
+        "expected_time_raw": "kaninang 3 PM"
+      }
+    ]
+  }
+]

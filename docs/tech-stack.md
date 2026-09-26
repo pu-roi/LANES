@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 1:59 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -57,11 +57,11 @@ This document serves as the official technical stack reference for the LANES pla
 * **Transactional Email & Communication:** **Resend REST API & httpx**
   * *Role:* Generating async HTTP requests to the Resend API (from `Lanes <noreply@navlanes.live>`) to securely dispatch 6-digit One-Time Password verification codes to user emails during account onboarding/password recovery, as well as delivering commuter messages from the /about contact form to official project inboxes (lanes@navlanes.live, navlanes.live@gmail.com).
 * **RSS News Discovery:** **httpx + Python standard-library XML/HTML parsers + Cloud Run Jobs + Cloud Scheduler**
-  * *Role:* Polling six verified publisher feeds every three hours in `asia-east1`, parsing bounded RSS/Atom responses, shortlisting Pasig flood entries, and storing source evidence in three migrated Cloud SQL tables. The staff-only API exposes feed health and pending candidates. No new Python package was added; NLP/NER remains future work.
+  * *Role:* Polling six verified publisher feeds every three hours in `asia-east1`, parsing bounded RSS/Atom responses, shortlisting Pasig flood entries in the currently deployed collector, and storing source evidence in three migrated Cloud SQL tables. The staff-only API exposes feed health and pending candidates. Phase 36 plans to expand discovery to flood reports anywhere in the Philippines; this requires a collector change. No new Python package was added for RSS collection.
 * **Image Processing & Storage:** **Cloudinary Python SDK**  
   * *Role:* Managing direct upload, scaling (down to 1024px), and WebP format compression of user-submitted flood evidence photos to a dedicated cloud CDN, ensuring lightweight database records and fast frontend loading.
-* **NLP & Information Extraction:** **spaCy**  
-  * *Role:* Managing the custom, locally executed Bilingual Named Entity Recognition (NER) pipeline to isolate street-level locations and severity parameters from Taglish text feeds.
+* **NLP & Information Extraction:** **Evidence-linked Taglish extraction service (local prototype)**
+  * *Role:* Uses explainable rules to extract Pasig place mentions, canonical flood depth, flood condition, and event time from news text while preserving character offsets and supporting sentences. It is benchmarked on a 50-item evaluation set at 0.71 ms per item on CPU. The planned nationwide expansion needs Philippine place references and a separate cross-region evaluation set. calamanCy was evaluated but is not installed as the runtime extractor; the current prototype does not require new heavy ML dependencies.
 * **Encrypted Secrets & Environment Orchestration:** **@dotenvx/dotenvx**  
   * *Role:* Cross-platform AES-256 encrypted environment variable management, enabling safe git repository synchronization without exposing raw API keys or database credentials.
 
