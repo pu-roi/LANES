@@ -928,7 +928,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
               Flood Severity <span className="text-red-500 ml-0.5">*</span>
             </label>
             <p className="text-[11px] text-gray-500 mb-2">Half-Tire to Knee water is not passable to light vehicles; Tires and deeper are blocked for normal navigation.</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
               {VISUAL_OPTIONS.map((opt) => {
                 const colors = SEVERITY_COLORS[opt.severity];
                 return (
@@ -938,13 +938,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                     aria-pressed={visualOption === opt.id}
                     onClick={() => setVisualOption((current) => current === opt.id ? null : opt.id)}
                     className={cn(
-                      "flex flex-col items-center gap-0.5 rounded-lg border px-2 py-2 text-xs font-semibold transition-all",
+                      "flex flex-col items-center text-center gap-0.5 rounded-lg border px-1 py-1.5 sm:px-2 sm:py-2 text-xs font-semibold transition-all leading-tight",
                       visualOption === opt.id ? colors.active : colors.pill
                     )}
                   >
-                    <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10", SEVERITY_DOT_COLORS[opt.severity])}></div>
-                    <span>{opt.label}</span>
-                {opt.description && <span className="font-normal text-[10px] opacity-75">{opt.description}</span>}
+                    <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10 shrink-0", SEVERITY_DOT_COLORS[opt.severity])}></div>
+                    <span className="truncate max-w-full">{opt.label}</span>
+                    {opt.description && <span className="font-normal text-[10px] opacity-75 whitespace-nowrap">{opt.description}</span>}
                   </button>
                 );
               })}

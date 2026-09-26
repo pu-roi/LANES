@@ -322,7 +322,7 @@ export function ActiveZonesPanel({
                                       </p>
 
                                       {/* Metadata Badges Footer */}
-                                      <div className="flex items-center gap-3 text-[10px] text-slate-500 pl-7">
+                                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-slate-500 pl-7">
                                         <span className="flex items-center gap-1">
                                           <span className={`w-1.5 h-1.5 rounded-full ${c.reporter_trust_score >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                                           Trust: <strong className="text-slate-700">{c.reporter_trust_score}%</strong>
