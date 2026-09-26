@@ -211,3 +211,104 @@ def test_extraction_idempotency_and_determinism():
         assert c1.depth_canonical == c2.depth_canonical
         assert c1.condition == c2.condition
         assert c1.is_negated == c2.is_negated
+
+
+def test_extracted_claim_populates_physical_measurements():
+    inp = NewsArticleExtractorInput(
+        article_id=108,
+        canonical_url="https://example.com/test-108",
+        publisher="Test News",
+        title="Measurement Test",
+        excerpt="Binaha ang Caniogan knee-deep.",
+        article_text="Lagpas tuhod ang baha sa Caniogan dahil sa tuluy-tuloy na ulan.",
+    )
+    res = extract_taglish_flood_facts(inp)
+    assert len(res.claims) >= 1
+    claim = res.claims[0]
+    assert claim.depth_canonical == "knee"
+    assert claim.depth_meters == 0.48
+    assert claim.depth_inches == 19.0
+    assert '19" (0.48m)' in (claim.depth_formatted or "")
+
+
+def test_pasig_historical_corridor_extraction():
+    text = "Binaha ang Urbano Velasco Ave at Ortigas Ext sa Pasig kaninang hapon abot-gutter."
+    inp = NewsArticleExtractorInput(
+        article_id=109,
+        canonical_url="https://example.com/test-109",
+        publisher="Test News",
+        title="Pasig Corridors",
+        excerpt=text,
+        article_text=text,
+    )
+    res = extract_taglish_flood_facts(inp)
+    names = [c.raw_place_name for c in res.claims]
+    assert any("Urbano Velasco" in n for n in names)
+    assert any("Ortigas Ext" in n for n in names)
+    c_urbano = next(c for c in res.claims if "Urbano Velasco" in c.raw_place_name)
+    assert c_urbano.place_type == "street"
+    assert c_urbano.depth_canonical == "gutter"
+
+
+def test_nationwide_place_extraction_luzon():
+    text = "Binaha ang MacArthur Highway sa San Fernando, Pampanga nang umabot sa gutter-deep ang tubig."
+    inp = NewsArticleExtractorInput(
+        article_id=110,
+        canonical_url="https://example.com/test-110",
+        publisher="Regional News",
+        title="Pampanga Flood",
+        excerpt=text,
+        article_text=text,
+    )
+    res = extract_taglish_flood_facts(inp)
+    assert len(res.claims) >= 2
+    road_claim = next(c for c in res.claims if c.place_type == "street")
+    assert "MacArthur Highway" in road_claim.raw_place_name
+    assert road_claim.depth_canonical == "gutter"
+
+    prov_claim = next((c for c in res.claims if c.place_type == "province"), None)
+    city_claim = next((c for c in res.claims if c.place_type == "city"), None)
+    assert prov_claim is not None or city_claim is not None
+
+
+def test_nationwide_place_extraction_visayas():
+    text = "Lubog sa knee-deep na baha ang Colon Street sa Cebu City kaninang umaga."
+    inp = NewsArticleExtractorInput(
+        article_id=111,
+        canonical_url="https://example.com/test-111",
+        publisher="Visayas News",
+        title="Cebu Flooding",
+        excerpt=text,
+        article_text=text,
+    )
+    res = extract_taglish_flood_facts(inp)
+    assert len(res.claims) >= 1
+    street_claim = next(c for c in res.claims if c.place_type == "street")
+    assert "Colon Street" in street_claim.raw_place_name
+    assert street_claim.depth_canonical == "knee"
+
+    city_claim = next(c for c in res.claims if c.place_type == "city")
+    assert "Cebu City" in city_claim.raw_place_name
+    assert city_claim.island_group == "Visayas"
+
+
+def test_nationwide_place_extraction_mindanao():
+    text = "Nalubog sa waist-deep na baha ang Brgy. Matina Crossing sa Davao City dahil sa pag-apaw ng ilog."
+    inp = NewsArticleExtractorInput(
+        article_id=112,
+        canonical_url="https://example.com/test-112",
+        publisher="Mindanao News",
+        title="Davao Flood",
+        excerpt=text,
+        article_text=text,
+    )
+    res = extract_taglish_flood_facts(inp)
+    assert len(res.claims) >= 1
+    bgy_claim = next(c for c in res.claims if c.place_type == "barangay")
+    assert "Matina Crossing" in bgy_claim.raw_place_name
+    assert bgy_claim.canonical_barangay == "Matina Crossing"
+    assert bgy_claim.depth_canonical == "waist"
+    assert bgy_claim.island_group == "Mindanao"
+    assert bgy_claim.canonical_city == "City of Davao"
+
+

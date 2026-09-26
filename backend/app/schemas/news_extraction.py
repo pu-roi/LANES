@@ -110,6 +110,9 @@ class ExtractedClaim(BaseModel):
     depth_raw: str | None = None
     depth_canonical: CanonicalDepth | None = None
     depth_rule: str | None = None
+    depth_meters: float | None = None
+    depth_inches: float | None = None
+    depth_formatted: str | None = None
 
     condition: FloodCondition = "unknown"
 

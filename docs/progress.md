@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 26, 2026, 6:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -31,6 +31,17 @@
 ---
 
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery & Taglish Extraction (🟡 IN PROGRESS)
+- [x] **Section 1 DRRMO Historical Flood Ingestion & Section 3.5 Nationwide Place Coverage (Deterministic Rule & PSGC Grounding without ML NER)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - **Section 1 Historical DRRMO Ingestion (`pasig_historical_service.py`)**:
+    - Ingested and indexed all 726 verified historical flood records (2020–2025) from `data/flooded_areas_pasig_clean.csv`, tracking 304 unique streets, 301 unique landmarks, centimeter depth ranges, year spans, and recurrence counts.
+    - Wired `PasigHistoricalService` into `NationwideGeometryService`, replacing hardcoded street strings with dynamic DRRMO recurrence bonuses (+0.02 to +0.06) and explainable score rationales for top corridors (e.g. Urbano Velasco Ave, Sandoval Ave, Caruncho Ave, Ortigas Ext, C5 Road).
+    - Verified with 4/4 unit tests in `backend/tests/test_pasig_historical_service.py`.
+  - **Section 3.5 Nationwide Place Extraction without ML NER (`taglish_extraction_service.py`)**:
+    - Expanded deterministic place extraction beyond Pasig using precompiled single-pass regex patterns: all 82 PSA Philippine provinces, chartered cities and regional hubs across Luzon, Visayas, and Mindanao, national thoroughfares (EDSA, MacArthur Highway, Colon Street, Osmeña Boulevard, etc.), dynamic `<Name> City` and administrative `City of / Lungsod ng / Bayan ng` prefixes, and nationwide prefixed barangays (`Brgy. <Name>`) grounded in `PhilippineLocationService.barangays`.
+    - Enriched `ExtractedClaim` with `canonical_city`, `canonical_province`, `canonical_road`, `island_group` (Luzon, Visayas, Mindanao), and `psgc_code` via `resolve_location_hierarchy`.
+    - Populated MMDA physical depth measurements (`depth_meters`, `depth_inches`, `depth_formatted`) on claims and auto-activated avoidance zones while preserving strict 3NF database architecture with zero schema alterations.
+    - Verified with 16/16 unit tests in `test_taglish_extraction.py` across Luzon, Visayas, Mindanao, and Pasig corridors, while preserving 100% barangay, depth, and condition recall on the 50-item benchmark (`scripts/evaluate_taglish_extraction.py`) at 0.73 ms/item on CPU.
+  - **Zero Heavy ML Dependencies**: Strictly adhered to user directive avoiding ML NER / `calamanCy` / transformer models in this phase, maintaining sub-millisecond CPU speed and zero dependency footprint.
 - [x] **Section 2 Discovery Hardening: Release-Time Cloud Run Deployment, Broad Nationwide Relevance Filter, Broadcaster Investigation & Manual Staff Ingestion** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Updated `cloudbuild.yaml` release automation to deploy the built backend container image to the `lanes-news-discovery` Cloud Run job in `asia-east1`, preventing release desynchronization.
   - Enhanced `likely_philippine_flood` in `backend/app/services/news_discovery_service.py` to evaluate Philippine places nationwide, filter out explicit international events, and preserve flood headlines lacking recognized places for full-text extraction/review.

@@ -15,6 +15,10 @@ from typing import Any, Optional
 import httpx
 
 from app.schemas.news_extraction import ExtractedClaim, RankedLocationCandidate
+from app.services.pasig_historical_service import (
+    PasigHistoricalService,
+    get_pasig_historical_service,
+)
 from app.services.philippine_location_service import (
     PhilippineLocationService,
     get_philippine_location_service,
@@ -218,8 +222,13 @@ def buffer_osm_linestring_to_polygon(
 class NationwideGeometryService:
     """Ranks geographic candidates and constructs avoidance geometry for live navigation."""
 
-    def __init__(self, location_service: Optional[PhilippineLocationService] = None) -> None:
+    def __init__(
+        self,
+        location_service: Optional[PhilippineLocationService] = None,
+        historical_service: Optional[PasigHistoricalService] = None,
+    ) -> None:
         self.location_service = location_service or get_philippine_location_service()
+        self.historical_service = historical_service or get_pasig_historical_service()
 
     async def geocode_osm_feature(
         self,
@@ -438,11 +447,12 @@ class NationwideGeometryService:
             confidence = 0.15
             rationale_parts.append("Rank 5 (Unresolved): Insufficient geographic evidence to anchor coordinates.")
 
-        # Pasig DRRMO Historical Recurrence Bonus
-        if resolved_city and "pasig" in resolved_city.lower():
-            if resolved_road and any(term in resolved_road.lower() for term in ("raymundo", "ortigas", "eusebio", "mercedes")):
-                confidence = min(0.99, confidence + 0.04)
-                rationale_parts.append("Historical match: Corroborated by Pasig DRRMO priority flood recurrence corridor.")
+        # Pasig DRRMO Historical Recurrence Prior (Dynamic 726-row dataset)
+        hist_place = resolved_road or resolved_landmark or p_name
+        bonus, hist_rationale = self.historical_service.get_recurrence_bonus(hist_place, city_hint=resolved_city)
+        if bonus > 0.0 and hist_rationale:
+            confidence = min(0.99, confidence + bonus)
+            rationale_parts.append(hist_rationale)
 
         # Auto-Approvable criteria (Section 4 & 5 Smart Auto-Activation):
         # 1. Must be exact road or landmark with valid polygon geometry
