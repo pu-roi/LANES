@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { parseUtcDate } from "@/lib/utils";
 import { Clock, Ruler, Car, EyeOff, ShieldCheck, User, Users, ChevronDown, ChevronUp, Shield, X } from "lucide-react";
 import { Modal } from "@/shared/ui";
+import { formatFloodDepth } from "@/lib/floodDepth";
 
 interface FloodZonePopupProps {
   properties: any;
@@ -173,7 +174,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
               Height
             </div>
             <div className="text-xs font-semibold text-gray-900">
-              {depth && depth !== "null" ? depth.replace(/_/g, ' ') : "Not specified"}
+              {formatFloodDepth(depth)}
             </div>
           </div>
 
@@ -289,7 +290,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
                   </p>
                   <div className="flex items-center gap-2 text-[9px] text-slate-400">
                     <span>Trust: <strong>{c.reporter_trust_score}%</strong></span>
-                    {c.depth && <span>• Depth: <strong>{c.depth}</strong></span>}
+                    {c.depth && <span>• Depth: <strong>{formatFloodDepth(c.depth, { compact: true })}</strong></span>}
                   </div>
                 </div>
               ))}

@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 9:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -60,7 +60,7 @@ These files are **always present** regardless of which page you are on.
 | `HomeStats.tsx` | `src/features/landing/HomeStats.tsx` — The three animated stat counters (Total Reports, Verified Zones, Total Visitors) displayed in the hero section. Fetches live counts from the backend `/public/stats` endpoint. |
 | `WeatherWidget.tsx` | `src/features/landing/WeatherWidget.tsx` — A compact weather card showing current temperature, humidity, and a short description for Metro Manila. Fetches from the backend `/weather/current` endpoint. |
 | `ForecastChart.tsx` | `src/features/landing/ForecastChart.tsx` — A 7-day rainfall/temperature forecast chart (Recharts line chart) displayed below the weather widget. |
-| `FloodLegend.tsx` | `src/features/landing/FloodLegend.tsx` — A small color-coded legend card explaining what each flood severity color (Low / Medium / High / Extreme) means. Static, no API calls. |
+| `FloodLegend.tsx` | `src/features/landing/FloodLegend.tsx` — A small color-coded legend card explaining what each flood severity color (Low / Medium / High / Extreme) means, featuring official MMDA vehicle clearance thresholds in dual units (meters and inches). Static, no API calls. |
 
 ### Hidden Until Interaction
 
@@ -522,7 +522,7 @@ Incoming flood event reports from users or external scraped sources.
 | `source` | Enum | Origin: `twitter`, `facebook`, `direct_user`, or `manual_seeder` |
 | `source_url` | String(500), nullable | Original URL if scraped from social media |
 | `severity` | Enum | Flood level: `low`, `medium`, `high`, or `extreme` |
-| `depth` | String(50), nullable | Estimated flood depth description — e.g., "knee-deep", "waist-high" |
+| `depth` | String(50), nullable | Estimated flood depth key (`gutter`, `knee`, etc.). Mapped dynamically to MMDA physical measurements (`depth_meters`, `depth_inches`, `depth_formatted`) in API responses without schema alterations |
 | `status` | Enum | Moderation state: `pending`, `approved`, or `rejected` |
 | `media_urls` | JSONB, nullable | Array of photo/video URLs attached to the report |
 | `human_readable_location` | String(255), nullable | Geocoded address string for display purposes |
@@ -575,7 +575,7 @@ Spatial polygon buffers generated around approved flood reports or curated direc
 | `geometry` | PostGIS POLYGON (SRID 4326) | The actual closed polygon boundary of the avoidance area |
 | `source_geometry` | PostGIS GEOMETRY, nullable | Original administrator-selected LineString or MultiLineString; used to render the active road core while `geometry` remains the routing buffer |
 | `severity_override` | Enum, nullable | Overridden severity level (`low`, `medium`, `high`, `extreme`) |
-| `depth_override` | String(50), nullable | Standard visual water depth gauge (e.g. `knee`, `waist`, `chest`) |
+| `depth_override` | String(50), nullable | Standard visual water depth gauge key (`gutter`, `knee`, etc.). Mapped dynamically to MMDA physical measurements (`depth_meters`, `depth_inches`, `depth_formatted`) in API responses without schema alterations |
 | `passable_vehicles_override` | String(500), nullable | Comma-separated list of safe vehicle types |
 | `hidden_hazards_override` | String(255), nullable | Presence of submerged dangers: `yes`, `no`, `unsure` |
 | `admin_notes` | Text, nullable | Dispatch notes and operational instructions |

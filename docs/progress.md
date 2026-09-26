@@ -1,12 +1,51 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 9:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
 
+### Capstone Phase 37: Official MMDA Flood Depth Measurement Integration (🟢 COMPLETED)
+- [x] **Deterministic MMDA Flood Depth Single-Source-of-Truth & Cross-Platform Measurement Integration** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - **Architecture & 3NF Compliance**: Implemented Option 1 (Single-Source-of-Truth in Backend & Presentation Shell) maintaining strict Third Normal Form (3NF) without modifying database schemas or Alembic migrations.
+  - **Backend Foundation (`backend/app/services/flood_depth.py`, `backend/app/models/report.py`, `backend/app/schemas/report.py`, `backend/app/schemas/flood_event.py`)**:
+    - Created authoritative registry mapping all 8 canonical MMDA depth levels (`gutter`, `half-knee`, `half-tire`, `knee`, `tires`, `waist`, `chest`, `neck`) to exact metric meters/centimeters and imperial inches (`0.20m / 8"`, `0.28m / 11"`, `0.33m / 13"`, `0.48m / 19"`, `0.66m / 26"`, `1.00m / 39"`, `1.22m / 48"`, `1.52m / 60"`).
+    - Added `@property` getters on `FloodReport`, `FloodAvoidanceZone`, and `FloodEvent` for `depth_meters`, `depth_inches`, and `depth_formatted`.
+    - Auto-populated Pydantic response schemas (`FloodReportBase`, `FloodReportResponse`, `ZoneContributorResponse`, `FloodAvoidanceZoneResponse`, `NearbyZoneResponse`, `FloodEventResponse`) with depth measurement fields via `@model_validator(mode="after")`.
+    - Enriched contributor metadata dictionaries in `FloodAvoidanceZone` with depth measurements.
+    - Verified backend with 7/7 unit tests in `test_flood_depth_contract.py` (32/32 backend routing/extraction tests passing).
+  - **Frontend Centralization (`frontend/src/lib/floodDepth.ts`)**:
+    - Created client single-source-of-truth utility exporting `FLOOD_DEPTH_SPECS`, `FLOOD_DEPTH_OPTIONS`, `getFloodDepthSpec()`, and `formatFloodDepth()` with both verbose (`19" (0.48m) • Knee`) and compact (`19" (0.48m) • Knee`) display modes.
+  - **Comprehensive UI/Admin Surface Upgrades**:
+    - **Landing Page (`FloodLegend.tsx`)**: Upgraded vehicle clearance rules legend with dual-unit measurements (meters and inches) across Low, Medium, High, and Extreme hazard tiers.
+    - **Hazard Reporting (`FloodReportPanel.tsx`)**: Replaced raw depth keys with visual selector options displaying metric and imperial measurements; formatted draft queue badges.
+    - **Admin Spatial Operations & Zone Modals (`ZoneDataEditorForm.tsx`)**: Integrated measurement badges into the shared zone editor form utilized by **Create Zone**, **Edit Zone**, and **Review Merge Suggestions** panels on `/admin/map`.
+    - **Merge Management (`MergeWorkspacePanel.tsx`, `ReportComparisonCard.tsx`, `ReportComparisonMatrix.tsx`)**: Formatted water depth in suggestion cards, side-by-side comparison matrix, and merge finalization summary.
+    - **Live Map & Layer Popups (`FloodZonePopup.tsx`)**: Formatted popup height metric and contributor report depths with physical measurements.
+    - **Universal Details Modals (`FloodReportDetailsModal.tsx`, `FloodZoneDetailsModal.tsx`)**: Integrated formatted water level and estimated depth across shared report and zone modals in Moderation Center, Spatial Operations, and Archive Center.
+    - **Moderation Queue & Active Panels (`FloodModerationQueue.tsx`, `PendingReportsPanel.tsx`, `ActiveZonesPanel.tsx`)**: Enhanced moderation cards, pending report items, active zone badges, and zone contributor breakdowns with compact measurement tags.
+    - **Flood History Records & Modals (`FloodEventDetailModal.tsx`, `FloodEventDetailsTabs.tsx`, `FloodEventRecords.tsx`)**: Formatted peak flood depth and official zone historical water levels.
+  - **Dual-Screen & Mobile/PWA Verification & Layout Optimizations**:
+    - Mobile-optimized responsive 4x2 depth button grids in `ZoneDataEditorForm.tsx` and `FloodReportPanel.tsx` with responsive gaps, text-centering, leading-tight, and `whitespace-nowrap` depth descriptions preventing text clipping on narrow 360px–390px viewports.
+    - Enhanced card badge wrapping in `PendingReportsPanel.tsx` and contributor metadata footer in `ActiveZonesPanel.tsx` for narrow mobile screens.
+    - Verified mobile drawer mode in `FloodZonePopup.tsx` and single-column responsive modals in `FloodReportDetailsModal.tsx` and `FloodZoneDetailsModal.tsx`.
+  - **Verification**: Complete Next.js production build (`npm run build`) succeeded with 0 TypeScript errors across 25 routes.
+
+---
+
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery & Taglish Extraction (🟡 IN PROGRESS)
+- [x] **Section 1 DRRMO Historical Flood Ingestion & Section 3.5 Nationwide Place Coverage (Deterministic Rule & PSGC Grounding without ML NER)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - **Section 1 Historical DRRMO Ingestion (`pasig_historical_service.py`)**:
+    - Ingested and indexed all 726 verified historical flood records (2020–2025) from `data/flooded_areas_pasig_clean.csv`, tracking 304 unique streets, 301 unique landmarks, centimeter depth ranges, year spans, and recurrence counts.
+    - Wired `PasigHistoricalService` into `NationwideGeometryService`, replacing hardcoded street strings with dynamic DRRMO recurrence bonuses (+0.02 to +0.06) and explainable score rationales for top corridors (e.g. Urbano Velasco Ave, Sandoval Ave, Caruncho Ave, Ortigas Ext, C5 Road).
+    - Verified with 4/4 unit tests in `backend/tests/test_pasig_historical_service.py`.
+  - **Section 3.5 Nationwide Place Extraction without ML NER (`taglish_extraction_service.py`)**:
+    - Expanded deterministic place extraction beyond Pasig using precompiled single-pass regex patterns: all 82 PSA Philippine provinces, chartered cities and regional hubs across Luzon, Visayas, and Mindanao, national thoroughfares (EDSA, MacArthur Highway, Colon Street, Osmeña Boulevard, etc.), dynamic `<Name> City` and administrative `City of / Lungsod ng / Bayan ng` prefixes, and nationwide prefixed barangays (`Brgy. <Name>`) grounded in `PhilippineLocationService.barangays`.
+    - Enriched `ExtractedClaim` with `canonical_city`, `canonical_province`, `canonical_road`, `island_group` (Luzon, Visayas, Mindanao), and `psgc_code` via `resolve_location_hierarchy`.
+    - Populated MMDA physical depth measurements (`depth_meters`, `depth_inches`, `depth_formatted`) on claims and auto-activated avoidance zones while preserving strict 3NF database architecture with zero schema alterations.
+    - Verified with 16/16 unit tests in `test_taglish_extraction.py` across Luzon, Visayas, Mindanao, and Pasig corridors, while preserving 100% barangay, depth, and condition recall on the 50-item benchmark (`scripts/evaluate_taglish_extraction.py`) at 0.73 ms/item on CPU.
+  - **Zero Heavy ML Dependencies**: Strictly adhered to user directive avoiding ML NER / `calamanCy` / transformer models in this phase, maintaining sub-millisecond CPU speed and zero dependency footprint.
 - [x] **Section 2 Discovery Hardening: Release-Time Cloud Run Deployment, Broad Nationwide Relevance Filter, Broadcaster Investigation & Manual Staff Ingestion** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - Updated `cloudbuild.yaml` release automation to deploy the built backend container image to the `lanes-news-discovery` Cloud Run job in `asia-east1`, preventing release desynchronization.
   - Enhanced `likely_philippine_flood` in `backend/app/services/news_discovery_service.py` to evaluate Philippine places nationwide, filter out explicit international events, and preserve flood headlines lacking recognized places for full-text extraction/review.

@@ -25,6 +25,7 @@ import type { GeometryMode } from "../zones/types";
 import { ConflictResolutionNotice } from "./ConflictResolutionNotice";
 import { ReportComparisonCard } from "./ReportComparisonCard";
 import { ReportComparisonMatrix } from "./ReportComparisonMatrix";
+import { formatFloodDepth } from "@/lib/floodDepth";
 
 interface MergeWorkspacePanelProps {
   primaryReport: FloodReport | null;
@@ -416,7 +417,7 @@ export function MergeWorkspacePanel({
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Reports included</dt><dd className="text-right font-semibold text-slate-800">#{[primaryReport.id, ...selectedCandidateIds].join(", #")}</dd></div>
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Suggestions excluded</dt><dd className="font-semibold text-slate-800">{Math.max(0, (candidatesData?.total_candidates || 0) - selectedCandidateIds.length)}</dd></div>
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Destination</dt><dd className="text-right font-semibold text-slate-800">{targetZoneId ? `Existing zone #${targetZoneId}` : "New official zone"}</dd></div>
-                  <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Depth / severity</dt><dd className="font-semibold capitalize text-slate-800">{editorValues.depth.replace(/-/g, " ")} · {editorValues.severity}</dd></div>
+                  <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Depth / severity</dt><dd className="font-semibold capitalize text-slate-800">{formatFloodDepth(editorValues.depth, { compact: true })} · {editorValues.severity}</dd></div>
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Passable</dt><dd className="max-w-[60%] text-right font-semibold text-slate-800">{editorValues.passable_vehicles.join(", ")}</dd></div>
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Geometry</dt><dd className="font-semibold text-slate-800">{editorValues.geometry.type}</dd></div>
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Contributor credit</dt><dd className="font-semibold text-slate-800">+5 trust per unique reporter</dd></div>

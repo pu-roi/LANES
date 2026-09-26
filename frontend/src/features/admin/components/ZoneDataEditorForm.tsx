@@ -31,25 +31,13 @@ interface ZoneDataEditorFormProps {
   hideDescription?: boolean;
 }
 
+import { FLOOD_DEPTH_OPTIONS, type FloodDepthSpec } from "@/lib/floodDepth";
+
 // ── Shared constants (exported so OfficialZoneDrawer can reuse them) ──────────
 
-type DepthOption = {
-  id: string;
-  severity: "low" | "medium" | "high" | "extreme";
-  label: string;
-  description?: string;
-};
+export type DepthOption = FloodDepthSpec;
 
-const VISUAL_OPTIONS: DepthOption[] = [
-  { id: "gutter",    severity: "low",     label: "Gutter" },
-  { id: "half-knee", severity: "low",     label: "Half-Knee" },
-  { id: "half-tire", severity: "medium",  label: "Half-Tire" },
-  { id: "knee",      severity: "medium",  label: "Knee" },
-  { id: "tires",     severity: "high",    label: "Tires" },
-  { id: "waist",     severity: "high",    label: "Waist" },
-  { id: "chest",     severity: "high",    label: "Chest" },
-  { id: "neck",      severity: "extreme", label: "Neck & Above" },
-];
+export const VISUAL_OPTIONS: DepthOption[] = FLOOD_DEPTH_OPTIONS;
 
 const SEVERITY_COLORS: Record<string, { pill: string; active: string }> = {
   low:     { pill: "border-lime-300 text-lime-700 bg-lime-50 hover:bg-lime-100",         active: "border-lime-400 bg-lime-100 text-lime-800 ring-2 ring-lime-300/50" },
@@ -115,7 +103,7 @@ export function ZoneDataEditorForm({
         <label className="text-xs font-semibold text-slate-700 block mb-1.5">
           Flood Depth & Severity <span className="text-red-500">*</span>
         </label>
-        <div className="grid grid-cols-4 gap-1.5">
+        <div className="grid grid-cols-4 gap-1 sm:gap-1.5">
           {VISUAL_OPTIONS.map((opt) => {
             const colors = SEVERITY_COLORS[opt.severity];
             return (
@@ -124,13 +112,13 @@ export function ZoneDataEditorForm({
                 type="button"
                 onClick={() => updateValues({ depth: opt.id, severity: opt.severity })}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 rounded-lg border px-1.5 py-2 text-xs font-semibold transition-all",
+                  "flex flex-col items-center text-center gap-0.5 rounded-lg border px-1 py-1.5 sm:px-1.5 sm:py-2 text-xs font-semibold transition-all leading-tight",
                   selectedOption?.id === opt.id ? colors.active : colors.pill
                 )}
               >
-                <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10", SEVERITY_DOT_COLORS[opt.severity])} />
-                <span>{opt.label}</span>
-                {opt.description && <span className="font-normal text-[10px] opacity-75">{opt.description}</span>}
+                <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10 shrink-0", SEVERITY_DOT_COLORS[opt.severity])} />
+                <span className="truncate max-w-full">{opt.label}</span>
+                {opt.description && <span className="font-normal text-[10px] opacity-75 whitespace-nowrap">{opt.description}</span>}
               </button>
             );
           })}

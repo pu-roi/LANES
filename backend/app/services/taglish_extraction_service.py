@@ -21,33 +21,43 @@ from app.schemas.news_extraction import (
     NewsExtractionResult,
     PlaceType,
 )
-from app.services.flood_depth import FLOOD_DEPTH_SEVERITIES
+from app.services.flood_depth import (
+    FLOOD_DEPTH_SEVERITIES,
+    get_flood_depth_measurement,
+)
 from app.services.philippine_location_service import (
     COMMON_ALIASES,
     get_philippine_location_service,
+)
+from app.services.pasig_historical_service import (
+    get_pasig_historical_service,
 )
 
 # Dynamic geographic reference data loaded from official PSA PSGC dataset.
 # Eliminates hardcoded barangay and place tuples in Python application code.
 _loc_service = get_philippine_location_service()
+_historical_service = get_pasig_historical_service()
+
 PASIG_BARANGAYS_CANONICAL: tuple[str, ...] = _loc_service.get_pasig_barangay_tuple()
 BARANGAY_ALIASES: dict[str, str] = COMMON_ALIASES
 
-OUT_OF_PASIG_CITIES: tuple[str, ...] = (
-    "Quezon City", "QC", "Manila", "Maynila", "Marikina", "Mandaluyong",
-    "Taguig", "Makati", "San Juan", "Parañaque", "Paranaque", "Las Piñas", "Las Pinas",
-    "Muntinlupa", "Caloocan", "Malabon", "Navotas", "Valenzuela", "Pateros",
-    "Cainta", "Taytay", "Antipolo",
-)
-
-PASIG_LANDMARKS: tuple[str, ...] = (
+# Base Pasig landmarks augmented dynamically with 301 verified clean DRRMO historical landmarks
+PASIG_BASE_LANDMARKS: tuple[str, ...] = (
     "Pasig City Hall", "Pasig Mega Market", "Rizal High School", "Capitol Commons",
     "The Medical City", "Pasig Rainforest Park",
 )
+_hist_lms = [
+    lm for lm in _historical_service.get_known_landmarks_list()
+    if len(lm) >= 4 and not lm.isdigit()
+]
+PASIG_LANDMARKS: tuple[str, ...] = tuple(
+    sorted(set(list(PASIG_BASE_LANDMARKS) + _hist_lms), key=len, reverse=True)
+)
 
-PASIG_KNOWN_STREETS: tuple[str, ...] = (
+# Base Pasig streets augmented dynamically with 304 verified clean DRRMO historical streets
+PASIG_BASE_STREETS: tuple[str, ...] = (
     "C. Raymundo Avenue", "C. Raymundo Ave",
-    "Ortigas Avenue", "Ortigas Ave",
+    "Ortigas Avenue", "Ortigas Ave", "Ortigas Ext", "Ortigas Extension",
     "Sandoval Avenue", "Sandoval Ave",
     "Caruncho Avenue", "Caruncho Ave",
     "Shaw Boulevard", "Shaw Blvd",
@@ -60,9 +70,102 @@ PASIG_KNOWN_STREETS: tuple[str, ...] = (
     "F. Manalo Street", "F. Manalo St",
     "Ilaya Street", "Ilaya St",
     "A. Mabini Street", "A. Mabini St",
-    "España Boulevard", "Espana Boulevard",
-    "Commonwealth Avenue",
+    "Urbano Velasco Avenue", "Urbano Velasco Ave",
+    "Elisco Road", "Elisco Rd",
+    "C5 Road", "C5",
 )
+_hist_sts = [
+    st for st in _historical_service.get_known_streets_list()
+    if len(st) >= 4 and not st.isdigit()
+]
+PASIG_KNOWN_STREETS: tuple[str, ...] = tuple(
+    sorted(set(list(PASIG_BASE_STREETS) + _hist_sts), key=len, reverse=True)
+)
+
+# Major Philippine national expressways and arterial thoroughfares
+MAJOR_PHILIPPINE_CORRIDORS: tuple[str, ...] = (
+    "EDSA", "Epifanio de los Santos Avenue",
+    "MacArthur Highway", "McArthur Highway",
+    "Maharlika Highway",
+    "Osmeña Highway", "Osmena Highway",
+    "Osmeña Boulevard", "Osmena Boulevard",
+    "Colon Street", "Colon St",
+    "Roxas Boulevard", "Roxas Blvd", "Roxas Avenue", "Roxas Ave",
+    "España Boulevard", "Espana Boulevard",
+    "Commonwealth Avenue", "Commonwealth Ave",
+    "Quezon Avenue", "Quezon Ave",
+    "SLEX", "South Luzon Expressway",
+    "NLEX", "North Luzon Expressway",
+    "SCTEX", "Subic-Clark-Tarlac Expressway",
+    "TPLEX", "Tarlac-Pangasinan-La Union Expressway",
+    "CAVITEX", "CALAX",
+)
+
+# 82 Official PSA Philippine Provinces
+PHILIPPINE_PROVINCES: tuple[str, ...] = tuple(
+    sorted([p["name"] for p in _loc_service.provinces.values()], key=len, reverse=True)
+)
+
+# Major chartered cities and regional hubs across Luzon, Visayas, Mindanao
+PHILIPPINE_MAJOR_CITIES: tuple[str, ...] = (
+    # Metro Manila
+    "Quezon City", "QC", "Manila", "Maynila", "City of Manila", "Marikina", "Mandaluyong",
+    "Taguig", "Makati", "San Juan", "Parañaque", "Paranaque", "Las Piñas", "Las Pinas",
+    "Muntinlupa", "Caloocan", "Malabon", "Navotas", "Valenzuela", "Pateros",
+    # Greater Manila / Calabarzon / Central Luzon
+    "Cainta", "Taytay", "Antipolo", "Antipolo City", "San Mateo", "Rodriguez",
+    "San Fernando", "San Fernando City", "Angeles", "Angeles City", "Mabalacat", "Mabalacat City",
+    "Malolos", "Malolos City", "Meycauayan", "Meycauayan City", "San Jose del Monte", "San Jose del Monte City",
+    "Tarlac City", "Cabanatuan City", "Olongapo", "Olongapo City", "Balanga City",
+    "Calamba", "Calamba City", "Santa Rosa", "Santa Rosa City", "Biñan", "Binan", "Cabuyao", "San Pedro",
+    "Batangas City", "Lipa", "Lipa City", "Lucena", "Lucena City", "San Pablo", "San Pablo City",
+    "Tagaytay", "Tagaytay City", "Bacoor", "Bacoor City", "Imus", "Imus City", "Dasmariñas", "Dasmarinas",
+    # Northern Luzon
+    "Baguio", "Baguio City", "Dagupan", "Dagupan City", "Laoag", "Laoag City", "Vigan", "Vigan City",
+    "Tuguegarao", "Tuguegarao City", "Santiago", "Santiago City", "Ilagan", "Cauayan",
+    # Bicol
+    "Legazpi", "Legazpi City", "Naga", "Naga City", "Sorsogon City",
+    # Visayas
+    "Cebu City", "City of Cebu", "Mandaue", "Mandaue City", "Lapu-Lapu", "Lapu-Lapu City",
+    "Iloilo City", "City of Iloilo", "Bacolod", "Bacolod City", "Tacloban", "Tacloban City",
+    "Ormoc", "Ormoc City", "Dumaguete", "Dumaguete City", "Tagbilaran", "Tagbilaran City",
+    "Roxas City", "Calbayog City", "Catbalogan", "Maasin",
+    # Mindanao
+    "Davao City", "City of Davao", "Cagayan de Oro", "Cagayan de Oro City",
+    "Zamboanga City", "General Santos", "General Santos City", "Butuan", "Butuan City",
+    "Iligan", "Iligan City", "Cotabato City", "Tagum", "Tagum City", "Digos", "Digos City",
+    "Koronadal", "Koronadal City", "Surigao City", "Puerto Princesa", "Puerto Princesa City",
+    "Malaybalay", "Valencia", "Ozamiz", "Panabo", "Mati", "Kidapawan", "Marawi",
+)
+OUT_OF_PASIG_CITIES: tuple[str, ...] = PHILIPPINE_MAJOR_CITIES
+
+
+def get_island_group_for_region(region: str | None) -> str | None:
+    """Map Philippine administrative region to major island group (Luzon, Visayas, Mindanao)."""
+    if not region:
+        return None
+    reg = region.lower()
+    if any(k in reg for k in ("ncr", "ilocos", "cagayan", "central luzon", "calabarzon", "mimaropa", "bicol", "car")):
+        return "Luzon"
+    if any(k in reg for k in ("western visayas", "central visayas", "eastern visayas", "negros")):
+        return "Visayas"
+    if any(k in reg for k in ("zamboanga", "northern mindanao", "davao", "soccsksargen", "caraga", "barmm", "bangsamoro")):
+        return "Mindanao"
+    return None
+
+# Precompiled single-pass patterns for high-performance CPU tokenization
+LANDMARK_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(lm) for lm in PASIG_LANDMARKS) + r")\b", re.I)
+STREET_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(st) for st in PASIG_KNOWN_STREETS) + r")\b", re.I)
+CORRIDOR_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(co) for co in MAJOR_PHILIPPINE_CORRIDORS) + r")\b", re.I)
+CITY_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(c) for c in PHILIPPINE_MAJOR_CITIES) + r")\b", re.I)
+
+_prov_patterns = []
+for prov in PHILIPPINE_PROVINCES:
+    if prov.lower() == "quezon":
+        _prov_patterns.append(r"(?:Probinsya\s+ng\s+|Province\s+of\s+)?Quezon(?!\s+City)")
+    else:
+        _prov_patterns.append(r"(?:Probinsya\s+ng\s+|Province\s+of\s+)?" + re.escape(prov))
+PROVINCE_PATTERN = re.compile(r"\b(?:" + "|".join(_prov_patterns) + r")\b", re.I)
 
 # Negation indicators
 NEGATION_PATTERNS = re.compile(
@@ -226,32 +329,43 @@ def normalize_barangay_name(raw_name: str, city_context: str | None = "Pasig") -
 
 
 def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str, Any]]:
-    """Locate all place candidates within a sentence with exact character offsets."""
+    """Locate all place candidates within a sentence with exact character offsets.
+    Supports Pasig DRRMO historical gazetteer, official PSGC provinces/cities/barangays,
+    major corridors, and generic road patterns without requiring ML NER.
+    """
     mentions: list[dict[str, Any]] = []
 
-    # 1. Landmarks
-    for landmark in PASIG_LANDMARKS:
-        for m in re.finditer(r"\b" + re.escape(landmark) + r"\b", sentence, re.I):
-            mentions.append({
-                "raw_place_name": m.group(0),
-                "canonical_barangay": None,
-                "place_type": "landmark",
-                "char_start": sent_offset_start + m.start(),
-                "char_end": sent_offset_start + m.end(),
-            })
+    # 1. Landmarks (Pasig DRRMO Historical + Base Landmarks)
+    for m in LANDMARK_PATTERN.finditer(sentence):
+        mentions.append({
+            "raw_place_name": m.group(0),
+            "canonical_barangay": None,
+            "place_type": "landmark",
+            "char_start": sent_offset_start + m.start(),
+            "char_end": sent_offset_start + m.end(),
+        })
 
-    # 2. Known Streets
-    for street in PASIG_KNOWN_STREETS:
-        for m in re.finditer(r"\b" + re.escape(street) + r"\b", sentence, re.I):
-            mentions.append({
-                "raw_place_name": m.group(0),
-                "canonical_barangay": None,
-                "place_type": "street",
-                "char_start": sent_offset_start + m.start(),
-                "char_end": sent_offset_start + m.end(),
-            })
+    # 2. Known Pasig Historical Streets
+    for m in STREET_PATTERN.finditer(sentence):
+        mentions.append({
+            "raw_place_name": m.group(0),
+            "canonical_barangay": None,
+            "place_type": "street",
+            "char_start": sent_offset_start + m.start(),
+            "char_end": sent_offset_start + m.end(),
+        })
 
-    # 2b. Generic Nationwide Streets/Avenues/Boulevards/Highways
+    # 2b. Major Philippine National Corridors & Expressways
+    for m in CORRIDOR_PATTERN.finditer(sentence):
+        mentions.append({
+            "raw_place_name": m.group(0),
+            "canonical_barangay": None,
+            "place_type": "street",
+            "char_start": sent_offset_start + m.start(),
+            "char_end": sent_offset_start + m.end(),
+        })
+
+    # 2c. Generic Nationwide Streets/Avenues/Boulevards/Highways
     generic_street_pattern = re.compile(
         r"\b([A-Z][a-zA-Z0-9\.\'\s]{1,35}?\s+(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Highway|Hwy\.?|Road|Rd\.?|Way|Drive|Dr\.?))\b",
         re.I,
@@ -267,11 +381,41 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
                 "char_end": sent_offset_start + m.end(1),
             })
 
-    # 3. Out-of-Pasig Cities
-    for city in OUT_OF_PASIG_CITIES:
-        for m in re.finditer(r"\b" + re.escape(city) + r"\b", sentence, re.I):
+    # 3. Nationwide Philippine Cities and Municipalities
+    for m in CITY_PATTERN.finditer(sentence):
+        mentions.append({
+            "raw_place_name": m.group(0),
+            "canonical_barangay": None,
+            "place_type": "city",
+            "char_start": sent_offset_start + m.start(),
+            "char_end": sent_offset_start + m.end(),
+        })
+
+    # 3b. Dynamic '<Name> City' pattern
+    city_suffix_pattern = re.compile(r"\b([A-Z][a-zA-Z\s\.\-]{2,25})\s+City\b", re.I)
+    for m in city_suffix_pattern.finditer(sentence):
+        full_city_name = m.group(0)
+        c_prefix = m.group(1).strip().lower()
+        if c_prefix in _loc_service.cities or f"{c_prefix} city" in _loc_service.cities:
             mentions.append({
-                "raw_place_name": m.group(0),
+                "raw_place_name": full_city_name,
+                "canonical_barangay": None,
+                "place_type": "city",
+                "char_start": sent_offset_start + m.start(),
+                "char_end": sent_offset_start + m.end(),
+            })
+
+    # 3c. Administrative Prefix Pattern: City of / Lungsod ng / Bayan ng / Municipality of
+    admin_city_pattern = re.compile(
+        r"\b(?:City\s+of|Lungsod\s+ng|Bayan\s+ng|Municipality\s+of)\s+([A-Z][a-zA-Z\s\.\-]{2,25})\b",
+        re.I,
+    )
+    for m in admin_city_pattern.finditer(sentence):
+        full_mention = m.group(0)
+        target_name = m.group(1).strip().lower()
+        if target_name in _loc_service.cities:
+            mentions.append({
+                "raw_place_name": full_mention,
                 "canonical_barangay": None,
                 "place_type": "city",
                 "char_start": sent_offset_start + m.start(),
@@ -288,7 +432,17 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
             "char_end": sent_offset_start + m.end(),
         })
 
-    # 5. Barangays (with or without Barangay/Brgy. prefix, including Sta./Sto. variations)
+    # 4b. All 82 Philippine Provinces
+    for m in PROVINCE_PATTERN.finditer(sentence):
+        mentions.append({
+            "raw_place_name": m.group(0),
+            "canonical_barangay": None,
+            "place_type": "province",
+                "char_start": sent_offset_start + m.start(),
+                "char_end": sent_offset_start + m.end(),
+            })
+
+    # 5. Pasig Barangays (with or without Barangay/Brgy. prefix, including Sta./Sto. variations)
     barangay_candidates = list(PASIG_BARANGAYS_CANONICAL) + list(BARANGAY_ALIASES.keys())
     for b_name in barangay_candidates:
         pattern = re.compile(r"\b(?:(?:Barangay|Brgy\.?|Bgy\.?)\s+)?" + re.escape(b_name) + r"\b", re.I)
@@ -301,6 +455,40 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
                 "place_type": "barangay",
                 "char_start": sent_offset_start + m.start(),
                 "char_end": sent_offset_start + m.end(),
+            })
+
+    # 5b. Nationwide Prefixed Barangays outside Pasig (e.g. Brgy. Matina Crossing, Barangay Balibago)
+    nationwide_bgy_pattern = re.compile(
+        r"\b(?:Barangay|Brgy\.?|Bgy\.?)\s+([A-Z][a-zA-Z0-9\.\']*(?:\s+(?:del\s+|de\s+|la\s+)?[A-Z0-9][a-zA-Z0-9\.\']*){0,3})\b"
+    )
+    for m in nationwide_bgy_pattern.finditer(sentence):
+        full_raw = m.group(0)
+        candidate = m.group(1).strip()
+        words = candidate.split()
+        found_candidate = None
+        for i in range(len(words), 0, -1):
+            sub_cand = " ".join(words[:i])
+            if sub_cand.lower() in _loc_service.barangays or normalize_barangay_name(sub_cand):
+                found_candidate = sub_cand
+                break
+
+        if found_candidate:
+            canonical = normalize_barangay_name(found_candidate)
+            if not canonical:
+                b_entries = _loc_service.barangays.get(found_candidate.lower(), [])
+                canonical = b_entries[0]["name"] if b_entries else found_candidate
+
+            match_start = sent_offset_start + m.start()
+            prefix_len = len(full_raw) - len(candidate)
+            actual_end = match_start + prefix_len + len(found_candidate)
+            actual_raw = sentence[m.start() : m.start() + prefix_len + len(found_candidate)]
+
+            mentions.append({
+                "raw_place_name": actual_raw,
+                "canonical_barangay": canonical,
+                "place_type": "barangay",
+                "char_start": match_start,
+                "char_end": actual_end,
             })
 
     # Also search for Sta. and Sto. patterns specifically: Sta. Rosa, Sto. Tomas, Sta. Lucia, Sta. Cruz
@@ -487,9 +675,49 @@ def extract_claims_from_sentence(
         if not t_raw:
             uncertainties.append("event_time_unknown")
 
+        depth_meas = get_flood_depth_measurement(d_canon) if d_canon else None
+
+        # Resolve geographic hierarchy
+        res = _loc_service.resolve_location_hierarchy(place["raw_place_name"], text_context=sentence)
+
+        canonical_bgy = place["canonical_barangay"] if place["place_type"] == "barangay" else None
+        canonical_city = None
+        canonical_prov = None
+        canonical_rd = None
+        psgc = None
+        island = None
+
+        if res:
+            psgc = res.get("psgc_code")
+            canonical_prov = res.get("province")
+            canonical_city = res.get("city_municipality")
+            reg = str(res.get("region", "")).lower()
+            island = get_island_group_for_region(reg)
+            if place["place_type"] == "barangay" and not canonical_bgy and res.get("level") == "Bgy":
+                canonical_bgy = res.get("matched_name")
+        elif place["place_type"] == "barangay" and canonical_bgy:
+            # Pasig canonical barangay default
+            canonical_city = "City of Pasig"
+            canonical_prov = "NCR, Second District"
+            island = "Luzon"
+
+        if place["place_type"] == "street":
+            canonical_rd = place["raw_place_name"]
+        elif place["place_type"] == "city" and not canonical_city:
+            canonical_city = place["raw_place_name"]
+        elif place["place_type"] == "province" and not canonical_prov:
+            canonical_prov = place["raw_place_name"]
+
+        confidence = 0.90 if canonical_bgy or place["place_type"] in ("street", "landmark") else (0.75 if place["place_type"] == "city" else 0.65)
+
         claim = ExtractedClaim(
             raw_place_name=place["raw_place_name"],
-            canonical_barangay=place["canonical_barangay"],
+            canonical_barangay=canonical_bgy,
+            canonical_city=canonical_city,
+            canonical_province=canonical_prov,
+            canonical_road=canonical_rd,
+            island_group=island,
+            psgc_code=psgc,
             place_type=place["place_type"],
             place_char_start=place["char_start"],
             place_char_end=place["char_end"],
@@ -500,13 +728,16 @@ def extract_claims_from_sentence(
             depth_raw=d_raw,
             depth_canonical=d_canon,
             depth_rule=d_rule,
+            depth_meters=depth_meas.meters if depth_meas else None,
+            depth_inches=depth_meas.inches if depth_meas else None,
+            depth_formatted=depth_meas.formatted if depth_meas else None,
             condition=condition,
             event_time_raw=t_raw,
             event_time_resolved=t_res,
             evidence_sentence=sentence,
             evidence_sentence_offset=(sent_start, sent_end),
             uncertainty_reasons=uncertainties,
-            confidence_score=0.9 if place["canonical_barangay"] else 0.7,
+            confidence_score=confidence,
         )
         claims.append(claim)
 

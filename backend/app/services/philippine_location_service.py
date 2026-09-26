@@ -278,12 +278,16 @@ class PhilippineLocationService:
         cleaned_bgy = re.sub(r"^(?:brgy\.?|bgy\.?|barangay)\s+", "", mention, flags=re.I).strip().lower()
         if cleaned_bgy in self.barangays:
             bgy_matches = self.barangays[cleaned_bgy]
-            # Disambiguate using city or province context
             ctx_lower = text_context.lower()
             for b in bgy_matches:
                 city = b.get("city_municipality", "").lower()
                 prov = b.get("province", "").lower()
-                if (city and city in ctx_lower) or (prov and prov in ctx_lower):
+                city_short = re.sub(r"^(?:city of\s+|lungsod ng\s+)", "", city)
+                if city_short.endswith(" city"):
+                    city_short = city_short[:-5]
+                city_short = city_short.strip()
+
+                if (city and city in ctx_lower) or (city_short and city_short in ctx_lower) or (prov and prov in ctx_lower):
                     return {
                         "matched_name": b["name"],
                         "level": "Bgy",

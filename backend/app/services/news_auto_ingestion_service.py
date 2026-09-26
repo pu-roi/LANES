@@ -30,7 +30,10 @@ from app.models.report import ReportSeverity, ReportSource, ReportStatus
 from app.schemas.common import LineStringGeometry, PolygonGeometry
 from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInput
 from app.schemas.report import FloodAvoidanceZoneCreate
-from app.services.flood_depth import severity_for_flood_depth
+from app.services.flood_depth import (
+    format_flood_depth,
+    severity_for_flood_depth,
+)
 from app.services.flood_event_service import create_verified_event_with_zone
 from app.services.hybrid_extraction_service import (
     HybridExtractionService,
@@ -116,7 +119,7 @@ class NewsAutoIngestionService:
                     db.add(db_report)
                     db.flush()
 
-                    # Create official FloodEvent and active FloodAvoidanceZone atomically
+                    formatted_depth = format_flood_depth(depth_str) or depth_str
                     event, zone = create_verified_event_with_zone(
                         db=db,
                         zone_input=zone_input,
@@ -125,7 +128,7 @@ class NewsAutoIngestionService:
                         acted_by_user_id=acted_by_user_id,
                         source_report=db_report,
                         zone_attributes={
-                            "name": f"Auto-Activated: {claim.canonical_road or claim.raw_place_name} ({depth_str})",
+                            "name": f"Auto-Activated: {claim.canonical_road or claim.raw_place_name} ({formatted_depth})",
                             "admin_notes": f"Ingested from {article.publisher_source_id} via Smart Auto-Activation. {claim.action_rationale}",
                         },
                     )

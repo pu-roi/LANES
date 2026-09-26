@@ -81,6 +81,30 @@ class FloodEvent(Base):
         nullable=False,
     )
     peak_depth: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+
+    @property
+    def peak_depth_meters(self) -> Optional[float]:
+        if not self.peak_depth:
+            return None
+        from app.services.flood_depth import get_flood_depth_measurement
+        measurement = get_flood_depth_measurement(self.peak_depth)
+        return measurement.meters if measurement else None
+
+    @property
+    def peak_depth_inches(self) -> Optional[float]:
+        if not self.peak_depth:
+            return None
+        from app.services.flood_depth import get_flood_depth_measurement
+        measurement = get_flood_depth_measurement(self.peak_depth)
+        return measurement.inches if measurement else None
+
+    @property
+    def peak_depth_formatted(self) -> Optional[str]:
+        if not self.peak_depth:
+            return None
+        from app.services.flood_depth import format_flood_depth
+        return format_flood_depth(self.peak_depth)
+
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False
@@ -204,6 +228,29 @@ class FloodReport(Base):
             return float(self.user.profile.trust_score)
         return 100.0
 
+    @property
+    def depth_meters(self) -> Optional[float]:
+        if not self.depth:
+            return None
+        from app.services.flood_depth import get_flood_depth_measurement
+        measurement = get_flood_depth_measurement(self.depth)
+        return measurement.meters if measurement else None
+
+    @property
+    def depth_inches(self) -> Optional[float]:
+        if not self.depth:
+            return None
+        from app.services.flood_depth import get_flood_depth_measurement
+        measurement = get_flood_depth_measurement(self.depth)
+        return measurement.inches if measurement else None
+
+    @property
+    def depth_formatted(self) -> Optional[str]:
+        if not self.depth:
+            return None
+        from app.services.flood_depth import format_flood_depth
+        return format_flood_depth(self.depth)
+
 
 class FloodReportLocation(Base):
     """
@@ -326,6 +373,29 @@ class FloodAvoidanceZone(Base):
         return self.primary_report.depth if self.primary_report else None
 
     @property
+    def depth_meters(self) -> Optional[float]:
+        if not self.depth:
+            return None
+        from app.services.flood_depth import get_flood_depth_measurement
+        measurement = get_flood_depth_measurement(self.depth)
+        return measurement.meters if measurement else None
+
+    @property
+    def depth_inches(self) -> Optional[float]:
+        if not self.depth:
+            return None
+        from app.services.flood_depth import get_flood_depth_measurement
+        measurement = get_flood_depth_measurement(self.depth)
+        return measurement.inches if measurement else None
+
+    @property
+    def depth_formatted(self) -> Optional[str]:
+        if not self.depth:
+            return None
+        from app.services.flood_depth import format_flood_depth
+        return format_flood_depth(self.depth)
+
+    @property
     def report_geometry(self) -> Any:
         if self.source_geometry is not None:
             return self.source_geometry
@@ -422,6 +492,9 @@ class FloodAvoidanceZone(Base):
                 "raw_text": r.raw_text,
                 "severity": r.severity.value if hasattr(r.severity, 'value') else str(r.severity),
                 "depth": r.depth,
+                "depth_meters": r.depth_meters,
+                "depth_inches": r.depth_inches,
+                "depth_formatted": r.depth_formatted,
                 "created_at": r.created_at,
                 "is_primary": idx == 0,
                 "geometry": r.geometry,

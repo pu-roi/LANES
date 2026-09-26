@@ -5,6 +5,7 @@ import { Layers, Trash2, Pencil, Route, Hexagon } from "lucide-react";
 import { Button } from "@/shared/ui";
 import type { ZoneDraftItem } from "../types";
 import { SEVERITY_COLORS } from "../types";
+import { formatFloodDepth } from "@/lib/floodDepth";
 
 interface DraftZoneCartProps {
   drafts: ZoneDraftItem[];
@@ -64,7 +65,7 @@ export function DraftZoneCart({
                     </span>
                     {draft.depth && (
                       <span className="text-[10px] text-slate-500 font-medium">
-                        {draft.depth}
+                        {formatFloodDepth(draft.depth, { compact: true })}
                       </span>
                     )}
                   </div>

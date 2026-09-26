@@ -5,6 +5,7 @@ import { parseUtcDate } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { MapPin, Clock, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatFloodDepth } from "@/lib/floodDepth";
 import type { FloodReport, MergeCandidateItem } from "../../adminApi";
 import { MergeExplanationBanner } from "./MergeExplanationBanner";
 
@@ -127,7 +128,7 @@ export function ReportComparisonCard({
         <div className="min-w-0">
           <span className="text-slate-400 block text-[10px] uppercase font-semibold">Water Depth</span>
           <span className="font-semibold text-slate-700 capitalize">
-            {depth ? depth.replace(/-/g, " ") : "Not reported"}
+            {depth ? formatFloodDepth(depth, { compact: true }) : "Not reported"}
           </span>
         </div>
 

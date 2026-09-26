@@ -1,7 +1,7 @@
 # LANES: Smart Auto-Activation & Multi-Tier Hybrid Flood Intelligence Plan
 
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)  
-> **Last Updated:** September 26, 2026, 3:30 AM  
+> **Last Updated:** September 26, 2026, 8:40 PM  
 > **Status:** Implemented & Verified (45/45 Tests Passing)  
 > **Target Phase:** Capstone Phase 36 — Trusted Flood Intelligence
 
@@ -11,7 +11,7 @@
 
 This document specifies the technical architecture, execution flow, safety suppression mechanisms, and geometric standards for **Trusted Flood Intelligence** in the LANES platform. 
 
-The system transitions from slow, manual administrator-only verification to an automated, intelligent ingestion pipeline (**Option 2: Smart Auto-Activation**). Complete flood reports from verified Philippine news sources are automatically converted into live Valhalla avoidance zones and official PostGIS flood events without admin bottleneck, while strict safety gates suppress receded waters (*"humupa na"*) and weather predictions (*"posibleng bahain"*) to prevent closing dry, passable roads.
+The system transitions from slow, manual administrator-only verification to an automated, intelligent ingestion pipeline (**Option 2: Smart Auto-Activation**). Complete flood reports from verified Philippine news sources are automatically converted into live Valhalla avoidance zones and official PostGIS flood events without admin bottleneck, while strict safety gates suppress receded waters (*"humupa na"*) and weather predictions (*"posibleng bahain"*) to prevent closing dry, passable roads. Extracted flood depths are bound to the Phase 37 MMDA physical depth measurement system (`flood_depth.py`), replacing text-only depth words with dual-unit metric and imperial measurements.
 
 ---
 
@@ -32,7 +32,7 @@ flowchart TD
     end
 
     subgraph CandidateAssembly [Candidate State]
-        Claim["Candidate Flood Claim<br/>• Road: 'C. Raymundo Ave'<br/>• Depth: 'knee' ('lagpas tuhod')<br/>• Condition: 'active'"]
+        Claim["Candidate Flood Claim<br/>• Road: 'C. Raymundo Ave'<br/>• Depth: 'knee' -> 19\" (0.48m) • Knee<br/>• Condition: 'active'"]
         Geo["NationwideGeometryService<br/>• PSGC Hierarchy: Province -> City -> Barangay -> Road<br/>• 50m Corridor / Buffer Polygon Generation"]
     end
 
@@ -81,7 +81,7 @@ flowchart TD
 A flood report is published directly to the live map and dynamic routing without waiting for administrator approval when **all five conditions** are met:
 1. **Auditor Confirmation**: Gemini 1.5 Flash verifies the candidate claim (`is_confirmed = True`).
 2. **Active Condition**: Condition is explicitly `"active"` or `"rising"` (not receded, not historical).
-3. **Canonical Depth Gauge**: Flood depth maps to a standardized gauge (`gutter`, `half-knee`, `half-tire`, `knee`, `tires`, `waist`, `chest`, `neck`).
+3. **Canonical Depth Gauge & MMDA Physical Measurements**: Flood depth maps to a standardized gauge (`gutter`, `half-knee`, `half-tire`, `knee`, `tires`, `waist`, `chest`, `neck`) and is dynamically enriched with metric (`depth_meters`) and imperial (`depth_inches`, `depth_formatted`) measurements via `flood_depth.py`.
 4. **Road or Landmark Precision**: Location resolves to an exact street segment or landmark (not just a broad city or province).
 5. **High Consensus**: Combined multi-tier confidence score reaches **$\ge 95\%$ (0.95)**.
 
@@ -94,7 +94,7 @@ A flood report is published directly to the live map and dynamic routing without
 - Articles mentioning only a broad city (e.g., *"Binaha ang Iloilo City"*) without a specific street or barangay.
 - Incomplete depth indicators.
 - Discrepancies between primary rules and the auditor.
-- Pre-rendered candidate geometry is attached in the dashboard for **1-click staff review and approval**.
+- Pre-rendered candidate geometry is attached in the dashboard for **1-click staff review and approval** displaying physical depth measurements (`19" (0.48m) • Knee`).
 
 ---
 
@@ -126,9 +126,9 @@ The [`NationwideGeometryService`](file:///d:/Documents/Github/LANES/backend/app/
 ## 5. Persistence & Database Contract
 
 - **Zero Schema Migrations Required**: Reuses established 3NF tables:
-  - [`flood_reports`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L99): Stores raw evidence, canonical depth, and PostGIS geometry.
-  - [`flood_events`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L64): Durable historical analytics record (`status = 'active'`).
-  - [`flood_avoidance_zones`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L241): Operational 50m polygon barrier queried by Valhalla routing.
+  - [`flood_reports`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L99): Stores raw evidence, canonical depth, and PostGIS geometry. Dynamic `@property` getters compute `depth_meters`, `depth_inches`, and `depth_formatted` adhering strictly to 3NF.
+  - [`flood_events`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L64): Durable historical analytics record (`status = 'active'`) exposing computed peak depth measurements.
+  - [`flood_avoidance_zones`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L241): Operational 50m polygon barrier queried by Valhalla routing, exposing computed depth measurements in contributor metadata.
 - **Idempotency**: Retried RSS articles or repeated URLs update `last_seen_at` without duplicating avoidance zones or inflating event counts.
 
 ---

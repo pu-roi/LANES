@@ -35,6 +35,8 @@ import {
   saveFloodReportDraft,
 } from "./floodReportDraftStorage";
 
+import { formatFloodDepth } from "@/lib/floodDepth";
+
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface FloodReportPanelProps {
@@ -79,14 +81,14 @@ const VISUAL_OPTIONS: {
   label: string;
   description?: string;
 }[] = [
-  { id: "gutter", severity: "low", label: "Gutter" },
-  { id: "half-knee", severity: "low", label: "Half-Knee" },
-  { id: "half-tire", severity: "medium", label: "Half-Tire" },
-  { id: "knee", severity: "medium", label: "Knee" },
-  { id: "tires", severity: "high", label: "Tires" },
-  { id: "waist", severity: "high", label: "Waist" },
-  { id: "chest", severity: "high", label: "Chest" },
-  { id: "neck", severity: "extreme", label: "Neck & Above" },
+  { id: "gutter", severity: "low", label: "Gutter", description: '8" (0.20m)' },
+  { id: "half-knee", severity: "low", label: "Half-Knee", description: '10" (0.25m)' },
+  { id: "half-tire", severity: "medium", label: "Half-Tire", description: '13" (0.33m)' },
+  { id: "knee", severity: "medium", label: "Knee", description: '19" (0.48m)' },
+  { id: "tires", severity: "high", label: "Tires", description: '26" (0.66m)' },
+  { id: "waist", severity: "high", label: "Waist", description: '37" (0.94m)' },
+  { id: "chest", severity: "high", label: "Chest", description: '45" (1.14m)' },
+  { id: "neck", severity: "extreme", label: "Neck & Above", description: '55"+ (1.40m+)' },
 ];
 
 function formatFileSize(bytes: number) {
@@ -838,7 +840,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                     <p className="text-xs text-gray-500 mt-1 line-clamp-2">{draft.description || "No description provided."}</p>
                     <div className="mt-3 flex items-center gap-2">
                        <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase", SEVERITY_COLORS[draft.severity as Severity]?.pill)}>
-                         {draft.severity} • {draft.depth}
+                         {draft.severity} • {formatFloodDepth(draft.depth, { compact: true })}
                        </span>
                     </div>
                  </div>
@@ -926,7 +928,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
               Flood Severity <span className="text-red-500 ml-0.5">*</span>
             </label>
             <p className="text-[11px] text-gray-500 mb-2">Half-Tire to Knee water is not passable to light vehicles; Tires and deeper are blocked for normal navigation.</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
               {VISUAL_OPTIONS.map((opt) => {
                 const colors = SEVERITY_COLORS[opt.severity];
                 return (
@@ -936,13 +938,13 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                     aria-pressed={visualOption === opt.id}
                     onClick={() => setVisualOption((current) => current === opt.id ? null : opt.id)}
                     className={cn(
-                      "flex flex-col items-center gap-0.5 rounded-lg border px-2 py-2 text-xs font-semibold transition-all",
+                      "flex flex-col items-center text-center gap-0.5 rounded-lg border px-1 py-1.5 sm:px-2 sm:py-2 text-xs font-semibold transition-all leading-tight",
                       visualOption === opt.id ? colors.active : colors.pill
                     )}
                   >
-                    <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10", SEVERITY_DOT_COLORS[opt.severity])}></div>
-                    <span>{opt.label}</span>
-                {opt.description && <span className="font-normal text-[10px] opacity-75">{opt.description}</span>}
+                    <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10 shrink-0", SEVERITY_DOT_COLORS[opt.severity])}></div>
+                    <span className="truncate max-w-full">{opt.label}</span>
+                    {opt.description && <span className="font-normal text-[10px] opacity-75 whitespace-nowrap">{opt.description}</span>}
                   </button>
                 );
               })}

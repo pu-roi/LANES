@@ -21,7 +21,7 @@ export function FloodLegend() {
             <span className="text-[10px] text-lime-900 font-bold ml-auto px-2 py-0.5 bg-[#d8ed34]/30 rounded-md">Gutter to Half-Knee</span>
           </div>
           <p className="text-xs text-lime-900/90 leading-snug">
-            8 - 10 inches. Passable by all vehicles, motorcycles, and pedestrians.
+            8 - 10 inches (0.20m - 0.25m). Passable by all vehicles, motorcycles, and pedestrians.
           </p>
         </div>
 
@@ -33,7 +33,7 @@ export function FloodLegend() {
             <span className="text-[10px] text-amber-900 font-bold ml-auto px-2 py-0.5 bg-amber-200/60 rounded-md">Half-Tire to Knee</span>
           </div>
           <p className="text-xs text-amber-900/90 leading-snug">
-            13 - 19 inches. Not passable to light vehicles; use a high-clearance vehicle only with caution.
+            13 - 19 inches (0.33m - 0.48m). Not passable to light vehicles; use a high-clearance vehicle only with caution.
           </p>
         </div>
 
@@ -45,7 +45,7 @@ export function FloodLegend() {
             <span className="text-[10px] text-orange-900 font-bold ml-auto px-2 py-0.5 bg-orange-200/60 rounded-md">Tires to Chest</span>
           </div>
           <p className="text-xs text-orange-900/90 leading-snug">
-            26 - 45 inches. Only passable by 4-Wheel High Clearance (SUVs, Pickups).
+            26 - 45 inches (0.66m - 1.14m). Impassable for sedans and 2-wheelers.
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export function FloodLegend() {
             <span className="text-[10px] text-red-900 font-bold ml-auto px-2 py-0.5 bg-red-200/60 rounded-md">Neck & Above</span>
           </div>
           <p className="text-xs text-red-900/90 leading-snug">
-            Danger. Impassable for all standard vehicles. Seek alternative routes.
+            55"+ inches (1.40m+). Critical hazard. Impassable for all vehicles.
           </p>
         </div>
       </div>

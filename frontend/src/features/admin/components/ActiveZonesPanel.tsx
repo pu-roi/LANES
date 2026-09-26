@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui";
 import { Pagination } from "@/shared/ui";
 import type { AvoidanceZone } from "@/features/admin/adminApi";
 import { parseUtcDate } from "@/lib/utils";
+import { formatFloodDepth } from "@/lib/floodDepth";
 
 interface ActiveZonesPanelProps {
   activeOnly: boolean;
@@ -200,6 +201,11 @@ export function ActiveZonesPanel({
                         }`}>
                           {zone.severity}
                         </span>
+                        {zone.depth && (
+                          <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-medium">
+                            {formatFloodDepth(zone.depth, { compact: true })}
+                          </span>
+                        )}
                       </div>
                       {zone.report_id && (
                         <p className="text-xs text-gray-500 mt-0.5 font-medium">Primary Report #{zone.report_id}</p>
@@ -316,14 +322,14 @@ export function ActiveZonesPanel({
                                       </p>
 
                                       {/* Metadata Badges Footer */}
-                                      <div className="flex items-center gap-3 text-[10px] text-slate-500 pl-7">
+                                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-slate-500 pl-7">
                                         <span className="flex items-center gap-1">
                                           <span className={`w-1.5 h-1.5 rounded-full ${c.reporter_trust_score >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                                           Trust: <strong className="text-slate-700">{c.reporter_trust_score}%</strong>
                                         </span>
                                         {c.depth && (
                                           <span className="text-slate-400">
-                                            Depth: <strong className="text-slate-700">{c.depth}</strong>
+                                            Depth: <strong className="text-slate-700">{formatFloodDepth(c.depth, { compact: true })}</strong>
                                           </span>
                                         )}
                                         {c.severity && (
