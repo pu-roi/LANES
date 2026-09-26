@@ -16,7 +16,7 @@ import { getCurrentLocation } from "@/features/geocoding/geocodingApi";
 import { WeatherWidget } from "./WeatherWidget";
 import { HomeStats } from "./HomeStats";
 import { ForecastChart } from "./ForecastChart";
-import { FloodLegend } from "./FloodLegend";
+import { FloodGauge } from "./FloodGauge";
 
 export default function LandingView() {
   const router = useRouter();
@@ -331,7 +331,7 @@ export default function LandingView() {
             </p>
           </div>
           <div className="w-full">
-            <FloodLegend />
+            <FloodGauge />
           </div>
         </div>
 

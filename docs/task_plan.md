@@ -1,13 +1,18 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 26, 2026, 9:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 10:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
 ---
 
 ## Active Sprint
+
+### Capstone Phase 38: Interactive MMDA Flood Gauge Visual & Vehicle Clearance Rules (🟢 COMPLETED)
+> **Delivered:** Interactive split-view MMDA flood depth gauge on Landing Page (`/`). Integrates an interactive depth table with expanding vehicle clearance guidelines (PATV, NPLV, NPATV) linked via hover/tap interactions to an animated SVG human silhouette (calibrated to 165 cm DOST-FNRI adult reference height) featuring dynamic Framer Motion spring water fill, centimeter tick ruler, water level line, and depth measurement bubbles. Fully optimized for both desktop and mobile/PWA layouts. (Delivered by [@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
 
 ### Capstone Phase 37: Official MMDA Flood Depth Measurement Integration (🟢 COMPLETED)
 > **Delivered:** Single-source-of-truth physical depth measurement system in backend (`flood_depth.py`) and frontend (`floodDepth.ts`) mapping MMDA depth levels (`gutter`..`neck`) to metric meters/cm and imperial inches. Fully integrated and verified across both desktop and mobile/PWA layouts (Landing Page, Hazard Reporting, Spatial Operations `ZoneDataEditorForm`, `OfficialZoneDrawer`, `MergeWorkspacePanel`, Details Modals, Moderation Queue, and Flood History) with zero database schema alterations. (Delivered by [@roicambe](https://github.com/roicambe) (Roi Cambe))

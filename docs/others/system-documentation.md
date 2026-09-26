@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 26, 2026, 9:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 10:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -60,7 +60,10 @@ These files are **always present** regardless of which page you are on.
 | `HomeStats.tsx` | `src/features/landing/HomeStats.tsx` — The three animated stat counters (Total Reports, Verified Zones, Total Visitors) displayed in the hero section. Fetches live counts from the backend `/public/stats` endpoint. |
 | `WeatherWidget.tsx` | `src/features/landing/WeatherWidget.tsx` — A compact weather card showing current temperature, humidity, and a short description for Metro Manila. Fetches from the backend `/weather/current` endpoint. |
 | `ForecastChart.tsx` | `src/features/landing/ForecastChart.tsx` — A 7-day rainfall/temperature forecast chart (Recharts line chart) displayed below the weather widget. |
-| `FloodLegend.tsx` | `src/features/landing/FloodLegend.tsx` — A small color-coded legend card explaining what each flood severity color (Low / Medium / High / Extreme) means, featuring official MMDA vehicle clearance thresholds in dual units (meters and inches). Static, no API calls. |
+| `FloodGauge.tsx` | `src/features/landing/FloodGauge.tsx` — Split-view interactive MMDA vehicle clearance rules and depth gauge container. Coordinates hover/tap state between the depth table and the SVG human silhouette, with responsive dual-screen layout and mobile auto-scroll. |
+| `FloodGaugeTable.tsx` | `src/features/landing/FloodGaugeTable.tsx` — Interactive MMDA flood classification table with 8 canonical depth tiers (`gutter`..`neck`), severity indicators, dual-unit measurements (`inches` and `meters`), and animated expandable vehicle accessibility badges (`PATV`, `NPLV`, `NPATV`). |
+| `FloodGaugeSilhouette.tsx` | `src/features/landing/FloodGaugeSilhouette.tsx` — Gender-neutral inline SVG human silhouette calibrated to 165 cm (5'5") reference height according to DOST-FNRI adult standards. Dynamically animates rising water levels via Framer Motion springs, vertical centimeter ruler ticks, water surface line, and depth measurement bubbles. |
+| `FloodLegend.tsx` | `src/features/landing/FloodLegend.tsx` — A lightweight 4-card fallback legend card explaining flood severity colors (Low / Medium / High / Extreme) with MMDA vehicle clearance thresholds. |
 
 ### Hidden Until Interaction
 
