@@ -3,6 +3,7 @@
 import React from "react";
 import { parseUtcDate } from "@/lib/utils";
 import { format } from "date-fns";
+import { formatFloodDepth } from "@/lib/floodDepth";
 import type { FloodReport, MergeCandidateItem } from "../../adminApi";
 
 type ComparableReport = FloodReport | MergeCandidateItem;
@@ -34,7 +35,7 @@ function valueFor(report: ComparableReport, field: string): React.ReactNode {
     case "severity":
       return report.severity || "Not reported";
     case "depth":
-      return report.depth?.replace(/-/g, " ") || "Not reported";
+      return report.depth ? formatFloodDepth(report.depth, { compact: true }) : "Not reported";
     case "vehicles": {
       const vehicles = "survey" in report ? survey?.passable_vehicles : report.passable_vehicles;
       return vehicles?.split(",").filter(Boolean).join(", ") || "Not specified";

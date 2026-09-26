@@ -1,8 +1,32 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 6:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+---
+
+### Capstone Phase 37: Official MMDA Flood Depth Measurement Integration (🟢 COMPLETED)
+- [x] **Deterministic MMDA Flood Depth Single-Source-of-Truth & Cross-Platform Measurement Integration** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
+  - **Architecture & 3NF Compliance**: Implemented Option 1 (Single-Source-of-Truth in Backend & Presentation Shell) maintaining strict Third Normal Form (3NF) without modifying database schemas or Alembic migrations.
+  - **Backend Foundation (`backend/app/services/flood_depth.py`, `backend/app/models/report.py`, `backend/app/schemas/report.py`, `backend/app/schemas/flood_event.py`)**:
+    - Created authoritative registry mapping all 8 canonical MMDA depth levels (`gutter`, `half-knee`, `half-tire`, `knee`, `tires`, `waist`, `chest`, `neck`) to exact metric meters/centimeters and imperial inches (`0.20m / 8"`, `0.28m / 11"`, `0.33m / 13"`, `0.48m / 19"`, `0.66m / 26"`, `1.00m / 39"`, `1.22m / 48"`, `1.52m / 60"`).
+    - Added `@property` getters on `FloodReport`, `FloodAvoidanceZone`, and `FloodEvent` for `depth_meters`, `depth_inches`, and `depth_formatted`.
+    - Auto-populated Pydantic response schemas (`FloodReportBase`, `FloodReportResponse`, `ZoneContributorResponse`, `FloodAvoidanceZoneResponse`, `NearbyZoneResponse`, `FloodEventResponse`) with depth measurement fields via `@model_validator(mode="after")`.
+    - Enriched contributor metadata dictionaries in `FloodAvoidanceZone` with depth measurements.
+    - Verified backend with 7/7 unit tests in `test_flood_depth_contract.py` (32/32 backend routing/extraction tests passing).
+  - **Frontend Centralization (`frontend/src/lib/floodDepth.ts`)**:
+    - Created client single-source-of-truth utility exporting `FLOOD_DEPTH_SPECS`, `FLOOD_DEPTH_OPTIONS`, `getFloodDepthSpec()`, and `formatFloodDepth()` with both verbose (`19" (0.48m) • Knee`) and compact (`19" (0.48m) • Knee`) display modes.
+  - **Comprehensive UI/Admin Surface Upgrades**:
+    - **Landing Page (`FloodLegend.tsx`)**: Upgraded vehicle clearance rules legend with dual-unit measurements (meters and inches) across Low, Medium, High, and Extreme hazard tiers.
+    - **Hazard Reporting (`FloodReportPanel.tsx`)**: Replaced raw depth keys with visual selector options displaying metric and imperial measurements; formatted draft queue badges.
+    - **Admin Spatial Operations & Zone Modals (`ZoneDataEditorForm.tsx`)**: Integrated measurement badges into the shared zone editor form utilized by **Create Zone**, **Edit Zone**, and **Review Merge Suggestions** panels on `/admin/map`.
+    - **Merge Management (`MergeWorkspacePanel.tsx`, `ReportComparisonCard.tsx`, `ReportComparisonMatrix.tsx`)**: Formatted water depth in suggestion cards, side-by-side comparison matrix, and merge finalization summary.
+    - **Live Map & Layer Popups (`FloodZonePopup.tsx`)**: Formatted popup height metric and contributor report depths with physical measurements.
+    - **Universal Details Modals (`FloodReportDetailsModal.tsx`, `FloodZoneDetailsModal.tsx`)**: Integrated formatted water level and estimated depth across shared report and zone modals in Moderation Center, Spatial Operations, and Archive Center.
+    - **Moderation Queue & Active Panels (`FloodModerationQueue.tsx`, `PendingReportsPanel.tsx`, `ActiveZonesPanel.tsx`)**: Enhanced moderation cards, pending report items, active zone badges, and zone contributor breakdowns with compact measurement tags.
+    - **Flood History Records & Modals (`FloodEventDetailModal.tsx`, `FloodEventDetailsTabs.tsx`, `FloodEventRecords.tsx`)**: Formatted peak flood depth and official zone historical water levels.
+  - **Verification**: Complete Next.js production build (`npm run build`) succeeded with 0 TypeScript errors across 25 routes.
 
 ---
 

@@ -35,6 +35,8 @@ import {
   saveFloodReportDraft,
 } from "./floodReportDraftStorage";
 
+import { formatFloodDepth } from "@/lib/floodDepth";
+
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface FloodReportPanelProps {
@@ -79,14 +81,14 @@ const VISUAL_OPTIONS: {
   label: string;
   description?: string;
 }[] = [
-  { id: "gutter", severity: "low", label: "Gutter" },
-  { id: "half-knee", severity: "low", label: "Half-Knee" },
-  { id: "half-tire", severity: "medium", label: "Half-Tire" },
-  { id: "knee", severity: "medium", label: "Knee" },
-  { id: "tires", severity: "high", label: "Tires" },
-  { id: "waist", severity: "high", label: "Waist" },
-  { id: "chest", severity: "high", label: "Chest" },
-  { id: "neck", severity: "extreme", label: "Neck & Above" },
+  { id: "gutter", severity: "low", label: "Gutter", description: '8" (0.20m)' },
+  { id: "half-knee", severity: "low", label: "Half-Knee", description: '10" (0.25m)' },
+  { id: "half-tire", severity: "medium", label: "Half-Tire", description: '13" (0.33m)' },
+  { id: "knee", severity: "medium", label: "Knee", description: '19" (0.48m)' },
+  { id: "tires", severity: "high", label: "Tires", description: '26" (0.66m)' },
+  { id: "waist", severity: "high", label: "Waist", description: '37" (0.94m)' },
+  { id: "chest", severity: "high", label: "Chest", description: '45" (1.14m)' },
+  { id: "neck", severity: "extreme", label: "Neck & Above", description: '55"+ (1.40m+)' },
 ];
 
 function formatFileSize(bytes: number) {
@@ -838,7 +840,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                     <p className="text-xs text-gray-500 mt-1 line-clamp-2">{draft.description || "No description provided."}</p>
                     <div className="mt-3 flex items-center gap-2">
                        <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase", SEVERITY_COLORS[draft.severity as Severity]?.pill)}>
-                         {draft.severity} • {draft.depth}
+                         {draft.severity} • {formatFloodDepth(draft.depth, { compact: true })}
                        </span>
                     </div>
                  </div>

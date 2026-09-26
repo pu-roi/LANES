@@ -31,25 +31,13 @@ interface ZoneDataEditorFormProps {
   hideDescription?: boolean;
 }
 
+import { FLOOD_DEPTH_OPTIONS, type FloodDepthSpec } from "@/lib/floodDepth";
+
 // ── Shared constants (exported so OfficialZoneDrawer can reuse them) ──────────
 
-type DepthOption = {
-  id: string;
-  severity: "low" | "medium" | "high" | "extreme";
-  label: string;
-  description?: string;
-};
+export type DepthOption = FloodDepthSpec;
 
-const VISUAL_OPTIONS: DepthOption[] = [
-  { id: "gutter",    severity: "low",     label: "Gutter" },
-  { id: "half-knee", severity: "low",     label: "Half-Knee" },
-  { id: "half-tire", severity: "medium",  label: "Half-Tire" },
-  { id: "knee",      severity: "medium",  label: "Knee" },
-  { id: "tires",     severity: "high",    label: "Tires" },
-  { id: "waist",     severity: "high",    label: "Waist" },
-  { id: "chest",     severity: "high",    label: "Chest" },
-  { id: "neck",      severity: "extreme", label: "Neck & Above" },
-];
+export const VISUAL_OPTIONS: DepthOption[] = FLOOD_DEPTH_OPTIONS;
 
 const SEVERITY_COLORS: Record<string, { pill: string; active: string }> = {
   low:     { pill: "border-lime-300 text-lime-700 bg-lime-50 hover:bg-lime-100",         active: "border-lime-400 bg-lime-100 text-lime-800 ring-2 ring-lime-300/50" },

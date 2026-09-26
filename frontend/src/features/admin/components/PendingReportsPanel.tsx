@@ -5,6 +5,7 @@ import { Select } from "@/shared/ui";
 import type { ApproveReportPayload, FloodReport } from "../adminApi";
 import { UseMutationResult } from "@tanstack/react-query";
 import { parseUtcDate } from "@/lib/utils";
+import { formatFloodDepth } from "@/lib/floodDepth";
 
 interface PendingReportsPanelProps {
   pendingLoading: boolean;
@@ -119,7 +120,7 @@ export function PendingReportsPanel({
                 </span>
                 {report.depth && (
                   <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px] font-medium">
-                    {report.depth}
+                    {formatFloodDepth(report.depth, { compact: true })}
                   </span>
                 )}
               </div>

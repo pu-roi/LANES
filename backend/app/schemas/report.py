@@ -20,7 +20,12 @@ from app.schemas.common import (
 
 
 from app.models.report import ReportSource, ReportSeverity, ReportStatus, HazardPresence, ReportRejectionReason
-from app.services.flood_depth import normalize_flood_depth, severity_for_flood_depth
+from app.services.flood_depth import (
+    normalize_flood_depth,
+    severity_for_flood_depth,
+    get_flood_depth_measurement,
+    format_flood_depth,
+)
 
 class SurveyData(BaseModel):
     passable_vehicles: Optional[str] = None
@@ -37,6 +42,9 @@ class FloodReportBase(BaseModel):
     source: ReportSource
     severity: ReportSeverity = ReportSeverity.MEDIUM
     depth: Optional[str] = None
+    depth_meters: Optional[float] = None
+    depth_inches: Optional[float] = None
+    depth_formatted: Optional[str] = None
     human_readable_location: Optional[str] = None
     barangay: Optional[str] = None
     city: Optional[str] = None
@@ -50,8 +58,17 @@ class FloodReportBase(BaseModel):
 
     @model_validator(mode="after")
     def validate_depth_matches_severity(self) -> "FloodReportBase":
-        if self.depth is not None and severity_for_flood_depth(self.depth) != self.severity:
-            raise ValueError("Severity must match the selected flood depth.")
+        if self.depth is not None:
+            if severity_for_flood_depth(self.depth) != self.severity:
+                raise ValueError("Severity must match the selected flood depth.")
+            measurement = get_flood_depth_measurement(self.depth)
+            if measurement:
+                if self.depth_meters is None:
+                    self.depth_meters = measurement.meters
+                if self.depth_inches is None:
+                    self.depth_inches = measurement.inches
+                if self.depth_formatted is None:
+                    self.depth_formatted = measurement.formatted
         return self
 
 
@@ -189,10 +206,26 @@ class ZoneContributorResponse(BaseModel):
     raw_text: str
     severity: str
     depth: Optional[str] = None
+    depth_meters: Optional[float] = None
+    depth_inches: Optional[float] = None
+    depth_formatted: Optional[str] = None
     created_at: datetime
     is_primary: bool = False
     geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     model_config = ConfigDict(from_attributes=True)
+
+    @model_validator(mode="after")
+    def populate_contributor_measurements(self) -> "ZoneContributorResponse":
+        if self.depth and (self.depth_meters is None or self.depth_formatted is None):
+            measurement = get_flood_depth_measurement(self.depth)
+            if measurement:
+                if self.depth_meters is None:
+                    self.depth_meters = measurement.meters
+                if self.depth_inches is None:
+                    self.depth_inches = measurement.inches
+                if self.depth_formatted is None:
+                    self.depth_formatted = measurement.formatted
+        return self
 
     @field_serializer("created_at")
     def serialize_contributor_datetimes(self, dt: datetime, _info):
@@ -235,6 +268,9 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     geometry: PolygonGeometry
     severity: str
     depth: Optional[str] = None
+    depth_meters: Optional[float] = None
+    depth_inches: Optional[float] = None
+    depth_formatted: Optional[str] = None
     report_geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     created_at: datetime
     updated_at: datetime
@@ -304,6 +340,20 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
                 return None
         return v
 
+    @model_validator(mode="after")
+    def populate_zone_measurements(self) -> "FloodAvoidanceZoneResponse":
+        target_depth = self.depth_override or self.depth
+        if target_depth and (self.depth_meters is None or self.depth_formatted is None):
+            measurement = get_flood_depth_measurement(target_depth)
+            if measurement:
+                if self.depth_meters is None:
+                    self.depth_meters = measurement.meters
+                if self.depth_inches is None:
+                    self.depth_inches = measurement.inches
+                if self.depth_formatted is None:
+                    self.depth_formatted = measurement.formatted
+        return self
+
 
 class FloodReportsPaginatedResponse(BaseModel):
     reports: list[FloodReportResponse]
@@ -355,10 +405,26 @@ class NearbyZoneResponse(BaseModel):
     id: int
     severity: str
     depth: Optional[str] = None
+    depth_meters: Optional[float] = None
+    depth_inches: Optional[float] = None
+    depth_formatted: Optional[str] = None
     distance_meters: float
     created_at: datetime
     geometry: PolygonGeometry
     report_count: int = 1
+
+    @model_validator(mode="after")
+    def populate_nearby_measurements(self) -> "NearbyZoneResponse":
+        if self.depth and (self.depth_meters is None or self.depth_formatted is None):
+            measurement = get_flood_depth_measurement(self.depth)
+            if measurement:
+                if self.depth_meters is None:
+                    self.depth_meters = measurement.meters
+                if self.depth_inches is None:
+                    self.depth_inches = measurement.inches
+                if self.depth_formatted is None:
+                    self.depth_formatted = measurement.formatted
+        return self
 
     @field_serializer("created_at")
     def serialize_nearby_datetimes(self, dt: datetime, _info):

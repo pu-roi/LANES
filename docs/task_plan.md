@@ -1,13 +1,18 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 26, 2026, 4:00 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 26, 2026, 6:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
 ---
 
 ## Active Sprint
+
+### Capstone Phase 37: Official MMDA Flood Depth Measurement Integration (🟢 COMPLETED)
+> **Delivered:** Single-source-of-truth physical depth measurement system in backend (`flood_depth.py`) and frontend (`floodDepth.ts`) mapping MMDA depth levels (`gutter`..`neck`) to metric meters/cm and imperial inches. Fully integrated across Landing Page, Hazard Reporting, Spatial Operations (`ZoneDataEditorForm`, `OfficialZoneDrawer`, `MergeWorkspacePanel`), Details Modals, Moderation Queue, and Flood History without database schema alterations. (Delivered by [@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
 
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery, Taglish Extraction & Admin-Reviewed Map Suggestions (🟡 IN PROGRESS)
 > **Focus:** Build a defense-ready, server-side assistant that discovers recent flood reports from approved public news sources across the Philippines, extracts Filipino/English/Taglish flood evidence, ranks likely map locations, and presents every result for administrator review before it can affect an official flood zone or routing. The Pasig DRRMO history strengthens Pasig-specific ranking; it is not a geographic limit. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
