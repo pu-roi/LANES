@@ -64,8 +64,88 @@ def test_ambiguous_depth_mapping():
         raw, canon, rule, reasons = extract_depth_from_text(text)
         assert raw is not None, f"Expected raw depth extracted for '{text}'"
         assert canon is None, f"Expected canonical to be None for '{text}'"
-        assert rule == "unsupported_or_ambiguous_scale"
-        assert "ambiguous_depth" in reasons
+        if " to " in text:
+            assert rule == "numeric_depth_range"
+            assert "depth_range_not_point_value" in reasons
+        else:
+            assert rule in ("unsupported_or_ambiguous_scale", "numeric_depth_without_exact_gauge")
+            assert reasons
+
+
+def _article_claims(title: str, text: str):
+    return extract_taglish_flood_facts(NewsArticleExtractorInput(
+        article_id=200, canonical_url="https://example.com/flood", publisher="Test News",
+        title=title, article_text=text,
+    )).claims
+
+
+def test_gma_road_segment_and_observation_time():
+    text = ("In Quezon City, floodwater was waist-deep on Sto. Domingo Avenue "
+            "between Atok and Calamba Streets as of 1:12 p.m.")
+    claims = _article_claims("Quezon City flooding", text)
+    road = next(c for c in claims if c.raw_place_name == "Sto. Domingo Avenue")
+    assert road.canonical_city == "Quezon City"
+    assert road.road_segment_raw == "between Atok and Calamba Streets"
+    assert road.depth_canonical == "waist"
+    assert road.event_time_raw == "as of 1:12 p.m."
+    assert road.event_time_kind == "observation"
+    assert not any(c.canonical_city == "City of Calamba" for c in claims)
+
+
+def test_inquirer_roads_keep_separate_measured_depths_and_unknown_time():
+    text = ("Biak-na-Bato Street had flooding as high as 37 inches, WHILE Mauban Street "
+            "had floodwater up to 19 inches.")
+    claims = _article_claims("Quezon City flood update", text)
+    roads = {c.raw_place_name: c for c in claims if c.place_type == "street"}
+    assert set(roads) == {"Biak-na-Bato Street", "Mauban Street"}
+    assert (roads["Biak-na-Bato Street"].depth_raw, roads["Biak-na-Bato Street"].depth_canonical) == ("as high as 37 inches", "waist")
+    assert (roads["Mauban Street"].depth_raw, roads["Mauban Street"].depth_canonical) == ("up to 19 inches", "knee")
+    assert all("upper_bound_depth" in c.uncertainty_reasons for c in roads.values())
+    assert all(c.canonical_city == "Quezon City" and c.event_time_raw is None for c in roads.values())
+
+
+def test_malabon_report_keeps_local_areas_and_collective_depth():
+    text = ("At 7 p.m., Malabon officials reported thigh-deep floodwaters along M.H. Del Pilar "
+            "in Maysilo, about 37 inches. Sitio 6 in Catmon, Dr. Lascano in Tugatog, "
+            "and Central Market area in Tañong had floodwaters around 26 inches.")
+    claims = _article_claims("Malabon flooded roads", text)
+    by_name = {c.raw_place_name: c for c in claims}
+    road = by_name["M.H. Del Pilar"]
+    assert road.local_area_raw == "Maysilo"
+    assert road.depth_raw == "about 37 inches" and road.depth_canonical == "waist"
+    assert "approximate_depth" in road.uncertainty_reasons
+    assert road.event_time_raw == "At 7 p.m."
+    assert road.event_time_kind == "report"
+    for name, area in (("Sitio 6", "Catmon"), ("Dr. Lascano", "Tugatog"), ("Central Market area", "Tañong")):
+        claim = by_name[name]
+        assert claim.local_area_raw == area
+        assert claim.canonical_city == "City of Malabon"
+        assert claim.depth_raw == "around 26 inches" and claim.depth_canonical == "tires"
+        assert "approximate_depth" in claim.uncertainty_reasons
+        assert claim.event_time_raw is None
+
+
+def test_unmapped_thigh_and_depth_range_remain_uncertain():
+    assert extract_depth_from_text("thigh-deep floodwater")[1] is None
+    raw, canonical, _, reasons = extract_depth_from_text("10 to 19 inches")
+    assert raw == "10 to 19 inches" and canonical is None
+    assert "depth_range_not_point_value" in reasons
+    raw, canonical, _, reasons = extract_depth_from_text("up to 19 inches")
+    assert raw == "up to 19 inches" and canonical == "knee"
+    assert "upper_bound_depth" in reasons
+
+
+def test_road_list_inherits_shared_range_without_inventing_individual_depth():
+    text = ("Other roads had floodwaters ranging from 10 to 19 inches. "
+            "These included Maria Clara in Acacia; Burgos and Sto. Niño in Concepcion; "
+            "Gov. Pascual near Robinsons in Tinajeros; and P. Aquino in Tonsuya.")
+    claims = _article_claims("Malabon roads flooded", text)
+    by_name = {c.raw_place_name: c for c in claims}
+    assert {"Maria Clara", "Burgos", "Sto. Niño", "Gov. Pascual", "P. Aquino"} <= set(by_name)
+    assert "Robinsons" not in by_name
+    assert by_name["Burgos"].local_area_raw == "Concepcion"
+    assert all(c.depth_raw == "10 to 19 inches" and c.depth_canonical is None for c in claims)
+    assert all("shared_depth_range_not_individual_measurement" in c.uncertainty_reasons for c in claims)
 
 
 def test_sentence_split_protects_abbreviations_and_initials():

@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 8:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -22,11 +22,36 @@
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery, Taglish Extraction & Admin-Reviewed Map Suggestions (🟡 IN PROGRESS)
 > **Focus:** Build a server-side assistant that discovers recent flood reports from approved public news sources across the Philippines, extracts Filipino/English/Taglish flood evidence, ranks likely map locations, and gives staff a review path for uncertain claims. Any future automatic activation must pass separately verified evidence and geometry gates before affecting an official zone or routing. The Pasig DRRMO history strengthens Pasig-specific ranking; it is not a geographic limit. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
-**Current next task:** Validate the nationwide extraction and geometry prototypes against real source evidence, repair the errors recorded in [the three-article check](phase-36-three-article-check.md), and replace the uncalibrated auto-approval percentage with explicit, testable evidence and geometry gates. Then connect saved RSS and staff-submitted articles to an idempotent processing step and complete staff review before claiming a live article-to-map pipeline. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+**Current next task:** Finish Gate 1 below by checking complete article bodies, every listed location, and cross-paragraph context against the [three August 2026 publisher examples](phase-36-three-article-check.md). Short checked passages now have reviewed expected facts and passing regression fixtures. RSS-to-extractor integration follows the validation and safety gates. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 > **Nationwide scope decision:** The Pasig City map border is a visual reference, not an ingestion, geocoding, moderation, or flood-zone boundary. Preserve completed Pasig-only milestones below as historical implementation records. The current source implements a nationwide discovery filter and PSGC-backed extraction baseline; representative cross-region evaluation and live deployment verification remain open. Pasig DRRMO history is an extra Pasig ranking signal. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 > **RSS, NLP & Physical Depth Measurement status:** The [RSS news discovery plan](plans/rss-news-discovery-plan.md) records 50 Feedspot candidates plus News5. Six feeds were verified in the prior production rollout. Taglish extraction and nationwide location ranking exist in source, with the 50-item constructed evaluation set reporting 100% barangay and depth recall; this does not establish real-article or nationwide accuracy. Extracted canonical depths map to the Phase 37 MMDA measurement registry (`flood_depth.py` / `floodDepth.ts`). The collector currently persists pending evidence and does not invoke `NewsAutoIngestionService`; staff review UI and a validated automatic activation gate remain open. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+#### Phase 36 Recovery Plan — Ordered Gates
+
+> The three-article check was an exploratory diagnostic, not an RSS replay or an acceptance test. Work through these gates before claiming that news can safely create live map zones. The deployed collector uses Cloud SQL; development tests use fixtures or a disposable development database, never production rows. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+1. **Gate 1 — Define expected facts and repair extraction (first).**
+   - [x] Record the developer-reviewed facts for the checked paragraphs of three 2026 articles: locations and parent cities, depth wording and numeric values, observation/report time versus unknown onset, and source links. Add false-city (`Calamba Street`), multi-road, and abbreviation (`p.m.`, `M.H.`) regression fixtures. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+   - [x] Repair those checked paragraphs' sentence boundaries, hyphenated/initialed road names, clause-specific numeric depth, city context, and segment/local-area evidence; parse the additional Malabon named-road list with its shared range and no invented per-road depth. Keep extraction read-only. Focused tests: 21/21; combined extraction/location/news discovery: 40/40. The 50-item constructed set retains 100% canonical barangay/depth recall; its article-level negation metric is 96% on two mixed-status items and is not real-article accuracy. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+   - [ ] Inspect the complete article bodies and all listed locations, including cross-paragraph context and approximate or ranged depths; label any unsupported location, timing, or geometry before treating Gate 1 as complete.
+2. **Gate 2 — Validate location suggestions and the activation decision.**
+   - [ ] Require map suggestions to carry evidence for the exact road segment or landmark and a verified geometry source. Do not promote fixed offline anchors, city centroids, broad barangays, or an entire OSM way to an automatic road closure. Missing or conflicting geometry goes to staff selection.
+   - [ ] Replace the post-decision `0.98` score with explicit prerequisites: observed recent flooding, non-forecast and non-subsided condition, supported canonical depth when claimed, exact place, verified geometry, and source provenance. Auditor failure or absence goes to review. Do not advertise `95%` as a probability until it is calibrated against a labeled real-article set.
+   - [ ] Test each failed prerequisite, stale historical news, repeated names, and contradictory updates; assert zero report/event/zone activation on every review or suppression path.
+3. **Gate 3 — Design durable claim review before any database change.**
+   - [ ] Specify where per-claim evidence, extraction version, geometry candidates, review decisions, and activation links live. Reuse existing tables only if they preserve these facts and idempotency. Obtain explicit developer approval before changing SQLAlchemy models or Alembic migrations, then apply and verify any approved migration against development PostGIS.
+   - [ ] Design staff actions to inspect, correct, approve, reject, or defer a claim with an audit trail; require staff authentication and role checks. Separate news review state from Flood Report moderation state and flood condition.
+4. **Gate 4 — Connect article processing in a non-publishing mode.**
+   - [ ] Run one idempotent processing path for both saved RSS articles and staff-submitted candidates. Start with a dry-run or review-only mode that persists or displays extracted claims without creating public zones. Re-fetches, Scheduler retries, and syndication must not duplicate processing or events; surface per-article errors.
+   - [ ] Verify metadata-only leads remain labeled as such, and validate full-text capture, URL/publisher provenance, publication time, and article age before extraction. Do not infer current flooding from an old article merely because it was fetched today.
+5. **Gate 5 — Complete the staff review flow and publish only approved claims.**
+   - [ ] Build or reuse a protected review UI showing original source, exact evidence sentence, raw and canonical depth, observed time, ranked geometry and rationale, and uncertainty. Verify correction and approval on desktop and mobile/PWA, including locations outside Pasig.
+   - [ ] Connect an approved claim to the existing server-owned Flood Report, Flood Event, and avoidance-zone workflow with duplicate prevention. Pending, rejected, deferred, historical, forecast, and subsided claims must never alter the public map or routing.
+6. **Gate 6 — Broaden evaluation, then consider automatic activation.**
+   - [ ] Begin with the three developer-readable cases, then add a separate labeled set of real permitted articles across Luzon, Visayas, and Mindanao, including no-flood and multiple-location cases. Report exact-place, depth, condition, event-time, geometry, and false-activation results separately; the 50-item constructed benchmark is not a substitute.
+   - [ ] Exercise RSS entry → saved article → extracted claim → staff decision → map/routing in development or a controlled environment. Verify release image, Cloud Run job, Cloud SQL migration state, and rollback path before production rollout. Enable automatic activation only after the decision and geometry gates pass on real articles and the developer has reviewed the measured false-activation risk.
 
 #### 1. Historical Location Input (Completed)
 
@@ -117,14 +142,13 @@
 - [x] Clean the DRRMO CSV into a usable Pasig historical location-prior dataset. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Deploy the verified-feed RSS collector with persistent evidence, URL/GUID deduplication, and a three-hour production schedule. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Complete the Pasig-focused NLP feasibility, labeled evaluation, extraction rules, provenance, and acceptance gate in Section 3; nationwide place coverage remains open in Section 3.5. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [x] Implement 4-tier hybrid NLP pipeline with Gemini 1.5 Flash in a strict supporting auditor role (`hybrid_extraction_service.py`). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Implement the deterministic extraction and optional auditor prototype in `hybrid_extraction_service.py`; calamanCy and Cloud Natural Language tiers are not integrated. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Implement the unconnected `NewsAutoIngestionService` prototype for reports, events, and avoidance zones; production connection and safety validation remain open. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Implement strict safety suppression gates for subsided waters ("humupa na") and forecasts ("posibleng bahain") with 0 active zones. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Implement OpenStreetMap (OSM) multi-point way LineString buffering (`buffer_osm_linestring_to_polygon`) with Nominatim `polygon_geojson=1` for 50m road corridor polygons. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [ ] Complete the remaining discovery extensions in Section 2 as needed to supply NLP inputs, including release-time RSS image updates, additional approved feeds or search leads, full-text capture, and any needed candidate fields. These can proceed alongside NLP and do not block the model/corpus spike. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [ ] Expand discovery and extraction to all Philippine locations, then rank candidate road segments or areas using nationwide place/road geometry, article context, available hazard layers, and Pasig historical data where applicable; show ambiguity and confidence.
-- [ ] Add pending AI-ingestion review or reuse moderation, then connect approved candidates to the existing official-zone/event workflow.
-- [ ] Test with real recent permitted articles and representative fixtures; show source evidence for every suggested location and verify the desktop/mobile review flow, authorization, and non-activation of pending/rejected candidates.
+- [ ] Execute Gates 1–2 above: fix real-article extraction and geometry errors, then validate explicit activation prerequisites before connecting the collector. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Execute Gates 3–5 above: design durable review, obtain any needed schema approval, connect both article entry paths in review-only mode, and complete staff-approved map publication. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Execute Gate 6 above: broaden real-article evaluation, verify desktop/mobile and nationwide behavior, and assess automatic activation only after the measured safety gate passes. Additional feed/search leads can be added when the validated pipeline needs them. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 #### 7. Definition of Done
 

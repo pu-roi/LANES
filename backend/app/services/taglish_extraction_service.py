@@ -252,7 +252,7 @@ AMBIGUOUS_DEPTH_PATTERN = re.compile(
     r"\b(?:"
     r"\d+\s*(?:to|-)\s*\d+\s*(?:feet|foot|ft|meters?|m|inches|in|centimeters?|cm)|"
     r"\d+\s*(?:centimeters?|cm|meters?|m|feet|foot|ft|inches|in)|"
-    r"mataas\s+na\s+(?:pagbaha|baha)|deep\s+(?:floodwaters?|flood|waters?|flooding)|abot[-\s]bubong"
+    r"mataas\s+na\s+(?:pagbaha|baha)|deep\s+(?:floodwaters?|flood|waters?|flooding)|thigh[-\s]deep|abot[-\s]bubong"
     r")\b",
     re.I,
 )
@@ -260,12 +260,12 @@ AMBIGUOUS_DEPTH_PATTERN = re.compile(
 # Event time expressions
 TIME_EXPRESSIONS = re.compile(
     r"\b(?:"
-    r"kaninang\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"as\s+of\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"around\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"at\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"bandang\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"simula\s+kaninang\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
+    r"kaninang\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"as\s+of\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"around\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"at\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"bandang\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"simula\s+kaninang\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
     r"kaninang\s+(?:tanghali|umaga|hapon|gabi)|"
     r"kaninang\s+alas-[a-z]+(?:\s+ng\s+(?:hapon|gabi|umaga))?|"
     r"alas-[a-z]+(?:\s+ng\s+(?:hapon|gabi|umaga))?|"
@@ -282,6 +282,20 @@ KNOWN_ABBREVIATIONS = (
     "inc.", "co.", "approx.",
 )
 
+ROAD_SUFFIX = r"(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Highway|Hwy\.?|Road|Rd\.?|Way|Drive|Dr\.?)"
+ROAD_NAME = r"(?:[A-Z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*\.?|[A-Z]\.)(?:\s+(?:[A-Z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*\.?|[A-Z]\.|del|de|la))*"
+GENERIC_ROAD_PATTERN = re.compile(rf"\b{ROAD_NAME}\s+{ROAD_SUFFIX}\b")
+INITIAL_ROAD_PATTERN = re.compile(r"\b(?:[A-Z]\.\s*){2,3}[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2}\b")
+ROAD_SEGMENT_PATTERN = re.compile(
+    r"\bbetween\s+([A-Z][\w.-]*)\s+and\s+([A-Z][\w.-]*)\s+Streets?\b", re.I
+)
+NUMERIC_DEPTH_PATTERN = re.compile(
+    r"\b(?P<value>\d+(?:\.\d+)?)\s*(?P<unit>inches|inch|centimeters|centimeter|cm|meters|meter|feet|foot|ft)\b", re.I
+)
+NUMERIC_DEPTH_RANGE_PATTERN = re.compile(
+    r"\b\d+(?:\.\d+)?\s*(?:to|-|–)\s*\d+(?:\.\d+)?\s*(?:inches|inch|in|cm|meters?|m|feet|foot|ft)\b", re.I
+)
+
 
 def split_sentences_with_offsets(text: str) -> list[tuple[str, int, int]]:
     """Split text into sentences while tracking start and end character offsets.
@@ -296,6 +310,9 @@ def split_sentences_with_offsets(text: str) -> list[tuple[str, int, int]]:
         if char in {".", "!", "?", "\n"}:
             is_abbr = False
             if char == ".":
+                # The first dot of p.m./a.m. precedes a lowercase initial.
+                if re.search(r"\b[ap]\.m\.$", text[max(0, i - 2):i + 3], re.I):
+                    is_abbr = True
                 # Check single capital initial like "C." or "F."
                 if i >= 1 and text[i - 1].isupper() and (i == 1 or not text[i - 2].isalpha()):
                     is_abbr = True
@@ -335,6 +352,31 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
     """
     mentions: list[dict[str, Any]] = []
 
+    # Road lists often omit suffixes: "These included Burgos and Sto. Niño in
+    # Concepcion; ...". Keep the list's locality as evidence, not a geocode.
+    list_lead = re.search(r"\bThese included\b", sentence, re.I)
+    if list_lead:
+        for group in re.finditer(r"[^;]+", sentence[list_lead.end():]):
+            group_text = group.group(0)
+            area_match = re.search(r"\s+in\s+([A-Z][\wÀ-ÿ.-]*(?:\s+(?:and\s+)?[A-Z][\wÀ-ÿ.-]*){0,2})", group_text)
+            if not area_match:
+                continue
+            area_raw = area_match.group(1).strip().rstrip(".")
+            names_text = re.split(r"\s+near\s+", group_text[:area_match.start()])[0]
+            for name_match in re.finditer(r"[A-Z][\wÀ-ÿ.-]*(?:\s+[A-Z][\wÀ-ÿ.-]*)*", names_text):
+                raw = name_match.group(0).strip().rstrip(".")
+                if raw.lower() in ("these", "included", "and"):
+                    continue
+                start = list_lead.end() + group.start() + name_match.start()
+                mentions.append({
+                    "raw_place_name": raw,
+                    "canonical_barangay": None,
+                    "place_type": "street",
+                    "local_area_raw": area_raw,
+                    "char_start": sent_offset_start + start,
+                    "char_end": sent_offset_start + start + len(raw),
+                })
+
     # 1. Landmarks (Pasig DRRMO Historical + Base Landmarks)
     for m in LANDMARK_PATTERN.finditer(sentence):
         mentions.append({
@@ -366,23 +408,37 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
         })
 
     # 2c. Generic Nationwide Streets/Avenues/Boulevards/Highways
-    generic_street_pattern = re.compile(
-        r"\b([A-Z][a-zA-Z0-9\.\'\s]{1,35}?\s+(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Highway|Hwy\.?|Road|Rd\.?|Way|Drive|Dr\.?))\b",
-        re.I,
-    )
-    for m in generic_street_pattern.finditer(sentence):
-        st_name = m.group(1).strip()
+    for m in list(GENERIC_ROAD_PATTERN.finditer(sentence)) + list(INITIAL_ROAD_PATTERN.finditer(sentence)):
+        st_name = m.group(0).strip()
+        leading_word = re.match(r"(?:While|In|On|Along|At|The|And|But|Meanwhile|As)\s+", st_name, re.I)
+        name_start = m.start() + (leading_word.end() if leading_word else 0)
+        if leading_word:
+            st_name = st_name[leading_word.end():]
         if not any(st_name.lower() == existing["raw_place_name"].lower() for existing in mentions):
             mentions.append({
                 "raw_place_name": st_name,
                 "canonical_barangay": None,
                 "place_type": "street",
-                "char_start": sent_offset_start + m.start(1),
-                "char_end": sent_offset_start + m.end(1),
+                "char_start": sent_offset_start + name_start,
+                "char_end": sent_offset_start + m.end(),
+            })
+
+    for pattern in (r"\bSitio\s+\d+\b", r"\bCentral Market(?:\s+area)?\b", r"\bDr\.\s+[A-Z][a-z]+\b"):
+        for m in re.finditer(pattern, sentence, re.I):
+            mentions.append({
+                "raw_place_name": m.group(0),
+                "canonical_barangay": None,
+                "place_type": "landmark",
+                "char_start": sent_offset_start + m.start(),
+                "char_end": sent_offset_start + m.end(),
             })
 
     # 3. Nationwide Philippine Cities and Municipalities
     for m in CITY_PATTERN.finditer(sentence):
+        # A homonymous city inside a road or road-segment name is not an admin mention.
+        road_context = sentence[m.end():]
+        if re.match(r"\s+Streets?\b", road_context, re.I):
+            continue
         mentions.append({
             "raw_place_name": m.group(0),
             "canonical_barangay": None,
@@ -510,6 +566,9 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
     unique_mentions: list[dict[str, Any]] = []
     last_end = -1
     for m in mentions:
+        local_start = m["char_start"] - sent_offset_start
+        if re.search(r"\bnear\s+$", sentence[:local_start], re.I):
+            continue
         if m["char_start"] >= last_end:
             unique_mentions.append(m)
             last_end = m["char_end"]
@@ -522,6 +581,33 @@ def extract_depth_from_text(text: str) -> tuple[str | None, CanonicalDepth | Non
     Returns (depth_raw, depth_canonical, depth_rule, uncertainty_reasons).
     """
     reasons: list[str] = []
+
+    # A measured value is stronger evidence than a body-part adjective. Only
+    # assign a gauge key for an exact configured gauge value; retain all others.
+    depth_range = NUMERIC_DEPTH_RANGE_PATTERN.search(text)
+    if depth_range:
+        return depth_range.group(0), None, "numeric_depth_range", ["depth_range_not_point_value"]
+    numeric = NUMERIC_DEPTH_PATTERN.search(text)
+    if numeric:
+        qualifier_match = re.search(
+            r"\b(about|around|approximately|roughly|up to|as high as)\s+$",
+            text[max(0, numeric.start() - 22):numeric.start()], re.I,
+        )
+        qualifier = qualifier_match.group(1).lower() if qualifier_match else None
+        raw_start = numeric.start() - len(qualifier_match.group(0)) if qualifier_match else numeric.start()
+        numeric_raw = text[raw_start:numeric.end()]
+        if qualifier in ("up to", "as high as"):
+            reasons.append("upper_bound_depth")
+        elif qualifier:
+            reasons.append("approximate_depth")
+        value = float(numeric.group("value"))
+        unit = numeric.group("unit").lower()
+        inches = value if unit.startswith("in") else (value / 2.54 if unit.startswith("centimeter") or unit == "cm" else (value * 39.37007874 if unit.startswith("meter") or unit == "m" else value * 12))
+        for key in FLOOD_DEPTH_SEVERITIES:
+            gauge = get_flood_depth_measurement(key)
+            if gauge and abs(inches - gauge.inches) < 0.05:
+                return numeric_raw, key, "numeric_gauge_match", reasons
+        return numeric_raw, None, "numeric_depth_without_exact_gauge", reasons + ["numeric_depth_not_canonical"]
 
     # 1. Collect all canonical matches
     raw_matches: list[tuple[int, int, str, CanonicalDepth, str]] = []
@@ -584,7 +670,10 @@ def extract_event_time_from_text(text: str) -> tuple[str | None, datetime | None
     """Extract explicit event time string."""
     m = TIME_EXPRESSIONS.search(text)
     if m:
-        return m.group(0), None
+        raw = m.group(0)
+        if m.end() < len(text) and text[m.end()] == "." and re.search(r"[ap]\.m$", raw, re.I):
+            raw += "."
+        return raw, None
     return None, None
 
 
@@ -613,6 +702,7 @@ def extract_claims_from_sentence(
     sent_start: int,
     sent_end: int,
     article_input: NewsArticleExtractorInput,
+    inherited_depth_raw: str | None = None,
 ) -> list[ExtractedClaim]:
     """Extract structured claims from a single sentence, associating facts per clause/place."""
     claims: list[ExtractedClaim] = []
@@ -620,11 +710,26 @@ def extract_claims_from_sentence(
     if not place_mentions:
         return claims
 
+    sentence_cities = [p for p in place_mentions if p["place_type"] == "city"]
+    title_cities = find_place_mentions(article_input.title, 0)
+    context_city = sentence_cities[0] if len(sentence_cities) == 1 else None
+    if context_city is None:
+        unique_title_cities = [p for p in title_cities if p["place_type"] == "city"]
+        if len(unique_title_cities) == 1:
+            context_city = unique_title_cities[0]
+
     # Break sentence into clauses for fine-grained multi-location attribution
     clauses = split_clauses(sentence)
+    road_segment_match = ROAD_SEGMENT_PATTERN.search(sentence)
 
     for place in place_mentions:
         local_place_start = place["char_start"] - sent_start
+        local_place_end = place["char_end"] - sent_start
+        local_area_match = re.match(
+            r"\s+in\s+([A-Z][\wÀ-ÿ.-]*(?:\s+[A-Z][\wÀ-ÿ.-]*){0,2})\b",
+            sentence[local_place_end:],
+        )
+        local_area_raw = place.get("local_area_raw") or (local_area_match.group(1) if local_area_match else None)
         target_clause_text = sentence
         for clause_text, c_start, c_end in clauses:
             if c_start <= local_place_start < c_end:
@@ -656,7 +761,12 @@ def extract_claims_from_sentence(
         d_raw, d_canon, d_rule, d_reasons = extract_depth_from_text(target_clause_text)
         if not d_raw and len(place_mentions) == 1:
             d_raw, d_canon, d_rule, d_reasons = extract_depth_from_text(sentence)
+        if not d_raw and inherited_depth_raw:
+            d_raw, d_canon, d_rule = inherited_depth_raw, None, "inherited_group_depth_range"
+            d_reasons = ["shared_depth_range_not_individual_measurement"]
         uncertainties.extend(d_reasons)
+        if place.get("local_area_raw"):
+            uncertainties.append("listed_road_requires_geometry_check")
 
         # If explicit depth is present and not negated/forecast/historical, flood is mentioned!
         if d_raw and not clause_negated and not is_forecast and not is_historical:
@@ -674,6 +784,11 @@ def extract_claims_from_sentence(
 
         if not t_raw:
             uncertainties.append("event_time_unknown")
+        time_kind = "unspecified"
+        if t_raw and t_raw.lower().startswith("as of"):
+            time_kind = "observation"
+        elif t_raw and re.search(r"\breported\b", target_clause_text, re.I):
+            time_kind = "report"
 
         depth_meas = get_flood_depth_measurement(d_canon) if d_canon else None
 
@@ -701,14 +816,25 @@ def extract_claims_from_sentence(
             canonical_prov = "NCR, Second District"
             island = "Luzon"
 
-        if place["place_type"] == "street":
-            canonical_rd = place["raw_place_name"]
+        if place["place_type"] in ("street", "landmark"):
+            if place["place_type"] == "street":
+                canonical_rd = place["raw_place_name"]
+            if context_city:
+                city_res = _loc_service.resolve_location_hierarchy(context_city["raw_place_name"])
+                if city_res and city_res.get("city_municipality"):
+                    canonical_city = city_res["city_municipality"]
+                    canonical_prov = city_res.get("province")
+                    island = get_island_group_for_region(city_res.get("region"))
+                    if not psgc:
+                        psgc = city_res.get("psgc_code")
         elif place["place_type"] == "city" and not canonical_city:
             canonical_city = place["raw_place_name"]
         elif place["place_type"] == "province" and not canonical_prov:
             canonical_prov = place["raw_place_name"]
 
         confidence = 0.90 if canonical_bgy or place["place_type"] in ("street", "landmark") else (0.75 if place["place_type"] == "city" else 0.65)
+        if place.get("local_area_raw"):
+            confidence = 0.50
 
         claim = ExtractedClaim(
             raw_place_name=place["raw_place_name"],
@@ -716,6 +842,13 @@ def extract_claims_from_sentence(
             canonical_city=canonical_city,
             canonical_province=canonical_prov,
             canonical_road=canonical_rd,
+            local_area_raw=local_area_raw,
+            road_segment_raw=(
+                road_segment_match.group(0)
+                if canonical_rd and road_segment_match
+                and re.fullmatch(r"\s*", sentence[local_place_end:road_segment_match.start()])
+                else None
+            ),
             island_group=island,
             psgc_code=psgc,
             place_type=place["place_type"],
@@ -734,6 +867,7 @@ def extract_claims_from_sentence(
             condition=condition,
             event_time_raw=t_raw,
             event_time_resolved=t_res,
+            event_time_kind=time_kind,
             evidence_sentence=sentence,
             evidence_sentence_offset=(sent_start, sent_end),
             uncertainty_reasons=uncertainties,
@@ -759,13 +893,21 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
 
     sentences = split_sentences_with_offsets(text_to_process)
     all_claims: list[ExtractedClaim] = []
+    previous_sentence = ""
 
     for sent_text, sent_start, sent_end in sentences:
-        claims = extract_claims_from_sentence(sent_text, sent_start, sent_end, article_input)
+        inherited_depth = None
+        if previous_sentence and re.match(r"These included\b", sent_text, re.I):
+            if "flood" in previous_sentence.lower():
+                depth_range = NUMERIC_DEPTH_RANGE_PATTERN.search(previous_sentence)
+                if depth_range:
+                    inherited_depth = depth_range.group(0)
+        claims = extract_claims_from_sentence(sent_text, sent_start, sent_end, article_input, inherited_depth)
         for claim in claims:
             if is_metadata_only and "metadata_only_lead" not in claim.uncertainty_reasons:
                 claim.uncertainty_reasons.append("metadata_only_lead")
             all_claims.append(claim)
+        previous_sentence = sent_text
 
     return NewsExtractionResult(
         article_id=article_input.article_id,

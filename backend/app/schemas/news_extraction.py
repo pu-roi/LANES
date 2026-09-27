@@ -95,6 +95,8 @@ class ExtractedClaim(BaseModel):
     canonical_city: str | None = None
     canonical_province: str | None = None
     canonical_road: str | None = None
+    road_segment_raw: str | None = None
+    local_area_raw: str | None = None
     island_group: str | None = None
     psgc_code: str | None = None
 
@@ -118,6 +120,7 @@ class ExtractedClaim(BaseModel):
 
     event_time_raw: str | None = None
     event_time_resolved: datetime | None = None
+    event_time_kind: Literal["observation", "report", "unspecified"] = "unspecified"
 
     evidence_sentence: str
     evidence_sentence_offset: tuple[int, int]

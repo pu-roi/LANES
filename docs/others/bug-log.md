@@ -1,6 +1,6 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 9:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -33,7 +33,7 @@ Override `get_db` with an in-memory SQLite session using `StaticPool`, create on
 ---
 
 ### [BUG-058] Real 2026 Flood Excerpts Produce Incorrect Place Spans and Event Time
-- **Status**: Investigating
+- **Status**: Partially resolved (checked passages pass; complete articles remain open)
 - **Severity**: High (would affect map suggestions if connected)
 - **Date Reported**: September 27, 2026
 - **Affected Area**: Phase 36 Taglish extraction and nationwide location resolution
@@ -45,16 +45,16 @@ Three short August 2026 publisher passages produce malformed road names, a false
 
 #### 2. Root Cause Analysis (RCA)
 
-Current sentence and place matching does not preserve all abbreviations and hyphenated roads, and it does not consistently propagate city context to nearby road claims. These are observed extraction defects; the full corrective root cause still needs tracing before code changes.
+The generic case-insensitive road regex swallowed leading words and dropped hyphenated prefixes; the city matcher treated a cross-street name as a city. Sentence splitting broke `p.m.` and the parser did not retain road segments or local-area phrases. Numeric depth was previously treated as ambiguous even when it exactly matched the configured gauge. A unit abbreviation also mistook `Sitio 6 in Catmon` for six inches; that ambiguity is now removed from the numeric matcher.
 
 #### 3. Solution & Architectural Strategy
 
-Add source-linked regression cases, then repair sentence boundaries, road-span matching, and administrative disambiguation. Keep article-to-zone processing disconnected until real-article checks and geometry gates pass.
+The checked passages now have source-linked expected facts and five targeted regression tests covering road spans, parent cities, numeric depth, local areas, shared ranges, and observation/report timing. Additional full-article context, passability, and geometry verification remain Gate 1/2 work. Keep article-to-zone processing disconnected until real-article checks and geometry gates pass.
 
 #### 4. Files Modified / What Changed
 
-- `docs/phase-36-three-article-check.md`: Recorded the source-linked reproductions and manual assessment.
-- `docs/task_plan.md`, `docs/progress.md`, `docs/feature-reference.md`, `docs/tech-stack.md`, `docs/others/system-documentation.md`, and `docs/plans/rss-news-discovery-plan.md`: Updated Phase 36 status and follow-up work. Backend extraction code has not yet changed.
+- `backend/app/services/taglish_extraction_service.py`, `backend/app/schemas/news_extraction.py`, and `backend/tests/test_taglish_extraction.py`: Repaired the checked cases and added evidence fields. Focused tests pass 21/21; combined extraction/location/news discovery tests pass 40/40.
+- `docs/phase-36-three-article-check.md`, `docs/task_plan.md`, and `docs/progress.md`: Recorded the developer-reviewed expected facts, results, and remaining full-article evaluation.
 
 ---
 

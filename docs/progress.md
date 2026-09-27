@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 9:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -53,6 +53,7 @@
 ---
 
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery & Taglish Extraction (🟡 IN PROGRESS)
+- [x] **Developer-reviewed article extraction repair** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): corrected the Quezon City/Calamba Street collision, preserved Sto. Domingo Avenue's cross-street segment, separated Biak-na-Bato and Mauban road depths, and extracted M.H. Del Pilar plus three Malabon sites with local-area phrases. The later Malabon named-road list yields 13 place claims with a shared 10–19-inch range and no invented per-road measurement. Explicit 37-, 19-, and 26-inch values map to configured gauge keys; approximation and upper-bound qualifiers remain attached to raw evidence, while unpaired ranges and `thigh-deep` alone remain uncertain. `as of 1:12 p.m.` is an observation time and the Malabon office's 7 p.m. statement a report time; Inquirer streets have unknown observation time. Tests: 21/21 focused and 40/40 extraction/location/news discovery; the 50-item constructed set retains 100% canonical barangay/depth recall with a 96% article-level negation metric on mixed-status items. Full article semantics, RSS integration, geometry, and map publication remain open. See [the source-linked check](phase-36-three-article-check.md) and [BUG-058](others/bug-log.md).
 - [x] **Read-only 2026 publisher evidence check, test isolation, and documentation reconciliation** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): ran three short August 2026 GMA, Inquirer, and Manila Bulletin passages through the deterministic extractor without Cloud SQL writes or zone activation. It recognized some flood/depth facts but produced malformed road spans, missed city context, misresolved Calamba Street as a city, and split a `p.m.` timestamp. Results and source links are in [the three-article check](phase-36-three-article-check.md). Isolated the staff news API test from external PostgreSQL with in-memory SQLite (`1 passed`; [BUG-059](others/bug-log.md)); [BUG-058](others/bug-log.md) tracks the extraction defects. Updated the active plan and reference documents to distinguish existing prototypes from the disconnected production collector; real-article accuracy and activation safety remain open.
 - [x] **Section 1 DRRMO Historical Flood Ingestion & Section 3.5 Nationwide Place Coverage (Deterministic Rule & PSGC Grounding without ML NER)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - **Section 1 Historical DRRMO Ingestion (`pasig_historical_service.py`)**:
