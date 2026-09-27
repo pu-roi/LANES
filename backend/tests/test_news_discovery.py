@@ -10,8 +10,10 @@ from sqlalchemy import create_engine, func, select
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import Session
+from sqlalchemy.pool import StaticPool
 
 from app.api import deps
+from app.core.database import get_db
 from app.main import app
 from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint
 from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_pasig_flood, likely_philippine_flood
@@ -178,31 +180,48 @@ def test_unverified_source_never_fetches() -> None:
 
 
 def test_staff_source_api_requires_authentication_and_lists_all_candidates() -> None:
-    with TestClient(app) as client:
-        assert client.get("/api/v1/admin/news/sources").status_code == 401
-        assert client.get("/api/v1/admin/news/feeds").status_code == 401
-        assert client.get("/api/v1/admin/news/candidates").status_code == 401
-        assert client.post("/api/v1/admin/news/runs").status_code == 401
-        assert client.post("/api/v1/admin/news/manual-candidate", json={"title": "Test", "text": "Baha"}).status_code == 401
-        app.dependency_overrides[deps.get_current_active_admin] = lambda: object()
-        try:
-            response = client.get("/api/v1/admin/news/sources")
-            assert response.status_code == 200
-            assert len(response.json()) == 51
-            assert sum(item["enabled"] for item in response.json()) == 6
-            assert client.post("/api/v1/admin/news/sources/news5/probe").status_code == 422
-            manual = client.post("/api/v1/admin/news/manual-candidate", json={
-                "title": "Baha sa Ortigas",
-                "text": "Lagpas tuhod ang baha sa Ortigas Avenue dahil sa malakas na ulan.",
-                "source_url": "https://facebook.com/drrmo/posts/12345"
-            })
-            assert manual.status_code == 200
-            assert manual.json()["title"] == "Baha sa Ortigas"
-            assert manual.json()["publisher_source_id"] == "Staff DRRMO / Social Post"
-            assert manual.json()["canonical_url"] == "https://facebook.com/drrmo/posts/12345"
-            assert manual.json()["review_state"] == "pending"
-        finally:
-            app.dependency_overrides.clear()
+    engine = create_engine(
+        "sqlite+pysqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    tables = [NewsArticle.__table__, NewsArticleFeedEntry.__table__]
+    NewsArticle.metadata.create_all(engine, tables=tables)
+
+    def test_db():
+        with Session(engine) as db:
+            yield db
+
+    app.dependency_overrides[get_db] = test_db
+    try:
+        with TestClient(app) as client:
+            assert client.get("/api/v1/admin/news/sources").status_code == 401
+            assert client.get("/api/v1/admin/news/feeds").status_code == 401
+            assert client.get("/api/v1/admin/news/candidates").status_code == 401
+            assert client.post("/api/v1/admin/news/runs").status_code == 401
+            assert client.post("/api/v1/admin/news/manual-candidate", json={"title": "Test", "text": "Baha"}).status_code == 401
+            app.dependency_overrides[deps.get_current_active_admin] = lambda: object()
+            try:
+                response = client.get("/api/v1/admin/news/sources")
+                assert response.status_code == 200
+                assert len(response.json()) == 51
+                assert sum(item["enabled"] for item in response.json()) == 6
+                assert client.post("/api/v1/admin/news/sources/news5/probe").status_code == 422
+                manual = client.post("/api/v1/admin/news/manual-candidate", json={
+                    "title": "Baha sa Ortigas",
+                    "text": "Lagpas tuhod ang baha sa Ortigas Avenue dahil sa malakas na ulan.",
+                    "source_url": "https://facebook.com/drrmo/posts/12345"
+                })
+                assert manual.status_code == 200
+                assert manual.json()["title"] == "Baha sa Ortigas"
+                assert manual.json()["publisher_source_id"] == "Staff DRRMO / Social Post"
+                assert manual.json()["canonical_url"] == "https://facebook.com/drrmo/posts/12345"
+                assert manual.json()["review_state"] == "pending"
+            finally:
+                app.dependency_overrides.pop(deps.get_current_active_admin, None)
+    finally:
+        app.dependency_overrides.pop(get_db, None)
+        engine.dispose()
 
 
 @compiles(JSONB, "sqlite")

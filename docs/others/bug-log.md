@@ -1,9 +1,60 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 22, 2026, 11:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-059] Staff News API Test Used a Missing Local PostgreSQL Database
+- **Status**: Resolved
+- **Severity**: Low (test isolation)
+- **Date Reported / Resolved**: September 27, 2026
+- **Affected Area**: Backend news API automated test
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The staff news API test timed out when posting a manual candidate on a machine without local PostgreSQL. The other focused backend tests passed; this did not establish a production Cloud SQL fault.
+
+#### 2. Root Cause Analysis (RCA)
+
+The test overrode staff authentication but left `get_db` pointing at the development default `localhost:5432`. Its manual-candidate request therefore depended on a running external database.
+
+#### 3. Solution & Architectural Strategy
+
+Override `get_db` with an in-memory SQLite session using `StaticPool`, create only the news tables, and remove the overrides after the test. The focused endpoint test now passes without a local or cloud database.
+
+#### 4. Files Modified / What Changed
+
+- `backend/tests/test_news_discovery.py`: Isolated the protected source/manual-candidate test from external PostgreSQL; confirmed `1 passed`.
+
+---
+
+### [BUG-058] Real 2026 Flood Excerpts Produce Incorrect Place Spans and Event Time
+- **Status**: Investigating
+- **Severity**: High (would affect map suggestions if connected)
+- **Date Reported**: September 27, 2026
+- **Affected Area**: Phase 36 Taglish extraction and nationwide location resolution
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Three short August 2026 publisher passages produce malformed road names, a false City of Calamba match for Calamba Street in Quezon City, missing city context on road claims, and a broken `p.m.` timestamp. Exact inputs, sources, and outputs are in [the three-article check](../phase-36-three-article-check.md).
+
+#### 2. Root Cause Analysis (RCA)
+
+Current sentence and place matching does not preserve all abbreviations and hyphenated roads, and it does not consistently propagate city context to nearby road claims. These are observed extraction defects; the full corrective root cause still needs tracing before code changes.
+
+#### 3. Solution & Architectural Strategy
+
+Add source-linked regression cases, then repair sentence boundaries, road-span matching, and administrative disambiguation. Keep article-to-zone processing disconnected until real-article checks and geometry gates pass.
+
+#### 4. Files Modified / What Changed
+
+- `docs/phase-36-three-article-check.md`: Recorded the source-linked reproductions and manual assessment.
+- `docs/task_plan.md`, `docs/progress.md`, `docs/feature-reference.md`, `docs/tech-stack.md`, `docs/others/system-documentation.md`, and `docs/plans/rss-news-discovery-plan.md`: Updated Phase 36 status and follow-up work. Backend extraction code has not yet changed.
 
 ---
 

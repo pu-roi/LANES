@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 26, 2026, 3:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -9,15 +9,15 @@ This document serves as the central technical reference for all currently implem
 ## 🛠️ Feature Reference (Current and Planned)
 
 ### 1. Bilingual Taglish NLP Ingestion, Multi-Tier Hybrid Ensemble & Smart Auto-Activation
-*   **Purpose:** Ingests and structures flood reports from accredited Philippine news sources across Luzon, Visayas, and Mindanao; automatically activates verified active flood zones into live Valhalla routing without admin bottleneck, while strictly suppressing receded floods and weather forecasts.
-*   **Current state:** Fully implemented and verified across 45 automated backend tests. 
+*   **Purpose:** Discover and structure flood evidence from approved Philippine news sources across Luzon, Visayas, and Mindanao, then provide staff-reviewed map suggestions and a future validated automatic activation path.
+*   **Current state:** News discovery is scheduled and stores pending article evidence. Nationwide deterministic extraction, geometry ranking, optional LLM auditing, and zone creation exist as separate source-code prototypes. The collector does not invoke `NewsAutoIngestionService`; staff review and real-article validation are incomplete.
     1. **Tier 1 (Lead Extractor):** Local deterministic Taglish rules and 43,778 official PSA PSGC records (`philippine_location_service.py`) dynamically resolve places, depth gauges (`gutter`..`neck`), and active conditions in sub-millisecond execution with zero hardcoded place lists.
-    2. **Tier 2 & 3 (NER & Entity Grounding):** `calamanCy` Tagalog NER and Google Cloud Natural Language API verify syntactic entities and colloquial Tagalog phrases.
-    3. **Tier 4 (Supporting Auditor):** Gemini 1.5 Flash acts strictly as a double-check auditor, answering targeted verification queries on candidate claims and evidence sentences without parsing entire articles from scratch.
-    4. **Smart Auto-Activation (Option 2):** Complete active flood claims ($\ge 95\%$ confidence) automatically create verified `FloodReport`, official `FloodEvent`, and operational 50m `FloodAvoidanceZone` records via `NewsAutoIngestionService`.
-    5. **Safety Suppression Gates:** News indicating water has subsided (*"humupa na"*) or weather predictions (*"posibleng bahain"*) are strictly suppressed, creating zero avoidance zones.
-*   **Nationwide Coverage:** `NationwideGeometryService` resolves `Province -> City/Municipality -> Barangay -> Road` and generates 50m road corridor polygons and circular buffer polygons (SRID 4326 GeoJSON) across the Philippines.
-*   **Access & Roles:** Public users benefit from instant, real-time routing detours around flood hazards. Staff can review flagged/ambiguous candidates via the Moderation Center.
+    2. **Planned tiers:** `calamanCy` Tagalog NER and Google Cloud Natural Language API were evaluated in the plan but are not integrated in the runtime pipeline.
+    3. **Supporting auditor prototype:** `hybrid_extraction_service.py` can call an OpenRouter Gemini model for candidate checks. Missing credentials or a failed request uses a deterministic fallback, so independent model confirmation is not guaranteed.
+    4. **Zone creation prototype:** `NewsAutoIngestionService` can create `FloodReport`, `FloodEvent`, and `FloodAvoidanceZone` records when explicitly called. The advertised 95% threshold is not evaluated before approval and must not be treated as a calibrated probability.
+    5. **Suppression prototype:** Rule and auditor classifications can suppress detected subsided, forecast, and negated claims in focused tests; broader real-article evaluation is pending.
+*   **Nationwide Coverage:** PSGC-backed place extraction exists, and `NationwideGeometryService` can generate suggested road or point buffers. [Three August 2026 article excerpts](phase-36-three-article-check.md) exposed place-span and context errors, so current geometry is not production-validated.
+*   **Access & Roles:** Staff have protected source and pending-candidate endpoints. A dedicated AI claim review and correction interface is still planned.
 *   **Related Components:**
     *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (for manual text submission and incident reporting).
     *   **Backend:** [reports.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/reports.py) handles manual reports; `admin_news.py` and `news_discovery_service.py` handle RSS evidence. Core NLP and geometry services: [`hybrid_extraction_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/hybrid_extraction_service.py), [`nationwide_geometry_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/nationwide_geometry_service.py), [`news_auto_ingestion_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/news_auto_ingestion_service.py), [`philippine_location_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/philippine_location_service.py), and [`taglish_extraction_service.py`](file:///d:/Documents/Github/LANES/backend/app/services/taglish_extraction_service.py). Detailed plan: [`docs/plans/smart-auto-activation-and-hybrid-nlp-plan.md`](file:///d:/Documents/Github/LANES/docs/plans/smart-auto-activation-and-hybrid-nlp-plan.md).

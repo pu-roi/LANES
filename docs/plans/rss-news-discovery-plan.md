@@ -1,8 +1,8 @@
 # RSS News Discovery Plan for LANES
 
 > **Prepared:** September 24, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Scope updated:** September 26, 2026, 2:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** RSS registry, parser, checkpoint-aware discovery, three approved evidence tables, and staff-only endpoints are deployed. Development and Cloud SQL migrations passed; the Cloud Run job completed two manual runs and one Scheduler-triggered run on September 25, 2026. The deployed shortlist still matches against hard-coded Pasig and Pasig-barangay place names; nationwide discovery, event grouping, and map suggestions remain pending. A Pasig-focused extraction prototype exists locally but is not deployed.
+> **Scope updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** RSS registry, parser, checkpoint-aware discovery, three approved evidence tables, and staff-only endpoints were deployed and migration-verified on September 25, 2026. A six-feed Cloud Run job and three-hour Scheduler were verified then. The current source includes nationwide relevance filtering, manual staff submission, and release-time RSS job image deployment; current Cloud execution of that newer revision has not been rechecked in this audit. Article-to-extraction processing, event grouping, staff claim review, and map activation remain disconnected or pending.
 
 This guide covers the **discovery and evidence-capture stage** of [Phase 36](../task_plan.md) across the Philippines. The cleaned [Pasig DRRMO history](../../data/flooded_areas_pasig_clean.csv) can improve later Pasig location ranking; it is not an article corpus, an NER training set, or a nationwide coverage limit. The developer approved the three tables below under `AGENTS.md`; the migration passed against development PostGIS and Cloud SQL on September 25, 2026.
 
@@ -167,7 +167,7 @@ The local pilot above established an initial working set. Re-run the same source
 | `backend/app/news_sources.json` | Implemented | 50 Feedspot candidates plus News5; six locally verified feeds are enabled. |
 | `backend/app/services/news_sources.py` | Implemented | Source validation, allowed publisher domains, and verified/enabled gating. |
 | `backend/app/services/news_feed_service.py` | Implemented | Bounded `httpx` polling, conditional headers, RSS/Atom parsing, entry normalization, and explicit per-feed failures. |
-| `backend/app/services/news_discovery_service.py` | Implemented | Flood/Pasig shortlisting, safe public article retrieval, metadata-only fallback, checkpoint-aware polling, and deduplication. |
+| `backend/app/services/news_discovery_service.py` | Implemented in current source | Nationwide Philippine flood shortlisting, safe public article retrieval, metadata-only fallback, checkpoint-aware polling, and deduplication. |
 | `backend/app/models/news.py`, `backend/app/crud/news.py`, `backend/alembic/versions/a83c1d4e7b92_add_news_discovery_storage.py` | Deployed | Three approved tables, article/GUID persistence, conditional checkpoints, and migration verified in development and Cloud SQL. |
 | `backend/app/schemas/news_candidate.py` | Implemented | Typed staff source, probe, pending article, and run-summary responses; later NER candidate schema remains pending. |
 | `backend/app/api/v1/endpoints/admin_news.py`, `backend/app/api/v1/api.py` | Implemented | Staff-authenticated source list, per-source probe, persisted feed health, pending evidence with provenance, and on-demand discovery trigger. Review decisions are later work. |
@@ -175,7 +175,7 @@ The local pilot above established an initial working set. Re-run the same source
 | `backend/tests/test_news_discovery.py` | Implemented | Offline parser, auth, source-policy, deduplication, redirect, no-activation, and repeat-run checkpoint coverage. |
 | `backend/app/services/news_event_grouping_service.py`, `backend/tests/test_news_event_grouping.py` | Later | Group articles by likely place/time and distinguish independent evidence from syndication. |
 | `backend/requirements.txt` | No change | `httpx` was already pinned; no new third-party library was imported. |
-| `cloudbuild.yaml` | Existing API pipeline | The `main` trigger runs the migration job before deploying `lanes-api`. The separate RSS Cloud Run job and Scheduler were configured in Google Cloud; their ongoing image updates require an explicit deployment step. |
+| `cloudbuild.yaml` | Updated in current source | The `main` trigger runs the migration job before deploying `lanes-api`, then deploys the same image to `lanes-news-discovery`. Verify the current build and job configuration in Google Cloud before claiming a completed rollout of that update. |
 
 The developer approved the three evidence tables below. `alembic upgrade head` passed against development PostGIS, and Cloud Build `8d552907` completed the production migration before deploying API revision `lanes-api-00035-khl`. Review unresolved Phase 33 data-integrity work before connecting approved AI candidates to Flood Events.
 
@@ -199,7 +199,7 @@ The migration adds uniqueness and a foreign-key check, and seeds no approved flo
 - Cloud Run job `lanes-news-discovery` in `asia-east1` uses the backend image from merge commit `60b03aa`, the existing `lanes-api-runtime` identity and Cloud SQL connection, and separate arguments `python`, `-m`, `scripts.run_news_discovery`, `--discover`. Two manual executions succeeded; the first attempted execution failed because its arguments were passed as one string, then the job configuration was corrected.
 - Both successful manual runs parsed the six enabled publisher feeds without feed errors. The second reused stored checkpoints and received conditional unchanged responses. No sampled entry met the Pasig flood shortlist; this does not indicate that Pasig has no flooding.
 - Cloud Scheduler job `lanes-news-discovery-every-3-hours` runs at `0 */3 * * *` in `Asia/Manila`. Service account `lanes-news-scheduler` has `roles/run.invoker` on this job only. A manually dispatched Scheduler run created execution `lanes-news-discovery-6h442`, which completed successfully.
-- The RSS job is configured separately from `cloudbuild.yaml`. A future backend build will update `lanes-api` and `lanes-migration` but **will not update the RSS job image**. Update and verify the RSS job image deliberately when collector code changes. No news UI or automatic public flood-zone activation is deployed.
+- **Historical September 25 state:** The RSS job was configured separately from `cloudbuild.yaml` at that time. Current source adds a release step to update its image; this audit did not verify that the newer build ran in Google Cloud. No article-to-zone activation is connected to the scheduled job.
 
 1. Build and test the collector locally with saved RSS/Atom and article fixtures, plus a staff-triggered run against a small number of verified live sources. Keep the implementation mockable; tests must not rely on live publisher availability.
 2. Package the one-run script in the existing backend image and create a dedicated **Cloud Run job** in `asia-east1`. Use a service account with only the access it needs. Limit per-host requests and set job timeout/retry behavior so failures are visible.

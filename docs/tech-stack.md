@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 26, 2026, 1:59 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -57,11 +57,11 @@ This document serves as the official technical stack reference for the LANES pla
 * **Transactional Email & Communication:** **Resend REST API & httpx**
   * *Role:* Generating async HTTP requests to the Resend API (from `Lanes <noreply@navlanes.live>`) to securely dispatch 6-digit One-Time Password verification codes to user emails during account onboarding/password recovery, as well as delivering commuter messages from the /about contact form to official project inboxes (lanes@navlanes.live, navlanes.live@gmail.com).
 * **RSS News Discovery:** **httpx + Python standard-library XML/HTML parsers + Cloud Run Jobs + Cloud Scheduler**
-  * *Role:* Polling six verified publisher feeds every three hours in `asia-east1`, parsing bounded RSS/Atom responses, shortlisting Pasig flood entries in the currently deployed collector, and storing source evidence in three migrated Cloud SQL tables. The staff-only API exposes feed health and pending candidates. Phase 36 plans to expand discovery to flood reports anywhere in the Philippines; this requires a collector change. No new Python package was added for RSS collection.
+  * *Role:* Polling six publisher feeds every three hours in `asia-east1` under the previously verified Cloud schedule, parsing bounded RSS/Atom responses, and storing source evidence in three migrated Cloud SQL tables. The current source code shortlists Philippine flood entries nationwide; verify the current deployed image before claiming that revision is live. The staff-only API exposes feed health, pending candidates, and manual candidate submission. Collection does not invoke zone activation. No new Python package was added for RSS collection.
 * **Image Processing & Storage:** **Cloudinary Python SDK**  
   * *Role:* Managing direct upload, scaling (down to 1024px), and WebP format compression of user-submitted flood evidence photos to a dedicated cloud CDN, ensuring lightweight database records and fast frontend loading.
-* **NLP & Information Extraction:** **Evidence-linked Taglish extraction service (local prototype)**
-  * *Role:* Uses explainable rules to extract Pasig place mentions, canonical flood depth, flood condition, and event time from news text while preserving character offsets and supporting sentences. It is benchmarked on a 50-item evaluation set at 0.71 ms per item on CPU. The planned nationwide expansion needs Philippine place references and a separate cross-region evaluation set. calamanCy was evaluated but is not installed as the runtime extractor; the current prototype does not require new heavy ML dependencies.
+* **NLP & Information Extraction:** **Evidence-linked Taglish extraction and nationwide PSGC location prototypes**
+  * *Role:* Uses explainable rules and the 43,778-row PSGC reference to extract Philippine place mentions, canonical flood depth, flood condition, and event time while preserving character offsets and supporting sentences. The existing 50-item constructed evaluation set is not a real-article accuracy measure; [three August 2026 publisher excerpts](phase-36-three-article-check.md) expose road-span, city-context, and time parsing defects. `calamanCy` and Google Cloud Natural Language are not integrated. An optional OpenRouter Gemini auditor exists, but article processing is not connected to the scheduled collector and its fallback is not an independent activation check.
 * **Encrypted Secrets & Environment Orchestration:** **@dotenvx/dotenvx**  
   * *Role:* Cross-platform AES-256 encrypted environment variable management, enabling safe git repository synchronization without exposing raw API keys or database credentials.
 

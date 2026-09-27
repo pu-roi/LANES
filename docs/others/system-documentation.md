@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 26, 2026, 10:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -394,8 +394,8 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 
 | Service | What It Does |
 |---------|-------------|
-| **Taglish Flood Extraction (local prototype)** | `taglish_extraction_service.py` uses rules and a Pasig place list to extract source-linked place mentions, canonical depth, flood condition, and event time. It has not been deployed or connected to `flood_report_locations`, official zones, or routing. Nationwide place coverage and location ranking are planned; calamanCy/spaCy is not the active extractor. |
-| **RSS News Discovery** | `news_sources.py`, `news_feed_service.py`, and `news_discovery_service.py` read a 51-publisher candidate registry and parse bounded RSS/Atom feeds. The deployed shortlist currently requires Pasig flood terms. `crud/news.py` saves conditional feed checkpoints and article evidence in three Cloud SQL tables. Six feeds are enabled; `lanes-news-discovery` runs on Cloud Run every three hours through Cloud Scheduler. Staff-only endpoints expose feed health and pending evidence. Phase 36 expands the shortlist to floods anywhere in the Philippines. No discovered article automatically creates a public zone or changes routing. |
+| **Taglish Flood Extraction and Geometry Prototypes** | `taglish_extraction_service.py` uses deterministic rules and the nationwide PSGC reference to extract source-linked places, canonical depth, flood condition, and event time. `nationwide_geometry_service.py` ranks locations and can generate suggested polygons. `hybrid_extraction_service.py` adds an optional OpenRouter Gemini auditor with a deterministic fallback; calamanCy and Cloud Natural Language are not integrated. The [three-article check](../phase-36-three-article-check.md) found road and time parsing defects. The scheduled collector does not invoke the activation prototype. |
+| **RSS News Discovery** | `news_sources.py`, `news_feed_service.py`, and `news_discovery_service.py` read a 51-publisher candidate registry and parse bounded RSS/Atom feeds. Current source code applies a nationwide Philippine flood shortlist. `crud/news.py` saves conditional feed checkpoints and article evidence in three Cloud SQL tables. Six feeds and a three-hour Cloud Run schedule were verified in the earlier rollout; verify the current deployed image before claiming the nationwide revision is live. Staff-only endpoints expose feed health, pending evidence, and manual candidate submission. No collector path currently creates a public zone or changes routing. |
 | **Routing Engine Proxy** | Uses Valhalla (primary) or OpenRouteService (secondary) only to generate candidates. The shared FastAPI flood policy evaluates candidate geometry against active `flood_avoidance_zones`, blocks medium exposure for light/Bike-Motorcycle and Red/Extreme exposure for every public profile; Orange/High is a strongly cautioned 40% fallback only for Walking. It ranks up to four distinct legal routes and reports deterministic exposure details. |
 | **Zone Deduplication** | When a new flood report is approved near an existing active zone (within a configurable buffer distance), it is linked to that zone instead of creating a new duplicate polygon |
 | **Trust Score Engine** | Automatically recalculates a user's `trust_score`, `accuracy_rate`, and report counters in `profiles` whenever one of their reports is approved or rejected |
@@ -416,7 +416,7 @@ A public-facing data visualization dashboard. Shows flood report trends over tim
 
 ### News discovery evidence tables (migration `a83c1d4e7b92`)
 
-These three tables are defined in code and await application to PostgreSQL. `news_feed_checkpoints` stores each feed URL, source ID, ETag, Last-Modified value, check/success times, and last error. `news_articles` keeps a unique canonical article URL, publisher source ID, title, excerpt, publication/fetch/seen times, optional public text or retrieval error, content fingerprint, and pending review state. `news_article_feed_entries` links each article to a source/feed URL/GUID with first/last seen times and optional JSONB metadata; the source, feed URL, and GUID combination is unique. The foreign key cascades only when a stored article is deleted. These records do not create Flood Reports, Flood Events, or map zones.
+These three tables were applied to development PostGIS and production Cloud SQL in the September 25 rollout. `news_feed_checkpoints` stores each feed URL, source ID, ETag, Last-Modified value, check/success times, and last error. `news_articles` keeps a unique canonical article URL, publisher source ID, title, excerpt, publication/fetch/seen times, optional public text or retrieval error, content fingerprint, and review state. `news_article_feed_entries` links each article to a source/feed URL/GUID with first/last seen times and optional JSONB metadata; the source, feed URL, and GUID combination is unique. The foreign key cascades only when a stored article is deleted. The current collector path does not create Flood Reports, Flood Events, or map zones.
 
 ---
 

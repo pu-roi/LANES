@@ -1,7 +1,7 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 27, 2026, 2:25 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
@@ -53,6 +53,7 @@
 ---
 
 ### Capstone Phase 36: Trusted Flood Intelligence — News Discovery & Taglish Extraction (🟡 IN PROGRESS)
+- [x] **Read-only 2026 publisher evidence check, test isolation, and documentation reconciliation** ([@roicambe](https://github.com/roicambe) (Roi Cambe)): ran three short August 2026 GMA, Inquirer, and Manila Bulletin passages through the deterministic extractor without Cloud SQL writes or zone activation. It recognized some flood/depth facts but produced malformed road spans, missed city context, misresolved Calamba Street as a city, and split a `p.m.` timestamp. Results and source links are in [the three-article check](phase-36-three-article-check.md). Isolated the staff news API test from external PostgreSQL with in-memory SQLite (`1 passed`; [BUG-059](others/bug-log.md)); [BUG-058](others/bug-log.md) tracks the extraction defects. Updated the active plan and reference documents to distinguish existing prototypes from the disconnected production collector; real-article accuracy and activation safety remain open.
 - [x] **Section 1 DRRMO Historical Flood Ingestion & Section 3.5 Nationwide Place Coverage (Deterministic Rule & PSGC Grounding without ML NER)** ([@roicambe](https://github.com/roicambe) (Roi Cambe)):
   - **Section 1 Historical DRRMO Ingestion (`pasig_historical_service.py`)**:
     - Ingested and indexed all 726 verified historical flood records (2020–2025) from `data/flooded_areas_pasig_clean.csv`, tracking 304 unique streets, 301 unique landmarks, centimeter depth ranges, year spans, and recurrence counts.
