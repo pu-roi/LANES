@@ -1,9 +1,11 @@
 # LANES: Smart Auto-Activation & Multi-Tier Hybrid Flood Intelligence Plan
 
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)  
-> **Last Updated:** September 26, 2026, 8:40 PM  
-> **Status:** Implemented & Verified (45/45 Tests Passing)  
+> **Last Updated:** September 27, 2026, 10:01 PM
+> **Status:** Automatic activation is the target architecture; scheduled collector connection, exact road geometry, and current release verification remain open. The historical 45/45 test result below predates the current safeguards.
 > **Target Phase:** Capstone Phase 36 — Trusted Flood Intelligence
+
+> **Current implementation note:** This document preserves the original Option 2 design. The runtime currently uses deterministic extraction and an optional Gemini auditor; calamanCy and Cloud Natural Language are not called. `0.95` is not a calibrated approval probability. The Pasig DRRMO CSV has historical street and depth context but no coordinates. LiPAD/UP NOAH layers are not integrated. Current polygons are previews and cannot make an exact road closure; see the [spatial integration](lipad-noah-flood-placement.md) and [activation safety](news-activation-safety-gates.md) plans. The ingestion code can auto-activate a fully evidenced claim, but the current geometry provider cannot produce the required verified segment. Credible news without exact segment geometry should reach commuters promptly as a separately labeled alert once that path is built.
 
 ---
 

@@ -1,4 +1,4 @@
-"""Pasig flood shortlisting and safe article retrieval; never creates map reports."""
+"""Metro Manila flood shortlisting and safe article retrieval; never creates map reports."""
 
 from __future__ import annotations
 
@@ -63,51 +63,23 @@ def likely_pasig_flood(entry: NewsEntry) -> bool:
     return bool(FLOOD_TERMS.search(text) and any(pattern.search(text) for pattern in PLACE_TERMS))
 
 
-INTERNATIONAL_LOCATIONS = re.compile(
-    r"\b(?:Spain|Bangladesh|Florida|Texas|California|China|Japan|India|Pakistan|"
-    r"Nepal|Germany|UK|United Kingdom|Europe|US|USA|United States|Taiwan|Myanmar|"
-    r"Indonesia|Malaysia|Thailand|Vietnam|Australia|Brazil|Canada|Italy|France|Greece)\b",
+METRO_MANILA_TERMS = re.compile(
+    r"\b(?:Metro\s+Manila|National\s+Capital\s+Region|NCR|"
+    r"Caloocan|Las\s+Pi(?:ñ|n)as|Makati|Malabon|Mandaluyong|Manila|Marikina|"
+    r"Muntinlupa|Navotas|Para(?:ñ|n)aque|Pasay|Pasig|Quezon\s+City|"
+    r"San\s+Juan\s+City|Taguig|Valenzuela|Pateros|EDSA)\b",
     re.I,
 )
 
 
-def likely_philippine_flood(entry: NewsEntry) -> bool:
-    """Nationwide flood detection across Luzon, Visayas, and Mindanao.
-    
-    A headline or excerpt containing flood terms without a recognized place remains a candidate
-    for full-text extraction and staff review, while explicit non-Philippine international stories
-    are filtered out.
+def likely_metro_manila_flood(entry: NewsEntry) -> bool:
+    """Shortlist flood entries with a Metro Manila place in RSS metadata.
+
+    Place-free headlines are skipped before article retrieval. This reduces
+    collector work but may miss reports whose location appears only in the body.
     """
     text = f"{entry.title} {entry.excerpt}"
-    if not FLOOD_TERMS.search(text):
-        return False
-    if likely_pasig_flood(entry):
-        return True
-
-    # If an international location is explicitly mentioned without explicit Philippine country markers, filter it out.
-    if INTERNATIONAL_LOCATIONS.search(text) and not re.search(r"\b(?:Philippines|Pilipinas|PH)\b", text, re.I):
-        return False
-
-    from app.services.philippine_location_service import get_philippine_location_service
-    loc_service = get_philippine_location_service()
-    lower_text = text.lower()
-
-    has_ph_place = False
-    for prov in loc_service.provinces:
-        if len(prov) >= 4 and re.search(rf"\b{re.escape(prov)}\b", lower_text):
-            has_ph_place = True
-            break
-    if not has_ph_place:
-        for city in loc_service.cities:
-            if len(city) >= 4 and re.search(rf"\b{re.escape(city)}\b", lower_text):
-                has_ph_place = True
-                break
-
-    if has_ph_place:
-        return True
-
-    # Otherwise, from an approved Philippine news publisher, keep as candidate for full-text extraction.
-    return True
+    return bool(FLOOD_TERMS.search(text) and METRO_MANILA_TERMS.search(text))
 
 
 class _ArticleParser(HTMLParser):
@@ -122,10 +94,12 @@ class _ArticleParser(HTMLParser):
             self.skip_depth += 1
         if tag in {"article", "main"}:
             self.article_depth += 1
-        if tag in {"p", "h1", "h2", "h3", "br"} and self.article_depth and not self.skip_depth:
-            self.parts.append(" ")
+        if tag in {"p", "h1", "h2", "h3", "li", "br"} and self.article_depth and not self.skip_depth:
+            self.parts.append("\n")
 
     def handle_endtag(self, tag: str) -> None:
+        if tag in {"p", "h1", "h2", "h3", "li"} and self.article_depth and not self.skip_depth:
+            self.parts.append("\n")
         if tag in {"article", "main"} and self.article_depth:
             self.article_depth -= 1
         if tag in {"script", "style", "nav", "footer", "aside"} and self.skip_depth:
@@ -162,7 +136,10 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
                         return None, "Article response exceeds size limit"
                 parser = _ArticleParser()
                 parser.feed(body.decode(response.encoding or "utf-8", errors="replace"))
-                text = " ".join(" ".join(parser.parts).split())[:30_000]
+                # Keep paragraph/list boundaries: flattening a multi-location
+                # list into one sentence assigns one road's depth to another.
+                lines = (" ".join(line.split()) for line in "".join(parser.parts).splitlines())
+                text = "\n".join(line for line in lines if line)[:30_000]
                 if len(text) < MIN_ARTICLE_CHARS:
                     return None, "Article text unavailable or too short"
                 return text, None
@@ -202,7 +179,7 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
                 )
                 if ((entry.published_at is not None and
                          entry.published_at < datetime.now(timezone.utc) - MAX_NEWS_AGE) or
-                        not likely_philippine_flood(entry)):
+                        not likely_metro_manila_flood(entry)):
                     continue
                 existing = news_crud.get_article(db, entry.article_url) if db is not None else None
                 normalized = " ".join(re.findall(r"\w+", f"{entry.title} {entry.excerpt}".casefold()))

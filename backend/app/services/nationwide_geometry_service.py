@@ -1,8 +1,7 @@
-"""Nationwide Location Ranking and Suggested Geometry Service.
+"""Nationwide location ranking and preview geometry suggestions.
 
-Resolves geographic hierarchies (Province -> City/Municipality -> Barangay -> Road/Landmark),
-disambiguates duplicate place names across the Philippines, scores candidate precision,
-and constructs authoritative PostGIS avoidance polygons (50m buffer) for live Valhalla detour routing.
+Offline anchors and generated buffers help staff locate a claim. They do not
+verify the affected road segment or authorize a live avoidance zone.
 """
 
 from __future__ import annotations
@@ -326,10 +325,13 @@ class NationwideGeometryService:
     ) -> RankedLocationCandidate:
         """Resolve hierarchy, score precision, and produce avoidance geometry."""
         p_name = claim.raw_place_name.strip()
-        full_context = f"{article_text} {claim.evidence_sentence}"
+        # The whole article may mention several cities. A road claim must use
+        # its own evidence and explicit claim city, not an unrelated city later
+        # in the article.
+        local_context = f"{claim.evidence_sentence} {claim.canonical_city or ''}"
 
         # 1. Resolve administrative hierarchy using 43,778 PSGC records
-        resolved = self.location_service.resolve_location_hierarchy(p_name, full_context)
+        resolved = self.location_service.resolve_location_hierarchy(p_name, local_context)
 
         resolved_province: Optional[str] = None
         resolved_city: Optional[str] = None
@@ -372,30 +374,57 @@ class NationwideGeometryService:
         else:
             precision_level = "unresolved"
 
+        # The extractor may have resolved a repeated barangay name using a
+        # preceding city heading. Do not re-resolve its raw name without that
+        # heading and overwrite the verified parent with another province.
+        if claim.place_type == "barangay" and claim.canonical_city:
+            resolved_city = claim.canonical_city
+            resolved_barangay = claim.canonical_barangay
+            resolved_province = claim.canonical_province
+            psgc_code = claim.psgc_code
+            precision_level = "barangay" if resolved_barangay else "city"
+
+        if precision_level in ("road", "landmark"):
+            if claim.canonical_city:
+                resolved_city = claim.canonical_city
+                resolved_province = claim.canonical_province or resolved_province
+                psgc_code = claim.psgc_code or psgc_code
+            else:
+                # A road name can also be a city/province name. The gazetteer
+                # result alone cannot establish its parent jurisdiction.
+                resolved_city = None
+                resolved_province = None
+                psgc_code = None
+
         # If road or landmark, discover parent city / province from full_context if not yet resolved
         if resolved_city is None:
             # Exclude the road name itself from context to prevent road names like "Roxas Ave" from matching town "Roxas"
-            surrounding_ctx = full_context.lower().replace(p_name.lower(), " ")
+            surrounding_ctx = claim.evidence_sentence.lower().replace(p_name.lower(), " ")
             # Sort city candidates by length descending so "Davao City" matches before "Davao"
             sorted_cities = sorted(self.location_service.cities.items(), key=lambda kv: len(kv[0]), reverse=True)
+            city_candidates: dict[str, dict[str, Any]] = {}
             for city_key, city_records in sorted_cities:
                 if len(city_key) >= 4 and re.search(rf"\b{re.escape(city_key)}\b", surrounding_ctx):
                     rec = city_records[0]
-                    resolved_city = rec["name"]
-                    resolved_province = rec["province"]
-                    reg = str(rec.get("region", "")).lower()
-                    if any(k in reg for k in ("ncr", "ilocos", "cagayan", "central luzon", "calabarzon", "mimaropa", "bicol", "car")):
-                        island_group = "Luzon"
-                    elif any(k in reg for k in ("western visayas", "central visayas", "eastern visayas")):
-                        island_group = "Visayas"
-                    elif any(k in reg for k in ("zamboanga", "northern mindanao", "davao", "soccsksargen", "caraga", "barmm")):
-                        island_group = "Mindanao"
-                    break
+                    city_candidates[rec["name"]] = rec
+            if len(city_candidates) == 1:
+                rec = next(iter(city_candidates.values()))
+                resolved_city = rec["name"]
+                resolved_province = rec["province"]
+                reg = str(rec.get("region", "")).lower()
+                if any(k in reg for k in ("ncr", "ilocos", "cagayan", "central luzon", "calabarzon", "mimaropa", "bicol", "car")):
+                    island_group = "Luzon"
+                elif any(k in reg for k in ("western visayas", "central visayas", "eastern visayas")):
+                    island_group = "Visayas"
+                elif any(k in reg for k in ("zamboanga", "northern mindanao", "davao", "soccsksargen", "caraga", "barmm")):
+                    island_group = "Mindanao"
 
         # 2. Geocode and construct avoidance geometry
         coords: Optional[tuple[float, float]] = None
+        geometry_provenance = "none"
         if fallback_lat is not None and fallback_lng is not None:
             coords = (fallback_lat, fallback_lng)
+            geometry_provenance = "caller_coordinate"
         else:
             # Construct geocode search query tokens
             search_tokens = [resolved_road, resolved_landmark, resolved_barangay, resolved_city, resolved_province, p_name]
@@ -406,9 +435,11 @@ class NationwideGeometryService:
                 tokens = [t.strip() for t in key_clean.split() if len(t.strip()) > 2]
                 if all(tok in combined_search for tok in tokens):
                     coords = anchor
+                    geometry_provenance = "offline_anchor"
                     break
                 if key in combined_search or combined_search in key:
                     coords = anchor
+                    geometry_provenance = "offline_anchor"
                     break
 
         geometry_geojson: Optional[dict[str, Any]] = None
@@ -433,7 +464,7 @@ class NationwideGeometryService:
             loc_str = f"'{resolved_road}' in {resolved_city or 'city'}"
             if resolved_province:
                 loc_str += f", {resolved_province}"
-            rationale_parts.append(f"Rank 1 (Road Segment): Exact road corridor matched: {loc_str}.")
+            rationale_parts.append(f"Rank 1 (Road Name): Candidate road mention: {loc_str}; affected segment is unverified.")
         elif precision_level == "landmark":
             confidence = 0.88
             rationale_parts.append(f"Rank 2 (Landmark): Specific facility/landmark '{resolved_landmark}' grounded in {resolved_city or 'region'}.")
@@ -454,24 +485,12 @@ class NationwideGeometryService:
             confidence = min(0.99, confidence + bonus)
             rationale_parts.append(hist_rationale)
 
-        # Auto-Approvable criteria (Section 4 & 5 Smart Auto-Activation):
-        # 1. Must be exact road or landmark with valid polygon geometry
-        # 2. Must not be forecast, subsided, or negated
-        # 3. Must have canonical depth gauge
-        # 4. Confidence >= 0.85
-        has_polygon = geometry_geojson is not None
-        is_safe_condition = (not claim.is_forecast) and (not claim.is_negated) and (claim.condition in ("active", "rising"))
-        has_depth = claim.depth_canonical is not None
-
-        is_auto_approvable = (
-            precision_level in ("road", "landmark")
-            and has_polygon
-            and is_safe_condition
-            and has_depth
-            and confidence >= 0.85
-        )
-
-        requires_staff_edit = not is_auto_approvable
+        # The current geometry comes from an offline anchor or caller-provided
+        # coordinate. Neither proves which part of a road is flooded.
+        if geometry_geojson is not None:
+            rationale_parts.append(f"Preview geometry from {geometry_provenance}; staff must verify the affected footprint.")
+        is_auto_approvable = False
+        requires_staff_edit = True
 
         return RankedLocationCandidate(
             raw_place_name=p_name,
@@ -488,6 +507,7 @@ class NationwideGeometryService:
             geometry_geojson=geometry_geojson,
             source_geometry_geojson=source_geometry_geojson,
             representative_point=coords,
+            geometry_provenance=geometry_provenance,
             is_auto_approvable=is_auto_approvable,
             requires_staff_edit=requires_staff_edit,
         )

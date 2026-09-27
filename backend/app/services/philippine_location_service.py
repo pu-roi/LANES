@@ -174,9 +174,10 @@ class PhilippineLocationService:
         # Check Sta / Sto replacements
         norm_sta = re.sub(r"^sta\.?\s+", "santa ", lowered)
         norm_sto = re.sub(r"^sto\.?\s+", "santo ", lowered)
+        norm_dona = re.sub(r"^dona\s+", "doña ", lowered)
 
         # Check aliases first
-        for candidate in (lowered, norm_sta, norm_sto):
+        for candidate in (lowered, norm_sta, norm_sto, norm_dona):
             if candidate in COMMON_ALIASES:
                 canonical_alias = COMMON_ALIASES[candidate]
                 if city_context:
@@ -196,7 +197,7 @@ class PhilippineLocationService:
             return None
 
         # General nationwide check
-        for candidate in (lowered, norm_sta, norm_sto):
+        for candidate in (lowered, norm_sta, norm_sto, norm_dona):
             if candidate in self.barangays:
                 entries = self.barangays[candidate]
                 if city_context:
@@ -204,6 +205,7 @@ class PhilippineLocationService:
                     for e in entries:
                         if ctx_lower in e.get("city_municipality", "").lower():
                             return e["name"]
+                    continue
                 return entries[0]["name"]
 
         return None
@@ -279,24 +281,30 @@ class PhilippineLocationService:
         if cleaned_bgy in self.barangays:
             bgy_matches = self.barangays[cleaned_bgy]
             ctx_lower = text_context.lower()
+
+            def has_context_name(name: str) -> bool:
+                return bool(name and re.search(r"(?<!\w)" + re.escape(name) + r"(?!\w)", ctx_lower))
+
+            def to_result(b: dict[str, Any], confidence: float) -> dict[str, Any]:
+                return {
+                    "matched_name": b["name"], "level": "Bgy",
+                    "psgc_code": b["psgc_code"], "region": b["region"],
+                    "province": b["province"],
+                    "city_municipality": b["city_municipality"],
+                    "confidence": confidence,
+                }
+
             for b in bgy_matches:
                 city = b.get("city_municipality", "").lower()
-                prov = b.get("province", "").lower()
                 city_short = re.sub(r"^(?:city of\s+|lungsod ng\s+)", "", city)
                 if city_short.endswith(" city"):
                     city_short = city_short[:-5]
                 city_short = city_short.strip()
-
-                if (city and city in ctx_lower) or (city_short and city_short in ctx_lower) or (prov and prov in ctx_lower):
-                    return {
-                        "matched_name": b["name"],
-                        "level": "Bgy",
-                        "psgc_code": b["psgc_code"],
-                        "region": b["region"],
-                        "province": b["province"],
-                        "city_municipality": b["city_municipality"],
-                        "confidence": 0.90,
-                    }
+                if has_context_name(city) or has_context_name(city_short):
+                    return to_result(b, 0.90)
+            for b in bgy_matches:
+                if has_context_name(b.get("province", "").lower()):
+                    return to_result(b, 0.82)
             # Fallback to Pasig if text mentions Pasig
             if "pasig" in ctx_lower:
                 for b in bgy_matches:

@@ -3,8 +3,8 @@
 Verifies:
   1. Primary extraction by Taglish rules & PSGC reference grounding.
   2. Gemini 1.5 Flash strictly in supporting / double-check auditor role.
-  3. Smart Auto-Activation (Option 2):
-     - High confidence (>=95%) active flood -> auto_approved directly to live map.
+  3. Fail-closed activation decisions:
+     - Auditor-confirmed active flood without verified segment/time -> staff review.
      - Subsided flood ("humupa na") -> suppressed_subsided.
      - Weather forecast ("posibleng bahain") -> suppressed_forecast.
      - Broad city/province -> flagged_review.
@@ -13,8 +13,10 @@ Verifies:
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
+
 import pytest
-from app.schemas.news_extraction import LLMAuditResult, NewsArticleExtractorInput
+from app.schemas.news_extraction import ExtractedClaim, LLMAuditResult, NewsArticleExtractorInput, RankedLocationCandidate
 from app.services.hybrid_extraction_service import (
     HybridExtractionService,
     get_hybrid_extraction_service,
@@ -47,14 +49,11 @@ async def test_hybrid_rules_only_mode(hybrid_service: HybridExtractionService):
 
 
 @pytest.mark.asyncio
-async def test_gemini_auditor_confirms_auto_approval(
+async def test_gemini_auditor_cannot_approve_preview_geometry(
     hybrid_service: HybridExtractionService,
     monkeypatch,
 ):
-    """When primary rules detect active flood with exact road + depth, and Gemini auditor confirms,
-
-    system reaches >=95% confidence and flags as auto_approved.
-    """
+    """An auditor confirmation does not verify a road segment or observation time."""
     async def mock_audit_claim_with_llm(claim, context_text, client=None):
         return LLMAuditResult(
             is_confirmed=True,
@@ -80,13 +79,12 @@ async def test_gemini_auditor_confirms_auto_approval(
     assert len(result.claims) >= 1
     claim = result.claims[0]
     assert claim.depth_canonical == "knee"
-    assert claim.confidence_score >= 0.95
-    assert claim.action_type == "auto_approved"
-    assert "automatically approved" in str(claim.action_rationale)
+    assert claim.action_type == "flagged_review"
     assert claim.ranked_location is not None
     assert claim.ranked_location.precision_level == "road"
     assert claim.ranked_location.geometry_geojson is not None
-    assert claim.ranked_location.is_auto_approvable is True
+    assert claim.ranked_location.is_auto_approvable is False
+    assert claim.ranked_location.geometry_provenance == "offline_anchor"
 
 
 @pytest.mark.asyncio
@@ -192,11 +190,11 @@ async def test_ambiguous_city_only_flagged_for_staff_review(
 @pytest.mark.asyncio
 async def test_hybrid_fallback_deterministic_auditor(
     hybrid_service: HybridExtractionService,
+    monkeypatch,
 ):
-    """When external LLM is offline or no API key is provided, the deterministic fallback auditor
-
-    confirms active flood with canonical depth cleanly.
-    """
+    """A missing external audit cannot independently confirm an active claim."""
+    monkeypatch.setattr(hybrid_service, "openrouter_api_key", "")
+    monkeypatch.setattr(hybrid_service, "gemini_api_key", "")
     article = NewsArticleExtractorInput(
         article_id=106,
         canonical_url="https://example.com/test6",
@@ -209,5 +207,43 @@ async def test_hybrid_fallback_deterministic_auditor(
     assert len(result.claims) >= 1
     claim = result.claims[0]
     assert claim.depth_canonical == "knee"
-    assert claim.action_type == "auto_approved"
-    assert claim.confidence_score >= 0.95
+    assert claim.action_type == "flagged_review"
+
+
+def test_activation_requires_independent_audit_recent_observation_and_verified_segment(
+    hybrid_service: HybridExtractionService,
+):
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="Sample Road",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=11,
+        evidence_sentence="Flood at Sample Road, knee deep.",
+        evidence_sentence_offset=(0, 32),
+        depth_canonical="knee",
+        condition="active",
+        event_time_resolved=now - timedelta(minutes=10),
+        event_time_kind="observation",
+        canonical_city="City of Pasig",
+    )
+    location = RankedLocationCandidate(
+        raw_place_name="Sample Road",
+        precision_level="road",
+        resolved_city="City of Pasig",
+        geometry_geojson={"type": "Polygon", "coordinates": []},
+        geometry_provenance="verified_segment",
+        is_auto_approvable=True,
+    )
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    published = now - timedelta(minutes=5)
+
+    assert hybrid_service.evaluate_claim_action(claim, audit, location, published)[0] == "auto_approved"
+    assert hybrid_service.evaluate_claim_action(claim, None, location, published)[0] == "flagged_review"
+    assert hybrid_service.evaluate_claim_action(claim, audit, location.model_copy(update={"geometry_provenance": "offline_anchor"}), published)[0] == "flagged_review"
+    assert hybrid_service.evaluate_claim_action(claim, audit, location, None)[0] == "flagged_review"
+    assert hybrid_service.evaluate_claim_action(claim.model_copy(update={"event_time_resolved": None}), audit, location, published)[0] == "flagged_review"
+    assert hybrid_service.evaluate_claim_action(claim.model_copy(update={"event_time_kind": "report"}), audit, location, published)[0] == "flagged_review"
+    assert hybrid_service.evaluate_claim_action(claim.model_copy(update={"is_historical": True}), audit, location, published)[0] == "flagged_review"
+    assert hybrid_service.evaluate_claim_action(claim, audit, location, now - timedelta(days=2))[0] == "flagged_review"
+    assert hybrid_service.evaluate_claim_action(claim.model_copy(update={"road_passability": "passable_all"}), audit, location, published)[0] == "flagged_review"

@@ -22,6 +22,8 @@ requests-cache
 retry-requests
 numpy
 pandas
+osmium==4.3.1
+shapely==2.1.2
 cachetools==5.5.2
 python-dotenv==1.2.2
 google-auth==2.40.3

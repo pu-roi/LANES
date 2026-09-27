@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** September 27, 2026, 7:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 10:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document serves as the central technical reference for all currently implemented and future planned functionality of the **LANES (Localised Alternative Navigation for Environs under Submersion)** platform. It maps high-level feature behaviors directly to the underlying frontend components, backend routers, databases, and algorithms.
 
@@ -9,14 +9,14 @@ This document serves as the central technical reference for all currently implem
 ## 🛠️ Feature Reference (Current and Planned)
 
 ### 1. Bilingual Taglish NLP Ingestion, Multi-Tier Hybrid Ensemble & Smart Auto-Activation
-*   **Purpose:** Discover and structure flood evidence from approved Philippine news sources across Luzon, Visayas, and Mindanao, then provide staff-reviewed map suggestions and a future validated automatic activation path.
-*   **Current state:** News discovery is scheduled and stores pending article evidence. Nationwide deterministic extraction, geometry ranking, optional LLM auditing, and zone creation exist as separate source-code prototypes. The collector does not invoke `NewsAutoIngestionService`; staff review and real-article validation are incomplete.
+*   **Purpose:** Discover and structure flood evidence from approved news sources for Metro Manila, then show timely source-labeled alerts and automatically activate bounded, evidence-supported flood zones. Staff corrects exceptions.
+*   **Current state:** News discovery is scheduled and stores pending article evidence. Current source shortlists Metro Manila RSS items by title/excerpt place clues before article retrieval; the revised filter is not yet verified in the deployed job. Nationwide deterministic extraction code, geometry ranking, optional LLM auditing, and zone creation exist as separate source-code prototypes. The collector does not invoke `NewsAutoIngestionService`; staff review and real-article validation are incomplete.
     1. **Tier 1 (Lead Extractor):** Local deterministic Taglish rules and 43,778 official PSA PSGC records (`philippine_location_service.py`) dynamically resolve places, depth gauges (`gutter`..`neck`), and active conditions in sub-millisecond execution with zero hardcoded place lists.
     2. **Planned tiers:** `calamanCy` Tagalog NER and Google Cloud Natural Language API were evaluated in the plan but are not integrated in the runtime pipeline.
-    3. **Supporting auditor prototype:** `hybrid_extraction_service.py` can call an OpenRouter Gemini model for candidate checks. Missing credentials or a failed request uses a deterministic fallback, so independent model confirmation is not guaranteed.
-    4. **Zone creation prototype:** `NewsAutoIngestionService` can create `FloodReport`, `FloodEvent`, and `FloodAvoidanceZone` records when explicitly called. The advertised 95% threshold is not evaluated before approval and must not be treated as a calibrated probability.
+    3. **Supporting auditor prototype:** `hybrid_extraction_service.py` can call an OpenRouter Gemini model for candidate checks. Missing credentials or a failed request uses unconfirmed deterministic classification and sends active claims to staff review.
+    4. **Zone creation prototype:** `NewsAutoIngestionService` contains dormant report/event/zone creation code and independently reevaluates a claim's auditor, observation time, status, and geometry before a public write. Automatic creation is allowed when every gate passes; the current geometry provider never yields a verified affected segment, so no news zone is generated yet. The former post-decision 98% score was removed; place-ranking scores are not calibrated approval probabilities. See [activation safety contract](plans/news-activation-safety-gates.md).
     5. **Suppression prototype:** Rule and auditor classifications can suppress detected subsided, forecast, and negated claims in focused tests; broader real-article evaluation is pending.
-*   **Nationwide Coverage:** PSGC-backed place extraction exists, and `NationwideGeometryService` can generate suggested road or point buffers. [Three August 2026 article excerpts](phase-36-three-article-check.md) exposed place-span and context errors, so current geometry is not production-validated.
+*   **Metro Manila rollout:** Nationwide PSGC extraction and place-hierarchy code remains in the repository as completed historical work, but the active RSS discovery, article evaluation, UP NOAH hazard integration, spatial prediction, and news-derived map-zone rollout strictly target Metro Manila (including Pasig City). `NationwideGeometryService` can generate suggested road or point buffers. The 726-row Pasig history is a ranking prior with no coordinates; LiPAD/UP NOAH hazard layers are not yet integrated. The [spatial data plan](plans/lipad-noah-flood-placement.md) uses the [NOAH data lead](https://huggingface.co/datasets/bettergovph/project-noah-hazard-maps) found through DavFlood. Current geometry is not production-validated.
 *   **Access & Roles:** Staff have protected source and pending-candidate endpoints. A dedicated AI claim review and correction interface is still planned.
 *   **Related Components:**
     *   **Frontend:** [FloodReportPanel.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/hazards/FloodReportPanel.tsx) (for manual text submission and incident reporting).

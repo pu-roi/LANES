@@ -16,7 +16,7 @@ from app.api import deps
 from app.core.database import get_db
 from app.main import app
 from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint
-from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_pasig_flood, likely_philippine_flood
+from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_metro_manila_flood, likely_pasig_flood
 from app.services.news_feed_service import NewsEntry, parse_feed, probe_feed
 from app.services.news_sources import NewsSource, load_news_sources
 
@@ -65,18 +65,18 @@ def test_rss_and_atom_parse_publisher_links_and_dates() -> None:
     assert parsed[0].published_at.isoformat() == "2026-09-24T03:00:00+00:00"
 
 
-def test_philippine_flood_filter_handles_nationwide_and_excludes_international() -> None:
+def test_metro_manila_flood_filter_requires_local_place_and_flood_terms() -> None:
     base = NewsEntry("example", "Example News", FEED_URL, "id-1", "", "", ARTICLE_URL, None)
-    # Nationwide city outside Pasig
-    assert likely_philippine_flood(replace(base, title="Heavy flooding hits Cebu City", excerpt="Several streets impassable"))
-    assert likely_philippine_flood(replace(base, title="Baha sa Davao Oriental", excerpt="Ulan nagdulot ng pagbaha"))
-    # Headline without explicit place (retained for full-text extraction)
-    assert likely_philippine_flood(replace(base, title="Ilang lansangan lubog sa baha dahil sa habagat", excerpt="Motorista pinag-iingat"))
-    # Explicit international flood without PH place (excluded)
-    assert not likely_philippine_flood(replace(base, title="Deadly flood hits Spain", excerpt="Valencia submerged in floodwater"))
-    assert not likely_philippine_flood(replace(base, title="Flash floods in Florida kill 3", excerpt="Heavy rainfall inundates roads"))
-    # Non-flood article (excluded)
-    assert not likely_philippine_flood(replace(base, title="PBA finals game 7 schedule", excerpt="Sports update"))
+    assert likely_metro_manila_flood(replace(base, title="Heavy flooding hits Quezon City", excerpt="Several streets impassable"))
+    assert likely_metro_manila_flood(replace(base, title="Baha sa Pasig", excerpt="C. Raymundo Avenue binaha"))
+    assert likely_metro_manila_flood(replace(base, title="Flood in Metro Manila", excerpt="Roads impassable"))
+    assert likely_metro_manila_flood(replace(base, title="Baha sa Las Piñas", excerpt=""))
+    assert likely_metro_manila_flood(replace(base, title="Flood on EDSA", excerpt=""))
+    assert not likely_metro_manila_flood(replace(base, title="Heavy flooding hits Cebu City", excerpt="Several streets impassable"))
+    assert not likely_metro_manila_flood(replace(base, title="Baha sa Davao Oriental", excerpt="Ulan nagdulot ng pagbaha"))
+    assert not likely_metro_manila_flood(replace(base, title="Ilang lansangan lubog sa baha dahil sa habagat", excerpt="Motorista pinag-iingat"))
+    assert not likely_metro_manila_flood(replace(base, title="Deadly flood hits Spain", excerpt="Valencia submerged in floodwater"))
+    assert not likely_metro_manila_flood(replace(base, title="PBA finals game 7 schedule", excerpt="Sports update"))
 
 
 def test_external_article_url_and_xml_entity_are_rejected() -> None:
@@ -119,6 +119,24 @@ def test_article_redirect_outside_publisher_is_metadata_only() -> None:
     assert error == "Article redirect left the publisher domains"
 
 
+def test_article_fetch_preserves_individual_flood_list_items() -> None:
+    html = (
+        "<article><h2>Impassable to all vehicles</h2><p>Quezon City</p>"
+        "<ul><li>Brgy. Sienna<ul>"
+        "<li>NS Amoranto cor Don Jose St. - 37 inches</li>"
+        "<li>NS Amoranto cor Banawe St. - 26 inches</li>"
+        "</ul></li></ul></article>"
+    )
+    transport = httpx.MockTransport(lambda request: httpx.Response(
+        200, text=html, headers={"content-type": "text/html; charset=utf-8"}))
+    with httpx.Client(transport=transport) as client:
+        text, error = fetch_article_text(source(), ARTICLE_URL, client)
+    assert error is None
+    assert text is not None
+    assert "Quezon City\nBrgy. Sienna\nNS Amoranto cor Don Jose St. - 37 inches\n" in text
+    assert "\nNS Amoranto cor Banawe St. - 26 inches" in text
+
+
 def test_probe_surfaces_http_error_and_conditional_304() -> None:
     statuses = [403, 304]
     headers_seen: list[dict[str, str]] = []
@@ -150,13 +168,15 @@ def test_discovery_filters_deduplicates_and_does_not_create_reports() -> None:
     flood = f'<item><guid>one</guid><title>Flood in Pasig</title><link>{ARTICLE_URL}</link></item>'
     duplicate = f'<item><guid>two</guid><title>Flood in Pasig</title><link>{ARTICLE_URL}</link></item>'
     irrelevant = '<item><title>Sports in Pasig</title><link>https://news.example.org/sports</link></item>'
+    outside_scope = '<item><title>Flood in Cebu City</title><link>https://news.example.org/cebu-flood</link></item>'
+    unspecified = '<item><title>Several roads flooded</title><link>https://news.example.org/unspecified-flood</link></item>'
     article = '<html><main><h1>Flood in Pasig</h1><p>' + ('Floodwater affected Pasig roads. ' * 8) + '</p></main></html>'
     requested: list[str] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
         requested.append(str(request.url))
         if str(request.url) == FEED_URL:
-            return httpx.Response(200, content=rss(flood + duplicate + irrelevant),
+            return httpx.Response(200, content=rss(flood + duplicate + irrelevant + outside_scope + unspecified),
                                   headers={"content-type": "application/rss+xml"})
         if str(request.url) == ARTICLE_URL:
             return httpx.Response(200, text=article, headers={"content-type": "text/html"})

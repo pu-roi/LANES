@@ -1,9 +1,36 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 27, 2026, 9:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 27, 2026, 10:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-060] News Claim Could Treat Preview Geometry and Fallback Audit as Approval Evidence
+- **Status**: Code safeguard applied; automated verification pending
+- **Severity**: High (public routing impact if dormant ingestion were connected)
+- **Date Reported / Updated**: September 27, 2026
+- **Affected Area**: Phase 36 hybrid extraction, location ranking, and news ingestion
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The dormant news ingestion path could treat generated polygons and an `auto_approved` label as sufficient to create a public Flood Report, Event, and avoidance zone. The label could be assigned without an independent audit or recent observation; a `0.98` score was assigned only afterward.
+
+#### 2. Root Cause Analysis (RCA)
+
+Offline coordinates generated suggestion geometry but also set `is_auto_approvable`. The fallback auditor returned `is_confirmed=True` when the external model was unavailable. The ingestion service trusted `action_type` and supplied a default `knee` depth and Pasig city on missing data.
+
+#### 3. Solution & Architectural Strategy
+
+Tag geometry provenance and keep current polygons as previews. Require explicit independent confirmation and recent observation/publication before any approval decision. Reevaluate all gates at the public-write boundary so an exact verified claim can activate automatically while stale or forged labels cannot. Remove synthetic confidence, depth, and city defaults. The current geometry provider cannot produce a verified affected segment; integrate LiPAD/UP NOAH spatial context and road-segment matching, then connect the collector. Python syntax parsing passed; the focused pytest suite remains pending because pytest is absent from both available Python runtimes.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/schemas/news_extraction.py`, `backend/app/services/nationwide_geometry_service.py`, `backend/app/services/hybrid_extraction_service.py`, `backend/app/services/news_auto_ingestion_service.py`: Added provenance, fail-closed audit/decision gates, attached audit results, and an independent write-boundary reevaluation.
+- `backend/tests/test_hybrid_extraction_service.py`, `backend/tests/test_nationwide_geometry.py`, `backend/tests/test_news_auto_ingestion.py`: Updated expected review outcomes and added failed-prerequisite and forged-label cases.
+- `docs/plans/news-activation-safety-gates.md`, `docs/task_plan.md`, `docs/progress.md`, `docs/feature-reference.md`, and `docs/others/system-documentation.md`: Recorded rollout boundary and current Gate 2 status.
 
 ---
 
@@ -32,8 +59,8 @@ Override `get_db` with an in-memory SQLite session using `StaticPool`, create on
 
 ---
 
-### [BUG-058] Real 2026 Flood Excerpts Produce Incorrect Place Spans and Event Time
-- **Status**: Partially resolved (checked passages pass; complete articles remain open)
+### [BUG-058] Real 2026 Flood Articles Lose Place Spans, Time, or List Locations
+- **Status**: Partially resolved (Manila Bulletin body and checked GMA/Inquirer passages pass; complete GMA/Inquirer articles remain open)
 - **Severity**: High (would affect map suggestions if connected)
 - **Date Reported**: September 27, 2026
 - **Affected Area**: Phase 36 Taglish extraction and nationwide location resolution
@@ -41,20 +68,20 @@ Override `get_db` with an in-memory SQLite session using `StaticPool`, create on
 
 #### 1. Problem Description
 
-Three short August 2026 publisher passages produce malformed road names, a false City of Calamba match for Calamba Street in Quezon City, missing city context on road claims, and a broken `p.m.` timestamp. Exact inputs, sources, and outputs are in [the three-article check](../phase-36-three-article-check.md).
+Three short August 2026 publisher passages produced malformed road names, a false City of Calamba match for Calamba Street in Quezon City, missing city context on road claims, and a broken `p.m.` timestamp. A full-body replay of the Manila Bulletin article also found seven missed named passable roads and 11 unstructured barangay mentions. Exact source-linked evidence is in [the three-article check](../evaluations/phase-36-three-article-check.md).
 
 #### 2. Root Cause Analysis (RCA)
 
-The generic case-insensitive road regex swallowed leading words and dropped hyphenated prefixes; the city matcher treated a cross-street name as a city. Sentence splitting broke `p.m.` and the parser did not retain road segments or local-area phrases. Numeric depth was previously treated as ambiguous even when it exactly matched the configured gauge. A unit abbreviation also mistook `Sitio 6 in Catmon` for six inches; that ambiguity is now removed from the numeric matcher.
+The generic case-insensitive road regex swallowed leading words and dropped hyphenated prefixes; the city matcher treated a cross-street name as a city. Sentence splitting broke `p.m.` and the parser did not retain road segments or local-area phrases. Numeric depth was previously treated as ambiguous even when it exactly matched the configured gauge. A unit abbreviation also mistook `Sitio 6 in Catmon` for six inches. The list parser handled an impassable-road list but ignored the separate passable-road and unnamed-street lists, so one article was incompletely represented.
 
 #### 3. Solution & Architectural Strategy
 
-The checked passages now have source-linked expected facts and five targeted regression tests covering road spans, parent cities, numeric depth, local areas, shared ranges, and observation/report timing. Additional full-article context, passability, and geometry verification remain Gate 1/2 work. Keep article-to-zone processing disconnected until real-article checks and geometry gates pass.
+The checked passages and full Manila Bulletin reporting body now have source-linked expected facts. A full-body regression checks 26 named-location and 11 broad-area claims, per-list passability, shared range depth, offsets, and the unresolved `Santulan` spelling. Complete GMA/Inquirer context and geometry remain Gate 1/2 work. Keep article-to-zone processing disconnected until real-article checks and geometry gates pass.
 
 #### 4. Files Modified / What Changed
 
-- `backend/app/services/taglish_extraction_service.py`, `backend/app/schemas/news_extraction.py`, and `backend/tests/test_taglish_extraction.py`: Repaired the checked cases and added evidence fields. Focused tests pass 21/21; combined extraction/location/news discovery tests pass 40/40.
-- `docs/phase-36-three-article-check.md`, `docs/task_plan.md`, and `docs/progress.md`: Recorded the developer-reviewed expected facts, results, and remaining full-article evaluation.
+- `backend/app/services/taglish_extraction_service.py`, `backend/app/schemas/news_extraction.py`, and `backend/tests/test_taglish_extraction.py`: Repaired the checked cases, added per-claim passability, and covered the full Manila Bulletin body structure. Tests pass 22/22 focused and 41/41 across extraction, location service, and news discovery.
+- `docs/evaluations/phase-36-three-article-check.md`, `docs/task_plan.md`, and `docs/progress.md`: Recorded the developer-reviewed expected facts, results, and remaining full-article evaluation.
 
 ---
 

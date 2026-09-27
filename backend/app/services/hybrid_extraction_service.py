@@ -1,21 +1,7 @@
-"""Hybrid Multi-Tier Ensemble Flood Extraction Service.
+"""Evidence-linked flood extraction with independent audit and review decisions.
 
-Combines four complementary tiers with an explicit division of labor:
-  Tier 1: Local Deterministic Taglish/English Rules & PSGC Reference Grounding (Primary extraction, <1ms)
-  Tier 2: Tagalog Named Entity Recognition (calamanCy baseline)
-  Tier 3: Google Cloud Natural Language (Broadsheet entity verification)
-  Tier 4: Gemini 1.5 Flash (Strictly in a Supporting / Auditor Role to double-check & verify)
-
-Smart Auto-Activation (Option 2):
-  - High Confidence (>= 95%) + Active Flood:
-    If primary rules + NER identify complete active flood details (road, canonical depth, active/rising status)
-    and Gemini 1.5 Flash auditor confirms the details, it is AUTOMATICALLY APPROVED for live Valhalla routing.
-  - Subsided Floods ("humupa na"):
-    Strictly suppressed to prevent closing dry, passable roads.
-  - Weather Forecasts / Advisories ("posibleng bahain"):
-    Strictly suppressed to prevent treating future predictions as active roadblocks.
-  - Ambiguous / City-Only Reports:
-    Enqueued into staff moderation queue for 1-click map review.
+Current geometry is a preview only, so active claims remain in staff review.
+Forecast, negated, and subsided claims are suppressed from activation.
 """
 
 from __future__ import annotations
@@ -24,7 +10,7 @@ import json
 import logging
 import os
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Literal, Optional
 
 import httpx
@@ -54,6 +40,7 @@ from app.services.taglish_extraction_service import (
 logger = logging.getLogger(__name__)
 
 ExtractionMode = Literal["ensemble", "rules_only", "auditor_only"]
+MAX_AUTO_ACTIVATION_AGE = timedelta(hours=12)
 
 
 class HybridExtractionService:
@@ -82,7 +69,7 @@ class HybridExtractionService:
         """
         api_key = self.openrouter_api_key or self.gemini_api_key
 
-        # Fallback deterministic auditor if no external API key is provided
+        # Local rules cannot substitute for an independent confirmation.
         if not api_key:
             return self._deterministic_fallback_audit(claim, context_text)
 
@@ -142,17 +129,18 @@ Respond ONLY with valid JSON:
                 raw_content = re.sub(r"\s*```$", "", raw_content)
                 parsed = json.loads(raw_content)
                 return LLMAuditResult(
-                    is_confirmed=bool(parsed.get("is_confirmed", True)),
-                    status_classification=parsed.get("status_classification", "active"),
-                    depth_confirmed=bool(parsed.get("depth_confirmed", True)),
+                    is_confirmed=parsed.get("is_confirmed") is True,
+                    status_classification=parsed.get("status_classification", "unclear"),
+                    depth_confirmed=parsed.get("depth_confirmed") is True,
                     depth_discrepancy_note=parsed.get("depth_discrepancy_note"),
-                    is_forecast=bool(parsed.get("is_forecast", False)),
-                    is_subsided=bool(parsed.get("is_subsided", False)),
-                    is_negated=bool(parsed.get("is_negated", False)),
-                    audit_notes=parsed.get("audit_notes", "Verified by Gemini 1.5 Flash auditor."),
+                    is_forecast=parsed.get("is_forecast") is True,
+                    is_subsided=parsed.get("is_subsided") is True,
+                    is_negated=parsed.get("is_negated") is True,
+                    audit_notes=parsed.get("audit_notes", "External audit response parsed."),
                 )
+            logger.warning("Gemini audit returned HTTP %d; claim requires staff review", resp.status_code)
         except Exception as exc:
-            logger.warning("Gemini 1.5 Flash audit call failed (%s); using deterministic fallback.", exc)
+            logger.warning("Gemini audit unavailable; claim requires staff review: %s", exc)
         finally:
             if should_close:
                 await client.aclose()
@@ -160,57 +148,56 @@ Respond ONLY with valid JSON:
         return self._deterministic_fallback_audit(claim, context_text)
 
     def _deterministic_fallback_audit(self, claim: ExtractedClaim, context_text: str) -> LLMAuditResult:
-        """High-precision local deterministic auditor when external LLM is offline."""
+        """Classify locally when external audit is unavailable, without confirming."""
         lower_evidence = f"{claim.evidence_sentence} {context_text}".lower()
 
         # Check subsidence / receded waters
         subsided_terms = ("humupa na", "hupa na", "nagsubside", "subsided", "bumaba na ang tubig", "cleared")
         if claim.condition == "subsided" or any(t in lower_evidence for t in subsided_terms):
             return LLMAuditResult(
-                is_confirmed=True,
+                is_confirmed=False,
                 status_classification="subsided",
                 depth_confirmed=False,
                 is_forecast=False,
                 is_subsided=True,
                 is_negated=False,
-                audit_notes="Auditor confirmed flood waters have already subsided/receded.",
+                audit_notes="Local rules classified water as subsided; independent audit unavailable.",
             )
 
         # Check forecast / prediction
         forecast_terms = ("posibleng bahain", "maaaring bumaha", "asahan ang pagbaha", "pinag-iingat sa baha", "flood advisory", "forecast")
         if claim.is_forecast or any(t in lower_evidence for t in forecast_terms):
             return LLMAuditResult(
-                is_confirmed=True,
+                is_confirmed=False,
                 status_classification="forecast",
                 depth_confirmed=False,
                 is_forecast=True,
                 is_subsided=False,
                 is_negated=False,
-                audit_notes="Auditor confirmed statement is a forecast/advisory warning.",
+                audit_notes="Local rules classified this as a forecast; independent audit unavailable.",
             )
 
         # Check negation
         if claim.is_negated or "walang baha" in lower_evidence or "passable sa lahat" in lower_evidence:
             return LLMAuditResult(
-                is_confirmed=True,
+                is_confirmed=False,
                 status_classification="negated",
                 depth_confirmed=False,
                 is_forecast=False,
                 is_subsided=False,
                 is_negated=True,
-                audit_notes="Auditor confirmed report is negated (no flooding).",
+                audit_notes="Local rules classified this as negated; independent audit unavailable.",
             )
 
         # Active observed flood with confirmed depth
-        is_active = claim.condition in ("active", "rising") or "baha" in lower_evidence
         return LLMAuditResult(
-            is_confirmed=True,
+            is_confirmed=False,
             status_classification="rising" if claim.condition == "rising" else "active",
             depth_confirmed=claim.depth_canonical is not None,
             is_forecast=False,
             is_subsided=False,
             is_negated=False,
-            audit_notes="Auditor verified active flood claim and depth gauge.",
+            audit_notes="Local rules detected flooding; independent audit unavailable, so staff review is required.",
         )
 
     def evaluate_claim_action(
@@ -218,16 +205,9 @@ Respond ONLY with valid JSON:
         claim: ExtractedClaim,
         audit_result: Optional[LLMAuditResult] = None,
         ranked_location: Optional[RankedLocationCandidate] = None,
+        article_published_at: Optional[datetime] = None,
     ) -> tuple[str, str]:
-        """Determine Smart Auto-Activation action:
-
-        Returns (action, rationale):
-          - ("auto_approved", "Complete active flood details verified; published directly to live map.")
-          - ("suppressed_subsided", "Waters have receded/subsided; suppressed to prevent false road closures.")
-          - ("suppressed_forecast", "Forecast advisory; suppressed to prevent closing dry roads.")
-          - ("suppressed_negated", "Negated report; discarded.")
-          - ("flagged_review", "Ambiguous location or uncertain depth; enqueued for staff review.")
-        """
+        """Return suppression or review unless every independent publish gate passes."""
         # 1. Safety Gate: Negated reports
         if claim.is_negated or (audit_result and audit_result.is_negated):
             return "suppressed_negated", "Report confirms no flooding occurred; discarded."
@@ -240,33 +220,47 @@ Respond ONLY with valid JSON:
         if claim.condition == "subsided" or (audit_result and audit_result.is_subsided):
             return "suppressed_subsided", "Flood waters have already subsided/receded; suppressed to keep passable roads open."
 
-        # 4. Check Smart Auto-Activation criteria (Option 2):
-        # Requirements:
-        # - High confidence (>= 0.95 / 95%)
-        # - Active or rising flood condition
-        # - Canonical depth gauge resolved (e.g. gutter, knee, waist, chest)
-        # - Exact road or landmark with valid polygon geometry
-        has_depth = claim.depth_canonical is not None
-        is_active = (claim.condition in ("active", "rising")) and (
-            not audit_result or audit_result.status_classification in ("active", "rising")
-        )
-        is_auditor_confirmed = audit_result.is_confirmed if audit_result else True
+        if claim.road_passability == "passable_all":
+            return "flagged_review", "Flooded road is reported passable; no avoidance closure is justified."
+        if claim.road_passability == "light_vehicle_closed":
+            return "flagged_review", "Light-vehicle restriction needs vehicle-specific staff review."
+        if claim.is_historical:
+            return "flagged_review", "Historical flood evidence cannot establish a current closure."
+        if not claim.flood_mentioned or claim.condition not in ("active", "rising"):
+            return "flagged_review", "No clearly observed active flood for this place."
+        if not audit_result or not audit_result.is_confirmed:
+            return "flagged_review", "Independent auditor did not confirm this claim."
+        if audit_result.status_classification not in ("active", "rising") or not audit_result.depth_confirmed:
+            return "flagged_review", "Auditor did not confirm active status and depth."
+        if claim.depth_canonical is None or claim.event_time_resolved is None or claim.event_time_kind != "observation":
+            return "flagged_review", "Canonical depth or explicit flood observation time is missing."
+        observed_at = claim.event_time_resolved
+        if observed_at.tzinfo is None:
+            return "flagged_review", "Flood observation time has no timezone."
+        if article_published_at is None or article_published_at.tzinfo is None:
+            return "flagged_review", "Article publication time is unavailable or lacks a timezone."
+        now = datetime.now(timezone.utc)
+        if not (timedelta(0) <= now - observed_at <= MAX_AUTO_ACTIVATION_AGE):
+            return "flagged_review", "Flood observation is stale or in the future."
+        if not (timedelta(0) <= now - article_published_at <= MAX_AUTO_ACTIVATION_AGE):
+            return "flagged_review", "Article publication is stale or in the future."
 
         precision_level = ranked_location.precision_level if ranked_location else "unresolved"
-        has_geometry = (ranked_location.geometry_geojson is not None) if ranked_location else False
-        is_road_or_landmark = precision_level in ("road", "landmark")
-
-        if is_auditor_confirmed and is_active and has_depth and is_road_or_landmark and has_geometry:
-            return (
-                "auto_approved",
-                "High-confidence active flood with verified depth and road geometry; automatically approved for live map.",
-            )
-
-        # Ambiguous, incomplete, or city-level only
         if precision_level == "city":
             return "flagged_review", "Broad municipal mention without specific road segment; enqueued for staff map selection."
+        if (
+            not ranked_location
+            or precision_level not in ("road", "landmark")
+            or not claim.canonical_city
+            or ranked_location.resolved_city != claim.canonical_city
+            or not ranked_location.is_auto_approvable
+            or ranked_location.requires_staff_edit
+            or ranked_location.geometry_provenance != "verified_segment"
+            or ranked_location.geometry_geojson is None
+        ):
+            return "flagged_review", "Affected road segment and geometry are not independently verified."
 
-        return "flagged_review", "Incomplete location or depth details; enqueued for staff review."
+        return "auto_approved", "Recent active flood and exact geometry independently verified."
 
     async def extract_hybrid(
         self,
@@ -277,9 +271,9 @@ Respond ONLY with valid JSON:
         """Run multi-tier extraction pipeline:
 
         Step 1: Primary extraction via Tier 1 Deterministic Rules + PSGC Location Grounding.
-        Step 2: Hierarchy resolution and 50m avoidance polygon generation via NationwideGeometryService.
+        Step 2: Hierarchy resolution and preview geometry via NationwideGeometryService.
         Step 3: Double-check verification via Gemini 1.5 Flash auditor (supporting role).
-        Step 4: Smart Auto-Activation decision (auto_approved, suppressed_subsided, or flagged_review).
+        Step 4: Fail-closed decision (suppressed or flagged_review until verification gates exist).
         """
         # Step 1: Run Primary Deterministic Extraction (Tier 1 Rules + PSGC)
         result_tier1 = extract_taglish_flood_facts(article_input)
@@ -294,7 +288,7 @@ Respond ONLY with valid JSON:
                 claim.canonical_road = ranked_geo.resolved_road
                 claim.island_group = ranked_geo.island_group
                 claim.psgc_code = ranked_geo.psgc_code
-                action, rationale = self.evaluate_claim_action(claim, ranked_location=ranked_geo)
+                action, rationale = self.evaluate_claim_action(claim, ranked_location=ranked_geo, article_published_at=article_input.published_at)
                 claim.action_type = action
                 claim.action_rationale = rationale
                 claim.uncertainty_reasons.append(f"action:{action}")
@@ -315,6 +309,7 @@ Respond ONLY with valid JSON:
 
             # Invoke Gemini 1.5 Flash in Supporting / Auditor Role
             audit_result = await self.audit_claim_with_llm(claim, article_text, client=http_client)
+            claim.audit_result = audit_result
 
             # Apply auditor safety classifications
             if audit_result.is_subsided:
@@ -325,17 +320,12 @@ Respond ONLY with valid JSON:
                 claim.is_negated = True
 
             # Evaluate auto-approval action
-            action, rationale = self.evaluate_claim_action(claim, audit_result, ranked_geo)
+            action, rationale = self.evaluate_claim_action(claim, audit_result, ranked_geo, article_input.published_at)
             claim.action_type = action
             claim.action_rationale = rationale
 
-            # Set final consensus confidence score
-            if action == "auto_approved":
-                claim.confidence_score = 0.98  # >= 95% threshold achieved
-            elif action in ("suppressed_subsided", "suppressed_forecast", "suppressed_negated"):
-                claim.confidence_score = 0.98
-            else:
-                claim.confidence_score = ranked_geo.confidence_score
+            # This is a place-ranking heuristic, not a calibrated approval probability.
+            claim.confidence_score = min(claim.confidence_score, ranked_geo.confidence_score)
 
             claim.uncertainty_reasons.append(f"action:{action}({rationale})")
             processed_claims.append(claim)
