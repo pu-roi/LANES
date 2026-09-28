@@ -1,9 +1,36 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 28, 2026, 10:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 28, 2026, 11:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-066] Historical PNA Replay Lost Its Test-Only Source After Registry Cleanup
+
+- **Status**: Source mapping repaired; current live replay blocked by PNA HTTP 500
+- **Severity**: Medium (historical acceptance evidence cannot currently be refreshed)
+- **Date Reported / Updated**: September 28, 2026
+- **Affected Area**: Phase 36 read-only article simulation
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After the runtime RSS registry was reduced to six active publishers, `simulate_phase36_articles.py` stopped two fixed historical PNA cases with `Publisher domain not registered`. The current PNA article endpoints also returned HTTP 500 when fetched after the mapping repair.
+
+#### 2. Root Cause Analysis (RCA)
+
+The replay script reused the live RSS source registry as its entire domain allowlist. PNA was removed from that registry because it is not an active feed, although two fixed historical acceptance cases still depend on its article domain. The HTTP 500 responses originate from current publisher requests; the script cannot recover their article bodies from them.
+
+#### 3. Solution & Architectural Strategy
+
+Add a disabled, feedless PNA source only inside the historical replay script. It still requires the existing approved-domain article fetcher and cannot affect scheduled discovery. Preserve the two PNA cases as unverified on this run until their publisher pages respond or an authorized saved full body is available; do not count prior 16/16 and 8/8 results as a current pass.
+
+#### 4. Files Modified / What Changed
+
+- `backend/scripts/simulate_phase36_articles.py`: Add fixed historical PNA domain mapping without enabling a runtime RSS source.
+- `docs/evaluations/phase-36-publisher-body-and-pagination-audit.md`, `docs/task_plan.md`, `docs/others/bug-log.md`: Record the current replay results and open availability limit.
 
 ---
 
@@ -37,7 +64,7 @@ Remove bare `in` depth matching; keep human-height descriptions as raw ambiguous
 
 ### [BUG-064] Long Article Bodies Were Silently Truncated
 
-- **Status**: Silent cutoff and sampled publisher body defects repaired; unseen pagination and Inquirer access remain open
+- **Status**: Silent cutoff, sampled publisher body defects, and a Rappler rolling-updates pagination miss repaired; unseen pagination and Inquirer access remain open
 - **Severity**: High (a late flood update could be omitted while the article appears complete)
 - **Date Reported / Updated**: September 28, 2026
 - **Affected Area**: Phase 36 article fetching and full-body extraction
@@ -45,26 +72,26 @@ Remove bare `in` depth matching; keep human-height descriptions as raw ambiguous
 
 #### 1. Problem Description
 
-`fetch_article_text` silently returned only the first 30,000 characters of parsed article text. A report, correction, or subsidence statement later in a long page would not reach the extractor, yet the result had no incomplete-body error.
+`fetch_article_text` silently returned only the first 30,000 characters of parsed article text. A report, correction, or subsidence statement later in a long page would not reach the extractor, yet the result had no incomplete-body error. A later five-entry-per-source audit also found a Rappler rolling-updates page where the first 4,353 parsed characters were accepted despite a `?next=2` continuation.
 
 #### 2. Root Cause Analysis (RCA)
 
-The parsed text was sliced with `[:30_000]` after the HTML response had already been read. The three audited articles are shorter than that limit, so their 51-site checks did not expose this general hole. The fetcher also only followed HTTP redirects, not publisher pagination links. In the current-source audit, Philstar's `sports_article_writeup` appeared outside `<article>` and `<main>`, so the generic parser returned no text. Rappler and BusinessWorld put story text within narrower containers than `<main>`, which admitted unrelated page content.
+The parsed text was sliced with `[:30_000]` after the HTML response had already been read. The three audited articles are shorter than that limit, so their 51-site checks did not expose this general hole. The fetcher also only followed HTTP redirects, not publisher pagination links. Its same-article continuation matcher recognized numeric `page` queries and paths but not Rappler's numeric `next` query. In the current-source audit, Philstar's `sports_article_writeup` appeared outside `<article>` and `<main>`, so the generic parser returned no text. Rappler and BusinessWorld put story text within narrower containers than `<main>`, which admitted unrelated page content.
 
 #### 3. Solution & Architectural Strategy
 
-Return the complete parsed text within a 100,000-character processing bound. If it exceeds that bound, return an explicit error and no article body so downstream processing cannot mistake a prefix for the whole story. Detect HTML `rel=next` and common same-article `?page=2`, `/page/2`, or `/2` links and mark those articles incomplete rather than processing page one alone. Require publisher story-body containers for Rappler and BusinessWorld, extract Philstar's write-up container, and omit sampled related-story widgets. Philstar's `lazy_section.php?page=1` link loads a different story and is not a continuation. The ten accessible current samples returned bodies, but this does not prove all templates or pagination schemes; unrecognized multi-page articles remain a risk. The Inquirer feed returned 200, while article pages returned Cloudflare `cf-mitigated: challenge` 403 responses. The collector now records an explicit publisher-challenge error and accepts no full Inquirer body. See the [publisher audit](../evaluations/phase-36-publisher-body-and-pagination-audit.md).
+Return the complete parsed text within a 100,000-character processing bound. If it exceeds that bound, return an explicit error and no article body so downstream processing cannot mistake a prefix for the whole story. Detect HTML `rel=next` and common same-article `?page=2`, `?next=2`, `/page/2`, or `/2` links and mark those articles incomplete rather than processing page one alone. Require publisher story-body containers for Rappler and BusinessWorld, extract Philstar's write-up container, and omit sampled related-story widgets. Philstar's `lazy_section.php?page=1` link loads a different story and is not a continuation. A ten-position-per-source follow-up found 50 accessible article responses: 49 supplied accepted text and the Rappler rolling-updates page remained incomplete, linking onward even after page 32. This does not prove all templates or pagination schemes; unrecognized multi-page articles remain a risk. The Inquirer feed returned 200, while ten article requests returned Cloudflare `cf-mitigated: challenge` 403 responses, including one repeated URL. The collector records an explicit publisher-challenge error and accepts no full Inquirer body. See the [publisher audit](../evaluations/phase-36-publisher-body-and-pagination-audit.md).
 
 #### 4. Files Modified / What Changed
 
-- `backend/app/services/news_discovery_service.py`, `backend/tests/test_news_discovery.py`: Remove silent truncation, narrow publisher containers, skip related blocks, and test incomplete-body and continuation cases.
+- `backend/app/services/news_discovery_service.py`, `backend/tests/test_news_discovery.py`: Remove silent truncation, narrow publisher containers, skip related blocks, and test incomplete-body and continuation cases, including Rappler's `next` query pattern.
 - `docs/task_plan.md`, `docs/progress.md`, `docs/others/bug-log.md`, `docs/evaluations/phase-36-publisher-body-and-pagination-audit.md`: Record the sampled results and open pagination/Inquirer limits.
 
 ---
 
-### [BUG-063] Explicit News Observation Times Remain Unresolved
+### [BUG-063] Explicit News Observation Clocks Lacked Dates
 
-- **Status**: Investigating; automatic activation remains closed
+- **Status**: Bounded explicit-clock resolution repaired; ambiguous dates and automatic activation remain in review
 - **Severity**: High (freshness cannot be verified for automatic routing)
 - **Date Reported / Updated**: September 28, 2026
 - **Affected Area**: Phase 36 Taglish event-time extraction and hybrid activation gate
@@ -76,15 +103,16 @@ The extractor keeps strings such as `as of 4:30 p.m.` and classifies some as obs
 
 #### 2. Root Cause Analysis (RCA)
 
-`extract_event_time_from_text` returns the raw match and `None` rather than combining the explicit clock time with a justified source date and timezone. The article's publication time is not itself a flood observation or onset time.
+`extract_event_time_from_text` returned the raw match and `None` rather than combining the explicit clock time with a justified source date and timezone. The article's publication time is not itself a flood observation or onset time.
 
 #### 3. Solution & Architectural Strategy
 
-Resolve only explicit observation clocks against source publication date and Asia/Manila timezone, test midnight rollover and future/stale ambiguity, and preserve report-time versus observation-time distinctions. Keep uncertain dates in review. Validate against real articles before any automatic activation.
+The extractor now resolves only explicit `as of` observation clocks against a timezone-aware publication time in Asia/Manila, within a 12-hour bound. It handles a nearby previous-day midnight rollover and leaves explicit other dates, stale clocks, missing or naive publication timestamps, and report-only clocks unresolved. A read-only August GMA replay resolved the named road observation clocks and left an embedded post with an explicit calendar date unresolved. This enables the time field to pass its prerequisite for suitable claims but does not satisfy the independent audit, exact geometry, current-source, or article-completeness gates for automatic activation.
 
 #### 4. Files Modified / What Changed
 
-- `docs/task_plan.md`, `docs/others/bug-log.md`: Record this open Gate 2 prerequisite. No time resolver, schema, database, or public map change was made in this audit.
+- `backend/app/services/taglish_extraction_service.py`, `backend/tests/test_taglish_extraction.py`: Add bounded observation time resolution and regressions for same-day, midnight, stale, explicit-date, naive publication, and report-only cases.
+- `docs/task_plan.md`, `docs/progress.md`, `docs/evaluations/phase-36-three-article-check.md`, `docs/others/bug-log.md`: Record the delivered prerequisite and remaining limits.
 
 ---
 

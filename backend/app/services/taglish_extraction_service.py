@@ -10,9 +10,10 @@ from __future__ import annotations
 import csv
 import re
 import unicodedata
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from app.schemas.news_extraction import (
     CanonicalDepth,
@@ -280,6 +281,17 @@ TIME_EXPRESSIONS = re.compile(
     r"this\s+afternoon|this\s+morning|later\s+tonight|mamayang\s+gabi|ngayong\s+araw|"
     r"noong\s+nakaraang\s+taon|taong\s+20\d\d|in\s+20\d\d"
     r")\b",
+    re.I,
+)
+PHILIPPINE_TIMEZONE = ZoneInfo("Asia/Manila")
+OBSERVATION_CLOCK = re.compile(r"^as\s+of\s+(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\.?$", re.I)
+EXPLICIT_OTHER_DATE = re.compile(
+    r"\b(?:yesterday|kahapon|last\s+night|previous\s+day|prior\s+day|a\s+day\s+earlier|"
+    r"(?:last|on)\s+(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)|"
+    r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b|"
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|"
+    r"Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}|"
+    r"\d{4}-\d{1,2}-\d{1,2}|\d{1,2}/\d{1,2}/\d{2,4})\b",
     re.I,
 )
 
@@ -909,6 +921,26 @@ def extract_event_time_from_text(text: str) -> tuple[str | None, datetime | None
     return None, None
 
 
+def resolve_observation_time(raw: str | None, context: str, published_at: datetime | None) -> datetime | None:
+    """Anchor an explicit flood observation clock only to a nearby publication time."""
+    if not raw or published_at is None or published_at.tzinfo is None or published_at.utcoffset() is None:
+        return None
+    match = OBSERVATION_CLOCK.fullmatch(raw.strip())
+    if not match or EXPLICIT_OTHER_DATE.search(context):
+        return None
+    hour, minute = int(match.group(1)), int(match.group(2) or "0")
+    if not 1 <= hour <= 12 or minute > 59:
+        return None
+    hour = (hour % 12) + (12 if match.group(3).casefold() == "p" else 0)
+    published_local = published_at.astimezone(PHILIPPINE_TIMEZONE)
+    observed_local = published_local.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    if observed_local > published_local:
+        observed_local -= timedelta(days=1)
+    if published_local - observed_local > timedelta(hours=12):
+        return None
+    return observed_local
+
+
 def split_clauses(sentence: str) -> list[tuple[str, int, int]]:
     """Split a sentence on contrasting or sequential conjunctions (habang, pero, whereas, etc.)."""
     clause_delimiters = re.compile(r"\b(?:habang|pero|samantala|whereas|while|meanwhile)\b|;", re.I)
@@ -940,6 +972,7 @@ def extract_claims_from_sentence(
     section_barangay: str | None = None,
     section_time_raw: str | None = None,
     section_flood_reported: bool = False,
+    section_time_context: str | None = None,
 ) -> list[ExtractedClaim]:
     """Extract structured claims from a single sentence, associating facts per clause/place."""
     claims: list[ExtractedClaim] = []
@@ -1085,9 +1118,11 @@ def extract_claims_from_sentence(
             condition = extract_condition_from_text(sentence, flood_mentioned, clause_negated)
 
         # Event time
+        time_context = target_clause_text
         t_raw, t_res = extract_event_time_from_text(target_clause_text)
         if not t_raw:
             t_raw, t_res = extract_event_time_from_text(sentence)
+            time_context = sentence
         has_listed_time = False
         if not t_raw:
             listed_time = re.match(
@@ -1099,6 +1134,7 @@ def extract_claims_from_sentence(
                 has_listed_time = True
         if not t_raw and section_time_raw:
             t_raw = section_time_raw
+            time_context = section_time_context or sentence
 
         if not t_raw:
             uncertainties.append("event_time_unknown")
@@ -1109,6 +1145,8 @@ def extract_claims_from_sentence(
             time_kind = "report"
         elif t_raw and re.search(r"\breported\b", target_clause_text, re.I):
             time_kind = "report"
+        if time_kind == "observation":
+            t_res = resolve_observation_time(t_raw, time_context, article_input.published_at)
 
         depth_meas = get_flood_depth_measurement(d_canon) if d_canon else None
 
@@ -1307,6 +1345,7 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
     section_barangay: str | None = None
     section_passability: str | None = None
     section_time_raw: str | None = None
+    section_time_context: str | None = None
     section_flood_reported = False
     section_list_mode = False
 
@@ -1358,12 +1397,14 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
             section_barangay = None
             observed_time, _ = extract_event_time_from_text(sent_text)
             section_time_raw = observed_time
+            section_time_context = sent_text if observed_time else None
         elif section_list_mode and not (is_list_entry or is_city_heading or is_list_heading):
             section_list_mode = False
             section_city = None
             section_barangay = None
             section_passability = None
             section_time_raw = None
+            section_time_context = None
             section_flood_reported = False
         if re.search(r"\bflood(?:ing|waters?|ed)?\b", sent_text, re.I) and not any(
             place["place_type"] in {"street", "landmark"}
@@ -1372,6 +1413,7 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
             observed_time, _ = extract_event_time_from_text(sent_text)
             if observed_time and observed_time.lower().startswith("as of"):
                 section_time_raw = observed_time
+                section_time_context = sent_text
                 if re.search(r"\b(?:reported|affected|following|several)\b", sent_text, re.I):
                     section_flood_reported = True
             if re.search(r"\ball passable\b", sent_text, re.I):
@@ -1423,6 +1465,7 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
             section_barangay,
             section_time_raw,
             section_flood_reported,
+            section_time_context,
         )
         for claim in claims:
             if is_metadata_only and "metadata_only_lead" not in claim.uncertainty_reasons:

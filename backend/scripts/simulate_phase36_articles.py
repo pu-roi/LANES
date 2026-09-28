@@ -1,6 +1,6 @@
 """Read-only Phase 36 simulation using the existing news and extraction services.
 
-Fetches three historical Metro Manila articles from registered publisher domains,
+Fetches three historical Metro Manila articles from approved runtime or historical test domains,
 then runs the same bounded article fetch, deterministic extraction, PSGC-backed
 location ranking, Pasig history lookup (when applicable), and action evaluator
 used by LANES. No database session, LLM request, map alert, or zone write occurs.
@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.schemas.news_extraction import NewsArticleExtractorInput
 from app.services.hybrid_extraction_service import HybridExtractionService
 from app.services.news_discovery_service import fetch_article_text
-from app.services.news_sources import load_news_sources
+from app.services.news_sources import NewsSource, load_news_sources
 
 
 PHT = ZoneInfo("Asia/Manila")
@@ -54,6 +54,11 @@ CASES = (
     ),
 )
 EXPECTED_SITES_PATH = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "phase36_expected_sites.json"
+# PNA is used only for these fixed historical acceptance cases. It is not an
+# enabled RSS source and is never loaded by the scheduled discovery collector.
+HISTORICAL_SOURCES = (
+    NewsSource("historical-pna", "Philippine News Agency", ("pna.gov.ph",), (), None, False),
+)
 
 
 def _fold(value: object) -> str:
@@ -95,7 +100,7 @@ def evaluate_expected_sites(results: list[dict], expected: dict) -> bool:
 
 
 async def simulate() -> list[dict]:
-    sources = load_news_sources()
+    sources = (*load_news_sources(), *HISTORICAL_SOURCES)
     hybrid = HybridExtractionService()
     results = []
     for case_number, (case_id, url, title, published_at) in enumerate(CASES, start=1):

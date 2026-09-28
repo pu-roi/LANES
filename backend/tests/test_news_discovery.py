@@ -279,7 +279,7 @@ def test_rappler_related_heading_without_list_keeps_following_reporting_list() -
     assert text is not None and "\nC. Raymundo Avenue" in text and "\nLaguna Street" in text
 
 
-@pytest.mark.parametrize("href", ["?page=2", "/pasig-flood/page/2", "/pasig-flood/2"])
+@pytest.mark.parametrize("href", ["?page=2", "?next=2", "/pasig-flood/page/2", "/pasig-flood/2"])
 def test_article_fetch_rejects_unlabeled_same_article_continuation(href: str) -> None:
     html = (
         '<article><p>Flooding was reported on Laguna Street in Pasig City and on nearby roads.</p>'

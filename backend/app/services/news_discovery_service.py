@@ -180,10 +180,15 @@ def _same_article_continuation(article_url: str, href: str) -> bool:
     current_path = current.path.rstrip("/")
     target_path = target.path.rstrip("/")
     if current_path == target_path:
-        current_pages = parse_qs(current.query).get("page", ["1"])
-        target_pages = parse_qs(target.query).get("page", [])
-        return bool(target_pages and target_pages != current_pages and
-                    any(page.isdigit() and int(page) > 1 for page in target_pages))
+        current_query = parse_qs(current.query)
+        target_query = parse_qs(target.query)
+        for key in ("page", "next"):
+            current_pages = current_query.get(key, ["1"])
+            target_pages = target_query.get(key, [])
+            if (target_pages and target_pages != current_pages and
+                    any(page.isdigit() and int(page) > 1 for page in target_pages)):
+                return True
+        return False
     return bool(re.fullmatch(re.escape(current_path) + r"/(?:page/)?[2-9]\d*", target_path))
 
 

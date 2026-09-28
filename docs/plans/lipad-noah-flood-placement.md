@@ -1,7 +1,7 @@
 # Phase 36: LiPAD / UP NOAH Flood Placement Integration
 
-> **Last Updated:** September 28, 2026, 12:52 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** All three Metro Manila archives opened; Bernal/Mercedes road-intersection probes computed locally. General placement logic and full regional coverage remain open. No hazard layer imported yet.
+> **Last Updated:** September 29, 2026, 4:38 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** All three Metro Manila archives opened; Bernal/Mercedes and one GMA article road-span probe computed locally. General placement logic and full regional coverage remain open. No hazard layer imported yet.
 
 ## Purpose
 
@@ -53,6 +53,10 @@ Downloaded the [Metro Manila OSM PBF extract](https://download.openstreetmap.fr/
 | Mercedes Avenue | 2 shared nodes/carriageway connections | 208.1 m | 121.9 m `Var=1` | 106.5 m `Var=1`; 97.5 m `Var=2` | 208.1 m `Var=2` |
 
 The DRRMO CSV has three Bernal/C. Raymundo corner rows labeled Rosario (2024–2025) and four Mercedes/C. Raymundo place rows labeled San Miguel or Caniogan (2023–2024, including the misspelling `Mercedez`). These are historical records with year and place, not four or three proven independent flood events. The separate junctions and different modeled overlap demonstrate how article cross streets could narrow a road-wide claim. The calculation does **not** prove either corner is flooded now, identify the precise flooded length, settle the correct barangay on both sides of Mercedes, validate OSM bridge/elevation against field conditions, or justify a routing closure. OSM road-name completeness, full Metro Manila NOAH coverage, source-map vintage, and general article-to-segment matching are still unverified.
+
+### GMA bounded article span (September 28, 2026)
+
+The [read-only Santo Domingo audit](../evaluations/phase-36-sto-domingo-road-span-audit.md) takes the August GMA article's explicit `Sto. Domingo Avenue between Atok and Calamba Streets` evidence through the local OSM extract and exact NOAH source-vector intersection. OSM maps the road as `Santo Domingo Avenue` and has one shared node at each named crossing. The connected candidate path is OSM way `9793981`, approximately 86.2 m, with no mapped bridge/tunnel/layer tag. The complete OSM Quezon City administrative relation `106569` contains the path. Each of the three NOAH scenarios overlaps this candidate line at `Var=3`. This is one historical article and a manually bounded search area, not a production article-to-segment resolver, verified flood extent, or live routing zone. Pasig DRRMO records do not apply to this Quezon City report.
 
 ## Source and access check
 

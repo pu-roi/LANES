@@ -27,6 +27,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Phase 36: Three 2026 flood article extraction check](evaluations/phase-36-three-article-check.md)
 - [Phase 36: Three full-article backend simulation](evaluations/phase-36-new-article-service-simulation.md)
 - [Phase 36: Publisher body and pagination audit](evaluations/phase-36-publisher-body-and-pagination-audit.md)
+- [Phase 36: Santo Domingo article-to-road-span audit](evaluations/phase-36-sto-domingo-road-span-audit.md)
 
 ## Guides
 

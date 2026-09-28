@@ -1,6 +1,6 @@
 # Phase 36: Three 2026 Flood Article Extraction Check
 
-> **Checked:** September 28, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Checked:** September 28, 2026, 11:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This is a read-only check of `extract_taglish_flood_facts` against approved publisher articles from August 2026. The initial check used three short passages. On September 27, the Manila Bulletin reporting body was replayed. On September 28, the GMA page was fetched through the registered source fetcher and its full parsed text was replayed. Inquirer's article still has only a passage-level check because its publisher returns HTTP 403 to this fetcher. No RSS replay, Cloud SQL write, geocoding, or zone activation occurred. Historical article conditions must not be interpreted as current flooding.
 
@@ -16,7 +16,11 @@ The registered GMA source returned HTTP 200. The initial generic parser returned
 | Antipolo Street at Jose Abad Santos Street, Tondo, Manila | Gutter-deep as of 12:44 p.m. The embedded repeat now resolves `Maynila` to the City of Manila and keeps Jose Abad Santos as a crossing street; it still cannot independently ground a zone. |
 | Zapote Junction and Alido Bridge, Las Piñas | Two separate landmark claims from the pump report. No depth, passability, precise road segment, or clock time is stated. |
 
-The related-story Marikina headline is now excluded by the HTML parser. Other broad city and embedded-post claims remain review-only. The fetched UTF-8 page does not establish a city-name encoding defect; the earlier replacement glyphs seen in terminal output were a display issue. City and street geometry remain unverified, and explicit observation clocks are still unresolved datetimes (BUG-063). This check establishes coverage of the seven named GMA sites in the returned page, not complete recall across publishers or readiness for automatic map activation. A fresh registered-source request for the Inquirer AMP article returned `Article HTTP 403` and zero body characters, so no full-article result is claimed for it.
+The related-story Marikina headline is now excluded by the HTML parser. Other broad city and embedded-post claims remain review-only. The fetched UTF-8 page does not establish a city-name encoding defect; the earlier replacement glyphs seen in terminal output were a display issue. City and street geometry remain unverified. At this checkpoint, observation clocks were still unresolved; the follow-up below addresses bounded clock resolution. This check establishes coverage of the seven named GMA sites in the returned page, not complete recall across publishers or readiness for automatic map activation. A fresh registered-source request for the Inquirer AMP article returned `Article HTTP 403` and zero body characters, so no full-article result is claimed for it.
+
+## September 28 observation-clock follow-up
+
+The registered GMA fetcher returned the August 29 page again, and its page metadata supplied `datePublished: 2026-08-29T14:55:00+08:00`. Using that timezone-aware publication time, the read-only extractor resolved the stated `as of` clocks for Sto. Domingo Avenue (1:12 p.m.), Regalado Highway (12:24 p.m.), and Antipolo Street (12:44 p.m.) to August 29 in Asia/Manila. An embedded Antipolo post includes its own explicit `August 29, 2026` date; that mention remains unresolved by this narrow resolver so its date cannot be silently inferred from publication. Report clocks, unknown times, and flood onset remain separate. No map or database write occurred; exact road geometry and current flood status remain unverified.
 
 ## September 28 real update-order replay
 

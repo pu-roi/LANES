@@ -11,6 +11,7 @@ from app.services.taglish_extraction_service import (
     extract_taglish_flood_facts,
     find_place_mentions,
     normalize_barangay_name,
+    resolve_observation_time,
     split_sentences_with_offsets,
 )
 
@@ -90,6 +91,49 @@ def test_gma_road_segment_and_observation_time():
     assert road.event_time_raw == "as of 1:12 p.m."
     assert road.event_time_kind == "observation"
     assert not any(c.canonical_city == "City of Calamba" for c in claims)
+
+
+def test_explicit_observation_clock_resolves_from_aware_publication_time():
+    article = NewsArticleExtractorInput(
+        article_id=201, canonical_url="https://example.com/flood", publisher="Test News",
+        title="Quezon City flooding",
+        article_text="Floodwater was waist-deep on Sto. Domingo Avenue in Quezon City as of 4:30 p.m.",
+        published_at=datetime(2026, 9, 28, 10, 0, tzinfo=timezone.utc),
+    )
+    road = next(c for c in extract_taglish_flood_facts(article).claims if c.raw_place_name == "Sto. Domingo Avenue")
+    assert road.event_time_kind == "observation"
+    assert road.event_time_resolved is not None
+    assert road.event_time_resolved.isoformat() == "2026-09-28T16:30:00+08:00"
+
+
+def test_observation_clock_midnight_rollover_and_uncertain_dates():
+    just_after_midnight = datetime(2026, 9, 28, 16, 15, tzinfo=timezone.utc)
+    resolved = resolve_observation_time("as of 11:30 p.m.", "Flooding as of 11:30 p.m.", just_after_midnight)
+    assert resolved is not None and resolved.isoformat() == "2026-09-28T23:30:00+08:00"
+    assert resolve_observation_time("as of 5 a.m.", "Flooding as of 5 a.m.",
+                                    datetime(2026, 9, 28, 10, 0, tzinfo=timezone.utc)) is None
+    assert resolve_observation_time("as of 4:30 p.m.", "Flooding as of 4:30 p.m. yesterday",
+                                    datetime(2026, 9, 28, 10, 0, tzinfo=timezone.utc)) is None
+    assert resolve_observation_time("as of 4:30 p.m.", "Flooding as of 4:30 p.m. on Sunday",
+                                    datetime(2026, 9, 28, 10, 0, tzinfo=timezone.utc)) is None
+    assert resolve_observation_time("as of 4:30 p.m.", "Flooding as of 4:30 p.m. on Sept. 27",
+                                    datetime(2026, 9, 28, 10, 0, tzinfo=timezone.utc)) is None
+    assert resolve_observation_time("as of 4:30 p.m.", "Flooding as of 4:30 p.m.",
+                                    datetime(2026, 9, 28, 10, 0)) is None
+    assert resolve_observation_time("as of 13:30 p.m.", "Flooding as of 13:30 p.m.",
+                                    just_after_midnight) is None
+
+
+def test_report_clock_is_not_promoted_to_observation():
+    article = NewsArticleExtractorInput(
+        article_id=202, canonical_url="https://example.com/flood", publisher="Test News",
+        title="Malabon flooding",
+        article_text="At 4:30 p.m., Malabon officials reported waist-deep floodwaters along M.H. Del Pilar.",
+        published_at=datetime(2026, 9, 28, 10, 0, tzinfo=timezone.utc),
+    )
+    road = next(c for c in extract_taglish_flood_facts(article).claims if c.raw_place_name == "M.H. Del Pilar")
+    assert road.event_time_kind == "report"
+    assert road.event_time_resolved is None
 
 
 def test_inquirer_roads_keep_separate_measured_depths_and_unknown_time():
