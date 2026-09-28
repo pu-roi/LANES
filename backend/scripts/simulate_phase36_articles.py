@@ -14,7 +14,9 @@ from __future__ import annotations
 import asyncio
 import argparse
 import json
+import re
 import sys
+import unicodedata
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -51,6 +53,45 @@ CASES = (
         datetime(2026, 8, 8, 19, 43, tzinfo=PHT),
     ),
 )
+EXPECTED_SITES_PATH = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "phase36_expected_sites.json"
+
+
+def _fold(value: object) -> str:
+    """Compare factual labels despite punctuation, spacing, or diacritics."""
+    decomposed = unicodedata.normalize("NFKD", str(value or "")).casefold()
+    return re.sub(r"[^a-z0-9]", "", "".join(char for char in decomposed if not unicodedata.combining(char)))
+
+
+def evaluate_expected_sites(results: list[dict], expected: dict) -> bool:
+    """Match every cited site to a distinct extracted claim and check its facts."""
+    all_matched = True
+    for article in results:
+        case = expected[article["id"]]
+        source_matches = article.get("url") == case["source"] if "source" in case else True
+        used_claims: set[int] = set()
+        missing = []
+        for site in case["sites"]:
+            required = {**case.get("defaults", {}), **site}
+            location = required.pop("location")
+            match = next(
+                (
+                    index
+                    for index, claim in enumerate(article.get("claims", []))
+                    if index not in used_claims
+                    and _fold(claim.get("road_segment") or claim.get("place")) == _fold(location)
+                    and all(_fold(claim.get(field)) == _fold(value) for field, value in required.items())
+                ),
+                None,
+            )
+            if match is None:
+                missing.append(required | {"location": location})
+            else:
+                used_claims.add(match)
+        article["expected_site_count"] = len(case["sites"])
+        article["matched_site_count"] = len(used_claims)
+        article["missing_sites"] = missing
+        all_matched = all_matched and source_matches and not missing and "error" not in article
+    return all_matched and len(results) == len(expected) and {article["id"] for article in results} == set(expected)
 
 
 async def simulate() -> list[dict]:
@@ -114,10 +155,18 @@ async def simulate() -> list[dict]:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, help="Write derived claim fields as UTF-8 JSON")
+    parser.add_argument("--check", action="store_true", help="Exit nonzero if a cited flood site or its facts are missing")
     args = parser.parse_args()
-    serialized = json.dumps(asyncio.run(simulate()), ensure_ascii=False, indent=2)
+    results = asyncio.run(simulate())
+    expected = json.loads(EXPECTED_SITES_PATH.read_text(encoding="utf-8"))
+    passed = evaluate_expected_sites(results, expected)
+    serialized = json.dumps(results, ensure_ascii=False, indent=2)
     if args.output:
         args.output.write_text(serialized + "\n", encoding="utf-8")
         print(f"Wrote derived claim fields to {args.output}")
     else:
         print(serialized)
+    for article in results:
+        print(f"{article['id']}: {article['matched_site_count']}/{article['expected_site_count']} cited sites matched", file=sys.stderr)
+    if args.check and not passed:
+        sys.exit(1)

@@ -1,8 +1,28 @@
 # Phase 36: Three 2026 Flood Article Extraction Check
 
-> **Checked:** September 27, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Checked:** September 28, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-This is a read-only check of `extract_taglish_flood_facts` against approved publisher articles from August 2026. The initial check used three short passages. On September 27, the Manila Bulletin reporting body was also replayed from its indexed public page and compared with every named location and broad locality in that body. GMA and Inquirer still have only passage-level checks. No RSS replay, Cloud SQL write, geocoding, or zone activation occurred. Historical article conditions must not be interpreted as current flooding.
+This is a read-only check of `extract_taglish_flood_facts` against approved publisher articles from August 2026. The initial check used three short passages. On September 27, the Manila Bulletin reporting body was replayed. On September 28, the GMA page was fetched through the registered source fetcher and its full parsed text was replayed. Inquirer's article still has only a passage-level check because its publisher returns HTTP 403 to this fetcher. No RSS replay, Cloud SQL write, geocoding, or zone activation occurred. Historical article conditions must not be interpreted as current flooding.
+
+## September 28 complete-page GMA replay
+
+The registered GMA source returned HTTP 200. The initial generic parser returned 3,750 characters including a related-story widget. After excluding that publisher widget, the reporting-page replay contains 3,530 parsed characters, including the later Las Piñas paragraphs and embedded social posts. The read-only rules-only hybrid path produces 27 claims, all `flagged_review`.
+
+| Reported site | Result and remaining limit |
+|---|---|
+| Sto. Domingo Avenue between Atok and Calamba Streets, Quezon City | `waist` from waist-deep; impassable to vehicles as of 1:12 p.m. The earlier photo caption remains a separate review-only mention. |
+| Regalado Highway, North Fairview, Quezon City | Small vehicles cannot pass as of 12:24 p.m.; embedded post repeats it. No depth was stated. |
+| San Antonio Valley 2, San Isidro, Parañaque; embedded San Felipe Street report | Both places are retained. “Exceeded a man's height” and “lagpas-tao” remain raw, ambiguous depths; no canonical gauge or clock time is invented. The later paragraph says floodwaters had receded slightly but persisted, so this is not a clearance. |
+| Antipolo Street at Jose Abad Santos Street, Tondo, Manila | Gutter-deep as of 12:44 p.m. The embedded repeat now resolves `Maynila` to the City of Manila and keeps Jose Abad Santos as a crossing street; it still cannot independently ground a zone. |
+| Zapote Junction and Alido Bridge, Las Piñas | Two separate landmark claims from the pump report. No depth, passability, precise road segment, or clock time is stated. |
+
+The related-story Marikina headline is now excluded by the HTML parser. Other broad city and embedded-post claims remain review-only. The fetched UTF-8 page does not establish a city-name encoding defect; the earlier replacement glyphs seen in terminal output were a display issue. City and street geometry remain unverified, and explicit observation clocks are still unresolved datetimes (BUG-063). This check establishes coverage of the seven named GMA sites in the returned page, not complete recall across publishers or readiness for automatic map activation. A fresh registered-source request for the Inquirer AMP article returned `Article HTTP 403` and zero body characters, so no full-article result is claimed for it.
+
+## September 28 real update-order replay
+
+A second [GMA article from July 10, 2026](https://www.gmanetwork.com/news/topstories/metro/994434/list-flooded-areas-in-metro-manila-on-july-10-2026/story/) puts a newer MMDA road-status list before an earlier alert. After related-story removal, the registered fetcher returns 3,000 parsed characters. The current read-only replay produces 26 claims: 23 `flagged_review` and three `suppressed_subsided`. The Manila Taft Avenue section toward PGH and España/Maceda each have a later cleared claim paired with an earlier active claim. Both pairs now carry `contradictory_update`; accent-insensitive matching connects `España` and `Espana` without changing the source evidence. The F. Ortigas/Boni Avenue depth change is retained as two active reports, not a clearing statement. No map or database write occurred.
+
+The status-list parser now keeps `España Antipolo to Quintos`, `Araneta E. Rodriguez`, and other suffixless sites together as road evidence. The replay no longer generates City of Antipolo or Rodriguez claims from those road names. It carries the latest 4:35 p.m. status-list clock and the earlier 2:50 p.m. alert clock to their respective entries, while individual clearing times override the group clock. The later narrative EDSA-Santolan report remains without a city rather than inheriting the preceding Marikina heading. An earlier advisory that explicitly recorded flooding at EDSA Shaw Tunnel is retained as an active historical report, not treated as a forecast. These are text-level checks only; publication and observation clocks are not resolved datetimes, exact road geometry is unverified, and the contradiction marker does not by itself establish the latest current condition.
 
 ## Developer-reviewed expected facts and September 27 repair
 
@@ -30,7 +50,7 @@ The indexed [Manila Bulletin article](https://mb.com.ph/2026/08/29/several-malab
 | Named roads that remained passable | 8 | Flooding with varying, unspecified depths; passable to all vehicles. These are not closure claims. |
 | Unnamed streets grouped by barangay | 11 | Area-only flood mentions with unknown street geometry; no road name or individual depth is invented. |
 
-This yields **26 named-location claims and 11 broad area claims**, plus two city-level context mentions. An independent paraphrased full-body regression fixture checks the groups, offsets, depth handling, and passability. The source spells one area `Santulan`; the PSGC reference has no Malabon barangay under that spelling, so its raw mention is retained without an official barangay match. Exact coordinates, which portion of a passable road is affected, and the report time for the later lists remain unknown. The GMA and Inquirer pages also contain additional places and prior-day statements; they still need complete-article, date-aware checks before Gate 1 is complete.
+This yields **26 named-location claims and 11 broad area claims**, plus two city-level context mentions. An independent paraphrased full-body regression fixture checks the groups, offsets, depth handling, and passability. The source spells one area `Santulan`; the PSGC reference has no Malabon barangay under that spelling, so its raw mention is retained without an official barangay match. Exact coordinates, which portion of a passable road is affected, and the report time for the later lists remain unknown. The GMA replays and real clearing-update check are documented above; Inquirer full-body and publisher pagination checks remain open before Gate 1 is complete.
 
 ## Initial short-passage baseline (before repairs)
 

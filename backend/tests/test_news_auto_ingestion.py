@@ -23,11 +23,86 @@ from app.services.news_auto_ingestion_service import (
     NewsAutoIngestionService,
     get_news_auto_ingestion_service,
 )
+from app.services.hybrid_extraction_service import HybridExtractionService
 
 
 @pytest.fixture
 def auto_ingestion_service() -> NewsAutoIngestionService:
     return get_news_auto_ingestion_service()
+
+
+def test_conflicting_update_blocks_even_independently_verified_geometry():
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="Araneta Avenue",
+        canonical_city="Quezon City",
+        road_segment_raw="Araneta Avenue corner Maria Clara",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=14,
+        evidence_sentence="Araneta Avenue corner Maria Clara was flooded at 26 inches.",
+        evidence_sentence_offset=(0, 58),
+        flood_mentioned=True,
+        depth_canonical="tires",
+        condition="active",
+        event_time_resolved=now,
+        event_time_kind="observation",
+        uncertainty_reasons=["contradictory_update"],
+    )
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    location = RankedLocationCandidate(
+        raw_place_name="Araneta Avenue",
+        resolved_city="Quezon City",
+        precision_level="road",
+        geometry_provenance="verified_segment",
+        is_auto_approvable=True,
+        requires_staff_edit=False,
+        geometry_geojson={"type": "Polygon", "coordinates": []},
+    )
+
+    action, reason = HybridExtractionService().evaluate_claim_action(claim, audit, location, now)
+
+    assert action == "flagged_review"
+    assert "conflicting" in reason.lower()
+
+
+def test_caption_and_metadata_only_cannot_activate_even_with_verified_geometry():
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="UN Avenue",
+        canonical_city="City of Manila",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=9,
+        evidence_sentence="A photo shows flooding on UN Avenue.",
+        evidence_sentence_offset=(0, 35),
+        flood_mentioned=True,
+        depth_canonical="knee",
+        condition="active",
+        event_time_resolved=now,
+        event_time_kind="observation",
+        uncertainty_reasons=["photo_caption_only"],
+    )
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    location = RankedLocationCandidate(
+        raw_place_name="UN Avenue",
+        resolved_city="City of Manila",
+        precision_level="road",
+        geometry_provenance="verified_segment",
+        is_auto_approvable=True,
+        requires_staff_edit=False,
+        geometry_geojson={"type": "Polygon", "coordinates": []},
+    )
+
+    action, reason = HybridExtractionService().evaluate_claim_action(claim, audit, location, now)
+
+    assert action == "flagged_review"
+    assert "caption" in reason.lower()
+
+    metadata_claim = claim.model_copy(update={"uncertainty_reasons": ["metadata_only_lead"]})
+    action, reason = HybridExtractionService().evaluate_claim_action(metadata_claim, audit, location, now)
+    assert action == "flagged_review"
+    assert "metadata" in reason.lower()
 
 
 @pytest.mark.asyncio

@@ -220,6 +220,15 @@ Respond ONLY with valid JSON:
         if claim.condition == "subsided" or (audit_result and audit_result.is_subsided):
             return "suppressed_subsided", "Flood waters have already subsided/receded; suppressed to keep passable roads open."
 
+        if "photo_caption_only" in claim.uncertainty_reasons:
+            return "flagged_review", "Photo-caption evidence requires independent report and location review."
+
+        if "metadata_only_lead" in claim.uncertainty_reasons:
+            return "flagged_review", "Article body is unavailable; metadata alone cannot verify a road closure."
+
+        if "contradictory_update" in claim.uncertainty_reasons:
+            return "flagged_review", "This place has conflicting flood updates in the article; staff must reconcile them."
+
         if claim.road_passability == "passable_all":
             return "flagged_review", "Flooded road is reported passable; no avoidance closure is justified."
         if claim.road_passability == "light_vehicle_closed":

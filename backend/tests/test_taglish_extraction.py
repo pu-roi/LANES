@@ -551,7 +551,9 @@ def test_advisory_bullet_times_and_landmarks_stay_on_the_main_road():
             "-- 6:10 p.m. Roxas Blvd. Pedro Gil. Svc. Rd.\n"
             "-- 6:20 p.m. Roxas Blvd. US Embassy\n"
             "-- 4:23 p.m. Roxas Blvd Pedro Gil Service Road\n"
+            "-- Taft Ave. - Quirino Ave., Malate; gutter-deep (8 inches)\n"
             "Parañaque City\n"
+            "-- Dr. A Santos Ave. NB - Para\u00f1aque National High School (8 inches)\n"
             "-- 3 p.m. Dr A. Santos Ave.-KayTalices (8 inches)\n"
             "Malabon City\n"
             "-- 3:14 p.m. Gov. Pascual Ave. (Sitio 6) (4 inches) - subsided as of 4:40 p.m."
@@ -572,9 +574,227 @@ def test_advisory_bullet_times_and_landmarks_stay_on_the_main_road():
     assert service_road.local_area_raw == "Pedro Gil Service Road"
     assert school_city.canonical_city == "City of Parañaque"
     assert school_city.depth_raw == "8 inches"
+    assert any(c.raw_place_name == "Taft Ave" and "Quirino Ave" in (c.road_segment_raw or "") for c in roads)
+    assert any(c.raw_place_name == "Dr. A Santos Ave" and "National High School" in (c.road_segment_raw or "") for c in roads)
     assert malabon.local_area_raw == "Sitio 6"
     assert malabon.condition == "subsided"
     assert malabon.event_time_raw == "as of 4:40 p.m."
     assert not any(c.raw_place_name in {"Svc. Rd", "Sitio 6"} for c in claims)
+
+
+def test_photo_caption_is_review_only_and_weather_places_are_skipped():
+    inp = NewsArticleExtractorInput(
+        article_id=119,
+        canonical_url="https://example.com/caption",
+        publisher="Test News",
+        title="NCR flood list",
+        article_text=(
+            "Floodwaters affected UN Avenue corner Taft Avenue in Manila.\n"
+            "The Philippine STAR/Edd Gumban\n"
+            "MANILA, Philippines — Flooding was reported in Metro Manila.\n"
+            "PAGASA declared an orange rainfall warning in Valenzuela and Malabon.\n"
+            "Quezon City\n"
+            "-- NS Amoranto cor Don Jose St. - 37 inches, waist deep"
+        ),
+    )
+    claims = extract_taglish_flood_facts(inp).claims
+    assert len([c for c in claims if c.place_type == "street"]) == 2
+    caption = next(c for c in claims if c.raw_place_name == "UN Avenue")
+    assert "photo_caption_only" in caption.uncertainty_reasons
+    assert not any(c.raw_place_name in {"Valenzuela", "Malabon", "MANILA"} for c in claims)
+    assert any(c.raw_place_name == "NS Amoranto" and c.canonical_city == "Quezon City" for c in claims)
+
+
+def test_long_pna_photo_caption_before_dateline_is_review_only():
+    inp = NewsArticleExtractorInput(
+        article_id=121,
+        canonical_url="https://example.com/long-caption",
+        publisher="Test News",
+        title="Metro Manila flood report",
+        article_text=(
+            "Flooded roads. Riders cross flooded EDSA-Kamuning during heavy rain. "
+            + ("The image shows rainfall across the region. " * 12)
+            + "(PNA photo by Test Photographer)\n"
+            "MANILA – Flooding was reported across Metro Manila.\n"
+            "Quezon City\n"
+            "-- Araneta Avenue corner Maria Clara was flooded at 26 inches."
+        ),
+    )
+    claims = extract_taglish_flood_facts(inp).claims
+    caption = next(c for c in claims if c.raw_place_name == "EDSA")
+    assert "photo_caption_only" in caption.uncertainty_reasons
+    assert any(c.raw_place_name == "Araneta Avenue" for c in claims)
+
+
+def test_later_subsidence_flags_only_the_same_bounded_road_section():
+    inp = NewsArticleExtractorInput(
+        article_id=120,
+        canonical_url="https://example.com/update",
+        publisher="Test News",
+        title="NCR flooding",
+        article_text=(
+            "In Quezon City, Araneta Avenue corner Maria Clara was flooded at 24 inches.\n"
+            "Araneta Avenue corner Florentino was also flooded at 19 inches.\n"
+            "Later, flooding at Araneta Avenue corner Maria Clara had subsided."
+        ),
+    )
+    roads = [c for c in extract_taglish_flood_facts(inp).claims if c.raw_place_name == "Araneta Avenue"]
+    maria = [c for c in roads if "Maria Clara" in (c.road_segment_raw or "")]
+    florentino = next(c for c in roads if "Florentino" in (c.road_segment_raw or ""))
+    assert len(maria) == 2
+    assert all("contradictory_update" in c.uncertainty_reasons for c in maria)
+    assert "contradictory_update" not in florentino.uncertainty_reasons
+
+
+def test_multi_city_report_keeps_each_road_closure_and_time_local():
+    inp = NewsArticleExtractorInput(
+        article_id=122,
+        canonical_url="https://example.com/multi-city-report",
+        publisher="Test News",
+        title="Floods in Metro Manila",
+        article_text=(
+            "Quezon City\n"
+            "In Quezon City, waist-deep flooding on Sto. Domingo Avenue between Atok and Calamba Streets "
+            "made the area no longer passable to vehicles as of 1:12 p.m.\n"
+            "Regalado Highway in Barangay North Fairview was not passable to small vehicles "
+            "due to flooding as of 12:24 p.m.\n"
+            "Commonwealth Avenue had zero visibility due to heavy rain.\n"
+            "Parañaque City\n"
+            "In San Antonio Valley 2 in Barangay San Isidro, Parañaque City, "
+            "the flood exceeded a man's height on Saturday morning.\n"
+            "Manila\n"
+            "Gutter-deep flooding was reported on Antipolo Street corner Jose Abad Santos Street "
+            "in Tondo as of 12:44 p.m.\n"
+            "Courtesy: Manila Public Information Office.\n"
+            "Las Piñas City\n"
+            "Pumps drained flooding at Zapote Junction and Alido Bridge on Saturday morning."
+        ),
+    )
+    claims = extract_taglish_flood_facts(inp).claims
+    sto_domingo = next(c for c in claims if c.raw_place_name == "Sto. Domingo Avenue")
+    regalado = next(c for c in claims if c.raw_place_name == "Regalado Highway")
+    valley = next(c for c in claims if c.raw_place_name == "San Antonio Valley 2")
+    san_isidro = next(c for c in claims if c.raw_place_name == "Barangay San Isidro")
+    antipolo = next(c for c in claims if c.raw_place_name == "Antipolo Street")
+    zapote = next(c for c in claims if c.raw_place_name == "Zapote Junction")
+    alido = next(c for c in claims if c.raw_place_name == "Alido Bridge")
+    assert sto_domingo.road_passability == "impassable_all"
+    assert regalado.road_passability == "light_vehicle_closed"
+    assert valley.depth_canonical is None and "ambiguous_depth" in valley.uncertainty_reasons
+    assert san_isidro.depth_raw != "2 in"
+    assert san_isidro.event_time_raw is None
+    assert antipolo.event_time_raw == "as of 12:44 p.m."
+    assert not any(c.raw_place_name == "Commonwealth Avenue" for c in claims)
+    assert not any(c.evidence_sentence.startswith("Courtesy:") for c in claims)
+    assert zapote.canonical_city == alido.canonical_city == "City of Las Piñas"
+    assert all(c.event_time_raw != "as of 12:44 p.m." for c in claims if "Zapote" in c.evidence_sentence)
+
+
+def test_newest_first_clearing_update_flags_the_older_same_section_only():
+    inp = NewsArticleExtractorInput(
+        article_id=123,
+        canonical_url="https://example.com/latest-first",
+        publisher="Test News",
+        title="Manila flood updates",
+        article_text=(
+            "Manila\n"
+            "Along Taft Avenue from Pedro Gil was subsided as of 4 p.m.\n"
+            "Earlier, Along Taft Avenue from Pedro Gil was flooded.\n"
+            "Taft Avenue corner Quirino Avenue was also flooded."
+        ),
+    )
+    roads = [c for c in extract_taglish_flood_facts(inp).claims if c.place_type == "street"]
+    pedro_gil = [c for c in roads if "Pedro Gil" in (c.road_segment_raw or "")]
+    quirino = next(c for c in roads if "Quirino" in (c.road_segment_raw or ""))
+    assert len(pedro_gil) == 2
+    assert all("contradictory_update" in c.uncertainty_reasons for c in pedro_gil)
+    assert "contradictory_update" not in quirino.uncertainty_reasons
+
+
+def test_agency_status_list_keeps_road_names_out_of_city_matching():
+    inp = NewsArticleExtractorInput(
+        article_id=124,
+        canonical_url="https://example.com/agency-status-list",
+        publisher="Test News",
+        title="Metro Manila flood road status",
+        article_text=(
+            "The agency released the following road status update as of 4:35 p.m.:\n"
+            "Manila City\n"
+            "Espana Antipolo to Quintos (eastbound/westbound) - subsided as of 3:20 p.m.\n"
+            "Quezon City\n"
+            "Along Araneta between Quezon Ave. and E. Rodriguez - gutter deep; passable to all vehicles\n"
+            "Araneta E. Rodriguez (southbound/northbound) - gutter deep; passable to all vehicles\n"
+            "EDSA Aurora Tunnel (northbound/southbound) - gutter deep; passable to all vehicles\n"
+            "As of 2:16 p.m., flooding along EDSA-Santolan was reported."
+        ),
+    )
+    claims = extract_taglish_flood_facts(inp).claims
+    roads = [c for c in claims if c.place_type == "street"]
+    assert any(c.raw_place_name.startswith("Espana Antipolo") and c.canonical_city == "City of Manila" for c in roads)
+    assert any(c.raw_place_name.startswith("Araneta between") and c.canonical_city == "Quezon City" for c in roads)
+    assert any(c.raw_place_name.startswith("Araneta E. Rodriguez") and c.canonical_city == "Quezon City" for c in roads)
+    aurora = next(c for c in roads if c.raw_place_name == "EDSA" and "Aurora Tunnel" in (c.road_segment_raw or ""))
+    assert aurora.event_time_raw == "as of 4:35 p.m."
+    assert any(c.raw_place_name == "EDSA" and c.canonical_city is None for c in roads)
+    assert not any(c.canonical_city in {"City of Antipolo", "Rodriguez"} for c in claims)
+
+
+def test_accented_publisher_spelling_connects_only_the_same_cleared_site():
+    inp = NewsArticleExtractorInput(
+        article_id=125,
+        canonical_url="https://example.com/damaged-spelling",
+        publisher="Test News",
+        title="Manila flood road status",
+        article_text=(
+            "Manila City\n"
+            "Espa\u00f1a Maceda - subsided as of 3:24 p.m.\n"
+            "Earlier, the following areas were flooded:\n"
+            "Manila City\n"
+            "Espana Maceda - gutter deep; passable to all vehicles\n"
+            "Espana Antipolo - gutter deep; passable to all vehicles"
+        ),
+    )
+    claims = extract_taglish_flood_facts(inp).claims
+    maceda = [c for c in claims if "Maceda" in c.raw_place_name]
+    antipolo = next(c for c in claims if "Antipolo" in c.raw_place_name)
+    assert len(maceda) == 2
+    assert all("contradictory_update" in c.uncertainty_reasons for c in maceda)
+    assert "contradictory_update" not in antipolo.uncertainty_reasons
+
+
+def test_earlier_advisory_with_recorded_flood_is_an_observation():
+    inp = NewsArticleExtractorInput(
+        article_id=126,
+        canonical_url="https://example.com/earlier-advisory",
+        publisher="Test News",
+        title="Metro Manila flood report",
+        article_text=(
+            "In an earlier advisory around 1 p.m., gutter-deep flooding was also recorded "
+            "at EDSA Shaw Tunnel in Mandaluyong City."
+        ),
+    )
+    edsa = next(c for c in extract_taglish_flood_facts(inp).claims if c.raw_place_name == "EDSA")
+    assert edsa.condition == "active"
+    assert not edsa.is_forecast
+    assert edsa.canonical_city == "City of Mandaluyong"
+
+
+def test_maynila_caption_keeps_cross_street_in_city_of_manila():
+    inp = NewsArticleExtractorInput(
+        article_id=127,
+        canonical_url="https://example.com/manila-caption",
+        publisher="Test News",
+        title="Metro Manila flood report",
+        article_text=(
+            "Manila\n"
+            "As of 12:44 PM, gutter-deep ang baha sa Antipolo St. cor. Jose Abad Santos St. "
+            "sa Tondo, Maynila ngayong Sabado."
+        ),
+    )
+    claims = extract_taglish_flood_facts(inp).claims
+    road = next(c for c in claims if c.raw_place_name == "Antipolo St.")
+    assert road.canonical_city == "City of Manila"
+    assert "Jose Abad Santos St." in (road.road_segment_raw or "")
+    assert not any(c.canonical_city == "Jose Abad Santos" for c in claims)
 
 

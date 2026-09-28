@@ -1,4 +1,4 @@
-"""Reviewed RSS source configuration; catalog entries are disabled by default."""
+"""Reviewed RSS source configuration for the runtime collector."""
 
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def _public_host(hostname: str | None) -> bool:
 
 
 def load_news_sources(path: Path = DEFAULT_SOURCE_FILE) -> tuple[NewsSource, ...]:
-    """Load candidates. An enabled source needs a dated human verification."""
+    """Load configured sources. An enabled source needs dated human verification."""
     payload = json.loads(path.read_text(encoding="utf-8"))
     sources: list[NewsSource] = []
     seen_ids: set[str] = set()
