@@ -670,7 +670,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       if (onClose) onClose();
     } catch (err: unknown) {
       console.error("Error submitting flood reports:", err);
-      error("Submission Failed", "Failed to submit some reports. Please try again.");
+      error("Submission Failed", err instanceof Error ? err.message : "Failed to submit some reports. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -1052,25 +1052,27 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
               </div>
             )}
             
-            <label className="flex items-center justify-center w-full rounded-md border border-dashed border-gray-300 px-3 py-4 bg-gray-50 hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer select-none text-sm text-gray-500">
+            <div className="relative flex items-center justify-center w-full rounded-md border border-dashed border-gray-300 px-3 py-4 bg-gray-50 hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer select-none text-sm text-gray-500 focus-within:ring-2 focus-within:ring-orange-400">
               <div className="flex flex-col items-center gap-1">
                 <ImagePlus className="w-5 h-5 text-gray-400 mb-1" />
-                <span className="font-medium text-gray-600">Click to upload media</span>
-                <span className="text-[10px] text-gray-400">JPEG, PNG, MP4 up to 10MB</span>
+                <span className="font-medium text-gray-600">Add photos or videos</span>
+                <span className="text-[10px] text-gray-400">Select from your device</span>
               </div>
               <input 
                 type="file" 
                 multiple
                 accept="image/*,video/*" 
-                className="hidden" 
+                aria-label="Add photos or videos to flood report"
+                className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
                 onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setMediaFiles(prev => [...prev, ...Array.from(e.target.files!)]);
+                  const selectedFiles = Array.from(e.currentTarget.files ?? []);
+                  if (selectedFiles.length > 0) {
+                    setMediaFiles(prev => [...prev, ...selectedFiles]);
                   }
-                  e.target.value = ''; // Reset to allow selecting the same file again
+                  e.currentTarget.value = ''; // Reset to allow selecting the same file again
                 }}
               />
-            </label>
+            </div>
           </div>
 
           {/* Description */}

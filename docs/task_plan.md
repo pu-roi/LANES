@@ -1,13 +1,17 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
 ---
 
 ## Active Sprint
+
+### Flood Report Media Attachment (🟡 DEVICE VERIFICATION PENDING)
+- [x] Fix the asynchronous file-list reset, make the picker directly tappable, and surface failed evidence uploads instead of submitting without them. Desktop/mobile viewport and backend regression checks pass. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Confirm photo and video selection on a physical mobile browser or WebView, including return from the native gallery/camera picker.
 
 ### Map Presentation: Metro Manila UP NOAH Hazard Overlay (🟢 COMPLETED)
 > **Delivered:** The commuter `/map` presents a selectable 5-, 25-, or 100-year modeled NOAH hazard image only after the user enters 3D and chooses a scenario. Desktop uses a control above Saved Places; mobile uses a compact drawer from the `+` menu. Switching to 2D clears the selection. The display overlay is separate from active zones, Phase 36 location ranking, and routing. Source vectors remain the authority for analytical intersections; these images are presentation assets. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

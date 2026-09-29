@@ -1,9 +1,35 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-068] Mobile flood report media selection did not attach picked files
+
+- **Status**: Resolved in code; physical-device verification pending
+- **Severity**: High (user-selected report evidence could be omitted)
+- **Date Reported / Updated**: September 30, 2026
+- **Affected Area**: `/map` flood report panel and report media upload API
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+On a small screen, selecting a photo or video in the flood report panel could leave the attachment list empty. A separate server failure path could submit the report without a selected media file if Cloudinary rejected it.
+
+#### 2. Root Cause Analysis (RCA)
+
+The file input's `onChange` scheduled a React state updater that read `e.target.files`, then immediately cleared the input value. By the time the updater ran, the live `FileList` could already be empty. The control also depended on a `display:none` input activated by a label, which is less reliable for native mobile pickers. On the server, `upload_image` returned `None` on failure, and the reports endpoint silently skipped that file before creating the report.
+
+#### 3. Solution & Architectural Strategy
+
+Copy selected `File` objects before resetting the input, and make the native input cover the upload control while remaining visually transparent. If a requested upload fails, return HTTP 502 before creating the report; the panel displays that error. Preserve the same control on desktop and mobile.
+
+#### 4. Files Modified / What Changed
+
+`frontend/src/features/hazards/FloodReportPanel.tsx`: direct picker target, stable file snapshot, and visible submission error. `backend/app/api/v1/endpoints/reports.py`: reject missing upload URLs. `frontend/tests/flood-report-media.spec.ts`: desktop and mobile viewport photo/video attachment regression. `backend/tests/test_report_media_upload.py`: failed-upload rejection. Both browser viewport checks and the backend regression pass; a physical mobile picker has not been tested.
 
 ---
 
