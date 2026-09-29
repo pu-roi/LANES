@@ -23,6 +23,9 @@ from shapely.geometry.base import BaseGeometry
 from shapely.ops import polygonize, transform, unary_union
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from app.schemas.news_extraction import ExtractedClaim
+from app.services.article_road_match_service import load_bounded_osm_roads, match_article_road_span
+from app.services.noah_road_prediction_service import RoadSectionEvidence, rank_noah_road_sections
 from scripts.audit_noah_road_intersections import RoadWay, hazard_overlap, local_projector
 
 MAX_BOUNDARY_XML_BYTES = 1_000_000
@@ -199,16 +202,6 @@ def main() -> None:
     if not (120 <= bbox[0] < bbox[2] <= 123 and 13 <= bbox[1] < bbox[3] <= 16
             and bbox[2] - bbox[0] <= 0.15 and bbox[3] - bbox[1] <= 0.15):
         raise ValueError("Audit bbox must be a bounded Metro Manila area")
-    cross_a, cross_b = cross_streets_from_span(args.span)
-    main_key = normalize_road_name(args.road)
-    roads = SpanRoads((args.road, cross_a, cross_b), bbox)
-    roads.apply_file(str(args.osm_pbf), locations=True)
-    main_ways = roads.ways[main_key]
-    if not main_ways:
-        raise ValueError("Named main road not found in the audit area")
-    start = unique_junction(main_ways, roads.ways[normalize_road_name(cross_a)], cross_a)
-    end = unique_junction(main_ways, roads.ways[normalize_road_name(cross_b)], cross_b)
-    coordinates, way_ids, grade_flags = shortest_named_road_path(main_ways, start, end)
     city_url = f"https://api.openstreetmap.org/api/0.6/relation/{args.city_relation_id}/full"
     with httpx.Client(trust_env=False, timeout=20) as client:
         with client.stream("GET", city_url, headers={
@@ -221,20 +214,40 @@ def main() -> None:
                 if len(content) > MAX_BOUNDARY_XML_BYTES:
                     raise ValueError("OSM city boundary response exceeds size limit")
     boundary = city_boundary_from_osm_xml(bytes(content), args.city_relation_id, args.city_name)
-    if not boundary.covers(LineString(coordinates)):
-        raise ValueError("Candidate road path is outside the reported OSM city boundary")
+    claim = ExtractedClaim(
+        raw_place_name=args.road, canonical_road=args.road, canonical_city=args.city_name,
+        road_segment_raw=args.span, place_type="street", place_char_start=0,
+        place_char_end=len(args.road), evidence_sentence=f"{args.road} {args.span}",
+        evidence_sentence_offset=(0, len(args.road) + len(args.span) + 1),
+    )
+    match = match_article_road_span(
+        claim, load_bounded_osm_roads(str(args.osm_pbf), bbox), boundary,
+        source_id=f"local-osm-pbf:{args.osm_pbf.name}",
+    )
+    if match.status != "bounded_candidate" or match.centerline_geojson is None:
+        raise ValueError(f"Road span remains unresolved: {match.reason}")
+    coordinates = match.centerline_geojson["coordinates"]
     line = transform(local_projector(), LineString(coordinates))
     print(f"Source: {args.source_url}")
     print(f"Article road/span: {args.road} {args.span}")
-    print(f"OSM path: {line.length:.1f} m; junction nodes {start} to {end}; ways {sorted(way_ids)}")
+    print(f"OSM path: {line.length:.1f} m; junction nodes {match.junction_ids}; ways {list(match.osm_way_ids)}")
     print(f"OSM centerline (lon, lat): {coordinates}")
     print(f"OSM city relation: {args.city_name} ({args.city_relation_id}); candidate path contained")
-    print(f"Grade flags: {sorted(grade_flags) if grade_flags else 'none mapped on path'}")
-    for zip_path in args.noah_zips:
-        lengths = hazard_overlap(zip_path, line)
-        print(f"NOAH {zip_path.name}: " + ", ".join(
+    print(f"Grade flags: {list(match.grade_flags) if match.grade_flags else 'none mapped on path'}")
+    prediction = rank_noah_road_sections(
+        [RoadSectionEvidence(
+            section_id=f"{match.osm_way_ids}:{match.junction_ids}",
+            metric_centerline=line, osm_source_id=match.source_id,
+            article_place_level=3, bounded_road_section=True,
+        )],
+        dict(zip((5, 25, 100), args.noah_zips)),
+        hazard_overlap,
+    )
+    for period, lengths in prediction.ranked_sections[0].modeled_overlap_m.items():
+        print(f"NOAH {period}-year: " + ", ".join(
             f"Var {hazard_class}={length:.1f} m" for hazard_class, length in sorted(lengths.items())
         ))
+    print(f"Predicted location: {prediction.predicted_section_id or 'unresolved'} ({prediction.reason})")
     print("Status: research candidate only; no current-flood or routing verification")
 
 

@@ -4,7 +4,7 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, MapPin } from "lucide-react";
+import { AlertTriangle, Layers3, MapPin } from "lucide-react";
 import { MapProvider, useMapContext } from "./MapContext";
 import RoutePanel from "@/features/routing/RoutePanel";
 import { ReportFab } from "@/features/hazards/ReportFab";
@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/shared/ui";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { SavePlacePanel } from "@/features/places/SavePlacePanel";
+import { Panel } from "@/shared/ui/layout";
 
 
 const MapCanvas = dynamic(() => import("./MapCanvas"), { ssr: false });
@@ -73,7 +74,12 @@ function MapLayout() {
     setActivePoint,
     setSavedPlaces,
     isSavePlacePanelOpen,
-    setIsSavePlacePanelOpen
+    setIsSavePlacePanelOpen,
+    is3DMode,
+    hazardScenario,
+    setHazardScenario,
+    isHazardPanelOpen,
+    setIsHazardPanelOpen,
   } = useMapContext();
 
   const searchParams = useSearchParams();
@@ -115,7 +121,7 @@ function MapLayout() {
   }, [searchParams, setIsReportPanelOpen, setIsSavePlacePanelOpen, setIsAnalyticsOpen, setActivePanel, setIsPickingOnMap, setActivePoint]);
 
   // Keep the FAB beneath whichever mobile panel is currently expanded.
-  const isPanelExpanded = (isReportPanelOpen && activePanel === "flood") || isAnalyticsOpen || isSavePlacePanelOpen || (isMobile && activePanel === "route");
+  const isPanelExpanded = (isReportPanelOpen && activePanel === "flood") || isAnalyticsOpen || isSavePlacePanelOpen || isHazardPanelOpen || (isMobile && activePanel === "route");
   
   const pillBottomClass = hasBottomOffset 
     ? "bottom-[calc(64px+env(safe-area-inset-bottom)+160px)]" 
@@ -138,6 +144,14 @@ function MapLayout() {
   const handleSelectSavePlace = () => {
     setIsSavePlacePanelOpen(true);
     setActivePanel("save_place");
+    setIsMenuOpen(false);
+  };
+
+  const handleSelectHazard = () => {
+    setIsReportPanelOpen(false);
+    setIsSavePlacePanelOpen(false);
+    setActivePanel(null);
+    setIsHazardPanelOpen(true);
     setIsMenuOpen(false);
   };
 
@@ -167,6 +181,20 @@ function MapLayout() {
       <AnimatePresence>
         {isMenuOpen && (
           <div className={`fixed ${pillBottomClass} left-4 z-[46] flex flex-col gap-3`}>
+            {pathname === "/map" && is3DMode && (
+              <motion.button
+                key="fab-action-pill-hazard"
+                variants={actionPillVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                onClick={handleSelectHazard}
+                className="flex items-center gap-3 rounded-full border border-gray-200/60 bg-white py-2.5 pl-3 pr-5 text-left font-semibold text-slate-800 shadow-2xl hover:bg-gray-50"
+              >
+                <span className="shrink-0 rounded-full bg-orange-100 p-2 text-orange-600"><Layers3 className="h-4 w-4" /></span>
+                <span className="text-sm tracking-tight">Flood Hazard</span>
+              </motion.button>
+            )}
             <motion.button
               key="fab-action-pill-flood"
               variants={actionPillVariants}
@@ -216,6 +244,35 @@ function MapLayout() {
       <AnimatePresence>
         <SavePlacePanel />
       </AnimatePresence>
+      {isMobile && pathname === "/map" && is3DMode && (
+        <Panel
+          title="UP NOAH Flood Hazard"
+          icon={<Layers3 className="h-4 w-4 text-orange-600" />}
+          iconBgClassName="bg-orange-100"
+          isMobile
+          isOpen={isHazardPanelOpen}
+          onClose={() => setIsHazardPanelOpen(false)}
+          isCollapsed={false}
+          onCollapseToggle={() => {}}
+          mobileHeight="185px"
+          bodyClassName="flex flex-col gap-2"
+        >
+          <div className="flex gap-2" role="group" aria-label="Flood hazard rainfall scenarios">
+            {([100, 25, 5] as const).map((scenario) => (
+              <button
+                key={scenario}
+                type="button"
+                aria-pressed={hazardScenario === scenario}
+                onClick={() => setHazardScenario(scenario)}
+                className={`min-w-0 flex-1 rounded-lg px-1 py-2 text-xs font-bold transition-colors ${hazardScenario === scenario ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+              >
+                {scenario}-Year
+              </button>
+            ))}
+          </div>
+          <p className="text-[11px] text-slate-600">Modeled flood hazard, not current flooding.</p>
+        </Panel>
+      )}
       {!pathname.startsWith('/admin') && pathname !== "/analytics" && (
         <>
           <FloodReportPanel

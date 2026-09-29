@@ -1,0 +1,20 @@
+# Phase 36: NOAH Road-Section Ranking Check
+
+> **Checked:** September 29, 2026, 5:53 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+`backend/app/services/noah_road_prediction_service.py` now compares candidate OSM road centerlines with the original local Metro Manila NOAH 5-, 25-, and 100-year polygons. The read-only audit scripts supply exact vector intersection lengths from `hazard_overlap`. The service retains each scenario and `Var` class separately, reports the modeled overlap fraction of each candidate line, and orders candidates by article place specificity, presence of a place-matched DRRMO record, then modeled overlap. These are explainable ranking signals, not calibrated flood probabilities. DRRMO row counts are preserved as records, not independent event frequencies. Reported news depth is untouched.
+
+| Local input | Ranking result | Limit |
+| --- | --- | --- |
+| GMA `Sto. Domingo Avenue between Atok and Calamba Streets` | The 86.2 m OSM candidate overlaps `Var=3` across its full length in all three scenarios. The service returns it as a unique predicted *location*. | One explicit historical span; NOAH does not narrow the 86.2 m line further or establish its actual flooded width. It cannot create a current zone. |
+| C. Raymundo Avenue near Bernal Street and Mercedes Avenue | Bernal's arbitrary 199.8 m window has 100% modeled line overlap in each scenario. Mercedes' arbitrary 208.1 m multi-junction window has approximately 59%, 98%, and 100% overlap in the 5-, 25-, and 100-year scenarios. Bernal ranks ahead on this specific NOAH signal. | Both are 100 m research windows around intersections, not road sections bounded by a news report or verified network split. The service returns **no selected bounded section**. Multiple Mercedes carriageway connections remain unresolved. |
+
+## Real OSM network split follow-up
+
+`backend/scripts/audit_noah_ranked_road_sections.py` now loads named highways from the local Metro Manila PBF, uses the repository's Pasig polygon, and splits C. Raymundo Avenue only between **two different mapped cross-street junctions**. It excludes raw OSM way endpoints, arbitrary-radius windows, and a Mercedes-to-Mercedes dual-node junction. The read-only run produced **25** sections; **one** has an alternative carriageway path. The NOAH comparison retains each scenario's total overlap and `Var` class rather than reducing everything to one opaque score.
+
+Many sections still tie: several have complete modeled overlap across all three scenarios and the same average high-class (`Var=3`) overlap. The result is `multiple_equally_supported_sections`, with **no unique predicted location** for a road-name-only claim. This is the expected distinction between a useful susceptibility prior and a precise current flood location. Article barangay, cross street, landmark, direction, and properly place-matched Pasig DRRMO records must narrow the candidates. The repository Pasig polygon and ignored OSM PBF are research inputs, not validated operational or official boundary sources.
+
+The service can now split and rank bounded OSM sections in this local audit. It must still join Pasig DRRMO rows by road **and** barangay/landmark, verify routable carriageways and source boundaries, identify an operational NOAH/OSM source and update policy, and validate the automatic placement rule on real reports before any routing-affecting zone. A current article is the evidence of flooding; modeled NOAH susceptibility helps predict *where along that named road* the report may apply.
+
+Six focused ranking tests and nine matcher tests pass. They cover a unique bounded prediction, article span priority, ties, arbitrary research windows, missing scenarios, inconsistent class overlap, absent modeled overlap for a road-only claim, intersection splitting, parallel paths, and a dual-node junction for the same cross street. The actual GMA, C. Raymundo window, and 25-section network commands completed read-only against the local OSM PBF and three NOAH ZIPs. No database, map alert, Flood Report, Flood Zone, or routing write occurred.

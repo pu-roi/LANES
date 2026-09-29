@@ -23,6 +23,7 @@ import { useRef } from "react";
 
 export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
 export type ActivePanel = "route" | "flood" | "save_place" | null;
+export type NoahHazardScenario = 5 | 25 | 100;
 
 export interface MapPoint {
   coords: [number, number];
@@ -62,6 +63,12 @@ export interface FloodReportMapState {
 export type FloodPreviewStatus = "idle" | "loading" | "validated" | "fallback" | "ambiguous" | "unmapped" | "error";
 
 interface MapContextValue {
+  is3DMode: boolean;
+  setIs3DMode: (enabled: boolean) => void;
+  hazardScenario: NoahHazardScenario | null;
+  setHazardScenario: (scenario: NoahHazardScenario | null) => void;
+  isHazardPanelOpen: boolean;
+  setIsHazardPanelOpen: (open: boolean) => void;
   start: MapPoint | null;
   end: MapPoint | null;
   activePoint: ActivePoint;
@@ -160,6 +167,17 @@ export function MapProvider({ children }: { children: ReactNode }) {
   const [end, setEndState] = useState<MapPoint | null>(null);
   const [activePoint, setActivePoint] = useState<ActivePoint>(null);
   const [activePanel, setActivePanelState] = useState<ActivePanel>("route");
+  const [is3DMode, setIs3DModeState] = useState(false);
+  const [hazardScenario, setHazardScenario] = useState<NoahHazardScenario | null>(null);
+  const [isHazardPanelOpen, setIsHazardPanelOpen] = useState(false);
+
+  const setIs3DMode = useCallback((enabled: boolean) => {
+    setIs3DModeState(enabled);
+    if (!enabled) {
+      setHazardScenario(null);
+      setIsHazardPanelOpen(false);
+    }
+  }, []);
   const [isAnalyticsOpen, setIsAnalyticsOpenState] = useState(false);
   const [isAnalyticsCollapsed, setIsAnalyticsCollapsedState] = useState(false);
   const [lastOpenedLeftPanel, setLastOpenedLeftPanel] = useState<"analytics" | "save_place" | null>(null);
@@ -628,6 +646,12 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<MapContextValue>(
     () => ({
+      is3DMode,
+      setIs3DMode,
+      hazardScenario,
+      setHazardScenario,
+      isHazardPanelOpen,
+      setIsHazardPanelOpen,
       start,
       end,
       activePoint,
@@ -694,6 +718,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
       bringPanelToFront,
     }),
     [
+      is3DMode,
+      setIs3DMode,
+      hazardScenario,
+      isHazardPanelOpen,
       start,
       end,
       activePoint,

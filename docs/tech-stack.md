@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 28, 2026, 10:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 29, 2026, 9:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -64,6 +64,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Uses explainable rules and the 43,778-row PSGC reference to extract Philippine place mentions, canonical flood depth, flood condition, and event time while preserving character offsets and supporting sentences. Full-article fetching enforces a 100,000-character bound without silent truncation, isolates publisher story containers, excludes related-story widgets, rejects unverified multi-page links, and flags contradictory same-road clearing updates. A 51-site expected facts fixture verifies text extraction against real articles; [evaluations](evaluations/phase-36-three-article-check.md) confirm 27/27 Philstar, 16/16 PNA August 17, and 8/8 PNA August 8 sites. `calamanCy` and Google Cloud Natural Language are not integrated. An optional OpenRouter Gemini auditor exists, but article processing is not connected to the scheduled collector and its fallback is not an independent activation check. Exact road geometry and resolved observation datetimes remain open prerequisites.
 * **Offline Spatial Audit:** **Pyosmium (`osmium`) & Shapely**
   * *Role:* Reading a local Metro Manila OSM PBF and measuring bounded road-centerline overlap with original NOAH hazard polygons in `backend/scripts/audit_noah_road_intersections.py`. These small geospatial libraries are declared in `backend/requirements.txt`; the script is read-only and is not a production news-zone service.
+* **NOAH Display Asset Export:** **Pillow**
+  * *Role:* Rendering the three local Metro Manila NOAH polygon archives into compact transparent PNGs for the commuter map's optional 3D hazard display. This offline presentation export does not supply current flood observations or routing geometry.
 * **Encrypted Secrets & Environment Orchestration:** **@dotenvx/dotenvx**  
   * *Role:* Cross-platform AES-256 encrypted environment variable management, enabling safe git repository synchronization without exposing raw API keys or database credentials.
 

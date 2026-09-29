@@ -18,6 +18,7 @@ import argparse
 import csv
 import math
 import struct
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from zipfile import ZipFile
@@ -28,6 +29,9 @@ import shapely
 from shapely.geometry import LineString, LinearRing, Point, Polygon
 from shapely.geometry.base import BaseGeometry
 from shapely.ops import transform
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from app.services.noah_road_prediction_service import RoadSectionEvidence, rank_noah_road_sections
 
 
 ROAD_NAME = "C. Raymundo Avenue"
@@ -237,6 +241,22 @@ def main() -> None:
                 f"  NOAH {zip_path.name}: " +
                 ", ".join(f"Var {key}={value:.1f} m" for key, value in sorted(lengths.items()))
             )
+    prediction = rank_noah_road_sections(
+        [RoadSectionEvidence(
+            section_id=name, metric_centerline=geometry,
+            osm_source_id=f"local-osm-pbf:{args.osm_pbf.name}",
+            bounded_road_section=False,
+        ) for name, geometry in windows.items()],
+        dict(zip((5, 25, 100), args.noah_zips)),
+        hazard_overlap,
+    )
+    print("\nModeled-susceptibility ranking of research windows:")
+    for section in prediction.ranked_sections:
+        print(f"  {section.section_id}: " + ", ".join(
+            f"{period}-year={section.modeled_overlap_fraction[period]:.2f} of window"
+            for period in (5, 25, 100)
+        ))
+    print(f"Predicted bounded section: {prediction.predicted_section_id or 'unresolved'} ({prediction.reason})")
 
 
 if __name__ == "__main__":

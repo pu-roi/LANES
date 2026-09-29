@@ -1,7 +1,12 @@
 # Phase 36: LiPAD / UP NOAH Flood Placement Integration
 
-> **Last Updated:** September 29, 2026, 4:38 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 29, 2026, 5:53 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** All three Metro Manila archives opened; Bernal/Mercedes and one GMA article road-span probe computed locally. General placement logic and full regional coverage remain open. No hazard layer imported yet.
+
+The read-only [reusable road-match check](../evaluations/phase-36-reusable-road-match-check.md) now accepts explicit `between` and `from ... to` claim spans and returns a bounded OSM centerline candidate or an unresolved reason. It reproduces the GMA Santo Domingo path but cannot yet resolve the PNA Araneta/Maria Clara/Florentino phrase from the local OSM junctions. It requires caller-supplied checked administrative boundaries and a local PBF, so it is not an operational ingestion geometry provider.
+
+The read-only [NOAH ranking check](../evaluations/phase-36-noah-road-ranking-check.md) now orders supplied OSM sections using exact vector overlap plus article-place and DRRMO-context signals. It predicts the explicit Santo Domingo location, while the Bernal/Mercedes 100 m audit windows remain unselected despite different modeled overlap.
+The local C. Raymundo network split now supplies 25 between-cross-street sections, excluding arbitrary OSM way ends and same-street dual junctions. One retains alternative carriageway uncertainty. Many sections tie even after comparing total NOAH overlap and `Var` class; a road-name-only report still cannot select one location. Article barangay/landmark context and place-matched DRRMO rows are needed to narrow this set before any automatic zone rule.
 
 ## Purpose
 
