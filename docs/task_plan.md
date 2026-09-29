@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 29, 2026, 9:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -210,6 +210,7 @@
 
 ### Capstone Phase 24 — Unified Flood-Routing Policy (🟡 CLOUD VERIFICATION PENDING)
 
+- [x] Request fastest and shortest candidate sets from both online engines, fill all four distinct eligible cards when available, and keep Walking on pedestrian profiles without a vehicle heading constraint. Focused backend tests pass. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [ ] Verify provider behavior against deployed Valhalla and ORS services, including the routing policy and responsive route presentation.
 
 ### Capstone Phase 22 — Private Valhalla Cloud Run Recovery (🟡 READY FOR CLOUD DEPLOYMENT)

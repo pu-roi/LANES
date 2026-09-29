@@ -2,9 +2,15 @@
 
 **Based on Philippine Urban Flooding Research (2020–2026)**
 
-> **Last Updated:** September 17, 2026, 5:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe) — public Route Planner policy. Walking may use Orange as a strongly cautioned 40% fallback; Red remains blocked for every public profile.
+> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe) — candidate generation and pedestrian routing clarified.
 
 This document defines the mathematical constraints and safety algorithms used by the LANES PostGIS routing engine. By mapping local flood terminology to actual metric depths and comparing them against vehicle engineering limits, the system provides highly accurate, safety-first navigation.
+
+## Online candidate generation
+
+The Route Planner sends the selected travel profile to FastAPI. Walking uses Valhalla `pedestrian` or ORS `foot-walking`; vehicle heading is ignored for Valhalla pedestrian snapping. The routing engines decide pedestrian legality from their OpenStreetMap graphs. A vehicle one-way tag alone does not authorize LANES to override a separate pedestrian prohibition, nor does it require a pedestrian detour when walking against vehicle flow is legal. Valhalla tiles include pedestrian ways; a missing or disconnected mapped footpath can still make a real-world shortcut unavailable.
+
+For either selected engine, FastAPI requests both fastest and shortest searches, each with the provider's native alternate request (Valhalla `alternates=3`, ORS `alternative_routes.target_count=3`). It repeats those searches with the applicable hard and cautious flood polygons, evaluates each returned geometry against active zones, rejects blocked paths, and fills up to four distinct route cards. The fastest eligible path leads; remaining choices favor lower travel time and then shorter distance after the safety categories. Four routes are a target, not a guarantee: the graph, provider alternate limits, flood blocks, and overlap removal may leave fewer legal distinct paths. LANES never invents a path to fill a card. Offline WASM routing currently shows one route with a limited-ranking notice.
 
 ## **1\. The Localized Flood Severity Matrix & MMDA Standards**
 

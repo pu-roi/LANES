@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 29, 2026, 9:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -83,7 +83,7 @@ This document serves as the official technical stack reference for the LANES pla
 ### **4\. Pathfinding Engine (Routing Graph Optimization)**
 
 * **Online Primary Routing Engine:** **Valhalla (Docker / private Cloud Run HTTP API)**  
-  * *Role:* High-performance self-hosted routing engine running as the private `lanes-valhalla` Cloud Run service. FastAPI calls it with a Cloud Run ID token; it natively supports `exclude_polygons`, multiple alternatives (`alternates=2`), and clearance vehicle profiles.
+  * *Role:* High-performance self-hosted routing engine running as the private `lanes-valhalla` Cloud Run service. FastAPI calls it with a Cloud Run ID token; it supports `exclude_polygons`, up to three requested alternates per fastest/shortest search, and pedestrian/motorcycle/auto costing profiles.
 * **Online Cloud Routing Engine:** **OpenRouteService (ORS API)**  
   * *Role:* Cloud-hosted secondary routing engine used as an alternative routing provider for dynamic comparison, fallback resilience, and user-switchable routing in the UI.
 * **Offline Routing Engine (PWA):** **Valhalla WebAssembly (WASM)**  

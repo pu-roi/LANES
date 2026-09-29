@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** September 29, 2026, 9:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > **Stack:** Next.js 18 (App Router) | FastAPI | PostgreSQL + PostGIS | Valhalla / OpenRouteService
 > This document maps every screen, component file, backend endpoint, and database table in the system.
@@ -117,7 +117,7 @@ These files are **always present** regardless of which page you are on.
 | `GET /api/v1/reports/zones` | Fetches all active flood avoidance zone polygons to render on the map |
 | `POST /api/v1/reports/` | Submits a new flood report from the FloodReportPanel form |
 | `POST /api/v1/reports/preview-bidirectional` | Builds an authoritative road preview from raw Start/End anchors. Valid routes retain only their Valhalla-snapped road vertices; the raw selections are input anchors and never become returned or saved connector geometry. Edge shape indexes split mixed road/topology runs before carriageway validation; a map-matched counterpart is trimmed to its longest genuinely parallel component. A short graph-mapped Y merge may be retained only when it connects the matching original-road endpoint, while cross-street or detached junction connectors cannot enter coverage. A verified opposite line therefore applies only to its matching run. Returns the original line, an optional graph-validated opposite carriageway, combined coverage geometry, road classification, validation status, and user-facing explanation. The `/routes/preview-bidirectional` controller remains the canonical implementation. |
-| `POST /api/v1/routing/calculate` | Loads authoritative active PostGIS zones once, obtains Valhalla or ORS candidates with hard/cautious avoidance, evaluates each actual geometry under one server-side policy, removes ineligible paths, and returns at most four distinct categorized routes plus an optional non-selectable blocked-baseline explanation. |
+| `POST /api/v1/reports/route` (also `/api/v1/routes` and `/api/v1/routes/route`) | Loads authoritative active PostGIS zones once, obtains both fastest and shortest Valhalla or ORS candidates with hard/cautious avoidance, evaluates each actual geometry under one server-side policy, removes ineligible paths, and returns up to four distinct categorized routes plus an optional non-selectable blocked-baseline explanation. Walking uses pedestrian graph access and has no vehicle heading constraint. The provider may return fewer than four distinct legal routes. |
 | `GET /api/v1/geocode/autocomplete?q=...` | Returns place name suggestions for location inputs |
 | `GET /api/v1/geocode/reverse?lat=&lon=` | Converts a map tap coordinate to a human-readable address |
 | `POST /api/v1/users/me/saved-places` | Saves a bookmarked location |

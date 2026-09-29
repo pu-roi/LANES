@@ -66,7 +66,7 @@ def test_ranking_deduplicates_categories_and_caps_at_four_cards() -> None:
     ]
     routes, baseline = rank_routes(candidates)
     assert baseline is None
-    assert len(routes) <= 4
+    assert len(routes) == 4
     assert len({route["duration"] for route in routes}) == len(routes)
     assert routes[0]["category"] == "fastest"
 

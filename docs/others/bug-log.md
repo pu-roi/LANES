@@ -1,9 +1,35 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 28, 2026, 11:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-067] Route Planner returned too few alternatives and Walking appeared vehicle-like
+
+- **Status**: Code resolved; live street verification pending
+- **Severity**: Medium
+- **Date Reported / Updated**: September 30, 2026
+- **Affected Area**: Online Valhalla and ORS routing
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Selecting Walking could show a road-like detour, and fewer than four route cards appeared even when four distinct candidates were available.
+
+#### 2. Root Cause Analysis (RCA)
+
+Both providers were queried only with their default fastest costing. Walking already used `pedestrian` / `foot-walking`, so the specific observed street could also reflect legal pedestrian tags, disconnected footpaths, or graph data. The ranker appended only one extra card after its category picks, so it could stop below four. Valhalla also accepted an optional vehicle heading for Walking.
+
+#### 3. Solution & Architectural Strategy
+
+Request fastest and shortest candidate sets from either provider using the same flood-exclusion passes. Keep pedestrian-specific profiles, omit vehicle heading for Walking, and fill the four-card limit from distinct eligible candidates. Never bypass pedestrian access tags or fabricate routes. Verify the reported street against live provider outputs and OSM tags when coordinates are available.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/valhalla_service.py`, `ors_service.py`, `routing_service.py`, `flood_routing_policy.py`: provider preferences, shared candidate search, and four-card ranking. `backend/tests/test_routing_service.py`, `test_flood_routing_policy.py`: walking requests, both preference passes, and four-card regression coverage. Routing guide and system records were synchronized.
 
 ---
 
