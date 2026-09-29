@@ -1,10 +1,13 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Flood report media attachment repair (September 30, 2026)
+- [x] Copied picked files before clearing the native input, made the picker directly tappable in the mobile sheet, and stopped the backend from creating a report after an evidence upload fails. Desktop and mobile viewport browser regressions pass (2/2); backend failure-path test passes (1/1). Physical-device picker confirmation remains open. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Online route alternatives and pedestrian costing (September 30, 2026)
 - [x] Unified Valhalla and ORS fastest/shortest candidate passes under the existing flood policy. The ranker now fills four distinct eligible cards when available, while Walking keeps pedestrian graph access without a vehicle heading. Focused routing tests pass 24/24; live provider behavior and specific street access remain to be verified. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

@@ -39,8 +39,12 @@ async def create_report(
     for file in media:
         if file and file.filename:
             url = upload_image(file)
-            if url:
-                media_urls.append(url)
+            if not url:
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"Could not attach {file.filename}. Your report was not submitted. Please try again.",
+                )
+            media_urls.append(url)
 
     geom_obj = None
     if geometry:
