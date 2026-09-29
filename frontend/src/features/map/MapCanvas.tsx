@@ -51,12 +51,12 @@ class ActionGroupControl {
   private _container: HTMLDivElement | undefined;
   private _onSavePlace: () => void;
   private _onAnalytics: () => void;
-  private _onHazardSelect: (scenario: NoahHazardScenario) => void;
+  private _onHazardSelect: (scenario: NoahHazardScenario | null) => void;
   private _hazardButton: HTMLButtonElement | undefined;
   private _hazardPanel: HTMLDivElement | undefined;
   private _onMapClick = () => this._closeHazardPanel();
 
-  constructor(onSavePlace: () => void, onAnalytics: () => void, onHazardSelect: (scenario: NoahHazardScenario) => void) {
+  constructor(onSavePlace: () => void, onAnalytics: () => void, onHazardSelect: (scenario: NoahHazardScenario | null) => void) {
     this._onSavePlace = onSavePlace;
     this._onAnalytics = onAnalytics;
     this._onHazardSelect = onHazardSelect;
@@ -150,12 +150,12 @@ class ActionGroupControl {
     this._hazardPanel.className = "absolute right-[calc(100%+8px)] top-0 w-40 rounded-xl border border-slate-200 bg-white p-2 shadow-xl";
     this._hazardPanel.setAttribute("role", "group");
     this._hazardPanel.setAttribute("aria-label", "UP NOAH hazard scenarios");
-    for (const scenario of [100, 25, 5] as NoahHazardScenario[]) {
+    for (const scenario of [null, 100, 25, 5] as (NoahHazardScenario | null)[]) {
       const option = document.createElement("button");
       option.type = "button";
       option.className = "block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-blue-600";
-      option.textContent = `${scenario}-Year`;
-      option.dataset.scenario = String(scenario);
+      option.textContent = scenario === null ? "Off" : `${scenario}-Year`;
+      option.dataset.scenario = scenario === null ? "off" : String(scenario);
       option.onclick = (event) => {
         event.stopPropagation();
         this._onHazardSelect(scenario);
@@ -179,7 +179,7 @@ class ActionGroupControl {
     if (this._hazardButton) this._hazardButton.style.display = visible ? "" : "none";
     if (!visible) this._closeHazardPanel();
     this._hazardPanel?.querySelectorAll<HTMLButtonElement>("button[data-scenario]").forEach((option) => {
-      const active = Number(option.dataset.scenario) === selected;
+      const active = option.dataset.scenario === (selected === null ? "off" : String(selected));
       option.classList.toggle("bg-blue-50", active);
       option.classList.toggle("text-blue-700", active);
       option.setAttribute("aria-pressed", String(active));

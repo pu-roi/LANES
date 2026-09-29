@@ -258,6 +258,14 @@ function MapLayout() {
           bodyClassName="flex flex-col gap-2"
         >
           <div className="flex gap-2" role="group" aria-label="Flood hazard rainfall scenarios">
+            <button
+              type="button"
+              aria-pressed={hazardScenario === null}
+              onClick={() => setHazardScenario(null)}
+              className={`min-w-0 flex-1 rounded-lg px-1 py-2 text-xs font-bold transition-colors ${hazardScenario === null ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+            >
+              Off
+            </button>
             {([100, 25, 5] as const).map((scenario) => (
               <button
                 key={scenario}
