@@ -79,7 +79,7 @@ def run_news_discovery(
 
 @router.get("/sources", response_model=list[NewsSourceSummary])
 def list_news_sources(_staff: object = Depends(deps.get_current_active_admin)) -> list[NewsSourceSummary]:
-    """Show candidate and enabled sources without changing moderation state."""
+    """Show configured runtime sources without changing moderation state."""
     return [NewsSourceSummary.model_validate(asdict(source)) for source in load_news_sources()]
 
 

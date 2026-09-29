@@ -1,9 +1,252 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 22, 2026, 11:35 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 28, 2026, 11:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-066] Historical PNA Replay Lost Its Test-Only Source After Registry Cleanup
+
+- **Status**: Source mapping repaired; current live replay blocked by PNA HTTP 500
+- **Severity**: Medium (historical acceptance evidence cannot currently be refreshed)
+- **Date Reported / Updated**: September 28, 2026
+- **Affected Area**: Phase 36 read-only article simulation
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After the runtime RSS registry was reduced to six active publishers, `simulate_phase36_articles.py` stopped two fixed historical PNA cases with `Publisher domain not registered`. The current PNA article endpoints also returned HTTP 500 when fetched after the mapping repair.
+
+#### 2. Root Cause Analysis (RCA)
+
+The replay script reused the live RSS source registry as its entire domain allowlist. PNA was removed from that registry because it is not an active feed, although two fixed historical acceptance cases still depend on its article domain. The HTTP 500 responses originate from current publisher requests; the script cannot recover their article bodies from them.
+
+#### 3. Solution & Architectural Strategy
+
+Add a disabled, feedless PNA source only inside the historical replay script. It still requires the existing approved-domain article fetcher and cannot affect scheduled discovery. Preserve the two PNA cases as unverified on this run until their publisher pages respond or an authorized saved full body is available; do not count prior 16/16 and 8/8 results as a current pass.
+
+#### 4. Files Modified / What Changed
+
+- `backend/scripts/simulate_phase36_articles.py`: Add fixed historical PNA domain mapping without enabling a runtime RSS source.
+- `docs/evaluations/phase-36-publisher-body-and-pagination-audit.md`, `docs/task_plan.md`, `docs/others/bug-log.md`: Record the current replay results and open availability limit.
+
+---
+
+### [BUG-065] Full GMA Body Exposed Cross-Section Fact Leakage and Publisher Widget Claims
+
+- **Status**: Checked GMA text-extraction errors repaired; publisher-wide pagination and Inquirer full-body access remain open
+- **Severity**: High (a later city can inherit another city's time or an incidental place can be misread)
+- **Date Reported / Updated**: September 28, 2026
+- **Affected Area**: Phase 36 article parsing and Taglish extraction
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The complete GMA page initially mapped “Valley 2 in Barangay” to a false two-inch depth, missed named junction/bridge sites, omitted reported vehicle restrictions, carried a Quezon City or Manila clock into later city sections, and treated zero-visibility weather and a photo credit as place claims. The parsed `<main>` also contains related stories and embedded social/widget text. The Inquirer source refuses the registered fetcher with HTTP 403.
+
+#### 2. Root Cause Analysis (RCA)
+
+An ambiguous-depth pattern accepted bare `in` as inches; landmark matching did not cover Junction, Bridge, or numbered Valley names; vehicle rules did not cover these ordinary English/Tagalog phrasings. Any paragraph containing an `as of` flood statement could set a section-wide clock even if it reported one named site. In the July GMA status list, suffixless road names were split into city matches, list headings leaked into later narrative, and grouping by exact spelling missed `España`/`Espana`. The generic HTML parser included a GMA related-story widget. Inquirer's 403 is an upstream access refusal, not evidence of an empty article.
+
+#### 3. Solution & Architectural Strategy
+
+Remove bare `in` depth matching; keep human-height descriptions as raw ambiguous depth. Extract the named landmarks and vehicle restrictions; skip zero-visibility and `Courtesy:` lines. Exclude the GMA `mrect_related_content_holder` widget in HTML parsing while preserving the following reporting text. Keep suffixless list sites together, scope grouped city/time to list boundaries, and treat recorded flooding in an earlier advisory as an observation rather than a forecast. Resolve `Maynila` as Manila for embedded road evidence. Compare same bounded road claims accent-insensitively and regardless of article order for review marking. Current live replays produce 27 review-only claims for August 29 and 26 review/suppressed claims for July 10; the original 51-site check still matches 27/27, 16/16, and 8/8, and 64 focused tests pass. Publisher-wide pagination/completeness and an accessible Inquirer body remain needed before Gate 1 closure.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`, `backend/tests/test_taglish_extraction.py`: list-site boundaries, city and time scope, alias matching, advisory observation, and contradiction regressions.
+- `backend/app/services/news_discovery_service.py`, `backend/tests/test_news_discovery.py`: exclude GMA's related-story container without cutting subsequent reporting text.
+- `docs/evaluations/phase-36-three-article-check.md`, `docs/task_plan.md`, `docs/progress.md`, `docs/others/bug-log.md`: source-level evidence and open limits.
+
+---
+
+### [BUG-064] Long Article Bodies Were Silently Truncated
+
+- **Status**: Silent cutoff, sampled publisher body defects, and a Rappler rolling-updates pagination miss repaired; unseen pagination and Inquirer access remain open
+- **Severity**: High (a late flood update could be omitted while the article appears complete)
+- **Date Reported / Updated**: September 28, 2026
+- **Affected Area**: Phase 36 article fetching and full-body extraction
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+`fetch_article_text` silently returned only the first 30,000 characters of parsed article text. A report, correction, or subsidence statement later in a long page would not reach the extractor, yet the result had no incomplete-body error. A later five-entry-per-source audit also found a Rappler rolling-updates page where the first 4,353 parsed characters were accepted despite a `?next=2` continuation.
+
+#### 2. Root Cause Analysis (RCA)
+
+The parsed text was sliced with `[:30_000]` after the HTML response had already been read. The three audited articles are shorter than that limit, so their 51-site checks did not expose this general hole. The fetcher also only followed HTTP redirects, not publisher pagination links. Its same-article continuation matcher recognized numeric `page` queries and paths but not Rappler's numeric `next` query. In the current-source audit, Philstar's `sports_article_writeup` appeared outside `<article>` and `<main>`, so the generic parser returned no text. Rappler and BusinessWorld put story text within narrower containers than `<main>`, which admitted unrelated page content.
+
+#### 3. Solution & Architectural Strategy
+
+Return the complete parsed text within a 100,000-character processing bound. If it exceeds that bound, return an explicit error and no article body so downstream processing cannot mistake a prefix for the whole story. Detect HTML `rel=next` and common same-article `?page=2`, `?next=2`, `/page/2`, or `/2` links and mark those articles incomplete rather than processing page one alone. Require publisher story-body containers for Rappler and BusinessWorld, extract Philstar's write-up container, and omit sampled related-story widgets. Philstar's `lazy_section.php?page=1` link loads a different story and is not a continuation. A ten-position-per-source follow-up found 50 accessible article responses: 49 supplied accepted text and the Rappler rolling-updates page remained incomplete, linking onward even after page 32. This does not prove all templates or pagination schemes; unrecognized multi-page articles remain a risk. The Inquirer feed returned 200, while ten article requests returned Cloudflare `cf-mitigated: challenge` 403 responses, including one repeated URL. The collector records an explicit publisher-challenge error and accepts no full Inquirer body. See the [publisher audit](../evaluations/phase-36-publisher-body-and-pagination-audit.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_discovery_service.py`, `backend/tests/test_news_discovery.py`: Remove silent truncation, narrow publisher containers, skip related blocks, and test incomplete-body and continuation cases, including Rappler's `next` query pattern.
+- `docs/task_plan.md`, `docs/progress.md`, `docs/others/bug-log.md`, `docs/evaluations/phase-36-publisher-body-and-pagination-audit.md`: Record the sampled results and open pagination/Inquirer limits.
+
+---
+
+### [BUG-063] Explicit News Observation Clocks Lacked Dates
+
+- **Status**: Bounded explicit-clock resolution repaired; ambiguous dates and automatic activation remain in review
+- **Severity**: High (freshness cannot be verified for automatic routing)
+- **Date Reported / Updated**: September 28, 2026
+- **Affected Area**: Phase 36 Taglish event-time extraction and hybrid activation gate
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The extractor keeps strings such as `as of 4:30 p.m.` and classifies some as observations, but `event_time_resolved` remains `None`. The activation gate requires a timezone-aware resolved observation time, so normal extracted claims cannot satisfy that prerequisite.
+
+#### 2. Root Cause Analysis (RCA)
+
+`extract_event_time_from_text` returned the raw match and `None` rather than combining the explicit clock time with a justified source date and timezone. The article's publication time is not itself a flood observation or onset time.
+
+#### 3. Solution & Architectural Strategy
+
+The extractor now resolves only explicit `as of` observation clocks against a timezone-aware publication time in Asia/Manila, within a 12-hour bound. It handles a nearby previous-day midnight rollover and leaves explicit other dates, stale clocks, missing or naive publication timestamps, and report-only clocks unresolved. A read-only August GMA replay resolved the named road observation clocks and left an embedded post with an explicit calendar date unresolved. This enables the time field to pass its prerequisite for suitable claims but does not satisfy the independent audit, exact geometry, current-source, or article-completeness gates for automatic activation.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`, `backend/tests/test_taglish_extraction.py`: Add bounded observation time resolution and regressions for same-day, midnight, stale, explicit-date, naive publication, and report-only cases.
+- `docs/task_plan.md`, `docs/progress.md`, `docs/evaluations/phase-36-three-article-check.md`, `docs/others/bug-log.md`: Record the delivered prerequisite and remaining limits.
+
+---
+
+### [BUG-062] Article Context Produced Incidental Flood Claims and Unreconciled Updates
+
+- **Status**: In progress; real newer-first clearing case checked, wider source evaluation pending
+- **Severity**: High (incorrect place evidence or stale active claim could mislead future automatic placement)
+- **Date Reported / Updated**: September 28, 2026
+- **Affected Area**: Phase 36 Taglish extraction and hybrid activation decision
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The three-article simulation included photo-caption, dateline-city, and rainfall-warning places among extracted claims. A later clearing update for the same road section did not mark its earlier active claim as conflicting.
+
+#### 2. Root Cause Analysis (RCA)
+
+The sentence extractor treated every recognized place in a news body as a candidate, including editorial context and weather measurements. Claims were evaluated independently, with no same-section check for later subsidence or negation.
+
+#### 3. Solution & Architectural Strategy
+
+Preserve pre-dateline flood-road captions as `photo_caption_only` review evidence; do not let them approve a zone without independent confirmation. Metadata-only leads are likewise review-only. Skip explicit photo credits, dateline place labels, and rainfall-only sentences without a flood observation. Mark a repeated city plus bounded road/landmark section when one statement says it cleared, regardless of article order; the action gate then requires review. Do not infer a resolved observation time or a whole-road closure. The initial connection errors came from process-only proxy variables pointing to `127.0.0.1:9`, not the publishers or user network. A publisher-backed rerun after removing those variables matched all 51 cited list sites while preserving the PNA lead photo claim as review-only. A separate July 10 GMA article verifies newer-first clearing markers on Taft Avenue and España/Maceda; its text-level road/city and grouped-time errors were repaired under BUG-065.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`, `backend/app/services/hybrid_extraction_service.py`: filter incidental context, link same-section contradictory updates, and block approval of those earlier claims.
+- `backend/tests/test_taglish_extraction.py`, `backend/tests/test_news_auto_ingestion.py`: verify filtering, segment isolation, caption review isolation, and the decision gate; five targeted and 65 focused tests passed.
+- `docs/evaluations/phase-36-new-article-service-simulation.md`, `docs/task_plan.md`, `docs/progress.md`, `docs/others/bug-log.md`: record the publisher-backed 51-site result, proxy cause, and remaining contradictory-update evaluation.
+
+---
+
+### [BUG-061] Full-Article Flood Lists Lost Locations and Their Parent Context
+
+- **Status**: Resolved for three audited articles; incidental-claim filtering and broader evaluation pending
+- **Severity**: High (missing or mislocated evidence would undermine automatic placement)
+- **Date Reported / Updated**: September 28, 2026
+- **Affected Area**: Phase 36 article fetch, Taglish extraction, PSGC hierarchy, and location ranking
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The read-only service simulation omitted named flood sites or lost their main road, cross street, parent city/barangay, report time, vehicle status, or travel direction in three Metro Manila articles. A count of extracted claims included incidental places and did not measure list completeness.
+
+#### 2. Root Cause Analysis (RCA)
+
+HTML list boundaries were flattened; periods in `p.m` and `cor.` split one entry; generic road suffix matching missed suffixless road names and mistook crossing roads or landmarks for separate reports. Article/list headings did not scope city, barangay, time, and passability. The PSGC resolver sometimes preferred an unrelated province or substring city match, and geometry ranking overwrote an already qualified barangay parent.
+
+#### 3. Solution & Architectural Strategy
+
+Preserve list boundaries and add source-evidence-linked road relation, service-road, landmark, numbered-site, direction, grouped advisory, and bullet-time parsing. Prefer explicit city-qualified PSGC matches and carry the qualified barangay into location ranking. The 51 manually checked entries are now a tracked expected-facts fixture; a live read-only rerun matched all 27/16/8 entries and the focused suite passed 73/73. This does not prove unseen-article recall or verified coordinates. Incidental photo/weather claims and spatial verification remain Phase 36 work.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_discovery_service.py`, `backend/app/services/taglish_extraction_service.py`, `backend/app/services/philippine_location_service.py`, `backend/app/services/nationwide_geometry_service.py`: Preserve article structure, link named sites to main roads, retain scoped facts, and resolve administrative parents from the right city.
+- `backend/tests/test_news_discovery.py`, `backend/tests/test_taglish_extraction.py`, `backend/tests/test_nationwide_geometry.py`, `backend/tests/test_phase36_article_simulation.py`, `backend/tests/fixtures/phase36_expected_sites.json`, `backend/scripts/simulate_phase36_articles.py`: Add regressions, the read-only full-article simulation, and expected-site checks. The focused suite passes 73/73 tests.
+- `docs/evaluations/phase-36-new-article-service-simulation.md`, `docs/task_plan.md`, `docs/progress.md`, `docs/others/bug-log.md`: Record source comparison, automated acceptance results, limits, and next Gate 1/Gate 3 tasks.
+
+---
+
+### [BUG-060] News Claim Could Treat Preview Geometry and Fallback Audit as Approval Evidence
+- **Status**: Code safeguard applied; automated verification pending
+- **Severity**: High (public routing impact if dormant ingestion were connected)
+- **Date Reported / Updated**: September 27, 2026
+- **Affected Area**: Phase 36 hybrid extraction, location ranking, and news ingestion
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The dormant news ingestion path could treat generated polygons and an `auto_approved` label as sufficient to create a public Flood Report, Event, and avoidance zone. The label could be assigned without an independent audit or recent observation; a `0.98` score was assigned only afterward.
+
+#### 2. Root Cause Analysis (RCA)
+
+Offline coordinates generated suggestion geometry but also set `is_auto_approvable`. The fallback auditor returned `is_confirmed=True` when the external model was unavailable. The ingestion service trusted `action_type` and supplied a default `knee` depth and Pasig city on missing data.
+
+#### 3. Solution & Architectural Strategy
+
+Tag geometry provenance and keep current polygons as previews. Require explicit independent confirmation and recent observation/publication before any approval decision. Reevaluate all gates at the public-write boundary so an exact verified claim can activate automatically while stale or forged labels cannot. Remove synthetic confidence, depth, and city defaults. The current geometry provider cannot produce a verified affected segment; integrate LiPAD/UP NOAH spatial context and road-segment matching, then connect the collector. The focused discovery/extraction/geometry/ingestion suite passes 70/70 tests; the broader Gate 2 prerequisite and zero-write acceptance checks remain pending.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/schemas/news_extraction.py`, `backend/app/services/nationwide_geometry_service.py`, `backend/app/services/hybrid_extraction_service.py`, `backend/app/services/news_auto_ingestion_service.py`: Added provenance, fail-closed audit/decision gates, attached audit results, and an independent write-boundary reevaluation.
+- `backend/tests/test_hybrid_extraction_service.py`, `backend/tests/test_nationwide_geometry.py`, `backend/tests/test_news_auto_ingestion.py`: Updated expected review outcomes and added failed-prerequisite and forged-label cases.
+- `docs/plans/news-activation-safety-gates.md`, `docs/task_plan.md`, `docs/progress.md`, `docs/feature-reference.md`, and `docs/others/system-documentation.md`: Recorded rollout boundary and current Gate 2 status.
+
+---
+
+### [BUG-059] Staff News API Test Used a Missing Local PostgreSQL Database
+- **Status**: Resolved
+- **Severity**: Low (test isolation)
+- **Date Reported / Resolved**: September 27, 2026
+- **Affected Area**: Backend news API automated test
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The staff news API test timed out when posting a manual candidate on a machine without local PostgreSQL. The other focused backend tests passed; this did not establish a production Cloud SQL fault.
+
+#### 2. Root Cause Analysis (RCA)
+
+The test overrode staff authentication but left `get_db` pointing at the development default `localhost:5432`. Its manual-candidate request therefore depended on a running external database.
+
+#### 3. Solution & Architectural Strategy
+
+Override `get_db` with an in-memory SQLite session using `StaticPool`, create only the news tables, and remove the overrides after the test. The focused endpoint test now passes without a local or cloud database.
+
+#### 4. Files Modified / What Changed
+
+- `backend/tests/test_news_discovery.py`: Isolated the protected source/manual-candidate test from external PostgreSQL; confirmed `1 passed`.
+
+---
+
+### [BUG-058] Real 2026 Flood Articles Lose Place Spans, Time, or List Locations
+- **Status**: Partially resolved (Manila Bulletin and checked GMA full-page replays pass their text checks; Inquirer full body, pagination, and geometry remain open)
+- **Severity**: High (would affect map suggestions if connected)
+- **Date Reported**: September 27, 2026
+- **Affected Area**: Phase 36 Taglish extraction and nationwide location resolution
+- **Author / Resolver**: [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Three short August 2026 publisher passages produced malformed road names, a false City of Calamba match for Calamba Street in Quezon City, missing city context on road claims, and a broken `p.m.` timestamp. A full-body replay of the Manila Bulletin article also found seven missed named passable roads and 11 unstructured barangay mentions. Exact source-linked evidence is in [the three-article check](../evaluations/phase-36-three-article-check.md).
+
+#### 2. Root Cause Analysis (RCA)
+
+The generic case-insensitive road regex swallowed leading words and dropped hyphenated prefixes; the city matcher treated a cross-street name as a city. Sentence splitting broke `p.m.` and the parser did not retain road segments or local-area phrases. Numeric depth was previously treated as ambiguous even when it exactly matched the configured gauge. A unit abbreviation also mistook `Sitio 6 in Catmon` for six inches. The list parser handled an impassable-road list but ignored the separate passable-road and unnamed-street lists, so one article was incompletely represented.
+
+#### 3. Solution & Architectural Strategy
+
+The checked passages and full Manila Bulletin reporting body now have source-linked expected facts. A full-body regression checks 26 named-location and 11 broad-area claims, per-list passability, shared range depth, offsets, and the unresolved `Santulan` spelling. The later GMA full-page and update-order replays are documented under BUG-065; the Inquirer full body, publisher pagination, and verified geometry remain Gate 1/2 work. Keep article-to-zone processing disconnected until those gates pass.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`, `backend/app/schemas/news_extraction.py`, and `backend/tests/test_taglish_extraction.py`: Repaired the checked cases, added per-claim passability, and covered the full Manila Bulletin body structure. Tests pass 22/22 focused and 41/41 across extraction, location service, and news discovery.
+- `docs/evaluations/phase-36-three-article-check.md`, `docs/task_plan.md`, and `docs/progress.md`: Recorded the developer-reviewed expected facts, results, and remaining full-article evaluation.
 
 ---
 

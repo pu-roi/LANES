@@ -64,7 +64,7 @@ class LLMAuditResult(BaseModel):
 
 
 class RankedLocationCandidate(BaseModel):
-    """Nationwide ranked geographic candidate with generated avoidance geometry."""
+    """Nationwide ranked geographic suggestion; geometry may be preview-only."""
 
     raw_place_name: str
     resolved_province: str | None = None
@@ -79,9 +79,10 @@ class RankedLocationCandidate(BaseModel):
     confidence_score: float = 0.0
     score_rationale: str = ""
 
-    geometry_geojson: dict | None = None  # Authoritative avoidance polygon GeoJSON
-    source_geometry_geojson: dict | None = None  # Centreline / point GeoJSON
+    geometry_geojson: dict | None = None  # Preview polygon unless exact segment verified
+    source_geometry_geojson: dict | None = None  # Suggested centreline / point GeoJSON
     representative_point: tuple[float, float] | None = None  # (lat, lng)
+    geometry_provenance: Literal["none", "offline_anchor", "caller_coordinate", "verified_segment"] = "none"
 
     is_auto_approvable: bool = False
     requires_staff_edit: bool = False
@@ -95,6 +96,8 @@ class ExtractedClaim(BaseModel):
     canonical_city: str | None = None
     canonical_province: str | None = None
     canonical_road: str | None = None
+    road_segment_raw: str | None = None
+    local_area_raw: str | None = None
     island_group: str | None = None
     psgc_code: str | None = None
 
@@ -106,6 +109,7 @@ class ExtractedClaim(BaseModel):
     is_negated: bool = False
     is_forecast: bool = False
     is_historical: bool = False
+    road_passability: Literal["passable_all", "light_vehicle_closed", "impassable_all", "unknown"] = "unknown"
 
     depth_raw: str | None = None
     depth_canonical: CanonicalDepth | None = None
@@ -118,6 +122,7 @@ class ExtractedClaim(BaseModel):
 
     event_time_raw: str | None = None
     event_time_resolved: datetime | None = None
+    event_time_kind: Literal["observation", "report", "unspecified"] = "unspecified"
 
     evidence_sentence: str
     evidence_sentence_offset: tuple[int, int]
@@ -128,6 +133,7 @@ class ExtractedClaim(BaseModel):
     # Auto-approval and spatial geometry extensions
     action_type: str | None = None
     action_rationale: str | None = None
+    audit_result: LLMAuditResult | None = None
     ranked_location: RankedLocationCandidate | None = None
 
 

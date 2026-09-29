@@ -1,14 +1,15 @@
-"""Integration tests for NewsAutoIngestionService and Smart Auto-Activation.
+"""Safety tests for news ingestion and public-zone activation.
 
 Verifies:
-  1. Auto-approval generates official FloodEvent and operational FloodAvoidanceZone atomically.
+  1. Auditor-confirmed news remains in review without verified geometry/time.
   2. Subsided flood ("humupa na") is strictly suppressed with zero created zones.
   3. Weather forecast ("posibleng bahain") is strictly suppressed with zero created zones.
-  4. Non-admin execution: zones are live immediately on live map without admin intervention.
+  4. A stale auto_approved action cannot bypass the persistence boundary.
 """
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 import pytest
 from sqlalchemy import create_engine
@@ -17,11 +18,12 @@ from sqlalchemy.orm import sessionmaker
 from app import models
 from app.models.news import NewsArticle
 from app.models.report import FloodAvoidanceZone, FloodEvent, FloodReport, FloodEventStatus, ReportStatus
-from app.schemas.news_extraction import LLMAuditResult
+from app.schemas.news_extraction import ExtractedClaim, LLMAuditResult, NewsExtractionResult, RankedLocationCandidate
 from app.services.news_auto_ingestion_service import (
     NewsAutoIngestionService,
     get_news_auto_ingestion_service,
 )
+from app.services.hybrid_extraction_service import HybridExtractionService
 
 
 @pytest.fixture
@@ -29,12 +31,86 @@ def auto_ingestion_service() -> NewsAutoIngestionService:
     return get_news_auto_ingestion_service()
 
 
+def test_conflicting_update_blocks_even_independently_verified_geometry():
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="Araneta Avenue",
+        canonical_city="Quezon City",
+        road_segment_raw="Araneta Avenue corner Maria Clara",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=14,
+        evidence_sentence="Araneta Avenue corner Maria Clara was flooded at 26 inches.",
+        evidence_sentence_offset=(0, 58),
+        flood_mentioned=True,
+        depth_canonical="tires",
+        condition="active",
+        event_time_resolved=now,
+        event_time_kind="observation",
+        uncertainty_reasons=["contradictory_update"],
+    )
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    location = RankedLocationCandidate(
+        raw_place_name="Araneta Avenue",
+        resolved_city="Quezon City",
+        precision_level="road",
+        geometry_provenance="verified_segment",
+        is_auto_approvable=True,
+        requires_staff_edit=False,
+        geometry_geojson={"type": "Polygon", "coordinates": []},
+    )
+
+    action, reason = HybridExtractionService().evaluate_claim_action(claim, audit, location, now)
+
+    assert action == "flagged_review"
+    assert "conflicting" in reason.lower()
+
+
+def test_caption_and_metadata_only_cannot_activate_even_with_verified_geometry():
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="UN Avenue",
+        canonical_city="City of Manila",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=9,
+        evidence_sentence="A photo shows flooding on UN Avenue.",
+        evidence_sentence_offset=(0, 35),
+        flood_mentioned=True,
+        depth_canonical="knee",
+        condition="active",
+        event_time_resolved=now,
+        event_time_kind="observation",
+        uncertainty_reasons=["photo_caption_only"],
+    )
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    location = RankedLocationCandidate(
+        raw_place_name="UN Avenue",
+        resolved_city="City of Manila",
+        precision_level="road",
+        geometry_provenance="verified_segment",
+        is_auto_approvable=True,
+        requires_staff_edit=False,
+        geometry_geojson={"type": "Polygon", "coordinates": []},
+    )
+
+    action, reason = HybridExtractionService().evaluate_claim_action(claim, audit, location, now)
+
+    assert action == "flagged_review"
+    assert "caption" in reason.lower()
+
+    metadata_claim = claim.model_copy(update={"uncertainty_reasons": ["metadata_only_lead"]})
+    action, reason = HybridExtractionService().evaluate_claim_action(metadata_claim, audit, location, now)
+    assert action == "flagged_review"
+    assert "metadata" in reason.lower()
+
+
 @pytest.mark.asyncio
-async def test_auto_approval_creates_verified_event_and_zone_without_admin(
+async def test_auditor_confirmation_does_not_create_public_zone(
     auto_ingestion_service: NewsAutoIngestionService,
     monkeypatch,
 ):
-    """Complete active flood details from news are automatically approved and activated."""
+    """Article extraction may suggest a road but must not activate a zone."""
     # Mock LLM auditor to confirm
     async def mock_audit(claim, context_text, client=None):
         return LLMAuditResult(
@@ -51,10 +127,7 @@ async def test_auto_approval_creates_verified_event_and_zone_without_admin(
 
     # Mock DB session
     mock_db = MagicMock()
-    mock_event = MagicMock(spec=FloodEvent, id=901, status=FloodEventStatus.ACTIVE)
-    mock_zone = MagicMock(spec=FloodAvoidanceZone, id=701, is_active=True)
-
-    with patch("app.services.news_auto_ingestion_service.create_verified_event_with_zone", return_value=(mock_event, mock_zone)):
+    with patch("app.services.news_auto_ingestion_service.create_verified_event_with_zone") as mock_create_event:
         article = NewsArticle(
             id=501,
             canonical_url="https://news.example.com/pasig-flood",
@@ -67,11 +140,64 @@ async def test_auto_approval_creates_verified_event_and_zone_without_admin(
 
         result = await auto_ingestion_service.process_and_ingest_article(mock_db, article, acted_by_user_id=1)
 
-        assert result["auto_approved_claims"] >= 1
-        assert result["review_state"] == "auto_approved"
-        assert 901 in result["created_event_ids"]
-        assert article.review_state == "auto_approved"
+        assert result["auto_approved_claims"] == 0
+        assert result["review_state"] == "flagged_review"
+        assert result["created_event_ids"] == []
+        assert article.review_state == "flagged_review"
+        assert not mock_create_event.called
         assert mock_db.commit.called
+
+
+@pytest.mark.asyncio
+async def test_forged_auto_approved_claim_cannot_write_public_records(
+    auto_ingestion_service: NewsAutoIngestionService,
+    monkeypatch,
+):
+    """A stale decision string is insufficient to cross the persistence boundary."""
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="Sample Road",
+        canonical_city="City of Pasig",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=11,
+        evidence_sentence="Flood at Sample Road, knee deep.",
+        evidence_sentence_offset=(0, 32),
+        depth_canonical="knee",
+        condition="active",
+        event_time_resolved=now,
+        action_type="auto_approved",
+        ranked_location=RankedLocationCandidate(
+            raw_place_name="Sample Road",
+            precision_level="road",
+            geometry_provenance="verified_segment",
+            is_auto_approvable=True,
+            geometry_geojson={"type": "Polygon", "coordinates": []},
+        ),
+    )
+
+    async def forged_extraction(*args, **kwargs):
+        return NewsExtractionResult(article_id=504, canonical_url="https://news.example.com/flood", is_metadata_only=False, processed_text_length=32, claims=[claim])
+
+    monkeypatch.setattr(auto_ingestion_service.hybrid_service, "extract_hybrid", forged_extraction)
+    article = NewsArticle(
+        id=504,
+        canonical_url="https://news.example.com/flood",
+        publisher_source_id="gma-news",
+        title="Sample Road flood",
+        article_text=claim.evidence_sentence,
+        published_at=now,
+        review_state="pending",
+    )
+    mock_db = MagicMock()
+    with patch("app.services.news_auto_ingestion_service.create_verified_event_with_zone") as create_event:
+        result = await auto_ingestion_service.process_and_ingest_article(mock_db, article)
+
+    assert result["flagged_claims"] == 1
+    assert result["created_event_ids"] == []
+    assert article.review_state == "flagged_review"
+    mock_db.add.assert_not_called()
+    create_event.assert_not_called()
 
 
 @pytest.mark.asyncio

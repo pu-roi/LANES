@@ -1,9 +1,11 @@
 # LANES: Smart Auto-Activation & Multi-Tier Hybrid Flood Intelligence Plan
 
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)  
-> **Last Updated:** September 26, 2026, 8:40 PM  
-> **Status:** Implemented & Verified (45/45 Tests Passing)  
+> **Last Updated:** September 28, 2026, 10:30 PM
+> **Status:** The scheduled RSS collector saves pending evidence. Connecting it to article extraction, current-evidence decisions, public alerts, and verified road zones remains open, as do exact road geometry and release verification. The historical 45/45 test result below predates the current safeguards.
 > **Target Phase:** Capstone Phase 36 — Trusted Flood Intelligence
+
+> **Current implementation note:** This document preserves the original Option 2 design. Separate backend services implement deterministic extraction and an optional Gemini auditor, but the scheduled RSS collector does not call them. calamanCy and Cloud Natural Language are not called. `0.95` is not a calibrated approval probability. The Pasig DRRMO CSV has historical street and depth context but no coordinates. LiPAD/UP NOAH layers are not integrated. Current polygons are previews and cannot make an exact road closure; see the [spatial integration](lipad-noah-flood-placement.md) and [activation safety](news-activation-safety-gates.md) plans. The ingestion code can auto-activate a fully evidenced claim, but the current geometry provider cannot produce the required verified segment. Credible news without exact segment geometry should reach commuters promptly as a separately labeled alert once that path is built.
 
 ---
 
@@ -11,96 +13,65 @@
 
 This document specifies the technical architecture, execution flow, safety suppression mechanisms, and geometric standards for **Trusted Flood Intelligence** in the LANES platform. 
 
-The system transitions from slow, manual administrator-only verification to an automated, intelligent ingestion pipeline (**Option 2: Smart Auto-Activation**). Complete flood reports from verified Philippine news sources are automatically converted into live Valhalla avoidance zones and official PostGIS flood events without admin bottleneck, while strict safety gates suppress receded waters (*"humupa na"*) and weather predictions (*"posibleng bahain"*) to prevent closing dry, passable roads. Extracted flood depths are bound to the Phase 37 MMDA physical depth measurement system (`flood_depth.py`), replacing text-only depth words with dual-unit metric and imperial measurements.
+The target system periodically checks approved RSS feeds for recent Metro Manila flood reports, extracts source-linked facts, and uses OSM road geometry with Pasig DRRMO history and LiPAD/UP NOAH hazard layers as location evidence. DRRMO records are historical context, and NOAH is modeled susceptibility; neither proves flooding now. Credible but imprecisely located reports should become source-labeled alerts. Only current claims with a verified bounded affected segment and all evidence gates may create an operational PostGIS zone that affects Valhalla routing. The collector currently stops after saving pending article evidence, and the spatial layers are not integrated into automatic placement.
 
 ---
 
-## 2. Multi-Tier Hybrid Architecture (4-Tier AI Ensemble)
+## 2. Current Extraction and Planned Supporting Tiers
 
-To prevent LLM hallucination, reduce API latency, and maintain academic defense rigor, the platform establishes an explicit division of labor: **deterministic rules and grounded NER lead detection, while Gemini 1.5 Flash acts strictly as a double-check auditor**.
+The current code uses deterministic rules and PSGC grounding. An optional configured OpenRouter Gemini auditor can check a candidate claim; missing or failed independent confirmation remains an exception. calamanCy and Google Cloud Natural Language are evaluation options, not runtime tiers. The diagram shows the intended connection between existing components and future spatial and publication gates.
 
 ```mermaid
 flowchart TD
-    subgraph Ingestion [Source Discovery]
-        RSS["Verified Philippine News (RSS / Atom / Web)"]
-    end
-
-    subgraph PrimaryDetection [Primary Feature Detection Core]
-        T1["Tier 1: Taglish Rules & 43k PSGC Reference Grounding<br/>(Deterministic regex, sub-millisecond, 0 hardcoded places)"]
-        T2["Tier 2: calamanCy Tagalog NER<br/>(Extracts colloquial Tagalog location spans)"]
-        T3["Tier 3: Google Cloud Natural Language<br/>(Syntax & broadsheet entity verification)"]
-    end
-
-    subgraph CandidateAssembly [Candidate State]
-        Claim["Candidate Flood Claim<br/>• Road: 'C. Raymundo Ave'<br/>• Depth: 'knee' -> 19\" (0.48m) • Knee<br/>• Condition: 'active'"]
-        Geo["NationwideGeometryService<br/>• PSGC Hierarchy: Province -> City -> Barangay -> Road<br/>• 50m Corridor / Buffer Polygon Generation"]
-    end
-
-    subgraph SecondaryAuditor [Supporting Verification Role]
-        LLM["Tier 4: Gemini 1.5 Flash Auditor<br/>(Strict double-check role: validates active status, depth, and context)"]
-    end
-
-    subgraph SafetyGate [Smart Auto-Activation Decision Engine]
-        Gate{"Evaluation Gate"}
-    end
-
-    subgraph Outcomes [Operational Lifecycle]
-        Auto["auto_approved (>=95% Confidence)<br/>SMART AUTO-ACTIVATION<br/>(Instant PostGIS Zone & Valhalla Rerouting)"]
-        Supp1["suppressed_subsided<br/>('humupa na' / receded)<br/>(Road kept open; no active zone)"]
-        Supp2["suppressed_forecast<br/>('posibleng bahain' / advisory)<br/>(No active road closure)"]
-        Flag["flagged_review<br/>(Ambiguous / City-Only / Low Confidence)<br/>(Enqueued for 1-click staff review)"]
-    end
-
-    RSS --> T1 & T2 & T3
-    T1 & T2 & T3 --> Claim
-    Claim --> Geo
-    Claim --> LLM
-    LLM --> Gate
-    Geo --> Gate
-
-    Gate -- "Active + Complete Road + Canonical Depth + Auditor Confirmed" --> Auto
-    Gate -- "Water Subsided / Receded" --> Supp1
-    Gate -- "Future Forecast / Advisory" --> Supp2
-    Gate -- "Broad City Only / Incomplete" --> Flag
+    RSS["Six configured publisher RSS feeds"] --> Shortlist["Metro Manila flood-word and place shortlist"]
+    Shortlist --> Body["Complete, accessible article body or incomplete lead"]
+    Body -.-> Facts["Deterministic Taglish facts and PSGC place evidence"]
+    Facts -.-> Preview["OSM-based location suggestions: preview only"]
+    Facts -.-> Audit["Optional independent claim auditor"]
+    DRRMO["Pasig DRRMO historical place context"] -.-> Spatial["Planned bounded-segment and provenance check"]
+    NOAH["UP NOAH modeled susceptibility"] -.-> Spatial
+    OSM["OSM road and landmark geometry"] -.-> Spatial
+    Preview -.-> Spatial
+    Audit -.-> Gate{"Planned current-evidence and spatial gates"}
+    Spatial -.-> Gate
+    Gate -.-> Alert["Credible unresolved claim: source-labeled map alert"]
+    Gate -.-> Zone["Verified bounded current claim: expiring routing zone"]
+    Gate -.-> Review["Incomplete or conflicting claim: staff exception"]
+    Gate -.-> Suppressed["Forecast, negated, or subsided: no active zone"]
 ```
 
-### The 4 Tiers Defined
+### Implemented and Proposed Extractors
 
 | Tier | Engine / Technology | Role in System | Performance / Cost |
 |---|---|---|---|
 | **Tier 1** | Local Deterministic Taglish Rules & PSA PSGC Grounding (`philippine_location_service.py`) | **Lead Extractor**: Scans text for flood verbs, canonical depths (`gutter`..`neck`), and matches place tokens against **43,778 official PSGC records**. Zero hardcoding in code files. | Sub-millisecond (<1ms), 0 MB cloud bandwidth, 100% deterministic. |
-| **Tier 2** | `calamanCy` Tagalog NER Baseline (`tl_calamancy_md`) | **Local NER Assistant**: Identifies colloquial Tagalog location phrases and prepositional location heads (*sa kahabaan ng*, *sa kanto ng*). | Local CPU inference. |
-| **Tier 3** | Google Cloud Natural Language API (`analyzeEntities`) | **Broadsheet Verifier**: Parses national broadsheet syntax, confirms entity salience, and verifies physical location entities. | Fast HTTP REST, 5,000 free monthly units. |
-| **Tier 4** | Gemini 1.5 Flash (`audit_claim_with_llm`) | **Supporting Auditor**: Does **NOT** scan 4k text from scratch. Receives only the candidate claim and sentence. Answers: (1) Is it actively flooded right now? (2) Has water subsided? (3) Is it a weather forecast? (4) Does depth match? | Focused prompt, fast response (~300ms), prevents hallucination. |
+| **Tier 2, planned evaluation** | `calamanCy` Tagalog NER | Test whether it improves difficult Taglish place extraction on labeled Metro Manila articles before integrating it. | Not installed or called by the runtime. |
+| **Tier 3, planned evaluation** | Google Cloud Natural Language API | Compare only if the labeled evaluation identifies a measurable need. | Not called by the runtime. |
+| **Supporting auditor prototype** | Configured OpenRouter Gemini model (`audit_claim_with_llm`) | Checks the candidate claim and evidence sentence; failure or missing credentials do not confirm a claim. | Optional; not connected to scheduled RSS processing. |
 
 ---
 
 ## 3. Smart Auto-Activation Policy (Option 2)
 
 ### A. Automatic Approval Criteria (`auto_approved`)
-A flood report is published directly to the live map and dynamic routing without waiting for administrator approval when **all five conditions** are met:
-1. **Auditor Confirmation**: Gemini 1.5 Flash verifies the candidate claim (`is_confirmed = True`).
-2. **Active Condition**: Condition is explicitly `"active"` or `"rising"` (not receded, not historical).
-3. **Canonical Depth Gauge & MMDA Physical Measurements**: Flood depth maps to a standardized gauge (`gutter`, `half-knee`, `half-tire`, `knee`, `tires`, `waist`, `chest`, `neck`) and is dynamically enriched with metric (`depth_meters`) and imperial (`depth_inches`, `depth_formatted`) measurements via `flood_depth.py`.
-4. **Road or Landmark Precision**: Location resolves to an exact street segment or landmark (not just a broad city or province).
-5. **High Consensus**: Combined multi-tier confidence score reaches **$\ge 95\%$ (0.95)**.
+A future claim may publish a routing-affecting zone without routine administrator approval only when **all** requirements in the [activation safety contract](news-activation-safety-gates.md) pass: complete traceable source text, a recent resolved flood observation time, active status, justified depth, independent confirmation, and a checked bounded affected road segment or landmark footprint with provenance. The persistence path must recheck those facts, handle contradictions and duplicates, and assign expiry. A place-ranking score is not a calibrated probability or an approval threshold. These requirements are not yet satisfied by the scheduled collector.
 
-### B. Safety Suppression Gates (Zero False Road Closures)
-- **Subsided Waters (`suppressed_subsided`)**: Reports containing *"humupa na"*, *"nag-subside"*, or *"muling nadaanan"* are strictly suppressed. Zero avoidance zones are created, ensuring clear roads remain open.
+### B. Safety Suppression Gates (Target Behavior)
+- **Subsided Waters (`suppressed_subsided`)**: Reports containing *"humupa na"*, *"nag-subside"*, or *"muling nadaanan"* must not create a current avoidance zone. Contradictory updates require review; real-article validation remains open.
 - **Weather Forecasts / Predictions (`suppressed_forecast`)**: Statements containing *"posibleng bahain"*, *"maaaring lumubog"*, or *"flood advisory"* are strictly suppressed. Predictions cannot close active roads.
-- **Negated Reports (`suppressed_negated`)**: Reports confirming *"walang baha"* or *"passable sa lahat ng sasakyan"* are discarded.
+- **Negated Reports (`suppressed_negated`)**: Explicit *"walang baha"* statements must not create a current flood zone. A passable road may still have floodwater, so passability and flood presence remain separate facts.
 
 ### C. Moderation Queue Placement (`flagged_review`)
 - Articles mentioning only a broad city (e.g., *"Binaha ang Iloilo City"*) without a specific street or barangay.
 - Incomplete depth indicators.
 - Discrepancies between primary rules and the auditor.
-- Pre-rendered candidate geometry is attached in the dashboard for **1-click staff review and approval** displaying physical depth measurements (`19" (0.48m) • Knee`).
+- Preview geometry can support the planned staff exception review, but the dedicated claim review dashboard is not implemented.
 
 ---
 
-## 4. Nationwide Location Ranking & Suggested Geometry
+## 4. Metro Manila Location Ranking & Suggested Geometry
 
-The [`NationwideGeometryService`](file:///d:/Documents/Github/LANES/backend/app/services/nationwide_geometry_service.py) transforms text mentions into authoritative PostGIS spatial barriers.
+The [`NationwideGeometryService`](file:///d:/Documents/Github/LANES/backend/app/services/nationwide_geometry_service.py) generates location suggestions and preview polygons. It does not verify a reported flooded road segment or create an authoritative PostGIS barrier.
 
 ### Spatial Calculations
 1. **Road Corridor Buffer (50m Polygon)**:
@@ -113,27 +84,28 @@ The [`NationwideGeometryService`](file:///d:/Documents/Github/LANES/backend/app/
 
 ### Hierarchical Precision Ranking
 
-| Rank | Level | Criteria | Confidence | Action |
-|---|---|---|:---:|---|
-| **Rank 1** | Road Segment | Exact road corridor matched in verified city/barangay. | **0.90 – 0.99** | `auto_approved` (if depth & active present) |
-| **Rank 2** | Specific Landmark | Resolved facility/landmark (e.g. market, hospital). | **0.85 – 0.88** | `auto_approved` (if depth & active present) |
-| **Rank 3** | Barangay Area | Barangay boundary resolved; road centerline unmapped. | **0.65 – 0.70** | `flagged_review` (staff street selection) |
-| **Rank 4** | City Only | Broad municipal mention without road/barangay. | **0.30 – 0.35** | `flagged_review` (prevents city shutdown) |
-| **Rank 5** | Unresolved | Insufficient evidence to anchor coordinates. | **< 0.20** | `flagged_review` (manual geocoding needed) |
+| Rank | Place evidence | Suggested handling |
+|---|---|---|
+| **1** | Article names a road plus cross streets or an explicit span, grounded in the correct city and, when given, barangay. | Check the bounded routable segment against the report; only a separately verified current claim can affect routing. |
+| **2** | Article names a landmark with a checked footprint and city context. | Keep as a location suggestion until the affected footprint is independently verified. |
+| **3** | Article names a road or barangay but no bounded affected section. | Show a source-labeled alert at defensible precision; do not close an entire road. |
+| **4** | Article names only a broad city or has unresolved place evidence. | Keep as an incomplete lead or staff exception; do not create a route-affecting zone. |
 
 ---
 
 ## 5. Persistence & Database Contract
 
-- **Zero Schema Migrations Required**: Reuses established 3NF tables:
+- **Existing domain tables:** The prototype can reuse established `flood_reports`, `flood_events`, and `flood_avoidance_zones` for an operational zone once evidence is verified. Durable per-claim evidence, alert state, corrections, and idempotency still need a schema assessment before Gate 4; no new model or migration is authorized by this plan.
   - [`flood_reports`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L99): Stores raw evidence, canonical depth, and PostGIS geometry. Dynamic `@property` getters compute `depth_meters`, `depth_inches`, and `depth_formatted` adhering strictly to 3NF.
   - [`flood_events`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L64): Durable historical analytics record (`status = 'active'`) exposing computed peak depth measurements.
   - [`flood_avoidance_zones`](file:///d:/Documents/Github/LANES/backend/app/models/report.py#L241): Operational 50m polygon barrier queried by Valhalla routing, exposing computed depth measurements in contributor metadata.
-- **Idempotency**: Retried RSS articles or repeated URLs update `last_seen_at` without duplicating avoidance zones or inflating event counts.
+- **Idempotency target:** Re-fetches, Scheduler retries, and syndicated copies must not duplicate public alerts or avoidance zones. This is not yet verified end to end.
 
 ---
 
-## 6. Test Suite Matrix (100% Green)
+## 6. Historical Test Baseline (September 2026)
+
+The 45/45 result below records an earlier unit-test run of separate prototypes. It is not an RSS-to-map integration test, a current test-suite result, or evidence of safe automatic activation. The former `0.95` test checked a heuristic that the current safety gate no longer treats as an approval probability.
 
 | Test File | Tests | Coverage Scope | Status |
 |---|:---:|---|:---:|
@@ -143,4 +115,4 @@ The [`NationwideGeometryService`](file:///d:/Documents/Github/LANES/backend/app/
 | [`test_philippine_location_service.py`](file:///d:/Documents/Github/LANES/backend/tests/test_philippine_location_service.py) | 6 | 43,778 PSGC record in-memory loading, alias normalization, hierarchical context disambiguation. | **PASSED** (0.24s) |
 | [`test_taglish_extraction.py`](file:///d:/Documents/Github/LANES/backend/tests/test_taglish_extraction.py) | 11 | Canonical depth gauges, offset preservation, multi-location attribution, determinism. | **PASSED** (0.12s) |
 | [`test_news_discovery.py`](file:///d:/Documents/Github/LANES/backend/tests/test_news_discovery.py) | 12 | RSS/Atom parsing, publisher domain allowlisting, deduplication, HTTP 304 checkpoints. | **PASSED** (0.26s) |
-| **Total** | **45** | **Comprehensive Full Phase 36 Test Suite** | **45 / 45 PASSED** |
+| **Total** | **45** | **Historical prototype tests only** | **45 / 45 PASSED at that checkpoint** |

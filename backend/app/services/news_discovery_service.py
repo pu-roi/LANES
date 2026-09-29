@@ -1,4 +1,4 @@
-"""Pasig flood shortlisting and safe article retrieval; never creates map reports."""
+"""Metro Manila flood shortlisting and safe article retrieval; never creates map reports."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
-from urllib.parse import urljoin
+from urllib.parse import parse_qs, urljoin, urlsplit
 
 import httpx
 from sqlalchemy import text
@@ -33,6 +33,7 @@ PASIG_BARANGAYS = (
 )
 PLACE_TERMS = tuple(re.compile(r"(?<!\w)" + re.escape(name) + r"(?!\w)", re.I) for name in ("Pasig", *PASIG_BARANGAYS))
 MAX_ARTICLE_BYTES = 1_000_000
+MAX_ARTICLE_CHARS = 100_000
 MIN_ARTICLE_CHARS = 120
 MAX_NEWS_AGE = timedelta(days=7)
 
@@ -63,77 +64,132 @@ def likely_pasig_flood(entry: NewsEntry) -> bool:
     return bool(FLOOD_TERMS.search(text) and any(pattern.search(text) for pattern in PLACE_TERMS))
 
 
-INTERNATIONAL_LOCATIONS = re.compile(
-    r"\b(?:Spain|Bangladesh|Florida|Texas|California|China|Japan|India|Pakistan|"
-    r"Nepal|Germany|UK|United Kingdom|Europe|US|USA|United States|Taiwan|Myanmar|"
-    r"Indonesia|Malaysia|Thailand|Vietnam|Australia|Brazil|Canada|Italy|France|Greece)\b",
+METRO_MANILA_TERMS = re.compile(
+    r"\b(?:Metro\s+Manila|National\s+Capital\s+Region|NCR|"
+    r"Caloocan|Las\s+Pi(?:ñ|n)as|Makati|Malabon|Mandaluyong|Manila|Marikina|"
+    r"Muntinlupa|Navotas|Para(?:ñ|n)aque|Pasay|Pasig|Quezon\s+City|"
+    r"San\s+Juan\s+City|Taguig|Valenzuela|Pateros|EDSA)\b",
     re.I,
 )
 
 
-def likely_philippine_flood(entry: NewsEntry) -> bool:
-    """Nationwide flood detection across Luzon, Visayas, and Mindanao.
-    
-    A headline or excerpt containing flood terms without a recognized place remains a candidate
-    for full-text extraction and staff review, while explicit non-Philippine international stories
-    are filtered out.
+def likely_metro_manila_flood(entry: NewsEntry) -> bool:
+    """Shortlist flood entries with a Metro Manila place in RSS metadata.
+
+    Place-free headlines are skipped before article retrieval. This reduces
+    collector work but may miss reports whose location appears only in the body.
     """
     text = f"{entry.title} {entry.excerpt}"
-    if not FLOOD_TERMS.search(text):
-        return False
-    if likely_pasig_flood(entry):
-        return True
-
-    # If an international location is explicitly mentioned without explicit Philippine country markers, filter it out.
-    if INTERNATIONAL_LOCATIONS.search(text) and not re.search(r"\b(?:Philippines|Pilipinas|PH)\b", text, re.I):
-        return False
-
-    from app.services.philippine_location_service import get_philippine_location_service
-    loc_service = get_philippine_location_service()
-    lower_text = text.lower()
-
-    has_ph_place = False
-    for prov in loc_service.provinces:
-        if len(prov) >= 4 and re.search(rf"\b{re.escape(prov)}\b", lower_text):
-            has_ph_place = True
-            break
-    if not has_ph_place:
-        for city in loc_service.cities:
-            if len(city) >= 4 and re.search(rf"\b{re.escape(city)}\b", lower_text):
-                has_ph_place = True
-                break
-
-    if has_ph_place:
-        return True
-
-    # Otherwise, from an approved Philippine news publisher, keep as candidate for full-text extraction.
-    return True
+    return bool(FLOOD_TERMS.search(text) and METRO_MANILA_TERMS.search(text))
 
 
 class _ArticleParser(HTMLParser):
-    def __init__(self) -> None:
+    def __init__(self, source_id: str) -> None:
         super().__init__(convert_charrefs=True)
+        self.source_id = source_id
         self.article_depth = 0
         self.skip_depth = 0
+        self.related_div_depth = 0
+        self.selected_div_depth = 0
+        self.related_heading = False
+        self.related_list_pending = False
+        self.related_list_depth = 0
         self.parts: list[str] = []
+        self.has_continuation = False
+        self.links: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if self.source_id == "feedspot-03":
+            if self.related_list_pending and not self.related_heading and tag != "ul":
+                self.related_list_pending = False
+            if tag == "h6" and any(name == "id" and value == "h-also-on-rappler" for name, value in attrs):
+                self.related_heading = True
+                self.related_list_pending = True
+                self.skip_depth += 1
+            elif tag == "ul" and (self.related_list_pending or self.related_list_depth):
+                if not self.related_list_depth:
+                    self.related_list_pending = False
+                    self.skip_depth += 1
+                self.related_list_depth += 1
+        if tag == "div":
+            attr = dict(attrs)
+            classes = set((attr.get("class") or "").split())
+            if self.related_div_depth:
+                self.related_div_depth += 1
+            elif (attr.get("id") in {"mrect_related_content_holder", "related_block", "load_more"} or
+                  (self.source_id == "feedspot-01" and bool(classes & {"lower_article", "ivs-placeholder-more-videos"})) or
+                  (self.source_id == "feedspot-03" and "related-article" in classes)):
+                self.related_div_depth = 1
+            selected = (
+                (self.source_id == "feedspot-05" and attr.get("id") == "sports_article_writeup") or
+                (self.source_id == "feedspot-03" and "post-single__content" in classes) or
+                (self.source_id == "feedspot-07" and "entry-content" in classes)
+            )
+            if self.selected_div_depth:
+                self.selected_div_depth += 1
+            elif selected:
+                self.selected_div_depth = 1
+                self.article_depth += 1
+        if tag == "a":
+            href = next((value for name, value in attrs if name == "href"), None)
+            if href:
+                self.links.append(href)
+        if tag in {"a", "link"} and (tag == "link" or self.article_depth):
+            rel = next((value for name, value in attrs if name == "rel"), None)
+            if rel and "next" in rel.casefold().split():
+                self.has_continuation = True
         if tag in {"script", "style", "nav", "footer", "aside"}:
             self.skip_depth += 1
-        if tag in {"article", "main"}:
+        if tag in {"article", "main"} and self.source_id not in {"feedspot-03", "feedspot-07"}:
             self.article_depth += 1
-        if tag in {"p", "h1", "h2", "h3", "br"} and self.article_depth and not self.skip_depth:
-            self.parts.append(" ")
+        if tag in {"p", "h1", "h2", "h3", "li", "br"} and self.article_depth and not self.skip_depth and not self.related_div_depth:
+            self.parts.append("\n")
 
     def handle_endtag(self, tag: str) -> None:
-        if tag in {"article", "main"} and self.article_depth:
+        if tag == "h6" and self.related_heading:
+            self.related_heading = False
+            self.skip_depth -= 1
+        if tag == "ul" and self.related_list_depth:
+            self.related_list_depth -= 1
+            if not self.related_list_depth:
+                self.skip_depth -= 1
+        if tag in {"p", "h1", "h2", "h3", "li"} and self.article_depth and not self.skip_depth and not self.related_div_depth:
+            self.parts.append("\n")
+        if tag == "div" and self.related_div_depth:
+            self.related_div_depth -= 1
+        if tag == "div" and self.selected_div_depth:
+            self.selected_div_depth -= 1
+            if not self.selected_div_depth:
+                self.article_depth -= 1
+        if tag in {"article", "main"} and self.article_depth and self.source_id not in {"feedspot-03", "feedspot-07"}:
             self.article_depth -= 1
         if tag in {"script", "style", "nav", "footer", "aside"} and self.skip_depth:
             self.skip_depth -= 1
 
     def handle_data(self, data: str) -> None:
-        if self.article_depth and not self.skip_depth:
+        if self.article_depth and not self.skip_depth and not self.related_div_depth:
             self.parts.append(data)
+
+
+def _same_article_continuation(article_url: str, href: str) -> bool:
+    """Recognize common page-two URLs without confusing publisher next-story loaders."""
+    current = urlsplit(article_url)
+    target = urlsplit(urljoin(article_url, href))
+    if target.netloc.casefold() != current.netloc.casefold() or target.scheme not in {"http", "https"}:
+        return False
+    current_path = current.path.rstrip("/")
+    target_path = target.path.rstrip("/")
+    if current_path == target_path:
+        current_query = parse_qs(current.query)
+        target_query = parse_qs(target.query)
+        for key in ("page", "next"):
+            current_pages = current_query.get(key, ["1"])
+            target_pages = target_query.get(key, [])
+            if (target_pages and target_pages != current_pages and
+                    any(page.isdigit() and int(page) > 1 for page in target_pages)):
+                return True
+        return False
+    return bool(re.fullmatch(re.escape(current_path) + r"/(?:page/)?[2-9]\d*", target_path))
 
 
 def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Client) -> tuple[str | None, str | None]:
@@ -152,6 +208,8 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
                     current_url = target
                     continue
                 if response.status_code != 200:
+                    if response.status_code == 403 and response.headers.get("cf-mitigated", "").casefold() == "challenge":
+                        return None, "Article access blocked by publisher challenge (HTTP 403)"
                     return None, f"Article HTTP {response.status_code}"
                 if "html" not in response.headers.get("content-type", "").lower():
                     return None, "Article response is not HTML"
@@ -160,9 +218,18 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
                     body.extend(chunk)
                     if len(body) > MAX_ARTICLE_BYTES:
                         return None, "Article response exceeds size limit"
-                parser = _ArticleParser()
+                parser = _ArticleParser(source.id)
                 parser.feed(body.decode(response.encoding or "utf-8", errors="replace"))
-                text = " ".join(" ".join(parser.parts).split())[:30_000]
+                if parser.has_continuation or any(
+                    _same_article_continuation(current_url, href) for href in parser.links
+                ):
+                    return None, "Article has a continuation page; full body was not extracted"
+                # Keep paragraph/list boundaries: flattening a multi-location
+                # list into one sentence assigns one road's depth to another.
+                lines = (" ".join(line.split()) for line in "".join(parser.parts).splitlines())
+                text = "\n".join(line for line in lines if line)
+                if len(text) > MAX_ARTICLE_CHARS:
+                    return None, "Article text exceeds processing limit; full body was not extracted"
                 if len(text) < MIN_ARTICLE_CHARS:
                     return None, "Article text unavailable or too short"
                 return text, None
@@ -202,7 +269,7 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
                 )
                 if ((entry.published_at is not None and
                          entry.published_at < datetime.now(timezone.utc) - MAX_NEWS_AGE) or
-                        not likely_philippine_flood(entry)):
+                        not likely_metro_manila_flood(entry)):
                     continue
                 existing = news_crud.get_article(db, entry.article_url) if db is not None else None
                 normalized = " ".join(re.findall(r"\w+", f"{entry.title} {entry.excerpt}".casefold()))

@@ -9,9 +9,11 @@ from __future__ import annotations
 
 import csv
 import re
-from datetime import datetime, timezone
+import unicodedata
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from app.schemas.news_extraction import (
     CanonicalDepth,
@@ -197,6 +199,12 @@ ACTIVE_FLOOD_WORDS = re.compile(
     re.I,
 )
 
+# Publisher photo credits and rainfall observations are article context, not
+# evidence that every named place in those lines has a reported road flood.
+PHOTO_CREDIT = re.compile(r"\b(?:photo(?:graph)?\s+(?:by|from)|image\s+(?:by|from)|PNA\s+photo)\b|^\s*Courtesy\s*:", re.I)
+WEATHER_ONLY = re.compile(r"\b(?:rainfall\s+warning|rainfall\s+was\s+recorded|rain\s+fell|weather\s+bureau|rainfall\s+advisory|zero\s+visibility)\b", re.I)
+ARTICLE_DATELINE = re.compile(r"^[A-Z][A-Z ]{2,30}(?:,\s*Philippines)?\s*[—–-]\s")
+
 # Condition indicators
 CONDITION_RISING = re.compile(r"\b(?:patuloy\s+na\s+tumataas|tumataas|rising|risen\s+to|increasing)\b", re.I)
 CONDITION_RECEDING = re.compile(r"\b(?:nagsisimula\s+nang\s+humupa|bumababa\s+na|bumababa|humuhupa|receding|subsiding)\b", re.I)
@@ -251,8 +259,9 @@ DEPTH_RULES: list[tuple[CanonicalDepth, re.Pattern, str]] = [
 AMBIGUOUS_DEPTH_PATTERN = re.compile(
     r"\b(?:"
     r"\d+\s*(?:to|-)\s*\d+\s*(?:feet|foot|ft|meters?|m|inches|in|centimeters?|cm)|"
-    r"\d+\s*(?:centimeters?|cm|meters?|m|feet|foot|ft|inches|in)|"
-    r"mataas\s+na\s+(?:pagbaha|baha)|deep\s+(?:floodwaters?|flood|waters?|flooding)|abot[-\s]bubong"
+    r"\d+\s*(?:centimeters?|cm|meters?|m|feet|foot|ft|inches)|"
+    r"mataas\s+na\s+(?:pagbaha|baha)|deep\s+(?:floodwaters?|flood|waters?|flooding)|thigh[-\s]deep|abot[-\s]bubong|"
+    r"(?:exceeded|above)\s+a\s+man'?s\s+height|lagpas[-\s]tao"
     r")\b",
     re.I,
 )
@@ -260,12 +269,12 @@ AMBIGUOUS_DEPTH_PATTERN = re.compile(
 # Event time expressions
 TIME_EXPRESSIONS = re.compile(
     r"\b(?:"
-    r"kaninang\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"as\s+of\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"around\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"at\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"bandang\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
-    r"simula\s+kaninang\s+\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)|"
+    r"kaninang\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"as\s+of\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"around\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"at\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"bandang\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
+    r"simula\s+kaninang\s+\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?|"
     r"kaninang\s+(?:tanghali|umaga|hapon|gabi)|"
     r"kaninang\s+alas-[a-z]+(?:\s+ng\s+(?:hapon|gabi|umaga))?|"
     r"alas-[a-z]+(?:\s+ng\s+(?:hapon|gabi|umaga))?|"
@@ -274,12 +283,48 @@ TIME_EXPRESSIONS = re.compile(
     r")\b",
     re.I,
 )
+PHILIPPINE_TIMEZONE = ZoneInfo("Asia/Manila")
+OBSERVATION_CLOCK = re.compile(r"^as\s+of\s+(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\.?$", re.I)
+EXPLICIT_OTHER_DATE = re.compile(
+    r"\b(?:yesterday|kahapon|last\s+night|previous\s+day|prior\s+day|a\s+day\s+earlier|"
+    r"(?:last|on)\s+(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)|"
+    r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b|"
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|"
+    r"Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}|"
+    r"\d{4}-\d{1,2}-\d{1,2}|\d{1,2}/\d{1,2}/\d{2,4})\b",
+    re.I,
+)
 
 
 KNOWN_ABBREVIATIONS = (
     "brgy.", "bgy.", "st.", "ave.", "blvd.", "rd.", "dr.", "no.",
     "p.m.", "a.m.", "sta.", "sto.", "gen.", "gov.", "pagasa.",
-    "inc.", "co.", "approx.",
+    "inc.", "co.", "approx.", "cor.", "svc.",
+)
+
+ROAD_SUFFIX = r"(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Highway|Hwy\.?|Road|Rd\.?|Way|Drive|Dr\.?)"
+ROAD_NAME = r"(?:[A-Z][\w-]*\.?|(?:[A-Z]\.){2,3})(?:\s+(?:[A-Z][\w-]*\.?|(?:[A-Z]\.){2,3}|del|de|la|na))*"
+GENERIC_ROAD_PATTERN = re.compile(rf"\b{ROAD_NAME}\s+{ROAD_SUFFIX}\b")
+INITIAL_ROAD_PATTERN = re.compile(r"\b(?:[A-Z]\.\s*){2,3}[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2}\b")
+ROAD_RELATION_PATTERN = re.compile(
+    rf"\b(?P<road>{ROAD_NAME}(?:\s+{ROAD_SUFFIX})?)\s+"
+    rf"(?P<link>cor\.?|corner|from)\s+"
+    rf"(?P<first>{ROAD_NAME}(?:\s+{ROAD_SUFFIX})?)"
+    rf"(?:\s+(?:up\s+to|to)\s+(?P<second>{ROAD_NAME}(?:\s+{ROAD_SUFFIX})?))?",
+)
+SERVICE_ROAD_PATTERN = re.compile(
+    r"\b(?P<road>[A-Z][\w.-]*(?:\s+[A-Z][\w.-]*){0,2}\s+"
+    r"(?:Boulevard|Blvd\.?|Avenue|Ave\.?))\s+"
+    r"(?P<site>[A-Z][\w.-]*(?:\s+[A-Z][\w.-]*){0,2}\s+Service\s+Road)\b"
+)
+ROAD_SEGMENT_PATTERN = re.compile(
+    r"\bbetween\s+([A-Z][\w.-]*)\s+and\s+([A-Z][\w.-]*)\s+Streets?\b", re.I
+)
+NUMERIC_DEPTH_PATTERN = re.compile(
+    r"\b(?P<value>\d+(?:\.\d+)?)\s*(?P<unit>inches|inch|centimeters|centimeter|cm|meters|meter|feet|foot|ft)\b", re.I
+)
+NUMERIC_DEPTH_RANGE_PATTERN = re.compile(
+    r"\b\d+(?:\.\d+)?\s*(?:to|-|–)\s*\d+(?:\.\d+)?\s*(?:inches|inch|in|cm|meters?|m|feet|foot|ft)\b", re.I
 )
 
 
@@ -296,6 +341,18 @@ def split_sentences_with_offsets(text: str) -> list[tuple[str, int, int]]:
         if char in {".", "!", "?", "\n"}:
             is_abbr = False
             if char == ".":
+                line_end = text.find("\n", i)
+                if line_end < 0:
+                    line_end = n
+                line_start = text.rfind("\n", 0, i) + 1
+                if text[line_start:line_end].lstrip().startswith("--") and i < line_end - 1:
+                    is_abbr = True  # An advisory bullet is one reported site.
+                # Some publisher copy uses "p.m" without a final period.
+                if i >= 1 and text[i - 1].lower() in {"a", "p"} and i + 1 < n and text[i + 1].lower() == "m":
+                    is_abbr = True
+                # The first dot of p.m./a.m. precedes a lowercase initial.
+                if re.search(r"\b[ap]\.m\.$", text[max(0, i - 2):i + 3], re.I):
+                    is_abbr = True
                 # Check single capital initial like "C." or "F."
                 if i >= 1 and text[i - 1].isupper() and (i == 1 or not text[i - 2].isalpha()):
                     is_abbr = True
@@ -334,6 +391,109 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
     major corridors, and generic road patterns without requiring ML NER.
     """
     mentions: list[dict[str, Any]] = []
+    relation_spans: list[tuple[int, int]] = []
+
+    # An intersection or named span is one bounded road claim. The crossing
+    # road is evidence for its geometry, not a second flooded road.
+    for match in ROAD_RELATION_PATTERN.finditer(sentence):
+        primary = match.group("road")
+        if primary.lower() in {"barangay", "brgy", "in"}:
+            continue
+        if match.group("link") == "from" and not (
+            re.search(rf"\s+{ROAD_SUFFIX}$", primary)
+            or len(primary.split()) > 1
+            or primary.lower() in {name.lower() for name in MAJOR_PHILIPPINE_CORRIDORS}
+        ):
+            continue
+        directional_tail = re.match(
+            r"\s*\((?:northbound|southbound)\)", sentence[match.end():], re.I,
+        )
+        relation_text = match.group(0) + (directional_tail.group(0) if directional_tail else "")
+        relation_spans.append((sent_offset_start + match.start(), sent_offset_start + match.end()))
+        mentions.append({
+            "raw_place_name": primary,
+            "canonical_barangay": None,
+            "place_type": "street",
+            "road_segment_raw": relation_text,
+            "relation_primary": True,
+            "char_start": sent_offset_start + match.start("road"),
+            "char_end": sent_offset_start + match.end("road"),
+        })
+    for match in SERVICE_ROAD_PATTERN.finditer(sentence):
+        relation_spans.append((sent_offset_start + match.start(), sent_offset_start + match.end()))
+        mentions.append({
+            "raw_place_name": match.group("road"),
+            "canonical_barangay": None,
+            "place_type": "street",
+            "road_segment_raw": match.group(0),
+            "local_area_raw": match.group("site"),
+            "relation_primary": True,
+            "char_start": sent_offset_start + match.start("road"),
+            "char_end": sent_offset_start + match.end("road"),
+        })
+
+    # Road lists often omit suffixes: "These included Burgos and Sto. Niño in
+    # Concepcion; ...". Keep the list's locality as evidence, not a geocode.
+    list_lead = re.search(r"\bThese included\b", sentence, re.I)
+    if list_lead:
+        for group in re.finditer(r"[^;]+", sentence[list_lead.end():]):
+            group_text = group.group(0)
+            area_match = re.search(r"\s+in\s+([A-Z][\wÀ-ÿ.-]*(?:\s+(?:and\s+)?[A-Z][\wÀ-ÿ.-]*){0,2})", group_text)
+            if not area_match:
+                continue
+            area_raw = area_match.group(1).strip().rstrip(".")
+            names_text = re.split(r"\s+near\s+", group_text[:area_match.start()])[0]
+            for name_match in re.finditer(r"[A-Z][\wÀ-ÿ.-]*(?:\s+[A-Z][\wÀ-ÿ.-]*)*", names_text):
+                raw = name_match.group(0).strip().rstrip(".")
+                if raw.lower() in ("these", "included", "and"):
+                    continue
+                start = list_lead.end() + group.start() + name_match.start()
+                mentions.append({
+                    "raw_place_name": raw,
+                    "canonical_barangay": None,
+                    "place_type": "street",
+                    "local_area_raw": area_raw,
+                    "listed_road": True,
+                    "char_start": sent_offset_start + start,
+                    "char_end": sent_offset_start + start + len(raw),
+                })
+
+    # A separate list may name flooded roads that are still passable. These
+    # must remain individual claims with their passability, not closures.
+    passable_lead = re.search(r"\bincluding\s+portions\s+of\s+", sentence, re.I)
+    unnamed_streets = re.search(r",\s+and\s+other\s+streets\s+in\s+", sentence, re.I)
+    if passable_lead and unnamed_streets and passable_lead.end() < unnamed_streets.start():
+        names_text = sentence[passable_lead.end():unnamed_streets.start()]
+        for item in re.finditer(r"[^,]+", names_text):
+            raw = item.group(0).strip()
+            if not raw:
+                continue
+            leading_space = len(item.group(0)) - len(item.group(0).lstrip())
+            start = passable_lead.end() + item.start() + leading_space
+            mentions.append({
+                "raw_place_name": raw,
+                "canonical_barangay": None,
+                "place_type": "street",
+                "listed_road": True,
+                "char_start": sent_offset_start + start,
+                "char_end": sent_offset_start + start + len(raw),
+            })
+
+        areas_text = sentence[unnamed_streets.end():].rstrip(".")
+        for item in re.finditer(r"[^,]+", areas_text):
+            raw = re.sub(r"^and\s+", "", item.group(0).strip(), flags=re.I)
+            if not raw:
+                continue
+            start_in_item = item.group(0).find(raw)
+            start = unnamed_streets.end() + item.start() + start_in_item
+            mentions.append({
+                "raw_place_name": raw,
+                "canonical_barangay": None,
+                "place_type": "barangay",
+                "unnamed_street_area": True,
+                "char_start": sent_offset_start + start,
+                "char_end": sent_offset_start + start + len(raw),
+            })
 
     # 1. Landmarks (Pasig DRRMO Historical + Base Landmarks)
     for m in LANDMARK_PATTERN.finditer(sentence):
@@ -366,23 +526,160 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
         })
 
     # 2c. Generic Nationwide Streets/Avenues/Boulevards/Highways
-    generic_street_pattern = re.compile(
-        r"\b([A-Z][a-zA-Z0-9\.\'\s]{1,35}?\s+(?:Street|St\.?|Avenue|Ave\.?|Boulevard|Blvd\.?|Highway|Hwy\.?|Road|Rd\.?|Way|Drive|Dr\.?))\b",
-        re.I,
-    )
-    for m in generic_street_pattern.finditer(sentence):
-        st_name = m.group(1).strip()
+    for m in list(GENERIC_ROAD_PATTERN.finditer(sentence)) + list(INITIAL_ROAD_PATTERN.finditer(sentence)):
+        st_name = m.group(0).strip()
+        leading_word = re.match(r"(?:While|In|On|Along|At|The|And|But|Meanwhile|As)\s+", st_name, re.I)
+        name_start = m.start() + (leading_word.end() if leading_word else 0)
+        if leading_word:
+            st_name = st_name[leading_word.end():]
+        full_match_name = st_name
+        road_suffixes = [
+            suffix for suffix in re.finditer(rf"\b{ROAD_SUFFIX}\b", st_name, re.I)
+            if suffix.start() > 0 and st_name[suffix.start() - 1].isspace()
+        ]
+        trailing_area = None
+        if len(road_suffixes) > 1:
+            first_end = road_suffixes[0].end()
+            trailing_area = st_name[first_end:].strip(" .-")
+            st_name = st_name[:first_end].rstrip(".")
         if not any(st_name.lower() == existing["raw_place_name"].lower() for existing in mentions):
-            mentions.append({
+            road_mention = {
                 "raw_place_name": st_name,
                 "canonical_barangay": None,
                 "place_type": "street",
-                "char_start": sent_offset_start + m.start(1),
-                "char_end": sent_offset_start + m.end(1),
+                "char_start": sent_offset_start + name_start,
+                "char_end": sent_offset_start + name_start + len(st_name),
+            }
+            if trailing_area:
+                road_mention["road_segment_raw"] = full_match_name
+                road_mention["local_area_raw"] = trailing_area
+            mentions.append(road_mention)
+
+    for pattern in (r"\bSitio\s+\d+\b", r"\bCentral Market(?:\s+area)?\b", r"\bDr\.\s+[A-Z][a-z]+\b"):
+        for m in re.finditer(pattern, sentence, re.I):
+            mentions.append({
+                "raw_place_name": m.group(0),
+                "canonical_barangay": None,
+                "place_type": "landmark",
+                "char_start": sent_offset_start + m.start(),
+                "char_end": sent_offset_start + m.end(),
             })
+
+    # List entries may identify flood sites by a local landmark or numbered
+    # address instead of a road suffix. Keep the full phrase as a candidate.
+    for pattern in (
+        r"\b(?:West|W\.?)\s+Riverside\s+Interior\b",
+        r"\b(?:[A-Z][\w.-]*\s+){1,4}(?:Cloverleaf|Hilltop|Alley|National High School)\b",
+        r"\b(?:[A-Z][\w.-]*\s+){1,3}(?:Junction|Bridge)\b",
+        r"\b(?:[A-Z][\w.-]*\s+){1,3}Valley\s+\d+\b",
+        r"\b[A-Z]{2,4}\s+Embassy\b",
+        r"\b\d{1,3}\s+[A-Z][a-z]{3,}\b",
+    ):
+        if pattern.startswith(r"\b\d") and not NUMERIC_DEPTH_PATTERN.search(sentence):
+            continue
+        for match in re.finditer(pattern, sentence):
+            raw = match.group(0)
+            leading = re.match(r"(?:In|At|On|The)\s+", raw)
+            if leading:
+                raw = raw[leading.end():]
+            mentions.append({
+                "raw_place_name": raw,
+                "canonical_barangay": None,
+                "place_type": "landmark",
+                "char_start": sent_offset_start + match.start() + (leading.end() if leading else 0),
+                "char_end": sent_offset_start + match.end(),
+            })
+
+    # In agency road-status lists, the place before " - " is a site name,
+    # even when it has no road suffix. Keep names such as "Espana Antipolo"
+    # together rather than resolving Antipolo/Rodriguez as a separate city.
+    listed_status = re.match(
+        r"^\s*(?:--\s*)?(?P<site>.+?)\s+[-–—]\s+(?P<status>.+)$",
+        sentence,
+    )
+    if listed_status and not sentence.lstrip().startswith("--") and not re.match(
+        r"(?:\d|(?:Brgy\.?|Barangay|Bgy\.?)\s)", listed_status.group("site"), re.I,
+    ) and re.search(
+        r"\b(?:flood(?:ed|ing)?|subsided|deep|inches|passable|level)\b",
+        listed_status.group("status"), re.I,
+    ):
+        site = listed_status.group("site")
+        site_start = listed_status.start("site")
+        lead = re.match(r"(?:Along|At|On)\s+", site, re.I)
+        if lead:
+            site_start += lead.end()
+            site = site[lead.end():]
+        site_end = listed_status.end("site")
+        site_mentions = [
+            mention for mention in mentions
+            if mention["place_type"] in {"street", "landmark"}
+            and site_start <= mention["char_start"] - sent_offset_start < site_end
+        ]
+        first = min(site_mentions, key=lambda mention: mention["char_start"]) if site_mentions else None
+        if first and first["char_start"] - sent_offset_start <= site_start + 1:
+            first["relation_primary"] = True
+            first.setdefault("road_segment_raw", site)
+        else:
+            mentions.append({
+                "raw_place_name": site,
+                "canonical_barangay": None,
+                "place_type": "street",
+                "road_segment_raw": site,
+                "listed_road": True,
+                "relation_primary": True,
+                "char_start": sent_offset_start + site_start,
+                "char_end": sent_offset_start + site_end,
+            })
+        relation_spans.append((sent_offset_start + site_start, sent_offset_start + site_end))
+
+    # Road advisories also list comma-separated names without road suffixes.
+    # Preserve each complete list item as bounded evidence rather than losing
+    # "Araneta E. Rodriguez" or reducing "EDSA White Plains" to EDSA.
+    roads_lead = re.search(r"\bother\s+flooded\s+roads\s+in\s+.+?\s+included\s+", sentence, re.I)
+    if roads_lead:
+        list_tail = sentence[roads_lead.end():]
+        list_tail = re.split(r",\s*all\s+of\s+which\b", list_tail, maxsplit=1, flags=re.I)[0]
+        for item in re.finditer(r"[^,]+", list_tail):
+            item_text = item.group(0).strip()
+            item_text = re.sub(r"^and\s+", "", item_text, flags=re.I)
+            if not item_text:
+                continue
+            item_start = roads_lead.end() + item.start() + item.group(0).find(item_text)
+            item_end = item_start + len(item_text)
+            contained = [
+                mention for mention in mentions
+                if mention["place_type"] == "street"
+                and item_start <= mention["char_start"] - sent_offset_start < item_end
+            ]
+            if contained:
+                first_road = min(contained, key=lambda mention: mention["char_start"])
+                first_road.setdefault("road_segment_raw", item_text)
+                near = re.search(r"\bnear\s+(.+)$", item_text, re.I)
+                if near:
+                    first_road["local_area_raw"] = near.group(1).strip()
+            else:
+                road_name = re.sub(
+                    r"\s+(?:northbound|southbound)(?:\s+and\s+(?:northbound|southbound))?$",
+                    "", item_text, flags=re.I,
+                )
+                mentions.append({
+                    "raw_place_name": road_name,
+                    "canonical_barangay": None,
+                    "place_type": "street",
+                    "road_segment_raw": item_text,
+                    "listed_road": True,
+                    "char_start": sent_offset_start + item_start,
+                    "char_end": sent_offset_start + item_start + len(road_name),
+                })
 
     # 3. Nationwide Philippine Cities and Municipalities
     for m in CITY_PATTERN.finditer(sentence):
+        if m.group(0).lower() == "manila" and sentence[max(0, m.start() - 6):m.start()].lower() == "metro ":
+            continue  # Metro Manila names the region, not the City of Manila.
+        # A homonymous city inside a road or road-segment name is not an admin mention.
+        road_context = sentence[m.end():]
+        if re.match(r"\s+Streets?\b", road_context, re.I):
+            continue
         mentions.append({
             "raw_place_name": m.group(0),
             "canonical_barangay": None,
@@ -468,12 +765,12 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
         found_candidate = None
         for i in range(len(words), 0, -1):
             sub_cand = " ".join(words[:i])
-            if sub_cand.lower() in _loc_service.barangays or normalize_barangay_name(sub_cand):
+            if sub_cand.lower() in _loc_service.barangays or _loc_service.normalize_barangay_name(sub_cand, city_context=None):
                 found_candidate = sub_cand
                 break
 
         if found_candidate:
-            canonical = normalize_barangay_name(found_candidate)
+            canonical = _loc_service.normalize_barangay_name(found_candidate, city_context=None)
             if not canonical:
                 b_entries = _loc_service.barangays.get(found_candidate.lower(), [])
                 canonical = b_entries[0]["name"] if b_entries else found_candidate
@@ -510,6 +807,12 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
     unique_mentions: list[dict[str, Any]] = []
     last_end = -1
     for m in mentions:
+        if not m.get("relation_primary"):
+            if any(start <= m["char_start"] < end for start, end in relation_spans):
+                continue
+        local_start = m["char_start"] - sent_offset_start
+        if re.search(r"\bnear\s+$", sentence[:local_start], re.I):
+            continue
         if m["char_start"] >= last_end:
             unique_mentions.append(m)
             last_end = m["char_end"]
@@ -522,6 +825,33 @@ def extract_depth_from_text(text: str) -> tuple[str | None, CanonicalDepth | Non
     Returns (depth_raw, depth_canonical, depth_rule, uncertainty_reasons).
     """
     reasons: list[str] = []
+
+    # A measured value is stronger evidence than a body-part adjective. Only
+    # assign a gauge key for an exact configured gauge value; retain all others.
+    depth_range = NUMERIC_DEPTH_RANGE_PATTERN.search(text)
+    if depth_range:
+        return depth_range.group(0), None, "numeric_depth_range", ["depth_range_not_point_value"]
+    numeric = NUMERIC_DEPTH_PATTERN.search(text)
+    if numeric:
+        qualifier_match = re.search(
+            r"\b(about|around|approximately|roughly|up to|as high as)\s+$",
+            text[max(0, numeric.start() - 22):numeric.start()], re.I,
+        )
+        qualifier = qualifier_match.group(1).lower() if qualifier_match else None
+        raw_start = numeric.start() - len(qualifier_match.group(0)) if qualifier_match else numeric.start()
+        numeric_raw = text[raw_start:numeric.end()]
+        if qualifier in ("up to", "as high as"):
+            reasons.append("upper_bound_depth")
+        elif qualifier:
+            reasons.append("approximate_depth")
+        value = float(numeric.group("value"))
+        unit = numeric.group("unit").lower()
+        inches = value if unit.startswith("in") else (value / 2.54 if unit.startswith("centimeter") or unit == "cm" else (value * 39.37007874 if unit.startswith("meter") or unit == "m" else value * 12))
+        for key in FLOOD_DEPTH_SEVERITIES:
+            gauge = get_flood_depth_measurement(key)
+            if gauge and abs(inches - gauge.inches) < 0.05:
+                return numeric_raw, key, "numeric_gauge_match", reasons
+        return numeric_raw, None, "numeric_depth_without_exact_gauge", reasons + ["numeric_depth_not_canonical"]
 
     # 1. Collect all canonical matches
     raw_matches: list[tuple[int, int, str, CanonicalDepth, str]] = []
@@ -584,8 +914,31 @@ def extract_event_time_from_text(text: str) -> tuple[str | None, datetime | None
     """Extract explicit event time string."""
     m = TIME_EXPRESSIONS.search(text)
     if m:
-        return m.group(0), None
+        raw = m.group(0)
+        if m.end() < len(text) and text[m.end()] == "." and re.search(r"[ap]\.m$", raw, re.I):
+            raw += "."
+        return raw, None
     return None, None
+
+
+def resolve_observation_time(raw: str | None, context: str, published_at: datetime | None) -> datetime | None:
+    """Anchor an explicit flood observation clock only to a nearby publication time."""
+    if not raw or published_at is None or published_at.tzinfo is None or published_at.utcoffset() is None:
+        return None
+    match = OBSERVATION_CLOCK.fullmatch(raw.strip())
+    if not match or EXPLICIT_OTHER_DATE.search(context):
+        return None
+    hour, minute = int(match.group(1)), int(match.group(2) or "0")
+    if not 1 <= hour <= 12 or minute > 59:
+        return None
+    hour = (hour % 12) + (12 if match.group(3).casefold() == "p" else 0)
+    published_local = published_at.astimezone(PHILIPPINE_TIMEZONE)
+    observed_local = published_local.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    if observed_local > published_local:
+        observed_local -= timedelta(days=1)
+    if published_local - observed_local > timedelta(hours=12):
+        return None
+    return observed_local
 
 
 def split_clauses(sentence: str) -> list[tuple[str, int, int]]:
@@ -613,18 +966,92 @@ def extract_claims_from_sentence(
     sent_start: int,
     sent_end: int,
     article_input: NewsArticleExtractorInput,
+    inherited_depth_raw: str | None = None,
+    inherited_passability: str | None = None,
+    section_city: str | None = None,
+    section_barangay: str | None = None,
+    section_time_raw: str | None = None,
+    section_flood_reported: bool = False,
+    section_time_context: str | None = None,
 ) -> list[ExtractedClaim]:
     """Extract structured claims from a single sentence, associating facts per clause/place."""
     claims: list[ExtractedClaim] = []
     place_mentions = find_place_mentions(sentence, sent_start)
+    dateline = ARTICLE_DATELINE.match(sentence)
+    if dateline:
+        place_mentions = [
+            place for place in place_mentions
+            if place["char_start"] - sent_start >= dateline.end()
+        ]
     if not place_mentions:
         return claims
 
+    sentence_cities = [p for p in place_mentions if p["place_type"] == "city"]
+    title_cities = find_place_mentions(article_input.title, 0)
+    context_city = sentence_cities[0] if len(sentence_cities) == 1 else None
+    if context_city is None and not section_city:
+        unique_title_cities = [p for p in title_cities if p["place_type"] == "city"]
+        if len(unique_title_cities) == 1:
+            context_city = unique_title_cities[0]
+    city_lookup = context_city["raw_place_name"] if context_city else section_city
+    if city_lookup and city_lookup.casefold() == "maynila":
+        city_lookup = "Manila"
+    city_res = _loc_service.resolve_location_hierarchy(city_lookup) if city_lookup else None
+    inline_barangay = re.match(r"^\s*(?:Brgy\.?|Barangay)\s+([A-Za-zÀ-ÿ. ]+?)(?=\s*[,(-]|$)", sentence, re.I)
+    effective_barangay = inline_barangay.group(1).strip() if inline_barangay else section_barangay
+
     # Break sentence into clauses for fine-grained multi-location attribution
     clauses = split_clauses(sentence)
+    road_segment_match = ROAD_SEGMENT_PATTERN.search(sentence)
+    nearby_sites: dict[int, tuple[str, int, int]] = {}
+    for candidate in place_mentions:
+        if candidate["place_type"] != "street" or candidate.get("road_segment_raw"):
+            continue
+        candidate_end = candidate["char_end"] - sent_start
+        site_match = re.match(
+            r"(?:\s*\.?\s*(?:NB|SB)?\s*[-–]\s*|\s*\.?\s*\(\s*|\s*\.\s+)"
+            r"(?P<site>[A-Z][\wÀ-ÿ.-]*(?:\s+(?:[A-Z0-9][\wÀ-ÿ.-]*)){0,4})",
+            sentence[candidate_end:],
+        )
+        if not site_match:
+            continue
+        site = site_match.group("site").strip().rstrip(".,-")
+        if not site or site.lower() in {"the", "a", "an", "and", "while"}:
+            continue
+        site_start = candidate_end + site_match.start("site")
+        site_end = site_start + len(site)
+        if "(" in site_match.group(0) and site_end < len(sentence) and sentence[site_end] == ")":
+            site_end += 1
+        nearby_sites[candidate["char_start"]] = (site, site_start, site_end)
 
     for place in place_mentions:
         local_place_start = place["char_start"] - sent_start
+        local_place_end = place["char_end"] - sent_start
+        if any(
+            site_start <= local_place_start < site_end
+            for site, site_start, site_end in nearby_sites.values()
+        ):
+            continue  # The crossing road/landmark is attached to its main road.
+        if place["place_type"] == "barangay" and any(
+            other["place_type"] in {"street", "landmark"} for other in place_mentions
+        ) and not sentence[:local_place_start].strip() and re.match(
+            r"\s*(?:\([^)]*\))?\s*,", sentence[local_place_end:]
+        ):
+            continue  # The leading barangay qualifies the following road/site.
+        directional_suffix = re.match(
+            r"\s+(?:northbound|southbound)(?:\s+and\s+(?:northbound|southbound))?\b",
+            sentence[local_place_end:], re.I,
+        )
+        local_area_match = re.match(
+            r"\s+in\s+([A-Z][\wÀ-ÿ.-]*(?:\s+[A-Z][\wÀ-ÿ.-]*){0,2})\b",
+            sentence[local_place_end:],
+        )
+        local_area_raw = (
+            place.get("local_area_raw")
+            or (local_area_match.group(1) if local_area_match else None)
+            or (nearby_sites[place["char_start"]][0] if place["char_start"] in nearby_sites else None)
+            or (effective_barangay if place["place_type"] in ("street", "landmark") else None)
+        )
         target_clause_text = sentence
         for clause_text, c_start, c_end in clauses:
             if c_start <= local_place_start < c_end:
@@ -634,6 +1061,11 @@ def extract_claims_from_sentence(
         # Check negation in the clause
         clause_negated = bool(NEGATION_PATTERNS.search(target_clause_text))
         is_forecast = bool(FORECAST_PATTERNS.search(target_clause_text) or FORECAST_PATTERNS.search(sentence))
+        if is_forecast and re.search(
+            r"\b(?:flooding|floodwaters?|baha)\s+(?:was|were|is|are)\s+(?:also\s+)?(?:reported|recorded|observed)\b",
+            target_clause_text, re.I,
+        ):
+            is_forecast = False  # A past advisory can describe a measured flood.
         is_historical = bool(HISTORICAL_PATTERNS.search(target_clause_text) or HISTORICAL_PATTERNS.search(sentence))
 
         uncertainties: list[str] = []
@@ -650,13 +1082,31 @@ def extract_claims_from_sentence(
             flood_mentioned = bool(
                 ACTIVE_FLOOD_WORDS.search(target_clause_text)
                 or ACTIVE_FLOOD_WORDS.search(sentence)
+                or section_flood_reported
             )
 
         # Depth extraction (prefer target clause, fallback to sentence if only one place)
         d_raw, d_canon, d_rule, d_reasons = extract_depth_from_text(target_clause_text)
         if not d_raw and len(place_mentions) == 1:
             d_raw, d_canon, d_rule, d_reasons = extract_depth_from_text(sentence)
+        if not d_raw and inherited_depth_raw:
+            d_raw, d_canon, d_rule = inherited_depth_raw, None, "inherited_group_depth_range"
+            d_reasons = ["shared_depth_range_not_individual_measurement"]
         uncertainties.extend(d_reasons)
+        if place.get("local_area_raw"):
+            uncertainties.append("listed_road_requires_geometry_check")
+        if place.get("unnamed_street_area"):
+            uncertainties.append("unnamed_street_in_barangay")
+
+        road_passability = "unknown"
+        if re.search(r"\b(?:not passable to (?:all|any)(?: kinds? of| types? of)? vehicles?|no longer passable to vehicles?|impassable to all(?: types? of)? vehicles?)\b", target_clause_text, re.I):
+            road_passability = "impassable_all"
+        elif re.search(r"\b(?:closed to (?:light|small) vehicles|not passable to (?:light|small) vehicles|hindi na passable sa mga maliliit na sasakyan)\b", target_clause_text, re.I):
+            road_passability = "light_vehicle_closed"
+        elif re.search(r"\bpassable to all(?: types of)? vehicles\b", target_clause_text, re.I):
+            road_passability = "passable_all"
+        elif inherited_passability:
+            road_passability = inherited_passability
 
         # If explicit depth is present and not negated/forecast/historical, flood is mentioned!
         if d_raw and not clause_negated and not is_forecast and not is_historical:
@@ -668,19 +1118,77 @@ def extract_claims_from_sentence(
             condition = extract_condition_from_text(sentence, flood_mentioned, clause_negated)
 
         # Event time
+        time_context = target_clause_text
         t_raw, t_res = extract_event_time_from_text(target_clause_text)
         if not t_raw:
             t_raw, t_res = extract_event_time_from_text(sentence)
+            time_context = sentence
+        has_listed_time = False
+        if not t_raw:
+            listed_time = re.match(
+                r"^\s*(?:--|[-–•])\s*(\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?)\b",
+                sentence, re.I,
+            )
+            if listed_time:
+                t_raw = listed_time.group(1)
+                has_listed_time = True
+        if not t_raw and section_time_raw:
+            t_raw = section_time_raw
+            time_context = section_time_context or sentence
 
         if not t_raw:
             uncertainties.append("event_time_unknown")
+        time_kind = "unspecified"
+        if t_raw and t_raw.lower().startswith("as of"):
+            time_kind = "observation"
+        elif has_listed_time:
+            time_kind = "report"
+        elif t_raw and re.search(r"\breported\b", target_clause_text, re.I):
+            time_kind = "report"
+        if time_kind == "observation":
+            t_res = resolve_observation_time(t_raw, time_context, article_input.published_at)
 
         depth_meas = get_flood_depth_measurement(d_canon) if d_canon else None
 
         # Resolve geographic hierarchy
-        res = _loc_service.resolve_location_hierarchy(place["raw_place_name"], text_context=sentence)
+        hierarchy_context = (
+            f"{sentence} {city_res['city_municipality']}"
+            if city_res and city_res.get("city_municipality") else sentence
+        )
+        lookup_name = place["raw_place_name"]
+        if place["place_type"] == "barangay" and city_res:
+            normalized_name = _loc_service.normalize_barangay_name(
+                lookup_name, city_context=city_res.get("city_municipality"),
+            )
+            if normalized_name:
+                lookup_name = f"Barangay {normalized_name}"
+        res = _loc_service.resolve_location_hierarchy(lookup_name, text_context=hierarchy_context)
+        if (place["place_type"] == "barangay" and city_res and res
+                and res.get("city_municipality") != city_res.get("city_municipality")):
+            res = None
+            uncertainties.append("barangay_parent_mismatch")
+        if place.get("unnamed_street_area"):
+            area_key = place["raw_place_name"].lower().replace("‑", "-")
+            matches = _loc_service.barangays.get(area_key, [])
+            city_name = city_res.get("city_municipality", "").lower() if city_res else ""
+            matching_area = next((entry for entry in matches if entry.get("city_municipality", "").lower() == city_name), None)
+            res = ({
+                "matched_name": matching_area["name"],
+                "level": "Bgy",
+                "psgc_code": matching_area["psgc_code"],
+                "province": matching_area.get("province"),
+                "city_municipality": matching_area["city_municipality"],
+                "region": matching_area.get("region"),
+            } if matching_area else None)
 
-        canonical_bgy = place["canonical_barangay"] if place["place_type"] == "barangay" else None
+        canonical_bgy = place["canonical_barangay"] if place["place_type"] == "barangay" and res else None
+        if place["place_type"] == "barangay" and res and res.get("level") == "Bgy":
+            canonical_bgy = res.get("matched_name")
+        if not canonical_bgy and place["place_type"] in ("street", "landmark"):
+            canonical_bgy = _loc_service.normalize_barangay_name(
+                local_area_raw or effective_barangay,
+                city_context=city_res.get("city_municipality") if city_res else None,
+            )
         canonical_city = None
         canonical_prov = None
         canonical_rd = None
@@ -695,20 +1203,41 @@ def extract_claims_from_sentence(
             island = get_island_group_for_region(reg)
             if place["place_type"] == "barangay" and not canonical_bgy and res.get("level") == "Bgy":
                 canonical_bgy = res.get("matched_name")
+        elif place["place_type"] == "barangay" and city_res:
+            canonical_city = city_res.get("city_municipality")
+            canonical_prov = city_res.get("province")
+            island = get_island_group_for_region(city_res.get("region"))
+            uncertainties.append("barangay_unverified")
         elif place["place_type"] == "barangay" and canonical_bgy:
             # Pasig canonical barangay default
             canonical_city = "City of Pasig"
             canonical_prov = "NCR, Second District"
             island = "Luzon"
+        elif place.get("unnamed_street_area") and city_res:
+            canonical_city = city_res.get("city_municipality")
+            canonical_prov = city_res.get("province")
+            island = get_island_group_for_region(city_res.get("region"))
+            uncertainties.append("barangay_unverified")
 
-        if place["place_type"] == "street":
-            canonical_rd = place["raw_place_name"]
+        if place["place_type"] in ("street", "landmark"):
+            if place["place_type"] == "street":
+                canonical_rd = place["raw_place_name"]
+            if city_res and city_res.get("city_municipality"):
+                canonical_city = city_res["city_municipality"]
+                canonical_prov = city_res.get("province")
+                island = get_island_group_for_region(city_res.get("region"))
+                if not psgc:
+                    psgc = city_res.get("psgc_code")
         elif place["place_type"] == "city" and not canonical_city:
-            canonical_city = place["raw_place_name"]
+            canonical_city = city_res.get("city_municipality") if city_res else place["raw_place_name"]
         elif place["place_type"] == "province" and not canonical_prov:
             canonical_prov = place["raw_place_name"]
 
         confidence = 0.90 if canonical_bgy or place["place_type"] in ("street", "landmark") else (0.75 if place["place_type"] == "city" else 0.65)
+        if place.get("local_area_raw") or place.get("listed_road"):
+            confidence = 0.50
+        if place.get("unnamed_street_area"):
+            confidence = 0.35
 
         claim = ExtractedClaim(
             raw_place_name=place["raw_place_name"],
@@ -716,6 +1245,19 @@ def extract_claims_from_sentence(
             canonical_city=canonical_city,
             canonical_province=canonical_prov,
             canonical_road=canonical_rd,
+            local_area_raw=local_area_raw,
+            road_segment_raw=(
+                place.get("road_segment_raw") or (
+                    sentence[local_place_start:nearby_sites[place["char_start"]][2]]
+                    if place["char_start"] in nearby_sites else None
+                ) or (
+                    sentence[local_place_start:local_place_end] + directional_suffix.group(0)
+                    if directional_suffix and place["place_type"] in {"street", "landmark"} else None
+                ) or (road_segment_match.group(0)
+                if canonical_rd and road_segment_match
+                and re.fullmatch(r"\s*", sentence[local_place_end:road_segment_match.start()])
+                else None)
+            ),
             island_group=island,
             psgc_code=psgc,
             place_type=place["place_type"],
@@ -725,6 +1267,7 @@ def extract_claims_from_sentence(
             is_negated=clause_negated,
             is_forecast=is_forecast,
             is_historical=is_historical,
+            road_passability=road_passability,
             depth_raw=d_raw,
             depth_canonical=d_canon,
             depth_rule=d_rule,
@@ -734,15 +1277,53 @@ def extract_claims_from_sentence(
             condition=condition,
             event_time_raw=t_raw,
             event_time_resolved=t_res,
+            event_time_kind=time_kind,
             evidence_sentence=sentence,
             evidence_sentence_offset=(sent_start, sent_end),
             uncertainty_reasons=uncertainties,
             confidence_score=confidence,
         )
-        claims.append(claim)
+        if place.get("listed_road") and local_area_raw and " and " in local_area_raw:
+            for area_name in local_area_raw.split(" and "):
+                claims.append(claim.model_copy(update={"local_area_raw": area_name}))
+        else:
+            claims.append(claim)
 
     return claims
 
+
+def mark_contradictory_updates(claims: list[ExtractedClaim]) -> None:
+    """Flag active and cleared claims for the same bounded place.
+
+    Publishers may put the latest update before the older report. Article
+    order alone cannot establish observation time, so both claims keep their
+    original evidence and require a human to reconcile the update.
+    """
+    def plain(value: str) -> str:
+        return "".join(
+            char for char in unicodedata.normalize("NFKD", value.casefold())
+            if not unicodedata.combining(char)
+        )
+
+    by_place: dict[tuple[str, str, str], list[ExtractedClaim]] = {}
+    for claim in claims:
+        if claim.place_type not in {"street", "landmark"}:
+            continue
+        key = (
+            plain(claim.canonical_city or ""),
+            plain(claim.raw_place_name),
+            plain(claim.road_segment_raw or claim.local_area_raw or ""),
+        )
+        if not key[0]:
+            continue
+        by_place.setdefault(key, []).append(claim)
+    for place_claims in by_place.values():
+        has_active = any(c.condition in {"active", "rising"} and c.flood_mentioned for c in place_claims)
+        has_cleared = any(c.condition == "subsided" or c.is_negated for c in place_claims)
+        if has_active and has_cleared:
+            for claim in place_claims:
+                if "contradictory_update" not in claim.uncertainty_reasons:
+                    claim.uncertainty_reasons.append("contradictory_update")
 
 def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> NewsExtractionResult:
     """Execute evidence-linked Taglish extraction on an article.
@@ -759,14 +1340,140 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
 
     sentences = split_sentences_with_offsets(text_to_process)
     all_claims: list[ExtractedClaim] = []
+    previous_sentence = ""
+    section_city: str | None = None
+    section_barangay: str | None = None
+    section_passability: str | None = None
+    section_time_raw: str | None = None
+    section_time_context: str | None = None
+    section_flood_reported = False
+    section_list_mode = False
 
+    dateline_start = next(
+        (start for sentence, start, _ in sentences if start < 1500 and ARTICLE_DATELINE.match(sentence)),
+        None,
+    )
     for sent_text, sent_start, sent_end in sentences:
-        claims = extract_claims_from_sentence(sent_text, sent_start, sent_end, article_input)
+        if has_full_text and dateline_start is not None and sent_start < dateline_start:
+            if ACTIVE_FLOOD_WORDS.search(sent_text) and not PHOTO_CREDIT.search(sent_text):
+                caption_claims = extract_claims_from_sentence(
+                    sent_text, sent_start, sent_end, article_input,
+                )
+                for claim in caption_claims:
+                    if claim.place_type in {"street", "landmark"}:
+                        claim.uncertainty_reasons.append("photo_caption_only")
+                        all_claims.append(claim)
+            continue
+        if PHOTO_CREDIT.search(sent_text):
+            continue
+        if WEATHER_ONLY.search(sent_text) and not ACTIVE_FLOOD_WORDS.search(sent_text):
+            continue
+        heading = sent_text.strip().rstrip(".").strip()
+        heading_city = _loc_service.resolve_location_hierarchy(heading)
+        is_city_heading = bool(heading_city and heading_city.get("level") in {"City", "Mun"})
+        is_list_intro = bool(re.search(
+            r"\b(?:following\s+(?:road\s+status|routes|areas)|list\s+of\s+roads)\b",
+            sent_text, re.I,
+        ))
+        is_list_entry = bool(
+            sent_text.lstrip().startswith("--")
+            or (
+                re.match(r"^\s*.+?\s+[-–—]\s+.+$", sent_text)
+                and re.search(r"\b(?:subsided|deep|passable|level|inches|flooded)\b", sent_text, re.I)
+            )
+            or (
+                section_list_mode and len(sent_text) < 130
+                and not re.match(r"^(?:In\s|As\s+of\s|Earlier\b|The\s|At\s|According\b)", sent_text, re.I)
+                and any(p["place_type"] in {"street", "landmark"} for p in find_place_mentions(sent_text, sent_start))
+            )
+        )
+        is_list_heading = bool(re.fullmatch(
+            r"(?:Impassable to (?:all|light)(?: types of)? vehicles|Passable with caution|Gutter-deep|"
+            r"(?:Brgy\.?|Barangay)\s+[A-Za-zÀ-ÿ. ]+(?:\s*\([A-Za-zÀ-ÿ. ]+\))?)", heading, re.I,
+        ))
+        if is_list_intro:
+            section_list_mode = True
+            section_city = None
+            section_barangay = None
+            observed_time, _ = extract_event_time_from_text(sent_text)
+            section_time_raw = observed_time
+            section_time_context = sent_text if observed_time else None
+        elif section_list_mode and not (is_list_entry or is_city_heading or is_list_heading):
+            section_list_mode = False
+            section_city = None
+            section_barangay = None
+            section_passability = None
+            section_time_raw = None
+            section_time_context = None
+            section_flood_reported = False
+        if re.search(r"\bflood(?:ing|waters?|ed)?\b", sent_text, re.I) and not any(
+            place["place_type"] in {"street", "landmark"}
+            for place in find_place_mentions(sent_text, sent_start)
+        ):
+            observed_time, _ = extract_event_time_from_text(sent_text)
+            if observed_time and observed_time.lower().startswith("as of"):
+                section_time_raw = observed_time
+                section_time_context = sent_text
+                if re.search(r"\b(?:reported|affected|following|several)\b", sent_text, re.I):
+                    section_flood_reported = True
+            if re.search(r"\ball passable\b", sent_text, re.I):
+                section_passability = "passable_all"
+        if re.fullmatch(r"Impassable to all(?: types of)? vehicles", heading, re.I):
+            section_passability = "impassable_all"
+            continue
+        if re.fullmatch(r"Impassable to light vehicles", heading, re.I):
+            section_passability = "light_vehicle_closed"
+            continue
+        if re.fullmatch(r"Passable with caution", heading, re.I):
+            section_passability = "passable_all"
+            continue
+        if is_city_heading:
+            section_city = heading
+            section_barangay = None
+            continue
+        city_intro = re.match(r"^In\s+([A-Z][A-Za-zÀ-ÿ ]{1,30}?),\s", sent_text)
+        if city_intro:
+            intro_location = _loc_service.resolve_location_hierarchy(city_intro.group(1))
+            if intro_location and intro_location.get("level") in {"City", "Mun"}:
+                section_city = city_intro.group(1)
+                section_barangay = None
+        barangay_heading = (
+            re.fullmatch(r"(?:Brgy\.?|Barangay)\s+([A-Za-zÀ-ÿ. ]+?)(?:\s*\([A-Za-zÀ-ÿ. ]+\))?", heading, re.I)
+            if not re.search(r"[,\d-]|\b(?:cor\.?|corner|from)\b", heading, re.I)
+            else None
+        )
+        if barangay_heading:
+            section_barangay = barangay_heading.group(1)
+            continue
+        inherited_depth = None
+        inherited_passability = None
+        if previous_sentence and re.match(r"These included\b", sent_text, re.I):
+            if "flood" in previous_sentence.lower():
+                depth_range = NUMERIC_DEPTH_RANGE_PATTERN.search(previous_sentence)
+                if depth_range:
+                    inherited_depth = depth_range.group(0)
+                if re.search(r"\b(?:closed to light vehicles|not passable to light vehicles)\b", previous_sentence, re.I):
+                    inherited_passability = "light_vehicle_closed"
+        claims = extract_claims_from_sentence(
+            sent_text,
+            sent_start,
+            sent_end,
+            article_input,
+            inherited_depth,
+            inherited_passability or section_passability,
+            section_city,
+            section_barangay,
+            section_time_raw,
+            section_flood_reported,
+            section_time_context,
+        )
         for claim in claims:
             if is_metadata_only and "metadata_only_lead" not in claim.uncertainty_reasons:
                 claim.uncertainty_reasons.append("metadata_only_lead")
             all_claims.append(claim)
+        previous_sentence = sent_text
 
+    mark_contradictory_updates(all_claims)
     return NewsExtractionResult(
         article_id=article_input.article_id,
         canonical_url=article_input.canonical_url,

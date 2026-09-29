@@ -80,8 +80,48 @@ def test_exact_road_resolution_metro_manila(geometry_service: NationwideGeometry
     assert ranked.geometry_geojson is not None
     assert ranked.geometry_geojson["type"] == "Polygon"
     assert ranked.source_geometry_geojson is not None
-    assert ranked.is_auto_approvable is True
-    assert ranked.requires_staff_edit is False
+    assert ranked.is_auto_approvable is False
+    assert ranked.requires_staff_edit is True
+    assert ranked.geometry_provenance == "offline_anchor"
+
+
+def test_multi_city_article_does_not_reassign_a_road_to_an_unrelated_city(
+    geometry_service: NationwideGeometryService,
+):
+    claim = ExtractedClaim(
+        raw_place_name="Banawe St",
+        canonical_city="Quezon City",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=9,
+        evidence_sentence="Banawe St in Quezon City had floodwater.",
+        evidence_sentence_offset=(0, 43),
+    )
+    ranked = geometry_service.rank_and_generate_geometry(
+        claim,
+        article_text="Flooding was also reported in Mandaluyong and Malabon.",
+    )
+    assert ranked.resolved_city == "Quezon City"
+    assert ranked.is_auto_approvable is False
+
+
+def test_unlocated_road_in_multi_city_article_remains_unresolved(
+    geometry_service: NationwideGeometryService,
+):
+    claim = ExtractedClaim(
+        raw_place_name="Banawe St",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=9,
+        evidence_sentence="Banawe St had floodwater.",
+        evidence_sentence_offset=(0, 26),
+    )
+    ranked = geometry_service.rank_and_generate_geometry(
+        claim,
+        article_text="Other floods affected Quezon City, Manila, and Malabon.",
+    )
+    assert ranked.resolved_city is None
+    assert ranked.is_auto_approvable is False
 
 
 def test_regional_road_resolution_visayas(geometry_service: NationwideGeometryService):
@@ -105,7 +145,7 @@ def test_regional_road_resolution_visayas(geometry_service: NationwideGeometrySe
     assert ranked.island_group == "Visayas"
     assert ranked.confidence_score >= 0.88
     assert ranked.geometry_geojson is not None
-    assert ranked.is_auto_approvable is True
+    assert ranked.is_auto_approvable is False
 
 
 def test_regional_road_resolution_mindanao(geometry_service: NationwideGeometryService):
@@ -128,7 +168,7 @@ def test_regional_road_resolution_mindanao(geometry_service: NationwideGeometryS
     assert ranked.resolved_city == "City of Davao"
     assert ranked.island_group == "Mindanao"
     assert ranked.geometry_geojson is not None
-    assert ranked.is_auto_approvable is True
+    assert ranked.is_auto_approvable is False
 
 
 def test_city_only_mention_prevents_auto_approval(geometry_service: NationwideGeometryService):

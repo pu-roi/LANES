@@ -302,6 +302,11 @@ export class Toggle3DControl {
   private _button: HTMLButtonElement | undefined;
   private _is3D: boolean = false; // default: start in 2D (flat) mode
   private _onStyleLoad: (() => void) | undefined;
+  private _onModeChange: (enabled: boolean) => void;
+
+  constructor(onModeChange: (enabled: boolean) => void = () => {}) {
+    this._onModeChange = onModeChange;
+  }
 
   private static readonly DEM_SOURCE_ID = "terrarium-dem";
   private static readonly TARGET_PITCH_3D = 45;
@@ -459,7 +464,7 @@ export class Toggle3DControl {
   private _enable3D(animate: boolean = true) {
     if (!this._map) return;
     this._enforceState();
-    if (animate && this._map.isStyleLoaded()) {
+    if (animate) {
       this._map.easeTo({ pitch: Toggle3DControl.TARGET_PITCH_3D, duration: 700 });
     }
     try {
@@ -482,7 +487,7 @@ export class Toggle3DControl {
   private _disable3D(animate: boolean = true) {
     if (!this._map) return;
     this._enforceState();
-    if (animate && this._map.isStyleLoaded()) {
+    if (animate) {
       this._map.easeTo({ pitch: 0, duration: 700 });
     }
     try {
@@ -501,6 +506,7 @@ export class Toggle3DControl {
       this._disable3D(true);
     }
     this._updateButton();
+    this._onModeChange(this._is3D);
   }
 
   onRemove() {
@@ -569,6 +575,7 @@ interface BaseMapProps {
   center?: [number, number];
   zoom?: number;
   actionControls?: (map: Map) => void;
+  on3DChange?: (enabled: boolean) => void;
 }
 
 export default function BaseMap({
@@ -579,18 +586,19 @@ export default function BaseMap({
   center = DEFAULT_CENTER,
   zoom = 13.5,
   actionControls,
+  on3DChange,
 }: BaseMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const initialViewportRef = useRef({ center, zoom });
-  const callbacksRef = useRef({ onMapInit, onMapLoad, actionControls });
+  const callbacksRef = useRef({ onMapInit, onMapLoad, actionControls, on3DChange });
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
   const [isUsingFallback, setIsUsingFallback] = useState(false);
 
   useEffect(() => {
-    callbacksRef.current = { onMapInit, onMapLoad, actionControls };
-  }, [actionControls, onMapInit, onMapLoad]);
+    callbacksRef.current = { onMapInit, onMapLoad, actionControls, on3DChange };
+  }, [actionControls, onMapInit, onMapLoad, on3DChange]);
 
   useEffect(() => {
     preloadOfflineEngine();
@@ -829,7 +837,7 @@ export default function BaseMap({
 
     // Add the 3D / 2D terrain toggle button (only when online; offline has no elevation data)
     if (!isOffline && PRIMARY_MAP_STYLE_URL) {
-      mapInstance.addControl(new Toggle3DControl(), "bottom-right");
+      mapInstance.addControl(new Toggle3DControl((enabled) => callbacksRef.current.on3DChange?.(enabled)), "bottom-right");
       mapInstance.addControl(new MapStylePickerControl(), "bottom-right");
     }
 

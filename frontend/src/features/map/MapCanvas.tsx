@@ -15,6 +15,9 @@ import BaseMap from "@/shared/ui/map/BaseMap";
 import { getFloodsOffline } from "@/lib/offline/storage";
 import { useCityBoundaries } from "./hooks/useCityBoundaries";
 import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
+import { useNoahHazardLayer } from "./hooks/useNoahHazardLayer";
+import type { NoahHazardScenario } from "./MapContext";
+import { useToast } from "@/shared/ui";
 
 let hasZoomedToPasigForAnalytics = false;
 let hasZoomedToPasigForMap = false;
@@ -48,10 +51,15 @@ class ActionGroupControl {
   private _container: HTMLDivElement | undefined;
   private _onSavePlace: () => void;
   private _onAnalytics: () => void;
+  private _onHazardSelect: (scenario: NoahHazardScenario) => void;
+  private _hazardButton: HTMLButtonElement | undefined;
+  private _hazardPanel: HTMLDivElement | undefined;
+  private _onMapClick = () => this._closeHazardPanel();
 
-  constructor(onSavePlace: () => void, onAnalytics: () => void) {
+  constructor(onSavePlace: () => void, onAnalytics: () => void, onHazardSelect: (scenario: NoahHazardScenario) => void) {
     this._onSavePlace = onSavePlace;
     this._onAnalytics = onAnalytics;
+    this._onHazardSelect = onHazardSelect;
   }
 
   onAdd(map: maplibregl.Map) {
@@ -67,7 +75,8 @@ class ActionGroupControl {
       border: 1px solid #e5e7eb;
       border-radius: 12px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      overflow: hidden;
+      position: relative;
+      overflow: visible;
     `;
     
     const createButton = (iconSvg: string, color: string, title: string, onClick: () => void, extraClass: string) => {
@@ -117,21 +126,76 @@ class ActionGroupControl {
       "flex"
     );
 
+    this._hazardButton = createButton(
+      `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19h18M5 16l4-9 4 6 3-4 3 7"/><path d="M7 16h10"/></svg>`,
+      "#ea580c",
+      "Choose UP NOAH Flood Hazard Scenario",
+      () => {
+        if (this._hazardPanel) {
+          this._hazardPanel.hidden = !this._hazardPanel.hidden;
+          this._hazardButton?.setAttribute("aria-expanded", String(!this._hazardPanel.hidden));
+        }
+      },
+      "hidden md:flex border-b border-gray-200"
+    );
+    this._hazardButton.style.display = "none";
+    this._hazardButton.setAttribute("aria-label", "Choose flood hazard scenario");
+    this._hazardButton.setAttribute("aria-expanded", "false");
+    this._container.appendChild(this._hazardButton);
     this._container.appendChild(saveBtn);
     this._container.appendChild(analyticsBtn);
+
+    this._hazardPanel = document.createElement("div");
+    this._hazardPanel.hidden = true;
+    this._hazardPanel.className = "absolute right-[calc(100%+8px)] top-0 w-40 rounded-xl border border-slate-200 bg-white p-2 shadow-xl";
+    this._hazardPanel.setAttribute("role", "group");
+    this._hazardPanel.setAttribute("aria-label", "UP NOAH hazard scenarios");
+    for (const scenario of [100, 25, 5] as NoahHazardScenario[]) {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-blue-600";
+      option.textContent = `${scenario}-Year`;
+      option.dataset.scenario = String(scenario);
+      option.onclick = (event) => {
+        event.stopPropagation();
+        this._onHazardSelect(scenario);
+        this._closeHazardPanel();
+      };
+      this._hazardPanel.appendChild(option);
+    }
+    this._container.appendChild(this._hazardPanel);
+    map.on("click", this._onMapClick);
     
     return this._container;
   }
 
   onRemove() {
+    this._map?.off("click", this._onMapClick);
     this._container?.parentNode?.removeChild(this._container);
     this._map = undefined;
+  }
+
+  setHazardMode(visible: boolean, selected: NoahHazardScenario | null) {
+    if (this._hazardButton) this._hazardButton.style.display = visible ? "" : "none";
+    if (!visible) this._closeHazardPanel();
+    this._hazardPanel?.querySelectorAll<HTMLButtonElement>("button[data-scenario]").forEach((option) => {
+      const active = Number(option.dataset.scenario) === selected;
+      option.classList.toggle("bg-blue-50", active);
+      option.classList.toggle("text-blue-700", active);
+      option.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  private _closeHazardPanel() {
+    if (this._hazardPanel) this._hazardPanel.hidden = true;
+    this._hazardButton?.setAttribute("aria-expanded", "false");
   }
 }
 
 export default function MapCanvas() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<Map | null>(null);
+  const actionControlRef = useRef<ActionGroupControl | null>(null);
   const mapRef = useRef<Map | null>(null);
   const startMarkerRef = useRef<Marker | null>(null);
   const endMarkerRef = useRef<Marker | null>(null);
@@ -162,6 +226,7 @@ export default function MapCanvas() {
   });
 
   const isTouchDevice = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+  const { error: showError } = useToast();
 
   // Hooks for modular map layers (reactive on mapInstance state!)
   useCityBoundaries(mapInstance, isLoaded);
@@ -181,8 +246,19 @@ export default function MapCanvas() {
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
     savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen,
     floodIsBidirectional, floodOppositeGeometry, floodShowMarkers,
-    draftReports
+    draftReports,
+    is3DMode, setIs3DMode, hazardScenario, setHazardScenario,
   } = useMapContext();
+
+  const isHazardAvailable = pathname === "/map" && is3DMode;
+  useNoahHazardLayer(mapInstance, isLoaded, isHazardAvailable ? hazardScenario : null, (message) => {
+    showError("Hazard map unavailable", message);
+    setHazardScenario(null);
+  });
+
+  useEffect(() => {
+    actionControlRef.current?.setHazardMode(isHazardAvailable, hazardScenario);
+  }, [isHazardAvailable, hazardScenario, mapInstance]);
 
   const isDesktopAnalytics = pathname === "/admin/analytics";
   const shouldShowHeatmap = (isAnalyticsOpen && !isAnalyticsCollapsed) || isDesktopAnalytics;
@@ -1075,14 +1151,18 @@ export default function MapCanvas() {
   return (
     <BaseMap
       actionControls={(map) => {
-        map.addControl(
-          new ActionGroupControl(
+        const control = new ActionGroupControl(
             () => setIsSavePlacePanelOpen(true),
-            () => setIsAnalyticsOpen(true)
-          ),
+            () => setIsAnalyticsOpen(true),
+            (scenario) => setHazardScenario(scenario)
+          );
+        actionControlRef.current = control;
+        map.addControl(
+          control,
           "bottom-right"
         );
       }}
+      on3DChange={setIs3DMode}
       onMapInit={(map) => {
         setMapInstance(map);
         mapRef.current = map;
@@ -1101,6 +1181,14 @@ export default function MapCanvas() {
       }}
       className={`relative h-full ${pathname === "/map" ? "w-full md:ml-[340px] md:w-[calc(100%-340px)]" : "w-full"} ${hasBottomOffset ? "flood-panel-open" : ""} ${pathname.includes('analytics') ? "hide-save-place" : ""}`}
     >
+
+      {isHazardAvailable && hazardScenario !== null && (
+        <div className="pointer-events-none absolute left-3 top-20 z-10 max-w-[230px] rounded-xl bg-white/95 px-3 py-2 text-xs text-slate-800 shadow-lg backdrop-blur-sm md:left-4 md:top-4" role="status">
+          <p className="font-bold">UP NOAH · {hazardScenario}-Year Flood Hazard</p>
+          <div className="mt-1 flex items-center gap-2"><span className="h-3 w-3 rounded-sm bg-yellow-400" />Low <span className="h-3 w-3 rounded-sm bg-orange-500" />Medium <span className="h-3 w-3 rounded-sm bg-red-600" />High</div>
+          <p className="mt-1 text-[10px] leading-tight text-slate-600">Modeled hazard, not current flooding. © Project NOAH and contributors.</p>
+        </div>
+      )}
 
       {/* Center Pin Overlay (for touch device panning) */}
       {isTouchDevice && isPickingOnMap && activePoint && (

@@ -1,17 +1,4 @@
-"""Transactional Auto-Ingestion and Smart Activation Service for Trusted News.
-
-When a news report contains complete, verified active flood details:
-  1. Primary Taglish NLP + PSGC rules detect location and canonical depth.
-  2. Gemini 1.5 Flash confirms in supporting role (>=95% confidence).
-  3. This service AUTOMATICALLY creates the verified FloodReport, official
-     FloodEvent, and operational FloodAvoidanceZone (50m polygon) without admin intervention.
-
-When a report is a forecast or subsided flood:
-  - Strictly suppressed; no active avoidance zone is created, keeping dry roads open.
-
-When a report is incomplete or ambiguous:
-  - Enqueued with pre-rendered geometry for 1-click staff review.
-"""
+"""News extraction and evidence-gated automatic flood activation."""
 
 from __future__ import annotations
 
@@ -44,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 class NewsAutoIngestionService:
-    """Executes Smart Auto-Activation or moderation queue placement."""
+    """Classifies claims and publishes only those passing the complete evidence gate."""
 
     def __init__(self, hybrid_service: Optional[HybridExtractionService] = None) -> None:
         self.hybrid_service = hybrid_service or get_hybrid_extraction_service()
@@ -56,7 +43,7 @@ class NewsAutoIngestionService:
         client: Optional[httpx.AsyncClient] = None,
         acted_by_user_id: int = 1,
     ) -> dict[str, Any]:
-        """Extract facts, audit with Gemini 1.5 Flash, and execute Smart Auto-Activation."""
+        """Extract facts, check each claim, and record the resulting review state."""
         extractor_input = NewsArticleExtractorInput(
             article_id=article.id,
             canonical_url=article.canonical_url,
@@ -77,8 +64,30 @@ class NewsAutoIngestionService:
 
         for claim in extraction_result.claims:
             action = claim.action_type or "flagged_review"
+            # Recheck at the write boundary. A cached or forged action label
+            # cannot bypass the auditor, observation-time, or geometry gates.
+            persistence_action, _ = self.hybrid_service.evaluate_claim_action(
+                claim,
+                claim.audit_result,
+                claim.ranked_location,
+                article.published_at,
+            )
 
-            if action == "auto_approved" and claim.ranked_location and claim.ranked_location.geometry_geojson:
+            if (
+                action == "auto_approved"
+                and persistence_action == "auto_approved"
+                and claim.ranked_location
+                and claim.ranked_location.geometry_provenance == "verified_segment"
+                and claim.ranked_location.is_auto_approvable
+                and not claim.ranked_location.requires_staff_edit
+                and claim.ranked_location.geometry_geojson
+                and claim.depth_canonical
+                and claim.canonical_city
+                and claim.event_time_resolved
+                and claim.event_time_kind == "observation"
+                and not claim.is_historical
+                and article.published_at
+            ):
                 # 1. Complete details verified -> SMART AUTO-ACTIVATION
                 try:
                     poly_geom = PolygonGeometry(**claim.ranked_location.geometry_geojson)
@@ -95,7 +104,7 @@ class NewsAutoIngestionService:
                         is_active=True,
                     )
 
-                    depth_str = claim.depth_canonical or "knee"
+                    depth_str = claim.depth_canonical
                     severity = severity_for_flood_depth(depth_str)
 
                     # Build PostGIS geometry clause for report point/polygon
@@ -112,7 +121,7 @@ class NewsAutoIngestionService:
                         status=ReportStatus.APPROVED,
                         human_readable_location=claim.canonical_road or claim.raw_place_name,
                         barangay=claim.canonical_barangay,
-                        city=claim.canonical_city or "City of Pasig",
+                        city=claim.canonical_city,
                         geometry=geometry_clause,
                         is_public=True,
                     )
@@ -136,9 +145,10 @@ class NewsAutoIngestionService:
                     auto_approved_count += 1
                     created_events.append(event.id)
                     logger.info("Smart Auto-Activation: Event %d and Zone %d created for %s", event.id, zone.id, claim.raw_place_name)
-                except Exception as exc:
-                    logger.error("Failed to auto-activate claim %s: %s", claim.raw_place_name, exc)
-                    flagged_count += 1
+                except Exception:
+                    db.rollback()
+                    logger.exception("Failed to auto-activate news claim %s", claim.raw_place_name)
+                    raise
 
             elif action in ("suppressed_subsided", "suppressed_forecast", "suppressed_negated"):
                 suppressed_count += 1
