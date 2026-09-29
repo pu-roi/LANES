@@ -261,10 +261,11 @@ def rank_routes(candidates: Iterable[dict[str, Any]]) -> tuple[list[dict[str, An
     for category, candidate in (("fastest", fastest), ("safest", safest), ("balanced", balanced)):
         if all(candidate is not selected for _, selected in ranked):
             ranked.append((category, candidate))
-    for candidate in sorted(eligible, key=lambda item: (item["flood_exposure"]["exposure_score"], item["duration"])):
+    for candidate in sorted(eligible, key=lambda item: (item["duration"], item["distance"], item["flood_exposure"]["exposure_score"])):
         if all(candidate is not selected for _, selected in ranked):
             ranked.append(("alternative", candidate))
-            break
+            if len(ranked) == 4:
+                break
     labels = {"fastest": "Fastest", "safest": "Safest", "balanced": "Balanced", "alternative": "Alternative"}
     routes: list[dict[str, Any]] = []
     for index, (category, candidate) in enumerate(ranked[:4]):

@@ -53,7 +53,7 @@ def decode_polyline6(encoded_str: str) -> List[List[float]]:
         
     return coordinates
 
-def request_valhalla_route(start: List[float], end: List[float], avoid_polygons: Optional[List[List[List[float]]]] = None, vehicle_profile: str = "light", heading: Optional[int] = None) -> Optional[Dict[str, Any]]:
+def request_valhalla_route(start: List[float], end: List[float], avoid_polygons: Optional[List[List[List[float]]]] = None, vehicle_profile: str = "light", heading: Optional[int] = None, preference: str = "fastest") -> Optional[Dict[str, Any]]:
     """Queries the Valhalla server for routes between start and end coordinates, optionally avoiding polygons."""
     
     # Map our vehicle profiles to Valhalla's native costing models
@@ -66,7 +66,8 @@ def request_valhalla_route(start: List[float], end: List[float], avoid_polygons:
     start_loc = {"lat": start[1], "lon": start[0]}
     end_loc = {"lat": end[1], "lon": end[0]}
     
-    if heading is not None:
+    # A vehicle's approach heading must not constrain pedestrian edge snapping.
+    if heading is not None and vehicle_profile != "walk":
         start_loc["heading"] = heading
         end_loc["heading"] = heading
         
@@ -76,6 +77,8 @@ def request_valhalla_route(start: List[float], end: List[float], avoid_polygons:
         "alternates": 3,
         "units": "kilometers"
     }
+    if preference == "shortest":
+        body["costing_options"] = {costing: {"shortest": True}}
     
     if avoid_polygons and len(avoid_polygons) > 0:
         # Valhalla's route API calls this ``exclude_polygons``.  The former
@@ -362,6 +365,7 @@ def fetch_route_candidates(
     exclude_polygons: Optional[List[List[List[float]]]] = None,
     vehicle_profile: str = "light",
     heading: Optional[int] = None,
+    preference: str = "fastest",
 ) -> List[Dict[str, Any]]:
     """Return raw Valhalla candidates; policy evaluation happens centrally."""
     data = request_valhalla_route(
@@ -370,6 +374,7 @@ def fetch_route_candidates(
         avoid_polygons=exclude_polygons,
         vehicle_profile=vehicle_profile,
         heading=heading,
+        preference=preference,
     )
     return process_valhalla_response(data or {})
 

@@ -1,10 +1,13 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 29, 2026, 9:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Online route alternatives and pedestrian costing (September 30, 2026)
+- [x] Unified Valhalla and ORS fastest/shortest candidate passes under the existing flood policy. The ranker now fills four distinct eligible cards when available, while Walking keeps pedestrian graph access without a vehicle heading. Focused routing tests pass 24/24; live provider behavior and specific street access remain to be verified. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Metro Manila NOAH hazard display on `/map` (September 29, 2026)
 - [x] Exported three lightweight transparent display images from the locally verified Metro Manila NOAH polygons, retaining class colors and source-ring holes at image resolution. Added a 3D-only desktop scenario control above Saved Places and a short mobile drawer under the `+` menu. Entering 3D leaves hazards hidden until 5-, 25-, or 100-year selection; 2D clears the selection. A legend distinguishes modeled hazard from current flooding, and the visual layer remains independent of active zones and routing. TypeScript and production build pass; local desktop/mobile browser checks covered 3D selection, all three images, style switching, 2D reset, and an image-load error toast. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

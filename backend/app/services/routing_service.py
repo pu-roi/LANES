@@ -25,26 +25,34 @@ async def calculate_route(payload: schemas.RouteRequest, db: Session) -> dict[st
     hard_polygons = polygons_for(zones, payload.vehicle_profile, {"blocked"})
     cautious_polygons = polygons_for(zones, payload.vehicle_profile, {"cautious"})
 
-    async def fetch(engine: str, exclusions: list[list[list[float]]]) -> list[dict[str, Any]]:
+    async def fetch(engine: str, exclusions: list[list[list[float]]], preference: str) -> list[dict[str, Any]]:
         if engine == "ors":
             return await ors_service.fetch_route_candidates(
                 start=payload.start, end=payload.end,
                 exclude_polygons=exclusions, vehicle_profile=payload.vehicle_profile,
+                preference=preference,
             )
         return valhalla_service.fetch_route_candidates(
             start=payload.start, end=payload.end,
             exclude_polygons=exclusions, vehicle_profile=payload.vehicle_profile,
             heading=payload.heading,
+            preference=preference,
         )
 
     async def route_with(engine: str) -> dict[str, Any]:
         # The unfiltered baseline is never navigable by itself. It lets LANES
         # explain an unsafe direct route only after actual intersection checks.
-        raw_candidates = await fetch(engine, [])
+        exclusions = [[]]
         if zones:
-            raw_candidates.extend(await fetch(engine, hard_polygons))
+            exclusions.append(hard_polygons)
             if cautious_polygons:
-                raw_candidates.extend(await fetch(engine, hard_polygons + cautious_polygons))
+                exclusions.append(hard_polygons + cautious_polygons)
+        # Both providers use the same search passes. The shortest pass can
+        # expose walkable shortcuts and distinct routes missed by fastest.
+        raw_candidates = []
+        for preference in ("fastest", "shortest"):
+            for excluded in exclusions:
+                raw_candidates.extend(await fetch(engine, excluded, preference))
         evaluated = [evaluate_route(candidate, zones, payload.vehicle_profile) for candidate in raw_candidates]
         routes, baseline = rank_routes(evaluated)
         baseline_summary = None

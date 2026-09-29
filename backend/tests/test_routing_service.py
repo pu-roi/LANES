@@ -65,6 +65,25 @@ def test_valhalla_uses_documented_exclude_polygons_and_three_alternates(monkeypa
     assert "avoid_polygons" not in captured
 
 
+def test_valhalla_walking_uses_pedestrian_edges_without_vehicle_heading(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict = {}
+    monkeypatch.setattr(valhalla_service, "get_valhalla_auth_headers", lambda: {})
+
+    def post(_url: str, **kwargs: object) -> httpx.Response:
+        captured.update(kwargs["json"])  # type: ignore[arg-type]
+        return httpx.Response(200, json={"trip": {"legs": []}})
+
+    monkeypatch.setattr(valhalla_service.httpx, "post", post)
+    valhalla_service.request_valhalla_route(
+        [121.0, 14.5], [121.1, 14.6], vehicle_profile="walk", heading=90,
+        preference="shortest",
+    )
+
+    assert captured["costing"] == "pedestrian"
+    assert captured["costing_options"] == {"pedestrian": {"shortest": True}}
+    assert all("heading" not in location for location in captured["locations"])
+
+
 def test_ors_uses_geojson_avoid_polygons_and_three_alternates(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict = {}
 
@@ -81,6 +100,44 @@ def test_ors_uses_geojson_avoid_polygons_and_three_alternates(monkeypatch: pytes
     assert captured["profile"] == "driving-car"
     assert captured["alternative_routes"]["target_count"] == 3
     assert captured["options"]["avoid_polygons"]["type"] == "MultiPolygon"
+
+
+def test_ors_walking_shortest_uses_foot_profile(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict = {}
+
+    async def fake_fetch(_client: object, request: dict, profile: str) -> dict:
+        captured.update(request)
+        captured["profile"] = profile
+        return {"features": []}
+
+    monkeypatch.setattr(ors_service, "fetch_ors_route", fake_fetch)
+    asyncio.run(ors_service.fetch_route_candidates(
+        [121.0, 14.5], [121.1, 14.6], vehicle_profile="walk", preference="shortest",
+    ))
+
+    assert captured["profile"] == "foot-walking"
+    assert captured["preference"] == "shortest"
+
+
+@pytest.mark.parametrize("engine", ["valhalla", "ors"])
+def test_both_engines_gather_fastest_and_shortest_routes(monkeypatch: pytest.MonkeyPatch, engine: str) -> None:
+    monkeypatch.setattr(routing_service, "get_active_flood_zones", lambda _: [])
+    seen: list[str] = []
+
+    def valhalla_candidates(**kwargs: object) -> list[dict]:
+        seen.append(str(kwargs["preference"]))
+        return RAW_ROUTE
+
+    async def ors_candidates(**kwargs: object) -> list[dict]:
+        seen.append(str(kwargs["preference"]))
+        return RAW_ROUTE
+
+    monkeypatch.setattr(routing_service.valhalla_service, "fetch_route_candidates", valhalla_candidates)
+    monkeypatch.setattr(routing_service.ors_service, "fetch_route_candidates", ors_candidates)
+    result = asyncio.run(routing_service.calculate_route(payload(engine), db=None))
+
+    assert seen == ["fastest", "shortest"]
+    assert len(result["routes"]) == 1
 
 
 def test_valhalla_timeout_is_service_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:

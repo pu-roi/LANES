@@ -193,6 +193,7 @@ async def fetch_route_candidates(
     end: List[float],
     exclude_polygons: Optional[List[List[List[float]]]] = None,
     vehicle_profile: str = "light",
+    preference: str = "fastest",
 ) -> List[Dict[str, Any]]:
     """Return raw ORS candidates; policy evaluation happens centrally."""
     multi_polygon_coords = [[polygon] for polygon in (exclude_polygons or []) if polygon]
@@ -202,7 +203,7 @@ async def fetch_route_candidates(
         "instructions": True,
         "geometry": True,
         "units": "m",
-        "preference": "fastest",
+        "preference": preference,
         "alternative_routes": {"target_count": 3, "weight_factor": 1.5, "share_factor": 0.5},
     }
     if multi_polygon_coords:
