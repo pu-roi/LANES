@@ -1,10 +1,13 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 30, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** September 30, 2026, 7:51 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Phase 36 Gates 1–3 acceptance checks (September 30, 2026)
+- [x] Closed the pre-Gate-4 article, activation-safety, and location-prediction checks. Blocked/incomplete Inquirer and Rappler articles remain incomplete leads; 10 activation failure cases plus negated/forecast/subsided paths prove no public flood writes; generic landmark scope and the 17-city OSM/NOAH coverage audit are recorded. A real historical GMA Pasig claim was traced through six bounded road candidates, place-matched DRRMO rows, and all three NOAH scenarios, and a separate Quezon City span trace covers a non-Pasig example. The current article remains ineligible for activation and no report, alert, zone, or route was written. Focused suite: 122 passed. Gate 4 has not started. See [task plan](task_plan.md), [article context evaluation](evaluations/phase-36-article-road-context-check.md), and [spatial coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Article and Pasig history road context (September 30, 2026)
 - [x] Added a read-only matcher from extracted article road/cross-street/span context and row-level Pasig DRRMO records to bounded OSM sections. A constructed Bernal Street claim narrows 25 C. Raymundo sections to two; three actual Rosario/Bernal CSV rows support both, while ungrounded rows remain visible. Non-Pasig claims do not use the Pasig history. The local NOAH audit accepts this context and all three scenarios; 21 focused tests pass. This is not yet a live RSS geometry provider, alert, zone, or routing write. See the [context evaluation](evaluations/phase-36-article-road-context-check.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

@@ -734,6 +734,50 @@ def test_multi_city_report_keeps_each_road_closure_and_time_local():
     assert all(c.event_time_raw != "as of 12:44 p.m." for c in claims if "Zapote" in c.evidence_sentence)
 
 
+def test_multi_city_sentence_assigns_each_location_its_local_city():
+    inp = NewsArticleExtractorInput(
+        article_id=129,
+        canonical_url="https://example.com/multi-city-sites",
+        publisher="Test News",
+        title="Metro Manila flooding",
+        article_text=(
+            "Floodwaters hit Barangay Plainview, Mandaluyong City, and "
+            "Caruncho Avenue, Pasig City."
+        ),
+    )
+
+    claims = extract_taglish_flood_facts(inp).claims
+    plainview = next(c for c in claims if c.raw_place_name == "Barangay Plainview")
+    caruncho = next(c for c in claims if c.raw_place_name == "Caruncho Avenue")
+
+    assert plainview.canonical_city == "City of Mandaluyong"
+    assert caruncho.canonical_city == "City of Pasig"
+    assert "city_context_ambiguous" not in caruncho.uncertainty_reasons
+
+
+def test_multi_city_landmark_keeps_its_city_and_barangay_scope():
+    inp = NewsArticleExtractorInput(
+        article_id=130,
+        canonical_url="https://example.com/multi-city-landmark",
+        publisher="Test News",
+        title="Metro Manila flooding",
+        article_text=(
+            "Floodwaters reached Maysilo Circle, Barangay Plainview, Mandaluyong City, "
+            "as well as Caruncho Avenue, Pasig City."
+        ),
+    )
+
+    claims = extract_taglish_flood_facts(inp).claims
+    maysilo = next(c for c in claims if c.raw_place_name == "Maysilo Circle")
+    caruncho = next(c for c in claims if c.raw_place_name == "Caruncho Avenue")
+
+    assert maysilo.place_type == "landmark"
+    assert maysilo.canonical_city == "City of Mandaluyong"
+    assert maysilo.canonical_barangay == "Plainview"
+    assert caruncho.canonical_city == "City of Pasig"
+    assert caruncho.canonical_barangay is None
+
+
 def test_newest_first_clearing_update_flags_the_older_same_section_only():
     inp = NewsArticleExtractorInput(
         article_id=123,

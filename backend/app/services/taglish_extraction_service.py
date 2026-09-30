@@ -157,6 +157,10 @@ def get_island_group_for_region(region: str | None) -> str | None:
 
 # Precompiled single-pass patterns for high-performance CPU tokenization
 LANDMARK_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(lm) for lm in PASIG_LANDMARKS) + r")\b", re.I)
+GENERIC_LANDMARK_PATTERN = re.compile(
+    r"\b(?:[A-Z][\wÀ-ÿ.'-]*\s+){0,3}"
+    r"(?:Circle|Rotunda|Junction|Plaza|Bridge|Park|Terminal|Market|Mall)\b"
+)
 STREET_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(st) for st in PASIG_KNOWN_STREETS) + r")\b", re.I)
 CORRIDOR_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(co) for co in MAJOR_PHILIPPINE_CORRIDORS) + r")\b", re.I)
 CITY_PATTERN = re.compile(r"\b(?:" + "|".join(re.escape(c) for c in PHILIPPINE_MAJOR_CITIES) + r")\b", re.I)
@@ -499,6 +503,28 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
     for m in LANDMARK_PATTERN.finditer(sentence):
         mentions.append({
             "raw_place_name": m.group(0),
+            "canonical_barangay": None,
+            "place_type": "landmark",
+            "char_start": sent_offset_start + m.start(),
+            "char_end": sent_offset_start + m.end(),
+        })
+
+    # A small nationwide landmark suffix rule catches named sites outside the
+    # Pasig DRRMO gazetteer (for example, Maysilo Circle) without treating
+    # ordinary lowercase phrases as place names. Keep exact mention offsets.
+    for m in GENERIC_LANDMARK_PATTERN.finditer(sentence):
+        raw = m.group(0).strip()
+        if any(
+            existing["place_type"] in {"street", "landmark"}
+            and existing["char_start"] < sent_offset_start + m.end()
+            and existing["char_end"] > sent_offset_start + m.start()
+            for existing in mentions
+        ):
+            continue
+        if raw.split()[0].casefold() in {"in", "at", "on", "the", "and", "but", "near"}:
+            continue
+        mentions.append({
+            "raw_place_name": raw,
             "canonical_barangay": None,
             "place_type": "landmark",
             "char_start": sent_offset_start + m.start(),
@@ -988,15 +1014,60 @@ def extract_claims_from_sentence(
 
     sentence_cities = [p for p in place_mentions if p["place_type"] == "city"]
     title_cities = find_place_mentions(article_input.title, 0)
-    context_city = sentence_cities[0] if len(sentence_cities) == 1 else None
-    if context_city is None and not section_city:
-        unique_title_cities = [p for p in title_cities if p["place_type"] == "city"]
-        if len(unique_title_cities) == 1:
-            context_city = unique_title_cities[0]
-    city_lookup = context_city["raw_place_name"] if context_city else section_city
-    if city_lookup and city_lookup.casefold() == "maynila":
-        city_lookup = "Manila"
-    city_res = _loc_service.resolve_location_hierarchy(city_lookup) if city_lookup else None
+    title_city_mentions = [p for p in title_cities if p["place_type"] == "city"]
+    # A sentence can report separate sites from separate cities. Keep each
+    # site's city inside its local coordinated phrase (for example,
+    # "Barangay Plainview, Mandaluyong City, as well as Caruncho Avenue,
+    # Pasig City"). If several cities remain in one phrase, do not guess.
+    city_scope_ranges: list[tuple[int, int]] = []
+    if len(sentence_cities) > 1:
+        scope_start = 0
+        for separator in re.finditer(r";|\b(?:as\s+well\s+as|while|whereas|but|and)\b", sentence, re.I):
+            city_scope_ranges.append((scope_start, separator.start()))
+            scope_start = separator.end()
+        city_scope_ranges.append((scope_start, len(sentence)))
+    else:
+        city_scope_ranges.append((0, len(sentence)))
+
+    def city_context_for(place_start: int) -> tuple[str | None, bool]:
+        """Resolve only an unambiguous local city; return ambiguity separately."""
+        scope = next(
+            ((start, end) for start, end in city_scope_ranges if start <= place_start <= end),
+            (0, len(sentence)),
+        )
+        local_cities = [
+            city for city in sentence_cities
+            if scope[0] <= city["char_start"] - sent_start < scope[1]
+        ]
+        if len(local_cities) == 1:
+            return local_cities[0]["raw_place_name"], False
+        if len(local_cities) > 1 or len(sentence_cities) > 1:
+            return None, True
+        if section_city:
+            return section_city, False
+        if len(title_city_mentions) == 1:
+            return title_city_mentions[0]["raw_place_name"], False
+        return None, False
+
+    def barangay_context_for(place_start: int, city_lookup: str | None) -> str | None:
+        """Attach a sole local barangay only when it belongs to this city scope."""
+        scope = next(
+            ((start, end) for start, end in city_scope_ranges if start <= place_start <= end),
+            (0, len(sentence)),
+        )
+        local_barangays = [
+            candidate for candidate in place_mentions
+            if candidate["place_type"] == "barangay"
+            and scope[0] <= candidate["char_start"] - sent_start < scope[1]
+        ]
+        if len(local_barangays) != 1:
+            return None
+        raw = local_barangays[0]["raw_place_name"]
+        raw = re.sub(r"^(?:Barangay|Brgy\.?)\s+", "", raw, flags=re.I).strip()
+        if not city_lookup:
+            return None
+        return _loc_service.normalize_barangay_name(raw, city_context=city_lookup) or raw
+
     inline_barangay = re.match(r"^\s*(?:Brgy\.?|Barangay)\s+([A-Za-zÀ-ÿ. ]+?)(?=\s*[,(-]|$)", sentence, re.I)
     effective_barangay = inline_barangay.group(1).strip() if inline_barangay else section_barangay
 
@@ -1038,6 +1109,11 @@ def extract_claims_from_sentence(
             r"\s*(?:\([^)]*\))?\s*,", sentence[local_place_end:]
         ):
             continue  # The leading barangay qualifies the following road/site.
+        city_lookup, city_context_ambiguous = city_context_for(local_place_start)
+        if city_lookup and city_lookup.casefold() == "maynila":
+            city_lookup = "Manila"
+        scoped_barangay = barangay_context_for(local_place_start, city_lookup)
+        city_res = _loc_service.resolve_location_hierarchy(city_lookup) if city_lookup else None
         directional_suffix = re.match(
             r"\s+(?:northbound|southbound)(?:\s+and\s+(?:northbound|southbound))?\b",
             sentence[local_place_end:], re.I,
@@ -1050,6 +1126,7 @@ def extract_claims_from_sentence(
             place.get("local_area_raw")
             or (local_area_match.group(1) if local_area_match else None)
             or (nearby_sites[place["char_start"]][0] if place["char_start"] in nearby_sites else None)
+            or (scoped_barangay if place["place_type"] in ("street", "landmark") else None)
             or (effective_barangay if place["place_type"] in ("street", "landmark") else None)
         )
         target_clause_text = sentence
@@ -1069,6 +1146,8 @@ def extract_claims_from_sentence(
         is_historical = bool(HISTORICAL_PATTERNS.search(target_clause_text) or HISTORICAL_PATTERNS.search(sentence))
 
         uncertainties: list[str] = []
+        if city_context_ambiguous and place["place_type"] in {"street", "landmark", "barangay"}:
+            uncertainties.append("city_context_ambiguous")
         if clause_negated:
             flood_mentioned = False
             uncertainties.append("negated_flood_report")

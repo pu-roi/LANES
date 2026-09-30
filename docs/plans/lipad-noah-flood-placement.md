@@ -1,12 +1,14 @@
 # Phase 36: LiPAD / UP NOAH Flood Placement Integration
 
-> **Last Updated:** September 29, 2026, 5:53 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** All three Metro Manila archives opened; Bernal/Mercedes and one GMA article road-span probe computed locally. General placement logic and full regional coverage remain open. No hazard layer imported yet.
+> **Last Updated:** September 30, 2026, 7:51 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** Gates 1–3 evidence checks passed. The Metro Manila source-map vintage is not published in the checked metadata; sample coverage and OSM snapshot/name limits are documented. Matching remains read-only and has not been connected to RSS, alerts, or routing. No hazard layer imported into the runtime.
 
 The read-only [reusable road-match check](../evaluations/phase-36-reusable-road-match-check.md) now accepts explicit `between` and `from ... to` claim spans and returns a bounded OSM centerline candidate or an unresolved reason. It reproduces the GMA Santo Domingo path but cannot yet resolve the PNA Araneta/Maria Clara/Florentino phrase from the local OSM junctions. It requires caller-supplied checked administrative boundaries and a local PBF, so it is not an operational ingestion geometry provider.
 
 The read-only [NOAH ranking check](../evaluations/phase-36-noah-road-ranking-check.md) now orders supplied OSM sections using exact vector overlap plus article-place and DRRMO-context signals. It predicts the explicit Santo Domingo location, while the Bernal/Mercedes 100 m audit windows remain unselected despite different modeled overlap.
 The local C. Raymundo network split now supplies 25 between-cross-street sections, excluding arbitrary OSM way ends and same-street dual junctions. One retains alternative carriageway uncertainty. Many sections tie even after comparing total NOAH overlap and `Var` class; a road-name-only report still cannot select one location. Article barangay/landmark context and place-matched DRRMO rows are needed to narrow this set before any automatic zone rule.
+
+The September 30 [Metro Manila coverage audit](../evaluations/phase-36-metro-spatial-coverage-audit.md) assembled all 17 OSM city relations, measured named-way coverage, and sampled all three NOAH archives across every city. It found a 2026-09-27 OSM snapshot, no automatic LANES refresh, and a NOAH archive with no published model-vintage date. The 5-year sample had no Pasay hit, while 25- and 100-year samples hit at least one polygon in all 17 cities. These are documented coverage limits, not evidence that uncovered locations are safe.
 
 ## Purpose
 
@@ -87,8 +89,8 @@ For a fresh credible flood claim, publish a source-labeled map alert automatical
 
 ## Acceptance evidence before release
 
-- A Pasig layer inventory with map vintage checked, plus representative exact NOAH-to-road segment intersections. Original reuse terms, Pasig polygon presence, and two research-window intersections are verified; map vintage and production-grade bounded spans remain open.
-- A trace from source sentence to named road, cross streets or landmark, bounded road segment, DRRMO match if any, hazard intersection if available, and output geometry.
+- A source-metadata audit for map vintage and representative exact NOAH-to-road segment intersections. The checked source metadata does not publish a modeling/validation date; ODbL terms, Metro Manila sample coverage, and local exact intersections are recorded. Production geometry remains a later integration task.
+- A trace from source sentence to named road, cross streets or landmark, bounded road segment, DRRMO match if any, hazard intersection if available, and output geometry. The real GMA Pasig trace and non-Pasig Santo Domingo span audit are linked in the [coverage evaluation](../evaluations/phase-36-metro-spatial-coverage-audit.md).
 - A C. Raymundo example showing separate Rosario/Bernal and Caniogan/Mercedes candidates, how article context disambiguates them, and how multiple plausible sections remain unresolved. Junction nodes and related DRRMO rows are grounded for the two research windows; general article-to-segment selection remains open.
 - Separate checks for alert latency, segment accuracy, false routing closures, stale/receded updates, duplicate articles, and missing spatial layers. Do not treat a numerical place-ranking score as a calibrated probability.
 - Development map and routing verification before production connection. Keep the user-requested article simulations paused for now; ordinary automated checks remain part of implementing code changes.
