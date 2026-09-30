@@ -6,6 +6,9 @@
 
 ---
 
+### Phase 36: Article and Pasig history road context (September 30, 2026)
+- [x] Added a read-only matcher from extracted article road/cross-street/span context and row-level Pasig DRRMO records to bounded OSM sections. A constructed Bernal Street claim narrows 25 C. Raymundo sections to two; three actual Rosario/Bernal CSV rows support both, while ungrounded rows remain visible. Non-Pasig claims do not use the Pasig history. The local NOAH audit accepts this context and all three scenarios; 21 focused tests pass. This is not yet a live RSS geometry provider, alert, zone, or routing write. See the [context evaluation](evaluations/phase-36-article-road-context-check.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
 ### Flood report media attachment repair (September 30, 2026)
 - [x] Copied picked files before clearing the native input, made the picker directly tappable in the mobile sheet, and stopped the backend from creating a report after an evidence upload fails. Desktop and mobile viewport browser regressions pass (2/2); backend failure-path test passes (1/1). Physical-device picker confirmation remains open. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 

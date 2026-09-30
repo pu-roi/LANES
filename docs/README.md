@@ -30,6 +30,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Phase 36: Santo Domingo article-to-road-span audit](evaluations/phase-36-sto-domingo-road-span-audit.md)
 - [Phase 36: Reusable article-to-road match check](evaluations/phase-36-reusable-road-match-check.md)
 - [Phase 36: NOAH road-section ranking check](evaluations/phase-36-noah-road-ranking-check.md)
+- [Phase 36: Article and DRRMO road-section context check](evaluations/phase-36-article-road-context-check.md)
 
 ## Guides
 
