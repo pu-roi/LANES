@@ -3,7 +3,7 @@
 from dataclasses import asdict
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -22,11 +22,13 @@ from app.schemas.news_candidate import (
     NewsDiscoveryRunSummary,
     NewsFeedCheckpointSummary,
     NewsFeedProbeResult,
+    OpenSearchLookupSummary,
     NewsSourceProbeResponse,
     NewsSourceSummary,
 )
 from app.services.news_discovery_service import discover_news
-from app.services.news_feed_service import probe_feed
+from app.services.news_open_search_service import retrieve_open_article_leads, search_open_article_leads
+from app.services.news_feed_service import canonical_article_url, probe_feed
 from app.services.news_sources import load_news_sources
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -52,6 +54,42 @@ def list_news_candidates(
 ) -> list[NewsArticleSummary]:
     """Show pending RSS evidence to staff; this does not create flood reports."""
     return [NewsArticleSummary.model_validate(article) for article in list_pending_articles(db, limit)]
+
+
+@router.get("/candidates/{article_id}/open-leads", response_model=OpenSearchLookupSummary)
+@limiter.limit("3/minute")
+def lookup_open_news_leads(
+    request: Request,
+    response: Response,
+    article_id: int,
+    retrieve_articles: bool = Query(default=False),
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> OpenSearchLookupSummary:
+    """Search public GDELT article links for a blocked publisher page."""
+    article = db.get(NewsArticle, article_id)
+    if article is None:
+        raise HTTPException(status_code=404, detail="News article not found")
+    if article.article_text is not None:
+        raise HTTPException(status_code=409, detail="Full article text is already available")
+    source = next((item for item in load_news_sources() if item.id == article.publisher_source_id
+                   and item.enabled and item.verified_at is not None), None)
+    if (source is None or canonical_article_url(article.canonical_url, source) is None or
+            not any(entry.source_id == source.id and entry.feed_url in source.feed_urls
+                    for entry in article.feed_entries)):
+        raise HTTPException(status_code=409, detail="Open lookup requires a verified publisher feed candidate")
+    with httpx.Client(timeout=httpx.Timeout(8.0, connect=3.0)) as client:
+        result = search_open_article_leads(
+            article.canonical_url,
+            article.title,
+            article.excerpt,
+            client,
+        )
+        if retrieve_articles:
+            result = retrieve_open_article_leads(result, load_news_sources(), client)
+    if result.retry_after_seconds is not None:
+        response.headers["Retry-After"] = str(result.retry_after_seconds)
+    return OpenSearchLookupSummary.model_validate(asdict(result))
 
 
 @router.post("/runs", response_model=NewsDiscoveryRunSummary)

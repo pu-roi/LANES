@@ -1,11 +1,64 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 30, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 01, 2026, 12:53 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-070] GDELT lookups lacked shared pacing and cooldowns
+
+- **Status:** Request handling repaired locally; live provider success remains unverified
+- **Severity:** Medium (repeated or concurrent staff lookups could amplify provider throttling)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Live GDELT checks returned HTTP 429. Separate lookups could repeat searches without a provider-wide interval or shared cooldown. A successful title search could also immediately issue a phrase search. The observed external 429's original cause is unconfirmed.
+
+#### 2. Root Cause Analysis (RCA)
+
+The staff route's per-client limit did not coordinate individual upstream queries across concurrent calls. The service had no success cache, failure cooldown state, or Retry-After parsing.
+
+#### 3. Solution & Architectural Strategy
+
+Use a single in-flight query gate per process, a 10-second gap, a bounded 10-minute cache, and exponential cooldowns starting at 60 seconds. Respect longer Retry-After seconds/dates, recognize HTTP-200 throttle notices, and expose structured wait metadata. Long waits return immediately and no failed query is automatically retried. A real HTTP 429 plus an immediate repeat generated one outbound request total. This does not coordinate multiple processes/replicas or clear external limits.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: pacing, cache, cooldowns, and provider failure handling.
+- `backend/app/schemas/news_candidate.py`: optional `retry_after_seconds`.
+- `backend/app/api/v1/endpoints/admin_news.py`: Retry-After response header.
+- `backend/tests/test_news_open_search.py`, `backend/tests/test_news_discovery.py`: concurrency, timing, cache, backoff, HTTP-date, failure, and response metadata regressions.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): verification and process-scope limits.
+
+### [BUG-069] Malformed indexed article URLs crashed the staff lookup
+
+- **Status:** Resolved locally with regression coverage
+- **Severity:** Medium (external search metadata could fail the lookup)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A GDELT-style result containing `https://[invalid/flood` raised an uncaught `ValueError`. Invalid/nonstandard ports could also survive lead validation. Live checks additionally returned HTTP 429, which the response labeled only as `HTTPStatusError`.
+
+#### 2. Root Cause Analysis (RCA)
+
+Article identity parsing ran outside the provider-error handler and did not catch URL parsing failures or validate the port. Provider failures used only the exception class, and a failed title search could still immediately trigger an excerpt search.
+
+#### 3. Solution & Architectural Strategy
+
+Skip malformed URLs and nonstandard ports, retain valid results, return HTTP status codes without provider body text, and stop immediate phrase searches after failed title requests. Alternate bodies remain separate and require event review. HTTP 429 availability remains an operational limitation, not a resolved provider issue.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: URL validation and failure handling.
+- `backend/tests/test_news_open_search.py`: malformed URL, malformed/oversized response, disabled-source, and 429 regressions.
+- `backend/tests/test_news_discovery.py`: retrieval-option response and unchanged stored original integration checks.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): offline and live verification details.
 
 ### [BUG-068] Mobile flood report media selection did not attach picked files
 

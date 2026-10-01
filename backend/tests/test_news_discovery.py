@@ -1,7 +1,7 @@
 """Offline RSS/Atom and safe-discovery contract tests."""
 
 from dataclasses import replace
-from datetime import date
+from datetime import date, datetime, timezone
 
 import httpx
 import pytest
@@ -17,6 +17,7 @@ from app.core.database import get_db
 from app.main import app
 from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint
 from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_metro_manila_flood, likely_pasig_flood
+from app.services.news_open_search_service import OpenSearchHit, OpenSearchLookup
 from app.services.news_feed_service import NewsEntry, parse_feed, probe_feed
 from app.services.news_sources import NewsSource, load_news_sources
 
@@ -356,7 +357,7 @@ def test_unverified_source_never_fetches() -> None:
     assert not run.probes and not run.candidates
 
 
-def test_staff_source_api_requires_authentication_and_lists_runtime_sources() -> None:
+def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monkeypatch: pytest.MonkeyPatch) -> None:
     engine = create_engine(
         "sqlite+pysqlite://",
         connect_args={"check_same_thread": False},
@@ -375,6 +376,7 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources() ->
             assert client.get("/api/v1/admin/news/sources").status_code == 401
             assert client.get("/api/v1/admin/news/feeds").status_code == 401
             assert client.get("/api/v1/admin/news/candidates").status_code == 401
+            assert client.get("/api/v1/admin/news/candidates/1/open-leads").status_code == 401
             assert client.post("/api/v1/admin/news/runs").status_code == 401
             assert client.post("/api/v1/admin/news/manual-candidate", json={"title": "Test", "text": "Baha"}).status_code == 401
             app.dependency_overrides[deps.get_current_active_admin] = lambda: object()
@@ -394,6 +396,77 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources() ->
                 assert manual.json()["publisher_source_id"] == "Staff DRRMO / Social Post"
                 assert manual.json()["canonical_url"] == "https://facebook.com/drrmo/posts/12345"
                 assert manual.json()["review_state"] == "pending"
+                blocked_url = "https://newsinfo.inquirer.net/2287229/test-story"
+                with Session(engine) as db:
+                    blocked = NewsArticle(
+                        canonical_url=blocked_url,
+                        publisher_source_id="feedspot-02",
+                        title="Flood in Pasig",
+                        excerpt="Baha sa Manggahan",
+                        article_text=None,
+                        article_error="Article access blocked by publisher challenge (HTTP 403)",
+                        content_fingerprint="0" * 64,
+                    )
+                    db.add(blocked)
+                    db.flush()
+                    db.add(NewsArticleFeedEntry(
+                        article_id=blocked.id,
+                        source_id="feedspot-02",
+                        feed_url="https://www.inquirer.net/fullfeed/",
+                        feed_guid="blocked-1",
+                    ))
+                    db.commit()
+                    blocked_id = blocked.id
+                assert client.get("/api/v1/admin/news/candidates/99999/open-leads").status_code == 404
+                monkeypatch.setattr("app.api.v1.endpoints.admin_news.search_open_article_leads", lambda *args: OpenSearchLookup(
+                    article_url=blocked_url,
+                    searched_at=datetime.now(timezone.utc),
+                    evidence_status="index_links_only_incomplete_article",
+                    results=(OpenSearchHit(
+                        url=blocked_url,
+                        title="Indexed Pasig story",
+                        seen_at=None,
+                        relationship="indexed_publisher_page",
+                        query_kind="title",
+                    ), OpenSearchHit(
+                        url="https://www.philstar.com/nation/2026/08/17/2549888/related-flood-story",
+                        title="Alternate flood report",
+                        seen_at=None,
+                        relationship="possible_other_source",
+                        query_kind="title",
+                    )),
+                    errors=("GDELT cooldown; retry in 180 seconds",),
+                    retry_after_seconds=180,
+                ))
+                lookup = client.get(f"/api/v1/admin/news/candidates/{blocked_id}/open-leads")
+                assert lookup.status_code == 200
+                assert lookup.json()["evidence_status"] == "index_links_only_incomplete_article"
+                assert lookup.json()["retry_after_seconds"] == 180
+                assert int(lookup.headers["retry-after"]) >= 179
+                assert lookup.json()["results"][0]["relationship"] == "indexed_publisher_page"
+                fetched: list[str] = []
+
+                def fake_article_fetch(source: NewsSource, url: str, _client: httpx.Client):
+                    fetched.append(url)
+                    assert source.id == "feedspot-05"
+                    return "Independent report of flooding in Pasig.", None
+
+                monkeypatch.setattr("app.services.news_open_search_service.fetch_article_text", fake_article_fetch)
+                retrieved = client.get(f"/api/v1/admin/news/candidates/{blocked_id}/open-leads?retrieve_articles=true")
+                assert retrieved.status_code == 200
+                assert len(fetched) == 1
+                alternate = retrieved.json()["results"][1]
+                assert alternate["article_text"] == "Independent report of flooding in Pasig."
+                assert alternate["publisher_source_id"] == "feedspot-05"
+                assert alternate["fetched_at"]
+                assert alternate["match_status"] == "same_event_review_required"
+                assert retrieved.json()["results"][0]["article_text"] is None
+                with Session(engine) as db:
+                    original = db.get(NewsArticle, blocked_id)
+                    assert original.article_text is None
+                    assert original.article_error == "Article access blocked by publisher challenge (HTTP 403)"
+                    assert original.review_state == "pending"
+                    assert db.scalar(select(func.count()).select_from(NewsArticle)) == 2
             finally:
                 app.dependency_overrides.pop(deps.get_current_active_admin, None)
     finally:

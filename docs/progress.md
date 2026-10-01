@@ -1,10 +1,16 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** September 30, 2026, 7:51 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 01, 2026, 12:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Phase 36: Free open-index leads for blocked publisher articles (October 1, 2026)
+- [x] Added process-wide GDELT pacing, bounded successful-query caching, exponential cooldowns, and Retry-After handling. The final focused suite passes 70 tests, including concurrency, expiry, throttling, provider dates, recovery, and API wait metadata. Live HTTP 429 plus a repeat produced exactly one outbound request; a later retry timed out, so provider success remains unverified. No new dependency or schema. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Verified retrieval-option API behavior and ingestion safety offline; repaired malformed provider URLs and surfaced HTTP status codes while stopping immediate fallback searches after provider errors. Live GDELT returned 429, while the GMA feed control parsed 15 entries. Live fallback success remains unverified. See the [evaluation](evaluations/phase-36-open-article-fallback-check.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Added optional bounded retrieval of three approved alternate publisher articles, retaining independent provenance and visible errors. Bodies require same-event review; no database schema or dependency changes. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Added a staff-only backend lookup for incomplete RSS publisher candidates using the free public GDELT DOC index. It searches by article title, then RSS phrase if needed, and returns bounded source-labeled URLs and index-seen times without treating them as full article text or publishing any flood data. It needs no payment card or API key. Live GDELT reachability from this development network could not be verified; scheduled fallback remains open. Focused offline tests pass. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36 Gates 1–3 acceptance checks (September 30, 2026)
 - [x] Closed the pre-Gate-4 article, activation-safety, and location-prediction checks. Blocked/incomplete Inquirer and Rappler articles remain incomplete leads; 10 activation failure cases plus negated/forecast/subsided paths prove no public flood writes; generic landmark scope and the 17-city OSM/NOAH coverage audit are recorded. A real historical GMA Pasig claim was traced through six bounded road candidates, place-matched DRRMO rows, and all three NOAH scenarios, and a separate Quezon City span trace covers a non-Pasig example. The current article remains ineligible for activation and no report, alert, zone, or route was written. Focused suite: 122 passed. Gate 4 has not started. See [task plan](task_plan.md), [article context evaluation](evaluations/phase-36-article-road-context-check.md), and [spatial coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

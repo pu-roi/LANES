@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** September 30, 2026, 7:51 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 01, 2026, 12:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -32,6 +32,15 @@
 > **Focus:** Build a server-side assistant that discovers recent Metro Manila flood reports from approved public news sources, extracts Filipino/English/Taglish flood evidence, ranks likely map locations, and gives staff a review path for uncertain claims. Automatic activation must pass separately verified evidence and geometry gates before affecting an official zone or routing. The Pasig DRRMO history strengthens Pasig-specific ranking within the Metro Manila scope. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 **Current next task:** Gates 1–3 now pass their acceptance checks. Gate 1 fails closed on blocked or incomplete pages; Gate 2 has a no-write failure matrix; Gate 3 has a real Pasig article/DRRMO/three-scenario trace, a non-Pasig bounded span trace, and explicit OSM/NOAH coverage limits. Gate 4 has not started. See the [publisher audit](evaluations/phase-36-publisher-body-and-pagination-audit.md), [safety contract](plans/news-activation-safety-gates.md), [article/DRRMO context check](evaluations/phase-36-article-road-context-check.md), and [spatial coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+#### Free blocked-article fallback (October 1)
+
+- [x] Add the staff-only `open-leads` lookup using free GDELT index metadata, without an account, card, or API key. Index links remain incomplete leads. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Support `retrieve_articles=true` for at most three enabled, verified alternate publishers through the bounded article parser. Return each alternate URL, text/error, publisher ID, fetch time, and same-event review status separately; leave the stored original and public flood state unchanged. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Add per-process pacing (10-second gap), bounded successful-query caching (10 minutes, 32 queries), single in-flight coordination, and exponential cooldowns (60 seconds up to 15 minutes, honoring longer Retry-After). Return structured wait guidance for throttling and transient failures. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Pass 70 focused backend tests for retrieval, API responses, failure handling, concurrency, cache, cooldown, and ingestion safety. Live HTTP 429 plus a repeat sent one outbound request total; GMA's feed control parsed 15 entries. A later GDELT retry timed out. See the [fallback evaluation](evaluations/phase-36-open-article-fallback-check.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Verify successful live GDELT retrieval from the target runtime and coordinate pacing across workers/replicas before scheduled multi-instance use. State currently resets on process restart. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Broaden event-oriented search and verify dates, places, and flood status from alternate article evidence before automatic same-event matching or scheduled integration. An index-seen timestamp is not an observation time. Any durable evidence schema needs separate approval. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 > **Metro Manila scope decision:** RSS discovery, article processing, predicted placement, and news-derived zones target Metro Manila, including Pasig. The collector now requires a Metro Manila place clue in an RSS title or excerpt before fetching an article; location-free headlines may be missed. The six approved feeds are still polled because they are publisher-wide feeds. Nationwide PSGC extraction code remains in the repository as completed historical work but is outside this phase's active evaluation and rollout. The Pasig map border is not a boundary for other Metro Manila cities. Manual/citizen reporting elsewhere is a separate feature and is not changed by this news-pipeline scope. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 

@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** September 30, 2026, 2:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 01, 2026, 12:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -58,6 +58,8 @@ This document serves as the official technical stack reference for the LANES pla
   * *Role:* Generating async HTTP requests to the Resend API (from `Lanes <noreply@navlanes.live>`) to securely dispatch 6-digit One-Time Password verification codes to user emails during account onboarding/password recovery, as well as delivering commuter messages from the /about contact form to official project inboxes (lanes@navlanes.live, navlanes.live@gmail.com).
 * **RSS News Discovery:** **httpx + Python standard-library XML/HTML parsers + Cloud Run Jobs + Cloud Scheduler**
   * *Role:* Polling six verified publisher feeds every three hours in `asia-east1` under the previously verified Cloud schedule, parsing bounded RSS/Atom responses, and storing source evidence in three migrated Cloud SQL tables. The runtime registry is pruned to six verified active feeds, while the 50 Feedspot candidate entries remain in research documentation (`docs/plans/rss-news-discovery-plan.md`). Current source code shortlists Metro Manila flood entries from RSS titles/excerpts; the deployed Cloud Run job has not yet been verified on that revision. The staff-only API exposes feed health, pending candidates, and manual candidate submission. Collection does not invoke zone activation. No new Python package was added for RSS collection.
+* **Open Article Leads:** **Public GDELT DOC API via existing httpx**
+  * *Role:* A staff-only lookup for blocked publisher candidates returns indexed links and index-seen times without an account, card, or API key. Optional retrieval fetches up to three approved alternate publisher bodies for event review, separately from the original. Standard-library locking, timing, and a bounded 10-minute cache provide per-process pacing and cooldowns with Retry-After handling. The fallback is not scheduled and cannot activate a flood or route change. Live index success and shared coordination across replicas remain unverified. No new Python package was added. [GDELT DOC API](https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/).
 * **Image Processing & Storage:** **Cloudinary Python SDK**  
   * *Role:* Managing direct upload, scaling (down to 1024px), and WebP format compression of user-submitted flood evidence photos to a dedicated cloud CDN, ensuring lightweight database records and fast frontend loading.
 * **NLP & Information Extraction:** **Evidence-linked Taglish extraction and nationwide PSGC location prototypes**

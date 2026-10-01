@@ -61,6 +61,28 @@ class NewsArticleSummary(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class OpenSearchHitSummary(BaseModel):
+    url: str
+    title: str
+    seen_at: datetime | None
+    relationship: str
+    query_kind: str
+    publisher_source_id: str | None = None
+    article_text: str | None = None
+    article_error: str | None = None
+    fetched_at: datetime | None = None
+    match_status: str = "unverified_index_lead"
+
+
+class OpenSearchLookupSummary(BaseModel):
+    article_url: str
+    searched_at: datetime
+    evidence_status: str
+    results: list[OpenSearchHitSummary]
+    errors: list[str]
+    retry_after_seconds: int | None = None
+
+
 class NewsDiscoveryRunSummary(BaseModel):
     probes: list[NewsFeedProbeResult]
     new_or_updated_candidates: int
