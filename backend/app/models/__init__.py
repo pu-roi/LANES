@@ -17,7 +17,7 @@ from app.models.comment import Comment
 from app.models.post import CommunityPost, CommunityPostEditHistory, CommunityPostReport
 from app.models.notification import Notification
 from app.models.saved_place import SavedPlace
-from app.models.news import NewsFeedCheckpoint, NewsArticle, NewsArticleFeedEntry
+from app.models.news import NewsFeedCheckpoint, NewsArticle, NewsArticleFeedEntry, NewsArticleVersion, NewsExtractionRun
 
 # Route domain currently has no models (mostly algorithmic), adding comment per user request
 # from app.models.route import ...

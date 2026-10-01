@@ -80,6 +80,50 @@ def _article_claims(title: str, text: str):
     )).claims
 
 
+@pytest.mark.parametrize("text", [
+    "Officials discussed an investigation into flood control projects in Taguig City.",
+    "The flood-control project in Taguig City has a wall measuring 3 meters.",
+    "Inimbestigahan ang anti-flood projects sa Taguig City.",
+    "Funding for flood mitigation and flood prevention in Taguig City is rising.",
+])
+def test_flood_control_discussion_is_not_a_flood_observation(text: str) -> None:
+    assert not _article_claims("Taguig flood control investigation", text)
+
+
+@pytest.mark.parametrize("prefix", [
+    "Flood-control teams reported ",
+    "Officials investigated flood control projects in Taguig City. Residents reported ",
+])
+@pytest.mark.parametrize("observation", ["knee-deep floodwater", "knee-deep water", "knee-deep"])
+def test_flood_control_context_preserves_actual_flood_evidence(prefix: str, observation: str) -> None:
+    text = prefix + observation + " on Laguna Street in Pasig City."
+    claims = _article_claims("Flood control investigation and road flooding", text)
+    road = next(c for c in claims if c.canonical_road == "Laguna Street")
+    assert road.flood_mentioned and road.condition == "active"
+    assert road.depth_canonical == "knee"
+    assert not any(c.canonical_city == "City of Taguig" for c in claims)
+    assert text[road.place_char_start:road.place_char_end] == road.raw_place_name
+    start, end = road.evidence_sentence_offset
+    assert text[start:end] == road.evidence_sentence
+
+
+def test_flood_control_clause_does_not_borrow_another_roads_flood() -> None:
+    text = ("Officials discussed flood-control projects on Laguna Street in Pasig City; "
+            "knee-deep floodwater was observed on España Boulevard in Manila.")
+    claims = _article_claims("Flood control and observed flooding", text)
+    assert not any(c.canonical_road == "Laguna Street" for c in claims)
+    road = next(c for c in claims if c.raw_place_name == "España Boulevard")
+    assert road.flood_mentioned and road.depth_canonical == "knee"
+
+
+def test_flood_control_metadata_is_not_a_flood_observation() -> None:
+    result = extract_taglish_flood_facts(NewsArticleExtractorInput(
+        article_id=201, canonical_url="https://example.com/control", publisher="Test News",
+        title="Taguig flood-control investigation", excerpt="Officials discussed project funding.",
+    ))
+    assert result.is_metadata_only and not result.claims
+
+
 def test_gma_road_segment_and_observation_time():
     text = ("In Quezon City, floodwater was waist-deep on Sto. Domingo Avenue "
             "between Atok and Calamba Streets as of 1:12 p.m.")

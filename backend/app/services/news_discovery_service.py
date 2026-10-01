@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 import hashlib
+import json
+from typing import TYPE_CHECKING
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
@@ -13,8 +15,12 @@ import httpx
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.schemas.news_extraction import NewsArticleExtractorInput, NewsExtractionResult
 from app.services.news_feed_service import FeedProbe, NewsEntry, canonical_article_url, probe_feed
 from app.services.news_sources import NewsSource
+
+if TYPE_CHECKING:
+    from app.models.news import NewsArticle
 
 
 # Broad discovery terms; NER and staff review decide whether a real flood occurred.
@@ -36,6 +42,7 @@ MAX_ARTICLE_BYTES = 1_000_000
 MAX_ARTICLE_CHARS = 100_000
 MIN_ARTICLE_CHARS = 120
 MAX_NEWS_AGE = timedelta(days=7)
+MAX_LOCATION_BODY_PROBES = 5
 
 
 @dataclass(frozen=True)
@@ -53,9 +60,106 @@ class NewsCandidate:
 
 
 @dataclass(frozen=True)
+class DiscoveryNotice:
+    source_id: str
+    article_url: str
+    reason: str
+
+
+@dataclass(frozen=True)
 class DiscoveryRun:
     probes: tuple[FeedProbe, ...]
     candidates: tuple[NewsCandidate, ...]
+    notices: tuple[DiscoveryNotice, ...] = ()
+
+
+@dataclass(frozen=True)
+class CandidateExtraction:
+    article_url: str
+    extraction: NewsExtractionResult | None
+    error: str | None = None
+    article_id: int | None = None
+    input_fingerprint: str | None = None
+
+
+async def extract_discovery_candidates(run: DiscoveryRun) -> tuple[CandidateExtraction, ...]:
+    """Exercise collection-to-extraction without DB writes or external audit calls.
+
+    This diagnostic does not invoke ingestion or turn preview geometry into
+    public zones. Missing bodies and individual extraction failures remain visible.
+    """
+    inputs: list[tuple[NewsArticleExtractorInput, str | None]] = []
+    for index, candidate in enumerate(run.candidates, start=1):
+        article = NewsArticleExtractorInput(
+            article_id=-index, canonical_url=candidate.article_url, publisher=candidate.publisher,
+            title=candidate.title, excerpt=candidate.excerpt, article_text=candidate.article_text,
+            published_at=candidate.published_at, fetched_at=candidate.fetched_at,
+        )
+        inputs.append((article, candidate.article_error))
+    return await _extract_article_inputs(inputs)
+
+
+async def extract_saved_news_articles(articles: list[NewsArticle]) -> tuple[CandidateExtraction, ...]:
+    """Read saved snapshots with real IDs; never commits or invokes ingestion.
+
+    This prepares the persistent worker handoff. It does not store extraction
+    results, change review state, retry network retrieval, or call an auditor.
+    """
+    def aware(value: datetime | None) -> datetime | None:
+        return value.replace(tzinfo=timezone.utc) if value and value.tzinfo is None else value
+
+    inputs = [(NewsArticleExtractorInput(
+        article_id=article.id, canonical_url=article.canonical_url, publisher=article.publisher_source_id,
+        title=article.title, excerpt=article.excerpt or "", article_text=article.article_text,
+        published_at=aware(article.published_at), fetched_at=aware(article.fetched_at),
+    ), article.article_error) for article in articles]
+    return await _extract_article_inputs(inputs)
+
+
+async def _extract_article_inputs(
+    inputs: list[tuple[NewsArticleExtractorInput, str | None]],
+) -> tuple[CandidateExtraction, ...]:
+    from app.services.hybrid_extraction_service import HybridExtractionService
+
+    extractor = HybridExtractionService()
+    results: list[CandidateExtraction] = []
+    for article, body_error in inputs:
+        # Fetch time is not evidence content and cannot create a new version.
+        _, fingerprint = extraction_input_snapshot(article)
+        error = body_error
+        if not error and not article.article_text:
+            error = "Article body unavailable"
+        if not error and len(article.article_text or "") > MAX_ARTICLE_CHARS:
+            error = "Article text exceeds processing limit"
+        if error:
+            results.append(CandidateExtraction(article.canonical_url, None, error, article.article_id, fingerprint))
+            continue
+        try:
+            extraction = await extractor.extract_hybrid(article, mode="rules_only")
+        except Exception as exc:
+            results.append(CandidateExtraction(article.canonical_url, None,
+                                               f"Extraction failed: {type(exc).__name__}", article.article_id, fingerprint))
+            continue
+        results.append(CandidateExtraction(article.canonical_url, extraction, None, article.article_id, fingerprint))
+    return tuple(results)
+
+
+def extraction_input_snapshot(article: NewsArticleExtractorInput) -> tuple[dict, str]:
+    """Canonical immutable evidence identity shared by previews and storage."""
+    snapshot = article.model_dump(mode="json", exclude={"article_id", "fetched_at"})
+    if article.published_at:
+        publication = article.published_at
+        if publication.tzinfo is None:
+            publication = publication.replace(tzinfo=timezone.utc)
+        snapshot["published_at"] = publication.astimezone(timezone.utc).isoformat()
+    fingerprint = hashlib.sha256(json.dumps(snapshot, ensure_ascii=False, sort_keys=True,
+                                             separators=(",", ":")).encode("utf-8")).hexdigest()
+    return snapshot, fingerprint
+
+
+async def extract_captured_news_article(article: NewsArticleExtractorInput) -> CandidateExtraction:
+    """Extract one captured snapshot without audit, ingestion, or SQL writes."""
+    return (await _extract_article_inputs([(article, None)]))[0]
 
 
 def likely_pasig_flood(entry: NewsEntry) -> bool:
@@ -81,6 +185,36 @@ def likely_metro_manila_flood(entry: NewsEntry) -> bool:
     """
     text = f"{entry.title} {entry.excerpt}"
     return bool(FLOOD_TERMS.search(text) and METRO_MANILA_TERMS.search(text))
+
+
+def body_has_metro_manila_flood_claim(entry: NewsEntry, body: str) -> bool:
+    """Shortlist body-grounded local claims; this is not event verification."""
+    from app.services.taglish_extraction_service import extract_taglish_flood_facts
+
+    result = extract_taglish_flood_facts(NewsArticleExtractorInput(
+        article_id=-1, canonical_url=entry.article_url, publisher=entry.publisher,
+        title=entry.title, excerpt=entry.excerpt, article_text=body, published_at=entry.published_at,
+    ))
+    return any(
+        claim.flood_mentioned and not claim.is_negated and not claim.is_forecast
+        and claim.condition in {"active", "rising", "receding", "subsided"}
+        and "photo_caption_only" not in claim.uncertainty_reasons
+        and (bool(claim.psgc_code and claim.psgc_code.startswith("13"))
+             or bool(METRO_MANILA_TERMS.search(claim.canonical_city or claim.raw_place_name)))
+        for claim in result.claims
+    )
+
+
+def metadata_names_only_outside_metro_places(entry: NewsEntry) -> bool:
+    """Avoid spending location probes on clearly non-local feed headlines."""
+    from app.services.taglish_extraction_service import extract_taglish_flood_facts
+
+    result = extract_taglish_flood_facts(NewsArticleExtractorInput(
+        article_id=-1, canonical_url=entry.article_url, publisher=entry.publisher,
+        title=entry.title, excerpt=entry.excerpt, published_at=entry.published_at,
+    ))
+    places = [claim for claim in result.claims if claim.psgc_code and claim.place_type in {"city", "province"}]
+    return bool(places) and all(not claim.psgc_code.startswith("13") for claim in places)
 
 
 class _ArticleParser(HTMLParser):
@@ -247,6 +381,9 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
     candidates: list[NewsCandidate] = []
     seen_urls: set[str] = set()
     seen_fingerprints: set[tuple[str, str, str]] = set()
+    accepted_urls: set[str] = set()
+    notices: list[DiscoveryNotice] = []
+    body_probes = 0
     for source in sources:
         if not source.enabled or source.verified_at is None:
             continue
@@ -261,30 +398,73 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
                 last_modified=checkpoint.last_modified if checkpoint else None,
             )
             probes.append(probe)
-            for entry in entries:
+            # Keep metadata-local leads first; extra body probes cannot consume
+            # their retrieval allowance. The five-probe budget covers the run.
+            for entry in sorted(entries, key=lambda item: (
+                    not likely_metro_manila_flood(item),
+                    -(item.published_at.timestamp() if item.published_at else float("-inf")))):
                 fingerprint = (
                     source.id,
                     " ".join(re.findall(r"\w+", entry.title.casefold())),
                     " ".join(re.findall(r"\w+", entry.excerpt.casefold())),
                 )
-                if ((entry.published_at is not None and
-                         entry.published_at < datetime.now(timezone.utc) - MAX_NEWS_AGE) or
-                        not likely_metro_manila_flood(entry)):
+                now = datetime.now(timezone.utc)
+                if (not FLOOD_TERMS.search(f"{entry.title} {entry.excerpt}") or
+                        (entry.published_at is not None and entry.published_at < now - MAX_NEWS_AGE)):
+                    continue
+                if entry.published_at is not None and entry.published_at > now:
+                    notices.append(DiscoveryNotice(source.id, entry.article_url, "Publication time is in the future"))
+                    continue
+                metadata_local = likely_metro_manila_flood(entry)
+                if not metadata_local and metadata_names_only_outside_metro_places(entry):
+                    notices.append(DiscoveryNotice(source.id, entry.article_url, "Feed metadata names only non-Metro Manila places"))
                     continue
                 existing = news_crud.get_article(db, entry.article_url) if db is not None else None
+                def utc(value: datetime) -> datetime:
+                    return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+
+                if (existing is not None and existing.published_at and entry.published_at
+                        and utc(entry.published_at) < utc(existing.published_at)):
+                    notices.append(DiscoveryNotice(source.id, entry.article_url, "Older feed revision cannot replace newer stored evidence"))
+                    continue
                 normalized = " ".join(re.findall(r"\w+", f"{entry.title} {entry.excerpt}".casefold()))
                 digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
                 duplicate = (entry.article_url in seen_urls or
                              (entry.excerpt and fingerprint in seen_fingerprints))
                 seen_urls.add(entry.article_url)
-                if entry.excerpt:
-                    seen_fingerprints.add(fingerprint)
-                if duplicate or (existing is not None and existing.content_fingerprint == digest
-                                 and existing.article_text is not None):
-                    if db is not None:
+                if duplicate:
+                    if db is not None and (entry.article_url in accepted_urls or existing is not None):
                         news_crud.save_candidate(db, entry, None)
                     continue
+                same_publication = (existing is not None and
+                                    (entry.published_at is None or (existing.published_at is not None and
+                                     utc(entry.published_at) == utc(existing.published_at))))
+                if (existing is not None and existing.content_fingerprint == digest
+                        and existing.article_text is not None and existing.article_error is None and same_publication):
+                    if metadata_local or body_has_metro_manila_flood_claim(entry, existing.article_text):
+                        accepted_urls.add(entry.article_url)
+                        if entry.excerpt:
+                            seen_fingerprints.add(fingerprint)
+                        if db is not None:
+                            news_crud.save_candidate(db, entry, None)
+                    continue
+                if not metadata_local:
+                    if body_probes >= MAX_LOCATION_BODY_PROBES:
+                        notices.append(DiscoveryNotice(source.id, entry.article_url, "Location body-probe limit reached; scope unresolved"))
+                        continue
+                    body_probes += 1
                 article_text, article_error = fetch_article_text(source, entry.article_url, client)
+                if not metadata_local:
+                    if article_text is None:
+                        notices.append(DiscoveryNotice(source.id, entry.article_url,
+                                                       f"Location unresolved: {article_error or 'article body unavailable'}"))
+                        continue
+                    if not body_has_metro_manila_flood_claim(entry, article_text):
+                        notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
+                        continue
+                accepted_urls.add(entry.article_url)
+                if entry.excerpt:
+                    seen_fingerprints.add(fingerprint)
                 candidate = NewsCandidate(
                     source_id=entry.source_id,
                     publisher=entry.publisher,
@@ -303,4 +483,4 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
             if db is not None:
                 news_crud.save_checkpoint(db, probe)
                 db.commit()
-    return DiscoveryRun(tuple(probes), tuple(candidates))
+    return DiscoveryRun(tuple(probes), tuple(candidates), tuple(notices))

@@ -1,11 +1,177 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 01, 2026, 12:53 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-076] Full backend tests lack isolated database and auth fixtures
+
+- **Status:** Investigated; pre-existing test infrastructure gap; remediation pending
+- **Severity:** Medium (prevents a trustworthy all-suite integration result; no new runtime regression established)
+- **Date Reported / Updated:** October 02, 2026
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The new-branch review collects 398 cases, but some older integration modules use configured shared database sessions/live providers, install auth overrides at import time, or request a nonexistent `db` fixture. Running them with the isolated news/authorization tests could contaminate dependency state or write to an unintended database. The review therefore explicitly separates these cases and does not claim a full-suite pass.
+
+#### 2. Root Cause Analysis (RCA)
+
+`tests/conftest.py` exposes `db_session` from the application SessionLocal rather than an isolated test database. `test_auth_endpoints.py` requests `db`, which that conftest does not define. `test_audit_trail.py`, `test_flood_report_merging.py`, `test_spatial_archive.py`, and `test_spatial_merging.py` mutate shared app auth overrides during collection without universal per-case cleanup. Other legacy tests call SessionLocal/live geocoding directly. All these files are unchanged from roi-branch; this was not introduced by the new worker.
+
+#### 3. Solution & Architectural Strategy
+
+Pending: add a guarded disposable PostgreSQL/PostGIS harness, restore auth/dependency/limiter state per test, mock external providers, and resolve fixture naming while preserving every failing test. First validate against the baseline and then the new revision; distinguish old test failures from feature regressions. The current review validates 371 distinct cases and explicitly leaves twenty-three database/live cases plus four guarded PostgreSQL cases unverified in this run. The earlier migration/four-PostgreSQL verification remains documented separately.
+
+#### 4. Files Modified / What Changed
+
+- No production or test runtime file changed during this investigation.
+- Existing evaluation, task/progress, and this issue record document the evidence, affected pre-existing test files, and remaining integration acceptance.
+
+**Later pre-push mitigation (October 2):** Running selected legacy modules in separate processes against a guarded disposable PostgreSQL/PostGIS database passes existing flood-event (4), profile/password (1), OTP (1), archive (2), saved-place (1), and login-limit (1) cases. Four queue cases also pass. An explicit-ID seed sequence error was corrected in disposable setup, not application code. This improves confidence to 385 distinct validated cases but does not repair universal fixture isolation or claim full-suite coverage; thirteen legacy/live cases remain open. See [verification](../evaluations/phase-36-open-article-fallback-check.md#additional-pre-push-verification--october-2). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### [BUG-075] Flood-control discussions were classified as active flooding
+
+- **Status:** Resolved locally; 13 focused and 207 combined regressions pass; one real administrative body rejected as flood evidence; broad live validation/deployment pending
+- **Severity:** High (policy discussion could create a false flood candidate)
+- **Date Reported / Updated:** October 02, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A constructed report discussing flood control projects in Taguig yielded an active, body-grounded local flood claim despite having no flood observation. Project height measurements and rising funding could also become depth/status evidence. The preview remained review-only; no public zone was written.
+
+#### 2. Root Cause Analysis (RCA)
+
+The active-word expression matched `flood` inside infrastructure/program phrases. Generic depth and condition rules then interpreted administrative wording as physical flood evidence, allowing unknown-scope discovery probes to accept the story.
+
+#### 3. Solution & Architectural Strategy
+
+Mask flood-control/mitigation/prevention/management/protection and anti-flood phrases only when checking evidence words; retain original source text and offsets. Exclude policy-only sentences and clauses before extracting measurements or borrowing another clause's flood evidence. Preserve explicit flood-depth gauges and genuine water observations in mixed-topic articles. Regression development caught and repaired an overly broad first guard that suppressed knee-deep water beside a flood-control mention. Metadata-local headlines may remain review leads; policy text cannot become observations. No schema or dependency change.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`: Shared evidence-word masking and policy-only sentence/clause guards with explicit-gauge preservation.
+- `backend/tests/test_taglish_extraction.py`: Twelve cases for administrative terms, project dimensions, metadata-only input, mixed actual floods, clause boundaries, and source offsets.
+- `backend/tests/test_news_discovery.py`: Real RSS/body parsing through mock HTTP rejects an unknown-scope policy story with a visible no-local-claim notice.
+- Existing evaluation, task/progress, feature/system reference, and RSS plan: Record local repair, fresh empty live shortlist, successful manual live negative after a permitted approval retry, and deferred Priority 3.
+
+### [BUG-074] Later flood updates were blanket conflicts and same-URL revisions reused old bodies
+
+**Later scope correction:** The broad Priority 3 hold is superseded. Priority 2 comparison repairs pass controlled tests; live matching remains unverified. Durable grouping/retry and zone updates are later integration requirements. The developer authorized saved-extraction preparation, with durable storage pending explicit schema approval.
+
+- **Status:** Resolved locally with 141 combined regression tests; live update verification and deployment pending
+- **Severity:** High (updates could be rejected or an old body relabeled as a newer version)
+- **Date Reported / Updated:** October 02, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Knee-deep flooding followed by a later chest-deep observation was treated as a depth conflict; observed clearance was also flagged as conflicting. Feed retrieval could choose older coverage before newer reports. A same-URL publication revision with unchanged wording reused the stored body; a failed fetch could keep old text while updating its metadata/date.
+
+#### 2. Root Cause Analysis (RCA)
+
+Comparison used depth/status differences and article-wide time lists rather than per-city/road observation order. Alternate feed selection stopped at the first three matches. Cached-body reuse checked title/summary fingerprint but ignored publication revisions. Persistence relabeled old text after failed refresh, and duplicate provenance could repeat that metadata update.
+
+#### 3. Solution & Architectural Strategy
+
+Compare latest explicit observations per city-qualified road, distinguish later changes/clearance from older/stale observations and genuine simultaneous conflicts, expose segment and recurrence ambiguity, and retain missing verification. Choose newest eligible alternate publications across bounded feeds and newest-first probes within discovery feeds. Refresh same-URL publication revisions, preserve successful body/date on failure, surface errors, and prevent older feed overwrites. Retained errored bodies cannot activate even with cached approval. The authenticated fallback can inspect them. No schema or dependency change; no production extraction wiring. Unchanged-feed retries, durable versions/grouping, and live acceptance remain open; Priority 3 is held.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: newest alternate selection and per-road observation decisions.
+- `backend/app/schemas/news_candidate.py`: typed `road_updates` response.
+- `backend/app/services/news_discovery_service.py`, `backend/app/crud/news.py`: publication refresh, ordering, older-version rejection, retained snapshot/error handling.
+- `backend/app/services/news_auto_ingestion_service.py`: failed-refresh body and activation guards.
+- `backend/app/api/v1/endpoints/admin_news.py`: protected fallback eligibility for retained errored bodies.
+- `backend/tests/test_news_open_search.py`, `backend/tests/test_news_discovery.py`, `backend/tests/test_news_auto_ingestion.py`: update ordering, bounded freshness, revision persistence, fallback auth, and no-write regression coverage.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md), task plan, progress, existing flagship Feature 1, system documentation, RSS plan, and tech stack: synchronized scope, validation, and hold.
+
+### [BUG-073] Feed location filtering discarded body-only Metro Manila flood reports
+
+- **Status:** Resolved locally with controlled coverage; live flood-candidate verification and deployment pending
+- **Severity:** Medium (local flood reports could be skipped before retrieval)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A headline such as “Several roads flooded” was discarded if its feed summary omitted the city, even when its article body explicitly reported a Pasig flooded road. Alternate-report retrieval exposed bodies but supplied no structured comparison or copied-body warning.
+
+#### 2. Root Cause Analysis (RCA)
+
+Discovery used only flood/place regexes on feed metadata. Alternate retrieval labeled all accessible bodies as review leads without comparing source-linked dates, city-qualified roads, or duplicate content. Duplicate feed processing could also save an unaccepted lead if acceptance and seen-request state were conflated.
+
+#### 3. Solution & Architectural Strategy
+
+Prioritize metadata-local leads and permit five additional unknown-scope article probes per run. Require an extracted body-grounded local flood claim; skip explicit non-local city/province metadata and future-dated entries. Return notices for unresolved/blocked/out-of-scope/budget outcomes. Track accepted URLs separately from seen requests, preserving rejected scope through duplicates and accepted cached-body reuse. Alternate review compares specific places, city-qualified roads, dates, depth/status, and normalized body hashes. Every overlap remains unverified; copied bodies do not count as independent evidence. No DB schema, dependencies, external auditor, or activation path changed.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_discovery_service.py`: bounded body-location probes, extracted scope, future-date checks, notices, and accepted/seen duplicate handling.
+- `backend/app/services/news_open_search_service.py`: structured event-review clues and duplicate-body warning.
+- `backend/app/schemas/news_candidate.py`, `backend/app/api/v1/endpoints/admin_news.py`: typed run notices and alternate event-review serialization through staff-authenticated routes.
+- `backend/scripts/run_news_discovery.py`: CLI notices and alternate review output.
+- `backend/tests/test_news_discovery.py`, `backend/tests/test_news_open_search.py`: body-only locations, incidental weather clues, run-wide budget, duplicates/repeats, city-qualified roads, dates/depth/status, and copied bodies.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): controlled results and remaining live limitations.
+
+### [BUG-072] Inquirer RSS HTML character references broke XML parsing
+
+- **Status:** Resolved locally; all six configured feeds parsed live; deployment pending
+- **Severity:** Medium (one configured publisher's feed was excluded before discovery)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The ordinary LANES client received HTTP 200 from Inquirer's configured full feed but returned `Invalid feed XML` and no entries. The failure response also discarded the received HTTP status, making this data-format error resemble a connection failure. A valid empty feed could additionally cause the discovery CLI to report failure.
+
+#### 2. Root Cause Analysis (RCA)
+
+The RSS used undeclared HTML character names (`hellip`, `nbsp`, and `rsquo`) outside CDATA. ElementTree rejected an undefined entity at line 92, column 54. The feed probe's exception branch always set HTTP status to null, and the discovery success check omitted the healthy `empty` status. These problems are distinct from the original article's Cloudflare challenge.
+
+#### 3. Solution & Architectural Strategy
+
+Convert only standard HTML named characters outside CDATA to numeric XML references. Preserve XML's predefined escapes and CDATA; reject unknown custom entities, DTD declarations, and oversized normalized data. Retain HTTP status for parsing errors, explicitly reject HTML/challenge responses, and treat valid empty feeds as healthy. A final live run parsed all six feeds, including 20 Inquirer entries, without feed errors. The combined discovery, fallback, ingestion, and hybrid suite passed 107 tests. Article-page recovery remains unverified.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_feed_service.py`: bounded known-character normalization, CDATA/XML escaping preservation, retained parse-error HTTP status, and HTML/challenge diagnostics.
+- `backend/scripts/run_news_discovery.py`: healthy empty-feed outcome and read-only extraction diagnostics.
+- `backend/app/services/news_discovery_service.py`: shared collection-to-rules extraction diagnostic with per-candidate errors and no ingestion calls.
+- `backend/tests/test_news_discovery.py`: live-failure regressions, custom-entity rejection, controlled RSS/body/extraction flow, no DB/auditor calls, and honest empty/blocked/error outcomes.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): live measurements and remaining integration boundaries.
+
+### [BUG-071] Staff index lookup timed out before slow TLS could finish
+
+- **Status:** Resolved locally with regression coverage; deployment and successful live automatic recovery pending
+- **Severity:** Medium (fallback could time out before receiving a provider response)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After the original Inquirer article returned a Cloudflare challenge, GDELT checks returned throttling or connection timeouts. Cooldowns suppressed repeat requests but did not identify where connection time was spent.
+
+#### 2. Root Cause Analysis (RCA)
+
+Local tracing completed TCP in 0.41 seconds and TLS at 8.83 seconds; a read-only Cloud Run diagnostic completed TCP in 0.19 seconds and TLS at 11.05 seconds. TLS alone exceeded the staff client's 3-second connect timeout and, in Cloud Run, a 10-second diagnostic budget. The completed connections returned HTTP 429 with the provider's five-second request-spacing notice. The cause of the slow handshake and the exact provider rate-limit bucket remain unknown; these are separate from Inquirer's Cloudflare challenge.
+
+#### 3. Solution & Architectural Strategy
+
+Override only GDELT requests with a 15-second connect / 20-second read timeout, retain per-process pacing/cooldowns, and reject malformed provider result shapes. Add optional place/date queries and independent approved-publisher feed shortlisting for recent originals, followed by the existing bounded body parser. Keep event review mandatory and preserve visible failures and original evidence. Add a read-only diagnostic mode to the existing collector script. The combined suite passes 87 tests, including recovery from simulated GDELT 429 through an RSS feed and unchanged database originals. Live provider throttling persists; no live automatic recovery is claimed.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: provider timeout, response validation, place/date search, approved recent-feed fallback, and accurate unavailable-body status.
+- `backend/app/api/v1/endpoints/admin_news.py`: publication context and independent feed fallback in retrieval mode.
+- `backend/app/schemas/news_candidate.py`: feed lead publication timestamp, separate from index-seen time.
+- `backend/scripts/run_news_discovery.py`: read-only open-leads diagnostic, safe network timing/status summaries, and truthful exit status.
+- `backend/tests/test_news_open_search.py`, `backend/tests/test_news_discovery.py`: timeout override, malformed payload, date/place filtering, feed recovery, API serialization, and no-write checks.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): local/Cloud Run traces and remaining live limits.
 
 ### [BUG-070] GDELT lookups lacked shared pacing and cooldowns
 

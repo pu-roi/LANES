@@ -10,7 +10,7 @@ Verifies:
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -444,3 +444,35 @@ async def test_forecast_advisory_strictly_suppressed(
         assert not mock_create_event.called
         mock_db.add.assert_not_called()
         mock_db.flush.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_failed_article_refresh_cannot_activate_retained_old_body() -> None:
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="Laguna Street", canonical_city="Pasig", canonical_road="Laguna Street",
+        place_type="street", place_char_start=0, place_char_end=13,
+        evidence_sentence="Laguna Street had knee-deep water.", evidence_sentence_offset=(0, 33),
+        depth_canonical="knee", condition="active", event_time_kind="observation", event_time_resolved=now,
+        action_type="auto_approved",
+        ranked_location=RankedLocationCandidate(raw_place_name="Laguna Street", precision_level="road",
+                                               geometry_provenance="verified_segment", is_auto_approvable=True,
+                                               geometry_geojson={"type": "Polygon", "coordinates": []}),
+    )
+    hybrid = MagicMock()
+    hybrid.extract_hybrid = AsyncMock(return_value=NewsExtractionResult(article_id=504,
+                                  canonical_url="https://news.example.org/update", is_metadata_only=False,
+                                  processed_text_length=100, claims=[claim]))
+    hybrid.evaluate_claim_action.return_value = ("auto_approved", "cached decision")
+    article = NewsArticle(id=504, canonical_url="https://news.example.org/update", publisher_source_id="example",
+                          title="Flood update", excerpt="", article_text=claim.evidence_sentence,
+                          article_error="Article HTTP 403", published_at=now, review_state="pending")
+    db = MagicMock()
+    with patch("app.services.news_auto_ingestion_service.create_verified_event_with_zone") as create_event:
+        result = await NewsAutoIngestionService(hybrid).process_and_ingest_article(db, article)
+    assert hybrid.extract_hybrid.call_args.args[0].article_text is None
+    assert result["auto_approved_claims"] == 0
+    assert result["flagged_claims"] == 1
+    create_event.assert_not_called()
+    db.add.assert_not_called()
+    db.flush.assert_not_called()

@@ -203,6 +203,31 @@ ACTIVE_FLOOD_WORDS = re.compile(
     re.I,
 )
 
+# Infrastructure/program names do not describe water on the ground. Mask only
+# these phrases when testing evidence words; keep the source text and offsets.
+NON_OBSERVATION_FLOOD_TERMS = re.compile(
+    r"\bflood[\s\-‐‑–—]+(?:control|mitigation|prevention|management|protection)\b|"
+    r"\banti[\s\-‐‑–—]+flood\b",
+    re.I,
+)
+OBSERVATION_DEPTH_WORDS = re.compile(
+    r"\b(?:(?:gutter|ankle|calf|half[-\s]knee|half[-\s]tire|knee|tire|waist|chest|neck)[-\s]+deep|"
+    r"(?:abot|lagpas|lampas|hanggang)[-\s]+(?:sakong|binti|tuhod|gulong|baywang|bewang|dibdib|leeg))\b",
+    re.I,
+)
+
+
+def _has_flood_evidence_word(text: str) -> bool:
+    evidence_text = NON_OBSERVATION_FLOOD_TERMS.sub(lambda match: " " * len(match.group()), text)
+    return bool(ACTIVE_FLOOD_WORDS.search(evidence_text))
+
+
+def _is_flood_control_only(text: str) -> bool:
+    return bool(NON_OBSERVATION_FLOOD_TERMS.search(text)
+                and not _has_flood_evidence_word(text)
+                and not OBSERVATION_DEPTH_WORDS.search(text))
+
+
 # Publisher photo credits and rainfall observations are article context, not
 # evidence that every named place in those lines has a reported road flood.
 PHOTO_CREDIT = re.compile(r"\b(?:photo(?:graph)?\s+(?:by|from)|image\s+(?:by|from)|PNA\s+photo)\b|^\s*Courtesy\s*:", re.I)
@@ -931,7 +956,7 @@ def extract_condition_from_text(text: str, has_active_flood: bool, is_negated: b
         return "receding"
     if CONDITION_SUBSIDED.search(text):
         return "subsided"
-    if has_active_flood or ACTIVE_FLOOD_WORDS.search(text):
+    if has_active_flood or _has_flood_evidence_word(text):
         return "active"
     return "unknown"
 
@@ -1002,6 +1027,8 @@ def extract_claims_from_sentence(
 ) -> list[ExtractedClaim]:
     """Extract structured claims from a single sentence, associating facts per clause/place."""
     claims: list[ExtractedClaim] = []
+    if _is_flood_control_only(sentence):
+        return claims
     place_mentions = find_place_mentions(sentence, sent_start)
     dateline = ARTICLE_DATELINE.match(sentence)
     if dateline:
@@ -1135,6 +1162,9 @@ def extract_claims_from_sentence(
                 target_clause_text = clause_text
                 break
 
+        if _is_flood_control_only(target_clause_text):
+            continue
+
         # Check negation in the clause
         clause_negated = bool(NEGATION_PATTERNS.search(target_clause_text))
         is_forecast = bool(FORECAST_PATTERNS.search(target_clause_text) or FORECAST_PATTERNS.search(sentence))
@@ -1159,8 +1189,8 @@ def extract_claims_from_sentence(
             uncertainties.append("historical_reference_only")
         else:
             flood_mentioned = bool(
-                ACTIVE_FLOOD_WORDS.search(target_clause_text)
-                or ACTIVE_FLOOD_WORDS.search(sentence)
+                _has_flood_evidence_word(target_clause_text)
+                or _has_flood_evidence_word(sentence)
                 or section_flood_reported
             )
 
@@ -1434,7 +1464,7 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
     )
     for sent_text, sent_start, sent_end in sentences:
         if has_full_text and dateline_start is not None and sent_start < dateline_start:
-            if ACTIVE_FLOOD_WORDS.search(sent_text) and not PHOTO_CREDIT.search(sent_text):
+            if _has_flood_evidence_word(sent_text) and not PHOTO_CREDIT.search(sent_text):
                 caption_claims = extract_claims_from_sentence(
                     sent_text, sent_start, sent_end, article_input,
                 )
@@ -1445,7 +1475,9 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
             continue
         if PHOTO_CREDIT.search(sent_text):
             continue
-        if WEATHER_ONLY.search(sent_text) and not ACTIVE_FLOOD_WORDS.search(sent_text):
+        if _is_flood_control_only(sent_text):
+            continue
+        if WEATHER_ONLY.search(sent_text) and not _has_flood_evidence_word(sent_text):
             continue
         heading = sent_text.strip().rstrip(".").strip()
         heading_city = _loc_service.resolve_location_hierarchy(heading)
@@ -1485,7 +1517,8 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
             section_time_raw = None
             section_time_context = None
             section_flood_reported = False
-        if re.search(r"\bflood(?:ing|waters?|ed)?\b", sent_text, re.I) and not any(
+        if (re.search(r"\bflood(?:ing|waters?|ed)?\b", sent_text, re.I)
+                and _has_flood_evidence_word(sent_text)) and not any(
             place["place_type"] in {"street", "landmark"}
             for place in find_place_mentions(sent_text, sent_start)
         ):

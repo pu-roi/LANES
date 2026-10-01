@@ -19,6 +19,9 @@ from app.models.news import NewsArticle
 from app.schemas.news_candidate import (
     ManualNewsCandidateInput,
     NewsArticleSummary,
+    NewsSavedExtractionSummary,
+    NewsExtractionRunSummary,
+    NewsProcessingSummary,
     NewsDiscoveryRunSummary,
     NewsFeedCheckpointSummary,
     NewsFeedProbeResult,
@@ -26,12 +29,12 @@ from app.schemas.news_candidate import (
     NewsSourceProbeResponse,
     NewsSourceSummary,
 )
-from app.services.news_discovery_service import discover_news
-from app.services.news_open_search_service import retrieve_open_article_leads, search_open_article_leads
+from app.services.news_discovery_service import discover_news, extract_saved_news_articles
+from app.services.news_open_search_service import append_publisher_feed_leads, assess_alternate_article_leads, retrieve_open_article_leads, search_open_article_leads
 from app.services.news_feed_service import canonical_article_url, probe_feed
 from app.services.news_sources import load_news_sources
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, sessionmaker
 
 
 router = APIRouter()
@@ -56,6 +59,60 @@ def list_news_candidates(
     return [NewsArticleSummary.model_validate(article) for article in list_pending_articles(db, limit)]
 
 
+@router.get("/candidates/{article_id}/extraction", response_model=NewsSavedExtractionSummary)
+@limiter.limit("3/minute")
+async def preview_saved_news_extraction(
+    request: Request,
+    response: Response,
+    article_id: int,
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsSavedExtractionSummary:
+    """Preview rules extraction of saved evidence without processing/zone writes."""
+    article = db.get(NewsArticle, article_id)
+    if article is None:
+        raise HTTPException(status_code=404, detail="News article not found")
+    result = (await extract_saved_news_articles([article]))[0]
+    return NewsSavedExtractionSummary.model_validate(asdict(result))
+
+
+@router.get("/candidates/{article_id}/processing", response_model=list[NewsExtractionRunSummary])
+def saved_news_processing_status(
+    article_id: int,
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> list[NewsExtractionRunSummary]:
+    from app.crud.news_processing import list_article_runs
+    if db.get(NewsArticle, article_id) is None:
+        raise HTTPException(status_code=404, detail="News article not found")
+    return [NewsExtractionRunSummary.model_validate(row) for row in list_article_runs(db, article_id)]
+
+
+@router.post("/candidates/{article_id}/processing", response_model=NewsProcessingSummary)
+@limiter.limit("3/minute")
+async def process_saved_news_candidate(
+    request: Request,
+    response: Response,
+    article_id: int,
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsProcessingSummary:
+    from app.crud.news_processing import enqueue_article
+    from app.services.news_processing_service import process_saved_news
+    article = db.get(NewsArticle, article_id)
+    if article is None:
+        raise HTTPException(status_code=404, detail="News article not found")
+    try:
+        if enqueue_article(db, article) is None:
+            raise HTTPException(status_code=409, detail="Processing requires pending evidence with an available, error-free body")
+        db.commit()
+        result = await process_saved_news(sessionmaker(bind=db.get_bind()), limit=20, article_id=article_id)
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(status_code=503, detail="News processing storage is unavailable") from exc
+    return NewsProcessingSummary.model_validate(asdict(result))
+
+
 @router.get("/candidates/{article_id}/open-leads", response_model=OpenSearchLookupSummary)
 @limiter.limit("3/minute")
 def lookup_open_news_leads(
@@ -70,7 +127,7 @@ def lookup_open_news_leads(
     article = db.get(NewsArticle, article_id)
     if article is None:
         raise HTTPException(status_code=404, detail="News article not found")
-    if article.article_text is not None:
+    if article.article_text is not None and not article.article_error:
         raise HTTPException(status_code=409, detail="Full article text is already available")
     source = next((item for item in load_news_sources() if item.id == article.publisher_source_id
                    and item.enabled and item.verified_at is not None), None)
@@ -84,9 +141,16 @@ def lookup_open_news_leads(
             article.title,
             article.excerpt,
             client,
+            published_at=article.published_at,
+            include_event_context=retrieve_articles,
         )
         if retrieve_articles:
-            result = retrieve_open_article_leads(result, load_news_sources(), client)
+            sources = load_news_sources()
+            result = append_publisher_feed_leads(
+                result, article.title, article.excerpt, article.published_at, sources, client,
+            )
+            result = retrieve_open_article_leads(result, sources, client)
+            result = assess_alternate_article_leads(result, article.title, article.excerpt, article.published_at)
     if result.retry_after_seconds is not None:
         response.headers["Retry-After"] = str(result.retry_after_seconds)
     return OpenSearchLookupSummary.model_validate(asdict(result))
@@ -112,6 +176,7 @@ def run_news_discovery(
     return NewsDiscoveryRunSummary(
         probes=[NewsFeedProbeResult.model_validate(asdict(probe)) for probe in result.probes],
         new_or_updated_candidates=len(result.candidates),
+        notices=[asdict(notice) for notice in result.notices],
     )
 
 
@@ -153,6 +218,7 @@ def submit_manual_news_candidate(
     Creates a pending news article candidate for extraction and review without requiring paid APIs.
     """
     now = datetime.now(timezone.utc)
+    from app.crud.news_processing import enqueue_article
     raw_url = payload.source_url.strip() if payload.source_url else None
     if not raw_url:
         raw_url = f"https://lanes.internal/manual-social/{uuid.uuid4().hex[:12]}"
@@ -177,13 +243,29 @@ def submit_manual_news_candidate(
         )
         db.add(article)
     else:
+        try:
+            enqueue_article(db, article)
+        except SQLAlchemyError as exc:
+            db.rollback()
+            raise HTTPException(status_code=503, detail="News candidate storage is unavailable") from exc
+        changed = article.title != payload.title[:500] or article.article_text != payload.text[:30_000]
         article.title = payload.title[:500]
         article.excerpt = payload.text[:500]
         article.article_text = payload.text[:30_000]
         article.last_seen_at = now
         article.content_fingerprint = fingerprint
+        if changed:
+            article.published_at = now
+        article.fetched_at = now
+        article.article_error = None
 
-    db.commit()
+    try:
+        db.flush()
+        enqueue_article(db, article)
+        db.commit()
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(status_code=503, detail="News candidate storage is unavailable") from exc
     refreshed = db.scalar(
         select(NewsArticle)
         .options(selectinload(NewsArticle.feed_entries))

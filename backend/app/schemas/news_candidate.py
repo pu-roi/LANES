@@ -1,8 +1,10 @@
 """Staff-facing source and feed-probe responses for news discovery."""
 
 from datetime import date, datetime
+from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from app.schemas.news_extraction import NewsExtractionResult
 
 
 class NewsSourceSummary(BaseModel):
@@ -61,6 +63,72 @@ class NewsArticleSummary(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class NewsSavedExtractionSummary(BaseModel):
+    article_id: int
+    article_url: str
+    input_fingerprint: str
+    read_only: Literal[True] = True
+    extraction_mode: Literal["rules_only"] = "rules_only"
+    extraction: NewsExtractionResult | None
+    error: str | None = None
+
+
+class NewsExtractionRunSummary(BaseModel):
+    id: int
+    article_version_id: int
+    pipeline_version: str
+    mode: Literal["rules_only"]
+    status: Literal["pending", "processing", "completed", "retry_wait", "failed"]
+    attempt_count: int
+    next_attempt_at: datetime | None
+    started_at: datetime | None
+    completed_at: datetime | None
+    error_code: str | None
+    result: NewsExtractionResult | None
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class NewsProcessingOutcome(BaseModel):
+    run_id: int
+    article_id: int
+    status: Literal["completed", "retry_wait", "failed", "lease_lost"]
+    error_code: str | None
+
+
+class NewsProcessingSummary(BaseModel):
+    captured: int
+    completed: int
+    retry_wait: int
+    failed: int
+    lease_lost: int
+    runs: list[NewsProcessingOutcome]
+
+
+class OpenLeadRoadUpdate(BaseModel):
+    city: str
+    road: str
+    decision: str
+    previous_observed_at: datetime | None
+    alternate_observed_at: datetime | None
+    previous_depth: str | None
+    alternate_depth: str | None
+    previous_condition: str | None
+    alternate_condition: str | None
+
+
+class OpenLeadEventReview(BaseModel):
+    status: str
+    shared_places: list[str]
+    shared_roads: list[str]
+    conflicts: list[str]
+    missing_evidence: list[str]
+    duplicate_of: str | None = None
+    road_updates: list[OpenLeadRoadUpdate] = Field(default_factory=list)
+
+
 class OpenSearchHitSummary(BaseModel):
     url: str
     title: str
@@ -72,6 +140,8 @@ class OpenSearchHitSummary(BaseModel):
     article_error: str | None = None
     fetched_at: datetime | None = None
     match_status: str = "unverified_index_lead"
+    published_at: datetime | None = None
+    event_review: OpenLeadEventReview | None = None
 
 
 class OpenSearchLookupSummary(BaseModel):
@@ -83,9 +153,16 @@ class OpenSearchLookupSummary(BaseModel):
     retry_after_seconds: int | None = None
 
 
+class NewsDiscoveryNotice(BaseModel):
+    source_id: str
+    article_url: str
+    reason: str
+
+
 class NewsDiscoveryRunSummary(BaseModel):
     probes: list[NewsFeedProbeResult]
     new_or_updated_candidates: int
+    notices: list[NewsDiscoveryNotice] = Field(default_factory=list)
 
 
 class NewsFeedCheckpointSummary(BaseModel):

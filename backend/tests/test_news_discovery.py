@@ -1,7 +1,7 @@
 """Offline RSS/Atom and safe-discovery contract tests."""
 
 from dataclasses import replace
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import httpx
 import pytest
@@ -15,7 +15,7 @@ from sqlalchemy.pool import StaticPool
 from app.api import deps
 from app.core.database import get_db
 from app.main import app
-from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint
+from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint, NewsArticleVersion, NewsExtractionRun
 from app.services.news_discovery_service import PASIG_BARANGAYS, discover_news, fetch_article_text, likely_metro_manila_flood, likely_pasig_flood
 from app.services.news_open_search_service import OpenSearchHit, OpenSearchLookup
 from app.services.news_feed_service import NewsEntry, parse_feed, probe_feed
@@ -43,6 +43,144 @@ def test_registry_enables_only_dated_verified_feeds() -> None:
     }
     assert all(item.enabled and item.verified_at is not None and len(item.feed_urls) == 1 for item in sources)
     assert len(PASIG_BARANGAYS) == 30
+
+
+@pytest.mark.parametrize("content,headers,expected", [
+    (b"<rss><channel>", {}, "Invalid feed XML"),
+    (b"<!DOCTYPE html><html><body>Just a moment...</body></html>",
+     {"content-type": "text/html"}, "Feed response is HTML, not RSS/Atom"),
+    (b"<html></html>", {"cf-mitigated": "challenge"}, "Feed access blocked by publisher challenge (HTTP 200)"),
+])
+def test_diagnostic_feed_parse_failure_keeps_http_status(content: bytes, headers: dict, expected: str) -> None:
+    with httpx.Client(transport=httpx.MockTransport(lambda request: httpx.Response(200, content=content, headers=headers))) as client:
+        probe, entries = probe_feed(source(), FEED_URL, client)
+    assert probe.status == "failed"
+    assert probe.http_status == 200
+    assert probe.error == expected
+    assert not entries
+
+
+def test_feed_html_entities_preserve_xml_escaping_and_cdata() -> None:
+    item = (f'<item><title>Quezon City&rsquo;s flood&nbsp;update&hellip; &amp; response</title>'
+            f'<link>{ARTICLE_URL}?a=1&amp;b=2</link>'
+            '<description><![CDATA[<p>Baha&nbsp;sa Pasig &amp; Maybunga</p>]]></description></item>')
+    entries = parse_feed(rss(item), source(), FEED_URL)
+    assert entries[0].title == "Quezon City’s flood update… & response"
+    assert entries[0].article_url == ARTICLE_URL + "?a=1&b=2"
+    assert entries[0].excerpt == "Baha sa Pasig & Maybunga"
+
+
+@pytest.mark.parametrize("content", [
+    b'<rss><channel><title>&unregistered;</title></channel></rss>',
+    b'<!DOCTYPE rss [<!ENTITY custom "value">]><rss><channel><title>&custom;</title></channel></rss>',
+    b'<!DOCTYPE rss SYSTEM "https://private.example.org/entity"><rss><channel/></rss>',
+])
+def test_html_entity_compatibility_does_not_enable_custom_xml_entities(content: bytes) -> None:
+    with pytest.raises(ValueError):
+        parse_feed(content, source(), FEED_URL)
+
+
+@pytest.mark.parametrize("blocked", [False, True])
+def test_diagnostic_collection_to_extraction_has_no_database_or_auditor_calls(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], blocked: bool,
+) -> None:
+    import json
+    import sys
+    from email.utils import format_datetime
+    from scripts import run_news_discovery
+    from app.services.hybrid_extraction_service import HybridExtractionService
+
+    publication = datetime.now(timezone.utc)
+    item = (f'<item><guid>diagnostic-1</guid><title>Baha sa Maybunga, Pasig City</title>'
+            f'<link>{ARTICLE_URL}</link><pubDate>{format_datetime(publication)}</pubDate></item>')
+    body = ("Binaha ang Barangay Maybunga sa Pasig City, abot-tuhod ang tubig kanina. "
+            "Patuloy ang pagbaha sa lugar at pinapayuhan ang mga residente na mag-ingat.")
+    requested: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested.append(str(request.url))
+        if str(request.url) == FEED_URL:
+            return httpx.Response(200, content=rss(item))
+        assert str(request.url) == ARTICLE_URL
+        if blocked:
+            return httpx.Response(403, headers={"cf-mitigated": "challenge"})
+        return httpx.Response(200, text=f"<article><p>{body}</p></article>", headers={"content-type": "text/html"})
+
+    original_client = httpx.Client
+    monkeypatch.setattr(run_news_discovery.httpx, "Client", lambda **kwargs: original_client(transport=httpx.MockTransport(handler), **kwargs))
+    monkeypatch.setattr(run_news_discovery, "load_news_sources", lambda _: (source(),))
+    monkeypatch.setattr(run_news_discovery, "SessionLocal", lambda: pytest.fail("Diagnostic opened a database session"))
+    monkeypatch.setattr(HybridExtractionService, "audit_claim_with_llm", lambda *args, **kwargs: pytest.fail("Diagnostic called external audit"))
+    monkeypatch.setattr(sys, "argv", ["run_news_discovery", "--discover", "--dry-run", "--extract"])
+
+    assert run_news_discovery.main() == (1 if blocked else 0)
+    payload = json.loads(capsys.readouterr().out)
+    assert requested == [FEED_URL, ARTICLE_URL]
+    assert payload["read_only"] is True
+    assert payload["extraction_mode"] == "rules_only"
+    extraction = payload["extractions"][0]
+    if blocked:
+        assert payload["outcome"] == "extraction_errors"
+        assert extraction["claim_count"] == 0
+        assert "publisher challenge" in extraction["error"]
+    else:
+        assert payload["outcome"] == "claims_extracted"
+        assert extraction["metadata_only"] is False
+        assert extraction["error"] is None
+        assert any(claim["barangay"] == "Maybunga" and claim["depth"] == "knee" for claim in extraction["claims"])
+        assert set(extraction["actions"]) == {"flagged_review"}
+        assert all(claim["geometry_provenance"] != "verified_segment" for claim in extraction["claims"])
+
+
+@pytest.mark.parametrize("args", [["--discover", "--extract"], ["--probe", "--extract"]])
+def test_diagnostic_extraction_rejects_non_dry_run_modes(monkeypatch: pytest.MonkeyPatch, args: list[str]) -> None:
+    import sys
+    from scripts import run_news_discovery
+    monkeypatch.setattr(sys, "argv", ["run_news_discovery", *args])
+    monkeypatch.setattr(run_news_discovery, "SessionLocal", lambda: pytest.fail("Invalid mode opened a database session"))
+    with pytest.raises(SystemExit) as exc:
+        run_news_discovery.main()
+    assert exc.value.code == 2
+
+
+def test_diagnostic_empty_feed_does_not_claim_extraction_success(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    import json
+    import sys
+    from scripts import run_news_discovery
+
+    original_client = httpx.Client
+    monkeypatch.setattr(run_news_discovery.httpx, "Client", lambda **kwargs: original_client(
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, content=rss(""))), **kwargs))
+    monkeypatch.setattr(run_news_discovery, "load_news_sources", lambda _: (source(),))
+    monkeypatch.setattr(run_news_discovery, "SessionLocal", lambda: pytest.fail("Empty diagnostic opened a database session"))
+    monkeypatch.setattr(sys, "argv", ["run_news_discovery", "--discover", "--dry-run", "--extract"])
+    assert run_news_discovery.main() == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["outcome"] == "no_candidates"
+    assert payload["extractions"] == []
+
+
+@pytest.mark.asyncio
+async def test_diagnostic_extraction_failure_preserves_next_candidate(monkeypatch: pytest.MonkeyPatch) -> None:
+    from app.schemas.news_extraction import NewsExtractionResult
+    from app.services.hybrid_extraction_service import HybridExtractionService
+    from app.services.news_discovery_service import DiscoveryRun, NewsCandidate, extract_discovery_candidates
+
+    async def extract(self, article, mode):
+        assert mode == "rules_only"
+        if article.article_id == -1:
+            raise RuntimeError("private exception detail")
+        return NewsExtractionResult(article_id=article.article_id, canonical_url=article.canonical_url,
+                                    is_metadata_only=False, processed_text_length=200, claims=[])
+
+    monkeypatch.setattr(HybridExtractionService, "extract_hybrid", extract)
+    candidate = NewsCandidate("example", "Example", "id", ARTICLE_URL, "Baha sa Pasig", "",
+                              datetime.now(timezone.utc), datetime.now(timezone.utc), "Body " * 40, None)
+    results = await extract_discovery_candidates(DiscoveryRun((), (candidate, replace(candidate, article_url=ARTICLE_URL + "-2"))))
+    assert results[0].error == "Extraction failed: RuntimeError"
+    assert "private" not in results[0].error
+    assert results[1].error is None
+    assert results[1].extraction is not None
 
 
 def test_rss_and_atom_parse_publisher_links_and_dates() -> None:
@@ -338,6 +476,9 @@ def test_discovery_filters_deduplicates_and_does_not_create_reports() -> None:
                                   headers={"content-type": "application/rss+xml"})
         if str(request.url) == ARTICLE_URL:
             return httpx.Response(200, text=article, headers={"content-type": "text/html"})
+        if str(request.url) == "https://news.example.org/unspecified-flood":
+            outside_body = "Floodwater affected roads in Cebu City. " * 5
+            return httpx.Response(200, text=f"<article><p>{outside_body}</p></article>", headers={"content-type": "text/html"})
         raise AssertionError("Unexpected request")
 
     with httpx.Client(transport=httpx.MockTransport(handler)) as client:
@@ -345,7 +486,7 @@ def test_discovery_filters_deduplicates_and_does_not_create_reports() -> None:
     assert len(run.probes) == 1
     assert len(run.candidates) == 1
     assert run.candidates[0].article_text is not None
-    assert requested == [FEED_URL, ARTICLE_URL]
+    assert requested == [FEED_URL, ARTICLE_URL, "https://news.example.org/unspecified-flood"]
 
 
 def test_unverified_source_never_fetches() -> None:
@@ -357,13 +498,171 @@ def test_unverified_source_never_fetches() -> None:
     assert not run.probes and not run.candidates
 
 
-def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize("case,expected", [("local", True), ("outside_with_manila_weather", False), ("blocked", False)])
+def test_missing_headline_location_is_checked_against_article_flood_claims(case: str, expected: bool) -> None:
+    item = f'<item><title>Several roads flooded after heavy rain</title><link>{ARTICLE_URL}</link></item>'
+    local = "Flooding affected Laguna Street in Pasig City. Residents reported knee-deep water this afternoon. " * 2
+    outside = "Flooding affected roads in Cebu City. The Manila weather office monitored rainfall across the country. " * 2
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEED_URL:
+            return httpx.Response(200, content=rss(item))
+        if case == "blocked":
+            return httpx.Response(403, headers={"cf-mitigated": "challenge"})
+        return httpx.Response(200, text=f'<article><p>{local if case == "local" else outside}</p></article>', headers={"content-type": "text/html"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        run = discover_news((source(),), client)
+    assert bool(run.candidates) is expected
+    if expected:
+        assert run.candidates[0].article_text == local.strip()
+    elif case == "blocked":
+        assert "publisher challenge" in run.notices[0].reason
+    else:
+        assert run.notices[0].reason == "No body-grounded Metro Manila flood claim"
+
+
+def test_location_probe_budget_is_run_wide_and_does_not_skip_metadata_local_leads(monkeypatch: pytest.MonkeyPatch) -> None:
+    from app.services import news_discovery_service
+    monkeypatch.setattr(news_discovery_service, "MAX_LOCATION_BODY_PROBES", 2)
+    second_feed = "https://feeds.example.org/second.xml"
+    second = replace(source(), id="second", feed_urls=(second_feed,))
+    fetched: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url in {FEED_URL, second_feed}:
+            prefix = "first" if url == FEED_URL else "second"
+            items = ''.join(f'<item><title>Several roads flooded</title><link>https://news.example.org/{prefix}-{i}</link></item>' for i in range(4))
+            items += f'<item><title>Flood in Pasig</title><link>https://news.example.org/{prefix}-local</link></item>'
+            return httpx.Response(200, content=rss(items))
+        fetched.append(url)
+        body = ("Flooding affected Laguna Street in Pasig City. " if url.endswith("local") else "Flooding affected roads in Cebu City. ") * 4
+        return httpx.Response(200, text=f"<article><p>{body}</p></article>", headers={"content-type": "text/html"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        run = discover_news((source(), second), client)
+    assert len(fetched) == 4
+    assert len(run.candidates) == 2
+    assert fetched[0].endswith("first-local")
+    assert sum("limit reached" in notice.reason for notice in run.notices) == 6
+
+
+def test_unknown_scope_flood_control_story_is_not_saved_as_local_flood() -> None:
+    item = f'<item><title>Flood control investigation continues</title><link>{ARTICLE_URL}</link></item>'
+    body = ("Officials discussed an investigation into flood control projects in Taguig City. "
+            "The inquiry concerns contracts and project funding. ")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEED_URL:
+            return httpx.Response(200, content=rss(item))
+        return httpx.Response(200, text=f'<article><p>{body}</p></article>',
+                              headers={"content-type": "text/html"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        run = discover_news((source(),), client)
+    assert not run.candidates
+    assert run.notices[0].reason == "No body-grounded Metro Manila flood claim"
+
+
+def test_future_flood_article_is_visible_but_not_fetched() -> None:
+    from email.utils import format_datetime
+    item = f'<item><title>Flood in Pasig</title><link>{ARTICLE_URL}</link><pubDate>{format_datetime(datetime.now(timezone.utc)+timedelta(days=1))}</pubDate></item>'
+    requests: list[str] = []
+    with httpx.Client(transport=httpx.MockTransport(lambda request: (requests.append(str(request.url)) or httpx.Response(200, content=rss(item))))) as client:
+        run = discover_news((source(),), client)
+    assert requests == [FEED_URL]
+    assert not run.candidates
+    assert run.notices[0].reason == "Publication time is in the future"
+
+
+def test_location_probe_prefers_newer_publications_to_feed_order(monkeypatch: pytest.MonkeyPatch) -> None:
+    from email.utils import format_datetime
+    from app.services import news_discovery_service
+    monkeypatch.setattr(news_discovery_service, "MAX_LOCATION_BODY_PROBES", 1)
+    now = datetime.now(timezone.utc)
+    items = ''.join(f'<item><title>Several roads flooded</title><link>https://news.example.org/{label}</link>'
+                    f'<pubDate>{format_datetime(now-timedelta(hours=hours))}</pubDate></item>'
+                    for label, hours in [("old", 24), ("new", 1)])
+    fetched: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEED_URL:
+            return httpx.Response(200, content=rss(items))
+        fetched.append(str(request.url))
+        return httpx.Response(200, text='<article><p>' + 'Flooding affected Laguna Street in Pasig City. ' * 4 + '</p></article>', headers={"content-type": "text/html"})
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        run = discover_news((source(),), client)
+    assert fetched == ["https://news.example.org/new"]
+    assert run.candidates[0].article_url.endswith("/new")
+    assert run.notices[0].article_url.endswith("/old")
+
+
+@pytest.mark.parametrize("blocked_refresh", [False, True])
+def test_same_url_new_publication_refreshes_body_and_preserves_failed_snapshot(blocked_refresh: bool) -> None:
+    from email.utils import format_datetime
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    tables = [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
+    NewsArticle.metadata.create_all(engine, tables=tables)
+    initial_publication = datetime.now(timezone.utc).replace(microsecond=0)-timedelta(hours=2)
+    revision = 0
+    body_requests = 0
+    initial_body = "Knee-deep flooding affected Laguna Street in Pasig City. " * 4
+    updated_body = "Chest-deep flooding affected Laguna Street in Pasig City. " * 4
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal body_requests
+        if str(request.url) == FEED_URL:
+            pub = initial_publication + timedelta(hours=revision)
+            # Even duplicate entries must not relabel a failed refresh's old body.
+            item = f'<item><guid>same</guid><title>Flood in Pasig</title><link>{ARTICLE_URL}</link><pubDate>{format_datetime(pub)}</pubDate></item>'
+            return httpx.Response(200, content=rss(item * 2))
+        body_requests += 1
+        if revision == 1 and blocked_refresh:
+            return httpx.Response(403)
+        body = updated_body if revision else initial_body
+        return httpx.Response(200, text=f'<article><p>{body}</p></article>', headers={"content-type": "text/html"})
+
+    try:
+        with httpx.Client(transport=httpx.MockTransport(handler)) as client, Session(engine) as db:
+            discover_news((source(),), client, db)
+            revision = 1
+            changed = discover_news((source(),), client, db)
+            assert len(changed.candidates) == 1
+            assert body_requests == 2
+            stored = db.scalar(select(NewsArticle))
+            if blocked_refresh:
+                assert stored.article_text == initial_body.strip()
+                assert stored.published_at.replace(tzinfo=timezone.utc) == initial_publication
+                assert stored.article_error == "Article HTTP 403"
+                retried = discover_news((source(),), client, db)
+                assert len(retried.candidates) == 1
+                assert body_requests == 3
+            else:
+                assert stored.article_text == updated_body.strip()
+                assert stored.published_at.replace(tzinfo=timezone.utc) == initial_publication + timedelta(hours=1)
+                revision = 0
+                older = discover_news((source(),), client, db)
+                assert not older.candidates
+                assert any("Older feed revision" in notice.reason for notice in older.notices)
+                assert body_requests == 2
+                assert stored.article_text == updated_body.strip()
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize("fallback_path", ["index", "publisher_feed"])
+@pytest.mark.parametrize("retained_body", [None, "Previous article body retained after a blocked refresh."])
+def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monkeypatch: pytest.MonkeyPatch, fallback_path: str, retained_body: str | None) -> None:
+    from app.core.limiter import limiter
+    limiter.reset()
     engine = create_engine(
         "sqlite+pysqlite://",
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    tables = [NewsArticle.__table__, NewsArticleFeedEntry.__table__]
+    tables = [NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
     NewsArticle.metadata.create_all(engine, tables=tables)
 
     def test_db():
@@ -402,8 +701,9 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monk
                         canonical_url=blocked_url,
                         publisher_source_id="feedspot-02",
                         title="Flood in Pasig",
+                        published_at=datetime.now(timezone.utc),
                         excerpt="Baha sa Manggahan",
-                        article_text=None,
+                        article_text=retained_body,
                         article_error="Article access blocked by publisher challenge (HTTP 403)",
                         content_fingerprint="0" * 64,
                     )
@@ -418,7 +718,7 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monk
                     db.commit()
                     blocked_id = blocked.id
                 assert client.get("/api/v1/admin/news/candidates/99999/open-leads").status_code == 404
-                monkeypatch.setattr("app.api.v1.endpoints.admin_news.search_open_article_leads", lambda *args: OpenSearchLookup(
+                monkeypatch.setattr("app.api.v1.endpoints.admin_news.search_open_article_leads", lambda *args, **kwargs: OpenSearchLookup(
                     article_url=blocked_url,
                     searched_at=datetime.now(timezone.utc),
                     evidence_status="index_links_only_incomplete_article",
@@ -444,6 +744,23 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monk
                 assert lookup.json()["retry_after_seconds"] == 180
                 assert int(lookup.headers["retry-after"]) >= 179
                 assert lookup.json()["results"][0]["relationship"] == "indexed_publisher_page"
+                if fallback_path == "publisher_feed":
+                    monkeypatch.setattr("app.api.v1.endpoints.admin_news.search_open_article_leads", lambda *args, **kwargs: OpenSearchLookup(
+                        article_url=blocked_url, searched_at=datetime.now(timezone.utc),
+                        evidence_status="index_links_only_incomplete_article", results=(),
+                        errors=("title search failed: HTTP 429",), retry_after_seconds=180,
+                    ))
+
+                    def feed_lookup(source: NewsSource, feed_url: str, _client: httpx.Client):
+                        now = datetime.now(timezone.utc)
+                        entries = (NewsEntry(source.id, source.publisher, feed_url, "alternate-feed-entry",
+                                             "Flood in Pasig", "Baha sa Manggahan",
+                                             "https://www.philstar.com/nation/2026/08/17/2549888/related-flood-story", now),) if source.id == "feedspot-05" else ()
+                        from app.services.news_feed_service import FeedProbe
+                        return FeedProbe(source.id, source.publisher, feed_url, "parsed" if entries else "empty",
+                                         200, len(entries), len(entries), now if entries else None), entries
+
+                    monkeypatch.setattr("app.services.news_open_search_service.probe_feed", feed_lookup)
                 fetched: list[str] = []
 
                 def fake_article_fetch(source: NewsSource, url: str, _client: httpx.Client):
@@ -455,15 +772,20 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monk
                 retrieved = client.get(f"/api/v1/admin/news/candidates/{blocked_id}/open-leads?retrieve_articles=true")
                 assert retrieved.status_code == 200
                 assert len(fetched) == 1
-                alternate = retrieved.json()["results"][1]
+                alternate = retrieved.json()["results"][-1]
                 assert alternate["article_text"] == "Independent report of flooding in Pasig."
                 assert alternate["publisher_source_id"] == "feedspot-05"
                 assert alternate["fetched_at"]
                 assert alternate["match_status"] == "same_event_review_required"
-                assert retrieved.json()["results"][0]["article_text"] is None
+                if fallback_path == "index":
+                    assert retrieved.json()["results"][0]["article_text"] is None
+                else:
+                    assert alternate["query_kind"] == "publisher_feed"
+                    assert alternate["published_at"]
+                    assert "HTTP 429" in retrieved.json()["errors"][0]
                 with Session(engine) as db:
                     original = db.get(NewsArticle, blocked_id)
-                    assert original.article_text is None
+                    assert original.article_text == retained_body
                     assert original.article_error == "Article access blocked by publisher challenge (HTTP 403)"
                     assert original.review_state == "pending"
                     assert db.scalar(select(func.count()).select_from(NewsArticle)) == 2
@@ -481,7 +803,7 @@ def _sqlite_jsonb(_type: JSONB, _compiler: object, **_kw: object) -> str:
 
 def test_persistent_discovery_reuses_checkpoint_and_article_evidence() -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:")
-    tables = [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__]
+    tables = [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
     NewsArticle.metadata.create_all(engine, tables=tables)
     item = f'<item><guid>one</guid><title>Flood in Pasig</title><link>{ARTICLE_URL}</link>' \
            '<description>Baha sa Manggahan</description></item>'
@@ -509,3 +831,31 @@ def test_persistent_discovery_reuses_checkpoint_and_article_evidence() -> None:
         assert db.scalar(select(func.count()).select_from(NewsArticle)) == 1
         assert db.scalar(select(func.count()).select_from(NewsArticleFeedEntry)) == 1
     engine.dispose()
+
+
+@pytest.mark.parametrize("local", [True, False])
+def test_body_scope_decision_survives_duplicate_entries_and_repeat_collection(local: bool) -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    tables = [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
+    NewsArticle.metadata.create_all(engine, tables=tables)
+    items = ''.join(f'<item><guid>{i}</guid><title>Several roads flooded</title><link>{ARTICLE_URL}</link></item>' for i in range(2))
+    requested: list[str] = []
+    body = ("Flooding affected Laguna Street in Pasig City. " if local else "Flooding affected roads in Cebu City. ") * 4
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requested.append(str(request.url))
+        if str(request.url) == FEED_URL:
+            return httpx.Response(200, content=rss(items))
+        return httpx.Response(200, text=f"<article><p>{body}</p></article>", headers={"content-type": "text/html"})
+
+    try:
+        with httpx.Client(transport=httpx.MockTransport(handler)) as client, Session(engine) as db:
+            first = discover_news((source(),), client, db)
+            second = discover_news((source(),), client, db)
+            assert len(first.candidates) == int(local)
+            assert not second.candidates if local else len(second.notices) == 1
+            assert requested.count(ARTICLE_URL) == (1 if local else 2)
+            assert db.scalar(select(func.count()).select_from(NewsArticle)) == int(local)
+            assert db.scalar(select(func.count()).select_from(NewsArticleFeedEntry)) == (2 if local else 0)
+    finally:
+        engine.dispose()

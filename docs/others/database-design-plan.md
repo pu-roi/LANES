@@ -1,6 +1,6 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** September 25, 2026, 10:43 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 2:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
 
@@ -15,6 +15,15 @@ Revision `a83c1d4e7b92` defines exactly three new tables. Publisher configuratio
 | `news_article_feed_entries` | Integer PK; `article_id` FK to `news_articles.id` with cascade delete and index; source ID, feed URL, feed GUID, first/last seen times, optional JSONB metadata; unique `(source_id, feed_url, feed_guid)` | Separate feed-entry provenance from the article body to avoid duplicate article storage. |
 
 No news table references or activates `flood_reports`, `flood_events`, or `flood_avoidance_zones`. Any later NER or event grouping schema requires separate approval.
+
+**October 2 approved addition — locally implemented and development-verified:** The developer approved Priority 3 after the two-table explanation. Migration `f29b6c8d104e` follows `a83c1d4e7b92`. Full `alembic upgrade head`, downgrade to the preceding revision, and upgrade again passed on disposable Cloud SQL PostgreSQL/PostGIS; the test database was then deleted. Production still has the original three deployed tables. The complete [contract](../plans/smart-auto-activation-and-hybrid-nlp-plan.md#priority-3-extraction-handoff--october-2-approved-implementation) and [verification](../evaluations/phase-36-open-article-fallback-check.md#priority-3-durable-extraction--october-2) describe release requirements. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+| Approved new table | Columns and constraints | Purpose |
+|---|---|---|
+| `news_article_versions` | Integer PK; indexed `article_id` RESTRICT FK; non-null SHA-256 fingerprint with length-64 check; non-null JSONB snapshot; UTC creation time; unique `(article_id, input_fingerprint)`; PostgreSQL BEFORE UPDATE trigger rejects every mutation | Exact historical URL/publisher/title/excerpt/body/publication input; fetch time and article ID excluded from canonical hash. |
+| `news_extraction_runs` | Integer PK; indexed version RESTRICT FK; pipeline version; `rules_only` mode check; status check (`pending`, `processing`, `completed`, `retry_wait`, `failed`); attempts 0..5; nullable due/lease/start/completion times, UUID lease token, safe error code, JSONB result; required creation/update times; unique `(article_version_id, pipeline_version, mode)`; due-work index on status/due/expiry; lease-state and completed-result checks | Durable extraction artifact and attempt ownership, independent of moderation. |
+
+JSONB stores immutable input documents and versioned extraction artifacts, not duplicated mutable domain entities. Results do not link to or activate public flood tables. Lease claims use short `FOR UPDATE SKIP LOCKED` transactions; conditional completion requires an unexpired matching token. Downgrade removes only the two new tables and trigger function; it discards extraction history and must be considered before a release rollback.
 
 ---
 
