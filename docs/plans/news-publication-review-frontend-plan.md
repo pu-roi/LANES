@@ -1,7 +1,7 @@
 # Phase 36: Priority 5 Publication, Review, Corrections, Expiry and Frontend Plan
 
-> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Proposed plan after task-plan review. Implementation is paused at the developer's request. This document does not approve database changes or production activation.
+> **Last Updated:** October 03, 2026, 12:43 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** F3 unified reading and revised Source Article design are implemented; the developer accepted the design on October 3. Recent layout edits refined F3. F4a now implements read-only Sources & feeds using existing staff APIs; TypeScript/lint pass. Full desktop/mobile checklist acceptance, F4b missing telemetry and the durable backend checkpoint remain pending before review/public stages. No browser or development server was started; no F4 backend/schema/dependency change.
 
 ## 1. Reviewed baseline and task order
 
@@ -51,8 +51,9 @@ Retain the existing feature-based frontend, persistent map and shared components
 
 | Existing surface | Proposed addition | Responsibility |
 | --- | --- | --- |
-| `/admin/moderation` | **News** tab beside Community and Flood Reports | Track claim/publication states, inspect read-only evidence, filter exceptions, and hand off **Review on map**. Spatial decisions stay in Spatial Operations. |
-| `/admin/map` | **News claims** list and contextual **Review news claim** workspace | Inspect candidate geometry against source details; correct, defer, reject, withdraw, or submit a gated confirmation. Preserve existing Create/Merge/Edit drafts and independent zone/report selections. |
+| `/admin/news`; accepted reading design | News Intelligence navigation opens one Flood Locations list; Info has Flood Details / Source Article. Collection status is a drawer on the same page, with processing history under More details. | Inspect specific reported locations while retaining failed/empty/questionable articles without duplicate article/result lists. Verification remains in Spatial Operations. Desktop/mobile manual acceptance pending. |
+| `/admin/moderation` | Keep existing Community and Flood Reports tracking | Optional news counts/links open Spatial Operations review; do not add another editable news queue. |
+| `/admin/map` | Rename **Pending Reports** to **Needs Review**; retain **Active Zones** | The accepted interface combines user reports and news claims in one review queue with All/User Reports/News Claims source filters. All includes only cases currently needing review, not active zones or completed decisions. Selecting either source opens its evidence and map workspace in place. Preserve existing Create/Merge/Edit drafts and independent selections. |
 | `/map` through persistent `GlobalMap` | **News alerts** entry and shared responsive panel | Read source-labeled active alerts and corrections without blocking route planning. Keep news geometry distinct from active-zone and modeled-NOAH layers. |
 | Existing staff audit/history surfaces | Linked decision history and verified event/zone handoffs | Public alerts alone do not count as verified Flood Events in analytics. Withdrawn/expired claim history is not a recycle-bin deletion. |
 
@@ -60,18 +61,21 @@ Proposed staff journey:
 
 ```mermaid
 flowchart LR
-    Track["Moderation Center: News tracking"] --> Inspect["Read source evidence and exception reason"]
-    Inspect --> Review["Spatial Operations: review claim"]
+    Track["Spatial Operations: Needs Review"] --> Inspect["Select user report or news claim"]
+    Inspect --> Review["Review evidence and map in the same workspace"]
     Review --> Decision["Server validates decision and current revision"]
     Decision --> Result["Updated alert / linked zone / deferred exception"]
     Result --> Track
+    Monitor["News Intelligence: pipeline monitoring"] -. "Optional direct link" .-> Track
 ```
 
 These are proposed additions, not delivered routes or endpoints.
 
 ## 4. Staff screens and actions
 
-**Tracking list:** default to exceptions needing attention, with separate filters for publication state, review reason, city/road, publisher and evidence date. Active automatic alerts, suppressed/historical claims, expired/withdrawn state and failed processing remain inspectable. Do not present `flagged_review` as synonymous with unpublished or extraction `completed` as approval. Include pagination, loading, empty, unavailable-source and explicit API failure states.
+**Accepted Needs Review queue:** one list of user reports and news claims that currently need a staff decision. The three source filters are All (both sources), User Reports and News Claims; these are filters inside the same main tab, not additional navigation pages. Every row carries a clear source badge and reason for review. Active zones and completed/rejected decisions are excluded from this queue unless an explicit authorized lifecycle transition reopens a case. Deferred cases follow the agreed backend due/visibility policy. News Intelligence Results and existing moderation/history views retain non-pending outcomes for inspection. Missing-body feed leads or processing failures without a claim stay in pipeline monitoring rather than becoming fabricated map-review claims.
+
+Provide server-owned ordering, counts and pagination across both sources, with source/review-reason/location/evidence-date filters where supported. Keep source identities distinct even when numeric IDs coincide. An article with several flood locations contributes separate claim cases, not one article-wide approve action. Do not present `flagged_review` as synonymous with unpublished or extraction `completed` as approval. Include loading, empty and explicit API failure states.
 
 **Read-only evidence detail:** show publisher/title/source link, source sentence and surrounding relevant text, original extracted place/span, depth wording and supported physical measurements, condition, passability, publication time, observation time and unknowns. Show model/rule/map provenance and coverage limits in expandable staff detail. Do not show ranking as a percentage likelihood or present shared depth ranges as exact per-road values.
 
@@ -79,7 +83,7 @@ These are proposed additions, not delivered routes or endpoints.
 
 **Decision controls:** show only actions allowed by the server for the current revision. Proposed actions are Correct details, Defer, Reject claim, Withdraw alert, Confirm corrected claim, and Open linked zone. Separate alert confirmation from zone activation; the button and confirmation summary must state the exact public/routing effect. A selected OSM line or staff click cannot bypass missing current evidence or affected-geometry requirements. Require reasons for decisions and show public correction text separately from internal notes. Retain edits on request failure; show stale-version conflicts and reload/compare before resubmission. Pending writes disable duplicate submissions; an uncertain timeout requires reading durable outcome before retrying.
 
-Preserve return-to-filtered-list navigation and repeat selection behavior. Opening a second claim must not silently replace unsaved review or existing Create/Merge/Edit drafts. Keep any saved drafts account-private using the established storage approach.
+After a successful decision, refresh the same queue and offer Next item. Keep source filters, list position and map context; no return to News Intelligence is required between items. On mobile, use Evidence/Map views and Back to queue with the same selection/draft. Opening a second item must not silently replace unsaved review or existing Create/Merge/Edit drafts. Keep any saved drafts account-private using the established storage approach.
 
 ## 5. Commuter experience and responsive behavior
 
@@ -99,18 +103,102 @@ Public reads show only server-published fields. An error must not appear as **No
 
 Existing `/admin/news` endpoints provide feed/source/candidate data and extraction/processing reads, not a durable publication/review API. Do not implement a fake public lifecycle by directly rendering pending candidates.
 
-Design staff list/detail/decision reads and writes, public active-alert/detail reads, and update notifications. Exact endpoint names and schemas remain proposals until lifecycle/storage design. Staff responses need source/version references, extraction and placement evidence, decision history, reasons, expiry, linked domain IDs, allowed actions and an expected revision token. Public responses need safe source identity/link, excerpt, reported place/time/depth qualifiers, public correction text, visibility state, location precision/display geometry and backend-calculated routing label/profile restrictions. Public schemas exclude internal notes and private evidence metadata.
+Design a unified staff review list with server-side source filters, ordering/counts and pagination while preserving distinct user-report and news-claim identity and evidence schemas. Use source-specific detail/decision rules behind the shared frontend workspace; the UI must not convert a news claim into a user report or merge separately paginated results locally. Design monitoring/result reads, public active-alert/detail reads and update notifications separately. Exact endpoint names and schemas remain proposals until lifecycle/storage design. Staff responses need source/version references, extraction and placement evidence, decision history, reasons, expiry, linked domain IDs, allowed actions and an expected revision token. Public responses need safe source identity/link, excerpt, reported place/time/depth qualifiers, public correction text, visibility state, location precision/display geometry and backend-calculated routing label/profile restrictions. Public schemas exclude internal notes and private evidence metadata.
 
 All staff reads and writes enforce authenticated active staff roles in FastAPI before record lookup, plus bounded queries and rate limits. Reuse `apiClient` and TanStack Query; the backend controls scope, order, filters, counts, age gates and decisions. JWT handling stays consistent with the current PWA/WebView architecture. React escapes source text; no raw publisher HTML. Backend validates public source URLs and suppresses unsafe links.
 
-## 7. Proposed delivery sequence and acceptance
+## 7. Frontend delivery phases and acceptance
 
-1. Agree Priority 5 outcome/state/expiry/continuity and evidence contracts; finish the storage assessment and explicit migration proposal if required.
-2. Agree frontend navigation and desktop/mobile wireframes using fixtures clearly marked preview-only. This planning stage is next; no implementation is currently authorized after the pause.
-3. After implementation resumes, establish durable backend lifecycle and security/idempotency/concurrency tests in isolated PostGIS. Obtain schema approval before required model/migration work.
-4. Build staff News tracking and Spatial Operations review first, using the contract; verify correction, conflict, rejection, deferral, withdrawal and shared-zone support behavior.
-5. Build commuter alerts and distinct map presentation. Connect server-owned publication/expiry and SSE/refetch behavior. Keep automatic routing rollout gated separately.
-6. Run controlled end-to-end cases and mobile/desktop review; document migration/release/rollback and independently approved production scope.
+These are frontend stages within **Phase 36, Priority 5**, not new capstone phases or recovery gates. Deliver one stage at a time. Every stage has its own reviewable result and completion evidence. The developer resumed F1 with the shared-component requirement, requested F2 after the standalone diagnostic did not display, and authorized proceeding to F3 after F2 while retaining manual browser verification. F1/F2 are verified locally; F3 is implemented with manual UI acceptance pending; F4–F8 remain pending. Plan author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+### Prerequisites checked within each stage
+
+The former F0 checklist is absorbed into F1–F8. The frontend direction is already agreed; use these checks to implement that direction, not restart design selection. Wireframes and unverified contracts are not marked complete by this change.
+
+- Draw desktop and mobile flows for News Intelligence, Needs Review, and the commuter alert entry. Include article/result detail windows and their loading, empty, missing-body and error states.
+- Map each screen field and action to an existing API or a missing contract. Define article/claim/source identities, pagination, server counts, allowed actions, version conflicts and safe public fields. Record missing capabilities as backend prerequisites.
+- Agree Priority 5 eligibility, continuity, corrections, shared-source withdrawal and expiry rules from section 2. Assess storage; produce an exact schema proposal if needed. Schema work still requires separate approval.
+- **Checked when:** the relevant stage's layout and labels are reviewed, its API gaps are recorded, and its required dependencies are satisfied. Lifecycle/storage rules remain prerequisites for dependent review/public functionality.
+
+### F1 — News Intelligence page and navigation
+
+**Delivered locally:** Thin `/admin/news` route with loading/error boundaries and `src/features/news/NewsIntelligencePage.tsx`. Reuses shared Card/CardContent/CardTitle, Tabs, TabContentPanel, Button and Skeleton, matching Flood History and Moderation Center. Four tabs display explicit unavailable states without fake metrics or news requests. AdminSidebar adds News Intelligence, current-page labels, desktop keyboard expansion and a tap-operated mobile menu; AdminLayout uses responsive content padding. The existing session/role guards and persistent map remain in place. Browser checks use mocked sessions/API responses, not production authorization or live news acceptance. Article cards/details and review/public workflows are not delivered in F1.
+
+- Add the thin `/admin/news` route, feature entry, and Overview / Articles / Results / Sources tabs using existing shared UI and authentication flow.
+- Add the News Intelligence destination to desktop navigation and the mobile menu. Wider sidebar regrouping remains a separate proposed presentation change; do not make it a dependency or move existing routes.
+- Establish shared loading/error/empty presentation, tab state, focus handling and responsive page layout. Unavailable capabilities must be labeled; do not show fabricated totals or operational controls.
+- **Depends on:** the accepted page direction, its desktop/mobile layout check and an explicit request to resume implementation. F1 is the first build stage.
+- **Done when:** staff can open the page and navigate all four tabs on desktop/mobile; existing admin destinations and session handling still work. This delivers navigation, not finished tab content.
+
+### F2 — Articles and Article Details
+
+**Delivered locally:** `NewsArticles`, `NewsArticleDialog`, typed API reads and shared presentation components. New staff-only `/articles` and `/articles/{id}` reads supply server filters/order/pagination and immutable input/run details without schema definition changes. Source, Extracted Facts and Processing History are read-only; the dialog restores list context and supports both screen sizes. Thirty-three backend checks, ten article browser checks and two live authenticated desktop/mobile checks pass. The historical Philstar capture is now saved in local PostgreSQL with 28 candidate claims after the separately approved existing migration. [Verification](../evaluations/phase-36-f2-article-browsing-check.md) distinguishes isolated fixtures, live local acceptance and undeployed production reads.
+
+- Connect article lists to supported staff reads with server-owned filters, ordering and pagination. Show publisher, title, publication time, body availability and processing status.
+- Implement View article with Source / Extracted Facts / Processing History detail tabs. Keep captured text, observation time, publication time and extraction versions distinct.
+- Preserve list filters, pagination, scroll and focus after closing. Keep missing-body, no-claims and failed-detail states visible. Retrieval/retry writes stay outside this stage.
+- **Depends on:** F1 and verified article/detail contracts. A missing read must be supplied before that feature is marked complete.
+- **Done when:** a real saved article can be inspected on both screen sizes, all detail states are demonstrated, and closing restores the same list.
+
+### F3 — Results and Result Details
+
+**Accepted single-list revision:** The developer confirmed the concrete Philstar example and authorized editing. One card represents one reported location/segment from one source article, with specific intersections and barangay/city where recorded. Info has Flood Details and Source Article; the source contains title/publisher, publication time, original LANES-save time, full captured text and collection details. Source Article contains immutable processing history in a desktop right pane or mobile Processing history view; collection inspection keeps More details. Collection status retains failed/empty/questionable articles and supports all saved articles. This supersedes Articles/Results page tabs and three-tab Article Details. Backend SQL selects each article's newest recorded run, including failures and pending attempts; older results stay in history. Conservative evidence screening is read-only and does not approve or activate zones. Manual acceptance remains pending.
+
+**Implemented locally; manual UI acceptance pending:** Shared result cards/details read individual completed-run claims through protected server-filtered/paginated endpoints. Run plus claim ordinal identifies read-only artifact evidence; each detail uses its immutable source. Publication/zone/review outcomes remain unavailable. Backend checks and actual local PostgreSQL/HTTP reads pass with 28 historical sample claims and no read-time writes. The developer requested manual browser verification; see [F3 checks and checklist](../evaluations/phase-36-f3-result-browsing-check.md). F4 is next after acceptance.
+
+- Add read-only claim cards, supported server filters and View result evidence detail. Show source sentence, location, depth qualifiers, condition, observation time and placement uncertainty.
+- Display publication/linked-zone outcomes only when a durable backend read supports them. Extraction completion must never appear as publication approval. Unsupported lifecycle fields show an explicit unavailable state.
+- Keep verification controls out of Results. Add an optional direct link to the selected Needs Review case only when the review contract and destination are available.
+- **Depends on:** F2, stable extraction/claim identity and the result read contract. Lifecycle inspection and review links depend on later backend capabilities and F5/F6.
+- **Done when:** multiple claims from one article remain separate, unresolved placement stays visible, and desktop/mobile detail close restores list context.
+
+### F4 — Remaining publisher and feed monitoring
+
+- Article-level Collection status counts and failure/empty/questionable states are delivered. Add remaining discovery summaries and feed health within the same monitoring page rather than restoring Articles/Results tabs. Alert/review counts require durable contracts.
+- **F4a implemented:** same-page Sources & feeds drawer with Publishers / Feed checks tabs. Existing GET /sources supplies configuration, enabled status and verification date; GET /feeds supplies saved check/success timestamps and errors. Source names are display labels only; no health/eligibility calculations or live probes. Shared dialog/tabs/buttons/skeletons, mobile safe areas and 44px actions; errors/retry/empty states remain explicit.
+- Keep technical versions in expandable diagnostics. Source configuration, manual article submission, extraction retries and automation/training controls are not included in this initial monitoring stage.
+- **Depends on:** existing staff source/feed read APIs for F4a; new durable telemetry reads for F4b. Developer monitoring acceptance remains pending.
+- **Done when:** staff can distinguish healthy-empty, failed and unavailable states on desktop/mobile; no invented health or incident counts appear.
+
+### Backend checkpoint before F5–F7
+
+Finish the durable lifecycle and security/idempotency/concurrency checks in isolated PostGIS after implementation resumes. The backend must supply the combined review reads, source-specific decisions, public publication/expiry, stable revisions, audit links and safe public schema needed by the relevant stage. Obtain separate approval before SQLAlchemy/Alembic changes. F1–F4 may use verified existing read contracts while lifecycle work remains pending; this does not authorize review writes or public alerts. Preview fixtures must be clearly labeled and must not become production fallback data.
+
+### F5 — Needs Review queue and evidence workspace
+
+- Rename Pending Reports to Needs Review; retain Active Zones. Add All / User Reports / News Claims filters to one server-paginated queue with distinct source identities.
+- Inspect reporter evidence or article evidence in the same map workspace. Desktop keeps evidence beside the persistent map; mobile offers Evidence / Map and Back to queue.
+- Show candidate geometry as Placement suggestion without choosing an initial candidate or implying activation. Preserve existing report actions and Create/Merge/Edit drafts. New news decisions remain unavailable until F6.
+- **Depends on:** the accepted Needs Review design, its desktop/mobile layout check, the combined review/detail backend contracts and source-aware identity. Monitoring completion alone does not satisfy this dependency.
+- **Done when:** both source types can be inspected without returning to News Intelligence; filters, selection, map context and drafts survive navigation on desktop/mobile. Existing user-report workflows still work.
+
+### F6 — Staff decisions and lifecycle history
+
+- Connect only server-allowed news actions: correction, confirmation, defer, reject and withdrawal. Separate public correction text from internal notes; show the exact alert/routing effect before submission.
+- Retain failed drafts, reject stale revisions, prevent duplicate submissions and read the durable result before retrying an uncertain timeout.
+- Refresh the same queue and offer Next item. Add available decision history, alert outcomes and linked-zone handoffs to read-only Results/Overview without duplicating verification controls there.
+- **Depends on:** F5 and tested durable decision, audit, revision, expiry and shared-source contracts. No client-side eligibility, expiry or zone activation rules.
+- **Done when:** success, failure, conflicting edits and timeout recovery work on desktop/mobile; history preserves original evidence; refresh/retry creates no duplicate decisions or zones.
+
+### F7 — Public map News alerts
+
+- Add the collapsed desktop News alerts control and mobile entry/sheet. Reuse shared map panels; coordinate with route planning and existing controls rather than stacking overlays.
+- Read only server-published alerts. Show publisher/link, supported excerpt, place, time/depth qualifiers, public corrections and server-provided restriction status. No landing-page changes.
+- Keep text-only unresolved locations and labeled display geometry distinct from active zones and NOAH layers. Connect server updates through existing SSE/refetch handling; show stale/offline/error states honestly.
+- **Depends on:** F6 staff oversight and tested safe public reads, publication/withdrawal/expiry and linked-zone refresh contracts. Historical GMA/backlog examples cannot populate the live public feed.
+- **Done when:** commuters can inspect active alerts on desktop/mobile; corrected, withdrawn and expired selections update correctly; source alerts alone do not affect routing; route/map context remains intact.
+
+### F8 — Integration verification and release readiness
+
+- Run a controlled article-to-result-to-review-to-public-alert flow in staging. Check correction, withdrawal, expiry, duplicate retries, stale edits, private fields and map/routing refresh.
+- Verify all stages at 1440px desktop, 390px mobile, 320px narrow width and landscape. Check keyboard focus, reachable touch controls, mobile safe areas, reconnect and preserved route/report drafts. Include physical mobile/PWA checks for the flows changed.
+- Run repository-required frontend checks and meaningful integration cases. Record results, API dependencies, migrations if approved, rollout scope and rollback instructions in the existing docs/evaluations structure.
+- **Depends on:** F1–F7 completion and their recorded checks.
+- **Done when:** controlled integration and responsive checks pass and the intended release scope is reviewable. Production automatic routing retains separate recovery Gate 6 acceptance and developer review. F8 does not close fresh discovery or live matching gaps in Priorities 1/2.
+
+### Stage completion rule
+
+For each stage, record changed screens/contracts, desktop and mobile evidence, relevant checks, remaining limitations and the next stage in `docs/task_plan.md` and `docs/progress.md`. Check off implementation only after its acceptance passes. A fixture preview, backend dependency or missing metric must not be recorded as a completed live feature. Keep each stage independently reviewable; split monitoring UI and later lifecycle additions when their dependencies differ.
 
 Acceptance must cover: credible unresolved-location alert without routing change; unresolved city/map coverage; bounded suggestion without false activation; multiple cities/claims; forecast/negation/historical/cleared evidence; unknown and stale time; shared/range depth; source revisions; retry/map-refresh/syndication duplicates; competing staff edits; transaction failure; public/internal-note privacy; 401/403 before evidence lookup; correction/withdrawal with other supporting sources; due expiry with delayed maintenance; final-zone event ending; offline stale data; reconnect; empty/error/loading states; narrow/mobile/PWA keyboard/safe-area behavior; and preservation of existing routing, hazard, Create/Merge/Edit and account-private drafts.
 
@@ -118,8 +206,74 @@ Historical GMA matching is a useful placement fixture, never a current public al
 
 ## 8. Decisions still to agree
 
-- Adopt the proposed News tracking tab plus Spatial Operations decision workspace and collapsed commuter map entry.
+- **Accepted interface:** Spatial Operations has Needs Review and Active Zones. Needs Review combines current user-report/news-claim exceptions and has All/User Reports/News Claims source filters. All excludes active zones and completed reviews. Routine staff verification stays within this workspace. This supersedes the earlier page-to-map verification handoff recommendation.
+- Manually accept the unified Flood Locations list, two-tab Info and Collection status drawer on desktop/mobile, then agree the commuter map entry. Processing history remains read-only and does not duplicate review actions.
 - Set alert eligibility when depth is unknown, observation time is absent, or publisher context only establishes a broad place; decide whether missing-time claims remain exceptions (recommended initial policy).
 - Agree alert/zone TTLs, newer clearance matching, and behavior when one of several supporting sources is withdrawn.
 - Agree durable claim/incident identity and the exact schema proposal if existing storage is insufficient. Prior extraction-table approval does not authorize this schema.
 - Review wireframes and public labels before coding. Automatic routing activation retains the separate measured-evidence release gate.
+
+## 9. Admin grouping research and revised recommendation
+
+**Research date:** October 2, 2026. Reviewed official product/design documentation with the UI, architecture and senior-planner skills. This is a qualitative recommendation for LANES, not a measured usability result or a universally best admin layout. The developer subsequently identified repeated page-to-map navigation as undesirable and accepted a shared Needs Review queue in Spatial Operations. That workflow decision supersedes the initial handoff recommendation below. No external admin product or new UI library is being installed.
+
+### Observed patterns and LANES interpretation
+
+- **Carbon navigation:** Sidebar links/submenus organize product destinations, with page tabs for further grouping. Carbon tabs organize related content in the same context, and its guidelines distinguish tabs from status filters and comparison views. **LANES interpretation:** the news pipeline is a destination with several related tasks; make it one sidebar page. Use status filters within Claims instead of separate overlapping Pending/Published/Expired tabs. Keep source evidence and editable extracted details simultaneously visible when staff compare them. Sources: [UI shell left panel](https://www.carbondesignsystem.com/building-blocks/core/components/ui-shell-left-panel/guidelines), [Tabs guidelines](https://www.carbondesignsystem.com/building-blocks/core/components/tabs/guidelines).
+- **Label Studio:** The Data Manager presents tasks in a sortable/filterable list and supports moving into task work. **LANES interpretation:** use searchable article/claim lists with a detail view; surface missing evidence and processing failures. This is a workflow reference, not a recommendation to train a new model or use uncalibrated prediction scores for publication. Source: [Data Manager](https://labelstud.io/guide/manage_data).
+- **Microsoft Sentinel:** Its investigation page collects incident evidence, timeline, activity and tools in context; a graphical investigation is a focused action from that case. **LANES interpretation:** retain claim identity, source history and decision context while handing map work to Spatial Operations. This pattern does not justify importing cybersecurity incident rules or equating similar articles with one flood. Source: [Incident investigation](https://learn.microsoft.com/en-us/azure/sentinel/investigate-incidents).
+- **ArcGIS Mission:** The analyst experience groups live operational activity in panels/feeds around a mission map. **LANES interpretation:** Spatial Operations remains the location/zone workspace, while collection and extraction administration lives on the news page. Reuse the persistent map and return to the selected claim after map work. Source: [Mission analyst experience, documented 11.1 workflow](https://doc.arcgis.com/en/mission/11.1/manager/manager-mission-analyst-intro.htm).
+
+### Options compared
+
+| Option | Strength | Cost for LANES | Recommendation |
+| --- | --- | --- | --- |
+| Put news inside Moderation Center | Small navigation change; useful for a simple exception queue. | Source health, article retrieval, processing and publication oversight become buried in moderation; staff may mistake automated news for citizen-report cases. | Suitable only if news stays a small review feature. |
+| Put all news management inside Spatial Operations with a third tab | Fast access to map candidates. | Feed failures, processing jobs, evidence history and broad/unmapped claims compete with operational report/zone work. | Do not make this the initial control room. |
+| Dedicated News Intelligence page with map handoff | Clear home for the pipeline; detailed evidence and processing remain traceable. | Repeated returns between the control room and map interrupt batch verification. | Initial recommendation; superseded by the developer's workflow correction. |
+| **News Intelligence monitoring plus combined Spatial Operations review** | Staff verify user reports and news claims in one map workspace; collection/processing diagnostics have their own home. | Needs a shared source-aware review contract and preserved source-specific decision rules. | **Accepted review interface and monitoring card/detail direction. Wireframes and lifecycle contracts remain pending.** |
+
+### Proposed sidebar grouping
+
+Use three shallow groups and the existing destinations. This is a proposed presentation change, not approval to move/delete route files.
+
+- **Operations:** Dashboard, Spatial Operations, News Intelligence, Moderation Center.
+- **Records:** Flood History & Analytics, Audit Trail, Archive Center.
+- **Administration:** User Registry, Roles, Data Management, System Settings. Keep Admin Profile/account controls in the existing footer.
+
+Show labels on mobile through a tap-accessible drawer/menu. The current sidebar expands on hover; hover cannot be the only way mobile staff discover the new destination. Keep active-page highlighting and avoid three-level menus.
+
+### News Intelligence contents — accepted single-list design
+
+The developer accepted the concrete September 9 Philstar example, then authorized editing. This design supersedes four page tabs and separate article/result lists. News Intelligence stays the navigation destination; its main content is Flood Locations from News.
+
+1. **Main list:** one card per source-reported location/segment from an article's newest recorded extraction. Lead with the reported intersection/segment, then barangay/city, water level, flood observation time and publisher. Different articles retain distinct evidence; do not merge places merely because city names match. Older extraction versions stay in history. A pending or failed newest run cannot fall back silently to an older success.
+2. **Info — Flood Details:** specific location, water level, source condition, flood observation/report time, placement uncertainty and supporting evidence sentence. Unknown facts remain "Not stated in article." Source-reported depth is not a verified current flood measurement.
+3. **Info — Source Article:** title, publisher, original source link, publication time, initial LANES save time, expandable full captured text and collection details. The selected claim uses its immutable captured input, not a later edited article body.
+4. **Processing history:** only Source Article shows processing history. Desktop shows article text on the left and an independently scrolling timeline on the right within the wide modal. Mobile switches between Article and Processing history inside Source Article. Flood Details remains focused on flood facts and evidence. Source Article uses a wider reading column, compact publication/save dates and full text open by default. The history sidebar is a summary timeline of status, timestamp, attempt/mention counts and a View details action. Detailed inspection opens full-width in the same modal, with Mentions / Article / Technical tabs and a Back action that preserves the reader/history context. Shared timeline styling also serves Flood History. Only one record is inspected at a time. The article stays visible as primary content; optional supporting sentences and collection metadata use disclosures. This follows [NN/g progressive disclosure](https://www.nngroup.com/articles/progressive-disclosure/) and [GOV.UK details guidance](https://design-system.service.gov.uk/components/details/). The newest twenty records retain immutable inputs, errors and attempts. Collection article inspection keeps this history under lazy More details. This frontend-only refinement supersedes the former collapsed history below Info's tabs.
+5. **Collection status:** a shared responsive drawer on the same page, defaulting to attention states. Retain failed retrieval/processing, missing text, waiting/processing, no extracted locations and questionable mentions. All saved articles and locations-available articles remain accessible through the collection-state filter. View article and Back stay inside the same focus-managed drawer.
+6. **Remaining source monitoring:** add feed health/discovery telemetry when supported, without restoring redundant Articles/Results page tabs. Public alerts, decisions and linked zones still need the later durable contracts.
+
+The server conservatively screens sentence-like/empty place names, missing supporting evidence, unsupported place-only mentions, forecast/negated/historical flags and metadata-only/error results. This is a reading policy; it does not repair the NLP output or persist a staff decision. Missing depth/time alone does not exclude a clearly reported flood. Unresolved exact map placement stays visible for readable evidence and does not imply a closure.
+
+### Reading implementation steps
+
+| Step | Reviewable result | Local status |
+| --- | --- | --- |
+| 1 — Main list | Unified list and source-specific intersection/segment cards | Implemented; manual desktop/mobile acceptance pending |
+| 2 — Info | Source Article desktop article/history panes, mobile Article/Processing history switching and distinct flood/publication/save clocks | Implemented; manual desktop/mobile acceptance pending |
+| 3 — Collection | Attention drawer, older history, server screening and newest-run scope | Implemented; manual desktop/mobile acceptance pending |
+
+All three reading steps use existing shared components and FastAPI reads. Backend tests, PostgreSQL read-only verification, TypeScript and changed-file lint pass. Browser checks are explicitly left to the developer; no development server was started.
+
+Approvals, rejection, correction and spatial verification remain in Spatial Operations → Needs Review once the durable review contract is implemented. No review action or public/routing state is added to this reading page.
+
+Close Info with filters/page/scroll/focus intact. Back from an article returns to the filtered collection drawer with its page and focus intact. Desktop uses the existing centered Info modal and a right drawer; mobile uses bounded scrolling, safe-area/bottom-navigation clearance and 44px controls. Check narrow and landscape layouts manually.
+
+### Spatial Operations clarification
+
+Rename the first main tab **Needs Review** and keep **Active Zones**. Needs Review owns one combined queue with source filters **All**, **User Reports** and **News Claims**. All shows both sources that currently need a decision; it excludes active zones and completed reviews. Each row identifies its source. A user report opens reporter description/media/location; a news claim opens publisher link, source sentence, extracted facts and candidate geometry. Both remain beside the same operational map on desktop, with Evidence/Map switching and Back to queue on mobile. Decisions refresh the queue and offer Next item without returning to another page. Preserve current Create/Merge/Edit drafts and source-specific server rules. Fully eligible automatic claims do not wait for this queue. An informational news alert alone does not become an active avoidance zone.
+
+### Public-page clarification and next check
+
+The public `/map` gains the proposed News alerts panel/sheet. Commuters see only published source-labeled alerts, public corrections and backend-provided restriction status. They do not see source-health panels, processing failures, internal notes or NLP controls. No landing-page change is proposed. Check desktop/mobile layouts within the relevant implementation stage using the accepted mixed-source queue and News Intelligence card/detail direction. Lifecycle/storage and automatic-routing release gates remain unchanged.

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { Logo } from "@/shared/ui";
@@ -16,7 +16,10 @@ import {
   Database,
   Settings,
   LogOut,
-  Home
+  Home,
+  Newspaper,
+  Menu,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,6 +30,7 @@ import { useSidebarStore } from "@/shared/stores/sidebarStore";
 const navItems = [
   { name: "Dashboard",                 href: "/admin/dashboard",     icon: LayoutDashboard },
   { name: "Spatial Operations",        href: "/admin/map",           icon: Map },
+  { name: "News Intelligence",         href: "/admin/news",          icon: Newspaper },
   { name: "Moderation Center",         href: "/admin/moderation",    icon: Flag },
   { name: "Flood History & Analytics", href: "/admin/flood-history", icon: History },
   { name: "User Registry",             href: "/admin/users",         icon: Users },
@@ -39,11 +43,23 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const setIsSidebarExpanded = useSidebarStore((state) => state.setIsSidebarExpanded);
   
   const { user, logout } = useAuth();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isKeyboardFocused, setIsKeyboardFocused] = useState(false);
+  const autoLabelVisibility = cn("opacity-0 md:group-hover:opacity-100", isKeyboardFocused && "md:opacity-100");
+  const autoBrandVisibility = cn("hidden md:group-hover:block", isKeyboardFocused && "md:block");
+  const labelVisibility = isMenuOpen
+    ? "opacity-100"
+    : autoLabelVisibility;
+
+  const closeMenu = (event: React.SyntheticEvent<HTMLElement>) => {
+    setIsMenuOpen(false);
+    setIsKeyboardFocused(false);
+    setIsSidebarExpanded(window.matchMedia("(min-width: 768px)").matches && !!event.currentTarget.closest("aside")?.matches(":hover"));
+  };
 
   const handleLogout = () => {
     logout();
@@ -52,30 +68,51 @@ export default function AdminSidebar() {
 
   return (
     <div className="relative w-14 shrink-0 h-full z-30 select-none">
-      <aside 
-        onMouseEnter={() => setIsSidebarExpanded(true)}
-        onMouseLeave={() => setIsSidebarExpanded(false)}
-        className="group absolute top-0 left-0 flex flex-col h-full bg-white border-r border-gray-200 
-                   w-14 hover:w-56 transition-all duration-150 ease-in-out shadow-md overflow-hidden"
+      <aside
+        onMouseEnter={() => setIsSidebarExpanded(isMenuOpen || window.matchMedia("(min-width: 768px)").matches)}
+        onMouseLeave={() => setIsSidebarExpanded(isMenuOpen || (isKeyboardFocused && window.matchMedia("(min-width: 768px)").matches))}
+        onPointerDownCapture={() => setIsKeyboardFocused(false)}
+        onFocusCapture={(event) => {
+          if (event.target.matches(":focus-visible")) {
+            setIsKeyboardFocused(true);
+            setIsSidebarExpanded(isMenuOpen || window.matchMedia("(min-width: 768px)").matches);
+          }
+        }}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setIsKeyboardFocused(false);
+            setIsSidebarExpanded(isMenuOpen || (window.matchMedia("(min-width: 768px)").matches && event.currentTarget.matches(":hover")));
+          }
+        }}
+        onKeyDown={(event) => { if (event.key === "Escape") closeMenu(event); }}
+        className={cn("group absolute top-0 left-0 flex flex-col h-full bg-white border-r border-gray-200 transition-all duration-150 ease-in-out shadow-md overflow-hidden",
+          isMenuOpen ? "w-56" : cn("w-14 md:hover:w-56", isKeyboardFocused && "md:w-56"))}
       >
         {/* Brand Header */}
         <div className="h-[92px] py-4 flex flex-col items-center justify-between border-b border-gray-200 overflow-hidden shrink-0 w-full">
           {/* Logo Row */}
           <div className="flex items-center justify-center w-full">
-            <Logo size="xs" textClassName="mt-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-150 hidden group-hover:block" />
+            <Logo size="xs" textClassName={cn("mt-[2px] transition-opacity duration-150", labelVisibility, isMenuOpen ? "block" : autoBrandVisibility)} />
           </div>
           
           {/* Admin Panel Row */}
-          <div className="flex items-center justify-center w-full">
+          <div className="hidden md:flex items-center justify-center w-full">
             <ShieldCheck className="w-[20px] h-[20px] text-blue-600 shrink-0" />
-            <span className="ml-1.5 font-semibold text-sm text-gray-900 tracking-tight whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 hidden group-hover:block">
+            <span className={cn("ml-1.5 font-semibold text-sm text-gray-900 tracking-tight whitespace-nowrap transition-opacity duration-150", labelVisibility, isMenuOpen ? "block" : autoBrandVisibility)}>
               Admin Panel
             </span>
           </div>
+          <Button type="button" variant="ghost" className="h-10 gap-2 px-2 md:hidden"
+            aria-label={isMenuOpen ? "Close admin menu" : "Open admin menu"}
+            aria-expanded={isMenuOpen} aria-controls="admin-navigation"
+            onClick={() => { setIsMenuOpen(!isMenuOpen); setIsSidebarExpanded(!isMenuOpen); }}>
+            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMenuOpen && <span>Admin menu</span>}
+          </Button>
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 py-4 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden px-2">
+        <nav id="admin-navigation" aria-label="Admin navigation" className="flex-1 py-4 flex flex-col gap-1.5 overflow-y-auto overflow-x-hidden px-2">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -83,6 +120,9 @@ export default function AdminSidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                aria-label={item.name}
+                aria-current={isActive ? "page" : undefined}
+                onClick={closeMenu}
                 className={cn(
                   "flex items-center h-9 w-full rounded-md transition-colors group/link overflow-hidden shrink-0",
                   isActive 
@@ -94,7 +134,7 @@ export default function AdminSidebar() {
                 <div className="w-10 flex items-center justify-center shrink-0">
                   <Icon className={cn("w-4 h-4", isActive ? "text-blue-600" : "")} />
                 </div>
-                <span className="text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                <span className={cn("text-sm font-medium whitespace-nowrap transition-opacity duration-150", labelVisibility)}>
                   {item.name}
                 </span>
               </Link>
@@ -107,6 +147,8 @@ export default function AdminSidebar() {
           {/* Profile Link */}
           <Link
             href="/admin/profile"
+            onClick={closeMenu}
+            aria-label="Admin Profile"
             className={cn(
               "flex items-center w-full h-10 mb-1 rounded-md transition-colors overflow-hidden shrink-0",
               pathname === "/admin/profile"
@@ -128,7 +170,7 @@ export default function AdminSidebar() {
                 </div>
               )}
             </div>
-            <div className="flex flex-col min-w-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 leading-tight">
+            <div className={cn("flex flex-col min-w-0 transition-opacity duration-150 leading-tight", labelVisibility)}>
               <span className="text-xs font-semibold text-gray-900 truncate">
                 {(user?.profile?.first_name && user?.profile?.display_full_name !== false)
                   ? `${user.profile.first_name} ${user.profile.last_name || ""}`.trim()
@@ -143,30 +185,32 @@ export default function AdminSidebar() {
           {user?.role?.name !== "Super Admin" && (
             <Link
               href="/"
+              onClick={closeMenu}
               className="flex items-center w-full h-9 mb-1 rounded-md text-gray-700 hover:bg-gray-100 transition-colors overflow-hidden shrink-0"
               title="Return to Public App"
             >
               <div className="w-10 flex items-center justify-center shrink-0">
                 <Home className="w-4 h-4" />
               </div>
-              <span className="text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+              <span className={cn("text-sm font-medium whitespace-nowrap transition-opacity duration-150", labelVisibility)}>
                 Return to Public App
               </span>
             </Link>
           )}
 
-          <button
+          <Button type="button" variant="ghost"
             onClick={() => setShowLogoutConfirm(true)}
-            className="flex items-center w-full h-9 rounded-md text-red-600 hover:bg-red-50 transition-colors overflow-hidden shrink-0 cursor-pointer"
+            className="flex items-center justify-start w-full h-9 px-0 rounded-md text-red-600 hover:bg-red-50 transition-colors overflow-hidden shrink-0 cursor-pointer"
             title="Log Out"
+            aria-label="Log Out"
           >
             <div className="w-10 flex items-center justify-center shrink-0">
               <LogOut className="w-4 h-4" />
             </div>
-            <span className="text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+            <span className={cn("text-sm font-medium whitespace-nowrap transition-opacity duration-150", labelVisibility)}>
               Log Out
             </span>
-          </button>
+          </Button>
         </div>
 
         {/* Logout Confirmation Modal */}

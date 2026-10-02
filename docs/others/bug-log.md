@@ -1,11 +1,81 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 02, 2026, 2:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 11:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-082] Portalled Select escapes the news drawer's keyboard containment
+
+- **Status:** Code fix implemented; developer keyboard/browser acceptance pending
+- **Severity:** Low (keyboard interaction in the new drawer)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Static review of Collection status finds that the shared Select renders options outside the drawer DOM. Escape reaches the enclosing dialog, and its focus trap excludes the option buttons.
+
+#### 2. Root Cause Analysis
+
+Select has no dropdown Escape handler; RecordDetailsDialog gathers focusable controls only beneath its own DOM ref. The portalled options are missing from that set.
+
+#### 3. Solution & Architectural Strategy
+
+Shared Select handles Escape in capture phase while open, closes only its dropdown and returns focus to its trigger. RecordDetailsDialog includes options for its own open shared Select in the focus cycle. Expanded state and a trigger marker identify the open control. TypeScript/lint and updated keyboard fixture cover the code contract; browser checks are prohibited by the developer, so interactive acceptance remains manual.
+
+#### 4. Files Modified / What Changed
+
+- frontend/src/shared/ui/forms/Select.tsx: Escape handling, trigger focus and expanded-state marker.
+- frontend/src/shared/ui/feedback/RecordDetailsDialog.tsx: portalled option focus containment.
+- frontend/tests/news-articles.spec.ts: dropdown Escape keeps the collection drawer open; fixture updated but not browser-executed.
+
+### [BUG-081] Local Docker runtime cannot start the PostgreSQL engine
+
+- **Status:** Resolved; Docker engine and existing PostgreSQL container recovered
+- **Severity:** Medium (local development environment unavailable)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+During F2 verification, configured local PostgreSQL returns an OperationalError and Docker has no Linux engine pipe. Docker Desktop starts but exits its engine initialization before the LANES database is available.
+
+#### 2. Root Cause Analysis
+
+The Docker backend first fails to rename `sailor-ingest.sock` in its runtime directory. After that directory is recreated, startup reports the same error against the separate Secrets Engine `engine.sock`. Their special reparse points return Windows error 1920, "The file cannot be accessed by the system," during individual inspection/deletion attempts. This matches the reported [Docker startup issue](https://github.com/docker/desktop-feedback/issues/554); the exact underlying Windows cause remains unverified.
+
+#### 3. Solution & Architectural Strategy
+
+Individual socket cleanup fails, but parent directory moves succeed. With Docker stopped, preserved `%LOCALAPPDATA%/Docker/run` and `%LOCALAPPDATA%/docker-secrets-engine` in timestamped quarantine directories and recreated clean runtime directories. The Secrets Engine directory was verified to contain only its two socket files. Docker then starts successfully; the existing PostgreSQL and Valhalla containers are running and PostgreSQL queries succeed. Container/database data was retained. The local database initially remained at `a83c1d4e7b92`; after separate explicit developer approval, existing extraction migration `f29b6c8d104e` applied successfully. Live authenticated F2 article/detail reads pass on desktop/mobile. No factory reset or model/migration definition change was needed.
+
+#### 4. Files Modified / What Changed
+
+- `docs/others/bug-log.md` and the F2 evaluation record the environment limitation.
+- No Docker configuration, database model, migration or application authentication source was modified for this issue.
+
+### [BUG-080] Existing AdminLayout fails current ESLint rules
+
+- **Status:** Investigating; confirmed present in HEAD before F1
+- **Severity:** Low (lint verification limitation; no demonstrated access regression)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Running ESLint on the F1 changed-file set reports three errors in `frontend/src/features/admin/AdminLayout.tsx`: one `react-hooks/set-state-in-effect` error and two `@typescript-eslint/no-explicit-any` errors. New News Intelligence route/feature/test files pass lint; AdminSidebar has only its existing avatar-image warning. TypeScript and mocked desktop/mobile access/navigation checks pass.
+
+#### 2. Root Cause Analysis
+
+The existing mount effect calls `setIsMounted(true)` synchronously, and both existing role checks cast `user as any`. All three statements were verified in HEAD. F1 changes only the layout's responsive padding; these lint errors were not introduced by News Intelligence.
+
+#### 3. Solution & Architectural Strategy
+
+Address the mount/hydration pattern and typed session role access in a dedicated follow-up, preserving existing loading, redirect, staff roles and persistent-map behavior. Do not suppress rules or rewrite authentication while adjusting F1 presentation. No fix is claimed here.
+
+#### 4. Files Modified / What Changed
+
+- `docs/others/bug-log.md`: records the existing lint limitation.
+- F1 source edits in `AdminLayout.tsx` affect padding only; its mount and role code is unchanged.
 
 ### [BUG-079] Linux OSM runtime lacked libexpat
 

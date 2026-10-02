@@ -25,6 +25,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
   ({ options, value, onChange, label, error, placeholder, className = "", ariaLabel }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
     const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
 
     const selectedOption = options.find((opt) => opt.value === value);
@@ -46,6 +47,20 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         };
       }
     }, [isOpen, updateRect]);
+
+    useEffect(() => {
+      if (!isOpen) return;
+      const handleEscape = (event: KeyboardEvent) => {
+        if (event.key !== "Escape") return;
+        event.preventDefault();
+        // Close the portalled dropdown before a containing dialog handles Escape.
+        event.stopImmediatePropagation();
+        setIsOpen(false);
+        triggerRef.current?.focus({ preventScroll: true });
+      };
+      document.addEventListener("keydown", handleEscape, true);
+      return () => document.removeEventListener("keydown", handleEscape, true);
+    }, [isOpen]);
 
     // Handle click outside to close
     useEffect(() => {
@@ -77,9 +92,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
         
         <div className="relative w-full" ref={ref}>
           <button
+            ref={triggerRef}
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={ariaLabel || label}
+            data-select-trigger="true"
+            aria-expanded={isOpen}
             className={`
               w-full flex items-center justify-between rounded-lg border bg-white px-3 py-2 text-sm text-gray-900 
               shadow-sm outline-none transition-all duration-200

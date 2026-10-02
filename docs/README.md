@@ -15,7 +15,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
-- [Priority 5 publication, review, corrections, expiry and frontend plan](plans/news-publication-review-frontend-plan.md) — proposed lifecycle contract and desktop/mobile integration; implementation paused.
+- [Priority 5 publication, review, corrections, expiry and frontend plan](plans/news-publication-review-frontend-plan.md) — F1/F2 delivered; F3 design accepted and F4a source/feed reads implemented. Full manual acceptance, F4b telemetry, review and public lifecycle stages remain pending.
 - [Flood event history design](plans/flood-event-history-design.md)
 - [Flood report merging plan](plans/flood-report-merging-plan.md)
 - [LiPAD & UP NOAH flood placement](plans/lipad-noah-flood-placement.md)
@@ -25,6 +25,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Evaluations and simulations
 
+- [Phase 36: F2 article browsing verification](evaluations/phase-36-f2-article-browsing-check.md)
+- [Phase 36: F3 unified news reading and F4a source monitoring verification](evaluations/phase-36-f3-result-browsing-check.md)
 - [Phase 36: Open article fallback check](evaluations/phase-36-open-article-fallback-check.md)
 - [Phase 36: Three 2026 flood article extraction check](evaluations/phase-36-three-article-check.md)
 - [Phase 36: Three full-article backend simulation](evaluations/phase-36-new-article-service-simulation.md)

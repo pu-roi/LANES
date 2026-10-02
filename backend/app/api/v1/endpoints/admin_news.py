@@ -3,7 +3,7 @@
 from dataclasses import asdict
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request, Response
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -33,11 +33,108 @@ from app.services.news_discovery_service import discover_news, extract_saved_new
 from app.services.news_open_search_service import append_publisher_feed_leads, assess_alternate_article_leads, retrieve_open_article_leads, search_open_article_leads
 from app.services.news_feed_service import canonical_article_url, probe_feed
 from app.services.news_sources import load_news_sources
+from app.schemas.news_browsing import ArticleOrder, BodyStatus, NewsArticleDetail, NewsArticlePage, ProcessingStatus
+from app.services.news_browsing_service import browse_news_articles, read_news_article_detail
+from app.schemas.news_extraction import FloodCondition
+from app.schemas.news_results import NewsResultDetail, NewsResultPage, PlacementFilter, ResultOrder
+from app.services.news_results_service import browse_news_results, read_news_result
+from app.schemas.news_collection import CollectionFilter, NewsCollectionPage
+from app.services.news_collection_service import browse_news_collection
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, sessionmaker
 
 
 router = APIRouter()
+
+
+@router.get("/collection", response_model=NewsCollectionPage)
+def browse_collection(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=12, ge=1, le=50),
+    search: str = Query(default="", max_length=200),
+    publisher: str | None = Query(default=None, max_length=100),
+    status: CollectionFilter = "attention",
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsCollectionPage:
+    """Read saved articles needing collection or extraction attention."""
+    try:
+        return browse_news_collection(db, page=page, page_size=page_size, search=search, publisher=publisher, status=status)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News collection storage is unavailable") from exc
+
+
+@router.get("/results", response_model=NewsResultPage)
+def browse_results(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=12, ge=1, le=50),
+    search: str = Query(default="", max_length=200),
+    publisher: str | None = Query(default=None, max_length=100),
+    condition: FloodCondition | None = None,
+    placement: PlacementFilter | None = None,
+    order: ResultOrder = "extraction_newest",
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsResultPage:
+    """Paginate reported locations from each article's newest recorded run."""
+    try:
+        return browse_news_results(db, page=page, page_size=page_size, search=search,
+            publisher=publisher, condition=condition, placement=placement, order=order)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News result storage is unavailable") from exc
+
+
+@router.get("/results/{run_id}/{claim_index}", response_model=NewsResultDetail)
+def read_result(
+    run_id: int = Path(ge=1),
+    claim_index: int = Path(ge=0),
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsResultDetail:
+    """Read one artifact ordinal and its immutable source; no lifecycle inference."""
+    try:
+        detail = read_news_result(db, run_id, claim_index)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News result storage is unavailable") from exc
+    if detail is None:
+        raise HTTPException(status_code=404, detail="News result not found")
+    return detail
+
+
+@router.get("/articles", response_model=NewsArticlePage)
+def browse_articles(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=12, ge=1, le=50),
+    search: str = Query(default="", max_length=200),
+    publisher: str | None = Query(default=None, max_length=100),
+    body: BodyStatus | None = None,
+    processing: ProcessingStatus | None = None,
+    order: ArticleOrder = "recently_seen",
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsArticlePage:
+    """Read saved articles with server-owned filters, ordering and pagination."""
+    try:
+        return browse_news_articles(db, page=page, page_size=page_size, search=search,
+                                    publisher=publisher, body=body, processing=processing, order=order)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News article storage is unavailable") from exc
+
+
+@router.get("/articles/{article_id}", response_model=NewsArticleDetail)
+def read_article(
+    article_id: int,
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsArticleDetail:
+    """Read captured inputs and the newest twenty recorded runs; never recompute."""
+    try:
+        detail = read_news_article_detail(db, article_id)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News article storage is unavailable") from exc
+    if detail is None:
+        raise HTTPException(status_code=404, detail="News article not found")
+    return detail
 
 
 @router.get("/feeds", response_model=list[NewsFeedCheckpointSummary])

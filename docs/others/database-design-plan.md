@@ -1,8 +1,10 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 8:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
+
+**October 2 local migration synchronization:** After recovering Docker/PostgreSQL, the developer explicitly approved applying existing extraction revision `f29b6c8d104e` to local LANES. `alembic upgrade head` succeeded from `a83c1d4e7b92`; the database reports the repository head. The historical Philstar test capture is saved as article #3 with one immutable input and one completed rules-only extraction run. Live F2 desktop/mobile reads pass. No model/migration definition or production schema was changed. See [F2 verification](../evaluations/phase-36-f2-article-browsing-check.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 **October 2 Priority 4 artifact extension:** The existing `news_extraction_runs.result` JSONB now carries optional typed per-claim `road_placement` evidence, including immutable catalog/source checksums, snapshot clock, city relation, bounded centerlines, and explicit uncertainty. Pipeline identity includes the full catalog checksum so refreshed map evidence creates a new run for the same immutable article input. Failed/unavailable source identity is distinct from repaired source identity. No table, column, SQLAlchemy model, constraint, or migration definition was changed. Production already applied extraction migration `f29b6c8d104e`; spatial candidates do not create public domain rows.
 
