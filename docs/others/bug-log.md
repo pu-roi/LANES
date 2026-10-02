@@ -1,11 +1,79 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 02, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 2:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-079] Linux OSM runtime lacked libexpat
+
+- **Status:** Resolved; corrected Linux import, durable processing, and historical article matching verified
+- **Severity:** High (new map-aware processing could not import its native reader)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The initial Priority 4 image passed API health but its production placement probe failed before processing with `ImportError: libexpat.so.1`. Windows-based matching tests had passed. Priority 3 extraction did not import the OSM reader and remained unaffected.
+
+#### 2. Root Cause Analysis (RCA)
+
+The declared `osmium` Linux wheel requires Debian's `libexpat1` runtime library. The slim backend image did not install it. API health does not execute the map-provider import, so it could not detect this native-library gap.
+
+#### 3. Solution & Architectural Strategy
+
+Restored traffic to verified API revision `lanes-api-00045-spg` and restored the Priority 3 collector image while rebuilding with `libexpat1`. Production placement/storage/idempotency verification must pass before this fix is closed. No schema rollback or public-data deletion is involved.
+
+The corrected image is now active at API revision `lanes-api-00047-59t`. Production execution `lanes-news-discovery-lmvj5` passes native import, catalog validation, ten persisted map-aware runs, repeat idempotency, unchanged public counts, and actual historical GMA span matching. No failure remains open for this dependency.
+
+#### 4. Files Modified / What Changed
+
+`backend/Dockerfile` adds `libexpat1` to the existing apt installation; the Python package remains declared in `backend/requirements.txt`. Evaluation and tech-stack records capture the platform-specific release verification.
+
+### [BUG-078] Fallback API fixture occasionally generated a future publication
+
+- **Status:** Resolved; focused broad suite passes 135 cases
+- **Severity:** Low (test clock/setup error; production future-date guard remains intact)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+One fallback API test intermittently expected a retrieved article but its fake publisher feed was rejected as future-dated. The first Priority 4 broad run had 133 passes and this one failure.
+
+#### 2. Root Cause Analysis (RCA)
+
+The fake feed sampled `datetime.now()` after the lookup had already captured its reference clock. Depending on clock resolution, its publication was slightly in the future. Its TestClient also unnecessarily booted database seeding/retention against the configured local database despite supplying a dedicated SQLite session.
+
+#### 3. Solution & Architectural Strategy
+
+The simulated feed publication now precedes lookup by one second, and the endpoint fixture uses an isolated no-op lifespan. Authentication, fallback retrieval, preserved original evidence, and table assertions stay intact. Production future-date validation was not changed.
+
+#### 4. Files Modified / What Changed
+
+`backend/tests/test_news_discovery.py` corrects only the fixture clock and startup isolation.
+
+### [BUG-077] Backend container omitted extraction reference datasets
+
+- **Status:** Resolved; production reference checksums verified
+- **Severity:** High (location/history resolution differed from development)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Production release preparation found that the extractor reads administrative and Pasig history CSVs from repository `data/`, while the backend-only image omitted that directory. Development tests saw local files, masking the runtime packaging gap.
+
+#### 2. Root Cause Analysis (RCA)
+
+Inside `/app`, both reference services resolve their repository data directory to `/data`. The prior Dockerfile copied only the backend context and `.dockerignore` excluded backend `data/`; absent files leave the providers empty. This is a packaging defect, not proof that earlier local article evaluations were wrong.
+
+#### 3. Solution & Architectural Strategy
+
+Bundle the three reviewed CSV snapshots in `backend/runtime_data/` and explicitly copy them to `/data`. Production SHA-256 verification matches all three development source files; the location service loads all 30 Pasig barangays. The release also enables the approved worker after migration. Ten RSS-linked backlog bodies now produce typed, source-linked stored results, with no duplicate or public flood writes. Historical rows remain context rather than live evidence.
+
+#### 4. Files Modified / What Changed
+
+`backend/Dockerfile` adds the reference copy; `backend/runtime_data/` holds the three snapshots and refresh/build instructions; `.gcloudignore` excludes backend environment files; `cloudbuild.yaml` selects bounded collector processing. Existing evaluation/progress/task/system/feature records document the release. No reference service, model, migration definition, or runtime dependency changed.
 
 ### [BUG-076] Full backend tests lack isolated database and auth fixtures
 

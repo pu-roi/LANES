@@ -15,6 +15,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
+- [Priority 5 publication, review, corrections, expiry and frontend plan](plans/news-publication-review-frontend-plan.md) — proposed lifecycle contract and desktop/mobile integration; implementation paused.
 - [Flood event history design](plans/flood-event-history-design.md)
 - [Flood report merging plan](plans/flood-report-merging-plan.md)
 - [LiPAD & UP NOAH flood placement](plans/lipad-noah-flood-placement.md)

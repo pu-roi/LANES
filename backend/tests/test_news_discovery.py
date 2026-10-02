@@ -655,6 +655,15 @@ def test_same_url_new_publication_refreshes_body_and_preserves_failed_snapshot(b
 @pytest.mark.parametrize("fallback_path", ["index", "publisher_feed"])
 @pytest.mark.parametrize("retained_body", [None, "Previous article body retained after a blocked refresh."])
 def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monkeypatch: pytest.MonkeyPatch, fallback_path: str, retained_body: str | None) -> None:
+    from contextlib import asynccontextmanager
+
+    @asynccontextmanager
+    async def isolated_lifespan(_app):
+        # This endpoint test supplies its own SQLite session; do not boot
+        # production seeding/retention against the configured external DB.
+        yield
+
+    monkeypatch.setattr(app.router, "lifespan_context", isolated_lifespan)
     from app.core.limiter import limiter
     limiter.reset()
     engine = create_engine(
@@ -752,7 +761,8 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monk
                     ))
 
                     def feed_lookup(source: NewsSource, feed_url: str, _client: httpx.Client):
-                        now = datetime.now(timezone.utc)
+                        # Feed publication precedes the lookup's captured clock.
+                        now = datetime.now(timezone.utc) - timedelta(seconds=1)
                         entries = (NewsEntry(source.id, source.publisher, feed_url, "alternate-feed-entry",
                                              "Flood in Pasig", "Baha sa Manggahan",
                                              "https://www.philstar.com/nation/2026/08/17/2549888/related-flood-story", now),) if source.id == "feedspot-05" else ()

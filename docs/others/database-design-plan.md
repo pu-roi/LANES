@@ -1,8 +1,10 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 02, 2026, 2:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
+
+**October 2 Priority 4 artifact extension:** The existing `news_extraction_runs.result` JSONB now carries optional typed per-claim `road_placement` evidence, including immutable catalog/source checksums, snapshot clock, city relation, bounded centerlines, and explicit uncertainty. Pipeline identity includes the full catalog checksum so refreshed map evidence creates a new run for the same immutable article input. Failed/unavailable source identity is distinct from repaired source identity. No table, column, SQLAlchemy model, constraint, or migration definition was changed. Production already applied extraction migration `f29b6c8d104e`; spatial candidates do not create public domain rows.
 
 ## Phase 36 RSS evidence storage (approved and migrated)
 
@@ -16,7 +18,9 @@ Revision `a83c1d4e7b92` defines exactly three new tables. Publisher configuratio
 
 No news table references or activates `flood_reports`, `flood_events`, or `flood_avoidance_zones`. Any later NER or event grouping schema requires separate approval.
 
-**October 2 approved addition — locally implemented and development-verified:** The developer approved Priority 3 after the two-table explanation. Migration `f29b6c8d104e` follows `a83c1d4e7b92`. Full `alembic upgrade head`, downgrade to the preceding revision, and upgrade again passed on disposable Cloud SQL PostgreSQL/PostGIS; the test database was then deleted. Production still has the original three deployed tables. The complete [contract](../plans/smart-auto-activation-and-hybrid-nlp-plan.md#priority-3-extraction-handoff--october-2-approved-implementation) and [verification](../evaluations/phase-36-open-article-fallback-check.md#priority-3-durable-extraction--october-2) describe release requirements. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+**October 2 approved addition — deployed and verified:** The developer approved Priority 3 after the two-table explanation. Migration `f29b6c8d104e` follows `a83c1d4e7b92`. Full `alembic upgrade head`, downgrade to the preceding revision, and upgrade again passed on disposable Cloud SQL PostgreSQL/PostGIS; the test database was then deleted. Production subsequently applied the migration and verified ten saved-body inputs/results, repeat idempotency and unchanged public tables. Priority 4 added map-aware results on those same immutable inputs without changing the schema. See the [contract](../plans/smart-auto-activation-and-hybrid-nlp-plan.md#priority-3-extraction-handoff--october-2-approved-implementation) and [production release verification](../evaluations/phase-36-reusable-road-match-check.md#production-release-verification). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+**Priority 5 storage assessment — proposed, not approved:** The [publication/review/frontend plan](../plans/news-publication-review-frontend-plan.md#2-priority-5-lifecycle-contract-before-screen-implementation) requires durable per-claim decisions, public visibility/expiry, stable incident/revision identity, correction history and domain activation links. Existing extraction JSONB is evidence, not a mutable decision store. Assess existing domain tables and design exact constraints/backfill/transaction boundaries before requesting any additional model/migration approval. No schema change is made by this planning review; Phase 33 origin/evidence-integrity remediation remains open.
 
 | Approved new table | Columns and constraints | Purpose |
 |---|---|---|

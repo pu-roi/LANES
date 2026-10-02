@@ -88,6 +88,33 @@ class RankedLocationCandidate(BaseModel):
     requires_staff_edit: bool = False
 
 
+class RoadPlacementCandidate(BaseModel):
+    """Mapped centerline evidence; never an observed flood width or closure."""
+
+    candidate_id: str
+    kind: Literal["reported_span", "road_section"]
+    centerline_geojson: dict
+    osm_way_ids: list[int]
+    cross_streets: list[list[str]] = Field(default_factory=list)
+    approximate_length_m: float | None = None
+    ambiguous_carriageway: bool = False
+
+
+class RoadPlacementEvidence(BaseModel):
+    status: Literal["bounded_candidate", "ambiguous", "unresolved", "source_unavailable"]
+    reason: str
+    source_id: str | None = None
+    snapshot_at: datetime | None = None
+    catalog_sha256: str | None = None
+    osm_sha256: str | None = None
+    city_relation_id: int | None = None
+    candidates: list[RoadPlacementCandidate] = Field(default_factory=list, max_length=25)
+    total_candidate_count: int = 0
+    candidates_truncated: bool = False
+    proves_current_flood: Literal[False] = False
+    may_affect_routing: Literal[False] = False
+
+
 class ExtractedClaim(BaseModel):
     """An evidence-linked structured flood claim for a specific location."""
 
@@ -135,6 +162,7 @@ class ExtractedClaim(BaseModel):
     action_rationale: str | None = None
     audit_result: LLMAuditResult | None = None
     ranked_location: RankedLocationCandidate | None = None
+    road_placement: RoadPlacementEvidence | None = None
 
 
 class NewsExtractionResult(BaseModel):

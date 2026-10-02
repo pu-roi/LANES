@@ -120,6 +120,7 @@ async def _extract_article_inputs(
     inputs: list[tuple[NewsArticleExtractorInput, str | None]],
 ) -> tuple[CandidateExtraction, ...]:
     from app.services.hybrid_extraction_service import HybridExtractionService
+    from app.services.news_road_placement_service import get_news_road_placement_provider
 
     extractor = HybridExtractionService()
     results: list[CandidateExtraction] = []
@@ -136,6 +137,9 @@ async def _extract_article_inputs(
             continue
         try:
             extraction = await extractor.extract_hybrid(article, mode="rules_only")
+            provider = get_news_road_placement_provider()
+            for claim in extraction.claims:
+                claim.road_placement = provider.resolve(claim)
         except Exception as exc:
             results.append(CandidateExtraction(article.canonical_url, None,
                                                f"Extraction failed: {type(exc).__name__}", article.article_id, fingerprint))

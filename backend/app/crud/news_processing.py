@@ -15,7 +15,7 @@ from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.schemas.news_extraction import NewsArticleExtractorInput
 from app.services.news_discovery_service import MAX_ARTICLE_CHARS, extraction_input_snapshot
 
-PIPELINE_VERSION = "rules-psgc-geometry-2026-10-02-v1"
+PIPELINE_VERSION = "rules-psgc-osm-2026-10-02-v2"
 MAX_ATTEMPTS = 5
 LEASE_SECONDS = 300
 
@@ -24,12 +24,18 @@ def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str = PIPELINE_VERSION) -> int | None:
+def current_pipeline_version() -> str:
+    from app.services.news_road_placement_service import get_news_road_placement_provider
+    return f"{PIPELINE_VERSION}:{get_news_road_placement_provider().revision}"
+
+
+def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str | None = None) -> int | None:
     """Capture valid pending input in the caller's article transaction; no commit."""
     if (article.review_state != "pending" or article.article_error or not (article.article_text or "").strip()
             or len(article.article_text or "") > MAX_ARTICLE_CHARS):
         return None
     db.flush()
+    pipeline_version = pipeline_version or current_pipeline_version()
     source = NewsArticleExtractorInput(
         article_id=article.id, canonical_url=article.canonical_url, publisher=article.publisher_source_id,
         title=article.title, excerpt=article.excerpt or "", article_text=article.article_text,
@@ -60,7 +66,7 @@ def capture_pending_inputs(db: Session, limit: int) -> int:
     """Bounded migration/restart handoff; skip captured runs and moderated history."""
     captured = exists(select(NewsExtractionRun.id).join(
         NewsArticleVersion, NewsArticleVersion.id == NewsExtractionRun.article_version_id,
-    ).where(NewsArticleVersion.article_id == NewsArticle.id, NewsExtractionRun.pipeline_version == PIPELINE_VERSION))
+    ).where(NewsArticleVersion.article_id == NewsArticle.id, NewsExtractionRun.pipeline_version == current_pipeline_version()))
     articles = db.scalars(select(NewsArticle).where(
         NewsArticle.review_state == "pending", NewsArticle.article_error.is_(None),
         func.length(func.trim(NewsArticle.article_text)) > 0,
@@ -85,7 +91,7 @@ def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None) 
     run = NewsExtractionRun
     due = or_(run.status == "pending", (run.status == "retry_wait") & (run.next_attempt_at <= now),
               (run.status == "processing") & (run.lease_expires_at <= now))
-    query = select(run).join(NewsArticleVersion).where(due, run.pipeline_version == PIPELINE_VERSION)
+    query = select(run).join(NewsArticleVersion).where(due, run.pipeline_version == current_pipeline_version())
     if article_id is not None:
         query = query.where(NewsArticleVersion.article_id == article_id)
     while True:

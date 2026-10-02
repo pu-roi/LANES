@@ -1,9 +1,31 @@
 # Phase 36: Open article fallback check
 
-> **Checked:** October 02, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Checked:** October 02, 2026, 1:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Scope and result
+
+### Production extraction release — October 2
+
+The developer authorized migration and deployment with “okay lets proceed.” Cloud Build `d799950a-83b1-4ff7-b1e4-0852a83ce425` succeeded, releasing image `gcr.io/lanes-project-508809/github.com/pu-roi/lanes:bb72b2e-news-processing-v3`. The migration job completed before API/collector deployment. Production read-only verification confirms Alembic `f29b6c8d104e`; API revision `lanes-api-00045-spg` serves traffic, `/health` returns 200 with database connected, and unauthenticated staff news access returns 401. The persistent collector arguments are `python -m scripts.run_news_discovery --discover --process --limit 50`.
+
+The existing container excluded repository `data/`, leaving extraction reference providers empty. The release now includes the reviewed PSGC (43,778 rows), Pasig barangay (30), and cleaned history (726) CSV snapshots under `/data`. Production SHA-256 values exactly match the development files. Repository copies in `backend/runtime_data/` and Docker's explicit `COPY runtime_data/ /data/` make future local/CI builds reproducible; `.gcloudignore` explicitly excludes backend environment files. The submitted build staged the same three source CSVs before building; the checked-in configuration uses the bundled copies directly. No new library or model/migration definition was added.
+
+Collector execution `lanes-news-discovery-9m59n` succeeded: five feeds parsed 80 entries and GMA returned unchanged. No new eligible candidate appeared. Inquirer challenge and Philstar policy-only exclusions remained visible. The worker captured and completed 10 existing RSS-linked article bodies (1,334–9,756 characters), each on its first attempt, producing 10 immutable versions and 10 persisted results with 50 candidate claims. No failure, retry, or lost lease occurred. Their September 27–30 publication dates are outside the current 12-hour activation window; this is backlog extraction verification, not fresh live incident acceptance or extraction accuracy certification.
+
+Repeat execution `lanes-news-discovery-2kr29` captured/completed zero work and preserved all article/version/run counts. Across collection and repeat processing, public rows stayed at 15 reports, 10 events, and 10 avoidance zones. A separate read-only schema/evidence check validated all stored artifacts with `NewsExtractionResult`: all 50 evidence sentences occur in their immutable captured bodies, none lacks evidence/offsets, 49 actions are `flagged_review`, and one is `suppressed_forecast`. The 10 active-condition labels remain review claims, not verified current floods. The collector never invokes public ingestion or the external auditor.
+
+Local focused regression: 28 tests passed; reference-copy checks and migration-before-deployment ordering passed. The first incomplete source archive failed before deployment, and subsequent preparatory builds were canceled before deployment while reference packaging was corrected. One initial read-only probe failed because the Windows gcloud wrapper corrupted multiline arguments; the single-line encoded retry passed. No production data was altered by those failed probes. Release configuration/reference/documentation changes remain local and uncommitted on `roi-branch`; no main merge or Git push ran during this release.
+
+Rollback, if needed: restore API traffic to `lanes-api-00044-n6m` and restore the collector image `gcr.io/lanes-project-508809/github.com/pu-roi/lanes:372dc60dbfe4829faa177a36dbcd40b75ec493f0` with `--discover` only. Retain the additive extraction tables and saved artifacts; do not downgrade production data as part of application rollback. No rollback was needed. Priority 3 production backlog processing/restart idempotency is verified; fresh automatically discovered body-to-artifact and Priority 2 live positive matching remain open. Next development work is Priority 4 verified bounded location matching, followed by publication/review/expiry integration. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Continuation and collector release preparation — October 2
+
+The referenced chat confirms `bb72b2e` was pushed to `roi-branch`; the current checkout is on that branch with the same commit. Read-only Cloud Run inspection confirms `lanes-news-discovery` uses image `372dc60dbfe4829faa177a36dbcd40b75ec493f0` and arguments `-m scripts.run_news_discovery --discover`. Its latest execution succeeded at 12:00 PM Asia/Manila. This verifies scheduler execution, not the new extraction queue or production migration state.
+
+Prepared `cloudbuild.yaml` to set the collector command and `--discover --process --limit 50` arguments explicitly. The existing migration job executes with `--wait` before API and collector release, so migration failure prevents the later deployment steps. Processing remains rules-only and does not invoke public alert/zone ingestion. No model, migration, dependency, frontend, production job, or production database was changed during this continuation. The focused processing/saved-extraction suite passes 28 tests. Production release and a live collected-body-to-persisted-artifact check remain open.
+
+The fresh network-enabled read-only discovery run parsed all six feeds (95 entries) and returned no candidates. Two notices remained visible: an Inquirer entertainment lead was blocked by HTTP 403, and a Philstar asset-freezing/flood-control story had no body-grounded Metro Manila flood claim. The initial sandbox attempt failed connections; the approved network retry succeeded. This verifies feed parsing and surfaced candidate outcomes, not successful live incident retrieval/matching or durable production extraction.
 
 ### Additional pre-push verification — October 2
 

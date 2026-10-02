@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** September 26, 2026, 3:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -423,6 +423,8 @@ One flooding incident can generate several public reports and one or more tempor
 ---
 
 ## 21. Smart Auto-Activation and Supporting LLM Auditor Architecture for Trusted News
+> **October 2 accuracy clarification:** The following records the original Option 2 prototype intent, not deployed automatic publication. Its historical 95% rule, authoritative-buffer wording, zero-risk assertion and no-migration assumption are superseded by the [activation safety contract](plans/news-activation-safety-gates.md) and [Priority 5 lifecycle/frontend proposal](plans/news-publication-review-frontend-plan.md). Rules extraction and checksum-identified OSM centerline evidence are deployed; public alerts, durable review/correction/expiry and routing activation remain open. Place scores are not probabilities, and centerlines/arbitrary buffers do not verify current flooded extent. Two extraction tables were separately approved/deployed; any further lifecycle schema needs its own approval. This clarification records current implementation limits, not a new architecture decision. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
 **Date:** September 2026  
 **Decision:** Adopt Option 2 (Smart Auto-Activation) where complete flood reports from verified Philippine news sources are automatically approved directly into live Valhalla routing avoidance zones and official PostGIS flood events without admin bottleneck. Gemini 1.5 Flash is strictly confined to a Supporting Auditor / Double-Check role to verify claims rather than hallucinating from scratch; receded waters ("humupa na") and forecasts ("posibleng bahain") are strictly suppressed with zero created avoidance zones.
 

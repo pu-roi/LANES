@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 02, 2026, 2:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 2:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -8,6 +8,10 @@
 ### **Focus: Web Application (Responsive Desktop & Mobile Browser Layouts)**
 
 This document serves as the official technical stack reference for the LANES platform. It outlines the specific tools, libraries, and frameworks utilized to build a fully self-hosted, free, and highly performant geospatial routing web application.
+
+**October 2 spatial runtime data:** Priority 4 adds a compressed server-owned NCR named-road catalog under `backend/runtime_data/osm/`, built offline with the already declared `osmium` and `shapely` libraries. It records OSM attribution, snapshot time, full source/catalog hashes, 17 checked city boundaries, and incomplete/unnamed-road coverage gaps. Runtime matching performs no provider requests and infers no current flood from map data. Administrative/Pasig history CSVs and the catalog are explicitly bundled in the backend image. No Python or Node dependency was added. Source refresh is reviewed and requires rebuild/restart; it is not scheduled automatically.
+
+The Linux image also installs Debian `libexpat1`, required by the existing `osmium` native module. This system-library dependency was exposed by the initial Priority 4 runtime probe; Windows unit tests alone do not verify Linux native imports.
 
 ## **🛠️ Technical Stack Components**
 

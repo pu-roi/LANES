@@ -6,6 +6,8 @@ node_modules/
 frontend/node_modules/
 backend/venv/
 backend/.venv/
+backend/.env
+backend/.env.*
 .venv/
 .next/
 data/

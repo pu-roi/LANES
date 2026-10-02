@@ -8,7 +8,7 @@ from datetime import datetime
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from app.crud.news_processing import MAX_ATTEMPTS, capture_pending_inputs, claim_due_run, finish_owned_run, utc_now
+from app.crud.news_processing import MAX_ATTEMPTS, capture_pending_inputs, claim_due_run, current_pipeline_version, finish_owned_run, utc_now
 from app.schemas.news_extraction import NewsArticleExtractorInput
 from app.services.news_discovery_service import extract_captured_news_article, extraction_input_snapshot
 
@@ -29,6 +29,8 @@ async def process_saved_news(session_factory: Callable[[], Session], *, limit: i
     if not 1 <= limit <= 200:
         raise ValueError("Processing limit must be between 1 and 200")
     summary = ProcessingSummary()
+    # Validate/cache the immutable map snapshot before any queue row locks.
+    current_pipeline_version()
     if article_id is None:
         with session_factory() as db, db.begin():
             summary.captured = capture_pending_inputs(db, limit)

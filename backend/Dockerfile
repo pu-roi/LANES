@@ -13,7 +13,7 @@ WORKDIR /app
 
 # Install minimal OS runtime packages required for networking & healthchecks
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+    curl libexpat1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only dependency files first to leverage Docker layer caching
@@ -25,6 +25,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy all application files
 COPY . .
+
+# Location service resolves repository data to /data in the /app container.
+# Bundled administrative and Pasig history references also support local builds.
+COPY runtime_data/ /data/
 
 # Expose default Cloud Run port
 EXPOSE 8080

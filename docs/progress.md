@@ -1,10 +1,24 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 02, 2026, 2:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Phase 36: Priority 5 planning review (October 2, 2026)
+
+- [x] Reviewed task/design/agent boundaries and the existing moderation/spatial/map architecture; drafted the [Priority 5 lifecycle and frontend plan](plans/news-publication-review-frontend-plan.md). Reconciled older current-status notes with deployed extraction and OSM evidence. This records completion of a planning draft only: publication, staff claim decisions, corrections, expiry and frontend implementation remain open, and coding is paused at the developer's request. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Deployed article-to-OSM placement connection (October 2, 2026)
+
+- [x] Shared article processing now persists source-identified bounded centerline/candidate evidence from a bundled NCR OSM snapshot, with explicit ambiguity and coverage gaps. Full catalog hashes version the pipeline; existing inputs/results are preserved. Broad road names cannot choose a flood extent or close a road. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Verified the corrected Linux runtime after adding the native reader's `libexpat1` dependency: ten map-aware backlog results persist, repeat creates no work, public rows stay unchanged, and the actual historical GMA narrative matches an 86.2 m span. All 50 backlog placement outcomes remain unresolved; no routing activation is claimed. The focused broad suite passes 135 tests, with a final 55-test rerun. See [verification](evaluations/phase-36-reusable-road-match-check.md#production-release-verification). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Production rules extraction release (October 2, 2026)
+
+- [x] Released the approved queue after production migration `f29b6c8d104e`; API health/database/authentication checks pass and the collector now runs `--discover --process --limit 50`. Bundled administrative/history references have matching production/development checksums. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Processed 10 existing RSS-linked article bodies into 10 durable results with 50 source-linked candidate claims. Repeat processing creates no duplicates; public reports/events/zones remain unchanged. All artifacts pass typed validation and evidence linkage. Twenty-eight focused tests pass. Fresh current-article discovery/matching, verified road geometry, alerts, corrections, and routing integration remain open. See [release evidence](evaluations/phase-36-open-article-fallback-check.md#production-extraction-release--october-2). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Additional database compatibility checks before requested push (October 2, 2026)
 

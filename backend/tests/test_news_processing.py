@@ -201,6 +201,37 @@ async def test_pipeline_bump_enqueues_new_run_without_duplicate_input(queue_db, 
 
 
 @pytest.mark.asyncio
+async def test_road_placement_persists_and_map_refresh_preserves_prior_artifact(queue_db, tmp_path, monkeypatch):
+    from test_news_road_placement import write_catalog
+    from app.services import news_road_placement_service
+    provider = write_catalog(tmp_path)
+    monkeypatch.setattr(news_road_placement_service, "get_news_road_placement_provider", lambda: provider)
+    body = "As of 10 AM, knee-deep flooding on Sto. Domingo Avenue between Atok and Calamba Streets in Quezon City."
+    with queue_db() as db, db.begin():
+        row = article(article_text=body, title="Quezon City flooding")
+        db.add(row)
+        enqueue_article(db, row)
+    first = await news_processing_service.process_saved_news(queue_db)
+    assert first.completed == 1
+    with queue_db() as db:
+        run = db.scalar(select(NewsExtractionRun))
+        original = run.result
+        road = next(c for c in original["claims"] if c["road_placement"]["status"] == "bounded_candidate")
+        assert road["road_placement"]["candidates"][0]["osm_way_ids"] == [10]
+        assert road["action_type"] != "auto_approved"
+    assert (await news_processing_service.process_saved_news(queue_db)).completed == 0
+    # A new map snapshot gets a new pipeline run for the same immutable article.
+    provider = write_catalog(tmp_path, snapshot_at="2026-10-01T00:00:00Z")
+    changed = await news_processing_service.process_saved_news(queue_db)
+    assert changed.completed == 1
+    with queue_db() as db:
+        runs = db.scalars(select(NewsExtractionRun).order_by(NewsExtractionRun.id)).all()
+        assert len(runs) == 2 and runs[0].result == original
+        assert runs[0].pipeline_version != runs[1].pipeline_version
+        assert db.scalar(select(func.count()).select_from(NewsArticleVersion)) == 1
+
+
+@pytest.mark.asyncio
 async def test_staff_processing_auth_status_and_idempotency(queue_db):
     with queue_db() as db, db.begin():
         db.add_all([article(), article(2, article_error="Article HTTP 403")])

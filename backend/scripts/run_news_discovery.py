@@ -214,7 +214,8 @@ def main() -> int:
                           "depth": claim.depth_canonical, "condition": claim.condition,
                           "observation_time": claim.event_time_resolved,
                           "action": claim.action_type, "rationale": claim.action_rationale,
-                          "geometry_provenance": claim.ranked_location.geometry_provenance if claim.ranked_location else None}
+                          "geometry_provenance": claim.ranked_location.geometry_provenance if claim.ranked_location else None,
+                          "road_placement": claim.road_placement.model_dump(mode="json") if claim.road_placement else None}
                          for claim in item.extraction.claims
                      ] if item.extraction else []}
                     for item in extracted

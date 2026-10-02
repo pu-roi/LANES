@@ -1,7 +1,9 @@
 # Phase 36: LiPAD / UP NOAH Flood Placement Integration
 
-> **Last Updated:** September 30, 2026, 7:51 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Gates 1–3 evidence checks passed. The Metro Manila source-map vintage is not published in the checked metadata; sample coverage and OSM snapshot/name limits are documented. Matching remains read-only and has not been connected to RSS, alerts, or routing. No hazard layer imported into the runtime.
+> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** Gates 1–3 evidence checks passed. Priority 4 now connects checksum-identified NCR OSM placement to shared article processing; explicit spans and uncertainty are persisted without public/routing effects. The operational NOAH/DRRMO corroboration path, public alerts and verified affected geometry remain open. The commuter NOAH display overlay is separate modeled presentation, not runtime analytical flood proof. The source-map vintage is not published in the checked NOAH metadata; coverage/source limits remain documented. Priority 5 is [lifecycle/frontend planning only](news-publication-review-frontend-plan.md).
+
+**Historical research context:** The local-PBF/caller-boundary descriptions below record September investigations. The separate bundled `NewsRoadPlacementProvider` now supplies checked city relations and source catalog to production extraction; this does not promote a centerline to verified flood extent. See [release verification](../evaluations/phase-36-reusable-road-match-check.md#production-release-verification).
 
 The read-only [reusable road-match check](../evaluations/phase-36-reusable-road-match-check.md) now accepts explicit `between` and `from ... to` claim spans and returns a bounded OSM centerline candidate or an unresolved reason. It reproduces the GMA Santo Domingo path but cannot yet resolve the PNA Araneta/Maria Clara/Florentino phrase from the local OSM junctions. It requires caller-supplied checked administrative boundaries and a local PBF, so it is not an operational ingestion geometry provider.
 
