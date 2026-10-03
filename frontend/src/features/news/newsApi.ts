@@ -207,7 +207,7 @@ export function getNewsResult(runId: number, claimIndex: number, signal?: AbortS
   });
 }
 
-export type CollectionStatus = "ready" | "needs_checking" | "no_locations" | "waiting" | "processing" | "processing_failed" | "retrieval_failed" | "missing_text";
+export type CollectionStatus = "ready" | "needs_checking" | "excluded" | "no_locations" | "waiting" | "processing" | "processing_failed" | "retrieval_failed" | "missing_text";
 
 export interface NewsCollectionItem extends NewsArticleItem {
   collection_status: CollectionStatus;
@@ -263,6 +263,48 @@ export function getNewsSources(signal?: AbortSignal) {
     if (!Array.isArray(data)) throw new Error("Publisher configuration is unavailable.");
     return data;
   });
+}
+
+export interface NewsMonitoringSummary {
+  read_only: true;
+  articles_total: number;
+  body_counts: Record<BodyStatus, number>;
+  latest_processing_counts: Record<ProcessingStatus, number>;
+  recent_retrieval_issues: { article_id: number; title: string; publisher: string; body_status: BodyStatus; article_error: string | null; last_seen_at: string }[];
+  issue_limit: number;
+  discovery_history: "recorded";
+  fallback_history: "recorded";
+  collection_to_alert_delay: "unavailable";
+}
+
+export function getNewsMonitoring(signal?: AbortSignal) {
+  return apiClient.get<NewsMonitoringSummary>("/admin/news/monitoring", { signal });
+}
+
+export type TelemetryKind = "discovery" | "fallback";
+export interface NewsTelemetryPage {
+  read_only: true;
+  items: {
+    id: number;
+    status: "running" | "completed" | "failed" | "interrupted";
+    started_at: string;
+    finished_at: string | null;
+    error_code: string | null;
+    trigger: string | null;
+    article_id: number | null;
+    retrieve_articles: boolean | null;
+    retry_after_seconds: number | null;
+    feeds: { source_id: string; feed_url: string; status: string; checked_at: string; error_code: string | null; entries_seen: number; candidates_saved: number; body_errors: number; scope_unresolved: number }[];
+    leads: { ordinal: number; article_url: string; source_id: string | null; retrieved_at: string | null; retrieval_status: string; error_code: string | null; assessment: string | null }[];
+  }[];
+  total: number;
+  page: number;
+  page_size: number;
+  pages: number;
+}
+
+export function getNewsTelemetry(kind: TelemetryKind, page: number, signal?: AbortSignal) {
+  return apiClient.get<NewsTelemetryPage>(`/admin/news/monitoring/${kind}?page=${page}&page_size=5`, { signal });
 }
 
 export function getNewsFeedCheckpoints(signal?: AbortSignal) {

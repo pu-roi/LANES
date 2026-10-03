@@ -13,6 +13,7 @@ const initialFilters: NewsCollectionFilters = { page: 1, search: "", publisher: 
 const statusOptions = [
   { value: "attention", label: "Needs attention" }, { value: "all", label: "All saved articles" },
   { value: "needs_checking", label: "Needs checking" }, { value: "no_locations", label: "No flood locations" },
+  { value: "excluded", label: "Excluded from flood reports" },
   { value: "processing_failed", label: "Processing failed" }, { value: "retrieval_failed", label: "Article retrieval failed" },
   { value: "missing_text", label: "Article text missing" }, { value: "waiting", label: "Waiting for processing" },
   { value: "processing", label: "Processing" }, { value: "ready", label: "Locations available" },
@@ -27,12 +28,12 @@ export function NewsCollectionDrawer({ onClose }: { onClose: () => void }) {
   const backButton = useRef<HTMLSpanElement | null>(null);
   const query = useQuery({ queryKey: ["news-collection", filters], queryFn: ({ signal }) => getNewsCollection(filters, signal), retry: false, refetchOnWindowFocus: false });
   const changeFilter = (next: Partial<NewsCollectionFilters>) => setFilters((current) => ({ ...current, ...next, page: 1 }));
-  return <RecordDetailsDialog title="Collection status" subtitle="Saved articles awaiting processing or needing checking" closeLabel="Close collection status" onClose={onClose} placement="drawer">
+  return <RecordDetailsDialog title="Collection status" subtitle="Article processing and collection history" closeLabel="Close collection status" onClose={onClose} placement="drawer">
     {articleId !== null ? <>
       <span ref={backButton}><Button size="sm" variant="ghost" className="min-h-11 gap-2" onClick={() => { setArticleId(null); requestAnimationFrame(() => opener.current?.focus({ preventScroll: true })); }}><ArrowLeft className="size-4" aria-hidden="true" />Back to collection</Button></span>
       <CollectionArticle articleId={articleId} />
     </> : <>
-      {query.data && <p className="text-sm text-slate-600">Across all saved articles: <strong>{query.data.counts.needs_checking}</strong> need checking · <strong>{query.data.counts.no_locations}</strong> have no flood locations · <strong>{query.data.counts.processing_failed}</strong> failed processing.</p>}
+      {query.data && <p className="text-sm text-slate-600">Across all saved articles: <strong>{query.data.counts.needs_checking}</strong> need checking · <strong>{query.data.counts.excluded ?? 0}</strong> excluded from flood reports · <strong>{query.data.counts.processing_failed}</strong> failed processing.</p>}
       <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); changeFilter({ search }); }}><Input aria-label="Search collection" placeholder="Search saved articles" maxLength={200} value={search} onChange={(event) => setSearch(event.target.value)} leftIcon={<Search className="size-4" />} /><Button type="submit" variant="outline">Search</Button></form>
       <div className="grid gap-3 sm:grid-cols-2"><Select label="Collection state" value={filters.status} options={statusOptions} onChange={(event) => changeFilter({ status: event.target.value as NewsCollectionFilters["status"] })} /><Select label="Publisher" value={filters.publisher} options={[{ value: "", label: "All publishers" }, ...(query.data?.publishers ?? []).map((item) => ({ value: item.id, label: item.label }))]} onChange={(event) => changeFilter({ publisher: String(event.target.value) })} /></div>
       <div className="flex flex-wrap gap-2"><Button size="sm" variant="ghost" onClick={() => { setFilters(initialFilters); setSearch(""); }}>Clear filters</Button><Button size="sm" variant="outline" className="gap-2" disabled={query.isFetching} onClick={() => void query.refetch()}><RefreshCw className="size-4" aria-hidden="true" />Refresh collection</Button></div>

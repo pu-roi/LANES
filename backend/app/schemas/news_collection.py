@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 from app.schemas.news_browsing import NewsArticleListItem, NewsPublisherOption
 
-CollectionStatus = Literal["ready", "needs_checking", "no_locations", "waiting", "processing", "processing_failed", "retrieval_failed", "missing_text"]
-CollectionFilter = Literal["attention", "all", "ready", "needs_checking", "no_locations", "waiting", "processing", "processing_failed", "retrieval_failed", "missing_text"]
+CollectionStatus = Literal["ready", "needs_checking", "excluded", "no_locations", "waiting", "processing", "processing_failed", "retrieval_failed", "missing_text"]
+CollectionFilter = Literal["attention", "all", "ready", "needs_checking", "excluded", "no_locations", "waiting", "processing", "processing_failed", "retrieval_failed", "missing_text"]
 
 
 class NewsCollectionItem(NewsArticleListItem):

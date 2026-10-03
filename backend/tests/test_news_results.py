@@ -45,6 +45,10 @@ def result_db(evidence_db, request):
                     {**deepcopy(base), "is_historical": True}]
             elif variant == "empty":
                 newest.result["claims"] = []
+            elif variant == "irrelevant":
+                newest.result["claims"] = [{**deepcopy(base), "evidence_sentence": "Officials in Pasig City discussed flooding and drainage projects."}]
+            elif variant == "caption":
+                newest.result["claims"] = [{**deepcopy(base), "uncertainty_reasons": ["photo_caption_only"]}]
             elif variant == "metadata":
                 newest.result["is_metadata_only"] = True
             elif variant == "errors":
@@ -168,9 +172,57 @@ def test_summary_keeps_article_flood_clock_separate():
     assert summary.water_level == "Knee-deep (0.5 m)"
 
 
+@pytest.mark.asyncio
+async def test_legacy_false_results_are_filtered_before_pages_and_preserved_in_history(evidence_db):
+    """Old stored active flags must not bypass the corrected evidence policy."""
+    from app.schemas.news_extraction import ExtractedClaim
+    from app.services.news_presentation_service import claim_reading_reason
+    generator = app.dependency_overrides[get_db]()
+    db = next(generator)
+    try:
+        old = db.get(NewsExtractionRun, 1)
+        base = deepcopy(old.result["claims"][0])
+        cases = [
+            ("Quezon City", "City of Quezon", "1381300000", "The basin in Quezon City helps mitigate localized flooding during heavy rains."),
+            ("Quezon City", "City of Quezon", "1381300000", "The school in Quezon City is regularly submerged during heavy downpours."),
+            ("Manila", "City of Manila", "1380600000", "DPWH is constructing drainage facilities at UP-PGH in Manila to help address flooding."),
+            ("Bangkok", None, None, "Bangkok residents waded through waist-deep flooding."),
+            ("interior", "San Jacinto", "0504119009", "The interior ministry said residents were flooded."),
+            ("Unknown site", None, None, "Flooding was reported at an unknown site."),
+            # A conflicting PSGC code cannot be overridden by a city label.
+            ("Laguna Street", "City of Pasig", "0504119009", "Streets are flooded in Pasig City."),
+            ("Laguna Street", "City of Pasig", "1381400000", "A basin was installed to prevent flooding, but streets are flooded on Laguna Street in Pasig City."),
+        ]
+        claims = [{**deepcopy(base), "raw_place_name": place, "canonical_city": city,
+                   "psgc_code": code, "evidence_sentence": sentence, "condition": "active",
+                   "depth_raw": None, "depth_formatted": None} for place, city, code, sentence in cases]
+        run = db.get(NewsExtractionRun, 2)
+        run.status = "completed"
+        run.result = {**deepcopy(old.result), "claims": claims}
+        db.commit()
+        assert [claim_reading_reason(ExtractedClaim.model_validate(c)) is None for c in claims] == [False] * 7 + [True]
+    finally:
+        generator.close()
+    baseline = len(evidence_db)
+    staff()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/v1/admin/news/results", params={"page_size": 1, "page": 9})
+        assert response.status_code == 200, response.text
+        page = response.json()
+        assert page["total"] == 1 and page["pages"] == 1 and page["page"] == 1
+        assert page["items"][0]["key"] == "2:7"
+        collection = (await client.get("/api/v1/admin/news/collection", params={"status": "all", "publisher": "feedspot-01"})).json()["items"][0]
+        assert collection["location_count"] == 1 and collection["questionable_count"] == 7
+        for index in range(7):
+            history = await client.get(f"/api/v1/admin/news/results/2/{index}")
+            assert history.status_code == 200
+            assert history.json()["item"]["summary"]["reading_status"] == "needs_checking"
+    assert len(evidence_db) == baseline
+
+
 @pytest.mark.parametrize("result_db, expected_locations, expected_status, questionable", [
     ("failed", 0, "processing_failed", 0), ("questionable", 1, "needs_checking", 5),
-    ("empty", 0, "no_locations", 0), ("metadata", 0, "needs_checking", 3),
+    ("empty", 0, "excluded", 0), ("irrelevant", 0, "excluded", 0), ("caption", 0, "excluded", 0), ("metadata", 0, "needs_checking", 3),
     ("errors", 0, "needs_checking", 3), ("ready", 3, "ready", 0),
 ], indirect=["result_db"])
 @pytest.mark.asyncio
@@ -189,7 +241,7 @@ async def test_collection_and_main_list_share_newest_evidence_gate(result_db, ex
         assert "article_text" not in item
         assert data["counts"][expected_status] >= 1 and data["read_only"]
         attention = (await client.get("/api/v1/admin/news/collection", params={"publisher": "feedspot-01"})).json()
-        assert attention["total"] == (0 if expected_status == "ready" else 1)
+        assert attention["total"] == (0 if expected_status in {"ready", "excluded"} else 1)
         # Even when the newest attempt fails, older evidence stays accessible in history.
         assert (await client.get("/api/v1/admin/news/results/1/0")).status_code == 200
 
@@ -224,8 +276,8 @@ def test_specific_intersection_heading_and_unknown_facts():
     from app.services.news_presentation_service import summarize_news_claim
     claim = ExtractedClaim(raw_place_name="NS Amoranto", road_segment_raw="NS Amoranto cor Don Jose St.",
         canonical_barangay="Sienna", canonical_city="Quezon City", local_area_raw="Sienna",
-        place_char_start=0, place_char_end=11, evidence_sentence="Flooding along NS Amoranto cor Don Jose St.",
-        evidence_sentence_offset=(0, 45), condition="active")
+        place_char_start=0, place_char_end=11, evidence_sentence="Flooding was reported along NS Amoranto cor Don Jose St.",
+        evidence_sentence_offset=(0, 54), condition="active")
     summary = summarize_news_claim(claim)
     assert summary.location == "NS Amoranto cor Don Jose St."
     assert summary.area == "Sienna, Quezon City" and summary.location_qualifier is None

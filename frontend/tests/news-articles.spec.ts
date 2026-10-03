@@ -83,7 +83,8 @@ test("article inspection preserves server filters, page, focus and input provena
   await drawer.getByRole("button", { name: "Search", exact: true }).click();
   await expect.poll(() => reads.some((url) => url.searchParams.get("search") === "Pasig")).toBe(true);
   await drawer.getByRole("button", { name: "Publisher", exact: true }).click();
-  await drawer.getByRole("button", { name: "GMA News Online", exact: true }).click();
+  // Select options are portalled outside the collection drawer.
+  await page.getByRole("button", { name: "GMA News Online", exact: true }).click();
   await expect.poll(() => reads.some((url) => url.searchParams.get("publisher") === "feedspot-01")).toBe(true);
   await drawer.getByRole("button", { name: "Publisher", exact: true }).click();
   await page.keyboard.press("Escape");

@@ -1,5 +1,9 @@
 """Article road matching must not turn ambiguous map evidence into a closure."""
 
+import subprocess
+import sys
+from pathlib import Path
+
 from shapely.geometry import box
 
 from app.schemas.news_extraction import ExtractedClaim
@@ -9,6 +13,33 @@ from app.services.article_road_match_service import (
 
 
 CITY = box(120.99, 14.60, 121.03, 14.67)
+
+
+def test_runtime_catalog_import_does_not_load_native_pbf_reader() -> None:
+    result = subprocess.run(
+        [sys.executable, "-c", """
+import importlib.abc
+import sys
+
+class RejectNativePbfImport(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path, target=None):
+        if fullname == 'osmium' or fullname.startswith('osmium.'):
+            raise ImportError('Native PBF reader is unavailable')
+
+sys.meta_path.insert(0, RejectNativePbfImport())
+from app.services.news_road_placement_service import NewsRoadPlacementProvider
+from app.services.article_road_match_service import load_bounded_osm_roads
+assert 'osmium' not in sys.modules
+try:
+    load_bounded_osm_roads('unused.pbf', (121.0, 14.6, 121.01, 14.61))
+except ImportError as exc:
+    assert str(exc) == 'Native PBF reader is unavailable'
+else:
+    raise AssertionError('Raw PBF parsing must still require its native reader')
+"""],
+        cwd=Path(__file__).resolve().parents[1], capture_output=True, text=True, timeout=30,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def claim(road: str, span: str, barangay: str | None = None) -> ExtractedClaim:

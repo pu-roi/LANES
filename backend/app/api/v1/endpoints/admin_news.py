@@ -30,7 +30,7 @@ from app.schemas.news_candidate import (
     NewsSourceSummary,
 )
 from app.services.news_discovery_service import discover_news, extract_saved_news_articles
-from app.services.news_open_search_service import append_publisher_feed_leads, assess_alternate_article_leads, retrieve_open_article_leads, search_open_article_leads
+from app.services.news_fallback_service import FallbackInput, lookup_news_leads
 from app.services.news_feed_service import canonical_article_url, probe_feed
 from app.services.news_sources import load_news_sources
 from app.schemas.news_browsing import ArticleOrder, BodyStatus, NewsArticleDetail, NewsArticlePage, ProcessingStatus
@@ -42,9 +42,41 @@ from app.schemas.news_collection import CollectionFilter, NewsCollectionPage
 from app.services.news_collection_service import browse_news_collection
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, sessionmaker
+from app.schemas.news_monitoring import NewsMonitoringSummary
+from app.services.news_monitoring_service import read_news_monitoring
+from app.crud.news_telemetry import AttemptKind
+from app.schemas.news_telemetry import NewsTelemetryPage
+from app.services.news_telemetry_service import browse_telemetry
 
 
 router = APIRouter()
+
+
+@router.get("/monitoring/{kind}", response_model=NewsTelemetryPage)
+def news_telemetry_history(
+    kind: AttemptKind,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=5, ge=1, le=20),
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsTelemetryPage:
+    """Read bounded operational history; never triggers network or writes."""
+    try:
+        return browse_telemetry(db, kind, page, page_size)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News telemetry storage is unavailable") from exc
+
+
+@router.get("/monitoring", response_model=NewsMonitoringSummary)
+def news_monitoring(
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsMonitoringSummary:
+    """Read current saved evidence totals; does not trigger collection."""
+    try:
+        return read_news_monitoring(db)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News monitoring storage is unavailable") from exc
 
 
 @router.get("/collection", response_model=NewsCollectionPage)
@@ -232,25 +264,30 @@ def lookup_open_news_leads(
             not any(entry.source_id == source.id and entry.feed_url in source.feed_urls
                     for entry in article.feed_entries)):
         raise HTTPException(status_code=409, detail="Open lookup requires a verified publisher feed candidate")
-    with httpx.Client(timeout=httpx.Timeout(8.0, connect=3.0)) as client:
-        result = search_open_article_leads(
-            article.canonical_url,
-            article.title,
-            article.excerpt,
-            client,
-            published_at=article.published_at,
-            include_event_context=retrieve_articles,
-        )
-        if retrieve_articles:
-            sources = load_news_sources()
-            result = append_publisher_feed_leads(
-                result, article.title, article.excerpt, article.published_at, sources, client,
-            )
-            result = retrieve_open_article_leads(result, sources, client)
-            result = assess_alternate_article_leads(result, article.title, article.excerpt, article.published_at)
+    from app.services.news_telemetry_service import begin_fallback, finish_fallback
+    captured_input = FallbackInput.capture(article)
+    lookup_id = None
+    try:
+        lookup_id = begin_fallback(db, article, _staff.id, retrieve_articles)
+        result = lookup_news_leads(captured_input, retrieve_articles)
+        finish_fallback(db, lookup_id, result)
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(status_code=503, detail="News lookup telemetry storage is unavailable") from exc
+    except Exception:
+        db.rollback()
+        try:
+            if lookup_id is not None:
+                finish_fallback(db, lookup_id)
+        except SQLAlchemyError as exc:
+            db.rollback()
+            raise HTTPException(status_code=503, detail="News lookup telemetry storage is unavailable") from exc
+        raise HTTPException(status_code=502, detail="News lookup failed")
     if result.retry_after_seconds is not None:
         response.headers["Retry-After"] = str(result.retry_after_seconds)
     return OpenSearchLookupSummary.model_validate(asdict(result))
+
+
 
 
 @router.post("/runs", response_model=NewsDiscoveryRunSummary)
@@ -266,7 +303,7 @@ def run_news_discovery(
         raise HTTPException(status_code=503, detail="No verified news sources are enabled")
     try:
         with httpx.Client(timeout=httpx.Timeout(12.0, connect=5.0)) as client:
-            result = discover_news(active, client, db)
+            result = discover_news(active, client, db, actor_id=_staff.id)
     except SQLAlchemyError as exc:
         db.rollback()
         raise HTTPException(status_code=503, detail="News discovery storage is unavailable") from exc

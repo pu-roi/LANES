@@ -1,8 +1,27 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 02, 2026, 8:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 5:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Local replay database:** a separate Docker database `lanes_news_test` uses the complete existing PostGIS/Alembic schema at `c5a7e9d2104f`. Creating it and applying existing migrations changed no model or migration source. The original local `lanes` database and cloud data/config are preserved. Guarded historical seeding currently retains one article and two immutable extraction runs (v5/v6), five readable street claims and unchanged avoidance-zone counts. Identical input at the same pipeline revision creates no further run. [Runbook](../guides/local-news-replay.md).
+
+**October 3 pre-push verification:** existing private `alembic upgrade head` succeeds. Fresh disposable local databases verify the full chain to `c5a7e9d2104f`, four queue integrity/concurrency cases and the telemetry downgrade/upgrade round-trip with original article evidence preserved (five passing checks). Only the newly created disposable databases were removed afterward. The replay database and cloud data were not reset; no further migration source was added.
 
 This document details the normalized, secure database architecture designed for **LANES (Localised Alternative Navigation for Environs under Submersion)**. It serves as a comprehensive reference guide to PostgreSQL schema patterns, spatial indexing, table normalization (3NF), and security safeguards.
+
+## Phase 36 F4b approved telemetry (October 3)
+
+The developer approved the four-table monitoring proposal. Additive revision `c5a7e9d2104f` follows `f29b6c8d104e`; [models](../../backend/app/models/news_telemetry.py) and [migration](../../backend/alembic/versions/c5a7e9d2104f_add_news_monitoring_telemetry.py) define:
+
+| Table | Keys and persisted facts |
+| --- | --- |
+| `news_discovery_runs` | ID, unique correlation UUID, nullable RESTRICT user actor, staff/collector trigger, running/completed/failed/interrupted status, start/finish clocks and sanitized error code. Staff requires an actor; collector requires none. |
+| `news_discovery_feed_runs` | RESTRICT parent run FK, source/feed provenance, probe status/check clock/error, nonnegative entries seen/candidates saved/body errors/scope unresolved. Unique parent/source/feed identity; indexed parent. |
+| `news_fallback_lookups` | ID, unique correlation UUID, RESTRICT original article and user FKs, original 64-character content fingerprint, retrieval-request flag, start/finish/status/error and nonnegative optional retry delay. Indexed article/start. |
+| `news_fallback_lookup_leads` | RESTRICT lookup FK, nonnegative ordinal unique per lookup, URL/source provenance, retrieval timestamp/status/error and optional assessment. Indexed parent; no article body. |
+
+Both attempt tables enforce status/finish consistency and chronological timestamps. Feed and lead facts belong to their own attempts, preserving 3NF without duplicating a mutable publisher registry. Source identity and original fingerprint are provenance snapshots. Conditional finalization prevents duplicate children and replacement of finalized/interrupted outcomes. New work marks attempts older than two hours interrupted; history GETs remain read-only. Per-feed telemetry commits alongside that feed's existing evidence/checkpoint; later failures preserve earlier commits. Fallback finalization and lead insertions are atomic. No synthetic backfill or evidence/lifecycle rewrite.
+
+Fresh disposable PostgreSQL upgrade/head, downgrade to the prior head, re-upgrade and repeated upgrade pass; prior news evidence remains intact. Local and production databases report `c5a7e9d2104f`. Four queue integration checks pass at the new head. The developer explicitly approved production migration/release; job `lanes-migration-j4dnk` succeeded before the corrected API/collector rollout. No dependency changes. Collection-to-alert delay still needs a separately agreed publication schema. See [verification](../evaluations/phase-36-f4b-monitoring-check.md) and [production evidence](../evaluations/phase-36-news-content-quality-investigation.md#completed-production-release). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 **October 2 local migration synchronization:** After recovering Docker/PostgreSQL, the developer explicitly approved applying existing extraction revision `f29b6c8d104e` to local LANES. `alembic upgrade head` succeeded from `a83c1d4e7b92`; the database reports the repository head. The historical Philstar test capture is saved as article #3 with one immutable input and one completed rules-only extraction run. Live F2 desktop/mobile reads pass. No model/migration definition or production schema was changed. See [F2 verification](../evaluations/phase-36-f2-article-browsing-check.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 

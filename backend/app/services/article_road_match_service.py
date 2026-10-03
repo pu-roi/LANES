@@ -14,7 +14,6 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Iterable
 
-import osmium
 from shapely.geometry import LineString
 from shapely.geometry.base import BaseGeometry
 
@@ -69,35 +68,38 @@ class OSMRoadSection:
     ambiguous_carriageway: bool = False
 
 
-class _BoundedRoadReader(osmium.SimpleHandler):
-    def __init__(self, bbox: tuple[float, float, float, float]) -> None:
-        super().__init__()
-        self.bbox = bbox
-        self.ways: list[OSMRoadWay] = []
-
-    def way(self, way: osmium.osm.Way) -> None:
-        if "highway" not in way.tags or not way.tags.get("name"):
-            return
-        if any(not node.location.valid() for node in way.nodes):
-            return
-        nodes = tuple((node.ref, node.lon, node.lat) for node in way.nodes)
-        west, south, east, north = self.bbox
-        if len(nodes) < 2 or not any(west <= lon <= east and south <= lat <= north for _, lon, lat in nodes):
-            return
-        aliases = tuple(alias.strip() for alias in way.tags.get("alt_name", "").split(";") if alias.strip())
-        self.ways.append(OSMRoadWay(
-            osm_id=way.id, name=way.tags["name"], nodes=nodes, aliases=aliases,
-            bridge=way.tags.get("bridge", ""), tunnel=way.tags.get("tunnel", ""),
-            layer=way.tags.get("layer", ""),
-        ))
-
-
 def load_bounded_osm_roads(osm_pbf: str, bbox: tuple[float, float, float, float]) -> list[OSMRoadWay]:
-    """Read named highways from a small Metro Manila box in a local OSM PBF."""
+    """Read a bounded local PBF; catalog matching does not need this native reader."""
     west, south, east, north = bbox
     if not (120 <= west < east <= 123 and 13 <= south < north <= 16
             and east - west <= 0.15 and north - south <= 0.15):
         raise ValueError("OSM search box must be a bounded Metro Manila area")
+    # Native PBF parsing is an offline source-reading dependency. Do not load
+    # it when runtime placement matches the already validated JSON catalog.
+    import osmium
+
+    class _BoundedRoadReader(osmium.SimpleHandler):
+        def __init__(self, bbox: tuple[float, float, float, float]) -> None:
+            super().__init__()
+            self.bbox = bbox
+            self.ways: list[OSMRoadWay] = []
+
+        def way(self, way: osmium.osm.Way) -> None:
+            if "highway" not in way.tags or not way.tags.get("name"):
+                return
+            if any(not node.location.valid() for node in way.nodes):
+                return
+            nodes = tuple((node.ref, node.lon, node.lat) for node in way.nodes)
+            west, south, east, north = self.bbox
+            if len(nodes) < 2 or not any(west <= lon <= east and south <= lat <= north for _, lon, lat in nodes):
+                return
+            aliases = tuple(alias.strip() for alias in way.tags.get("alt_name", "").split(";") if alias.strip())
+            self.ways.append(OSMRoadWay(
+                osm_id=way.id, name=way.tags["name"], nodes=nodes, aliases=aliases,
+                bridge=way.tags.get("bridge", ""), tunnel=way.tags.get("tunnel", ""),
+                layer=way.tags.get("layer", ""),
+            ))
+
     reader = _BoundedRoadReader(bbox)
     reader.apply_file(osm_pbf, locations=True)
     return reader.ways

@@ -169,3 +169,76 @@ async def test_detail_history_is_bounded_without_unrelated_versions(evidence_db)
         assert [run["id"] for run in data["runs"]] == list(range(27, 7, -1))
         assert [version["id"] for version in data["versions"]] == [2]
     assert not evidence_db
+
+
+@pytest.mark.asyncio
+async def test_monitoring_guard_latest_failure_and_current_body_state(evidence_db):
+    path = "/api/v1/admin/news/monitoring"
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        assert (await client.get(path)).status_code == 401
+        app.dependency_overrides[deps.get_current_user] = lambda: SimpleNamespace(role=SimpleNamespace(name="Commuter"))
+        assert (await client.get(path)).status_code == 403
+        staff()
+        response = await client.get(path)
+        assert response.status_code == 200, response.text
+        data = response.json()
+        assert data["articles_total"] == 3
+        assert data["body_counts"] == {"available": 1, "missing": 1, "error": 1}
+        assert data["latest_processing_counts"]["failed"] == 1
+        assert data["latest_processing_counts"]["completed"] == 0
+        assert data["latest_processing_counts"]["not_recorded"] == 2
+        assert [row["article_id"] for row in data["recent_retrieval_issues"]] == [3, 2]
+        assert data["recent_retrieval_issues"][0]["article_error"] == "Article HTTP 403"
+        assert "article_text" not in response.text
+        assert data["discovery_history"] == data["fallback_history"] == "recorded"
+        assert data["collection_to_alert_delay"] == "unavailable"
+        assert data["read_only"] is True
+    assert not evidence_db
+
+
+@pytest.mark.asyncio
+async def test_monitoring_storage_failure_is_sanitized(evidence_db, monkeypatch):
+    from sqlalchemy.exc import OperationalError
+    from app.api.v1.endpoints import admin_news
+    staff()
+    def fail(*args, **kwargs):
+        raise OperationalError("private connection", {}, Exception("private details"))
+    monkeypatch.setattr(admin_news, "read_news_monitoring", fail)
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/v1/admin/news/monitoring")
+        assert response.status_code == 503
+        assert response.json()["detail"] == "News monitoring storage is unavailable"
+        assert "private" not in response.text
+    assert not evidence_db
+
+
+@pytest.mark.parametrize("issue_count", [0, 13])
+@pytest.mark.asyncio
+async def test_monitoring_empty_and_bounded_issue_list(evidence_db, issue_count):
+    from sqlalchemy import delete
+    database = app.dependency_overrides[get_db]()
+    with next(database) as db:
+        db.execute(delete(NewsExtractionRun))
+        db.execute(delete(NewsArticleVersion))
+        db.execute(delete(NewsArticle))
+        for id in range(1, issue_count + 1):
+            db.add(NewsArticle(id=id, canonical_url=f"https://example.org/issue/{id}", title=f"Issue {id}",
+                publisher_source_id="unknown-publisher", excerpt="", article_text=None,
+                first_seen_at=NOW, last_seen_at=NOW, content_fingerprint="0" * 64, review_state="pending"))
+        db.commit()
+    database.close()
+    evidence_db.clear()
+    staff()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/v1/admin/news/monitoring")
+        assert response.status_code == 200, response.text
+        data = response.json()
+        assert data["articles_total"] == issue_count
+        assert sum(data["latest_processing_counts"].values()) == issue_count
+        assert len(data["recent_retrieval_issues"]) == min(issue_count, 10)
+        if issue_count:
+            assert [row["article_id"] for row in data["recent_retrieval_issues"]] == list(range(13, 3, -1))
+            assert data["recent_retrieval_issues"][0]["publisher"] == "unknown-publisher"
+        else:
+            assert set(data["body_counts"].values()) == {0}
+    assert not evidence_db

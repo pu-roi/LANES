@@ -1,9 +1,13 @@
 # Phase 36: Priority 5 Publication, Review, Corrections, Expiry and Frontend Plan
 
-> **Last Updated:** October 03, 2026, 12:43 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** F3 unified reading and revised Source Article design are implemented; the developer accepted the design on October 3. Recent layout edits refined F3. F4a now implements read-only Sources & feeds using existing staff APIs; TypeScript/lint pass. Full desktop/mobile checklist acceptance, F4b missing telemetry and the durable backend checkpoint remain pending before review/public stages. No browser or development server was started; no F4 backend/schema/dependency change.
+> **Last Updated:** October 03, 2026, 2:22 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** F3 design accepted; F4a delivered; F4b durable monitoring API/Pipeline history implemented after explicit schema approval. Revision `c5a7e9d2104f` tested and applied locally. Delay awaits publication records; manual desktop/mobile acceptance, production rollout and lifecycle checkpoint remain open before F5–F7. 214 news regressions, four PostgreSQL queue checks, one migration round-trip, TypeScript/scoped lint pass. No browser/dev server started; no new dependencies.
+
+**Delivery target reaffirmed October 3:** automatic RSS/news → NLP/NER → bounded OSM placement assisted by UP NOAH source-vector overlap and matching Pasig DRRMO history → automatic map publication and gated zone activation. Routine eligible claims bypass Needs Review. Staff handles exceptions and corrections. Complete the runtime/lifecycle contracts, then implement F5/F6 exception controls and F7 commuter visibility within one delivery bundle; the stage numbering does not require all staff screens to finish before automatic publication work starts. Automatic end-to-end operation remains pending. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ## 1. Reviewed baseline and task order
+
+**Monday deployed-site demonstration:** the developer confirmed October 5, 2026 and the deployed website as the presentation target. Focus October 3 on one complete automatic source→facts→OSM/NOAH/DRRMO placement→eligible zone/map flow, including actual auditor participation. Focus October 4 on release/version/migration/configuration checks and rehearsal against the deployed URL with repair time. Reuse the current article reader and map, implementing minimum publication visibility and exception/correction controls before additional staff-interface polish. F5/F6/F7 acceptance remains required for the changed flows but their entire optional presentation backlog is not a prerequisite. Original routing eligibility gates remain in force. A historical replay must be clearly labeled and isolated from live public zones/routing; no replay implementation is currently claimed. This schedule is a priority target, not verified delivery. See the [active deadline checklist](../task_plan.md#automatic-pipeline-delivery-target--reaffirmed-october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 Read the root `AGENTS.md`, `DESIGN.md`, `frontend/AGENTS.md`, documentation index, Phase 36 task plan, delivery records, relevant news/spatial/history plans and evaluations, screen/API/database references, and the senior-planner, UI, API, security and test skills under `.agents/skills/`. The frontend-specific rules require installed Next.js guides to be read before future code changes. Existing source was inspected to check integration points; no application code was changed for this plan.
 
@@ -28,7 +32,7 @@ The FastAPI backend owns eligibility, suppression, incident comparison, expiry, 
 | --- | --- | --- |
 | Incomplete source or unresolved current-evidence prerequisites | Staff-only exception/lead with reason and retry information. | None |
 | Credible recent source claim, affected segment unresolved | Automatically publish a source-labeled news alert after the separate alert policy passes. Missing map coverage alone does not veto a credible report. | None |
-| Current claim with verified affected geometry and all activation gates | Create or link an expiring operational zone through the server-owned workflow. Record reported versus predicted placement. | Backend applies the existing vehicle-specific routing policy. |
+| Current claim with verified affected geometry and all activation gates | Automatically create or link an expiring operational zone through the server-owned workflow, without routine staff approval. Record reported versus predicted placement. | Backend applies the existing vehicle-specific routing policy. |
 | Conflicting evidence or ambiguous incident update | Retain evidence and require an exception decision; conservative handling of any existing linked state must be specified. | No automatic promotion or unrelated-zone removal. |
 | Historical, forecast, negated or subsided claim | Preserve the evidence and reason. Do not publish it as a current flood alert or create a current closure. A matched later clearance can end existing state. | Only a verified update to the same linked incident can end its restriction. |
 | Correction, withdrawal or expiry | Update public visibility and any linked operational state consistently, keeping source evidence and decision history. | Linked restriction must stop applying when withdrawn or expired. |
@@ -154,19 +158,21 @@ The former F0 checklist is absorbed into F1–F8. The frontend direction is alre
 
 ### F4 — Remaining publisher and feed monitoring
 
+**F4b durable monitoring implemented:** protected GET /monitoring plus /monitoring/discovery and /monitoring/fallback supply current counts/issues and independently paginated histories. The approved four-table migration is tested/applied locally; shared Pipeline UI shows feed counters, retrieval/assessment outcomes and recorded errors. History refresh is read-only. Manual acceptance/production rollout and publication-delay contract remain open; see [implementation](news-monitoring-telemetry-plan.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
 - Article-level Collection status counts and failure/empty/questionable states are delivered. Add remaining discovery summaries and feed health within the same monitoring page rather than restoring Articles/Results tabs. Alert/review counts require durable contracts.
 - **F4a implemented:** same-page Sources & feeds drawer with Publishers / Feed checks tabs. Existing GET /sources supplies configuration, enabled status and verification date; GET /feeds supplies saved check/success timestamps and errors. Source names are display labels only; no health/eligibility calculations or live probes. Shared dialog/tabs/buttons/skeletons, mobile safe areas and 44px actions; errors/retry/empty states remain explicit.
 - Keep technical versions in expandable diagnostics. Source configuration, manual article submission, extraction retries and automation/training controls are not included in this initial monitoring stage.
-- **Depends on:** existing staff source/feed read APIs for F4a; new durable telemetry reads for F4b. Developer monitoring acceptance remains pending.
+- **Depends on:** existing staff source/feed reads plus implemented durable telemetry/history APIs and approved migration `c5a7e9d2104f`. Developer visual acceptance and production rollout remain pending.
 - **Done when:** staff can distinguish healthy-empty, failed and unavailable states on desktop/mobile; no invented health or incident counts appear.
 
 ### Backend checkpoint before F5–F7
 
-Finish the durable lifecycle and security/idempotency/concurrency checks in isolated PostGIS after implementation resumes. The backend must supply the combined review reads, source-specific decisions, public publication/expiry, stable revisions, audit links and safe public schema needed by the relevant stage. Obtain separate approval before SQLAlchemy/Alembic changes. F1–F4 may use verified existing read contracts while lifecycle work remains pending; this does not authorize review writes or public alerts. Preview fixtures must be clearly labeled and must not become production fallback data.
+Connect the operational OSM/NOAH/DRRMO placement path and automatic publication/zone lifecycle, with security/idempotency/concurrency checks in isolated PostGIS. The backend must supply scheduled and saved-article processing, exception reads/actions, public publication/expiry, stable revisions, audit links and safe public schemas. Obtain separate approval before SQLAlchemy/Alembic changes. F5/F6 exception controls and F7 public visibility can proceed alongside each other once their shared contracts are ready; individual news claims do not require a staff action. F1–F4 reads and preview fixtures do not establish implemented public publication.
 
 ### F5 — Needs Review queue and evidence workspace
 
-- Rename Pending Reports to Needs Review; retain Active Zones. Add All / User Reports / News Claims filters to one server-paginated queue with distinct source identities.
+- Rename Pending Reports to Needs Review; retain Active Zones. Add All / User Reports / News Claims filters to one server-paginated queue with distinct source identities. News Claims contains exceptions requiring intervention; automatically eligible claims bypass it. Existing user-report moderation is preserved.
 - Inspect reporter evidence or article evidence in the same map workspace. Desktop keeps evidence beside the persistent map; mobile offers Evidence / Map and Back to queue.
 - Show candidate geometry as Placement suggestion without choosing an initial candidate or implying activation. Preserve existing report actions and Create/Merge/Edit drafts. New news decisions remain unavailable until F6.
 - **Depends on:** the accepted Needs Review design, its desktop/mobile layout check, the combined review/detail backend contracts and source-aware identity. Monitoring completion alone does not satisfy this dependency.
@@ -185,12 +191,12 @@ Finish the durable lifecycle and security/idempotency/concurrency checks in isol
 - Add the collapsed desktop News alerts control and mobile entry/sheet. Reuse shared map panels; coordinate with route planning and existing controls rather than stacking overlays.
 - Read only server-published alerts. Show publisher/link, supported excerpt, place, time/depth qualifiers, public corrections and server-provided restriction status. No landing-page changes.
 - Keep text-only unresolved locations and labeled display geometry distinct from active zones and NOAH layers. Connect server updates through existing SSE/refetch handling; show stale/offline/error states honestly.
-- **Depends on:** F6 staff oversight and tested safe public reads, publication/withdrawal/expiry and linked-zone refresh contracts. Historical GMA/backlog examples cannot populate the live public feed.
+- **Depends on:** tested automatic eligibility/placement, safe public reads, publication/withdrawal/expiry and linked-zone refresh contracts, with the exception/correction controls verified before release. F7 can be implemented alongside F5/F6; staff approval is not a per-claim dependency. Historical GMA/backlog examples cannot populate the live public feed.
 - **Done when:** commuters can inspect active alerts on desktop/mobile; corrected, withdrawn and expired selections update correctly; source alerts alone do not affect routing; route/map context remains intact.
 
 ### F8 — Integration verification and release readiness
 
-- Run a controlled article-to-result-to-review-to-public-alert flow in staging. Check correction, withdrawal, expiry, duplicate retries, stale edits, private fields and map/routing refresh.
+- Run controlled RSS-to-extraction-to-OSM/NOAH/DRRMO-placement-to-automatic-alert/zone flows in staging without routine staff actions. Separately exercise the exception/correction path, withdrawal, expiry, duplicate retries, stale edits, private fields and map/routing refresh.
 - Verify all stages at 1440px desktop, 390px mobile, 320px narrow width and landscape. Check keyboard focus, reachable touch controls, mobile safe areas, reconnect and preserved route/report drafts. Include physical mobile/PWA checks for the flows changed.
 - Run repository-required frontend checks and meaningful integration cases. Record results, API dependencies, migrations if approved, rollout scope and rollback instructions in the existing docs/evaluations structure.
 - **Depends on:** F1–F7 completion and their recorded checks.

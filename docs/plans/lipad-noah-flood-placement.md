@@ -1,6 +1,6 @@
 # Phase 36: LiPAD / UP NOAH Flood Placement Integration
 
-> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 1:59 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Gates 1–3 evidence checks passed. Priority 4 now connects checksum-identified NCR OSM placement to shared article processing; explicit spans and uncertainty are persisted without public/routing effects. The operational NOAH/DRRMO corroboration path, public alerts and verified affected geometry remain open. The commuter NOAH display overlay is separate modeled presentation, not runtime analytical flood proof. The source-map vintage is not published in the checked NOAH metadata; coverage/source limits remain documented. Priority 5 is [lifecycle/frontend planning only](news-publication-review-frontend-plan.md).
 
 **Historical research context:** The local-PBF/caller-boundary descriptions below record September investigations. The separate bundled `NewsRoadPlacementProvider` now supplies checked city relations and source catalog to production extraction; this does not promote a centerline to verified flood extent. See [release verification](../evaluations/phase-36-reusable-road-match-check.md#production-release-verification).
@@ -15,6 +15,8 @@ The September 30 [Metro Manila coverage audit](../evaluations/phase-36-metro-spa
 ## Purpose
 
 Get current, credible news flood claims onto the map quickly and automatically. Use the Pasig DRRMO history and permitted LiPAD / UP NOAH spatial layers to improve the *location* of a claim. A modeled hazard layer is context for where flooding is plausible; the recent article or field report is evidence that flooding is happening now.
+
+**Next integration bundle:** move bounded OSM section ranking with exact NOAH vector overlap and matching Pasig DRRMO context from the read-only audit into shared saved/RSS processing. Feed its supported placement and uncertainty into automatic alert/zone eligibility, identity and expiry handling. Commuter publication and staff exception controls share those backend contracts; routine eligible claims do not wait for a staff screen or approval. This is pending work, not an implemented runtime capability. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ## What exists today
 

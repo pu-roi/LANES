@@ -12,6 +12,7 @@ from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.schemas.news_extraction import FloodCondition
 from app.schemas.news_results import PlacementFilter, ResultOrder
 from app.crud.news_browsing import latest_article_runs
+from app.services.news_evidence_policy import FLOOD_OBSERVATION_PATTERN, HYPOTHETICAL_FLOOD_PATTERN, METRO_CITY_PATTERN, NON_OBSERVATION_PATTERN, OBSERVED_EVENT_PATTERN
 
 
 def result_rows(db: Session, *, latest_only: bool = False) -> tuple[Select, Callable[[str], ColumnElement], ColumnElement, Callable[[str], ColumnElement]]:
@@ -43,16 +44,31 @@ def result_rows(db: Session, *, latest_only: bool = False) -> tuple[Select, Call
     return query, value, placement, source
 
 
+def context_only_claim(value: Callable[[str], ColumnElement]) -> ColumnElement:
+    """City/locality qualifiers stay in history without becoming attention items."""
+    return cast(func.coalesce(value("uncertainty_reasons"), "[]"), Text).contains('"location_context_only"')
+
+
 def readable_claim(value: Callable[[str], ColumnElement]) -> ColumnElement:
     """Conservative browsing gate; this does not approve or activate a flood zone."""
     place = func.trim(func.coalesce(value("raw_place_name"), ""))
     evidence = func.trim(func.coalesce(value("evidence_sentence"), ""))
+    normalized_evidence = func.lower(evidence)
+    city = func.lower(func.trim(func.coalesce(value("canonical_city"), "")))
+    psgc = func.coalesce(value("psgc_code"), "")
     truth = lambda field, default: cast(func.coalesce(value(field), default), Text).in_(["true", "1"])
     return and_(
         func.length(place).between(1, 120), func.length(evidence) > 0,
+        normalized_evidence.regexp_match(FLOOD_OBSERVATION_PATTERN),
+        ~normalized_evidence.regexp_match(HYPOTHETICAL_FLOOD_PATTERN),
+        or_(psgc.startswith("13"), and_(psgc == "", city.regexp_match(METRO_CITY_PATTERN))),
+        or_(~normalized_evidence.regexp_match(NON_OBSERVATION_PATTERN),
+            normalized_evidence.regexp_match(OBSERVED_EVENT_PATTERN)),
         ~place.contains("\n"), or_(place != evidence, func.length(place) <= 60),
         truth("flood_mentioned", "true"),
         ~truth("is_forecast", "false"), ~truth("is_negated", "false"), ~truth("is_historical", "false"),
+        ~cast(func.coalesce(value("uncertainty_reasons"), "[]"), Text).contains('"photo_caption_only"'),
+        ~context_only_claim(value),
         or_(value("condition").in_(["active", "rising", "receding", "subsided"]),
             func.length(func.trim(func.coalesce(value("depth_raw"), ""))) > 0,
             func.length(func.trim(func.coalesce(value("depth_formatted"), ""))) > 0,

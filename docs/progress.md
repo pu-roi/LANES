@@ -1,10 +1,70 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 03, 2026, 12:52 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 5:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Phase 36: Documentation and branch pre-push verification (October 3, 2026)
+
+- [x] Audited the eight registered documents and reconciled monitoring's verified production rollout with the still-pending v6 release/automatic placement. Dependencies are unchanged; private configuration and replay data remain ignored. Verified 355 news/backend cases plus five disposable PostgreSQL queue/migration cases (360 distinct checks), existing local `alembic upgrade head`, TypeScript, scoped lint and 25 responsive UI cases. Three optional/project UI cases were skipped. Corrected the existing publisher-option test to account for the shared Select portal; both previously failing desktop/mobile cases pass on focused rerun. Remote `roi-branch` had no divergence. This verifies branch preparation, not production v6 deployment or automatic map integration. [Evidence](evaluations/phase-36-september24-historical-replay.md#branch-pre-push-verification--october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: City summaries remain context beside specific flood sites (October 3, 2026)
+
+- [x] Added article-level extraction reconciliation: a broad city observation becomes `location_context_only` when credible specific sites in that same resolved city are present. City-only reports, other cities, unreliable specific mentions and distinct explicit observation times remain independent. Source evidence/offsets and each street's facts remain unchanged. Bumped immutable processing identity to v6/v1.4 and reprocessed the private Docker article into a second run, preserving the original run. Actual authenticated API/browser now show five street cards and zero Collection attention items. All 224 related backend tests pass. No schema/dependency/frontend changes; production v4 remains unchanged. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Explicit location fields in news flood details (October 3, 2026)
+
+- [x] Added a flat Reported location section before the detail measurements, showing the existing extracted street, barangay, reported section/intersection and local area/landmark. A city/area mention without an extracted road explicitly says **Not specified for this mention**, without borrowing another claim's street. Live local replay checks confirm Boni/F. Ortigas, Gov. Pascual/Sitio 6 and long Aurora directions at desktop and 390/320px mobile widths with no horizontal overflow. TypeScript, scoped ESLint and both existing desktop/mobile Info modal tests pass (automated API fixtures; live checks use actual local API data). No backend/schema/dependency change or deployment. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Private Docker replay visible in News Intelligence (October 3, 2026)
+
+- [x] Recovered Docker Desktop from failed Ingest/Secrets Engine runtime sockets through preserved-directory backups, without resetting volumes. Created separate `lanes_news_test`, applied the complete existing Alembic chain to `c5a7e9d2104f`, saved the real September 24 body through the durable processor and restarted loopback-only frontend/backend using ignored test overrides. Verified authenticated API and actual browser main list (seven locations/five roads), Boni detail/source and Collection ready with zero questionable mentions; no API mocking. Repeated seeding retains one article/one run and unchanged zone totals. All 29 focused replay/isolation tests pass. Added reproducible launchers/[guide](guides/local-news-replay.md). Production configuration/data and the existing local `lanes` database are preserved; v5 deployment and automatic plotting remain pending. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: September 24 historical pipeline replay (October 3, 2026)
+
+- [x] Tested the real Daily Tribune report through publisher retrieval, production extraction entry point and local OSM; verified durable queue/main SQL reading in an isolated database and the actual PostgreSQL predicate with read-only literals. Corrected streamed body retrieval, numeric compounds, intersections/directions, city/PSGC attribution, cleared states, explicit recent weekday clocks, adjacent passability and duplicate qualifiers/attention counts. Five road sites now preserve correct original facts. All 373 related backend tests pass (one disposable-database migration skip); 19 PostgreSQL policy and 11 real-claim parity checks pass. Version v5 is local and not deployed; production history remains unchanged. [Evidence](evaluations/phase-36-september24-historical-replay.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Strict actual-flood collection follow-up (October 3, 2026)
+
+- [x] Released affirmative Metro Manila reporting-body admission, blocked-body rejection and explicit excluded history. Forecasts/simulations/drills/habitual references and caption-only artifacts cannot qualify. API `00049-q25`, the matching collector and Firebase frontend `build-2026-10-03-002` are live. Saved-only and normal executions succeed; ten v4 results preserve all 30 prior runs, ten source versions and 24 articles. All 341 backend tests, 15 PostgreSQL checks, TypeScript and 15 deployed desktop/mobile cases pass (mocked API/session). All 24 legacy articles are excluded; zero qualify for the main or attention lists. No additional schema change. [Evidence](evaluations/phase-36-news-content-quality-investigation.md#v4-backend-release-verification). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: News observation and geography correction (October 3, 2026)
+
+- [x] Released the correction to API `00048-xc7`, the matching collector image and Firebase frontend `build-2026-10-03-001`. Approved migration `c5a7e9d2104f` succeeded. Corrective and normal collector executions pass; ten new completed runs preserve all 20 previous runs, ten source versions and 24 articles. The nine false main-list cards are excluded. Final eight PostgreSQL checks and 13 deployed desktop/mobile tests pass; frontend tests mock API/session boundaries. Automatic plotting remains the next integration bundle. [Release evidence](evaluations/phase-36-news-content-quality-investigation.md#completed-production-release). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+- [x] Implemented shared prevention/habitual and Metro Manila evidence checks across extraction, discovery, SQL counts/pagination and reader explanations; closed the metadata-local body bypass and common-noun gazetteer matches. Versioned the corrected extractor/processing pipeline. All 306 backend regressions, eight read-only PostgreSQL policy checks, 13 distinct desktop/mobile UI cases and TypeScript pass. The same 24-article database yields zero qualifying rows under the corrected reader, excluding nine false cards while preserving source/history. Production migration, reprocessing and synchronized release are complete as recorded above. See [verification](evaluations/phase-36-news-content-quality-investigation.md#corrective-implementation-and-verification--october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: News content quality investigation (October 3, 2026)
+
+- [x] Traced the reported foreign/prevention stories through 24 configured saved articles, latest immutable runs and local main-list predicates. Confirmed nine misleading displayed claims and reproduced the errors with the current pure local rules parser. Verified API/collector release metadata and live route probes: healthy/authenticated source boundary, but the new results route is absent from production. Recorded [BUG-085](others/bug-log.md#bug-085-news-intelligence-displays-foreign-floods-and-prevention-projects-as-flood-observations), the [investigation](evaluations/phase-36-news-content-quality-investigation.md), and data correctness/release alignment as the immediate priority before plotting. Read-only database/Cloud inspection; no external AI, stored writes, functional correction or deployment. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Monday deployed-site demonstration priorities (October 3, 2026)
+
+- [x] Recorded the developer-confirmed October 5 presentation on the deployed website. Prioritized the automatic article-to-map integration, operational NOAH/DRRMO context and actual auditor participation, followed by synchronized migration/API/collector/frontend release and deployed desktop/mobile rehearsal. Deferred optional administration/monitoring polish; retained original evidence/routing gates and a clearly labeled isolated replay proposal for repeatability. Documentation planning only; no implementation, schema change, push, deployment or replay delivery is claimed. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Runtime OSM dependency isolation (October 3, 2026)
+
+- [x] Removed unnecessary native-PBF loading from runtime catalog matching by deferring the existing `osmium` import/handler to the bounded raw-file reader. All 140 focused regression checks pass, including the 26 formerly failing checks and a fresh-process native-dependency isolation case. Windows security remains unchanged; raw-PBF tooling is still subject to its separate unsigned-library restriction. No schema, dependency or UI changes, no deployment or completed automatic publication claim. See [BUG-084](others/bug-log.md#bug-084-windows-application-control-blocks-osmium-during-pipeline-verification) and [verification](evaluations/phase-36-automatic-plan-alignment-audit.md#verification-recovery-runtime-dependency-isolation). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Completed-work alignment audit (October 3, 2026)
+
+- [x] Compared recent committed reading and uncommitted telemetry changes with the automatic pipeline target. Found no removed activation path or new routine staff approval; recorded existing disconnected publication/NOAH ranking and preview-only geometry limits. Telemetry introduces a migration-before-collector deployment dependency. Focused checks: 81 passed, 26 failed on Windows Application Control blocking `_osmium`; this audit does not replace prior verification with a passing result. Recorded [BUG-084](others/bug-log.md#bug-084-windows-application-control-blocks-osmium-during-pipeline-verification) and the [alignment evidence](evaluations/phase-36-automatic-plan-alignment-audit.md). No application/schema/dependency/security-policy changes. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Automatic pipeline plan reconciliation (October 3, 2026)
+
+- [x] Reconciled the architecture, active task plan, publication/frontend plan, spatial integration plan and feature/system references with the original automatic workflow: RSS/news → NLP/NER → OSM placement assisted by UP NOAH vectors and matching Pasig DRRMO history → automatic eligible map alerts/zones. Staff review remains an exception/correction path. The next delivery bundle connects runtime placement and lifecycle contracts, with F5/F6 exception controls and F7 commuter visibility developed alongside each other after shared contracts are available. This records a documentation correction, not completed automatic integration or release acceptance; application code and database schemas were unchanged. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: F4b durable discovery and fallback history (October 3, 2026)
+
+- [x] After explicit schema approval, added four normalized telemetry tables and revision `c5a7e9d2104f`, durable staff/collector discovery feed outcomes and fallback attempt/lead metadata. Staff history APIs and responsive Pipeline sections provide pagination, read-only refresh, safe links, explicit empty/error/retry and interrupted outcomes. Start records survive worker/finalization failure; conditional finalization and atomic lead commits prevent duplicate/replaced outcomes. Captured fallback inputs remain consistent across concurrent article revisions. Fresh PostgreSQL migration round-trip and local upgrade succeed; original evidence preserved. All 214 news regressions, four PostgreSQL queue cases, one migration round-trip, TypeScript and scoped ESLint pass. Desktop/mobile fixture cases prepared without browser execution. No dependencies added; production rollout, manual acceptance and publication-delay contract remain open. Next: durable review/publication backend checkpoint before F5–F7. See [verification](evaluations/phase-36-f4b-monitoring-check.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: F4b saved pipeline monitoring (October 3, 2026)
+
+- Verification: all 53 focused news backend regression tests pass; full frontend TypeScript and scoped ESLint pass. Sandbox temporary-folder permission failures were resolved by running the same suite with normal temporary-folder access. No browser/dev server execution; developer visual acceptance remains pending.
+
+- [x] Added staff-protected GET /monitoring with SQL body aggregates, newest extraction counts and ten current retrieval issues, without bodies/result payloads. Sources & feeds adds a lazy responsive Pipeline tab, GET-only refresh and visible empty/error/retry states. Access controls, newer-failure precedence, zero/bounded datasets and sanitized 503 are tested. TypeScript and scoped ESLint pass; manual visual acceptance remains pending. No dependency/model/migration change. Discovery/fallback history requires the [storage proposal](plans/news-monitoring-telemetry-plan.md) approval; alert delay awaits publication records. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: News frontend delivery checkpoint (October 3, 2026)
 

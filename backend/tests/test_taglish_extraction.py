@@ -90,6 +90,31 @@ def test_flood_control_discussion_is_not_a_flood_observation(text: str) -> None:
     assert not _article_claims("Taguig flood control investigation", text)
 
 
+@pytest.mark.parametrize("text", [
+    "QC school gets detention basin under covered court to curb flooding.",
+    "A newly installed detention basin sits beneath the covered basketball court of Masambong Elementary School in Quezon City to help mitigate localized flooding during heavy rains.",
+    "Quezon City Mayor Joy Belmonte said the detention basin was installed to help prevent flooding at the school, which is regularly submerged during heavy downpours.",
+    "The DPWH is fast-tracking the construction of drainage facilities and septic tanks at UP-PGH in Manila to help address flooding.",
+    "The school in Pasig City is regularly flooded during heavy downpours.",
+])
+def test_prevention_and_habitual_descriptions_are_not_current_observations(text: str) -> None:
+    assert not _article_claims("Flood prevention infrastructure", text)
+
+
+@pytest.mark.parametrize("observation", [
+    "knee-deep floodwater was observed", "streets are flooded", "floodwater was seen", "residents reported flooding",
+])
+def test_prevention_story_preserves_independent_observation(observation: str) -> None:
+    text = "A basin was installed to prevent flooding. In Pasig City, " + observation + " on Laguna Street."
+    assert any(c.canonical_road == "Laguna Street" and c.condition == "active" for c in _article_claims("Pasig basin and flooding", text))
+
+
+def test_foreign_report_does_not_geocode_interior_ministry_or_market_heading() -> None:
+    text = "The permanent secretary of the interior ministry said residents in Bangkok were flooded. FLOATING FLOOD MARKET Residents waded through waist-deep waters in Bang Kapi."
+    claims = _article_claims("Thousands huddle in Bangkok shelters as Thai flood damages rise", text)
+    assert not any(c.raw_place_name.casefold() in {"interior", "market"} for c in claims)
+
+
 @pytest.mark.parametrize("prefix", [
     "Flood-control teams reported ",
     "Officials investigated flood control projects in Taguig City. Residents reported ",

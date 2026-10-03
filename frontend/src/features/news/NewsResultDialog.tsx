@@ -35,7 +35,17 @@ export function NewsResultDialog({ runId, claimIndex, onClose }: { runId: number
       {tab === "source" && <div className="shrink-0 lg:hidden"><Tabs<SourcePane> tabs={sourcePanes} activeTab={mobileHistory ? "history" : "article"} onChange={(next) => setMobileHistory(next === "history")} variant="underline" fullWidth tabClassName="min-h-11 px-2 text-xs focus-visible:ring-2 focus-visible:ring-blue-500" layoutId="news-source-panes" /></div>}
       <RecordDetailsPanels mainLabel="News evidence" asideLabel="Article processing records" showAsideOnMobile={tab === "source" && mobileHistory} main={<TabContentPanel tabKey={tab} direction={direction}>
         {tab === "flood" ? <section aria-label="Flood details" className="space-y-4">
-          <FloodLocationSummary showPublication={false} data={floodSummaryData(data.item.summary, data.captured_input.published_at)} />
+          <FloodLocationSummary showPublication={false} data={floodSummaryData(data.item.summary, data.captured_input.published_at)} locationDetails={
+            <section aria-label="Reported location" className="space-y-3">
+              <h4 className="text-sm font-semibold text-slate-900">Reported location</h4>
+              <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                <div className="min-w-0"><dt className="text-xs text-slate-500">Street / road</dt><dd className="mt-1 break-words text-sm font-medium text-slate-900">{data.claim.canonical_road || "Not specified for this mention"}</dd></div>
+                {data.claim.canonical_barangay && <div className="min-w-0"><dt className="text-xs text-slate-500">Barangay</dt><dd className="mt-1 break-words text-sm font-medium text-slate-900">{data.claim.canonical_barangay}</dd></div>}
+                {data.claim.road_segment_raw && <div className="min-w-0 sm:col-span-2"><dt className="text-xs text-slate-500">Reported section / intersection</dt><dd className="mt-1 break-words text-sm text-slate-900">{data.claim.road_segment_raw}</dd></div>}
+                {data.claim.local_area_raw && <div className="min-w-0 sm:col-span-2"><dt className="text-xs text-slate-500">Local area / landmark</dt><dd className="mt-1 break-words text-sm text-slate-900">{data.claim.local_area_raw}</dd></div>}
+              </dl>
+            </section>
+          } />
           {data.item.summary.reading_reason && <p className="text-sm text-amber-800">Needs checking: {data.item.summary.reading_reason}</p>}
           <div className="space-y-2"><h4 className="text-sm font-semibold">What the article says</h4><blockquote className="whitespace-pre-wrap break-words border-l-2 border-blue-200 pl-3 text-sm leading-6 text-slate-600">{data.claim.evidence_sentence}</blockquote>{data.claim.event_time_raw && <p className="text-xs text-slate-500">Time wording: {data.claim.event_time_raw}</p>}</div>
           <p className="text-xs text-slate-500">Times shown in Philippine time. This is the flood described by the article, not confirmation of flooding now.</p>

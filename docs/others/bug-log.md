@@ -1,11 +1,165 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 02, 2026, 11:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 5:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-088] City summaries appear as additional flood sites beside street details
+
+- **Status:** Resolved locally in v6/v1.4; production release pending
+- **Severity:** Medium (redundant admin flood cards and confusing missing-street details)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The September 24 replay shows a broad Mandaluyong card followed by the specific Boni/F. Ortigas report, and a broad Quezon City summary beside East/Aurora reports. Seven readable mentions appear to be seven separate flood sites; the broad cards have no street or observation clock.
+
+#### 2. Root Cause Analysis (RCA)
+
+Same-sentence city qualifiers were already marked context only. Standalone summaries in another paragraph remained separate observations because extraction lacked reconciliation across the article. Streets were correctly extracted; their city summaries were counted again.
+
+#### 3. Solution & Architectural Strategy
+
+Reconcile city summaries against credible specific observations in that same resolved city after per-sentence extraction. Retain summaries as `location_context_only`, preserving original evidence/offsets and each street's facts. Keep city-only reports, different cities, explicit different times and cases where the specific evidence is speculative, caption-only, ambiguous or conflicting. Version the correction and reprocess into a new immutable local run. Actual authenticated API/browser show five street cards and zero attention items; 224 related backend tests pass. Production data/releases remain unchanged.
+
+#### 4. Files Modified / What Changed
+
+Updated `taglish_extraction_service.py` reconciliation/extractor version, `crud/news_processing.py` pipeline identity, local seeder expectations and replay regressions. Existing SQL readability/Collection gates exclude context without new frontend filtering, models, migrations or dependencies. Updated the existing evaluation/runbook and core documentation. The known local backend stalled during auto-reload and was restarted using its guarded loopback launcher before real page verification.
+
+### [BUG-087] Docker runtime socket errors block the private local replay
+
+- **Status:** Resolved on this computer; no factory reset
+- **Severity:** High (local PostgreSQL unavailable; testing blocked)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Docker Desktop 4.91.0 could not rename `sailor-ingest.sock`, then Secrets Engine `engine.sock`, with Windows error 1920. The Linux engine pipe was unavailable. Separately, the original historical replay used isolated in-memory storage, so the normal page had no saved test article.
+
+#### 2. Root Cause Analysis (RCA)
+
+Windows could not access Docker's runtime socket objects. Resolving only one directory permitted startup to reach another failed socket; each failed start left additional unusable objects. The precise underlying OS/Docker cause is not established. The empty LANES page was a storage-scope mismatch, not evidence that successful extraction had been saved to its database.
+
+#### 3. Solution & Architectural Strategy
+
+Stop Docker completely, preserve both socket directories as recoverable backups and start with fresh runtime directories. The original containers/volumes resumed. Create separate `lanes_news_test`, apply existing migrations, seed the actual historical evidence using existing processing services and run local frontend/backend with ignored environment overrides. Authenticating against the separate local database makes seven locations/five roads visible. Replays are idempotent and create no zones. All 29 focused tests pass. Production and the original local database remain preserved. [Operational details](../guides/local-news-replay.md).
+
+#### 4. Files Modified / What Changed
+
+Added `backend/scripts/seed_local_news_replay.py`, `backend/tests/test_local_news_replay.py`, loopback launchers in backend/frontend, ignored `backend/.env.test.local` and ignored captured source data. Added the local replay guide and updated evaluation/progress/task/system references. Runtime directory backups remain outside the repository. No SQLAlchemy model, Alembic migration or dependency was introduced.
+
+### [BUG-086] Genuine September 24 flooding loses body paragraphs and per-road facts
+
+- **Status:** Resolved locally; v5 release pending
+- **Severity:** High (missed actual flooding and incorrect place/clearance attribution)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Replay the September 24 Daily Tribune flood event, published September 25. Regular retrieval produced only 182 characters and no flood claims. AMP retrieval exposed missing compound depths/intersections, false Manila agency-name matches, wrong city attribution, missed clearance times/states, lost adjacent passability and duplicate qualifiers. A regression additionally exposed Roxas Boulevard's unrelated barangay PSGC code.
+
+#### 2. Root Cause Analysis (RCA)
+
+The publisher streams its body after the article closes. Road/measurement/time patterns omit ordinary narrative forms. City context persists from an earlier paragraph and raw-name PSGC resolution can survive an explicit road parent-city override. Qualifier mentions were counted as independent sites or questionable claims. Existing tests did not cover this reporting structure.
+
+#### 3. Solution & Architectural Strategy
+
+Read only Tribune reporting containers; retain exact offsets and road qualifiers/directions; parse compound measurements and cleared/receded states. Resolve a sole recent explicit weekday through aware publication time while refusing ambiguous dates. Attach passability only to one immediately preceding road in the same paragraph. Use the explicit road parent-city PSGC code. Preserve context qualifiers without main/attention counts. v5/v1.3 preserve prior runs on later release. All 373 related tests pass (one disposable PostgreSQL migration skip), plus 19 PostgreSQL policy and 11 real-claim comparisons. No production writes/deployment or schema change. [Full evaluation](../evaluations/phase-36-september24-historical-replay.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_discovery_service.py`: streamed publisher body adapter.
+- `backend/app/services/taglish_extraction_service.py`: evidence attribution, compounds, narrative road relations/directions, clocks, passability, qualifiers and PSGC identity.
+- `backend/app/services/news_evidence_policy.py`: affirmative cleared/receded evidence.
+- `backend/app/services/news_presentation_service.py`, `backend/app/crud/news_results.py`, `backend/app/crud/news_collection.py`: context explanations and matching SQL counts.
+- `backend/app/crud/news_processing.py`: v5 pipeline identity.
+- `backend/scripts/replay_september24_news.py`, `backend/scripts/audit_news_display.py`: real/offline replay and read-only PostgreSQL parity checks.
+- `backend/tests/test_news_september24_replay.py`: 17 replay regression cases.
+
+### [BUG-085] News Intelligence displays foreign floods and prevention projects as flood observations
+
+- **Status:** Resolved and deployed, including the strict v4 collection follow-up
+- **Severity:** High (misleading main-list content; unsafe input for planned automatic plotting)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The developer reports foreign flood and flood-control content on News Intelligence. Read-only inspection of the configured database confirms 24 saved articles and nine local main-list claims: five QC prevention-project claims, three Bangkok claims, and one UP-PGH infrastructure-purpose claim. Pure local rules reproduce the extraction errors. The deployed API also returns 404 for the current frontend's `/api/v1/admin/news/results` route.
+
+#### 2. Root Cause Analysis (RCA)
+
+Explicit flood-control phrase suppression misses purpose/prevention and habitual descriptions. Main-list SQL and summary screening lack a Metro Manila grounding gate. Generic `interior` is incorrectly resolved to a Philippine barangay; captured publisher/related-content fragments add noise. Shortlisting changes do not invalidate existing stored artifacts. API/collector use the older `news-osm-20261002-v4-expat` image, while local reading code uses a later route. Scheduled rules/OSM services are used; optional LLM auditing remains disconnected. See the [full investigation](../evaluations/phase-36-news-content-quality-investigation.md).
+
+#### 3. Solution & Architectural Strategy
+
+**Collection follow-up (October 3):** block new unreadable bodies from candidate admission; require affirmative actual flooding instead of a bare topic word; screen forecasts, simulations, drills and habitual descriptions; exclude caption-only legacy claims. Completed zero-qualified extractions and unverified legacy leads now have an explicit `excluded` status outside default attention, preserving article/run history. All 341 backend tests, 15 PostgreSQL checks, TypeScript and 15 deployed desktop/mobile cases pass (API/session mocked). Matching v4 API/collector/frontend releases and saved/normal executions succeeded. Additional changes: `news_evidence_policy.py`, discovery/processing/extraction services, Collection CRUD/schemas/labels, `NewsCollectionDrawer.tsx`, `newsApi.ts`, read-only audit and article-screening/Collection/telemetry/Playwright tests. No model/schema/dependency changes.
+
+Implemented shared observation/scope classification, real positive/negative regressions and a readable-body gate even for local RSS headlines. Main-list/Collection SQL screen evidence before counts and pagination; historical detail explains exclusions. Prevention and habitual flooding no longer establish active observations; generic interior/market words require a named spatial mention. Versioned processing preserves earlier artifacts. All 306 backend tests and eight read-only PostgreSQL checks pass; the nine false rows are excluded from the same 24 articles. The approved production migration, reprocessing and synchronized release succeeded.
+
+#### 4. Files Modified / What Changed
+
+**Release verified:** API `00048-xc7`, the same collector digest and Firebase frontend `build-2026-10-03-001` are live. Migration and corrective/normal collector executions succeed. Ten new v3 runs preserve 20 earlier runs and all 24 articles. Eight final PostgreSQL checks and 13 deployed desktop/mobile asset checks pass (API/session mocked). See [production evidence](../evaluations/phase-36-news-content-quality-investigation.md#completed-production-release).
+
+- `backend/scripts/audit_news_display.py`: bounded read-only stored-claim trace and optional pure local rules comparison; no hybrid/HTTP/external AI calls or database commits.
+- Investigation, documentation index, task plan and progress: record evidence, deployment mismatch and revised immediate priority.
+- `news_evidence_policy.py`, Taglish extraction, discovery, results CRUD and presentation: shared evidence/geography gates and body-bypass correction; pipeline/extractor version bump.
+- Extraction, discovery/results and desktop/mobile tests: real false-positive passages, positive retention, pagination/history parity and subpixel precision.
+- Backend Docker/Firebase upload ignores: exclude environment credentials and local frontend artifacts from release uploads.
+- No new schema or dependency was introduced by the content correction; the release uses the separately approved telemetry migration.
+
+### [BUG-084] Windows Application Control blocks osmium during pipeline verification
+
+- **Status:** Runtime import coupling resolved; Windows native PBF-reader restriction remains
+- **Severity:** Low residual limitation (raw-PBF tooling on this Windows host)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The October 3 automatic-plan audit ran five focused backend suites: 81 checks passed and 26 failed while importing the installed `osmium` native extension. This prevents confirming collection/processing/OSM regressions in the current local environment; it does not establish a production failure.
+
+#### 2. Root Cause Analysis (RCA)
+
+All 26 failures in the concise normal-access run report `DLL load failed while importing _osmium: An Application Control policy has blocked this file.` `article_road_match_service.py` imports `osmium`, and the operational road provider imports that matcher. Initial sandbox temporary-directory access errors disappeared on normal-access reruns, but the native-module policy block remained. No evidence identifies why Windows started rejecting this dependency or attributes it to telemetry code.
+
+Read-only Windows Code Integrity event inspection confirms events 3033 and 3077 at October 3, 2:08:46 AM Philippine time. The process is Codex's bundled Python runtime; the rejected file is `backend/venv/Lib/site-packages/osmium/_osmium.cp312-win_amd64.pyd`. Windows reports that it does not meet Enterprise signing-level requirements (policy ID `0283ac0f-fff1-49ae-ada1-8a933130cad6`). This establishes an enforced native-extension signing-policy rejection during this invocation, not 26 independent application assertion failures. The log does not establish when/why the policy or trust decision changed, or whether another authorized runtime would have the same outcome.
+
+#### 3. Solution & Architectural Strategy
+
+The runtime provider already reads a validated JSON catalog and only needs the pure road graph/geometry routines. `article_road_match_service.py` unnecessarily loaded the native PBF parser at module import. Moved the existing native import and handler definition inside `load_bounded_osm_roads`, after bounding-box validation. The raw reader still requires the real dependency and propagates its import error; no substitute parser, fake geometry, suppressed errors or security-policy changes were introduced.
+
+Post-fix verification: **140 passed**, including all original 107 checks plus road-placement, road-matching and NOAH-ranking checks. A fresh-process regression rejects all `osmium` imports, confirms the runtime catalog provider imports normally, and confirms raw-PBF reading still requires its native reader. Existing dependencies and schemas are unchanged. Local signature inspection reports the extension is unsigned; the blocking policy GUID is the built-in Smart App Control policy identified in [Microsoft's policy registry](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/operations/inbox-appcontrol-policies). Raw-PBF tooling still needs a dependency accepted by the applicable policy; [Microsoft recommends valid publisher signing](https://support.microsoft.com/en-us/windows/security/threat-malware-protection/smart-app-control-frequently-asked-questions).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/article_road_match_service.py`: loads the native parser only for raw-PBF reading, retaining its existing filtering and bounded-reader behavior.
+- `backend/tests/test_article_road_match_service.py`: adds the fresh-process native-dependency isolation regression.
+- Evaluation, task/progress, feature/system references and documentation index: record the runtime fix, 140 passing checks and remaining raw-PBF restriction. No schema, dependency, UI or security-policy changes.
+
+### [BUG-083] Source Article save date appears inconsistent with processing history
+
+- **Status:** Resolved investigation; displayed dates verified correct for the reported article
+- **Severity:** Low (date meaning is unclear; no timestamp corruption found)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The BusinessWorld article "Thousands huddle in Bangkok shelters as Thai flood damages seen at $320 million" shows publication September 28, 2026, 5:09 PM and Saved in LANES September 28, 6:00 PM, while extraction history shows October 2. The developer questioned whether the save date was working.
+
+#### 2. Root Cause Analysis (RCA)
+
+Read-only queries against the dotenvx-configured database identify article #12. Its publication is `2026-09-28T09:09:39Z`; article and feed provenance independently record first collection at `2026-09-28T10:00:34.180964Z`. Immutable version #4 was created October 2 at 1:22 PM Philippine time. Runs #4 and #14 completed October 2 at 1:22 PM and 2:19 PM. Collection and extraction occurred on different days. The fallback local database contains different articles; it is not the database supplying this screenshot.
+
+#### 3. Solution & Architectural Strategy
+
+The result-detail service returns the article's `first_seen_at` as `saved_at`; article detail agrees. Executing the actual frontend `newsDate` formatter returns September 28 5:09 PM publication, September 28 6:00 PM first save and October 2 2:19 PM processing. UTC-to-Philippine formatting is correct. The save date means first collection, not extraction or copying into a local database. No timestamp correction is needed. A future wording refinement can use "First collected in LANES" to make this distinction explicit; no UI change is claimed in this investigation.
+
+#### 4. Files Modified / What Changed
+
+- `docs/others/bug-log.md`: records the reported article, stored evidence and formatter verification.
+- No application, schema, dependency or stored data changes. All database queries used `SET TRANSACTION READ ONLY`; no browser or service was started.
 
 ### [BUG-082] Portalled Select escapes the news drawer's keyboard containment
 

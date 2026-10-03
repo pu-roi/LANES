@@ -8,6 +8,7 @@ from app.schemas.news_collection import CollectionFilter, NewsCollectionItem, Ne
 from app.services.news_browsing_service import publisher_labels
 
 COLLECTION_LABELS = {
+    "excluded": ("Excluded from flood reports", "No verified Metro Manila flood observation is available. This previously saved article is kept for history and is excluded from flood reports."),
     "ready": ("Locations available", "Reported locations appear in the main list. Exact map placement may still need verification."),
     "needs_checking": ("Needs checking", "Some extracted mentions do not clearly describe a flood at a usable place, or the extraction has incomplete evidence."),
     "no_locations": ("No flood locations", "Processing completed without extracting any flood locations."),

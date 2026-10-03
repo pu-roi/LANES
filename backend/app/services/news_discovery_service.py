@@ -23,10 +23,10 @@ if TYPE_CHECKING:
     from app.models.news import NewsArticle
 
 
-# Broad discovery terms; NER and staff review decide whether a real flood occurred.
+# Broad discovery terms; body evidence and geographic gates qualify local leads.
 FLOOD_TERMS = re.compile(
-    r"\b(?:baha|binaha|binabaha|pagbaha|bumaha|bumabaha|flood|flooded|flooding|"
-    r"inundat(?:ed|ion)|lubog|nalubog|submerged|lagpas\s+tuhod|knee[-\s]deep|ankle[-\s]deep)\b",
+    r"\b(?:baha|binaha|binabaha|pagbaha|bumaha|bumabaha|floods?|flooded|flooding|"
+    r"floodwaters?|inundat(?:ed|ion)|lubog|nalubog|submerged|lagpas\s+tuhod|knee[-\s]deep|ankle[-\s]deep)\b",
     re.I,
 )
 # Snapshot of data/pasig_barangay_reference.csv (30 PSGC-backed Pasig barangays).
@@ -194,17 +194,17 @@ def likely_metro_manila_flood(entry: NewsEntry) -> bool:
 def body_has_metro_manila_flood_claim(entry: NewsEntry, body: str) -> bool:
     """Shortlist body-grounded local claims; this is not event verification."""
     from app.services.taglish_extraction_service import extract_taglish_flood_facts
+    from app.services.news_evidence_policy import has_flood_observation, metro_manila_claim
 
     result = extract_taglish_flood_facts(NewsArticleExtractorInput(
         article_id=-1, canonical_url=entry.article_url, publisher=entry.publisher,
         title=entry.title, excerpt=entry.excerpt, article_text=body, published_at=entry.published_at,
     ))
     return any(
-        claim.flood_mentioned and not claim.is_negated and not claim.is_forecast
+        claim.flood_mentioned and not claim.is_negated and not claim.is_forecast and not claim.is_historical
         and claim.condition in {"active", "rising", "receding", "subsided"}
         and "photo_caption_only" not in claim.uncertainty_reasons
-        and (bool(claim.psgc_code and claim.psgc_code.startswith("13"))
-             or bool(METRO_MANILA_TERMS.search(claim.canonical_city or claim.raw_place_name)))
+        and metro_manila_claim(claim) and has_flood_observation(claim.evidence_sentence)
         for claim in result.claims
     )
 
@@ -259,6 +259,7 @@ class _ArticleParser(HTMLParser):
                   (self.source_id == "feedspot-03" and "related-article" in classes)):
                 self.related_div_depth = 1
             selected = (
+                (self.source_id == "daily-tribune" and "story-text" in classes) or
                 (self.source_id == "feedspot-05" and attr.get("id") == "sports_article_writeup") or
                 (self.source_id == "feedspot-03" and "post-single__content" in classes) or
                 (self.source_id == "feedspot-07" and "entry-content" in classes)
@@ -278,7 +279,7 @@ class _ArticleParser(HTMLParser):
                 self.has_continuation = True
         if tag in {"script", "style", "nav", "footer", "aside"}:
             self.skip_depth += 1
-        if tag in {"article", "main"} and self.source_id not in {"feedspot-03", "feedspot-07"}:
+        if tag in {"article", "main"} and self.source_id not in {"feedspot-03", "feedspot-07", "daily-tribune"}:
             self.article_depth += 1
         if tag in {"p", "h1", "h2", "h3", "li", "br"} and self.article_depth and not self.skip_depth and not self.related_div_depth:
             self.parts.append("\n")
@@ -299,7 +300,7 @@ class _ArticleParser(HTMLParser):
             self.selected_div_depth -= 1
             if not self.selected_div_depth:
                 self.article_depth -= 1
-        if tag in {"article", "main"} and self.article_depth and self.source_id not in {"feedspot-03", "feedspot-07"}:
+        if tag in {"article", "main"} and self.article_depth and self.source_id not in {"feedspot-03", "feedspot-07", "daily-tribune"}:
             self.article_depth -= 1
         if tag in {"script", "style", "nav", "footer", "aside"} and self.skip_depth:
             self.skip_depth -= 1
@@ -356,7 +357,12 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
                     body.extend(chunk)
                     if len(body) > MAX_ARTICLE_BYTES:
                         return None, "Article response exceeds size limit"
-                parser = _ArticleParser(source.id)
+                # Tribune streams its reporting paragraphs after the enclosing
+                # <article> closes. Read only those named body containers, not
+                # unrelated stories or embedded JavaScript/JSON summaries.
+                publisher_host = (urlsplit(current_url).hostname or "").removeprefix("www.")
+                parser = _ArticleParser("daily-tribune" if publisher_host == "tribune.net.ph"
+                                        and "/amp/story/" not in urlsplit(current_url).path else source.id)
                 parser.feed(body.decode(response.encoding or "utf-8", errors="replace"))
                 if parser.has_continuation or any(
                     _same_article_continuation(current_url, href) for href in parser.links
@@ -376,7 +382,25 @@ def fetch_article_text(source: NewsSource, article_url: str, client: httpx.Clien
         return None, str(exc)
 
 
-def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Session | None = None) -> DiscoveryRun:
+def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Session | None = None,
+                  *, actor_id: int | None = None) -> DiscoveryRun:
+    """Persist operational attempts for staff and collector; dry runs stay pure."""
+    if db is None:
+        return _discover_news(sources, client)
+    from app.services.news_telemetry_service import begin_discovery, finish_discovery
+    id = begin_discovery(db, actor_id)
+    try:
+        result = _discover_news(sources, client, db, telemetry_id=id)
+        finish_discovery(db, id, "feed_partial_failure" if any(probe.error for probe in result.probes) else None)
+        return result
+    except Exception:
+        db.rollback()
+        finish_discovery(db, id, "discovery_failed")
+        raise
+
+
+def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Session | None = None,
+                   *, telemetry_id: int | None = None) -> DiscoveryRun:
     """Run verified feeds; with a session, persist checkpoints and shortlisted evidence."""
     # Local import avoids coupling the read-only probe path to database operations.
     from app.crud import news as news_crud
@@ -392,6 +416,10 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
         if not source.enabled or source.verified_at is None:
             continue
         for feed_url in source.feed_urls:
+            checked_at = datetime.now(timezone.utc)
+            saved_urls: set[str] = set()
+            body_errors = 0
+            scope_unresolved = 0
             if db is not None and db.get_bind().dialect.name == "postgresql":
                 # Cloud Scheduler may retry a job while the earlier run is active.
                 db.execute(text("SELECT pg_advisory_xact_lock(hashtext(:feed_url))"), {"feed_url": feed_url})
@@ -437,35 +465,57 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
                              (entry.excerpt and fingerprint in seen_fingerprints))
                 seen_urls.add(entry.article_url)
                 if duplicate:
-                    if db is not None and (entry.article_url in accepted_urls or existing is not None):
+                    if db is not None and entry.article_url in accepted_urls:
                         news_crud.save_candidate(db, entry, None)
+                        saved_urls.add(entry.article_url)
                     continue
                 same_publication = (existing is not None and
                                     (entry.published_at is None or (existing.published_at is not None and
                                      utc(entry.published_at) == utc(existing.published_at))))
                 if (existing is not None and existing.content_fingerprint == digest
                         and existing.article_text is not None and existing.article_error is None and same_publication):
-                    if metadata_local or body_has_metro_manila_flood_claim(entry, existing.article_text):
+                    if body_has_metro_manila_flood_claim(entry, existing.article_text):
                         accepted_urls.add(entry.article_url)
                         if entry.excerpt:
                             seen_fingerprints.add(fingerprint)
                         if db is not None:
                             news_crud.save_candidate(db, entry, None)
+                            saved_urls.add(entry.article_url)
+                    else:
+                        notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
                     continue
                 if not metadata_local:
                     if body_probes >= MAX_LOCATION_BODY_PROBES:
+                        scope_unresolved += 1
                         notices.append(DiscoveryNotice(source.id, entry.article_url, "Location body-probe limit reached; scope unresolved"))
                         continue
                     body_probes += 1
                 article_text, article_error = fetch_article_text(source, entry.article_url, client)
+                if article_error:
+                    body_errors += 1
                 if not metadata_local:
                     if article_text is None:
+                        scope_unresolved += 1
                         notices.append(DiscoveryNotice(source.id, entry.article_url,
                                                        f"Location unresolved: {article_error or 'article body unavailable'}"))
                         continue
-                    if not body_has_metro_manila_flood_claim(entry, article_text):
-                        notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
-                        continue
+                # A local headline cannot qualify an unreadable article. Keep
+                # failed refresh diagnostics only for previously verified flood
+                # evidence, without admitting a new candidate or relabeling it.
+                if article_text is None:
+                    notices.append(DiscoveryNotice(source.id, entry.article_url,
+                        f"Article not collected: body verification unavailable ({article_error or 'no article text'})"))
+                    if (db is not None and existing is not None and existing.article_text
+                            and body_has_metro_manila_flood_claim(entry, existing.article_text)):
+                        failed = NewsCandidate(source_id=entry.source_id, publisher=entry.publisher,
+                            feed_id=entry.feed_id, article_url=entry.article_url, title=entry.title,
+                            excerpt=entry.excerpt, published_at=entry.published_at,
+                            fetched_at=datetime.now(timezone.utc), article_text=None, article_error=article_error)
+                        news_crud.save_candidate(db, entry, failed)
+                    continue
+                if article_text is not None and not body_has_metro_manila_flood_claim(entry, article_text):
+                    notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
+                    continue
                 accepted_urls.add(entry.article_url)
                 if entry.excerpt:
                     seen_fingerprints.add(fingerprint)
@@ -484,7 +534,14 @@ def discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Ses
                 candidates.append(candidate)
                 if db is not None:
                     news_crud.save_candidate(db, entry, candidate)
+                    saved_urls.add(entry.article_url)
             if db is not None:
                 news_crud.save_checkpoint(db, probe)
+                if telemetry_id is not None:
+                    from app.models.news_telemetry import NewsDiscoveryFeedRun
+                    db.add(NewsDiscoveryFeedRun(discovery_run_id=telemetry_id, source_id=source.id,
+                        feed_url=feed_url, status=probe.status, checked_at=checked_at,
+                        error_code="feed_probe_failed" if probe.error else None, entries_seen=len(entries),
+                        candidates_saved=len(saved_urls), body_errors=body_errors, scope_unresolved=scope_unresolved))
                 db.commit()
     return DiscoveryRun(tuple(probes), tuple(candidates), tuple(notices))

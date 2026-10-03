@@ -2,6 +2,7 @@
 
 from app.schemas.news_extraction import ExtractedClaim
 from app.schemas.news_presentation import NewsFloodSummary
+from app.services.news_evidence_policy import has_flood_observation, metro_manila_claim, non_observation_only
 
 
 def claim_reading_reason(claim: ExtractedClaim) -> str | None:
@@ -11,8 +12,18 @@ def claim_reading_reason(claim: ExtractedClaim) -> str | None:
         return "The extracted location looks like a sentence or an incomplete place name."
     if not claim.evidence_sentence.strip():
         return "No supporting sentence was saved."
+    if "location_context_only" in claim.uncertainty_reasons:
+        return "This name provides location context for a reported road, rather than a separate flood site."
+    if "photo_caption_only" in claim.uncertainty_reasons:
+        return "The flood mention appears only in a photo caption, without reporting-body evidence."
+    if non_observation_only(claim.evidence_sentence):
+        return "This sentence describes flood prevention or habitual flooding, without a current observation."
+    if not metro_manila_claim(claim):
+        return "The location is outside Metro Manila or its Metro Manila city is unresolved."
     if not claim.flood_mentioned or claim.is_negated or claim.is_forecast or claim.is_historical:
         return "This mention describes a forecast, past reference or absence of flooding."
+    if not has_flood_observation(claim.evidence_sentence):
+        return "This sentence does not provide affirmative evidence of actual flooding."
     if (claim.condition == "unknown" and not (claim.depth_raw or "").strip()
             and not (claim.depth_formatted or "").strip()
             and claim.road_passability not in {"impassable_all", "light_vehicle_closed"}):

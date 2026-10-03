@@ -20,6 +20,9 @@ from app.crud.news import save_candidate
 from app.crud.news_processing import (PIPELINE_VERSION, claim_due_run, enqueue_article, finish_owned_run)
 from app.main import app
 from app.models.news import (NewsArticle, NewsArticleFeedEntry, NewsArticleVersion, NewsExtractionRun, NewsFeedCheckpoint)
+from app.models.news_telemetry import NewsDiscoveryRun, NewsDiscoveryFeedRun, NewsFallbackLookup, NewsFallbackLookupLead
+from app.models.user import User
+from app.models.role import Role
 from app.services import news_processing_service
 from app.services.hybrid_extraction_service import HybridExtractionService
 from app.services.news_auto_ingestion_service import NewsAutoIngestionService
@@ -50,7 +53,9 @@ def queue_db(monkeypatch):
     @event.listens_for(engine, "connect")
     def enable_fk(connection, _record):
         connection.execute("PRAGMA foreign_keys=ON")
-    NewsArticle.metadata.create_all(engine, tables=[NewsArticle.__table__, NewsArticleFeedEntry.__table__,
+    NewsArticle.metadata.create_all(engine, tables=[Role.__table__, User.__table__,
+        NewsDiscoveryRun.__table__, NewsDiscoveryFeedRun.__table__, NewsFallbackLookup.__table__, NewsFallbackLookupLead.__table__,
+        NewsArticle.__table__, NewsArticleFeedEntry.__table__,
         NewsFeedCheckpoint.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__])
     def forbidden(*args, **kwargs):
         pytest.fail("Extraction attempted external audit or public ingestion")

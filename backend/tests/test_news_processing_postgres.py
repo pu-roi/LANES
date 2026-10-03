@@ -30,14 +30,15 @@ def postgres_queue():
     with engine.connect() as connection:
         database = connection.scalar(text("SELECT current_database()"))
         assert database.startswith("lanes_p3_verify_"), "Refusing a non-disposable database"
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "f29b6c8d104e"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "c5a7e9d2104f"
         assert connection.scalar(text("SELECT postgis_version()"))
     tables = inspect(engine).get_table_names()
     assert "news_article_versions" in tables and "news_extraction_runs" in tables
 
     def clean():
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE news_extraction_runs, news_article_versions, "
+            connection.execute(text("TRUNCATE news_fallback_lookup_leads, news_fallback_lookups, "
+                                    "news_discovery_feed_runs, news_discovery_runs, news_extraction_runs, news_article_versions, "
                                     "news_article_feed_entries, news_articles RESTART IDENTITY"))
 
     clean()
