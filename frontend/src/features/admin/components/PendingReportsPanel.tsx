@@ -8,6 +8,8 @@ import { parseUtcDate } from "@/lib/utils";
 import { formatFloodDepth } from "@/lib/floodDepth";
 
 interface PendingReportsPanelProps {
+  hideFilters?: boolean;
+  inspectionOnly?: boolean;
   pendingLoading: boolean;
   pendingReports: FloodReport[] | undefined;
   filteredPendingReports: FloodReport[];
@@ -29,6 +31,8 @@ export function PendingReportsPanel({
   onOpenMergeWorkspace,
   onRequestReject,
   approveMutation,
+  hideFilters = false,
+  inspectionOnly = false,
 }: PendingReportsPanelProps) {
 
   const [filterSeverity, setFilterSeverity] = React.useState<string>("all");
@@ -63,7 +67,7 @@ export function PendingReportsPanel({
   return (
     <div className="flex-1 overflow-hidden flex flex-col">
       {/* Troll Filtration Controls */}
-      <div className="p-3 bg-white border-b border-gray-100 flex gap-2 shrink-0">
+      {!hideFilters && <div className="p-3 bg-white border-b border-gray-100 flex gap-2 shrink-0">
         <div className="flex-1">
           <Select 
             value={filterSeverity} 
@@ -88,7 +92,7 @@ export function PendingReportsPanel({
             ]}
           />
         </div>
-      </div>
+      </div>}
 
       <div className="scrollbar-auto-hide flex-1 overflow-y-auto divide-y divide-gray-100">
         {displayedReports.length === 0 ? (
@@ -101,7 +105,7 @@ export function PendingReportsPanel({
             key={report.id}
             onClick={() => setSelectedReportId(isSelected ? null : report.id)}
             className={`p-4 transition-all cursor-pointer hover:bg-slate-50/80 ${
-              isSelected ? "bg-blue-50/80 ring-2 ring-blue-500/30" : ""
+              isSelected ? "bg-blue-50/80 ring-2 ring-blue-500/30" : hideFilters ? "bg-blue-50/80" : ""
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -131,7 +135,7 @@ export function PendingReportsPanel({
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); onInfoClick(report); }}
-                  className="flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 rounded-md transition-colors shadow-xs"
+                  className="flex min-h-11 items-center gap-1 px-2 py-0.5 text-[11px] font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 rounded-md transition-colors shadow-xs"
                   title="View full report moderation details"
                 >
                   <Info className="w-3 h-3" />
@@ -152,12 +156,12 @@ export function PendingReportsPanel({
             </div>
 
             {/* Quick Moderation Actions */}
-            <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
+            {!inspectionOnly && <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-gray-100" onClick={(e) => e.stopPropagation()}>
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => onOpenMergeWorkspace(report)}
-                className="h-7 text-xs px-2.5 text-blue-700 border-blue-200 hover:bg-blue-50 rounded-lg"
+                className="min-h-11 text-xs px-2.5 text-blue-700 border-blue-200 hover:bg-blue-50 rounded-lg"
                 title="Ask the intelligent matching engine for possible reports from the same incident"
               >
                 <Sparkles className="w-3.5 h-3.5 mr-1" /> Review Merge Suggestions
@@ -166,7 +170,7 @@ export function PendingReportsPanel({
                 size="sm"
                 variant="outline"
                 onClick={() => onRequestReject(report)}
-                className="h-7 text-xs px-2.5 text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="min-h-11 text-xs px-2.5 text-gray-600 hover:bg-gray-100 rounded-lg"
               >
                 <X className="w-3.5 h-3.5 mr-1 text-red-500" /> Reject
               </Button>
@@ -176,12 +180,12 @@ export function PendingReportsPanel({
                 variant="primary"
                 onClick={() => approveMutation.mutate({ id: report.id, payload: { action: "CREATE_NEW" } })}
                 disabled={approveMutation.isPending}
-                className="h-7 text-xs px-3 rounded-lg shadow-sm"
+                className="min-h-11 text-xs px-3 rounded-lg shadow-sm"
                 title="Approve this report as a standalone official zone"
               >
                 <Check className="w-3.5 h-3.5 mr-1" /> Approve
               </Button>
-            </div>
+            </div>}
           </div>
         );
       })}

@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 03, 2026, 11:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 4 reviewed-growth compatibility:** existing `FloodEvent` locations, linked reports and event-owned zones already support multiple roads/barangays/cities and section-specific conditions. Extension preserves the supported polygon and `source_geometry`; corroboration keeps operational fields unchanged; separate sections reuse the same event. Report moderation outcomes, location/timeline updates and merge audit save together. Native tests use a guarded local PostGIS database with outer rollback. This checkpoint modifies no SQLAlchemy model or Alembic revision; schema remains `c5a7e9d2104f`. [Verification](../evaluations/phase-36-needs-review-inspection.md#october-4-cross-boundary-growth-implementation).
 
 **Local v10 storage compatibility:** optional `placement_preview` uses existing extraction JSONB. Source hashing keeps processing identity at 90 characters within existing `String(100)`; old inputs/history remain intact. NOAH tiles are external derived files, not PostGIS tables. No SQLAlchemy/Alembic change or real database reprocessing occurred; prior v9 counts remain unchanged. Durable public state still needs storage assessment/separate schema approval. [Verification](../evaluations/phase-36-backend-placement-preview.md).
 

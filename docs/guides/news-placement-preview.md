@@ -1,6 +1,6 @@
 # News placement preview and NOAH catalog
 
-> **Last Updated:** October 03, 2026, 11:52 PM
+> **Last Updated:** October 04, 2026, 2:28 AM
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Staff can inspect a completed immutable result without writes:
@@ -10,7 +10,7 @@ GET /api/v1/admin/news/results/{run_id}/{claim_index}/placement
 Authorization: Bearer <staff JWT>
 ```
 
-Review the selected candidate, reported/predicted kind, alternatives, OSM/NOAH/history checksums, modeled overlap and status/reason. Original saved claim/run identity is separate from current placement revision. A proposed centerline does not prove flooded width; no map UI is delivered yet. Newly processed artifacts also expose the optional preview through existing extraction/details contracts.
+Review the ranked candidate, reported/predicted kind, alternatives, OSM/NOAH/history checksums, modeled overlap and status/reason. Original saved claim/run identity is separate from current placement revision. A proposed centerline does not prove flooded width. The local Spatial Operations Needs Review interface now opens current news exceptions with independent blue dashed suggestions; it starts with no candidate selected. Newly processed artifacts also expose the optional preview through existing extraction/details contracts. This does not deliver automatic publication. [Inspection verification](../evaluations/phase-36-needs-review-inspection.md).
 
 ## Build exact analytical assets
 

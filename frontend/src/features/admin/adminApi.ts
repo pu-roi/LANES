@@ -630,6 +630,8 @@ export interface MergeCandidatesListResponse {
   detected_conflicts: MergeConflict[];
   suggested_merged_geometry?: ReportGeometry | null;
   is_bidirectional_detected: boolean;
+  zone_candidates?: { zone_id: number; event_id: number; name?: string | null; distance_m: number;
+    severity?: string | null; depth?: string | null; match_reasons: string[] }[];
 }
 
 export interface MergedZoneFinalData {
@@ -650,6 +652,17 @@ export interface MergeReportsPayload {
   merged_report_ids: number[];
   target_zone_id?: number | null;
   final_data: MergedZoneFinalData;
+  merge_mode?: "extend" | "corroborate" | "add_section";
+}
+
+export interface MergeGeometryPreview {
+  geometry: ReportGeometry; source_geometry: ReportGeometry | null;
+  reviewed_geometry?: ReportGeometry;
+  preserves_existing_coverage: boolean; read_only: true;
+}
+
+export function getMergePreview(payload: MergeReportsPayload & { use_report_extents?: boolean }) {
+  return apiClient.post<MergeGeometryPreview>("/admin/reports/merge-preview", payload);
 }
 
 export interface MergeReportsResponse {

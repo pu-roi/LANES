@@ -188,7 +188,7 @@ test("Info keeps processing history inside Source Article with responsive panes"
   await open.click();
   const dialog = page.getByRole("dialog", { name: "News Flood Details", exact: true });
   await expect(dialog.getByRole("heading", { name: "Maybunga", exact: true })).toBeVisible();
-  await expect(dialog.getByText("Not stated in article", { exact: true })).toBeVisible();
+  await expect(dialog.getByRole("region", { name: "Reported location", exact: true }).getByText("Not stated in article", { exact: true })).toBeVisible();
   await expect(dialog.getByText("Full article text", { exact: true })).toHaveCount(0);
   const evidence = dialog.getByRole("region", { name: "News evidence", exact: true });
   const history = dialog.getByRole("region", { name: "Article processing records", exact: true });

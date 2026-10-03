@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFi
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func, or_
+from sqlalchemy.exc import SQLAlchemyError
 
 from app import crud, models, schemas
 from app.api import deps
@@ -27,6 +28,7 @@ from app.services.flood_event_service import (
     serialize_flood_event_planning_records,
 )
 from app.services.visitor_analytics_service import get_visitor_analytics
+from app.services.flood_zone_growth_service import compose_reviewed_coverage, validate_active_target
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -564,23 +566,31 @@ async def approve_report(
 
     if action not in {"CREATE_NEW", "MERGE"}:
         raise HTTPException(status_code=422, detail="Unsupported report approval action.")
+    if action == "MERGE" and (not body or not body.target_zone_id):
+        raise HTTPException(422, "Choose an existing zone before merging supporting evidence.")
 
     if action == "MERGE" and body and body.target_zone_id:
         # Merge report into existing active zone
         target_zone = db.query(models.FloodAvoidanceZone).filter(
             models.FloodAvoidanceZone.id == body.target_zone_id
-        ).first()
+        ).with_for_update().first()
         if not target_zone:
             raise HTTPException(status_code=404, detail="Target avoidance zone not found")
-        if not target_zone.is_active or target_zone.event_id is None:
-            raise HTTPException(
-                status_code=409,
-                detail="Select an active event-enabled zone, or create a new verified event.",
-            )
-        if body.custom_geometry:
-            geojson_str = body.custom_geometry.model_dump_json()
-            target_zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
-            target_zone.curated_by_admin_id = current_user.id
+        try:
+            validate_active_target(target_zone)
+            if body.custom_geometry:
+                final = schemas.MergedZoneFinalData(
+                    geometry=body.custom_geometry,
+                    severity=body.severity or target_zone.severity,
+                    depth=body.depth or target_zone.depth,
+                )
+                polygon, core, _ = compose_reviewed_coverage(db, final, target_zone, "extend")
+                target_zone.geometry = polygon
+                target_zone.source_geometry = core
+                target_zone.curated_by_admin_id = current_user.id
+        except ValueError as exc:
+            db.rollback()
+            raise HTTPException(422, str(exc)) from exc
         if body.severity:
             target_zone.severity_override = body.severity
         if body.depth:
@@ -603,6 +613,7 @@ async def approve_report(
                 acted_by_user_id=current_user.id,
             )
         except ValueError as exc:
+            db.rollback()
             raise HTTPException(status_code=409, detail=str(exc)) from exc
     else:
         # Action is CREATE_NEW
@@ -746,6 +757,32 @@ def get_merge_candidates(
         raise HTTPException(status_code=500, detail=f"Failed to identify merge candidates: {e}")
 
 
+@router.post("/reports/merge-preview", response_model=schemas.MergeGeometryPreview)
+def preview_merge_coverage(payload: schemas.MergePreviewRequest, db: Session = Depends(get_db),
+        _admin: models.User = Depends(deps.get_current_active_admin)) -> Any:
+    """Read-only final coverage preview using the same composition as publication."""
+    ids = set([payload.primary_report_id, *payload.merged_report_ids])
+    available = db.query(models.FloodReport.id).filter(models.FloodReport.id.in_(ids),
+        models.FloodReport.status == models.ReportStatus.PENDING, models.FloodReport.deleted_at.is_(None)).count()
+    if available != len(ids):
+        raise HTTPException(409, "Selected reports are no longer pending. Refresh the review.")
+    target = db.get(models.FloodAvoidanceZone, payload.target_zone_id) if payload.target_zone_id else None
+    if payload.target_zone_id and not target:
+        raise HTTPException(404, "Target avoidance zone not found")
+    try:
+        final = payload.final_data
+        if payload.use_report_extents:
+            from app.services.merge_service import synthesize_merged_geometry
+            selected = db.query(models.FloodReport).filter(models.FloodReport.id.in_(ids)).order_by(models.FloodReport.id).all()
+            geometry, _ = synthesize_merged_geometry(selected, db)
+            if not geometry:
+                raise ValueError("These reports need an explicitly reviewed affected boundary.")
+            final = schemas.MergedZoneFinalData.model_validate({**final.model_dump(), "geometry": geometry})
+        return compose_reviewed_coverage(db, final, target, payload.merge_mode)[2]
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
+
+
 @router.post("/reports/merge", response_model=schemas.MergeReportsResponse)
 async def merge_reports(
     payload: schemas.MergeReportsRequest,
@@ -757,7 +794,7 @@ async def merge_reports(
     Atomic Multi-Report Merge & Official Zone Declaration.
     - Merges primary_report and merged_report_ids into a new or existing FloodAvoidanceZone.
     - Saves overridden passable vehicles, hazards, severity, depth, notes, and merge rationale.
-    - Buffers geometry into active avoidance polygon (using dual-carriageway hull if bidirectional).
+    - Previews and preserves supported coverage; separate sections keep the same event.
     - Credits +5 Trust Score to each unique reporter.
     - Preserves all original crowdsourced reports and leaves CommunityFeed posts 100% immutable.
     - Broadcasts real-time SSE notification and records audit trail.
@@ -767,7 +804,7 @@ async def merge_reports(
     matched_reports = db.query(models.FloodReport).filter(
         models.FloodReport.id.in_(all_report_ids),
         models.FloodReport.deleted_at.is_(None),
-    ).all()
+    ).order_by(models.FloodReport.id).with_for_update().all()
 
     if len(matched_reports) != len(all_report_ids):
         raise HTTPException(status_code=409, detail="All selected reports must still be available for merge.")
@@ -775,7 +812,9 @@ async def merge_reports(
     completed_zone_ids = {report.zone_id for report in matched_reports if report.status == models.ReportStatus.APPROVED and report.event_id and report.zone_id}
     if len(completed_zone_ids) == 1 and len(completed_zone_ids) == len({report.zone_id for report in matched_reports}):
         completed_zone_id = completed_zone_ids.pop()
-        if payload.target_zone_id is None or payload.target_zone_id == completed_zone_id:
+        if payload.target_zone_id is None or payload.target_zone_id == completed_zone_id or (
+            payload.merge_mode == "add_section" and db.get(models.FloodAvoidanceZone, payload.target_zone_id)
+            and db.get(models.FloodAvoidanceZone, payload.target_zone_id).event_id == matched_reports[0].event_id):
             completed_zone = db.get(models.FloodAvoidanceZone, completed_zone_id)
             if completed_zone:
                 return schemas.MergeReportsResponse(
@@ -784,6 +823,7 @@ async def merge_reports(
                     zone_name=completed_zone.name,
                     merged_count=len(matched_reports),
                     awarded_user_ids=[],
+                    zone=schemas.FloodAvoidanceZoneResponse.model_validate(completed_zone),
                 )
 
     if any(report.status != models.ReportStatus.PENDING for report in matched_reports):
@@ -793,131 +833,136 @@ async def merge_reports(
     final = payload.final_data
     target_zone = None
     created_new_zone = False
+    existing_event = None
 
     # 1. Resolve Target Avoidance Zone (Existing vs New)
     if payload.target_zone_id:
         target_zone = db.query(models.FloodAvoidanceZone).filter(
             models.FloodAvoidanceZone.id == payload.target_zone_id
-        ).first()
+        ).with_for_update().first()
         if not target_zone:
             raise HTTPException(status_code=404, detail=f"Target avoidance zone #{payload.target_zone_id} not found")
         if not target_zone.is_active or target_zone.event_id is None:
             raise HTTPException(status_code=409, detail="Select an active event-enabled zone, or create a new verified event.")
+        existing_event = db.query(models.FloodEvent).filter(models.FloodEvent.id == target_zone.event_id).with_for_update().one()
+        try:
+            validate_active_target(target_zone)
+        except ValueError as exc:
+            raise HTTPException(409, str(exc)) from exc
+        created_new_zone = payload.merge_mode == "add_section"
     else:
         # Create a new FloodAvoidanceZone
         created_new_zone = True
 
-    # 2. Process and Buffer the Final Zone Geometry
-    # Final geometry can be Hand-Drawn Polygon (TerraDraw) or Routed Line/MultiLine
-    geom_dict = final.geometry.model_dump()
-    geom_type = geom_dict.get("type")
-    
-    if geom_type in ["Polygon", "MultiPolygon"]:
-        # Hand-drawn boundary polygon
-        geojson_str = json.dumps(geom_dict)
-        final_poly_geom = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
-    else:
-        # LineString or MultiLineString: buffer into avoidance polygon
-        geojson_str = json.dumps(geom_dict)
-        input_geom = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geojson_str), 4326)
-        buffer_radius = (final.buffer_radius or 25.0) / 111000.0  # meters to approx degrees
+    try:
+        final_poly_geom, final_core_geom, coverage_preview = compose_reviewed_coverage(db, final, target_zone, payload.merge_mode)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from exc
 
-        if geom_type == "MultiLineString":
-            # Dual carriageway (Decision #16): buffer both lines and take convex hull
-            final_poly_geom = func.ST_ConvexHull(
-                func.ST_Collect(
-                    func.ST_Buffer(func.ST_GeometryN(input_geom, 1), buffer_radius),
-                    func.ST_Buffer(func.ST_GeometryN(input_geom, 2), buffer_radius)
-                )
+    try:
+        # 3. Apply Overrides to Avoidance Zone
+        if created_new_zone:
+            target_zone = models.FloodAvoidanceZone(
+                curated_by_admin_id=current_user.id,
+                geometry=final_poly_geom,
+                source_geometry=final_core_geom,
+                event_id=existing_event.id if existing_event else None,
+                name=final.name,
+                severity_override=models.ReportSeverity(final.severity) if final.severity in [s.value for s in models.ReportSeverity] else models.ReportSeverity.MEDIUM,
+                depth_override=final.depth,
+                passable_vehicles_override=final.passable_vehicles,
+                hidden_hazards_override=final.hidden_hazards,
+                merge_rationale=final.merge_rationale or f"Merged {len(reports)} reports ({', '.join([f'#{r.id}' for r in reports])})",
+                admin_notes=final.admin_notes,
+                is_active=True
             )
-        else:
-            final_poly_geom = func.ST_Buffer(input_geom, buffer_radius)
-
-    # 3. Apply Overrides to Avoidance Zone
-    if created_new_zone:
-        target_zone = models.FloodAvoidanceZone(
-            curated_by_admin_id=current_user.id,
-            geometry=final_poly_geom,
-            name=final.name,
-            severity_override=models.ReportSeverity(final.severity) if final.severity in [s.value for s in models.ReportSeverity] else models.ReportSeverity.MEDIUM,
-            depth_override=final.depth,
-            passable_vehicles_override=final.passable_vehicles,
-            hidden_hazards_override=final.hidden_hazards,
-            merge_rationale=final.merge_rationale or f"Merged {len(reports)} reports ({', '.join([f'#{r.id}' for r in reports])})",
-            admin_notes=final.admin_notes,
-            is_active=True
-        )
-        db.add(target_zone)
-        db.flush()
-        try:
-            initialize_verified_event_for_zone(
+            db.add(target_zone)
+            db.flush()
+            try:
+                if existing_event:
+                    target_zone.flood_event = existing_event
+                    record_zone_update(db, target_zone, {"merge_mode": "add_section", "new_section": True,
+                        "geometry": coverage_preview["geometry"]}, commit=False)
+                else:
+                    initialize_verified_event_for_zone(db=db, zone=target_zone,
+                        peak_severity=final.severity, peak_depth=final.depth)
+            except ValueError as exc:
+                db.rollback()
+                raise HTTPException(status_code=409, detail=str(exc)) from exc
+        elif payload.merge_mode == "extend":
+            target_zone.curated_by_admin_id = current_user.id
+            target_zone.geometry = final_poly_geom
+            target_zone.source_geometry = final_core_geom
+            if final.name:
+                target_zone.name = final.name
+            if final.severity:
+                target_zone.severity_override = models.ReportSeverity(final.severity) if final.severity in [s.value for s in models.ReportSeverity] else target_zone.severity_override
+            if final.depth:
+                target_zone.depth_override = final.depth
+            if final.passable_vehicles:
+                target_zone.passable_vehicles_override = final.passable_vehicles
+            if final.hidden_hazards:
+                target_zone.hidden_hazards_override = final.hidden_hazards
+            target_zone.merge_rationale = final.merge_rationale or f"Merged {len(reports)} additional reports ({', '.join([f'#{r.id}' for r in reports])})"
+            if final.admin_notes:
+                target_zone.admin_notes = final.admin_notes
+            target_zone.is_active = True
+            db.flush()
+            record_zone_update(
                 db=db,
                 zone=target_zone,
-                peak_severity=final.severity,
-                peak_depth=final.depth,
+                changes={"merge_report_ids": all_report_ids, "merge_mode": payload.merge_mode,
+                    "preserves_existing_coverage": True, "geometry": coverage_preview["geometry"],
+                    "official_overrides": final.model_dump(mode="json")},
+                commit=False,
             )
+
+        # 4. Link all reports as corroborating evidence without creating duplicate events.
+        awarded_user_ids = list(dict.fromkeys(report.user_id for report in reports if report.user_id))
+        try:
+            for report in reports:
+                link_supporting_report(
+                    db=db,
+                    report=report,
+                    event=target_zone.flood_event,
+                    zone=target_zone,
+                    acted_by_user_id=current_user.id,
+                    commit=False,
+                )
+            db.flush()
         except ValueError as exc:
+            db.rollback()
             raise HTTPException(status_code=409, detail=str(exc)) from exc
-    else:
-        target_zone.curated_by_admin_id = current_user.id
-        target_zone.geometry = final_poly_geom
-        target_zone.name = final.name
-        if final.severity:
-            target_zone.severity_override = models.ReportSeverity(final.severity) if final.severity in [s.value for s in models.ReportSeverity] else target_zone.severity_override
-        if final.depth:
-            target_zone.depth_override = final.depth
-        if final.passable_vehicles:
-            target_zone.passable_vehicles_override = final.passable_vehicles
-        if final.hidden_hazards:
-            target_zone.hidden_hazards_override = final.hidden_hazards
-        target_zone.merge_rationale = final.merge_rationale or f"Merged {len(reports)} additional reports ({', '.join([f'#{r.id}' for r in reports])})"
-        if final.admin_notes:
-            target_zone.admin_notes = final.admin_notes
-        target_zone.is_active = True
-        db.flush()
-        record_zone_update(
-            db=db,
-            zone=target_zone,
-            changes={"merge_report_ids": all_report_ids, "official_overrides": final.model_dump(mode="json")},
+
+        # 5. Audit Trail Logging
+        client_ip = request.client.host if request.client else None
+        crud.create_audit_log(
+            db,
+            audit_in=schemas.AuditLogCreate(
+                admin_id=current_user.id,
+                action_type="MERGE_REPORTS",
+                target_table="flood_avoidance_zones",
+                target_id=target_zone.id,
+                metadata_json={
+                    "zone_id": target_zone.id,
+                    "created_new_zone": created_new_zone,
+                    "merge_mode": payload.merge_mode,
+                    "preserves_existing_coverage": coverage_preview["preserves_existing_coverage"],
+                    "merged_report_ids": all_report_ids,
+                    "awarded_user_ids": awarded_user_ids,
+                    "final_severity": final.severity,
+                },
+                ip_address=client_ip
+            ),
             commit=False,
         )
 
-    # 4. Link all reports as corroborating evidence without creating duplicate events.
-    awarded_user_ids = list(dict.fromkeys(report.user_id for report in reports if report.user_id))
-    try:
-        for report in reports:
-            link_supporting_report(
-                db=db,
-                report=report,
-                event=target_zone.flood_event,
-                zone=target_zone,
-                acted_by_user_id=current_user.id,
-                commit=False,
-            )
         db.commit()
         db.refresh(target_zone)
-    except ValueError as exc:
-        raise HTTPException(status_code=409, detail=str(exc)) from exc
-
-    # 5. Audit Trail Logging
-    client_ip = request.client.host if request.client else None
-    crud.create_audit_log(
-        db,
-        audit_in=schemas.AuditLogCreate(
-            admin_id=current_user.id,
-            action_type="MERGE_REPORTS",
-            target_table="flood_avoidance_zones",
-            target_id=target_zone.id,
-            metadata_json={
-                "zone_id": target_zone.id,
-                "created_new_zone": created_new_zone,
-                "merged_report_ids": all_report_ids,
-                "awarded_user_ids": awarded_user_ids,
-                "final_severity": final.severity,
-            },
-            ip_address=client_ip
-        )
-    )
+    except (ValueError, SQLAlchemyError) as exc:
+        db.rollback()
+        logger.exception("Unable to publish reviewed flood coverage")
+        raise HTTPException(500, "Unable to publish the reviewed coverage. No changes were saved.") from exc
 
     # 6. Real-Time Broadcast via SSE
     from app.core.sse import manager
@@ -1933,8 +1978,10 @@ async def merge_pending_into_zone(
         )
 
     target_event = db.get(models.FloodEvent, target_zone.event_id)
-    if not target_event or target_event.status != models.FloodEventStatus.ACTIVE:
-        raise HTTPException(status_code=409, detail="The target Flood Event is no longer active.")
+    try:
+        validate_active_target(target_zone)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc)) from exc
 
     reports = [crud.get_flood_report(db, report_id=report_id) for report_id in payload.report_ids]
     if all(

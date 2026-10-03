@@ -1,11 +1,111 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 03, 2026, 8:09 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-096] Cross-boundary flood growth lacks a consistent review and extension workflow
+
+- **Status:** Resolved in the reviewed roi-branch checkpoint; developer acceptance and production rollout pending
+- **Severity:** Medium (candidate visibility and preservation of existing zone coverage)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The developer identified that an expanding flood can cross streets/barangays and may need to extend an existing zone. Current display grouping excludes known different barangays and different normalized road names. Existing merge actions do not consistently mean geographic extension.
+
+#### 2. Root Cause Analysis (RCA)
+
+The inspection grouper uses administrative/road labels as hard conditions, while actual merge suggestions award locality points rather than imposing a barangay boundary. `find_merge_candidates` queries nearby pending reports, not active zones, despite its broader docstring. `/zones/{id}/merge-pending` links supporting evidence without changing coverage. `/reports/merge` assigns the submitted final polygon to the target zone; selecting an existing destination does not itself union its old boundary into that payload. `MergeWorkspacePanel` initializes the final geometry from the primary report. Road synthesis projects endpoints onto the longest submitted line, which cannot reliably extend past that baseline or represent connected branches.
+
+This is primarily a workflow/geometry gap: `FloodEvent.locations`, `reports` and `zones` already support multiple affected places and sections, and `link_supporting_report` records each report's road/barangay/city. The Phase 33 design explicitly supports multi-road/cross-barangay incidents.
+
+#### 3. Solution & Architectural Strategy
+
+Implemented server-owned boundary-crossing review without automatic incident merging. Same-road/same-city grouping allows 500 m; different roads/cities use 50 m; pairwise report time remains two hours and complete-link grouping prevents chains. Active event-owned zones within 500 m are suggested independently of the original event age. The admin explicitly chooses extension, evidence-only corroboration, or a separate section of the same event. Shared PostGIS preview/publication unions existing coverage and road cores during extension, buffers all reviewed road branches in projected metres, rejects points/invalid/disconnected coverage, and preserves original evidence. Legacy approval also preserves old coverage; batch merge remains corroboration only. Publication, moderation outcomes and audit commit together. Existing event location/zone tables handle multiple places and different per-section conditions; no schema/dependency change.
+
+#### 4. Files Investigated / What Changed
+
+- Changed `services/spatial_review_grouping.py`, `services/merge_service.py`, new `services/flood_zone_growth_service.py`, `api/v1/endpoints/admin.py`, `crud/audit.py`, request/response schemas, frontend `adminApi.ts`, `MergeWorkspacePanel.tsx` and the mobile drawer placement in `LiveMapPage.tsx`.
+- Added native local PostGIS/API rollback-isolated growth tests and desktop/mobile review-action regressions. Existing database containers were restored after Docker runtime socket failures; no volumes or databases were reset.
+- Verification and remaining limits: [implementation evaluation](../evaluations/phase-36-needs-review-inspection.md#october-4-cross-boundary-growth-implementation). Actual report #2/#3 coordinates/incident membership are not present in the dedicated test database and remain unverified.
+
+
+### [BUG-095] Map selection retains another queue card's related reports
+
+- **Status:** Resolved locally; native database verification pending
+- **Severity:** Medium (incorrect report relationships in inspection)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Selecting #2 or #4 shows the other report, but selecting #3 on the map can show both #2 and #4. The screenshots label #3 Rosario and #2/#4 Maybunga.
+
+#### 2. Root Cause Analysis (RCA)
+
+`NeedsReviewPanel.openedGroup` changed only when a queue card was clicked. `LiveMapPage.selectQueueReportFromMap` selected new evidence without updating that group. The previous card's members therefore remained below an unrelated report. The member endpoint also resolved only the oldest-ID group anchor, preventing direct lookup by another selected member.
+
+#### 3. Solution & Architectural Strategy
+
+Remove retained card membership from the panel. Query the protected member endpoint by the selected report's identity; the backend resolves that identity's current group and returns its canonical key and grouping reason. Hide the related section for singleton groups, preserve pagination and individual actions, and retain existing locality/distance/time rules. Known different barangays remain separate even when nearby; this fix does not change merge eligibility. Regression verification is recorded in the [evaluation](../evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-selected-report-group-resolution). A guarded read-only attempt against the dedicated local PostGIS test database timed out; exact real distances and live membership remain unverified.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/spatial_review_service.py`, `schemas/spatial_review.py`: resolve members by any current identity and return the server grouping reason; no database model/migration change.
+- `frontend/src/features/admin/review/NeedsReviewPanel.tsx`, `RelatedReviewReports.tsx`, `reviewApi.ts`: selected-identity member query, no retained queue-group fallback, singleton hiding and explicit read failure/retry.
+- `backend/tests/test_spatial_review_grouping.py`, `frontend/tests/spatial-review.spec.ts`: reciprocal lookup, different-barangay exclusion, non-anchor pagination and map/external selection regressions.
+
+### [BUG-094] Needs Review flattens related reports and lacks source card styling
+
+- **Status:** Resolved locally; actual database grouping/developer acceptance pending
+- **Severity:** Medium (queue readability and repeated location rows)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Developer screenshots show three nearby Dr. Sixto Antonio reports as separate plain rows. User and news sources have text labels but little visual separation compared with existing report details.
+
+#### 2. Root Cause Analysis (RCA)
+
+The combined reader originally paginated individual identities, and its row renderer omitted the previous report card's background/measurement presentation. Grouping only the returned frontend page would split related reports at page boundaries. Calling the full merge engine on each polled card would also perform road tracing and geometry synthesis.
+
+#### 3. Solution & Architectural Strategy
+
+Group eligible pending user metadata in the backend before card pagination, reusing merge road normalization and conservative same-locality, pairwise 500 m/two-hour rules. Keep all original evidence and conflicts. Distinguish light blue user groups and light violet independent news cards; open report details for the related list and individual actions, and paginate larger member sets through a protected read. The developer requested the queue dropdown be removed; related reports now appear inside evidence. Actual merges remain explicit. 95 backend checks and 18 distinct current browser checks pass; TypeScript/scoped lint pass. [Evidence](../evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-related-cards-and-source-styling).
+
+The subsequent related-detail presentation originally used compact links and duplicated the selected report. The developer requested the existing full report layout throughout. Related members now use protected full-detail reads and the same `PendingReportsPanel`, with individual actions and no duplicated selected row. Approving/rejecting another member preserves the current detail. [Follow-up](../evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-consistent-related-report-layout).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/crud/spatial_review.py`, `services/spatial_review_grouping.py`, `services/spatial_review_service.py`, `schemas/spatial_review.py`, `api/v1/endpoints/admin_review.py`: compact metadata, grouped card/member contracts, projected geometry and bounded evidence reads; no schema/migration writes.
+- `frontend/src/features/admin/review/ReviewQueueCard.tsx`, `NeedsReviewPanel.tsx`, `reviewApi.ts`, `LiveMapPage.tsx`: source styles, measurements, expansion, error/focus preservation and moderation cache refresh.
+- `backend/tests/test_spatial_review.py`, `test_spatial_review_grouping.py`, `frontend/tests/spatial-review.spec.ts`: auth, exclusions, anti-chain bounds, conflicting measurements, pagination and desktop/mobile coverage.
+
+### [BUG-093] Spatial Operations mobile map switching fails in touch landscape
+
+- **Status:** Resolved locally; developer visual acceptance pending
+- **Severity:** Medium (map and evidence workspace visibility)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+During Needs Review integration, touch landscape could display both the sidebar and map, or hide the return control despite selecting the mobile map workspace. Narrow layouts also required explicit overflow checks.
+
+#### 2. Root Cause Analysis (RCA)
+
+The JavaScript mobile test included coarse pointers and a 640px breakpoint, while Tailwind desktop classes started at 768px. Unconditional `md:flex` and `md:hidden` overrode mobile visibility on landscape touch devices.
+
+#### 3. Solution & Architectural Strategy
+
+Align the viewport threshold to 768px and use the same responsive state for the primary sidebar/map and mobile controls. Preserve the mounted map and drawing sessions. Browser checks cover a 320px evidence viewport, 844×390 touch landscape switching, and desktop inspection. [Verification](../evaluations/phase-36-needs-review-inspection.md).
+
+#### 4. Files Modified / What Changed
+
+- `frontend/src/features/admin/LiveMapPage.tsx`: consistent responsive layout, Map/Evidence visibility and 44px controls.
+- `frontend/tests/spatial-review.spec.ts`: narrow/landscape overflow and workspace-switching coverage.
 
 ### [BUG-092] News details overstate depth and attach unrelated province labels
 

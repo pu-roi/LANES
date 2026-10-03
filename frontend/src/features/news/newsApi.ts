@@ -66,6 +66,7 @@ export interface NewsClaim {
   is_negated: boolean;
   road_passability: string;
   action_type: string | null;
+  action_rationale?: string | null;
   road_placement: { status: string; reason: string } | null;
 }
 

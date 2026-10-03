@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** October 03, 2026, 11:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -11,10 +11,30 @@
 
 ## Active Sprint
 
+### Needs Review: local queue and placement inspection
+
+- [x] Resolve related reports from the currently selected identity for queue, map and external handoffs; remove stale queue-card group state and support non-anchor member reads. Keep existing locality/distance/time and explicit merge rules. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-selected-report-group-resolution). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Render related reports with the same existing report component and own-record actions, excluding the selected report from the related list. Preserve queue styling and grouping. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Keep grouped source cards simple: clicking opens report evidence with the related reports inside the detail view, without a queue dropdown. Preserve existing merge/moderation actions and member pagination. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Push existing checkpoint `d435f02` to `roi-branch` before beginning the review workspace. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Implement protected server-paginated All/User Reports/News Claims reads and the renamed Needs Review workspace, with in-place source evidence and independent dashed centerline suggestions on desktop/mobile. Keep existing user-report actions and mounted Create/Merge/Edit drafts. No schema/dependency or news publication writes. [Verification](evaluations/phase-36-needs-review-inspection.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Group nearby same-road user reports before card pagination and distinguish user/news sources with light blue/violet cards. Preserve individual conflicting measurements/actions and paginate large groups; 95 backend checks and 18 distinct Spatial Operations browser checks pass, with TypeScript/scoped lint. Actual database grouping and developer visual acceptance remain open. [Follow-up](evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-related-cards-and-source-styling). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Complete developer visual acceptance (native PostGIS/authenticated queue, members and preview now verified). F5 inspection is locally implemented; durable exception decisions and automatic publication/lifecycle remain unfinished. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+- [x] Complete the authorized senior-planner checkpoint audit, including all eight authoritative records, index/plan consistency and dependency/schema synchronization. Prepare the combined Needs Review and reviewed-growth bundle for `roi-branch`; production rollout and developer acceptance remain separate. [Audit](evaluations/phase-36-needs-review-inspection.md#october-4-senior-planner-checkpoint-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+**Cross-boundary growth follow-up — implemented locally, acceptance pending:** Boundary-crossing review, explicit extension/evidence-only/separate-section modes and preserved coverage are implemented without schema changes. [Implementation evidence](evaluations/phase-36-needs-review-inspection.md#october-4-cross-boundary-growth-implementation). The developer requested inspection of floods spanning streets/barangays and extension of an existing zone. Phase 33 already provides multiple event locations, supporting reports and event-owned zones; reuse that storage before proposing any migration. [Investigation](evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-cross-boundary-growth-scope), [BUG-096](others/bug-log.md#bug-096-cross-boundary-flood-growth-lacks-a-consistent-review-and-extension-workflow). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+- [x] Make related-report/active-zone discovery support boundary-crossing candidates using projected geometry and road connectivity/overlap, compatible incident time and evidence; known different barangays must not alone exclude review. Preserve distinctions between nearby evidence and verified shared incident membership. Include later growth of an ongoing active event instead of treating a fixed two-hour report window as an incident lifetime. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Define and implement explicit corroboration versus zone-extension behavior. For extension, retain existing supported coverage and road-core geometry while adding reviewed affected sections; ordinary corroboration must not expand the boundary. Preserve event/zone identity, original reports, condition differences, affected places, audit history and routing eligibility. Disconnected or differently conditioned sections can use separate zones owned by the same confirmed event. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Reuse `flood_event_locations` and linked reports for multiple roads/barangays/cities. Identify any remaining per-section storage gap before proposing an exact schema change for approval; no model, migration or dependency change was needed for this implementation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Verify cross-barangay and connected multi-road growth, unrelated nearby events, ongoing-event updates, preserved old coverage, branching/disconnected geometry, differing local depths, idempotency/history and desktop/mobile review actions. Native PostGIS/API and desktop/mobile checks are recorded in the implementation evaluation. Actual #2/#3 incident membership and developer visual acceptance remain open; screenshots alone establish neither. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
 ### Automatic placement: local backend preview
 
 - [x] Connect exact indexed NOAH intersections and section-matched Pasig DRRMO evidence to shared extraction; add protected current-placement GET with immutable evidence/source identities. Build the local catalog and verify 86.2 m Santo Domingo plus six Caruncho candidates. 550 distinct backend checks pass (one skip); existing JSONB/90-character identity require no SQLAlchemy/Alembic change. No actual database replay, UI/public write or deployment. [Verification](evaluations/phase-36-backend-placement-preview.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [ ] Integrate previews into desktop/mobile Spatial Operations; settle supported operational corridor geometry and durable alert/zone identity/correction/expiry before publication. Provision external NOAH assets for matching API/collector release. Any exact schema proposal needs separate approval. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Integrate read-only placement previews into desktop/mobile Spatial Operations. Current news exceptions open in Needs Review with independent candidate inspection; native API and developer visual acceptance remain open. [Verification](evaluations/phase-36-needs-review-inspection.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Settle supported operational corridor geometry and durable alert/zone identity/correction/expiry before publication. Provision external NOAH assets for matching API/collector release. Any exact schema proposal needs separate approval. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Automatic placement: existing map rendering investigation
 

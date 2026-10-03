@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 03, 2026, 11:52 PM
+> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
 
@@ -28,6 +28,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Needs Review queue and placement inspection](evaluations/phase-36-needs-review-inspection.md) — protected mixed-source reads, related user cards, source styling, reviewed cross-boundary growth with retained coverage, native PostGIS/JWT checks, desktop/mobile workspace and remaining lifecycle acceptance.
 
 - [Backend OSM/NOAH/Pasig placement preview](evaluations/phase-36-backend-placement-preview.md) — local shared extraction/protected API, exact vector assets, 550 distinct passing checks and pending map/publication integration.
 

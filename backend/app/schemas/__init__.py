@@ -9,7 +9,7 @@ from app.schemas.report import (
     AvoidanceZoneUpdateRequest, ApproveReportRequest, RejectFloodReportRequest, NearbyZoneResponse,
     MergePendingReportsRequest, MergePendingReportsResponse,
     MergeConflict, MergeCandidateItem, MergeCandidatesListResponse,
-    MergedZoneFinalData, MergeReportsRequest, MergeReportsResponse
+    MergedZoneFinalData, MergeReportsRequest, MergeReportsResponse, MergeGeometryPreview, MergePreviewRequest
 )
 from app.schemas.route import RouteRequest, RouteResponse, LineStringGeometry, RouteOption, MultiRouteResponse, FloodExposure, BlockedRouteBaseline
 from app.schemas.common import PointGeometry, PolygonGeometry, serialize_utc_datetime, ensure_utc
