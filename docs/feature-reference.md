@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 03, 2026, 5:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 7:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current local news checkpoint:** v8/v1.6 retains the September 24 results and adds the September 9 three-article replay with 33 readable sites, including 20 explicit caution records. Independent road facts, publisher corrections and visible retrieval failures are repaired; Flood Details renders server-owned passability. The pre-push regression run passes 555 tests spanning news, routing, depth, authorization and geometry, plus frontend TypeScript and scoped lint. Earlier local v5/v6 descriptions below are verification history. Production remains v4; final visual acceptance, freshness policy and automatic publication remain pending. [Workflow evidence](evaluations/phase-36-news-workflow-follow-up.md).
 
 **Private local news testing delivered:** the September 24 historical replay is persisted in separate Docker database `lanes_news_test` and visible through the real authenticated News Intelligence page, detail/source and Collection. Loopback launchers load ignored database/JWT overrides while preserving cloud configuration. Local v6/v1.4 keeps city summaries as context where credible specific sites exist in the same city: five street cards, one article, two preserved versioned runs and no zones. City-only reports and distinct explicit observation times remain independent. All 224 related backend tests pass; no schema, dependency or API/UI contract change. Production v4 remains deployed. [Runbook](guides/local-news-replay.md).
 

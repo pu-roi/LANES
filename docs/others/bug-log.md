@@ -1,11 +1,86 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 03, 2026, 5:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 7:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-091] Collection timing and unchanged RSS can miss current publisher updates
+
+- **Status:** Investigating; refresh policy and production schedule unchanged
+- **Severity:** High for the intended near-real-time news workflow
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+An article may change from flooded to subsided while RSS title/excerpt/publication remain identical. Discovery reuses stored text or receives no entries on HTTP 304. It never sees the edit. Production Scheduler inspection confirms collection every three hours; minute-scale extraction retry due times do not start a worker themselves.
+
+#### 2. Root Cause Analysis (RCA)
+
+RSS metadata/checkpoints are used as article-body freshness signals. There is no independent bounded body revisit or publisher retrieval-retry queue. Scheduler launch retries differ from extraction and publisher retry. News itself can also lag actual conditions.
+
+#### 3. Solution & Architectural Strategy
+
+Document actual timing and distinguish retry from refresh. The developer questioned the hourly/24-hour proposal; it remains unapproved. Agree on discovery/update latency, publisher request limits, retry bounds and stale-observation behavior before changing code or production scheduling. [Evidence](../evaluations/phase-36-news-workflow-follow-up.md#freshness-investigation-open-unchanged).
+
+#### 4. Files Modified / What Changed
+
+Evaluation, task plan and system/progress records only for this timing finding. Read-only `gcloud scheduler` list/describe inspection; no scheduler, source registry or retrieval interval changed.
+
+### [BUG-090] Existing news workflow mixes facts and drops publisher corrections
+
+- **Status:** Resolved locally in v8/v1.6; production release pending
+- **Severity:** High (stale/misleading flood facts and hidden retrieval issues)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Caution became unrestricted passability; independently conjoined roads shared the wrong depth/clock; bare narrative retained a list time. Successful publisher denials or changed-city corrections were rejected and left older active evidence current. Failed refreshes with newer pending/failed extraction, or after a denial, disappeared from Collection attention. UI exposed a permanently empty filter and omitted structured passability from details.
+
+#### 2. Root Cause Analysis (RCA)
+
+Claim enum lacked caution; conjunction/list rules lacked independent-predicate scope. New-article admission rules were also applied to existing publisher corrections. Failed-refresh visibility considered only current/latest evidence, ignoring credible history. Frontend options/facts lagged backend behavior.
+
+#### 3. Solution & Architectural Strategy
+
+Use the explicitly approved caution category with source provenance and a no-automatic-closure guard. Preserve independently stated road facts while keeping shared qualifiers/subjects together. Version successful corrections and retain immutable old history; keep new irrelevant stories excluded. Use current-or-history recognition for failed fetch diagnostics and Collection attention without reviving old main rows. Add backend-owned passability labels and remove the dead UI option. All 452 related backend tests, TypeScript, scoped lint and 33-site private API/source checks pass. No database migration, dependency, deployment or current-zone creation. [Evaluation](../evaluations/phase-36-news-workflow-follow-up.md).
+
+#### 4. Files Modified / What Changed
+
+- `taglish_extraction_service.py`, `schemas/news_extraction.py`, `hybrid_extraction_service.py`, `crud/news_processing.py`: scoped facts, explicit caution/guard and v8/v1.6 identity.
+- `news_discovery_service.py`, `crud/news_collection.py`: existing corrections, credible-history diagnostics and attention state.
+- `schemas/news_presentation.py`, `news_presentation_service.py`, frontend `newsApi.ts`, `NewsResultDialog.tsx`, `NewsCollectionDrawer.tsx`: server passability labels, shared responsive details and selectable statuses.
+- New passability/correction/Collection tests; extended September 9 tests and source-supported caution expectations. Affected evaluation/core/runbook records are synchronized.
+
+### [BUG-089] Multi-location September 9 reports lose sites and scoped facts
+
+- **Status:** Resolved locally in v7/v1.5; production release pending
+- **Severity:** High (missing observations and incorrect temporal/context attribution)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Three September 9 reporting bodies expose an omitted depthless list road, missing Blumentritt, missed singular vehicle-passability wording, unresolved afternoon clocks in a morning-published/afternoon-updated article, and missing road/barangay separation. Regression review also finds forecast/drill headings lost on measured rows and list clocks leaking into short independent narrative roads. The local test server loses its socket on Windows auto-reload and leaves an empty API served at the local address.
+
+#### 2. Root Cause Analysis (RCA)
+
+Street, qualifier and passability rules omit source forms; row-local evidence ignores a credible list introduction. Clock anchoring only knows original publication. List scope lacks inherited non-observation flags and treats short finite-verb narrative as telegraphic entries. The local reload child fails while reconstructing its inherited socket.
+
+#### 3. Solution & Architectural Strategy
+
+Retain exact source offsets and contiguous list provenance; validate barangays against parent-city PSGC; parse coordinated roads and explicit singular passability. Use the approved narrow GMA-only matching publication/update header without changing publication or schema. Carry disqualifying context through rows, reset at independent narrative, and leave unsupported facts unknown. Version to v7/v1.5 and retain immutable earlier runs. Disable auto-reload only in the private replay launcher; restart explicitly after edits. All 410 related tests and 33 audited source locations pass. Actual authenticated API/frontend proxy details match. Browser verification is separately blocked by saved permission policy. [Evaluation](../evaluations/phase-36-september9-production-day-replay.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`: road/PSGC/passability parsing, scoped evidence, observation anchor and narrative/non-observation boundaries.
+- `backend/app/services/news_evidence_policy.py`: affirmative affected-road/area wording shared by SQL and readers.
+- `backend/app/crud/news_processing.py`: v7 identity.
+- `backend/scripts/replay_september9_news.py`: guarded captured-body/reconstructed-RSS replay, private persistence and idempotence verification.
+- `backend/tests/test_news_september9_extraction.py`, `test_news_september9_replay.py`, `test_news_temporal_scope.py`: conservative attribution, update/header guards, history/isolation and temporal scope regressions.
+- `backend/start-local-news-test.ps1`: stable loopback worker without Windows auto-reload.
+- Evaluation, local guide and affected core records: exact evidence, source audit and remaining acceptance/recommendations. No schema, dependency, frontend or production change.
 
 ### [BUG-088] City summaries appear as additional flood sites beside street details
 

@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 03, 2026, 5:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 7:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**
@@ -13,7 +13,7 @@ This document serves as the official technical stack reference for the LANES pla
 
 The Linux image also installs Debian `libexpat1`, required by the existing `osmium` native module. This system-library dependency was exposed by the initial Priority 4 runtime probe; Windows unit tests alone do not verify Linux native imports.
 
-**October 3 dependency and release audit:** approved telemetry revision `c5a7e9d2104f` and matching API/collector/Firebase monitoring releases are deployed, as recorded in the release evaluation. Current body-evidence filtering is production v4. Local v6/v1.4 adds September 24 extraction corrections and article-level city-context reconciliation; its release remains pending. The private Docker replay uses existing PostgreSQL/PostGIS, dotenvx and loopback launchers with ignored configuration. No Python or Node dependency was added. Automatic NOAH/DRRMO-assisted publication and zone activation remain unfinished.
+**October 3 dependency and release audit:** approved telemetry revision `c5a7e9d2104f` and matching API/collector/Firebase monitoring releases are deployed, as recorded in the release evaluation. Current body-evidence filtering is production v4. Local v8/v1.6 includes the prior September 24 corrections plus September 9 attribution, cautious passability, publisher correction and retrieval-error fixes; its release remains pending. The private Docker replay uses existing PostgreSQL/PostGIS, dotenvx and loopback launchers with ignored configuration. No Python or Node dependency, SQLAlchemy model or migration was changed in this follow-up. Automatic NOAH/DRRMO-assisted publication and zone activation remain unfinished.
 
 ## **🛠️ Technical Stack Components**
 

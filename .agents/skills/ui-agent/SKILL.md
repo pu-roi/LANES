@@ -5,7 +5,7 @@ description: Frontend UI specialist. Use this skill when building or modifying R
 
 # UI Agent Guidelines
 
-You are the Frontend UI Specialist for LANES. Your domain is `d:\Documents\Github\LANES\frontend`.
+You are the Frontend UI Specialist for LANES. Your domain is `frontend/` in the active repository checkout. Resolve all paths from that checkout so this skill also works in worktrees.
 
 ## Core Focus
 - **Reusable UI Components**: Build modular, clean elements (buttons, inputs, cards, map overlays).
@@ -15,8 +15,8 @@ You are the Frontend UI Specialist for LANES. Your domain is `d:\Documents\Githu
 - **Mobile Viewport & Navigation Overlaps**: NEVER hardcode bottom padding on main containers. ALWAYS use a global CSS Variable (e.g., `var(--bottom-nav-height)`) combined with `env(safe-area-inset-bottom)` to calculate the exact padding needed (e.g. `pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]`) so that fixed bottom navigation bars never obscure scrollable content on mobile devices.
 
 ## Animation & Component Standards
-- **Animations (`framer-motion`)**: Use `framer-motion` for fluid, dynamic interfaces. This applies to page transitions, full-screen containers, sliding tabs, and modals. Use features like `<AnimatePresence>` for smooth entry/exit fade and scale effects. When building direction-aware UI (like swiping or sliding), track state to pass dynamic `custom={direction}` variants.
-- **Shared UI Components**: Before building raw HTML elements (like `<button>`, `<input>`, or dialogs), you MUST check `d:\Documents\Github\LANES\frontend\src\shared\ui` for existing components. 
+- **Animations (`framer-motion`)**: Use existing `framer-motion` patterns when motion helps the requested interaction. Keep motion restrained and respect reduced-motion preferences; do not add animations solely because this skill is active. Use features like `<AnimatePresence>` for smooth entry/exit fade and scale effects. When building direction-aware UI (like swiping or sliding), track state to pass dynamic `custom={direction}` variants.
+- **Shared UI Components**: Before building raw HTML elements (like `<button>`, `<input>`, or dialogs), you MUST check `frontend/src/shared/ui` for existing components.
 - **Standardization**: When using the central `<Button>` component (`src/shared/ui/Button.tsx`), leverage its standard props (`variant`, `size`) to maintain uniform sizing and our global `rounded-lg` radius. Only use raw HTML buttons for highly custom, one-off layouts (like floating icons over images).
 
 ## Design & Aesthetics

@@ -221,6 +221,22 @@ def metadata_names_only_outside_metro_places(entry: NewsEntry) -> bool:
     return bool(places) and all(not claim.psgc_code.startswith("13") for claim in places)
 
 
+def previously_verified_article(db: Session, entry: NewsEntry, article: NewsArticle) -> bool:
+    """Recognize stored flood evidence before evaluating a correction's headline."""
+    from dataclasses import replace
+    stored_entry = replace(entry, title=article.title, excerpt=article.excerpt or "",
+                           published_at=article.published_at)
+    if article.article_text and body_has_metro_manila_flood_claim(stored_entry, article.article_text):
+        return True
+    # After a denial replaces the current body, its original verified input
+    # remains history. Further corrections to that known article are legitimate.
+    from app.crud.news_results import result_rows, readable_claim, readable_run
+    from app.models.news import NewsArticleVersion
+    history, value, _, _ = result_rows(db)
+    return db.execute(history.where(NewsArticleVersion.article_id == article.id,
+        readable_claim(value), readable_run(db)).limit(1)).first() is not None
+
+
 class _ArticleParser(HTMLParser):
     def __init__(self, source_id: str) -> None:
         super().__init__(convert_charrefs=True)
@@ -441,15 +457,10 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                     " ".join(re.findall(r"\w+", entry.excerpt.casefold())),
                 )
                 now = datetime.now(timezone.utc)
-                if (not FLOOD_TERMS.search(f"{entry.title} {entry.excerpt}") or
-                        (entry.published_at is not None and entry.published_at < now - MAX_NEWS_AGE)):
+                if entry.published_at is not None and entry.published_at < now - MAX_NEWS_AGE:
                     continue
                 if entry.published_at is not None and entry.published_at > now:
                     notices.append(DiscoveryNotice(source.id, entry.article_url, "Publication time is in the future"))
-                    continue
-                metadata_local = likely_metro_manila_flood(entry)
-                if not metadata_local and metadata_names_only_outside_metro_places(entry):
-                    notices.append(DiscoveryNotice(source.id, entry.article_url, "Feed metadata names only non-Metro Manila places"))
                     continue
                 existing = news_crud.get_article(db, entry.article_url) if db is not None else None
                 def utc(value: datetime) -> datetime:
@@ -459,6 +470,16 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                         and utc(entry.published_at) < utc(existing.published_at)):
                     notices.append(DiscoveryNotice(source.id, entry.article_url, "Older feed revision cannot replace newer stored evidence"))
                     continue
+                metadata_local = likely_metro_manila_flood(entry)
+                has_flood_metadata = bool(FLOOD_TERMS.search(f"{entry.title} {entry.excerpt}"))
+                metadata_outside = not metadata_local and metadata_names_only_outside_metro_places(entry)
+                if not has_flood_metadata or metadata_outside:
+                    known_evidence = existing is not None and previously_verified_article(db, entry, existing)
+                    if not known_evidence:
+                        if metadata_outside:
+                            notices.append(DiscoveryNotice(source.id, entry.article_url, "Feed metadata names only non-Metro Manila places"))
+                        continue
+                    metadata_local = True  # A known article correction needs no new location probe.
                 normalized = " ".join(re.findall(r"\w+", f"{entry.title} {entry.excerpt}".casefold()))
                 digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
                 duplicate = (entry.article_url in seen_urls or
@@ -493,6 +514,17 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 article_text, article_error = fetch_article_text(source, entry.article_url, client)
                 if article_error:
                     body_errors += 1
+                # A prior publisher denial can be the current body while its
+                # original verified flood evidence remains in history. Keep a
+                # later retrieval failure visible for that known article too,
+                # including when the revised metadata lacks a local place clue.
+                if (article_text is None and db is not None and existing is not None
+                        and previously_verified_article(db, entry, existing)):
+                    failed = NewsCandidate(source_id=entry.source_id, publisher=entry.publisher,
+                        feed_id=entry.feed_id, article_url=entry.article_url, title=entry.title,
+                        excerpt=entry.excerpt, published_at=entry.published_at,
+                        fetched_at=datetime.now(timezone.utc), article_text=None, article_error=article_error)
+                    news_crud.save_candidate(db, entry, failed)
                 if not metadata_local:
                     if article_text is None:
                         scope_unresolved += 1
@@ -505,17 +537,16 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 if article_text is None:
                     notices.append(DiscoveryNotice(source.id, entry.article_url,
                         f"Article not collected: body verification unavailable ({article_error or 'no article text'})"))
-                    if (db is not None and existing is not None and existing.article_text
-                            and body_has_metro_manila_flood_claim(entry, existing.article_text)):
-                        failed = NewsCandidate(source_id=entry.source_id, publisher=entry.publisher,
-                            feed_id=entry.feed_id, article_url=entry.article_url, title=entry.title,
-                            excerpt=entry.excerpt, published_at=entry.published_at,
-                            fetched_at=datetime.now(timezone.utc), article_text=None, article_error=article_error)
-                        news_crud.save_candidate(db, entry, failed)
                     continue
                 if article_text is not None and not body_has_metro_manila_flood_claim(entry, article_text):
                     notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
-                    continue
+                    # A successfully retrieved correction must supersede the
+                    # current body of an article already admitted on verified
+                    # evidence. Otherwise a denial, forecast-only revision or
+                    # changed event can leave its earlier flood claim current
+                    # indefinitely. New unrelated leads remain excluded.
+                    if existing is None or not (existing.article_text or "").strip():
+                        continue
                 accepted_urls.add(entry.article_url)
                 if entry.excerpt:
                     seen_fingerprints.add(fingerprint)

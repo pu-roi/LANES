@@ -1,10 +1,26 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 03, 2026, 5:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 7:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Phase 36: Documentation synchronized before v8 branch publication (October 3, 2026)
+
+- [x] Completed the requested senior-planner audit before the authorized `roi-branch` commit/push. Current task, feature, stack, database, system, bug and evaluation records distinguish tested local v8 from production v4; index links and historical results are preserved. Decisions require no new entry because no architectural pivot occurred. Visual acceptance, freshness policy, fallback integration and automatic map publication remain open. No application source changed after the 555-test review. [Preparation](evaluations/phase-36-news-workflow-follow-up.md#documentation-preparation-before-branch-publication). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: v8 branch readiness review (October 3, 2026)
+
+- [x] Reviewed the complete pending bundle with senior-planner/merge-coordinator guidance; fetched `origin/roi-branch` with zero divergence. Expanded verification to 555 backend checks including routing, depth, authorization and geometry; TypeScript and scoped lint pass again. Synchronized current feature/stack/database notes with local v8 while preserving release history. No dependency, model, migration or deployment source changes; final visual acceptance and freshness remain open. This is readiness evidence, with no commit or push performed. [Review](evaluations/phase-36-news-workflow-follow-up.md#branch-readiness-review-october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: News workflow correctness follow-up (October 3, 2026)
+
+- [x] Corrected approved cautious passability, independent road facts, discarded publisher corrections and hidden retrieval failures. Added server-owned Road passability details and removed the dead Collection filter from shared mobile/desktop UI. Local v8/v1.6 preserves history and 33 replay sites with 20 caution records; 452 backend tests, TypeScript, scoped lint and real private API/proxy evidence checks pass. Read-only Scheduler inspection confirms three-hour collection and an unchanged-RSS gap; refresh policy remains unapproved. No database schema/dependency or production changes; no browser implementation/debugging. [Evaluation](evaluations/phase-36-news-workflow-follow-up.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: September 9 multi-location day replay (October 3, 2026)
+
+- [x] Team-tested three actual publisher reports through reconstructed September 9 RSS and the real saved processing/reading services in private `lanes_news_test`. Source comparison matches all 33 locations; corrected missing roads, passability wording, PSGC qualifiers, shared list evidence/clocks, approved exact GMA update-header anchoring and forecast/drill/narrative boundaries. Local v7/v1.5 preserves older inputs/runs, unknown facts and zero reports/zones; 410 related tests pass. Authenticated real backend/frontend proxy lists and all detail evidence match. Fixed the private launcher's failing Windows reload behavior. Additional RSS/GDELT audit is recorded; registrations and scheduled fallback are unchanged. Visual verification remains blocked by saved browser permission, and production v4/release/map integration remain unchanged. [Evaluation](evaluations/phase-36-september9-production-day-replay.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Documentation and branch pre-push verification (October 3, 2026)
 

@@ -12,7 +12,7 @@ import { NewsProcessingDetails } from "./NewsProcessingDetails";
 const initialFilters: NewsCollectionFilters = { page: 1, search: "", publisher: "", status: "attention" };
 const statusOptions = [
   { value: "attention", label: "Needs attention" }, { value: "all", label: "All saved articles" },
-  { value: "needs_checking", label: "Needs checking" }, { value: "no_locations", label: "No flood locations" },
+  { value: "needs_checking", label: "Needs checking" },
   { value: "excluded", label: "Excluded from flood reports" },
   { value: "processing_failed", label: "Processing failed" }, { value: "retrieval_failed", label: "Article retrieval failed" },
   { value: "missing_text", label: "Article text missing" }, { value: "waiting", label: "Waiting for processing" },

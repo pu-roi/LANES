@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 03, 2026, 5:35 PM
+> **Last Updated:** October 03, 2026, 7:39 PM
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
 
@@ -28,6 +28,10 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [News workflow defect follow-up](evaluations/phase-36-news-workflow-follow-up.md) — approved caution contract, per-road facts, publisher corrections, visible retrieval failures, v8 replay, 555-test branch review, documentation preparation and verified three-hour freshness gap.
+
+- [September 9 production-day replay](evaluations/phase-36-september9-production-day-replay.md) — three actual articles, 33 audited locations, reconstructed discovery, private persistence/API checks, v7 corrections, RSS/GDELT audit and incomplete visual verification.
 
 - [September 24 historical flood replay](evaluations/phase-36-september24-historical-replay.md) — actual publisher retrieval, street-fact corrections, v6 city-context reconciliation, private saved replay, PostgreSQL parity and pending release/placement gaps.
 

@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** October 03, 2026, 5:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 7:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -11,6 +11,17 @@
 
 ## Active Sprint
 
+### September 9 production-day test
+
+- [x] Complete requested senior-planner documentation synchronization before publishing the reviewed bundle to `roi-branch`: eight registered records audited, current local v8/production v4 distinguished, evaluation/index updated and unresolved visual/freshness/map gates retained. Dependencies and migrations are unchanged; 555-test regression evidence remains applicable. Branch publication is authorized; production release is still pending. [Preparation](evaluations/phase-36-news-workflow-follow-up.md#documentation-preparation-before-branch-publication). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Review local v8 branch readiness: 555 backend regression checks, TypeScript and scoped lint pass; `origin/roi-branch` has zero divergence after fetch. Core feature/stack/database notes match current local status. No commit or push performed; production and visual acceptance remain separate. [Review](evaluations/phase-36-news-workflow-follow-up.md#branch-readiness-review-october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Complete authorized workflow fixes in local v8/v1.6: approved caution category/detail label, independently conjoined road facts, publisher correction capture and visible failed refreshes with immutable history. Remove the dead Collection filter. All 452 backend tests, TypeScript and scoped lint pass; 33 original sites and 20 caution records match actual private API/proxy evidence. [Follow-up](evaluations/phase-36-news-workflow-follow-up.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Agree on near-real-time discovery/body-update freshness and retrieval retry policy. Production inspection confirms every-three-hour collection; unchanged RSS metadata/304 can conceal publisher edits. The hourly proposal was questioned and remains unapproved/unimplemented. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Replay three actual September 9 articles through reconstructed RSS, normal capture/discovery, durable processing and private PostgreSQL readers. Independently audit 33 source-backed locations; preserve publication, per-road depths and supported shared clocks. Correct list scope, missing roads, barangay attribution and the approved narrow GMA update-header resolver in local v7/v1.5. All 410 related tests pass; repeat creates no new processing or zones. Real authenticated backend and frontend proxy return matching list/detail evidence. [Evaluation](evaluations/phase-36-september9-production-day-replay.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Probe enabled and additional publisher feeds and trace GDELT callers: staff/CLI fallback exists, scheduled collection does not invoke it; live provider lookup returned 429. No feed registration or automatic fallback change. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Complete the September 9 visual page/detail check. The browser tool's saved permission policy still blocks loopback access despite chat authorization; actual API/proxy verification passes. Local replay launcher now avoids failing Windows reload workers. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Discuss targeted feed additions and automatic fallback integration. Caution semantics are approved and corrected in v8. Release tested v8 API/collector together after approval; it includes prior v5/v6/v7 corrections. Production remains v4; automatic map publication remains unfinished. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
 ### September 24 article replay follow-up
 
 - [x] Audit/synchronize registered docs and verify the requested `roi-branch` commit bundle: 360 distinct backend/PostgreSQL checks, approved migration upgrade/head and disposable round-trip, TypeScript/lint and 25 desktop/mobile UI cases. Three optional/project UI cases remain skipped. Portal test locator corrected; both affected cases pass on rerun. No new dependency or additional schema proposal. Branch publication does not satisfy v6 deployment or automatic pipeline acceptance. [Pre-push evidence](evaluations/phase-36-september24-historical-replay.md#branch-pre-push-verification--october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
@@ -18,7 +29,7 @@
 - [x] Show explicit street/road, extracted section/intersection and local landmark in the flood details modal; identify missing streets per mention. Live desktop/mobile local replay checks, TypeScript, lint and two existing responsive Info tests pass. Local frontend change only; release remains pending. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Persist the real historical article in private Docker database `lanes_news_test` and verify actual authenticated News Intelligence list, detail/source and Collection with seven locations/five roads and zero questionable mentions. Existing migrations reach head; repeated replay stays one article/one run. All 29 focused tests pass. Loopback launchers and ignored environment override preserve cloud settings. [Runbook](guides/local-news-replay.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Reproduce and correct real article retrieval/extraction defects; validate local durable processing, SQL reader/Collection counts, unchanged live age filtering and PostgreSQL parity. 373 backend tests pass (one migration skip), 19 policy checks and 11 real-claim comparisons pass. [Replay evidence](evaluations/phase-36-september24-historical-replay.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
-- [ ] Release tested v6 API/collector together (includes v5 extraction corrections and article-level city context) and verify deployed behavior; v4 remains deployed. Daily Tribune feed registration requires verification before inclusion. Historical replay remains separate from current observations. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Release tested v8 API/collector together (includes prior v5/v6/v7 corrections and workflow fixes) and verify deployed behavior after approval; v4 remains deployed. Daily Tribune feed registration requires verification before inclusion. Historical replay remains separate from current observations. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [ ] Resolve authoritative road aliases/affected extents and complete the original OSM/NOAH/matching Pasig DRRMO automatic placement/publication bundle; single intersections cannot establish flooded road lengths. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Flood Report Media Attachment (🟡 DEVICE VERIFICATION PENDING)

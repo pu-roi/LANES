@@ -42,6 +42,8 @@ FLOOD_OBSERVATION_PATTERN = (
       r"|(?:^|[^a-z])(?:waded|wading|stranded)[^.!?]{0,80}floodwaters?(?:[^a-z]|$)"
       r"|(?:^|[^a-z])(?:floodwaters?|baha)[^.!?]{0,50}(?:rose|rising|receding|subsided|humupa|humuhupa)(?:[^a-z]|$)"
       r"|(?:^|[^a-z])(?:flooding|floodwaters?|baha)[^.!?]{0,140}(?:cleared|subsided|receded)(?:[^a-z]|$)"
+      r"|(?:^|[^a-z])(?:roads?|routes?|areas?)(?:\s+and\s+(?:roads?|routes?|areas?))?\s+"
+      r"(?:(?:were|are)\s+)?affected\s+by\s+flooding(?:[^a-z]|$)"
 )
 HYPOTHETICAL_FLOOD_PATTERN = (
     r"(?:^|[^a-z])(?:will|may|might|could|would)\s+(?:be\s+)?"

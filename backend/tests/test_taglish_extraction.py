@@ -563,7 +563,7 @@ def test_metro_manila_article_list_headings_scope_city_barangay_and_passability(
     assert banawe.road_passability == "impassable_all"
     assert taft.canonical_city == "City of Manila"
     assert taft.depth_raw == "8 inches"
-    assert taft.road_passability == "passable_all"
+    assert taft.road_passability == "passable_with_caution"
 
 
 def test_article_list_keeps_intersections_inline_barangays_and_report_time():

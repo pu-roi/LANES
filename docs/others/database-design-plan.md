@@ -1,8 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 03, 2026, 5:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 7:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Local replay database:** a separate Docker database `lanes_news_test` uses the complete existing PostGIS/Alembic schema at `c5a7e9d2104f`. Creating it and applying existing migrations changed no model or migration source. The original local `lanes` database and cloud data/config are preserved. Guarded historical seeding currently retains one article and two immutable extraction runs (v5/v6), five readable street claims and unchanged avoidance-zone counts. Identical input at the same pipeline revision creates no further run. [Runbook](../guides/local-news-replay.md).
+**Local replay database:** a separate Docker database `lanes_news_test` uses the complete existing PostGIS/Alembic schema at `c5a7e9d2104f`. Creating it and applying existing migrations changed no model or migration source. The original local `lanes` database and cloud data/config are preserved. The September 24 article retains its five readable street claims and prior runs. The additional September 9 subset has three articles, four immutable source versions, eight runs and 33 readable sites at local v8/v1.6. Reports and avoidance zones remain unchanged. Explicit caution is stored in the existing claim JSONB; the added summary label requires no column or migration. Identical input at the same pipeline revision creates no further run. [Runbook](../guides/local-news-replay.md).
 
 **October 3 pre-push verification:** existing private `alembic upgrade head` succeeds. Fresh disposable local databases verify the full chain to `c5a7e9d2104f`, four queue integrity/concurrency cases and the telemetry downgrade/upgrade round-trip with original article evidence preserved (five passing checks). Only the newly created disposable databases were removed afterward. The replay database and cloud data were not reset; no further migration source was added.
 

@@ -57,6 +57,11 @@ def summarize_news_claim(claim: ExtractedClaim) -> NewsFloodSummary:
         location=location, area=", ".join(area) or None,
         location_qualifier=" · ".join(qualifiers) or None,
         water_level=claim.depth_formatted or claim.depth_raw or "Not stated in article",
+        passability={"passable_all": "Passable to all vehicles",
+                     "passable_with_caution": "Passable with caution; vehicle types not specified",
+                     "light_vehicle_closed": "Not passable to light vehicles",
+                     "impassable_all": "Not passable to any vehicles"}.get(
+                         claim.road_passability, "Not stated in article"),
         condition=condition, flood_time=claim.event_time_resolved,
         flood_time_label={"observation": "Flood observed in article", "report": "Flood reported in article",
                           "unspecified": "Flood time in article"}[claim.event_time_kind],

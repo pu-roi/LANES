@@ -11,6 +11,7 @@ class NewsFloodSummary(BaseModel):
     area: str | None
     location_qualifier: str | None
     water_level: str
+    passability: str = "Not stated in article"
     condition: str
     flood_time: datetime | None
     flood_time_label: Literal["Flood observed in article", "Flood reported in article", "Flood time in article"]

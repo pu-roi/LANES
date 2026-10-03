@@ -136,7 +136,7 @@ class ExtractedClaim(BaseModel):
     is_negated: bool = False
     is_forecast: bool = False
     is_historical: bool = False
-    road_passability: Literal["passable_all", "light_vehicle_closed", "impassable_all", "unknown"] = "unknown"
+    road_passability: Literal["passable_all", "passable_with_caution", "light_vehicle_closed", "impassable_all", "unknown"] = "unknown"
 
     depth_raw: str | None = None
     depth_canonical: CanonicalDepth | None = None

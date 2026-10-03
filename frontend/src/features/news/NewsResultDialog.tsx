@@ -40,6 +40,7 @@ export function NewsResultDialog({ runId, claimIndex, onClose }: { runId: number
               <h4 className="text-sm font-semibold text-slate-900">Reported location</h4>
               <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
                 <div className="min-w-0"><dt className="text-xs text-slate-500">Street / road</dt><dd className="mt-1 break-words text-sm font-medium text-slate-900">{data.claim.canonical_road || "Not specified for this mention"}</dd></div>
+                <div className="min-w-0"><dt className="text-xs text-slate-500">Road passability</dt><dd className="mt-1 break-words text-sm font-medium text-slate-900">{data.item.summary.passability || "Not stated in article"}</dd></div>
                 {data.claim.canonical_barangay && <div className="min-w-0"><dt className="text-xs text-slate-500">Barangay</dt><dd className="mt-1 break-words text-sm font-medium text-slate-900">{data.claim.canonical_barangay}</dd></div>}
                 {data.claim.road_segment_raw && <div className="min-w-0 sm:col-span-2"><dt className="text-xs text-slate-500">Reported section / intersection</dt><dd className="mt-1 break-words text-sm text-slate-900">{data.claim.road_segment_raw}</dd></div>}
                 {data.claim.local_area_raw && <div className="min-w-0 sm:col-span-2"><dt className="text-xs text-slate-500">Local area / landmark</dt><dd className="mt-1 break-words text-sm text-slate-900">{data.claim.local_area_raw}</dd></div>}

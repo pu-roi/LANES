@@ -121,6 +121,7 @@ export interface NewsFloodSummary {
   location_qualifier: string | null;
   water_level: string;
   condition: string;
+  passability?: string;
   flood_time: string | null;
   flood_time_label: string;
   map_status: string;

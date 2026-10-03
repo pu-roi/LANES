@@ -1,6 +1,6 @@
 """Paginate collection attention states and counts without loading article bodies."""
 
-from sqlalchemy import and_, case, func, or_, select
+from sqlalchemy import and_, case, exists, func, or_, select
 from sqlalchemy.orm import Session, defer
 from sqlalchemy.sql import ColumnElement, Select
 
@@ -23,7 +23,11 @@ def collection_rows(db: Session) -> tuple[Select, ColumnElement]:
     body = article_body_status()
     # Metadata-only legacy leads cannot establish the actual-flood requirement.
     # Failed refreshes of previously qualifying evidence remain visible issues.
-    unsupported_body = and_(location_count == 0, body.in_(["error", "missing"]))
+    history, history_value, _, _ = result_rows(db)
+    credible_history = history.where(readable_claim(history_value), readable_run(db)).subquery()
+    had_readable_evidence = exists(select(1).select_from(credible_history).where(
+        credible_history.c.article_id == NewsArticle.id))
+    unsupported_body = and_(location_count == 0, body.in_(["error", "missing"]), ~had_readable_evidence)
     processing = func.coalesce(NewsExtractionRun.status, "not_recorded")
     status = case(
         (unsupported_body, "excluded"),
