@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 from app.schemas.news_browsing import NewsCapturedInput, NewsPublisherOption
 from app.schemas.news_extraction import ExtractedClaim, FloodCondition
 from app.schemas.news_presentation import NewsFloodSummary
+from app.schemas.news_placement import NewsPlacementPreview
 
 PlacementFilter = Literal["bounded_candidate", "ambiguous", "unresolved", "source_unavailable", "not_recorded"]
 ResultOrder = Literal["extraction_newest", "publication_newest"]
@@ -75,4 +76,16 @@ class NewsResultDetail(BaseModel):
     extraction_errors: list[str]
     is_metadata_only: bool
     lifecycle_status: Literal["not_available"] = "not_available"
+    read_only: Literal[True] = True
+
+
+class NewsResultPlacementPreview(BaseModel):
+    """Current catalog computation from immutable claim evidence; never stored by GET."""
+    run_id: int
+    claim_index: int
+    input_fingerprint: str
+    evidence_pipeline_version: str
+    placement_revision: str
+    claim: ExtractedClaim
+    preview: NewsPlacementPreview
     read_only: Literal[True] = True

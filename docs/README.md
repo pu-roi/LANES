@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 03, 2026, 7:39 PM
+> **Last Updated:** October 03, 2026, 11:52 PM
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
 
@@ -29,6 +29,12 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Evaluations and simulations
 
+- [Backend OSM/NOAH/Pasig placement preview](evaluations/phase-36-backend-placement-preview.md) — local shared extraction/protected API, exact vector assets, 550 distinct passing checks and pending map/publication integration.
+
+- [Flood Zone rendering and placement integration investigation](evaluations/phase-36-flood-zone-rendering-investigation.md) — shared active-zone/preview renderers, inner/outer geometry roles, runtime placement gaps and recommended backend-preview-first slice.
+
+- [Four-article source/database audit](evaluations/phase-36-four-article-source-audit.md) — complete source rereads, 38-record API parity, faithful depth/clearance labels, generic passability, corrected provinces and local v9 verification.
+
 - [News workflow defect follow-up](evaluations/phase-36-news-workflow-follow-up.md) — approved caution contract, per-road facts, publisher corrections, visible retrieval failures, v8 replay, 555-test branch review, documentation preparation and verified three-hour freshness gap.
 
 - [September 9 production-day replay](evaluations/phase-36-september9-production-day-replay.md) — three actual articles, 33 audited locations, reconstructed discovery, private persistence/API checks, v7 corrections, RSS/GDELT audit and incomplete visual verification.
@@ -52,6 +58,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Phase 36: Metro Manila OSM and NOAH coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md)
 
 ## Guides
+
+- [News placement preview and NOAH catalog](guides/news-placement-preview.md) — deterministic build, external runtime assets and protected immutable-evidence reads.
 
 - [Private local News Intelligence replay](guides/local-news-replay.md) — Docker test database, guarded historical article persistence, loopback launchers and return to cloud-backed development.
 - [Flood history verification](guides/flood-history-verification.md)

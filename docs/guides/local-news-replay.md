@@ -1,6 +1,6 @@
 # Local News Intelligence replay
 
-> **Last Updated:** October 03, 2026, 7:25 PM
+> **Last Updated:** October 03, 2026, 8:09 PM
 > Author: [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 The September 24 Daily Tribune report is saved in the separate Docker PostgreSQL/PostGIS database `lanes_news_test`. Version v6 produces five readable road sites; the two broad city summaries remain source context in processing history. This is a historical article demonstration, not current flooding or automatic map activation. Its publisher label includes **local historical test**, and its original event/publication dates are preserved.
@@ -8,6 +8,8 @@ The September 24 Daily Tribune report is saved in the separate Docker PostgreSQL
 The September 9 replay now adds three actual reports with **33 readable location records** (27 Philstar, 3 GMA alert, 3 GMA evening). They share one historical day and retain original dates. The September 24 article remains with five roads. Current local processing is v8/v1.6; older saved runs remain available. Twenty records preserve explicit cautious passability, shown in Flood Details. See [day replay evidence](../evaluations/phase-36-september9-production-day-replay.md) and [workflow follow-up](../evaluations/phase-36-news-workflow-follow-up.md).
 
 ## Start the private local servers
+
+The latest four-article re-audit is local **v9/v1.7**, with 38 locations/four articles/five input versions/fourteen runs. Source depth wording is shown without invented precision; two Tribune corridors retain generic passability and the cleared roads retain **by** timestamps. Four wrong province labels are corrected. Earlier version/count statements below record replay history. [Current audit](../evaluations/phase-36-four-article-source-audit.md). Refresh the page after the backend restart to load current labels; browser visual acceptance remains incomplete.
 
 Docker Desktop must be running. The existing `lanes_postgis_db` container and volume supply PostgreSQL; the existing `lanes` database is preserved. The ignored `backend/.env.test.local` sets the dedicated local `DATABASE_URL`, development mode and a separate local JWT signing key. The encrypted shared `backend/.env` remains the cloud configuration. No credential values belong in this guide or in tracked source files.
 

@@ -1,10 +1,22 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 03, 2026, 7:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 11:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### Phase 36: Local backend OSM/NOAH/Pasig placement preview (October 3, 2026)
+
+- [x] Delivered shared typed previews and protected no-write current-placement reads with exact tiled NOAH overlap, matching Pasig road/crossing history, alternatives and explicit source/boundary errors. Built 897 local vector tiles plus manifest; preserved attribution/checksums. Spatial probes reproduce the 86.2 m Santo Domingo span and six Caruncho candidates without routing effects. 550 distinct checks pass (one skip). No SQLAlchemy/migration/dependency change, actual replay, UI change, commit/push or release. [Verification](evaluations/phase-36-backend-placement-preview.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Flood Zone rendering and placement investigation (October 3, 2026)
+
+- [x] Completed requested source investigation of shared Map/Spatial Operations active-zone rendering and Report/Create/Edit previews. Recorded centerline versus operational polygon roles, existing buffer/geometry compatibility checks, unconnected runtime NOAH ranking and section-specific Pasig DRRMO requirements. Recommended backend placement preview followed by existing map integration and durable gated publication. Documentation only; application code, database, dependencies and deployment unchanged. [Investigation](evaluations/phase-36-flood-zone-rendering-investigation.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Four-article source/database re-audit (October 3, 2026)
+
+- [x] Freshly fetched all four original publisher bodies with unchanged content; independently audited body/context/caption evidence and every stored/detail record. Local v9/v1.7 repairs overstated depth precision, missing generic passability, incorrect homonym provinces and clearance-bound labels. All 595 backend tests pass; real backend/frontend proxy match 38 details, four histories and Collection with zero mismatches. Four new immutable runs preserve previous records; reports/zones stay zero. Browser visual acceptance is still blocked by saved policy. No schema/dependency/production change or new commit/push. [Audit](evaluations/phase-36-four-article-source-audit.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Documentation synchronized before v8 branch publication (October 3, 2026)
 

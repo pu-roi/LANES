@@ -169,7 +169,7 @@ def test_summary_keeps_article_flood_clock_separate():
     summary = summarize_news_claim(claim)
     assert summary.flood_time == NOW - timedelta(hours=2)
     assert summary.flood_time_label == "Flood observed in article"
-    assert summary.water_level == "Knee-deep (0.5 m)"
+    assert summary.water_level == "knee-deep"
 
 
 @pytest.mark.asyncio

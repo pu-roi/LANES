@@ -1388,6 +1388,9 @@ def extract_claims_from_sentence(
             road_passability = "passable_all"
         elif inherited_passability:
             road_passability = inherited_passability
+        elif (re.search(r"\bpassable\s*[.!?]*\s*$", target_clause_text, re.I)
+              and not re.search(r"\b(?:not|never|no\s+longer)\s+(?:\w+\s+){0,3}passable\b", target_clause_text, re.I)):
+            road_passability = "passable_unspecified"
 
         # If explicit depth is present and not negated/forecast/historical, flood is mentioned!
         if d_raw and not clause_negated and not is_forecast and not is_historical:
@@ -1881,6 +1884,23 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
                     road.road_passability = "passable_with_caution"
                     road.evidence_sentence = text_to_process[start:sent_end]
                     road.evidence_sentence_offset = (start, sent_end)
+        # A bounded anaphor may report general passability without naming
+        # vehicle classes. Match only one preceding road or exactly two
+        # preceding corridors in the same paragraph; retain stronger facts.
+        generic_single = re.fullmatch(r"(?:Officials confirmed (?:that )?)?[Tt]he road remained passable\.?", sent_text)
+        generic_pair = re.fullmatch(r"Traffic remained passable through both corridors\.?", sent_text)
+        if generic_single or generic_pair:
+            prior_roads = [c for c in previous_claims if c.place_type == "street"]
+            required_count = 1 if generic_single else 2
+            distinct_sites = {(c.canonical_city, c.road_segment_raw or c.raw_place_name) for c in prior_roads}
+            if len(prior_roads) == required_count and len(distinct_sites) == required_count:
+                for road in prior_roads:
+                    start, end = road.evidence_sentence_offset
+                    if (road.road_passability == "unknown" and not (road.is_forecast or road.is_negated or road.is_historical)
+                            and re.fullmatch(r"[ \t]*", text_to_process[end:sent_start])):
+                        road.road_passability = "passable_unspecified"
+                        road.evidence_sentence = text_to_process[start:sent_end]
+                        road.evidence_sentence_offset = (start, sent_end)
         claims = extract_claims_from_sentence(
             sent_text,
             sent_start,
@@ -1942,6 +1962,6 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
         processed_text_length=len(text_to_process),
         claims=all_claims,
         extracted_at=datetime.now(timezone.utc),
-        extractor_version="taglish-rules-v1.6",
+        extractor_version="taglish-rules-v1.7",
         errors=[],
     )

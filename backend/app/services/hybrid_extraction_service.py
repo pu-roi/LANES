@@ -233,6 +233,8 @@ Respond ONLY with valid JSON:
             return "flagged_review", "Flooded road is reported passable; no avoidance closure is justified."
         if claim.road_passability == "passable_with_caution":
             return "flagged_review", "Road is reported passable with caution; vehicle applicability is unstated and no avoidance closure is justified."
+        if claim.road_passability == "passable_unspecified":
+            return "flagged_review", "Road is reported passable without specified vehicle types; no avoidance closure is justified."
         if claim.road_passability == "light_vehicle_closed":
             return "flagged_review", "Light-vehicle restriction needs vehicle-specific staff review."
         if claim.is_historical:

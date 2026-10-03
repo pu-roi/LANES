@@ -41,6 +41,8 @@ export interface FeedResponse {
   posts: FeedPost[];
   total: number;
   has_more: boolean;
+  expanded_radius?: boolean;
+  resolved_location_name?: string;
 }
 
 export interface CommentResponse {

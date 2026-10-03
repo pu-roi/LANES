@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
@@ -15,7 +16,7 @@ from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.schemas.news_extraction import NewsArticleExtractorInput
 from app.services.news_discovery_service import MAX_ARTICLE_CHARS, extraction_input_snapshot
 
-PIPELINE_VERSION = "rules-psgc-osm-2026-10-03-v8"
+PIPELINE_VERSION = "rules-spatial-preview-v10"
 MAX_ATTEMPTS = 5
 LEASE_SECONDS = 300
 
@@ -26,7 +27,9 @@ def utc_now() -> datetime:
 
 def current_pipeline_version() -> str:
     from app.services.news_road_placement_service import get_news_road_placement_provider
-    return f"{PIPELINE_VERSION}:{get_news_road_placement_provider().revision}"
+    from app.services.news_placement_preview_service import get_news_placement_preview_service
+    sources = f"{get_news_road_placement_provider().revision}:{get_news_placement_preview_service().revision}"
+    return f"{PIPELINE_VERSION}:{hashlib.sha256(sources.encode()).hexdigest()}"
 
 
 def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str | None = None) -> int | None:

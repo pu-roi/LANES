@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from pydantic import BaseModel, Field
+from app.schemas.news_placement import NewsPlacementPreview
 
 
 CanonicalDepth = Literal[
@@ -136,7 +137,7 @@ class ExtractedClaim(BaseModel):
     is_negated: bool = False
     is_forecast: bool = False
     is_historical: bool = False
-    road_passability: Literal["passable_all", "passable_with_caution", "light_vehicle_closed", "impassable_all", "unknown"] = "unknown"
+    road_passability: Literal["passable_all", "passable_with_caution", "passable_unspecified", "light_vehicle_closed", "impassable_all", "unknown"] = "unknown"
 
     depth_raw: str | None = None
     depth_canonical: CanonicalDepth | None = None
@@ -163,6 +164,7 @@ class ExtractedClaim(BaseModel):
     audit_result: LLMAuditResult | None = None
     ranked_location: RankedLocationCandidate | None = None
     road_placement: RoadPlacementEvidence | None = None
+    placement_preview: NewsPlacementPreview | None = None
 
 
 class NewsExtractionResult(BaseModel):

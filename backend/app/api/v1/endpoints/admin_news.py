@@ -36,7 +36,7 @@ from app.services.news_sources import load_news_sources
 from app.schemas.news_browsing import ArticleOrder, BodyStatus, NewsArticleDetail, NewsArticlePage, ProcessingStatus
 from app.services.news_browsing_service import browse_news_articles, read_news_article_detail
 from app.schemas.news_extraction import FloodCondition
-from app.schemas.news_results import NewsResultDetail, NewsResultPage, PlacementFilter, ResultOrder
+from app.schemas.news_results import NewsResultDetail, NewsResultPage, NewsResultPlacementPreview, PlacementFilter, ResultOrder
 from app.services.news_results_service import browse_news_results, read_news_result
 from app.schemas.news_collection import CollectionFilter, NewsCollectionPage
 from app.services.news_collection_service import browse_news_collection
@@ -131,6 +131,31 @@ def read_result(
     if detail is None:
         raise HTTPException(status_code=404, detail="News result not found")
     return detail
+
+
+@router.get("/results/{run_id}/{claim_index}/placement", response_model=NewsResultPlacementPreview)
+@limiter.limit("3/minute")
+def preview_result_placement(
+    request: Request,
+    response: Response,
+    run_id: int = Path(ge=1),
+    claim_index: int = Path(ge=0),
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsResultPlacementPreview:
+    """Compute current placement from saved evidence; no network, audit or zone writes."""
+    from app.services.news_placement_preview_service import get_news_placement_preview_service
+    try:
+        detail = read_news_result(db, run_id, claim_index)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News result storage is unavailable") from exc
+    if detail is None:
+        raise HTTPException(status_code=404, detail="News result not found")
+    service = get_news_placement_preview_service()
+    return NewsResultPlacementPreview(run_id=run_id, claim_index=claim_index,
+        input_fingerprint=detail.input_fingerprint, evidence_pipeline_version=detail.pipeline_version,
+        placement_revision=service.revision, claim=detail.claim,
+        preview=service.preview(detail.claim))
 
 
 @router.get("/articles", response_model=NewsArticlePage)

@@ -1,0 +1,45 @@
+# News placement preview and NOAH catalog
+
+> **Last Updated:** October 03, 2026, 11:52 PM
+> **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Staff can inspect a completed immutable result without writes:
+
+```text
+GET /api/v1/admin/news/results/{run_id}/{claim_index}/placement
+Authorization: Bearer <staff JWT>
+```
+
+Review the selected candidate, reported/predicted kind, alternatives, OSM/NOAH/history checksums, modeled overlap and status/reason. Original saved claim/run identity is separate from current placement revision. A proposed centerline does not prove flooded width; no map UI is delivered yet. Newly processed artifacts also expose the optional preview through existing extraction/details contracts.
+
+## Build exact analytical assets
+
+From the repository root in PowerShell, using the existing Python environment and verified Metro Manila ZIPs:
+
+```powershell
+backend/venv/Scripts/python.exe backend/scripts/build_noah_placement_catalog.py `
+  --noah-5yr data/noah_metro_5yr_inspect.zip `
+  --noah-25yr data/noah_metro_25yr_inspect.zip `
+  --noah-100yr data/noah_metro_100yr_inspect.zip `
+  --output data/noah-placement
+```
+
+Default extent: longitude 120.90–121.14, latitude 14.35–14.79. `--bounds west south east north` permits an explicitly smaller development catalog. The builder refuses to replace an existing manifest: choose a new versioned directory for changed sources. Partial builds have no manifest and remain unavailable. Preserve attribution and ODbL terms when distributing these derived assets.
+
+Local default is ignored `data/noah-placement`. Override with:
+
+```powershell
+$env:LANES_NEWS_NOAH_DIR = 'D:/path/to/immutable/noah-catalog'
+```
+
+Restart API/collector after changing the directory/catalog. Providers cache immutable versions; do not modify live tiles in place. New source digests change processing identity while preserving old inputs/results. OSM uses the existing `LANES_NEWS_OSM_CATALOG_DIR`; history uses the existing bundled Pasig clean CSV.
+
+## Runtime and limits
+
+Production needs versioned external assets/mount with the same directory/source identity for API and collector. No provisioning/deployment occurred. The roughly 90 MB output and raw ZIPs are outside Git/the API image. The frontend PNG overlay cannot replace analytical vectors.
+
+Missing/corrupt/oversized assets and out-of-extent queries remain unavailable evidence. Missing history/barangay boundaries stay explicit. Zero modeled overlap does not prove current safety. NOAH return periods are distinct from DRRMO historical years; neither supplies current observation time or depth.
+
+The protected preview GET does not enqueue processing. Historical persistence/replay must follow the [private isolation guide](local-news-replay.md). Existing replay rows were not changed by this slice.
+
+[Verification and remaining work](../evaluations/phase-36-backend-placement-preview.md).

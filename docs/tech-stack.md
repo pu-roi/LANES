@@ -1,6 +1,10 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 03, 2026, 7:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 11:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Local v10 analytical placement:** existing Shapely 2.1.2, NumPy, Pydantic and standard-library gzip/hashlib/struct support exact tiled vectors and section-matched history. No dependency change. External checksummed assets use `LANES_NEWS_NOAH_DIR`; raw ZIPs and the roughly 90 MB catalog remain outside Git/the API image. Provisioning/release remains pending. [Guide](guides/news-placement-preview.md).
+
+**Latest local audit:** v9/v1.7 adds faithful source-depth/clearance presentation, generic passability and consistent road-parent provinces using existing dependencies and JSONB. All 595 backend tests pass. Production remains v4; the earlier v8 checkpoint below is release history. No library, SQLAlchemy model or migration changed. [Audit](evaluations/phase-36-four-article-source-audit.md).
 
 
 ### **Project: Flood-Adaptive Route Calculation and Visualization Web Platform**

@@ -1,11 +1,37 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 03, 2026, 7:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 8:09 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-092] News details overstate depth and attach unrelated province labels
+
+- **Status:** Resolved locally in v9/v1.7; production release pending
+- **Severity:** High for misleading source/location facts
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The four-article re-audit found gutter-only observations displayed as measured numbers, an approximate depth displayed as exact, two explicit generally passable corridors displayed as unstated, four Metro Manila roads labeled with unrelated provinces and clearance clocks labeled as flooding observations.
+
+#### 2. Root Cause Analysis (RCA)
+
+Presentation preferred normalized gauges to raw measurements. No claim value represented general passability without vehicle classes. Geometry ranking preserved a homonym's province after accepting a different grounded parent city. Time labels used observation kind without considering cleared condition or the source's by bound.
+
+#### 3. Solution & Architectural Strategy
+
+Prefer raw reported depth with legacy formatted fallback. Add delegated/approved `passable_unspecified`, bounded same-paragraph evidence and an explicit no-closure guard. Derive parent province/island together from grounded city/PSGC. Label resolved clearance observations by status and bound. Preserve previous snapshots/runs, exclusion policy and unknown facts. 595 tests and final 38-detail database/API parity pass. Caption-provenance explanations remain an open refinement, with no caption promotion. [Audit](../evaluations/phase-36-four-article-source-audit.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_presentation_service.py`, `backend/app/schemas/news_presentation.py`: source depth, passability, clearance and exclusion labels.
+- `backend/app/schemas/news_extraction.py`, `taglish_extraction_service.py`, `hybrid_extraction_service.py`: unspecified vehicle passability and safety guard.
+- `backend/app/services/nationwide_geometry_service.py`: grounded parent-field consistency.
+- `backend/app/crud/news_processing.py`: v9 identity; extractor is v1.7.
+- New depth-presentation, generic-passability and geometry-parent tests; existing summary expectation updated to source wording. Affected core records, evaluation and runbook synchronized. No model/migration/dependency or frontend source changed.
 
 ### [BUG-091] Collection timing and unchanged RSS can miss current publisher updates
 

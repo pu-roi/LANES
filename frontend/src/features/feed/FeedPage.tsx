@@ -6,21 +6,24 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { getFeed, votePost, FeedPost, FeedResponse, VoteResponse } from './feedApi';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
-import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
+import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin, MapPin, AlertTriangle } from 'lucide-react';
 import { useToast, Button } from '@/shared/ui';
 import { savedPlacesApi } from '@/features/places/savedPlacesApi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { EmergencyHotlinesCard } from './components/EmergencyHotlinesCard';
+import { resolveProfileCoordinates } from '@/constants/locations';
 
 export function FeedPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { error: showError } = useToast();
+  const { error: showError, info: showInfo } = useToast();
   const [tab, setTab] = useState<'recent' | 'nearby'>('recent');
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [locationLabel, setLocationLabel] = useState<string | null>(null);
+  const [locationSource, setLocationSource] = useState<'gps' | 'profile' | 'saved' | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [preselectedFiles, setPreselectedFiles] = useState<File[]>([]);
@@ -35,7 +38,7 @@ export function FeedPage() {
   const photoInputRef = React.useRef<HTMLInputElement>(null);
   const videoInputRef = React.useRef<HTMLInputElement>(null);
 
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -104,33 +107,92 @@ export function FeedPage() {
     }
   }, [searchParams, router]);
 
+  // Round coordinates to ~110m (3 decimals) to avoid GPS jitter cache-thrashing
+  const snapCoord = (val: number) => Math.round(val * 1000) / 1000;
+
+  const switchToProfileLocation = (quiet = false): boolean => {
+    const profileAddr = user?.profile?.address;
+    if (profileAddr?.barangay) {
+      const coords = resolveProfileCoordinates(profileAddr.barangay, profileAddr.city_municipality);
+      if (coords) {
+        setUserLocation(coords);
+      }
+      const bgyLabel = `Brgy. ${profileAddr.barangay}${profileAddr.city_municipality ? `, ${profileAddr.city_municipality}` : ''}`;
+      setLocationLabel(bgyLabel);
+      setLocationSource('profile');
+      if (!quiet) {
+        showInfo("Using Profile Address", `Showing feed near your registered address in ${bgyLabel}.`);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  const requestGpsLocation = (silentFallback = false) => {
+    if (!('geolocation' in navigator)) {
+      if (!silentFallback) showError("Not Supported", "Geolocation is not supported by your browser.");
+      const fallbackSuccess = switchToProfileLocation(silentFallback);
+      if (!fallbackSuccess && !silentFallback) {
+        showError("Location Required", "Please update your registered address in your Profile.");
+      }
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const snappedLat = snapCoord(pos.coords.latitude);
+        const snappedLng = snapCoord(pos.coords.longitude);
+        setUserLocation({ lat: snappedLat, lng: snappedLng });
+        setLocationLabel("Current Location");
+        setLocationSource('gps');
+      },
+      (_err) => {
+        // 1. Fallback to registered profile address first
+        const fallbackSuccess = switchToProfileLocation(silentFallback);
+        if (!fallbackSuccess) {
+          // 2. Secondary fallback to saved places
+          const fallbackPlace = savedPlaces?.find((p) => p.name?.trim().toLowerCase() === 'home') || (savedPlaces?.[0]);
+          if (fallbackPlace) {
+            setUserLocation({ lat: snapCoord(fallbackPlace.latitude), lng: snapCoord(fallbackPlace.longitude) });
+            setLocationLabel(fallbackPlace.name || "Saved Location");
+            setLocationSource('saved');
+            if (!silentFallback) {
+              showInfo("Using Saved Place", `Showing feed near your saved "${fallbackPlace.name}" place.`);
+            }
+          } else if (!silentFallback) {
+            showError("Location Required", "Please allow GPS location or complete your registered address in your Profile to view nearby posts.");
+          }
+        }
+      },
+      { timeout: 8000, maximumAge: 60000 }
+    );
+  };
+
   // Request location if nearby tab is clicked and we don't have it
   useEffect(() => {
     if (tab === 'nearby' && !userLocation) {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          },
-          (err) => {
-            showError("Location Unavailable", "Please enable location permissions to use the Nearby feed.");
-            setTab('recent');
-          }
-        );
-      } else {
-        showError("Not Supported", "Geolocation is not supported by your browser.");
-        setTab('recent');
-      }
+      requestGpsLocation(true);
     }
-  }, [tab, userLocation, showError]);
+  }, [tab, userLocation, user, savedPlaces]);
 
-  const feedQueryKey = ['feed', tab, userLocation?.lat, userLocation?.lng];
+  const feedQueryKey = ['feed', tab, userLocation?.lat, userLocation?.lng, locationSource];
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: feedQueryKey,
     queryFn: () => getFeed(userLocation?.lat, userLocation?.lng, tab, 0, 50),
-    enabled: tab === 'recent' || (tab === 'nearby' && userLocation !== null),
+    enabled: tab === 'recent' || (tab === 'nearby' && (userLocation !== null || isAuthenticated)),
   });
+
+  // Sync resolved location name from backend if not already set
+  useEffect(() => {
+    if (data?.resolved_location_name && (!locationLabel || locationLabel === "your location")) {
+      setLocationLabel(data.resolved_location_name);
+      if (!locationSource) {
+        setLocationSource('profile');
+      }
+    }
+  }, [data?.resolved_location_name, locationLabel, locationSource]);
+
 
   const voteMutation = useMutation({
     mutationFn: ({ postId, type }: { postId: number; type: 'upvote' | 'downvote' }) => votePost(postId, type),
@@ -367,6 +429,75 @@ export function FeedPage() {
 
             {/* Feed Content */}
             <div className="space-y-3 sm:space-y-4 mb-20">
+              {tab === 'nearby' && (userLocation || locationLabel) && (
+                <div className="space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-medium text-blue-700 bg-blue-50/90 border border-blue-200/70 rounded-xl px-3.5 py-2.5 shadow-xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <MapPin className="w-4 h-4 shrink-0 text-blue-500" />
+                      <span className="truncate">
+                        Showing posts near <strong className="font-semibold text-blue-900">{locationLabel || "your location"}</strong>
+                        {locationSource === 'profile' && <span className="ml-1 text-blue-600 font-normal">(from Profile Address)</span>}
+                        {locationSource === 'gps' && <span className="ml-1 text-blue-600 font-normal">(Current GPS)</span>}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
+                      {locationSource !== 'gps' && (
+                        <button
+                          type="button"
+                          onClick={() => requestGpsLocation(false)}
+                          className="px-2.5 py-1 text-[11px] font-semibold text-blue-700 hover:text-blue-800 bg-white hover:bg-blue-100/50 border border-blue-200 rounded-md transition-colors"
+                        >
+                          Use Current GPS
+                        </button>
+                      )}
+                      {locationSource !== 'profile' && user?.profile?.address?.barangay && (
+                        <button
+                          type="button"
+                          onClick={() => switchToProfileLocation(false)}
+                          className="px-2.5 py-1 text-[11px] font-semibold text-blue-700 hover:text-blue-800 bg-white hover:bg-blue-100/50 border border-blue-200 rounded-md transition-colors"
+                        >
+                          Use Profile Address
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {data?.expanded_radius && (
+                    <div className="flex items-center gap-2 text-xs font-medium text-amber-800 bg-amber-50 border border-amber-200/80 rounded-xl px-3.5 py-2.5 shadow-xs">
+                      <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
+                      <span>No reports found within 5 km. Showing community posts within an expanded 15 km radius.</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {tab === 'nearby' && !userLocation && !isLoading && !data && (
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-8 sm:p-12 text-center text-gray-600">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-base mb-1">Location Required for Nearby Feed</h3>
+                  <p className="text-sm text-gray-500 max-w-md mx-auto mb-4">
+                    To see flood reports and posts near you, enable GPS or set your home address in your profile.
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <Button size="sm" onClick={() => requestGpsLocation(false)}>
+                      Enable GPS
+                    </Button>
+                    {isAuthenticated ? (
+                      <Button variant="outline" size="sm" onClick={() => router.push('/profile')}>
+                        Set Profile Address
+                      </Button>
+                    ) : (
+                      <Button variant="outline" size="sm" onClick={() => router.push('/login')}>
+                        Log In to Use Profile
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {isLoading && (
                 <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center py-20">
                   <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
@@ -383,8 +514,8 @@ export function FeedPage() {
 
               {data && data.posts.length === 0 && (
                 <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-16 text-center text-gray-500">
-                  <p className="font-medium text-lg text-gray-700">No reports found.</p>
-                  <p className="text-sm mt-1">Check back later or submit a new report.</p>
+                  <p className="font-medium text-lg text-gray-700">No reports found{tab === 'nearby' ? ' nearby' : ''}.</p>
+                  <p className="text-sm mt-1">{tab === 'nearby' ? 'No community posts or flood reports were found in your area.' : 'Check back later or submit a new report.'}</p>
                 </div>
               )}
 

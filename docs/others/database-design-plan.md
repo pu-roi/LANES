@@ -1,6 +1,10 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 03, 2026, 7:35 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 11:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Local v10 storage compatibility:** optional `placement_preview` uses existing extraction JSONB. Source hashing keeps processing identity at 90 characters within existing `String(100)`; old inputs/history remain intact. NOAH tiles are external derived files, not PostGIS tables. No SQLAlchemy/Alembic change or real database reprocessing occurred; prior v9 counts remain unchanged. Durable public state still needs storage assessment/separate schema approval. [Verification](../evaluations/phase-36-backend-placement-preview.md).
+
+**Latest replay state (v9/v1.7):** four articles, five immutable source versions and fourteen extraction runs preserve 38 readable locations. September 9 contributes eleven runs and September 24 three; earlier v8 counts below are verification history. Generic passability uses existing claim JSONB, with no column/model/migration change. Reports/zones remain zero. [Audit](../evaluations/phase-36-four-article-source-audit.md).
 
 **Local replay database:** a separate Docker database `lanes_news_test` uses the complete existing PostGIS/Alembic schema at `c5a7e9d2104f`. Creating it and applying existing migrations changed no model or migration source. The original local `lanes` database and cloud data/config are preserved. The September 24 article retains its five readable street claims and prior runs. The additional September 9 subset has three articles, four immutable source versions, eight runs and 33 readable sites at local v8/v1.6. Reports and avoidance zones remain unchanged. Explicit caution is stored in the existing claim JSONB; the added summary label requires no column or migration. Identical input at the same pipeline revision creates no further run. [Runbook](../guides/local-news-replay.md).
 

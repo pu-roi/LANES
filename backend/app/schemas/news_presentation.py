@@ -14,7 +14,8 @@ class NewsFloodSummary(BaseModel):
     passability: str = "Not stated in article"
     condition: str
     flood_time: datetime | None
-    flood_time_label: Literal["Flood observed in article", "Flood reported in article", "Flood time in article"]
+    flood_time_label: Literal["Flood observed in article", "Flood reported in article", "Flood time in article",
+                              "Floodwater subsided by", "Floodwater subsided in article"]
     map_status: str
     reading_status: Literal["reported_location", "needs_checking"]
     reading_reason: str | None

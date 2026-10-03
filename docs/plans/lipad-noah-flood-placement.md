@@ -1,6 +1,8 @@
 # Phase 36: LiPAD / UP NOAH Flood Placement Integration
 
-> **Last Updated:** October 03, 2026, 1:59 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 03, 2026, 11:52 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+> **Local v10 update:** exact tiled NOAH source-vector analysis and section-matched Pasig DRRMO context now connect to shared extraction through typed read-only placement previews and a protected current-placement GET. Existing JSONB stores optional evidence without schema changes. 550 distinct backend checks pass (one skip). Map integration, durable publication/auditor/expiry handling and production analytical assets remain pending. Earlier status/research statements below describe the preceding production/audit stages. [Verification](../evaluations/phase-36-backend-placement-preview.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 > **Status:** Gates 1–3 evidence checks passed. Priority 4 now connects checksum-identified NCR OSM placement to shared article processing; explicit spans and uncertainty are persisted without public/routing effects. The operational NOAH/DRRMO corroboration path, public alerts and verified affected geometry remain open. The commuter NOAH display overlay is separate modeled presentation, not runtime analytical flood proof. The source-map vintage is not published in the checked NOAH metadata; coverage/source limits remain documented. Priority 5 is [lifecycle/frontend planning only](news-publication-review-frontend-plan.md).
 
 **Historical research context:** The local-PBF/caller-boundary descriptions below record September investigations. The separate bundled `NewsRoadPlacementProvider` now supplies checked city relations and source catalog to production extraction; this does not promote a centerline to verified flood extent. See [release verification](../evaluations/phase-36-reusable-road-match-check.md#production-release-verification).
