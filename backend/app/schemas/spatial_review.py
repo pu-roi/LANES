@@ -23,12 +23,23 @@ class SpatialReviewMember(BaseModel):
     queued_at: datetime
     severity: str | None = None
     depth: str | None = None
+    city: str | None = None
+    barangay: str | None = None
 
 
 class SpatialReviewItem(SpatialReviewMember):
     member_count: int = 1
     members: list[SpatialReviewMember] = Field(default_factory=list)
     group_reason: str | None = None
+    location_summary: str = ""
+    area_summary: str = ""
+    severity_levels: list[str] = Field(default_factory=list)
+    depth_levels: list[str] = Field(default_factory=list)
+
+
+class SpatialReviewFacets(BaseModel):
+    cities: list[str] = Field(default_factory=list)
+    barangays: list[str] = Field(default_factory=list)
 
 
 class SpatialReviewPage(BaseModel):
@@ -39,6 +50,7 @@ class SpatialReviewPage(BaseModel):
     pages: int
     counts: dict[str, int]
     item_total: int
+    facets: SpatialReviewFacets = Field(default_factory=SpatialReviewFacets)
     read_only: Literal[True] = True
 
 

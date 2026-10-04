@@ -9,12 +9,16 @@ export interface ReviewItem {
   report_id: number | null; run_id: number | null; claim_index: number | null;
   title: string; location: string; evidence: string; review_reason: string; queued_at: string;
   severity?: string | null; depth?: string | null;
+  city?: string | null; barangay?: string | null;
+  location_summary?: string; area_summary?: string;
+  severity_levels?: string[]; depth_levels?: string[];
   member_count?: number; members?: ReviewItem[]; group_reason?: string | null;
 }
 export interface ReviewPage {
   items: ReviewItem[]; total: number; page: number; page_size: number; pages: number;
   counts: Record<ReviewSource, number>; read_only: true;
   item_total?: number;
+  facets?: { cities: string[]; barangays: string[] };
 }
 export interface ReviewMembersPage {
   group_reason?: string | null;
@@ -49,8 +53,10 @@ export interface PlacementEnvelope {
   evidence_pipeline_version: string; placement_revision: string; claim: NewsClaim; preview: PlacementPreview;
   read_only: true;
 }
-export function getReviewPage(source: ReviewSource, page: number, signal?: AbortSignal) {
-  return apiClient.get<ReviewPage>(`/admin/review/items?source=${source}&page=${page}&page_size=20`, { signal }).then((data) => {
+export interface ReviewFilters { q: string; city: string; barangay: string; severity: string }
+export function getReviewPage(source: ReviewSource, page: number, signal?: AbortSignal, filters?: ReviewFilters) {
+  const params = new URLSearchParams({ source, page: String(page), page_size: "20", ...filters });
+  return apiClient.get<ReviewPage>(`/admin/review/items?${params}`, { signal }).then((data) => {
     if (!Array.isArray(data.items) || !data.counts || data.read_only !== true) throw new Error("Update the backend to load the combined review queue.");
     return data;
   });

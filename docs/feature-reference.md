@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 1:44 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Local reviewed flood growth:** Spatial Operations suggests related evidence across barangays and nearby ongoing event zones. Admins explicitly choose extension, evidence-only linking or a separate event section; server-owned preview/publication preserves supported existing coverage and original evidence. Existing event locations and per-section zones handle multi-road/multi-barangay floods and differing conditions without a migration. News decisions/automatic publication remain pending. [Implementation and validation](evaluations/phase-36-needs-review-inspection.md#october-4-cross-boundary-growth-implementation).
 
@@ -131,6 +131,8 @@ This document serves as the central technical reference for all currently implem
 ---
 
 ### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
+
+*   **Primary Panel refinement (local):** Search and city/barangay/severity filters are server-owned and run before card pagination, retaining full related groups. Cards summarize actual roads/areas and mixed conditions; reports, active zones and contributors reuse the flat `FloodRecordSummary` presentation with compact desktop/touch-aware actions. Source styling, own-record moderation and reviewed merge semantics remain. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-search-and-detail-consistency).
 *   **Purpose:** Implements a "human-in-the-loop" validation workflow to prevent automated NLP ingestion errors or mapping hallucinations from misdirecting drivers.
 *   **What it does:** Needs Review combines pending user reports and current news exceptions in Spatial Operations, with All/User Reports/News Claims filters. User reports retain staff moderation; news evidence and dashed placement suggestions are currently inspection-only. Fully eligible news claims retain the intended automatic publication path once its backend lifecycle is connected.
 *   **Queue presentation:** Light blue user cards group pairwise related reports within two hours: up to 500 m on the same road/city, or 50 m across roads/cities; barangay boundaries alone do not exclude review; opening a card shows the related list inside report details, retaining each report's evidence, severity, depth and actions without a queue dropdown. Light violet news cards retain individual claim identity. Grouping is server-owned display organization, with member pagination and separate report/card counts; actual merging still requires the existing explicit review workflow.

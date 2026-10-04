@@ -58,9 +58,10 @@ async function suggestionPixels(page: Page) {
   }, png.toString("base64"));
 }
 
-async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | "limited" | "queue_error" | "grouped" | "large_group" | "separate_group" | "growth" | "growth_error" = "ready") {
+async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | "limited" | "queue_error" | "grouped" | "large_group" | "separate_group" | "growth" | "growth_error" | "panel_details" = "ready") {
   const writes: string[] = [];
   const sources: string[] = [];
+  const filterRequests: Record<string, string>[] = [];
   const mergePayloads: Record<string, unknown>[] = [];
   const previewControl = { unavailable: mode === "growth_error" };
   const growthReport = { ...report, geometry: candidates[0].centerline_geojson };
@@ -70,7 +71,16 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
     review_reason: "Pending user-report verification.", queued_at: source.published_at,
     severity: index === 1 ? "high" : "low", depth: index === 1 ? "waist" : "ankle",
   }));
-  const grouping = ["grouped", "large_group", "separate_group"].includes(mode);
+  const grouping = ["grouped", "large_group", "separate_group", "panel_details"].includes(mode);
+  const zone = { id: 9, report_id: 2, name: "Maybunga bridge", is_active: true,
+    created_at: source.published_at, updated_at: source.published_at, expires_at: "2026-10-04T08:00:00Z",
+    severity: "medium", depth: "knee", report_text: report.raw_text, report_source: "direct_user",
+    passable_vehicles: "Heavy vehicles", hidden_hazards: "Open drain", admin_notes: "Keep the bridge approach clear.",
+    reporter_name: report.reporter_name,
+    geometry: { type: "Polygon", coordinates: [[[121.08,14.57],[121.081,14.57],[121.081,14.571],[121.08,14.57]]] },
+    contributors: [2, 3].map((id) => ({ report_id: id, reporter_name: `Reporter ${id}`, raw_text: `Zone evidence ${id}`,
+      severity: id === 2 ? "medium" : "high", depth: "knee", created_at: source.published_at,
+      reporter_trust_score: 80, is_primary: id === 2, geometry: report.geometry })) };
   const groupReason = "Nearby reports within 2 hours. Barangay boundaries do not exclude review. Confirm flood extent before merging.";
   const fullReport = (id: number) => {
     const member = groupedMembers.find((row) => row.report_id === id);
@@ -108,6 +118,8 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
         awarded_user_ids: [], zone: { id: 9, event_id: 6, severity: "medium", depth: "knee", geometry: report.geometry } };
     }
     else if (path.endsWith("/notifications")) body = { notifications: [], total: 0, unread_count: 0, has_more: false };
+    else if (path.endsWith("/admin/zones/all") && mode === "panel_details") body = { zones: [zone], total: 1 };
+    else if (path.endsWith("/reports/active-zones") && mode === "panel_details") body = [zone];
     else if (path.endsWith("/admin/zones")) body = { items: [], total: 0, page: 1, limit: 10, pages: 1 };
     else if (path.endsWith("/admin/reports/pending") && mode === "separate_group") body = groupedMembers.map((member) => fullReport(member.report_id));
     else if (path.includes("/admin/reports/detail/")) body = fullReport(Number(path.split("/").pop()));
@@ -120,17 +132,25 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
     else if (path.endsWith("/admin/review/items")) {
       if (mode === "queue_error") return route.fulfill({ status: 503, json: { detail: "Review queue storage is unavailable." } });
       const filter = url.searchParams.get("source") ?? "all"; sources.push(filter);
+      filterRequests.push(Object.fromEntries(url.searchParams.entries()));
       const relatedMembers = mode === "separate_group" ? groupedMembers.filter((member) => member.report_id !== 3) : groupedMembers;
-      const userRow = grouping ? { ...relatedMembers[0], member_count: relatedMembers.length, members: relatedMembers.slice(0, 3), group_reason: groupReason } :
+      const userRow = grouping ? { ...relatedMembers[0], member_count: relatedMembers.length, members: relatedMembers.slice(0, 3), group_reason: groupReason,
+        ...(mode === "panel_details" ? { location_summary: "Dr. Sixto Antonio Avenue · Bridge approach", area_summary: "Maybunga, Pasig · Rosario, Pasig", severity_levels: ["low", "high"], depth_levels: ["ankle", "waist"] } : {}) } :
         { key: "user_report:2", source: "user_report", report_id: 2, run_id: null, claim_index: null, title: "Report #2",
           location: "Maybunga bridge", evidence: report.raw_text, review_reason: "Pending user-report verification.", queued_at: source.published_at, severity: "medium", depth: "knee" };
       const rows = [{ key: "news_claim:2:0", source: "news_claim", report_id: null, run_id: 2, claim_index: 0,
         title: source.title, location: "Caruncho Avenue", evidence: claim.evidence_sentence, review_reason: claim.action_rationale, queued_at: source.published_at },
       userRow, ...(mode === "separate_group" ? [{ ...groupedMembers[1], member_count: 1, members: [], group_reason: null }] : [])];
-      const items = rows.filter((row) => filter === "all" || row.source === (filter === "news_claims" ? "news_claim" : "user_report"));
+      const items = rows.filter((row) => (filter === "all" || row.source === (filter === "news_claims" ? "news_claim" : "user_report")) && (mode !== "panel_details" || (
+        (!url.searchParams.get("q") || (row.source === "user_report" && url.searchParams.get("q") === "Report #3")) &&
+        (!url.searchParams.get("city") || url.searchParams.get("city") === "Pasig") &&
+        (!url.searchParams.get("barangay") || url.searchParams.get("barangay") === "Rosario") &&
+        (!url.searchParams.get("severity") || (row.source === "user_report" && url.searchParams.get("severity") === "high"))
+      )));
       const userCount = grouping ? groupedMembers.length : 1;
       body = { items, total: items.length, item_total: filter === "all" ? userCount + 1 : filter === "news_claims" ? 1 : userCount,
-        page: 1, pages: 1, page_size: 20, counts: { all: userCount + 1, news_claims: 1, user_reports: userCount }, read_only: true };
+        page: 1, pages: 1, page_size: 20, counts: { all: userCount + 1, news_claims: 1, user_reports: userCount }, read_only: true,
+        ...(mode === "panel_details" ? { item_total: items.reduce((sum, item) => sum + (item.source === "user_report" ? 3 : 1), 0), facets: { cities: filter === "news_claims" ? ["Pasig"] : ["Pasig", "Cainta"], barangays: url.searchParams.get("city") === "Cainta" ? ["San Andres"] : ["Maybunga", "Rosario"] } } : {}) };
     } else if (path.endsWith("/items/news_claim:2:0")) body = { key: "news_claim:2:0", source: "news_claim", is_current_review: true, report: null, news, news_actions_available: false };
     else if (path.includes("/items/user_report:")) {
       const id = Number(path.split(":").pop());
@@ -155,7 +175,7 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
     return route.fulfill({ status: 200, json: body });
   });
   await page.goto("/admin/map", { waitUntil: "domcontentloaded" });
-  return { writes, sources, mergePayloads, previewControl };
+  return { writes, sources, filterRequests, mergePayloads, previewControl };
 }
 
 test("mixed queue keeps news inspection separate from user-report actions", async ({ page }, info) => {
@@ -503,5 +523,95 @@ test("failed coverage preview blocks publication and can be retried", async ({ p
   previewControl.unavailable = false;
   await workspace.getByRole("button", { name: "Retry coverage preview" }).click();
   await expect(workspace.getByRole("button", { name: "Review Confirmation" })).toBeEnabled();
+  expect(writes).toEqual([]);
+});
+
+
+test("queue search and location filters retain complete groups and survive returning from evidence", async ({ page }, info) => {
+  if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
+  const { writes, filterRequests } = await setup(page, "panel_details");
+  const panel = page.getByRole("region", { name: "Needs Review", exact: true });
+  const search = panel.getByRole("searchbox", { name: "Search review queue" });
+  await expect(panel.getByText("Maybunga, Pasig · Rosario, Pasig", { exact: true })).toBeVisible();
+  await search.fill("Report #3");
+  await expect(panel.getByText("3 reports requiring review · 1 review card")).toBeVisible();
+  await panel.getByRole("button", { name: "Filters", exact: true }).click();
+  await panel.getByRole("button", { name: "Filter by city", exact: true }).click();
+  await page.getByRole("button", { name: "Pasig", exact: true }).click();
+  await panel.getByRole("button", { name: "Filter by barangay", exact: true }).click();
+  await page.getByRole("button", { name: "Rosario", exact: true }).click();
+  await panel.getByRole("button", { name: "Filter by severity", exact: true }).click();
+  await page.getByRole("button", { name: "High", exact: true }).click();
+  await expect.poll(() => filterRequests.some((request) => request.q === "Report #3" && request.city === "Pasig" && request.barangay === "Rosario" && request.severity === "high")).toBe(true);
+  await page.screenshot({ path: info.outputPath("queue-search-filters.png") });
+  await panel.getByRole("button", { name: "Inspect user report: Dr. Sixto Antonio Avenue", exact: true }).click();
+  const evidence = panel.getByRole("region", { name: "User report evidence", exact: true });
+  await expect(evidence.getByText("Report #2", { exact: true })).toBeVisible();
+  await expect(evidence.getByText("Reported by", { exact: true })).toBeVisible();
+  await expect(evidence.getByText("Attachments", { exact: true })).toBeVisible();
+  await expect(panel.getByRole("region", { name: "Related reports", exact: true }).getByText("Report #3", { exact: true })).toBeVisible();
+  const approve = evidence.getByRole("button", { name: "Approve", exact: true });
+  expect((await approve.boundingBox())!.height).toBe(info.project.name === "mobile-chromium" ? 44 : 32);
+  await page.screenshot({ path: info.outputPath("report-shared-details.png") });
+  await panel.getByRole("button", { name: "Back to queue", exact: true }).click();
+  await expect(search).toHaveValue("Report #3");
+  await expect(panel.getByRole("button", { name: "Filter by barangay" })).toHaveText(/Rosario/);
+  await panel.getByRole("button", { name: "Filter by city" }).click();
+  await page.getByRole("button", { name: "Cainta", exact: true }).click();
+  await expect(panel.getByRole("button", { name: "Filter by barangay" })).toHaveText("All barangays");
+  await expect(panel.getByText("No items need review in this filter.")).toBeVisible();
+  await panel.getByRole("button", { name: /News Claims/ }).click();
+  await expect(panel.getByRole("button", { name: "Filter by city" })).toHaveText("Cainta");
+  await panel.getByRole("button", { name: /^All \d/ }).click();
+  await panel.getByRole("button", { name: "Clear filters", exact: true }).click();
+  await expect(search).toHaveValue("");
+  await expect(panel.getByText("4 reports requiring review · 2 review cards")).toBeVisible();
+  if (info.project.name === "mobile-chromium") {
+    await page.setViewportSize({ width: 320, height: 740 });
+    expect(await panel.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath("queue-narrow-filters.png") });
+    await page.setViewportSize({ width: 844, height: 390 });
+    expect(await panel.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+  }
+  expect(writes).toEqual([]);
+});
+
+test("active zones share report styling and keep zone-specific actions and contributor focus", async ({ page }, info) => {
+  if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
+  const { writes } = await setup(page, "panel_details");
+  await page.getByRole("button", { name: /Active Zones/ }).click();
+  const panel = page.getByRole("region", { name: "Active Zones", exact: true });
+  const zone = panel.getByRole("article", { name: "Zone #9", exact: true });
+  await expect(zone.getByText("Open drain", { exact: true })).toBeVisible();
+  await expect(zone.getByText("Heavy vehicles", { exact: true })).toBeVisible();
+  await expect(zone.getByText("Keep the bridge approach clear.", { exact: true })).toBeVisible();
+  await expect(zone.getByText("Expires", { exact: true })).toBeVisible();
+  await zone.getByRole("checkbox", { name: "Select Zone #9", exact: true }).check();
+  await expect(zone.getByRole("checkbox")).toBeChecked();
+  const view = zone.getByRole("button", { name: "View on map", exact: true });
+  expect((await view.boundingBox())!.height).toBe(info.project.name === "mobile-chromium" ? 44 : 32);
+  await zone.getByRole("button", { name: /Reported by/ }).click();
+  const contributors = zone.getByRole("region", { name: "Zone #9 contributing reports", exact: true });
+  await expect(contributors.getByRole("article")).toHaveCount(2);
+  await contributors.getByRole("button", { name: "Inspect Report #3 on map", exact: true }).click();
+  await expect(contributors.getByRole("button", { name: "Restore zone on map", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await contributors.getByRole("button", { name: "Restore zone on map", exact: true }).click();
+  await zone.getByRole("button", { name: /Reported by/ }).click();
+  await page.screenshot({ path: info.outputPath("zone-shared-details.png") });
+  await zone.getByRole("checkbox", { name: "Select Zone #9", exact: true }).uncheck();
+  await zone.getByRole("button", { name: "Deactivate", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Confirm Deactivation", exact: true })).toBeVisible();
+  await expect(page.getByText("#9", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  if (info.project.name === "mobile-chromium") {
+    await page.setViewportSize({ width: 320, height: 740 });
+    await view.scrollIntoViewIfNeeded();
+    expect(await panel.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath("zone-narrow-details.png") });
+    await page.setViewportSize({ width: 844, height: 390 });
+    expect(await panel.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+  }
+  await zone.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.getByText(/Edit Zone #9/, { exact: true }).first()).toBeVisible();
   expect(writes).toEqual([]);
 });

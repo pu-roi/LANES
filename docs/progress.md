@@ -1,12 +1,16 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
 
 ### Phase 36: Local Needs Review inspection workspace (October 4, 2026)
+
+- [x] Audited the Primary Panel checkpoint with the senior-planner skill: synchronized existing feature/system/task/progress/bug records, catalog and F5 plan; confirmed no dependency/model/migration changes and retained prior 33 backend/38 browser checks, TypeScript/scoped lint evidence. The fresh local Alembic check could not complete because Docker/PostGIS is offline; no cloud database was used. Prepare the requested `roi-branch` commit/push. [Audit](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-push-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+- [x] Refined Spatial Operations Primary Panel in the existing design: server-side queue search and city/barangay/severity filters retain full related groups, cards summarize locations/conditions/latest report, and reports/zones/contributors share a flat detail component. Compact desktop actions retain mobile touch sizes and own-record targets. 33 backend checks and 38 distinct desktop/mobile browser cases pass across the suite and focused reruns (two expected skips); TypeScript/scoped ESLint pass. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-search-and-detail-consistency). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 - [x] Completed the requested senior-planner audit for the Needs Review/related-report and reviewed flood-growth `roi-branch` checkpoint: eight authoritative records checked, existing Spatial Operations behavior synchronized, no new dependency/model/migration or architectural pivot, and native user-review checks separated from unfinished news publication/native news-placement acceptance. Prior 46 backend/34 desktop-mobile checks and TypeScript/scoped lint remain applicable. [Checkpoint audit](evaluations/phase-36-needs-review-inspection.md#october-4-senior-planner-checkpoint-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Implemented reviewed cross-boundary flood growth locally: nearby active-zone discovery, extension/evidence-only/separate-section actions, shared server preview, retained coverage/core and atomic report/history/audit saves. Existing event locations/zones support multiple streets/barangays and section-specific conditions without schema/dependency changes. 46 distinct backend and 34 distinct desktop/mobile browser checks pass (two viewport skips), with TypeScript/scoped lint. Native JWT/PostGIS verified in rollback-isolated local test DB; actual screenshot incident membership, developer acceptance and publication remain open. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-cross-boundary-growth-implementation). ([@roicambe](https://github.com/roicambe) (Roi Cambe))

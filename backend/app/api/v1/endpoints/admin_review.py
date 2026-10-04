@@ -26,9 +26,12 @@ def review_members(key: str = Path(pattern=r"^(user_report:[1-9][0-9]*|news_clai
 
 @router.get("/items", response_model=SpatialReviewPage)
 def review_items(source: ReviewSource = "all", page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=100),
+                 q: str = Query("", max_length=120), city: str = Query("", max_length=100),
+                 barangay: str = Query("", max_length=100), severity: str = Query("", pattern=r"^(|low|medium|high|extreme|unknown)$"),
                  db: Session = Depends(get_db), _staff: object = Depends(deps.get_current_active_admin)) -> SpatialReviewPage:
     try:
-        return browse_spatial_review(db, source=source, page=page, page_size=page_size)
+        return browse_spatial_review(db, source=source, page=page, page_size=page_size,
+            q=q, city=city, barangay=barangay, severity=severity)
     except SQLAlchemyError as exc:
         raise HTTPException(503, "Review queue storage is unavailable.") from exc
 

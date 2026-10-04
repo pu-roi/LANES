@@ -19,7 +19,7 @@ def review_rows(db: Session, now: datetime) -> Subquery:
         (literal("Report #") + cast(report.id, Text)).label("title"),
         func.coalesce(report.human_readable_location, report.barangay, report.city, "Location not specified").label("location"),
         report.raw_text.label("evidence"), literal("Pending user-report verification.").label("review_reason"),
-        cast(report.severity, Text).label("severity"), report.depth,
+        cast(report.severity, Text).label("severity"), report.depth, report.city, report.barangay,
     ).where(report.status == "pending", report.deleted_at.is_(None))
 
     news, value, _, _ = result_rows(db, latest_only=True)
@@ -49,14 +49,15 @@ def review_rows(db: Session, now: datetime) -> Subquery:
         field("evidence_sentence").label("evidence"),
         func.coalesce(field("action_rationale"), "Incomplete or conflicting flood evidence.").label("review_reason"),
         literal(None, Text).label("severity"), field("depth_raw").label("depth"),
+        field("canonical_city").label("city"), field("canonical_barangay").label("barangay"),
     )
     return union_all(reports, claims).subquery()
 
 
 def list_review_identities(db: Session, now: datetime) -> list[RowMapping]:
-    """Compact current identities; grouping precedes card pagination."""
+    """Queue facts for server search/summary; no detail relationships are loaded."""
     rows = review_rows(db, now)
-    return list(db.execute(select(rows.c.source, rows.c.record_id, rows.c.claim_index, rows.c.queued_at)).mappings())
+    return list(db.execute(select(rows)).mappings())
 
 
 def list_report_group_metadata(db: Session) -> list[RowMapping]:

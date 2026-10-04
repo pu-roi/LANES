@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Primary Panel read-contract compatibility:** Queue search, facets and all-member summaries use existing report columns and extraction claim JSON. Added Pydantic response fields are API contracts, not database changes. No SQLAlchemy model or Alembic revision changed. Fresh pre-push local `alembic upgrade head` could not complete with Docker/PostGIS offline; last verified schema is `c5a7e9d2104f`. No cloud database was contacted. [Audit](../evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-push-audit).
 
 **October 4 reviewed-growth compatibility:** existing `FloodEvent` locations, linked reports and event-owned zones already support multiple roads/barangays/cities and section-specific conditions. Extension preserves the supported polygon and `source_geometry`; corroboration keeps operational fields unchanged; separate sections reuse the same event. Report moderation outcomes, location/timeline updates and merge audit save together. Native tests use a guarded local PostGIS database with outer rollback. This checkpoint modifies no SQLAlchemy model or Alembic revision; schema remains `c5a7e9d2104f`. [Verification](../evaluations/phase-36-needs-review-inspection.md#october-4-cross-boundary-growth-implementation).
 

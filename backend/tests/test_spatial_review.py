@@ -1,5 +1,6 @@
 """Mixed review reads are bounded, source-aware and never publish historical evidence."""
 from copy import deepcopy
+import json
 from datetime import timedelta
 from types import SimpleNamespace
 
@@ -141,6 +142,68 @@ def test_native_postgres_query_shape_without_fetching_backlog():
     assert "jsonb_array_elements" in sql and "UNION ALL" in sql
     assert "max(news_extraction_runs.id)" in sql
     db.execute.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_search_matches_any_member_without_splitting_cross_boundary_group(review_db):
+    generator = app.dependency_overrides[get_db]()
+    db = next(generator)
+    for id, road, city, barangay, severity, depth, longitude in [
+        (2, "Alpha Road", "Pasig", "Maybunga", "medium", "knee", 121.08),
+        (90, "Beta Road", "Cainta", "Rosario", "high", "waist", 121.0802),
+    ]:
+        db.execute(text("UPDATE flood_reports SET human_readable_location=:road, city=:city, barangay=:barangay, severity=:severity, depth=:depth, geometry=:geometry WHERE id=:id"),
+            dict(id=id, road=road, city=city, barangay=barangay, severity=severity, depth=depth,
+                geometry=json.dumps({"type": "Point", "coordinates": [longitude, 14.58]})))
+    db.commit()
+    review_db.clear()
+    staff()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        root = "/api/v1/admin/review/items"
+        for filters in ({"q": "report #90"}, {"q": "  BETA   ROSARIO  "}, {"city": "City of Cainta", "barangay": "Rosario", "severity": "high"}):
+            response = await client.get(root, params={"source": "user_reports", "page": 99, "page_size": 1, **filters})
+            assert response.status_code == 200, response.text
+            result = response.json()
+            assert result["total"] == 1 and result["item_total"] == 2 and result["page"] == 1
+            card = result["items"][0]
+            assert card["key"] == "user_report:2" and card["member_count"] == 2
+            assert {row["report_id"] for row in card["members"]} == {2, 90}
+            assert card["severity_levels"] == ["medium", "high"]
+            assert set(card["depth_levels"]) == {"knee", "waist"}
+            assert card["location_summary"] == "Alpha Road · Beta Road"
+            assert "Rosario, Cainta" in card["area_summary"]
+            assert result["counts"]["all"] == 4
+        # City and barangay must belong to the same member, not different members.
+        result = (await client.get(root, params={"source": "user_reports", "city": "Cainta", "barangay": "Maybunga"})).json()
+        assert result["items"] == [] and result["item_total"] == 0
+        assert result["facets"] == {"cities": ["Cainta", "Pasig"], "barangays": ["Rosario"]}
+        members = (await client.get("/api/v1/admin/review/groups/user_report:90/members")).json()
+        assert members["key"] == "user_report:2" and members["total"] == 2
+    generator.close()
+
+
+@pytest.mark.asyncio
+async def test_queue_search_is_global_before_pagination_and_validated(review_db):
+    generator = app.dependency_overrides[get_db]()
+    db = next(generator)
+    for id in range(100, 400):
+        db.execute(text("INSERT INTO flood_reports VALUES (:id, 'pending', NULL, :created, 'Another road', 'Test barangay', 'Other city', :evidence, 'low', 'ankle', NULL)"),
+            {"id": id, "created": NOW - timedelta(minutes=id), "evidence": "Find this distant page" if id == 399 else "Other evidence"})
+    db.commit()
+    review_db.clear()
+    staff()
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        root = "/api/v1/admin/review/items"
+        result = (await client.get(root, params={"q": "distant page", "page_size": 1})).json()
+        assert result["total"] == 1 and result["items"][0]["report_id"] == 399
+        assert result["counts"]["user_reports"] == 302
+        assert (await client.get(root, params={"q": "%"})).json()["total"] == 0
+        result = (await client.get(root, params={"source": "news_claims", "severity": "unknown"})).json()
+        assert result["total"] == 2
+        assert (await client.get(root, params={"source": "news_claims", "severity": "high"})).json()["total"] == 0
+        for filters in ({"q": "x" * 121}, {"city": "x" * 101}, {"barangay": "x" * 101}, {"severity": "bogus"}):
+            assert (await client.get(root, params=filters)).status_code == 422
+    generator.close()
 
 
 @pytest.mark.asyncio

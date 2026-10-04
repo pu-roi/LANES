@@ -1,7 +1,7 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Completed work and delivery history are recorded in [progress.md](progress.md). This plan contains the active sprint, unresolved work, and future backlog.
 
@@ -12,6 +12,10 @@
 ## Active Sprint
 
 ### Needs Review: local queue and placement inspection
+
+- [x] Complete the requested senior-planner audit for the Primary Panel checkpoint: synchronize all eight records and the F5 plan with verified behavior, tests and dependency/schema state. Prepare commit/push to `roi-branch`; developer acceptance and production rollout remain open. [Audit](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-push-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+- [x] Improve the existing Primary Panel without an overall redesign: server-side search/city/barangay/severity filters before pagination, complete group summaries, shared report/zone/contributor details, and standard compact desktop buttons with mobile touch targets. Preserve membership, source styling and moderation/zone actions. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-search-and-detail-consistency). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 - [x] Resolve related reports from the currently selected identity for queue, map and external handoffs; remove stale queue-card group state and support non-anchor member reads. Keep existing locality/distance/time and explicit merge rules. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-selected-report-group-resolution). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Render related reports with the same existing report component and own-record actions, excluding the selected report from the related list. Preserve queue styling and grouping. ([@roicambe](https://github.com/roicambe) (Roi Cambe))

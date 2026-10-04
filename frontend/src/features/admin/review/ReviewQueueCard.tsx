@@ -1,13 +1,8 @@
 import { Layers, Newspaper, UserRound } from "lucide-react";
 import { Button } from "@/shared/ui";
-import { formatFloodDepth } from "@/lib/floodDepth";
+import { FloodSeverityBadge, FloodDepthBadge } from "../components/FloodRecordSummary";
 import { parseUtcDate } from "@/lib/utils";
 import type { ReviewItem } from "./reviewApi";
-
-const severityColors: Record<string, string> = {
-  low: "bg-lime-100 text-lime-900", medium: "bg-amber-100 text-amber-900",
-  high: "bg-orange-100 text-orange-900", extreme: "bg-red-100 text-red-900",
-};
 
 export function ReviewQueueCard({ item, onInspect }: {
   item: ReviewItem; onInspect: (key: string, opener: HTMLButtonElement) => void;
@@ -19,10 +14,12 @@ export function ReviewQueueCard({ item, onInspect }: {
   const sourceLabel = news ? "News claim" : "User report";
   const stamp = parseUtcDate(item.queued_at);
   const inspectLabel = (row: ReviewItem) => `Inspect ${row.source === "news_claim" ? "news claim" : "user report"}: ${row.location}`;
-  const measurements = (row: ReviewItem) => <div className="flex flex-wrap gap-1.5">
-    {row.severity && <span className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${severityColors[row.severity.toLowerCase()] ?? "bg-slate-100 text-slate-700"}`}>{row.severity}</span>}
-    {row.depth && <span className="rounded bg-sky-100 px-2 py-0.5 text-[10px] font-medium text-sky-900">{formatFloodDepth(row.depth, { compact: true })}</span>}
-  </div>;
+  const measurements = <span className="flex flex-wrap gap-1.5">
+    {item.severity_levels?.length ? item.severity_levels.map((severity) => <FloodSeverityBadge key={severity} severity={severity} />) : <FloodSeverityBadge severity={grouped ? null : item.severity} />}
+    {!grouped && item.depth && <FloodDepthBadge depth={item.depth} />}
+    {grouped && item.depth_levels?.slice(0, 3).map((depth) => <FloodDepthBadge key={depth} depth={depth} />)}
+    {grouped && (item.depth_levels?.length ?? 0) > 3 && <span className="text-[10px] text-slate-500">More depths in details</span>}
+  </span>;
   return <article aria-label={`${sourceLabel}: ${item.location}${grouped ? ` · ${count} related reports` : ""}`}
     className={`overflow-hidden rounded-xl border-l-4 ${news ? "border-violet-400 bg-violet-50/70" : "border-sky-400 bg-sky-50/70"}`}>
     <Button variant="ghost" className={`h-auto min-h-11 w-full flex-col items-stretch gap-2 rounded-none p-4 text-left font-normal focus:ring-inset focus:ring-offset-0 ${news ? "hover:bg-violet-100/70 focus:ring-violet-500" : "hover:bg-sky-100/70 focus:ring-sky-500"}`}
@@ -33,9 +30,11 @@ export function ReviewQueueCard({ item, onInspect }: {
         {grouped ? <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 px-2 py-1 text-[11px] font-semibold text-sky-900"><Layers className="size-3" />{count} related</span>
           : stamp && <time dateTime={item.queued_at} className="text-[10px] text-slate-500">{stamp.toLocaleString("en-PH", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</time>}
       </span>
-      <span className="min-w-0 break-words text-sm font-semibold text-slate-900">{item.location}</span>
-      {!grouped && <>{measurements(item)}<span className="break-words text-xs text-slate-500">{item.title}</span><span className="line-clamp-2 break-words text-sm leading-5 text-slate-700">{item.evidence}</span><span className="break-words text-xs text-amber-800">{item.review_reason}</span></>}
-      {grouped && <span className="break-words text-xs leading-5 text-slate-600">Nearby reports on the same road. Open to review their evidence.</span>}
+      <span className="min-w-0 break-words text-sm font-semibold text-slate-900">{item.location_summary || item.location}</span>
+      {item.area_summary && <span className="break-words text-xs text-slate-500">{item.area_summary}</span>}
+      {measurements}
+      {!grouped && <><span className="break-words text-xs text-slate-500">{item.title}</span><span className="line-clamp-2 break-words text-sm leading-5 text-slate-700">{item.evidence}</span><span className="break-words text-xs text-amber-800">{item.review_reason}</span></>}
+      {grouped && <><span className="line-clamp-2 break-words text-xs leading-5 text-slate-700">{item.evidence}</span><span className="text-[10px] text-slate-500">Latest report: {stamp?.toLocaleString("en-PH", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) ?? "Time unavailable"}</span><span className="break-words text-xs leading-5 text-slate-600">Related evidence · Review each report before merging.</span></>}
     </Button>
   </article>;
 }

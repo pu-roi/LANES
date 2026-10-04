@@ -1,6 +1,6 @@
 # Phase 36: Needs Review queue and placement inspection
 
-> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Local inspection implementation; news decisions and automatic publication remain unfinished.
 
 ## Checkpoint and scope
@@ -133,3 +133,39 @@ Audited the eight authoritative records against the actual changed files and pri
 Confirmed active identity Roi Cambe and branch `roi-branch`; fetch showed zero local/remote divergence before this commit. No model, migration, requirement, package or lockfile diff exists. The pre-push guarded local `alembic upgrade head` completed successfully without introducing a revision. Existing declared dependencies cover new imports; private runtime configuration, screenshots, test output and Docker runtime backups remain outside the commit. Prior verification remains applicable: 46 distinct backend checks, 34 distinct desktop/mobile browser checks (two expected skips), TypeScript and scoped lint. The checkpoint includes the earlier combined Needs Review implementation and its related-report fixes plus reviewed flood growth; it does not deploy the system or complete automatic news decisions/publication.
 
 The user authorized shutdown only after documentation and branch push complete. Power-off is an operational follow-up, not an application change. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+
+## October 4 Primary Panel search and detail consistency
+
+**Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe). **Scope:** retain the existing Spatial Operations design and source colors; improve queue organization/context, useful details and shared action sizing. Implementation was initially local on `roi-branch`; the subsequent request authorizes its documentation audit and branch checkpoint push. Deployment and developer visual acceptance remain separate.
+
+### Behavior and boundaries
+
+- Protected queue reads add bounded `q`, city, barangay and severity inputs. Search is case-insensitive/all-word literal matching across title, road, city, barangay, evidence and review reason. Severity `unknown` covers unassessed evidence, including news claims without an assessment.
+- Grouping precedes filtering. Every supplied criterion must match one member; any matching member returns the entire group and its canonical anchor, including members in different roads/cities/barangays. Filtering does not rewrite membership or moderation targets. Pagination/counts apply to matching full groups. Source totals remain global; filtered `item_total` includes all records in those returned groups, not just matching members.
+- Facets come from the source-wide eligible queue rather than a single page or the current text/severity match. Barangays belong to the selected city; city aliases use the existing locality normalization. Empty results remain clearable. City changes reset barangay; selected locations remain visible after source switching. Search debounces 300 ms and filters survive opening/back navigation.
+- Server cards summarize all members' roads/areas, severity/depth diversity and latest queue time. Road/area text is bounded to three names with a remainder count; card depth badges show three distinct values and point to details for more. Individual evidence remains authoritative. News and user cards retain violet/blue styling and no member dropdown.
+- `FloodRecordSummary` supplies the common flat record layout, severity/depth badges, full date/time, location, fact rows and action slot. Pending evidence adds existing reporter/trust, reported vehicles/hazards and attachment count. Active zones expose existing effective conditions, primary report, expiry and admin notes. `ZoneContributors` reuses the same presentation, preserving original facts and inspect/restore map selection.
+- `SpatialPanelButton` delegates to the existing shared Button `size="sm"`: desktop action height is 32 px, narrow/coarse-pointer minimum is 44 px. Shared Input/Select and Pagination remain in use; main scroll containers retain CSS-variable/safe-area bottom padding. The rest of the admin panel, map plotting, grouping distances and merge publication logic are unchanged.
+
+### Verification
+
+- `dotenvx run -f .env.test.local -f .env -- .\venv\Scripts\python.exe -m pytest tests/test_spatial_review.py tests/test_spatial_review_grouping.py -q`: **33 passed**. Includes matching the final record in a 300-record backlog before pagination, intact cross-city groups, canonical member reads, simultaneous per-member filters, city alias matching, facet stability, literal percent search, invalid lengths/severities, auth and storage errors. Uses isolated SQLite fixtures and PostgreSQL SQL compilation; no fresh native database integration run for these filters.
+- Existing Spatial Operations Playwright suite: 32 passes and two expected viewport skips initially; two empty-page timeouts during active edits pass in isolated reruns. Four new desktop/mobile filter/detail/zone cases pass after correcting test selectors for the existing generic Modal and its independent bulk-action Cancel button. **38 distinct browser cases pass**, with two expected skips. New fixtures mock staff/API data and basemap; this does not establish production/native data acceptance.
+- New browser checks verify complete group presentation, request parameters, source counts, clear/zero-result states, city resetting barangay, selected facets after source switching, retained filters after back navigation, 32/44 px action heights, own-zone edit/deactivate confirmation, contributor inspection/restoration and zero writes during inspection. 320 px narrow and 844×390 touch landscape are checked. Screenshots are kept under ignored `frontend/test-results/primary-panel-*` output directories and visually inspected.
+- TypeScript and scoped ESLint pass; `git diff --check` passes. No package/lockfile, SQLAlchemy model or Alembic migration changes. Existing merge-mode browser regressions continue to pass; no live reports/zones were published or deactivated.
+
+### Senior-planner audit
+
+Audited all eight authoritative records. Updated task plan, reverse-chronological progress, existing Feature 7, system documentation and BUG-097. Tech stack/dependency, architectural decisions and database-design records remain accurate and unchanged because this refinement uses existing technologies/tables and no architectural pivot. Updated this existing evaluation and its catalog description. Developer visual acceptance and the previously unfinished news exception decisions/automatic publication remain open; this task does not close those milestones.
+
+
+## October 4 Primary Panel push audit
+
+**Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The developer requested the senior-planner audit/update and push to `roi-branch` after the Primary Panel implementation.
+
+Read the skill, repository instructions and design; confirmed Roi Cambe's Git identity and active `roi-branch`. Audited all eight authoritative records, existing evaluation/catalog and Priority 5 plan. Updated task/progress tracking, existing Feature 7 context, screen/API/component documentation and BUG-097. Kept architectural decisions unchanged because there is no architectural pivot. Recorded existing-dependency and existing-storage compatibility in the stack/database records, and synchronized the F5 plan with implemented search/facets/shared details while keeping acceptance and news publication milestones open.
+
+Prior verification applies to the unchanged implementation: 33 backend checks, 38 distinct desktop/mobile browser cases passing across the original run and focused reruns, two expected viewport skips, TypeScript and scoped ESLint. No additional application changes or test claims are introduced by this documentation-only follow-up. Fetch found zero local/remote divergence before the checkpoint.
+
+The pre-push attempt validated a loopback-only `lanes_news_test` target and invoked `alembic upgrade head`, but could not complete because Docker Desktop's Linux engine/PostGIS was not running. The attempt returned a database connection timeout; checked for remaining task-owned Alembic processes. No fresh migration success is claimed, and no cloud database was used. The checkpoint changes no SQLAlchemy models, Alembic revisions, requirements, packages or lockfiles; the last verified schema remains `c5a7e9d2104f`. Pulling these UI/read-contract changes introduces no new migration or installation step. Screenshots, private environment files and test output remain outside the checkpoint. Production deployment and developer visual acceptance remain pending.

@@ -1,11 +1,38 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 04, 2026, 5:07 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 1:44 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-097] Primary Panel duplicates report/zone presentation and omits group context
+
+- **Status:** Resolved locally; developer visual acceptance pending
+- **Severity:** Low (administrator context and UI consistency)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Needs Review cards emphasize the anchor road but do not summarize grouped cities/barangays, conflicting severity/depth or latest evidence. The Primary Panel lacks location/search organization for large queues. Pending evidence and published zones use separate detail layouts and inconsistent button heights.
+
+#### 2. Root Cause Analysis (RCA)
+
+Queue previews previously hydrate only three members and expose no all-member location/condition summaries or search facets. Report and zone panels duplicate badge, fact and action markup, with unconditional 44 px report actions versus 28 px zone actions. The unused legacy pending-panel trust selector implies filtering that is not implemented.
+
+#### 3. Solution & Architectural Strategy
+
+Read existing queue facts in the backend, group under the unchanged spatial/time policy, match all criteria against any one member, retain complete canonical groups and paginate afterwards. Return city-scoped facets and all-member summaries, keeping global source counts distinct from filtered card/record counts. Reuse existing locality normalization for city aliases. The UI preserves source colors and the detail-based Related reports list, shares a flat record summary, removes unused legacy frontend filter controls, and uses shared small buttons with 44 px touch minimums. Contributor map inspection/restore is keyboard-accessible; report actions still target each original report.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/crud/spatial_review.py`, `schemas/spatial_review.py`, `services/spatial_review_service.py`, `api/v1/endpoints/admin_review.py`: existing-data summaries, validated protected filters, facet and count contracts; no model/migration/publication writes.
+- `frontend/src/features/admin/components/FloodRecordSummary.tsx`, `ZoneContributors.tsx`, `PendingReportsPanel.tsx`, `ActiveZonesPanel.tsx`: shared presentation, useful facts and compact/touch-aware actions.
+- `frontend/src/features/admin/review/{NeedsReviewPanel,ReviewQueueCard,RelatedReviewReports,NewsReviewEvidence}.tsx`, `reviewApi.ts`: filters, contextual cards and consistent action sizing.
+- `backend/tests/test_spatial_review.py`, `frontend/tests/spatial-review.spec.ts`: 300-record search, intact cross-boundary groups, validation/zero results, filter retention, narrow/landscape bounds and independent zone actions.
+
+[Verification](../evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-search-and-detail-consistency).
 
 ### [BUG-096] Cross-boundary flood growth lacks a consistent review and extension workflow
 

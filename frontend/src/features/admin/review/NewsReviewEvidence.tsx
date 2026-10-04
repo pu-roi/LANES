@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, FloodLocationSummary } from "@/shared/ui";
+import { FloodLocationSummary } from "@/shared/ui";
 import { NewsSourceArticle } from "@/features/news/NewsSourceArticle";
 import { floodSummaryData } from "@/features/news/newsPresentation";
 import { getPlacementPreview, type PlacementEnvelope, type ReviewDetail } from "./reviewApi";
+
+import { SpatialPanelButton as Button } from "../components/FloodRecordSummary";
 
 const reasonLabel = (value: string) => value.replaceAll("_", " ");
 
@@ -40,7 +42,7 @@ export function NewsReviewEvidence({ detail, active, selectedId, onSelect, onPre
         <p className="text-xs text-blue-700">Blue dashed lines: placement suggestions. Select one to inspect; selection does not confirm it.</p>
         {selectedId && <Button variant="ghost" size="sm" onClick={() => onSelect(null)}>Show all suggestions</Button>}
         <div className="divide-y divide-slate-100">{preview.candidates.map((candidate, index) => <div key={candidate.candidate_id} className="py-3">
-          <Button variant={selectedId === candidate.candidate_id ? "primary" : "outline"} className="min-h-11 w-full justify-start" aria-pressed={selectedId === candidate.candidate_id} onClick={() => onSelect(candidate.candidate_id)}>Inspect suggestion {index + 1} · {Math.round(candidate.approximate_length_m)} m</Button>
+          <Button variant={selectedId === candidate.candidate_id ? "primary" : "outline"} className="w-full justify-start" aria-pressed={selectedId === candidate.candidate_id} onClick={() => onSelect(candidate.candidate_id)}>Inspect suggestion {index + 1} · {Math.round(candidate.approximate_length_m)} m</Button>
           <p className="mt-2 break-words text-xs text-slate-600">{candidate.kind === "reported_span" ? "Reported span" : "Road section"}{candidate.cross_streets.length ? ` · ${candidate.cross_streets.map((names) => names.join(" / ")).join(" — ")}` : ""}</p>
           {candidate.ambiguous_carriageway && <p className="mt-1 text-xs text-amber-800">Competing carriageways remain unresolved.</p>}
           <dl className="mt-2 space-y-1 text-xs text-slate-600">{[5, 25, 100].map((period) => <div key={period} className="flex justify-between gap-2"><dt>NOAH {period}-year modeled overlap</dt><dd>{candidate.modeled_overlap_fraction[String(period)] == null ? "Unavailable" : `${Math.round(candidate.modeled_overlap_fraction[String(period)] * 100)}%`}</dd></div>)}</dl>
