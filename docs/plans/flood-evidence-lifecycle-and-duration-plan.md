@@ -1,0 +1,170 @@
+# Flood evidence lifecycle and duration estimation plan
+
+> **Last Updated:** October 04, 2026, 11:24 PM (Asia/Manila)
+> **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** Scope aligned: Metro Manila for news collection and automatic flood plotting; Pasig City is the primary thesis evaluation area, including expiry. Active/Unconfirmed/Cleared semantics and a conditional two-hour fallback are accepted. The system features, lifecycle policy details and any trained model remain in progress or pending evaluation.
+
+## Scope and delivery sequence
+
+Accepted scope, dataset architecture and model admission gates are consolidated in [Decision 23](../decisions.md#23-metro-manila-product-coverage-pasig-duration-study-and-separated-evidence-datasets). [Decision 22](../decisions.md#22-separate-observed-flood-status-evidence-expiry-and-predicted-clearance) records lifecycle semantics. These decisions define intended behaviour; task completion and implementation status remain in the [task plan](../task_plan.md).
+
+**October 4 scope alignment:** the system's news collection and automatic flood plotting cover Metro Manila, matching the regional reach of news sources. Pasig City remains the primary thesis development/evaluation area, including evaluation of automatic expiry, because the thesis scope and available local evidence are centered there. Metro Manila product coverage does not mean the thesis has evaluated every NCR city or that expiry predictions are validated outside Pasig. Finish and evaluate the AI, automatic plotting, and expiry features before revising the research document. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+1. Preserve the parent product goal: automatically discover reliable flood reports across Metro Manila, extract location/depth/time/status, resolve supported affected sections using appropriate geographic/history context, and plot eligible information. Keep the thesis evaluation geography distinct: Pasig City is the primary evaluation area for the AI, automatic plotting and expiry features; NCR-wide collection and plotting are broader system scope.
+2. Investigate and acquire usable temporal evidence for location/context-dependent flood-duration or remaining-time estimates, starting with Pasig. Compare simple statistical methods and ML only where reviewed incident-level labels support them. Survival analysis is accepted for investigation; a final trained model is not selected, and record totals alone do not establish data sufficiency.
+3. Retain the accepted two-hour transition to **Unconfirmed** specifically as a fallback for settings without sufficient validated duration support. A validated adaptive evidence horizon and estimated physical recession are separate outputs. Neither a timer nor a model prediction alone establishes observed clearance.
+4. Keep credible matched updates for refreshed flooding and **Cleared** status, source/time explanations and conflicting-support checks. Future public-map commuter confirmation remains planned, not implemented.
+5. Preserve the 2021–2026 evidence collection target and source register, while keeping system-wide NCR coverage separate from Pasig thesis evaluation. Current coverage graphs were removed from the evaluation bundles; scripts and source registers can regenerate them. Model-result graphs are required only if a model is fit and evaluated. Do not promise a trained model or accuracy before label review and independent-event evaluation establish feasibility.
+
+### Agreed delivery order
+
+1. Complete the AI/news extraction needed to collect and interpret flood reports across Metro Manila, with source evidence and uncertainty preserved.
+2. Complete automatic flood plotting for eligible Metro Manila reports. Evaluate the feature primarily with Pasig cases for the thesis; wider operational coverage does not imply every city has been evaluated.
+3. Complete the expiry lifecycle. Stale support may become **Unconfirmed** under the accepted fallback after required storage/API decisions; only a credible matched update can establish **Cleared**. Keep a duration estimate separate from observed clearance.
+4. Evaluate these implemented features using genuine, reproducible system evidence. Assess whether Pasig has enough admitted independent clearance outcomes for a trained predictor; if not, complete and evaluate the evidence-based lifecycle without claiming prediction accuracy.
+5. After feature implementation and evaluation, revise the research document to reflect the actual system, methods, and results. Do not present the fabricated Chapter III technical results as measured findings; preserve the authentic user survey and verify its underlying counts before reuse.
+
+Implementation/storage/API, Unconfirmed retention/routing and release gates remain pending. Bounded offline collectors and evidence registers are delivered; the plan does not claim a trained model or automatic application lifecycle. Public physical clearance remains evidence-based even if a duration estimate is subsequently available.
+
+**Accessible-data supplementation:** prioritize recent studies with actual public tables/supplements and immediately accessible official observations; do not wait for agency/author requests to begin. The [recent-source follow-up](../research/metro-manila-flood-duration-rrl.md#10-recent-study-supplementation-without-waiting-for-external-requests) adds a 2026 Philippine rainfall/recession study and a verified public UrbanFlood24 simulation download. Qualify each contribution as an incident label, measured feature, prior, simulation or methods context. A published average or simulated value cannot fill an unknown local clearance label as observed truth; foreign/model data require separate evaluation and local validation. Inspect size/endpoints before committing to large downloads or model training. Final fitting still depends on acquired/admitted data.
+
+## Accepted status contract
+
+| Public meaning | Evidence | Intended behaviour |
+| --- | --- | --- |
+| Active | Fresh supported observation for this incident and affected section; operational geometry/access gates still apply to zones. | Current map treatment and routing under the existing vehicle policy while evidence is eligible. |
+| Unconfirmed | Earlier supported flooding, current condition no longer established; no supported clearance. | Show last observation/source, explicit uncertainty and any separately labelled estimate. Retire stale active evidence. Finite current-map retention prevents indefinite clutter; preserve history. |
+| Cleared | Newer credible clearance observation explicitly matched to the section/incident. | Record supported clearance time or bracket and provenance; withdraw affected contribution atomically. Passability remains a separate fact. |
+
+Estimated subsidence is an optional forecast field, never an automatic confirmed-clearance observation. A failed source/API/model call is missing information. No update is not a dry observation. Apply transitions per section and contributing source; expiry of one news source cannot withdraw a zone that still has independent fresh support.
+
+**October 4 revised developer decision:** use a **two-hour fallback to Unconfirmed for locations without enough validated duration support**. Apply it from the latest eligible supported flood-observation time for the matched incident/section, not publication/fetch time. A genuinely newer qualified observation can refresh support. If the observation is already over two hours old at admission, do not present it as newly Active under this fallback. Universal physical clearance after two hours is not the policy. Supported clearance can act earlier; independent fresh support still applies.
+
+For locations with a validated model and current compatible inputs, evaluate an adaptive evidence horizon separately. Merely appearing in a research paper, consultation table or hazard map does not establish sufficient model support. Missing/out-of-domain inputs, insufficient local validation or unavailable estimates use the two-hour fallback. Until models qualify, this includes researched locations whose duration accuracy remains unvalidated. Finite adaptive bounds and Unconfirmed map-retention/routing behaviour still need selection.
+
+The implementation direction is to complete the AI, automatic Metro Manila plotting, and expiry lifecycle, then evaluate them primarily in Pasig. Duration estimation remains a data-gated part of expiry: automatically track qualified updates, maintain a reviewable duration register, and compare adaptive estimates only when the admitted outcomes support the comparison. Keep the plan open to further user refinements and measured results.
+
+An adaptive-expiry candidate is a deadline computed from the supported observation plus a validated location/context-dependent horizon, bounded by finite policy limits. Evaluate its early-removal and stale-active errors against simpler windows. It remains a deadline for transition to **Unconfirmed**, not a declaration of physical drainage. Pin the evidence/model/policy snapshot that produced the deadline; a later weather forecast may revise the displayed estimate or review priority but cannot indefinitely reset evidence age. A genuinely newer positive observation can support a new decision. No formula, quantile or bounds are selected yet.
+
+## Research result and data gate
+
+- [x] Verify Pasig cleaned/runtime/raw CSV and workbook: no duration/onset/clearance fields. Record exact counts and source structure in the [research](../research/flood-expiry-and-duration-research.md#2-local-pasig-data-audit).
+- [x] Research NOAH static/dynamic products, Google river/flash API and historical datasets, broader Metro Manila data, model families and dependency fit. Public provider documentation is evidence of potential capabilities, not verified LANES access.
+- [x] Complete the [Metro Manila duration RRL](../research/metro-manila-flood-duration-rrl.md). Verify the official Pasig DRRM Plan 2023–2028 Table 19 Duration column, separate from the supplied CSV. Record consultation priors, river-threshold durations, historical survey maps, hydraulic recession outputs and public clearance observations with distinct provenance.
+- [x] Record developer acceptance of survival investigation and the revised conditional two-hour fallback to Unconfirmed. The LANES team will conduct the reproducible study and explain its graphs; no final fitted algorithm is selected.
+- [x] Identify recent official Pasig August 2026 flood/clearance chronologies and 2026 MMDA acquisition leads in the [RRL follow-up](../research/metro-manila-flood-duration-rrl.md#9-recent-data-and-revised-plan-october-4-follow-up). Contemporary pilot observations are available, but no reviewed multi-storm NCR training/evaluation register exists yet.
+- [x] Deliver source-linked offline evidence and candidate-duration registers, including the [Pasig-only working exports](../evaluations/pasig-duration-cleanup-20261004/README.md). This completes the working-export step, not label admission or a model-ready training dataset. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Qualify each locality, flood mechanism, infrastructure era, source/year and target in the delivered registers. Acquire original Pasig consultation basis, EFCOS histories, NAMRIA/DPWH survey/GIS and UP temporal model outputs where permitted and useful. Do not turn aggregate ranges into synthetic independent incidents. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [ ] Acquire dated DRRMO/MMDA section observations and reopening/clearance logs. Audit any existing LANES event endings to separate observed clearance from administrative expiry.
+- [ ] Inspect Google Groundsource's schema, permitted reuse and Philippine/NCR subset before using it. Check Google API access and actual basin/urban coverage. Verify NOAH Studio/API/archive terms; request temporal simulation output only if appropriate.
+- [ ] Inventory permitted PAGASA and weather archives with issue/valid times, resolution, latency and missingness. Build a city-by-source coverage matrix. Mark unsupported cities explicitly.
+
+The [source acquisition inventory](../research/flood-duration-data-sources.md#earlier-research-acquisition-status-and-priority) retains the earlier Marikina/EFCOS, JICA, Vamco, lake, NOAH, Google and weather sources with actual status. Studies have been reviewed, but their underlying temporal datasets are not assumed acquired. Prioritize recent road-level observations and matched context for the pilot; older survey/GIS and simulation outputs remain optional supporting acquisition, not prerequisites to starting the official Pasig archive collection. Keep all citations and explain any later exclusion/deferment.
+
+## October 4 older-year acquisition and regional expansion
+
+The developer requested immediate 2021–2023 acquisition and NCR expansion, then challenged the uneven 5/2/gap coverage. The [current expanded register](../evaluations/metro-manila-flood-duration-20261004/README.md) captures 17 publisher articles plus one NDRRMC PDF in addition to the original 18 Pasig sources: **753 evidence records, 739 report observations and 14 separate historical incidents, 16 NCR LGUs**. Pasig 2021 now has eight observations plus 12 historical incidents; 2022 has three observations; 2023 remains an explicitly documented capture gap. Five new Manila road-clearance candidates share two dates; eight chronological conflicts remain flagged. All are unadmitted for training.
+
+The saved coverage counts support an evidence-coverage audit, not a flood-frequency trend or model result. Generated graph exports have since been removed; the data registers and plotting scripts remain reproducible. Historical collection and duration-label qualification remain incomplete. Continue older-year/NCR collection while prioritizing reviewed Pasig duration outcomes for thesis evaluation. No agency request is a prerequisite, no statistical improvement is assumed from raw row count, and no trained accuracy is claimed. The conditional Unconfirmed fallback/status contract is unchanged.
+
+## Pasig working dataset and final training export
+
+The [cleanup bundle](../evaluations/pasig-duration-cleanup-20261004/README.md) is the current Pasig dataset entry point. It separates 467 wet observations, three clearance summaries, 12 historical incidents, 37 derived candidate intervals, 679 DRRMO context rows and eight general duration references. The 37 interval rows derive from three shared summary episodes; do not add them to the 482 source-record count or treat them as 37 independent clearance episodes. No duration row is training-admitted. Exact duplicates were absent; repeated timeline updates and unresolved review flags are retained.
+
+**Format decision:** Keep the evidence registers as separate CSVs by record meaning, with JSON manifests and preserved source captures. A single final training CSV is a later derived artifact, rather than a concatenation of these files. Its proposed unit is one supported incident/road-section outcome with a defined prediction reference time. Link multiple observations and context to that outcome through stable IDs. Include supported outcome bounds/censoring, source lineage, admission status and storm-group identity. Final columns and eligibility rules must follow the reviewed outcome/feature contract; no training schema is finalized here.
+
+**Next data sequence:**
+
+1. Qualify the existing three clearance episodes and historical entries against captured sources; resolve aliases, clock meanings, continuity, possible cross-source duplication and depth conflicts. Keep unknowns explicit.
+2. Continue targeted acquisition for the Pasig 2023 gap and more independent storms with section-specific wet/clear follow-ups across 2021–2026. More snapshots can enrich timelines; only supported outcomes establish duration targets.
+3. Define the estimand and admission rules. Current intervals bound remaining time after the last supported wet snapshot; they do not measure total onset-to-clearance duration where onset is unknown. Keep reporting delay and summary-level uncertainty explicit.
+4. Join optional DRRMO location/depth context and predictors available as of the reference time, after location/time matching. Do not infer incident counts or clearance targets from annual DRRMO headings or general duration ranges.
+5. Publish admitted outcomes, dependent storm groups, missingness and available evaluation splits. Assemble the final CSV only when these checks support it; select baseline/model comparisons using that actual label structure.
+
+Status transitions do not train a model. Later user/source reports can expand a reviewed register, but automatic self-training is not adopted. Any later retraining needs versioned data, evaluation and release gates. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+## Label and feature contract
+
+<a id="immediate-work-package-five-year-pasig-collection-and-coverage-audit"></a>
+
+### Evidence work package: Metro Manila collection, Pasig duration evaluation
+
+**Pasig pilot delivered:** [bounded public-report pilot](../evaluations/flood-duration-pilot-20261004/README.md) contains 18 source captures and 398 candidate observations, including 37 candidate location/clearance bounds that share three clearance episodes. None is training-admitted. The expanded [Metro Manila register](../evaluations/metro-manila-flood-duration-20261004/README.md) supports regional evidence collection and plotting; it does not expand the thesis evaluation area by itself. Cached offline collectors exist. Archive coverage, matched weather context, reviewed duration labels and any model fitting remain pending. The pilot demonstrates a data collection route, not validated duration accuracy.
+
+Continue the **offline historical collector and duration-register builder** across Metro Manila for system evidence, while curating and evaluating expiry evidence primarily for Pasig. Target **January 1, 2021 through the collection cutoff in 2026**: six calendar years, with 2026 explicitly marked as partial/year to date. The initial cutoff is October 4, 2026 (Asia/Manila); update it when collection expands. Include qualifying 2026 sources and reserve unused Pasig storm groups for evaluation where sample size permits. Sources inspected during development are not an untouched final holdout. Archive availability for 2021–2023 is not established; report missing years explicitly rather than promising complete coverage.
+
+1. Inventory official Pasig archive pagination and accessible update pages, including dated flood and explicit clearance reports. Respect published access rules, use bounded requests/retries and resumable caching, and record retrieval failures. A failed or empty fetch is not a clear observation.
+2. Preserve original URL, fetched source/version, publication time, content hash and immutable text. Update the [Markdown source register](../research/flood-duration-data-sources.md) with every collected source's publisher/title, dates, canonical URL, access/capture information, fields, limitations and admission status. Link observation/incident IDs to stable source IDs and versions. Distinguish each embedded observation time from the article's publication date. Image-only evidence remains unparsed/flagged unless explicitly recovered with traceable verification.
+3. Extract qualified road/barangay, depth/range, flood/clearance status, passability and supported observation time. Match chronological observations to candidate section/episode identities; keep uncertain matches and missing outcomes explicit.
+4. Automate duplicate, timestamp/unit, missing-field, location and conflict checks. Review representative samples and flagged ambiguous cases; the developer is not expected to manually approve every source row. Scripts and source-linked inspection provide the review workflow.
+5. Export a traceable source manifest, observation register, candidate incident/clearance-bound register, exception list and coverage report. Report years, locations, independent episodes/storm groups, positive/clear pairs, unresolved/interval outcomes, gaps and retrieval failures. Include coverage/missingness graphs; these are dataset graphs, not trained-model results.
+6. Decide from the actual register whether a supported Pasig pilot can be trained and evaluated. Add available weather/hydrologic context after validating label identities. Reserve later storms/geographies before model tuning; known development examples remain distinct from final evaluation records.
+
+**Data expansion priority:** Seek additional independent storms and matched wet/clear outcomes across 2021–2026, with reliable location/time evidence and compatible predictor histories. More rows alone do not establish better prediction. Preserve repeated snapshots for trajectories, group shared episodes during evaluation, and keep conflicting/unparsed measurements in the exception register. After training is justified, plot validation error against increasing numbers of independent training storm groups to assess the benefit of more data ([scikit-learn learning-curve guidance](https://scikit-learn.org/stable/modules/learning_curve.html#learning-curve)).
+
+**Second bounded batch delivered:** Four additional official reports add 122 observations, including a September 2024 candidate episode; total clearance episodes remain three. The v2 parser handles spaced list numbering, records unsupported bullets for review, and leaves canonical depth blank when alternate source units disagree beyond a conservative 0.25 cm tolerance. There are 32 exception entries; no new training admission or model. That second-batch snapshot had a full 2021–2023 gap; the current regional expansion above acquires 2021/2022 evidence and retains the 2023 Pasig gap.
+
+The 2021–2026 window is a collection target, not a sufficient-data guarantee. Count supported independent episodes and matched clearance outcomes as well as years; report missing years as uncollected, never as zero flood incidence. Do not infer an onset or clearance when a location disappears from an update. Historical collection remains separate from live publication and application schemas. This task does not require postponing the accepted fallback until NCR-wide prediction is solved.
+
+Design an offline dataset before proposing any application schema. Each incident/section must preserve qualified location, source identity and immutable evidence, source publication/fetch times, supported observation times, onset availability, latest positive observation, first supported clearance, censoring bounds/type, clearance/passability distinction, storm/group identity and label-review provenance.
+
+Capture rainfall accumulations and trends, available forecast-as-of values, reported depth ranges and qualifiers, river/catchment context, terrain and NOAH scenario features. The developer retains the existing Pasig CSV primarily for automatic plotting/location context; it is not a duration-label source or required input to this study. Optional matched historical location/depth features may be evaluated only if they provide measured benefit. Include supported drainage/pump/gate/lake/tidal context and infrastructure era. Missing inputs stay missing. Pasig history must not be copied into other cities. Avoid future data, realised later rainfall, terminal peak depth and operational expiry-derived labels. Consultation ranges can be qualified priors/context, not labels copied onto the 726 historical location rows. Simulated trajectories and observed incident outcomes remain separate.
+
+Where onset is unknown, target remaining time from a specified observation instead of claiming total physical duration. Where clearance is only bounded between positive and clear observations, use interval-aware methods. Right-censor at the last supported positive follow-up, not the time the news search stopped. Separate administrative end, reported clearance and road passability.
+
+## Benchmark and decision gates
+
+1. Define outcome, admissible labels, reporting-delay assumptions and evaluation horizons. Implement the accepted conditional two-hour evidence fallback after pending storage/API gates; do not wait for an accurate NCR duration model to specify this baseline. Adaptive bounds, routing uncertainty and map retention remain open.
+2. Build pooled/location-stratified empirical baselines with minimum-support/abstention rules derived from the data. Compare qualified adaptive policies against the accepted two-hour fallback, measuring premature retirement and stale active hours without treating policy expiry as clearance.
+3. Conduct the accepted survival-analysis study: compare empirical/Turnbull interval-aware distributions and supported accelerated-failure-time models; use Kaplan–Meier for appropriate exact/right-censored records. Compare regularized log-duration regression and scikit-learn quantile gradient boosting for suitably observed completed durations. Cox, survival forests or dynamic hazard models remain later comparators when actual fitter support, label format and assumptions fit; standard Cox fitting does not automatically handle interval censoring. ARIMA is a hydrologic-series comparator only when suitable repeated observations exist. Random sampling supplies uncertainty, not a learned expiry.
+4. Use grouped storm/incident and chronological splits plus city/road holdouts. Measure duration/probability calibration, prediction-interval coverage/width, early-expiry error and unnecessary detour time. Tune without looking at the final holdout. Audit missingness, reporting-dependent censoring, geography transfer and interval-label sensitivity. Validate any pooling across similar flood mechanisms separately before cross-city use.
+5. Select a model only if it has a measured benefit over the simple baseline with acceptable operational errors and abstention. A Pasig model starts as Pasig-only; other cities need their own validation. If data remain insufficient, deliver finite Unconfirmed lifecycle without invented duration estimates.
+6. Produce all required graphs below and a reproducible evaluation report. Update `decisions.md` with the chosen model/stack and tradeoffs **after** this decision; the accepted evidence semantics are recorded now.
+7. Run shadow predictions against future observed updates before any estimate influences publication or routing. Weather/model changes do not extend active observational freshness by themselves.
+
+### ML comparison and geographic scale
+
+Survival analysis describes time-to-event estimation with incomplete outcomes; machine learning can implement it. Research candidates are an interval-capable parametric AFT baseline, **XGBoost survival AFT** for nonlinear interval/right-censored histories, and **scikit-learn quantile gradient boosting** for suitably completed durations. Random survival forests are optional right-censored comparators; standard implementations cannot receive interval labels unchanged. Verify versions/interfaces and assumptions before adding any package. [Official XGBoost AFT documentation](https://xgboost.readthedocs.io/en/stable/tutorials/aft_survival_analysis.html), [scikit-learn quantile example](https://scikit-learn.org/1.5/auto_examples/ensemble/plot_gradient_boosting_quantile.html).
+
+Train one shared feature-based model, or a small set by flood mechanism/catchment if justified, with locality/context features and geographic validation. Do not require a separate model or manually chosen timer for every barangay. A road section can differ from another within the same barangay. Sparse/unseen settings may use pooled estimates only when held-out evidence supports them; otherwise abstain to the two-hour fallback. Data coverage and independent storm diversity, rather than barangay count alone, determine feasibility.
+
+Enough data means reviewed temporal labels, varied independent storms, usable predictor histories, geographic/mechanism coverage and adequate untouched evaluation evidence. No arbitrary row count or accuracy promise substitutes for these checks. Recent pilot observations and literature ranges do not yet meet this gate.
+
+## Required graphs and documentation
+
+Model-result visualizations are a required deliverable if ML/statistical duration estimation proceeds:
+
+- Label availability/missingness and completed/right/interval-censored counts by city, road and storm.
+- Duration distributions and empirical/predicted persistence curves with uncertainty.
+- Held-out predicted-versus-observed values, residual/error distributions and quantile interval coverage/width.
+- Clearance/persistence calibration, horizon-specific errors and baseline/model comparison.
+- City/road error maps and supported/unsupported coverage; feature effects with interpretation limits.
+- Individual timelines joining rainfall, supported observations, forecast issue/valid times, estimate updates and Active/Unconfirmed/Cleared transitions.
+
+Export publication-quality figures and backing aggregate CSV/JSON under a versioned evaluation bundle in `docs/evaluations/`, with accessible axes/units, split IDs, counts, model/data checksums, random seed and captions. Mark illustrative/synthetic plots explicitly. Interactive staff views are optional future UI; any new UI must cover desktop/mobile. No fitted-model graphs exist yet because there are no validated duration labels or trained model.
+
+## Backend and map integration proposal
+
+Keep status/freshness, prediction and current-map retention separate in the API contract. Candidate projection fields are observation state/reason, last supported observation, active-evidence deadline, Unconfirmed retention deadline, estimate-as-of/model version, predicted clearance quantiles, uncertainty, input freshness and supported geography. These are contract candidates, not approved database columns.
+
+Implement lifecycle/prediction in FastAPI services, invoked by bounded scheduled work. Use UTC internally and explicit display zones. Use idempotent revision-aware transitions, evaluate eligibility at read/routing time even if a maintenance job is delayed, and publish SSE only after commits. Every estimate is versioned and traceable; stale/missing/incompatible inputs trigger abstention.
+
+Refresh/reopen requires genuinely newer matched evidence. A supported clear update may automatically remove its own active contribution after continuity/conflict checks. Operational history endings caused by expiry must retain the expiry reason and must not become observed-clearance labels. Do not deactivate independent citizen/manual support when a news claim expires.
+
+The existing five-table [publication readiness proposal](news-publication-readiness-plan.md) remains unapproved. Its `expired` projection should communicate **Unconfirmed** when it represents stale evidence; clear and administrative withdrawal retain distinct reasons. The exact enum/snapshot/API adaptation needs review before schema implementation. No new ML tables or migrations are assumed necessary.
+
+The public map should show Unconfirmed with last observation and an uncertainty treatment, then remove it from the default current view after finite retention while retaining history. Choose the retention value and whether Unconfirmed produces a warning/soft route cost through policy evaluation. It must lose the assertion of a verified current closure once all fresh support expires, and it must never be advertised as a safe road solely because it is routable. Active fresh independent sources still control their verified geometry. Reuse existing shared details and map rendering on desktop/mobile.
+
+## Tools, release and outstanding decisions
+
+Existing pandas/NumPy/scikit-learn/openmeteo packages support initial offline analysis. Survival and plotting libraries remain candidates; current scikit-survival requirements conflict with the older LANES scikit-learn pin, so resolve compatibility in isolation first. Update `backend/requirements.txt` and `docs/tech-stack.md` immediately if implementation adds a dependency.
+
+Required later checks: label provenance, temporal/geographic holdouts, probability/interval calibration, source/model outages, new contradictory evidence, forecast-only updates, clock/read-time expiry, duplicate refreshes, shared support, section-specific clearance, route semantics and both screen sizes. Model/schema work needs the repository's explicit schema approval and disposable PostGIS migration verification. Production release remains a separate action.
+
+## Future public-map confirmation feature
+
+Record the developer's requested future interaction on an Unconfirmed area: commuters can submit a current observation such as **still flooded**, **water has subsided**, or vehicle-specific **passable**, with time, matched section and supporting evidence where available. This feature is not implemented by this research task.
+
+The backend validates authentication, locality/time/evidence, duplicates, trust and contradictory reports using an approved acceptance/moderation policy. Accepted fresh flooding can reactivate/refresh the matched contribution; accepted clearance can establish supported Cleared; uncertain/conflicting submissions preserve Unconfirmed and trigger review. One unvalidated tap cannot overwrite every independent contributor. Preserve history and consent-aware evidence, and provide desktop/mobile submission and response states. UI/API details, trust rules and any storage change remain future design work; schema approval is still required.
+
+Open decisions: actual label register; target/censoring and final algorithm; qualified city/road coverage; permitted providers/access; adaptive evidence bounds; map retention and uncertainty/routing thresholds; commuter-feedback acceptance; library compatibility and exact persistence/API changes. The conditional two-hour fallback is accepted; implementation remains pending.

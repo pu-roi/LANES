@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 3:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 4 publication storage assessment — proposed, awaiting approval:** Existing news tables preserve extraction evidence; existing events/locations/zones support verified multi-section incidents. They do not store durable unresolved alerts or per-claim decisions. The [exact five-table proposal](../plans/news-publication-readiness-plan.md#1-storage-reuse-and-required-additions) adds `news_claim_cases`, `news_claim_sources`, `news_claim_evaluations`, `news_claim_decisions` and `news_claim_zone_links`, including unique immutable run/ordinal identity, leased audit work, request/revision guards, finite expiry and contribution ownership. Reuse existing event/zone fields without changing ReportSource or fabricating FloodReports. No SQLAlchemy or migration file has changed; repository head remains `c5a7e9d2104f`. New migration application/backfill/publication is not authorized or tested by this assessment. [Evidence](../evaluations/phase-36-publication-readiness-audit.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 **Primary Panel read-contract compatibility:** Queue search, facets and all-member summaries use existing report columns and extraction claim JSON. Added Pydantic response fields are API contracts, not database changes. No SQLAlchemy model or Alembic revision changed. Fresh pre-push local `alembic upgrade head` could not complete with Docker/PostGIS offline; last verified schema is `c5a7e9d2104f`. No cloud database was contacted. [Audit](../evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-push-audit).
 

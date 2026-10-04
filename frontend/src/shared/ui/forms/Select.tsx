@@ -19,10 +19,11 @@ export interface SelectProps {
   placeholder?: string;
   className?: string;
   ariaLabel?: string;
+  disabled?: boolean;
 }
 
 export const Select = forwardRef<HTMLDivElement, SelectProps>(
-  ({ options, value, onChange, label, error, placeholder, className = "", ariaLabel }, ref) => {
+  ({ options, value, onChange, label, error, placeholder, className = "", ariaLabel, disabled = false }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
@@ -78,6 +79,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     }, []);
 
     const handleSelect = (optionValue: string | number) => {
+      if (disabled) return;
       onChange({ target: { value: optionValue } });
       setIsOpen(false);
     };
@@ -94,14 +96,16 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           <button
             ref={triggerRef}
             type="button"
+            disabled={disabled}
             onClick={() => setIsOpen(!isOpen)}
             aria-label={ariaLabel || label}
             data-select-trigger="true"
-            aria-expanded={isOpen}
+            aria-expanded={isOpen && !disabled}
             className={`
               w-full flex items-center justify-between rounded-lg border bg-white px-3 py-2 text-sm text-gray-900 
               shadow-sm outline-none transition-all duration-200
               focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+              disabled:cursor-not-allowed disabled:bg-gray-50 disabled:opacity-60
               ${isOpen ? "border-blue-500 ring-2 ring-blue-100" : "border-gray-200 hover:border-gray-300"}
               ${error ? "border-red-500 focus:border-red-500 focus:ring-red-100 ring-red-100" : ""}
             `}
@@ -114,7 +118,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             />
           </button>
           
-          {isOpen && typeof document !== "undefined" && createPortal(
+          {isOpen && !disabled && typeof document !== "undefined" && createPortal(
               <div
                 data-portal="select-dropdown"
                 className="fixed mt-1 rounded-lg border border-gray-100 bg-white shadow-xl overflow-hidden py-1"

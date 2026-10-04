@@ -22,6 +22,9 @@ requests-cache
 retry-requests
 numpy
 pandas
+matplotlib==3.10.7
+# Keep plotting compatible with the existing NumPy 1.x NLP environment.
+contourpy==1.3.2
 osmium==4.3.1
 shapely==2.1.2
 Pillow==12.3.0

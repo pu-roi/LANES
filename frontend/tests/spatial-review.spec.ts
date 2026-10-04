@@ -536,8 +536,12 @@ test("queue search and location filters retain complete groups and survive retur
   await search.fill("Report #3");
   await expect(panel.getByText("3 reports requiring review · 1 review card")).toBeVisible();
   await panel.getByRole("button", { name: "Filters", exact: true }).click();
+  const barangayFilter = panel.getByRole("button", { name: "Filter by barangay", exact: true });
+  await expect(barangayFilter).toBeDisabled();
+  await expect(barangayFilter).toHaveText("Select a city first");
   await panel.getByRole("button", { name: "Filter by city", exact: true }).click();
   await page.getByRole("button", { name: "Pasig", exact: true }).click();
+  await expect(barangayFilter).toBeEnabled();
   await panel.getByRole("button", { name: "Filter by barangay", exact: true }).click();
   await page.getByRole("button", { name: "Rosario", exact: true }).click();
   await panel.getByRole("button", { name: "Filter by severity", exact: true }).click();
@@ -559,12 +563,18 @@ test("queue search and location filters retain complete groups and survive retur
   await panel.getByRole("button", { name: "Filter by city" }).click();
   await page.getByRole("button", { name: "Cainta", exact: true }).click();
   await expect(panel.getByRole("button", { name: "Filter by barangay" })).toHaveText("All barangays");
+  await barangayFilter.click();
+  await expect(page.locator('[data-portal="select-dropdown"]').getByRole("button", { name: "San Andres", exact: true })).toBeVisible();
+  await expect(page.locator('[data-portal="select-dropdown"]').getByRole("button", { name: "Rosario", exact: true })).toHaveCount(0);
+  await page.keyboard.press("Escape");
   await expect(panel.getByText("No items need review in this filter.")).toBeVisible();
   await panel.getByRole("button", { name: /News Claims/ }).click();
   await expect(panel.getByRole("button", { name: "Filter by city" })).toHaveText("Cainta");
   await panel.getByRole("button", { name: /^All \d/ }).click();
   await panel.getByRole("button", { name: "Clear filters", exact: true }).click();
   await expect(search).toHaveValue("");
+  await expect(barangayFilter).toBeDisabled();
+  await expect(barangayFilter).toHaveText("Select a city first");
   await expect(panel.getByText("4 reports requiring review · 2 review cards")).toBeVisible();
   if (info.project.name === "mobile-chromium") {
     await page.setViewportSize({ width: 320, height: 740 });

@@ -1,0 +1,16 @@
+dataset,check,result,handling
+Pasig report register,Direct flood observations,467,Kept in flood_observations.csv
+Pasig report register,Clearance summaries,3,Separated because these are group summaries rather than individual road clearances
+Pasig report register,Exact duplicate observation IDs,0,No rows removed for duplicate IDs
+Pasig report register,Exact duplicate full observation rows,0,No rows removed for exact row duplication
+Pasig report register,Non-Pasig rows in export,0,Filter restricted export to Pasig
+Pasig report register,Direct wet observations lacking supported clock,4,Kept with missing clock and source flags
+Pasig report register,Rows marked candidate review status,395,Kept with review status; not training-admitted
+Pasig report register,Source-reviewed candidate wet observations,72,Kept as reviewed evidence; not training-admitted
+Pasig report register,Potential cross-source duplicate flags,3,Kept and flagged for episode/source reconciliation
+Pasig report register,Alternate source units disagree,16,Kept raw evidence and flags; canonical measurements remain subject to review
+Duration candidates,Location-level candidate intervals,37,Kept as candidate intervals across only three shared clearance summaries
+Duration candidates,Training-admitted examples,0,No duration labels admitted
+DRRMO location context,Records from source-year 2021-2025,679,Kept as annual location/depth context; source_year is not event time
+DRRMO location context,Exact duplicate full rows,0,No rows removed for exact row duplication
+Year coverage,Pasig direct flood observations,2021:8; 2022:3; 2023:0; 2024:80; 2025:129; 2026:247,2026 partial through 2026-10-04; 2023 zero means not captured in this bundle, not no flooding

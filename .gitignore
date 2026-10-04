@@ -29,7 +29,12 @@ env/
 env.bak/
 venv.bak/
 
-# Environment Variables / Secrets (Encrypted .env files are safe to commit with dotenvx)
+# Environment variables: ignore new local/plaintext files.
+# Existing tracked dotenvx-encrypted configs remain tracked; never commit plaintext values.
+.env
+.env.*
+!.env.example
+!.env.*.example
 .env.development.local
 .env.test.local
 .env.production.local
@@ -39,6 +44,25 @@ venv.bak/
 *.keys
 **/.env.keys
 **/.env*.keys
+*.key
+*.pem
+*.p12
+*.pfx
+service-account*.json
+service_account*.json
+
+# Local test, lint and type-check caches / output
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+*.log
 
 # IDEs and Editors
 .idea/
@@ -55,6 +79,16 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+[Dd]esktop.ini
+
+# Reproducible duration-pilot chart exports (retain CSV/JSON and sources/ captures).
+# These dated bundles hold collection figures, not final model evaluation figures.
+/docs/evaluations/flood-duration-pilot-20261004/*.png
+/docs/evaluations/flood-duration-pilot-20261004/*.svg
+/docs/evaluations/flood-duration-pilot-20261004/*.pdf
+/docs/evaluations/metro-manila-flood-duration-20261004/*.png
+/docs/evaluations/metro-manila-flood-duration-20261004/*.svg
+/docs/evaluations/metro-manila-flood-duration-20261004/*.pdf
 
 # Documentation
 docs/others/*

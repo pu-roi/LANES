@@ -1,7 +1,54 @@
 # Phase 36: Needs Review queue and placement inspection
 
-> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 3:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Local inspection implementation; news decisions and automatic publication remain unfinished.
+
+## October 4 automatic plotting readiness audit
+
+**Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The developer requested read-only investigation, then authorized documentation synchronization before further implementation. This section records current source behavior and the checks run in that investigation; it does not overwrite earlier delivery or release evidence.
+
+### Pipeline and map findings
+
+- `process_saved_news` calls captured-body rules-only extraction. Shared extraction attaches OSM `road_placement` and exact NOAH/section-matched Pasig `placement_preview`, then saves the immutable result. It does not call `NewsAutoIngestionService` or independent auditing. The separate activation prototype requires checked evidence and `verified_segment` geometry; its existence is not a connected public lifecycle.
+- F5 source/placement inspection exists on desktop/mobile. News candidates use blue dashed centerlines and start without a selected candidate; selection is inspection only. User-report Needs Review uses translucent auras. Active road zones use a solid source centerline plus the persisted translucent operational polygon. That polygon participates in routing; pending pixel-width auras do not establish a real flooded corridor. Complete fields alone cannot authorize a zone.
+- Reviewed citizen-report growth supports cross-barangay/connected-road extensions, evidence-only corroboration and separate sections within an event. It preserves prior supported coverage/core and original evidence. This does not establish automatic multi-barangay news placement: the current OSM provider has city polygons but rejects named barangays with `missing_valid_barangay_boundary`.
+- Current source admission and analytical OSM/NOAH assets cover Metro Manila. The original user-confirmed product goal is the entire Philippines. Matching Pasig DRRMO rows apply only in Pasig; this checkpoint changes no geographic filter or coverage asset.
+
+### Local C. Raymundo probe
+
+The constructed claim names **C. Raymundo Avenue, Pasig**, with a short synthetic flood sentence and no source article or resolved observation time. Current local providers return 25 OSM sections. Exact NOAH overlap plus matching DRRMO context yields `predicted_candidate`, reason `unique_ranked_prediction_not_verified_flood_extent`, candidate `osm:123442003-4003002153`, retaining all 25 alternatives. Twelve candidate/history associations are returned; those are not distinct flood-event counts. Adding `canonical_barangay=Rosario` returns `unresolved`, reason `missing_valid_barangay_boundary`.
+
+The probe explicitly returns `read_only=true` and `may_affect_routing=false`. Earlier NOAH-only audits found tied sections; their inputs did not include the same current section-matched historical evidence. This probe neither validates a real article nor identifies current flood extent/depth/width or establishes operational activation. The bundled historical CSV contains 726 rows for 2020–2025.
+
+### Focused verification
+
+Commands ran from `backend/` during the preceding investigation:
+
+```powershell
+./venv/Scripts/python.exe -m pytest tests/test_news_placement_preview.py tests/test_news_road_placement.py tests/test_news_auto_ingestion.py -q -k 'not preview_endpoint_auth_identity_and_no_database_writes'
+./venv/Scripts/python.exe -m pytest tests/test_spatial_review_grouping.py tests/test_flood_zone_growth.py::test_report_extent_proposal_retains_branches_and_extensions -q
+```
+
+The selections pass **55 + 15 = 70 checks**. The first explicitly deselects one database-backed preview endpoint case; grouping fixtures use isolated SQLite where needed, and the selected extent case does not invoke the native growth transaction fixture. Existing multipart and SQLite datetime deprecation warnings remain. No native PostGIS growth transaction, actual auditor, browser visual check or live production release was reverified. Temporary fixtures/caches are not publication state. No live report/event/zone writes or application/schema/dependency changes occurred.
+
+### Eight-record audit and next task
+
+| Authoritative record | Outcome |
+| --- | --- |
+| Task plan | Correct stale F4b/v6 summary; record local F5/v10 state and unchecked backend publication-readiness work. |
+| Progress tracker | Prepend this investigation/documentation checkpoint; retain older milestone results and acceptance limits. |
+| Feature reference | Update existing news feature descriptions; do not create a new flagship feature. |
+| System documentation | Reconcile shared extraction, F5 inspection and pending public lifecycle; retain current two-layer geometry roles. |
+| Tech stack | Existing local v10/dependency/asset notes remain accurate; no library or manifest change. |
+| Database design plan | Existing JSONB preview compatibility and multi-location event/zone storage notes remain accurate; no new schema or migration. |
+| Bug log | Existing BUG-096 covers reviewed cross-boundary growth; automatic placement/lifecycle gaps stay open in the plans without duplicating that issue. |
+| Architectural decisions | Existing automatic/exception boundaries remain unchanged; no architectural pivot warrants a new entry. |
+
+This investigation identified backend readiness as the next task: assess durable claim/publication/zone identity and reuse of existing event/report storage; specify affected geometry and authoritative boundaries; identify independent-auditor and matching analytical-asset release requirements; propose concrete transactions and APIs before implementation. The subsequent [publication readiness assessment](phase-36-publication-readiness-audit.md) completes that investigation with a five-table proposal; schema/expiry approval and implementation remain pending. F6 news actions and F7 commuter visibility then share those contracts and existing renderers. The [active checklist](../task_plan.md#phase-36-automatic-news-publication-readiness--assessment-complete-approval-pending) retains implementation tasks as unchecked.
+
+Documentation validation checks relative file targets and new section anchors, current-status wording, single timestamp blocks and `git diff --check`. SHA-256 comparison confirms existing frontend edits, package manifests and the four audited unchanged core records remain byte-identical to the pre-update checkpoint.
+
+Documentation synchronization preserves existing uncommitted Primary Panel/filter/test edits. This audit does not claim commit/push, migration execution, deployment, nationwide operation or new desktop/mobile acceptance.
 
 ## Checkpoint and scope
 
@@ -169,3 +216,10 @@ Read the skill, repository instructions and design; confirmed Roi Cambe's Git id
 Prior verification applies to the unchanged implementation: 33 backend checks, 38 distinct desktop/mobile browser cases passing across the original run and focused reruns, two expected viewport skips, TypeScript and scoped ESLint. No additional application changes or test claims are introduced by this documentation-only follow-up. Fetch found zero local/remote divergence before the checkpoint.
 
 The pre-push attempt validated a loopback-only `lanes_news_test` target and invoked `alembic upgrade head`, but could not complete because Docker Desktop's Linux engine/PostGIS was not running. The attempt returned a database connection timeout; checked for remaining task-owned Alembic processes. No fresh migration success is claimed, and no cloud database was used. The checkpoint changes no SQLAlchemy models, Alembic revisions, requirements, packages or lockfiles; the last verified schema remains `c5a7e9d2104f`. Pulling these UI/read-contract changes introduces no new migration or installation step. Screenshots, private environment files and test output remain outside the checkpoint. Production deployment and developer visual acceptance remain pending.
+
+
+## October 4 city-first barangay filter
+
+**Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe). The developer accepted requiring a city before choosing a barangay. `NeedsReviewPanel` disables Barangay and displays “Select a city first” when City is All cities. Selecting a city enables the existing server-scoped barangay options; changing city clears barangay and clearing filters disables it again. The shared `Select` adds optional native disabled support with a muted trigger and no interactive dropdown while disabled; other callers retain the default enabled behavior.
+
+The existing queue/filter Playwright flow passes on desktop and mobile (**2 passed**), including the disabled/placeholder initial and reset states, enabling after city selection, Cainta showing San Andres and excluding Rosario, retained groups/back navigation and 320 px/touch-landscape overflow checks. TypeScript and scoped ESLint pass; the mobile screenshot was visually inspected. No backend, model, migration or dependency change; source/filter/grouping policy remains as documented. This follow-up remains local after checkpoint `615feae`.

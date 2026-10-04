@@ -1,6 +1,6 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 6:52 PM (Asia/Manila)
 
 **Primary Panel checkpoint compatibility:** Server search/facets and shared report/zone details reuse existing FastAPI, SQLAlchemy, Pydantic, TanStack Query, React/Tailwind, Lucide and shared UI components. No new Python/Node dependency or package/lockfile change. [Audit](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-push-audit).
 
@@ -83,6 +83,8 @@ The Linux image also installs Debian `libexpat1`, required by the existing `osmi
   * *Role:* Uses explainable rules and the 43,778-row PSGC reference to extract Philippine place mentions, canonical flood depth, flood condition, and event time while preserving character offsets and supporting sentences. Full-article fetching enforces a 100,000-character bound without silent truncation, isolates publisher story containers, excludes related-story widgets, rejects unverified multi-page links, and flags contradictory same-road clearing updates. A 51-site expected facts fixture verifies text extraction against real articles; [evaluations](evaluations/phase-36-three-article-check.md) confirm 27/27 Philstar, 16/16 PNA August 17, and 8/8 PNA August 8 sites. `calamanCy` and Google Cloud Natural Language are not integrated. An optional OpenRouter Gemini auditor exists, but article processing is not connected to the scheduled collector and its fallback is not an independent activation check. Exact road geometry and resolved observation datetimes remain open prerequisites.
 * **Offline Spatial Audit:** **Pyosmium (`osmium`) & Shapely**
   * *Role:* Reading a local Metro Manila OSM PBF and measuring bounded road-centerline overlap with original NOAH hazard polygons in `backend/scripts/audit_noah_road_intersections.py`. These small geospatial libraries are declared in `backend/requirements.txt`; the script is read-only and is not a production news-zone service.
+* **Offline Research Figures:** **Matplotlib 3.10.7**
+  * *Role:* Standard Python scientific plots for the saved Pasig duration pilot, exported as 300 dpi PNG and vector PDF/SVG. The collector uses the shared offline plotting helper; Matplotlib and NumPy-compatible ContourPy 1.3.2 are declared in `backend/requirements.txt`. These figures describe dataset coverage and candidate intervals; no fitted duration model is claimed.
 * **NOAH Display Asset Export:** **Pillow**
   * *Role:* Rendering the three local Metro Manila NOAH polygon archives into compact transparent PNGs for the commuter map's optional 3D hazard display. This offline presentation export does not supply current flood observations or routing geometry.
 * **Encrypted Secrets & Environment Orchestration:** **@dotenvx/dotenvx**  
@@ -131,3 +133,8 @@ The Linux image also installs Debian `libexpat1`, required by the existing `osmi
   * *Role:* Automates container image build (`cloudbuild.yaml`), pushes tagged images to Google Container Registry (`gcr.io`), executes automated database migrations ahead of rollouts via Cloud Run Jobs (`lanes-migration`), and deploys new revisions to Cloud Run (`lanes-api`) with hardened service account logging (`CLOUD_LOGGING_ONLY`).
 * **Database Migration Jobs:** **Google Cloud Run Jobs (`lanes-migration`)**  
   * *Role:* Serverless batch execution task triggered synchronously during Cloud Build (`gcloud run jobs execute lanes-migration --wait`) to apply latest Alembic schema migrations (`alembic upgrade head`) before new web service revisions are deployed, eliminating schema drift between backend code and production PostgreSQL.
+
+
+### Offline flood-duration research archive
+
+The standard-library `collect_flood_report_archive.py` validates cached publisher/document evidence and explicit interpretation/pairing rules; `plot_flood_report_archive.py` uses existing NumPy/Matplotlib for standard PNG/PDF/SVG coverage and candidate-interval figures. This research tooling reads no application settings or database. Captured incident occurrence clocks remain separate from clearance; no model library or app schema was added. [Current evidence snapshot](evaluations/metro-manila-flood-duration-20261004/README.md).

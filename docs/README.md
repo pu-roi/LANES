@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 04, 2026, 1:44 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 11:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
 
@@ -9,7 +9,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Task plan](task_plan.md) — active sprint and backlog.
 - [Progress tracker](progress.md) — delivery history.
 - [Feature reference](feature-reference.md) — major platform capabilities.
-- [Architecture decisions](decisions.md) — significant design choices.
+- [Architecture decisions](decisions.md) — significant design choices; [Decision 23](decisions.md#23-metro-manila-product-coverage-pasig-duration-study-and-separated-evidence-datasets) records geographic scope and duration-dataset architecture, and [Decision 22](decisions.md#22-separate-observed-flood-status-evidence-expiry-and-predicted-clearance) records status/expiry semantics.
 - [Tech stack](tech-stack.md) — technologies and deployment components.
 - [System documentation](others/system-documentation.md) — screens, routes, endpoints, and components.
 - [Database design plan](others/database-design-plan.md) — schema and spatial design.
@@ -17,9 +17,13 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
+- [Flood evidence lifecycle and duration estimation](plans/flood-evidence-lifecycle-and-duration-plan.md) — Metro Manila collection/plotting, Pasig evaluation, delivered separated evidence CSVs, pending outcome qualification/final training export, conditional two-hour Unconfirmed fallback and model/storage/routing/release gates.
+
+- [News publication backend readiness contract](plans/news-publication-readiness-plan.md) — completed storage assessment; five-table proposal, claim continuity, auditor fixes, transaction/API contracts, geometry/asset gates and pending expiry/schema approval.
+
 - [F4b monitoring telemetry implementation](plans/news-monitoring-telemetry-plan.md) — approved durable discovery/fallback history, tested local migration and remaining rollout/manual acceptance.
 
-- [Priority 5 publication, review, corrections, expiry and frontend plan](plans/news-publication-review-frontend-plan.md) — F1/F2 delivered, F3 design accepted, F4a/F4b monitoring implemented; manual acceptance and review/public lifecycle checkpoint remain pending.
+- [Priority 5 publication, review, corrections, expiry and frontend plan](plans/news-publication-review-frontend-plan.md) — F1–F4 reading/monitoring implemented, F5 inspection delivered locally; backend publication readiness precedes F6/F7 and integrated release acceptance.
 - [Flood event history design](plans/flood-event-history-design.md)
 - [Flood report merging plan](plans/flood-report-merging-plan.md)
 - [LiPAD & UP NOAH flood placement](plans/lipad-noah-flood-placement.md)
@@ -29,9 +33,17 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Evaluations and simulations
 
-- [Needs Review queue and placement inspection](evaluations/phase-36-needs-review-inspection.md) — protected mixed-source reads, server search/location filters, shared report/zone details, related user cards, source styling, reviewed cross-boundary growth with retained coverage, native PostGIS/JWT checks, desktop/mobile workspace and remaining lifecycle acceptance.
+- [Expanded Pasig and NCR flood-evidence register](evaluations/metro-manila-flood-duration-20261004/README.md) — older-year acquisition, regional coverage, separate historical incident records, explicit clearance candidates, source citations and reproducible coverage summaries; graph exports were removed, while source data and plotting scripts remain.
 
-- [Backend OSM/NOAH/Pasig placement preview](evaluations/phase-36-backend-placement-preview.md) — local shared extraction/protected API, exact vector assets, 550 distinct passing checks and pending map/publication integration.
+- [Pasig flood-duration data cleanup, 2021–2026](evaluations/pasig-duration-cleanup-20261004/README.md) — Pasig-only working exports separated into wet reports, clearance summaries, 2021 historical report rows, candidate intervals, DRRMO location/depth context and locality duration references; zero training-admitted examples.
+
+- [First Pasig flood-duration public-report pilot](evaluations/flood-duration-pilot-20261004/README.md) — 18 captured/cited official sources, 398 observations, 37 candidate bounds across three shared clearance episodes, conflicts and reproducible coverage summaries; no training admission or fitted model.
+
+- [Backend publication readiness assessment](evaluations/phase-36-publication-readiness-audit.md) — runtime/storage/deployment audit, mocked auditor defects, seven passing hybrid regressions and confirmed absence of DRRMO duration fields; no live publication or schema change.
+
+- [Needs Review queue and placement inspection](evaluations/phase-36-needs-review-inspection.md) — protected mixed-source reads, server search/location filters, shared report/zone details, related user cards, source styling, reviewed cross-boundary growth with retained coverage, native PostGIS/JWT checks, desktop/mobile workspace, October 4 readiness audit with 70 focused checks and remaining lifecycle acceptance.
+
+- [Backend OSM/NOAH/Pasig placement preview](evaluations/phase-36-backend-placement-preview.md) — local shared extraction/protected API, exact vector assets, 550 distinct passing checks; F5 inspection subsequently integrated, while operational geometry/publication remains pending.
 
 - [Flood Zone rendering and placement integration investigation](evaluations/phase-36-flood-zone-rendering-investigation.md) — shared active-zone/preview renderers, inner/outer geometry roles, runtime placement gaps and recommended backend-preview-first slice.
 
@@ -69,6 +81,14 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Vehicle passability](guides/vehicle-passability.md)
 
 ## Research and capstone
+
+- [Research documentation follow-up notes](research/chapter1-3-revision-notes.md) — scope alignment, authentic Chapter III result boundary, and items to revisit after system features are implemented and evaluated; working notes only.
+
+- [Flood-duration dataset source register](research/flood-duration-data-sources.md) — report citations, earlier-source acquisition inventory and recent public-study/simulation metadata; distinguishes reviewed/obtained/admitted status and contribution limits.
+
+- [Metro Manila flood-duration literature review](research/metro-manila-flood-duration-rrl.md) — official Pasig consultation durations, recent August 2026 wet/clear chronologies, contemporary MMDA access leads, local studies, shared ML candidates and data-sufficiency limits.
+
+- [Automatic flood expiry and duration research](research/flood-expiry-and-duration-research.md) — Pasig CSV/workbook audit, NOAH/Google/PAGASA/weather datasets, geographic limits, censoring-aware model comparison and documentation requirements.
 
 - [Routing engine research](<research/Routing Engine Research.md>) — research context; use the current [tech stack](tech-stack.md) and [decisions](decisions.md) for adopted architecture.
 - [Capstone defense reviewer](capstone/capstone_defense_reviewer.md)

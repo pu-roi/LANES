@@ -1,11 +1,11 @@
 # LANES: Smart Auto-Activation & Multi-Tier Hybrid Flood Intelligence Plan
 
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)  
-> **Last Updated:** October 02, 2026, 2:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Priorities 3 and 4 are deployed: immutable inputs, durable rules extraction and source-identified OSM placement artifacts are verified. Public alerts, durable exception decisions, corrections, expiry and verified affected geometry remain open. Priority 5 is now [lifecycle/frontend planning only](news-publication-review-frontend-plan.md); implementation is paused. The historical 45/45 result and local/pre-release notes below predate the latest safeguards/releases.
+> **Last Updated:** October 04, 2026, 3:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** Priorities 3/4 have recorded production extraction/OSM verification; local v10 attaches exact NOAH vector overlap and section-matched Pasig DRRMO evidence. Priority 5 F5 source/placement inspection is locally implemented; implementation is no longer paused. Independent audit, verified operational geometry, durable news decisions/publication/correction/expiry, F7 commuter visibility and F8 release acceptance remain open. Older prototype/pre-release results below are historical evidence. See the [current frontend plan](news-publication-review-frontend-plan.md).
 > **Target Phase:** Capstone Phase 36 — Trusted Flood Intelligence
 
-> **Current implementation note:** This document preserves the original Option 2 design. The scheduled collector now invokes durable rules-only extraction with OSM placement evidence; it does not invoke the optional external auditor or `NewsAutoIngestionService`. calamanCy and Cloud Natural Language are not called. `0.95` is not a calibrated approval probability. The Pasig DRRMO CSV is historical place/depth context, and operational NOAH ranking remains unconnected. Preview polygons and OSM centerlines do not verify affected width or a current closure; see the [spatial integration](lipad-noah-flood-placement.md) and [activation safety](news-activation-safety-gates.md) plans. Credible current news without exact segment geometry should reach commuters as a separately labeled alert once that lifecycle is built. Older implementation/deployment descriptions below are preparation history, superseded by [production verification](../evaluations/phase-36-reusable-road-match-check.md#production-release-verification).
+> **Current implementation note:** shared saved/RSS processing invokes rules-only extraction, OSM candidate resolution and local NOAH/DRRMO placement preview. It does not invoke the optional external auditor or `NewsAutoIngestionService`. F5 inspects source evidence and alternatives without public writes. calamanCy and Cloud Natural Language remain unused; `0.95` is not an approval probability. A centerline or NOAH/DRRMO ranking does not verify current flooded width. [Readiness assessment](news-publication-readiness-plan.md) is complete with a five-table proposal; schema/expiry approval and operational geometry/assets remain pending. Auditor provider/context defects are reproduced offline, not fixed. Production was last documented as v4; local v9 corrections and v10 previews are not a release claim. [Assessment evidence](../evaluations/phase-36-publication-readiness-audit.md), [activation gates](news-activation-safety-gates.md).
 
 ---
 
@@ -13,7 +13,7 @@
 
 This document specifies the technical architecture, execution flow, safety suppression mechanisms, and geometric standards for **Trusted Flood Intelligence** in the LANES platform. 
 
-The target system periodically checks approved RSS feeds for recent Metro Manila flood reports, extracts source-linked facts, and uses OSM road geometry with Pasig DRRMO history and LiPAD/UP NOAH hazard layers as location evidence. DRRMO records are historical context, and NOAH is modeled susceptibility; neither proves flooding now. Credible but imprecisely located reports should become source-labeled alerts. Only current claims with a verified bounded affected segment and all evidence gates may create an operational PostGIS zone that affects Valhalla routing. The collector now stores rules-extraction and OSM placement artifacts; public alerts, operational spatial corroboration and routing activation remain later integration work.
+The product target is nationwide Philippines flood intelligence; current collection and analytical road/hazard coverage are Metro Manila. The system captures source-linked facts, ranks bounded OSM sections using exact NOAH vectors and matching Pasig-only DRRMO history, and locally presents those read-only suggestions in F5. Historical data and modeled susceptibility do not prove current flooding. Credible unresolved claims should become source-labeled alerts once the lifecycle is built; routing zones additionally require verified affected geometry and all evidence gates. Automatic alert/zone publication, independent audit, correction and expiry remain unfinished.
 
 ---
 
@@ -28,7 +28,7 @@ flowchart TD
     Body --> Inputs["Immutable input version and idempotent extraction run"]
     Inputs --> Worker["Opt-in rules worker: owned lease and bounded retries"]
     Worker --> Facts["Stored Taglish facts and PSGC place evidence"]
-    Facts -.-> Preview["OSM-based location suggestions: preview only"]
+    Facts --> Preview["Local OSM/NOAH/DRRMO suggestions: read-only F5 inspection"]
     Facts -.-> Audit["Optional independent claim auditor"]
     DRRMO["Pasig DRRMO historical place context"] -.-> Spatial["Planned bounded-segment and provenance check"]
     NOAH["UP NOAH modeled susceptibility"] -.-> Spatial

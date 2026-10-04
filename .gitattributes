@@ -1,0 +1,6 @@
+# PDFs are binary documents, even when Git's content heuristic sees text.
+*.pdf binary
+
+# Immutable research captures must retain their original bytes and manifest hashes.
+# Treat captured HTML/text as evidence artifacts rather than editable source files.
+/docs/evaluations/**/sources/** binary

@@ -1,9 +1,44 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 04, 2026, 1:44 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 6:11 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
+
+---
+
+### [BUG-099] Offline duration pilot mishandles spaced list numbering and conflicting alternate units
+
+- **Status:** Corrected in parser v2; broader extraction validation remains pending
+- **Severity:** Research data-quality defect; no application writes
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Evidence / cause:** The August 29, 2026 20:30 source contains `5 . Caliwag St.`; the old numbered-item pattern missed the location and reused the preceding pending row for its depth. Alternate values such as `12.7 cm (6 inches)` were reduced to the first unit without an inconsistency flag.
+- **Change:** `backend/scripts/collect_flood_duration_pilot.py` v2 accepts spaced numbering, compares alternate units with a conservative 0.25 cm tolerance, preserves raw values and leaves conflicting canonical depths blank. Unsupported later bullet lists become explicit review exceptions. Original captures remain immutable.
+- **Evidence after rebuild:** Caliwag is present under its own location; 16 unit-disagreement rows, 14 unsupported bullets and two same-clock depth-conflict entries are retained in the expanded pilot. Saved source text and selected derived records were inspected. No automated tests were added or run. See [pilot report](../evaluations/flood-duration-pilot-20261004/README.md).
+
+---
+
+### [BUG-098] Dormant news auditor uses the wrong credential provider and omits article context
+
+- **Status:** Investigating; reproduced offline, source fix pending
+- **Severity:** High if connected to automatic publication; current collector never invokes this auditor
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The independent audit can send a Google credential to OpenRouter and evaluate only the extracted sentence while missing article-wide clearance/conflict evidence. A mocked positive response is accepted without structured place/time confirmation. No live credential or provider request was used in reproduction; current publication remains unconnected.
+
+#### 2. Root Cause Analysis (RCA)
+
+`HybridExtractionService.audit_claim_with_llm` selects `OPENROUTER_API_KEY or GEMINI_API_KEY`, always posts to the OpenRouter endpoint, and omits `context_text` from its prompt. `LLMAuditResult` covers status/depth but lacks explicit place/time evidence confirmation. The dormant prototype also lacks durable publication identity/expiry and invokes internally committing activation helpers; connect neither path before lifecycle safeguards exist.
+
+#### 3. Solution & Architectural Strategy
+
+Use provider-specific credentials/transport and a configured verified model. Supply bounded immutable article context as untrusted evidence beneath trusted system instructions; validate structured place/status/depth/time checks and evidence offsets. Persist evaluation identity and safe failures separately from rules extraction. Add fail-closed transport/context and transaction regressions before enabling publication. See [readiness contract](../plans/news-publication-readiness-plan.md) and [mock probe](../evaluations/phase-36-publication-readiness-audit.md#auditor-defects-reproduced-without-external-calls). Seven existing hybrid regressions pass but do not cover these defects.
+
+#### 4. Files Modified / What Changed
+
+Documentation only: readiness plan/evaluation, task/progress/index, database proposal and this investigation record. `backend/app/services/hybrid_extraction_service.py`, `backend/app/schemas/news_extraction.py` and ingestion/event helpers are investigated source, not modified files. No schema, dependency, provider configuration or public write occurred.
 
 ---
 

@@ -1,12 +1,108 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 04, 2026, 2:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 04, 2026, 11:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
 
+### Phase 36: Research and expiry checkpoint preparation (October 4, 2026)
+
+- [x] Audit `.gitignore` and pending files for the authorized `roi-branch` checkpoint. Exclude Windows metadata, new local/plaintext env files, private keys, caches/test outputs and regenerable coverage charts in the two dated collection bundles. Preserve datasets, original evidence and research materials. Add `.gitattributes` to prevent line-ending conversion of immutable source captures/PDFs; verify all 75 staged evidence/document artifacts match local bytes. Normalize only trailing whitespace in the expanded source-citation Markdown. Checked pending text for private-key/token patterns without printing values; tracked environment settings are dotenvx-encrypted. Plotting requirements match imports; no SQLAlchemy/Alembic changes exist, so no migration upgrade is introduced. Prior desktop/mobile filter verification remains documented; no new application tests, training or deployment performed. Commit/push outcome is reported after Git completes. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
+
+### Phase 36: Scope and dataset architecture decision consolidation (October 4, 2026)
+
+- [x] Record [Decision 23](decisions.md#23-metro-manila-product-coverage-pasig-duration-study-and-separated-evidence-datasets): Metro Manila news/plotting coverage, Pasig thesis/initial prediction evaluation, separate evidence registers and a later qualified incident/section training CSV. Update Decision 22 to distinguish rule-based status changes from model retraining. Synchronize the lifecycle plan, active tasks and catalog with the delivered working exports and pending outcome/model gates. Documentation only; no new data, training admission, fitted model or runtime implementation. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
+
+### Phase 36: Pasig-only expiry-data cleanup (October 4, 2026)
+
+- [x] Export a Pasig-only 2021–2026 working bundle separating 467 wet observations, three clearance summaries, 12 NDRRMC historical incident rows, 37 summary-linked candidate intervals, 679 DRRMO location/depth context rows and eight local duration references. Audit found no exact duplicate observation rows or IDs; retain repeated updates, uncertainty flags, source provenance and the 2023 gap. No records are admitted for model training. Preserve the NCR evidence bundle for regional news collection/plotting. [Cleanup report](evaluations/pasig-duration-cleanup-20261004/README.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
+
+### Phase 36: Older Pasig years and NCR evidence collection (October 4, 2026)
+
+- [x] Captured 17 selected publisher articles and a 123-page NDRRMC government report with immutable evidence/checksums. Combined the original pilot into **753 evidence records: 739 report observations plus 14 separate historical incident records**, representing 16 of 17 NCR LGUs. Pasig 2021 has eight observations plus 12 historical incidents, 2022 three observations, 2023 a documented acquisition gap; 2024–2026 retain partial source selection. Preserved blocked leads and archive/government-report inspection findings in Markdown. [Register and figures](evaluations/metro-manila-flood-duration-20261004/README.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Derived five unadmitted Manila remaining-time candidates across two dates; flagged eight unresolved chronology conflicts. Independent review corrected road/depth fields and clock evidence. Offline rebuild completed and three standard Matplotlib PNG/PDF/SVG figures visually inspected; coverage bars separate occurrence/status records from observations. No automated tests, live application/database changes, training admission or model accuracy claim. Older-year/NCR acquisition continues as an unresolved task. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Second public flood-duration collection batch (October 4, 2026)
+
+- [x] Captured four additional official Pasig reports and rebuilt source citations, registers and Matplotlib exports: 18 captured sources, 398 candidate observations across six candidate continuity groups and 14 barangays. Clearance episodes remain three; 2021–2023 remain uncollected. Revised v2 extraction handles spaced list numbering, flags disagreeing alternate units/unsupported bullets, and records 32 exceptions. Inspected newly saved evidence and selected derived rows, and viewed updated coverage PNG; no automated tests, application/database changes or trained model. [Report](evaluations/flood-duration-pilot-20261004/README.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Revised duration-data collection window (October 4, 2026)
+
+- [x] Recorded the developer’s expanded **2021–2026** scope, with 2026 explicitly partial through the recorded collection cutoff. Updated the plan, source register, pilot report and active collection task. Missing-year coverage and independent-storm outcome requirements remain explicit; no extra source capture or model training is claimed. [Collection scope](plans/flood-evidence-lifecycle-and-duration-plan.md#immediate-work-package-20212026-pasig-collection-and-coverage-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Standard Python research graphs (October 4, 2026)
+
+- [x] Replaced both custom SVG diagrams with Matplotlib default-style plots, readable axes/gridlines and interval endpoint markers. Delivered 300 dpi PNG plus vector PDF/SVG; visually inspected both PNG exports. Added a standalone offline plotting helper reused by the collector and synchronized requirements, tech stack and reproduction instructions. Existing observations and candidate bounds remain the figure inputs; no ML fitting or automated tests. [Pilot figures](evaluations/flood-duration-pilot-20261004/README.md#files). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: First public flood-duration dataset pilot (October 4, 2026)
+
+- [x] Built a bounded/cached offline standard-library collector and captured 14 selected official Pasig reports with immutable HTML/text, checksums, source manifest and complete Markdown citations. Exported 276 candidate observations, 37 location/clearance-bound candidates sharing three reported-clearance episodes, a two-row depth conflict exception list, data-coverage and interval figures. Saved Figshare simulation metadata separately. [Pilot report](evaluations/flood-duration-pilot-20261004/README.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Preserved unknown onset, summary-scope inference, observed-vs-administrative clearance and correlated episode identity. Offline rebuild completed; selected source/clock/conflict records inspected. No new automated tests, application/schema/dependency change, database write, full five-year collection, simulation-archive download, training admission, model fitting or accuracy result is claimed. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Recent-study and public-supplement verification (October 4, 2026)
+
+- [x] Extended the [RRL](research/metro-manila-flood-duration-rrl.md#10-recent-study-supplementation-without-waiting-for-external-requests) with a 2026 Philippine study covering recent storm simulations and verified UrbanFlood24 public Figshare metadata/license/file size. Rechecked Google's public news-derived archive methodology. Updated source register and plan to use accessible online sources without making external requests a dependency; keep empirical labels, context/priors and simulations distinct. No raw dataset archive downloaded, training register admitted, model fitted or accuracy demonstrated. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Original-goal reconciliation after scope drift (October 4, 2026)
+
+- [x] Reread “Flood plotting on map 2” and “Plan AI flood NLP and NER” and reconciled the current duration-research decisions. Corrected the [plan](plans/flood-evidence-lifecycle-and-duration-plan.md#original-goal-and-deadline-constraint) and active tasks: location-dependent duration investigation and public-data pilot remain active; the deadline-driven fallback-first deferral was a recommendation, not developer acceptance, and is withdrawn as active priority. Preserve conditional two-hour Unconfirmed fallback, evidence-based clearance, five-year target, graphs and optional ML selection. Documentation only; no collector/model/lifecycle delivery claim. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Defense deadline and evidence-based lifecycle scope (October 4, 2026)
+
+> **Superseded recommendation:** the developer subsequently challenged this scope shift. The entry below records the earlier proposal only; see the scope correction above for the active goal.
+
+- [x] Recorded next-week defense and the developer's clarification that trained duration ML is not mandatory. Proposed automatic evidence ageing to Unconfirmed, matched credible report-based clearance and a small traceable replay, with five-year collection/agency requests later. This deferral was not accepted and is superseded by the [scope correction](plans/flood-evidence-lifecycle-and-duration-plan.md#original-goal-and-deadline-constraint). Two hours is a freshness policy, not validated physical drainage. No application, schema, dataset or model change, new lifecycle evaluation or release is claimed. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Earlier-source acquisition reconciliation (October 4, 2026)
+
+- [x] Audited documented findings against the source register and existing project data files. Expanded the [source inventory](research/flood-duration-data-sources.md#earlier-research-acquisition-status-and-priority) to retain all earlier source families with reviewed-vs-acquired status and pilot priority. Marikina raw gauge histories, JICA survey/GIS and UP temporal simulation outputs have not been obtained; five-year collection remains pending. Documentation only, with no dataset acquisition or outreach performed in this audit. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Research dataset source register (October 4, 2026)
+
+- [x] Created [flood-duration-data-sources.md](research/flood-duration-data-sources.md) with original report citations, stable source IDs, access dates, inspection limitations and unacquired MMDA leads. Added collector requirements for source snapshots/checksums, version/admission status and observation/incident linkage; indexed the document. Full collection and dataset admission remain pending. Documentation only. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Five-year collection target and next deliverable (October 4, 2026)
+
+- [x] Recorded the accepted five-year research collection target, 2021–2025 with available 2026 updates for recent evaluation, and the immediate offline Pasig collector/observation/incident-register work package. Specify immutable sources, supported embedded clocks, automatic quality checks, sample/exception review, coverage graphs and a measured training-data gate. 2021–2023 archive coverage remains unverified. [Work package](plans/flood-evidence-lifecycle-and-duration-plan.md#immediate-work-package-five-year-pasig-collection-and-coverage-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Clarified that the next delivered result should be a traceable dataset plus coverage report before model training. Planning/documentation only; no collector implementation, full archival scrape, dependency/schema/application change or model training occurred. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Revised fallback, recent-data evidence and shared ML study plan (October 4, 2026)
+
+- [x] Recorded the developer's revised **two-hour observation-based fallback to Unconfirmed where validated duration support is insufficient**, future commuter confirmation interaction, and retention of the current CSV primarily for plotting. Updated current plans/decisions while preserving the earlier rejected-policy history below. No runtime feature was implemented. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Directly retrieved official Pasig August 2026 reports and verified candidate wet/clear chronologies for Maybunga and Dela Paz. Preserved interval bounds, summary scope, unknown onset and same-episode correlation. Checked 2026 MMDA request responses: information emailed privately or still pending, with no verified public training schema. [Recent-data follow-up](research/metro-manila-flood-duration-rrl.md#9-recent-data-and-revised-plan-october-4-follow-up). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Clarified data sufficiency: enough for design and a recent labeling pilot, insufficient to claim validated NCR duration accuracy. Added shared feature-based model investigation, interval-aware XGBoost AFT and completed-duration quantile boosting comparators, geographic holdouts, abstention and mandatory graphs. No model/package/schema/code changes, application tests, agency outreach or deployment. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Metro Manila flood-duration RRL and accepted study direction (October 4, 2026)
+
+- [x] Completed parallel local-literature, data-source and methods research; reconciled observed survey durations, river-threshold distributions, consultation summaries, simulation trajectories and accessible clearance advisories in the [RRL](research/metro-manila-flood-duration-rrl.md). Checked requested repository search/access limits without claiming an exhaustive dataset search. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Verified the original official Pasig DRRM Plan 2023–2028 readable text: Table 19 contains Duration estimates for qualified barangay areas based on consultations. This separate source complements the verified CSV/workbook absence of duration fields; its ranges are not incident-level ground truth. Direct raw-file download failed, so no visual table-layout check is claimed. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Recorded explicit rejection of universal two-hour expiry and acceptance of survival analysis for investigation in current plans/decisions. Added offline register acquisition, interval-aware empirical/AFT candidates, reporting-bias checks and mandatory graphs. No runtime/schema/dependency changes, model training, provider forecasting calls, agency/author outreach, commit or deployment. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Flood evidence lifecycle and duration research (October 4, 2026)
+
+- [x] Recorded developer acceptance of **Unconfirmed**, distinct from Active and evidence-confirmed Cleared. Updated the [lifecycle plan](plans/flood-evidence-lifecycle-and-duration-plan.md), publication readiness and architecture decision; finite freshness/retention and ML selection remain open. The earlier two-hour proposal is unaccepted. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Completed [primary-source research and local file audit](research/flood-expiry-and-duration-research.md): 726 cleaned Pasig rows and original CSV/workbook lack duration labels; NOAH products, Google river/urban-flash forecasts and Groundsource, permitted external weather/hydrologic data, censored-duration model choices and mandatory graphs are documented. Existing event durations describe operational closure and require provenance audit. No application/schema/dependency changes, training, authenticated provider calls or deployment. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Backend publication readiness assessment (October 4, 2026)
+
+- [x] Completed storage/runtime/geometry/asset assessment and prepared a [five-table proposal with lifecycle, transaction and API contracts](plans/news-publication-readiness-plan.md). Reuse verified multi-section events/zones; unresolved alerts need separate durable claim storage. Schema approval, expiry decision, operational footprints/boundaries and F6/F7/F8 implementation remain pending. No model/migration/application/dependency or cloud changes. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Seven existing hybrid regressions pass. Isolated MockTransport confirms Google-key-to-OpenRouter fallback and missing article context in the dormant auditor; fixes remain pending under BUG-098. Inspected DRRMO workbook, raw CSV and 726 cleaned rows: no onset/clearance/duration fields. Recommended two-hour evidence freshness, not estimated flood duration; expired observations must remain unknown rather than imply clearance. [Evidence](evaluations/phase-36-publication-readiness-audit.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Automatic plotting readiness and documentation reconciliation (October 4, 2026)
+
+- [x] Audited the eight authoritative records and reconciled current task, frontend, spatial, hybrid, feature/system and catalog descriptions with local F5 inspection and v10 analytical previews. Earlier implementation/release history remains intact; nationwide target is distinguished from current Metro Manila coverage. Recorded the next backend storage/geometry/auditor/asset assessment before dependent publication UI. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Read-only investigation verified 55 placement/activation checks plus 15 grouping/extent checks (70 passing; one database-backed preview check deselected). A constructed C. Raymundo claim returns 25 sections and a unique NOAH/DRRMO-ranked prediction; adding Rosario returns `missing_valid_barangay_boundary`. The result remains read-only and cannot affect routing. This is neither a live article nor an activation test. No new application/schema/dependency changes, PostGIS growth transaction rerun, deployment or browser visual acceptance. [Evidence and limits](evaluations/phase-36-needs-review-inspection.md#october-4-automatic-plotting-readiness-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
 ### Phase 36: Local Needs Review inspection workspace (October 4, 2026)
+
+- [x] Make Barangay a city-first filter: disabled with “Select a city first” until a city is chosen, then use its existing server-scoped barangays; changing/clearing city clears the barangay. Reuse shared Select disabled support and verify desktop/mobile. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-city-first-barangay-filter). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 - [x] Audited the Primary Panel checkpoint with the senior-planner skill: synchronized existing feature/system/task/progress/bug records, catalog and F5 plan; confirmed no dependency/model/migration changes and retained prior 33 backend/38 browser checks, TypeScript/scoped lint evidence. The fresh local Alembic check could not complete because Docker/PostGIS is offline; no cloud database was used. Prepare the requested `roi-branch` commit/push. [Audit](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-push-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
