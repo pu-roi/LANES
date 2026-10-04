@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 04, 2026, 6:52 PM (Asia/Manila)
+> **Last Updated:** October 05, 2026, 3:14 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 5 dependency audit:** local v11 disconnected placement, reviewed boundary loading, transparent review auras and the approved five-table publication storage reuse the declared Shapely, Pydantic, SQLAlchemy/PostGIS, React/MapLibre and test stack. Offline Pasig qualification/follow-up scripts use existing Python dependencies; no package or lockfile change is required. `LANES_NEWS_BARANGAY_DIR` adds an external versioned polygon catalog alongside `LANES_NEWS_NOAH_DIR`; real reviewed polygons and matching API/evaluator asset release remain pending. Matplotlib/ContourPy remain declared for reproducible research plots. [Placement verification](evaluations/phase-36-disconnected-news-placement.md), [storage verification](evaluations/phase-36-news-publication-storage.md).
 
 **Primary Panel checkpoint compatibility:** Server search/facets and shared report/zone details reuse existing FastAPI, SQLAlchemy, Pydantic, TanStack Query, React/Tailwind, Lucide and shared UI components. No new Python/Node dependency or package/lockfile change. [Audit](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-push-audit).
 

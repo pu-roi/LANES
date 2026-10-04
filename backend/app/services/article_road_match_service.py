@@ -28,6 +28,7 @@ ALIASES = {"sto": "santo", "sta": "santa", "st": "street", "ave": "avenue",
 def normalize_name(value: str) -> str:
     folded = "".join(char for char in unicodedata.normalize("NFKD", value.casefold())
                      if not unicodedata.combining(char))
+    folded = re.sub(r"\bc[\s-]*5\b", "c5", folded)
     return " ".join(ALIASES.get(word, word) for word in re.findall(r"[a-z0-9]+", folded))
 
 
@@ -264,11 +265,14 @@ def match_article_road_span(
     city_boundary: BaseGeometry | None,
     source_id: str,
     barangay_boundary: BaseGeometry | None = None,
+    allow_partial_barangay: bool = False,
 ) -> RoadMatch:
     """Return one bounded OSM candidate only when source and geometry are unique.
 
     ``ways`` must come from a bounded, identified OSM extract. The caller must
     provide a checked city polygon; a named barangay also requires its polygon.
+    ``allow_partial_barangay`` is for a caller that immediately clips the
+    matched centerline to that checked polygon. Default callers remain strict.
     """
     reported_road = claim.canonical_road or claim.raw_place_name
     span = claim.road_segment_raw
@@ -333,7 +337,8 @@ def match_article_road_span(
     line = LineString(coords)
     if not city_boundary.covers(line):
         return unresolved("outside_reported_city")
-    if barangay_boundary is not None and not barangay_boundary.covers(line):
+    if barangay_boundary is not None and not barangay_boundary.covers(line) and not (
+            allow_partial_barangay and line.intersection(barangay_boundary).length > 0):
         return unresolved("outside_reported_barangay")
     grade_flags = sorted({f"{tag}={value}" for way in path_ways
                           for tag, value in (("bridge", way.bridge), ("tunnel", way.tunnel), ("layer", way.layer))

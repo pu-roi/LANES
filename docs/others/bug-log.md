@@ -1,22 +1,113 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 04, 2026, 6:11 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
 
+### [BUG-102] Git newline normalization breaks SHA-bound research replay
+
+- **Status:** Pre-push byte-preservation repair; staged manifest verification is required before commit.
+- **Severity:** High — a fresh checkout can fail recorded input/output provenance despite equivalent displayed CSV values.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The pre-push audit found 17 SHA-bound research files whose working bytes would be changed by Git newline normalization. Recorded dataset manifests and replay builders validate exact bytes, so normalized staged files would fail after cloning.
+
+#### 2. Root Cause Analysis (RCA)
+
+`core.autocrlf=true` normalizes text into Git blobs while manifests hash the original working files. Existing source-capture protection did not cover all derived CSV/JSON inputs, the three hashed collector/builder scripts or the hashed target plan.
+
+#### 3. Solution & Architectural Strategy
+
+Extend `.gitattributes` with `-text` for the dated research CSV/JSON bundles and specifically hashed scripts/target plan. Renormalize only the affected research files into their verified original bytes, then compare staged Git blob hashes with all 30 manifest input/output/builder checks before commit. Preserve source evidence and logical data: 819 wet observations, 37 conditional projections and zero training admission remain unchanged.
+
+#### 4. Files Modified / What Changed
+
+- `.gitattributes`: explicit byte-preservation patterns for hashed research artifacts.
+- Existing dated Pasig research inputs: stage their original verified bytes instead of newline-normalized equivalents; no row/value or label-admission change.
+- Qualification/follow-up evaluation notes record the reproducibility constraint. Commit/push outcome is reported separately after Git completes.
+
+### [BUG-101] City aliases escape as barangays and news previews hide hazard gaps
+
+- **Status:** Code/preview defects resolved locally; actual reviewed boundary provisioning and C5/Pasig catalog coverage remain pending.
+- **Severity:** High — blocks qualified locality placement and misrepresents disconnected modeled road pieces.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+`C5 in Pasig City` could set canonical barangay to `City of Pasig`. Named barangays had no supported polygon loader. Placement returned whole candidate centerlines and NOAH lengths; the blue dashed map treatment could not express separate modeled intersections.
+
+#### 2. Root Cause Analysis (RCA)
+
+A shared alias map includes cities and barangays; normalization returned alias targets without validating level/parent. OSM also tokenized C5 and C-5 differently, and the article city could be misread as an ungrounded landmark. Barangay metadata was rejected unconditionally in the OSM provider. NOAH intersections were reduced to lengths, and the preview hook rendered candidate centerlines.
+
+#### 3. Solution & Architectural Strategy
+
+Validate aliases against actual barangays/exact parents; retain qualified barangay context. Load reviewed checksummed polygons and clip only within supported administrative geometry. Return source-identified disconnected intersection fragments and dissolved modeled display geometry without bridging gaps. Reuse shared pending aura styles, with reported depth controlling severity and unknown depth staying neutral. Preserve read-only/current-flood/routing gates and prior extraction history; new processing identity is v11.
+
+**Remaining source-coverage limit:** C5/C-5 aliases now match, but all 85 indexed ways under those names lie outside the checked Pasig polygon. The constructed city-only C5 probe therefore returns `named_road_sections_not_found`; the Ugong probe returns `missing_valid_barangay_boundary`. Reviewed OSM alias/road coverage and real polygon assets must be provisioned before these cases resolve. A separate constructed C. Raymundo probe produced 25 candidates/141 modeled fragments, with disconnected display geometry on 13 candidates; this establishes preview behavior, not current flood confirmation or routing eligibility.
+
+#### 4. Files Modified / What Changed
+
+- Backend: `philippine_location_service.py`, `taglish_extraction_service.py`, new `barangay_boundary_service.py`/`placement_geometry_service.py`, road matching/context/placement/NOAH services, extraction/placement Pydantic contracts and processing version.
+- Frontend: `reviewApi.ts`, `useNewsPlacementLayer.ts`, `NewsReviewEvidence.tsx`; browser fixtures now carry disconnected preview geometry.
+- Tests: extraction, new `test_barangay_placement.py`, placement regressions and existing spatial browser flows. 226 backend checks and 14 browser cases pass; TypeScript/lint pass. [Evaluation](../evaluations/phase-36-disconnected-news-placement.md).
+
+### [BUG-100] Local Docker startup fails on stale Windows Unix sockets
+
+- **Status:** Local startup recovered; upstream cause and recurrence prevention unverified.
+- **Severity:** High — blocks native PostGIS/migration verification.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Docker Desktop 4.91.0 failed to start with Windows file-access errors when renaming `Docker/run/sailor-ingest.sock`, then `docker-secrets-engine/engine.sock`. Restarting only the second folder encountered a new stale ingest socket left by the preceding failed launch. Database/Valhalla services were initially unavailable.
+
+#### 2. Root Cause Analysis (RCA)
+
+Local runtime entries were zero-byte Archive/ReparsePoint socket objects. Docker's startup could not rename them. Exact kernel/filesystem cause is not established; the symptom and multi-listener sequence match a first-hand [Docker issue](https://github.com/docker/desktop-feedback/issues/554). This is an environment failure, not a LANES schema or service defect.
+
+#### 3. Solution & Architectural Strategy
+
+Stop Docker Desktop with its CLI and verify Desktop/backend processes exit. Verify exact absolute target directories and that their parents are ordinary directories. Preserve both socket directories under unique backup names, recreate both runtime folders, and launch once. The existing PostGIS and Valhalla containers then appeared in `docker ps`; 60 focused backend/storage checks passed. No factory reset, uninstall, Docker volumes/data removal, WSL distro deletion, cloud action or secret-content read. Backup socket objects remain preserved; a permanent upstream fix is not claimed.
+
+#### 4. Files Modified / What Changed
+
+No LANES application file was changed to repair Docker. Runtime folders `C:/Users/roicambe/AppData/Local/Docker/run` and `C:/Users/roicambe/AppData/Local/docker-secrets-engine` were recreated. Preserved backups: `run.stale-20261005-8c9d325c`, `run.stale-20261005-d134ed73` beneath `Docker`; `docker-secrets-engine.stale-20261005-dddafe6a` and `docker-secrets-engine.stale-20261005-12fd9ecd` beneath Local AppData. [Storage and recovery evaluation](../evaluations/phase-36-news-publication-storage.md).
+
+---
+
 ### [BUG-099] Offline duration pilot mishandles spaced list numbering and conflicting alternate units
 
-- **Status:** Corrected in parser v2; broader extraction validation remains pending
+- **Status:** Resolved for captured official-page formats in collector v3, with separate offline replay and source qualification. Original v2 snapshots and reviewed v1 overlays remain preserved.
 - **Severity:** Research data-quality defect; no application writes
 - **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - **Evidence / cause:** The August 29, 2026 20:30 source contains `5 . Caliwag St.`; the old numbered-item pattern missed the location and reused the preceding pending row for its depth. Alternate values such as `12.7 cm (6 inches)` were reduced to the first unit without an inconsistency flag.
 - **Change:** `backend/scripts/collect_flood_duration_pilot.py` v2 accepts spaced numbering, compares alternate units with a conservative 0.25 cm tolerance, preserves raw values and leaves conflicting canonical depths blank. Unsupported later bullet lists become explicit review exceptions. Original captures remain immutable.
 - **Evidence after rebuild:** Caliwag is present under its own location; 16 unit-disagreement rows, 14 unsupported bullets and two same-clock depth-conflict entries are retained in the expanded pilot. Saved source text and selected derived records were inspected. No automated tests were added or run. See [pilot report](../evaluations/flood-duration-pilot-20261004/README.md).
 
+#### October 5 source-qualification follow-up
+
+**Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+1. **Problem:** A. Policarpio's consistent 2–3 in / 5.08–7.62 cm range was falsely flagged and its San Joaquin heading lost. Fourteen 20 cm / 8 in rounded pairs were withheld by the strict tolerance. Two Metroville 10.64cm / 4 in disagreements were missed. Wet evidence remains supported in each case.
+2. **Root cause:** `depth_bounds` reads only the first scalar in a repeated-unit metric range; heading extraction requires Brgy/Barangay prefixes; the alternate-unit detector's `\bcm\b` misses digit-adjacent `10.64cm`. The 0.25 cm tolerance classifies a plausible 0.32 cm whole-number conversion rounding as disagreement. Source Kabutihan 12.7 cm / 6 in remains an actual unresolved conflict.
+3. **Strategy/status:** Preserve original parser outputs/captures and apply explicit reviewed feature overrides in a separate versioned qualification layer: A. Policarpio range/barangay restored, 14 source-reported metric features tagged with rounding uncertainty, three genuine unresolved unit conflicts blank in qualified numeric fields. These evidence-specific overrides do not repair the general collector parser or establish model outcomes. General extraction repair was pending at this v1 review; the v3 repair below now addresses the captured formats.
+4. **Files changed:** new `backend/scripts/qualify_pasig_duration_data.py`, `docs/evaluations/pasig-duration-qualification-20261005/review_rules.json`, derived review CSVs/manifest/report and synchronized plan/progress/index. Original collector, capture files and base CSVs are unchanged. [Qualification evidence](../evaluations/pasig-duration-qualification-20261005/README.md#observation-corrections-and-unresolved-features). No application tests, new dependency, schema or training change.
+
 ---
+
+#### October 5 general collector repair and follow-up integration
+
+1. **Observed cause:** Repeated-unit ranges and numeric-adjacent unit tokens were mishandled; the San Joaquin/plain Sta. Lucia headings and singular foot were missed. No-space `4.Rosario` could reuse an emitted Morales row; repeated punctuation `29..` needed preservation. Maybunga source qualifiers polluted the canonical name. Whole-centimeter rounding needed a separate uncertainty category.
+2. **Resolution:** Collector v3 handles supported ranges/units/headings/numbered formats, canonical qualifiers and pending-row reuse; preserves raw evidence and blanks genuine conflicting numerical conversions. Add offline `--source-bundle` replay and standard-library `--skip-figures`; original captures/outputs remain untouched. The merged builder preserves old raw fields, exposes parser overlays, labels 68 new qualitative depths correctly and follows existing timeline/snapshot hash conventions.
+3. **Evidence:** Original replay retains all 398 claim identities/location/evidence/clocks and 37 bounds, with 33 exceptions. Eight new captures produce 352 unique source-verified wet observations, no false duplicates and supported multi-clock frames. Independent review plus the builder checks original 467 rows, 35 source identities and 70 artifact hashes. No automated tests, dependencies, application schema or runtime changes.
+4. **Files:** `backend/scripts/collect_flood_duration_pilot.py`, new `backend/scripts/build_pasig_duration_followup.py`, and [versioned exports/source-review report](../evaluations/pasig-duration-followup-20261005/README.md). **Resolver:** ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
 
 ### [BUG-098] Dormant news auditor uses the wrong credential provider and omits article context
 

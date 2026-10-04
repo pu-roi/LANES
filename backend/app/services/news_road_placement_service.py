@@ -14,10 +14,13 @@ from functools import lru_cache
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field
-from shapely.geometry import shape
+from shapely.geometry import shape, mapping
 from shapely.errors import ShapelyError
+from shapely.geometry.base import BaseGeometry
 
 from app.schemas.news_extraction import ExtractedClaim, RoadPlacementCandidate, RoadPlacementEvidence
+from app.services.barangay_boundary_service import BarangayBoundaryProvider, get_barangay_boundary_provider
+from app.services.placement_geometry_service import geometry_id, line_parts
 from app.services.article_road_match_service import (
     OSMRoadWay, ROAD_SUFFIXES, _span_cross_streets, _way_matches, match_article_road_span,
     normalize_name, split_named_road_at_intersections,
@@ -78,8 +81,9 @@ class RoadCatalog(BaseModel):
 
 
 class NewsRoadPlacementProvider:
-    def __init__(self, directory: Path) -> None:
+    def __init__(self, directory: Path, barangays: BarangayBoundaryProvider | None = None) -> None:
         self.directory = directory
+        self.barangays = barangays or get_barangay_boundary_provider()
         self.error: str | None = None
         self.digest: str | None = None
         self.catalog: RoadCatalog | None = None
@@ -105,7 +109,31 @@ class NewsRoadPlacementProvider:
     def revision(self) -> str:
         self._load()
         digest = self.digest if self.digest else "none"
-        return digest if self.catalog is not None and not self.error else f"bad-{digest}"
+        road_revision = digest if self.catalog is not None and not self.error else f"bad-{digest}"
+        return f"{road_revision}:barangay-{self.barangays.revision}"
+
+    def barangay_boundary(self, claim: ExtractedClaim) -> BaseGeometry | None:
+        boundary = self.boundaries.get(city_key(claim.canonical_city or ""))
+        if boundary is None or not claim.canonical_barangay:
+            return None
+        return self.barangays.resolve(claim.canonical_city or "", claim.canonical_barangay, boundary)
+
+    def _clip_candidates(self, candidates: list[RoadPlacementCandidate], boundary: BaseGeometry) -> list[RoadPlacementCandidate]:
+        clipped = []
+        for candidate in candidates:
+            line = shape(candidate.centerline_geojson)
+            for part in line_parts(line.intersection(boundary)):
+                endpoints = []
+                for point in (part.coords[0], part.coords[-1]):
+                    endpoints.append(next((names for original, names in zip(
+                        (line.coords[0], line.coords[-1]), candidate.cross_streets) if point == original), []))
+                clipped.append(candidate.model_copy(update={
+                    "candidate_id": f"{candidate.candidate_id}:bgy:{geometry_id(self.barangays.revision, part)}",
+                    "centerline_geojson": mapping(part),
+                    "cross_streets": endpoints,
+                    "approximate_length_m": None,
+                }))
+        return clipped
 
     def _load(self) -> None:
         if self._loaded or self.error:
@@ -184,22 +212,33 @@ class NewsRoadPlacementProvider:
         if any(_way_matches(OSMRoadWay(w.osm_id,w.name,(),tuple(w.aliases)), name)
                for w in self.catalog.incomplete_ways for name in names):
             return RoadPlacementEvidence(status="unresolved", reason="incomplete_named_road_coverage", **metadata)
-        # No authoritative barangay polygons are supplied by this snapshot.
+        barangay_boundary = None
         if claim.canonical_barangay:
-            return RoadPlacementEvidence(status="unresolved", reason="missing_valid_barangay_boundary", **metadata)
+            metadata.update(barangay_boundary_status="unavailable", barangay_catalog_sha256=self.barangays.digest)
+            barangay_boundary = self.barangay_boundary(claim)
+            if barangay_boundary is None:
+                return RoadPlacementEvidence(status="unresolved",
+                    reason=self.barangays.error or "missing_valid_barangay_boundary", **metadata)
+            catalog = self.barangays.catalog
+            record = self.barangays.records[(key, normalize_name(claim.canonical_barangay))][0]
+            metadata.update(barangay_boundary_status="available", barangay_source_id=catalog.source_id,
+                            barangay_psgc_code=record.psgc_code)
         boundary = self.boundaries[key]
         if claim.road_segment_raw:
             selected: dict[int, OSMRoadWay] = {}
             for name in names:
                 selected.update(self._name_index.get(normalize_name(name),{}))
-            match = match_article_road_span(claim, selected.values(), boundary, self.catalog.source_id)
+            match = match_article_road_span(claim, selected.values(), boundary, self.catalog.source_id,
+                barangay_boundary=barangay_boundary, allow_partial_barangay=True)
             if match.status != "bounded_candidate":
                 return RoadPlacementEvidence(status="unresolved", reason=match.reason, **metadata)
             candidate = RoadPlacementCandidate(candidate_id=f"osm-span:{match.junction_ids[0]}:{match.junction_ids[1]}",
                 kind="reported_span", centerline_geojson=match.centerline_geojson, osm_way_ids=list(match.osm_way_ids),
                 cross_streets=[[name] for name in match.cross_streets], approximate_length_m=match.approximate_length_m)
-            return RoadPlacementEvidence(status="bounded_candidate", reason=match.reason,
-                                         candidates=[candidate], total_candidate_count=1, **metadata)
+            candidates = self._clip_candidates([candidate], barangay_boundary) if barangay_boundary is not None else [candidate]
+            return RoadPlacementEvidence(status="bounded_candidate" if candidates else "unresolved",
+                reason=match.reason if candidates else "reported_road_outside_barangay",
+                candidates=candidates[:25], total_candidate_count=len(candidates), candidates_truncated=len(candidates)>25, **metadata)
         # Road-name-only and landmark mentions cannot choose one flooded span.
         main = self._name_index.get(normalize_name(claim.canonical_road),{})
         nodes = {n[0] for way in main.values() for n in way.nodes}
@@ -208,10 +247,12 @@ class NewsRoadPlacementProvider:
         candidates = [RoadPlacementCandidate(candidate_id=s.section_id, kind="road_section",
             centerline_geojson=s.centerline_geojson, osm_way_ids=list(s.osm_way_ids),
             cross_streets=[list(names) for names in s.end_cross_streets], ambiguous_carriageway=s.ambiguous_carriageway)
-            for s in sections[:25]]
+            for s in sections]
+        if barangay_boundary is not None:
+            candidates = self._clip_candidates(candidates, barangay_boundary)
         return RoadPlacementEvidence(status="ambiguous" if candidates else "unresolved",
             reason="reported_road_extent_unbounded" if candidates else "named_road_sections_not_found",
-            candidates=candidates, total_candidate_count=len(sections), candidates_truncated=len(sections)>25, **metadata)
+            candidates=candidates[:25], total_candidate_count=len(candidates), candidates_truncated=len(candidates)>25, **metadata)
 
 
 @lru_cache(maxsize=1)

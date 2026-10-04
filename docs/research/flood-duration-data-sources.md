@@ -1,8 +1,8 @@
 # Flood duration dataset: source register
 
-> **Last Updated:** October 04, 2026, 6:52 PM (Asia/Manila)
+> **Last Updated:** October 05, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Expanded current register: 753 evidence records (739 report observations and 14 separate historical incidents), 36 captured source files across the two bundles, 16 NCR LGUs. Older Pasig acquisition remains incomplete; no training admission/model.
+> **Status:** Original NCR register retained as a dated snapshot; latest Pasig follow-up adds eight official captures/352 wet observations, yielding 819 Pasig wet observations plus three summaries and 12 historical entries. Conditional proxy labels delivered; no training admission/model.
 
 ## Purpose and collection scope
 
@@ -10,9 +10,15 @@ This is the human-readable citation and provenance register for data collected f
 
 Target **2021–2026**, beginning January 1, 2021 and ending at the recorded collection cutoff (initially October 4, 2026, Asia/Manila). This spans six calendar years; 2026 is partial/year to date. Include qualifying 2026 sources in the register and reserve previously unused later storm groups for evaluation when feasible. Sources verified so far do not establish complete coverage of all target years. The [literature review](metro-manila-flood-duration-rrl.md) holds studies/methods and additional acquisition leads; the [study plan](../plans/flood-evidence-lifecycle-and-duration-plan.md) defines dataset construction and model gates.
 
+## October 5 Pasig follow-up
+
+The [latest source/working register](../evaluations/pasig-duration-followup-20261005/README.md) and [eight-source citation list](../evaluations/pasig-duration-followup-20261005/additional-reports/sources.md) preserve every new URL, acquisition date, HTML/text hash and observation ID. New reports cover July 22 and July 24, 2025 and add 352 source-verified wet observations, including three later lower-depth street observations. They add no explicit subsidence outcome. The 2023 recheck remains a gap. All 467 original Pasig wet rows and their source captures remain preserved.
+
+Use the combined 819-row wet register with its qualified/parser-overlay fields, and the separate 37-row conditional proxy register under the [adopted target contract](../plans/pasig-reported-subsidence-target.md). Current Pasig wet counts: 2021=8, 2022=3, 2023=uncollected, 2024=80, 2025=481, 2026=247; three 2026 summaries and 12 historical entries remain separate. The acquisition cutoff is October 5, 2026; 2026 is partial. Counts below describe the original October 4 regional snapshot.
+
 ## Current acquisition: older Pasig years and NCR expansion
 
-The [expanded register](../evaluations/metro-manila-flood-duration-20261004/README.md) is the current data/figure snapshot. Its [sources.md](../evaluations/metro-manila-flood-duration-20261004/sources.md) supplies 17 newly captured publisher articles and one NDRRMC PDF, alongside links to the original 18 official Pasig captures. The [search/access log](../evaluations/metro-manila-flood-duration-20261004/collection-search-log.md) documents older archive pagination, blocked files, inspected government reports and exclusion reasons.
+The [expanded register](../evaluations/metro-manila-flood-duration-20261004/README.md) is the preserved October 4 regional data snapshot. Its [sources.md](../evaluations/metro-manila-flood-duration-20261004/sources.md) supplies 17 newly captured publisher articles and one NDRRMC PDF, alongside links to the original 18 official Pasig captures. The [search/access log](../evaluations/metro-manila-flood-duration-20261004/collection-search-log.md) documents older archive pagination, blocked files, inspected government reports and exclusion reasons.
 
 Pasig now has **2021: eight report observations plus 12 historical incident records; 2022: three report observations; 2023: a capture gap; 2024: 80; 2025: 129; 2026: 250**. Two 2021 city assignments and two 2022 road assignments retain context/geographic alias qualifications. The Julia Vargas 2022 report has a date inferred from the contemporary storm section but no clock. Counts measure evidence acquired, not independent floods or training labels. The supplied depth/location CSV remains for plotting/context, not duration targets.
 

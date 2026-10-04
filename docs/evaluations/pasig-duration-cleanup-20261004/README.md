@@ -1,7 +1,10 @@
 # Pasig flood-duration data cleanup, 2021–2026
 
-> **Last Updated:** October 04, 2026, 11:10 PM (Asia/Manila)
+> **Last Updated:** October 05, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Pasig-only working dataset; no duration examples admitted for model training.
+
+
+**Latest working version:** See the [October 5 follow-up](../pasig-duration-followup-20261005/README.md) for 819 combined wet observations and purpose-specific proxy admission. This dated bundle remains preserved; its counts and original review verdicts are not overwritten.
 
 ## Scope and preservation
 
@@ -37,6 +40,8 @@ The exports are separated by what each record can actually tell us. They are not
 - **Training-admitted duration examples: zero.** The current work is a cleaned, source-linked evidence bundle and candidate-label register, not a model-ready training set.
 
 ## Recommended next data step
+
+The first source/timeline review is now delivered in the [October 5 qualification bundle](../pasig-duration-qualification-20261005/README.md). Use its derived corrections, candidate timelines and purpose-specific verdicts alongside these preserved original exports. Three summaries are usable reported-subsidence evidence; 37 physical-section outcomes remain uncertain and no model labels are admitted. The original CSVs in this folder remain unchanged.
 
 Review the three shared clearance episodes and the 2021 NDRRMC entries against their original captures, qualify location aliases and clock meaning, then search for more Pasig-specific 2023 reports and dated DRRMO/MMDA follow-up or reopening records. Only after event-level wet-to-clear evidence is reviewed should a training table be assembled. Keep one row per supported incident/section outcome, linked to its multiple observation rows and source records.
 

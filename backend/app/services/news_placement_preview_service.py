@@ -8,11 +8,14 @@ from dataclasses import asdict
 from functools import lru_cache
 from pathlib import Path
 
-from shapely.geometry import shape
+from shapely import union_all, line_merge
+from shapely.geometry import shape, mapping
 from shapely.errors import ShapelyError
 
 from app.schemas.news_extraction import ExtractedClaim, RoadPlacementEvidence
-from app.schemas.news_placement import NewsPlacementPreview, PlacementHistoryRow, PlacementSection
+from app.schemas.news_placement import NewsPlacementPreview, PlacementFragment, PlacementHistoryRow, PlacementSection
+from app.services.placement_geometry_service import geometry_id, line_parts
+from app.services.flood_depth import get_flood_depth_measurement
 from app.services.article_road_context_service import match_article_road_context
 from app.services.article_road_match_service import OSMRoadSection
 from app.services.news_road_placement_service import NewsRoadPlacementProvider, city_key, get_news_road_placement_provider
@@ -41,12 +44,18 @@ class NewsPlacementPreviewService:
 
     @property
     def revision(self) -> str:
-        return f"osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
+        return f"fragments-v1:osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
 
     def preview(self, claim: ExtractedClaim, placement: RoadPlacementEvidence | None = None) -> NewsPlacementPreview:
         placement = placement or self.roads.resolve(claim)
         is_pasig = city_key(claim.canonical_city or "") == "pasig"
+        depth = get_flood_depth_measurement(claim.depth_canonical)
         metadata = dict(total_candidate_count=placement.total_candidate_count,
+                        reported_severity=depth.severity.value if depth else None,
+                        barangay_catalog_sha256=placement.barangay_catalog_sha256,
+                        barangay_source_id=placement.barangay_source_id,
+                        barangay_psgc_code=placement.barangay_psgc_code,
+                        barangay_boundary_status=placement.barangay_boundary_status,
                         candidates_truncated=placement.candidates_truncated,
                         osm_source_id=placement.source_id,
                         osm_catalog_sha256=placement.catalog_sha256,
@@ -68,13 +77,20 @@ class NewsPlacementPreviewService:
         if (city is None or boundary is None or placement.catalog_sha256 != self.roads.digest
                 or placement.city_relation_id != city.relation_id):
             return NewsPlacementPreview(status="unresolved", reason="placement_source_mismatch", **metadata)
+        barangay_boundary = self.roads.barangay_boundary(claim)
+        if claim.canonical_barangay and (barangay_boundary is None
+                or placement.barangay_catalog_sha256 != self.roads.barangays.digest
+                or placement.barangay_boundary_status != "available"):
+            return NewsPlacementPreview(status="unresolved", reason="missing_valid_barangay_boundary", **metadata)
         sections = [OSMRoadSection(c.candidate_id, claim.canonical_road or claim.raw_place_name,
                     c.centerline_geojson, tuple(c.osm_way_ids),
                     tuple(tuple(names) for names in c.cross_streets), placement.source_id or "",
                     c.ambiguous_carriageway) for c in placement.candidates if len(c.cross_streets) == 2]
         try:
             context = match_article_road_context(claim, sections, boundary,
-                         self.history_path if is_pasig and self.history_available else None)
+                         self.history_path if is_pasig and self.history_available else None,
+                         barangay_boundary=barangay_boundary,
+                         reported_span_section_ids=frozenset(c.candidate_id for c in placement.candidates if c.kind == "reported_span"))
         except (OSError, ValueError, ShapelyError) as exc:
             return NewsPlacementPreview(status="source_unavailable", reason="invalid_placement_context",
                                         uncertainty_reasons=[type(exc).__name__], **metadata)
@@ -88,6 +104,8 @@ class NewsPlacementPreviewService:
         for candidate_id in context.candidate_section_ids:
             candidate = by_id[candidate_id]
             line = shape(candidate.centerline_geojson)
+            if barangay_boundary is not None and not barangay_boundary.covers(line):
+                return NewsPlacementPreview(status="unresolved", reason="placement_outside_barangay", **metadata)
             metric = metric_geometry(line)
             rows = context.historical_rows_by_section.get(candidate_id, ())
             level = context.article_place_levels[candidate_id]
@@ -107,11 +125,36 @@ class NewsPlacementPreviewService:
             uncertainties.append("pasig_history_unavailable")
         try:
             for candidate in output:
-                overlaps = self.noah.overlaps(shape(candidate.centerline_geojson))
+                intersections = self.noah.intersections(shape(candidate.centerline_geojson))
+                overlaps = {p: {h: metric_geometry(g).length for h, g in classes.items()}
+                            for p, classes in intersections.items()}
                 measurements[candidate.candidate_id] = overlaps
                 candidate.modeled_overlap_m = overlaps
+                parts = []
+                for period, classes in intersections.items():
+                    source = self.noah.manifest.scenarios[period]
+                    for hazard, geometry in classes.items():
+                        for part in line_parts(geometry):
+                            if len(candidate.modeled_fragments) >= 512:
+                                raise NoahAssetError("noah_fragment_limit")
+                            parts.append(part)
+                            candidate.modeled_fragments.append(PlacementFragment(
+                                fragment_id=geometry_id(f"{candidate.candidate_id}:{self.noah.digest}:{period}:{hazard}", part),
+                                centerline_geojson=mapping(part), approximate_length_m=metric_geometry(part).length,
+                                return_period=period, hazard_class=hazard,
+                                noah_source_id=source.source_id, noah_archive_sha256=source.archive_sha256))
+                # The display is the modeled envelope across all three scenarios.
+                # Dissolve duplicate overlap to avoid stacking transparent colors;
+                # merge only touching linework, preserving every real gap.
+                display = line_merge(union_all(parts)) if parts else None
+                candidate.preview_geometry = mapping(display) if display is not None else None
+                candidate.fragment_status = "available" if parts else "no_modeled_overlap"
             prediction = rank_measured_road_sections(evidence, measurements, metadata.get("noah_source_ids", {}))
         except (NoahAssetError, ValueError, ShapelyError) as exc:
+            for candidate in output:
+                candidate.preview_geometry = None
+                candidate.modeled_fragments = []
+                candidate.fragment_status = "source_unavailable"
             reason = str(exc) if isinstance(exc, NoahAssetError) else "invalid_noah_measurements"
             return NewsPlacementPreview(status="source_unavailable", reason=reason, candidates=output,
                                         uncertainty_reasons=uncertainties, **metadata)
@@ -128,8 +171,6 @@ class NewsPlacementPreviewService:
             selected, reason = None, "candidate_set_truncated"
         elif context.reason == "local_place_not_grounded":
             selected, reason = None, context.reason
-        elif claim.canonical_barangay:
-            selected, reason = None, "missing_valid_barangay_boundary"
         elif is_pasig and not self.history_available:
             selected, reason = None, "pasig_history_unavailable"
         elif (claim.is_negated or claim.is_forecast or not claim.flood_mentioned

@@ -16,6 +16,27 @@ from app.services.taglish_extraction_service import (
 )
 
 
+@pytest.mark.parametrize("qualifier,barangay", [("Pasig City", None), ("Barangay Ugong, Pasig City", "Ugong")])
+def test_c5_parent_city_is_never_a_barangay(qualifier, barangay):
+    source = NewsArticleExtractorInput(article_id=999, canonical_url="https://example.org/c5",
+        publisher="Fixture", title="Flood update", published_at=datetime(2026, 10, 5, tzinfo=timezone.utc),
+        article_text=f"As of 8 AM, knee-deep flooding along C5 in {qualifier}.")
+    road = next(c for c in extract_taglish_flood_facts(source).claims if c.canonical_road == "C5")
+    assert road.canonical_city == "City of Pasig"
+    assert road.canonical_barangay == barangay
+    assert road.local_area_raw and road.depth_canonical == "knee"
+
+
+def test_barangay_aliases_validate_level_and_exact_parent():
+    from app.services.philippine_location_service import get_philippine_location_service
+    locations = get_philippine_location_service()
+    assert locations.normalize_barangay_name("Pasig City", None) is None
+    assert locations.normalize_barangay_name("QC", "Quezon City") is None
+    assert locations.normalize_barangay_name("Maybunnga", "Pasig City") == "Maybunga"
+    assert locations.normalize_barangay_name("Maybunnga", "Valenzuela") is None
+    assert locations.normalize_barangay_name("Ugong", "Pasig City") == "Ugong"
+
+
 def test_psgc_barangay_normalization():
     assert normalize_barangay_name("Maybunga") == "Maybunga"
     assert normalize_barangay_name("Barangay Maybunga") == "Maybunga"

@@ -1,8 +1,26 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 04, 2026, 11:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
+
+## 24. Purpose-specific reported-subsidence proxy and prospective prediction reference
+
+**Date:** October 5, 2026
+
+**Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Status:** Adopted offline research target/admission contract; no model or runtime forecast adopted.
+
+**Decision:** The initial Pasig prediction study targets elapsed time from supported wet evidence until scope-matched **reported subsidence**. Treat collective-source outcomes as conditional reported-location proxies, preserving scope class, bounds, shared outcome IDs and physical-section uncertainty. Proxy admission and training admission are separate. Unknown physical dry conditions or passability cannot be filled by the proxy.
+
+**Reference policy:** Existing last-wet brackets are selected retrospectively and support descriptive evidence analysis. Prospective training/replay must predefine first-eligible or landmark references without future outcome knowledge and require predictors available by issuance. Embedded historical wet lists in later clearance pages do not prove pre-outcome availability. An issuance-time remaining-duration target requires an explicit age adjustment/version; source clock and issuance time are separate.
+
+**Evidence consequence:** The [current register](evaluations/pasig-duration-followup-20261005/README.md) contains 819 wet observations plus three summaries and 12 historical records. Its 37 conditional projections share three outcomes with `(0,260]`, `(0,120)` and `(0,360]` minute bounds. All `training_admitted=false`; the 2023 gap remains. More wet snapshots support trajectories but cannot substitute for independent outcomes. Original datasets and v1 review decisions remain preserved.
+
+**Reasoning and operational boundary:** Exact endpoints are unnecessary for valid interval evidence, but declaring a proxy does not solve collective scope, reporting bias, outcome dependence, reference selection or model identifiability. Study empirical interval-aware baselines, then supported AFT comparisons when held-out outcomes permit them. Evidence-based Active/Unconfirmed/Cleared implementation proceeds through existing approval gates; reaching a predicted time cannot establish confirmed clearance. Full [target contract](plans/pasig-reported-subsidence-target.md).
+
+---
 
 ## 23. Metro Manila product coverage, Pasig duration study and separated evidence datasets
 
@@ -10,7 +28,7 @@ This document tracks major technical decisions, architecture shifts, and the rea
 
 **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Status:** Geographic scope and evidence separation adopted for the current plan. Pasig working exports delivered; duration-label qualification, model choice and application lifecycle implementation remain pending.
+**Status:** Geographic scope and evidence separation adopted. Pasig exports and initial qualification delivered; Decision 24 adds conditional proxy admission. Prospective training admission, model choice and application lifecycle implementation remain pending.
 
 **Decision:** Keep news collection and automatic flood plotting Metro Manila-wide. Pasig City is the primary thesis evaluation area for AI, plotting and automatic expiry, and the initial geography for any validated duration predictor. Evidence gathered outside Pasig stays available for regional plotting; it does not establish prediction accuracy outside Pasig. Extending a Pasig predictor requires separate geographic validation.
 
@@ -18,7 +36,7 @@ This document tracks major technical decisions, architecture shifts, and the rea
 
 **Reasoning:** These records represent different units. Repeated reports can reveal changes at the same location and must remain available for timelines. Annual DRRMO place/depth rows and consultation duration ranges provide context, but lack the dated observations needed to establish a particular flood's clearance. Joining context by location may support features after review; copying general ranges onto historical rows would invent duration labels. Roads sharing one clearance summary also share outcome uncertainty and cannot be treated as independent storms during evaluation.
 
-**Current evidence:** The [Pasig working bundle](evaluations/pasig-duration-cleanup-20261004/README.md) partitions 482 source records into 467 wet observations, three clearance summaries and 12 historical records. Its 37 derived interval candidates share only three summary episodes. The 679 DRRMO rows and eight local duration references remain context. Zero duration examples are training-admitted; 2023 direct Pasig report coverage remains a gap. Collection targets 2021 through the recorded 2026 cutoff, with 2026 partial. These counts describe acquired evidence, not independent floods or model accuracy.
+**October 4 evidence snapshot:** The [Pasig working bundle](evaluations/pasig-duration-cleanup-20261004/README.md) partitions 482 source records into 467 wet observations, three clearance summaries and 12 historical records. Its 37 derived interval candidates share only three summary episodes. The 679 DRRMO rows and eight local duration references remain context. Zero duration examples are training-admitted; 2023 direct Pasig report coverage remains a gap. Collection targets 2021 through the recorded 2026 cutoff, with 2026 partial. These counts describe acquired evidence, not independent floods or model accuracy. Decision 24 links the latest follow-up version.
 
 **Model gate:** Time until subsidence is a prediction problem when an estimate is produced. Automatic evidence ageing and observed-clearance handling are rule-based lifecycle operations. Investigate survival/interval-aware AFT methods alongside simple baselines, and quantile regression only for suitable completed outcomes. No final algorithm or minimum row threshold is adopted. Qualify labels and predictor histories, group dependent episodes, and assess held-out storms/time/locations before fitting or selecting a model. Record model adoption in a later decision after measured benefit, calibration and shadow evaluation support it.
 

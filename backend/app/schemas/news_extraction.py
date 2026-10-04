@@ -109,6 +109,10 @@ class RoadPlacementEvidence(BaseModel):
     catalog_sha256: str | None = None
     osm_sha256: str | None = None
     city_relation_id: int | None = None
+    barangay_catalog_sha256: str | None = None
+    barangay_source_id: str | None = None
+    barangay_psgc_code: str | None = None
+    barangay_boundary_status: Literal["not_required", "available", "unavailable"] = "not_required"
     candidates: list[RoadPlacementCandidate] = Field(default_factory=list, max_length=25)
     total_candidate_count: int = 0
     candidates_truncated: bool = False

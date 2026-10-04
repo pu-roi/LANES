@@ -11,6 +11,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import re
 import time
 import unicodedata
@@ -23,7 +24,7 @@ from urllib import error, request, robotparser
 from urllib.parse import urlparse
 
 
-REVISION = "pasig-duration-pilot-v2"
+REVISION = "pasig-duration-pilot-v3"
 AGENT = "LANES-Research-Pilot/1.0"
 MONTHS = {name: n for n, name in enumerate(
     ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), 1)}
@@ -34,6 +35,7 @@ DATE_PATTERNS = (
 CLOCK = re.compile(r"\b(\d{1,2}):(\d{2})\s*(AM|PM|NN)\b", re.I)
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 BLOCK = {"p", "h1", "h2", "h3", "li", "div", "br"}
+BARANGAY_REFERENCE = Path(__file__).resolve().parents[2] / "data/pasig_barangay_reference.csv"
 
 
 def norm(value: str) -> str:
@@ -41,9 +43,9 @@ def norm(value: str) -> str:
 
 
 def barangay_key(value: str) -> str:
-    name = re.sub(r"\s*\([^)]*\)\s*$", "", value).strip(" .")
+    name = re.sub(r"\s*\([^)]*\)\s*$", "", value.split("*", 1)[0]).strip(" .")
     key = re.sub(r"[^a-z0-9]", "", norm(name).lower())
-    return "Sta. Lucia" if key == "stalucia" else name
+    return "Sta. Lucia" if key in {"stalucia", "santalucia"} else name
 
 
 def location_key(value: str) -> str:
@@ -202,18 +204,62 @@ def base_observation(source: dict[str, Any], line: int, evidence: str, clock: st
 
 def depth_bounds(raw: str) -> tuple[float | str, float | str]:
     # No numeric conversion of knee/waist/gutter words. Preserve original text.
-    match = re.search(r"(\d+(?:\.\d+)?)\s*(?:[-–]\s*(\d+(?:\.\d+)?))?\s*(cm|inch(?:es)?|ft|feet)\b", raw, re.I)
+    repeated = re.search(r"(\d+(?:\.\d+)?)\s*(cm|inch(?:es)?|ft|feet|foot)\s*[-–]\s*(\d+(?:\.\d+)?)\s*\2\b", raw, re.I)
+    if repeated:
+        factor = 1 if repeated[2].lower() == "cm" else (30.48 if repeated[2].lower() in {"ft", "feet", "foot"} else 2.54)
+        low, high = float(repeated[1]), float(repeated[3])
+        return (round(low * factor, 4), round(high * factor, 4)) if high >= low else ("", "")
+    match = re.search(r"(\d+(?:\.\d+)?)\s*(?:[-–]\s*(\d+(?:\.\d+)?))?\s*(cm|inch(?:es)?|ft|feet|foot)\b", raw, re.I)
     if not match:
         return "", ""
-    factor = 1 if match[3].lower() == "cm" else (30.48 if match[3].lower() in {"ft", "feet"} else 2.54)
+    factor = 1 if match[3].lower() == "cm" else (30.48 if match[3].lower() in {"ft", "feet", "foot"} else 2.54)
     low, high = float(match[1]), float(match[2] or match[1])
+    if high < low:
+        return "", ""
     # Mixed feet-and-inch values cannot be truncated at the first feet value.
-    if match[3].lower() in {"ft", "feet"}:
-        remainder = raw[match.end():]
+    if match[3].lower() in {"ft", "feet", "foot"}:
+        # Parenthetical alternate units must not become additive depth.
+        remainder = raw[match.end():].split("(", 1)[0]
         extra = re.search(r"(?:and\s+)?(\d+(?:\.\d+)?)\s*inch(?:es)?", remainder, re.I)
         if extra and not match[2]:
             return round(low * factor + float(extra[1]) * 2.54, 4), round(high * factor + float(extra[1]) * 2.54, 4)
     return round(low * factor, 4), round(high * factor, 4)
+
+
+def alternate_depth_review(raw: str) -> tuple[float | str, float | str, str]:
+    """Retain reported metric features with explicit rounding/conflict qualifiers."""
+    low, high = depth_bounds(raw)
+    outside, separator, inside = raw.partition("(")
+    if not separator:
+        return low, high, ""
+    # Numeric-adjacent units (10.64cm, 4inches) are legitimate spellings.
+    metric = r"(?<![A-Za-z])cm\b"
+    imperial = r"(?<![A-Za-z])(?:inch(?:es)?|ft|feet|foot)\b"
+    if re.search(metric, outside, re.I) and re.search(imperial, inside, re.I):
+        metric_text, imperial_text = outside, inside
+    elif re.search(metric, inside, re.I) and re.search(imperial, outside, re.I):
+        metric_text, imperial_text = inside, outside
+    else:
+        return low, high, ""
+    metric_bounds, imperial_bounds = depth_bounds(metric_text), depth_bounds(imperial_text)
+    if not all(isinstance(v, (int, float)) for v in (*metric_bounds, *imperial_bounds)):
+        return "", "", "alternate_units_unparsed_requires_review"
+    differences = [abs(a - b) for a, b in zip(metric_bounds, imperial_bounds)]
+    if max(differences) <= 0.25:
+        return low, high, ""
+    # Only a source-reported whole-centimeter scalar matching nearest rounding
+    # receives this qualifier. Decimal metric disagreements remain unresolved.
+    metric_scalar = re.fullmatch(r"\s*(\d+)\s*cm\s*\)?\s*", metric_text, re.I)
+    if metric_scalar and imperial_bounds[0] == imperial_bounds[1] and max(differences) <= 0.5:
+        return metric_bounds[0], metric_bounds[1], "alternate_unit_rounding_uncertain"
+    return "", "", "source_alternate_units_disagree"
+
+
+def barangay_headings() -> set[str]:
+    """Accept unprefixed headings only when they match the existing Pasig reference."""
+    with BARANGAY_REFERENCE.open(encoding="utf-8-sig", newline="") as handle:
+        names = {barangay_key(row["barangay_name"]).lower() for row in csv.DictReader(handle)}
+    return names
 
 
 def observations(source: dict[str, Any], output: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -231,6 +277,7 @@ def observations(source: dict[str, Any], output: Path) -> tuple[list[dict[str, A
     pending: dict[str, Any] | None = None
     rows: list[dict[str, Any]] = []
     exceptions: list[dict[str, Any]] = []
+    known_barangays = barangay_headings()
     for number, line in enumerate(lines[2:], 3):
         new_day = date_in(line)
         if new_day:
@@ -270,11 +317,11 @@ def observations(source: dict[str, Any], output: Path) -> tuple[list[dict[str, A
             pending = None
             continue
         heading = re.match(r"^(?:Brgy\.?|Barangay)\s+(.+)$", line, re.I)
-        if heading:
-            barangay = heading[1].strip(" .")
+        if heading or barangay_key(line).lower() in known_barangays:
+            barangay = heading[1].strip(" .") if heading else line.strip(" .")
             pending = None
             continue
-        location = re.match(r"^\d+\s*[.,]*\s+(.+)$", line)
+        location = re.match(r"^\d+(?:\s*[.,]+\s*|\s+)(.+)$", line)
         if location:
             pending = base_observation(source, number, line, clock, clock_evidence)
             pending["location_raw"] = location[1].strip()
@@ -284,27 +331,18 @@ def observations(source: dict[str, Any], output: Path) -> tuple[list[dict[str, A
             continue
         water = re.match(r"^(?:Water\s*Level|Flood\s*Depth)\s*:?\s*(.+)$", line, re.I)
         if water:
-            if pending is None:
+            if pending is None or pending.get("status"):
                 exceptions.append({"source_id": source["source_id"], "line": number, "reason": "depth_without_supported_numbered_location", "evidence": line})
                 continue
             pending.update(status="flood_observed", depth_raw=water[1], evidence=pending["evidence"] + " | " + line)
-            pending["depth_cm_low"], pending["depth_cm_high"] = depth_bounds(water[1])
+            low, high, unit_flag = alternate_depth_review(water[1])
+            pending["depth_cm_low"], pending["depth_cm_high"] = low, high
             flags = []
-            # Check alternate units in parentheses, not additive feet-and-inches.
-            outside, separator, inside = water[1].partition("(")
-            metric_outside = bool(re.search(r"\bcm\b", outside, re.I))
-            metric_inside = bool(re.search(r"\bcm\b", inside, re.I))
-            imperial = r"\b(?:inch(?:es)?|ft|feet)\b"
-            alternate_units = separator and ((metric_outside and re.search(imperial, inside, re.I)) or (metric_inside and re.search(imperial, outside, re.I)))
-            if alternate_units:
-                first_units, second_units = depth_bounds(outside), depth_bounds(inside)
-                if all(isinstance(v, (int, float)) for v in (*first_units, *second_units)) and any(abs(a - b) > 0.25 for a, b in zip(first_units, second_units)):
-                    flags.append("source_alternate_units_disagree")
-                    # Preserve both source values; neither becomes a trusted feature.
-                    pending["depth_cm_low"], pending["depth_cm_high"] = "", ""
-                    exceptions.append({"source_id": source["source_id"], "line": number, "reason": "source_alternate_units_disagree", "evidence": line})
+            if unit_flag:
+                flags.append(unit_flag)
+                exceptions.append({"source_id": source["source_id"], "line": number, "reason": unit_flag, "evidence": line})
             if pending["depth_cm_low"] == "":
-                if "source_alternate_units_disagree" not in flags:
+                if not unit_flag:
                     flags.append("qualitative_depth_no_numeric_conversion")
             if not pending["observation_at"]:
                 flags.append("missing_observation_clock")
@@ -322,15 +360,16 @@ def observations(source: dict[str, Any], output: Path) -> tuple[list[dict[str, A
     return rows, exceptions
 
 
-def build(seeds: list[dict[str, Any]], output: Path, reviewed_rules: list[dict[str, Any]]) -> dict[str, Any]:
-    manifest = json.loads((output / "source_manifest.json").read_text(encoding="utf-8"))
+def build(seeds: list[dict[str, Any]], output: Path, reviewed_rules: list[dict[str, Any]], source_bundle: Path | None = None, figures: bool = True) -> dict[str, Any]:
+    capture_root = source_bundle or output
+    manifest = json.loads((capture_root / "source_manifest.json").read_text(encoding="utf-8"))
     rows: list[dict[str, Any]] = []
     exceptions: list[dict[str, Any]] = []
     for source in manifest:
         if source.get("status") != "captured":
             exceptions.append({"source_id": source["source_id"], "line": "", "reason": source["status"], "evidence": source.get("error", "")})
             continue
-        parsed, issues = observations(source, output)
+        parsed, issues = observations(source, capture_root)
         rows.extend(parsed)
         exceptions.extend(issues)
     # Record exact repeated rows and same-clock measurement conflicts, never erase raw evidence.
@@ -385,16 +424,18 @@ def build(seeds: list[dict[str, Any]], output: Path, reviewed_rules: list[dict[s
     by_year = Counter(r["observation_at"][:4] for r in rows if r["observation_at"])
     summary = {"revision": REVISION, "built_at": datetime.now(timezone.utc).isoformat(), "seeded_sources": len(seeds), "captured_sources": sum(s.get("status") == "captured" for s in manifest), "failed_sources": sum(s.get("status") != "captured" for s in manifest), "observations": len(rows), "flood_observations": sum(r["status"] == "flood_observed" for r in rows), "clearance_summary_observations": sum(r["status"] == "clearance_candidate" for r in rows), "duplicate_flags": sum("duplicate_of:" in r["flags"] for r in rows), "conflict_flags": sum("same_clock_depth_conflict" in r["flags"] for r in rows), "missing_clock_rows": sum(not r["observation_at"] for r in rows), "candidate_incident_bounds": len(candidates), "candidate_clearance_episode_groups": len({r["episode_group"] for r in candidates}), "candidate_episode_groups": len({r["episode_group"] for r in rows}), "barangays": sorted({r["barangay"] for r in rows if r["barangay"]}), "observation_year_counts": dict(sorted(by_year.items())), "exceptions": len(exceptions), "training_admitted_incidents": 0, "model_trained": False, "readiness": "pilot_only_not_validated_training_data", "limits": ["selected reports; not exhaustive archive", "episode groups are candidate continuity groups, not proved independent storms", "summary clearance lacks individual measured timestamps", "no known flood onset for candidate incidents", "no matched weather exports yet", "2021-2023 archive coverage unverified", "no local ML accuracy estimate"]}
     dump_json(output / "coverage.json", summary)
-    from plot_flood_duration_pilot import render_pilot_figures
-
-    render_pilot_figures(output)
+    if figures:
+        from plot_flood_duration_pilot import render_pilot_figures
+        render_pilot_figures(output)
     # Human-readable citations for every captured/failed source with observation links.
     citations = ["# Captured Pasig pilot sources", "", "Generated from source_manifest.json. Reuse terms remain unverified. Capture is not training admission.", ""]
     for source in manifest:
         citations += [f"## {source['source_id']}", "", f"- Publisher: City Government of Pasig. [{source.get('title', source['source_id'])}]({source['url']}).", f"- Status: {source['status']}. Retrieved: {source.get('fetched_at', 'unavailable')}."]
         if source.get("status") == "captured":
             ids = [r["observation_id"] for r in rows if r["source_id"] == source["source_id"]]
-            citations += [f"- Displayed publication date: {source.get('displayed_publication_date') or 'unknown'}; embedded observation clocks retained separately.", f"- [HTML capture]({source['html_path']}); [normalized article text]({source['text_path']}).", f"- HTML SHA-256: `{source['html_sha256']}`.", f"- Text SHA-256: `{source['text_sha256']}`.", f"- Capture version: `{source['capture_version']}`; observation IDs: {', '.join(ids) or 'none parsed'}." ]
+            html_link = Path(os.path.relpath(capture_root / source["html_path"], output)).as_posix()
+            text_link = Path(os.path.relpath(capture_root / source["text_path"], output)).as_posix()
+            citations += [f"- Displayed publication date: {source.get('displayed_publication_date') or 'unknown'}; embedded observation clocks retained separately.", f"- [HTML capture]({html_link}); [normalized article text]({text_link}).", f"- HTML SHA-256: `{source['html_sha256']}`.", f"- Text SHA-256: `{source['text_sha256']}`.", f"- Capture version: `{source['capture_version']}`; observation IDs: {', '.join(ids) or 'none parsed'}." ]
         else:
             citations.append(f"- Failure/restriction: {source.get('error', source['status'])}.")
         citations.append("")
@@ -408,15 +449,19 @@ def main() -> None:
     parser.add_argument("--seeds", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--review-rules", type=Path)
+    parser.add_argument("--source-bundle", type=Path, help="Read immutable captures from another bundle; write derived outputs separately")
+    parser.add_argument("--skip-figures", action="store_true", help="Build source-linked tables with the standard library only")
     parser.add_argument("--collect", action="store_true", help="Fetch approved seed pages; otherwise rebuild offline")
     parser.add_argument("--refresh", action="store_true", help="Create a new capture version when source changed")
     args = parser.parse_args()
     seeds = json.loads(args.seeds.read_text(encoding="utf-8"))
     args.output.mkdir(parents=True, exist_ok=True)
     if args.collect:
+        if args.source_bundle:
+            parser.error("--source-bundle is offline-only; collect into its own output bundle")
         collect(seeds, args.output, args.refresh)
     rules = json.loads(args.review_rules.read_text(encoding="utf-8")) if args.review_rules else []
-    build(seeds, args.output, rules)
+    build(seeds, args.output, rules, args.source_bundle, figures=not args.skip_figures)
 
 
 if __name__ == "__main__":

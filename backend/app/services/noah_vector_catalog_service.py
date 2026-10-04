@@ -140,6 +140,11 @@ class NoahVectorCatalog:
             raise NoahAssetError("missing_or_invalid_noah_tile") from exc
 
     def overlaps(self, line: BaseGeometry) -> dict[int, dict[int, float]]:
+        return {period: {hazard: metric_geometry(geometry).length for hazard, geometry in classes.items()}
+                for period, classes in self.intersections(line).items()}
+
+    def intersections(self, line: BaseGeometry) -> dict[int, dict[int, BaseGeometry]]:
+        """Exact per-scenario/class intersections, preserving holes and gaps."""
         self._check_assets()
         if self.error or self.manifest is None:
             raise NoahAssetError(self.error or "noah_catalog_not_configured")
@@ -158,10 +163,10 @@ class NoahVectorCatalog:
             result = {}
             for period in (5, 25, 100):
                 tiles = [self._tile(period, key) for key in keys]
-                result[period] = {hazard: metric_geometry(union_all([
-                    line.intersection(tile[hazard]) for tile in tiles])).length
+                result[period] = {hazard: union_all([
+                    line.intersection(tile[hazard]) for tile in tiles])
                     for hazard in (1, 2, 3)}
-                if sum(result[period].values()) > metric_geometry(line).length + 0.1:
+                if sum(metric_geometry(g).length for g in result[period].values()) > metric_geometry(line).length + 0.1:
                     raise NoahAssetError("overlapping_noah_classes")
             return result
         except ShapelyError as exc:

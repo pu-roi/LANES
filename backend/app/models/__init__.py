@@ -19,6 +19,7 @@ from app.models.notification import Notification
 from app.models.saved_place import SavedPlace
 from app.models.news import NewsFeedCheckpoint, NewsArticle, NewsArticleFeedEntry, NewsArticleVersion, NewsExtractionRun
 from app.models.news_telemetry import NewsDiscoveryRun, NewsDiscoveryFeedRun, NewsFallbackLookup, NewsFallbackLookupLead
+from app.models.news_publication import NewsClaimCase, NewsClaimSource, NewsClaimEvaluation, NewsClaimDecision, NewsClaimZoneLink
 
 # Route domain currently has no models (mostly algorithmic), adding comment per user request
 # from app.models.route import ...

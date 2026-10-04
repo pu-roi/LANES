@@ -16,7 +16,7 @@ from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.schemas.news_extraction import NewsArticleExtractorInput
 from app.services.news_discovery_service import MAX_ARTICLE_CHARS, extraction_input_snapshot
 
-PIPELINE_VERSION = "rules-spatial-preview-v10"
+PIPELINE_VERSION = "rules-spatial-preview-v11"
 MAX_ATTEMPTS = 5
 LEASE_SECONDS = 300
 

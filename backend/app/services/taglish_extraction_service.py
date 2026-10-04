@@ -1221,7 +1221,7 @@ def extract_claims_from_sentence(
         raw = re.sub(r"^(?:Barangay|Brgy\.?)\s+", "", raw, flags=re.I).strip()
         if not city_lookup:
             return None
-        return _loc_service.normalize_barangay_name(raw, city_context=city_lookup) or raw
+        return _loc_service.normalize_barangay_name(raw, city_context=city_lookup)
 
     # A status row can put its barangay after the road ("Brgy San Agustin")
     # or before it ("Tañong F. Sevilla Blvd"). Validate the qualifier against
@@ -1475,7 +1475,7 @@ def extract_claims_from_sentence(
             canonical_bgy = res.get("matched_name")
         if not canonical_bgy and place["place_type"] in ("street", "landmark"):
             canonical_bgy = _loc_service.normalize_barangay_name(
-                local_area_raw or effective_barangay,
+                scoped_barangay or local_area_raw or effective_barangay,
                 city_context=city_res.get("city_municipality") if city_res else None,
             )
         canonical_city = None

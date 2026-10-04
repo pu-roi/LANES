@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import { LngLatBounds, type Map, type MapLayerMouseEvent } from "maplibre-gl";
+import { LngLatBounds, type GeoJSONSource, type Map, type MapLayerMouseEvent } from "maplibre-gl";
 import type { FeatureCollection, LineString, MultiLineString } from "geojson";
 import type { PlacementEnvelope } from "./reviewApi";
+import { PENDING_REPORT_ROAD_AURA_PAINT, SEVERITY_COLORS } from "@/features/map/mapStyles";
 
 const SOURCE = "news-placement-suggestions";
 const LAYER = "news-placement-centerlines";
@@ -13,20 +14,20 @@ export function useNewsPlacementLayer(map: Map | null, loaded: boolean, data: Pl
   useEffect(() => {
     if (!map || !loaded || !enabled || !data) return;
     const geometry: FeatureCollection<LineString | MultiLineString> = {
-      type: "FeatureCollection", features: data.preview.candidates.map((candidate) => ({
-        type: "Feature", geometry: candidate.centerline_geojson,
-        properties: { candidate_id: candidate.candidate_id },
-      })),
+      type: "FeatureCollection", features: data.preview.candidates.flatMap((candidate) => candidate.preview_geometry ? [{
+        type: "Feature" as const, geometry: candidate.preview_geometry,
+        properties: { candidate_id: candidate.candidate_id, is_selected: candidate.candidate_id === selectedId,
+          color: data.preview.reported_severity ? SEVERITY_COLORS[data.preview.reported_severity] : "#94a3b8" },
+      }] : []),
     };
     const draw = () => {
       if (!map.isStyleLoaded()) return;
       try {
         if (!map.getSource(SOURCE)) map.addSource(SOURCE, { type: "geojson", data: geometry });
+        else (map.getSource(SOURCE) as GeoJSONSource).setData(geometry);
         if (!map.getLayer(LAYER)) map.addLayer({ id: LAYER, type: "line", source: SOURCE,
           layout: { "line-cap": "round", "line-join": "round" },
-          paint: { "line-color": ["case", ["==", ["get", "candidate_id"], selectedId ?? ""], "#1d4ed8", "#60a5fa"],
-            "line-width": ["case", ["==", ["get", "candidate_id"], selectedId ?? ""], 7, 4],
-            "line-dasharray": [2, 1.5], "line-opacity": 0.9 } });
+          paint: PENDING_REPORT_ROAD_AURA_PAINT });
         onError(null);
       } catch (error) {
         onError(`Placement suggestions could not be drawn. ${error instanceof Error ? error.message : "Reload the map to retry."}`);
@@ -59,12 +60,13 @@ export function useNewsPlacementLayer(map: Map | null, loaded: boolean, data: Pl
   useEffect(() => {
     if (!enabled || !data) { focused.current = null; return; }
     if (!map || !loaded || !visible) return;
-    const token = `${data.run_id}:${data.claim_index}:${selectedId ?? "all"}`;
+    const token = `${data.run_id}:${data.claim_index}:${data.placement_revision}:${selectedId ?? "all"}`;
     if (focused.current === token) return;
     const sections = selectedId ? data.preview.candidates.filter((candidate) => candidate.candidate_id === selectedId) : data.preview.candidates;
     const bounds = new LngLatBounds();
     for (const candidate of sections) {
-      const lines = candidate.centerline_geojson.type === "LineString" ? [candidate.centerline_geojson.coordinates] : candidate.centerline_geojson.coordinates;
+      if (!candidate.preview_geometry) continue;
+      const lines = candidate.preview_geometry.type === "LineString" ? [candidate.preview_geometry.coordinates] : candidate.preview_geometry.coordinates;
       for (const line of lines) for (const position of line) bounds.extend([position[0], position[1]]);
     }
     if (!bounds.isEmpty()) {

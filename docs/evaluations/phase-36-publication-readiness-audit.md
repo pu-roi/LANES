@@ -1,9 +1,27 @@
 # Phase 36: Backend publication readiness assessment
 
-> **Last Updated:** October 04, 2026, 3:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 1:54 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Scope:** Source inspection, isolated mocked auditor probe and existing hybrid regressions. No application/model/migration changes, database writes, live model requests, cloud inspection/deployment or new browser acceptance.
 
-## Result and next task
+**Subsequent approved implementation:** after the review below, the developer approved the five additive publication tables. Models and migration `d7e4b9a21c60` are implemented and verified in disposable local PostGIS with 60 focused checks. The [storage evaluation](phase-36-news-publication-storage.md) records current delivery; pending-schema statements below describe the review before that approval. Auditor, decision/publication services and operational geometry remain unfinished. No production verification or cloud migration occurred. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+## October 5 conversation and source reconciliation
+
+Read the three explicitly referenced chats through `read_thread`: **Plan flood zone expiry** (`01a1072a-88d1-7541-ba75-da9e96795b59`), **Review article pipeline progress** (`01a0faf3-a146-74b0-a96f-f6b3c9167d45`), and **Review flood plotting conversation** (`01a105dd-b43a-70b2-aa2b-4fa054aa144b`). Reviewed their relevant recent decisions; also read the older page of the article-pipeline chat for the original priority order and frontend pause. Conversation outputs were treated as historical context and compared with current files. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+| Area | Current evidence and consequence |
+| --- | --- |
+| Delivery order | The latest expiry-chat correction and lifecycle plan agree: finish AI/automatic plotting, include basic freshness before release, then evaluate expiry/duration primarily in Pasig. No additional broad data collection or model training is prerequisite to publication work. |
+| Runtime connection | `news_processing_service.py` calls saved-body extraction and persists immutable results. It does not perform external auditing or public ingestion. `models/news.py` still contains feed/article/version/extraction storage, without the five proposed publication tables. F6 durable decisions and F7 public reads remain implementation work. |
+| Auditor | `hybrid_extraction_service.py` still uses `openrouter_api_key or gemini_api_key` for an OpenRouter request, supplies a single user prompt without complete `context_text`, and lacks explicit place/time confirmation in `LLMAuditResult`. BUG-098 remains unresolved; no live provider probe was run in this continuation. |
+| Prototype writes | `news_auto_ingestion_service.py` still uses manual-seeder provenance and builds a zone without an expiry. It is not a substitute for the proposed identity, transaction and support lifecycle. |
+| Duration evidence | The current follow-up bundle records 819 wet observations and three shared summaries; 37 conditional projections remain training-ineligible. Source review supports reported-subsidence research, not verified physical clearance or a deployed predictor. Data/capture hashes were not re-audited here. |
+| Interface | Preserve current local F5 inspection and the current parent plan. Older card/tab proposals in the referenced chat do not override later repository decisions. No frontend edit is included in this continuation. |
+| Authorization | Exact five-table schema approval remains pending in the current plan/database reference. Earlier approval for extraction or monitoring migrations is separate. No models/migrations, database state, cloud settings or public zones were changed. |
+
+The [continuation checkpoint](../plans/news-publication-readiness-plan.md#october-5-continuation-checkpoint) makes the next work reviewable: approve the exact additive schema, verify it locally, repair audit/evaluation, implement alert/decision/freshness transactions, then connect zones only with supported geometry. Public status projection, finite Unconfirmed retention and routing uncertainty remain release-policy work. This review used source inspection and documentation consistency checks; no new application tests or deployment acceptance are claimed.
+
+## October 4 result and next task (historical assessment)
 
 F5 inspection is locally implemented. F6 durable decisions and F7 public alerts/zones still need backend work. Existing domain storage can represent verified multi-section incidents, but cannot safely represent unresolved news alerts or durable per-claim publication/correction/expiry. The [concrete readiness contract](../plans/news-publication-readiness-plan.md) proposes five additive tables, transaction ownership, staff/public API contracts and staged acceptance. Exact schema approval and expiry policy are pending; automatic operational geometry remains independently blocked.
 

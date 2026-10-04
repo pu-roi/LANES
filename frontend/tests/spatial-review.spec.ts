@@ -30,19 +30,23 @@ const candidates = [0, 1].map((index) => ({ candidate_id: `section-${index}`, ki
   type: "LineString", coordinates: [[121.08 + index * .001, 14.57], [121.081 + index * .001, 14.571]],
 }, osm_way_ids: [index + 1], cross_streets: [["Test crossing"]], ambiguous_carriageway: false, article_place_level: 1,
   approximate_length_m: 120, modeled_overlap_m: { "5": { "1": 60 } }, modeled_overlap_fraction: { "5": .5, "25": .7, "100": .8 },
+  preview_geometry: { type: "MultiLineString", coordinates: [
+    [[121.08 + index * .001, 14.57], [121.0803 + index * .001, 14.5703]],
+    [[121.0807 + index * .001, 14.5707], [121.081 + index * .001, 14.571]],
+  ] }, fragment_status: "available", modeled_fragments: [],
   matching_history: index ? [] : [{ source_year: "2023", source_record_no: "19", barangay: "Maybunga", street: "Caruncho", landmark: "Test crossing" }] }));
 const preview = { status: "ambiguous", reason: "competing_road_sections", selected_candidate_id: "section-0",
   placement_kind: "predicted", candidates, total_candidate_count: 2, candidates_truncated: false,
   osm_source_id: "fixture-osm", osm_catalog_sha256: "fixture-osm-hash", osm_snapshot_at: source.published_at,
   noah_catalog_sha256: "fixture-noah-hash", noah_source_ids: { "5": "fixture-noah" }, noah_attribution: "UP NOAH · fixture",
   history_status: "available", history_sha256: "fixture-history", unmatched_history: [], uncertainty_reasons: [],
-  proves_current_flood: false, may_affect_routing: false, read_only: true };
+  reported_severity: "medium", proves_current_flood: false, may_affect_routing: false, read_only: true };
 
 // Inspect rendered pixels in the canvas interior, excluding map controls.
-// The fixture basemap has no blue roads, so these pixels belong to suggestions.
+// The fixture basemap has no yellow road auras; count transparent severity pixels.
 async function suggestionPixels(page: Page) {
   const bounds = await page.locator(".maplibregl-canvas").boundingBox();
-  if (!bounds || bounds.width < 600 || bounds.height < 160) return -1;
+  if (!bounds || bounds.width < 200 || bounds.height < 160) return -1;
   const png = await page.screenshot({ clip: { x: bounds.x + 60, y: bounds.y + 60,
     width: bounds.width - 120, height: bounds.height - 120 } });
   return page.evaluate(async (base64) => {
@@ -52,7 +56,8 @@ async function suggestionPixels(page: Page) {
     const rgba = context.getImageData(0, 0, canvas.width, canvas.height).data;
     let total = 0;
     for (let index = 0; index < rgba.length; index += 4) {
-      if (rgba[index + 2] > 120 && rgba[index + 2] > rgba[index] * 1.3 && rgba[index + 2] > rgba[index + 1] * 1.05) total++;
+      if (rgba[index] > rgba[index + 2] + 20 && rgba[index + 1] > rgba[index + 2] + 10
+        && Math.abs(rgba[index] - rgba[index + 1]) < 45) total++;
     }
     return total;
   }, png.toString("base64"));
@@ -170,7 +175,7 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
       body = { run_id: 2, claim_index: 0, input_fingerprint: "fixture", evidence_pipeline_version: "fixture-v10",
         placement_revision: "fixture-spatial", claim, read_only: true, preview: mode === "unresolved" ? {
           ...preview, status: "unresolved", reason: "no_supported_geometry", candidates: [], total_candidate_count: 0,
-        } : mode === "unavailable" ? { ...preview, status: "source_unavailable", reason: "noah_unavailable", history_status: "source_unavailable" } : preview };
+        } : mode === "unavailable" ? { ...preview, status: "source_unavailable", reason: "noah_unavailable", history_status: "source_unavailable", candidates: candidates.map((candidate) => ({ ...candidate, preview_geometry: null, fragment_status: "source_unavailable" })) } : preview };
     }
     return route.fulfill({ status: 200, json: body });
   });
@@ -199,6 +204,7 @@ test("mixed queue keeps news inspection separate from user-report actions", asyn
   if (info.project.name === "mobile-chromium") {
     await page.getByRole("button", { name: "Open map", exact: true }).click();
     await expect(page.getByRole("button", { name: "Evidence", exact: true })).toBeVisible();
+    await expect.poll(() => suggestionPixels(page)).toBeGreaterThan(100);
     await page.locator(".maplibregl-canvas").screenshot({ path: info.outputPath("news-candidate-map.png") });
     await page.getByRole("button", { name: "Evidence", exact: true }).click();
   }

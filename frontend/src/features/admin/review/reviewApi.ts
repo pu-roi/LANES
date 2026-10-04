@@ -37,6 +37,11 @@ export interface PlacementSection {
   cross_streets: string[][]; ambiguous_carriageway: boolean; article_place_level: number;
   approximate_length_m: number; modeled_overlap_m: Record<string, Record<string, number>>;
   modeled_overlap_fraction: Record<string, number>; matching_history: HistoryMatch[];
+  modeled_fragments?: { fragment_id: string; centerline_geojson: LineString;
+    approximate_length_m: number; return_period: 5 | 25 | 100; hazard_class: 1 | 2 | 3;
+    noah_source_id: string; noah_archive_sha256: string }[];
+  preview_geometry?: LineString | MultiLineString | null;
+  fragment_status?: "available" | "no_modeled_overlap" | "source_unavailable";
 }
 export interface PlacementPreview {
   status: "predicted_candidate" | "ambiguous" | "unresolved" | "source_unavailable";
@@ -46,6 +51,10 @@ export interface PlacementPreview {
   noah_catalog_sha256: string | null; noah_source_ids: Record<string, string>; noah_attribution: string | null;
   history_status: "not_applicable" | "available" | "source_unavailable";
   history_sha256: string | null; unmatched_history: HistoryMatch[]; uncertainty_reasons: string[];
+  reported_severity?: "low" | "medium" | "high" | "extreme" | null;
+  barangay_catalog_sha256?: string | null; barangay_source_id?: string | null;
+  barangay_psgc_code?: string | null;
+  barangay_boundary_status?: "not_required" | "available" | "unavailable";
   proves_current_flood: false; may_affect_routing: false; read_only: true;
 }
 export interface PlacementEnvelope {

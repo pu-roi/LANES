@@ -56,6 +56,15 @@ def test_broad_road_never_selects_even_a_single_mapped_section(tmp_path):
     assert result.candidates[0].kind=="road_section"
 
 
+@pytest.mark.parametrize("name", ["C5", "C-5", "C5 Road", "C-5 Road"])
+def test_c5_news_name_matches_osm_numbered_road_alias(tmp_path, name):
+    road_ways = ways()
+    road_ways[0].update(name="Carlos P. Garcia Avenue", aliases=["C-5 Road"])
+    result = write_catalog(tmp_path, road_ways).resolve(claim(span=None, raw_place_name=name, canonical_road=name))
+    assert len(result.candidates) == 1 and result.candidates[0].osm_way_ids == [10]
+    assert result.reason == "reported_road_extent_unbounded" and not result.may_affect_routing
+
+
 @pytest.mark.parametrize("changes,reason",[
     ({"canonical_barangay":"Santo Domingo"},"missing_valid_barangay_boundary"),
     ({"canonical_city":"City of Pasig"},"reported_city_not_covered"),

@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 04, 2026, 11:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 3:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
 
@@ -9,7 +9,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Task plan](task_plan.md) — active sprint and backlog.
 - [Progress tracker](progress.md) — delivery history.
 - [Feature reference](feature-reference.md) — major platform capabilities.
-- [Architecture decisions](decisions.md) — significant design choices; [Decision 23](decisions.md#23-metro-manila-product-coverage-pasig-duration-study-and-separated-evidence-datasets) records geographic scope and duration-dataset architecture, and [Decision 22](decisions.md#22-separate-observed-flood-status-evidence-expiry-and-predicted-clearance) records status/expiry semantics.
+- [Architecture decisions](decisions.md) — significant design choices; [Decision 24](decisions.md#24-purpose-specific-reported-subsidence-proxy-and-prospective-prediction-reference) records the target/reference policy, [Decision 23](decisions.md#23-metro-manila-product-coverage-pasig-duration-study-and-separated-evidence-datasets) records geographic scope and duration-dataset architecture, and [Decision 22](decisions.md#22-separate-observed-flood-status-evidence-expiry-and-predicted-clearance) records status/expiry semantics.
 - [Tech stack](tech-stack.md) — technologies and deployment components.
 - [System documentation](others/system-documentation.md) — screens, routes, endpoints, and components.
 - [Database design plan](others/database-design-plan.md) — schema and spatial design.
@@ -17,9 +17,11 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
-- [Flood evidence lifecycle and duration estimation](plans/flood-evidence-lifecycle-and-duration-plan.md) — Metro Manila collection/plotting, Pasig evaluation, delivered separated evidence CSVs, pending outcome qualification/final training export, conditional two-hour Unconfirmed fallback and model/storage/routing/release gates.
+- [Pasig reported-subsidence target](plans/pasig-reported-subsidence-target.md) — adopted proxy target, 37 conditional projections/three summary outcomes, prospective references, source availability and model gates.
 
-- [News publication backend readiness contract](plans/news-publication-readiness-plan.md) — completed storage assessment; five-table proposal, claim continuity, auditor fixes, transaction/API contracts, geometry/asset gates and pending expiry/schema approval.
+- [Flood evidence lifecycle and duration estimation](plans/flood-evidence-lifecycle-and-duration-plan.md) — Metro Manila collection/plotting, Pasig evaluation, reviewed conditional proxy labels and pending prospective training export, conditional two-hour Unconfirmed fallback and model/storage/routing/release gates.
+
+- [News publication backend readiness contract](plans/news-publication-readiness-plan.md) — approved five-table storage tested locally; next auditor/evaluation work, claim continuity, transaction/API contracts, geometry/asset gates and remaining lifecycle policy.
 
 - [F4b monitoring telemetry implementation](plans/news-monitoring-telemetry-plan.md) — approved durable discovery/fallback history, tested local migration and remaining rollout/manual acceptance.
 
@@ -32,6 +34,14 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Disconnected news placement](evaluations/phase-36-disconnected-news-placement.md) — local v11 locality repair, exact fragments and transparent review auras; operational publication still pending.
+
+- [Approved news publication storage](evaluations/phase-36-news-publication-storage.md) — five models/migration `d7e4b9a21c60`, initial 60 focused checks and separate 59-check pre-push rerun, full/repeated upgrade and downgrade/re-upgrade evidence preservation, immutable history and local Docker socket recovery; no public publication or cloud migration.
+
+- [Pasig follow-up acquisition and collector v3 repair](evaluations/pasig-duration-followup-20261005/README.md) — 819 combined wet observations, eight new official captures, 37 conditional proxy projections/three summaries, original evidence preserved and zero training admission.
+
+- [Pasig source and duration-outcome qualification](evaluations/pasig-duration-qualification-20261005/README.md) — reviewed overlays for 467 wet observations, 221 candidate timelines, three usable reported-subsidence summaries, 37 conditional interval candidates and twelve historical rows; raw evidence preserved, physical-section outcome admission pending.
 
 - [Expanded Pasig and NCR flood-evidence register](evaluations/metro-manila-flood-duration-20261004/README.md) — older-year acquisition, regional coverage, separate historical incident records, explicit clearance candidates, source citations and reproducible coverage summaries; graph exports were removed, while source data and plotting scripts remain.
 
@@ -72,6 +82,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Phase 36: Metro Manila OSM and NOAH coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md)
 
 ## Guides
+
+- [Reviewed barangay boundary assets](guides/news-barangay-boundary-assets.md) — versioned polygon identity, checksum and coverage requirements.
 
 - [News placement preview and NOAH catalog](guides/news-placement-preview.md) — deterministic build, external runtime assets and protected immutable-evidence reads.
 

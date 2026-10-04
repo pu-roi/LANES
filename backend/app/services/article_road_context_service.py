@@ -73,12 +73,15 @@ def match_article_road_context(
     city_boundary: BaseGeometry,
     pasig_csv: Path | None = None,
     barangay_boundary: BaseGeometry | None = None,
+    reported_span_section_ids: frozenset[str] = frozenset(),
 ) -> RoadContextResult:
     """Match precise article clues first, then ground Pasig history by road and crossing.
 
     ``barangay_boundary`` must be a verified polygon for the article barangay.
     Without it, a barangay name does not establish which side of a road lies
     in that barangay. Historical rows with no mapped crossing stay unmatched.
+    ``reported_span_section_ids`` records provider-matched spans whose original
+    cross-street anchors were removed by subsequent administrative clipping.
     """
     if not claim.canonical_city or city_boundary.is_empty or not city_boundary.is_valid:
         raise ValueError("A named article city and checked city boundary are required")
@@ -104,7 +107,7 @@ def match_article_road_context(
     if span is not None:
         for section in eligible:
             first, second = section.end_cross_streets
-            if (any(_contains_name(name, span[0]) for name in first)
+            if section.section_id in reported_span_section_ids or (any(_contains_name(name, span[0]) for name in first)
                     and any(_contains_name(name, span[1]) for name in second)) or (
                     any(_contains_name(name, span[1]) for name in first)
                     and any(_contains_name(name, span[0]) for name in second)):
@@ -113,7 +116,14 @@ def match_article_road_context(
         if not matched:
             return RoadContextResult((), levels, {}, (), "reported_span_not_grounded")
     else:
-        local_clue = " ".join(filter(None, (claim.local_area_raw, claim.road_segment_raw)))
+        local_area = claim.local_area_raw
+        def scope_key(value: str) -> str:
+            normalized = normalize_name(value)
+            return re.sub(r"^city of | city$|^(?:barangay|brgy) ", "", normalized)
+        if local_area and scope_key(local_area) in {
+                scope_key(claim.canonical_city or ""), scope_key(claim.canonical_barangay or "")}:
+            local_area = None  # The verified administrative scope is not a missing landmark.
+        local_clue = " ".join(filter(None, (local_area, claim.road_segment_raw)))
         if local_clue:
             for section in eligible:
                 if any(_contains_name(local_clue, name) for end in section.end_cross_streets for name in end):
@@ -162,6 +172,6 @@ def match_article_road_context(
         historical_rows_by_section={section_id: tuple(rows) for section_id, rows in history.items()},
         unmatched_history_rows=tuple(unmatched),
         reason=("matched_article_place" if max(levels.values()) else
-                "local_place_not_grounded" if claim.local_area_raw or claim.road_segment_raw else
+                "local_place_not_grounded" if local_clue else
                 "road_name_only"),
     )

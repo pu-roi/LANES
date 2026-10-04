@@ -13,6 +13,16 @@ class PlacementHistoryRow(BaseModel):
     landmark: str
 
 
+class PlacementFragment(BaseModel):
+    fragment_id: str
+    centerline_geojson: dict
+    approximate_length_m: float = Field(gt=0)
+    return_period: Literal[5, 25, 100]
+    hazard_class: Literal[1, 2, 3]
+    noah_source_id: str
+    noah_archive_sha256: str
+
+
 class PlacementSection(BaseModel):
     candidate_id: str
     kind: Literal["reported_span", "road_section"]
@@ -25,6 +35,9 @@ class PlacementSection(BaseModel):
     modeled_overlap_m: dict[int, dict[int, float]] = Field(default_factory=dict)
     modeled_overlap_fraction: dict[int, float] = Field(default_factory=dict)
     matching_history: list[PlacementHistoryRow] = Field(default_factory=list)
+    modeled_fragments: list[PlacementFragment] = Field(default_factory=list, max_length=512)
+    preview_geometry: dict | None = None
+    fragment_status: Literal["available", "no_modeled_overlap", "source_unavailable"] = "source_unavailable"
 
 
 class NewsPlacementPreview(BaseModel):
@@ -39,6 +52,11 @@ class NewsPlacementPreview(BaseModel):
     osm_catalog_sha256: str | None = None
     osm_snapshot_at: datetime | None = None
     city_relation_id: int | None = None
+    barangay_catalog_sha256: str | None = None
+    barangay_source_id: str | None = None
+    barangay_psgc_code: str | None = None
+    barangay_boundary_status: Literal["not_required", "available", "unavailable"] = "not_required"
+    reported_severity: Literal["low", "medium", "high", "extreme"] | None = None
     noah_catalog_sha256: str | None = None
     noah_source_ids: dict[int, str] = Field(default_factory=dict)
     noah_attribution: str | None = None

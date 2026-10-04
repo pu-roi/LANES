@@ -1,8 +1,45 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 04, 2026, 11:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 3:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+
+---
+
+### Phase 36: Senior planner and pre-push checkpoint (October 5, 2026)
+
+- [x] Audit all eight authoritative records, current plans/evaluations and the index for approved publication storage, Pasig research qualification/follow-up and local v11 disconnected placement. Correct superseded frontend-pause/approval-pending instructions and the stale task anchor while preserving historical checkpoints. Retain Decision 24 without adding a routine architecture decision or new flagship feature. Real reviewed barangay polygons, C5/Pasig road coverage and automatic publication/expiry remain open. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Fresh pre-push verification: **59 checks passed** (37 publication storage, 18 extraction units, four native extraction queue checks). Full `alembic upgrade head`, repeated upgrade and publication downgrade/re-upgrade preserve synthetic evidence in two newly created disposable local databases; both removed afterward. Normal application/replay/cloud databases untouched. Dependencies unchanged; prior 226 placement checks and 14 browser cases/two project-specific skips remain separate evidence, with overlapping extraction tests not added together. [Checkpoint details](evaluations/phase-36-news-publication-storage.md#october-5-pre-push-checkpoint). Commit/push completion is reported after Git succeeds. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### Phase 36: Locality repair and disconnected news placement (October 5, 2026)
+
+**Local v11 placement follow-up:** locality aliases now validate barangay level and exact parent city; reviewed boundary catalogs clip supported road candidates; exact NOAH intersections preserve disconnected fragments with scenario/source identity. Spatial Operations uses the existing transparent review aura, with reported-depth severity and gray for unknown depth. No solid news core or public/routing write is introduced. Real reviewed barangay polygon provisioning remains pending. [Disconnected placement verification](evaluations/phase-36-disconnected-news-placement.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- 226 distinct backend checks, TypeScript/scoped lint and 14 desktop/mobile browser cases pass (two project-specific skips). Synthetic boundaries validate loader behavior; they do not establish real barangay coverage. No deployment or article backfill.
+
+### Phase 36: Approved publication storage and local Docker recovery (October 5, 2026)
+
+- [x] Implement the explicitly approved five additive publication models and migration `d7e4b9a21c60` after `c5a7e9d2104f`: immutable source/decision/link history, finalized evaluations, actor/active-expiry constraints, unique request/revision/source/policy identity and single zone creation owner with multiple support links. Register relationships to existing extraction/users/zones; add no dependency, backfill, fabricated report or automatic activation. [Evaluation](evaluations/phase-36-news-publication-storage.md). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Pass 60 focused checks: 37 native/storage/metadata tests, 18 extraction units, four native extraction queue checks and one telemetry migration round-trip. Verify full/repeated upgrades and downgrade/re-upgrade preserve original article/version/extraction/zone rows and geometry in disposable local PostGIS. Adapt dedicated extraction-test cleanup to RESTRICT publication FKs. Recover Docker Desktop by preserving stale runtime socket folders and recreating them together; existing PostGIS/Valhalla start, volumes remain intact. Normal application/replay/cloud databases were not migrated; services, endpoints, frontend, push and deployment remain pending. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
+
+### Phase 36: Pipeline, plotting and expiry continuation review (October 5, 2026)
+
+- [x] Read the three referenced chats and compare relevant decisions with current source/storage and delivered Pasig exports. Reaffirm automatic plotting first, basic freshness before release and Pasig duration evaluation after implementation. Replace the stale next-bundle instruction to repeat readiness assessment with the [concrete backend sequence](plans/news-publication-readiness-plan.md#october-5-continuation-checkpoint). Exact five-table approval, auditor repair, durable publication/expiry, operational geometry and retention/routing remain open. Preserve current F5 inspection and paused frontend scope. [Review evidence](evaluations/phase-36-publication-readiness-audit.md#october-5-conversation-and-source-reconciliation). Documentation only; no application/schema changes, data acquisition, training, new application tests or deployment. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
+
+### Phase 36: Pasig follow-up, target definition and collector v3 repair (October 5, 2026)
+
+- [x] Deliver the [follow-up bundle](evaluations/pasig-duration-followup-20261005/README.md): eight new official captures/352 verified wet observations, 819 combined wet observations with all 467 original raw rows preserved, three five-hour depth-update pairs and checksummed provenance for 35 source identities/70 artifacts. Recheck older-year leads; 2023 remains uncollected and clearance summaries remain three. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Repair offline collector v3 range/unit/heading/list/pending-row defects and reparse original 18 captures separately: 398 identities/evidence/clocks and 37 bounds retained, supported feature corrections exposed in parser overlays. Independent source and integration reviews corrected qualitative-depth metadata and aligned timeline/snapshot identity across layers. Define the [reported-subsidence contract](plans/pasig-reported-subsidence-target.md) and [Decision 24](decisions.md#24-purpose-specific-reported-subsidence-proxy-and-prospective-prediction-reference); publish 37 conditional proxy projections shared across three summaries, zero training admission. No automated tests, new dependencies, schemas, model fitting, runtime integration, commit or push. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+---
+
+### Phase 36: Pasig source and duration-outcome qualification (October 5, 2026)
+
+- [x] Deliver the [reviewed qualification bundle](evaluations/pasig-duration-qualification-20261005/README.md) with three read-only agents and an offline standard-library builder. All 467 wet claims match captured evidence; 463 have supported clocks. Preserve all raw fields, add purpose-specific depth/location/time overlays, group 221 candidate timelines/466 candidate snapshots, and review 37 interval candidates against three usable reported-subsidence summaries (260 minutes inclusive, 120 exclusive, 360 inclusive). Retain twelve NDRRMC rows as historical context. Verify 27 source identities/54 capture hashes, input preservation and interval/reference consistency; independent follow-up confirms overlay and methodology. Zero model labels admitted. No new acquisition, application tests, dependencies, schema, training, runtime publication, commit or push in this task. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ---
 
@@ -35,7 +72,7 @@
 
 ### Phase 36: Revised duration-data collection window (October 4, 2026)
 
-- [x] Recorded the developer’s expanded **2021–2026** scope, with 2026 explicitly partial through the recorded collection cutoff. Updated the plan, source register, pilot report and active collection task. Missing-year coverage and independent-storm outcome requirements remain explicit; no extra source capture or model training is claimed. [Collection scope](plans/flood-evidence-lifecycle-and-duration-plan.md#immediate-work-package-20212026-pasig-collection-and-coverage-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Recorded the developer’s expanded **2021–2026** scope, with 2026 explicitly partial through the recorded collection cutoff. Updated the plan, source register, pilot report and active collection task. Missing-year coverage and independent-storm outcome requirements remain explicit; no extra source capture or model training is claimed. [Collection scope](plans/flood-evidence-lifecycle-and-duration-plan.md#evidence-work-package-metro-manila-collection-pasig-duration-evaluation). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Standard Python research graphs (October 4, 2026)
 
@@ -52,13 +89,13 @@
 
 ### Phase 36: Original-goal reconciliation after scope drift (October 4, 2026)
 
-- [x] Reread “Flood plotting on map 2” and “Plan AI flood NLP and NER” and reconciled the current duration-research decisions. Corrected the [plan](plans/flood-evidence-lifecycle-and-duration-plan.md#original-goal-and-deadline-constraint) and active tasks: location-dependent duration investigation and public-data pilot remain active; the deadline-driven fallback-first deferral was a recommendation, not developer acceptance, and is withdrawn as active priority. Preserve conditional two-hour Unconfirmed fallback, evidence-based clearance, five-year target, graphs and optional ML selection. Documentation only; no collector/model/lifecycle delivery claim. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Reread “Flood plotting on map 2” and “Plan AI flood NLP and NER” and reconciled the current duration-research decisions. Corrected the [plan](plans/flood-evidence-lifecycle-and-duration-plan.md#scope-and-delivery-sequence) and active tasks: location-dependent duration investigation and public-data pilot remain active; the deadline-driven fallback-first deferral was a recommendation, not developer acceptance, and is withdrawn as active priority. Preserve conditional two-hour Unconfirmed fallback, evidence-based clearance, five-year target, graphs and optional ML selection. Documentation only; no collector/model/lifecycle delivery claim. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Defense deadline and evidence-based lifecycle scope (October 4, 2026)
 
 > **Superseded recommendation:** the developer subsequently challenged this scope shift. The entry below records the earlier proposal only; see the scope correction above for the active goal.
 
-- [x] Recorded next-week defense and the developer's clarification that trained duration ML is not mandatory. Proposed automatic evidence ageing to Unconfirmed, matched credible report-based clearance and a small traceable replay, with five-year collection/agency requests later. This deferral was not accepted and is superseded by the [scope correction](plans/flood-evidence-lifecycle-and-duration-plan.md#original-goal-and-deadline-constraint). Two hours is a freshness policy, not validated physical drainage. No application, schema, dataset or model change, new lifecycle evaluation or release is claimed. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Recorded next-week defense and the developer's clarification that trained duration ML is not mandatory. Proposed automatic evidence ageing to Unconfirmed, matched credible report-based clearance and a small traceable replay, with five-year collection/agency requests later. This deferral was not accepted and is superseded by the [scope correction](plans/flood-evidence-lifecycle-and-duration-plan.md#scope-and-delivery-sequence). Two hours is a freshness policy, not validated physical drainage. No application, schema, dataset or model change, new lifecycle evaluation or release is claimed. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Earlier-source acquisition reconciliation (October 4, 2026)
 
@@ -70,7 +107,7 @@
 
 ### Phase 36: Five-year collection target and next deliverable (October 4, 2026)
 
-- [x] Recorded the accepted five-year research collection target, 2021–2025 with available 2026 updates for recent evaluation, and the immediate offline Pasig collector/observation/incident-register work package. Specify immutable sources, supported embedded clocks, automatic quality checks, sample/exception review, coverage graphs and a measured training-data gate. 2021–2023 archive coverage remains unverified. [Work package](plans/flood-evidence-lifecycle-and-duration-plan.md#immediate-work-package-five-year-pasig-collection-and-coverage-audit). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Recorded the accepted five-year research collection target, 2021–2025 with available 2026 updates for recent evaluation, and the immediate offline Pasig collector/observation/incident-register work package. Specify immutable sources, supported embedded clocks, automatic quality checks, sample/exception review, coverage graphs and a measured training-data gate. 2021–2023 archive coverage remains unverified. [Work package](plans/flood-evidence-lifecycle-and-duration-plan.md#evidence-work-package-metro-manila-collection-pasig-duration-evaluation). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 - [x] Clarified that the next delivered result should be a traceable dataset plus coverage report before model training. Planning/documentation only; no collector implementation, full archival scrape, dependency/schema/application change or model training occurred. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: Revised fallback, recent-data evidence and shared ML study plan (October 4, 2026)
@@ -135,7 +172,7 @@
 
 ### Phase 36: v8 branch readiness review (October 3, 2026)
 
-- [x] Reviewed the complete pending bundle with senior-planner/merge-coordinator guidance; fetched `origin/roi-branch` with zero divergence. Expanded verification to 555 backend checks including routing, depth, authorization and geometry; TypeScript and scoped lint pass again. Synchronized current feature/stack/database notes with local v8 while preserving release history. No dependency, model, migration or deployment source changes; final visual acceptance and freshness remain open. This is readiness evidence, with no commit or push performed. [Review](evaluations/phase-36-news-workflow-follow-up.md#branch-readiness-review-october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+- [x] Reviewed the complete pending bundle with senior-planner/merge-coordinator guidance; fetched `origin/roi-branch` with zero divergence. Expanded verification to 555 backend checks including routing, depth, authorization and geometry; TypeScript and scoped lint pass again. Synchronized current feature/stack/database notes with local v8 while preserving release history. No dependency, model, migration or deployment source changes; final visual acceptance and freshness remain open. This is readiness evidence, with no commit or push performed. [Review](evaluations/phase-36-news-workflow-follow-up.md#branch-readiness-review--october-3). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
 
 ### Phase 36: News workflow correctness follow-up (October 3, 2026)
 

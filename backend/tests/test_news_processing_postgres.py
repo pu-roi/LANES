@@ -8,8 +8,11 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from threading import Barrier
+from pathlib import Path
 
 import pytest
+from alembic.config import Config
+from alembic.script import ScriptDirectory
 from sqlalchemy import create_engine, func, inspect, select, text, update
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.orm import sessionmaker
@@ -30,16 +33,23 @@ def postgres_queue():
     with engine.connect() as connection:
         database = connection.scalar(text("SELECT current_database()"))
         assert database.startswith("lanes_p3_verify_"), "Refusing a non-disposable database"
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "c5a7e9d2104f"
+        config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+        config.set_main_option("script_location", str(Path(__file__).resolve().parents[1] / "alembic"))
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == ScriptDirectory.from_config(config).get_current_head()
         assert connection.scalar(text("SELECT postgis_version()"))
     tables = inspect(engine).get_table_names()
     assert "news_article_versions" in tables and "news_extraction_runs" in tables
 
     def clean():
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE news_fallback_lookup_leads, news_fallback_lookups, "
-                                    "news_discovery_feed_runs, news_discovery_runs, news_extraction_runs, news_article_versions, "
-                                    "news_article_feed_entries, news_articles RESTART IDENTITY"))
+            # New RESTRICT publication FKs prohibit truncating parent evidence,
+            # even when their child tables are empty. This dedicated extraction
+            # fixture may remove only its own rows, never publication history.
+            assert connection.scalar(text("SELECT count(*) FROM news_claim_sources")) == 0
+            for table in ("news_fallback_lookup_leads", "news_fallback_lookups", "news_discovery_feed_runs",
+                          "news_discovery_runs", "news_extraction_runs", "news_article_versions",
+                          "news_article_feed_entries", "news_articles"):
+                connection.execute(text(f"DELETE FROM {table}"))
 
     clean()
     try:

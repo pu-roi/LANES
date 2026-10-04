@@ -72,6 +72,50 @@ def test_exact_intersection_preserves_holes_and_never_uses_return_period_as_dept
         assert results[period][1] == results[period][2] == 0
 
 
+def test_preview_returns_disconnected_fragments_with_stable_scenario_provenance(tmp_path):
+    outer = box(120.999, 14.629, 121.001, 14.632)
+    hole = box(120.9995, 14.6303, 121.0005, 14.6307)
+    engine = service(tmp_path, polygon=outer.difference(hole))
+    evidence = claim(depth_canonical="knee")
+    original = evidence.model_dump()
+    preview = engine.preview(evidence)
+    candidate = preview.candidates[0]
+    display = candidate.preview_geometry
+    assert display["type"] == "MultiLineString" and len(display["coordinates"]) == 2
+    assert candidate.fragment_status == "available" and len(candidate.modeled_fragments) == 6
+    gap = LineString([(121, 14.6304), (121, 14.6306)])
+    from shapely.geometry import shape
+    assert not shape(display).intersects(gap)
+    assert preview.reported_severity == "medium"  # NOAH fixture has class 3, not reported high severity.
+    assert evidence.model_dump() == original
+    assert len({f.fragment_id for f in candidate.modeled_fragments}) == 6
+    for f in candidate.modeled_fragments:
+        assert f.noah_source_id == f"noah-fixture-{f.return_period}"
+        assert f.noah_archive_sha256 == "b" * 64 and f.hazard_class == 3
+    assert engine.preview(evidence).model_dump_json() == preview.model_dump_json()
+    assert not preview.may_affect_routing and not preview.proves_current_flood
+
+
+def test_excess_fragmentation_returns_explicit_failure_without_partial_map(tmp_path):
+    from shapely import union_all
+    pieces = union_all([box(120.999, 14.63 + i * .001 / 180, 121.001,
+                            14.63 + i * .001 / 180 + .0000025) for i in range(180)])
+    preview = service(tmp_path, polygon=pieces).preview(claim())
+    assert preview.status == "source_unavailable" and preview.reason == "noah_fragment_limit"
+    assert preview.selected_candidate_id is None
+    assert all(c.preview_geometry is None and c.modeled_fragments == []
+               and c.fragment_status == "source_unavailable" for c in preview.candidates)
+
+
+def test_unknown_depth_and_point_contact_never_invent_zone_severity(tmp_path):
+    engine = service(tmp_path, polygon=box(121, 14.631, 121.001, 14.632))
+    preview = engine.preview(claim())
+    assert preview.reported_severity is None
+    assert preview.candidates[0].fragment_status == "no_modeled_overlap"
+    assert preview.candidates[0].preview_geometry is None
+    assert preview.candidates[0].modeled_fragments == []
+
+
 def test_tile_boundary_does_not_double_count(tmp_path):
     provider = noah_catalog(tmp_path)
     line = LineString([(121, 14.62), (121, 14.64)])
@@ -115,6 +159,13 @@ def test_pasig_history_matches_road_and_crossing_without_inventing_events(tmp_pa
     assert preview.history_status == "available" and preview.history_sha256
     assert [row.source_record_no for row in preview.candidates[0].matching_history] == ["1"]
     assert [row.source_record_no for row in preview.unmatched_history] == ["2"]
+
+
+def test_parent_city_qualifier_is_not_an_ungrounded_landmark(tmp_path):
+    preview = service(tmp_path, city="Pasig").preview(claim(span=None,
+        canonical_city="City of Pasig", local_area_raw="Pasig City"))
+    assert preview.candidates and preview.reason != "local_place_not_grounded"
+    assert all(c.article_place_level == 0 for c in preview.candidates)
 
 
 def test_non_pasig_never_reads_historical_rows_even_same_road(tmp_path):
