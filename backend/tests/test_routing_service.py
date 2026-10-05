@@ -262,3 +262,42 @@ def test_legacy_ignore_floods_cannot_bypass_public_hard_blocks(monkeypatch: pyte
 
     assert result["routes"] == []
     assert result["blocked_baseline"] is not None
+
+
+def test_operational_news_zone_triggers_route_exclusion_and_baseline_warning(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verifies that an operational flood avoidance zone (originating from an audited news claim)
+    is ingested by routing policy and triggers avoidance polygon exclusion in Valhalla."""
+    # Polygon overlapping the route between [121.0, 14.5] and [121.1, 14.6]
+    news_zone = ActiveFloodZone(
+        id=99,
+        severity="medium",
+        polygon=[[121.04, 14.54], [121.06, 14.54], [121.06, 14.56], [121.04, 14.56], [121.04, 14.54]],
+        passable_vehicles="Large Trucks / Buses",
+    )
+    monkeypatch.setattr(routing_service, "get_active_flood_zones", lambda _: [news_zone])
+
+    captured_exclusions: list = []
+
+    def fake_valhalla_fetch(exclude_polygons=None, **kwargs):
+        captured_exclusions.append(exclude_polygons)
+        # Returns candidate intersecting the flooded zone
+        return [{
+            "geometry": {"type": "LineString", "coordinates": [[121.0, 14.5], [121.05, 14.55], [121.1, 14.6]]},
+            "distance": 1500.0,
+            "duration": 180.0,
+            "instructions": [],
+            "is_truncated": False,
+        }]
+
+    monkeypatch.setattr(routing_service.valhalla_service, "fetch_route_candidates", fake_valhalla_fetch)
+
+    # Walk or motorcycle profiles treat medium flood as blocked
+    req = RouteRequest(start=[121.0, 14.5], end=[121.1, 14.6], vehicle_profile="motorcycle", engine="valhalla")
+    result = asyncio.run(routing_service.calculate_route(req, db=None))
+
+    # The zone's polygon was submitted as an exclusion to Valhalla
+    assert any(news_zone.polygon in excl for excl in captured_exclusions if excl)
+    # The direct intersecting route is flagged in blocked_baseline
+    assert result["blocked_baseline"] is not None
+    assert "crosses floodwater" in result["blocked_baseline"]["message"]
+
