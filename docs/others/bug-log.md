@@ -1,11 +1,99 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 05, 2026, 7:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 10:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-110] Operational shape validation is treated as verified incident evidence
+
+- **Status:** Resolved locally; **398 distinct checks pass**. Actual current source provisioning and worker/map integration remain open.
+- **Severity:** High — arbitrary source labels and partial locality overlap previously authorized operational geometry.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A valid polygon partly outside its reported locality passed with a nonempty arbitrary source label; shape acceptance was not proof of a current affected footprint.
+
+#### 2. Root Cause Analysis (RCA)
+
+The optional parent predicate used intersection; provenance checked only string presence and coordinate bounds substituted for explicit CRS. No trusted exact current article/claim/incident approval or component binding existed, and newer observations could renew old geometry.
+
+#### 3. Solution & Architectural Strategy
+
+Separate shape validation from server approval. Resolve qualified locality assets and require full coverage, explicit SRID and all valid disconnected parts. Bind exact current evidence to an operator-approved catalog record or stored active/capable staff review. Client labels/checksums and modeled geometry cannot approve a zone. Preview/save share gates; relinks verify article/incident/component/metadata ownership. Unsupported renewal becomes an alert with a private reason and withdraws unsupported old links; immutable history stays intact. No real current catalog is provisioned.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/operational_footprint_service.py`, new `operational_footprint_evidence_service.py` and `news_permissions.py`, `news_publication_service.py`, `news_road_placement_service.py`, publication schema/API/dependencies, geometry/catalog/road/native lifecycle tests and the guarded runner. Sixty added targeted checks cover geometry limits/coverage/provenance, catalog integrity and native incident/actor/preview/refresh/relink rejection. No SQLAlchemy models or Alembic definitions changed. [Verification](../evaluations/phase-36-trusted-footprint-contract.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
+
+### [BUG-109] Correcting an active news case to retain its own zone deactivates that zone
+
+- **Status:** Resolved locally; **289 distinct checks pass** across the repair and related regressions.
+- **Severity:** High — operational map/routing/lifecycle behavior differs from accepted news evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+An audited same-case correction appended an active-zone supported link but immediately deactivated its retained zone and truncated expiry.
+
+#### 2. Root Cause Analysis (RCA)
+
+`_withdraw_support` excluded `previous.case_id` rather than the prior decision, ignoring the newly current support revision. Retained active labels consequently pointed to inactive coverage.
+
+#### 3. Solution & Architectural Strategy
+
+Exclude only the previous decision ID, retaining current-revision, active-state, unexpired linked support from any case. Preserve original expiry on retention/retry; reject expired target zones. Final withdrawal ends solely news-supported coverage and its final event without deleting history. Existing independent news/citizen and manual-owner exemptions remain intact.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/news_publication_service.py` and native lifecycle tests. Six retained-support final-state cases, replacement, concurrency, two rollback cases and expired-zone rejection pass; existing shared-source/citizen coverage regression also passes. [Repair verification](../evaluations/phase-36-zone-metadata-support-repair.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
+
+### [BUG-108] News-created zones lose accepted flood depth and severity
+
+- **Status:** Resolved locally; **289 distinct checks pass** across the repair and related regressions.
+- **Severity:** High — operational map/routing/lifecycle behavior differs from accepted news evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A waist-depth claim created a high/waist event but its zone read medium/null. Native public-zone verification also found polygon contributor geometry failed response validation.
+
+#### 2. Root Cause Analysis (RCA)
+
+Creation populated event peaks without existing zone override fields. Routing reads zone metadata. `ZoneContributorResponse` permitted PolygonGeometry but omitted Polygon EWKB decoding.
+
+#### 3. Solution & Architectural Strategy
+
+A shared news-only validator supplies supported depth/severity and independently confirmed access metadata to every created component via existing fields. Unknown depth and passable-all activation reject; unknown access stays unset. Explicit vehicle prohibitions can only tighten depth policy, without inferring other allowed classes or pedestrian closure. Decode valid contributor polygons through the existing parser.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/news_publication_service.py`, `backend/app/services/flood_routing_policy.py`, `backend/app/schemas/report.py`, native lifecycle tests and the preserved runner. Sixteen MultiPolygon metadata cases, five real public API/native vehicle-policy matrices and five measurement/access rejections pass. No SQLAlchemy model/migration or new request-level override field. [Repair verification](../evaluations/phase-36-zone-metadata-support-repair.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
+
+### [BUG-107] Operational activation fails decoding its stored independent audit
+
+- **Status:** Resolved locally; both original regressions and 23 added guard/retry/transaction checks pass. BUG-108/109 are subsequently repaired; BUG-110 is subsequently repaired locally; operational integration still depends on actual current source provisioning and worker/map acceptance.
+- **Severity:** High — activation and refresh could not complete on the approved database.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Fresh migration/pytest reproduced an AttributeError after invalid strict audit decoding was swallowed. After repairing decoding, native tests exposed an unsupported decision operation and insertion of refresh support links before the referenced active decision existed.
+
+#### 2. Root Cause Analysis (RCA)
+
+`activate_operational_footprint` used strict Python-object validation for stored JSON instead of `_load`'s strict JSON path. It omitted current evidence/revision checks and hashed only the source label. The approved operation check rejects `activate_zone`; the existing link trigger requires the active decision before support insertion.
+
+#### 3. Solution & Architectural Strategy
+
+Reuse `_load`, reject malformed/missing/stale evidence safely, validate source/policy/claim/depth/passability/historical observation identity, require expected revision and recheck under incident-then-case locks. Bind the request to geometry/checksum/parent/actor/policy/revision; exact retries return the original decision without resetting expiry. Record private geometry attribution in existing JSONB. Use approved evaluate/correct operations and append the refresh decision before its links within the outer transaction. Provenance attribution does not resolve BUG-110 source trust.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/news_publication_service.py`, `backend/app/schemas/news_publication.py`, `backend/tests/test_news_publication_lifecycle_postgres.py`, the disposable verification runner and synchronized records. No SQLAlchemy model, migration definition or dependency change. **103 targeted + 133 auditor/evaluation + four event = 240 distinct passing checks**. [Repair evidence](../evaluations/phase-36-bug107-activation-repair.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
 
 ### [BUG-106] Shared Select menu opens outside the available viewport
 

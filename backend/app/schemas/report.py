@@ -233,7 +233,7 @@ class ZoneContributorResponse(BaseModel):
 
     @field_validator("geometry", mode="before")
     @classmethod
-    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry]]:
+    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]]:
         if isinstance(v, WKBElement):
             try:
                 data = bytes.fromhex(v.desc) if isinstance(v.desc, str) else bytes(v.data)
@@ -250,6 +250,9 @@ class ZoneContributorResponse(BaseModel):
                 elif pure_geom_type == 5:  # MultiLineString
                     coords = parse_ewkb_multilinestring(data)
                     return MultiLineStringGeometry(type="MultiLineString", coordinates=coords)
+                elif pure_geom_type == 3:  # Polygon, including news contributors
+                    coords = parse_ewkb_polygon(data)
+                    return PolygonGeometry(type="Polygon", coordinates=coords)
             except Exception as e:
                 print(f"Warning: Failed parsing contributor geometry EWKB: {e}")
                 return None

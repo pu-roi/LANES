@@ -3,13 +3,7 @@ from fastapi import Depends, HTTPException
 
 from app.api.deps import get_current_user
 from app.models.user import User
-
-
-def may_write_news_claims(user: User) -> bool:
-    role = getattr(user, "role", None)
-    permissions = getattr(role, "permissions", None)
-    return bool(role is not None and role.name != "Commuter" and isinstance(permissions, dict)
-                and permissions.get("reports") == "full")
+from app.services.news_permissions import may_write_news_claims
 
 
 def require_news_reader(user: User = Depends(get_current_user)) -> User:

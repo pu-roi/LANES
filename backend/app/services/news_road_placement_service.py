@@ -132,6 +132,16 @@ class NewsRoadPlacementProvider:
             return None
         return self.barangays.resolve(claim.canonical_city or "", claim.canonical_barangay, boundary)
 
+    def locality_boundary(self, claim: ExtractedClaim) -> BaseGeometry | None:
+        """Qualified catalog locality only; never evidence of current flooding."""
+        self._load()
+        if self.error:
+            return None
+        city = self.boundaries.get(city_key(claim.canonical_city or ""))
+        if city is None:
+            return None
+        return self.barangay_boundary(claim) if claim.canonical_barangay else city
+
     def _clip_candidates(self, candidates: list[RoadPlacementCandidate], boundary: BaseGeometry) -> list[RoadPlacementCandidate]:
         clipped = []
         for candidate in candidates:

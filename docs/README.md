@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 05, 2026, 7:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 10:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
 
@@ -34,6 +34,12 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Phase 36 trusted current footprint contract](evaluations/phase-36-trusted-footprint-contract.md) — BUG-110 source/incident approval, CRS/full locality/component gates, safe renewal fallback and 398 distinct local checks; real footprint provisioning and worker/map integration remain open.
+
+- [Phase 36 news zone metadata and retained-support repair](evaluations/phase-36-zone-metadata-support-repair.md) — BUG-108/109, native public-zone serialization/routing policy, 37 new cases and 289 distinct passing local checks.
+- [Phase 36 BUG-107 activation and refresh repair](evaluations/phase-36-bug107-activation-repair.md) — strict evidence/revision/retry guards, existing transaction constraints, private provenance and 240 distinct passing local checks.
+- [Phase 36 integration and completion audit](evaluations/phase-36-integration-audit-20261005/README.md) — original call-chain audit at `67cdffa`, historical 78 passing/two failing checks, remaining metadata/support/trust findings and reproducible runner; BUG-107 repair is recorded above.
 
 - [Automatic source-alert publication and lifecycle](evaluations/phase-36-news-publication-lifecycle.md) — atomic source alerts, supported refresh/clearance, historical supersession, finite Unconfirmed retention, staff controls and public desktop/mobile views; operational zones remain gated.
 

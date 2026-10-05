@@ -101,6 +101,24 @@ def test_missing_catalog_is_a_visible_coverage_gap(tmp_path):
     assert result.status=="source_unavailable" and result.reason=="osm_catalog_not_configured"
 
 
+def test_locality_boundary_is_loaded_without_road_resolution(tmp_path):
+    provider = write_catalog(tmp_path)
+    boundary = provider.locality_boundary(claim())
+    assert boundary.equals(box(120.99,14.60,121.03,14.67))
+    assert provider.revision and provider.locality_boundary(claim(canonical_city="City of Pasig")) is None
+
+
+def test_named_barangay_never_falls_back_to_city_boundary(tmp_path):
+    provider = write_catalog(tmp_path)
+    assert provider.locality_boundary(claim(canonical_barangay="Missing Santo Domingo")) is None
+
+
+def test_invalid_locality_asset_cannot_authorize_containment(tmp_path):
+    provider = write_catalog(tmp_path)
+    (tmp_path/"roads.json.gz").write_bytes(b"changed")
+    assert provider.locality_boundary(claim()) is None
+
+
 @pytest.mark.parametrize("road",["Santo Domingo Avenue","Calamba Street"])
 def test_missing_nodes_on_main_or_crossing_cannot_prove_unique_path(tmp_path,road):
     provider=write_catalog(tmp_path,incomplete_ways=[dict(osm_id=99,name=road,aliases=[])])

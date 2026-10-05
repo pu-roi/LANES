@@ -1,10 +1,26 @@
 # Phase 36: Automatic source-alert publication and evidence lifecycle
 
-> **Last Updated:** October 05, 2026, 7:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 10:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Implemented locally; final verification checkpoint recorded below. Operational zones and production release remain gated.
 
 Automatic source-labeled **text-only news alerts**, atomic append-only decisions, supported observation refresh, matched clearance and two-hour evidence expiry are implemented locally. Read-time expiry becomes **Unconfirmed** even before maintenance; the default current feed retains it for 24 hours after expiry (configurable 1–72 hours), while safe historical detail remains available. Staff correction/defer/reject/reopen/clearance controls and desktop/mobile public-map News alerts are connected. Operational flood-zone activation/routing remains blocked by missing verified current affected polygons; OSM/NOAH/community boundaries remain placement evidence. No live deployment, paid provider request, new schema/dependency or normal/cloud database migration occurred.
+
+## Current trusted-footprint contract
+
+BUG-110 now passes locally: exact server-approved incident/staff evidence, explicit SRID, full qualified locality/component coverage, preview parity, relink ownership and safe unsupported-refresh fallback. **398 distinct checks pass**. No actual current footprint catalog is provisioned; worker/map integration and staging/PWA acceptance remain open. [Verification](phase-36-trusted-footprint-contract.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Earlier zone metadata/support repair
+
+BUG-108/109 pass locally: every created component receives accepted depth/severity/audited access, native public-zone contributors decode polygons, same-case retention preserves current coverage, and unsupported final coverage ends. **289 distinct checks pass**. BUG-110, worker/map geometry integration and staging/PWA acceptance remain open. [Verification](phase-36-zone-metadata-support-repair.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Earlier BUG-107 repair checkpoint
+
+BUG-107 is repaired locally: strict stored-audit/current-evidence validation, expected revision, complete retry identity, private geometry attribution, approved decision operations and valid refresh link ordering. **240 distinct checks pass**. BUG-108/109/110, runtime/frontend integration and staging/physical PWA acceptance remain open. [Repair verification](phase-36-bug107-activation-repair.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Original operational audit correction (historical)
+
+The earlier source-alert verification below remains its own historical checkpoint. A fresh audit at `67cdffa` runs eight focused suites with **78 passed, 2 failed**: the operational activation and zone-refresh tests fail because strict JSON-backed audit decoding is swallowed and `_public` receives None. Operational helpers/staff inputs exist, but automatic activation has no runtime caller; staff probes reproduce missing zone severity/depth and same-case support withdrawal. Basic staff-created linked expiry/clearance work. Gates 1/3/4/5 are reopened; verified incident geometry, frontend/worker integration and staging/PWA acceptance remain open. [Reproduction and findings](phase-36-integration-audit-20261005/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Delivered contract
 

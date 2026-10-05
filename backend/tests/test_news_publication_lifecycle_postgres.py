@@ -32,6 +32,14 @@ from app.services.news_publication_service import (
 )
 from app.services.news_sources import NewsSource
 from tests.test_news_claim_auditor import evidence
+from tests.operational_footprint_fixtures import BOUNDARY, SyntheticLocalityProvider, register_footprint
+
+
+@pytest.fixture(autouse=True)
+def trusted_synthetic_footprint_assets(tmp_path, monkeypatch):
+    from app.services import operational_footprint_evidence_service as service
+    monkeypatch.setattr(service, "get_news_road_placement_provider", lambda: SyntheticLocalityProvider())
+    monkeypatch.setenv("LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR", str(tmp_path))
 
 NOW = datetime(2026, 10, 5, 3, tzinfo=timezone.utc)
 IDENTITY = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="fixture/model", openrouter_api_key="synthetic")).policy_identity()
@@ -63,10 +71,17 @@ def publication_factory():
 
 
 def seed_evaluation(factory, *, policy=POLICY, article_id=None, condition="active", observed=None,
-                    depth="knee", status="completed", body_suffix="", **changes):
+                    depth="knee", status="completed", body_suffix="", evaluation_result_changes=None,
+                    audit_access=False, **changes):
     observed = observed or NOW - timedelta(minutes=5)
-    raw_depth = "knee deep" if depth else None
-    wording = "was flooded knee deep" if condition == "active" else "floodwaters subsided"
+    raw_depth = f"{depth} deep" if depth else None
+    wording = f"was flooded {raw_depth or 'with unknown depth'}" if condition == "active" else "floodwaters subsided"
+    access_wording = {"impassable_all": " No vehicles can pass.",
+                      "light_vehicle_closed": " Light vehicles cannot pass.",
+                      "passable_all": " All vehicles can pass.",
+                      "passable_with_caution": " Passable with caution.",
+                      "passable_unspecified": " Reported passable."}.get(changes.get("road_passability"), "")
+    wording += access_wording
     body = f"At {observed.isoformat()}, Sample Road between First Street and Second Street in Pasig City {wording}." + body_suffix
     start = body.index("Sample Road")
     value = ExtractedClaim(**{
@@ -104,6 +119,9 @@ def seed_evaluation(factory, *, policy=POLICY, article_id=None, condition="activ
         response = evidence(value, article)
         if value.depth_raw is None:
             response["depth"] = {"confirmed": False, "evidence": [], "canonical": None, "raw": None, "qualifiers": []}
+        if audit_access:
+            response["access"] = {"confirmed": True, "evidence": [{"start": 0, "end": len(body), "quote": body}],
+                                  "classification": value.road_passability}
         audit = IndependentAuditResult(outcome="verified", reason_code="claim_evidence_verified", provider="openrouter",
             model="fixture/model", prompt_version=IDENTITY["prompt_version"], response_version=IDENTITY["response_version"],
             input_sha256=fingerprint, claim_sha256=source.claim_sha256,
@@ -111,6 +129,8 @@ def seed_evaluation(factory, *, policy=POLICY, article_id=None, condition="activ
         evaluated = {"schema_version": "independent-claim-evaluation-v1", "policy_fingerprint": policy.fingerprint,
             "policy_identity": policy.auditor_identity, "input_sha256": fingerprint, "claim_sha256": source.claim_sha256,
             "reason_code": "claim_evidence_verified", "audit": audit.model_dump(mode="json")}
+        if evaluation_result_changes:
+            evaluated.update(evaluation_result_changes)
         if status == "failed":
             finish_owned_evaluation(db, owned, NOW, error_code="auditor_credential_missing")
         else:
@@ -505,6 +525,8 @@ def test_activate_operational_footprint_splits_multipolygon_and_creates_zones(pu
             db,
             case_id,
             footprint=multi_poly_geojson,
+            geometry_srid=4326,
+            expected_revision=1,
             provenance_source="field_survey:drrmo_pasig",
             policy=POLICY,
             now=NOW,
@@ -514,6 +536,8 @@ def test_activate_operational_footprint_splits_multipolygon_and_creates_zones(pu
         assert decision.public_state == "active_zone"
         assert decision.review_state == "resolved"
         assert decision.reason_code == "verified_operational_footprint"
+        assert decision.snapshot["geometry_reason"] == "staff_reviewed_footprint"
+        assert decision.snapshot["operational_provenance"]["binding"]["evidence_kind"] == "staff_review"
 
         # Check links created
         links = list(db.scalars(select(NewsClaimZoneLink).where(NewsClaimZoneLink.decision_id == decision.id)))
@@ -559,6 +583,8 @@ def test_observation_refresh_extends_active_zone_expiry(publication_factory):
             db,
             case_id,
             footprint=poly_geojson,
+            geometry_srid=4326,
+            expected_revision=1,
             provenance_source="field_survey:drrmo_pasig",
             policy=POLICY,
             now=NOW,
@@ -566,10 +592,13 @@ def test_observation_refresh_extends_active_zone_expiry(publication_factory):
             sources=SOURCES,
         )
         zone_id = act_dec.snapshot["linked_zone_ids"][0]
+        initial_provenance = act_dec.snapshot["operational_provenance"]
+        initial_decision_id = act_dec.id
         initial_expiry = db.get(FloodAvoidanceZone, zone_id).expires_at
 
     # Newer observation from revised article
-    fresh, _, _ = seed_evaluation(factory, article_id=article_id, observed=NOW, body_suffix=" Water still rising.")
+    fresh, fresh_case, _ = seed_evaluation(factory, article_id=article_id, observed=NOW, body_suffix=" Water still rising.")
+    register_footprint(factory, fresh_case, poly_geojson)
     fresh_dec_id, refreshed_case_id = publish(factory, fresh)
     assert refreshed_case_id == case_id
 
@@ -577,6 +606,11 @@ def test_observation_refresh_extends_active_zone_expiry(publication_factory):
         fresh_dec = db.get(NewsClaimDecision, fresh_dec_id)
         assert fresh_dec.public_state == "active_zone"
         assert fresh_dec.reason_code == "newer_matched_flood_observation"
+        proof = fresh_dec.snapshot["operational_provenance"]
+        assert proof["geometry_sha256"] == initial_provenance["geometry_sha256"]
+        assert proof["binding"]["observed_at"] != initial_provenance["binding"]["observed_at"]
+        assert proof["binding"]["evidence_kind"] == "authoritative_current_incident"
+        assert db.get(NewsClaimDecision, initial_decision_id).snapshot["operational_provenance"] == initial_provenance
         zone = db.get(FloodAvoidanceZone, zone_id)
         assert zone.expires_at > initial_expiry
         assert zone.expires_at == fresh_dec.expires_at
@@ -589,3 +623,742 @@ def test_observation_refresh_extends_active_zone_expiry(publication_factory):
         assert sup_link is not None
         assert sup_link.relation == "supported"
 
+
+OPERATIONAL_POLYGON = {
+    "type": "Polygon",
+    "coordinates": [[[121.070, 14.580], [121.071, 14.580], [121.071, 14.581],
+                     [121.070, 14.581], [121.070, 14.580]]],
+}
+
+
+def activation(factory, case_id, **changes):
+    from app.services.news_publication_service import activate_operational_footprint
+    options = dict(expected_revision=1, provenance_source="synthetic:operational-test", geometry_srid=4326,
+                   policy=POLICY, now=NOW, sources=SOURCES)
+    options.update(changes)
+    footprint = options.pop("footprint", OPERATIONAL_POLYGON)
+    options.setdefault("evidence_record_id", register_footprint(factory, case_id, footprint,
+        source=options["provenance_source"], checksum=options.get("provenance_checksum")))
+    with factory() as db, db.begin():
+        return activate_operational_footprint(db, case_id, footprint, **options).id
+
+
+def operational_counts(factory):
+    from app.models.news_publication import NewsClaimZoneLink
+    with factory() as db:
+        return tuple(db.scalar(select(func.count()).select_from(model))
+                     for model in (FloodEvent, FloodAvoidanceZone, NewsClaimZoneLink))
+
+
+@pytest.mark.parametrize("scenario,reason", [
+    ("expired", "observation_evidence_expired"),
+    ("changed_policy", "publication_policy_changed"),
+    ("unapproved_source", "unapproved_article_source"),
+    ("stale_revision", "stale_case_revision"),
+    ("unknown_depth", "operational_depth_not_verified"),
+    ("passable_all", "reported_passable_to_all_vehicles"),
+])
+def test_activation_rechecks_current_evidence_before_any_operational_write(publication_factory, scenario, reason):
+    from dataclasses import replace
+    factory = publication_factory
+    claim = {"depth": None} if scenario == "unknown_depth" else {}
+    if scenario == "passable_all":
+        claim["road_passability"] = "passable_all"
+    evaluation_id, case_id, _ = seed_evaluation(factory, **claim)
+    publish(factory, evaluation_id)
+    options = {}
+    if scenario == "expired":
+        options["now"] = NOW + timedelta(hours=2)
+    elif scenario == "changed_policy":
+        options["policy"] = replace(POLICY, fingerprint="b" * 64)
+    elif scenario == "unapproved_source":
+        options["sources"] = ()
+    elif scenario == "stale_revision":
+        options["expected_revision"] = 0
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match=reason):
+        activation(factory, case_id, **options)
+    assert operational_counts(factory) == before
+    with factory() as db:
+        assert db.get(NewsClaimCase, case_id).revision == 1
+
+
+@pytest.mark.parametrize("changed", ["geometry", "source", "checksum", "actor", "policy", "revision", "parent"])
+def test_activation_retries_bind_complete_payload(publication_factory, changed):
+    from copy import deepcopy
+    from dataclasses import replace
+    from shapely.geometry import Polygon
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    request_id = uuid4()
+    first_id = activation(factory, case_id, request_id=request_id)
+    assert activation(factory, case_id, request_id=request_id, now=NOW + timedelta(hours=3)) == first_id
+    before = operational_counts(factory)
+    options = {"request_id": request_id}
+    if changed == "geometry":
+        polygon = deepcopy(OPERATIONAL_POLYGON)
+        polygon["coordinates"][0][1][0] += 0.001
+        options["footprint"] = polygon
+    elif changed == "source":
+        options["provenance_source"] = "synthetic:different-source"
+    elif changed == "checksum":
+        options["provenance_checksum"] = "f" * 64
+    elif changed == "actor":
+        options["actor_user_id"] = staff_user(factory)
+    elif changed == "policy":
+        options["policy"] = replace(POLICY, fingerprint="b" * 64)
+    elif changed == "revision":
+        options["expected_revision"] = 2
+    else:
+        from shapely import set_srid
+        options["parent_boundary"] = set_srid(Polygon([(121.06,14.57),(121.08,14.57),(121.08,14.59),(121.06,14.59)]),4326)
+    with pytest.raises(NewsPublicationError, match="request_identity_conflict"):
+        activation(factory, case_id, **options)
+    assert operational_counts(factory) == before
+    with factory() as db:
+        assert db.get(NewsClaimCase, case_id).revision == 2
+        assert db.get(NewsClaimDecision, first_id).expires_at == NOW + timedelta(hours=1, minutes=55)
+
+
+def test_activation_default_request_is_stable_and_records_private_geometry_identity(publication_factory):
+    from app.crud.news_evaluation import canonical_sha256
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    first_id = activation(factory, case_id, provenance_checksum="c" * 64)
+    assert activation(factory, case_id, provenance_checksum="c" * 64, now=NOW + timedelta(minutes=5)) == first_id
+    with factory() as db:
+        row = db.get(NewsClaimDecision, first_id)
+        proof = row.snapshot["operational_provenance"]
+        assert proof["source"] == "synthetic:operational-test" and proof["source_checksum"] == "c" * 64
+        assert proof["geometry_sha256"] == canonical_sha256(OPERATIONAL_POLYGON)
+        from shapely.geometry import mapping
+        assert proof["parent_boundary_sha256"] == canonical_sha256(mapping(BOUNDARY))
+        assert proof["binding"]["article_id"] == row.snapshot["article_id"]
+        assert proof["binding"]["claim_sha256"] == row.snapshot["claim_sha256"]
+        assert "operational_provenance" not in public_projection(row, NOW).model_dump()
+
+
+def test_parallel_activation_retries_create_one_decision_and_one_zone(publication_factory):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    before = operational_counts(factory)
+    request_id, barrier = uuid4(), Barrier(2)
+    def worker():
+        barrier.wait(timeout=10)
+        return activation(factory, case_id, request_id=request_id)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first, second = pool.submit(worker), pool.submit(worker)
+        assert first.result(timeout=30) == second.result(timeout=30)
+    assert operational_counts(factory) == tuple(value + 1 for value in before)
+
+
+def test_activation_outer_rollback_leaves_no_partial_event_zone_links_or_revision(publication_factory):
+    from app.services.news_publication_service import activate_operational_footprint
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    before = operational_counts(factory)
+    request_id = uuid4()
+    record_id = register_footprint(factory, case_id, OPERATIONAL_POLYGON)
+    with pytest.raises(RuntimeError, match="interrupted activation"):
+        with factory() as db, db.begin():
+            activate_operational_footprint(db, case_id, OPERATIONAL_POLYGON, expected_revision=1,
+                provenance_source="synthetic:operational-test", policy=POLICY, now=NOW,
+                geometry_srid=4326, evidence_record_id=record_id,
+                sources=SOURCES, request_id=request_id)
+            raise RuntimeError("interrupted activation")
+    assert operational_counts(factory) == before
+    with factory() as db:
+        assert db.get(NewsClaimCase, case_id).revision == 1
+        assert db.scalar(select(NewsClaimDecision.id).where(NewsClaimDecision.request_id == request_id)) is None
+    activation(factory, case_id, request_id=request_id)
+
+
+@pytest.mark.parametrize("invalid_result,reason", [
+    ({"audit": None, "reason_code": "independent_audit_unavailable"}, "independent_audit_unavailable"),
+    ({"audit": {"outcome": "verified"}}, "invalid_independent_audit"),
+    ({"claim_sha256": "f" * 64}, "evaluation_identity_mismatch"),
+])
+def test_preexisting_active_label_cannot_bypass_current_stored_audit_validation(publication_factory, invalid_result, reason):
+    # Construct a bad upstream decision with the low-level append helper. Even
+    # an existing Active label must not substitute for valid current evidence.
+    from app.services.news_publication_service import _load, _snapshot, _write
+    from app.crud.news_publication import lock_case, reserve_decision_id
+    factory = publication_factory
+    valid_evaluation, _, _ = seed_evaluation(factory)
+    valid_decision, _ = publish(factory, valid_evaluation)
+    evaluation_id, case_id, _ = seed_evaluation(factory, evaluation_result_changes=invalid_result)
+    with factory() as db, db.begin():
+        evaluation, source, _, version, article, claim, _, failure = _load(db,evaluation_id,POLICY,NOW,SOURCES)
+        assert failure
+        case = lock_case(db, case_id)
+        decision_id = reserve_decision_id(db)
+        public = public_projection(db.get(NewsClaimDecision,valid_decision),NOW).model_copy(update={
+            "case_id": case_id, "decision_id": decision_id, "revision": 1, "source_url": article.canonical_url,
+        })
+        snapshot = _snapshot(source,version,claim,POLICY,"a"*64,evaluation_id=evaluation.id,public=public)
+        _write(db,case,decision_id,uuid4(),snapshot,NOW,state="active_alert",review="resolved",
+               observed=claim.event_time_resolved,expiry=public.expires_at)
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match=reason):
+        activation(factory,case_id)
+    assert operational_counts(factory) == before
+    with factory() as db:
+        assert db.get(NewsClaimCase,case_id).revision == 1
+
+
+@pytest.mark.parametrize("later_condition", ["active", "subsided"])
+def test_activation_historical_observation_barriers_survive_an_old_active_label(publication_factory, later_condition):
+    from app.services.news_publication_service import _load, _snapshot, _write
+    from app.crud.news_publication import lock_case, reserve_decision_id
+    factory = publication_factory
+    wet, _, article_id = seed_evaluation(factory)
+    original_id, _ = publish(factory, wet)
+    newer, _, _ = seed_evaluation(factory, article_id=article_id, condition=later_condition,
+                                  observed=NOW, body_suffix=" Newer source observation.")
+    publish(factory, newer)
+    old, old_case, _ = seed_evaluation(factory, article_id=article_id,
+                                      observed=NOW-timedelta(minutes=10), body_suffix=" Old captured revision.")
+    with factory() as db, db.begin():
+        evaluation, source, _, version, article, claim, _, failure = _load(db,old,POLICY,NOW,SOURCES)
+        assert failure is None
+        case = lock_case(db,old_case)
+        decision_id = reserve_decision_id(db)
+        public = public_projection(db.get(NewsClaimDecision,original_id),NOW).model_copy(update={
+            "case_id": old_case, "decision_id": decision_id, "revision": 1,
+            "observed_at": claim.event_time_resolved, "expires_at": claim.event_time_resolved+timedelta(hours=2),
+        })
+        snapshot = _snapshot(source,version,claim,POLICY,"a"*64,evaluation_id=evaluation.id,public=public)
+        _write(db,case,decision_id,uuid4(),snapshot,NOW,state="active_alert",review="resolved",
+               observed=claim.event_time_resolved,expiry=public.expires_at)
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match="source_observation_superseded"):
+        activation(factory,old_case)
+    assert operational_counts(factory) == before
+
+
+@pytest.mark.parametrize("operation", ["expire", "clear"])
+def test_activation_provenance_survives_linked_zone_lifecycle(publication_factory, operation):
+    factory = publication_factory
+    wet, case_id, article_id = seed_evaluation(factory)
+    publish(factory,wet)
+    activated_id = activation(factory,case_id)
+    with factory() as db:
+        activated = db.get(NewsClaimDecision,activated_id)
+        provenance = activated.snapshot["operational_provenance"]
+        zone_id = activated.snapshot["linked_zone_ids"][0]
+    if operation == "clear":
+        evaluation_id, _, _ = seed_evaluation(factory,article_id=article_id,condition="subsided",observed=NOW)
+    with factory() as db, db.begin():
+        if operation == "expire":
+            result = expire_case(db,case_id,now=NOW+timedelta(hours=2))
+        else:
+            result = clear_case_from_evaluation(db,case_id,evaluation_id,expected_revision=2,
+                request_id=uuid4(),policy=POLICY,now=NOW,sources=SOURCES)
+        assert result.snapshot["operational_provenance"] == provenance
+        assert not db.get(FloodAvoidanceZone,zone_id).is_active
+
+
+def staff_activation(factory, case_id, evaluation_id, **changes):
+    actor = changes.pop("actor_user_id", None) or staff_user(factory)
+    options = dict(request_id=uuid4(), expected_revision=1, operation="correct",
+                   reason="Reviewed synthetic operational footprint", evaluation_id=evaluation_id,
+                   operational_footprint=OPERATIONAL_POLYGON)
+    options["operational_footprint_srid"] = 4326
+    options.update(changes)
+    with factory() as db, db.begin():
+        return apply_staff_decision(db, case_id, NewsStaffDecisionRequest(**options),
+            actor_user_id=actor, policy=POLICY, now=NOW, sources=SOURCES).id
+
+
+@pytest.mark.parametrize("path", ["automatic", "staff"])
+@pytest.mark.parametrize("depth,access,expected_access", [
+    ("gutter", "unknown", None),
+    ("knee", "unknown", None),
+    ("waist", "unknown", None),
+    ("neck", "unknown", None),
+    ("gutter", "light_vehicle_closed", "Light vehicles prohibited"),
+    ("gutter", "impassable_all", "No vehicles"),
+    ("gutter", "passable_with_caution", "Passable with caution; vehicle types unspecified"),
+    ("gutter", "passable_unspecified", "Passability reported; vehicle types unspecified"),
+])
+def test_every_news_polygon_persists_verified_metadata(publication_factory, path, depth, access, expected_access):
+    from copy import deepcopy
+    from app.schemas.report import FloodAvoidanceZoneResponse
+    from app.services.flood_depth import get_flood_depth_measurement
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory, depth=depth, road_passability=access,
+                                                audit_access=access != "unknown")
+    publish(factory, evaluation_id)
+    second = deepcopy(OPERATIONAL_POLYGON["coordinates"])
+    for point in second[0]:
+        point[0] += 0.005
+    multi = {"type": "MultiPolygon", "coordinates": [OPERATIONAL_POLYGON["coordinates"], second]}
+    decision_id = (activation(factory, case_id, footprint=multi) if path == "automatic"
+                   else staff_activation(factory, case_id, evaluation_id, operational_footprint=multi))
+    measurement = get_flood_depth_measurement(depth)
+    with factory() as db:
+        decision = db.get(NewsClaimDecision, decision_id)
+        zone_ids = decision.snapshot["linked_zone_ids"]
+        assert len(zone_ids) == 2
+        events = set()
+        for zone_id in zone_ids:
+            zone = db.get(FloodAvoidanceZone, zone_id)
+            events.add(zone.event_id)
+            response = FloodAvoidanceZoneResponse.model_validate(zone)
+            assert response.severity == measurement.severity.value
+            assert response.depth == depth
+            assert response.depth_meters == measurement.meters
+            assert response.depth_inches == measurement.inches
+            assert response.depth_formatted == f"{measurement.display_label} • {measurement.formatted}"
+            assert response.passable_vehicles == expected_access
+            assert response.report_source == "news"
+            assert response.contributors[0].depth == depth
+            assert response.contributors[0].severity == measurement.severity.value
+            assert zone.curated_by_admin_id is None
+        assert len(events) == 1
+        event = db.get(FloodEvent, events.pop())
+        assert event.peak_severity == measurement.severity and event.peak_depth == depth
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("depth,access,expected", [
+    ("gutter", "unknown", {"walk": "passable", "motorcycle": "passable", "light": "passable", "heavy": "passable"}),
+    ("gutter", "light_vehicle_closed", {"walk": "passable", "motorcycle": "blocked", "light": "blocked", "heavy": "passable"}),
+    ("gutter", "impassable_all", {"walk": "passable", "motorcycle": "blocked", "light": "blocked", "heavy": "blocked"}),
+    ("waist", "passable_with_caution", {"walk": "cautious", "motorcycle": "blocked", "light": "blocked", "heavy": "blocked"}),
+    ("neck", "unknown", {"walk": "blocked", "motorcycle": "blocked", "light": "blocked", "heavy": "blocked"}),
+])
+async def test_public_zone_api_and_native_routing_read_news_metadata(publication_factory, monkeypatch, depth, access, expected):
+    import httpx
+    from types import SimpleNamespace
+    from sqlalchemy import literal
+    from app.core.database import get_db
+    from app.main import app
+    from app.crud import report as report_crud
+    from app.services import flood_routing_policy as routing
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory, depth=depth, road_passability=access,
+                                                audit_access=access != "unknown")
+    publish(factory, evaluation_id)
+    decision_id = activation(factory, case_id)
+    with factory() as db:
+        zone_id = db.get(NewsClaimDecision, decision_id).snapshot["linked_zone_ids"][0]
+    # Use the fixture observation clock in the real SQL expiry predicates.
+    monkeypatch.setattr(report_crud, "func", SimpleNamespace(now=lambda: literal(NOW)))
+    monkeypatch.setattr(routing, "func", SimpleNamespace(now=lambda: literal(NOW), ST_AsGeoJSON=func.ST_AsGeoJSON))
+    def database():
+        with factory() as db:
+            yield db
+    previous_overrides = dict(app.dependency_overrides)
+    app.dependency_overrides[get_db] = database
+    try:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            result = await client.get("/api/v1/reports/active-zones")
+        assert result.status_code == 200
+        public = next(item for item in result.json() if item["id"] == zone_id)
+        assert public["depth"] == depth and public["report_source"] == "news"
+        with factory() as db:
+            routed = next(zone for zone in routing.get_active_flood_zones(db) if zone.id == zone_id)
+            assert routed.severity == public["severity"]
+            assert routed.passable_vehicles == public["passable_vehicles"]
+            assert {profile: routing.zone_decision(profile, routed) for profile in expected} == expected
+        with factory() as db, db.begin():
+            expire_case(db, case_id, now=NOW+timedelta(hours=2))
+        with factory() as db:
+            assert zone_id not in {zone.id for zone in routing.get_active_flood_zones(db)}
+            assert zone_id not in {zone.id for zone in report_crud.get_active_avoidance_zones(db)}
+    finally:
+        app.dependency_overrides.clear()
+        app.dependency_overrides.update(previous_overrides)
+
+
+@pytest.mark.parametrize("depth,access,reason", [
+    (None, "unknown", "operational_depth_not_verified"),
+    ("gutter", "passable_all", "reported_passable_to_all_vehicles"),
+    ("gutter", "light_vehicle_closed", "operational_access_not_verified"),
+])
+def test_staff_geometry_cannot_invent_operational_measurements_or_access(publication_factory, depth, access, reason):
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory, depth=depth, road_passability=access)
+    publish(factory, evaluation_id)
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match=reason):
+        staff_activation(factory, case_id, evaluation_id)
+    assert operational_counts(factory) == before
+    with factory() as db:
+        assert db.get(NewsClaimCase, case_id).revision == 1
+
+
+@pytest.mark.parametrize("access", ["light_vehicle_closed", "impassable_all"])
+def test_automatic_zone_requires_independently_verified_known_access(publication_factory, access):
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory, road_passability=access)
+    publish(factory, evaluation_id)
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match="operational_access_not_verified"):
+        activation(factory, case_id)
+    assert operational_counts(factory) == before
+
+
+@pytest.mark.parametrize("end", ["reject", "defer", "reopen", "text_only", "clear", "expire"])
+def test_same_case_retained_zone_stays_active_until_its_final_support_ends(publication_factory, end):
+    from app.models.news_publication import NewsClaimZoneLink
+    from app.models.report import FloodEventStatus
+    factory = publication_factory
+    evaluation_id, case_id, article_id = seed_evaluation(factory, depth="waist")
+    publish(factory, evaluation_id)
+    original = staff_activation(factory, case_id, evaluation_id)
+    actor = staff_user(factory)
+    with factory() as db:
+        original_decision = db.get(NewsClaimDecision, original)
+        zone_id = original_decision.snapshot["linked_zone_ids"][0]
+        expiry = db.get(FloodAvoidanceZone, zone_id).expires_at
+    retained_request = NewsStaffDecisionRequest(request_id=uuid4(), expected_revision=2, operation="correct",
+        reason="Retain the same reviewed footprint", evaluation_id=evaluation_id, operational_zone_id=zone_id)
+    with factory() as db, db.begin():
+        retained = apply_staff_decision(db, case_id, retained_request, actor_user_id=actor, policy=POLICY,
+                                       now=NOW, sources=SOURCES)
+        retained_id = retained.id
+        zone = db.get(FloodAvoidanceZone, zone_id)
+        event_id = zone.event_id
+        assert zone.is_active and zone.expires_at == expiry and zone.depth == "waist"
+        assert db.get(FloodEvent, event_id).status == FloodEventStatus.ACTIVE
+        assert db.scalar(select(NewsClaimZoneLink.relation).where(NewsClaimZoneLink.decision_id == retained.id)) == "supported"
+    counts = operational_counts(factory)
+    with factory() as db, db.begin():
+        assert apply_staff_decision(db, case_id, retained_request, actor_user_id=actor, policy=POLICY,
+            now=NOW+timedelta(minutes=10), sources=SOURCES).id == retained_id
+        assert db.get(FloodAvoidanceZone, zone_id).expires_at == expiry
+    assert operational_counts(factory) == counts
+    if end == "clear":
+        cleared, _, _ = seed_evaluation(factory, article_id=article_id, condition="subsided", observed=NOW)
+    with factory() as db, db.begin():
+        ended_at = NOW+timedelta(hours=2) if end == "expire" else NOW
+        if end == "expire":
+            expire_case(db, case_id, now=ended_at)
+        elif end == "clear":
+            clear_case_from_evaluation(db, case_id, cleared, expected_revision=3, request_id=uuid4(),
+                                      policy=POLICY, now=NOW, sources=SOURCES)
+        else:
+            options = {"evaluation_id": evaluation_id} if end == "text_only" else {}
+            if end == "defer": options["deferred_until"] = NOW+timedelta(hours=1)
+            request = NewsStaffDecisionRequest(request_id=uuid4(), expected_revision=3,
+                operation="correct" if end == "text_only" else end, reason="End retained source support", **options)
+            if end == "reopen":
+                with pytest.raises(NewsPublicationError, match="claim_cannot_reopen"):
+                    apply_staff_decision(db, case_id, request, actor_user_id=actor, policy=POLICY, now=NOW, sources=SOURCES)
+                assert db.get(FloodAvoidanceZone, zone_id).is_active
+                apply_staff_decision(db, case_id, NewsStaffDecisionRequest(request_id=uuid4(), expected_revision=3,
+                    operation="reject", reason="Withdraw before reopening"), actor_user_id=actor,
+                    policy=POLICY, now=NOW, sources=SOURCES)
+                request = request.model_copy(update={"request_id": uuid4(), "expected_revision": 4})
+            apply_staff_decision(db, case_id, request, actor_user_id=actor, policy=POLICY, now=NOW, sources=SOURCES)
+        zone = db.get(FloodAvoidanceZone, zone_id)
+        assert not zone.is_active and zone.expires_at <= ended_at
+        assert db.get(FloodEvent, event_id).status == FloodEventStatus.ENDED
+        assert db.get(NewsClaimDecision, original).public_state == "active_zone"
+        assert db.get(NewsClaimDecision, retained_id).public_state == "active_zone"
+
+
+def test_replacement_footprint_ends_old_support_but_keeps_new_zone_active(publication_factory):
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    original = staff_activation(factory, case_id, evaluation_id)
+    with factory() as db:
+        old_id = db.get(NewsClaimDecision, original).snapshot["linked_zone_ids"][0]
+    replacement = staff_activation(factory, case_id, evaluation_id, expected_revision=2)
+    with factory() as db:
+        new_id = db.get(NewsClaimDecision, replacement).snapshot["linked_zone_ids"][0]
+        assert new_id != old_id
+        assert not db.get(FloodAvoidanceZone, old_id).is_active
+        assert db.get(FloodAvoidanceZone, new_id).is_active
+
+
+def test_parallel_same_case_retention_serializes_revision_and_preserves_zone(publication_factory):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    original = staff_activation(factory, case_id, evaluation_id)
+    actor = staff_user(factory)
+    with factory() as db:
+        zone_id = db.get(NewsClaimDecision, original).snapshot["linked_zone_ids"][0]
+    barrier = Barrier(2)
+    def worker():
+        barrier.wait(timeout=10)
+        try:
+            with factory() as db, db.begin():
+                result = apply_staff_decision(db, case_id, NewsStaffDecisionRequest(request_id=uuid4(),
+                    expected_revision=2, operation="correct", reason="Concurrent retention",
+                    evaluation_id=evaluation_id, operational_zone_id=zone_id), actor_user_id=actor,
+                    policy=POLICY, now=NOW, sources=SOURCES)
+                return result.public_state
+        except NewsPublicationError as exc:
+            return exc.code
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(worker) for _ in range(2)]
+        assert sorted(future.result(timeout=30) for future in futures) == ["active_zone", "stale_case_revision"]
+    with factory() as db:
+        assert db.get(FloodAvoidanceZone, zone_id).is_active
+        assert db.get(NewsClaimCase, case_id).revision == 3
+
+
+@pytest.mark.parametrize("replacement", [False, True])
+def test_retained_or_replaced_zone_changes_rollback_with_outer_transaction(publication_factory, replacement):
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    original = staff_activation(factory, case_id, evaluation_id)
+    actor = staff_user(factory)
+    with factory() as db:
+        zone_id = db.get(NewsClaimDecision, original).snapshot["linked_zone_ids"][0]
+    before = operational_counts(factory)
+    geometry = {"operational_footprint": OPERATIONAL_POLYGON, "operational_footprint_srid": 4326} if replacement else {"operational_zone_id": zone_id}
+    with pytest.raises(RuntimeError, match="Interrupt support change"):
+        with factory() as db, db.begin():
+            apply_staff_decision(db, case_id, NewsStaffDecisionRequest(request_id=uuid4(), expected_revision=2,
+                operation="correct", reason="Rollback fixture", evaluation_id=evaluation_id, **geometry),
+                actor_user_id=actor, policy=POLICY, now=NOW, sources=SOURCES)
+            raise RuntimeError("Interrupt support change")
+    assert operational_counts(factory) == before
+    with factory() as db:
+        assert db.get(NewsClaimCase, case_id).revision == 2
+        assert db.get(FloodAvoidanceZone, zone_id).is_active
+
+
+def test_expired_zone_cannot_be_retained_as_current_coverage(publication_factory):
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+    original = staff_activation(factory, case_id, evaluation_id)
+    with factory() as db, db.begin():
+        zone_id = db.get(NewsClaimDecision, original).snapshot["linked_zone_ids"][0]
+        db.get(FloodAvoidanceZone, zone_id).expires_at = NOW
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match="invalid_operational_zone"):
+        staff_activation(factory, case_id, evaluation_id, expected_revision=2,
+                         operational_footprint=None, operational_zone_id=zone_id)
+    assert operational_counts(factory) == before
+
+
+@pytest.mark.parametrize("change,reason", [
+    ("no_catalog","operational_footprint_catalog_not_configured"),
+    ("no_record","unapproved_operational_footprint_record"),
+    ("source","operational_source_identity_mismatch"),
+    ("checksum","operational_source_identity_mismatch"),
+    ("geometry","operational_geometry_evidence_mismatch"),
+    ("article_id","operational_incident_identity_mismatch"),
+    ("input_sha256","operational_incident_identity_mismatch"),
+    ("claim_sha256","operational_incident_identity_mismatch"),
+    ("incident_identity","operational_incident_identity_mismatch"),
+    ("observed_at","operational_incident_identity_mismatch"),
+    ("city","operational_incident_identity_mismatch"),
+    ("barangay","operational_incident_identity_mismatch"),
+    ("missing_boundary","missing_parent_locality_boundary"),
+    ("missing_srid","unsupported_or_missing_geometry_srid"),
+])
+def test_automatic_footprint_requires_exact_server_approved_evidence(publication_factory, monkeypatch, change, reason):
+    import json
+    from copy import deepcopy
+    from tests.operational_footprint_fixtures import write_catalog
+    from app.services import operational_footprint_evidence_service as evidence_service
+    from app.services.news_publication_service import activate_operational_footprint
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory,evaluation_id)
+    record_id = register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+    directory = Path(os.environ["LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR"])
+    options = dict(geometry_srid=4326,evidence_record_id=record_id,provenance_source="synthetic:operational-test")
+    polygon = deepcopy(OPERATIONAL_POLYGON)
+    if change == "no_catalog": monkeypatch.delenv("LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR")
+    elif change == "no_record": options["evidence_record_id"] = "client-forged-current-authority"
+    elif change == "source": options["provenance_source"] = "official-current-flood"
+    elif change == "checksum": options["provenance_checksum"] = "f"*64
+    elif change == "geometry": polygon["coordinates"][0][1][0] += .001
+    elif change == "missing_srid": options["geometry_srid"] = None
+    elif change == "missing_boundary":
+        class NoBoundary(SyntheticLocalityProvider):
+            def locality_boundary(self,claim): return None
+        monkeypatch.setattr(evidence_service,"get_news_road_placement_provider", lambda: NoBoundary())
+    else:
+        records = json.loads((directory/"footprints.json").read_text())["records"]
+        records[0][change] = ({"article_id":999999,"input_sha256":"f"*64,"claim_sha256":"f"*64,
+            "incident_identity":"f"*64,"observed_at":NOW.isoformat(),"city":"City of Manila","barangay":"Unknown"}[change])
+        write_catalog(directory,records)
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError,match=reason):
+        with factory() as db, db.begin():
+            activate_operational_footprint(db,case_id,polygon,expected_revision=1,policy=POLICY,now=NOW,
+                                           sources=SOURCES,**options)
+    assert operational_counts(factory) == before
+    with factory() as db: assert db.get(NewsClaimCase,case_id).revision == 1
+
+
+@pytest.mark.parametrize("actor_kind",["inactive","commuter","deleted"])
+def test_staff_footprint_preview_and_write_recheck_stored_actor(publication_factory,actor_kind):
+    factory = publication_factory
+    evaluation_id,case_id,_ = seed_evaluation(factory)
+    publish(factory,evaluation_id)
+    actor = staff_user(factory)
+    with factory() as db,db.begin():
+        user = db.get(User,actor)
+        if actor_kind == "inactive": user.is_active = False
+        elif actor_kind == "deleted": user.deleted_at = NOW
+        else:
+            role = db.scalar(select(Role).where(Role.name == "Commuter"))
+            if role is None:
+                role = Role(name="Commuter",permissions={"reports":"full"})
+                db.add(role); db.flush()
+            user.role_id = role.id
+    request = NewsStaffDecisionRequest(request_id=uuid4(),expected_revision=1,operation="correct",
+        reason="Attempt fixture review",evaluation_id=evaluation_id,operational_footprint=OPERATIONAL_POLYGON,
+        operational_footprint_srid=4326)
+    before = operational_counts(factory)
+    for method in (preview_staff_decision,apply_staff_decision):
+        with pytest.raises(NewsPublicationError,match="unauthorized_footprint_review") as caught:
+            with factory() as db,db.begin():
+                method(db,case_id,request,actor_user_id=actor,policy=POLICY,now=NOW,sources=SOURCES)
+        assert caught.value.status_code == 403
+    assert operational_counts(factory) == before
+
+
+@pytest.mark.parametrize("valid",[False,True])
+def test_staff_preview_and_submit_share_containment_checks(publication_factory,valid):
+    from copy import deepcopy
+    factory = publication_factory
+    evaluation_id,case_id,_ = seed_evaluation(factory)
+    publish(factory,evaluation_id)
+    actor = staff_user(factory)
+    polygon = deepcopy(OPERATIONAL_POLYGON)
+    if not valid:
+        for point in polygon["coordinates"][0]: point[0] += .0295
+    request = NewsStaffDecisionRequest(request_id=uuid4(),expected_revision=1,operation="correct",
+        reason="Explicit current staff review",evaluation_id=evaluation_id,operational_footprint=polygon,
+        operational_footprint_srid=4326)
+    before = operational_counts(factory)
+    with factory() as db:
+        if valid:
+            preview = preview_staff_decision(db,case_id,request,actor_user_id=actor,policy=POLICY,now=NOW,sources=SOURCES)
+            assert preview.affects_routing and preview.public_state == "active_zone"
+        else:
+            with pytest.raises(NewsPublicationError,match="outside_parent_locality"):
+                preview_staff_decision(db,case_id,request,actor_user_id=actor,policy=POLICY,now=NOW,sources=SOURCES)
+    assert operational_counts(factory) == before
+    with factory() as db,db.begin():
+        if valid:
+            decision = apply_staff_decision(db,case_id,request,actor_user_id=actor,policy=POLICY,now=NOW,sources=SOURCES)
+            binding = decision.snapshot["operational_provenance"]["binding"]
+            assert binding["actor_user_id"] == actor and binding["record_id"] == str(request.request_id)
+            assert binding["evidence_kind"] == "staff_review" and binding["catalog_sha256"] is None
+        else:
+            with pytest.raises(NewsPublicationError,match="outside_parent_locality"):
+                apply_staff_decision(db,case_id,request,actor_user_id=actor,policy=POLICY,now=NOW,sources=SOURCES)
+
+
+def test_empty_staff_footprint_does_not_silently_become_text_correction(publication_factory):
+    factory = publication_factory
+    evaluation_id,case_id,_ = seed_evaluation(factory)
+    publish(factory,evaluation_id)
+    actor = staff_user(factory)
+    request = NewsStaffDecisionRequest(request_id=uuid4(),expected_revision=1,operation="correct",
+        reason="Invalid empty geometry",evaluation_id=evaluation_id,operational_footprint={},operational_footprint_srid=4326)
+    before = operational_counts(factory)
+    for method in (preview_staff_decision,apply_staff_decision):
+        with pytest.raises(NewsPublicationError,match="invalid_geometry_syntax"):
+            with factory() as db,db.begin():
+                method(db,case_id,request,actor_user_id=actor,policy=POLICY,now=NOW,sources=SOURCES)
+    assert operational_counts(factory) == before
+
+
+@pytest.mark.parametrize("change",["no_current_extent","different_extent","changed_depth","edited_zone"])
+def test_newer_article_cannot_renew_unsupported_old_footprint(publication_factory,change):
+    from copy import deepcopy
+    from geoalchemy2 import WKTElement
+    from shapely.geometry import shape
+    factory = publication_factory
+    evaluation_id,case_id,article_id = seed_evaluation(factory,observed=NOW-timedelta(minutes=30))
+    publish(factory,evaluation_id)
+    original = staff_activation(factory,case_id,evaluation_id)
+    with factory() as db:
+        old = db.get(NewsClaimDecision,original)
+        zone_id = old.snapshot["linked_zone_ids"][0]
+        original_snapshot = deepcopy(old.snapshot)
+    fresh,fresh_case,_ = seed_evaluation(factory,article_id=article_id,observed=NOW,
+                                        depth="waist" if change == "changed_depth" else "knee")
+    if change != "no_current_extent":
+        polygon = deepcopy(OPERATIONAL_POLYGON)
+        if change == "different_extent":
+            for point in polygon["coordinates"][0]: point[0] += .005
+        register_footprint(factory,fresh_case,polygon)
+    if change == "edited_zone":
+        with factory() as db,db.begin():
+            polygon = deepcopy(OPERATIONAL_POLYGON)
+            for point in polygon["coordinates"][0]: point[0] += .005
+            db.get(FloodAvoidanceZone,zone_id).geometry = WKTElement(shape(polygon).wkt,srid=4326)
+    refreshed,matched = publish(factory,fresh)
+    assert matched == case_id
+    with factory() as db:
+        decision = db.get(NewsClaimDecision,refreshed)
+        assert decision.public_state == "active_alert"
+        assert decision.reason_code == "newer_observation_footprint_unverified"
+        assert decision.snapshot["private_reason"] == "operational_footprint_refresh_unverified"
+        assert not decision.snapshot["public"]["affects_routing"]
+        assert decision.snapshot["public"]["display_geojson"] is None
+        assert not db.get(FloodAvoidanceZone,zone_id).is_active
+        assert db.get(NewsClaimDecision,original).snapshot == original_snapshot
+
+
+@pytest.mark.parametrize("change",["different_article","edited_geometry","legacy_proof"])
+def test_existing_zone_id_does_not_substitute_for_bound_incident_evidence(publication_factory,change):
+    from copy import deepcopy
+    from geoalchemy2 import WKTElement
+    from shapely.geometry import shape
+    factory = publication_factory
+    evaluation_id,case_id,_ = seed_evaluation(factory)
+    publish(factory,evaluation_id)
+    original = staff_activation(factory,case_id,evaluation_id)
+    with factory() as db,db.begin():
+        old = db.get(NewsClaimDecision,original)
+        zone_id = old.snapshot["linked_zone_ids"][0]
+        if change == "legacy_proof":
+            from app.crud.news_publication import lock_case, reserve_decision_id
+            from app.models.news_publication import NewsClaimZoneLink
+            from app.schemas.news_publication import NewsDecisionSnapshot
+            from app.services.news_publication_service import _write
+            existing = db.get(FloodAvoidanceZone,zone_id)
+            legacy = FloodAvoidanceZone(geometry=existing.geometry,event_id=existing.event_id,
+                is_active=True,expires_at=existing.expires_at,severity_override=existing.severity_override,
+                depth_override=existing.depth_override,passable_vehicles_override=existing.passable_vehicles_override)
+            db.add(legacy); db.flush()
+            zone_id = legacy.id
+            identity = reserve_decision_id(db)
+            saved = NewsDecisionSnapshot.model_validate(old.snapshot)
+            saved.operational_provenance.binding = None
+            saved.linked_zone_ids = [zone_id]
+            saved.public = saved.public.model_copy(update={"decision_id":identity,"revision":3})
+            fixture = _write(db,lock_case(db,case_id),identity,uuid4(),saved,NOW,
+                state="active_zone",review="resolved",reason="legacy_unbound_fixture",
+                observed=old.observed_at,expiry=old.expires_at)
+            db.add(NewsClaimZoneLink(decision_id=fixture.id,zone_id=zone_id,relation="created"))
+        elif change == "edited_geometry":
+            polygon = deepcopy(OPERATIONAL_POLYGON)
+            for point in polygon["coordinates"][0]: point[0] += .005
+            db.get(FloodAvoidanceZone,zone_id).geometry = WKTElement(shape(polygon).wkt,srid=4326)
+    revision = 3 if change == "legacy_proof" else 2
+    if change == "different_article":
+        evaluation_id,case_id,_ = seed_evaluation(factory)
+        publish(factory,evaluation_id)
+        revision = 1
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError,match="operational_zone_incident_unverified"):
+        staff_activation(factory,case_id,evaluation_id,expected_revision=revision,
+                         operational_footprint=None,operational_zone_id=zone_id)
+    assert operational_counts(factory) == before

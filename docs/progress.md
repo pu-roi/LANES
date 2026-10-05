@@ -1,14 +1,51 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 05, 2026, 7:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 10:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
 
-### October 5: Operational flood-zone integration & verification
+### October 5: Planner audit for the operational repair push
 
-- [x] **Operational Flood-Zone Integration Completed (October 05, 2026, 7:52 PM, Asia/Manila):**
+- [x] Reconcile all eight authoritative records with the completed BUG-107/108/109/110 repairs and the latest **398-check** verification. Update detailed geometry rules to full qualified containment and exact server approval; index current and historical evaluations. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Audit dependencies and migration state: existing declared libraries and existing JSONB/metadata columns cover the changes; no new model/migration/package. Disposable upgrades reached `d7e4b9a21c60`, and test databases were removed. Architectural decisions remain unchanged because this implements existing boundaries. Approved real current footprints, worker integration, desktop/mobile polygons and staging/PWA acceptance remain open. Commit/push is the next Git operation. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 5: BUG-110 trusted current footprint contract verified locally
+
+- [x] Require an approved exact current incident record or authenticated staff review, explicit SRID, full qualified locality coverage and all component identities. Reject caller labels, modeled classifications, missing assets and mismatched input/claim/observation/source/geometry. Preview and submit share the gates; legacy snapshots stay readable. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prevent unsupported perimeter renewal: current matching extent/components/metadata can refresh; missing or changed proof falls back to a source alert and withdraws unsupported prior links. Staff relinking verifies incident ownership and unchanged geometry/metadata. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] **398 distinct checks pass**: 200 targeted, 194 related and four event regressions across 18 suites. Existing upgrades reach `d7e4b9a21c60` in fresh disposable databases; final runs remove all four allocated databases. No schema/dependency, normal/cloud data, live provider, frontend, deployment or push change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Synchronize the delivery plan: BUG-110/Gate 1 contract is complete locally. No real current footprint catalog is provisioned; approved source provisioning, automatic worker and desktop/mobile map integration remain next. [Verification](evaluations/phase-36-trusted-footprint-contract.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 5: BUG-108/109 zone metadata and retained support verified
+
+- [x] Persist independently supported canonical depth/severity and audited access on every staff/automatic news polygon using existing zone metadata fields. Reject unknown depth, passable-to-all activation and unconfirmed known access. Decode contributor polygons for real public-zone responses; vehicle restrictions only tighten existing policy. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Count newly current same-case links during withdrawal; exact retention/retries preserve expiry. Verify final withdrawal/clearance/expiry, replacement, concurrent revision control, rollback and expired-zone rejection. Existing independent news/citizen support checks pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] **289 distinct checks pass**: 140 targeted plus 145 related auditor/evaluation/schema/presentation and four event checks. Native public HTTP/zone/routing reads use disposable PostGIS and fixture clocks. Existing upgrades reach `d7e4b9a21c60`; both final runs removed all allocated databases. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Synchronized current plans/records. BUG-110, real worker/map geometry integration and staging/PWA acceptance remain pending. No SQLAlchemy model/migration/dependency, normal/cloud data, live/paid provider, frontend, deployment or push change. [Verification](evaluations/phase-36-zone-metadata-support-repair.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 5: Automatic news-zone delivery goal clarified
+
+- [x] Checked the active plan, earlier automatic plotting tasks and Git diff/history: automatic news-derived flood-zone polygons remain in scope. Earlier operational completion gates were reopened by the integration audit, not removed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Made the active delivery target explicit and separated prerequisite metadata/support/trusted-footprint repairs from automatic worker integration, desktop/mobile map polygons and full lifecycle/routing acceptance. These implementation tasks remain pending; this clarification adds no application code or new test result. [Active delivery plan](task_plan.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 5: BUG-107 activation and refresh repair verified locally
+
+- [x] Reused strict JSON audit loading and current source/policy/claim/freshness/clearance validation; added expected revision and complete geometry/provenance/actor/policy retry identity. Private immutable geometry attribution remains in existing decision JSONB and survives qualified refresh/clearance/expiry. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Replaced the unsupported activation operation with existing approved evaluate/correct operations; write the active decision before its support links. Parallel retries create one result and caller rollback leaves no partial event/zone/link/revision. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] **240 distinct checks passed**: 103 targeted (including both original failures and 23 new checks), 133 auditor/evaluation regressions and four event regressions. Disposable PostGIS upgrades reached `d7e4b9a21c60`; all allocated databases were removed. The event harness seeds its required fixture admin only in its disposable database. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Synchronized plans, bug record and operator boundaries. BUG-108/109/110, actual worker/frontend geometry integration and staging/physical PWA acceptance remain open. No SQLAlchemy model/migration/dependency, live provider request, normal/cloud data, deployment or Git push change. [Verification](evaluations/phase-36-bug107-activation-repair.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 5: Integration audit reopens operational completion
+
+- [x] Audited checkpoint `67cdffa` against the referenced handoff, active plans and actual collector/worker/API/frontend call chains. The explicit source-alert pipeline is connected, while the configured discovery job stops after extraction and operational activation has no runtime caller. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Fresh verification across eight suites: **78 passed, 2 failed**. Both new native operational activation tests crash after strict audit decoding is swallowed. Staff probes confirm waist-depth zones become medium/no-depth and correcting to the same zone deactivates retained coverage. Basic linked expiry/clearance and staff freshness/policy rejection work. Four disposable databases were created/removed; three full existing upgrades reached `d7e4b9a21c60`. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Reopened gates 1/3/4/5 and recorded BUG-107–BUG-110. Source-alert delivery remains complete locally; operational activation/metadata/support and trusted geometry integration must be fixed before staging/PWA acceptance. Historical test checkpoints below remain historical, with their operational completion claim superseded by this audit. No application source, schema/dependency, normal/cloud DB, paid request or release change. [Evidence and reproduction](evaluations/phase-36-integration-audit-20261005/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 5: Earlier operational implementation checkpoint (acceptance superseded)
+
+- [x] **Operational helper implementation recorded (October 05, 2026, 7:52 PM, Asia/Manila; completion/test claim superseded by the integration audit above):**
   - **Gate 1 (Operational Footprint Validation):** Implemented `validate_operational_footprint` in `operational_footprint_service.py` to strictly enforce GeoJSON/Shapely `Polygon`/`MultiPolygon` (SRID 4326), area >= 1 sqm, bounds check, non-bridging multi-part separation, and parent locality intersection.
   - **Gate 2 (Non-Committing Flood Event Helper):** Added non-committing transaction support (`commit=False`) to `flood_event_service.py` (`create_verified_event_with_zone`, `deactivate_zone_and_end_event_if_final`) using `db.flush()` for outer atomicity.
   - **Gate 3 (Atomic Publication Service Linking):** Implemented `activate_operational_footprint` and enhanced `apply_staff_decision` and `publish_completed_evaluation` in `news_publication_service.py` to atomically generate/support `FloodEvent` and `FloodAvoidanceZone`s linked via `NewsClaimZoneLink` (`created` or `supported`), with multi-part decomposition and observation refresh.

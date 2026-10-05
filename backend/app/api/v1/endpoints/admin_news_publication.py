@@ -73,12 +73,13 @@ def decide_claim(payload: NewsStaffDecisionRequest, background: BackgroundTasks,
 
 @router.post("/claims/{case_id}/decision-preview", response_model=NewsDecisionEffect)
 def preview_decision(payload: NewsStaffDecisionRequest, response: Response, case_id: int = Path(gt=0),
-                     db: Session = Depends(get_db), _staff: User = Depends(require_news_writer),
+                     db: Session = Depends(get_db), staff: User = Depends(require_news_writer),
                      policy: EvaluationPolicy = Depends(publication_policy)) -> NewsDecisionEffect:
     from app.services.news_publication_service import preview_staff_decision
     response.headers["Cache-Control"] = "no-store"
     try:
-        return preview_staff_decision(db, case_id, payload, policy=policy, now=publication_read_clock())
+        return preview_staff_decision(db, case_id, payload, actor_user_id=staff.id,
+                                      policy=policy, now=publication_read_clock())
     except NewsPublicationError as exc:
         raise HTTPException(exc.status_code, {"code": exc.code, "current_revision": exc.revision}) from exc
     except (SQLAlchemyError, ValueError) as exc:

@@ -71,6 +71,32 @@ class PublicNewsAlertPage(NewsPublicationModel):
     as_of: datetime
 
 
+class OperationalFootprintBinding(NewsPublicationModel):
+    evidence_kind: Literal["authoritative_current_incident", "staff_review"]
+    record_id: str = Field(min_length=1, max_length=200)
+    actor_user_id: int | None = Field(default=None, gt=0)
+    article_id: int = Field(gt=0)
+    input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    claim_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    incident_identity: str = Field(pattern=r"^[0-9a-f]{64}$")
+    observed_at: datetime
+    city: str = Field(min_length=1, max_length=200)
+    barangay: str | None = Field(default=None, max_length=200)
+    srid: Literal[4326]
+    boundary_revision: str = Field(min_length=1, max_length=300)
+    component_sha256: list[str] = Field(min_length=1, max_length=25)
+    catalog_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+
+
+class OperationalFootprintProvenance(NewsPublicationModel):
+    """Private server-approved binding; legacy unbound attribution stays readable."""
+    source: str = Field(min_length=1, max_length=500)
+    source_checksum: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    geometry_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    parent_boundary_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    binding: OperationalFootprintBinding | None = None
+
+
 class NewsDecisionSnapshot(NewsPublicationModel):
     schema_version: Literal["news-publication-v1"] = "news-publication-v1"
     request_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -93,6 +119,7 @@ class NewsDecisionSnapshot(NewsPublicationModel):
         "staff_reviewed_footprint",
     ] = "operational_geometry_not_verified"
     linked_zone_ids: list[int] = Field(default_factory=list)
+    operational_provenance: OperationalFootprintProvenance | None = None
 
 
 class NewsStaffDecisionRequest(NewsPublicationModel):
@@ -105,6 +132,7 @@ class NewsStaffDecisionRequest(NewsPublicationModel):
     deferred_until: datetime | None = None
     operational_zone_id: int | None = Field(default=None, gt=0)
     operational_footprint: dict | None = None
+    operational_footprint_srid: Literal[4326] | None = None
 
     @field_validator("deferred_until")
     @classmethod

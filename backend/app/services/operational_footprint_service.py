@@ -7,8 +7,13 @@ buffer guesses are rejected.
 """
 from __future__ import annotations
 
-import hashlib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
+from math import isfinite
+
+from shapely import get_coordinates, get_srid
+
+from app.crud.news_evaluation import canonical_sha256
+from app.schemas.news_publication import OperationalFootprintProvenance
 from typing import Any
 
 from shapely.errors import ShapelyError
@@ -30,26 +35,16 @@ class OperationalFootprintValidation:
     provenance_checksum: str | None = None
 
 
-def validate_operational_footprint(
+def validate_operational_shape(
     geometry_input: Any,
     *,
-    provenance_source: str | None = None,
-    provenance_checksum: str | None = None,
     parent_boundary: BaseGeometry | None = None,
-    allow_unverified: bool = False,
+    geometry_srid: int | None = None,
 ) -> OperationalFootprintValidation:
-    """Validate a candidate footprint against the operational flood-zone contract.
+    """Check declared WGS84 shape, topology, area and full parent containment.
 
-    Enforces:
-    1. Input must be present and parseable as GeoJSON or Shapely geometry.
-    2. Geometry type must be Polygon or MultiPolygon (LineString / Point rejected).
-    3. Topology must be valid and non-empty.
-    4. Metric area must be non-zero (>= 1.0 m^2).
-    5. Coordinate bounds must be valid geographic coordinates (WGS84).
-    6. If a parent boundary is provided, the footprint must intersect it.
-    7. Unless allow_unverified is True, explicit provenance_source is required.
-    8. Disconnected parts in a MultiPolygon are split into distinct Polygon GeoJSONs
-       so callers can persist separate FloodAvoidanceZones without bridging gaps.
+    Valid shape alone is not approval. Preserve every disconnected component;
+    reject invalid/tiny parts rather than repairing, clipping or dropping them.
     """
     if geometry_input is None:
         return OperationalFootprintValidation(
@@ -61,6 +56,8 @@ def validate_operational_footprint(
         if isinstance(geometry_input, BaseGeometry):
             geom = geometry_input
         elif isinstance(geometry_input, dict):
+            if set(geometry_input) - {"type", "coordinates"}:
+                return OperationalFootprintValidation(False, "invalid_geometry_syntax")
             geom = shape(geometry_input)
         elif hasattr(geometry_input, "model_dump"):
             geom = shape(geometry_input.model_dump())
@@ -105,31 +102,28 @@ def validate_operational_footprint(
             geometry=geom,
         )
 
+    if type(geometry_srid) is not int or geometry_srid != 4326:
+        return OperationalFootprintValidation(False, "unsupported_or_missing_geometry_srid")
+    if isinstance(geometry_input, BaseGeometry) and get_srid(geom) != 4326:
+        return OperationalFootprintValidation(False, "geometry_srid_mismatch")
+    if geom.has_z or getattr(geom, "has_m", False):
+        return OperationalFootprintValidation(False, "unsupported_coordinate_dimensions")
+    if len(get_coordinates(geom)) > 10000:
+        return OperationalFootprintValidation(False, "operational_geometry_size_limit")
     area_sqm = float(metric_geometry(geom).area)
-    if area_sqm < 1.0:
+    if not isfinite(area_sqm) or area_sqm < 1.0:
         return OperationalFootprintValidation(
             is_eligible=False,
             reason_code="zero_or_negligible_area",
             geometry=geom,
             area_sqm=area_sqm,
         )
-
-    if not allow_unverified and not provenance_source:
-        return OperationalFootprintValidation(
-            is_eligible=False,
-            reason_code="missing_geometry_provenance",
-            geometry=geom,
-            area_sqm=area_sqm,
-        )
-
-    if parent_boundary is not None and not parent_boundary.is_empty:
-        if not parent_boundary.intersects(geom):
-            return OperationalFootprintValidation(
-                is_eligible=False,
-                reason_code="outside_parent_locality",
-                geometry=geom,
-                area_sqm=area_sqm,
-            )
+    if parent_boundary is not None:
+        if (not isinstance(parent_boundary, BaseGeometry) or parent_boundary.geom_type not in ("Polygon", "MultiPolygon")
+                or parent_boundary.is_empty or not parent_boundary.is_valid or get_srid(parent_boundary) != 4326):
+            return OperationalFootprintValidation(False, "invalid_parent_boundary")
+        if not parent_boundary.covers(geom):
+            return OperationalFootprintValidation(False, "outside_parent_locality")
 
     parts: list[dict[str, Any]] = []
     if geom.geom_type == "Polygon":
@@ -139,15 +133,46 @@ def validate_operational_footprint(
             if not part.is_empty and metric_geometry(part).area >= 1.0:
                 parts.append(mapping(part))
 
-    computed_checksum = provenance_checksum or hashlib.sha256(geom.wkb).hexdigest()
+    if len(parts) > 25:
+        return OperationalFootprintValidation(False, "operational_component_limit")
+    expected_count = 1 if geom.geom_type == "Polygon" else len(geom.geoms)
+    if len(parts) != expected_count:
+        return OperationalFootprintValidation(False, "zero_or_negligible_component_area")
+    computed_checksum = canonical_sha256(mapping(geom))
 
     return OperationalFootprintValidation(
         is_eligible=True,
-        reason_code="verified_operational_footprint",
+        reason_code="valid_operational_shape",
         geometry=geom,
         geojson=mapping(geom),
         polygon_parts=parts,
         area_sqm=area_sqm,
-        provenance_source=provenance_source,
         provenance_checksum=computed_checksum,
     )
+
+
+def validate_operational_footprint(geometry_input: Any, *, provenance_source: str | None = None,
+        provenance_checksum: str | None = None, parent_boundary: BaseGeometry | None = None,
+        allow_unverified: bool = False, geometry_srid: int | None = None,
+        trusted_provenance: OperationalFootprintProvenance | None = None) -> OperationalFootprintValidation:
+    """Only the server evidence service supplies trusted_provenance.
+
+    Client labels/checksums and the deprecated preview flag cannot approve a zone.
+    """
+    result = validate_operational_shape(geometry_input, geometry_srid=geometry_srid, parent_boundary=parent_boundary)
+    if not result.is_eligible:
+        return result
+    if trusted_provenance is None or trusted_provenance.binding is None:
+        return replace(result, is_eligible=False, reason_code=("unverified_geometry_provenance"
+            if provenance_source or allow_unverified else "missing_geometry_provenance"))
+    if parent_boundary is None:
+        return replace(result, is_eligible=False, reason_code="missing_parent_locality_boundary")
+    binding = trusted_provenance.binding
+    if (not trusted_provenance.source_checksum
+            or trusted_provenance.geometry_sha256 != canonical_sha256(result.geojson)
+            or trusted_provenance.parent_boundary_sha256 != canonical_sha256(mapping(parent_boundary))
+            or binding.component_sha256 != [canonical_sha256(part) for part in result.polygon_parts]
+            or binding.srid != geometry_srid):
+        return replace(result, is_eligible=False, reason_code="operational_geometry_evidence_mismatch")
+    return replace(result, reason_code="verified_operational_footprint",
+                   provenance_source=trusted_provenance.source, provenance_checksum=trusted_provenance.source_checksum)
