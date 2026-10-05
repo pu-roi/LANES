@@ -30,6 +30,8 @@ class BoundaryRecord(BaseModel):
     barangay: str = Field(min_length=1, max_length=200)
     psgc_code: str = Field(pattern=r"^[0-9]{9,10}$")
     geometry: dict
+    osm_relation_id: int | None = Field(default=None, gt=0)
+    source_url: str | None = Field(default=None, pattern=r"^https://", max_length=1000)
 
 
 class BoundaryCatalog(BaseModel):
@@ -42,6 +44,8 @@ class BoundaryCatalog(BaseModel):
     verified_at: datetime
     verified_by: str = Field(min_length=1, max_length=200)
     attribution: str = Field(min_length=1, max_length=1000)
+    source_classification: Literal["reviewed_source", "osm_community"] = "reviewed_source"
+    review_method: str | None = Field(default=None, min_length=1, max_length=1200)
     records: list[BoundaryRecord] = Field(min_length=1, max_length=2000)
 
 
@@ -73,6 +77,10 @@ class BarangayBoundaryProvider:
                 raise ValueError("boundary clock")
             locations = get_philippine_location_service()
             for record in catalog.records:
+                if catalog.source_classification == "osm_community" and (not catalog.review_method
+                        or record.osm_relation_id is None
+                        or record.source_url != f"https://www.openstreetmap.org/relation/{record.osm_relation_id}"):
+                    raise ValueError("boundary community provenance")
                 canonical = locations.normalize_barangay_name(record.barangay, record.city)
                 entries = locations.barangays.get((canonical or "").casefold(), [])
                 if not canonical or not any(e["psgc_code"] == record.psgc_code
@@ -104,6 +112,17 @@ class BarangayBoundaryProvider:
         if self.error or value is None or not city_boundary.covers(value[1]):
             return None
         return value[1]
+
+    def resolution_reason(self, city: str, barangay: str, city_boundary: BaseGeometry) -> str | None:
+        """Expose missing coverage separately from a checked-parent disagreement."""
+        if self.error:
+            return self.error
+        value = self.records.get((_city_key(city), normalize_name(barangay)))
+        if value is None:
+            return "missing_valid_barangay_boundary"
+        if not city_boundary.covers(value[1]):
+            return "barangay_boundary_parent_mismatch"
+        return None
 
 
 @lru_cache(maxsize=1)

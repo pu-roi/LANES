@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 05, 2026, 3:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 7:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
 
@@ -21,11 +21,11 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 - [Flood evidence lifecycle and duration estimation](plans/flood-evidence-lifecycle-and-duration-plan.md) — Metro Manila collection/plotting, Pasig evaluation, reviewed conditional proxy labels and pending prospective training export, conditional two-hour Unconfirmed fallback and model/storage/routing/release gates.
 
-- [News publication backend readiness contract](plans/news-publication-readiness-plan.md) — approved five-table storage tested locally; next auditor/evaluation work, claim continuity, transaction/API contracts, geometry/asset gates and remaining lifecycle policy.
+- [News publication backend readiness contract](plans/news-publication-readiness-plan.md) — approved five-table storage tested locally; delivered auditor/evaluation and source-alert lifecycle, claim continuity, transaction/API contracts, geometry/asset gates and remaining lifecycle policy.
 
 - [F4b monitoring telemetry implementation](plans/news-monitoring-telemetry-plan.md) — approved durable discovery/fallback history, tested local migration and remaining rollout/manual acceptance.
 
-- [Priority 5 publication, review, corrections, expiry and frontend plan](plans/news-publication-review-frontend-plan.md) — F1–F4 reading/monitoring implemented, F5 inspection delivered locally; backend publication readiness precedes F6/F7 and integrated release acceptance.
+- [Priority 5 publication, review, corrections, expiry and frontend plan](plans/news-publication-review-frontend-plan.md) — F1–F4 reading/monitoring implemented, F5 inspection delivered locally; F6 decisions/F7 source-alert visibility delivered locally; operational-zone and integrated release acceptance remain open.
 - [Flood event history design](plans/flood-event-history-design.md)
 - [Flood report merging plan](plans/flood-report-merging-plan.md)
 - [LiPAD & UP NOAH flood placement](plans/lipad-noah-flood-placement.md)
@@ -34,6 +34,10 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Automatic source-alert publication and lifecycle](evaluations/phase-36-news-publication-lifecycle.md) — atomic source alerts, supported refresh/clearance, historical supersession, finite Unconfirmed retention, staff controls and public desktop/mobile views; operational zones remain gated.
+
+- [Independent evaluation and spatial coverage](evaluations/phase-36-independent-evaluation-and-spatial-coverage.md) — provider-separated evidence audit, leased immutable evaluation queue, C5 relation coverage repair, twenty Pasig OSM community preview polygons and remaining boundary/operational geometry gaps.
 
 - [Disconnected news placement](evaluations/phase-36-disconnected-news-placement.md) — local v11 locality repair, exact fragments and transparent review auras; operational publication still pending.
 
@@ -82,6 +86,10 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Phase 36: Metro Manila OSM and NOAH coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md)
 
 ## Guides
+
+- [News publication/lifecycle operator guide](guides/news-publication-lifecycle.md) — explicit saved-article pipeline, current-policy gates, public/staff reads, retention, retries and rollout limitations.
+
+- [Independent news claim evaluation](guides/news-claim-evaluation.md) — explicit provider/model configuration, bounded seed/evaluate handoff, safe retries and no publication writes.
 
 - [Reviewed barangay boundary assets](guides/news-barangay-boundary-assets.md) — versioned polygon identity, checksum and coverage requirements.
 

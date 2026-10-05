@@ -51,7 +51,7 @@ def test_caution_cannot_auto_approve_even_when_audit_and_geometry_pass():
         event_time_resolved=now-timedelta(minutes=10), road_passability="passable_with_caution")
     location = RankedLocationCandidate(raw_place_name="Example Avenue", precision_level="road", resolved_city="City of Pasig",
         geometry_geojson={"type":"Polygon","coordinates":[]}, geometry_provenance="verified_segment", is_auto_approvable=True)
-    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True, place_confirmed=True, time_confirmed=True)
     service = HybridExtractionService()
     assert service.evaluate_claim_action(claim.model_copy(update={"road_passability":"unknown"}), audit, location, now)[0] == "auto_approved"
     action, reason = service.evaluate_claim_action(claim, audit, location, now)

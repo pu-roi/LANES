@@ -9,6 +9,7 @@ from shapely.geometry import box, mapping
 
 from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInput
 from app.services.news_road_placement_service import NewsRoadPlacementProvider
+from app.services.barangay_boundary_service import BarangayBoundaryProvider
 
 
 def ways() -> list[dict]:
@@ -28,7 +29,7 @@ def write_catalog(directory, road_ways=None, **changes):
     blob=gzip.compress(json.dumps(payload).encode(),mtime=0)
     (directory/"roads.json.gz").write_bytes(blob)
     (directory/"manifest.json").write_text(json.dumps(dict(catalog_sha256=hashlib.sha256(blob).hexdigest())))
-    return NewsRoadPlacementProvider(directory)
+    return NewsRoadPlacementProvider(directory, BarangayBoundaryProvider(directory / "unconfigured_barangays"))
 
 
 def claim(span="between Atok and Calamba Streets", **changes):

@@ -6,23 +6,17 @@ Forecast, negated, and subsided claims are suppressed from activation.
 
 from __future__ import annotations
 
-import json
-import logging
-import os
-import re
+from dataclasses import replace
 from datetime import datetime, timedelta, timezone
-from typing import Any, Literal, Optional
+from typing import Literal, Optional
 
 import httpx
 
 from app.schemas.news_extraction import (
-    CanonicalDepth,
     ExtractedClaim,
-    FloodCondition,
     LLMAuditResult,
     NewsArticleExtractorInput,
     NewsExtractionResult,
-    PlaceType,
     RankedLocationCandidate,
 )
 from app.services.nationwide_geometry_service import (
@@ -37,14 +31,14 @@ from app.services.taglish_extraction_service import (
     extract_taglish_flood_facts,
 )
 
-logger = logging.getLogger(__name__)
+from app.services.news_claim_auditor import AuditorConfig, NewsClaimAuditor
 
 ExtractionMode = Literal["ensemble", "rules_only", "auditor_only"]
 MAX_AUTO_ACTIVATION_AGE = timedelta(hours=12)
 
 
 class HybridExtractionService:
-    """Orchestrates multi-tier extraction, Gemini 1.5 Flash verification, and nationwide geometry generation."""
+    """Orchestrates rules extraction, independent evidence audit and preview geometry."""
 
     def __init__(
         self,
@@ -53,151 +47,41 @@ class HybridExtractionService:
     ) -> None:
         self.location_service = location_service or get_philippine_location_service()
         self.geometry_service = geometry_service or get_nationwide_geometry_service()
-        self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY", "")
-        self.gemini_api_key = os.getenv("GEMINI_API_KEY", "")
+        auditor_config = AuditorConfig.from_environment()
+        self.openrouter_api_key = auditor_config.openrouter_api_key
+        self.gemini_api_key = auditor_config.gemini_api_key
 
     async def audit_claim_with_llm(
         self,
         claim: ExtractedClaim,
-        context_text: str,
+        context_text: str | NewsArticleExtractorInput,
         client: Optional[httpx.AsyncClient] = None,
     ) -> LLMAuditResult:
-        """Invoke Gemini 1.5 Flash strictly in a Supporting / Auditor role to double-check candidate claims.
+        """Compatibility projection of the complete independent evidence audit.
 
-        The LLM does NOT discover claims from scratch; it inspects the primary pipeline's
-        candidate and determines whether the active flood, depth, and road are verified.
+        Durable evaluations call NewsClaimAuditor directly after extraction commits.
+        A text-only legacy caller has no fabricated source timestamps or identity.
         """
-        api_key = self.openrouter_api_key or self.gemini_api_key
-
-        # Local rules cannot substitute for an independent confirmation.
-        if not api_key:
-            return self._deterministic_fallback_audit(claim, context_text)
-
-        prompt = f"""You are a safety verification auditor for the LANES Philippine Flood Disaster Intelligence System.
-The primary NLP detection engines (deterministic Taglish rules, 43k PSGC grounding, and NER) identified this candidate flood claim:
-- Extracted Location: "{claim.raw_place_name}"
-- Extracted Depth Gauge: "{claim.depth_canonical}" (Raw text: "{claim.depth_raw}")
-- Extracted Condition: "{claim.condition}"
-- Supporting Evidence Sentence: "{claim.evidence_sentence}"
-
-Your supporting role is strictly to double-check and verify this candidate claim:
-1. Is this claim explicitly supported by the text?
-2. WATER STATUS SAFETY AUDIT:
-   - Is water ACTIVELY FLOODED or RISING right now? -> status: "active" or "rising"
-   - Has the flood SUBSIDED / RECEDED ("humupa na", "hupa na", "subsided", "cleared", "bumaba na")? -> status: "subsided"
-   - Is this merely a WEATHER FORECAST or FLOOD ADVISORY ("posibleng bahain", "pinag-iingat", "asahan ang pagbaha")? -> status: "forecast"
-   - Is it NEGATED ("walang baha", "passable sa lahat")? -> status: "negated"
-3. DEPTH AUDIT:
-   - Does the text verify depth gauge "{claim.depth_canonical}"?
-
-Respond ONLY with valid JSON:
-{{
-  "is_confirmed": true,
-  "status_classification": "active" | "rising" | "receding" | "subsided" | "forecast" | "negated" | "unclear",
-  "depth_confirmed": true,
-  "depth_discrepancy_note": null,
-  "is_forecast": false,
-  "is_subsided": false,
-  "is_negated": false,
-  "audit_notes": "concise explanation"
-}}
-"""
-        should_close = False
-        if client is None:
-            client = httpx.AsyncClient(timeout=10.0)
-            should_close = True
-
-        try:
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            }
-            payload = {
-                "model": "google/gemini-flash-1.5",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,
-            }
-            resp = await client.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json=payload,
-            )
-            if resp.status_code == 200:
-                data = resp.json()
-                raw_content = data["choices"][0]["message"]["content"].strip()
-                raw_content = re.sub(r"^```(?:json)?\s*", "", raw_content)
-                raw_content = re.sub(r"\s*```$", "", raw_content)
-                parsed = json.loads(raw_content)
-                return LLMAuditResult(
-                    is_confirmed=parsed.get("is_confirmed") is True,
-                    status_classification=parsed.get("status_classification", "unclear"),
-                    depth_confirmed=parsed.get("depth_confirmed") is True,
-                    depth_discrepancy_note=parsed.get("depth_discrepancy_note"),
-                    is_forecast=parsed.get("is_forecast") is True,
-                    is_subsided=parsed.get("is_subsided") is True,
-                    is_negated=parsed.get("is_negated") is True,
-                    audit_notes=parsed.get("audit_notes", "External audit response parsed."),
-                )
-            logger.warning("Gemini audit returned HTTP %d; claim requires staff review", resp.status_code)
-        except Exception as exc:
-            logger.warning("Gemini audit unavailable; claim requires staff review: %s", exc)
-        finally:
-            if should_close:
-                await client.aclose()
-
-        return self._deterministic_fallback_audit(claim, context_text)
-
-    def _deterministic_fallback_audit(self, claim: ExtractedClaim, context_text: str) -> LLMAuditResult:
-        """Classify locally when external audit is unavailable, without confirming."""
-        lower_evidence = f"{claim.evidence_sentence} {context_text}".lower()
-
-        # Check subsidence / receded waters
-        subsided_terms = ("humupa na", "hupa na", "nagsubside", "subsided", "bumaba na ang tubig", "cleared")
-        if claim.condition == "subsided" or any(t in lower_evidence for t in subsided_terms):
-            return LLMAuditResult(
-                is_confirmed=False,
-                status_classification="subsided",
-                depth_confirmed=False,
-                is_forecast=False,
-                is_subsided=True,
-                is_negated=False,
-                audit_notes="Local rules classified water as subsided; independent audit unavailable.",
-            )
-
-        # Check forecast / prediction
-        forecast_terms = ("posibleng bahain", "maaaring bumaha", "asahan ang pagbaha", "pinag-iingat sa baha", "flood advisory", "forecast")
-        if claim.is_forecast or any(t in lower_evidence for t in forecast_terms):
-            return LLMAuditResult(
-                is_confirmed=False,
-                status_classification="forecast",
-                depth_confirmed=False,
-                is_forecast=True,
-                is_subsided=False,
-                is_negated=False,
-                audit_notes="Local rules classified this as a forecast; independent audit unavailable.",
-            )
-
-        # Check negation
-        if claim.is_negated or "walang baha" in lower_evidence or "passable sa lahat" in lower_evidence:
-            return LLMAuditResult(
-                is_confirmed=False,
-                status_classification="negated",
-                depth_confirmed=False,
-                is_forecast=False,
-                is_subsided=False,
-                is_negated=True,
-                audit_notes="Local rules classified this as negated; independent audit unavailable.",
-            )
-
-        # Active observed flood with confirmed depth
+        article = context_text if isinstance(context_text, NewsArticleExtractorInput) else NewsArticleExtractorInput(
+            article_id=0, canonical_url="", publisher="", title="", article_text=context_text,
+        )
+        config = replace(AuditorConfig.from_environment(), openrouter_api_key=self.openrouter_api_key,
+                         gemini_api_key=self.gemini_api_key)
+        result = await NewsClaimAuditor(config).audit(claim, article, client=client)
+        evidence = result.evidence
+        verified = result.outcome == "verified"
+        classification = evidence.status.classification if evidence else "unclear"
         return LLMAuditResult(
-            is_confirmed=False,
-            status_classification="rising" if claim.condition == "rising" else "active",
-            depth_confirmed=claim.depth_canonical is not None,
-            is_forecast=False,
-            is_subsided=False,
-            is_negated=False,
-            audit_notes="Local rules detected flooding; independent audit unavailable, so staff review is required.",
+            is_confirmed=verified,
+            status_classification=classification,
+            place_confirmed=verified and evidence.place.confirmed,
+            time_confirmed=verified and evidence.time.confirmed,
+            depth_confirmed=verified and evidence.depth.confirmed,
+            is_forecast=bool(evidence and evidence.status.confirmed and classification == "forecast"),
+            is_subsided=bool(evidence and evidence.status.confirmed and classification == "subsided"),
+            is_negated=bool(evidence and evidence.status.confirmed and classification == "negated"),
+            audit_notes=result.reason_code,
+            independent_audit=result,
         )
 
     def evaluate_claim_action(
@@ -243,6 +127,8 @@ Respond ONLY with valid JSON:
             return "flagged_review", "No clearly observed active flood for this place."
         if not audit_result or not audit_result.is_confirmed:
             return "flagged_review", "Independent auditor did not confirm this claim."
+        if not audit_result.place_confirmed or not audit_result.time_confirmed:
+            return "flagged_review", "Auditor did not confirm place and observation time."
         if audit_result.status_classification not in ("active", "rising") or not audit_result.depth_confirmed:
             return "flagged_review", "Auditor did not confirm active status and depth."
         if claim.depth_canonical is None or claim.event_time_resolved is None or claim.event_time_kind != "observation":
@@ -285,7 +171,7 @@ Respond ONLY with valid JSON:
 
         Step 1: Primary extraction via Tier 1 Deterministic Rules + PSGC Location Grounding.
         Step 2: Hierarchy resolution and preview geometry via NationwideGeometryService.
-        Step 3: Double-check verification via Gemini 1.5 Flash auditor (supporting role).
+        Step 3: Independent verification against complete immutable article evidence.
         Step 4: Fail-closed decision (suppressed or flagged_review until verification gates exist).
         """
         # Step 1: Run Primary Deterministic Extraction (Tier 1 Rules + PSGC)
@@ -307,7 +193,7 @@ Respond ONLY with valid JSON:
                 claim.uncertainty_reasons.append(f"action:{action}")
             return result_tier1
 
-        # Step 2 & 3: For each candidate claim, run Nationwide Geometry & Gemini 1.5 Flash Auditor
+        # Step 2 & 3: For each candidate claim, run preview geometry and independent audit
         processed_claims: list[ExtractedClaim] = []
 
         for claim in result_tier1.claims:
@@ -320,8 +206,8 @@ Respond ONLY with valid JSON:
             claim.island_group = ranked_geo.island_group
             claim.psgc_code = ranked_geo.psgc_code
 
-            # Invoke Gemini 1.5 Flash in Supporting / Auditor Role
-            audit_result = await self.audit_claim_with_llm(claim, article_text, client=http_client)
+            # Audit complete source evidence without changing durable extraction
+            audit_result = await self.audit_claim_with_llm(claim, article_input, client=http_client)
             claim.audit_result = audit_result
 
             # Apply auditor safety classifications
@@ -349,7 +235,7 @@ Respond ONLY with valid JSON:
             is_metadata_only=result_tier1.is_metadata_only,
             processed_text_length=result_tier1.processed_text_length,
             claims=processed_claims,
-            extractor_version="hybrid-ensemble-auditor-v2.0",
+            extractor_version="hybrid-ensemble-auditor-v3.0",
             errors=result_tier1.errors,
         )
 

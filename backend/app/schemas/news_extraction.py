@@ -7,6 +7,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 from app.schemas.news_placement import NewsPlacementPreview
+from app.schemas.news_audit import IndependentAuditResult
 
 
 CanonicalDepth = Literal[
@@ -52,7 +53,7 @@ class NewsArticleExtractorInput(BaseModel):
 
 
 class LLMAuditResult(BaseModel):
-    """Audit result from Gemini 1.5 Flash supporting double-check verification."""
+    """Backward-compatible hybrid projection; durable audits use strict evidence."""
 
     is_confirmed: bool
     status_classification: Literal["active", "rising", "receding", "subsided", "forecast", "negated", "unclear"] = "unclear"
@@ -62,6 +63,9 @@ class LLMAuditResult(BaseModel):
     is_subsided: bool = False
     is_negated: bool = False
     audit_notes: str = ""
+    place_confirmed: bool = False
+    time_confirmed: bool = False
+    independent_audit: IndependentAuditResult | None = None
 
 
 class RankedLocationCandidate(BaseModel):
@@ -112,6 +116,9 @@ class RoadPlacementEvidence(BaseModel):
     barangay_catalog_sha256: str | None = None
     barangay_source_id: str | None = None
     barangay_psgc_code: str | None = None
+    barangay_osm_relation_id: int | None = None
+    barangay_source_url: str | None = None
+    barangay_source_classification: Literal["osm_community", "reviewed_source"] | None = None
     barangay_boundary_status: Literal["not_required", "available", "unavailable"] = "not_required"
     candidates: list[RoadPlacementCandidate] = Field(default_factory=list, max_length=25)
     total_candidate_count: int = 0

@@ -43,12 +43,25 @@ def city_key(name: str) -> str:
     return name
 
 
+class CatalogRouteReference(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    relation_id: int = Field(gt=0)
+    reference: str = Field(min_length=1, max_length=100)
+
+
+def road_aliases(item: CatalogWay | IncompleteWay) -> tuple[str, ...]:
+    """Route membership is source evidence; the road suffix is a display form."""
+    references = [name for route in item.route_references for name in (route.reference, f"{route.reference} Road")]
+    return tuple(dict.fromkeys([*item.aliases, *references]))
+
+
 class CatalogWay(BaseModel):
     model_config = ConfigDict(extra="forbid")
     osm_id: int = Field(gt=0)
     name: str = Field(min_length=1, max_length=300)
     nodes: list[tuple[int, float, float]] = Field(min_length=2, max_length=10000)
     aliases: list[str] = Field(default_factory=list, max_length=100)
+    route_references: list[CatalogRouteReference] = Field(default_factory=list, max_length=100)
     bridge: str = ""
     tunnel: str = ""
     layer: str = ""
@@ -66,6 +79,7 @@ class IncompleteWay(BaseModel):
     osm_id: int = Field(gt=0)
     name: str = Field(min_length=1, max_length=300)
     aliases: list[str] = Field(default_factory=list, max_length=100)
+    route_references: list[CatalogRouteReference] = Field(default_factory=list, max_length=100)
 
 
 class RoadCatalog(BaseModel):
@@ -176,7 +190,7 @@ class NewsRoadPlacementProvider:
                     if node in node_positions and node_positions[node] != (lon, lat):
                         raise ValueError("conflicting OSM node coordinates")
                     node_positions[node] = (lon, lat)
-                ways.append(OSMRoadWay(item.osm_id, item.name, tuple(item.nodes), tuple(item.aliases),
+                ways.append(OSMRoadWay(item.osm_id, item.name, tuple(item.nodes), road_aliases(item),
                                        item.bridge, item.tunnel, item.layer))
             self.catalog, self.ways, self.cities, self.boundaries = catalog, tuple(ways), cities, boundaries
             for item in catalog.incomplete_ways:
@@ -209,7 +223,7 @@ class NewsRoadPlacementProvider:
         if not claim.canonical_road:
             return RoadPlacementEvidence(status="unresolved", reason="no_reported_road", **metadata)
         names = [claim.canonical_road, *(_span_cross_streets(claim.road_segment_raw) or ())]
-        if any(_way_matches(OSMRoadWay(w.osm_id,w.name,(),tuple(w.aliases)), name)
+        if any(_way_matches(OSMRoadWay(w.osm_id,w.name,(),road_aliases(w)), name)
                for w in self.catalog.incomplete_ways for name in names):
             return RoadPlacementEvidence(status="unresolved", reason="incomplete_named_road_coverage", **metadata)
         barangay_boundary = None
@@ -218,11 +232,13 @@ class NewsRoadPlacementProvider:
             barangay_boundary = self.barangay_boundary(claim)
             if barangay_boundary is None:
                 return RoadPlacementEvidence(status="unresolved",
-                    reason=self.barangays.error or "missing_valid_barangay_boundary", **metadata)
+                    reason=self.barangays.resolution_reason(claim.canonical_city or "", claim.canonical_barangay,
+                        self.boundaries[key]) or "missing_valid_barangay_boundary", **metadata)
             catalog = self.barangays.catalog
             record = self.barangays.records[(key, normalize_name(claim.canonical_barangay))][0]
             metadata.update(barangay_boundary_status="available", barangay_source_id=catalog.source_id,
-                            barangay_psgc_code=record.psgc_code)
+                            barangay_psgc_code=record.psgc_code, barangay_osm_relation_id=record.osm_relation_id,
+                            barangay_source_url=record.source_url, barangay_source_classification=catalog.source_classification)
         boundary = self.boundaries[key]
         if claim.road_segment_raw:
             selected: dict[int, OSMRoadWay] = {}

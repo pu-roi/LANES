@@ -1,9 +1,14 @@
 # Phase 36: Backend publication readiness assessment
 
-> **Last Updated:** October 05, 2026, 1:54 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 7:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Later October 5 continuation:** source-alert publication/lifecycle, F6 decisions and F7 desktop/mobile alert views are now implemented locally. This earlier assessment/placement record remains historical; operational zone activation and deployment are still gated. [Current lifecycle evaluation](phase-36-news-publication-lifecycle.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 > **Scope:** Source inspection, isolated mocked auditor probe and existing hybrid regressions. No application/model/migration changes, database writes, live model requests, cloud inspection/deployment or new browser acceptance.
 
 **Subsequent approved implementation:** after the review below, the developer approved the five additive publication tables. Models and migration `d7e4b9a21c60` are implemented and verified in disposable local PostGIS with 60 focused checks. The [storage evaluation](phase-36-news-publication-storage.md) records current delivery; pending-schema statements below describe the review before that approval. Auditor, decision/publication services and operational geometry remain unfinished. No production verification or cloud migration occurred. ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+**Subsequent independent evaluation delivery:** BUG-098 provider/context/structured-evidence defects are repaired locally and the approved storage now has immutable claim binding/leased evaluation services. External requests are explicitly configured and remain separate from extraction; no public decisions/zones are created. C5/Pasig route coverage and twenty Pasig OSM community preview polygons including Ugong are delivered locally, while omitted barangays/regions and operational footprints remain unsupported. The probes below retain their original assessment context. [Current verification](phase-36-independent-evaluation-and-spatial-coverage.md).
 
 ## October 5 conversation and source reconciliation
 

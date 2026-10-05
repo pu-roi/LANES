@@ -26,7 +26,36 @@ export interface ReviewMembersPage {
 }
 export interface ReviewDetail {
   key: string; source: "user_report" | "news_claim"; is_current_review: boolean;
-  report: FloodReport | null; news: NewsResultDetail | null; news_actions_available: false;
+  report: FloodReport | null; news: NewsResultDetail | null; news_actions_available: boolean;
+  news_case?: NewsClaimDetail | null;
+}
+export type NewsDecisionOperation = "correct" | "defer" | "reject" | "reopen" | "clear";
+export interface NewsDecisionSummary {
+  id: number; revision: number; operation: string; public_state: string; review_state: string;
+  reason_code: string; decided_at: string; observed_at: string | null; expires_at: string | null;
+}
+export interface NewsClaimDetail {
+  case_id: number; revision: number; allowed_actions: NewsDecisionOperation[];
+  current: NewsDecisionSummary | null; decisions: NewsDecisionSummary[];
+  evaluation_options: { evaluation_id: number; source_id: number; run_id: number; claim_ordinal: number;
+    condition: string; observed_at: string | null; outcome: string; reason_code: string }[];
+}
+export interface NewsDecisionRequest {
+  request_id: string; expected_revision: number; operation: NewsDecisionOperation; reason: string;
+  evaluation_id?: number; public_correction?: string; deferred_until?: string;
+}
+export interface NewsDecisionEffect {
+  public_state: string; review_state: string; status: "Active" | "Unconfirmed" | "Cleared" | null;
+  reason_code: string; affects_routing: false;
+}
+export function previewNewsDecision(caseId: number, request: NewsDecisionRequest) {
+  return apiClient.post<NewsDecisionEffect>(`/admin/news/claims/${caseId}/decision-preview`, request);
+}
+export function submitNewsDecision(caseId: number, request: NewsDecisionRequest) {
+  return apiClient.post<NewsDecisionSummary>(`/admin/news/claims/${caseId}/decisions`, request);
+}
+export function getNewsDecisionHistory(caseId: number) {
+  return apiClient.get<{ items: (NewsDecisionSummary & { request_id: string })[] }>(`/admin/news/claims/${caseId}/history?page_size=100`, { cache: "no-store" });
 }
 export interface HistoryMatch {
   source_year: string; source_record_no: string; barangay: string; street: string; landmark: string;

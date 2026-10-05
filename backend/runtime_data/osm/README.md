@@ -13,8 +13,26 @@ The catalog retains 66,129 complete named highway ways and 17 checked city
 relations. Three incomplete named ways remain explicit coverage gaps; a claim
 using one of those road/cross-street names cannot receive a bounded match.
 100,264 unnamed highways cannot be resolved by the named-road matcher.
-Barangay polygons are not supplied, so a claim requiring barangay containment
-stays unresolved. There is no automatic source refresh.
+The separate reviewed community-boundary catalog supplies 20 Pasig barangays,
+including Ugong, from this same OSM snapshot. Claims requiring missing barangay
+coverage stay unresolved. There is no automatic source refresh.
+
+The October 5 source-preserving rebuild additionally retains explicit road-route
+references for 5,257 named ways. Each reference records its OSM relation ID;
+bus-route names and inferred street-name equivalences are excluded. In particular,
+road relations `417210` and `14448353` identify the C-5 northbound/southbound
+members, including Pasig ways named E. Rodriguez Jr. Avenue. The provider indexes
+these source references without renaming the original roads. A local C5/Pasig
+coverage audit now finds 45 matching ways with positive road length inside the
+checked city boundary and 14 ambiguous road sections. No reported affected span,
+flooded width, operational footprint or routing permission follows from this.
+Catalog SHA-256: `5edd1284a00003ed2d97ff7d500f02b58d7f53521864e149311628df3d338386`.
+
+Inspect current assets without database or network access:
+
+```powershell
+.\venv\Scripts\python.exe -m scripts.audit_news_spatial_assets --city Pasig --road C5
+```
 
 To replace the snapshot, from `backend/` run:
 

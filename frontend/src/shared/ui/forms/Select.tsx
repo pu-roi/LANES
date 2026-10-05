@@ -28,23 +28,31 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
+    const [viewport, setViewport] = useState({ top: 0, bottom: 0, left: 0, width: 0, height: 0 });
 
     const selectedOption = options.find((opt) => opt.value === value);
 
     const updateRect = useCallback(() => {
-      if (containerRef.current) {
-        setDropdownRect(containerRef.current.getBoundingClientRect());
+      if (triggerRef.current) {
+        setDropdownRect(triggerRef.current.getBoundingClientRect());
+        const visual = window.visualViewport;
+        const top = visual?.offsetTop ?? 0;
+        setViewport({ top, bottom: top + (visual?.height ?? window.innerHeight), left: visual?.offsetLeft ?? 0,
+          width: visual?.width ?? window.innerWidth, height: window.innerHeight });
       }
     }, []);
 
     useEffect(() => {
       if (isOpen) {
-        updateRect();
         window.addEventListener("scroll", updateRect, true); // capture phase to handle inner scrolls
         window.addEventListener("resize", updateRect);
+        window.visualViewport?.addEventListener("resize", updateRect);
+        window.visualViewport?.addEventListener("scroll", updateRect);
         return () => {
           window.removeEventListener("scroll", updateRect, true);
           window.removeEventListener("resize", updateRect);
+          window.visualViewport?.removeEventListener("resize", updateRect);
+          window.visualViewport?.removeEventListener("scroll", updateRect);
         };
       }
     }, [isOpen, updateRect]);
@@ -84,6 +92,13 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       setIsOpen(false);
     };
 
+    const below = dropdownRect ? Math.max(0, viewport.bottom - dropdownRect.bottom - 8) : 0;
+    const above = dropdownRect ? Math.max(0, dropdownRect.top - viewport.top - 8) : 0;
+    const opensUp = below < Math.min(250, options.length * 40 + 10) && above > below;
+    const optionHeight = Math.max(0, Math.min(240, (opensUp ? above : below) - 10));
+    const dropdownWidth = Math.max(0, Math.min(dropdownRect?.width ?? 0, viewport.width - 16));
+    const dropdownLeft = Math.max(viewport.left + 8, Math.min(dropdownRect?.left ?? 0, viewport.left + viewport.width - dropdownWidth - 8));
+
     return (
       <div className={cn("flex flex-col gap-1 w-full", className)} ref={containerRef}>
         {label && (
@@ -97,7 +112,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
             ref={triggerRef}
             type="button"
             disabled={disabled}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => { if (!isOpen) updateRect(); setIsOpen(!isOpen); }}
             aria-label={ariaLabel || label}
             data-select-trigger="true"
             aria-expanded={isOpen && !disabled}
@@ -121,15 +136,16 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           {isOpen && !disabled && typeof document !== "undefined" && createPortal(
               <div
                 data-portal="select-dropdown"
-                className="fixed mt-1 rounded-lg border border-gray-100 bg-white shadow-xl overflow-hidden py-1"
+                className="fixed rounded-lg border border-gray-100 bg-white shadow-xl overflow-hidden py-1"
                 style={{
                   zIndex: 99999,
-                  top: dropdownRect ? dropdownRect.bottom : 0,
-                  left: dropdownRect ? dropdownRect.left : 0,
-                  width: dropdownRect ? dropdownRect.width : 0,
+                  top: opensUp ? undefined : dropdownRect ? dropdownRect.bottom + 4 : 0,
+                  bottom: opensUp && dropdownRect ? viewport.height - dropdownRect.top + 4 : undefined,
+                  left: dropdownLeft,
+                  width: dropdownWidth,
                 }}
               >
-                <div className="max-h-60 overflow-y-auto overflow-x-hidden scrollbar-thin">
+                <div className="overflow-y-auto overflow-x-hidden scrollbar-thin" style={{ maxHeight: optionHeight }}>
                   {options.map((option) => (
                     <button
                       key={option.value}

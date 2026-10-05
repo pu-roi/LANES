@@ -1,20 +1,21 @@
 "use client";
 
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, Layers3, MapPin } from "lucide-react";
+import { AlertTriangle, Layers3, MapPin, Newspaper } from "lucide-react";
 import { MapProvider, useMapContext } from "./MapContext";
 import RoutePanel from "@/features/routing/RoutePanel";
 import { ReportFab } from "@/features/hazards/ReportFab";
 import { FloodReportPanel } from "@/features/hazards/FloodReportPanel";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/shared/ui";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { SavePlacePanel } from "@/features/places/SavePlacePanel";
 import { Panel } from "@/shared/ui/layout";
+import { NewsAlertsPanel } from "@/features/news/NewsAlertsPanel";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const MapCanvas = dynamic(() => import("./MapCanvas"), { ssr: false });
@@ -54,11 +55,18 @@ const actionPillVariants = {
 function MapLayout() {
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNewsOpen, setIsNewsOpen] = useState(false);
+  const openNews = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: ["publicNewsAlerts"], refetchType: "none" });
+    setIsMenuOpen(false);
+    setIsNewsOpen(true);
+  }, [queryClient]);
+  const closeNews = useCallback(() => setIsNewsOpen(false), []);
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   
   const { isAuthenticated } = useAuth();
-  const { error } = useToast();
   
   const { 
     activePanel, 
@@ -83,6 +91,9 @@ function MapLayout() {
   } = useMapContext();
 
   const searchParams = useSearchParams();
+  const hasCompetingNewsPanel = isAnalyticsOpen || isSavePlacePanelOpen || isHazardPanelOpen || (isMobile && isReportPanelOpen && activePanel === "flood");
+
+  const showNews = isNewsOpen && !hasCompetingNewsPanel;
 
   useEffect(() => {
     if (pathname === "/analytics" || pathname === "/admin/analytics") {
@@ -160,6 +171,7 @@ function MapLayout() {
   return (
     <>
       <MapCanvas />
+      {pathname === "/map" && !isPickingOnMap && !hasCompetingNewsPanel && <NewsAlertsPanel isMobile={isMobile} open={showNews} onOpen={openNews} onClose={closeNews} />}
 
       {/* -- 1. Backdrop blur overlay ---------------------------------------- */}
       <AnimatePresence>
@@ -181,6 +193,7 @@ function MapLayout() {
       <AnimatePresence>
         {isMenuOpen && (
           <div className={`fixed ${pillBottomClass} left-4 z-[46] flex flex-col gap-3`}>
+            {pathname === "/map" && <motion.button type="button" variants={actionPillVariants} initial="hidden" animate="visible" exit="exit" onClick={openNews} className="flex items-center gap-3 rounded-full border border-gray-200/60 bg-white py-2.5 pl-3 pr-5 text-left font-semibold text-slate-800 shadow-2xl hover:bg-gray-50"><span className="shrink-0 rounded-full bg-slate-100 p-2 text-slate-600"><Newspaper className="h-4 w-4" aria-hidden="true" /></span><span className="text-sm tracking-tight">News alerts</span></motion.button>}
             {pathname === "/map" && is3DMode && (
               <motion.button
                 key="fab-action-pill-hazard"
@@ -283,10 +296,10 @@ function MapLayout() {
       )}
       {!pathname.startsWith('/admin') && pathname !== "/analytics" && (
         <>
-          <FloodReportPanel
+          <div className={showNews ? "hidden" : "contents"}><FloodReportPanel
             isOpen={isMobile ? (isReportPanelOpen && activePanel === "flood") : true}
             onClose={handleCloseFloodReport}
-          />
+          /></div>
           <RoutePanel />
         </>
       )}

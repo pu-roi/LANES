@@ -115,14 +115,24 @@ def browse_review_members(db: Session, key: str, *, page: int, page_size: int) -
         total=total, page=actual_page, page_size=page_size, pages=pages, group_reason=group.reason)
 
 
-def read_spatial_review(db: Session, key: str) -> SpatialReviewDetail | None:
+def read_spatial_review(db: Session, key: str, *, can_write_news: bool = False) -> SpatialReviewDetail | None:
     parts = key.split(":")
     source, record_id = parts[0], int(parts[1])
     index = int(parts[2]) if source == "news_claim" else -1
     current = is_current_review(db, source, record_id, index, review_clock())
     if source == "news_claim":
         news = read_news_result(db, record_id, index)
-        return SpatialReviewDetail(key=key, source=source, is_current_review=current, news=news) if news else None
+        if news is None:
+            return None
+        case = None
+        if db.get_bind().dialect.name == "postgresql":
+            from app.crud.news_publication_read import source_for_claim
+            from app.services.news_publication_read_service import read_news_claim_detail
+            binding = source_for_claim(db, record_id, index)
+            if binding is not None:
+                case = read_news_claim_detail(db, binding.case_id, can_write=can_write_news)
+        return SpatialReviewDetail(key=key, source=source, is_current_review=current, news=news,
+            news_case=case, news_actions_available=bool(case and case.allowed_actions))
     report = get_flood_report(db, record_id)
     return SpatialReviewDetail(key=key, source=source, is_current_review=current,
         report=FloodReportResponse.model_validate(report)) if report else None

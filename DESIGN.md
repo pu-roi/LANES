@@ -95,7 +95,7 @@ erDiagram
 
 ## 3. Spatial Data Pipeline
 
-The news pipeline targets automatic discovery, extraction, placement and gated zone activation. The flow below is the intended architecture; operational NOAH/DRRMO placement and automatic publication/activation remain unfinished. Citizen-report moderation keeps its existing staff approval workflow.
+The news pipeline targets automatic discovery, extraction, placement and gated zone activation. Bounded OSM/NOAH/Pasig DRRMO modeled placement previews, independent evidence auditing and automatic text-only source alerts are implemented locally, including qualified observation refresh, matched clearance, two-hour evidence expiry and staff/public interfaces. Operational flood-zone activation and routing remain gated by verified current affected geometry and release acceptance; modeled susceptibility and administrative boundaries do not establish that footprint. The flow below includes this remaining operational-zone target. Citizen-report moderation keeps its existing staff approval workflow. See the [current lifecycle verification](docs/evaluations/phase-36-news-publication-lifecycle.md).
 
 ```mermaid
 flowchart TD

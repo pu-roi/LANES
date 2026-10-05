@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.api import deps
+from app.api.news_publication_deps import may_write_news_claims
 from app.core.database import get_db
 from app.schemas.spatial_review import ReviewSource, SpatialReviewDetail, SpatialReviewPage, SpatialReviewMembersPage
 from app.services.spatial_review_service import browse_spatial_review, read_spatial_review, browse_review_members
@@ -40,7 +41,7 @@ def review_items(source: ReviewSource = "all", page: int = Query(1, ge=1), page_
 def review_detail(key: str = Path(pattern=r"^(user_report:[1-9][0-9]*|news_claim:[1-9][0-9]*:[0-9]+)$", max_length=100),
                   db: Session = Depends(get_db), _staff: object = Depends(deps.get_current_active_admin)) -> SpatialReviewDetail:
     try:
-        detail = read_spatial_review(db, key)
+        detail = read_spatial_review(db, key, can_write_news=may_write_news_claims(_staff))
     except SQLAlchemyError as exc:
         raise HTTPException(503, "Review evidence storage is unavailable.") from exc
     if detail is None:

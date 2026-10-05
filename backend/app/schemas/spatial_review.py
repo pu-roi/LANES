@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from app.schemas.news_results import NewsResultDetail
 from app.schemas.report import FloodReportResponse
+from app.schemas.news_publication import NewsClaimDetail
 
 ReviewSource = Literal["all", "user_reports", "news_claims"]
 
@@ -71,4 +72,5 @@ class SpatialReviewDetail(BaseModel):
     is_current_review: bool
     report: FloodReportResponse | None = None
     news: NewsResultDetail | None = None
-    news_actions_available: Literal[False] = False
+    news_actions_available: bool = False
+    news_case: NewsClaimDetail | None = None

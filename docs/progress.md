@@ -1,10 +1,35 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 05, 2026, 3:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 7:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### October 5: Pre-push documentation audit
+
+- [x] **Pre-push documentation checkpoint (October 05, 2026, 7:08 PM, Asia/Manila):** Senior-planner re-audit confirms **452 broad backend checks, 28 native PostGIS/actual JWT API checks and 16 distinct mocked desktop/mobile browser checks**, with final TypeScript/scoped lint, Python compilation, diff checks and primary screenshot review passed. Locally delivered source alerts, independent auditing, qualified refresh/clearance, two-hour Unconfirmed expiry, finite retention and F6/F7 interfaces are synchronized with current code. Operational flood-zone/routing activation, broader coverage, physical PWA/developer acceptance and deployment remain open. Existing approved migration head is `d7e4b9a21c60`; no new model/dependency/migration, paid provider call or normal/cloud DB write. User-authorized commit/push to `roi-branch` is the following Git step; this checkpoint does not claim push success. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### Phase 36: Automatic source alerts and evidence lifecycle (October 5, 2026)
+
+- [x] Automatic source-labeled **text-only news alerts**, atomic append-only decisions, supported observation refresh, matched clearance and two-hour evidence expiry are implemented locally. Read-time expiry becomes **Unconfirmed** even before maintenance; the default current feed retains it for 24 hours after expiry (configurable 1–72 hours), while safe historical detail remains available. Staff correction/defer/reject/reopen/clearance controls and desktop/mobile public-map News alerts are connected. Operational flood-zone activation/routing remains blocked by missing verified current affected polygons; OSM/NOAH/community boundaries remain placement evidence. No live deployment, paid provider request, new schema/dependency or normal/cloud database migration occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Revalidate independent audit/current policy, immutable article/claim hashes, approved sources and observation clocks under short publication locks. Append decision/case revision and a safe audit row atomically; UUID retries return their original outcome. Historical clearance survives reopening/defer/rejection; consumed evaluations cannot publish a duplicate source case. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Public source reads are bounded and private-note-free. Needs Review excludes current resolved/deferred-not-due identities by exact run/ordinal; staff decision preview is read-only. Existing citizen/manual support is preserved during news withdrawal. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Add bounded saved-article processing → seed → independent evaluation → publication/expiry CLI; discovery remains independent. No application database or production worker was executed. [Verification](evaluations/phase-36-news-publication-lifecycle.md), [runbook](guides/news-publication-lifecycle.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Current verification: **452 broad backend + 21 native lifecycle + 7 native read/actual JWT API checks** pass; **16 mocked desktop/mobile browser checks**, TypeScript/scoped ESLint, Python compilation and diff checks pass. Native databases upgraded the existing head and were removed. Shared Select menus now flip/cap against the visual viewport; existing location filters and Active Zone styles/actions remain verified. Primary public/staff screenshot review passes; developer acceptance, physical PWA and deployment remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### Phase 36: Independent evaluation and explicit C5 route coverage (October 5, 2026)
+
+- [x] Implement provider-separated independent auditing, full immutable article context, strict evidence offsets and structured place/status/time/depth/access. Explicit model/provider/config revision drives safe policy identity; credentials never fall back across providers. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Bind completed extraction to immutable cases/sources and leased evaluations in the approved schema; retries, lock ownership, safe failures and completion freshness remain separate from extraction. The bounded seed/evaluate CLI creates no decisions/publication/zones. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Enrich the existing September 27 OSM snapshot with explicit C5 route memberships: 45 Pasig ways/14 ambiguous sections. Deliver read-only coverage checks, explicit administrative-parent mismatch and offline immutable polygon provisioning. GeoRisk/Pasig atlas research yields no suitable official polygon source. Subsequent same-snapshot OSM community review packages twenty valid exact-PSGC Pasig polygons including Ugong, with automated-review/ODbL provenance; ten barangays and operational flood geometry remain unresolved. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Final combined verification: **449 backend checks across twenty suites and 20 native PostGIS checks pass**. The fresh disposable database completed the full migration chain to `d7e4b9a21c60` and was removed afterward. Mocked providers verify transport/evidence without live or paid requests. Normal application/cloud databases, frontend and dependencies remain unchanged; no new model/migration, public activation or deployment. [Current evaluation](evaluations/phase-36-independent-evaluation-and-spatial-coverage.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The real constructed C5/Ugong probe returns thirteen clipped candidates and 250 modeled fragments, eleven disconnected preview geometries and zero linework outside Ugong. The result remains `unique_ranked_prediction_not_verified_flood_extent`, with no current-flood or routing assertion.
+
+[Current verification and remaining work](evaluations/phase-36-independent-evaluation-and-spatial-coverage.md). No schema/dependency, frontend/public map, cloud deployment or live activation change.
 
 ### Phase 36: Senior planner and pre-push checkpoint (October 5, 2026)
 

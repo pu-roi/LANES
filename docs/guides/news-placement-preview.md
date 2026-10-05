@@ -1,6 +1,6 @@
 # News placement preview and NOAH catalog
 
-> **Last Updated:** October 04, 2026, 2:28 AM
+> **Last Updated:** October 05, 2026, 6:04 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Staff can inspect a completed immutable result without writes:
@@ -10,7 +10,13 @@ GET /api/v1/admin/news/results/{run_id}/{claim_index}/placement
 Authorization: Bearer <staff JWT>
 ```
 
-Review the ranked candidate, reported/predicted kind, alternatives, OSM/NOAH/history checksums, modeled overlap and status/reason. Original saved claim/run identity is separate from current placement revision. A proposed centerline does not prove flooded width. The local Spatial Operations Needs Review interface now opens current news exceptions with independent blue dashed suggestions; it starts with no candidate selected. Newly processed artifacts also expose the optional preview through existing extraction/details contracts. This does not deliver automatic publication. [Inspection verification](../evaluations/phase-36-needs-review-inspection.md).
+Review the ranked candidate, reported/predicted kind, alternatives, OSM/NOAH/history checksums, modeled overlap and status/reason. Original saved claim/run identity is separate from current placement revision. A proposed centerline does not prove flooded width. The local Spatial Operations Needs Review interface now opens current news exceptions with separate modeled road pieces using the existing transparent severity aura; it starts with no candidate selected. Newly processed artifacts also expose the optional preview through existing extraction/details contracts. This does not deliver automatic publication. [Inspection verification](../evaluations/phase-36-needs-review-inspection.md).
+
+## Current OSM and administrative coverage
+
+The local OSM catalog rebuild uses the same September 27 snapshot, adding source-stated C5 route relations rather than renaming roads. C5/Pasig now resolves 45 road ways and 14 ambiguous sections; these do not establish a flooded span. Run the read-only `python -m scripts.audit_news_spatial_assets --city Pasig --road C5` from `backend/` to inspect OSM/NOAH/history/boundary source identity and coverage. No network/database/public write occurs.
+
+Twenty Pasig OSM community polygons are bundled locally, including Ugong. The actual reviewer is the geometry agent performing automated source/PSGC/parent checks; no official/legal/human/field verification is implied. The placement response preserves `barangay_osm_relation_id`, `barangay_source_url` and `barangay_source_classification` beside source/catalog hashes. Ten Pasig barangays and broader regions remain unsupported. Missing polygons and parent-city containment mismatch remain explicit failures. Follow the [boundary asset guide](news-barangay-boundary-assets.md); no point fallback, synthetic polygon, hazard envelope or arbitrary road buffer supplies operational width. [Current verification](../evaluations/phase-36-independent-evaluation-and-spatial-coverage.md).
 
 ## Build exact analytical assets
 
@@ -36,7 +42,7 @@ Restart API/collector after changing the directory/catalog. Providers cache immu
 
 ## Runtime and limits
 
-Production needs versioned external assets/mount with the same directory/source identity for API and collector. No provisioning/deployment occurred. The roughly 90 MB output and raw ZIPs are outside Git/the API image. The frontend PNG overlay cannot replace analytical vectors.
+Production needs versioned external assets/mount with the same directory/source identity for API and collector/evaluator. No provisioning/deployment occurred. The roughly 90 MB output and raw ZIPs are outside Git/the API image. The frontend PNG overlay cannot replace analytical vectors.
 
 Missing/corrupt/oversized assets and out-of-extent queries remain unavailable evidence. Missing history/barangay boundaries stay explicit. Zero modeled overlap does not prove current safety. NOAH return periods are distinct from DRRMO historical years; neither supplies current observation time or depth.
 

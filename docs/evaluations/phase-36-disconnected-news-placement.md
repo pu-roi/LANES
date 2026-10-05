@@ -1,8 +1,13 @@
 # Phase 36: Locality repair and disconnected news placement
 
-> **Last Updated:** October 05, 2026, 2:56 AM
+> **Last Updated:** October 05, 2026, 7:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Later October 5 continuation:** source-alert publication/lifecycle, F6 decisions and F7 desktop/mobile alert views are now implemented locally. This earlier assessment/placement record remains historical; operational zone activation and deployment are still gated. [Current lifecycle evaluation](phase-36-news-publication-lifecycle.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Local code and preview UI implemented. Real barangay polygon provisioning, independent auditing, automatic activation/publication/expiry and production rollout remain pending.
+
+**Subsequent October 5 follow-up:** the [independent evaluation/spatial coverage implementation](phase-36-independent-evaluation-and-spatial-coverage.md) repairs C5 catalog coverage through explicit route relations in the same September 27 snapshot: 45 Pasig ways and 14 ambiguous sections. The earlier zero-section probe below remains historical evidence. Independent auditing/leased evaluation and twenty Pasig OSM community preview polygons, including Ugong, are now delivered locally. The current C5/Ugong probe yields thirteen clipped candidates/250 modeled fragments, eleven disconnected previews and no out-of-boundary linework. Missing barangays, operational flood footprints and publication/expiry remain pending; the original missing-boundary probe below is historical.
 
 ## Delivered behavior
 

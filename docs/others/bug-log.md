@@ -1,11 +1,107 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 05, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 7:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-106] Shared Select menu opens outside the available viewport
+
+- **Status:** Resolved; staff desktop/mobile checks and four existing filter/Active Zone regressions pass.
+- **Severity:** Medium — staff cannot reliably choose audited evidence or decisions near the screen bottom.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Actual browser verification of the new staff decision controls found that the shared portal dropdown extended below the visible screen instead of remaining reachable. Small/mobile viewports and lower form controls reproduce it.
+
+#### 2. Root Cause Analysis (RCA)
+
+The fixed portal always opened below the trigger and did not constrain its option-list height/position to available visual viewport space.
+
+#### 3. Solution & Architectural Strategy
+
+Measure visual viewport bounds and respond to viewport scroll/resize; choose upward opening when needed, cap menu height and keep horizontal bounds visible. Preserve the existing shared component, backend-owned options and independent report/zone behavior.
+
+#### 4. Files Modified / What Changed
+
+- `frontend/src/shared/ui/forms/Select.tsx`: viewport-aware dropdown flipping, bounds and height.
+- `frontend/tests/news-decisions.spec.ts`: staff decision/evidence flows on desktop/mobile.
+- Existing location-filter/Active Zone checks verify the shared-control/style behavior still works. [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md).
+
+### [BUG-105] Correcting original wet evidence can roll back a newer matched observation
+
+- **Status:** Resolved locally; two native lifecycle regressions pass in the final checkpoint.
+- **Severity:** High — current alert depth/status and observation expiry can regress to superseded evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After a newer qualified wet report refreshes a stable alert, correcting the original evidence on that same case could restore the older observation/depth. The same rollback remained possible after an administrative review transition.
+
+#### 2. Root Cause Analysis (RCA)
+
+The case/evaluation identity and clearance barrier were valid, but correction did not compare the proposed wet observation to prior append-only wet decisions. Current-state filtering can lose that newer observation after withdrawal/reopening.
+
+#### 3. Solution & Architectural Strategy
+
+`_wet_supersedes` consults same-article, exact-qualified-incident active wet history and blocks an older wet observation. Both automatic publication and shared preview/final correction apply the history barrier. Newer source evidence remains traceable and its accepted clock cannot be rolled back by an older correction.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_publication_service.py`: historical newer-wet query used at automatic and staff write gates.
+- `backend/tests/test_news_publication_lifecycle_postgres.py`: immediate same-case correction and correction after administrative rejection.
+- [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md): all 21 native lifecycle checks.
+
+### [BUG-104] Staff correction bypasses stable-case continuity after observation refresh
+
+- **Status:** Fixed locally; final native regression checkpoint recorded in the lifecycle evaluation.
+- **Severity:** High — duplicate or superseded Active source alerts can survive a correction path.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+An automatic newer qualified observation refreshes the stable target alert while its immutable source stays bound to a separate evidence case. Correcting that separate source case using the already-consumed evaluation could publish a second Active alert. Preview and final correction also differed in supersession checks.
+
+#### 2. Root Cause Analysis (RCA)
+
+Staff correction checked its source/case and current audit but did not use the incident serialization, evaluation-consumption and same-lineage continuity gates applied to automatic publication. `allowed_actions` only guides the interface and is not a write-boundary authorization check.
+
+#### 3. Solution & Architectural Strategy
+
+Share correction continuity/supersession validation between preview and final submission. Reject an evaluation consumed on another case and conflicting same-lineage public cases. Acquire incident advisory lock before the target case lock; retain expected revision and globally unique request identity. Staff clearance now hashes the complete validated request body, so changing any payload field under a reused UUID returns identity conflict. Supported evidence remains immutable; a retry cannot create another decision or extend expiry.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_publication_service.py`: `_correction_checks`, incident-before-case ordering and shared preview/final gates.
+- `backend/tests/test_news_publication_lifecycle_postgres.py`: native separate-case refresh/correction regressions.
+- [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md): final scope and checkpoint.
+
+### [BUG-103] Administrative review choices erase a matched-clearance barrier
+
+- **Status:** Fixed locally; final native regression checkpoint recorded in the lifecycle evaluation.
+- **Severity:** High — recently cleared flooding could be republished from an older wet observation.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Publish a supported wet observation, record a newer matched clearance, then reopen/reject/defer the case. While the old wet observation is still inside its two-hour horizon, a correction or separate replay could make it Active again despite the preserved clearance evidence.
+
+#### 2. Root Cause Analysis (RCA)
+
+Supersession checked only the latest decision. Nonpublic review decisions carry no observation clock and replace the latest clear operation, hiding its clock from automatic and staff correction guards.
+
+#### 3. Solution & Architectural Strategy
+
+`_clearance_supersedes` checks immutable historical clearance for the same article lineage and exact qualified incident identity. Wet evidence at/before that observed clearance remains superseded after any later administrative choice. Both automatic publication and shared preview/final correction use this barrier; no clearance history is rewritten.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_publication_service.py`: historical matched-clearance query and automatic/staff supersession gates.
+- `backend/tests/test_news_publication_lifecycle_postgres.py`: clear → reopen/reject/defer → old-wet correction regressions.
+- [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md): final native checks and operational limitations.
 
 ### [BUG-102] Git newline normalization breaks SHA-bound research replay
 
@@ -33,7 +129,7 @@ Extend `.gitattributes` with `-text` for the dated research CSV/JSON bundles and
 
 ### [BUG-101] City aliases escape as barangays and news previews hide hazard gaps
 
-- **Status:** Code/preview defects resolved locally; actual reviewed boundary provisioning and C5/Pasig catalog coverage remain pending.
+- **Status:** Code/preview defects, C5/Pasig route coverage and twenty-barangay Pasig community preview provisioning resolved locally; omitted administrative areas and operational footprints remain pending.
 - **Severity:** High — blocks qualified locality placement and misrepresents disconnected modeled road pieces.
 - **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -49,11 +145,14 @@ A shared alias map includes cities and barangays; normalization returned alias t
 
 Validate aliases against actual barangays/exact parents; retain qualified barangay context. Load reviewed checksummed polygons and clip only within supported administrative geometry. Return source-identified disconnected intersection fragments and dissolved modeled display geometry without bridging gaps. Reuse shared pending aura styles, with reported depth controlling severity and unknown depth staying neutral. Preserve read-only/current-flood/routing gates and prior extraction history; new processing identity is v11.
 
-**Remaining source-coverage limit:** C5/C-5 aliases now match, but all 85 indexed ways under those names lie outside the checked Pasig polygon. The constructed city-only C5 probe therefore returns `named_road_sections_not_found`; the Ugong probe returns `missing_valid_barangay_boundary`. Reviewed OSM alias/road coverage and real polygon assets must be provisioned before these cases resolve. A separate constructed C. Raymundo probe produced 25 candidates/141 modeled fragments, with disconnected display geometry on 13 candidates; this establishes preview behavior, not current flood confirmation or routing eligibility.
+**Earlier source-coverage probe (before route-relation enrichment):** C5/C-5 aliases now match, but all 85 indexed ways under those names lie outside the checked Pasig polygon. The constructed city-only C5 probe therefore returns `named_road_sections_not_found`; the Ugong probe returns `missing_valid_barangay_boundary`. Reviewed OSM alias/road coverage and real polygon assets must be provisioned before these cases resolve. A separate constructed C. Raymundo probe produced 25 candidates/141 modeled fragments, with disconnected display geometry on 13 candidates; this establishes preview behavior, not current flood confirmation or routing eligibility.
+
+**Subsequent coverage repair:** the same September 27 PBF now contributes explicit C5 road-route relations 417210/14448353, resolving 45 Pasig member ways and 14 ambiguous sections without renaming original roads. Read-only asset checks, parent mismatch reasons and immutable provisioning tooling are delivered; the later same-snapshot OSM community review packages twenty Pasig polygons including Ugong with explicit automated-review and ODbL provenance. Ten barangays remain omitted; no human/official/legal/field extent is claimed. GeoRisk requires a token and the old Pasig atlas lacks Ugong/has parent/licensing limits, so neither alternative was installed. The C5/Ugong probe has thirteen clipped candidates/250 modeled fragments, eleven disconnected previews and zero linework outside Ugong; no operational footprint is claimed. [Current verification](../evaluations/phase-36-independent-evaluation-and-spatial-coverage.md).
 
 #### 4. Files Modified / What Changed
 
 - Backend: `philippine_location_service.py`, `taglish_extraction_service.py`, new `barangay_boundary_service.py`/`placement_geometry_service.py`, road matching/context/placement/NOAH services, extraction/placement Pydantic contracts and processing version.
+- Coverage follow-up: `backend/scripts/build_news_osm_catalog.py`, bundled `runtime_data/osm/roads.json.gz`/`manifest.json`/README, `news_road_placement_service.py` and `barangay_boundary_service.py`; new `scripts/audit_news_spatial_assets.py`/`provision_news_barangay_catalog.py`/`build_news_barangay_catalog.py`, `runtime_data/barangay/` catalog/review/provisioning receipts and spatial-asset tests preserve explicit relation provenance, safe coverage failures and immutable provisioning.
 - Frontend: `reviewApi.ts`, `useNewsPlacementLayer.ts`, `NewsReviewEvidence.tsx`; browser fixtures now carry disconnected preview geometry.
 - Tests: extraction, new `test_barangay_placement.py`, placement regressions and existing spatial browser flows. 226 backend checks and 14 browser cases pass; TypeScript/lint pass. [Evaluation](../evaluations/phase-36-disconnected-news-placement.md).
 
@@ -111,25 +210,30 @@ No LANES application file was changed to repair Docker. Runtime folders `C:/User
 
 ### [BUG-098] Dormant news auditor uses the wrong credential provider and omits article context
 
-- **Status:** Investigating; reproduced offline, source fix pending
-- **Severity:** High if connected to automatic publication; current collector never invokes this auditor
+- **Status:** Resolved locally for independent auditing and leased evaluation; live provider/model acceptance and automatic publication remain pending.
+- **Severity:** High when connected to automatic publication; completed extraction remains independent.
 - **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 #### 1. Problem Description
 
-The independent audit can send a Google credential to OpenRouter and evaluate only the extracted sentence while missing article-wide clearance/conflict evidence. A mocked positive response is accepted without structured place/time confirmation. No live credential or provider request was used in reproduction; current publication remains unconnected.
+The old independent audit could send a Google credential to OpenRouter, inspect only one sentence and accept a positive response without structured place/time confirmation. It missed article-wide clearance/conflict evidence. Original reproduction used mocked transport; no live credential/request or publication was performed.
 
 #### 2. Root Cause Analysis (RCA)
 
-`HybridExtractionService.audit_claim_with_llm` selects `OPENROUTER_API_KEY or GEMINI_API_KEY`, always posts to the OpenRouter endpoint, and omits `context_text` from its prompt. `LLMAuditResult` covers status/depth but lacks explicit place/time evidence confirmation. The dormant prototype also lacks durable publication identity/expiry and invokes internally committing activation helpers; connect neither path before lifecycle safeguards exist.
+`HybridExtractionService.audit_claim_with_llm` selected `OPENROUTER_API_KEY or GEMINI_API_KEY`, always used the OpenRouter endpoint and omitted complete immutable article context. The legacy result lacked explicit place/time evidence. The dormant ingestion prototype also lacks durable publication identity/finite expiry and remains unsuitable for live activation.
 
 #### 3. Solution & Architectural Strategy
 
-Use provider-specific credentials/transport and a configured verified model. Supply bounded immutable article context as untrusted evidence beneath trusted system instructions; validate structured place/status/depth/time checks and evidence offsets. Persist evaluation identity and safe failures separately from rules extraction. Add fail-closed transport/context and transaction regressions before enabling publication. See [readiness contract](../plans/news-publication-readiness-plan.md) and [mock probe](../evaluations/phase-36-publication-readiness-audit.md#auditor-defects-reproduced-without-external-calls). Seven existing hybrid regressions pass but do not cover these defects.
+Delegate hybrid auditing to a dedicated adapter with explicitly configured provider/model/config revision, provider-specific credential transport and no credential fallback. Send complete bounded immutable article evidence beneath trusted instructions, validate strict place/status/time/depth/access dimensions and exact quote offsets, and keep modeled placement/status predictions out of independent evidence. Unavailable, malformed, conflicting and unsupported responses remain safe review/failure outcomes.
+
+Bind completed extraction using immutable input/claim hashes and ordinal identity, then evaluate through separate bounded seed/evaluate commands under leased ownership in the approved tables. External requests occur after lease commit; retries/config revision recovery preserve immutable failed history. Recheck freshness/admission at completion, surface safe errors and create no decisions, reports, zones or routing effects. [Verification](../evaluations/phase-36-independent-evaluation-and-spatial-coverage.md), [operator guide](../guides/news-claim-evaluation.md).
 
 #### 4. Files Modified / What Changed
 
-Documentation only: readiness plan/evaluation, task/progress/index, database proposal and this investigation record. `backend/app/services/hybrid_extraction_service.py`, `backend/app/schemas/news_extraction.py` and ingestion/event helpers are investigated source, not modified files. No schema, dependency, provider configuration or public write occurred.
+- `backend/app/services/news_claim_auditor.py`, `backend/app/schemas/news_audit.py`: provider adapter and strict independent evidence contract.
+- `backend/app/services/hybrid_extraction_service.py`, `backend/app/schemas/news_extraction.py`: safe delegation/projection; extraction stays independent.
+- `backend/app/crud/news_evaluation.py`, `backend/app/services/news_evaluation_service.py`, `backend/scripts/evaluate_news_claims.py`: immutable source binding, leased evaluation and explicit bounded handoff.
+- Auditor/evaluation/hybrid/passability/native PostgreSQL regressions exercise transport, evidence, concurrency, lost leases, retries/config recovery, admission and no public/domain writes. No new schema/dependency, endpoint, frontend integration or deployment.
 
 ---
 

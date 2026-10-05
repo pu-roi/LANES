@@ -20,12 +20,33 @@ from app.services.news_road_placement_service import DEFAULT_CATALOG_DIR, MAX_CA
 from scripts.audit_phase36_metro_spatial_coverage import AdminRelations, BoundaryWays, load_city_boundaries
 
 
-class NamedRoads(osmium.SimpleHandler):
+class RoadRoutes(osmium.SimpleHandler):
+    """Retain explicit road-route membership; bus routes are not road aliases."""
+
     def __init__(self) -> None:
+        super().__init__()
+        self.references: dict[int, list[dict]] = {}
+
+    def relation(self, relation: osmium.osm.Relation) -> None:
+        if relation.tags.get("type") != "route" or relation.tags.get("route") != "road":
+            return
+        references = [ref.strip() for ref in relation.tags.get("ref", "").split(";") if ref.strip()]
+        for member in relation.members:
+            if member.type != "w":
+                continue
+            for reference in references:
+                value = dict(relation_id=relation.id, reference=reference)
+                if value not in self.references.setdefault(member.ref, []):
+                    self.references[member.ref].append(value)
+
+
+class NamedRoads(osmium.SimpleHandler):
+    def __init__(self, route_references: dict[int, list[dict]] | None = None) -> None:
         super().__init__()
         self.ways: list[dict] = []
         self.unnamed_highways = 0
         self.incomplete_ways: list[dict] = []
+        self.route_references = route_references or {}
 
     def way(self, way: osmium.osm.Way) -> None:
         if "highway" not in way.tags:
@@ -37,12 +58,14 @@ class NamedRoads(osmium.SimpleHandler):
         aliases = [n.strip() for n in way.tags.get("alt_name", "").split(";") if n.strip()]
         if way.tags.get("name:en") and way.tags["name:en"] != name:
             aliases.append(way.tags["name:en"])
+        references = sorted(self.route_references.get(way.id, []), key=lambda value: (value["relation_id"], value["reference"]))
         if len(way.nodes)<2 or any(not node.location.valid() for node in way.nodes):
-            self.incomplete_ways.append(dict(osm_id=way.id,name=name,aliases=aliases))
+            self.incomplete_ways.append(dict(osm_id=way.id,name=name,aliases=aliases,route_references=references))
             return
         nodes = [(node.ref, node.lon, node.lat) for node in way.nodes]
         self.ways.append(dict(osm_id=way.id, name=name, nodes=nodes, aliases=aliases,
-            bridge=way.tags.get("bridge", ""), tunnel=way.tags.get("tunnel", ""), layer=way.tags.get("layer", "")))
+            bridge=way.tags.get("bridge", ""), tunnel=way.tags.get("tunnel", ""), layer=way.tags.get("layer", ""),
+            route_references=references))
 
 
 def validate_boundary_rings(pbf: Path) -> None:
@@ -68,7 +91,9 @@ def build_catalog(pbf: Path, output: Path) -> dict:
     if not snapshot_at:
         raise ValueError("OSM extract must identify its replication snapshot time")
     validate_boundary_rings(pbf)
-    roads = NamedRoads()
+    routes = RoadRoutes()
+    routes.apply_file(str(pbf), locations=False)
+    roads = NamedRoads(routes.references)
     roads.apply_file(str(pbf), locations=True)
     osm_digest = hashlib.sha256(pbf.read_bytes()).hexdigest()
     source_id = f"osm-ncr:{snapshot_at}:{osm_digest[:16]}"
@@ -88,6 +113,7 @@ def build_catalog(pbf: Path, output: Path) -> dict:
                    snapshot_at=snapshot_at, osm_sha256=osm_digest, named_ways=len(roads.ways),
                    unnamed_highways=roads.unnamed_highways, cities=len(boundaries),
                    incomplete_named_ways=len(roads.incomplete_ways),
+                   route_referenced_named_ways=sum(bool(way["route_references"]) for way in roads.ways),
                    compressed_bytes=len(compressed), expanded_bytes=len(raw))
     (output / "manifest.json").write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8")
     return summary

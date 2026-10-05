@@ -49,7 +49,7 @@ def test_conflicting_update_blocks_even_independently_verified_geometry():
         event_time_kind="observation",
         uncertainty_reasons=["contradictory_update"],
     )
-    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True, place_confirmed=True, time_confirmed=True)
     location = RankedLocationCandidate(
         raw_place_name="Araneta Avenue",
         resolved_city="Quezon City",
@@ -83,7 +83,7 @@ def test_caption_and_metadata_only_cannot_activate_even_with_verified_geometry()
         event_time_kind="observation",
         uncertainty_reasons=["photo_caption_only"],
     )
-    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True, place_confirmed=True, time_confirmed=True)
     location = RankedLocationCandidate(
         raw_place_name="UN Avenue",
         resolved_city="City of Manila",

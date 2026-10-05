@@ -8,6 +8,8 @@ from sqlalchemy.sql.selectable import Subquery
 
 from app.crud.news_results import readable_claim, readable_run, result_rows
 from app.models.report import FloodReport
+from app.models.news import NewsExtractionRun
+from app.models.news_publication import NewsClaimCase, NewsClaimDecision, NewsClaimSource
 from app.services.hybrid_extraction_service import MAX_AUTO_ACTIVATION_AGE
 
 
@@ -23,6 +25,20 @@ def review_rows(db: Session, now: datetime) -> Subquery:
     ).where(report.status == "pending", report.deleted_at.is_(None))
 
     news, value, _, _ = result_rows(db, latest_only=True)
+    if db.get_bind().dialect.name == "postgresql":
+        # A preserved extraction action is not a durable current decision.
+        # Select the case's latest revision before excluding resolved/deferred
+        # work, so an old needs-review decision cannot resurrect an active case.
+        current = select(NewsClaimSource.id).join(NewsClaimCase, NewsClaimCase.id == NewsClaimSource.case_id).join(
+            NewsClaimDecision, and_(NewsClaimDecision.case_id == NewsClaimCase.id,
+                                   NewsClaimDecision.revision == NewsClaimCase.revision)).where(
+            NewsClaimSource.extraction_run_id == NewsExtractionRun.id,
+            NewsClaimSource.claim_ordinal == news.selected_columns.claim_index,
+            or_(NewsClaimDecision.review_state == "resolved",
+                and_(NewsClaimDecision.review_state == "deferred",
+                     cast(NewsClaimDecision.snapshot["deferred_until"].astext, DateTime(timezone=True)) > now)),
+        ).correlate_except(NewsClaimSource, NewsClaimCase, NewsClaimDecision).exists()
+        news = news.where(~current)
     # Explicit historical observations must not become current merely because
     # somebody reprocessed an old captured article today.
     timestamp = lambda item: cast(item, DateTime(timezone=True)) if db.get_bind().dialect.name == "postgresql" else func.julianday(item)

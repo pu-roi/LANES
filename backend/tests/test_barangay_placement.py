@@ -82,4 +82,6 @@ def test_invalid_or_missing_boundaries_never_broaden_to_city(tmp_path, failure):
     result = roads.resolve(claim(span=None, canonical_city="Pasig", canonical_barangay="Ugong"))
     assert result.status == "unresolved" and not result.candidates
     assert result.barangay_boundary_status == "unavailable"
-    assert result.reason in {"invalid_barangay_boundary_catalog", "missing_valid_barangay_boundary"}
+    assert result.reason in {"invalid_barangay_boundary_catalog", "missing_valid_barangay_boundary", "barangay_boundary_parent_mismatch"}
+    if failure == "outside":
+        assert result.reason == "barangay_boundary_parent_mismatch"

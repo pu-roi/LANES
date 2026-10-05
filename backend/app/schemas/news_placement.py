@@ -55,6 +55,9 @@ class NewsPlacementPreview(BaseModel):
     barangay_catalog_sha256: str | None = None
     barangay_source_id: str | None = None
     barangay_psgc_code: str | None = None
+    barangay_osm_relation_id: int | None = None
+    barangay_source_url: str | None = None
+    barangay_source_classification: Literal["osm_community", "reviewed_source"] | None = None
     barangay_boundary_status: Literal["not_required", "available", "unavailable"] = "not_required"
     reported_severity: Literal["low", "medium", "high", "extreme"] | None = None
     noah_catalog_sha256: str | None = None

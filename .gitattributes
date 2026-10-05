@@ -15,3 +15,6 @@
 /backend/scripts/collect_flood_duration_pilot.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/scripts/qualify_pasig_duration_data.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/scripts/build_pasig_duration_followup.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Runtime boundary catalogs are checked by raw-byte SHA-256 on every platform.
+/backend/runtime_data/barangay/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

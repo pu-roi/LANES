@@ -6,6 +6,7 @@ import { floodSummaryData } from "@/features/news/newsPresentation";
 import { getPlacementPreview, type PlacementEnvelope, type ReviewDetail } from "./reviewApi";
 
 import { SpatialPanelButton as Button } from "../components/FloodRecordSummary";
+import { NewsDecisionControls } from "./NewsDecisionControls";
 
 const reasonLabel = (value: string) => value.replaceAll("_", " ");
 
@@ -23,7 +24,7 @@ export function NewsReviewEvidence({ detail, active, selectedId, onSelect, onPre
   }, [active, query.data, onPreview]);
   const preview = query.data?.preview;
   return <div className="space-y-6 p-4">
-    <div><p className="text-xs font-semibold uppercase tracking-wide text-blue-700">News claim · inspection only</p>
+    <div><p className="text-xs font-semibold uppercase tracking-wide text-blue-700">News claim · {detail.news_actions_available ? "exception review" : "inspection only"}</p>
       <p className="mt-2 text-sm text-amber-800">{news.claim.action_rationale ?? "Incomplete or conflicting flood evidence."}</p>
       <p className="mt-2 text-xs text-slate-500">Placement suggestions do not confirm current flooding or change routing.</p></div>
     <FloodLocationSummary showPublication={false} data={floodSummaryData(news.item.summary, news.captured_input.published_at)} />
@@ -56,5 +57,6 @@ export function NewsReviewEvidence({ detail, active, selectedId, onSelect, onPre
       </>}
     </section>
     <NewsSourceArticle source={news.captured_input} publisher={news.item.publisher} savedAt={news.item.saved_at} articleId={news.item.article_id} />
+    {detail.news_case && <NewsDecisionControls claim={detail.news_case} />}
   </div>;
 }
