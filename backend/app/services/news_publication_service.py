@@ -26,10 +26,16 @@ from app.crud.news_publication import (
 from app.models.news import NewsArticleVersion, NewsExtractionRun
 from app.models.audit import AuditLog
 from app.models.news_publication import NewsClaimCase, NewsClaimDecision, NewsClaimEvaluation, NewsClaimSource, NewsClaimZoneLink
-from app.models.report import FloodAvoidanceZone, FloodEvent, FloodEventStatus, FloodEventTimelineEntry, FloodReport, ReportStatus
+from app.models.report import FloodAvoidanceZone, FloodEvent, FloodEventStatus, FloodEventTimelineEntry, FloodReport, ReportStatus, ReportSeverity
+from app.schemas.common import PolygonGeometry
+from app.schemas.report import FloodAvoidanceZoneCreate
+from app.crud.report import create_flood_avoidance_zone
 from app.schemas.news_audit import IndependentAuditResult
 from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInput
 from app.schemas.news_publication import NewsDecisionEffect, NewsDecisionSnapshot, NewsStaffDecisionRequest, PublicNewsAlert
+from app.services.flood_event_service import create_verified_event_with_zone
+from app.services.flood_depth import get_flood_depth_measurement
+from app.services.operational_footprint_service import validate_operational_footprint
 from app.services.news_claim_auditor import canonical_claim_sha256, _classify, _validate_evidence
 from app.services.news_evaluation_service import EvaluationPolicy, preliminary_reason, publication_is_current, source_is_approved
 from app.services.news_sources import NewsSource, load_news_sources
@@ -169,18 +175,26 @@ def _snapshot(source: NewsClaimSource, version: NewsArticleVersion, claim: Extra
               policy: EvaluationPolicy, digest: str, *, evaluation_id: int | None,
               previous: NewsClaimDecision | None = None, public: PublicNewsAlert | None = None,
               private_reason: str | None = None, target: int | None = None,
-              deferred_until: datetime | None = None) -> NewsDecisionSnapshot:
+              deferred_until: datetime | None = None,
+              geometry_reason: str = "operational_geometry_not_verified",
+              linked_zone_ids: list[int] | None = None) -> NewsDecisionSnapshot:
     return NewsDecisionSnapshot(request_sha256=digest, policy_fingerprint=policy.fingerprint,
         claim_source_id=source.id, evaluation_id=evaluation_id, input_sha256=version.input_fingerprint,
         claim_sha256=source.claim_sha256, incident_identity=_incident(claim), article_id=version.article_id,
         public=public, private_reason=private_reason, target_case_id=target,
         previous_decision_id=previous.id if previous else None, deferred_until=deferred_until,
-        unconfirmed_retention_hours=unconfirmed_retention_hours())
+        unconfirmed_retention_hours=unconfirmed_retention_hours(),
+        geometry_reason=geometry_reason,
+        linked_zone_ids=linked_zone_ids or [])
 
 
 def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractorInput,
             claim: ExtractedClaim, audit: IndependentAuditResult, now: datetime,
-            sources: tuple[NewsSource, ...]) -> PublicNewsAlert:
+            sources: tuple[NewsSource, ...],
+            *,
+            geometry_precision: str = "text_only",
+            display_geojson: dict | None = None,
+            affects_routing: bool = False) -> PublicNewsAlert:
     publisher = next(source.publisher for source in sources if source.id == article.publisher)
     # Raw source depth and qualifiers only; no borrowing modeled severity.
     depth = _safe(claim.depth_raw, 500) if audit.evidence.depth.confirmed else None
@@ -197,7 +211,10 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
         expires_at=claim.event_time_resolved + timedelta(hours=2), updated_at=now,
         source_title=_safe(article.title, 500), source_publisher=_safe(publisher, 160),
         source_url=article.canonical_url, source_published_at=article.published_at,
-        evidence_excerpt=_safe(claim.evidence_sentence, 700))
+        evidence_excerpt=_safe(claim.evidence_sentence, 700),
+        geometry_precision=geometry_precision,
+        display_geojson=display_geojson,
+        affects_routing=affects_routing)
 
 
 def public_projection(decision: NewsClaimDecision | None, now: datetime, *, include_retained: bool = False) -> PublicNewsAlert | None:
@@ -323,18 +340,37 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
             original_run = db.get(NewsExtractionRun, original_source.extraction_run_id)
             original_article, original_result = validate_run(original_run, db.get(NewsArticleVersion, original_run.article_version_id))
             original_claim = original_result.claims[original_source.claim_ordinal]
-            if (target.public_state != "active_zone" and target_snapshot.public is not None
+            if (target_snapshot.public is not None
                     and _supported_section(original_claim, original_article)
                     and target_snapshot.public.observed_at < claim.event_time_resolved
                     <= target_snapshot.public.observed_at + timedelta(hours=12)):
                 target_case = lock_case(db, target.case_id)
                 if target_case.revision != target.revision:
                     raise NewsPublicationError("stale_case_revision", 409, revision=target_case.revision)
-                refreshed = _public(target_case, decision_id, article, claim, audit, now, sources)
-                snapshot = _snapshot(source, version, claim, policy, digest, evaluation_id=evaluation.id,
-                    previous=target, public=refreshed, target=target.case_id)
+                is_active_zone = (target.public_state == "active_zone")
+                linked_zones = list(db.scalars(select(NewsClaimZoneLink.zone_id).where(NewsClaimZoneLink.decision_id == target.id)))
+                refreshed = _public(
+                    target_case, decision_id, article, claim, audit, now, sources,
+                    geometry_precision="operational_polygon" if is_active_zone else "text_only",
+                    display_geojson=target_snapshot.public.display_geojson if is_active_zone else None,
+                    affects_routing=is_active_zone,
+                )
+                if is_active_zone and linked_zones:
+                    for lz_id in linked_zones:
+                        z_obj = db.get(FloodAvoidanceZone, lz_id)
+                        if z_obj and z_obj.is_active:
+                            z_obj.expires_at = refreshed.expires_at
+                            db.add(NewsClaimZoneLink(decision_id=decision_id, zone_id=lz_id, relation="supported", created_at=now))
+                    db.flush()
+                snapshot = _snapshot(
+                    source, version, claim, policy, digest, evaluation_id=evaluation.id,
+                    previous=target, public=refreshed, target=target.case_id,
+                    geometry_reason=target_snapshot.geometry_reason if is_active_zone else "operational_geometry_not_verified",
+                    linked_zone_ids=linked_zones if is_active_zone else [],
+                )
                 return _write(db, target_case, decision_id, request_id, snapshot, now,
-                    state="active_alert", review="resolved", reason="newer_matched_flood_observation",
+                    state="active_zone" if is_active_zone else "active_alert",
+                    review="resolved", reason="newer_matched_flood_observation",
                     observed=claim.event_time_resolved, expiry=refreshed.expires_at)
         # Same source lineage+qualified section needs explicit continuity before
         # another immutable case can publish or extend the first observation.
@@ -494,7 +530,26 @@ def preview_staff_decision(db: Session, case_id: int, request: NewsStaffDecision
             raise NewsPublicationError(reason)
         if request.operation == "correct":
             _correction_checks(db, case_id, request.evaluation_id, source, article, claim)
-            return NewsDecisionEffect(public_state="active_alert", review_state="resolved", status="Active", reason_code="staff_correct")
+            is_zone = bool(request.operational_footprint or request.operational_zone_id)
+            if request.operational_footprint:
+                val = validate_operational_footprint(
+                    request.operational_footprint,
+                    provenance_source="staff:preview",
+                )
+                if not val.is_eligible:
+                    raise NewsPublicationError(val.reason_code)
+            elif request.operational_zone_id:
+                target_zone = db.get(FloodAvoidanceZone, request.operational_zone_id)
+                if not target_zone or not target_zone.is_active:
+                    raise NewsPublicationError("invalid_operational_zone")
+            return NewsDecisionEffect(
+                public_state="active_zone" if is_zone else "active_alert",
+                review_state="resolved",
+                status="Active",
+                reason_code="staff_correct",
+                affects_routing=is_zone,
+                linked_zone_ids=[request.operational_zone_id] if request.operational_zone_id else [],
+            )
         if previous is None or previous.public_state not in ("active_alert", "active_zone", "expired"):
             raise NewsPublicationError("clearance_target_not_active_or_unconfirmed")
         if claim.condition != "subsided" or audit.evidence.status.classification != "subsided":
@@ -560,6 +615,10 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
     saved = NewsDecisionSnapshot.model_validate(previous.snapshot) if previous else None
     public = None
     state, review, evaluation_id = "unpublished", "needs_review", None
+    linked_zone_ids: list[int] = []
+    geom_reason = "operational_geometry_not_verified"
+    display_geojson = None
+
     if request.operation == "correct":
         evaluation, corrected_source, corrected_run, corrected_version, corrected_article, corrected_claim, audit, failure = correction
         if failure:
@@ -567,7 +626,52 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
         _correction_checks(db, case.id, request.evaluation_id, corrected_source, corrected_article, corrected_claim)
         source, version, claim, article = corrected_source, corrected_version, corrected_claim, corrected_article
         evaluation_id = evaluation.id
-        state, review = "active_alert", "resolved"
+
+        is_zone = bool(request.operational_footprint or request.operational_zone_id)
+        state = "active_zone" if is_zone else "active_alert"
+        review = "resolved"
+
+        if request.operational_footprint:
+            val = validate_operational_footprint(
+                request.operational_footprint,
+                provenance_source=f"staff:{actor_user_id}",
+            )
+            if not val.is_eligible:
+                raise NewsPublicationError(val.reason_code)
+            geom_reason = "staff_reviewed_footprint"
+            display_geojson = val.geojson
+
+            depth_meas = get_flood_depth_measurement(claim.depth_canonical)
+            sev_val = depth_meas.severity if depth_meas else ReportSeverity.MEDIUM
+            event_obj = None
+            expiry_time = claim.event_time_resolved + timedelta(hours=2)
+            for idx, part in enumerate(val.polygon_parts):
+                poly_in = PolygonGeometry(**part)
+                zone_in = FloodAvoidanceZoneCreate(
+                    geometry=poly_in,
+                    is_active=True,
+                    expires_at=expiry_time,
+                )
+                if idx == 0:
+                    event_obj, created_zone = create_verified_event_with_zone(
+                        db,
+                        zone_in,
+                        peak_severity=sev_val,
+                        peak_depth=claim.depth_canonical,
+                        acted_by_user_id=actor_user_id,
+                        commit=False,
+                        first_reported_at=claim.event_time_resolved,
+                    )
+                    linked_zone_ids.append(created_zone.id)
+                else:
+                    created_zone = create_flood_avoidance_zone(db, zone_in, event_id=event_obj.id, commit=False)
+                    linked_zone_ids.append(created_zone.id)
+        elif request.operational_zone_id:
+            target_zone = db.get(FloodAvoidanceZone, request.operational_zone_id)
+            if not target_zone or not target_zone.is_active:
+                raise NewsPublicationError("invalid_operational_zone")
+            linked_zone_ids.append(target_zone.id)
+            geom_reason = "staff_reviewed_footprint"
     elif request.operation == "defer":
         if request.deferred_until is None or not now < request.deferred_until <= now + timedelta(days=7):
             raise NewsPublicationError("invalid_deferred_until")
@@ -580,14 +684,140 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
         # Reopening is a review action; it cannot resurrect expired evidence.
     decision_id = reserve_decision_id(db)
     if request.operation == "correct":
-        public = _public(case, decision_id, article, claim, audit, now, sources)
+        public = _public(
+            case, decision_id, article, claim, audit, now, sources,
+            geometry_precision="operational_polygon" if state == "active_zone" else "text_only",
+            display_geojson=display_geojson,
+            affects_routing=(state == "active_zone"),
+        )
         public.correction_note = _safe(request.public_correction, 500)
     snapshot = _snapshot(source, version, claim, policy, digest, evaluation_id=evaluation_id,
         previous=previous, public=public, private_reason=request.reason,
-        deferred_until=request.deferred_until if request.operation == "defer" else None)
+        deferred_until=request.deferred_until if request.operation == "defer" else None,
+        geometry_reason=geom_reason, linked_zone_ids=linked_zone_ids)
     decision = _write(db, case, decision_id, request.request_id, snapshot, now, actor_kind="staff", actor_id=actor_user_id,
         operation=request.operation, state=state, review=review, reason=f"staff_{request.operation}",
         observed=public.observed_at if public else None, expiry=public.expires_at if public else None)
+
+    if linked_zone_ids:
+        rel = "created" if request.operational_footprint else "supported"
+        for z_id in linked_zone_ids:
+            db.add(NewsClaimZoneLink(decision_id=decision_id, zone_id=z_id, relation=rel, created_at=now))
+        db.flush()
+
+    _withdraw_support(db, previous, now)
+    return decision
+
+
+def activate_operational_footprint(
+    db: Session,
+    case_id: int,
+    footprint: dict | Any,
+    *,
+    provenance_source: str,
+    provenance_checksum: str | None = None,
+    parent_boundary: Any | None = None,
+    policy: EvaluationPolicy,
+    now: datetime,
+    actor_user_id: int | None = None,
+    request_id: UUID | None = None,
+    sources: tuple[NewsSource, ...] | None = None,
+) -> NewsClaimDecision:
+    """Activate an operational flood footprint for a verified news claim atomically.
+
+    Performs atomic creation of FloodEvent, FloodAvoidanceZone(s),
+    NewsClaimZoneLink (relation='created'), and updates the decision to active_zone.
+    MultiPolygons are split into distinct FloodAvoidanceZone records without bridging gaps.
+    """
+    now = require_utc(now)
+    sources = sources if sources is not None else load_news_sources()
+    request_id = request_id or uuid5(NAMESPACE_URL, f"lanes-news-footprint:{case_id}:{canonical_sha256({'src': provenance_source, 'now': now.isoformat()})}")
+    digest = canonical_sha256({"operation": "activate_footprint", "case_id": case_id, "source": provenance_source})
+    publication_lock(db, canonical_sha256({"request_id": str(request_id)}))
+    existing = existing_request(db, request_id, digest)
+    if existing:
+        return existing
+    val = validate_operational_footprint(
+        footprint,
+        provenance_source=provenance_source,
+        provenance_checksum=provenance_checksum,
+        parent_boundary=parent_boundary,
+    )
+    if not val.is_eligible:
+        raise NewsPublicationError(val.reason_code)
+
+    case = lock_case(db, case_id)
+    previous = latest_decision(db, case.id)
+    if previous is None or previous.public_state not in ("active_alert", "active_zone"):
+        raise NewsPublicationError("claim_not_active_alert_or_zone")
+
+    prev_snapshot = NewsDecisionSnapshot.model_validate(previous.snapshot)
+    source = db.get(NewsClaimSource, prev_snapshot.claim_source_id)
+    run = db.get(NewsExtractionRun, source.extraction_run_id)
+    version = db.get(NewsArticleVersion, run.article_version_id)
+    article, extraction = validate_run(run, version)
+    claim = extraction.claims[source.claim_ordinal]
+
+    evaluation = db.get(NewsClaimEvaluation, prev_snapshot.evaluation_id) if prev_snapshot.evaluation_id else None
+    audit = None
+    if evaluation and evaluation.result and evaluation.result.get("audit"):
+        try:
+            audit = IndependentAuditResult.model_validate(evaluation.result["audit"])
+        except Exception:
+            audit = None
+
+    decision_id = reserve_decision_id(db)
+    depth_meas = get_flood_depth_measurement(claim.depth_canonical)
+    sev_val = depth_meas.severity if depth_meas else ReportSeverity.MEDIUM
+    expiry_time = claim.event_time_resolved + timedelta(hours=2)
+
+    linked_zone_ids: list[int] = []
+    event_obj = None
+    for idx, part in enumerate(val.polygon_parts):
+        poly_in = PolygonGeometry(**part)
+        zone_in = FloodAvoidanceZoneCreate(
+            geometry=poly_in,
+            is_active=True,
+            expires_at=expiry_time,
+        )
+        if idx == 0:
+            event_obj, created_zone = create_verified_event_with_zone(
+                db,
+                zone_in,
+                peak_severity=sev_val,
+                peak_depth=claim.depth_canonical,
+                acted_by_user_id=actor_user_id,
+                commit=False,
+                first_reported_at=claim.event_time_resolved,
+            )
+            linked_zone_ids.append(created_zone.id)
+        else:
+            created_zone = create_flood_avoidance_zone(db, zone_in, event_id=event_obj.id, commit=False)
+            linked_zone_ids.append(created_zone.id)
+
+    public = _public(
+        case, decision_id, article, claim, audit, now, sources,
+        geometry_precision="operational_polygon",
+        display_geojson=val.geojson,
+        affects_routing=True,
+    )
+    snapshot = _snapshot(
+        source, version, claim, policy, digest, evaluation_id=evaluation.id if evaluation else None,
+        previous=previous, public=public, target=case.id,
+        geometry_reason="verified_incident_footprint",
+        linked_zone_ids=linked_zone_ids,
+    )
+    decision = _write(db, case, decision_id, request_id, snapshot, now,
+        actor_kind="staff" if actor_user_id is not None else "automatic",
+        actor_id=actor_user_id,
+        operation="activate_zone", state="active_zone", review="resolved",
+        reason="verified_operational_footprint",
+        observed=claim.event_time_resolved, expiry=expiry_time)
+
+    for z_id in linked_zone_ids:
+        db.add(NewsClaimZoneLink(decision_id=decision_id, zone_id=z_id, relation="created", created_at=now))
+    db.flush()
+
     _withdraw_support(db, previous, now)
     return decision
 

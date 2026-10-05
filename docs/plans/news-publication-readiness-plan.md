@@ -1,6 +1,6 @@
 # Phase 36: News publication backend readiness contract
 
-> **Last Updated:** October 05, 2026, 7:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 05, 2026, 7:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 5 publication/lifecycle follow-up:** Automatic source-labeled **text-only news alerts**, atomic append-only decisions, supported observation refresh, matched clearance and two-hour evidence expiry are implemented locally. Read-time expiry becomes **Unconfirmed** even before maintenance; the default current feed retains it for 24 hours after expiry (configurable 1–72 hours), while safe historical detail remains available. Staff correction/defer/reject/reopen/clearance controls and desktop/mobile public-map News alerts are connected. Operational flood-zone activation/routing remains blocked by missing verified current affected polygons; OSM/NOAH/community boundaries remain placement evidence. No live deployment, paid provider request, new schema/dependency or normal/cloud database migration occurred. [Verification](../evaluations/phase-36-news-publication-lifecycle.md), [operator guide](../guides/news-publication-lifecycle.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -91,6 +91,14 @@ Reuse existing `POLYGON` zones: disconnected verified sections become separate z
 
 The original target remains nationwide. Current analytical catalog covers Metro Manila's 17 cities; Pasig history applies only to matching Pasig claims. Missing regional assets remain explicit coverage gaps. Do not advertise nationwide verified plotting on this local snapshot.
 
+### Operational footprint validation contract
+1. **Geometry type & coordinate system:** PostGIS `POLYGON` or `MULTIPOLYGON` (SRID 4326). Linestrings or points alone do not satisfy the operational zone contract.
+2. **Topological integrity:** Geometry must be topologically valid (`ST_IsValid` / Shapely `is_valid`), non-empty, and have positive non-zero area. Self-intersecting rings or degenerate geometries are rejected.
+3. **Locality containment:** The footprint must be spatially contained within or cleanly intersect the reported administrative parent boundary (city/barangay). Polygons falling outside or across unauthorized boundaries are rejected.
+4. **Provenance & metadata:** The geometry payload must record source provenance (e.g. authoritative DRRMO shapefile/incident feed ID, checksum, or authenticated staff review ID). OSM centerlines and NOAH hazard overlaps provide candidate evidence and placement preview auras, not verified real-time operational perimeters.
+5. **Non-bridging of disconnected sections:** If a flood affects multiple disconnected segments along a corridor, each qualified section must be persisted as an independent `FloodAvoidanceZone` sharing the parent `FloodEvent`. Never stitch or convex-hull across unverified gaps.
+6. **Fallback behavior:** Where no qualifying operational polygon is available, the claim remains an `active_alert` (`geometry_precision="text_only"`, `geometry_reason="operational_geometry_not_verified"`, `affects_routing=False`). The preview aura remains visible in Needs Review inspection without creating an avoidance closure in Valhalla routing.
+
 ## 5. Transaction, support and recovery contract
 
 1. **Implemented evaluation stage:** claim one evaluation under `FOR UPDATE SKIP LOCKED`, commit its lease, then perform the external audit outside the transaction. Bound attempts/time/response size and finalize only under matching live lease ownership. Terminal evaluations are immutable; this stage writes no decisions or operational state. Never hold database locks across network calls.
@@ -101,6 +109,16 @@ The original target remains nationwide. Current analytical catalog covers Metro 
 6. On withdrawal/expiry, remove the case's current support in its new decision. Deactivate only zones with recorded news creation ownership and no remaining eligible news support or applicable independent citizen/manual support. Never delete prior polygons/evidence. Shared zones retain their supported coverage; if partial coverage cannot be safely reconstructed from existing provenance, keep independent sections separate and send the conflict to review. Independent support includes existing operational ownership and approved linked reports under their existing lifecycle, not news-count heuristics.
 7. For news-owned zones, effective expiry reflects the remaining eligible contribution lifetimes; extending it requires a newer supported observation or independent eligible contribution, never a retry. Existing citizen/manual lifecycle remains authoritative. End an event only after its final active unexpired zone ends. Public readers and routing exclude expired records even if the expiry worker is delayed. Alerts derive visibility from the latest decision's state and expiry; old active history cannot reappear after a withdrawal.
 8. Emit existing API-process SSE invalidation only after commit. Collector/job processes do not share the API's in-memory SSE manager. Use durable reads plus existing 15-second polling/focus/reconnect refresh for correctness; do not claim job broadcast reaches all clients. A worker crash after commit but before notification is recovered by polling, while a crash before commit leaves no partial public state.
+
+### Operational zone transaction & service integration specification
+- **Gate 1 (Schema adjustments):** In `app/schemas/news_publication.py`, update `NewsDecisionSnapshot.geometry_reason` to permit qualified operational geometry provenance (e.g. `operational_geometry_not_verified`, `authoritative_incident_footprint`, `staff_reviewed_footprint`), allow `PublicNewsAlert.affects_routing` and `geometry_precision` to reflect active zone state when an operational zone is linked, and update `NewsStaffDecisionRequest` / `NewsDecisionEffect` accordingly while preserving backward-compatible text-only defaults.
+- **Gate 2 (Non-committing service refactoring):** Refactor `create_verified_event_with_zone(..., commit: bool = True, acted_by_user_id: Optional[int] = None, first_reported_at: Optional[datetime] = None)` and `deactivate_zone_and_end_event_if_final(..., commit: bool = True)` in `app/services/flood_event_service.py`. Existing callers default to `commit=True`; transactional callers pass `commit=False` to participate in outer atomic commits.
+- **Gate 3 (Atomic zone, event, and link transaction):** In `app/services/news_publication_service.py`, when a claim satisfies operational geometry gates:
+  1. Atomically create or update `FloodEvent` (using `first_reported_at = claim.event_time_resolved`, peak severity/depth), `FloodAvoidanceZone` (`geometry=poly`, `source_geometry=line`, `is_active=True`, `expires_at=expiry`), and `NewsClaimZoneLink` (`relation="created"`).
+  2. Record `NewsClaimDecision` with `public_state="active_zone"`, linking observation refresh, matched clearance, and expiry across zones.
+  3. Ensure withdrawal/expiry logic (`_withdraw_support`) deactivates only zones where news is the creation owner and no remaining eligible citizen or news support exists.
+- **Gate 4 (Zone reader & contributor provenance):** Expose news provenance safely in `FloodAvoidanceZone` properties (`report_source`, contributor mapping) and zone response schemas without modifying database tables or running unapproved migrations.
+- **Gate 5 (Verification):** Test rejected predictions (centerlines never create routing zones), accepted qualifying footprints, multi-surface desktop/mobile visibility, and routing exclusion.
 
 ## 6. API contracts
 

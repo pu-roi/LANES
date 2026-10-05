@@ -46,10 +46,10 @@ class PublicNewsAlert(NewsPublicationModel):
     source_published_at: datetime | None = None
     correction_note: str | None = Field(default=None, max_length=500)
     evidence_excerpt: str = Field(max_length=700)
-    geometry_precision: Literal["text_only", "display_suggestion"] = "text_only"
+    geometry_precision: Literal["text_only", "display_suggestion", "operational_polygon"] = "text_only"
     display_geojson: dict | None = None
     current_status_unknown: bool = False
-    affects_routing: Literal[False] = False
+    affects_routing: bool = False
 
 
     @field_validator("source_url")
@@ -87,7 +87,12 @@ class NewsDecisionSnapshot(NewsPublicationModel):
     previous_decision_id: int | None = Field(default=None, gt=0)
     deferred_until: datetime | None = None
     unconfirmed_retention_hours: int = Field(default=24, ge=1, le=72)
-    geometry_reason: Literal["operational_geometry_not_verified"] = "operational_geometry_not_verified"
+    geometry_reason: Literal[
+        "operational_geometry_not_verified",
+        "verified_incident_footprint",
+        "staff_reviewed_footprint",
+    ] = "operational_geometry_not_verified"
+    linked_zone_ids: list[int] = Field(default_factory=list)
 
 
 class NewsStaffDecisionRequest(NewsPublicationModel):
@@ -98,6 +103,8 @@ class NewsStaffDecisionRequest(NewsPublicationModel):
     evaluation_id: int | None = Field(default=None, gt=0)
     public_correction: str | None = Field(default=None, max_length=500)
     deferred_until: datetime | None = None
+    operational_zone_id: int | None = Field(default=None, gt=0)
+    operational_footprint: dict | None = None
 
     @field_validator("deferred_until")
     @classmethod
@@ -145,7 +152,8 @@ class NewsDecisionEffect(NewsPublicationModel):
     review_state: str
     status: Literal["Active", "Unconfirmed", "Cleared"] | None = None
     reason_code: str
-    affects_routing: Literal[False] = False
+    affects_routing: bool = False
+    linked_zone_ids: list[int] = Field(default_factory=list)
 
 
 

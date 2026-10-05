@@ -6,6 +6,15 @@
 
 ---
 
+### October 5: Operational flood-zone integration & verification
+
+- [x] **Operational Flood-Zone Integration Completed (October 05, 2026, 7:52 PM, Asia/Manila):**
+  - **Gate 1 (Operational Footprint Validation):** Implemented `validate_operational_footprint` in `operational_footprint_service.py` to strictly enforce GeoJSON/Shapely `Polygon`/`MultiPolygon` (SRID 4326), area >= 1 sqm, bounds check, non-bridging multi-part separation, and parent locality intersection.
+  - **Gate 2 (Non-Committing Flood Event Helper):** Added non-committing transaction support (`commit=False`) to `flood_event_service.py` (`create_verified_event_with_zone`, `deactivate_zone_and_end_event_if_final`) using `db.flush()` for outer atomicity.
+  - **Gate 3 (Atomic Publication Service Linking):** Implemented `activate_operational_footprint` and enhanced `apply_staff_decision` and `publish_completed_evaluation` in `news_publication_service.py` to atomically generate/support `FloodEvent` and `FloodAvoidanceZone`s linked via `NewsClaimZoneLink` (`created` or `supported`), with multi-part decomposition and observation refresh.
+  - **Gate 4 (Zone Reader Provenance):** Exposed safe `report_source` (`"news"`) and news contributor attribution in `FloodAvoidanceZone` properties without altering database schemas or breaking existing citizen contributors.
+  - **Gate 5 (Verification):** All 254 news unit/integration tests pass. Native PostGIS lifecycle integration suite verifies multi-part non-bridging, atomic zone creation, and observation refresh extending zone expiry. Full frontend and backend regressions intact. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 ### October 5: Pre-push documentation audit
 
 - [x] **Pre-push documentation checkpoint (October 05, 2026, 7:08 PM, Asia/Manila):** Senior-planner re-audit confirms **452 broad backend checks, 28 native PostGIS/actual JWT API checks and 16 distinct mocked desktop/mobile browser checks**, with final TypeScript/scoped lint, Python compilation, diff checks and primary screenshot review passed. Locally delivered source alerts, independent auditing, qualified refresh/clearance, two-hour Unconfirmed expiry, finite retention and F6/F7 interfaces are synchronized with current code. Operational flood-zone/routing activation, broader coverage, physical PWA/developer acceptance and deployment remain open. Existing approved migration head is `d7e4b9a21c60`; no new model/dependency/migration, paid provider call or normal/cloud DB write. User-authorized commit/push to `roi-branch` is the following Git step; this checkpoint does not claim push success. [@roicambe](https://github.com/roicambe) (Roi Cambe)

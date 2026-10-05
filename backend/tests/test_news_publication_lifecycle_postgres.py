@@ -480,3 +480,112 @@ def test_shared_support_withdrawal_preserves_independent_news_and_citizen_covera
             operation="reject", reason="Withdraw the other source"), actor_user_id=actor, policy=POLICY, now=NOW, sources=SOURCES)
         assert db.get(FloodAvoidanceZone, zone_id).is_active
         assert db.get(FloodAvoidanceZone, zone_id).expires_at == NOW + timedelta(hours=3)
+
+
+def test_activate_operational_footprint_splits_multipolygon_and_creates_zones(publication_factory):
+    from app.services.news_publication_service import activate_operational_footprint
+    from app.models.news_publication import NewsClaimZoneLink
+
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation_id)
+
+    # MultiPolygon with 2 disjoint polygon components in Pasig
+    multi_poly_geojson = {
+        "type": "MultiPolygon",
+        "coordinates": [
+            [[[121.070, 14.580], [121.071, 14.580], [121.071, 14.581], [121.070, 14.581], [121.070, 14.580]]],
+            [[[121.075, 14.585], [121.076, 14.585], [121.076, 14.586], [121.075, 14.586], [121.075, 14.585]]]
+        ]
+    }
+
+    actor = staff_user(factory)
+    with factory() as db, db.begin():
+        decision = activate_operational_footprint(
+            db,
+            case_id,
+            footprint=multi_poly_geojson,
+            provenance_source="field_survey:drrmo_pasig",
+            policy=POLICY,
+            now=NOW,
+            actor_user_id=actor,
+            sources=SOURCES,
+        )
+        assert decision.public_state == "active_zone"
+        assert decision.review_state == "resolved"
+        assert decision.reason_code == "verified_operational_footprint"
+
+        # Check links created
+        links = list(db.scalars(select(NewsClaimZoneLink).where(NewsClaimZoneLink.decision_id == decision.id)))
+        assert len(links) == 2
+        for link in links:
+            assert link.relation == "created"
+            zone = db.get(FloodAvoidanceZone, link.zone_id)
+            assert zone is not None
+            assert zone.is_active is True
+            assert zone.report_source == "news"
+            assert len(zone.contributors) == 1
+            assert zone.contributors[0]["reporter_role"] == "News Publisher"
+
+        # Verify both zones share the same FloodEvent parent
+        z1 = db.get(FloodAvoidanceZone, links[0].zone_id)
+        z2 = db.get(FloodAvoidanceZone, links[1].zone_id)
+        assert z1.event_id is not None
+        assert z1.event_id == z2.event_id
+
+        # Public projection reflects operational polygon and affects routing
+        proj = public_projection(decision, NOW)
+        assert proj.status == "Active"
+        assert proj.geometry_precision == "operational_polygon"
+        assert proj.affects_routing is True
+        assert proj.display_geojson is not None
+
+
+def test_observation_refresh_extends_active_zone_expiry(publication_factory):
+    from app.services.news_publication_service import activate_operational_footprint
+    from app.models.news_publication import NewsClaimZoneLink
+
+    factory = publication_factory
+    wet, case_id, article_id = seed_evaluation(factory, observed=NOW - timedelta(minutes=30))
+    publish(factory, wet)
+
+    poly_geojson = {
+        "type": "Polygon",
+        "coordinates": [[[121.070, 14.580], [121.071, 14.580], [121.071, 14.581], [121.070, 14.581], [121.070, 14.580]]]
+    }
+    actor = staff_user(factory)
+    with factory() as db, db.begin():
+        act_dec = activate_operational_footprint(
+            db,
+            case_id,
+            footprint=poly_geojson,
+            provenance_source="field_survey:drrmo_pasig",
+            policy=POLICY,
+            now=NOW,
+            actor_user_id=actor,
+            sources=SOURCES,
+        )
+        zone_id = act_dec.snapshot["linked_zone_ids"][0]
+        initial_expiry = db.get(FloodAvoidanceZone, zone_id).expires_at
+
+    # Newer observation from revised article
+    fresh, _, _ = seed_evaluation(factory, article_id=article_id, observed=NOW, body_suffix=" Water still rising.")
+    fresh_dec_id, refreshed_case_id = publish(factory, fresh)
+    assert refreshed_case_id == case_id
+
+    with factory() as db:
+        fresh_dec = db.get(NewsClaimDecision, fresh_dec_id)
+        assert fresh_dec.public_state == "active_zone"
+        assert fresh_dec.reason_code == "newer_matched_flood_observation"
+        zone = db.get(FloodAvoidanceZone, zone_id)
+        assert zone.expires_at > initial_expiry
+        assert zone.expires_at == fresh_dec.expires_at
+
+        # Verify a 'supported' link was added for this decision
+        sup_link = db.scalar(select(NewsClaimZoneLink).where(
+            NewsClaimZoneLink.decision_id == fresh_dec.id,
+            NewsClaimZoneLink.zone_id == zone_id,
+        ))
+        assert sup_link is not None
+        assert sup_link.relation == "supported"
+
