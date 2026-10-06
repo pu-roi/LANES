@@ -1,7 +1,22 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 07, 2026, 12:51 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 2:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Senior-planner audit before the authorized performance push
+
+- [x] Review all eight authoritative records against both performance passes and deployed API/job/Firebase releases. Reconcile current news-worker release status, shared polling, weather provider, routing safety and idle offline warm-up descriptions; preserve earlier checkpoint history. No new flagship feature, dependency or architectural decision is introduced. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Confirm unchanged dependencies/models/migrations and read-only cloud/local Alembic head `d7e4b9a21c60`. Retain the already completed **37 backend and 16 desktop/mobile browser checks**, production builds, scoped lint and public smoke checks without repeating unchanged code tests. The developer authorizes commit/push of this snapshot to `roi-branch`; Git completion is reported after the operation. Physical-device speed, sustained load, next scheduled job memory and real-current-article acceptance remain open. [Evaluation](evaluations/cloud-performance-20261007.md#senior-planner-pre-push-checkpoint). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Second performance pass — shared sync reads and weather responsiveness
+
+- [x] Share one authoritative flood read per 15-second cycle per API worker, with atomic subscriber capacity, bounded latest snapshots and idle/shutdown cleanup. Move blocking current/forecast provider work to FastAPI's thread pool. Warm offline routing after map rendering during idle time, retaining timeout/fallback/on-demand initialization. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify **37 focused backend and 16 desktop/mobile browser tests**, frontend build/TypeScript and scoped lint. A controlled 100-client check proves one database read per poll, and blocked weather requests leave other ASGI requests responsive. API `lanes-api-00057-cuf`, matching discovery image and Firebase `build-2026-10-06-003` are deployed; real health/weather/route/concurrent-sync and public desktop/mobile navigation/reconnect checks pass. Exact limits/rollback are in the [performance evaluation](evaluations/cloud-performance-20261007.md). No additional resource/specification, schema, dependency or authentication change; source uncommitted. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Application and Cloud performance improvements
+
+- [x] Apply authorized API minimum instance 1 and news-job RAM 1 GiB; deploy the tested API image with checked assets and matching discovery image. No database/resource-size expansion elsewhere. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Overlap bounded routing searches off the API loop, remove unchanged flood refetches, defer initial map/panel work and preserve PWA reconnect state. **32 focused backend and 14 distinct desktop/mobile browser checks**, frontend build/type/lint and public desktop/mobile Feed-to-Map/reconnect smoke checks pass. Firebase rollout `build-2026-10-06-002` succeeded; API and frontend serve 100% of traffic on the tested revisions. Source remains uncommitted; next scheduled job memory and physical PWA acceptance remain open. [Performance evaluation](evaluations/cloud-performance-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 7: Pre-push documentation and release-state audit
 

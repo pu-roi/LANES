@@ -19,6 +19,9 @@ const getLocalIPs = () => {
 const withPWA = withPWAInit({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
+  // React Query and SSE recover current data without losing open panels or
+  // route inputs to a full-page reload on mobile network reconnects.
+  reloadOnOnline: false,
   fallbacks: {
     document: "/~offline",
   },

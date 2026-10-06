@@ -1,4 +1,5 @@
 import asyncio
+import threading
 
 import httpx
 import pytest
@@ -136,7 +137,7 @@ def test_both_engines_gather_fastest_and_shortest_routes(monkeypatch: pytest.Mon
     monkeypatch.setattr(routing_service.ors_service, "fetch_route_candidates", ors_candidates)
     result = asyncio.run(routing_service.calculate_route(payload(engine), db=None))
 
-    assert seen == ["fastest", "shortest"]
+    assert sorted(seen) == ["fastest", "shortest"]
     assert len(result["routes"]) == 1
 
 
@@ -301,3 +302,107 @@ def test_operational_news_zone_triggers_route_exclusion_and_baseline_warning(mon
     assert result["blocked_baseline"] is not None
     assert "crosses floodwater" in result["blocked_baseline"]["message"]
 
+
+def test_valhalla_searches_overlap_without_blocking_the_api_loop(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(routing_service, "get_active_flood_zones", lambda _: [])
+    barrier = threading.Barrier(2)
+
+    async def scenario() -> dict:
+        loop = asyncio.get_running_loop()
+
+        async def heartbeat() -> bool:
+            return True
+
+        def candidates(**_: object) -> list[dict]:
+            # Both requests must be in flight together, while the same API
+            # event loop can still service unrelated work.
+            barrier.wait(timeout=3)
+            assert asyncio.run_coroutine_threadsafe(heartbeat(), loop).result(timeout=3)
+            return RAW_ROUTE
+
+        monkeypatch.setattr(routing_service.valhalla_service, "fetch_route_candidates", candidates)
+        return await routing_service.calculate_route(payload(), db=None)
+
+    result = asyncio.run(scenario())
+    assert len(result["routes"]) == 1
+    assert result["fallback_used"] is False
+
+
+def test_cautious_only_zones_do_not_repeat_an_empty_exclusion_pass(monkeypatch: pytest.MonkeyPatch) -> None:
+    zone = ActiveFloodZone(id=7, severity="medium", polygon=[[120.0, 13.0], [120.1, 13.0], [120.1, 13.1], [120.0, 13.0]])
+    monkeypatch.setattr(routing_service, "get_active_flood_zones", lambda _: [zone])
+    seen: list[tuple[str, list]] = []
+
+    async def candidates(**kwargs: object) -> list[dict]:
+        seen.append((str(kwargs["preference"]), kwargs["exclude_polygons"]))
+        return RAW_ROUTE
+
+    monkeypatch.setattr(routing_service.ors_service, "fetch_route_candidates", candidates)
+    request = payload("ors")
+    request.vehicle_profile = "heavy"
+    result = asyncio.run(routing_service.calculate_route(request, db=None))
+    assert len(seen) == 4
+    assert sum(not exclusions for _, exclusions in seen) == 2
+    assert len(result["routes"]) == 1
+
+
+def test_provider_concurrency_is_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
+    zones = [
+        ActiveFloodZone(id=1, severity="extreme", polygon=[[120.0, 13.0], [120.1, 13.0], [120.1, 13.1], [120.0, 13.0]]),
+        ActiveFloodZone(id=2, severity="medium", polygon=[[120.2, 13.0], [120.3, 13.0], [120.3, 13.1], [120.2, 13.0]]),
+    ]
+    monkeypatch.setattr(routing_service, "get_active_flood_zones", lambda _: zones)
+    active = 0
+    peak = 0
+    calls = 0
+
+    async def candidates(**_: object) -> list[dict]:
+        nonlocal active, peak, calls
+        calls += 1
+        active += 1
+        peak = max(peak, active)
+        await asyncio.sleep(0)
+        active -= 1
+        return RAW_ROUTE
+
+    monkeypatch.setattr(routing_service.ors_service, "fetch_route_candidates", candidates)
+    request = payload("ors")
+    request.vehicle_profile = "heavy"
+    asyncio.run(routing_service.calculate_route(request, db=None))
+    assert calls == 6
+    assert peak == 2
+    assert active == 0
+
+
+def test_fallback_waits_for_inflight_valhalla_searches(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(routing_service, "get_active_flood_zones", lambda _: [])
+    started = threading.Event()
+    release = threading.Event()
+    completed = threading.Event()
+
+    def candidates(**kwargs: object) -> list[dict]:
+        if kwargs["preference"] == "fastest":
+            raise ValhallaServiceUnavailable("unavailable")
+        started.set()
+        assert release.wait(timeout=3)
+        completed.set()
+        return RAW_ROUTE
+
+    async def fallback(**_: object) -> list[dict]:
+        assert completed.is_set()
+        return RAW_ROUTE
+
+    monkeypatch.setattr(routing_service.valhalla_service, "fetch_route_candidates", candidates)
+    monkeypatch.setattr(routing_service.ors_service, "fetch_route_candidates", fallback)
+
+    async def scenario() -> dict:
+        task = asyncio.create_task(routing_service.calculate_route(payload(), db=None))
+        try:
+            assert await asyncio.to_thread(started.wait, 3)
+        finally:
+            release.set()
+        return await task
+
+    result = asyncio.run(scenario())
+    assert result["fallback_used"] is True
+    assert result["engine_used"] == "ors"

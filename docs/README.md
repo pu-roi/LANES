@@ -1,6 +1,12 @@
 # LANES documentation
 
-> **Last Updated:** October 07, 2026, 12:51 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 2:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+[Senior-planner pre-push checkpoint](evaluations/cloud-performance-20261007.md#senior-planner-pre-push-checkpoint) — eight-record audit, reconciled deployed behavior, unchanged dependencies/schema, migration head and user-authorized `roi-branch` delivery.
+
+[Second performance pass](evaluations/cloud-performance-20261007.md#second-pass-shared-polling-and-responsive-weather-handlers) — API/job/Firebase rollout completed for shared DB polling, responsive weather handlers and idle offline warm-up; 37 backend and 16 desktop/mobile regressions plus public smoke checks pass, with rollout limits, rollback and primary-source research.
+
+[October 7 Cloud/application performance verification](evaluations/cloud-performance-20261007.md) — API/job/Firebase rollout completed; 32 backend, 14 distinct browser regressions and public desktop/mobile smoke checks passed. Includes resource evidence, bounded routing, changed refresh, deferred startup, PWA reconnect behavior and verification limits.
 
 **October 7 exact-source auditor repair (current):** The backend now supplies exact quote/offset options; the model copies selected supporting spans, and strict immutable-source validation remains unchanged. **170 focused checks pass**. Live free synthetic probes passed at both 60 seconds and the normal 20-second worker limit, producing historical review without database/public writes. Prompt v2 changes the existing evaluation policy identity; no new package/model/migration or UI design. Matching release, real-article/map/routing and physical PWA acceptance remain open. [Verification](evaluations/phase-36-auditor-evidence-options-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

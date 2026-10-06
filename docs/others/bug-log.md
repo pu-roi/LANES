@@ -1,6 +1,50 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 07, 2026, 12:51 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 2:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-116] Sync database work scales with clients; weather blocks the API loop
+
+- **Status:** Fixed and deployed; 37 backend/16 desktop-mobile regressions and real API/public smoke checks pass. Sustained load/physical-device speedup remain unverified.
+- **Severity:** Medium for responsiveness and load growth.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The second performance audit found one flood DB query per SSE client every 15 seconds and blocking Open-Meteo calls inside async weather handlers. Offline engine warm-up also started alongside first map rendering. The small live request sample had a first-wave 1.27–1.31-second cluster, with later active-zone reads at 13–16 ms; it is not a controlled user-speedup benchmark.
+
+#### 2. Root Cause Analysis (RCA)
+
+Independent client polling repeats the same read/serialization. A synchronous weather SDK blocks the async event loop, so unrelated requests share its wait. Offline warm-up competes for startup resources even though it can wait until the map appears.
+
+#### 3. Solution & Architectural Strategy
+
+Use one shared DB-backed poll per worker with 100 reserved subscriptions, latest-result queues and idle/shutdown cleanup; retain init/update/unavailable behavior and independent routing safety reads. Run current/forecast handlers in FastAPI's worker pool. Schedule offline warm-up after render/idle with a timeout and older-browser timer fallback.
+
+#### 4. Files Modified / What Changed
+
+`services/flood_sync_service.py`, `endpoints/sync.py`, application lifespan, weather current/forecast signatures, `BaseMap.tsx`, snapshot/broker/weather tests and desktop/mobile map performance tests. No new schema/library/auth or cloud capacity change. [Research, tests and release details](../evaluations/cloud-performance-20261007.md#second-pass-shared-polling-and-responsive-weather-handlers).
+
+### [BUG-115] Cold starts, redundant flood refreshes and blocking route searches
+
+- **Status:** API/job/frontend fixes deployed and browser smoke checks passed; next scheduled discovery-run memory and sustained/physical-device acceptance remain unverified.
+- **Severity:** Medium for interactive latency; High for separate discovery-job memory failures.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The developer reported a slower newer version. Cloud logs showed 18–21-second API startup waits, duplicate flood-refresh paths and two 512-MiB discovery-job memory-limit failures. Production browser tests also exposed full-page reloads on reconnect that cleared open news panels.
+
+#### 2. Root Cause Analysis (RCA)
+
+Scale-to-zero, synchronous Valhalla/database waits in asynchronous routing, repeated empty exclusions, unchanged SSE snapshots triggering HTTP refetches alongside 15-second map polling, eager hidden map work and the PWA plugin's default online reload. Database/API/frontend metrics did not justify general resource upgrades under observed traffic.
+
+#### 3. Solution & Architectural Strategy
+
+Keep one API instance warm and give discovery 1 GiB. Offload synchronous waits and overlap at most two searches; preserve all flood gates and wait for in-flight calls before fallback. Send changed snapshots with keepalives, retain offline data on failed reads, use a 60-second map fallback, defer initial map/panels and keep PWA state during reconnect.
+
+#### 4. Files Modified / What Changed
+
+Backend routing, sync and retention services/endpoints; providers, live-sync hook, map/admin polling, GlobalMap, feed coordinate navigation, PWA configuration, Cloud Build and focused tests. **32 backend and 14 distinct desktop/mobile browser tests**, frontend build/type/lint and public desktop/mobile smoke checks passed. Exact rollout and browser results are maintained in the [evaluation](../evaluations/cloud-performance-20261007.md); next scheduled news-run RAM and physical phones remain unverified.
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
