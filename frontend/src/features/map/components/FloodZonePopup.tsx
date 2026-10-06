@@ -4,6 +4,8 @@ import { parseUtcDate } from "@/lib/utils";
 import { Clock, Ruler, Car, EyeOff, ShieldCheck, User, Users, ChevronDown, ChevronUp, Shield, X } from "lucide-react";
 import { Modal } from "@/shared/ui";
 import { formatFloodDepth } from "@/lib/floodDepth";
+import type { PublicNewsAlert } from "@/features/news/publicNewsApi";
+import { newsDate, publisherLink } from "@/features/news/newsPresentation";
 
 interface FloodZonePopupProps {
   properties: any;
@@ -38,6 +40,13 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
     contributors_json,
   } = properties;
 
+  let news: PublicNewsAlert[] = [];
+  try {
+    news = JSON.parse(properties.news_json || "[]");
+  } catch {
+    news = [];
+  }
+
   let contributors: any[] = [];
   try {
     if (contributors_json) {
@@ -71,7 +80,9 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
   }
 
   let reportedText = "Unknown";
-  if (created_at) {
+  if (news[0]?.observed_at) {
+    reportedText = newsDate(news[0].observed_at);
+  } else if (created_at) {
     try {
       reportedText = format(parseUtcDate(created_at) || new Date(created_at), "MMM d, h:mm a");
     } catch (e) {}
@@ -104,7 +115,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
         />
       )}
       <div
-        className={`flex flex-col w-full font-sans bg-white overflow-hidden pointer-events-auto border-slate-200/80 ${compact ? "flood-zone-popup-compact" : ""} ${drawer ? "fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-[100] max-h-[calc(100vh-5rem-env(safe-area-inset-bottom,0px))] rounded-t-2xl border-t shadow-[0_-8px_30px_rgba(0,0,0,0.16)]" : "rounded-2xl border-x border-b"}`}
+        className={`flex flex-col w-full font-sans bg-white overflow-hidden pointer-events-auto border-slate-200/80 ${compact ? "flood-zone-popup-compact" : ""} ${drawer ? "fixed inset-x-0 bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom,0px))] z-[100] max-h-[calc(100dvh-var(--bottom-nav-height)-1rem-env(safe-area-inset-bottom,0px))] rounded-t-2xl border-t shadow-[0_-8px_30px_rgba(0,0,0,0.16)]" : "rounded-2xl border-x border-b"}`}
         onClick={drawer ? (e) => e.stopPropagation() : undefined}
       >
         {drawer && (
@@ -125,7 +136,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
             </div>
           </>
         )}
-        <div className={drawer ? "min-h-0 overflow-y-auto overscroll-contain" : undefined}>
+        <div className={drawer ? "min-h-0 overflow-y-auto overscroll-contain" : compact ? "max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain" : undefined}>
       {/* Header */}
       <div 
         className={`px-4 py-3 select-none flex flex-col gap-1.5 rounded-t-2xl ${compact ? "popup-header-compact" : ""}`}
@@ -217,6 +228,15 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
 
       {/* Footer (Reporter & Contributors) */}
       <div className={`border-t border-gray-100 bg-gray-50/90 px-4 py-3 flex flex-col gap-2 ${compact ? "popup-footer-compact" : ""}`}>
+        {news.map((alert) => {
+          const link = publisherLink(alert.source_url);
+          return <div key={alert.case_id} className="flex flex-col gap-1 text-xs text-slate-600">
+            <span className="font-semibold text-slate-900">{alert.source_publisher} · {alert.status}</span>
+            {link ? <a href={link} target="_blank" rel="noopener noreferrer" className="break-words text-blue-700 underline underline-offset-2">{alert.source_title}<span className="sr-only"> (opens in a new tab)</span></a> : <span>{alert.source_title}</span>}
+            <span>{alert.geometry_basis === "estimated_road_corridor" ? "Estimated road corridor; flood extent is unmeasured." : "Verified current flood footprint."}</span>
+            <span>Observed {newsDate(alert.observed_at)} · Evidence expires {newsDate(alert.expires_at)}</span>
+          </div>;
+        })}
         <div 
           onClick={() => {
             if (hasMultipleContributors) {
@@ -247,7 +267,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
                 {displayReporterTitle}
               </span>
               <span className="text-[10px] text-gray-500 font-medium leading-tight">
-                {hasMultipleContributors ? "Community Reports (Click to expand)" : "Reporter"}
+                {hasMultipleContributors ? "Community Reports (Click to expand)" : news.length ? "News source" : "Reporter"}
               </span>
             </div>
           </div>

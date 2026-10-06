@@ -1,0 +1,104 @@
+[
+  {
+    "source_id": "GMA-20210725-796691",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/796691/list-flooded-areas-in-metro-manila-on-sunday-july-25-2021/story/",
+    "episode_group": "NCR-2021-JUL-HABAGAT",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20210723-796470",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/796470/floods-landslides-hit-luzon-areas-amid-habagat-rains/story/",
+    "episode_group": "NCR-2021-JUL-HABAGAT",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20210725-796750",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/796750/metro-manila-battles-floods-amid-stricter-quarantine-restrictions/story/",
+    "episode_group": "NCR-2021-JUL-HABAGAT",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20220730-839934",
+    "url": "https://www.gmanetwork.com/news/topstories/world/839934/ester-enhanced-habagat-rain-floods-several-metro-manila-areas/story/",
+    "episode_group": "NCR-2022-JUL30-ESTER",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20220920-845479",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/845479/habagat-induced-rains-flood-some-metro-manila-roads/story/",
+    "episode_group": "NCR-2022-SEP20-HABAGAT",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20220903-843663",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/843663/metro-manila-areas-flooded-due-to-henry-southwest-monsoon/story/",
+    "episode_group": "NCR-2022-SEP03-HENRY",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20230923-883038",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/883038/flooded-areas-saturday-sept-23-2023/story/",
+    "episode_group": "NCR-2023-SEP23",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20250722-953360",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/953360/heavy-rains-from-habagat-trigger-floods-in-parts-of-metro-manila/story/",
+    "episode_group": "NCR-2025-JUL21-25",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20250722-953419",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/953419/mmda-list-of-flooded-areas-as-of-tuesday-4-40-p-m/story/",
+    "episode_group": "NCR-2025-JUL21-25",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20240902-918977",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+    "episode_group": "NCR-2024-SEP02-ENTENG",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20260710-994434",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/994434/list-flooded-areas-in-metro-manila-on-july-10-2026/story/",
+    "episode_group": "NCR-2026-JUL10",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20260808-997803",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/997803/list-flooded-areas-in-metro-manila-due-to-rains-from-habagat-aug-8-2026/story/",
+    "episode_group": "NCR-2026-AUG08",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20260817-998778",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+    "episode_group": "NCR-2026-AUG17-18",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20230831-880633",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/880633/flood-hits-metro-manila-other-areas-amid-heavy-rains/story/",
+    "episode_group": "NCR-2023-AUG31-GORING",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "GMA-20250806-954964",
+    "url": "https://www.gmanetwork.com/news/topstories/metro/954964/heavy-rainfall-causes-flooding-in-parts-of-metro-manila/story/",
+    "episode_group": "NCR-2025-AUG06",
+    "publisher": "GMA Integrated News; MMDA/LGU observations where attributed"
+  },
+  {
+    "source_id": "RMN-20210725-MANDALUYONG-PASIG",
+    "url": "https://rmn.ph/ilang-kalsada-sa-mandaluyong-binaha-na-matapos-ang-tuloy-tuloy-na-pag-ulan/",
+    "publisher": "RMN Networks",
+    "episode_group": "NCR-2021-FABIAN-HABAGAT"
+  },
+  {
+    "source_id": "ONENEWS-20220904-HENRY",
+    "url": "https://www.onenews.ph/articles/henry-gains-strength-while-exiting",
+    "publisher": "OneNews / Romina Marie Cabrera",
+    "episode_group": "NCR-2022-HENRY-HABAGAT"
+  }
+]

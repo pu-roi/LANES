@@ -1,0 +1,94 @@
+{
+  "review_version": "pasig-source-qualification-v1",
+  "scope": "Existing Pasig evidence only; no new acquisition or training admission",
+  "rounding_review": {
+    "raw_value": "20 cm (8 inches)",
+    "reason": "Retain reported metric 20 cm as a qualified feature, not an exact measurement. Eight inches converts to 20.32 cm; plausible whole-centimeter rounding remains explicitly uncertain. Original conflicting-unit flag/value preserved."
+  },
+  "episode_group_aliases": {
+    "NCR-2021-FABIAN-HABAGAT": "PASIG-2021-JUL23-25-CANDIDATE",
+    "NCR-2021-JUL-HABAGAT": "PASIG-2021-JUL23-25-CANDIDATE",
+    "NCR-2024-SEP02-ENTENG": "PASIG-2024-SEP02-03",
+    "NCR-2026-AUG17-18": "PASIG-2026-AUG17-18"
+  },
+  "episode_group_policy": "Date/source context aliases are candidate reporting groups only, not verified independent meteorological storms or uninterrupted physical incidents. Preserve original episode/storm fields. Exact normalized place and barangay are required for a candidate timeline; no unverified road alias or branch merge.",
+  "observation_overrides": {
+    "OBS-c6115f5949d9b12d": {
+      "qualified_barangay": "San Joaquin",
+      "depth_status": "usable_consistent_reported_range",
+      "qualified_depth_cm_low": "5.08",
+      "qualified_depth_cm_high": "7.62",
+      "reason": "PASIG-20250723-1700 text lines 19-21 give San Joaquin heading and A. Policarpio 2-3 inches (5.08-7.62 cm), exactly consistent. Original missing-barangay/unit flags are parser artifacts; original values remain unchanged."
+    },
+    "OBS-7580c0b7733fff5e": {
+      "depth_status": "uncertain_new_alternate_units_conflict",
+      "qualified_depth_cm_low": "",
+      "qualified_depth_cm_high": "",
+      "reason": "PASIG-20260829-2030 text lines 22-24: Metroville 10.64cm (4 inches); four inches is 10.16 cm. Existing parser missed digit-adjacent cm; withhold numeric feature without selecting a correction."
+    },
+    "OBS-760ddb4b0bbb42b7": {
+      "depth_status": "uncertain_new_alternate_units_conflict",
+      "qualified_depth_cm_low": "",
+      "qualified_depth_cm_high": "",
+      "reason": "PASIG-20260829-2230 text lines 22-24: Metroville 10.64cm (4 inches); four inches is 10.16 cm. Preserve wet/clock evidence and withhold numeric feature."
+    },
+    "OBS-7b67a36aafc7cc99": {
+      "duplicate_review": "representative_of_candidate_same_place_clock",
+      "related_observation_ids": "OBS-a69a15308434af2c",
+      "reason": "PASIG-20250721-1900 lines 5-6 and 27-28 report Karangalan Phase 2 A at the same clock with knee level and 1 ft. Keep two source claims but one candidate wet snapshot; first source occurrence is a display representative only, not preferred depth."
+    },
+    "OBS-a69a15308434af2c": {
+      "duplicate_review": "additional_conflicting_depth_claim_same_candidate_snapshot",
+      "related_observation_ids": "OBS-7b67a36aafc7cc99",
+      "reason": "Preserve both same-place/time wet claims; numeric 1 ft is not selected over knee level. Do not treat this as a second independent wet outcome."
+    },
+    "OBS-04c437340afc0fcf": {
+      "duplicate_review": "possible_same_location_date_different_unknown_clock",
+      "related_observation_ids": "OBS-8dce85ed0ae538fd",
+      "reason": "RMN lines 2,7-8 preserve Kalusugan Stresst typo; Kalusugan Street is a search alias only. GMA-20210725-796691 lines 24-25 give Pasig noon/Kalusugan de la paz. Retain RMN supporting claim; do not copy GMA noon into RMN or merge as one exact snapshot."
+    },
+    "OBS-f7367beee8be5758": {
+      "duplicate_review": "unresolved_no_matching_timed_karangalan_claim",
+      "reason": "RMN lines 2,7-8 give date/context only. No matching timed Karangalan claim identified in this export; do not merge with Kalusugan or Karangalan Village/Phase 2 A."
+    },
+    "OBS-f7db71171f0bb0f3": {
+      "duplicate_review": "unresolved_no_matching_pasig_julia_vargas_claim",
+      "reason": "OneNews lines 12-18 support Pasig Julia Vargas wet claim with context-derived Sept 3 date, no clock. Noon is Manila and 11:30 is a PAGASA warning. No same-location Pasig duplicate identified in this export."
+    },
+    "OBS-7170e9e84fad4c4e": {
+      "geography_status": "uncertain_cross_report_barangay_identity",
+      "reason": "PASIG-20250721-1900 text lines 11-12 report Kabayanihan/Karikitan under Dela Paz; PASIG-20250723-0900 lines 21,30-31 and PASIG-20250723-1700 lines 13-15 place it under Manggahan. Preserve stated barangay; do not join or correct by majority."
+    },
+    "OBS-24e03340ba9e38e6": {
+      "geography_status": "uncertain_cross_report_barangay_identity",
+      "reason": "PASIG-20250721-2200 text lines 11-12 report Kabayanihan/Karikitan under Dela Paz; PASIG-20250723-0900 lines 21,30-31 and PASIG-20250723-1700 lines 13-15 give Manggahan. Retain source locality and hold cross-day identity join."
+    },
+    "OBS-6b6e7014e9240e69": {
+      "geography_status": "uncertain_cross_report_barangay_identity",
+      "reason": "PASIG-20250721-2345 text lines 11-12 report Kabayanihan/Karikitan under Dela Paz; PASIG-20250723-0900 lines 21,30-31 and PASIG-20250723-1700 lines 13-15 give Manggahan. Retain source locality and hold cross-day identity join."
+    },
+    "OBS-c1ab7cbdb9ba37e9": {
+      "geography_status": "uncertain_cross_report_barangay_identity",
+      "reason": "PASIG-20250723-1700 text lines 13-15 give Manggahan; Jul 21 1900/2200/2345 captures lines 11-12 give Dela Paz for Kabayanihan/Karikitan. No unilateral locality correction."
+    },
+    "OBS-a50d339eab66ef01": {
+      "geography_status": "uncertain_cross_report_barangay_identity",
+      "reason": "PASIG-20250723-0900 text lines 21,30-31 give Manggahan; Jul 21 1900/2200/2345 captures lines 11-12 give Dela Paz for Kabayanihan/Karikitan. No unilateral locality correction."
+    }
+  },
+  "clearance_episode_reviews": {
+    "OBS-c33d857e974b018d": {
+      "reported_scope": "Maybunga flooding; city reports no remaining reported flooded areas",
+      "source_linkage_basis": "Same capture PASIG-20260811-0950: line 4 09:50, line 5 summary, line 8 05:30 wet list, location lines 10/13/16/19/22/25/28/31. Conditional 260-minute upper bound inclusive."
+    },
+    "OBS-7d1d5441f76ee802": {
+      "reported_scope": "Reported Dela Paz flooding subsided before 14:00; no recorded roads remaining flooded",
+      "source_linkage_basis": "PASIG-20260818-1200 lines 1-6 wet at noon; PASIG-20260818-2300 line 7 explicitly before 02:00PM. Conditional 120-minute bound exclusive. 23:00 is response as-of, not physical clearance."
+    },
+    "OBS-aed0c046a22c54b0": {
+      "reported_scope": "Recorded flooding subsided according to barangay reports; prior list names Dela Paz, Santolan and Sta. Lucia",
+      "source_linkage_basis": "Same PASIG-20260830-1100 capture: line 4 11:00, line 5 summary, line 8 05:00 retained wet list and 28 location entries. Conditional 360-minute upper bound inclusive."
+    }
+  },
+  "admission_policy": "Usable means source-backed historical evidence, not model readiness. Summary-linked remaining-time brackets are descriptive reported-recession proxies. Individual physically dry road-section labels remain uncertain. No exact total duration, dry/safe-road outcome, recurrence-free period or model label is admitted. Broad NDRRMC occurrence/status rows remain historical context. Silence never establishes clearance or follow-up censoring."
+}

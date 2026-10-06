@@ -1,36 +1,24 @@
-import { useState, useEffect } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.matchMedia(query).matches;
-    }
-    return false;
-  });
-
-  useEffect(() => {
+  const subscribe = useCallback((notify: () => void) => {
     const media = window.matchMedia(query);
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
-
-    const listener = () => setMatches(media.matches);
     if (media.addEventListener) {
-      media.addEventListener("change", listener);
+      media.addEventListener("change", notify);
     } else {
-      media.addListener(listener);
+      media.addListener(notify);
     }
-    window.addEventListener("resize", listener);
 
     return () => {
       if (media.removeEventListener) {
-        media.removeEventListener("change", listener);
+        media.removeEventListener("change", notify);
       } else {
-        media.removeListener(listener);
+        media.removeListener(notify);
       }
-      window.removeEventListener("resize", listener);
     };
-  }, [matches, query]);
+  }, [query]);
 
-  return matches;
+  const getSnapshot = useCallback(() => window.matchMedia(query).matches, [query]);
+  // Hydrate the server layout first, then subscribe to the actual viewport.
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }

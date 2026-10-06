@@ -28,7 +28,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
 import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
-import { PendingReportsPanel } from "./components/PendingReportsPanel";
+import { NeedsReviewPanel } from "./review/NeedsReviewPanel";
+import { useNewsPlacementLayer } from "./review/useNewsPlacementLayer";
+import type { PlacementEnvelope } from "./review/reviewApi";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
 import { RejectFloodReportModal } from "./components/RejectFloodReportModal";
@@ -130,17 +132,24 @@ type SecondaryWorkspace = "merge" | "edit";
 
 export default function LiveMapPage() {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
   const toast = useToast();
   const { user, isAuthenticated } = useAuth();
   const createZoneDraftUserId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   
-  // Tab State: 'pending' (Tab 1) | 'zones' (Tab 2)
+  // Keep the legacy 'pending' key compatible with report handoffs and layers.
   const [activeTab, setActiveTab] = useState<"pending" | "zones">("pending");
   
   // Pending Moderation State
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isolatedReportId, setIsolatedReportId] = useState<number | null>(null);
+  const [selectedReviewKey, setSelectedReviewKey] = useState<string | null>(null);
+  const [reviewReport, setReviewReport] = useState<FloodReport | null>(null);
+  const [reviewCount, setReviewCount] = useState<number | undefined>(undefined);
+  const [newsPlacement, setNewsPlacement] = useState<PlacementEnvelope | null>(null);
+  const [selectedNewsCandidate, setSelectedNewsCandidate] = useState<string | null>(null);
+  const [newsLayerError, setNewsLayerError] = useState<string | null>(null);
 
   // Merge Workspace Secondary Drawer State
   const [isMergeDrawerOpen, setIsMergeDrawerOpen] = useState(false);
@@ -192,7 +201,7 @@ export default function LiveMapPage() {
   const [analyticsControl, setAnalyticsControl] = useState<AnalyticsControl | null>(null);
 
   // Responsive viewport check
-  const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+  const isMobile = useMediaQuery("(max-width: 767px), (pointer: coarse)");
   const [isMobileMapVisible, setIsMobileMapVisible] = useState(false);
 
   // DRAWER WIDTH: Consistent standard width across secondary workspace panels
@@ -218,6 +227,11 @@ export default function LiveMapPage() {
   // authoritative before the drawer restores local values.
   useEffect(() => {
     if (!isAuthenticated || !createZoneDraftUserId) {
+      setSelectedReviewKey(null);
+      setNewsPlacement(null);
+      setSelectedNewsCandidate(null);
+      setReviewReport(null);
+      setReviewCount(undefined);
       setEditingZone(null);
       setIsCreateZoneDrawerOpen(false);
       setIsEditZoneDrawerOpen(false);
@@ -225,6 +239,11 @@ export default function LiveMapPage() {
       return;
     }
     if (previousAdminId.current && previousAdminId.current !== createZoneDraftUserId) {
+      setSelectedReviewKey(null);
+      setNewsPlacement(null);
+      setSelectedNewsCandidate(null);
+      setReviewReport(null);
+      setReviewCount(undefined);
       setEditingZone(null);
       setIsCreateZoneDrawerOpen(false);
       setIsEditZoneDrawerOpen(false);
@@ -273,7 +292,7 @@ export default function LiveMapPage() {
     refetchInterval: 15000,
   });
 
-  const { data: pendingReports, isLoading: pendingLoading, refetch: refetchPending } = useQuery({
+  const { data: pendingReports, refetch: refetchPending } = useQuery({
     queryKey: ["adminPendingReports"],
     queryFn: getPendingReports,
     refetchInterval: 10000,
@@ -333,6 +352,9 @@ export default function LiveMapPage() {
         if (targetReport) {
           setActiveTab("pending");
           setSelectedReportId(idNum);
+          setSelectedReviewKey(`user_report:${idNum}`);
+          setNewsPlacement(null);
+          setSelectedNewsCandidate(null);
           setIsolatedReportId(idNum);
 
           if (targetReport.geometry && (!latStr || !lngStr)) {
@@ -369,7 +391,8 @@ export default function LiveMapPage() {
     refetchInterval: 15000,
   });
 
-  const selectedReport = pendingReports?.find((report) => report.id === selectedReportId) || null;
+  const selectedReport = pendingReports?.find((report) => report.id === selectedReportId)
+    || (reviewReport?.id === selectedReportId ? reviewReport : null);
   const selectedZone = (mapZones || []).find((zone: AvoidanceZone) => zone.id === selectedZoneId) || null;
 
   const openMergeWorkspace = (report: FloodReport) => {
@@ -443,8 +466,38 @@ export default function LiveMapPage() {
 
   // Ordinary report selection never changes the queue or guesses which reports are related.
   // Map spotlight is scoped to the explicit intelligent merge workflow.
-  const filteredPendingReports = pendingReports || [];
-  const mapPendingReports = focusedModerationReport && isolatedReportId === focusedModerationReport.id
+  const selectReview = useCallback((key: string | null) => {
+    setSelectedReviewKey(key);
+    setSelectedNewsCandidate(null);
+    setNewsPlacement(null);
+    setNewsLayerError(null);
+    if (key?.startsWith("news_claim:")) {
+      // Collapse only the visible workspaces; mounted sessions retain drafts.
+      setIsCreateZoneDrawerOpen(false);
+      setIsEditZoneDrawerOpen(false);
+      setIsMergeDrawerOpen(false);
+      setIsMergeMobileMapVisible(false);
+      setIsolatedReportId(null);
+      setSelectedReportId(null);
+    } else if (key?.startsWith("user_report:")) {
+      setSelectedReportId(Number(key.split(":")[1]));
+    } else {
+      setSelectedReportId(null);
+      setIsolatedReportId(null);
+    }
+  }, []);
+  const reviewingNews = selectedReviewKey?.startsWith("news_claim:") === true;
+  const newsPreviewEnabled = reviewingNews && activeTab === "pending" && pathname === "/admin/map"
+    && !isCreateZoneDrawerOpen && !isEditZoneDrawerOpen && !isMergeDrawerOpen;
+  useNewsPlacementLayer(mapInstance, isLoaded, newsPlacement, selectedNewsCandidate, newsPreviewEnabled,
+    !isMobile || isMobileMapVisible, setSelectedNewsCandidate, setNewsLayerError);
+  const selectQueueReportFromMap = useCallback((id: number | null) => {
+    handleReportFocusChange(id);
+    selectReview(id === null ? null : `user_report:${id}`);
+  }, [handleReportFocusChange, selectReview]);
+  const filteredPendingReports = reviewReport?.status === "pending" && !pendingReports?.some((report) => report.id === reviewReport.id)
+    ? [...(pendingReports || []), reviewReport] : pendingReports || [];
+  const mapPendingReports = reviewingNews ? [] : focusedModerationReport && isolatedReportId === focusedModerationReport.id
     ? [focusedModerationReport]
     : isMergeDrawerOpen && mergingReport
     ? filteredPendingReports.filter((report) => report.id === mergingReport.id)
@@ -478,7 +531,7 @@ export default function LiveMapPage() {
     isLoaded, 
     mapPendingReports,
     activeTab, 
-    handleReportFocusChange,
+    selectQueueReportFromMap,
     selectedReportId,
     isolatedReportId,
     isMobile
@@ -492,7 +545,6 @@ export default function LiveMapPage() {
     proposedGeometry: mergeProposedGeometry,
   });
 
-  const pathname = usePathname();
   useEffect(() => {
     if (mapInstance && isLoaded && pathname === "/admin/map") {
       setTimeout(() => {
@@ -639,7 +691,14 @@ export default function LiveMapPage() {
       queryClient.invalidateQueries({ queryKey: ["activeZonesMap"] });
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setSelectedReportId((current) => current === variables.id ? null : current);
-    }
+      queryClient.invalidateQueries({ queryKey: ["spatial-review"] });
+      queryClient.invalidateQueries({ queryKey: ["spatial-review-detail"] });
+      queryClient.invalidateQueries({ queryKey: ["spatial-review-members"] });
+      if (selectedReviewKey === `user_report:${variables.id}`) selectReview(null);
+    },
+    onError: (error: Error) => {
+      toast.error("Approval Failed", error.message || "Could not approve this report.");
+    },
   });
 
   const rejectMutation = useMutation({
@@ -651,6 +710,10 @@ export default function LiveMapPage() {
       setRejectionReport(null);
       setInfoModalReport(null);
       toast.success("Report Rejected", `Flood report #${variables.id} was retained in internal moderation history.`);
+      queryClient.invalidateQueries({ queryKey: ["spatial-review"] });
+      queryClient.invalidateQueries({ queryKey: ["spatial-review-detail"] });
+      queryClient.invalidateQueries({ queryKey: ["spatial-review-members"] });
+      if (selectedReviewKey === `user_report:${variables.id}`) selectReview(null);
     },
     onError: (err: any) => {
       toast.error("Rejection Failed", err?.response?.data?.detail || err?.message || "Could not reject report.");
@@ -780,9 +843,9 @@ export default function LiveMapPage() {
         isPreviewEnabled={isCreateZoneDrawerOpen || isEditZoneDrawerOpen}
         isCreateZoneDrawerOpen={isCreateZoneDrawerOpen || isEditZoneDrawerOpen}
       />
-      <div className="flex flex-col md:flex-row h-full w-full overflow-hidden bg-white">
+      <div className={`relative flex ${isMobile ? "flex-col" : "flex-row"} h-full w-full overflow-hidden bg-white`}>
         {/* LEFT PANEL: Moderation & Zones Sidebar */}
-        <div className={`${isMobile && (isMergeDrawerOpen && isMergeMobileMapVisible || isMobileMapVisible) ? "hidden" : "flex"} relative w-full md:w-[420px] xl:w-[460px] shrink-0 flex-col bg-white border-r border-slate-200 h-full md:flex md:h-full z-40 shadow-sm`}>
+        <div className={`${isMobile && (isMergeDrawerOpen && isMergeMobileMapVisible || isMobileMapVisible) ? "hidden" : "flex"} relative ${isMobile ? "w-full" : "w-[420px] xl:w-[460px]"} shrink-0 flex-col bg-white border-r border-slate-200 h-full z-40 shadow-sm`}>
           
           {/* Mode Switcher Tabs Header */}
           <div className="p-3 border-b border-gray-100 bg-slate-50/70 flex flex-wrap items-center justify-between gap-2">
@@ -791,9 +854,9 @@ export default function LiveMapPage() {
                 tabs={[
                   {
                     id: "pending",
-                    label: "Pending Reports",
+                    label: "Needs Review",
                     icon: FileQuestion,
-                    badge: pendingReports && pendingReports.length > 0 ? pendingReports.length : undefined,
+                    badge: reviewCount,
                     badgeColor: "bg-amber-500 text-white"
                   },
                   {
@@ -814,44 +877,48 @@ export default function LiveMapPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => { refetchPending(); refetchList(); refetchMap(); }}
+                onClick={() => { refetchPending(); refetchList(); refetchMap(); void queryClient.invalidateQueries({ queryKey: ["spatial-review"] }); void queryClient.invalidateQueries({ queryKey: ["spatial-review-detail"] }); void queryClient.invalidateQueries({ queryKey: ["spatial-review-members"] }); }}
                 className="h-9 flex-1 rounded-xl bg-white md:flex-none md:px-2.5"
                 title="Refresh list"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
                 <span className="ml-1.5 md:hidden">Refresh</span>
               </Button>
-              <Button
+              {isMobile && <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
                   setIsMobileMapVisible(true);
                   window.setTimeout(() => mapInstance?.resize(), 0);
                 }}
-                className="h-9 flex-1 rounded-xl bg-white md:hidden"
+                className="min-h-11 flex-1 rounded-xl bg-white"
                 title="Open map"
                 aria-label="Open map"
               >
                 <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                <span className="ml-1.5">View map</span>
-              </Button>
+                <span className="ml-1.5">{selectedReviewKey ? "Map" : "View map"}</span>
+              </Button>}
             </div>
           </div>
 
-          {/* TAB 1: PENDING REPORTS (MODERATION QUEUE) */}
-          {activeTab === "pending" && (
-            <PendingReportsPanel 
-              pendingLoading={pendingLoading}
-              pendingReports={pendingReports}
-              filteredPendingReports={filteredPendingReports}
-              selectedReportId={selectedReportId}
-              setSelectedReportId={handleReportFocusChange}
+          {/* TAB 1: SOURCE-AWARE NEEDS REVIEW QUEUE */}
+          <div className={`${activeTab === "pending" ? "flex" : "hidden"} min-h-0 flex-1 flex-col`}>
+            <NeedsReviewPanel
+              active={isAuthenticated && activeTab === "pending" && pathname === "/admin/map"}
+              selectedKey={selectedReviewKey}
+              onSelect={selectReview}
+              onReport={setReviewReport}
+              onPreview={setNewsPlacement}
+              selectedCandidate={selectedNewsCandidate}
+              onCandidate={setSelectedNewsCandidate}
+              onCount={setReviewCount}
+              layerError={newsLayerError}
               onInfoClick={(r) => setInfoModalReport(r)}
               onOpenMergeWorkspace={openMergeWorkspace}
               onRequestReject={setRejectionReport}
               approveMutation={approveMutation}
             />
-          )}
+          </div>
 
           {/* TAB 2: ACTIVE ZONES (DETOURS & OPERATIONS) */}
           {activeTab === "zones" && (
@@ -918,7 +985,7 @@ export default function LiveMapPage() {
             }}
             className={isZoneWorkspaceOpen
               ? "absolute inset-0 hidden"
-              : `fixed inset-0 z-50 flex h-full min-w-0 shrink-0 md:relative md:inset-auto md:z-30 ${isMergeDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
+              : `${isMobile ? "absolute inset-0 z-50" : "relative z-30"} flex h-full min-w-0 shrink-0 ${isMergeDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
             }
             onAnimationComplete={() => {
               mapInstance?.resize();
@@ -930,10 +997,10 @@ export default function LiveMapPage() {
                   key={mergingReport.id}
                   primaryReport={mergingReport}
                   isOpen={isMergeDrawerOpen}
-                  onShowMap={() => {
+                  onShowMap={isMobile ? () => {
                     setIsMergeMobileMapVisible(true);
                     window.setTimeout(() => mapInstance?.resize(), 260);
-                  }}
+                  } : undefined}
                   onClose={() => {
                     setIsMergeDrawerOpen(false);
                     setIsMergeMobileMapVisible(false);
@@ -958,6 +1025,10 @@ export default function LiveMapPage() {
                     refetchPending();
                     refetchMap();
                     refetchList();
+                    queryClient.invalidateQueries({ queryKey: ["spatial-review"] });
+                    queryClient.invalidateQueries({ queryKey: ["spatial-review-detail"] });
+                    queryClient.invalidateQueries({ queryKey: ["spatial-review-members"] });
+                    selectReview(null);
                   }}
                 />
               </div>
@@ -1213,7 +1284,7 @@ export default function LiveMapPage() {
       </AnimatePresence>
 
       {/* RIGHT PANEL: Live Map View */}
-      <div className={`${isMobile && !isMergeDrawerOpen && !isMobileMapVisible ? "hidden" : "flex"} flex-1 relative h-full md:flex bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
+      <div className={`${isMobile && !isMergeDrawerOpen && !isMobileMapVisible ? "hidden" : "flex"} flex-1 relative h-full bg-[#f2efe9] overflow-hidden transform-gpu z-0`}>
         <BaseMap 
           actionControls={handleActionControls}
           onMapInit={handleMapInit}
@@ -1274,9 +1345,9 @@ export default function LiveMapPage() {
               setIsMobileMapVisible(false);
               window.setTimeout(() => mapInstance?.resize(), 0);
             }}
-            className="fixed bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-900 px-4 text-xs text-white shadow-xl hover:bg-slate-800 md:hidden"
+            className="fixed bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom)+1rem)] left-1/2 z-50 min-h-11 -translate-x-1/2 rounded-full bg-slate-900 px-4 text-xs text-white shadow-xl hover:bg-slate-800"
           >
-            <ArrowRight className="mr-1.5 h-4 w-4 rotate-180" /> Operations
+            <ArrowRight className="mr-1.5 h-4 w-4 rotate-180" /> {selectedReviewKey ? "Evidence" : "Operations"}
           </Button>
         )}
       </div>

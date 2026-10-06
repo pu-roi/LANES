@@ -6,7 +6,7 @@ from app.models.audit import AuditLog
 from app.schemas.audit import AuditLogCreate
 
 
-def create_audit_log(db: Session, audit_in: AuditLogCreate) -> AuditLog:
+def create_audit_log(db: Session, audit_in: AuditLogCreate, commit: bool = True) -> AuditLog:
     """
     Creates a new audit log record.
     """
@@ -19,8 +19,11 @@ def create_audit_log(db: Session, audit_in: AuditLogCreate) -> AuditLog:
         ip_address=audit_in.ip_address,
     )
     db.add(db_audit)
-    db.commit()
-    db.refresh(db_audit)
+    if commit:
+        db.commit()
+        db.refresh(db_audit)
+    else:
+        db.flush()
     return db_audit
 
 

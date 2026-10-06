@@ -1,0 +1,24 @@
+# PDFs are binary documents, even when Git's content heuristic sees text.
+*.pdf binary
+
+# Immutable research captures must retain their original bytes and manifest hashes.
+# Treat captured HTML/text as evidence artifacts rather than editable source files.
+/docs/evaluations/**/sources/** binary
+
+# Dated research exports and their builder identities are SHA-256 evidence.
+# Preserve bytes on every OS so manifest verification survives a Git checkout.
+/docs/evaluations/pasig-duration-*/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-duration-*/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/flood-duration-pilot-20261004/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/flood-duration-pilot-20261004/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/plans/pasig-reported-subsidence-target.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/collect_flood_duration_pilot.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/qualify_pasig_duration_data.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/build_pasig_duration_followup.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Runtime boundary catalogs are checked by raw-byte SHA-256 on every platform.
+/backend/runtime_data/barangay/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve analytical manifest identity through Windows/Linux checkouts.
+/backend/runtime_data/noah-placement/*.json -text
+/backend/runtime_data/noah-placement/**/*.gz binary

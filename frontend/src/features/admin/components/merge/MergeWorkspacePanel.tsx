@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useMapContext } from "@/features/map/MapContext";
 import {
   getMergeCandidates,
+  getMergePreview,
   mergeReports,
   type AvoidanceZone,
   type FloodReport,
@@ -71,7 +72,6 @@ export function MergeWorkspacePanel({
   onClose,
   onShowMap,
   onMergeSuccess,
-  activeZones = [],
   mapInstance = null,
   onPreviewChange,
 }: MergeWorkspacePanelProps) {
@@ -93,6 +93,7 @@ export function MergeWorkspacePanel({
   const [currentStep, setCurrentStep] = useState<WorkflowStep>(1);
   const [selectedCandidateIds, setSelectedCandidateIds] = useState<number[]>([]);
   const [targetZoneId, setTargetZoneId] = useState<number | null>(null);
+  const [mergeMode, setMergeMode] = useState<"extend" | "corroborate" | "add_section">("extend");
   const [geometryMode, setGeometryMode] = useState<GeometryMode>("line");
   const [editorValues, setEditorValues] = useState<ZoneDataEditorValues>(() => ({
     severity: primaryReport?.severity || "medium",
@@ -140,9 +141,19 @@ export function MergeWorkspacePanel({
     return Array.from(unique.values());
   }, [selectedCandidates]);
 
+  const previewPayload: MergeReportsPayload | null = primaryReport ? {
+    primary_report_id: primaryReport.id, merged_report_ids: selectedCandidateIds, target_zone_id: targetZoneId,
+    merge_mode: mergeMode, final_data: { ...editorValues, passable_vehicles: editorValues.passable_vehicles.join(",") },
+  } : null;
+  const coverage = useQuery({ queryKey: ["mergeCoverage", previewPayload],
+    queryFn: () => getMergePreview(previewPayload!), enabled: isOpen && currentStep >= 3 && Boolean(previewPayload), retry: false });
+  const proposalMutation = useMutation({ mutationFn: () => getMergePreview({ ...previewPayload!, use_report_extents: true }),
+    onSuccess: (data) => setEditorValues((previous) => ({ ...previous, geometry: data.reviewed_geometry ?? data.geometry })),
+    onError: (error: Error) => showError("Boundary Unavailable", error.message) });
+
   useEffect(() => {
-    onPreviewChange?.(isOpen ? selectedCandidates : [], isOpen ? editorValues.geometry : null);
-  }, [editorValues.geometry, isOpen, onPreviewChange, selectedCandidates]);
+    onPreviewChange?.(isOpen ? selectedCandidates : [], isOpen ? coverage.data?.geometry ?? editorValues.geometry : null);
+  }, [coverage.data, editorValues.geometry, isOpen, onPreviewChange, selectedCandidates]);
 
   useEffect(() => {
     if (isOpen) return;
@@ -190,6 +201,9 @@ export function MergeWorkspacePanel({
       success("Reports Merged", data.message || "The official avoidance zone was published.");
       queryClient.invalidateQueries({ queryKey: ["adminPendingReports"] });
       queryClient.invalidateQueries({ queryKey: ["adminZones"] });
+      for (const key of ["spatial-review", "spatial-review-detail", "spatial-review-members", "adminActiveZones", "adminZones", "activeZonesMap", "adminDashboardStats", "floodEvents", "mergeCandidates"]) {
+        void queryClient.invalidateQueries({ queryKey: [key] });
+      }
       onMergeSuccess?.(data.zone);
       handleClose();
     },
@@ -226,6 +240,7 @@ export function MergeWorkspacePanel({
   };
 
   const validateFinalData = (): boolean => {
+    if (mergeMode === "corroborate" && targetZoneId) return true;
     if (!hasUsableGeometry(editorValues.geometry)) {
       showError("Geometry Required", "Define a valid road segment or draw one hazard boundary before continuing.");
       return false;
@@ -242,20 +257,21 @@ export function MergeWorkspacePanel({
   };
 
   const handleNext = () => {
-    if (currentStep === 1 && selectedCandidateIds.length === 0) {
-      showError("Choose a Report", "Select at least one suggested report to create a multi-report merge.");
+    if (currentStep === 1 && selectedCandidateIds.length === 0 && !targetZoneId) {
+      showError("Choose a Report or Zone", "Select related reports or an existing event zone.");
       return;
     }
-    if (currentStep === 3 && !validateFinalData()) return;
+    if (currentStep === 3 && (!validateFinalData() || !coverage.data || coverage.isFetching || coverage.isError)) return;
     setCurrentStep((currentStep + 1) as WorkflowStep);
   };
 
   const handleExecuteMerge = () => {
-    if (selectedCandidateIds.length === 0 || !validateFinalData()) return;
+    if ((!selectedCandidateIds.length && !targetZoneId) || !validateFinalData() || !coverage.data || coverage.isFetching || coverage.isError) return;
     const payload: MergeReportsPayload = {
       primary_report_id: primaryReport.id,
       merged_report_ids: selectedCandidateIds,
       target_zone_id: targetZoneId,
+      merge_mode: mergeMode,
       final_data: {
         name: editorValues.name,
         severity: editorValues.severity,
@@ -283,7 +299,7 @@ export function MergeWorkspacePanel({
         </div>
         <div className="flex shrink-0 items-center gap-1">
           {onShowMap && (
-            <Button type="button" variant="ghost" size="sm" onClick={onShowMap} className="h-8 px-2 text-[11px] md:hidden">
+            <Button type="button" variant="ghost" size="sm" onClick={onShowMap} className="h-8 px-2 text-[11px]">
               <MapPinned className="mr-1 h-3.5 w-3.5" /> Map
             </Button>
           )}
@@ -305,7 +321,7 @@ export function MergeWorkspacePanel({
         })}
       </div>
 
-      <div className="scrollbar-auto-hide flex-1 space-y-4 overflow-y-auto p-3.5 sm:p-4">
+      <div className="scrollbar-auto-hide flex-1 space-y-4 overflow-y-auto p-3.5 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] sm:p-4">
         {isCandidatesLoading ? (
           <div className="flex h-56 flex-col items-center justify-center gap-2.5 text-center text-slate-500">
             <Loader2 className="h-7 w-7 animate-spin text-blue-600" />
@@ -368,6 +384,16 @@ export function MergeWorkspacePanel({
                   </div>
                 )}
                 </section>
+                <section aria-label="Nearby active zones" className="border-t border-slate-200 pt-4">
+                  <h3 className="text-xs font-semibold text-slate-800">Nearby active flood zones</h3>
+                  <p className="my-2 text-xs text-slate-500">Choose a zone only when this report belongs to the same ongoing flood. Streets and barangays may differ.</p>
+                  {!(candidatesData?.zone_candidates?.length) && <p className="text-xs text-slate-500">No nearby active event zones were found.</p>}
+                  <div className="space-y-2">{candidatesData?.zone_candidates?.map((zone) => <Button key={zone.zone_id} variant={targetZoneId === zone.zone_id ? "primary" : "outline"}
+                    className="min-h-11 h-auto w-full whitespace-normal text-left text-xs" aria-pressed={targetZoneId === zone.zone_id}
+                    onClick={() => { setTargetZoneId(targetZoneId === zone.zone_id ? null : zone.zone_id); setMergeMode("extend"); }}>
+                    Zone #{zone.zone_id} · {zone.name || "Active flood"} · {Math.round(zone.distance_m)} m away
+                  </Button>)}</div>
+                </section>
               </div>
             )}
 
@@ -381,8 +407,10 @@ export function MergeWorkspacePanel({
 
             {currentStep === 3 && (
               <div className="space-y-5">
-                <section className="space-y-3">
-                  <div><h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">1. Final spatial geometry</h3><p className="mt-1 text-[11px] text-slate-500">Keep the primary geometry or redefine the official routing boundary using the shared zone tools.</p></div>
+                {mergeMode !== "corroborate" && <section className="space-y-3">
+                  <div><h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">1. Reviewed affected section</h3><p className="mt-1 text-[11px] text-slate-500">Review the affected extent. Extending an existing zone retains its current coverage; separate sections keep their own conditions.</p></div>
+                  <Button variant="outline" size="sm" className="min-h-11" disabled={proposalMutation.isPending}
+                    onClick={() => proposalMutation.mutate()}>Use selected report extents</Button>
                   <GeometryModeSelector geometryMode={geometryMode} onChange={(mode) => { setGeometryMode(mode); if (mode !== "line") setFloodIsBidirectional(false); }} isDrawingMode={isDrawingMode} onCancelDrawing={cancelDrawingMode} />
                   {geometryMode === "line" ? (
                     <div className="space-y-3">
@@ -395,17 +423,26 @@ export function MergeWorkspacePanel({
                       {drawnFeatures.length > 0 && <Button type="button" variant="outline" size="sm" onClick={clearDrawing} className="mt-2 border-red-200 text-red-600">Clear drawing</Button>}
                     </div>
                   )}
-                </section>
-                <section className="space-y-3 border-t border-slate-100 pt-4">
+                </section>}
+                {mergeMode !== "corroborate" && <section className="space-y-3 border-t border-slate-100 pt-4">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">2. Final operational information</h3>
                   <ZoneDataEditorForm initialValues={editorValues} onChange={setEditorValues} hideBidirectional />
-                </section>
+                </section>}
                 <section className="space-y-1.5 border-t border-slate-100 pt-4">
                   <label htmlFor="merge-target-zone" className="text-xs font-semibold text-slate-700">Destination avoidance zone</label>
-                  <select id="merge-target-zone" value={targetZoneId ?? ""} onChange={(event) => setTargetZoneId(event.target.value ? Number(event.target.value) : null)} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-xs font-medium text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <select id="merge-target-zone" value={targetZoneId ?? ""} onChange={(event) => { setTargetZoneId(event.target.value ? Number(event.target.value) : null); setMergeMode("extend"); }} className="w-full rounded-lg border border-slate-200 bg-white p-2 text-xs font-medium text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
                     <option value="">Create a new official avoidance zone</option>
-                    {activeZones.map((zone) => <option key={zone.id} value={zone.id}>Zone #{zone.id} · {zone.name || zone.severity || "Active incident"}</option>)}
+                    {candidatesData?.zone_candidates?.map((zone) => <option key={zone.zone_id} value={zone.zone_id}>Zone #{zone.zone_id} · {zone.name || "Active incident"}</option>)}
                   </select>
+                  {targetZoneId && <><label htmlFor="merge-mode" className="block pt-2 text-xs font-semibold text-slate-700">How does this report affect the event?</label>
+                    <select id="merge-mode" value={mergeMode} onChange={(event) => setMergeMode(event.target.value as typeof mergeMode)} className="min-h-11 w-full rounded-lg border border-slate-200 bg-white p-2 text-xs">
+                      <option value="extend">Extend this zone · retain current coverage</option>
+                      <option value="corroborate">Link supporting evidence · keep current boundary and conditions</option>
+                      <option value="add_section">Add a separate section · same event, its own boundary and conditions</option>
+                    </select></>}
+                  {coverage.isPending && <p role="status" className="pt-2 text-xs text-slate-500">Checking final coverage…</p>}
+                  {coverage.isError && <div role="alert" className="space-y-2 pt-2 text-xs text-red-700"><p>{coverage.error.message}</p><Button variant="outline" size="sm" onClick={() => void coverage.refetch()}>Retry coverage preview</Button></div>}
+                  {coverage.data && !coverage.isError && <p role="status" className="pt-2 text-xs text-emerald-700">{coverage.data.preserves_existing_coverage ? "Existing zone coverage is preserved in the map preview." : "Reviewed section is shown in the map preview."}</p>}
                 </section>
               </div>
             )}
@@ -416,13 +453,13 @@ export function MergeWorkspacePanel({
                 <dl className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white text-xs">
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Reports included</dt><dd className="text-right font-semibold text-slate-800">#{[primaryReport.id, ...selectedCandidateIds].join(", #")}</dd></div>
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Suggestions excluded</dt><dd className="font-semibold text-slate-800">{Math.max(0, (candidatesData?.total_candidates || 0) - selectedCandidateIds.length)}</dd></div>
-                  <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Destination</dt><dd className="text-right font-semibold text-slate-800">{targetZoneId ? `Existing zone #${targetZoneId}` : "New official zone"}</dd></div>
-                  <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Depth / severity</dt><dd className="font-semibold capitalize text-slate-800">{formatFloodDepth(editorValues.depth, { compact: true })} · {editorValues.severity}</dd></div>
+                  <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Destination</dt><dd className="text-right font-semibold text-slate-800">{targetZoneId ? `${mergeMode === "add_section" ? "New section in event of" : mergeMode === "corroborate" ? "Supporting evidence for" : "Extend"} zone #${targetZoneId}` : "New official zone"}</dd></div>
+                  {mergeMode !== "corroborate" && <><div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Depth / severity</dt><dd className="font-semibold capitalize text-slate-800">{formatFloodDepth(editorValues.depth, { compact: true })} · {editorValues.severity}</dd></div>
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Passable</dt><dd className="max-w-[60%] text-right font-semibold text-slate-800">{editorValues.passable_vehicles.join(", ")}</dd></div>
-                  <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Geometry</dt><dd className="font-semibold text-slate-800">{editorValues.geometry.type}</dd></div>
+                  <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Geometry</dt><dd className="font-semibold text-slate-800">{editorValues.geometry.type}</dd></div></>}
                   <div className="flex justify-between gap-4 p-3"><dt className="text-slate-500">Contributor credit</dt><dd className="font-semibold text-slate-800">+5 trust per unique reporter</dd></div>
                 </dl>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-[11px] text-slate-600"><strong className="text-slate-800">Operational description:</strong> {editorValues.admin_notes}</div>
+                {mergeMode === "corroborate" ? <p className="text-xs text-slate-600">The existing boundary and operational conditions remain unchanged.</p> : <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-[11px] text-slate-600"><strong className="text-slate-800">Operational description:</strong> {editorValues.admin_notes}</div>}
               </div>
             )}
           </>
@@ -434,7 +471,7 @@ export function MergeWorkspacePanel({
           {currentStep === 1 ? "Cancel" : <><ArrowLeft className="mr-1 h-3.5 w-3.5" /> Back</>}
         </Button>
         {currentStep < 4 ? (
-          <Button type="button" variant="primary" size="sm" onClick={handleNext} disabled={isCandidatesLoading || isCandidatesError || (currentStep === 1 && selectedCandidateIds.length === 0)} className="bg-blue-600 text-xs font-semibold text-white hover:bg-blue-700">
+          <Button type="button" variant="primary" size="sm" onClick={handleNext} disabled={isCandidatesLoading || isCandidatesError || (currentStep === 1 && selectedCandidateIds.length === 0 && !targetZoneId) || (currentStep === 3 && (coverage.isFetching || coverage.isError || !coverage.data))} className="bg-blue-600 text-xs font-semibold text-white hover:bg-blue-700">
             {currentStep === 1 ? "Compare Selected" : currentStep === 2 ? "Edit Final Zone" : "Review Confirmation"}<ArrowRight className="ml-1 h-3.5 w-3.5" />
           </Button>
         ) : (

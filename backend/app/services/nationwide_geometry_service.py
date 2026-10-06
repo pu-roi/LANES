@@ -387,14 +387,40 @@ class NationwideGeometryService:
         if precision_level in ("road", "landmark"):
             if claim.canonical_city:
                 resolved_city = claim.canonical_city
-                resolved_province = claim.canonical_province or resolved_province
-                psgc_code = claim.psgc_code or psgc_code
+                # A road name such as Calamba or Blumentritt can also match an
+                # unrelated administrative place. Derive the parent fields
+                # together from the already grounded city; never keep the
+                # homonym's province/island when preserving the claimed city.
+                parents = self.location_service.cities.get(claim.canonical_city.casefold(), [])
+                if claim.psgc_code:
+                    matching = [record for record in parents if claim.psgc_code.startswith(
+                        record["psgc_code"].rstrip("0"))]
+                    parents = matching
+                parent = parents[0] if len(parents) == 1 else None
+                resolved_province = claim.canonical_province or None
+                island_group = None
+                if parent:
+                    parent_region = str(parent.get("region", "")).lower()
+                    resolved_province = parent.get("province") or None
+                    if "ncr" in parent_region or parent["psgc_code"].startswith("13"):
+                        resolved_province = None
+                        island_group = "Luzon"
+                    elif any(k in parent_region for k in ("ilocos", "cagayan", "central luzon", "calabarzon", "mimaropa", "bicol", "car")):
+                        island_group = "Luzon"
+                    elif any(k in parent_region for k in ("western visayas", "central visayas", "eastern visayas")):
+                        island_group = "Visayas"
+                    elif any(k in parent_region for k in ("zamboanga", "northern mindanao", "davao", "soccsksargen", "caraga", "barmm")):
+                        island_group = "Mindanao"
+                resolved_barangay = claim.canonical_barangay
+                psgc_code = claim.psgc_code or (parent["psgc_code"] if parent else None)
             else:
                 # A road name can also be a city/province name. The gazetteer
                 # result alone cannot establish its parent jurisdiction.
                 resolved_city = None
                 resolved_province = None
                 psgc_code = None
+                island_group = None
+                resolved_barangay = None
 
         # If road or landmark, discover parent city / province from full_context if not yet resolved
         if resolved_city is None:

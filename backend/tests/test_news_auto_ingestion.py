@@ -9,8 +9,8 @@ Verifies:
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from datetime import datetime, timedelta, timezone
+from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -49,7 +49,7 @@ def test_conflicting_update_blocks_even_independently_verified_geometry():
         event_time_kind="observation",
         uncertainty_reasons=["contradictory_update"],
     )
-    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True, place_confirmed=True, time_confirmed=True)
     location = RankedLocationCandidate(
         raw_place_name="Araneta Avenue",
         resolved_city="Quezon City",
@@ -83,7 +83,7 @@ def test_caption_and_metadata_only_cannot_activate_even_with_verified_geometry()
         event_time_kind="observation",
         uncertainty_reasons=["photo_caption_only"],
     )
-    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True, place_confirmed=True, time_confirmed=True)
     location = RankedLocationCandidate(
         raw_place_name="UN Avenue",
         resolved_city="City of Manila",
@@ -145,6 +145,8 @@ async def test_auditor_confirmation_does_not_create_public_zone(
         assert result["created_event_ids"] == []
         assert article.review_state == "flagged_review"
         assert not mock_create_event.called
+        mock_db.add.assert_not_called()
+        mock_db.flush.assert_not_called()
         assert mock_db.commit.called
 
 
@@ -200,6 +202,165 @@ async def test_forged_auto_approved_claim_cannot_write_public_records(
     create_event.assert_not_called()
 
 
+@pytest.mark.parametrize(
+    "failed_gate",
+    [
+        "missing_audit",
+        "stale_publication",
+        "stale_observation",
+        "report_time_only",
+        "passable_road",
+        "contradictory_update",
+        "metadata_only",
+        "preview_geometry",
+        "missing_city",
+        "missing_depth",
+    ],
+)
+@pytest.mark.asyncio
+async def test_each_failed_activation_gate_writes_no_public_flood_data(
+    failed_gate: str,
+    auto_ingestion_service: NewsAutoIngestionService,
+    monkeypatch,
+):
+    """A forged approval label cannot create a report, event, or routing zone."""
+    now = datetime.now(timezone.utc)
+    published_at = now - timedelta(minutes=5)
+    claim = ExtractedClaim(
+        raw_place_name="Sample Road",
+        canonical_road="Sample Road",
+        canonical_city="City of Pasig",
+        place_type="street",
+        place_char_start=9,
+        place_char_end=20,
+        evidence_sentence="Flood at Sample Road, knee deep.",
+        evidence_sentence_offset=(0, 32),
+        depth_canonical="knee",
+        condition="active",
+        event_time_resolved=now - timedelta(minutes=10),
+        event_time_kind="observation",
+        action_type="auto_approved",
+        audit_result=LLMAuditResult(
+            is_confirmed=True, status_classification="active", depth_confirmed=True,
+        ),
+        ranked_location=RankedLocationCandidate(
+            raw_place_name="Sample Road",
+            resolved_city="City of Pasig",
+            precision_level="road",
+            geometry_provenance="verified_segment",
+            is_auto_approvable=True,
+            requires_staff_edit=False,
+            geometry_geojson={
+                "type": "Polygon",
+                "coordinates": [[[121.0, 14.5], [121.001, 14.5], [121.001, 14.501], [121.0, 14.501], [121.0, 14.5]]],
+            },
+        ),
+    )
+
+    if failed_gate == "missing_audit":
+        claim.audit_result = None
+    elif failed_gate == "stale_publication":
+        published_at = now - timedelta(days=2)
+    elif failed_gate == "stale_observation":
+        claim.event_time_resolved = now - timedelta(days=2)
+    elif failed_gate == "report_time_only":
+        claim.event_time_kind = "report"
+    elif failed_gate == "passable_road":
+        claim.road_passability = "passable_all"
+    elif failed_gate == "contradictory_update":
+        claim.uncertainty_reasons.append("contradictory_update")
+    elif failed_gate == "metadata_only":
+        claim.uncertainty_reasons.append("metadata_only_lead")
+    elif failed_gate == "preview_geometry":
+        claim.ranked_location.geometry_provenance = "offline_anchor"
+    elif failed_gate == "missing_city":
+        claim.canonical_city = None
+        claim.ranked_location.resolved_city = None
+    elif failed_gate == "missing_depth":
+        claim.depth_canonical = None
+
+    async def forged_extraction(*args, **kwargs):
+        return NewsExtractionResult(
+            article_id=505,
+            canonical_url="https://news.example.com/flood",
+            is_metadata_only=failed_gate == "metadata_only",
+            processed_text_length=len(claim.evidence_sentence),
+            claims=[claim],
+        )
+
+    monkeypatch.setattr(auto_ingestion_service.hybrid_service, "extract_hybrid", forged_extraction)
+    article = NewsArticle(
+        id=505,
+        canonical_url="https://news.example.com/flood",
+        publisher_source_id="gma-news",
+        title="Sample Road flood",
+        article_text=claim.evidence_sentence,
+        published_at=published_at,
+        review_state="pending",
+    )
+    mock_db = MagicMock()
+    with patch("app.services.news_auto_ingestion_service.create_verified_event_with_zone") as create_event:
+        result = await auto_ingestion_service.process_and_ingest_article(mock_db, article)
+
+    assert result["auto_approved_claims"] == 0
+    assert result["created_event_ids"] == []
+    assert article.review_state == "flagged_review"
+    mock_db.add.assert_not_called()
+    mock_db.flush.assert_not_called()
+    create_event.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_negated_claim_writes_no_public_flood_data(
+    auto_ingestion_service: NewsAutoIngestionService,
+    monkeypatch,
+):
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="Sample Road",
+        canonical_city="City of Pasig",
+        place_type="street",
+        place_char_start=0,
+        place_char_end=11,
+        evidence_sentence="No flood was reported on Sample Road.",
+        evidence_sentence_offset=(0, 37),
+        flood_mentioned=False,
+        is_negated=True,
+        action_type="suppressed_negated",
+    )
+
+    async def negated_extraction(*args, **kwargs):
+        return NewsExtractionResult(
+            article_id=506,
+            canonical_url="https://news.example.com/no-flood",
+            is_metadata_only=False,
+            processed_text_length=len(claim.evidence_sentence),
+            claims=[claim],
+        )
+
+    monkeypatch.setattr(auto_ingestion_service.hybrid_service, "extract_hybrid", negated_extraction)
+    article = NewsArticle(
+        id=506,
+        canonical_url="https://news.example.com/no-flood",
+        publisher_source_id="gma-news",
+        title="No flood on Sample Road",
+        article_text=claim.evidence_sentence,
+        published_at=now,
+        review_state="pending",
+    )
+    mock_db = MagicMock()
+    with patch("app.services.news_auto_ingestion_service.create_verified_event_with_zone") as create_event:
+        result = await auto_ingestion_service.process_and_ingest_article(mock_db, article)
+
+    assert result["suppressed_claims"] == 1
+    assert result["auto_approved_claims"] == 0
+    assert result["created_event_ids"] == []
+    assert article.review_state == "suppressed"
+    mock_db.add.assert_not_called()
+    mock_db.flush.assert_not_called()
+    create_event.assert_not_called()
+
+
 @pytest.mark.asyncio
 async def test_subsided_flood_strictly_suppressed(
     auto_ingestion_service: NewsAutoIngestionService,
@@ -239,6 +400,8 @@ async def test_subsided_flood_strictly_suppressed(
         assert article.review_state == "suppressed"
         # Verify no event or zone creation service was ever called
         assert not mock_create_event.called
+        mock_db.add.assert_not_called()
+        mock_db.flush.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -279,3 +442,37 @@ async def test_forecast_advisory_strictly_suppressed(
         assert result["created_event_ids"] == []
         assert article.review_state == "suppressed"
         assert not mock_create_event.called
+        mock_db.add.assert_not_called()
+        mock_db.flush.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_failed_article_refresh_cannot_activate_retained_old_body() -> None:
+    now = datetime.now(timezone.utc)
+    claim = ExtractedClaim(
+        raw_place_name="Laguna Street", canonical_city="Pasig", canonical_road="Laguna Street",
+        place_type="street", place_char_start=0, place_char_end=13,
+        evidence_sentence="Laguna Street had knee-deep water.", evidence_sentence_offset=(0, 33),
+        depth_canonical="knee", condition="active", event_time_kind="observation", event_time_resolved=now,
+        action_type="auto_approved",
+        ranked_location=RankedLocationCandidate(raw_place_name="Laguna Street", precision_level="road",
+                                               geometry_provenance="verified_segment", is_auto_approvable=True,
+                                               geometry_geojson={"type": "Polygon", "coordinates": []}),
+    )
+    hybrid = MagicMock()
+    hybrid.extract_hybrid = AsyncMock(return_value=NewsExtractionResult(article_id=504,
+                                  canonical_url="https://news.example.org/update", is_metadata_only=False,
+                                  processed_text_length=100, claims=[claim]))
+    hybrid.evaluate_claim_action.return_value = ("auto_approved", "cached decision")
+    article = NewsArticle(id=504, canonical_url="https://news.example.org/update", publisher_source_id="example",
+                          title="Flood update", excerpt="", article_text=claim.evidence_sentence,
+                          article_error="Article HTTP 403", published_at=now, review_state="pending")
+    db = MagicMock()
+    with patch("app.services.news_auto_ingestion_service.create_verified_event_with_zone") as create_event:
+        result = await NewsAutoIngestionService(hybrid).process_and_ingest_article(db, article)
+    assert hybrid.extract_hybrid.call_args.args[0].article_text is None
+    assert result["auto_approved_claims"] == 0
+    assert result["flagged_claims"] == 1
+    create_event.assert_not_called()
+    db.add.assert_not_called()
+    db.flush.assert_not_called()

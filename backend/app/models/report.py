@@ -408,6 +408,22 @@ class FloodAvoidanceZone(Base):
         return self.primary_report.raw_text if self.primary_report else None
 
     @property
+    def report_source(self) -> Optional[str]:
+        if self.primary_report and self.primary_report.source:
+            return self.primary_report.source.value if hasattr(self.primary_report.source, "value") else str(self.primary_report.source)
+        try:
+            from sqlalchemy.orm import object_session
+            from app.models.news_publication import NewsClaimZoneLink
+            s = object_session(self)
+            if s:
+                link = s.query(NewsClaimZoneLink).filter(NewsClaimZoneLink.zone_id == self.id).first()
+                if link:
+                    return "news"
+        except Exception:
+            pass
+        return None
+
+    @property
     def reporter_name(self) -> str:
         if self.primary_report and self.primary_report.user:
             user = self.primary_report.user
@@ -463,6 +479,33 @@ class FloodAvoidanceZone(Base):
         """
         contribs = []
         if not self.reports:
+            try:
+                from sqlalchemy.orm import object_session
+                from app.models.news_publication import NewsClaimZoneLink, NewsClaimDecision
+                s = object_session(self)
+                if s:
+                    link = s.query(NewsClaimZoneLink).filter(NewsClaimZoneLink.zone_id == self.id).first()
+                    if link and link.decision:
+                        pub = (link.decision.snapshot or {}).get("public") or {}
+                        publisher = pub.get("source_publisher") or "Verified News Report"
+                        contribs.append({
+                            "report_id": 0,
+                            "reporter_name": publisher,
+                            "reporter_username": None,
+                            "reporter_role": "News Publisher",
+                            "reporter_trust_score": 100.0,
+                            "raw_text": pub.get("evidence_excerpt") or self.admin_notes or "Audited news flood report",
+                            "severity": self.severity,
+                            "depth": self.depth,
+                            "depth_meters": self.depth_meters,
+                            "depth_inches": self.depth_inches,
+                            "depth_formatted": self.depth_formatted,
+                            "created_at": link.created_at or self.created_at,
+                            "is_primary": True,
+                            "geometry": self.geometry,
+                        })
+            except Exception:
+                pass
             return contribs
 
         for idx, r in enumerate(self.reports):

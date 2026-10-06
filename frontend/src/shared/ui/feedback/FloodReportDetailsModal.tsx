@@ -24,6 +24,7 @@ import {
 import { Button } from "@/shared/ui/forms/Button";
 import { MediaViewer } from "./MediaViewer";
 import { formatFloodDepth } from "@/lib/floodDepth";
+import { FloodDetailMetric as ReportMetric } from "./FloodDetailMetric";
 
 export interface FloodReportDetailsGeometry {
   type: string;
@@ -121,8 +122,4 @@ export function FloodReportDetailsModal({ report, isOpen, presentation = "dialog
       {(onViewOnMap || canModerate) && <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/80 px-4 py-4 sm:flex-row sm:px-6">{onViewOnMap && <Button className="flex w-full items-center justify-center gap-2 border-blue-200 text-sm font-semibold text-blue-600 hover:bg-blue-50 sm:w-auto" onClick={handleMapView} variant="outline"><MapIcon className="size-4 text-blue-600" />View on Map (Focus)</Button>}{canModerate && <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto"><Button className="flex-1 gap-1.5 border-rose-200 text-sm font-semibold text-rose-600 hover:bg-rose-50 sm:flex-none" disabled={isRejectLoading} onClick={() => onReject(report.id)} variant="outline">{isRejectLoading ? <Loader2 className="size-4 animate-spin" /> : <XCircle className="size-4" />}Reject</Button><Button className="flex-1 gap-1.5 bg-emerald-600 text-sm font-semibold text-white hover:bg-emerald-700 sm:flex-none" disabled={isApproveLoading} onClick={() => onApprove(report.id)}>{isApproveLoading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle className="size-4" />}Approve</Button></div>}</div>}
     </motion.div>
   </motion.div>}</AnimatePresence><MediaViewer initialIndex={mediaViewer?.initialIndex} isOpen={mediaViewer !== null} mediaUrls={mediaViewer?.urls ?? []} onClose={() => setMediaViewer(null)} /></>;
-}
-
-function ReportMetric({ icon, iconClassName, label, value, capitalize = false }: { icon: React.ReactNode; iconClassName: string; label: string; value: string; capitalize?: boolean }) {
-  return <div className="flex items-start gap-3 rounded-xl border border-slate-200/70 bg-slate-50/80 p-3.5"><div className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${iconClassName}`}>{icon}</div><div className="flex flex-col"><span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</span><span className={`text-sm font-bold text-slate-900 ${capitalize ? "capitalize" : ""}`}>{value}</span></div></div>;
 }

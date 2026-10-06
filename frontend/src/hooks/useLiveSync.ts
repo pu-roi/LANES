@@ -40,6 +40,10 @@ export function useLiveSync() {
           const floods = JSON.parse(event.data);
           await saveFloodsOffline(floods);
           queryClient.invalidateQueries({ queryKey: ['reports', 'flood'] });
+          queryClient.invalidateQueries({ queryKey: ['activeZones'] });
+          queryClient.invalidateQueries({ queryKey: ['activeZonesMap'] });
+          queryClient.invalidateQueries({ queryKey: ['adminZones'] });
+          queryClient.invalidateQueries({ queryKey: ['publicNewsAlerts'] });
         } catch (err) {
           console.warn("Failed to parse SSE update:", err);
         }

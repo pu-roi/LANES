@@ -1,0 +1,13 @@
+{
+  "catalog_sha256": "5edd1284a00003ed2d97ff7d500f02b58d7f53521864e149311628df3d338386",
+  "source_id": "osm-ncr:2026-09-27T00:56:56Z:0fa54508ad7fe5e9",
+  "snapshot_at": "2026-09-27T00:56:56Z",
+  "osm_sha256": "0fa54508ad7fe5e9debd6f46b6cd5ca01eeb57b26e2ba5d5b751a5539b6b2b1d",
+  "named_ways": 66129,
+  "unnamed_highways": 100264,
+  "cities": 17,
+  "incomplete_named_ways": 3,
+  "route_referenced_named_ways": 5257,
+  "compressed_bytes": 5307116,
+  "expanded_bytes": 21939651
+}

@@ -50,7 +50,7 @@ class NewsAutoIngestionService:
             publisher=article.publisher_source_id,
             title=article.title,
             excerpt=article.excerpt or "",
-            article_text=article.article_text,
+            article_text=article.article_text if not article.article_error else None,
             published_at=article.published_at,
             fetched_at=article.fetched_at,
         )
@@ -75,6 +75,7 @@ class NewsAutoIngestionService:
 
             if (
                 action == "auto_approved"
+                and not article.article_error
                 and persistence_action == "auto_approved"
                 and claim.ranked_location
                 and claim.ranked_location.geometry_provenance == "verified_segment"

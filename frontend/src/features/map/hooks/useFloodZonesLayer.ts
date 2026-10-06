@@ -144,6 +144,7 @@ export function useFloodZonesLayer(
           passable_vehicles: zone.passable_vehicles,
           hidden_hazards: zone.hidden_hazards,
           contributors_json: JSON.stringify(zone.contributors || []),
+          news_json: JSON.stringify(zone.news || []),
         };
 
         // 1. Zoomed-in Road Solid Core feature (Street Level: Zoom > 14)
@@ -329,8 +330,9 @@ export function useFloodZonesLayer(
       // Floating nav bar sits at top (Y: 0 to ~100px) and popup is ~360px tall + 14px offset.
       // To safely place the popup above without colliding with the top navigation,
       // we need at least 500px of clearance above AND more space above than below.
-      const canSafelyFitAbove = spaceAbove >= 500 && spaceAbove >= spaceBelow;
-      const canFitBelow = spaceBelow >= 360;
+      const popupHeight = properties.news_json && properties.news_json !== "[]" ? 550 : 360;
+      const canSafelyFitAbove = spaceAbove >= Math.max(500, popupHeight + 100) && spaceAbove >= spaceBelow;
+      const canFitBelow = spaceBelow >= popupHeight;
       const isNearLeft = spaceLeft < 190;
       const isNearRight = spaceRight < 190;
 
@@ -344,7 +346,11 @@ export function useFloodZonesLayer(
         else smartAnchor = "top";
       } else {
         // If vertical space is constrained, place to the side with more horizontal room
-        if (spaceRight >= spaceLeft) {
+        // Prefer the left side when the full popup fits, leaving the existing
+        // public report/map controls on the right accessible.
+        if (spaceLeft >= 360) {
+          smartAnchor = "right";
+        } else if (spaceRight >= spaceLeft) {
           smartAnchor = "left";
         } else {
           smartAnchor = "right";

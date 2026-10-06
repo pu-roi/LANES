@@ -14,7 +14,7 @@ export function useSSE() {
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
 
-  const connect = useCallback(() => {
+  const connect = useCallback(function connect() {
     if (!mountedRef.current) return;
     if (typeof window === "undefined") return;
 
@@ -25,6 +25,7 @@ export function useSSE() {
     eventSourceRef.current = eventSource;
 
     eventSource.onopen = () => {
+      queryClient.invalidateQueries({ queryKey: ["publicNewsAlerts"] });
       console.log("SSE connected successfully");
       // Connection succeeded — reset backoff
       backoffRef.current = INITIAL_BACKOFF_MS;
@@ -37,6 +38,7 @@ export function useSSE() {
         console.log("Received SSE event:", payload);
 
         const { event: eventName } = payload;
+        queryClient.invalidateQueries({ queryKey: ["publicNewsAlerts"] });
         if (eventName === "report_approved" || eventName === "report_rejected") {
           queryClient.invalidateQueries({ queryKey: ["adminReports"] });
           queryClient.invalidateQueries({ queryKey: ["activeZones"] });

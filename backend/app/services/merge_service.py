@@ -3,27 +3,23 @@ import logging
 import math
 import re
 import struct
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 from geoalchemy2 import WKBElement
-from sqlalchemy import func, or_, and_, desc
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
-from app.models.report import FloodReport, FloodAvoidanceZone, ReportStatus, ReportSeverity
-from app.models.user import User
-from app.models.profile import Profile
+from app.models.report import FloodReport, FloodAvoidanceZone, FloodEvent, FloodEventStatus, ReportStatus, ReportSeverity
 from app.schemas.common import (
     parse_ewkb_point,
     parse_ewkb_linestring,
     parse_ewkb_multilinestring,
     parse_ewkb_polygon,
 )
-from app.schemas.report import MergeCandidateItem, MergeConflict, MergeCandidatesListResponse
+from app.schemas.report import MergeCandidateItem, MergeConflict, MergeCandidatesListResponse, MergeZoneCandidate
 from app.services.carriageway_service import (
     trace_road_attributes,
-    find_opposite_carriageway,
-    decode_polyline6,
 )
 
 logger = logging.getLogger(__name__)
@@ -135,13 +131,13 @@ def calculate_spatial_corridor_overlap(geom_a: Any, geom_b: Any, db: Session) ->
         query = db.query(
             func.ST_Area(
                 func.ST_Intersection(
-                    func.ST_Buffer(geom_a, 0.00025),  # ~25 meters
-                    func.ST_Buffer(geom_b, 0.00025)
+                    func.ST_Buffer(func.ST_Transform(geom_a, 32651), 25),
+                    func.ST_Buffer(func.ST_Transform(geom_b, 32651), 25)
                 )
             ).label("intersection_area"),
             func.LEAST(
-                func.ST_Area(func.ST_Buffer(geom_a, 0.00025)),
-                func.ST_Area(func.ST_Buffer(geom_b, 0.00025))
+                func.ST_Area(func.ST_Buffer(func.ST_Transform(geom_a, 32651), 25)),
+                func.ST_Area(func.ST_Buffer(func.ST_Transform(geom_b, 32651), 25))
             ).label("min_area")
         ).first()
 
@@ -220,10 +216,10 @@ def detect_conflicts(primary: FloodReport, candidate: FloodReport) -> List[Merge
 def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListResponse:
     """
     Core Multi-Factor Candidate Engine:
-    Finds pending reports and active zones spatially and topologically related to report_id.
+    Finds nearby pending reports and active event-owned zone review targets.
     """
     primary = db.query(FloodReport).filter(FloodReport.id == report_id).first()
-    if not primary:
+    if not primary or primary.deleted_at is not None or primary.status != ReportStatus.PENDING:
         raise ValueError(f"Report with ID {report_id} not found")
 
     if not primary.geometry:
@@ -238,8 +234,9 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
     nearby_reports = db.query(FloodReport).filter(
         FloodReport.id != primary.id,
         FloodReport.status == ReportStatus.PENDING,
+        FloodReport.deleted_at.is_(None),
         FloodReport.geometry.isnot(None),
-        func.ST_DWithin(FloodReport.geometry, primary.geometry, 0.005)  # ~500m
+        func.ST_DWithin(func.ST_Transform(FloodReport.geometry, 32651), func.ST_Transform(primary.geometry, 32651), 500)
     ).all()
 
     # 2. Trace primary road network properties (Decision #16 & OSM way_id)
@@ -307,9 +304,6 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
                 points = int(best_sim * 30)
                 score += points
                 match_reasons.append(f"Same Street Name ({int(best_sim * 100)}% match)")
-            elif best_sim < 0.4 and cand.barangay == primary.barangay and (cand_names and primary_road_names):
-                # Disqualify reports in same barangay on different streets
-                continue
 
         # Firewall: Reject merging highway with service road/alley if classes mismatch drastically
         if primary_road_class and cand_road_class:
@@ -343,7 +337,12 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
             score += 5
 
         # Minimum score threshold to qualify as candidate
-        if score >= 45:
+        distance_m = db.query(func.ST_Distance(func.ST_Transform(primary.geometry, 32651),
+            func.ST_Transform(cand.geometry, 32651))).scalar()
+        cross_road_review = distance_m is not None and distance_m <= 50 and time_diff <= 120
+        if score >= 45 or cross_road_review:
+            if cross_road_review:
+                match_reasons.append("Nearby affected section; confirm continuity before merging")
             cand_conflicts = detect_conflicts(primary, cand)
             all_conflicts.extend(cand_conflicts)
 
@@ -379,7 +378,7 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
     # Sort descending by match score
     scored_candidates.sort(key=lambda x: x.match_score, reverse=True)
 
-    # 3. Synthesize Initial Proposed Merged Geometry (Linear Referencing)
+    # 3. Propose all submitted sections for explicit administrator review
     all_reports = [primary] + [cand for cand in nearby_reports if cand.id in [c.report_id for c in scored_candidates[:5]]]
     synthesized_geom, is_bidirectional = synthesize_merged_geometry(all_reports, db=db)
 
@@ -389,8 +388,24 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
         total_candidates=len(scored_candidates),
         detected_conflicts=all_conflicts,
         suggested_merged_geometry=synthesized_geom,
-        is_bidirectional_detected=is_bidirectional
+        is_bidirectional_detected=is_bidirectional,
+        zone_candidates=find_active_zone_candidates(primary, db),
     )
+
+
+def find_active_zone_candidates(primary: FloodReport, db: Session) -> list[MergeZoneCandidate]:
+    """An ongoing zone may be older than two hours; its active lifecycle is the gate."""
+    distance = func.ST_Distance(func.ST_Transform(primary.geometry, 32651),
+        func.ST_Transform(FloodAvoidanceZone.geometry, 32651))
+    rows = db.query(FloodAvoidanceZone, distance.label("distance_m")).join(FloodEvent).filter(
+        FloodAvoidanceZone.is_active.is_(True), FloodEvent.status == FloodEventStatus.ACTIVE,
+        or_(FloodAvoidanceZone.expires_at.is_(None), FloodAvoidanceZone.expires_at > datetime.now(timezone.utc)),
+        func.ST_DWithin(func.ST_Transform(primary.geometry, 32651), func.ST_Transform(FloodAvoidanceZone.geometry, 32651), 500),
+    ).order_by(distance, FloodAvoidanceZone.id).limit(20).all()
+    return [MergeZoneCandidate(zone_id=zone.id, event_id=zone.event_id, name=zone.name,
+        distance_m=round(float(metres), 1), severity=zone.severity, depth=zone.depth,
+        match_reasons=["Nearby active Flood Event", "Confirm shared incident and affected extent; locality labels do not exclude review"])
+        for zone, metres in rows]
 
 
 def synthesize_merged_geometry(
@@ -398,78 +413,22 @@ def synthesize_merged_geometry(
     db: Session,
     is_bidirectional: bool = False
 ) -> Tuple[Optional[dict], bool]:
+    """Propose all submitted sections without trimming branches or inventing gaps.
+
+    The administrator must confirm this proposal through the coverage preview.
+    Unsupported or mixed geometry requires an explicit reviewed boundary.
     """
-    Linear Referencing Geometry Synthesis:
-    1. Finds the longest, continuous centerline along the verified road graph.
-    2. Projects each report's start and end points via ST_LineLocatePoint (0.0 - 1.0).
-    3. Slices the continuous road extent using min(t) and max(t) via ST_LineSubstring.
-    4. Evaluates opposite carriageways via Decision #16 if bidirectional is requested or detected.
-    """
-    valid_geoms = [r.geometry for r in reports if r.geometry is not None]
-    if not valid_geoms:
+    from shapely.geometry import shape, mapping
+    from shapely.ops import unary_union, linemerge
+    submitted = [extract_geojson_geometry(r.geometry) for r in reports if r.geometry is not None]
+    if not submitted or any(not raw or raw["type"] not in {"LineString", "MultiLineString", "Polygon"} for raw in submitted):
         return None, False
-
-    try:
-        # Check if any report is a Polygon (TerraDraw shape)
-        for r in reports:
-            g_dict = extract_geojson_geometry(r.geometry)
-            if g_dict and g_dict.get("type") in ["Polygon", "MultiPolygon"]:
-                # If an admin or user drew a polygon, union the shapes
-                union_poly = db.query(func.ST_AsGeoJSON(func.ST_UnaryUnion(func.ST_Collect(*valid_geoms)))).scalar()
-                if union_poly:
-                    return json.loads(union_poly), is_bidirectional
-
-        # Centerline Linear Referencing for LineStrings
-        # Find the line that spans the longest distance to serve as the baseline route
-        primary_line = valid_geoms[0]
-        max_len = 0.0
-        for g in valid_geoms:
-            length = db.query(func.ST_Length(g)).scalar() or 0.0
-            if length > max_len:
-                max_len = length
-                primary_line = g
-
-        # Compute min(t) and max(t) across all report start and end vertices
-        t_values = []
-        for g in valid_geoms:
-            t_start = db.query(func.ST_LineLocatePoint(primary_line, func.ST_StartPoint(g))).scalar()
-            t_end = db.query(func.ST_LineLocatePoint(primary_line, func.ST_EndPoint(g))).scalar()
-            if t_start is not None:
-                t_values.append(float(t_start))
-            if t_end is not None:
-                t_values.append(float(t_end))
-
-        min_t = min(t_values) if t_values else 0.0
-        max_t = max(t_values) if t_values else 1.0
-        if max_t - min_t < 0.01:
-            min_t = 0.0
-            max_t = 1.0
-
-        merged_line_json = db.query(
-            func.ST_AsGeoJSON(func.ST_LineSubstring(primary_line, min_t, max_t))
-        ).scalar()
-
-        if merged_line_json:
-            merged_dict = json.loads(merged_line_json)
-            coords = merged_dict.get("coordinates", [])
-
-            # Check Decision #16 two-way road status
-            road_name = reports[0].human_readable_location
-            road_type, opp_geom = find_opposite_carriageway(coords, original_road_name=road_name)
-
-            if is_bidirectional or any(r.is_bidirectional for r in reports):
-                if road_type == "DIVIDED_CARRIAGEWAY" and opp_geom:
-                    opp_coords = opp_geom.get("coordinates", [])
-                    return {
-                        "type": "MultiLineString",
-                        "coordinates": [coords, opp_coords]
-                    }, True
-                return merged_dict, True
-
-            return merged_dict, (road_type == "NARROW_TWO_WAY")
-
-    except Exception as e:
-        logger.warning(f"Error in synthesize_merged_geometry: {e}")
-
-    # Fallback to first report's geometry
-    return extract_geojson_geometry(valid_geoms[0]), is_bidirectional
+    shapes = [shape(raw) for raw in submitted]
+    if any(not geom.is_valid or geom.is_empty for geom in shapes):
+        return None, False
+    merged = unary_union(shapes)
+    if merged.geom_type == "MultiLineString":
+        merged = linemerge(merged)
+    if merged.geom_type in {"LineString", "MultiLineString", "Polygon"}:
+        return mapping(merged), is_bidirectional or any(r.is_bidirectional for r in reports)
+    return None, False

@@ -10,6 +10,7 @@ from app.schemas.interaction import PostInteractionCreate
 from app.crud import feed as crud_feed
 from app.crud import interaction as crud_interaction
 from app.models.interaction import InteractionType
+from app.services.geocoding_service import resolve_address_coordinates
 
 router = APIRouter()
 
@@ -27,18 +28,48 @@ def get_feed(
 ):
     """
     Retrieve community feed.
-    If tab='nearby', lat and lng are required.
+    If tab='nearby', lat and lng are used. If missing, falls back to the user's
+    registered profile address (primary), and then saved places (secondary).
     By default, 'recent' tab prioritizes posts from the last 72 hours (3 days) to match
     flood hazard lifecycles, falling back gracefully to latest posts if none exist in that window.
     """
+    resolved_location_name = None
     if tab == "nearby" and (lat is None or lng is None):
-        raise HTTPException(
-            status_code=400, 
-            detail="Latitude and longitude must be provided for 'nearby' feed."
-        )
+        # 1. Primary Fallback: Registered address from user profile (Registration address)
+        if current_user and getattr(current_user, "profile", None) and getattr(current_user.profile, "address", None):
+            addr = current_user.profile.address
+            resolved = resolve_address_coordinates(
+                barangay=addr.barangay,
+                city=addr.city_municipality,
+                province=addr.province
+            )
+            if resolved:
+                lat, lng = resolved
+                resolved_location_name = f"Brgy. {addr.barangay}, {addr.city_municipality}"
+
+        # 2. Secondary Fallback: User's saved places (e.g. Home bookmark)
+        if (lat is None or lng is None) and current_user and getattr(current_user, "saved_places", None):
+            sorted_places = sorted(
+                current_user.saved_places,
+                key=lambda p: (
+                    0 if (p.name and p.name.strip().lower() == "home") else 1,
+                    p.pin_order if p.pin_order is not None else 999
+                )
+            )
+            if sorted_places:
+                primary_place = sorted_places[0]
+                lat = primary_place.latitude
+                lng = primary_place.longitude
+                resolved_location_name = primary_place.name or "Saved Place"
+
+        if lat is None or lng is None:
+            raise HTTPException(
+                status_code=400,
+                detail="Latitude and longitude must be provided for 'nearby' feed, or complete your registered address in your profile."
+            )
 
     user_id = current_user.id if current_user else None
-    
+
     feed_data = crud_feed.get_feed_posts(
         db=db,
         user_id=user_id,
@@ -65,8 +96,34 @@ def get_feed(
             tab=tab,
             time_window_hours=None
         )
-    
-    return feed_data
+
+    # Concentric radius expansion: if 5km yielded 0 posts, expand search up to 15km
+    # so users in adjacent barangays don't encounter an artificial blank feed.
+    expanded_radius = False
+    if tab == "nearby" and feed_data["total"] == 0 and radius is not None and radius < 15000:
+        expanded_data = crud_feed.get_feed_posts(
+            db=db,
+            user_id=user_id,
+            lat=lat,
+            lng=lng,
+            radius=15000,
+            skip=skip,
+            limit=limit,
+            tab=tab,
+            time_window_hours=None
+        )
+        if expanded_data["total"] > 0:
+            feed_data = expanded_data
+            expanded_radius = True
+
+    return CommunityPostPaginatedResponse(
+        posts=feed_data["posts"],
+        total=feed_data["total"],
+        has_more=feed_data["has_more"],
+        expanded_radius=expanded_radius,
+        resolved_location_name=resolved_location_name
+    )
+
 
 
 @router.get("/leaderboard", response_model=TopReportersResponse)
@@ -94,21 +151,20 @@ def vote_post(
     """
     if interaction_in.post_id != post_id:
         raise HTTPException(status_code=400, detail="Post ID mismatch")
-        
+
     if interaction_in.interaction_type not in [InteractionType.UPVOTE, InteractionType.DOWNVOTE]:
         raise HTTPException(status_code=400, detail="Invalid interaction type")
 
     crud_interaction.toggle_interaction(
-        db=db, 
-        user_id=current_user.id, 
+        db=db,
+        user_id=current_user.id,
         interaction_in=interaction_in
     )
-    
+
     summary = crud_interaction.get_post_vote_summary(
         db=db,
         post_id=post_id,
         user_id=current_user.id
     )
-    
-    return summary
 
+    return summary

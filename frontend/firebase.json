@@ -4,6 +4,10 @@
     "rootDir": "/",
     "ignore": [
       "node_modules",
+      ".next",
+      ".env*",
+      "test-results",
+      "playwright-report",
       ".git",
       "firebase-debug.log",
       "firebase-debug.*.log",

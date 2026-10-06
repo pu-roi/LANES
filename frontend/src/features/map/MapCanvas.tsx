@@ -212,13 +212,17 @@ export default function MapCanvas() {
   const altSourceIds = useRef<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const [zoneStatusUnavailable, setZoneStatusUnavailable] = useState(false);
   const { data: activeZonesData } = useQuery({
     queryKey: ["activeZones"],
     queryFn: async () => {
       try {
-        return await apiClient.get<any[]>("/reports/active-zones");
+        const zones = await apiClient.get<any[]>("/reports/active-zones");
+        setZoneStatusUnavailable(false);
+        return zones;
       } catch (err) {
         console.warn("API unreachable, falling back to offline flood cache.");
+        setZoneStatusUnavailable(true);
         return await getFloodsOffline();
       }
     },
@@ -227,6 +231,9 @@ export default function MapCanvas() {
 
   const isTouchDevice = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const { error: showError } = useToast();
+  useEffect(() => {
+    if (zoneStatusUnavailable) showError("Flood zone status unavailable", "Could not refresh the flood zones. Cached map data may be out of date.");
+  }, [zoneStatusUnavailable, showError]);
 
   // Hooks for modular map layers (reactive on mapInstance state!)
   useCityBoundaries(mapInstance, isLoaded);

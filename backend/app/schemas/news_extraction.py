@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from pydantic import BaseModel, Field
+from app.schemas.news_placement import NewsPlacementPreview
+from app.schemas.news_audit import IndependentAuditResult
 
 
 CanonicalDepth = Literal[
@@ -51,7 +53,7 @@ class NewsArticleExtractorInput(BaseModel):
 
 
 class LLMAuditResult(BaseModel):
-    """Audit result from Gemini 1.5 Flash supporting double-check verification."""
+    """Backward-compatible hybrid projection; durable audits use strict evidence."""
 
     is_confirmed: bool
     status_classification: Literal["active", "rising", "receding", "subsided", "forecast", "negated", "unclear"] = "unclear"
@@ -61,6 +63,9 @@ class LLMAuditResult(BaseModel):
     is_subsided: bool = False
     is_negated: bool = False
     audit_notes: str = ""
+    place_confirmed: bool = False
+    time_confirmed: bool = False
+    independent_audit: IndependentAuditResult | None = None
 
 
 class RankedLocationCandidate(BaseModel):
@@ -88,6 +93,40 @@ class RankedLocationCandidate(BaseModel):
     requires_staff_edit: bool = False
 
 
+class RoadPlacementCandidate(BaseModel):
+    """Mapped centerline evidence; never an observed flood width or closure."""
+
+    candidate_id: str
+    kind: Literal["reported_span", "road_section"]
+    centerline_geojson: dict
+    osm_way_ids: list[int]
+    cross_streets: list[list[str]] = Field(default_factory=list)
+    approximate_length_m: float | None = None
+    ambiguous_carriageway: bool = False
+
+
+class RoadPlacementEvidence(BaseModel):
+    status: Literal["bounded_candidate", "ambiguous", "unresolved", "source_unavailable"]
+    reason: str
+    source_id: str | None = None
+    snapshot_at: datetime | None = None
+    catalog_sha256: str | None = None
+    osm_sha256: str | None = None
+    city_relation_id: int | None = None
+    barangay_catalog_sha256: str | None = None
+    barangay_source_id: str | None = None
+    barangay_psgc_code: str | None = None
+    barangay_osm_relation_id: int | None = None
+    barangay_source_url: str | None = None
+    barangay_source_classification: Literal["osm_community", "reviewed_source"] | None = None
+    barangay_boundary_status: Literal["not_required", "available", "unavailable"] = "not_required"
+    candidates: list[RoadPlacementCandidate] = Field(default_factory=list, max_length=25)
+    total_candidate_count: int = 0
+    candidates_truncated: bool = False
+    proves_current_flood: Literal[False] = False
+    may_affect_routing: Literal[False] = False
+
+
 class ExtractedClaim(BaseModel):
     """An evidence-linked structured flood claim for a specific location."""
 
@@ -109,7 +148,7 @@ class ExtractedClaim(BaseModel):
     is_negated: bool = False
     is_forecast: bool = False
     is_historical: bool = False
-    road_passability: Literal["passable_all", "light_vehicle_closed", "impassable_all", "unknown"] = "unknown"
+    road_passability: Literal["passable_all", "passable_with_caution", "passable_unspecified", "light_vehicle_closed", "impassable_all", "unknown"] = "unknown"
 
     depth_raw: str | None = None
     depth_canonical: CanonicalDepth | None = None
@@ -135,6 +174,8 @@ class ExtractedClaim(BaseModel):
     action_rationale: str | None = None
     audit_result: LLMAuditResult | None = None
     ranked_location: RankedLocationCandidate | None = None
+    road_placement: RoadPlacementEvidence | None = None
+    placement_preview: NewsPlacementPreview | None = None
 
 
 class NewsExtractionResult(BaseModel):

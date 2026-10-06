@@ -53,3 +53,49 @@ export const PHILIPPINE_LOCATIONS: Record<string, Record<string, string[]>> = {
     ]
   }
 };
+
+export const PASIG_BARANGAY_CENTROIDS: Record<string, [number, number]> = {
+  "bagong ilog": [14.565254, 121.069000],
+  "bagong katipunan": [14.558597, 121.075193],
+  "bambang": [14.554780, 121.078653],
+  "buting": [14.554785, 121.067741],
+  "caniogan": [14.571951, 121.080520],
+  "dela paz": [14.613554, 121.095793],
+  "kalawaan": [14.551481, 121.086725],
+  "kapasigan": [14.564499, 121.074174],
+  "kapitolyo": [14.571258, 121.059267],
+  "malinao": [14.557603, 121.078579],
+  "manggahan": [14.603896, 121.099242],
+  "maybunga": [14.573879, 121.098035],
+  "oranbo": [14.573583, 121.064245],
+  "palatiw": [14.563063, 121.084919],
+  "pinagbuhatan": [14.557297, 121.090992],
+  "pineda": [14.566581, 121.059579],
+  "rosario": [14.590928, 121.087306],
+  "sagad": [14.566274, 121.079462],
+  "san antonio": [14.583057, 121.061801],
+  "san joaquin": [14.552226, 121.075712],
+  "san jose": [14.561303, 121.073645],
+  "san miguel": [14.565805, 121.085476],
+  "san nicolas": [14.560669, 121.080379],
+  "santa cruz": [14.563571, 121.078921],
+  "santa lucia": [14.584264, 121.101303],
+  "santa rosa": [14.557324, 121.070366],
+  "santo tomas": [14.562841, 121.081683],
+  "santolan": [14.621693, 121.086314],
+  "sumilang": [14.556648, 121.073891],
+  "ugong": [14.584131, 121.073246],
+};
+
+export function resolveProfileCoordinates(
+  barangay?: string | null,
+  _city?: string | null
+): { lat: number; lng: number } | null {
+  if (!barangay) return null;
+  const cleanBgy = barangay.toLowerCase().replace(/^(barangay|brgy\.?)\s+/i, '').trim();
+  if (PASIG_BARANGAY_CENTROIDS[cleanBgy]) {
+    const [lat, lng] = PASIG_BARANGAY_CENTROIDS[cleanBgy];
+    return { lat, lng };
+  }
+  return null;
+}

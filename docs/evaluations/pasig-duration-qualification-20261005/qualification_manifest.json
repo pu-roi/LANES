@@ -1,0 +1,422 @@
+{
+  "review_version": "pasig-source-qualification-v1",
+  "review_date": "2026-10-05 Asia/Manila",
+  "collection_cutoff": "2026-10-04 Asia/Manila (unchanged)",
+  "source_scope": "Pasig City",
+  "input_sha256": {
+    "flood_observations.csv": "67c638e9f067c30067515d50096d64d3e7ce69e23b8a1f2e15963a88e135bb17",
+    "clearance_observations.csv": "ef6756815db000f5107f89d27ae83579573b49f6d7004bbf69d79e9cf2cd5a74",
+    "candidate_duration_intervals.csv": "152519daa08332f98896cbc1f69cc0772ec4e30c11d66a2dc14cdfcdaff756b7",
+    "historical_incidents.csv": "8689894ebe75993738fb404a58218ba0ce58cb57227a7f5c6968c1606d47e080"
+  },
+  "review_rules_sha256": "89b333a2a1bfe90a58b5b64d3715ab02e423ab0c96fc66b79b90adee6e44224b",
+  "builder_sha256": "3a621718856267974cb50320372b4e66ccef8f20f20f13ea6093c191fa26f95a",
+  "verified_source_count": 27,
+  "verified_sources": {
+    "PASIG-20240725-0400": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20240725-0400.b6d9289c2c3d.html",
+          "sha256": "b6d9289c2c3d4945f12925a7dd202f16fe18b7efce3ef6f807e74fc69b2bb412"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20240725-0400.b6d9289c2c3d.txt",
+          "sha256": "4b0fb08e1f05e5ea1721e1306302adfbc7f82325537a4b723a8eaf28a7a7c8e1"
+        }
+      },
+      "capture_version": "b6d9289c2c3d"
+    },
+    "PASIG-20240725-1700": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20240725-1700.0438d3cd550b.html",
+          "sha256": "0438d3cd550bead4e453c9243edab1793f65523682bd5777be066a8218f945ac"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20240725-1700.0438d3cd550b.txt",
+          "sha256": "57fb0eb48aa93ce6f071985930ffca5f25145683b3cacb84d1fe0e34396c78b9"
+        }
+      },
+      "capture_version": "0438d3cd550b"
+    },
+    "PASIG-20250721-1900": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250721-1900.af19914833ce.html",
+          "sha256": "af19914833ced5e03cbdde84bac9e789472eff59effca816ced8f29cf0fb596c"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250721-1900.af19914833ce.txt",
+          "sha256": "77d86004e738aede3e9a8194a6de9c9b8caf9c89aaff9eb2ee8a1841976692c1"
+        }
+      },
+      "capture_version": "af19914833ce"
+    },
+    "PASIG-20250721-2200": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250721-2200.1de8fa5a4265.html",
+          "sha256": "1de8fa5a42652ce1e5ad09775721e5bad4fe08a0bc30e241b44aaec31a7e6314"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250721-2200.1de8fa5a4265.txt",
+          "sha256": "72f1ad010ada1efb90a8ee2d508638f63e01676a628ac95cc2ec6942042359df"
+        }
+      },
+      "capture_version": "1de8fa5a4265"
+    },
+    "PASIG-20250721-2345": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250721-2345.653ede578161.html",
+          "sha256": "653ede578161025c14404bcad0364175935f41ea334daf1b49cb4398f5f37518"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250721-2345.653ede578161.txt",
+          "sha256": "e2b0c4cf38c0219a309f3fe86686e30b9df186895e5ca1657edbc869b962f119"
+        }
+      },
+      "capture_version": "653ede578161"
+    },
+    "PASIG-20250723-1700": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250723-1700.91cbbcf5b901.html",
+          "sha256": "91cbbcf5b901a26c23670eb138807c26823b8ee229074b08c376f951765d2a89"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250723-1700.91cbbcf5b901.txt",
+          "sha256": "3e9a944d09249bd3c0ecdca5c98dfc2b1ff7f93ffc4311a2b6ae25ca2828b221"
+        }
+      },
+      "capture_version": "91cbbcf5b901"
+    },
+    "PASIG-20260810-0030": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260810-0030.f0de99330fb4.html",
+          "sha256": "f0de99330fb4c1ab322a3a81259452964272020c5ad2a54397f71f21d505c83d"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260810-0030.f0de99330fb4.txt",
+          "sha256": "57defee97f504fc832460f2ba0d2ab05cee6f40a0255ed2568b9dd5f026abe08"
+        }
+      },
+      "capture_version": "f0de99330fb4"
+    },
+    "PASIG-20260811-0950": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260811-0950.4223ec2f856d.html",
+          "sha256": "4223ec2f856d442d9351b4366c097ce1b4ce076f2cc173e3aaa34dfceb7b7505"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260811-0950.4223ec2f856d.txt",
+          "sha256": "cf7bdb96c2b46a4c5fb8d43178cbfafec45b947a3587e9e022329e4151eb3c0a"
+        }
+      },
+      "capture_version": "4223ec2f856d"
+    },
+    "PASIG-20260818-0030": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-0030.0fb66bd2f64d.html",
+          "sha256": "0fb66bd2f64da599ddd10fb49b9426e748fce0d5c07871f5b1747dd56ac38795"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-0030.0fb66bd2f64d.txt",
+          "sha256": "e43477d41010973e279c7d7e1a9d3e39bbc5f28327cd8a97ad10f2f4bd013d86"
+        }
+      },
+      "capture_version": "0fb66bd2f64d"
+    },
+    "PASIG-20260818-0430": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-0430.6b3b10b4ae3e.html",
+          "sha256": "6b3b10b4ae3e2bd695a37772a2b975f67c997d33382c110c1e5b1add34673ecf"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-0430.6b3b10b4ae3e.txt",
+          "sha256": "f0730e292fca37c35a5dc7cfb1a922b4fe9f211f5d2d0dee8b17ed45d505ee94"
+        }
+      },
+      "capture_version": "6b3b10b4ae3e"
+    },
+    "PASIG-20260818-1200": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-1200.5f3ad14459ce.html",
+          "sha256": "5f3ad14459ceab6cdab0cc5f6bda61ffdfa26ac96d23383f95b0bab413b1c47b"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-1200.5f3ad14459ce.txt",
+          "sha256": "7246e5836dfc11f58e91062f9ee2307e419fca75fc072a754dab9f31c584d748"
+        }
+      },
+      "capture_version": "5f3ad14459ce"
+    },
+    "PASIG-20260829-2230": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260829-2230.acea8d66b823.html",
+          "sha256": "acea8d66b823ce4201f6a5282f57aeca630e16f769e5589db9a5ecd9ed6d9003"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260829-2230.acea8d66b823.txt",
+          "sha256": "6708d9915beff9270487deb6512de4290cc4b4bf75f56babf867705208c75efa"
+        }
+      },
+      "capture_version": "acea8d66b823"
+    },
+    "PASIG-20260830-1100": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260830-1100.f89215d1462c.html",
+          "sha256": "f89215d1462cf6e7391a73ad422887c3d27ab17b0775100ec56a6b28aaacda99"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260830-1100.f89215d1462c.txt",
+          "sha256": "76cdc7744957b31d009b25f29c027a3f56ca62d4c613b3493e49cf8683463a09"
+        }
+      },
+      "capture_version": "f89215d1462c"
+    },
+    "PASIG-20240902-2100": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20240902-2100.c67d2bdf1831.html",
+          "sha256": "c67d2bdf18313e3df13431231f8084fe36503f79213bc569e9a58273ae0377fa"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20240902-2100.c67d2bdf1831.txt",
+          "sha256": "6a5dea0c67c688b7c8e55ac267dc6fab262d51cc4e0ea03b00015255a8e576c4"
+        }
+      },
+      "capture_version": "c67d2bdf1831"
+    },
+    "PASIG-20250723-0900": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250723-0900.4a6617896d3e.html",
+          "sha256": "4a6617896d3e1e68404bc01097fdb1bbd73364c08420f82721533df63d913971"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250723-0900.4a6617896d3e.txt",
+          "sha256": "186b6feba40e2b98a1ce73fb589cd0002b3b779c5bc0a349301cd75df5450739"
+        }
+      },
+      "capture_version": "4a6617896d3e"
+    },
+    "PASIG-20250725-2330": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250725-2330.70611da8f9e6.html",
+          "sha256": "70611da8f9e65bc35e7ce03fabdf4eefd73ff2e313fb710da5e2b54a74b23951"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20250725-2330.70611da8f9e6.txt",
+          "sha256": "02342a3c83457ffdbd8f8cf84b81e89e7e18ce91b4131bf9c6d9837ef99eb6ab"
+        }
+      },
+      "capture_version": "70611da8f9e6"
+    },
+    "PASIG-20260829-2030": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260829-2030.83cb52829260.html",
+          "sha256": "83cb52829260e20232f0e4339d59bd9090c6ec2452a15916e787b08e8b0c58c8"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260829-2030.83cb52829260.txt",
+          "sha256": "72409468e3dc889feff9103a491d3864488530a96d5693e8af2b8c7e1e228312"
+        }
+      },
+      "capture_version": "83cb52829260"
+    },
+    "GMA-20210725-796691": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20210725-796691.ac9d7a5f858b.html",
+          "sha256": "ac9d7a5f858b61c8de931fc0a3effe62f0e0429ce3db50821220a744625f400a"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20210725-796691.ac9d7a5f858b.txt",
+          "sha256": "08fa8996769370d0a885e508424239bf06daf700f56e0ffced9d3a270f2fc3f2"
+        }
+      },
+      "capture_version": "ac9d7a5f858b"
+    },
+    "GMA-20210723-796470": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20210723-796470.cbab2b72a552.html",
+          "sha256": "cbab2b72a55201d2237677692c4998e644cda0519906b91f3180c7f4602ebeca"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20210723-796470.cbab2b72a552.txt",
+          "sha256": "79c16552b0c94e51adf3fb7e86f54c6203b43791385b236e0eb9e76390eafa85"
+        }
+      },
+      "capture_version": "cbab2b72a552"
+    },
+    "GMA-20220730-839934": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20220730-839934.298401874cd4.html",
+          "sha256": "298401874cd412913ebeef153c5a52369c3c51f7bafc450b5826e4796515bee1"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20220730-839934.298401874cd4.txt",
+          "sha256": "a94020ba0de3d7c25e197fb8d3752d2ffc4eb452fa5bcafb52e14fe10f3375e3"
+        }
+      },
+      "capture_version": "298401874cd4"
+    },
+    "GMA-20260710-994434": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20260710-994434.bfd9d195d38c.html",
+          "sha256": "bfd9d195d38c6260cd893afb9a19025e6a41c5f0775c193f9eab7d832e5fb5ee"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20260710-994434.bfd9d195d38c.txt",
+          "sha256": "752d1b9d760195fd7f10fa4f1e2f12a7b2fe4e593d8853c8c3897adb5a9faf3f"
+        }
+      },
+      "capture_version": "bfd9d195d38c"
+    },
+    "GMA-20240902-918977": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20240902-918977.15153a2a97a3.html",
+          "sha256": "15153a2a97a3743f94494b079e29b83808e94dd7cde7826f94e03f96ca63aad0"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20240902-918977.15153a2a97a3.txt",
+          "sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d"
+        }
+      },
+      "capture_version": "15153a2a97a3"
+    },
+    "GMA-20260817-998778": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20260817-998778.f746dffb4918.html",
+          "sha256": "f746dffb4918282557915f6f5930485dd1f2fb03ef8de77a1a2970c31f16100e"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/GMA-20260817-998778.f746dffb4918.txt",
+          "sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5"
+        }
+      },
+      "capture_version": "f746dffb4918"
+    },
+    "RMN-20210725-MANDALUYONG-PASIG": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/RMN-20210725-MANDALUYONG-PASIG.32a77ec7d1b0.html",
+          "sha256": "32a77ec7d1b045080c65f5d72ebf717d3635d557dbf7f0ce50a8eccd23ef8c72"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/RMN-20210725-MANDALUYONG-PASIG.32a77ec7d1b0.txt",
+          "sha256": "66d4b0518217e1f03257110d487d6e90c723a58846d8786dc2eaa39cfb781711"
+        }
+      },
+      "capture_version": "32a77ec7d1b0"
+    },
+    "ONENEWS-20220904-HENRY": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/ONENEWS-20220904-HENRY.0c6534d5d582.html",
+          "sha256": "0c6534d5d5828e2a3189f33aaaeaeed2fe0b82df3bc08a8789088a8becfc7913"
+        },
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/ONENEWS-20220904-HENRY.0c6534d5d582.txt",
+          "sha256": "c1fc7f108d686f19a8141cf74de09182dfdc5952bce6b929f19a978922a2046b"
+        }
+      },
+      "capture_version": "0c6534d5d582"
+    },
+    "PASIG-20260818-2300": {
+      "artifacts": {
+        "html": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-2300.1f15b36aea0a.html",
+          "sha256": "1f15b36aea0a93aeca8c7c81424817c85f5f93f73be573e15b23bce98739480e"
+        },
+        "text": {
+          "path": "docs/evaluations/flood-duration-pilot-20261004/sources/PASIG-20260818-2300.1f15b36aea0a.txt",
+          "sha256": "d7882b6d10d8f71fb9c82991bdff9673b23a670f4a0d33428cca8ed5c9d4d404"
+        }
+      },
+      "capture_version": "1f15b36aea0a"
+    },
+    "NDRRMC-20210801-FABIAN-SITREP10": {
+      "artifacts": {
+        "text": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/NDRRMC-20210801-FABIAN-SITREP10.70705fc29490.txt",
+          "sha256": "78ddf0157c55886b2a5b68c5b017674b1691cb26d4f1e5da7e000fefe4897c2f"
+        },
+        "pdf": {
+          "path": "docs/evaluations/metro-manila-flood-duration-20261004/sources/NDRRMC-20210801-FABIAN-SITREP10.70705fc29490.pdf",
+          "sha256": "70705fc29490c71d477b752a42325a1dc5dff43a76fbc25ad68fd20df176f3ba"
+        }
+      },
+      "capture_version": "70705fc29490"
+    }
+  },
+  "output_rows": {
+    "qualified_observations.csv": 467,
+    "candidate_timelines.csv": 221,
+    "interval_qualification.csv": 37,
+    "clearance_episode_review.csv": 3,
+    "historical_qualification.csv": 12
+  },
+  "output_sha256": {
+    "qualified_observations.csv": "13aac0f7ab145c76328833079fb20aef8fd48a140d99585be69a94302576ded3",
+    "candidate_timelines.csv": "1d829c456d0fe0c0e269aefbf21c4af3a8dfd9d0c90791743dbb28867c437e9c",
+    "interval_qualification.csv": "8df00106065c88769e03e82c05e7854f4a9936d827cb81f484929caaa555580c",
+    "clearance_episode_review.csv": "fc3287be0fea2c534a0878fb017ebb0e2981ea596ee5b0d9911f5336213d9e8c",
+    "historical_qualification.csv": "54bcfce14525c80e809a1c8f79c7b811e43b260fe70ac7746e30626cca0472c9"
+  },
+  "wet_evidence_status_counts": {
+    "usable": 467
+  },
+  "timing_status_counts": {
+    "usable_reported_snapshot_clock": 463,
+    "uncertain_clock_date_only": 4
+  },
+  "depth_qualification_counts": {
+    "not_reported": 82,
+    "uncertain_same_clock_source_claims": 2,
+    "usable_reported_numeric": 326,
+    "qualitative_only": 36,
+    "usable_consistent_reported_range": 1,
+    "uncertain_new_alternate_units_conflict": 2,
+    "usable_reported_metric_with_rounding_qualifier": 14,
+    "uncertain_alternate_units": 1,
+    "usable_shared_upper_bound_not_road_measurement": 3
+  },
+  "geography_status_counts": {
+    "source_reported_locality": 457,
+    "uncertain_cross_report_barangay_identity": 5,
+    "uncertain_section_or_alias": 5
+  },
+  "candidate_reporting_groups": [
+    "NCR-2022-HENRY-HABAGAT",
+    "NCR-2022-JUL30-ESTER",
+    "NCR-2026-JUL10",
+    "PASIG-2021-JUL23-25-CANDIDATE",
+    "PASIG-2024-JUL24-25",
+    "PASIG-2024-SEP02-03",
+    "PASIG-2025-JUL21-25",
+    "PASIG-2026-AUG10-11",
+    "PASIG-2026-AUG17-18",
+    "PASIG-2026-AUG29-30"
+  ],
+  "shared_summary_outcomes": 3,
+  "candidate_wet_snapshot_groups": 466,
+  "usable_exact_physical_duration_labels": 0,
+  "training_admitted_examples": 0,
+  "interpretation": "Source evidence qualified; timelines/conditional summary bounds are exploratory, not model-ready physical-clearance labels or independently verified storms."
+}

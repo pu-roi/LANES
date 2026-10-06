@@ -111,9 +111,10 @@ def read_active_avoidance_zones(db: Session = Depends(get_db)):
     Retrieve all active flood avoidance zones (polygons representing detour zones).
     """
     try:
-        return crud.get_active_avoidance_zones(db=db)
+        from app.services.news_zone_projection_service import zone_responses_with_news
+        return zone_responses_with_news(db, crud.get_active_avoidance_zones(db=db))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database is offline: {e}")
+        raise HTTPException(status_code=500, detail="Could not load active flood zones") from e
 
 
 @router.post("/avoidance-zones", response_model=schemas.FloodAvoidanceZoneResponse, status_code=status.HTTP_201_CREATED)

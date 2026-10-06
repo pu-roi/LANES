@@ -75,6 +75,13 @@ def _override_allows(profile: VehicleProfile, value: str | None) -> bool | None:
     if not value:
         return None
     raw_value = value.lower()
+    # News restrictions describe prohibited vehicle classes, not an allowlist.
+    # They can tighten depth-based policy without implying pedestrian closure
+    # or permission for an unmentioned class.
+    if profile != "walk" and raw_value == "no vehicles":
+        return False
+    if profile in {"motorcycle", "light"} and raw_value == "light vehicles prohibited":
+        return False
     normalized = {item.strip().lower() for item in value.replace("/", ",").split(",") if item.strip()}
     if profile == "walk":
         if any(phrase in raw_value for phrase in ("no pedestrians", "pedestrians prohibited", "no walking", "walking prohibited")):

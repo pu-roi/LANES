@@ -1,0 +1,72 @@
+[
+  {
+    "rule_id": "MAYBUNGA-20260811",
+    "episode_group": "PASIG-2026-AUG10-11",
+    "barangay": "Maybunga",
+    "clear_source_id": "PASIG-20260811-0950",
+    "clear_evidence_contains": "matapos humupa",
+    "clearance_upper_at": "2026-08-11T09:50:00+08:00",
+    "upper_inclusive": true,
+    "last_wet_source_id": "PASIG-20260811-0950",
+    "last_wet_at": "2026-08-11T05:30:00+08:00",
+    "scope": "Maybunga summary explicitly names subsided flooding; linkage to preceding listed blocks is candidate inference",
+    "reviewer": "Codex source inspection; developer acceptance pending",
+    "review_basis": "saved main-column text lines 4-11; source says no reported flooded areas after Maybunga flooding subsided"
+  },
+  {
+    "rule_id": "DELAPAZ-20260818",
+    "episode_group": "PASIG-2026-AUG17-18",
+    "barangay": "Dela Paz",
+    "clear_source_id": "PASIG-20260818-2300",
+    "clear_evidence_contains": "bago mag-02:00PM",
+    "clearance_upper_at": "2026-08-18T14:00:00+08:00",
+    "upper_inclusive": false,
+    "last_wet_source_id": "PASIG-20260818-1200",
+    "last_wet_at": "2026-08-18T12:00:00+08:00",
+    "scope": "Dela Paz flooding reported subsided before 14:00; link to noon Katipiran C Yap Compound candidate, not 23:00 clearance",
+    "reviewer": "Codex source inspection; developer acceptance pending",
+    "review_basis": "saved response text line 7 and noon flood text lines 3-6"
+  },
+  {
+    "rule_id": "BARANGAY-DELAPAZ-20260830",
+    "episode_group": "PASIG-2026-AUG29-30",
+    "barangay": "Dela Paz",
+    "clear_source_id": "PASIG-20260830-1100",
+    "clear_evidence_contains": "Subsided na ang",
+    "clearance_upper_at": "2026-08-30T11:00:00+08:00",
+    "upper_inclusive": true,
+    "last_wet_source_id": "PASIG-20260830-1100",
+    "last_wet_at": "2026-08-30T05:00:00+08:00",
+    "scope": "City report summary states recorded flooding subsided according to barangays; each preceding listed location is only a candidate linkage",
+    "reviewer": "Codex source inspection; developer acceptance pending",
+    "review_basis": "saved same-source text lines 4-8 and 05:00 list; shared clearance summary not independently measured for each location"
+  },
+  {
+    "rule_id": "BARANGAY-SANTOLAN-20260830",
+    "episode_group": "PASIG-2026-AUG29-30",
+    "barangay": "Santolan",
+    "clear_source_id": "PASIG-20260830-1100",
+    "clear_evidence_contains": "Subsided na ang",
+    "clearance_upper_at": "2026-08-30T11:00:00+08:00",
+    "upper_inclusive": true,
+    "last_wet_source_id": "PASIG-20260830-1100",
+    "last_wet_at": "2026-08-30T05:00:00+08:00",
+    "scope": "City report summary states recorded flooding subsided according to barangays; each preceding listed location is only a candidate linkage",
+    "reviewer": "Codex source inspection; developer acceptance pending",
+    "review_basis": "saved same-source text lines 4-8 and 05:00 list; shared clearance summary not independently measured for each location"
+  },
+  {
+    "rule_id": "BARANGAY-STALUCIA-20260830",
+    "episode_group": "PASIG-2026-AUG29-30",
+    "barangay": "Sta. Lucia",
+    "clear_source_id": "PASIG-20260830-1100",
+    "clear_evidence_contains": "Subsided na ang",
+    "clearance_upper_at": "2026-08-30T11:00:00+08:00",
+    "upper_inclusive": true,
+    "last_wet_source_id": "PASIG-20260830-1100",
+    "last_wet_at": "2026-08-30T05:00:00+08:00",
+    "scope": "City report summary states recorded flooding subsided according to barangays; each preceding listed location is only a candidate linkage",
+    "reviewer": "Codex source inspection; developer acceptance pending",
+    "review_basis": "saved same-source text lines 4-8 and 05:00 list; shared clearance summary not independently measured for each location"
+  }
+]

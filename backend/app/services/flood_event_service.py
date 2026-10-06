@@ -429,10 +429,12 @@ def create_verified_event_with_zone(
     zone_input: schemas.FloodAvoidanceZoneCreate,
     peak_severity: models.ReportSeverity | str,
     peak_depth: Optional[str],
-    acted_by_user_id: int,
+    acted_by_user_id: Optional[int] = None,
     source_report: Optional[models.FloodReport] = None,
     zone_snapshot: Optional[dict[str, Any]] = None,
     zone_attributes: Optional[dict[str, Any]] = None,
+    commit: bool = True,
+    first_reported_at: Optional[datetime] = None,
 ) -> tuple[models.FloodEvent, models.FloodAvoidanceZone]:
     """Create a verified event and its first operational zone atomically."""
     if source_report and source_report.event_id is not None:
@@ -443,10 +445,11 @@ def create_verified_event_with_zone(
         raise ValueError("The report has an incomplete existing Flood Event link and cannot be re-approved.")
     severity = _severity_value(peak_severity)
     verified_at = datetime.now(timezone.utc)
+    onset_at = ensure_utc(first_reported_at) or (ensure_utc(source_report.created_at) if source_report else None)
     try:
         event = models.FloodEvent(
             status=models.FloodEventStatus.ACTIVE,
-            first_reported_at=ensure_utc(source_report.created_at) if source_report else None,
+            first_reported_at=onset_at,
             verified_at=verified_at,
             peak_severity=severity,
             peak_depth=peak_depth,
@@ -463,14 +466,15 @@ def create_verified_event_with_zone(
             source_report.status = models.ReportStatus.APPROVED
             source_report.approved_at = verified_at
             _record_report_location_rows(db, event, source_report)
-            db.add(models.FloodReportModerationOutcome(
-                report_id=source_report.id,
-                outcome=models.ReportModerationOutcomeType.APPROVED,
-                event_id=event.id,
-                zone_id=zone.id,
-                acted_by_user_id=acted_by_user_id,
-                acted_at=verified_at,
-            ))
+            if acted_by_user_id is not None:
+                db.add(models.FloodReportModerationOutcome(
+                    report_id=source_report.id,
+                    outcome=models.ReportModerationOutcomeType.APPROVED,
+                    event_id=event.id,
+                    zone_id=zone.id,
+                    acted_by_user_id=acted_by_user_id,
+                    acted_at=verified_at,
+                ))
             if source_report.user_id:
                 credit_user_verified_report(db, source_report.user_id, commit=False)
 
@@ -490,12 +494,16 @@ def create_verified_event_with_zone(
             {"zone_id": zone.id, **(zone_snapshot or {})},
             verified_at,
         )
-        db.commit()
-        db.refresh(event)
-        db.refresh(zone)
+        if commit:
+            db.commit()
+            db.refresh(event)
+            db.refresh(zone)
+        else:
+            db.flush()
         return event, zone
     except Exception:
-        db.rollback()
+        if commit:
+            db.rollback()
         raise
 
 
@@ -647,6 +655,7 @@ def deactivate_zone_and_end_event_if_final(
     db: Session,
     zone: models.FloodAvoidanceZone,
     occurred_at: Optional[datetime] = None,
+    commit: bool = True,
 ) -> models.FloodAvoidanceZone:
     """Deactivate one zone and end the event only when no live zones remain."""
     occurred_at = ensure_utc(occurred_at) or datetime.now(timezone.utc)
@@ -669,11 +678,15 @@ def deactivate_zone_and_end_event_if_final(
                     db, event.id, "event_ended", "All live flood zones for this event have ended.",
                     {"final_zone_id": zone.id}, occurred_at,
                 )
-        db.commit()
-        db.refresh(zone)
+        if commit:
+            db.commit()
+            db.refresh(zone)
+        else:
+            db.flush()
         return zone
     except Exception:
-        db.rollback()
+        if commit:
+            db.rollback()
         raise
 
 

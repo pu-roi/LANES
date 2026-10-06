@@ -3,6 +3,7 @@ import struct
 from typing import Any, Literal, Optional, Union
 from pydantic import BaseModel, ConfigDict, field_serializer, field_validator, model_validator
 from geoalchemy2.elements import WKBElement
+from app.schemas.news_publication import PublicNewsAlert
 
 from app.schemas.common import (
     PointGeometry,
@@ -233,7 +234,7 @@ class ZoneContributorResponse(BaseModel):
 
     @field_validator("geometry", mode="before")
     @classmethod
-    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry]]:
+    def convert_geometry(cls, v: Any) -> Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]]:
         if isinstance(v, WKBElement):
             try:
                 data = bytes.fromhex(v.desc) if isinstance(v.desc, str) else bytes(v.data)
@@ -250,6 +251,9 @@ class ZoneContributorResponse(BaseModel):
                 elif pure_geom_type == 5:  # MultiLineString
                     coords = parse_ewkb_multilinestring(data)
                     return MultiLineStringGeometry(type="MultiLineString", coordinates=coords)
+                elif pure_geom_type == 3:  # Polygon, including news contributors
+                    coords = parse_ewkb_polygon(data)
+                    return PolygonGeometry(type="Polygon", coordinates=coords)
             except Exception as e:
                 print(f"Warning: Failed parsing contributor geometry EWKB: {e}")
                 return None
@@ -293,6 +297,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     # later attaches directly to the operational zone.
     report_media_urls: Optional[list[str]] = None
     contributors: list[ZoneContributorResponse] = []
+    news: list["PublicNewsAlert"] = []
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -512,6 +517,17 @@ class MergeCandidatesListResponse(BaseModel):
     detected_conflicts: list[MergeConflict] = []
     suggested_merged_geometry: Optional[Union[LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
     is_bidirectional_detected: bool = False
+    zone_candidates: list["MergeZoneCandidate"] = []
+
+
+class MergeZoneCandidate(BaseModel):
+    zone_id: int
+    event_id: int
+    name: Optional[str] = None
+    distance_m: float
+    severity: Optional[str] = None
+    depth: Optional[str] = None
+    match_reasons: list[str] = []
 
 
 class MergedZoneFinalData(BaseModel):
@@ -539,7 +555,15 @@ class MergedZoneFinalData(BaseModel):
             raise ValueError("Severity must match the selected flood depth.")
         return self
     merge_rationale: Optional[str] = None
-    buffer_radius: Optional[float] = 25.0
+    buffer_radius: float = 25.0
+
+    @field_validator("buffer_radius")
+    @classmethod
+    def valid_buffer(cls, value: float) -> float:
+        import math
+        if not math.isfinite(value) or not 1 <= value <= 100:
+            raise ValueError("Buffer radius must be between 1 and 100 metres.")
+        return value
 
 
 class MergeReportsRequest(BaseModel):
@@ -547,6 +571,27 @@ class MergeReportsRequest(BaseModel):
     merged_report_ids: list[int]
     target_zone_id: Optional[int] = None  # None = create new zone; int = merge into existing zone
     final_data: MergedZoneFinalData
+    merge_mode: Literal["extend", "corroborate", "add_section"] = "extend"
+
+    @model_validator(mode="after")
+    def validate_target(self) -> "MergeReportsRequest":
+        if self.merge_mode != "extend" and self.target_zone_id is None:
+            raise ValueError("Choose an existing zone for supporting evidence or a new event section.")
+        if self.primary_report_id < 1 or any(value < 1 for value in self.merged_report_ids):
+            raise ValueError("Report identities must be positive.")
+        return self
+
+
+class MergeGeometryPreview(BaseModel):
+    geometry: PolygonGeometry
+    reviewed_geometry: Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]
+    source_geometry: Optional[Union[LineStringGeometry, MultiLineStringGeometry]] = None
+    preserves_existing_coverage: bool
+    read_only: Literal[True] = True
+
+
+class MergePreviewRequest(MergeReportsRequest):
+    use_report_extents: bool = False
 
 
 class MergeReportsResponse(BaseModel):

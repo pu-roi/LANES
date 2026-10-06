@@ -4,7 +4,7 @@ import { parseUtcDate } from "@/lib/utils";
 
 import { useState } from "react";
 import { CalendarClock, Car, ChevronLeft, Clock3, EyeOff, FileText, Map as MapIcon, MapPin, Ruler, ShieldCheck, Timer, Users } from "lucide-react";
-import { Button, FloodReportDetailsModal, Tabs } from "@/shared/ui";
+import { Button, FloodReportDetailsModal, RecordTimeline, Tabs } from "@/shared/ui";
 import type { FloodReport } from "@/features/admin/adminApi";
 import type { FloodEventDetail, FloodEventZone, HistoricalMapFocusTarget } from "./floodHistoryApi";
 import { formatFloodDepth } from "@/lib/floodDepth";
@@ -57,7 +57,7 @@ function Overview({ data, onFocusHistoricalMap }: Pick<FloodEventDetailsTabsProp
 function OfficialHistory({ data, onFocusHistoricalMap }: Pick<FloodEventDetailsTabsProps, "data" | "onFocusHistoricalMap">) {
   return <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.85fr)]">
     <section><h3 className="text-sm font-bold text-slate-900">Official zone history</h3><p className="mt-1 text-xs text-slate-500">Historical footprints only — never used for active route avoidance.</p><div className="mt-3 space-y-3">{data.zones.length ? data.zones.map((zone) => <ZoneHistoryRow key={zone.id} eventId={data.id} onFocusHistoricalMap={onFocusHistoricalMap} zone={zone} />) : <p className="text-sm text-slate-500">No official zones recorded.</p>}</div></section>
-    <section><h3 className="text-sm font-bold text-slate-900">Incident timeline</h3><ol className="mt-3 space-y-4 border-l border-slate-200 pl-4">{data.timeline.length ? data.timeline.map((entry) => <li key={entry.id}><p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{timelineLabel(entry.entry_type)}</p><p className="mt-1 text-sm text-slate-800">{entry.summary}</p><p className="mt-1 text-xs text-slate-500">{formatDate(entry.occurred_at)}</p></li>) : <li className="text-sm text-slate-500">No lifecycle entries recorded.</li>}</ol></section>
+    <section><h3 className="text-sm font-bold text-slate-900">Incident timeline</h3><RecordTimeline entries={data.timeline.map((entry) => ({ id: entry.id, label: timelineLabel(entry.entry_type), description: entry.summary, timestamp: formatDate(entry.occurred_at) }))} emptyMessage="No lifecycle entries recorded." /></section>
   </div>;
 }
 
