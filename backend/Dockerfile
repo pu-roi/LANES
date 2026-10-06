@@ -6,7 +6,8 @@ FROM python:3.12-slim
 # Prevent Python from writing .pyc files and buffer stdout/stderr
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=8080
+    PORT=8080 \
+    LANES_NEWS_NOAH_DIR=/data/noah-placement
 
 # Working directory inside the container
 WORKDIR /app
@@ -29,6 +30,10 @@ COPY . .
 # Location service resolves repository data to /data in the /app container.
 # Bundled administrative and Pasig history references also support local builds.
 COPY runtime_data/ /data/
+
+# Reject missing or mismatched analytical assets before deploying this image.
+# This check performs no database writes, discovery, or provider requests.
+RUN python -m scripts.verify_news_runtime_assets
 
 # Expose default Cloud Run port
 EXPOSE 8080

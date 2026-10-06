@@ -1,21 +1,42 @@
 # News source-alert publication and lifecycle operator guide
 
-> **Last Updated:** October 05, 2026, 10:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 12:45 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-Automatic source alerts are implemented locally after independent evidence evaluation. They publish text-only reported conditions; operational flood-zone creation/routing remains disabled until current affected geometry is verified. No live pipeline execution or deployment is part of this checkpoint.
+Automatic source alerts, exact approved footprints and server-derived estimated road corridors are implemented locally after independent evidence evaluation. A uniquely article-grounded, qualified-locality-contained OSM/NOAH estimate may activate automatically using the existing 25 m road-zone margin and stored centerline. It is labeled estimated; NOAH supplies modeled susceptibility rather than measured current flood extent. Unsupported estimates remain Needs Review/source alerts. No real-event accuracy, matching release or live pipeline execution is established by local fixtures. [Current integration evidence](../evaluations/phase-36-estimated-road-zone-integration-20261006.md).
+
+The worker prioritizes exact approved incident records, then checks eligible automatic source alerts for estimates. Unresolved attempts record the checked placement revision in existing decision JSONB; unchanged attempts are excluded from later sweeps to admit later claims. Replaced catalogs require a worker/API restart because placement providers are process-cached. Carry both returned seed and case cursors in interval mode. Storage/invalid-catalog errors remain explicit failure outcomes.
+
+Estimated operation requires matching checked OSM/NOAH and qualified locality/history assets plus the existing independently configured evaluator. `LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR` is optional for that path; it configures the separate authoritative current-extent catalog. An invalid configured incident catalog fails the footprint stage and must be corrected. Existing two-hour observation expiry, metadata/access, current source/audit, identity/revision and staff-choice protections apply to both paths. Unchanged estimated extents/core/metadata can refresh after recomputation; changed extent falls back to an alert and withdraws unsupported old coverage.
+
+Accepted zones are available to public/routing API reads at commit. Map clients use existing SSE/polling/cache invalidation, with roughly 15-second database polling; no sub-second delivery claim is made. Public/staff details reuse existing layouts and show article/source, observation, status, expiry and geometry basis.
+
+## Release preparation
+
+Exact-source auditor options under prompt v2 pass strict evidence checks with live synthetic free responses at both 20 and 60 seconds. Existing response schema and lifecycle gates remain. [Latest verification](../evaluations/phase-36-auditor-evidence-options-20261007.md).
+
+The analytical bundle is now prepared and checked in the local Linux image. Follow the [exact release checklist](news-zone-release-checklist.md) for the free-only provider probe, existing migration, matching API/job/frontend deployment and controlled current-article checks. Local fixtures and packaging do not establish live operation. [Verification](../evaluations/phase-36-news-runtime-packaging-20261007.md).
 
 ## Explicit pipeline
 
 From `backend`, the operator command is:
 
 ```powershell
-venv/Scripts/python.exe -m scripts.run_news_pipeline --limit 50 --after-run-id 0
+venv/Scripts/python.exe -m scripts.run_news_pipeline --limit 50 --after-run-id 0 --after-case-id 0
 ```
 
 This writes to the configured database and may incur fees from the explicitly configured independent AI provider. Verify the intended environment and credentials before operational use; this task ran only disposable fixtures and `--help`. No secret belongs in a command argument, source file or log.
 
-Each bounded stage processes saved article evidence → seeds completed claims → independently audits leased work → publishes/clears/expires eligible source alerts. The JSON summary includes stage outcomes and `next_seed_cursor`; use that cursor on the next batch. `--interval 30` repeats bounded batches (accepted interval 30–3600 seconds). Discovery/collection remains an independent existing process. Standalone `scripts.evaluate_news_claims --seed`/`--evaluate` remains available and creates no publication decisions; see [independent evaluator guide](news-claim-evaluation.md).
+Each bounded stage processes saved article evidence → seeds completed claims → independently audits leased work → publishes/refreshes/clears/expires source decisions → activates exact approved current footprints. The JSON summary includes `next_seed_cursor` and `next_footprint_cursor`; pass them as `--after-run-id` and `--after-case-id` on the next batch. `--interval 30` repeats batches and carries both cursors (accepted interval 30–3600 seconds). Restart seeding skips existing current-policy handoffs and empty/old candidates; partial sweeps wrap so newly approved older evidence can be reconsidered. If rejected seeds repeatedly fill a batch, inspect their safe reason codes and use the explicit run cursor to process later work. Standalone `scripts.evaluate_news_claims --seed`/`--evaluate` remains available and creates no publication decisions; see [independent evaluator guide](news-claim-evaluation.md).
+
+Discovery can opt into the full pipeline:
+
+```powershell
+venv/Scripts/python.exe -m scripts.run_news_discovery --discover --pipeline --limit 50
+venv/Scripts/python.exe -m scripts.run_news_discovery --process-saved --pipeline --limit 50
+```
+
+The saved-only command performs no feed/article HTTP discovery. Discovery runs maintenance even after unchanged feeds or feed errors; failure exit status remains nonzero. `--discover --process` remains extraction-only. `--pipeline` cannot be combined with dry-run or `--process`. The local Cloud Build job command is prepared for full-pipeline discovery, but no deployed job was changed.
 
 Missing/invalid provider/model configuration, unsupported or stale evidence and audit disagreement cannot produce Active. Provider/model/config revision is part of policy identity. Fix configuration and deliberately change its nonsecret revision for new policy evaluation rather than mutating terminal history. Use matching processing/spatial assets in every participating runtime.
 
@@ -33,7 +54,7 @@ Use the same request UUID for uncertain retries. An altered request identity or 
 
 ## Operational activation boundary after the integration audit
 
-`scripts.run_news_pipeline` connects saved extraction/evaluation to source alerts and maintenance; the configured discovery job still invokes only extraction. The separate activation helper has no automatic worker caller. BUG-107/108/109/110 pass locally; actual current footprint provisioning and worker/map integration remain open. [Current verification](../evaluations/phase-36-trusted-footprint-contract.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+`scripts.run_news_pipeline` and opt-in discovery `--pipeline` now invoke automatic approved-footprint activation after source publication/maintenance. The worker filters exact current catalog identities before activation and rechecks all service gates atomically. Each sweep considers at most 500 catalog-matching current decisions; `--limit` caps successful footprint activations. Rejected records do not block later candidates within that bound. Per-claim failures roll back independently and expose safe summary codes; seed/auditor/publication/footprint failures produce a nonzero one-shot exit. Missing catalog is normal text-only fallback; invalid configured catalog is an error. **456 distinct checks pass locally**. Actual current footprint provisioning, desktop/mobile map integration and matching deployed runtime acceptance remain open. [Current verification](../evaluations/phase-36-automatic-footprint-worker.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Automatic activation requires `expected_revision`, `geometry_srid=4326` and `evidence_record_id` for an exact current operator-approved catalog record. Configure its operator-owned directory through the process environment variable `LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR`; it contains checksummed `manifest.json` and `footprints.json`. The verification report documents fields, limits and approval/archive responsibilities. No real catalog was provisioned. Missing/invalid records, source/incident/input/claim/time/geometry mismatches or missing qualified locality boundaries cannot create routing geometry. Labels, OSM/NOAH/admin polygons and historical data cannot establish a current affected extent.
 

@@ -32,6 +32,9 @@ export function NewsDecisionControls({ claim }: { claim: NewsClaimDetail }) {
       client.invalidateQueries({ queryKey: ["spatial-review-detail"] }),
       client.invalidateQueries({ queryKey: ["spatial-review-members"] }),
       client.invalidateQueries({ queryKey: ["publicNewsAlerts"] }),
+      client.invalidateQueries({ queryKey: ["activeZones"] }),
+      client.invalidateQueries({ queryKey: ["activeZonesMap"] }),
+      client.invalidateQueries({ queryKey: ["adminZones"] }),
     ]);
   };
   const check = async () => {
@@ -104,7 +107,7 @@ export function NewsDecisionControls({ claim }: { claim: NewsClaimDetail }) {
     </form>}
     {effect && prepared && <div className="space-y-2 bg-slate-50 p-3 text-xs text-slate-700">
       <p>Server effect: {effect.status ?? effect.public_state.replaceAll("_", " ")} · {effect.review_state.replaceAll("_", " ")}</p>
-      <p>Routing: unchanged. {effect.reason_code.replaceAll("_", " ")}</p>
+      <p>Routing: {effect.affects_routing ? "zone coverage affected" : "no new routing zone"}. {effect.reason_code.replaceAll("_", " ")}</p>
       {prepared.expected_revision !== claim.revision && <p role="alert" className="text-amber-800">Evidence changed since this check. Check the decision again.</p>}
       <Button variant="primary" disabled={busy || prepared.expected_revision !== claim.revision} onClick={() => void submit()}>
         {busy ? "Saving…" : "Save news decision"}

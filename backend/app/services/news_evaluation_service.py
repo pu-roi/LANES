@@ -8,7 +8,7 @@ import json
 
 import httpx
 from pydantic import ValidationError
-from sqlalchemy import select
+from sqlalchemy import case, exists, func, select
 from sqlalchemy.orm import Session
 
 from app.crud.news_evaluation import (
@@ -16,7 +16,8 @@ from app.crud.news_evaluation import (
     require_utc, validate_run,
 )
 from app.crud.news_processing import current_pipeline_version, utc_now
-from app.models.news import NewsArticleVersion, NewsExtractionRun
+from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
+from app.models.news_publication import NewsClaimEvaluation, NewsClaimSource
 from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInput, NewsExtractionResult
 from app.services.news_claim_auditor import NewsClaimAuditor, canonical_claim_sha256
 from app.services.news_discovery_service import extraction_input_snapshot
@@ -100,7 +101,8 @@ class EvaluationSummary:
 def seed_claim_evaluations(session_factory: Callable[[], Session], policy: EvaluationPolicy, *,
                            now: datetime, limit: int = 50, after_run_id: int = 0,
                            run_id: int | None = None,
-                           sources: tuple[NewsSource, ...] | None = None) -> EvaluationSummary:
+                           sources: tuple[NewsSource, ...] | None = None,
+                           unbound_only: bool = False) -> EvaluationSummary:
     """Bounded explicit handoff after extraction commits, with a resumable cursor."""
     now = require_utc(now)
     if not 1 <= limit <= 200 or after_run_id < 0 or (run_id is not None and run_id <= 0):
@@ -109,6 +111,21 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
     summary = EvaluationSummary(next_after_run_id=after_run_id)
     with session_factory() as db:
         query = select(NewsExtractionRun.id).where(NewsExtractionRun.status == "completed")
+        if unbound_only:
+            # Scheduled jobs start without a saved cursor. Ignore runs already
+            # handed off for this policy and empty/old extraction rather than
+            # letting them monopolize every recurring batch. These predicates
+            # only shortlist: immutable input and freshness are checked below.
+            claims = NewsExtractionRun.result["claims"]
+            nonempty_claims = case((func.jsonb_typeof(claims) == "array", func.jsonb_array_length(claims)), else_=0) > 0
+            evaluated = exists(select(NewsClaimEvaluation.id).join(NewsClaimSource,
+                NewsClaimSource.id == NewsClaimEvaluation.claim_source_id).where(
+                NewsClaimSource.extraction_run_id == NewsExtractionRun.id,
+                NewsClaimEvaluation.policy_fingerprint == policy.fingerprint))
+            query = query.join(NewsArticleVersion, NewsArticleVersion.id == NewsExtractionRun.article_version_id).join(
+                NewsArticle, NewsArticle.id == NewsArticleVersion.article_id).where(
+                NewsExtractionRun.pipeline_version == policy.pipeline_version, nonempty_claims, ~evaluated,
+                NewsArticle.published_at >= now - ADMISSION_AGE, NewsArticle.published_at <= now)
         if run_id is not None:
             query = query.where(NewsExtractionRun.id == run_id)
         else:
@@ -134,6 +151,8 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
             created, queued = bind_completed_run(db, selected_id, policy.fingerprint, now)
             summary.sources_created += created
             summary.evaluations_created += queued
+    if unbound_only and len(ids) < limit:
+        summary.next_after_run_id = 0
     return summary
 
 

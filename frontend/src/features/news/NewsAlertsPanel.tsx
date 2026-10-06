@@ -53,7 +53,7 @@ export function NewsAlertsPanel({ isMobile, open, onOpen, onClose: close }: { is
       <span ref={closeControl}><Button variant="ghost" size="sm" className="min-h-11 min-w-11 px-2" aria-label="Close news alerts" onClick={close}><X className="size-5" aria-hidden="true" /></Button></span>
     </header>
     <div className="min-h-0 overflow-y-auto px-4 pb-4">
-      <p className="text-xs leading-relaxed text-slate-600">News reports describe reported conditions. Exact flood footprints are unverified; these alerts do not change route avoidance zones.</p>
+      <p className="text-xs leading-relaxed text-slate-600">News reports describe reported conditions. Accepted flood zones appear on the map and affect routing. Estimated road corridors use reported locations and flood susceptibility data.</p>
       <div className="my-3 flex items-center justify-between gap-2">
         <p className="text-xs text-slate-500">{alerts.data ? `Server snapshot: ${newsDate(alerts.data.as_of)}` : "Checking news reports"}</p>
         <Button variant="ghost" size="sm" aria-label="Refresh news alerts" disabled={alerts.isFetching || alerts.offline} onClick={() => void alerts.refetch()} className="min-h-11 min-w-11 px-2"><RefreshCw className={`size-4 ${alerts.isFetching ? "animate-spin motion-reduce:animate-none" : ""}`} aria-hidden="true" /></Button>
@@ -71,6 +71,7 @@ export function NewsAlertsPanel({ isMobile, open, onOpen, onClose: close }: { is
             <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="break-words text-sm font-semibold text-slate-900">{alert.location_label}</h3><span className={`text-xs font-semibold ${unavailable ? "text-slate-500" : alert.status === "Active" ? "text-orange-700" : alert.status === "Cleared" ? "text-emerald-700" : "text-amber-700"}`}>{unavailable ? `Last downloaded: ${alert.status}` : `News status: ${alert.status}`}</span></div>
             {alert.current_status_unknown && <p className="mt-1 text-xs text-amber-800">Current flooding is unconfirmed.</p>}
             {alert.location_qualifier && <p className="mt-1 text-xs text-slate-600">{alert.location_qualifier}</p>}
+            <p className="mt-1 text-xs text-slate-600">{alert.affects_routing && !unavailable && alert.status === "Active" ? (alert.geometry_basis === "estimated_road_corridor" ? "Active zone · Estimated road corridor" : "Active zone · Verified flood footprint") : "No current routing zone confirmed"}</p>
             <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs [&_dd]:min-w-0 [&_dd]:break-words"><dt className="text-slate-500">Reported depth</dt><dd>{alert.depth_label || "Not stated"}</dd><dt className="text-slate-500">Conditions</dt><dd>{alert.condition_label || "Not stated"}</dd><dt className="text-slate-500">Passability</dt><dd>{alert.passability_label || "Not established"}</dd><dt className="text-slate-500">Observed</dt><dd>{newsDate(alert.observed_at, "Not established")}</dd><dt className="text-slate-500">Evidence expiry</dt><dd>{newsDate(alert.expires_at, "Not established")}</dd></dl>
             {alert.evidence_excerpt && <p className="mt-3 break-words text-xs italic text-slate-600">“{alert.evidence_excerpt}”</p>}
             {alert.correction_note && <p className="mt-3 break-words text-xs text-slate-700"><strong>Correction: </strong>{alert.correction_note}</p>}

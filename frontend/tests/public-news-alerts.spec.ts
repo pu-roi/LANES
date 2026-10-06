@@ -87,7 +87,7 @@ test("shows source-qualified text alerts, preserves route inputs, and paginates 
   await expect(page.getByText("Approximately knee-deep", { exact: true })).toBeVisible();
   await expect(page.getByText("Not established for all vehicles", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /Flood report along C5/ })).toHaveAttribute("href", "https://example.org/flood");
-  await expect(page.getByText(/do not change route avoidance zones/)).toBeVisible();
+  await expect(page.getByText("No current routing zone confirmed", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Ortigas Avenue, Pasig" })).toBeVisible();
   expect(control.requests).toContain(2);

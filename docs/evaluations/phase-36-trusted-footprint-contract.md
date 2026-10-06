@@ -1,7 +1,7 @@
 # Phase 36: Trusted current incident footprint contract
 
-> **Last Updated:** October 05, 2026, 10:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** BUG-110 contract implemented locally; final verification recorded below. Real current footprint provisioning, automatic worker and desktop/mobile map integration remain open.
+> **Last Updated:** October 05, 2026, 11:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Status:** BUG-110 contract implemented locally; this historical checkpoint records its verification. The [later worker integration](phase-36-automatic-footprint-worker.md) passes locally; real current footprint provisioning and desktop/mobile map integration remain open.
 
 Valid shapes and arbitrary source labels can no longer authorize operational news zones. Approval comes from an operator-owned current incident catalog or an authenticated staff review of the exact claim and footprint. Missing approval stays a source alert. This delivers the contract prerequisite, not automatic news-derived polygons on the public map.
 

@@ -239,6 +239,11 @@ async def resolve_community_post_reports(
 def _attach_report_media(zone: models.FloodAvoidanceZone) -> schemas.FloodAvoidanceZoneResponse:
     """Expose source-report evidence and zone media without copying."""
     response = schemas.FloodAvoidanceZoneResponse.model_validate(zone)
+    from sqlalchemy.orm import object_session
+    from app.services.news_zone_projection_service import zone_responses_with_news
+    session = object_session(zone)
+    if session is not None:
+        response = zone_responses_with_news(session, [zone])[0]
     report_media: list[str] = []
     if zone.reports:
         for r in zone.reports:

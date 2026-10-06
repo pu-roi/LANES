@@ -4,6 +4,7 @@ import { ZoneContributors } from "./ZoneContributors";
 import { FloodRecordSummary, SpatialPanelButton as Button, floodRecordTime } from "./FloodRecordSummary";
 import { Pagination } from "@/shared/ui";
 import type { AvoidanceZone } from "@/features/admin/adminApi";
+import { publisherLink } from "@/features/news/newsPresentation";
 
 interface ActiveZonesPanelProps {
   activeOnly: boolean;
@@ -179,6 +180,14 @@ export function ActiveZonesPanel({
                   </>}
                   facts={[
                     { label: "Source", value: zone.report_source === "direct_user" ? "User report" : zone.report_source?.replaceAll("_", " ") || "Official zone" },
+                    ...(zone.news || []).flatMap((alert) => {
+                      const link = publisherLink(alert.source_url);
+                      return [
+                        { label: "Article", value: link ? <a href={link} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()} className="text-blue-700 underline underline-offset-2">{alert.source_publisher}: {alert.source_title}<span className="sr-only"> (opens in a new tab)</span></a> : alert.source_title },
+                        { label: "Observed", value: floodRecordTime(alert.observed_at) },
+                        { label: "Placement", value: alert.geometry_basis === "estimated_road_corridor" ? "Estimated road corridor" : "Verified flood footprint" },
+                      ];
+                    }),
                     ...(zone.report_id ? [{ label: "Primary report", value: `Report #${zone.report_id}` }] : []),
                     { label: "Expires", value: zone.expires_at ? floodRecordTime(zone.expires_at) : "No expiry recorded" },
                     { label: "Vehicles", value: zone.passable_vehicles || "Not recorded" },

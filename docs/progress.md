@@ -1,10 +1,51 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 05, 2026, 10:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 12:51 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Pre-push documentation and release-state audit
+
+- [x] Audit all eight authoritative records and synchronize completed local worker/map integration, 897-tile runtime packaging, free-auditor source options and remaining release/current-article/PWA acceptance. Architectural decisions remain unchanged; this implements existing boundaries. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Confirm declared dependencies and unchanged migration/model definitions; retain fresh disposable `d7e4b9a21c60` verification and successful default/extended free probes. **61 focused pre-push regressions pass**, supplementing the documented checkpoints without additive totals. Verify encrypted environment changes and byte-preserved manifest identity. User-authorized `roi-branch` commit/push is the following operation; no merge or deployment is claimed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Exact-source evidence options repair the free auditor's formatting
+
+- [x] Supply bounded exact-source quote/offset options under prompt v2, preserve the complete article and strict response/evidence rules, and expose only safe numeric HTTP error status. Existing policy fingerprints change; historical records remain preserved. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify **170 distinct checks**, including twenty native saved-evaluation cases in a fresh removed local PostGIS database. Rebuild the Linux image and pass offline assets verification. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify live synthetic `openrouter/free` responses at 60 seconds and the normal 20-second worker default. Both return valid historical review; no database/public write. Earlier generic HTTP failure remains an availability limitation, not a waived gate. Matching cloud/API/job/frontend release, real article and PWA acceptance remain open. No package/model/migration, deployment, commit or push. [Verification](evaluations/phase-36-auditor-evidence-options-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Free-auditor timeout diagnosed; provider acceptance pending
+
+- [x] Add bounded `--timeout-seconds` for the synthetic probe and transport; preserve the 20-second worker default, exact free-router guard and all evidence/publication checks. **134 focused tests pass**. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Execute one 60-second free synthetic retry. The provider responded, but invalid evidence offsets were rejected (`audit_evidence_offset_mismatch`). No database/public writes or deployment. This is a diagnosed reliability gap, not successful live acceptance. [Evidence](evaluations/phase-36-news-runtime-packaging-20261007.md#october-7-live-timeout-follow-up). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Runtime assets packaged and Docker startup recovered
+
+- [x] Package 897 unchanged Metro Manila NOAH tiles with manifest checksums and ODbL attribution in the API/job build context. Add build/runtime asset verification, preserve Windows/Linux bytes and retain explicit directory overrides. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Add a free-only auditor configuration check and opt-in synthetic response probe with no database/publication access. Local encrypted configuration passes; no live AI probe was made. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify **188 distinct focused tests**, the existing migration/storage lifecycle in a removed disposable local PostGIS database and the final Linux Docker build/offline runtime check. Recover Docker's Windows socket startup error using preserved runtime-folder backups; original containers/database volume remain present. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Write [exact release instructions](guides/news-zone-release-checklist.md). Matching cloud migration/deployment, provider response, real current article and physical PWA acceptance remain open. No new dependency/model/migration, cloud write, commit or push. [Evidence](evaluations/phase-36-news-runtime-packaging-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 ---
+
+### October 6: Estimated road activation and existing flood-zone UI integrated locally
+
+- [x] Add server-derived, uniquely grounded OSM/NOAH corridor activation after independent current-news auditing, using existing source_geometry and decision JSONB. Preserve every disconnected component, exact asset binding, depth/access, revision/idempotency and two-hour observation lifecycle; recompute before activation/refresh. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Queue unsupported estimates for Needs Review and skip unchanged spatial-review revisions on repeat sweeps. Reuse existing public/staff layers and shared detail layouts for source, observation, status and estimated/verified basis; invalidate existing map caches and expose refresh failures. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify native PostGIS/HTTP/routing/refresh/expiry and desktop/mobile layer/detail fixtures; final totals are recorded in the [integration report](evaluations/phase-36-estimated-road-zone-integration-20261006.md). No new design, model/migration/dependency, live provider call, deployment or push. Real-article, matching release and physical PWA acceptance remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 6: Automatic plotting intent and existing-design audit
+
+- [x] Compare the clarified C5/locality → OSM/NOAH estimated placement → automatic Active Zone target with the actual code. Location clues, narrowed candidates, ranked modeled fragments and selected transparent review previews exist. Catalog-backed activation remains locally complete; estimated-section activation, source centerline for the solid core, safe news details/types and immediate refresh remain unfinished. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] **10 focused checks pass** using deterministic fixtures/existing C5/Ugong assets. Reconcile the next-task wording: backend placement-to-activation and existing UI integration both remain. Existing severity/layer/panel/shared UI must be reused; no redesign or source-code change was made in this audit. [Evidence](evaluations/phase-36-user-plotting-alignment-audit-20261006.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 5: Automatic footprint worker connected and verified locally
+
+- [x] Add bounded exact-catalog activation after saved extraction, independent evaluation and source-alert publication/maintenance. Recheck all approval/evidence/revision gates atomically, protect staff choices, continue after per-claim failures and preserve stable retries. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Add discovery `--pipeline`, including unchanged/error feed responses and saved-only execution; retain extraction-only mode. Prepare the local Cloud Build job command for the full pipeline, without deploying or running it. Restart seeding skips current-policy handoffs/empty/old runs, and footprint failures cannot block later eligible catalog cases within the bounded sweep. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] **456 distinct checks pass**: 258 targeted, 194 related and four event regressions. The native saved-processing → audit → publication → zone → retry → expiry test uses mocked extraction/provider results and a synthetic approved perimeter. Existing migrations reach `d7e4b9a21c60`; all four final-run disposable databases are removed. No new dependencies/models/migrations, live provider call or normal/cloud data change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Synchronize plans/records and record BUG-111. Gate 3 is complete locally; actual current-source provisioning, desktop/mobile polygons and full live routing/staging/PWA acceptance remain pending. This slice is uncommitted and unpushed. [Verification](evaluations/phase-36-automatic-footprint-worker.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 5: Planner audit for the operational repair push
 

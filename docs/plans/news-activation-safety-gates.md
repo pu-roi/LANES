@@ -2,6 +2,8 @@
 
 > **Drafted:** September 27, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**October 6 current implementation:** The explicit pipeline supports strict approved current footprints and a distinct developer-requested estimated road-corridor path. Current independently audited news supplies condition/depth/access/time; a uniquely article-grounded checked OSM/NOAH section supplies placement. Server recomputation, qualified locality containment, asset/component binding, source centerline, conflict/freshness/revision and finite expiry guards are required. The existing 25 m margin is routing/display policy rather than measured water width. Preview scores/buffers alone remain ineligible. Estimates are publicly labeled, unsupported cases stay Needs Review, and real-event/release acceptance remains open. [Integration evidence](../evaluations/phase-36-estimated-road-zone-integration-20261006.md).
+
 ## Decision states
 
 Each extracted location is an independent claim. A claim can be `flagged_review`, `suppressed_forecast`, `suppressed_negated`, `suppressed_subsided`, or `auto_approved`. Automatic operation is the intended path for complete current claims; staff review is for exceptions. An otherwise credible claim lacking exact road closure geometry should become a prompt, source-labeled public news alert once that separate feature exists, without changing routing. Simulation output and a location suggestion are not public map zones. The current geometry provider still sends active claims to `flagged_review` because it cannot verify an affected segment.

@@ -1,8 +1,20 @@
 # LANES documentation
 
-> **Last Updated:** October 05, 2026, 10:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 12:51 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 7 exact-source auditor repair (current):** The backend now supplies exact quote/offset options; the model copies selected supporting spans, and strict immutable-source validation remains unchanged. **170 focused checks pass**. Live free synthetic probes passed at both 60 seconds and the normal 20-second worker limit, producing historical review without database/public writes. Prompt v2 changes the existing evaluation policy identity; no new package/model/migration or UI design. Matching release, real-article/map/routing and physical PWA acceptance remain open. [Verification](evaluations/phase-36-auditor-evidence-options-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier provider failure (resolved locally by the update above):** A 60-second free synthetic retry received a response but failed exact evidence-offset validation. The timeout diagnostic was implemented and tested; the subsequent exact-source repair above passed synthetic provider acceptance. Release remains pending. [Follow-up evidence](evaluations/phase-36-news-runtime-packaging-20261007.md#october-7-live-timeout-follow-up).
+
+**October 7 initial runtime packaging checkpoint:** The checked NOAH vector bundle is now versioned under `backend/runtime_data/noah-placement` and verified during Docker build. Final Linux build/offline image verification and **188 focused tests** pass. Free-router configuration is verified; the optional single synthetic provider probe, matching cloud migration/API/job/frontend rollout, real-article and physical PWA acceptance remain open. No live cloud/provider write or deployment was performed. [Verification](evaluations/phase-36-news-runtime-packaging-20261007.md), [exact operator steps](guides/news-zone-release-checklist.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Start with the [project README](../README.md), [agent instructions](../AGENTS.md), and [system design](../DESIGN.md). The files below are grouped by purpose. The eight registered project records retain their established paths so existing workflows can find them.
+
+[Current estimated-road integration verification](evaluations/phase-36-estimated-road-zone-integration-20261006.md) — local automatic corridor activation and existing desktop/mobile map integration; real-article/runtime release and physical PWA acceptance remain open.
+
+[Latest automatic footprint worker verification](evaluations/phase-36-automatic-footprint-worker.md) — 456 distinct local checks; real current source and desktop/mobile map acceptance remain pending.
+
+[October 6 developer-intent plotting audit](evaluations/phase-36-user-plotting-alignment-audit-20261006.md) — historical source comparison that identified the now-implemented estimated activation/centerline gaps; current verification is linked above.
 
 ## Project records
 
@@ -34,6 +46,10 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Exact-source free-auditor evidence options](evaluations/phase-36-auditor-evidence-options-20261007.md) - 170 passing checks, strict source spans, safe HTTP status and successful synthetic free probes at the 20/60-second limits; real-article/deployment acceptance remains open.
+
+- [Phase 36 runtime packaging and release preparation](evaluations/phase-36-news-runtime-packaging-20261007.md) - 897 checksummed NOAH tiles, final Linux image/offline asset checks, 188 focused tests and remaining cloud/live acceptance.
 
 - [Phase 36 trusted current footprint contract](evaluations/phase-36-trusted-footprint-contract.md) — BUG-110 source/incident approval, CRS/full locality/component gates, safe renewal fallback and 398 distinct local checks; real footprint provisioning and worker/map integration remain open.
 
@@ -92,6 +108,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Phase 36: Metro Manila OSM and NOAH coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md)
 
 ## Guides
+
+- [News-zone release: exact operator steps](guides/news-zone-release-checklist.md) - free-only synthetic auditor probe, reviewed Git release, Cloud Build migration/API/job checks, separate Firebase rollout and controlled live acceptance; includes Docker socket recovery.
 
 - [News publication/lifecycle operator guide](guides/news-publication-lifecycle.md) — explicit saved-article pipeline, current-policy gates, public/staff reads, retention, retries and rollout limitations.
 

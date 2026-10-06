@@ -3,6 +3,7 @@ import struct
 from typing import Any, Literal, Optional, Union
 from pydantic import BaseModel, ConfigDict, field_serializer, field_validator, model_validator
 from geoalchemy2.elements import WKBElement
+from app.schemas.news_publication import PublicNewsAlert
 
 from app.schemas.common import (
     PointGeometry,
@@ -296,6 +297,7 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     # later attaches directly to the operational zone.
     report_media_urls: Optional[list[str]] = None
     contributors: list[ZoneContributorResponse] = []
+    news: list["PublicNewsAlert"] = []
 
     model_config = ConfigDict(from_attributes=True)
 

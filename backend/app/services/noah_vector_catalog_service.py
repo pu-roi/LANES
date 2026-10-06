@@ -22,7 +22,7 @@ from shapely.geometry.base import BaseGeometry
 
 X_METRES = 111320.0 * math.cos(math.radians(14.58))
 Y_METRES = 110574.0
-DEFAULT_DIRECTORY = Path(__file__).resolve().parents[3] / "data" / "noah-placement"
+DEFAULT_DIRECTORY = Path(__file__).resolve().parents[2] / "runtime_data" / "noah-placement"
 
 
 def metric_geometry(geometry: BaseGeometry) -> BaseGeometry:

@@ -38,7 +38,9 @@ try:
         created.append(name)
     tests = [
         'tests/test_operational_footprint.py', 'tests/test_news_pipeline.py',
+        'tests/test_news_estimated_road.py',
         'tests/test_operational_footprint_evidence.py',
+        'tests/test_news_pipeline_cli.py', 'tests/test_news_processing.py', 'tests/test_news_saved_extraction.py',
         'tests/test_news_publication_lifecycle.py', 'tests/test_news_publication_api.py',
         'tests/test_routing_service.py', 'tests/test_flood_routing_policy.py',
         'tests/test_news_publication_lifecycle_postgres.py',

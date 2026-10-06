@@ -13,6 +13,7 @@ from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInpu
 from app.services.news_claim_auditor import (
     MAX_ARTICLE_BYTES, MAX_RESPONSE_BYTES, AuditorConfig, NewsClaimAuditor, canonical_claim_sha256,
     canonical_input_sha256, AUDIT_CANDIDATE_EXCLUDED_FIELDS,
+    MAX_EVIDENCE_OPTIONS, MAX_EVIDENCE_QUOTE_CHARACTERS,
 )
 
 
@@ -70,6 +71,30 @@ async def run_response(result: dict) -> object:
 
 
 @pytest.mark.asyncio
+async def test_custom_timeout_bounds_http_and_whole_response_without_changing_default(monkeypatch):
+    claim, article = inputs()
+    response = evidence(claim, article)
+    limits = []
+    real_timeout = asyncio.timeout
+
+    def capture_deadline(seconds):
+        limits.append(seconds)
+        return real_timeout(seconds)
+
+    def handler(request):
+        assert set(request.extensions["timeout"].values()) == {60.0}
+        return reply(response)
+
+    monkeypatch.setattr(asyncio, "timeout", capture_deadline)
+    service = NewsClaimAuditor(auditor().config, timeout_seconds=60)
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        result = await service.audit(claim, article, client=client)
+    assert result.outcome == "verified" and limits == [60.0]
+    assert service.policy_identity()["timeout_seconds"] == 60
+    assert auditor().policy_identity()["timeout_seconds"] == 20
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("provider", ["openrouter", "gemini"])
 async def test_provider_uses_only_its_credential_and_complete_immutable_article(provider):
     claim, article = inputs()
@@ -116,6 +141,93 @@ async def test_provider_uses_only_its_credential_and_complete_immutable_article(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("provider", ["openrouter", "gemini"])
+async def test_provider_can_copy_exact_unicode_crlf_source_spans_without_counting(provider):
+    claim, article = inputs()
+    sentence = claim.evidence_sentence.replace("Sample Road", "Doña Imelda Road")
+    article.article_text = "🌧️ Bulletin — Taglish.\r\n" + sentence + "\r\nOther Road has cleared."
+    begin = article.article_text.index(sentence)
+    claim.raw_place_name = claim.canonical_road = "Doña Imelda Road"
+    claim.evidence_sentence = sentence
+    claim.evidence_sentence_offset = (begin, begin + len(sentence))
+    claim.place_char_start = article.article_text.index(claim.raw_place_name)
+    claim.place_char_end = claim.place_char_start + len(claim.raw_place_name)
+
+    def handler(request):
+        payload = json.loads(request.content)
+        context = json.loads(payload["messages"][1]["content"] if provider == "openrouter"
+                             else payload["contents"][0]["parts"][0]["text"])
+        options = context["evidence_options"]
+        assert all(context["evidence_text"][s["start"]:s["end"]] == s["quote"] for s in options)
+        assert any(s["quote"] == "Other Road has cleared." for s in options)
+        response = evidence(claim, article)
+        for fact in ("place", "status", "time", "depth"):
+            response[fact]["evidence"] = [options[0]]
+        return reply(response, provider)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        result = await auditor(provider).audit(claim, article, client=client)
+    assert result.outcome == "verified"
+    span = result.evidence.place.evidence[0]
+    assert (span.start, span.end, span.quote) == (begin, begin + len(sentence), sentence)
+
+
+@pytest.mark.asyncio
+async def test_bounded_span_options_keep_late_duplicate_occurrence_and_complete_article():
+    claim, article = inputs()
+    sentence = claim.evidence_sentence
+    article.article_text = sentence + "\n" + ("Other locality context.\n" * 300) + sentence
+    begin = article.article_text.rindex(sentence)
+    claim.evidence_sentence_offset = (begin, begin + len(sentence))
+    claim.place_char_start = begin + sentence.index(claim.raw_place_name)
+    claim.place_char_end = claim.place_char_start + len(claim.raw_place_name)
+
+    def handler(request):
+        context = json.loads(json.loads(request.content)["messages"][1]["content"])
+        assert context["evidence_text"] == article.article_text
+        assert context["article"]["article_text"] == article.article_text
+        assert len(context["evidence_options"]) == MAX_EVIDENCE_OPTIONS
+        selected = context["evidence_options"][0]
+        assert selected == {"start": begin, "end": begin + len(sentence), "quote": sentence}
+        assert any(s["start"] == 0 and s["quote"] == sentence for s in context["evidence_options"])
+        response = evidence(claim, article)
+        for fact in ("place", "status", "time", "depth"):
+            response[fact]["evidence"] = [selected]
+        return reply(response)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        result = await auditor().audit(claim, article, client=client)
+    assert result.outcome == "verified" and result.evidence.status.evidence[0].start == begin
+
+
+@pytest.mark.asyncio
+async def test_oversized_source_paragraph_has_only_schema_sized_exact_options():
+    claim, article = inputs()
+    article.article_text += " " + "x" * (MAX_EVIDENCE_QUOTE_CHARACTERS * 2)
+    def handler(request):
+        context = json.loads(json.loads(request.content)["messages"][1]["content"])
+        spans = context["evidence_options"]
+        assert all(len(s["quote"]) <= MAX_EVIDENCE_QUOTE_CHARACTERS for s in spans)
+        assert all(article.article_text[s["start"]:s["end"]] == s["quote"] for s in spans)
+        assert spans[-1]["end"] == len(article.article_text)
+        return reply(evidence(claim, article))
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        result = await auditor().audit(claim, article, client=client)
+    assert result.outcome == "verified"
+
+
+@pytest.mark.asyncio
+async def test_span_option_overhead_cannot_bypass_whole_request_size_limit():
+    claim, article = inputs()
+    article.article_text += " " + "x" * 120_000
+    def forbidden(request):
+        raise AssertionError("An oversized indexed article must not reach the provider")
+    async with httpx.AsyncClient(transport=httpx.MockTransport(forbidden)) as client:
+        result = await auditor().audit(claim, article, client=client)
+    assert result.outcome == "review" and result.reason_code == "audit_input_oversized"
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("config, reason", [
     (AuditorConfig(), "auditor_provider_not_configured"),
     (AuditorConfig(provider="other", model="fixture"), "auditor_provider_not_configured"),
@@ -154,6 +266,7 @@ async def test_safe_http_error_and_retry_classification(status, retryable, reaso
     assert len(calls) == 1
     assert result.outcome == "unavailable" and result.reason_code == reason
     assert result.retryable is retryable
+    assert result.provider_http_status == status
     assert "private" not in result.model_dump_json()
 
 
@@ -474,15 +587,14 @@ async def test_hybrid_projection_sends_source_metadata_and_requires_structured_c
 
 
 @pytest.mark.asyncio
-async def test_total_wall_clock_deadline_bounds_slow_provider(monkeypatch):
-    import app.services.news_claim_auditor as module
-    monkeypatch.setattr(module, "AUDIT_TIMEOUT_SECONDS", 0.02)
+async def test_total_wall_clock_deadline_bounds_slow_provider():
     claim, article = inputs()
     async def handler(request):
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(2)
         return reply(evidence(claim, article))
+    service = NewsClaimAuditor(auditor().config, timeout_seconds=1)
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
-        result = await auditor().audit(claim, article, client=client)
+        result = await service.audit(claim, article, client=client)
     assert result.reason_code == "auditor_timeout" and result.retryable
 
 

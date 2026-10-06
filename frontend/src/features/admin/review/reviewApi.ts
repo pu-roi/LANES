@@ -46,7 +46,7 @@ export interface NewsDecisionRequest {
 }
 export interface NewsDecisionEffect {
   public_state: string; review_state: string; status: "Active" | "Unconfirmed" | "Cleared" | null;
-  reason_code: string; affects_routing: false;
+  reason_code: string; affects_routing: boolean;
 }
 export function previewNewsDecision(caseId: number, request: NewsDecisionRequest) {
   return apiClient.post<NewsDecisionEffect>(`/admin/news/claims/${caseId}/decision-preview`, request);

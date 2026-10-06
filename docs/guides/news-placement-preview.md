@@ -1,6 +1,6 @@
 # News placement preview and NOAH catalog
 
-> **Last Updated:** October 05, 2026, 6:04 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 12:25 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Staff can inspect a completed immutable result without writes:
@@ -32,7 +32,7 @@ backend/venv/Scripts/python.exe backend/scripts/build_noah_placement_catalog.py 
 
 Default extent: longitude 120.90–121.14, latitude 14.35–14.79. `--bounds west south east north` permits an explicitly smaller development catalog. The builder refuses to replace an existing manifest: choose a new versioned directory for changed sources. Partial builds have no manifest and remain unavailable. Preserve attribution and ODbL terms when distributing these derived assets.
 
-Local default is ignored `data/noah-placement`. Override with:
+Local default is now versioned `backend/runtime_data/noah-placement`; the original builder output can remain in ignored `data/noah-placement`. Override with:
 
 ```powershell
 $env:LANES_NEWS_NOAH_DIR = 'D:/path/to/immutable/noah-catalog'
@@ -42,7 +42,7 @@ Restart API/collector after changing the directory/catalog. Providers cache immu
 
 ## Runtime and limits
 
-Production needs versioned external assets/mount with the same directory/source identity for API and collector/evaluator. No provisioning/deployment occurred. The roughly 90 MB output and raw ZIPs are outside Git/the API image. The frontend PNG overlay cannot replace analytical vectors.
+The reviewed approximately 90 MB derived bundle is now included in `backend/runtime_data/noah-placement` and copied by Docker to `/data/noah-placement`, with complete build-time asset verification and preserved manifest hashes. Raw ZIPs remain outside Git/the API image. Explicit immutable external catalogs remain supported. Matching cloud deployment is pending; the frontend PNG overlay cannot replace analytical vectors. [Packaging evidence](../evaluations/phase-36-news-runtime-packaging-20261007.md), [exact release steps](news-zone-release-checklist.md).
 
 Missing/corrupt/oversized assets and out-of-extent queries remain unavailable evidence. Missing history/barangay boundaries stay explicit. Zero modeled overlap does not prove current safety. NOAH return periods are distinct from DRRMO historical years; neither supplies current observation time or depth.
 

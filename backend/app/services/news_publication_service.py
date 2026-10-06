@@ -17,6 +17,7 @@ from pydantic import ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import exists, select
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from shapely.geometry import mapping
 from shapely import get_srid
 from geoalchemy2.shape import to_shape
@@ -206,7 +207,8 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
             *,
             geometry_precision: str = "text_only",
             display_geojson: dict | None = None,
-            affects_routing: bool = False) -> PublicNewsAlert:
+            affects_routing: bool = False,
+            geometry_basis: str | None = None) -> PublicNewsAlert:
     publisher = next(source.publisher for source in sources if source.id == article.publisher)
     # Raw source depth and qualifiers only; no borrowing modeled severity.
     depth = _safe(claim.depth_raw, 500) if audit.evidence.depth.confirmed else None
@@ -226,7 +228,7 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
         evidence_excerpt=_safe(claim.evidence_sentence, 700),
         geometry_precision=geometry_precision,
         display_geojson=display_geojson,
-        affects_routing=affects_routing)
+        affects_routing=affects_routing, geometry_basis=geometry_basis)
 
 
 def public_projection(decision: NewsClaimDecision | None, now: datetime, *, include_retained: bool = False) -> PublicNewsAlert | None:
@@ -241,7 +243,7 @@ def public_projection(decision: NewsClaimDecision | None, now: datetime, *, incl
         anchor = decision.observed_at
         if anchor is None or (not include_retained and now >= anchor + timedelta(hours=snapshot.unconfirmed_retention_hours)):
             return None
-        return public.model_copy(update={"status": "Cleared", "current_status_unknown": False,
+        return public.model_copy(update={"status": "Cleared", "current_status_unknown": False, "affects_routing": False,
             "condition_label": "Reported cleared; vehicle passability remains separate", "updated_at": decision.decided_at})
     if decision.public_state == "withdrawn":
         return None
@@ -251,7 +253,7 @@ def public_projection(decision: NewsClaimDecision | None, now: datetime, *, incl
     if now >= expiry or decision.public_state == "expired":
         if not include_retained and now >= expiry + timedelta(hours=snapshot.unconfirmed_retention_hours):
             return None
-        return public.model_copy(update={"status": "Unconfirmed", "current_status_unknown": True,
+        return public.model_copy(update={"status": "Unconfirmed", "current_status_unknown": True, "affects_routing": False,
             "condition_label": "Last reported flooding; current condition unknown",
             "passability_label": "Last report: " + public.passability_label.removeprefix("Last report: "),
             "depth_label": "Last reported: " + public.depth_label.removeprefix("Last reported: ") if public.depth_label else None,
@@ -361,7 +363,8 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                     raise NewsPublicationError("stale_case_revision", 409, revision=target_case.revision)
                 is_active_zone = (target.public_state == "active_zone")
                 was_active_zone = is_active_zone
-                linked_zones = list(db.scalars(select(NewsClaimZoneLink.zone_id).where(NewsClaimZoneLink.decision_id == target.id)))
+                linked_zones = list(db.scalars(select(NewsClaimZoneLink.zone_id).where(NewsClaimZoneLink.decision_id == target.id)
+                    .order_by(NewsClaimZoneLink.zone_id)))
                 supported_zone_ids: list[int] = []
                 refresh_provenance = None
                 refresh_failure = None
@@ -376,14 +379,28 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                         if all(getattr(record, key) == value for key, value in context.items())
                         and canonical_sha256(record.geometry) == canonical_sha256(target_snapshot.public.display_geojson)]
                     try:
-                        if assets.error or len(matches) != 1 or not linked_zones:
+                        binding = (target_snapshot.operational_provenance.binding
+                                   if target_snapshot.operational_provenance else None)
+                        estimated = binding is not None and binding.evidence_kind == "estimated_news_road"
+                        if not linked_zones:
                             raise NewsPublicationError("operational_footprint_refresh_unverified")
-                        _, refresh_provenance = approve_news_footprint(db, matches[0].geometry,
-                            geometry_srid=matches[0].srid, claim=claim, context=context, now=now,
-                            record_id=matches[0].record_id, source=matches[0].source_id)
+                        if estimated:
+                            from app.services.news_estimated_road_service import build_estimated_road_zone
+                            corridor = build_estimated_road_zone(claim)
+                            if canonical_sha256(corridor.geometry) != canonical_sha256(target_snapshot.public.display_geojson):
+                                raise NewsPublicationError("estimated_road_extent_changed")
+                            _, refresh_provenance = approve_news_footprint(db, corridor.geometry,
+                                geometry_srid=4326, claim=claim, context=context, now=now,
+                                source=corridor.source_id, checksum=corridor.checksum, estimated_road=True)
+                        else:
+                            if assets.error or len(matches) != 1:
+                                raise NewsPublicationError("operational_footprint_refresh_unverified")
+                            _, refresh_provenance = approve_news_footprint(db, matches[0].geometry,
+                                geometry_srid=matches[0].srid, claim=claim, context=context, now=now,
+                                record_id=matches[0].record_id, source=matches[0].source_id)
                         attributes = _operational_zone_attributes(claim, audit)
                         current_components = []
-                        for zone_id in linked_zones:
+                        for index, zone_id in enumerate(linked_zones):
                             zone = db.get(FloodAvoidanceZone, zone_id)
                             if (zone is None or not zone.is_active or zone.expires_at is None or zone.expires_at <= now
                                     or any(getattr(zone, name) != value for name, value in attributes.items())):
@@ -392,6 +409,9 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                             if get_srid(actual_geometry) != 4326:
                                 raise NewsPublicationError("operational_footprint_refresh_unverified")
                             current_components.append(canonical_sha256(mapping(actual_geometry)))
+                            if estimated and (zone.source_geometry is None or canonical_sha256(mapping(to_shape(zone.source_geometry)))
+                                    != canonical_sha256(refresh_provenance.binding.estimated_road.component_centerlines[index])):
+                                raise NewsPublicationError("estimated_road_centerline_changed")
                         if sorted(current_components) != sorted(refresh_provenance.binding.component_sha256):
                             raise NewsPublicationError("operational_footprint_refresh_unverified")
                     except NewsPublicationError as exc:
@@ -404,6 +424,7 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                     geometry_precision="operational_polygon" if is_active_zone else "text_only",
                     display_geojson=target_snapshot.public.display_geojson if is_active_zone else None,
                     affects_routing=is_active_zone,
+                    geometry_basis=target_snapshot.public.geometry_basis if is_active_zone else None,
                 )
                 if is_active_zone and linked_zones:
                     for lz_id in linked_zones:
@@ -840,6 +861,49 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
     return decision
 
 
+def require_geometry_review(db: Session, case_id: int, *, expected_revision: int,
+        reason: str, now: datetime, asset_revision: str) -> None:
+    """Queue a text alert for spatial review without inventing a routing extent."""
+    case = lock_case(db, case_id)
+    previous = latest_decision(db, case_id)
+    if (case.revision != expected_revision or previous is None or previous.actor_kind != "automatic"
+            or previous.operation != "evaluate" or previous.public_state != "active_alert"):
+        return
+    snapshot = NewsDecisionSnapshot.model_validate(previous.snapshot)
+    if (previous.review_state == "needs_review" and snapshot.private_reason == reason
+            and snapshot.estimated_road_review_revision == asset_revision):
+        return
+    digest = canonical_sha256({"operation": "geometry_review", "case_id": case_id,
+                               "revision": expected_revision, "reason": reason})
+    decision_id = reserve_decision_id(db)
+    public = snapshot.public.model_copy(update={"decision_id": decision_id, "revision": case.revision + 1,
+                                                "updated_at": now}) if snapshot.public else None
+    snapshot = snapshot.model_copy(update={"request_sha256": digest, "private_reason": reason,
+        "previous_decision_id": previous.id, "public": public, "estimated_road_review_revision": asset_revision})
+    _write(db, case, decision_id, uuid5(NAMESPACE_URL, f"lanes-news-geometry-review:{digest}"), snapshot, now,
+           state="active_alert", review="needs_review", reason="estimated_road_needs_review",
+           observed=previous.observed_at, expiry=previous.expires_at)
+
+
+def activate_estimated_road(db: Session, case_id: int, *, expected_revision: int,
+        policy: EvaluationPolicy, now: datetime, sources: tuple[NewsSource, ...] | None = None) -> NewsClaimDecision:
+    """Derive an estimate; the common transaction rechecks its audit and assets."""
+    from app.services.news_estimated_road_service import build_estimated_road_zone
+    previous = latest_decision(db, case_id)
+    if previous is None:
+        raise NewsPublicationError("claim_not_active_alert_or_zone")
+    snapshot = NewsDecisionSnapshot.model_validate(previous.snapshot)
+    sources = sources if sources is not None else load_news_sources()
+    _, _, _, _, _, claim, _, failure = _load(db, snapshot.evaluation_id, policy, now, sources)
+    if failure:
+        raise NewsPublicationError(failure)
+    estimated = build_estimated_road_zone(claim)
+    return activate_operational_footprint(db, case_id, estimated.geometry,
+        expected_revision=expected_revision, geometry_srid=4326, policy=policy, now=now,
+        provenance_source=estimated.source_id, provenance_checksum=estimated.checksum,
+        estimated_road=True, sources=sources)
+
+
 def activate_operational_footprint(
     db: Session,
     case_id: int,
@@ -856,6 +920,7 @@ def activate_operational_footprint(
     actor_user_id: int | None = None,
     request_id: UUID | None = None,
     sources: tuple[NewsSource, ...] | None = None,
+    estimated_road: bool = False,
 ) -> NewsClaimDecision:
     """Activate an operational flood footprint for a verified news claim atomically.
 
@@ -888,6 +953,7 @@ def activate_operational_footprint(
         "operation": "activate_footprint", "case_id": case_id,
         "expected_revision": expected_revision, "actor_user_id": actor_user_id,
         "geometry_srid": geometry_srid, "evidence_record_id": evidence_record_id,
+        "estimated_road": estimated_road,
         "provenance": provenance.model_dump(mode="json"),
         "policy_fingerprint": policy.fingerprint, "pipeline_version": policy.pipeline_version,
         "auditor_identity": policy.auditor_identity,
@@ -945,7 +1011,8 @@ def activate_operational_footprint(
     val, provenance = approve_news_footprint(db, footprint, geometry_srid=geometry_srid, claim=claim,
         context=_footprint_context(source, version, article, claim), now=now, actor_user_id=actor_user_id,
         review_id=str(request_id) if actor_user_id is not None else None, record_id=evidence_record_id,
-        source=provenance_source, checksum=provenance_checksum, caller_parent=parent_boundary)
+        source=provenance_source, checksum=provenance_checksum, caller_parent=parent_boundary,
+        estimated_road=estimated_road)
 
     decision_id = reserve_decision_id(db)
     sev_val = zone_attributes["severity_override"]
@@ -957,6 +1024,8 @@ def activate_operational_footprint(
         poly_in = PolygonGeometry(**part)
         zone_in = FloodAvoidanceZoneCreate(
             geometry=poly_in,
+            source_geometry=(provenance.binding.estimated_road.component_centerlines[idx]
+                             if estimated_road else None),
             is_active=True,
             expires_at=expiry_time,
         )
@@ -983,11 +1052,13 @@ def activate_operational_footprint(
         geometry_precision="operational_polygon",
         display_geojson=val.geojson,
         affects_routing=True,
+        geometry_basis="estimated_road_corridor" if estimated_road else "verified_current_footprint",
     )
     snapshot = _snapshot(
         source, version, claim, policy, digest, evaluation_id=evaluation.id,
         previous=previous, public=public, target=case.id,
-        geometry_reason="staff_reviewed_footprint" if actor_user_id is not None else "verified_incident_footprint",
+        geometry_reason=("estimated_road_corridor" if estimated_road else
+                         "staff_reviewed_footprint" if actor_user_id is not None else "verified_incident_footprint"),
         linked_zone_ids=linked_zone_ids,
         operational_provenance=provenance,
     )
@@ -996,7 +1067,7 @@ def activate_operational_footprint(
         actor_id=actor_user_id,
         operation="correct" if actor_user_id is not None else "evaluate",
         state="active_zone", review="resolved",
-        reason="verified_operational_footprint",
+        reason="estimated_road_corridor" if estimated_road else "verified_operational_footprint",
         observed=claim.event_time_resolved, expiry=expiry_time)
 
     for z_id in linked_zone_ids:
@@ -1040,17 +1111,25 @@ def process_news_publications(session_factory: Callable[[], Session], *, policy:
                 decision = publish_completed_evaluation(db, evaluation_id, policy=policy, now=clock(), sources=sources)
                 state = decision.public_state
                 operation = decision.operation
-            outcome = "cleared" if operation == "clear" else "published" if state == "active_alert" else "needs_review"
+            outcome = "cleared" if operation == "clear" else "published" if state in ("active_alert", "active_zone") else "needs_review"
             setattr(summary, outcome, getattr(summary, outcome) + 1)
         except NewsPublicationError as exc:
             summary.skipped.append({"evaluation_id": evaluation_id, "reason_code": exc.code})
+        except SQLAlchemyError:
+            summary.skipped.append({"evaluation_id": evaluation_id, "reason_code": "publication_storage_unavailable"})
     with session_factory() as db:
         cases = list(db.scalars(select(NewsClaimCase.id).join(NewsClaimDecision, NewsClaimDecision.case_id == NewsClaimCase.id)
             .where(NewsClaimDecision.revision == NewsClaimCase.revision,
                 NewsClaimDecision.public_state.in_(("active_alert", "active_zone")), NewsClaimDecision.expires_at <= clock())
             .order_by(NewsClaimCase.id).limit(limit)))
     for case_id in cases:
-        with session_factory() as db, db.begin():
-            if expire_case(db, case_id, now=clock()) is not None:
+        try:
+            with session_factory() as db, db.begin():
+                expired = expire_case(db, case_id, now=clock()) is not None
+            if expired:
                 summary.expired += 1
+        except NewsPublicationError as exc:
+            summary.skipped.append({"case_id": case_id, "reason_code": exc.code})
+        except SQLAlchemyError:
+            summary.skipped.append({"case_id": case_id, "reason_code": "maintenance_storage_unavailable"})
     return summary

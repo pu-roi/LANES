@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
+import type { PublicNewsAlert } from "@/features/news/publicNewsApi";
 
 export interface PointGeometry {
   type: "Point";
@@ -253,6 +254,7 @@ export interface AvoidanceZone {
   /** Evidence later attached directly by an administrator to this zone. */
   media_urls?: string[];
   contributors?: ZoneContributor[];
+  news?: PublicNewsAlert[];
 }
 
 export interface PaginatedZonesResponse {

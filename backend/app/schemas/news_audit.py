@@ -79,4 +79,5 @@ class IndependentAuditResult(BaseModel):
     input_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     claim_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     provider_request_id: str | None = Field(default=None, max_length=200)
+    provider_http_status: int | None = Field(default=None, ge=100, le=599)
     evidence: ProviderClaimAudit | None = None

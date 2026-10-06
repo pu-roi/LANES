@@ -14,7 +14,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.orm import sessionmaker
 
 from app.crud.news_evaluation import bind_completed_run, claim_due_evaluation, finish_owned_evaluation
-from app.crud.news_publication import NewsPublicationError
+from app.crud.news_publication import NewsPublicationError, latest_decision
 from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.models.news_publication import NewsClaimCase, NewsClaimDecision, NewsClaimEvaluation, NewsClaimSource
 from app.models.report import FloodAvoidanceZone, FloodEvent, FloodReport
@@ -72,7 +72,7 @@ def publication_factory():
 
 def seed_evaluation(factory, *, policy=POLICY, article_id=None, condition="active", observed=None,
                     depth="knee", status="completed", body_suffix="", evaluation_result_changes=None,
-                    audit_access=False, **changes):
+                    audit_access=False, bind=True, extraction_result_changes=None, **changes):
     observed = observed or NOW - timedelta(minutes=5)
     raw_depth = f"{depth} deep" if depth else None
     wording = f"was flooded {raw_depth or 'with unknown depth'}" if condition == "active" else "floodwaters subsided"
@@ -109,10 +109,14 @@ def seed_evaluation(factory, *, policy=POLICY, article_id=None, condition="activ
         db.flush()
         result = NewsExtractionResult(article_id=row.id, canonical_url=row.canonical_url, is_metadata_only=False,
             processed_text_length=len(body), claims=[value])
+        if extraction_result_changes:
+            result = result.model_copy(update=extraction_result_changes)
         run = NewsExtractionRun(article_version_id=version.id, pipeline_version=policy.pipeline_version,
             status="completed", completed_at=NOW, result=result.model_dump(mode="json"))
         db.add(run)
         db.flush()
+        if not bind:
+            return run.id, None, row.id
         bind_completed_run(db, run.id, policy.fingerprint, NOW)
         source = db.scalar(select(NewsClaimSource).where(NewsClaimSource.extraction_run_id == run.id))
         owned = claim_due_evaluation(db, NOW, policy_fingerprint=policy.fingerprint, run_id=run.id)
@@ -1362,3 +1366,392 @@ def test_existing_zone_id_does_not_substitute_for_bound_incident_evidence(public
         staff_activation(factory,case_id,evaluation_id,expected_revision=revision,
                          operational_footprint=None,operational_zone_id=zone_id)
     assert operational_counts(factory) == before
+
+
+def footprint_batch(factory,**kwargs):
+    from app.services.news_footprint_worker_service import process_news_footprints
+    return process_news_footprints(factory,policy=POLICY,clock=lambda:NOW,sources=SOURCES,**kwargs)
+
+
+@pytest.fixture
+def estimated_assets(tmp_path, monkeypatch):
+    from shapely.geometry import box, mapping
+    from test_news_placement_preview import service
+    from test_news_road_placement import ways, write_catalog
+    from app.services import news_estimated_road_service as estimated
+    from app.services import operational_footprint_evidence_service as approval
+    engine = service(tmp_path, city="City of Pasig")
+    roads = ways()
+    for road, name in zip(roads, ["Sample Road", "First Street", "Second Street"]):
+        road["name"] = name
+    engine.roads = write_catalog(tmp_path / "roads", roads,
+        cities=[dict(name="City of Pasig", relation_id=106569, boundary=mapping(box(120.99,14.60,121.03,14.67)))])
+    monkeypatch.setattr(estimated, "get_news_placement_preview_service", lambda: engine)
+    monkeypatch.setattr(approval, "get_news_road_placement_provider", lambda: engine.roads)
+    monkeypatch.delenv("LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR")
+    return engine
+
+
+@pytest.mark.asyncio
+async def test_worker_estimate_creates_public_zone_core_and_routing_then_expires(publication_factory, estimated_assets, monkeypatch):
+    from geoalchemy2.shape import to_shape
+    from app.services import news_zone_projection_service as projection
+    factory = publication_factory
+    evaluation, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation)
+    before = operational_counts(factory)
+    result = footprint_batch(factory, after_case_id=case_id-1, limit=1)
+    assert result.estimated_activated == 1 and not result.skipped and not result.unresolved
+    assert operational_counts(factory) == tuple(value + 1 for value in before)
+    assert footprint_batch(factory, after_case_id=case_id-1, limit=1).activated == 0
+    monkeypatch.setattr(projection, "utc_now", lambda: NOW)
+    with factory() as db:
+        decision = db.get(NewsClaimDecision, result.outcomes[0]["decision_id"])
+        assert decision.snapshot["public"]["geometry_basis"] == "estimated_road_corridor"
+        binding = decision.snapshot["operational_provenance"]["binding"]
+        assert binding["evidence_kind"] == "estimated_news_road"
+        zone = db.get(FloodAvoidanceZone, decision.snapshot["linked_zone_ids"][0])
+        assert to_shape(zone.geometry).covers(to_shape(zone.source_geometry))
+        response = projection.zone_responses_with_news(db, [zone])[0]
+        assert response.report_geometry.type == "LineString" and response.news[0].affects_routing
+        assert response.news[0].source_url.startswith("https://example.org/")
+    import httpx
+    from types import SimpleNamespace
+    from sqlalchemy import literal
+    from app.core.database import get_db
+    from app.main import app
+    from app.crud import report as report_crud
+    from app.services import flood_routing_policy as routing
+    monkeypatch.setattr(report_crud, "func", SimpleNamespace(now=lambda: literal(NOW)))
+    monkeypatch.setattr(routing, "func", SimpleNamespace(now=lambda: literal(NOW), ST_AsGeoJSON=func.ST_AsGeoJSON))
+    def database():
+        with factory() as db:
+            yield db
+    previous_overrides = dict(app.dependency_overrides)
+    app.dependency_overrides[get_db] = database
+    try:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            http_response = await client.get("/api/v1/reports/active-zones")
+        assert http_response.status_code == 200
+        public = next(item for item in http_response.json() if item["id"] == zone.id)
+        assert public["report_geometry"]["type"] == "LineString"
+        assert public["news"][0]["geometry_basis"] == "estimated_road_corridor"
+        assert "operational_provenance" not in public["news"][0]
+        with factory() as db:
+            routed = next(item for item in routing.get_active_flood_zones(db) if item.id == zone.id)
+            assert routing.zone_decision("light", routed) == "blocked"
+    finally:
+        app.dependency_overrides.clear()
+        app.dependency_overrides.update(previous_overrides)
+    with factory() as db, db.begin():
+        expired = expire_case(db, case_id, now=NOW+timedelta(hours=2))
+        assert expired.public_state == "expired"
+    with factory() as db:
+        assert not db.get(FloodAvoidanceZone, zone.id).is_active
+        assert zone.id not in {item.id for item in routing.get_active_flood_zones(db)}
+
+
+@pytest.mark.parametrize("changes", [{"road_segment_raw": None}, {"depth": None}])
+def test_unresolved_estimate_enters_review_and_retries_without_history_spam(publication_factory, estimated_assets, changes):
+    factory = publication_factory
+    evaluation, case_id, _ = seed_evaluation(factory, **changes)
+    publish(factory, evaluation)
+    before = operational_counts(factory)
+    result = footprint_batch(factory, after_case_id=case_id-1, limit=1)
+    assert result.estimated_activated == 0 and result.unresolved and not result.skipped
+    with factory() as db:
+        decision = latest_decision(db, case_id)
+        assert decision.review_state == "needs_review" and decision.revision == 2
+    assert footprint_batch(factory, after_case_id=case_id-1, limit=1).estimated_considered == 0
+    with factory() as db:
+        assert latest_decision(db, case_id).revision == 2
+    assert operational_counts(factory) == before
+
+
+def test_estimate_refresh_rechecks_assets_and_keeps_existing_zone(publication_factory, estimated_assets):
+    factory = publication_factory
+    evaluation, case_id, article_id = seed_evaluation(factory)
+    publish(factory, evaluation)
+    footprint_batch(factory, after_case_id=case_id-1, limit=1)
+    before = operational_counts(factory)
+    newer, _, _ = seed_evaluation(factory, article_id=article_id, observed=NOW-timedelta(minutes=1))
+    _, refreshed_case = publish(factory, newer)
+    assert refreshed_case == case_id
+    with factory() as db:
+        decision = latest_decision(db, case_id)
+        assert decision.public_state == "active_zone"
+        assert decision.snapshot["public"]["geometry_basis"] == "estimated_road_corridor"
+        assert decision.snapshot["operational_provenance"]["binding"]["observed_at"].startswith("2026-10-05T02:59")
+    assert operational_counts(factory) == (before[0], before[1], before[2]+1)
+
+
+def test_parallel_estimate_workers_do_not_duplicate_zone(publication_factory, estimated_assets):
+    from concurrent.futures import ThreadPoolExecutor
+    factory = publication_factory
+    evaluation, case_id, _ = seed_evaluation(factory, observed=NOW)
+    publish(factory, evaluation)
+    before = operational_counts(factory)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(lambda _: footprint_batch(factory, after_case_id=case_id-1, limit=1), range(2)))
+    assert all(not result.skipped for result in results)
+    assert operational_counts(factory) == tuple(value+1 for value in before)
+
+
+def test_changed_noah_extent_cannot_silently_refresh_old_estimate(publication_factory, estimated_assets, tmp_path):
+    from shapely.geometry import box
+    from test_news_placement_preview import noah_catalog
+    factory = publication_factory
+    evaluation, case_id, article_id = seed_evaluation(factory)
+    publish(factory, evaluation)
+    footprint_batch(factory, after_case_id=case_id-1, limit=1)
+    with factory() as db:
+        zone_id = latest_decision(db, case_id).snapshot["linked_zone_ids"][0]
+    estimated_assets.noah = noah_catalog(tmp_path / "changed_noah", box(120.999,14.6304,121.001,14.632))
+    newer, _, _ = seed_evaluation(factory, article_id=article_id, observed=NOW-timedelta(minutes=1))
+    publish(factory, newer)
+    with factory() as db:
+        decision = latest_decision(db, case_id)
+        assert decision.public_state == "active_alert"
+        assert decision.snapshot["private_reason"] == "estimated_road_extent_changed"
+        assert not db.get(FloodAvoidanceZone, zone_id).is_active
+
+
+def test_estimate_flag_cannot_approve_tampered_geometry(publication_factory, estimated_assets):
+    import json
+    from app.services.news_estimated_road_service import build_estimated_road_zone
+    from app.services.news_publication_service import activate_operational_footprint
+    factory = publication_factory
+    evaluation, case_id, _ = seed_evaluation(factory, observed=NOW)
+    publish(factory, evaluation)
+    with factory() as db:
+        source = db.get(NewsClaimSource, latest_decision(db, case_id).snapshot["claim_source_id"])
+        claim = ExtractedClaim.model_validate(db.get(NewsExtractionRun, source.extraction_run_id).result["claims"][0])
+    estimate = build_estimated_road_zone(claim)
+    changed = json.loads(json.dumps(estimate.geometry))
+    for point in changed["coordinates"][0]:
+        point[0] += .0001
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match="estimated_road_evidence_mismatch"):
+        with factory() as db, db.begin():
+            activate_operational_footprint(db, case_id, changed, expected_revision=1,
+                provenance_source=estimate.source_id, provenance_checksum=estimate.checksum,
+                geometry_srid=4326, estimated_road=True, policy=POLICY, now=NOW, sources=SOURCES)
+    assert operational_counts(factory) == before
+
+
+def test_worker_activates_exact_approved_case_and_retry_creates_no_duplicate_zone(publication_factory):
+    factory=publication_factory
+    evaluation,case_id,_=seed_evaluation(factory)
+    publish(factory,evaluation)
+    register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+    before=operational_counts(factory)
+    summary=footprint_batch(factory)
+    assert summary.activated == 1 and not summary.skipped
+    assert summary.outcomes[0]["case_id"] == case_id
+    assert operational_counts(factory)==tuple(value+1 for value in before)
+    assert footprint_batch(factory).activated == 0
+    assert operational_counts(factory)==tuple(value+1 for value in before)
+    with factory() as db:
+        current=db.get(NewsClaimCase,case_id)
+        assert current.revision==2
+        decision=db.get(NewsClaimDecision,summary.outcomes[0]["decision_id"])
+        assert decision.snapshot["operational_provenance"]["binding"]["evidence_kind"] == "authoritative_current_incident"
+        assert decision.actor_user_id is None
+
+
+@pytest.mark.parametrize("kind",["unconfigured","invalid","missing_record"])
+def test_worker_retains_alert_without_approved_assets(publication_factory,monkeypatch,kind):
+    factory=publication_factory
+    evaluation,case_id,_=seed_evaluation(factory)
+    alert,_=publish(factory,evaluation)
+    if kind=="unconfigured": monkeypatch.delenv("LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR")
+    elif kind=="invalid":
+        Path(os.environ["LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR"],"manifest.json").write_text("bad")
+    else:
+        from tests.operational_footprint_fixtures import write_catalog
+        write_catalog(Path(os.environ["LANES_NEWS_OPERATIONAL_FOOTPRINT_DIR"]),[])
+    before=operational_counts(factory)
+    summary=footprint_batch(factory)
+    assert summary.activated==0 and operational_counts(factory)==before
+    assert bool(summary.skipped)==(kind=="invalid")
+    with factory() as db:
+        assert db.get(NewsClaimCase,case_id).revision==(1 if kind=="invalid" else 2)
+        assert db.get(NewsClaimDecision,alert).public_state=="active_alert"
+
+
+@pytest.mark.parametrize("choice",["correct","reject","defer"])
+def test_worker_cannot_override_staff_choices(publication_factory,choice):
+    factory=publication_factory
+    evaluation,case_id,_=seed_evaluation(factory)
+    publish(factory,evaluation)
+    register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+    request=NewsStaffDecisionRequest(request_id=uuid4(),expected_revision=1,operation=choice,
+        reason="Explicit staff choice",evaluation_id=evaluation if choice=="correct" else None,
+        deferred_until=NOW+timedelta(hours=1) if choice=="defer" else None)
+    actor=staff_user(factory)
+    with factory() as db,db.begin():
+        apply_staff_decision(db,case_id,request,actor_user_id=actor,policy=POLICY,now=NOW,sources=SOURCES)
+    before=operational_counts(factory)
+    assert footprint_batch(factory).activated==0
+    assert operational_counts(factory)==before
+
+
+def test_worker_filters_missing_footprints_before_applying_batch_limit(publication_factory):
+    factory=publication_factory
+    for _ in range(3):
+        evaluation,_,_=seed_evaluation(factory)
+        publish(factory,evaluation)
+    evaluation,case_id,_=seed_evaluation(factory)
+    publish(factory,evaluation)
+    register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+    summary=footprint_batch(factory,limit=1)
+    assert summary.activated==1 and summary.next_after_case_id==case_id
+    assert footprint_batch(factory,limit=1,after_case_id=case_id).next_after_case_id==0
+
+
+def test_worker_reports_ambiguous_records_without_guessing(publication_factory):
+    from copy import deepcopy
+    factory=publication_factory
+    evaluation,case_id,_=seed_evaluation(factory)
+    publish(factory,evaluation)
+    register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+    other=deepcopy(OPERATIONAL_POLYGON)
+    for point in other["coordinates"][0]: point[0]+=.005
+    register_footprint(factory,case_id,other)
+    before=operational_counts(factory)
+    summary=footprint_batch(factory)
+    assert summary.activated==0 and summary.skipped==[{"case_id":case_id,"reason_code":"ambiguous_operational_footprint_records"}]
+    assert operational_counts(factory)==before
+
+
+@pytest.mark.parametrize("failure",["validation","storage"])
+def test_worker_rolls_back_failed_claim_and_continues_next_claim(publication_factory,monkeypatch,failure):
+    from sqlalchemy.exc import SQLAlchemyError
+    from app.services import news_footprint_worker_service as worker
+    factory=publication_factory
+    cases=[]
+    for _ in range(2):
+        evaluation,case_id,_=seed_evaluation(factory)
+        publish(factory,evaluation)
+        register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+        cases.append(case_id)
+    original=worker.activate_operational_footprint
+    def interrupted(db,case_id,*args,**kwargs):
+        result=original(db,case_id,*args,**kwargs)
+        if case_id==cases[0]:
+            if failure=="storage": raise SQLAlchemyError("synthetic private details must not leak")
+            raise NewsPublicationError("synthetic_approval_changed")
+        return result
+    monkeypatch.setattr(worker,"activate_operational_footprint",interrupted)
+    before=operational_counts(factory)
+    summary=footprint_batch(factory,limit=1)
+    assert summary.activated==1 and summary.outcomes[0]["case_id"]==cases[1]
+    assert summary.skipped==[{"case_id":cases[0],"reason_code":"footprint_storage_unavailable" if failure=="storage" else "synthetic_approval_changed"}]
+    assert operational_counts(factory)==tuple(value+1 for value in before)
+    with factory() as db: assert db.get(NewsClaimCase,cases[0]).revision==1
+
+
+def test_parallel_footprint_workers_create_one_operational_result(publication_factory):
+    from concurrent.futures import ThreadPoolExecutor
+    factory=publication_factory
+    evaluation,case_id,_=seed_evaluation(factory)
+    publish(factory,evaluation)
+    register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+    before=operational_counts(factory)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results=list(pool.map(lambda _:footprint_batch(factory),range(2)))
+    assert all(not result.skipped for result in results)
+    assert operational_counts(factory)==tuple(value+1 for value in before)
+
+
+def test_restart_safe_seed_skips_completed_handoffs_and_empty_claim_runs(publication_factory):
+    from app.services.news_evaluation_service import seed_claim_evaluations
+    factory=publication_factory
+    old,_,_=seed_evaluation(factory)
+    seed_evaluation(factory,bind=False,extraction_result_changes={"claims":[]})
+    seed_evaluation(factory,bind=False)
+    first=seed_claim_evaluations(factory,POLICY,now=NOW,limit=1,unbound_only=True,sources=SOURCES)
+    assert first.evaluations_created==1
+    second_run,_,_=seed_evaluation(factory,bind=False)
+    second=seed_claim_evaluations(factory,POLICY,now=NOW,limit=1,unbound_only=True,sources=SOURCES)
+    assert second.evaluations_created==1 and second.next_after_run_id==second_run
+
+
+@pytest.mark.asyncio
+async def test_saved_pipeline_commits_zone_retries_and_expires_on_native_postgis(publication_factory,monkeypatch):
+    """Real storage/stage handoffs; extraction/auditor/extent remain synthetic."""
+    from types import SimpleNamespace
+    import json
+    from app.crud import news_processing as queue
+    from app.services import news_processing_service as processing
+    from app.services import news_evaluation_service as evaluation
+    from app.services import news_pipeline_service as pipeline
+    factory=publication_factory
+    _,reference_case,reference_article=seed_evaluation(factory)
+    with factory() as db,db.begin():
+        original=db.get(NewsArticle,reference_article)
+        source=db.scalar(select(NewsClaimSource).where(NewsClaimSource.case_id==reference_case))
+        extraction=NewsExtractionResult.model_validate(db.get(NewsExtractionRun,source.extraction_run_id).result)
+        saved=NewsArticle(canonical_url=f"https://example.org/pipeline/{uuid4()}",publisher_source_id="fixture",
+            title=original.title,article_text=original.article_text,published_at=NOW,excerpt="",content_fingerprint="0"*64)
+        db.add(saved)
+        db.flush()
+        article_id=saved.id
+
+    def capture_target(db,limit):
+        # Restrict fixture admission; all queue leases/commits are real.
+        return int(queue.enqueue_article(db,db.get(NewsArticle,article_id)) is not None)
+    async def fixture_extract(article):
+        assert article.article_id==article_id
+        return SimpleNamespace(error=None,extraction=extraction.model_copy(update={
+            "article_id":article.article_id,"canonical_url":article.canonical_url}))
+    class FixtureAuditor:
+        def policy_identity(self): return IDENTITY
+        async def audit(self,claim,article,**kwargs):
+            if article.article_id==article_id:
+                with factory() as db:
+                    source=db.scalar(select(NewsClaimSource).join(NewsExtractionRun,
+                        NewsExtractionRun.id==NewsClaimSource.extraction_run_id).join(NewsArticleVersion,
+                        NewsArticleVersion.id==NewsExtractionRun.article_version_id)
+                        .where(NewsArticleVersion.article_id==article_id))
+                    case_id=source.case_id
+                # Simulates separately provisioned operator evidence, no guess.
+                register_footprint(factory,case_id,OPERATIONAL_POLYGON)
+            return IndependentAuditResult(outcome="verified",reason_code="claim_evidence_verified",provider="openrouter",
+                model="fixture/model",prompt_version=IDENTITY["prompt_version"],response_version=IDENTITY["response_version"],
+                input_sha256=extraction_input_snapshot(article)[1],claim_sha256=canonical_claim_sha256(claim),
+                evidence=ProviderClaimAudit.model_validate_json(json.dumps(evidence(claim,article))))
+    for module in (queue,processing,evaluation):
+        monkeypatch.setattr(module,"current_pipeline_version",lambda:POLICY.pipeline_version)
+    monkeypatch.setattr(processing,"capture_pending_inputs",capture_target)
+    monkeypatch.setattr(processing,"extract_captured_news_article",fixture_extract)
+    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _:POLICY)
+    before=operational_counts(factory)
+    result=await pipeline.run_news_pipeline(factory,limit=200,auditor=FixtureAuditor(),sources=SOURCES,
+        unbound_only=True,clock=lambda:NOW)
+    assert result["extraction"]["completed"]==1
+    assert result["footprints"]["activated"]==1, result
+    assert operational_counts(factory)==tuple(value+1 for value in before)
+    with factory() as db:
+        source=db.scalar(select(NewsClaimSource).join(NewsExtractionRun,
+            NewsExtractionRun.id==NewsClaimSource.extraction_run_id).join(NewsArticleVersion,
+            NewsArticleVersion.id==NewsExtractionRun.article_version_id)
+            .where(NewsArticleVersion.article_id==article_id))
+        current=db.scalar(select(NewsClaimDecision).where(NewsClaimDecision.case_id==source.case_id)
+            .order_by(NewsClaimDecision.revision.desc()))
+        assert current.public_state=="active_zone"
+        zone_id=current.snapshot["linked_zone_ids"][0]
+        case_id=source.case_id
+    retry=await pipeline.run_news_pipeline(factory,limit=200,auditor=FixtureAuditor(),sources=SOURCES,
+        unbound_only=True,clock=lambda:NOW)
+    assert retry["extraction"]["completed"]==retry["footprints"]["activated"]==0
+    assert operational_counts(factory)==tuple(value+1 for value in before)
+    expired=await pipeline.run_news_pipeline(factory,limit=200,auditor=FixtureAuditor(),sources=SOURCES,
+        unbound_only=True,clock=lambda:NOW+timedelta(hours=2))
+    assert expired["publication"]["expired"]>=1
+    with factory() as db:
+        zone=db.get(FloodAvoidanceZone,zone_id)
+        assert not zone.is_active and db.get(FloodEvent,zone.event_id).status=="ended"
+        current=db.scalar(select(NewsClaimDecision).where(NewsClaimDecision.case_id==case_id)
+            .order_by(NewsClaimDecision.revision.desc()))
+        assert current.public_state=="expired" and public_projection(current,NOW+timedelta(hours=2)).status=="Unconfirmed"

@@ -18,3 +18,7 @@
 
 # Runtime boundary catalogs are checked by raw-byte SHA-256 on every platform.
 /backend/runtime_data/barangay/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve analytical manifest identity through Windows/Linux checkouts.
+/backend/runtime_data/noah-placement/*.json -text
+/backend/runtime_data/noah-placement/**/*.gz binary

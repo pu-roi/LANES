@@ -1,15 +1,103 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 05, 2026, 10:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 12:51 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
 
+### [BUG-114] Free-auditor quote positions fail exact article grounding
+
+- **Status:** Repaired and verified locally with exact-source options; broader real-article/deployment acceptance remains pending.
+- **Severity:** Medium - a returned structured audit can fail before eligible news publication.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After a twenty-second timeout, a sixty-second synthetic probe received structured evidence with positions that did not match its quotes in the article. The validator correctly rejected it with `audit_evidence_offset_mismatch`.
+
+#### 2. Root Cause Analysis (RCA)
+
+The prompt required the model to count Python character positions. This introduces a formatting burden even when quotes are available in immutable text. The discarded response does not establish the exact counting mistake; exact source validation remains required.
+
+#### 3. Solution & Architectural Strategy
+
+Calculate bounded exact quote/start/end options on the server and instruct the independent model to select/copy them. Keep full article context, strict immutable-substring checks and existing fact/status/time/identity gates. Prompt v2 changes the evaluation fingerprint. Return only safe numeric HTTP status for transport failures; never raw provider messages or automatic paid fallback.
+
+#### 4. Files Modified / What Changed
+
+`news_claim_auditor.py`, internal `news_audit.py` result metadata, `scripts/check_news_auditor.py` and representative tests. **170 distinct checks pass**, including native evaluation/policy/history. Live synthetic free probes validate at both sixty and twenty seconds and remain historical review; Linux image/offline asset checks pass. No dependency/model/migration/cloud write or new UI design. [Evidence](../evaluations/phase-36-auditor-evidence-options-20261007.md).
+
+### [BUG-113] NOAH analytical tiles are absent from the API/job image
+
+- **Status:** Resolved and verified locally; matching cloud rollout remains pending.
+- **Severity:** High - automatic estimated road placement lacks a required runtime input.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Local placement uses the approximately 90 MB NOAH catalog, while an image built from `backend` cannot access ignored root `data/noah-placement`. The rendered public hazard overlay does not supply those analytical vectors.
+
+#### 2. Root Cause Analysis (RCA)
+
+The catalog default points outside the Docker build context. Existing runtime bundling contains OSM/history/boundaries but not NOAH; deployment therefore cannot reproduce local placement.
+
+#### 3. Solution & Architectural Strategy
+
+Preserve the checked bounded catalog in `backend/runtime_data/noah-placement`, retain ODbL attribution and manifest hashes, and verify all declared tiles plus qualified parent coverage during Docker build. Local defaults use the bundle; Docker sets `/data/noah-placement`; explicit configuration overrides remain. No modeled polygon becomes current evidence merely because packaging passes.
+
+#### 4. Files Modified / What Changed
+
+`noah_vector_catalog_service.py`, `backend/Dockerfile`, runtime README/bundle, `.gitattributes`, packaging/verifier scripts and focused fixtures. **188 focused tests**, final Linux image build and offline asset verification pass. No new dependency/model/migration or deployed cloud change. [Evidence](../evaluations/phase-36-news-runtime-packaging-20261007.md).
+
+### [BUG-112] News-created road zones omit the existing solid road core
+
+- **Status:** Resolved locally for automatic estimated road corridors; catalog-only polygons require separately supported road geometry.
+- **Severity:** Medium — active road-zone presentation cannot display both expected layers.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+News activation persists an operational polygon, but an active road zone needs the existing solid centerline plus transparent outer area on both public and staff maps. Source tracing shows news activation supplies only the area.
+
+#### 2. Root Cause Analysis (RCA)
+
+`activate_operational_footprint` constructs `FloodAvoidanceZoneCreate` without source_geometry or a road report. `FloodAvoidanceZone.report_geometry` resolves source_geometry or primary-report geometry. `useFloodZonesLayer` creates the solid-core feature only for LineString/MultiLineString report_geometry; its polygon feature uses the transparent fill.
+
+#### 3. Solution & Architectural Strategy
+
+Bind accepted bounded news road linework to the operational area and persist it through existing source_geometry where supported. Keep exact component ownership/containment and disconnected spans. Reuse existing mapStyles/useFloodZonesLayer on both screen sizes. Complete placement-to-activation acceptance separately; a preview ranking alone is not field-verified geometry. No schema/model change is part of this audit.
+
+#### 4. Files Modified / What Changed
+
+`news_estimated_road_service.py` derives each accepted component and its road line; `news_publication_service.py` persists the core through existing source_geometry and rechecks it on refresh. Safe public/staff news projection and existing popup/summary facts expose source/time/status/basis. Shared paints remain unchanged. Native storage/HTTP/routing checks and actual desktop/mobile core/aura pixel tests pass. No model/migration or new design. Arbitrary catalog polygons do not acquire invented centerlines. [Verification](../evaluations/phase-36-estimated-road-zone-integration-20261006.md).
+
+### [BUG-111] Scheduled news command stops before publication and footprint activation
+
+- **Status:** Resolved locally; release/current-source provisioning remains pending.
+- **Severity:** High — saved flood claims never reach operational activation through the configured command.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The local Cloud Build news-job command selected `--discover --process`, which performs durable extraction only. The explicit publication pipeline did not call the footprint activation helper. Repeated stateless batches could also revisit completed handoffs instead of later claims.
+
+#### 2. Root Cause Analysis (RCA)
+
+The configured command and service handoffs predated the publication/footprint contracts. Seed batching included already-bound and empty extraction runs; activation had no worker-stage caller.
+
+#### 3. Solution & Architectural Strategy
+
+Add opt-in discovery `--pipeline`, prepared local job args, restart seeding filters and an exact approved-catalog activation stage after publication/expiry. Keep activation atomic and revision/evidence guarded; staff choices remain protected. Scan bounded catalog candidates past failures while limiting successful activations. Sanitized errors appear in summaries and CLI exit status. Missing catalog is normal text-only fallback; invalid configured catalog is an error. No real source is provisioned and no deployed job was changed.
+
+#### 4. Files Modified / What Changed
+
+New `backend/app/services/news_footprint_worker_service.py`; existing pipeline/evaluation/publication services; discovery and pipeline CLIs; local `cloudbuild.yaml`; worker/native lifecycle/pipeline/CLI tests and guarded verification runner. **456 distinct checks pass** overall. No schema or dependency changes. [Verification](../evaluations/phase-36-automatic-footprint-worker.md).
+
 ### [BUG-110] Operational shape validation is treated as verified incident evidence
 
-- **Status:** Resolved locally; **398 distinct checks pass**. Actual current source provisioning and worker/map integration remain open.
+- **Status:** Resolved locally; **398 distinct checks pass**. Actual current source provisioning and map integration remain open; worker connection is verified in [the subsequent worker checkpoint](../evaluations/phase-36-automatic-footprint-worker.md).
 - **Severity:** High — arbitrary source labels and partial locality overlap previously authorized operational geometry.
 - **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

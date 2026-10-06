@@ -63,7 +63,7 @@ async function suggestionPixels(page: Page) {
   }, png.toString("base64"));
 }
 
-async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | "limited" | "queue_error" | "grouped" | "large_group" | "separate_group" | "growth" | "growth_error" | "panel_details" = "ready") {
+async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | "limited" | "queue_error" | "grouped" | "large_group" | "separate_group" | "growth" | "growth_error" | "panel_details" | "news_zone" = "ready") {
   const writes: string[] = [];
   const sources: string[] = [];
   const filterRequests: Record<string, string>[] = [];
@@ -87,6 +87,9 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
       severity: id === 2 ? "medium" : "high", depth: "knee", created_at: source.published_at,
       reporter_trust_score: 80, is_primary: id === 2, geometry: report.geometry })) };
   const groupReason = "Nearby reports within 2 hours. Barangay boundaries do not exclude review. Confirm flood extent before merging.";
+  if (mode === "news_zone") Object.assign(zone, { report_id: null, report_source: "news", reporter_name: "Example News", contributors: [],
+    news: [{ case_id: 71, status: "Active", source_title: "News flood zone evidence", source_publisher: "Example News",
+      source_url: "https://example.org/flood", observed_at: source.published_at, geometry_basis: "estimated_road_corridor" }] });
   const fullReport = (id: number) => {
     const member = groupedMembers.find((row) => row.report_id === id);
     return grouping ? { ...report, id, raw_text: member?.evidence, severity: member?.severity, depth: member?.depth,
@@ -123,8 +126,8 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
         awarded_user_ids: [], zone: { id: 9, event_id: 6, severity: "medium", depth: "knee", geometry: report.geometry } };
     }
     else if (path.endsWith("/notifications")) body = { notifications: [], total: 0, unread_count: 0, has_more: false };
-    else if (path.endsWith("/admin/zones/all") && mode === "panel_details") body = { zones: [zone], total: 1 };
-    else if (path.endsWith("/reports/active-zones") && mode === "panel_details") body = [zone];
+    else if (path.endsWith("/admin/zones/all") && ["panel_details", "news_zone"].includes(mode)) body = { zones: [zone], total: 1 };
+    else if (path.endsWith("/reports/active-zones") && ["panel_details", "news_zone"].includes(mode)) body = [zone];
     else if (path.endsWith("/admin/zones")) body = { items: [], total: 0, page: 1, limit: 10, pages: 1 };
     else if (path.endsWith("/admin/reports/pending") && mode === "separate_group") body = groupedMembers.map((member) => fullReport(member.report_id));
     else if (path.includes("/admin/reports/detail/")) body = fullReport(Number(path.split("/").pop()));
@@ -589,6 +592,19 @@ test("queue search and location filters retain complete groups and survive retur
     await page.setViewportSize({ width: 844, height: 390 });
     expect(await panel.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
   }
+  expect(writes).toEqual([]);
+});
+
+test("active news zones reuse the staff summary with source and estimate details", async ({ page }, info) => {
+  if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
+  const { writes } = await setup(page, "news_zone");
+  await page.getByRole("button", { name: /Active Zones/ }).click();
+  const zone = page.getByRole("article", { name: "Zone #9", exact: true });
+  await expect(zone.getByRole("link", { name: /News flood zone evidence/ })).toHaveAttribute("href", "https://example.org/flood");
+  await expect(zone.getByText("Estimated road corridor", { exact: true })).toBeVisible();
+  await expect(zone.getByText("Observed", { exact: true })).toBeVisible();
+  expect(await zone.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("news-zone-existing-staff-summary.png") });
   expect(writes).toEqual([]);
 });
 

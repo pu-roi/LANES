@@ -20,10 +20,11 @@ export interface PublicNewsAlert {
   source_published_at: string | null;
   correction_note: string | null;
   evidence_excerpt?: string | null;
-  geometry_precision: "text_only";
-  display_geojson: null;
+  geometry_precision: "text_only" | "display_suggestion" | "operational_polygon";
+  display_geojson: GeoJSON.Polygon | GeoJSON.MultiPolygon | null;
   current_status_unknown: boolean;
-  affects_routing: false;
+  affects_routing: boolean;
+  geometry_basis?: "verified_current_footprint" | "estimated_road_corridor" | null;
 }
 
 export interface PublicNewsAlertPage {

@@ -1,7 +1,8 @@
 """Build exact, indexed NOAH vector tiles from the three Metro Manila ZIPs.
 
-No source ZIPs are packaged into the API image. Publish the generated catalog
-as a versioned external asset/mount and set LANES_NEWS_NOAH_DIR at runtime.
+No source ZIPs are packaged into the API image. Copy a reviewed generated catalog
+with scripts.package_news_noah_assets into the versioned runtime bundle, or
+provision an external catalog and set LANES_NEWS_NOAH_DIR at runtime.
 Repaired rings and holes are retained; there is no geometry simplification.
 """
 from __future__ import annotations

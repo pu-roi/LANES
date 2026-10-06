@@ -27,6 +27,7 @@ from app.crud.news import list_pending_articles
 from app.services.news_feed_service import canonical_article_url, probe_feed
 from app.services.news_open_search_service import append_publisher_feed_leads, assess_alternate_article_leads, retrieve_open_article_leads, search_open_article_leads
 from app.services.news_sources import DEFAULT_SOURCE_FILE, NewsSource, load_news_sources
+from app.services.news_pipeline_service import pipeline_has_failures, run_news_pipeline
 
 
 def _selected_sources(all_sources: tuple[NewsSource, ...], ids: list[str]) -> tuple[NewsSource, ...]:
@@ -46,6 +47,7 @@ def main() -> int:
     mode.add_argument("--extract-saved", action="store_true", help="Preview rules extraction of saved pending articles; requires --dry-run")
     mode.add_argument("--process-saved", action="store_true", help="Persist rules extraction of captured pending inputs and due retries")
     parser.add_argument("--process", action="store_true", help="Process saved/due work after --discover, including unchanged feeds")
+    parser.add_argument("--pipeline", action="store_true", help="Run saved extraction, independent audit, publication, expiry and verified footprints; may incur configured AI fees")
     parser.add_argument("--limit", type=int, help="Saved preview/processing batch size, 1-200 (default 50)")
     parser.add_argument("--source", action="append", default=[], help="Source ID; repeat for multiple sources")
     parser.add_argument("--all-leads", action="store_true", help="Probe every configured feed lead")
@@ -69,7 +71,9 @@ def main() -> int:
         parser.error("--extract-saved requires --dry-run; durable processing is not enabled")
     if args.process and (not args.discover or args.dry_run):
         parser.error("--process requires --discover without --dry-run")
-    if args.limit is not None and (not (args.extract_saved or args.process_saved or args.process) or not 1 <= args.limit <= 200):
+    if args.pipeline and (args.dry_run or not (args.discover or args.process_saved) or args.process):
+        parser.error("--pipeline requires --discover or --process-saved without --dry-run/--process")
+    if args.limit is not None and (not (args.extract_saved or args.process_saved or args.process or args.pipeline) or not 1 <= args.limit <= 200):
         parser.error("--limit requires saved preview/processing and must be between 1 and 200")
     if args.process_saved and args.source:
         parser.error("Saved processing does not accept feed selection options")
@@ -85,6 +89,18 @@ def main() -> int:
         parser.error("Article lookup and trace options require --open-leads")
 
     if args.process_saved:
+        if args.pipeline:
+            try:
+                result = asyncio.run(run_news_pipeline(SessionLocal, limit=args.limit or 50,
+                    unbound_only=True, sources=load_news_sources(args.sources_file)))
+            except (SQLAlchemyError, ValueError) as exc:
+                print("news_pipeline_storage_unavailable" if isinstance(exc, SQLAlchemyError)
+                      else "news_pipeline_configuration_invalid", file=sys.stderr)
+                return 1
+            output = json.dumps({"mode":"process-saved-pipeline", **result},ensure_ascii=False,indent=2)
+            if args.output: args.output.write_text(output + "\n",encoding="utf-8")
+            else: print(output)
+            return int(pipeline_has_failures(result))
         from app.services.news_processing_service import process_saved_news
         try:
             processed = asyncio.run(process_saved_news(SessionLocal, limit=args.limit or 50))
@@ -235,6 +251,16 @@ def main() -> int:
             return 1
         payload["processing"] = asdict(processed)
         success = success and not (processed.failed or processed.retry_wait or processed.lease_lost)
+    if args.pipeline:
+        try:
+            result = asyncio.run(run_news_pipeline(SessionLocal, limit=args.limit or 50,
+                unbound_only=True, sources=all_sources))
+        except (SQLAlchemyError, ValueError) as exc:
+            print("news_pipeline_storage_unavailable" if isinstance(exc, SQLAlchemyError)
+                  else "news_pipeline_configuration_invalid", file=sys.stderr)
+            return 1
+        payload["pipeline"] = result
+        success = success and not pipeline_has_failures(result)
     output = json.dumps(payload, ensure_ascii=False, indent=2, default=str)
     if args.output:
         args.output.write_text(output + "\n", encoding="utf-8")

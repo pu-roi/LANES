@@ -109,7 +109,8 @@ def approve_news_footprint(db: Session, footprint: Any, *, geometry_srid: int | 
         claim: ExtractedClaim, context: dict[str, Any], now: datetime,
         actor_user_id: int | None = None, review_id: str | None = None,
         record_id: str | None = None, source: str | None = None, checksum: str | None = None,
-        caller_parent: BaseGeometry | None = None) -> tuple[OperationalFootprintValidation, OperationalFootprintProvenance]:
+        caller_parent: BaseGeometry | None = None,
+        estimated_road: bool = False) -> tuple[OperationalFootprintValidation, OperationalFootprintProvenance]:
     """Resolve approval from the server catalog or stored staff identity only."""
     now = require_utc(now)
     observed = require_utc(context["observed_at"])
@@ -129,7 +130,21 @@ def approve_news_footprint(db: Session, footprint: Any, *, geometry_srid: int | 
         raise NewsPublicationError(result.reason_code)
     components = [canonical_sha256(part) for part in result.polygon_parts]
     catalog_digest = None
-    if actor_user_id is not None:
+    estimated_evidence = None
+    if estimated_road:
+        # Internal worker path only. Recompute from checked server assets; a
+        # submitted label/checksum can never approve an arbitrary polygon.
+        from app.services.news_estimated_road_service import build_estimated_road_zone
+        estimated = build_estimated_road_zone(claim)
+        if actor_user_id is not None or record_id is not None:
+            raise NewsPublicationError("estimated_road_approval_identity_mismatch")
+        if (geometry_srid != 4326 or source != estimated.source_id or checksum != estimated.checksum
+                or canonical_sha256(result.geojson) != canonical_sha256(estimated.geometry)):
+            raise NewsPublicationError("estimated_road_evidence_mismatch")
+        kind, approved_id = "estimated_news_road", estimated.evidence.candidate_id
+        approved_source, approved_checksum = estimated.source_id, estimated.checksum
+        estimated_evidence = estimated.evidence
+    elif actor_user_id is not None:
         actor = db.get(User, actor_user_id)
         if (actor is None or not actor.is_active or actor.deleted_at is not None
                 or not may_write_news_claims(actor) or not review_id):
@@ -156,7 +171,7 @@ def approve_news_footprint(db: Session, footprint: Any, *, geometry_srid: int | 
         approved_checksum, catalog_digest = record.source_sha256, assets.digest
     binding = OperationalFootprintBinding(evidence_kind=kind, record_id=approved_id,
         actor_user_id=actor_user_id, **context, srid=4326, boundary_revision=provider.revision,
-        component_sha256=components, catalog_sha256=catalog_digest)
+        component_sha256=components, catalog_sha256=catalog_digest, estimated_road=estimated_evidence)
     provenance = OperationalFootprintProvenance(source=approved_source, source_checksum=approved_checksum,
         geometry_sha256=canonical_sha256(result.geojson), parent_boundary_sha256=canonical_sha256(mapping(parent)), binding=binding)
     verified = validate_operational_footprint(footprint, geometry_srid=geometry_srid,

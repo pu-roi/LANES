@@ -50,6 +50,7 @@ class PublicNewsAlert(NewsPublicationModel):
     display_geojson: dict | None = None
     current_status_unknown: bool = False
     affects_routing: bool = False
+    geometry_basis: Literal["verified_current_footprint", "estimated_road_corridor"] | None = None
 
 
     @field_validator("source_url")
@@ -71,8 +72,18 @@ class PublicNewsAlertPage(NewsPublicationModel):
     as_of: datetime
 
 
+class EstimatedRoadEvidence(NewsPublicationModel):
+    policy_version: Literal["news-estimated-road-v1"] = "news-estimated-road-v1"
+    candidate_id: str = Field(min_length=1, max_length=300)
+    placement_revision: str = Field(min_length=1, max_length=500)
+    osm_catalog_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    noah_catalog_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    buffer_radius_metres: Literal[25.0] = 25.0
+    component_centerlines: list[dict] = Field(min_length=1, max_length=25)
+
+
 class OperationalFootprintBinding(NewsPublicationModel):
-    evidence_kind: Literal["authoritative_current_incident", "staff_review"]
+    evidence_kind: Literal["authoritative_current_incident", "staff_review", "estimated_news_road"]
     record_id: str = Field(min_length=1, max_length=200)
     actor_user_id: int | None = Field(default=None, gt=0)
     article_id: int = Field(gt=0)
@@ -86,6 +97,7 @@ class OperationalFootprintBinding(NewsPublicationModel):
     boundary_revision: str = Field(min_length=1, max_length=300)
     component_sha256: list[str] = Field(min_length=1, max_length=25)
     catalog_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    estimated_road: EstimatedRoadEvidence | None = None
 
 
 class OperationalFootprintProvenance(NewsPublicationModel):
@@ -117,9 +129,11 @@ class NewsDecisionSnapshot(NewsPublicationModel):
         "operational_geometry_not_verified",
         "verified_incident_footprint",
         "staff_reviewed_footprint",
+        "estimated_road_corridor",
     ] = "operational_geometry_not_verified"
     linked_zone_ids: list[int] = Field(default_factory=list)
     operational_provenance: OperationalFootprintProvenance | None = None
+    estimated_road_review_revision: str | None = Field(default=None, max_length=500)
 
 
 class NewsStaffDecisionRequest(NewsPublicationModel):
