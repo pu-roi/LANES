@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+[Community Trending Hotspots verification](evaluations/community-trending-hotspots-20261007.md) — server-ranked place activity, bounded 24/48-hour fallback, consistent desktop/mobile states, nine native PostGIS checks and ten browser checks.
 
 [Duration-model follow-up search notes](evaluations/pasig-duration-model-20261007/followup-search-notes.md) — source acquisition notes and evidence limitations for the conditional study.
 

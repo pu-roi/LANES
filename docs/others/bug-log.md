@@ -1,6 +1,23 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-120] Community Trending Hotspots displayed fixed example places
+
+- **Status:** Fixed and verified locally; deployment pending.
+- **Severity:** Medium — fixed counts/places falsely suggested current community activity.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Open the desktop feed sidebar or mobile navigation; España, Taft and EDSA-Kamuning always appeared with the same counts even when the feed had no current activity.
+- **Root cause:** Both layouts contained duplicated hardcoded labels, counts and map coordinates, with no backend ranking or freshness policy.
+- **Solution:** Parameterized public aggregation of named/located posts with a default 24-hour window and bounded 48-hour fallback only if nothing qualifies, two distinct contributors, per-author latest activity weight with a six-hour half-life, and deterministic top-three ordering. Match normalized case/whitespace labels and PostGIS proximity (500 projected metres in EPSG:3857, approximately 484 ground metres around Metro Manila). Use a representative saved report point or post coordinates for map links. Public pending and approved shares count as community activity, without asserting flood confirmation. Deleted/hidden/private/rejected content, old report reshares, inactive/deleted accounts and missing/invalid locations do not count. Different aliases are not automatically merged.
+- **Files:** `backend/app/api/v1/endpoints/feed.py`, `schemas/feed.py`, new `services/trending_hotspots_service.py`, `crud/trending_hotspots.py`; `frontend/src/features/feed/feedApi.ts`, new `components/TrendingHotspots.tsx`, `LeftSidebar.tsx`, `FeedPage.tsx`; native PostGIS and responsive Playwright tests.
+- **Verification:** 13 focused backend checks pass after applying existing Alembic migrations to a fresh disposable PostgreSQL/PostGIS database; TypeScript and focused lint pass. Eight Chromium Playwright checks pass across desktop and iPhone-sized mobile viewports, covering navigation, empty/error/retry states and automatic expiry refresh; both screenshots reviewed. No SQLAlchemy model, migration or dependency addition.
+
+- **Sidebar design follow-up:** Align loading/empty states with Saved Places and compact list rows/actions across desktop/mobile; remove the technical ranking footer. Eight browser checks and TypeScript/scoped lint pass; screenshots reviewed. The existing navigation check now waits for the mobile drawer animation before measuring bounds.
+
+- **Final acceptance record:** [Community hotspots verification](../evaluations/community-trending-hotspots-20261007.md) records the final nine native/ten browser checks, unchanged schema/dependencies and release limits.
+
+- **Bounded freshness follow-up:** The selected window is returned by the backend and displayed by both sidebar layouts. One qualifying place prevents older filler; fallback excludes posts/report sources beyond 48 hours, preserves privacy and distinct-author protections, and returns to 24 hours when fresh activity qualifies. Nine native PostGIS/API checks and ten desktop/mobile browser checks pass, plus TypeScript/scoped lint. Existing migrations apply in the generated local database, which is removed after acceptance; no model/migration/dependency changes.
 
 ### [BUG-119] System Settings saved unused values and could fail after persisting
 

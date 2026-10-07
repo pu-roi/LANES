@@ -1,6 +1,6 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 07, 2026, 09:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 Functional System Settings (local):** `/admin/settings` now edits four operational groups and shows recorded stage health. `GET/PUT /api/v1/admin/settings/configuration` return typed settings, revision, update metadata, supported options and read-only runtime status; capability `settings=view/full` is enforced. Legacy GET remains compatible; legacy PUT returns 410. Citizen multipart submission accepts optional timezone-aware `observed_at`; older clients remain in review. Automatic approval is labelled in staff moderation and records provenance/policy in existing audit/timeline history. Fixed-tick worker cadence is database controlled. Matching production rollout remains pending. [Verification](../evaluations/functional-system-settings-20261007.md), [operator guide](../guides/system-settings-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -238,10 +238,12 @@ These files are **always present** regardless of which page you are on.
 | File | What You See |
 |------|-------------|
 | `FeedPage.tsx` | `src/features/feed/FeedPage.tsx` — The main three-column feed layout. Center column shows the scrollable list of standalone `PostItem` cards separated by clean whitespace (`space-y-3 sm:space-y-4`) with responsive mobile edge margins (`px-3 sm:px-0 pt-3 sm:pt-4`), composer placeholder (`"What's happening?"` on mobile vs `"What's happening in your area?"` on desktop), and standalone loading/empty cards. Left and right sidebars are pinned on desktop. Fetches paginated posts on load. |
-| `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Left panel (desktop only). Shows the logged-in user's avatar, display name, trust score badge, quick stats, saved places pills (which open the Saved Places panel), and a "Create Post" shortcut button. Features hover-activated custom slim scrollbar. |
+| `LeftSidebar.tsx` | `src/features/feed/LeftSidebar.tsx` — Desktop navigation, shared recent Trending Hotspots, saved places and emergency hotlines. The same hotspot component appears in the mobile navigation drawer in `FeedPage.tsx`. |
 | `RightSidebar.tsx` | `src/features/feed/RightSidebar.tsx` — Right panel (desktop only). Shows community highlights: top contributors, recent active flood zones, and trending location tags. |
 | `PostItem.tsx` | `src/features/feed/PostItem.tsx` | An independent, standalone card in the feed (`bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100`). Shows author avatar/name/role, post text, attached media carousel, responsive flood severity badge (compact on mobile, detailed on desktop), standalone `ArrowBigUp`/`ArrowBigDown` voting buttons with active fills, comment count, and responsive single-row action bar (compact map/share labels on iPhone SE/12). Provides a dropdown menu with soft-deletion support: author self-deletion prompts a standard confirmation dialog, while staff/admin removal triggers an **Administrative Post Removal** modal prompting for violation category and notes. Dispatches an in-app `SYSTEM` notification to the post author explaining the decision, logs an `ADMIN_DELETE_POST` audit record, and updates the feed via SSE. Its interactive location badge and flood-report **View on Map** action focus the road-length midpoint of the saved report geometry; paired carriageways focus their shared center. |
 | `EmergencyHotlinesCard.tsx` | `src/features/feed/components/EmergencyHotlinesCard.tsx` — API-backed priority emergency contacts with expandable numbers, direct `tel:` links, loading/unavailable states, and a full-directory trigger. Rendered in the feed sidebar layout. |
+
+`components/TrendingHotspots.tsx` shares `feedApi.getTrendingHotspots` and React Query key `["feed", "hotspots"]` across desktop/mobile. It refreshes every 60 seconds, on window focus when stale, and on existing feed mutation invalidations. It displays post counts, map links and a community-activity caption showing the backend-selected 24-hour or 48-hour window with results. The server widens to 48 hours only when the 24-hour result is empty, keeps the same contributor/privacy/recency rules, and returns an honest 48-hour empty state when neither window qualifies. Loading uses the same two gray skeleton bars as Saved Places, with screen-reader status and reduced-motion support; empty content uses the same muted text/padding. Compact rows use circular location icons and ellipsis for long labels; the full location/count remains in the accessible link text and title. Failures show a visible error and blue sidebar-style retry action. One shared component keeps desktop/mobile states consistent. [Final acceptance](../evaluations/community-trending-hotspots-20261007.md).
 
 ### Hidden Until Interaction
 
@@ -254,6 +256,7 @@ These files are **always present** regardless of which page you are on.
 
 | Endpoint | Purpose |
 |----------|---------|
+| `GET /api/v1/feed/hotspots?limit=3` | Public recent place activity, server-ranked by distinct contributors and recency; limit 1–10, default 24-hour window with a bounded 48-hour fallback only when no place qualifies; `window_hours` reports the selected window even for empty results. Thin feed endpoint delegates to `trending_hotspots_service.py` and the PostGIS aggregation in `crud/trending_hotspots.py`. |
 | `GET /api/v1/feed/posts?page=&limit=` | Paginated list of community posts |
 | `POST /api/v1/feed/posts` | Create a new community post |
 | `DELETE /api/v1/posts/{id}` | Soft-deletes a post; supports optional `CommunityPostDeletePayload(reason, details)` when deleted by staff to deliver author notification and audit log |

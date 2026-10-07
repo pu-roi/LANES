@@ -75,6 +75,22 @@ class TopReportersResponse(BaseModel):
     reporters: list[TopReporter]
 
 
+class TrendingHotspot(BaseModel):
+    id: str
+    name: str
+    latitude: float
+    longitude: float
+    post_count: int
+    contributor_count: int
+    latest_post_at: datetime
+
+
+class TrendingHotspotsResponse(BaseModel):
+    hotspots: list[TrendingHotspot]
+    window_hours: int
+    as_of: datetime
+
+
 class VoteResponse(BaseModel):
     """Schema for the authoritative response after voting on a post."""
     post_id: int

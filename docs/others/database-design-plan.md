@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 7 community hotspots storage checkpoint:** Ranking reads existing `community_posts`, `flood_reports` and `users` using parameterized PostGIS aggregation. No model, table, column, index or Alembic definition changed. Existing migrations reach head during nine native hotspot checks in a fresh disposable loopback database, removed afterward; application/cloud data remains unchanged. [Verification](../evaluations/community-trending-hotspots-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 pre-push migration checkpoint:** Fresh **174 settings/lifecycle/growth PostGIS checks pass**, applying the existing migration chain to `d7e4b9a21c60 (head)` in generated local databases; a subsequent read confirms zero remaining generated settings/lifecycle databases. No SQLAlchemy model, column or Alembic migration changed in this checkpoint. Normal application/cloud databases remain unchanged. Structured follow-up runtime acceptance is still a separate open gate. [Audit](../evaluations/pasig-subsidence-validation-20261007/README.md#senior-planner-pre-push-checkpoint). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

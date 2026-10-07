@@ -5,7 +5,8 @@ from app.core.database import get_db
 from app.api.deps import get_current_user_optional, get_current_user
 from app.models.user import User
 from app.schemas.post import CommunityPostPaginatedResponse
-from app.schemas.feed import TopReportersResponse, VoteResponse
+from app.schemas.feed import TopReportersResponse, VoteResponse, TrendingHotspotsResponse
+from app.services.trending_hotspots_service import get_trending_hotspots
 from app.schemas.interaction import PostInteractionCreate
 from app.crud import feed as crud_feed
 from app.crud import interaction as crud_interaction
@@ -124,6 +125,15 @@ def get_feed(
         resolved_location_name=resolved_location_name
     )
 
+
+
+@router.get("/hotspots", response_model=TrendingHotspotsResponse)
+def trending_hotspots(
+    limit: int = Query(3, ge=1, le=10),
+    db: Session = Depends(get_db),
+) -> TrendingHotspotsResponse:
+    """Public 24-hour place activity, expanding to 48 hours only when empty."""
+    return get_trending_hotspots(db, limit=limit)
 
 
 @router.get("/leaderboard", response_model=TopReportersResponse)
