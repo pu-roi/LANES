@@ -9,6 +9,7 @@ import { MapProvider, useMapContext } from "./MapContext";
 import RoutePanel from "@/features/routing/RoutePanel";
 import { ReportFab } from "@/features/hazards/ReportFab";
 import { FloodReportPanel } from "@/features/hazards/FloodReportPanel";
+import { MapPickerMobileOverlay } from "./MapPickerMobileOverlay";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
 import { Panel } from "@/shared/ui/layout";
@@ -69,6 +70,7 @@ function MapLayout() {
   const { isAuthenticated } = useAuth();
   
   const { 
+    zoneUpdate, closeZoneUpdate,
     activePanel, 
     setActivePanel, 
     isPickingOnMap, 
@@ -94,6 +96,7 @@ function MapLayout() {
   const hasCompetingNewsPanel = isAnalyticsOpen || isSavePlacePanelOpen || isHazardPanelOpen || (isMobile && isReportPanelOpen && activePanel === "flood");
 
   const showNews = isNewsOpen && !hasCompetingNewsPanel;
+  const pickingZoneRoad = isMobile && isPickingOnMap && (activePoint === "zone_update_start" || activePoint === "zone_update_end");
 
   useEffect(() => {
     if (pathname === "/analytics" || pathname === "/admin/analytics") {
@@ -139,15 +142,18 @@ function MapLayout() {
     : "bottom-[calc(64px+env(safe-area-inset-bottom)+88px)]";
 
   const handleSelectFloodReport = () => {
+    closeZoneUpdate();
+    if (searchParams.has("zone_update")) router.replace("/map", { scroll: false });
     setIsReportPanelOpen(true);
     setActivePanel("flood");
     setIsMenuOpen(false);
   };
 
   const handleCloseFloodReport = () => {
+    closeZoneUpdate();
     setIsReportPanelOpen(false);
     setActivePanel(null);
-    if (searchParams.get("action") === "report") {
+    if (searchParams.get("action") === "report" || searchParams.has("zone_update")) {
       router.replace("/map", { scroll: false });
     }
   };
@@ -171,6 +177,7 @@ function MapLayout() {
   return (
     <>
       <MapCanvas />
+      {pickingZoneRoad && <MapPickerMobileOverlay confirmText={`Set Flood ${activePoint === "zone_update_start" ? "Start" : "End"}`} onCancel={() => setIsPickingOnMap(false)} onConfirm={() => window.dispatchEvent(new Event("confirm-zone-update-location"))} />}
       {pathname === "/map" && !isPickingOnMap && !hasCompetingNewsPanel && <NewsAlertsPanel isMobile={isMobile} open={showNews} onOpen={openNews} onClose={closeNews} />}
 
       {/* -- 1. Backdrop blur overlay ---------------------------------------- */}
@@ -296,7 +303,9 @@ function MapLayout() {
       )}
       {!pathname.startsWith('/admin') && pathname !== "/analytics" && (
         <>
-          <div className={showNews ? "hidden" : "contents"}><FloodReportPanel
+          <div className={showNews || pickingZoneRoad ? "hidden" : "contents"}><FloodReportPanel
+            zoneUpdate={zoneUpdate}
+            onReturnToReport={() => { closeZoneUpdate(); if (searchParams.has("zone_update")) router.replace("/map", { scroll: false }); }}
             isOpen={isMobile ? (isReportPanelOpen && activePanel === "flood") : true}
             onClose={handleCloseFloodReport}
           /></div>

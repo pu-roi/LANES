@@ -8,7 +8,6 @@ const LEGACY_FILE_KEY = "lanes_active_flood_form_files";
 const LEGACY_MAP_DRAFTS_KEY = "lanes_map_drafts";
 
 export interface FloodReportDraftActiveState extends FloodReportMapState {
-  observedAt?: string;
   startInput: string;
   endInput: string;
   visualOption: string | null;

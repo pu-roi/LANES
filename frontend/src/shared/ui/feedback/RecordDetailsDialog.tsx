@@ -17,9 +17,10 @@ export function RecordDetailsDialog({ title, subtitle, closeLabel, onClose, chil
     document.body.style.overflow = "hidden";
     closeButton.current?.focus({ preventScroll: true });
     const handleKey = (event: KeyboardEvent) => {
+      if (document.querySelector("[data-media-viewer]")) return;
       if (event.key === "Escape") { event.preventDefault(); onClose(); }
       if (event.key !== "Tab") return;
-      const inside = Array.from(dialog.current?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input, select, summary, [tabindex="0"]') ?? []);
+      const inside = Array.from(dialog.current?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), select:not([disabled]), summary, [tabindex="0"]') ?? []);
       const openSelect = dialog.current?.querySelector('button[data-select-trigger="true"][aria-expanded="true"]');
       const options = openSelect ? Array.from(document.querySelectorAll<HTMLElement>('[data-portal="select-dropdown"] button:not([disabled])')) : [];
       const nodes = [...inside, ...options].filter((node) => node.getClientRects().length > 0);

@@ -1,6 +1,6 @@
 # Cloud and application performance — October 7, 2026
 
-> **Last Updated:** October 07, 2026, 2:17 AM, Asia/Manila
+> **Last Updated:** October 08, 2026, 02:28 AM, Asia/Manila
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Scope and evidence
@@ -218,3 +218,20 @@ the discovery job to 512 MiB would reintroduce the observed memory-limit risk.
 Frontend rollback: select prior App Hosting build `build-2026-10-06-001`
 (`lanes-frontend-build-2026-10-06-001`) through the existing App Hosting rollout
 controls. Keep the API/job configuration rollback separate from application code.
+
+
+## October 8 WebGL recovery
+
+The reported exception originates in MapLibre's graphics-context construction, not a MapTiler HTTP failure. Local installed `maplibre-gl` 5.24.0 throws when canvas context creation is denied. A map-style fallback still needs WebGL. Existing BaseMap cleanup removed live maps, but immediate mount effects allocated an extra context during development Strict Mode; this is a contributing allocation pattern, not proof of why the browser blocked the page.
+
+BaseMap now defers creation to one cancellable animation frame, catches constructor failure and clears partial DOM, provides Map unavailable/Retry map with no automatic graphics retry loop, and pauses style timers during live context loss. It waits for an actual restored render before clearing the loss message. Disposal cancels compass/load/resize timers and prevents late map calls. Surrounding report forms remain mounted. No dependency/model/migration/API change or production release.
+
+Four Playwright recovery checks pass across desktop Chromium and iPhone-sized mobile Chromium. Browser instrumentation reproduces the exact creation-error status and verifies one initial canvas allocation under development Strict Mode, failed and successful retries, cleared debris, no uncaught page errors, and actual WEBGL_lose_context loss/restoration. Two ordinary flood-zone popup checks pass on both viewports. TypeScript/diff whitespace checks pass; BaseMap retains its HEAD lint baseline of eight errors/seven warnings, and the new tests pass scoped lint. Screenshots of both recovery states were inspected. The tests use installed Chrome with software WebGL; physical GPU/driver block clearance cannot be guaranteed by application code. No push/deployment.
+
+```powershell
+$env:PLAYWRIGHT_CHROME_PATH='C:\Program Files\Google\Chrome\Application\chrome.exe'
+npx playwright test tests/webgl-recovery.spec.ts --workers=1
+npx playwright test tests/spatial-review.spec.ts -g 'public zone popup quick action' --workers=1
+```
+
+Evidence references: [MapLibre context events](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapEventType/), [context attributes](https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/), and the installed library's `src/ui/map.ts` constructor/context-loss/remove lifecycle. [@roicambe](https://github.com/roicambe) (Roi Cambe)

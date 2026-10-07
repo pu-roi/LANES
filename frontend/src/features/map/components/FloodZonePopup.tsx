@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { format } from "date-fns";
 import { parseUtcDate } from "@/lib/utils";
 import { Clock, Ruler, Car, EyeOff, ShieldCheck, User, Users, ChevronDown, ChevronUp, Shield, X } from "lucide-react";
-import { Modal } from "@/shared/ui";
+import { Modal, Button } from "@/shared/ui";
+import type { ZoneCondition } from "@/features/hazards/zoneUpdatesApi";
 import { formatFloodDepth } from "@/lib/floodDepth";
 import type { PublicNewsAlert } from "@/features/news/publicNewsApi";
 import { newsDate, publisherLink } from "@/features/news/newsPresentation";
@@ -14,6 +15,7 @@ interface FloodZonePopupProps {
   drawer?: boolean;
   modal?: boolean;
   onClose?: () => void;
+  onUpdate?: (condition: ZoneCondition) => void;
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
@@ -23,7 +25,7 @@ const SEVERITY_COLORS: Record<string, string> = {
   extreme: "#ef4444",
 };
 
-export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onToggleExpand, compact = false, drawer = false, modal = false, onClose }) => {
+export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onToggleExpand, compact = false, drawer = false, modal = false, onClose, onUpdate }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const {
@@ -319,6 +321,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
         )}
       </div>
       </div>
+      {onUpdate && <div className="border-t border-slate-100 bg-white px-4 py-3"><div className="grid grid-cols-2 gap-2"><Button variant="outline" size="sm" className="min-h-11 whitespace-normal px-2 text-xs" onClick={() => onUpdate("still_flooded")}>Still flooded</Button><Button variant="outline" size="sm" className="min-h-11 whitespace-normal px-2 text-xs" onClick={() => onUpdate("no_floodwater")}>No floodwater</Button></div><Button variant="ghost" size="sm" className="mt-1 min-h-11 w-full text-blue-700" onClick={() => onUpdate("other_change")}>Update</Button></div>}
       </div>
     </>
   );

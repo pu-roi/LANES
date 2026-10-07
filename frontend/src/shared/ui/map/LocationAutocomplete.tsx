@@ -61,21 +61,38 @@ export function LocationAutocomplete({
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
+  const [viewportBottom, setViewportBottom] = useState(0);
 
   const updateRect = useCallback(() => {
     if (containerRef.current) {
-      setDropdownRect(containerRef.current.getBoundingClientRect());
+      const rect = containerRef.current.getBoundingClientRect();
+      setDropdownRect(previous => previous && previous.x === rect.x && previous.y === rect.y && previous.width === rect.width && previous.height === rect.height ? previous : rect);
+      const viewport = window.visualViewport;
+      const rootStyle = getComputedStyle(document.documentElement);
+      const navValue = rootStyle.getPropertyValue("--bottom-nav-height").trim();
+      const navHeight = (parseFloat(navValue) || 0) * (navValue.endsWith("rem") ? parseFloat(rootStyle.fontSize) : 1);
+      setViewportBottom((viewport ? viewport.offsetTop + viewport.height : window.innerHeight) - navHeight - 8);
     }
   }, []);
 
   useEffect(() => {
     if (isOpen) {
       updateRect();
+      // Mobile keyboard/sheet animations can move the input after resize fires.
+      // Track its actual bounds only while suggestions are open.
+      let frame: number;
+      const trackPosition = () => { updateRect(); frame = requestAnimationFrame(trackPosition); };
+      frame = requestAnimationFrame(trackPosition);
       window.addEventListener("scroll", updateRect, true); // capture phase to handle inner scrolls
       window.addEventListener("resize", updateRect);
+      window.visualViewport?.addEventListener("resize", updateRect);
+      window.visualViewport?.addEventListener("scroll", updateRect);
       return () => {
+        cancelAnimationFrame(frame);
         window.removeEventListener("scroll", updateRect, true);
         window.removeEventListener("resize", updateRect);
+        window.visualViewport?.removeEventListener("resize", updateRect);
+        window.visualViewport?.removeEventListener("scroll", updateRect);
       };
     }
   }, [isOpen, updateRect]);
@@ -223,12 +240,16 @@ export function LocationAutocomplete({
         <ul 
           data-portal="location-autocomplete"
           data-lenis-prevent
-          className="fixed z-40 mt-1 overflow-y-auto overscroll-contain rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg"
+          className="fixed z-[80] overflow-y-auto overscroll-contain rounded-md border border-gray-200 bg-white text-gray-900 shadow-lg"
           style={{
-            top: dropdownRect ? dropdownRect.bottom : 0,
+            top: dropdownRect ? (viewportBottom - dropdownRect.bottom < 224 && dropdownRect.top > viewportBottom - dropdownRect.bottom
+              ? Math.max(8, dropdownRect.top - Math.min(224, dropdownRect.top - 12) - 4)
+              : dropdownRect.bottom + 4) : 0,
             left: dropdownRect ? dropdownRect.left : 0,
             width: dropdownRect ? dropdownRect.width : 0,
-            maxHeight: "14rem"
+            maxHeight: dropdownRect ? Math.max(80, Math.min(224,
+              viewportBottom - dropdownRect.bottom < 224 && dropdownRect.top > viewportBottom - dropdownRect.bottom
+                ? dropdownRect.top - 12 : viewportBottom - dropdownRect.bottom - 4)) : 224,
           }}
           onWheel={(e) => e.stopPropagation()}
           onTouchMove={(e) => e.stopPropagation()}

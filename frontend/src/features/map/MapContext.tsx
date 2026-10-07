@@ -19,9 +19,10 @@ import {
   type MultiRouteResponse,
 } from "@/features/routing/routingApi";
 import { apiClient } from "@/lib/apiClient";
+import type { ZoneCondition, ZoneUpdateContext } from "@/features/hazards/zoneUpdatesApi";
 import { useRef } from "react";
 
-export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "post_location" | "save_place_location" | null;
+export type ActivePoint = "start" | "end" | "flood_start" | "flood_end" | "zone_update_start" | "zone_update_end" | "post_location" | "save_place_location" | null;
 export type ActivePanel = "route" | "flood" | "save_place" | null;
 export type NoahHazardScenario = 5 | 25 | 100;
 
@@ -31,7 +32,6 @@ export interface MapPoint {
 }
 
 export interface DraftReport {
-  observedAt?: string;
   id: string;
   geometry: RouteGeometry;
   oppositeGeometry: RouteGeometry | null;
@@ -64,6 +64,11 @@ export interface FloodReportMapState {
 export type FloodPreviewStatus = "idle" | "loading" | "validated" | "fallback" | "ambiguous" | "unmapped" | "error";
 
 interface MapContextValue {
+  zoneUpdateRoad: { start: MapPoint | null; end: MapPoint | null; isBidirectional: boolean };
+  setZoneUpdateRoad: React.Dispatch<React.SetStateAction<MapContextValue["zoneUpdateRoad"]>>;
+  zoneUpdate: { zone: ZoneUpdateContext; condition: ZoneCondition; key: string } | null;
+  openZoneUpdate: (zone: ZoneUpdateContext, condition: ZoneCondition) => void;
+  closeZoneUpdate: () => void;
   is3DMode: boolean;
   setIs3DMode: (enabled: boolean) => void;
   hazardScenario: NoahHazardScenario | null;
@@ -157,6 +162,8 @@ function coordsLabel(coords: [number, number]): string {
 }
 
 export function MapProvider({ children }: { children: ReactNode }) {
+  const [zoneUpdateRoad, setZoneUpdateRoad] = useState<MapContextValue["zoneUpdateRoad"]>({ start: null, end: null, isBidirectional: false });
+  const [zoneUpdate, setZoneUpdate] = useState<MapContextValue["zoneUpdate"]>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const locationParam = searchParams.get("location");
@@ -352,6 +359,16 @@ export function MapProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const openZoneUpdate = useCallback((zone: ZoneUpdateContext, condition: ZoneCondition) => {
+    setZoneUpdateRoad({ start: null, end: null, isBidirectional: false });
+    setZoneUpdate({ zone, condition, key: crypto.randomUUID() });
+    setIsPickingOnMap(false);
+    setActivePoint(null);
+    setIsReportPanelOpen(true);
+    setIsHazardPanelOpen(false);
+  }, [setIsReportPanelOpen]);
+  const closeZoneUpdate = useCallback(() => { setZoneUpdate(null); setActivePoint(null); setIsPickingOnMap(false); }, []);
+
   // When a panel closes, shift focus to the other one if it's open
   const isInitialMountPanels = useRef(true);
   useEffect(() => {
@@ -484,6 +501,10 @@ export function MapProvider({ children }: { children: ReactNode }) {
       } else if (activePoint === "flood_end") {
         setFloodEnd(coords, label);
         setActivePoint(null);
+        setIsPickingOnMap(false);
+      } else if (activePoint === "zone_update_start" || activePoint === "zone_update_end") {
+        setZoneUpdateRoad(previous => ({ ...previous, [activePoint === "zone_update_start" ? "start" : "end"]: { coords, label } }));
+        setActivePoint(activePoint === "zone_update_start" ? "zone_update_end" : null);
         setIsPickingOnMap(false);
       } else if (activePoint === "post_location") {
         setActivePoint(null);
@@ -647,6 +668,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<MapContextValue>(
     () => ({
+      zoneUpdateRoad, setZoneUpdateRoad,
+      zoneUpdate, openZoneUpdate, closeZoneUpdate,
       is3DMode,
       setIs3DMode,
       hazardScenario,
@@ -719,6 +742,8 @@ export function MapProvider({ children }: { children: ReactNode }) {
       bringPanelToFront,
     }),
     [
+      zoneUpdateRoad,
+      zoneUpdate, openZoneUpdate, closeZoneUpdate,
       is3DMode,
       setIs3DMode,
       hazardScenario,

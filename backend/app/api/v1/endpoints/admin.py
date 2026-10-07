@@ -2176,8 +2176,6 @@ def get_zone(
     zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
-    if body.is_active is True and zone.flood_event and zone.flood_event.status == models.FloodEventStatus.ENDED:
-        raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
     return _attach_report_media(zone)
 
 
@@ -2196,6 +2194,8 @@ async def update_zone(
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
         
+    if body.is_active is True and zone.flood_event and zone.flood_event.status == models.FloodEventStatus.ENDED:
+        raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
     if body.name is not None:
         zone.name = body.name
     if body.severity_override is not None:

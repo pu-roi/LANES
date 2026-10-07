@@ -4,7 +4,7 @@ test.setTimeout(90_000);
 test.use({ browserName: "chromium" });
 if (process.env.PLAYWRIGHT_CHROME_PATH) test.use({ launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROME_PATH } });
 
-for (const automatic of [true, false]) test(`saved citizen observation survives reload and shows ${automatic ? "automatic approval" : "manual review"} feedback`, async ({ page }, info) => {
+for (const automatic of [true, false]) test(`saved citizen report omits legacy observation time and shows server ${automatic ? "automatic approval" : "manual review"} feedback`, async ({ page }, info) => {
   await page.addInitScript(() => localStorage.setItem("lanes_token", "synthetic-citizen-fixture"));
   let submitted = "";
   await page.route("**/api.maptiler.com/**", route => route.fulfill({ json: { version: 8, sources: {}, layers: [] } }));
@@ -49,10 +49,12 @@ for (const automatic of [true, false]) test(`saved citizen observation survives 
     await page.getByRole("button", { name: "Report Flood Hazard" }).click();
     await page.getByRole("button", { name: "Flood Report", exact: true }).click();
   } else await page.getByRole("button", { name: "Expand panel" }).click();
-  await expect(page.getByLabel("When did you observe this flood? (Optional)")).toHaveValue("2026-10-07T15:30");
+  await expect(page.getByLabel("When did you observe this flood? (Optional)")).toHaveCount(0);
+  await page.screenshot({ path: info.outputPath("report-without-observation-time.png") });
   await page.getByRole("button", { name: "View drafts", exact: true }).click();
   await page.getByRole("button", { name: "Submit All 1 Drafts" }).click();
-  await expect.poll(() => submitted).toContain('name="observed_at"');
+  await expect.poll(() => submitted).toContain('name="survey_data"');
+  expect(submitted).not.toContain('name="observed_at"');
   expect(submitted).toContain('name="survey_data"');
   expect(submitted).toContain("Large Trucks / Buses");
   await expect(page.getByText(automatic ? "Eligible reports were automatically approved. Check My Reports for each report status." : "Thank you! Your reports are now in review.")).toBeVisible();

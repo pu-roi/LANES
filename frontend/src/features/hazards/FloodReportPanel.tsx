@@ -6,21 +6,22 @@ import {
   Loader2,
   Navigation2,
   HelpCircle,
-  FileVideo,
-  ImagePlus,
   X,
   ArrowLeft,
-  User,
   ShieldCheck,
   Pencil,
   Trash2,
 } from "lucide-react";
-import Link from "next/link";
 import { Button, ConfirmDialog, LoadingOverlay, Panel } from "@/shared/ui";
 import { MapPickerMobileOverlay } from "@/features/map/MapPickerMobileOverlay";
 import { useToast } from "@/shared/ui";
 import { LocationInputGroup } from "@/shared/ui";
 import { cn } from "@/lib/utils";
+import { FloodDepthField, FloodMediaField, FloodDescriptionField, FloodSurveyFields, FloodSurveyLauncher, floodDepthColors } from "./FloodReportFields";
+import { useFloodMedia } from "./useFloodMedia";
+import { ZoneUpdateForm } from "./ZoneUpdateForm";
+import { FloodReportLoginGate } from "./FloodReportLoginGate";
+import type { ZoneCondition, ZoneUpdateContext } from "./zoneUpdatesApi";
 import { apiClient } from "@/lib/apiClient";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
@@ -35,11 +36,13 @@ import {
   saveFloodReportDraft,
 } from "./floodReportDraftStorage";
 
-import { formatFloodDepth } from "@/lib/floodDepth";
+import { FLOOD_DEPTH_OPTIONS, formatFloodDepth } from "@/lib/floodDepth";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface FloodReportPanelProps {
+  zoneUpdate?: { zone: ZoneUpdateContext; condition: ZoneCondition; key: string } | null;
+  onReturnToReport?: () => void;
   isOpen: boolean;
   onClose: () => void;
   isAdminMode?: boolean;
@@ -49,58 +52,9 @@ interface FloodReportPanelProps {
 type Severity = "low" | "medium" | "high" | "extreme";
 type ReportVisualOption = "gutter" | "half-knee" | "half-tire" | "knee" | "tires" | "waist" | "chest" | "neck";
 
-const SEVERITY_COLORS = {
-  low: {
-    pill: "border-lime-300 text-lime-700 bg-lime-50 hover:bg-lime-100",
-    active: "border-lime-400 bg-lime-100 text-lime-800 ring-2 ring-lime-300/50",
-  },
-  medium: {
-    pill: "border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100",
-    active: "border-amber-400 bg-amber-100 text-amber-800 ring-2 ring-amber-300/50",
-  },
-  high: {
-    pill: "border-orange-300 text-orange-700 bg-orange-50 hover:bg-orange-100",
-    active: "border-orange-400 bg-orange-100 text-orange-800 ring-2 ring-orange-300/50",
-  },
-  extreme: {
-    pill: "border-red-300 text-red-700 bg-red-50 hover:bg-red-100",
-    active: "border-red-400 bg-red-100 text-red-800 ring-2 ring-red-300/50",
-  },
-};
+const VISUAL_OPTIONS = FLOOD_DEPTH_OPTIONS;
 
-const SEVERITY_DOT_COLORS = {
-  low: "bg-[#d8ed34]", // 80% yellow, 20% green
-  medium: "bg-amber-400",
-  high: "bg-orange-500",
-  extreme: "bg-red-600",
-};
-
-const VISUAL_OPTIONS: {
-  id: ReportVisualOption;
-  severity: Severity;
-  label: string;
-  description?: string;
-}[] = [
-  { id: "gutter", severity: "low", label: "Gutter", description: '8" (0.20m)' },
-  { id: "half-knee", severity: "low", label: "Half-Knee", description: '10" (0.25m)' },
-  { id: "half-tire", severity: "medium", label: "Half-Tire", description: '13" (0.33m)' },
-  { id: "knee", severity: "medium", label: "Knee", description: '19" (0.48m)' },
-  { id: "tires", severity: "high", label: "Tires", description: '26" (0.66m)' },
-  { id: "waist", severity: "high", label: "Waist", description: '37" (0.94m)' },
-  { id: "chest", severity: "high", label: "Chest", description: '45" (1.14m)' },
-  { id: "neck", severity: "extreme", label: "Neck & Above", description: '55"+ (1.40m+)' },
-];
-
-function formatFileSize(bytes: number) {
-  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-
-
-// ── Main component ─────────────────────────────────────────────────────────────
-
-export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit }: FloodReportPanelProps) {
+export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit, zoneUpdate, onReturnToReport }: FloodReportPanelProps) {
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const { user, isAuthenticated } = useAuth();
   const userId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
@@ -138,11 +92,9 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   const [passableVehicles, setPassableVehicles] = useState<string[]>([]);
   const [hiddenHazards, setHiddenHazards] = useState<"yes" | "no" | "unsure" | null>(null);
   const [showSurvey, setShowSurvey] = useState(false);
-  const [observedAt, setObservedAt] = useState("");
   const [description, setDescription] = useState("");
-  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
-  const mediaPreviewUrlsRef = useRef(new WeakMap<File, string>());
-  const createdPreviewUrlsRef = useRef(new Set<string>());
+  const media = useFloodMedia();
+  const { mediaFiles, setMediaFiles, clearMediaFiles } = media;
   const [isPublic, setIsPublic] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [isViewingDrafts, setIsViewingDrafts] = useState(false);
@@ -151,44 +103,10 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUpdatingZone, setIsUpdatingZone] = useState(false);
   const [isDiscardDialogOpen, setIsDiscardDialogOpen] = useState(false);
+  const [discardUpdateKey, setDiscardUpdateKey] = useState<string | null>(null);
   const { success, error } = useToast();
-
-  const getImagePreviewUrl = useCallback((file: File) => {
-    if (!file.type.startsWith("image/")) return undefined;
-    const existingUrl = mediaPreviewUrlsRef.current.get(file);
-    if (existingUrl) return existingUrl;
-
-    const previewUrl = URL.createObjectURL(file);
-    mediaPreviewUrlsRef.current.set(file, previewUrl);
-    createdPreviewUrlsRef.current.add(previewUrl);
-    return previewUrl;
-  }, []);
-
-  const removeMediaFile = useCallback((index: number) => {
-    setMediaFiles((current) => {
-      const file = current[index];
-      const previewUrl = file ? mediaPreviewUrlsRef.current.get(file) : undefined;
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-        createdPreviewUrlsRef.current.delete(previewUrl);
-        mediaPreviewUrlsRef.current.delete(file);
-      }
-      return current.filter((_, fileIndex) => fileIndex !== index);
-    });
-  }, []);
-
-  const clearMediaFiles = useCallback(() => {
-    createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-    createdPreviewUrlsRef.current.clear();
-    mediaPreviewUrlsRef.current = new WeakMap<File, string>();
-    setMediaFiles([]);
-  }, []);
-
-  useEffect(() => () => {
-    createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-    createdPreviewUrlsRef.current.clear();
-  }, []);
 
   // Account-private draft hydration and persistence. Never read a device-wide draft
   // for an unauthenticated or different account.
@@ -213,7 +131,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setHiddenHazards(null);
     setShowSurvey(false);
     setDescription("");
-    setObservedAt("");
     clearMediaFiles();
     setIsPublic(false);
     setStep(1);
@@ -250,7 +167,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         setHiddenHazards(active.hiddenHazards);
         setShowSurvey(active.showSurvey);
         setDescription(active.description);
-        setObservedAt(active.observedAt || "");
         setMediaFiles(active.mediaFiles);
         setIsPublic(active.isPublic);
         setStep(active.step);
@@ -301,7 +217,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         hiddenHazards,
         showSurvey,
         description,
-      observedAt,
         mediaFiles,
         isPublic,
         step,
@@ -320,7 +235,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         error("Draft Not Saved", "Your changes could not be saved on this device.");
       }
     });
-  }, [canPersistDraft, description, observedAt, draftReports, endInput, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, hiddenHazards, isBidirectional, isPublic, mediaFiles, passableVehicles, showSurvey, startInput, step, userId, visualOption]);
+  }, [canPersistDraft, description, draftReports, endInput, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, hiddenHazards, isBidirectional, isPublic, mediaFiles, passableVehicles, showSurvey, startInput, step, userId, visualOption]);
 
   // ── Map-pick: listen to the shared map-center-changed event ────────────────
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -354,7 +269,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setFloodStartLabel("");
     setFloodEndLabel("");
     setDescription("");
-    setObservedAt("");
     setVisualOption(null);
     setPassableVehicles([]);
     setHiddenHazards(null);
@@ -402,7 +316,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       setHiddenHazards(null);
       setShowSurvey(false);
       setDescription("");
-    setObservedAt("");
       clearMediaFiles();
       setIsPublic(false);
     }
@@ -508,7 +421,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       severity,
       depth,
       description,
-      observedAt,
       mediaFiles: [...mediaFiles],
       startLabel: startInput,
       endLabel: endInput,
@@ -537,11 +449,10 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setStartInput(draft.startLabel || "");
     setEndInput(draft.endLabel || "");
     setDescription(draft.description);
-    setObservedAt(draft.observedAt || "");
     const option = VISUAL_OPTIONS.find((item) => item.id === draft.depth)
       || VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth)
       || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
-    setVisualOption(option?.id ?? null);
+    setVisualOption((option?.id as ReportVisualOption | undefined) ?? null);
     setPassableVehicles(draft.passableVehicles || []);
     setHiddenHazards(draft.hiddenHazards || null);
     setIsPublic(draft.isPublic || false);
@@ -570,7 +481,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       const fd = new FormData();
       fd.append("raw_text", data.description.trim());
       fd.append("source", "direct_user");
-      if (data.observedAt) fd.append("observed_at", new Date(data.observedAt).toISOString());
       fd.append("severity", data.severity);
       if (data.depth) fd.append("depth", data.depth);
       if (data.humanReadableLocation) fd.append("human_readable_location", data.humanReadableLocation);
@@ -604,7 +514,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       formsToSubmit.push(
         createFormData({
           description: draft.description,
-          observedAt: draft.observedAt,
           severity: draft.severity,
           depth: draft.depth,
           humanReadableLocation: draftHint,
@@ -632,7 +541,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       formsToSubmit.push(
         createFormData({
           description: description,
-          observedAt,
           severity: selectedOption.severity,
           depth: selectedOption.id,
           humanReadableLocation: currentHint,
@@ -695,7 +603,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   const canSubmitAny = (draftReports.length > 0) || canSubmitCurrent;
 
   // ── Mobile map-pick overlay ────────────────────────────────────────────────
-  if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
+  if (!zoneUpdate && isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
     return (
       <MapPickerMobileOverlay 
         onCancel={() => {
@@ -723,7 +631,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       hiddenHazards,
       showSurvey,
       description,
-      observedAt,
       mediaFiles,
       isPublic,
       step,
@@ -737,18 +644,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   };
 
   const formBody = (!isAuthenticated && !isAdminMode) ? (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
-      <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 mb-2 mt-8">
-        <User className="w-8 h-8" />
-      </div>
-      <h3 className="text-lg font-bold text-gray-900">Login Required</h3>
-      <p className="text-sm text-gray-500">
-        You need to be logged in to report a flood and help the community.
-      </p>
-      <Link href="/login?redirect=%2Fmap%3Faction%3Dreport" className="w-full mt-4">
-        <Button className="w-full">Go to Login</Button>
-      </Link>
-    </div>
+    <FloodReportLoginGate />
   ) : (
     <form
       onSubmit={handleSubmit}
@@ -854,7 +750,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                     <h4 className="font-bold text-gray-800 text-sm pr-16 truncate">{draft.startLabel || "Unknown Road"}</h4>
                     <p className="text-xs text-gray-500 mt-1 line-clamp-2">{draft.description || "No description provided."}</p>
                     <div className="mt-3 flex items-center gap-2">
-                       <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase", SEVERITY_COLORS[draft.severity as Severity]?.pill)}>
+                       <span className={cn("px-2 py-0.5 rounded text-[10px] font-bold uppercase", floodDepthColors[draft.severity as Severity]?.[0])}>
                          {draft.severity} • {formatFloodDepth(draft.depth, { compact: true })}
                        </span>
                     </div>
@@ -875,14 +771,6 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                 )}
               </Button>
            </div>
-        </div>
-      )}
-
-      {!isViewingDrafts && !isAdminMode && (
-        <div className="space-y-1">
-          <label htmlFor="flood-observed-at" className="text-sm font-medium text-gray-700">When did you observe this flood? (Optional)</label>
-          <input id="flood-observed-at" type="datetime-local" value={observedAt} onChange={(event) => setObservedAt(event.target.value)} className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm" />
-          <p className="text-xs text-gray-500">Use your local time. An explicit recent observation time is required for automatic approval. Without it, staff review your report.</p>
         </div>
       )}
 
@@ -945,34 +833,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             </p>
           )}
 
-          {/* Severity selector */}
-          <div className="space-y-1">
-            <label className="text-sm font-semibold text-gray-800 block mb-1.5">
-              Flood Severity <span className="text-red-500 ml-0.5">*</span>
-            </label>
-            <p className="text-[11px] text-gray-500 mb-2">Half-Tire to Knee water is not passable to light vehicles; Tires and deeper are blocked for normal navigation.</p>
-            <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-              {VISUAL_OPTIONS.map((opt) => {
-                const colors = SEVERITY_COLORS[opt.severity];
-                return (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    aria-pressed={visualOption === opt.id}
-                    onClick={() => setVisualOption((current) => current === opt.id ? null : opt.id)}
-                    className={cn(
-                      "flex flex-col items-center text-center gap-0.5 rounded-lg border px-1 py-1.5 sm:px-2 sm:py-2 text-xs font-semibold transition-all leading-tight",
-                      visualOption === opt.id ? colors.active : colors.pill
-                    )}
-                  >
-                    <div className={cn("w-3.5 h-3.5 rounded-sm mb-0.5 shadow-sm shadow-black/10 shrink-0", SEVERITY_DOT_COLORS[opt.severity])}></div>
-                    <span className="truncate max-w-full">{opt.label}</span>
-                    {opt.description && <span className="font-normal text-[10px] opacity-75 whitespace-nowrap">{opt.description}</span>}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <FloodDepthField value={visualOption} onChange={value => setVisualOption(value as ReportVisualOption | null)} />
 
           {/* Info Card */}
           <div className="bg-orange-50/70 border border-orange-100/50 rounded-xl p-3 text-[11px] leading-relaxed text-orange-950 space-y-1 shadow-sm">
@@ -1003,114 +864,10 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
 
       {!isViewingDrafts && step === 2 && !showSurvey && (
         <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-300">
-          {/* Survey link */}
-          <div className="py-2 border-b border-gray-100 flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-gray-800 flex items-center gap-1.5">
-                Community Survey <span className="text-red-500">*</span>
-                {isSurveyComplete && (
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                )}
-              </span>
-              <span className="text-[11px] text-gray-500">
-                {isSurveyComplete ? "Survey complete. Thank you!" : "Required to submit report"}
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowSurvey(true)}
-              className="text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-full transition-colors"
-            >
-              Take Survey
-            </button>
-          </div>
+          <FloodSurveyLauncher complete={isSurveyComplete} onOpen={() => setShowSurvey(true)} />
 
-          {/* Media Upload */}
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-800 flex items-center justify-between mb-1.5">
-              <span>Photos & Videos <span className="text-gray-400 font-normal ml-1">(Optional)</span></span>
-            </label>
-            
-            {mediaFiles.length > 0 && (
-              <div className="mb-2 space-y-2" aria-live="polite">
-                <p className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
-                  <CheckCircle className="h-3.5 w-3.5" />
-                  {mediaFiles.length} {mediaFiles.length === 1 ? "file" : "files"} ready to publish
-                </p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {mediaFiles.map((file, index) => {
-                    const previewUrl = getImagePreviewUrl(file);
-                    return (
-                      <div
-                        key={`${file.name}-${file.lastModified}-${index}`}
-                        className="flex min-w-0 items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2"
-                      >
-                        {previewUrl ? (
-                          <img
-                            src={previewUrl}
-                            alt={`Selected ${file.name}`}
-                            className="h-11 w-11 shrink-0 rounded-md object-cover ring-1 ring-gray-200"
-                          />
-                        ) : (
-                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-orange-100 text-orange-700">
-                            <FileVideo className="h-5 w-5" />
-                          </div>
-                        )}
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-xs font-medium text-gray-700" title={file.name}>{file.name}</p>
-                          <p className="text-[10px] text-gray-500">{file.type.startsWith("video/") ? "Video" : "Image"} · {formatFileSize(file.size)}</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => removeMediaFile(index)}
-                          aria-label={`Remove ${file.name}`}
-                          className="shrink-0 rounded-full p-1 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
-                        >
-                          <X className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-            
-            <div className="relative flex items-center justify-center w-full rounded-md border border-dashed border-gray-300 px-3 py-4 bg-gray-50 hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer select-none text-sm text-gray-500 focus-within:ring-2 focus-within:ring-orange-400">
-              <div className="flex flex-col items-center gap-1">
-                <ImagePlus className="w-5 h-5 text-gray-400 mb-1" />
-                <span className="font-medium text-gray-600">Add photos or videos</span>
-                <span className="text-[10px] text-gray-400">Select from your device</span>
-              </div>
-              <input 
-                type="file" 
-                multiple
-                accept="image/*,video/*" 
-                aria-label="Add photos or videos to flood report"
-                className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
-                onChange={(e) => {
-                  const selectedFiles = Array.from(e.currentTarget.files ?? []);
-                  if (selectedFiles.length > 0) {
-                    setMediaFiles(prev => [...prev, ...selectedFiles]);
-                  }
-                  e.currentTarget.value = ''; // Reset to allow selecting the same file again
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Description */}
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-800 block mb-1.5">
-              Description <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              placeholder={isAdminMode ? "Enter official DRRMO statement, detour instructions, or zone details..." : "Describe the flood conditions (e.g., impassable to motorcycles, water is moving fast)"}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              className="w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-400 resize-none"
-            />
-          </div>
+          <FloodMediaField media={media} />
+          <FloodDescriptionField value={description} onChange={setDescription} placeholder={isAdminMode ? "Enter official DRRMO statement, detour instructions, or zone details..." : "Describe the flood conditions (e.g., impassable to motorcycles, water is moving fast)"} />
 
           {/* Community Feed Sharing */}
           <div className="space-y-2 pt-2 border-t border-gray-100">
@@ -1194,78 +951,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             <h3 className="text-sm font-bold text-gray-800">Community Survey</h3>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-800 block mb-1.5">
-              Which vehicles can safely pass? <span className="text-red-500">*</span>
-            </label>
-            <p className="text-xs text-gray-500 mb-2">Select all that apply.</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                "Pedestrians",
-                "Bicycles / E-Bikes",
-                "Motorcycles",
-                "Sedans / Hatchbacks",
-                "SUVs / Pickups",
-                "Large Trucks / Buses",
-              ].map((vehicle) => {
-                const isChecked = passableVehicles.includes(vehicle);
-                return (
-                  <label
-                    key={vehicle}
-                    className={cn(
-                      "flex items-center gap-2 rounded-lg border p-2 cursor-pointer transition-colors",
-                      isChecked ? "border-orange-400 bg-orange-50" : "border-gray-200 hover:bg-gray-50"
-                    )}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setPassableVehicles((prev) => [...prev, vehicle]);
-                        } else {
-                          setPassableVehicles((prev) => prev.filter((v) => v !== vehicle));
-                        }
-                      }}
-                      className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600 focus:ring-2"
-                    />
-                    <span className={cn("text-xs font-medium", isChecked ? "text-orange-900" : "text-gray-700")}>
-                      {vehicle}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
+          <FloodSurveyFields vehicles={passableVehicles} onVehiclesChange={value => setPassableVehicles(value ?? [])} hazards={hiddenHazards} onHazardsChange={setHiddenHazards} />
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-800 flex items-center justify-between">
-              <span>Are there hidden hazards? <span className="text-red-500 ml-0.5">*</span></span>
-            </label>
-            <p className="text-xs text-gray-500 mb-2">E.g., open manholes, large debris underwater.</p>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { value: "yes", label: "Yes", activeClass: "bg-red-50 border-red-300 text-red-700" },
-                { value: "no", label: "No", activeClass: "bg-green-50 border-green-300 text-green-700" },
-                { value: "unsure", label: "Unsure", activeClass: "bg-gray-100 border-gray-300 text-gray-700" }
-              ].map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setHiddenHazards(opt.value as "yes" | "no" | "unsure")}
-                  className={cn(
-                    "rounded-md border py-2 text-sm font-medium transition-colors",
-                    hiddenHazards === opt.value
-                      ? opt.activeClass
-                      : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-                  )}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          
           <div className="sticky bottom-0 -mx-4 -mb-4 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 mt-auto z-30 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] rounded-b-2xl">
             <Button type="button" onClick={() => setShowSurvey(false)} className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold h-10 rounded-xl">
               Done & Return
@@ -1276,7 +963,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     </form>
   );
 
-  if (isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
+  if (!zoneUpdate && isMobile && isPickingOnMap && (activePoint === "flood_start" || activePoint === "flood_end")) {
     return (
       <MapPickerMobileOverlay 
         onCancel={() => {
@@ -1290,14 +977,26 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   }
 
   // Hide the panel body on mobile while picking if we were just returning null
-  if (isMobile && isPickingOnMap) return null;
+  if (!zoneUpdate && isMobile && isPickingOnMap) return null;
 
   return (
     <Panel
       title={isAdminMode ? "Create Official Zone" : "Report Flood"}
       icon={isAdminMode ? <ShieldCheck className="h-4 w-4 text-blue-600" /> : <Navigation2 className="h-4 w-4 text-orange-600 rotate-180" />}
       iconBgClassName={isAdminMode ? "bg-blue-100" : "bg-orange-100"}
-      headerActions={!isViewingDrafts && editingDraft ? (
+      headerActions={zoneUpdate && isAuthenticated && onReturnToReport ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={isUpdatingZone}
+          className="min-h-11 whitespace-nowrap px-2 text-xs text-gray-500"
+          onPointerDown={event => event.stopPropagation()}
+          onClick={event => { event.stopPropagation(); setDiscardUpdateKey(zoneUpdate.key); }}
+        >
+          New report
+        </Button>
+      ) : !zoneUpdate && !isViewingDrafts && editingDraft ? (
         <button
           type="button"
           onClick={(event) => {
@@ -1314,13 +1013,29 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       onCollapseToggle={() => setActivePanel(isCollapsed ? "flood" : null)}
       isMobile={isMobile}
       isOpen={isOpen}
-      onClose={onClose}
-      mobileHeight={`${isAuthenticated ? "min(520px" : "min(440px"}, calc(100vh - 80px - 4rem - env(safe-area-inset-bottom, 0px)))`}
+      onClose={() => { if (!isUpdatingZone) onClose(); }}
+      mobileClassName={zoneUpdate ? "z-[60]" : undefined}
+      mobileHeight={`${isAuthenticated ? "min(520px" : "min(440px"}, calc(100dvh - 80px - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px)))`}
       anchor="right"
       initialPosition={{ x: 16, y: 80 }}
       panelId="flood_report"
     >
-      {formBody}
+      {zoneUpdate ? (isAuthenticated ? <ZoneUpdateForm key={zoneUpdate.key} zone={zoneUpdate.zone} initialCondition={zoneUpdate.condition} onClose={onClose} onSubmittingChange={setIsUpdatingZone} /> : <FloodReportLoginGate redirect={`/map?zone_update=${zoneUpdate.zone.id}&zone_condition=${zoneUpdate.condition}`} />) : formBody}
+      <ConfirmDialog
+        isOpen={!!zoneUpdate && isAuthenticated && discardUpdateKey === zoneUpdate.key}
+        title="Discard this update?"
+        message="Your current Flood Zone update fields and attachments will be lost. Your unfinished flood report will be kept."
+        confirmLabel="Discard"
+        cancelLabel="Keep editing"
+        variant="destructive"
+        isLoading={isUpdatingZone}
+        onConfirm={() => {
+          if (isUpdatingZone || !zoneUpdate || discardUpdateKey !== zoneUpdate.key) return;
+          setDiscardUpdateKey(null);
+          onReturnToReport?.();
+        }}
+        onCancel={() => setDiscardUpdateKey(null)}
+      />
       <ConfirmDialog
         isOpen={isDiscardDialogOpen}
         title="Clear flood-report panel?"

@@ -1,7 +1,35 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Final zone-update documentation and branch publication checkpoint
+
+- All eight authoritative records were audited; the catalog/feature plan/acceptance reflect the single Report Flood panel, original guest view, editable proposed extent, Active Zones staff review, New report discard confirmation and WebGL recovery. Sixteen native checks and twenty-two desktop/mobile browser scenarios pass across recorded task runs; TypeScript and scoped lint/baseline checks pass. Existing migration head `d7e4b9a21c60` is verified in removed disposable PostGIS databases; package/model/migration definitions are unchanged. User-authorized `roi-branch` commit/push is prepared and its Git result is reported separately. Physical camera/media-provider checks and matching deployment remain pending. [Acceptance](evaluations/flood-zone-community-updates-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Compact New report header action with discard confirmation
+
+- Move the signed-in update return action into the existing panel header as New report. Shared confirmation warns that current update fields/files will be lost; Keep editing preserves them, and Discard restores the unfinished new-report draft. The action is disabled during upload and hidden from the original guest gate. Responsive checks include a 320px title/action layout and warning bounds, plus guest UI parity; TypeScript/scoped lint pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: WebGL startup and context-loss recovery
+
+- Reproduced and handled browser-blocked WebGL construction without a page crash, removed development double allocation, added visible/manual retry and context-restoration handling, and cancelled stale map timers. Four recovery checks plus two popup regressions pass across desktop/mobile, with TypeScript and unchanged lint baseline. Browser GPU recovery remains external; no deployment/package/schema changes. [Verification](evaluations/cloud-performance-20261007.md#october-8-webgl-recovery). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Original Report Flood login view shared by both modes
+
+- Replaced the remaining custom update sign-in prompt with the original shared badge/heading/message/button and spacing; guest zone context and extra desktop close control removed. Login return preserves the selected zone/condition. Two desktop/mobile parity comparisons and two signed-in upload regressions pass; TypeScript/scoped lint pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Report Flood panel reused with editable update extent
+
+- Removed the separate update panel and reused the existing public report shell/fields. Restored the survey button/view, large media picker plus one camera action, editable start/end locations and road preview/map picking. Independent update-road state protects unfinished original reports. Server rebuilds proposed extent into audit JSON; missing observation time stays null and official zones remain staff-controlled. Sixteen native checks pass; responsive acceptance is recorded in the [evaluation](evaluations/flood-zone-community-updates-20261008.md). No schema/package change; physical capture/provider/release remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Report Flood observation-time removal and reuse review
+
+- Removed the new-report observation-time field and its state/submission path, including legacy queued timestamps. Six desktop/mobile checks pass for restored draft omission, backend feedback and selected media retention. Current backend reports without explicit observations proceed to staff review; timestamps are not inferred. Recommended one public panel with separate report/update modes and shared field components; consolidation remains proposed. [Review](plans/flood-zone-community-updates.md#october-8-follow-up-reuse-the-report-flood-panel). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Revised Active Zone community observations implemented locally
+
+- Public zone quick actions open one contextual form with observation time/spot, canonical depth/survey, description and optional camera/media. Active Zones retains existing cards/actions and adds Info, unreviewed indicators and private per-zone staff review; official conditions change through existing Edit/Deactivate. Ten native PostgreSQL/PostGIS/API checks and eight desktop/mobile browser checks pass; media focus/Escape follow-up passes four rerun checks. No schema/package change; provider/device verification and release remain pending. [Acceptance](evaluations/flood-zone-community-updates-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 8: Community hotspots delivery documentation audited
 

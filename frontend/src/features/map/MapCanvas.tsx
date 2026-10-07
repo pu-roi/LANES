@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { ZoneCondition } from "@/features/hazards/zoneUpdatesApi";
+import { useZoneRoadPreview } from "@/features/hazards/useZoneRoadPreview";
 import maplibregl from "maplibre-gl";
 import type { Map, Marker, MapMouseEvent } from "maplibre-gl";
 import { flyToCoordinates } from "./mapGeoUtils";
@@ -243,7 +245,21 @@ export default function MapCanvas() {
 
   // Hooks for modular map layers (reactive on mapInstance state!)
   useCityBoundaries(mapInstance, isLoaded);
-  useFloodZonesLayer(mapInstance, isLoaded, activeZonesData, isTouchDevice);
+  const { openZoneUpdate, zoneUpdate, zoneUpdateRoad } = useMapContext();
+  const updateRoadPreview = useZoneRoadPreview(zoneUpdateRoad.start, zoneUpdateRoad.end, zoneUpdateRoad.isBidirectional, !!zoneUpdate);
+  const returnZoneId = useSearchParams().get("zone_update");
+  const returnCondition = useSearchParams().get("zone_condition");
+  const handledReturn = useRef<string | null>(null);
+  const returnedZone = returnZoneId ? activeZonesData?.find(zone => zone.id === Number(returnZoneId)) : null;
+  const returnedCondition: ZoneCondition = returnCondition === "no_floodwater" ? "no_floodwater" : returnCondition === "still_flooded" ? "still_flooded" : "other_change";
+  useEffect(() => {
+    if (!returnZoneId) { handledReturn.current = null; return; }
+    const key = `${returnZoneId}:${returnedCondition}`;
+    if (!returnedZone || handledReturn.current === key) return;
+    handledReturn.current = key;
+    openZoneUpdate(returnedZone, returnedCondition);
+  }, [returnZoneId, returnedZone, returnedCondition, openZoneUpdate]);
+  useFloodZonesLayer(mapInstance, isLoaded, activeZonesData, isTouchDevice, "zones", undefined, undefined, undefined, undefined, openZoneUpdate);
 
   const isTouchDeviceRef = useRef(isTouchDevice);
   const searchParams = useSearchParams();
@@ -261,6 +277,12 @@ export default function MapCanvas() {
     draftReports,
     is3DMode, setIs3DMode, hazardScenario, setHazardScenario,
   } = useMapContext();
+
+  useEffect(() => {
+    const confirm = () => { const center = mapRef.current?.getCenter(); if (center) setPointFromMap([center.lng, center.lat]); };
+    window.addEventListener("confirm-zone-update-location", confirm);
+    return () => window.removeEventListener("confirm-zone-update-location", confirm);
+  }, [setPointFromMap]);
 
   const isHazardAvailable = pathname === "/map" && is3DMode;
   useNoahHazardLayer(mapInstance, isLoaded, isHazardAvailable ? hazardScenario : null, (message) => {
@@ -470,11 +492,11 @@ export default function MapCanvas() {
 
   useFloodMapPreview(
     mapRef.current,
-    floodStart,
-    floodEnd,
-    floodPreviewGeometry,
-    floodOppositeGeometry,
-    floodIsBidirectional,
+    zoneUpdate ? zoneUpdateRoad.start : floodStart,
+    zoneUpdate ? zoneUpdateRoad.end : floodEnd,
+    zoneUpdate ? updateRoadPreview.data?.original ?? null : floodPreviewGeometry,
+    zoneUpdate ? updateRoadPreview.data?.opposite ?? null : floodOppositeGeometry,
+    zoneUpdate ? zoneUpdateRoad.isBidirectional : floodIsBidirectional,
     isLoaded,
     floodShowMarkers
   );
@@ -1161,7 +1183,7 @@ export default function MapCanvas() {
   }, [heatmapData, isLoaded, pathname, isAnalyticsOpen, isAnalyticsCollapsed]);
 
   return (
-    <BaseMap
+    <><BaseMap
       actionControls={(map) => {
         const control = new ActionGroupControl(
             () => setIsSavePlacePanelOpen(true),
@@ -1306,6 +1328,6 @@ export default function MapCanvas() {
           display: none !important;
         }
       `}</style>
-    </BaseMap>
+    </BaseMap></>
   );
 }

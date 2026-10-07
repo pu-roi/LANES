@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 operational governance checkpoint (local):** Existing news intelligence, verified flood-zone lifecycle and RBAC modules now consume one typed server policy. Staff defaults affect future operations; automatic deadlines retain their observation-time snapshots; expiry becomes Unconfirmed. Citizen auto approval requires documented human history and independently corroborated, validated road evidence. Admin capability checks and saved worker health are connected on desktop/mobile. This does not adopt the separate duration research model or establish live current-news plotting acceptance. [Verification](evaluations/functional-system-settings-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -150,6 +150,8 @@ This document serves as the central technical reference for all currently implem
 ---
 
 ### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
+
+**October 8 Active Zone observations (local):** Public quick actions reuse the existing Report Flood panel with shared depth/survey/description/media, original Take Survey view, large media picker plus one camera action and editable start/end. Proposed road extent is rebuilt on the backend and recorded as private evidence; it does not alter official geometry/routing. Info/count opens per-zone Community updates solely in Active Zones, with existing Edit/Deactivate and explicit review. The original login view and New report header/discard warning preserve the existing reporting UI and unfinished drafts. Sixteen native and eighteen responsive report/update/login checks pass; provider/device/release limits remain in [acceptance](evaluations/flood-zone-community-updates-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 *   **Primary Panel refinement (local):** Search and city/barangay/severity filters are server-owned and run before card pagination, retaining full related groups. Cards summarize actual roads/areas and mixed conditions; reports, active zones and contributors reuse the flat `FloodRecordSummary` presentation with compact desktop/touch-aware actions. Source styling, own-record moderation and reviewed merge semantics remain. [Verification](evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-search-and-detail-consistency).
 *   **Purpose:** Implements a "human-in-the-loop" validation workflow to prevent automated NLP ingestion errors or mapping hallucinations from misdirecting drivers.
