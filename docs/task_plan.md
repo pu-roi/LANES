@@ -1,7 +1,15 @@
 # LANES — Task Plan
 
 > Tracking active sprints, backlog, and development priorities.
-> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] **Community hotspots documentation/pre-push audit:** Reconcile the eight authoritative records and index the final acceptance contract. Nine native PostGIS/API checks, ten desktop/mobile browser checks, TypeScript/scoped lint and migration-to-head acceptance pass. No new dependencies/schema definitions; the withdrawn Flood Zone update feature is excluded from this delivery. [Verification](evaluations/community-trending-hotspots-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] **Trending Hotspots bounded fallback:** Use 24 hours by default, expand to 48 only when no place qualifies, retain two distinct contributors and recency/privacy gates, display the actual window and return to 24 hours on fresh qualifying activity. Nine native PostGIS/API checks and ten desktop/mobile browser checks pass, along with TypeScript/scoped lint. No schema/dependency changes; deployment pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] **Trending Hotspots sidebar consistency:** Match Saved Places skeleton/empty patterns, row styling and retry action on desktop/mobile; simplify supporting copy. Eight existing browser checks, TypeScript and scoped lint pass; both screen sizes visually reviewed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] **Recent community Trending Hotspots:** Implement server-owned 24-hour place ranking, distinct-contributor protection, six-hour recency decay, and shared desktop/mobile UI with minute refresh and actionable errors. Existing migrations apply on a disposable PostGIS database; no schema or dependency change. Local verification in BUG-120; deployment remains pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] **October 7 senior-planner pre-push checkpoint:** All eight authoritative records audited; dependencies and unchanged model/migration definitions synchronized. Fresh 174 native PostGIS checks migrate to `d7e4b9a21c60` and leave zero allocated test databases; latest 89 focused checks and frontend production/TypeScript build pass. Prepare the user-authorized `roi-branch` commit/push with settings, follow-ups and research evaluations. Follow-up DB/API/browser/PWA acceptance, production settings/cadence release, real-news plotting and qualified prospective subsidence prediction remain open. [Pre-push audit](evaluations/pasig-subsidence-validation-20261007/README.md#senior-planner-pre-push-checkpoint). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

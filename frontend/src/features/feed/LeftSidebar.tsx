@@ -3,11 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Map, Rss, MessageSquarePlus, TrendingUp, Flame, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
+import { Map, Rss, MessageSquarePlus, Heart, Plus, ChevronDown, Pin } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { savedPlacesApi } from '@/features/places/savedPlacesApi';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import { TrendingHotspots } from './components/TrendingHotspots';
 import { EmergencyHotlinesCard } from './components/EmergencyHotlinesCard';
 
 export function LeftSidebar() {
@@ -90,34 +91,7 @@ export function LeftSidebar() {
           })}
         </div>
 
-        {/* Trending Locations */}
-        <div className="space-y-1">
-          <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-            <TrendingUp className="w-3.5 h-3.5" />
-            Trending Hotspots
-          </h3>
-          <div 
-            onClick={() => router.push("/map?lat=14.6091&lng=120.9899&zoom=15")}
-            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
-          >
-            <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /> Espana Blvd</span>
-            <span className="text-xs text-gray-400 group-hover:text-gray-600">12</span>
-          </div>
-          <div 
-            onClick={() => router.push("/map?lat=14.5648&lng=120.9932&zoom=15")}
-            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
-          >
-            <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /> Taft Ave</span>
-            <span className="text-xs text-gray-400 group-hover:text-gray-600">8</span>
-          </div>
-          <div 
-            onClick={() => router.push("/map?lat=14.6353&lng=121.0433&zoom=15")}
-            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-xl cursor-pointer transition-colors flex justify-between items-center group active:scale-98"
-          >
-            <span className="flex items-center gap-2"><Flame className="w-4 h-4 text-orange-400" /> EDSA-Kamuning</span>
-            <span className="text-xs text-gray-400 group-hover:text-gray-600">5</span>
-          </div>
-        </div>
+        <TrendingHotspots />
 
         {/* Saved Places */}
         <div className="space-y-1 relative" ref={dropdownRef}>

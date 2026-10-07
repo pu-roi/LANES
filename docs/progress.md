@@ -1,7 +1,23 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Community hotspots delivery documentation audited
+
+- Final behavior and release limits are recorded in the [acceptance contract](evaluations/community-trending-hotspots-20261007.md). All eight authoritative records were audited; native PostGIS/API (nine), desktop/mobile browser (ten), TypeScript/scoped lint and existing migration-head acceptance pass. No dependency, model or migration definition changed. The withdrawn Flood Zone update feature is excluded. Commit/push to `roi-branch` is user-authorized; Git results are reported separately, and matching deployment remains pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Trending Hotspots 48-hour fallback implemented locally
+
+- The backend searches 24 hours first and checks 48 only if no place qualifies; partial lists stay at 24 hours. Both windows retain two distinct contributors, six-hour per-author recency weights and public/located-content filters. The shared sidebar discloses the chosen window, distinguishes empty results from failures, and returns to 24 hours after new activity qualifies. Nine native PostGIS/API checks pass on a fresh disposable database with existing Alembic migrations; the generated database is removed. Ten desktop/mobile browser checks, TypeScript and scoped lint pass; fallback screenshots reviewed on both viewports. Matching deployment remains pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Trending Hotspots sidebar consistency
+
+- Match Saved Places loading bars, muted empty-state spacing, compact location rows and the existing blue sidebar action style for retry. Remove the ranking explanation and show the 24-hour community-activity caption only with results. The shared component covers desktop and mobile; screen-reader loading feedback and reduced-motion support are retained. TypeScript/scoped lint and all eight hotspot browser checks pass; loading, empty, error and populated screenshots reviewed on both viewports. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Recent community Trending Hotspots implemented locally
+
+- Replace desktop/mobile placeholder places with public `GET /api/v1/feed/hotspots` and shared `TrendingHotspots.tsx`. Rank only the last 24 hours, require two distinct contributors, weight each contributor's latest post with a six-hour half-life, and group normalized matching labels within approximately 500 m using PostGIS. Exclude hidden/deleted posts, inactive/deleted accounts, private/rejected/deleted reports and old report reshares; return an empty list when nothing qualifies. Refresh every minute and after feed mutations, with accessible map links, loading/empty/error/retry states. Existing models, migrations and dependencies are unchanged. Backend: 13 checks pass with the existing migration chain applied to a fresh disposable PostGIS database; TypeScript and focused lint pass. Eight desktop/mobile Chromium browser checks pass, including automatic expiry refresh; both screenshots reviewed. Verification is recorded in BUG-120. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 7: Senior-planner pre-push checkpoint
 
