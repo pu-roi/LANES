@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import maplibregl, { Map } from "maplibre-gl";
 import { createRoot, type Root } from "react-dom/client";
 import { FloodZonePopup } from "../components/FloodZonePopup";
+import type { ZoneCondition, ZoneUpdateContext } from "@/features/hazards/zoneUpdatesApi";
 import {
   SEVERITY_COLORS,
   SEVERITY_BORDER_COLORS,
@@ -21,7 +22,8 @@ export function useFloodZonesLayer(
   selectedZoneId?: number | null,
   setSelectedZoneId?: (id: number | null) => void,
   selectedContributorId?: number | null,
-  setSelectedContributorId?: (id: number | null) => void
+  setSelectedContributorId?: (id: number | null) => void,
+  onZoneUpdate?: (zone: ZoneUpdateContext, condition: ZoneCondition) => void
 ) {
   const activePopupRef = useRef<{ popup: maplibregl.Popup | null; root: Root; zoneId?: number } | null>(null);
 
@@ -330,7 +332,7 @@ export function useFloodZonesLayer(
       // Floating nav bar sits at top (Y: 0 to ~100px) and popup is ~360px tall + 14px offset.
       // To safely place the popup above without colliding with the top navigation,
       // we need at least 500px of clearance above AND more space above than below.
-      const popupHeight = properties.news_json && properties.news_json !== "[]" ? 550 : 360;
+      const popupHeight = (properties.news_json && properties.news_json !== "[]" ? 550 : 360) + (onZoneUpdate ? 132 : 0);
       const canSafelyFitAbove = spaceAbove >= Math.max(500, popupHeight + 100) && spaceAbove >= spaceBelow;
       const canFitBelow = spaceBelow >= popupHeight;
       const isNearLeft = spaceLeft < 190;
@@ -397,6 +399,11 @@ export function useFloodZonesLayer(
         compact: !isTouchDevice,
         modal: isTouchDevice,
         onClose: closeMobileModal,
+        onUpdate: onZoneUpdate ? (condition: ZoneCondition) => {
+          const zone = activeZonesData?.find(zone => zone.id === Number(properties.id));
+          if (zone) onZoneUpdate(zone, condition);
+          setTimeout(removeActivePopup, 0);
+        } : undefined,
       }));
 
       if (popup) {
@@ -509,5 +516,5 @@ export function useFloodZonesLayer(
         map.off("click", layer, handleZoneClick);
       });
     };
-  }, [map, isLoaded, activeZonesData, isTouchDevice, activeTab, selectedZoneId, setSelectedZoneId, selectedContributorId]);
+  }, [map, isLoaded, activeZonesData, isTouchDevice, activeTab, selectedZoneId, setSelectedZoneId, selectedContributorId, onZoneUpdate]);
 }

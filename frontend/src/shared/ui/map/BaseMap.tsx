@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import type { Map } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
+import { Button } from "@/shared/ui/forms/Button";
 import { registerOfflineProtocol } from "@/lib/offline/map-pmtiles";
 import { preloadOfflineEngine } from "@/features/routing/routingApi";
 
@@ -595,6 +596,8 @@ export default function BaseMap({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isRecovering, setIsRecovering] = useState(false);
   const [isUsingFallback, setIsUsingFallback] = useState(false);
+  const [graphicsFailure, setGraphicsFailure] = useState<"startup" | "lost" | null>(null);
+  const [mapAttempt, setMapAttempt] = useState(0);
 
   useEffect(() => {
     callbacksRef.current = { onMapInit, onMapLoad, actionControls, on3DChange };
@@ -615,361 +618,413 @@ export default function BaseMap({
   // Map creation intentionally uses the initial viewport only. Updating these
   // props must not recreate the WebGL map; callback props are read via refs.
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    // Strict Mode cancels the first frame before allocating a graphics context.
+    let dispose: (() => void) | undefined;
+    const initialize = () => {
+      if (!mapContainerRef.current) return;
 
-    let destroyed = false;
-    let activeStyle: ActiveMapStyle = (
-      !PRIMARY_MAP_STYLE_URL || (typeof navigator !== "undefined" && !navigator.onLine)
-    ) ? "fallback" : "primary";
-    let activeAttempt = 1;
-    let initialLoadFinished = false;
-    let hasNotifiedMapLoad = false;
-    let retryIndex = 0;
-    let firstRenderTimer: ReturnType<typeof setTimeout> | null = null;
-    let retryTimer: ReturnType<typeof setTimeout> | null = null;
-    const reportedAttempts = new Set<number>();
+      let destroyed = false;
+      let contextLost = false;
+      setGraphicsFailure(null);
+      setIsLoaded(false);
+      let activeStyle: ActiveMapStyle = (
+        !PRIMARY_MAP_STYLE_URL || (typeof navigator !== "undefined" && !navigator.onLine)
+      ) ? "fallback" : "primary";
+      let activeAttempt = 1;
+      let initialLoadFinished = false;
+      let hasNotifiedMapLoad = false;
+      let retryIndex = 0;
+      let firstRenderTimer: ReturnType<typeof setTimeout> | null = null;
+      let retryTimer: ReturnType<typeof setTimeout> | null = null;
+      const reportedAttempts = new Set<number>();
 
-    const clearFirstRenderTimer = () => {
-      if (firstRenderTimer) {
-        clearTimeout(firstRenderTimer);
-        firstRenderTimer = null;
-      }
-    };
+      const clearFirstRenderTimer = () => {
+        if (firstRenderTimer) {
+          clearTimeout(firstRenderTimer);
+          firstRenderTimer = null;
+        }
+      };
 
-    const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+      const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
-    // Retrieve last explored boundary from localStorage if offline
-    let dynamicBounds: [[number, number], [number, number]] = PHILIPPINES_WIDE_BOUNDS;
-    if (isOffline && typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("lanes_explored_bounds");
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length === 2) {
-            dynamicBounds = parsed as [[number, number], [number, number]];
+      // Retrieve last explored boundary from localStorage if offline
+      let dynamicBounds: [[number, number], [number, number]] = PHILIPPINES_WIDE_BOUNDS;
+      if (isOffline && typeof window !== "undefined") {
+        try {
+          const saved = localStorage.getItem("lanes_explored_bounds");
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length === 2) {
+              dynamicBounds = parsed as [[number, number], [number, number]];
+            }
           }
-        }
-      } catch (e) { }
-    }
-
-    let initialCenter = initialViewportRef.current.center;
-    let initialZoom = initialViewportRef.current.zoom;
-    let initialPitch = 0;
-    let initialBearing = 0;
-
-    if (typeof window !== "undefined") {
-      try {
-        const savedViewport = sessionStorage.getItem("lanes_map_viewport");
-        if (savedViewport) {
-          const parsed = JSON.parse(savedViewport);
-          if (parsed.center) initialCenter = parsed.center;
-          if (parsed.zoom !== undefined) initialZoom = parsed.zoom;
-          if (parsed.pitch !== undefined) initialPitch = parsed.pitch;
-          if (parsed.bearing !== undefined) initialBearing = parsed.bearing;
-        }
-      } catch (e) { }
-    }
-
-    const startedAt = performance.now();
-    const mapInstance = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: activeStyle === "primary" ? PRIMARY_MAP_STYLE_URL! : OSM_FALLBACK_STYLE,
-      center: initialCenter,
-      zoom: initialZoom,
-      minZoom: isOffline ? 11.5 : 5.0, // Only clamp zoom-out when offline so you don't zoom into grey void
-      maxZoom: 20.0,
-      maxPitch: 70,
-      maxBounds: isOffline ? dynamicBounds : PHILIPPINES_WIDE_BOUNDS,
-      pitch: initialPitch,
-      bearing: initialBearing,
-    });
-    mapRef.current = mapInstance;
-
-    const styleMatchesActiveAttempt = () => {
-      try {
-        const currentStyle = mapInstance.getStyle();
-        // MapTiler styles may also name a vector source "osm". Identify our
-        // fallback by LANES' own raster source and layer instead of generic IDs.
-        const isOsmFallbackStyle =
-          currentStyle.sources[OSM_FALLBACK_SOURCE_ID]?.type === "raster"
-          && currentStyle.layers.some((layer) => layer.id === OSM_FALLBACK_LAYER_ID);
-        return activeStyle === "fallback" ? isOsmFallbackStyle : !isOsmFallbackStyle;
-      } catch {
-        return false;
+        } catch (e) { }
       }
-    };
 
-    const reportFailure = (phase: string, error?: unknown) => {
-      if (reportedAttempts.has(activeAttempt)) return;
-      reportedAttempts.add(activeAttempt);
-      const event = error as { message?: string; error?: { message?: string }; url?: string } | undefined;
-      const message = event?.message || event?.error?.message || String(error || "No first visual render");
-      console.warn("[map-style-fallback]", {
-        attempt: activeAttempt,
-        phase,
-        elapsedMs: Math.round(performance.now() - startedAt),
-        url: redactMapTilerKey(event?.url),
-        message: redactMapTilerKey(message),
-      });
-    };
+      let initialCenter = initialViewportRef.current.center;
+      let initialZoom = initialViewportRef.current.zoom;
+      let initialPitch = 0;
+      let initialBearing = 0;
 
-    const completeStyle = (style: ActiveMapStyle) => {
-      if (destroyed || style !== activeStyle || !styleMatchesActiveAttempt()) return;
-      clearFirstRenderTimer();
-      // A fallback can become the map's first completed style when MapTiler
-      // misses the startup budget. Mark it complete so future MapTiler
-      // `style.load` events are eligible to restore the detailed map.
-      initialLoadFinished = true;
-      setIsLoaded(true);
-      setIsRecovering(false);
-      setIsUsingFallback(style === "fallback");
+      if (typeof window !== "undefined") {
+        try {
+          const savedViewport = sessionStorage.getItem("lanes_map_viewport");
+          if (savedViewport) {
+            const parsed = JSON.parse(savedViewport);
+            if (parsed.center) initialCenter = parsed.center;
+            if (parsed.zoom !== undefined) initialZoom = parsed.zoom;
+            if (parsed.pitch !== undefined) initialPitch = parsed.pitch;
+            if (parsed.bearing !== undefined) initialBearing = parsed.bearing;
+          }
+        } catch (e) { }
+      }
 
-      if (style === "primary") {
-        retryIndex = 0;
-        if (retryTimer) {
-          clearTimeout(retryTimer);
-          retryTimer = null;
-        }
-        console.debug("[map-performance]", {
-          style: "maptiler",
-          loadMs: Math.round(performance.now() - startedAt),
+      const startedAt = performance.now();
+      let mapInstance: Map;
+      try {
+        mapInstance = new maplibregl.Map({
+          container: mapContainerRef.current,
+          style: activeStyle === "primary" ? PRIMARY_MAP_STYLE_URL! : OSM_FALLBACK_STYLE,
+          center: initialCenter,
+          zoom: initialZoom,
+          minZoom: isOffline ? 11.5 : 5.0, // Only clamp zoom-out when offline so you don't zoom into grey void
+          maxZoom: 20.0,
+          maxPitch: 70,
+          maxBounds: isOffline ? dynamicBounds : PHILIPPINES_WIDE_BOUNDS,
+          pitch: initialPitch,
+          bearing: initialBearing,
         });
-      }
-
-      if (!hasNotifiedMapLoad) {
-        hasNotifiedMapLoad = true;
-        callbacksRef.current.onMapLoad?.(mapInstance);
-      }
-    };
-
-    const isPermanentAuthError = (error?: unknown) => {
-      const event = error as any;
-      const status = event?.status || event?.error?.status;
-      const message = `${event?.message || ""} ${event?.error?.message || ""}`.toLowerCase();
-      return (
-        status === 401 ||
-        status === 403 ||
-        message.includes("403") ||
-        message.includes("401") ||
-        message.includes("forbidden") ||
-        message.includes("unauthorized")
-      );
-    };
-
-    let hasPermanentPrimaryFailure = false;
-
-    const schedulePrimaryRetry = (immediate = false, error?: unknown) => {
-      if (
-        destroyed ||
-        retryTimer ||
-        !PRIMARY_MAP_STYLE_URL ||
-        (typeof navigator !== "undefined" && !navigator.onLine) ||
-        hasPermanentPrimaryFailure ||
-        retryIndex >= 2
-      ) {
+      } catch (failure) {
+        // Construction failed before a Map was returned. Remove its partial DOM.
+        mapContainerRef.current.replaceChildren();
+        mapContainerRef.current.classList.remove("maplibregl-map");
+        setGraphicsFailure("startup");
+        setIsRecovering(false);
+        console.warn("[map-graphics] initialization unavailable", redactMapTilerKey(failure instanceof Error ? failure.message : String(failure)));
         return;
       }
-      if (isPermanentAuthError(error)) {
-        hasPermanentPrimaryFailure = true;
-        return;
-      }
-      const delay = immediate ? 0 : MAPTILER_RETRY_DELAYS_MS[Math.min(retryIndex, MAPTILER_RETRY_DELAYS_MS.length - 1)];
-      retryIndex += 1;
-      retryTimer = setTimeout(() => {
-        retryTimer = null;
-        if (destroyed || activeStyle !== "fallback" || (typeof navigator !== "undefined" && !navigator.onLine) || hasPermanentPrimaryFailure) return;
-        activeStyle = "primary";
+      mapRef.current = mapInstance;
+
+      const styleMatchesActiveAttempt = () => {
+        try {
+          const currentStyle = mapInstance.getStyle();
+          // MapTiler styles may also name a vector source "osm". Identify our
+          // fallback by LANES' own raster source and layer instead of generic IDs.
+          const isOsmFallbackStyle =
+            currentStyle.sources[OSM_FALLBACK_SOURCE_ID]?.type === "raster"
+            && currentStyle.layers.some((layer) => layer.id === OSM_FALLBACK_LAYER_ID);
+          return activeStyle === "fallback" ? isOsmFallbackStyle : !isOsmFallbackStyle;
+        } catch {
+          return false;
+        }
+      };
+
+      const reportFailure = (phase: string, error?: unknown) => {
+        if (reportedAttempts.has(activeAttempt)) return;
+        reportedAttempts.add(activeAttempt);
+        const event = error as { message?: string; error?: { message?: string }; url?: string } | undefined;
+        const message = event?.message || event?.error?.message || String(error || "No first visual render");
+        console.warn("[map-style-fallback]", {
+          attempt: activeAttempt,
+          phase,
+          elapsedMs: Math.round(performance.now() - startedAt),
+          url: redactMapTilerKey(event?.url),
+          message: redactMapTilerKey(message),
+        });
+      };
+
+      const completeStyle = (style: ActiveMapStyle) => {
+        if (destroyed || contextLost || style !== activeStyle || !styleMatchesActiveAttempt()) return;
+        clearFirstRenderTimer();
+        // A fallback can become the map's first completed style when MapTiler
+        // misses the startup budget. Mark it complete so future MapTiler
+        // `style.load` events are eligible to restore the detailed map.
+        initialLoadFinished = true;
+        setIsLoaded(true);
+        setIsRecovering(false);
+        setIsUsingFallback(style === "fallback");
+
+        if (style === "primary") {
+          retryIndex = 0;
+          if (retryTimer) {
+            clearTimeout(retryTimer);
+            retryTimer = null;
+          }
+          console.debug("[map-performance]", {
+            style: "maptiler",
+            loadMs: Math.round(performance.now() - startedAt),
+          });
+        }
+
+        if (!hasNotifiedMapLoad) {
+          hasNotifiedMapLoad = true;
+          callbacksRef.current.onMapLoad?.(mapInstance);
+        }
+      };
+
+      const isPermanentAuthError = (error?: unknown) => {
+        const event = error as any;
+        const status = event?.status || event?.error?.status;
+        const message = `${event?.message || ""} ${event?.error?.message || ""}`.toLowerCase();
+        return (
+          status === 401 ||
+          status === 403 ||
+          message.includes("403") ||
+          message.includes("401") ||
+          message.includes("forbidden") ||
+          message.includes("unauthorized")
+        );
+      };
+
+      let hasPermanentPrimaryFailure = false;
+
+      const schedulePrimaryRetry = (immediate = false, error?: unknown) => {
+        if (
+          destroyed ||
+          contextLost ||
+          retryTimer ||
+          !PRIMARY_MAP_STYLE_URL ||
+          (typeof navigator !== "undefined" && !navigator.onLine) ||
+          hasPermanentPrimaryFailure ||
+          retryIndex >= 2
+        ) {
+          return;
+        }
+        if (isPermanentAuthError(error)) {
+          hasPermanentPrimaryFailure = true;
+          return;
+        }
+        const delay = immediate ? 0 : MAPTILER_RETRY_DELAYS_MS[Math.min(retryIndex, MAPTILER_RETRY_DELAYS_MS.length - 1)];
+        retryIndex += 1;
+        retryTimer = setTimeout(() => {
+          retryTimer = null;
+          if (destroyed || activeStyle !== "fallback" || (typeof navigator !== "undefined" && !navigator.onLine) || hasPermanentPrimaryFailure) return;
+          activeStyle = "primary";
+          activeAttempt += 1;
+          setIsLoaded(false);
+          setIsRecovering(true);
+          setIsUsingFallback(false);
+          mapInstance.setStyle(PRIMARY_MAP_STYLE_URL, { diff: false });
+          firstRenderTimer = setTimeout(
+            () => activateFallback("primary_retry_timeout"),
+            PRIMARY_RETRY_RENDER_BUDGET_MS,
+          );
+        }, delay);
+      };
+
+      const activateFallback = (phase: string, error?: unknown) => {
+        if (destroyed || contextLost || activeStyle === "fallback") return;
+        reportFailure(phase, error);
+        clearFirstRenderTimer();
+        activeStyle = "fallback";
         activeAttempt += 1;
         setIsLoaded(false);
         setIsRecovering(true);
-        setIsUsingFallback(false);
-        mapInstance.setStyle(PRIMARY_MAP_STYLE_URL, { diff: false });
-        firstRenderTimer = setTimeout(
-          () => activateFallback("primary_retry_timeout"),
-          PRIMARY_RETRY_RENDER_BUDGET_MS,
-        );
-      }, delay);
-    };
+        setIsUsingFallback(true);
+        mapInstance.setStyle(OSM_FALLBACK_STYLE, { diff: false });
+        schedulePrimaryRetry(false, error);
+      };
 
-    const activateFallback = (phase: string, error?: unknown) => {
-      if (destroyed || activeStyle === "fallback") return;
-      reportFailure(phase, error);
-      clearFirstRenderTimer();
-      activeStyle = "fallback";
-      activeAttempt += 1;
-      setIsLoaded(false);
-      setIsRecovering(true);
-      setIsUsingFallback(true);
-      mapInstance.setStyle(OSM_FALLBACK_STYLE, { diff: false });
-      schedulePrimaryRetry(false, error);
-    };
-
-    if (activeStyle === "primary") {
-      firstRenderTimer = setTimeout(() => activateFallback("first_render_timeout"), FIRST_RENDER_BUDGET_MS);
-    } else {
-      setIsUsingFallback(true);
-    }
-
-    mapInstance.on('moveend', () => {
-      try {
-        const viewport = {
-          center: mapInstance.getCenter().toArray(),
-          zoom: mapInstance.getZoom(),
-          pitch: mapInstance.getPitch(),
-          bearing: mapInstance.getBearing()
-        };
-        sessionStorage.setItem("lanes_map_viewport", JSON.stringify(viewport));
-      } catch (e) { }
-    });
-
-    mapInstance.addControl(new TopViewControlV3(), "bottom-right");
-    mapInstance.addControl(new ZoomLevelControl(), "bottom-right");
-    const navControl = new maplibregl.NavigationControl({
-      showCompass: true,
-      showZoom: true,
-      visualizePitch: true, // Show pitch arc on the compass when map is tilted
-    });
-    mapInstance.addControl(navControl, "bottom-right");
-
-    // Hijack compass click to ONLY reset bearing, not pitch (we have TopViewControlV3 for pitch)
-    setTimeout(() => {
-      const compassBtn = mapInstance.getContainer().querySelector('.maplibregl-ctrl-compass');
-      if (compassBtn) {
-        compassBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          mapInstance.easeTo({ bearing: 0, pitch: mapInstance.getPitch(), duration: 800 });
-        }, true);
+      if (activeStyle === "primary") {
+        firstRenderTimer = setTimeout(() => activateFallback("first_render_timeout"), FIRST_RENDER_BUDGET_MS);
+      } else {
+        setIsUsingFallback(true);
       }
-    }, 100);
 
-    // Add the 3D / 2D terrain toggle button (only when online; offline has no elevation data)
-    if (!isOffline && PRIMARY_MAP_STYLE_URL) {
-      mapInstance.addControl(new Toggle3DControl((enabled) => callbacksRef.current.on3DChange?.(enabled)), "bottom-right");
-      mapInstance.addControl(new MapStylePickerControl(), "bottom-right");
-    }
-
-    callbacksRef.current.actionControls?.(mapInstance);
-    callbacksRef.current.onMapInit?.(mapInstance);
-
-    mapInstance.on("error", (e) => {
-      if (activeStyle !== "primary" || (typeof navigator !== "undefined" && !navigator.onLine)) return;
-      const errorEvent = e as unknown as { message?: string; error?: { message?: string }; url?: string };
-      const message = `${errorEvent.message || ""} ${errorEvent.error?.message || ""}`.toLowerCase();
-      const url = errorEvent.url || "";
-      if (url.includes("api.maptiler.com") || message.includes("maptiler") || message.includes("failed to fetch") || message.includes("ajax")) {
-        activateFallback("maptiler_resource_error", errorEvent);
-      }
-    });
-
-    mapInstance.on("styleimagemissing", (e) => {
-      const id = e.id;
-      const canvas = document.createElement("canvas");
-      canvas.width = 1;
-      canvas.height = 1;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const imageData = ctx.getImageData(0, 0, 1, 1);
-        mapInstance.addImage(id, imageData);
-      }
-    });
-
-    mapInstance.on("load", () => {
-      initialLoadFinished = true;
-      completeStyle(activeStyle);
-      setTimeout(() => mapInstance.resize(), 100);
-    });
-
-    mapInstance.on("style.load", () => {
-      // `load` waits for every style asset, including remote glyph ranges. A
-      // MapLibre render after `style.load` proves the user can see the map, so
-      // use it for the 1.5-second usability budget while still listening for
-      // resource errors that require the OSM fallback.
-      const attemptAtStyleLoad = activeAttempt;
-      const styleAtStyleLoad = activeStyle;
-      mapInstance.once("render", () => {
-        if (destroyed || attemptAtStyleLoad !== activeAttempt || styleAtStyleLoad !== activeStyle) return;
-        completeStyle(styleAtStyleLoad);
-      });
-    });
-
-    const handleOnline = () => {
-      if (activeStyle === "fallback") {
-        retryIndex = 0;
-        schedulePrimaryRetry(true);
-      }
-    };
-    window.addEventListener("online", handleOnline);
-
-    // Continuously update the explored boundary in localStorage while online
-    mapInstance.on("moveend", () => {
-      if (typeof navigator !== "undefined" && navigator.onLine) {
+      mapInstance.on('moveend', () => {
         try {
-          const currentBounds = mapInstance.getBounds();
-          const sw = currentBounds.getSouthWest();
-          const ne = currentBounds.getNorthEast();
-
-          let minLng = sw.lng;
-          let minLat = sw.lat;
-          let maxLng = ne.lng;
-          let maxLat = ne.lat;
-
-          const prev = localStorage.getItem("lanes_explored_bounds");
-          if (prev) {
-            const [pSW, pNE] = JSON.parse(prev);
-            minLng = Math.min(minLng, pSW[0]);
-            minLat = Math.min(minLat, pSW[1]);
-            maxLng = Math.max(maxLng, pNE[0]);
-            maxLat = Math.max(maxLat, pNE[1]);
-          }
-
-          // Expand padding slightly (+0.01 deg) so edge tiles feel natural
-          const expanded: [[number, number], [number, number]] = [
-            [minLng - 0.01, minLat - 0.01],
-            [maxLng + 0.01, maxLat + 0.01]
-          ];
-          localStorage.setItem("lanes_explored_bounds", JSON.stringify(expanded));
+          const viewport = {
+            center: mapInstance.getCenter().toArray(),
+            zoom: mapInstance.getZoom(),
+            pitch: mapInstance.getPitch(),
+            bearing: mapInstance.getBearing()
+          };
+          sessionStorage.setItem("lanes_map_viewport", JSON.stringify(viewport));
         } catch (e) { }
-      }
-    });
-
-    // Observe container size changes (e.g. sidebar open/close, responsive breakpoint shifts, route transitions)
-    const container = mapContainerRef.current;
-    let resizeObserver: ResizeObserver | null = null;
-    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-    if (container && typeof ResizeObserver !== "undefined") {
-      resizeObserver = new ResizeObserver(() => {
-        // Debounce resize events so the WebGL canvas buffer is not discarded on every 16ms animation frame
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          try {
-            if (mapInstance && typeof mapInstance.resize === "function") {
-              mapInstance.resize();
-            }
-          } catch (e) { }
-        }, 400);
       });
-      resizeObserver.observe(container);
-    }
 
-    return () => {
-      destroyed = true;
-      if (resizeTimer) clearTimeout(resizeTimer);
-      resizeObserver?.disconnect();
-      clearFirstRenderTimer();
-      if (retryTimer) clearTimeout(retryTimer);
-      window.removeEventListener("online", handleOnline);
-      mapInstance.remove();
-      mapRef.current = null;
-      setIsLoaded(false);
+      mapInstance.addControl(new TopViewControlV3(), "bottom-right");
+      mapInstance.addControl(new ZoomLevelControl(), "bottom-right");
+      const navControl = new maplibregl.NavigationControl({
+        showCompass: true,
+        showZoom: true,
+        visualizePitch: true, // Show pitch arc on the compass when map is tilted
+      });
+      mapInstance.addControl(navControl, "bottom-right");
+
+      // Hijack compass click to ONLY reset bearing, not pitch (we have TopViewControlV3 for pitch)
+      const compassTimer = setTimeout(() => {
+        if (destroyed) return;
+        const compassBtn = mapInstance.getContainer().querySelector('.maplibregl-ctrl-compass');
+        if (compassBtn) {
+          compassBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            mapInstance.easeTo({ bearing: 0, pitch: mapInstance.getPitch(), duration: 800 });
+          }, true);
+        }
+      }, 100);
+
+      // Add the 3D / 2D terrain toggle button (only when online; offline has no elevation data)
+      if (!isOffline && PRIMARY_MAP_STYLE_URL) {
+        mapInstance.addControl(new Toggle3DControl((enabled) => callbacksRef.current.on3DChange?.(enabled)), "bottom-right");
+        mapInstance.addControl(new MapStylePickerControl(), "bottom-right");
+      }
+
+      callbacksRef.current.actionControls?.(mapInstance);
+      callbacksRef.current.onMapInit?.(mapInstance);
+
+      mapInstance.on("error", (e) => {
+        if (activeStyle !== "primary" || (typeof navigator !== "undefined" && !navigator.onLine)) return;
+        const errorEvent = e as unknown as { message?: string; error?: { message?: string }; url?: string };
+        const message = `${errorEvent.message || ""} ${errorEvent.error?.message || ""}`.toLowerCase();
+        const url = errorEvent.url || "";
+        if (url.includes("api.maptiler.com") || message.includes("maptiler") || message.includes("failed to fetch") || message.includes("ajax")) {
+          activateFallback("maptiler_resource_error", errorEvent);
+        }
+      });
+
+      mapInstance.on("styleimagemissing", (e) => {
+        const id = e.id;
+        const canvas = document.createElement("canvas");
+        canvas.width = 1;
+        canvas.height = 1;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          const imageData = ctx.getImageData(0, 0, 1, 1);
+          mapInstance.addImage(id, imageData);
+        }
+      });
+
+      let loadedResizeTimer: ReturnType<typeof setTimeout> | null = null;
+      mapInstance.on("webglcontextlost", () => {
+        if (destroyed) return;
+        contextLost = true;
+        clearFirstRenderTimer();
+        if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }
+        setGraphicsFailure("lost");
+        setIsLoaded(false);
+        setIsRecovering(false);
+      });
+      mapInstance.on("webglcontextrestored", () => {
+        if (destroyed) return;
+        contextLost = false;
+        mapInstance.once("render", () => {
+          if (destroyed || contextLost) return;
+          setGraphicsFailure(null);
+          completeStyle(activeStyle);
+        });
+      });
+      mapInstance.on("load", () => {
+        initialLoadFinished = true;
+        completeStyle(activeStyle);
+        loadedResizeTimer = setTimeout(() => { if (!destroyed && !contextLost) mapInstance.resize(); }, 100);
+      });
+
+      mapInstance.on("style.load", () => {
+        // `load` waits for every style asset, including remote glyph ranges. A
+        // MapLibre render after `style.load` proves the user can see the map, so
+        // use it for the 1.5-second usability budget while still listening for
+        // resource errors that require the OSM fallback.
+        const attemptAtStyleLoad = activeAttempt;
+        const styleAtStyleLoad = activeStyle;
+        mapInstance.once("render", () => {
+          if (destroyed || attemptAtStyleLoad !== activeAttempt || styleAtStyleLoad !== activeStyle) return;
+          completeStyle(styleAtStyleLoad);
+        });
+      });
+
+      const handleOnline = () => {
+        if (activeStyle === "fallback") {
+          retryIndex = 0;
+          schedulePrimaryRetry(true);
+        }
+      };
+      window.addEventListener("online", handleOnline);
+
+      // Continuously update the explored boundary in localStorage while online
+      mapInstance.on("moveend", () => {
+        if (typeof navigator !== "undefined" && navigator.onLine) {
+          try {
+            const currentBounds = mapInstance.getBounds();
+            const sw = currentBounds.getSouthWest();
+            const ne = currentBounds.getNorthEast();
+
+            let minLng = sw.lng;
+            let minLat = sw.lat;
+            let maxLng = ne.lng;
+            let maxLat = ne.lat;
+
+            const prev = localStorage.getItem("lanes_explored_bounds");
+            if (prev) {
+              const [pSW, pNE] = JSON.parse(prev);
+              minLng = Math.min(minLng, pSW[0]);
+              minLat = Math.min(minLat, pSW[1]);
+              maxLng = Math.max(maxLng, pNE[0]);
+              maxLat = Math.max(maxLat, pNE[1]);
+            }
+
+            // Expand padding slightly (+0.01 deg) so edge tiles feel natural
+            const expanded: [[number, number], [number, number]] = [
+              [minLng - 0.01, minLat - 0.01],
+              [maxLng + 0.01, maxLat + 0.01]
+            ];
+            localStorage.setItem("lanes_explored_bounds", JSON.stringify(expanded));
+          } catch (e) { }
+        }
+      });
+
+      // Observe container size changes (e.g. sidebar open/close, responsive breakpoint shifts, route transitions)
+      const container = mapContainerRef.current;
+      let resizeObserver: ResizeObserver | null = null;
+      let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+      if (container && typeof ResizeObserver !== "undefined") {
+        resizeObserver = new ResizeObserver(() => {
+          // Debounce resize events so the WebGL canvas buffer is not discarded on every 16ms animation frame
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            try {
+              if (!destroyed && !contextLost && typeof mapInstance.resize === "function") {
+                mapInstance.resize();
+              }
+            } catch (e) { }
+          }, 400);
+        });
+        resizeObserver.observe(container);
+      }
+
+      return () => {
+        destroyed = true;
+        clearTimeout(compassTimer);
+        if (loadedResizeTimer) clearTimeout(loadedResizeTimer);
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeObserver?.disconnect();
+        clearFirstRenderTimer();
+        if (retryTimer) clearTimeout(retryTimer);
+        window.removeEventListener("online", handleOnline);
+        mapInstance.remove();
+        mapRef.current = null;
+        setIsLoaded(false);
+      };
     };
-  }, []);
+    const frame = requestAnimationFrame(() => { dispose = initialize(); });
+    return () => { cancelAnimationFrame(frame); dispose?.(); };
+  }, [mapAttempt]);
 
-  const showLoader = !isLoaded || isRecovering;
+  const showLoader = !graphicsFailure && (!isLoaded || isRecovering);
 
   return (
     <div className={`${className} bg-[#f2efe9]`}>
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full bg-[#f2efe9] transform-gpu" />
+
+      {graphicsFailure && <div role="alert" className="absolute inset-0 z-10 flex items-center justify-center bg-slate-100/90 p-4 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-4">
+        <div className="w-full max-w-sm space-y-3 rounded-xl bg-white p-5 text-center shadow-lg">
+          <AlertTriangle className="mx-auto size-6 text-amber-600" />
+          <h2 className="text-base font-semibold text-slate-900">Map unavailable</h2>
+          <p className="text-sm leading-6 text-slate-600">{graphicsFailure === "startup" ? "Your browser could not start the map's graphics." : "Your browser interrupted the map's graphics. The map will return if the browser restores them."} Try again. If it keeps failing, close other map tabs and reload this page.</p>
+          <Button className="min-h-11 w-full" onClick={() => { setGraphicsFailure(null); setMapAttempt(attempt => attempt + 1); }}>Retry map</Button>
+        </div>
+      </div>}
 
       {showLoader && (
         <div className="absolute inset-0 bg-slate-100/50 backdrop-blur-sm flex items-center justify-center z-10">

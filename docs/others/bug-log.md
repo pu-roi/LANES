@@ -1,6 +1,50 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-124] Blocked WebGL initialization crashes the map page
+
+- **Status:** Application recovery fixed and verified locally; browser/device GPU availability remains external.
+- **Severity:** High - browser refusal of a WebGL context surfaced as an uncaught Next.js runtime error instead of a usable page.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** MapLibre construction throws Failed to initialize WebGL with status Web page caused context loss and was blocked. Changing map styles still requires the same graphics context.
+- **Root cause:** BaseMap did not catch constructor failure or present context loss. Cleanup already removed initialized maps, but the immediate effect still allocated an extra development Strict Mode context. The browser's underlying resource/block reason cannot be established from the error alone.
+- **Solution:** Schedule creation on a cancellable animation frame, catch failed construction and remove partial canvas DOM, show Map unavailable/Retry map without automatic graphics retry loops, handle context loss and clear the error after a restored render, suspend style retries while lost and clear delayed compass/resize work on cleanup. Map/report state is not reset by the recovery screen.
+- **Files / validation:** `frontend/src/shared/ui/map/BaseMap.tsx`, `frontend/tests/webgl-recovery.spec.ts`. Four desktop/mobile checks reproduce browser refusal, verify one initial allocation under Strict Mode, handle failed/successful manual retries with no page errors and recover a real simulated lost context. Two flood-zone popup regressions also pass. TypeScript/whitespace checks pass; BaseMap's eight lint errors/seven warnings equal HEAD baseline. No package/model/migration changes and no deployment. [Details](../evaluations/cloud-performance-20261007.md#october-8-webgl-recovery).
+
+### [BUG-123] Public update interface diverged from Report Flood
+
+- **Status:** Reworked locally; provider/device/release verification pending.
+- **Severity:** Medium — separate panel/inconsistent controls and missing editable extent prevented the requested reporting workflow.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Updates used a separate panel, then a shared shell with a survey dropdown, three attachment actions, time/spot/depth-unsure fields and no editable road anchors. Mobile autocomplete could place suggestions outside the viewport.
+- **Root cause:** Update presentation/state was built independently of the original reporting fields; original survey/location interactions were not reused. Portal placement measured input bounds before mobile keyboard/sheet movement and sat below sheets.
+- **Solution:** One Report Flood shell, shared depth/media/description and Take Survey/separate survey view; original large picker plus one camera action; remove extra controls; authenticate original road context and allow editing through the existing location/map preview workflow. Server rebuilds proposed extent into private audit evidence, without operational edits or fabricated observation clocks. Dropdown tracks open input bounds, chooses viewport space and sits above sheets. Independent road/form state preserves original report drafts.
+- **Files / verification:** `FloodReportPanel`, `FloodReportFields`, `ZoneUpdateForm`, `useFloodMedia`, `useZoneRoadPreview`, `MapContext`, `GlobalMap`, `MapCanvas`, shared `LocationAutocomplete`, `zone_update` schema/API/service and staff `ActiveZoneDetails`; native and responsive tests. Sixteen native checks pass; [acceptance](../evaluations/flood-zone-community-updates-20261008.md) records browser/provider/release evidence. No model/migration/package change.
+
+- **Guest-screen follow-up:** Both modes now render the exact original `FloodReportLoginGate` (badge, heading, message, spacing, button); signed-out updates show no zone header/return link or extra desktop close button. The selected zone/condition remains encoded in login return. Two desktop/mobile parity checks compare markup/dimensions, plus two signed-in upload regression checks; TypeScript/scoped lint pass.
+
+- **Header return follow-up:** Move the body return link to a compact New report header action. Existing ConfirmDialog warns about losing the current update fields/files, with Keep editing and Discard. Cancel retains edits; confirmation restores the unrelated unfinished report. Tests check header alignment/full title, 320px warning bounds, cancellation/media retention and original draft restoration; guest parity remains. Popup confirmation wording is short enough for narrow screens.
+
+### [BUG-122] Unwanted observation-time field in Report Flood
+
+- **Status:** Removed and verified locally; release pending.
+- **Severity:** Low — unexpected extra field disrupts the existing public report interface.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The new-report panel displays “When did you observe this flood? (Optional)” above road selection, although the developer wants the existing workflow preserved.
+- **Root cause:** Commit `f04108c` added observation-time collection/state/draft submission for conservative citizen automatic approval on October 7; this was separate from the current Active Zone update panel.
+- **Solution:** Remove that field and new-report timestamp handling, including submission from older queued drafts. Preserve backend observation support and policy; reports lacking explicit observed time remain for staff review. Update-only observation time remains in the current zone observation form.
+- **Files modified / verification:** `FloodReportPanel.tsx`, `floodReportDraftStorage.ts`, `MapContext.tsx`, `tests/citizen-observation.spec.ts`. Six desktop/mobile browser checks pass for legacy drafts, multipart timestamp omission, backend feedback and existing report media. Shared-panel consolidation is recommended separately, not claimed delivered.
+
+### [BUG-121] Existing-zone reader uses an undefined update request
+
+- **Status:** Fixed and verified locally; matching release pending.
+- **Severity:** Medium — reading an existing zone can fail and block refreshed details/edit recovery.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** An authenticated staff GET to `/admin/zones/{zone_id}` for an existing zone reaches a reference to `body.is_active`, although the reader accepts no request body.
+- **Root cause:** An ended-event reactivation guard is placed in `get_zone`; `body` is only defined in the separate `update_zone` handler.
+- **Solution:** Remove the undefined request check from GET and enforce ended-event reactivation protection in PUT. Native authenticated HTTP acceptance verifies existing-zone reads alongside private observation endpoints.
+- **Files modified / verification:** `backend/app/api/v1/endpoints/admin.py`, `backend/tests/test_zone_updates.py`. Ten native checks and eight desktop/mobile browser checks pass for the integrated update feature. Visual acceptance also corrected its popup footer height and mobile sheet stacking/safe-area positioning. The broader legacy Create/Edit upload/description gaps remain unmodified. [Acceptance](../evaluations/flood-zone-community-updates-20261008.md).
 
 ### [BUG-120] Community Trending Hotspots displayed fixed example places
 

@@ -1,5 +1,9 @@
-import React, { useState } from "react";
-import { Loader2, CheckCircle, Shield, Pencil } from "lucide-react";
+import React, { useCallback, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
+import { Loader2, CheckCircle, Shield, Pencil, Info, MessageSquare } from "lucide-react";
+import { ActiveZoneDetails } from "./ActiveZoneDetails";
+import { getZoneUpdateCounts } from "@/features/hazards/zoneUpdatesApi";
 import { ZoneContributors } from "./ZoneContributors";
 import { FloodRecordSummary, SpatialPanelButton as Button, floodRecordTime } from "./FloodRecordSummary";
 import { Pagination } from "@/shared/ui";
@@ -48,6 +52,11 @@ export function ActiveZonesPanel({
   onEditZone,
 }: ActiveZonesPanelProps) {
   const [expandedZoneIds, setExpandedZoneIds] = useState<number[]>([]);
+  const [details, setDetails] = useState<{ zone: AvoidanceZone; tab: "overview" | "updates" } | null>(null);
+  const closeDetails = useCallback(() => setDetails(null), []);
+  const zoneIds = zones.filter(zone => zone.is_active).map(zone => zone.id);
+  const showing = usePathname() === "/admin/map";
+  const counts = useQuery({ queryKey: ["zone-update-counts", zoneIds], queryFn: () => getZoneUpdateCounts(zoneIds), enabled: showing && zoneIds.length > 0, refetchInterval: 30000 });
 
   const toggleExpand = (zoneId: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -88,7 +97,7 @@ export function ActiveZonesPanel({
   };
 
   return (
-    <section aria-label="Active Zones" className="flex min-h-0 flex-1 flex-col overflow-hidden">
+    <><section aria-label="Active Zones" className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* Filter Toolbar */}
       <div className="p-3 border-b border-gray-100 flex flex-wrap items-center justify-between bg-white gap-2">
         <div className="flex items-center gap-2">
@@ -136,6 +145,7 @@ export function ActiveZonesPanel({
       </div>
 
       {/* Zones List Content */}
+      {counts.isError && <div role="alert" className="px-4 py-2 text-xs text-red-700">Could not check public updates. <Button variant="ghost" onClick={() => counts.refetch()}>Retry</Button></div>}
       <div className="scrollbar-auto-hide flex-1 overflow-y-auto divide-y divide-gray-100 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-3">
         {listLoading && !isPlaceholderData ? (
           <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2">
@@ -173,6 +183,7 @@ export function ActiveZonesPanel({
                 }`}
               >
                 <FloodRecordSummary title={`Zone #${zone.id}`} severity={zone.severity} depth={zone.depth}
+                  aside={zone.is_active ? <Button variant="outline" aria-label={`Info for Zone #${zone.id}`} className="gap-1 border-blue-200 text-blue-700" onClick={(event) => { event.stopPropagation(); setDetails({ zone, tab: "overview" }); }}><Info className="size-3.5" />Info</Button> : undefined}
                   timestamp={zone.created_at} text={zone.report_text} location={zone.name}
                   headingExtra={<>
                     {zone.is_active && <input type="checkbox" aria-label={`Select Zone #${zone.id}`} checked={selectedIds.includes(zone.id)} onChange={(event) => handleSelectRow(zone.id, event.target.checked)} onClick={(event) => event.stopPropagation()} className="size-4 rounded border-gray-300 text-blue-600" />}
@@ -220,6 +231,7 @@ export function ActiveZonesPanel({
                   )}
                   </>}
                 >
+                  {zone.is_active && (counts.data?.[zone.id] ?? 0) > 0 && <Button variant="ghost" className="mb-2 gap-1.5 px-0 text-blue-700" onClick={(event) => { event.stopPropagation(); setDetails({ zone, tab: "updates" }); }}><MessageSquare className="size-3.5" />{counts.data?.[zone.id]} new {counts.data?.[zone.id] === 1 ? "update" : "updates"}</Button>}
                   <ZoneContributors zone={zone} expanded={isExpanded} selectedId={selectedContributorId} onToggle={(event) => toggleExpand(zone.id, event)} onInspect={(id, event) => handleContributorClick(id, zone, event)} />
                 </FloodRecordSummary>
               </div>
@@ -232,6 +244,6 @@ export function ActiveZonesPanel({
       <div className="p-3 border-t border-gray-200 bg-white">
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
-    </section>
+    </section>{showing && details && <ActiveZoneDetails key={details.zone.id} zone={details.zone} initialTab={details.tab} onClose={closeDetails} onEdit={onEditZone} />}</>
   );
 }

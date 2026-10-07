@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 [Community Trending Hotspots verification](evaluations/community-trending-hotspots-20261007.md) — server-ranked place activity, bounded 24/48-hour fallback, consistent desktop/mobile states, nine native PostGIS checks and ten browser checks.
 
@@ -49,6 +49,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
+- [Flood Zone community updates](plans/flood-zone-community-updates.md) — shared Report Flood panel, editable road extent, New report discard confirmation, Still flooded / No floodwater actions and optional camera evidence and private review exclusively under Spatial Operations → Active Zones; implemented locally.
+
 - [Structured Pasig flood follow-up evidence](plans/flood-followup-evidence-plan.md) — owner observations, independent staff review, existing append-only storage and later duration-dataset qualification.
 
 - [Pasig subsidence model implementation](plans/pasig-subsidence-model-implementation.md) — fitted conditional research AFT baseline, distinct first-recorded-wet target, protected preview API and pending operational validation.
@@ -70,6 +72,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Active Zone community updates acceptance](evaluations/flood-zone-community-updates-20261008.md) — sixteen native checks, eighteen responsive panel/road/media/login scenarios, existing storage/privacy and pending provider/device/release verification.
 
 - [Structured Pasig flood follow-ups](evaluations/structured-flood-followups-20261007.md) — local owner observation/staff review/JSON export implementation, existing append-only storage, privacy safeguards, completed source review and pending runtime/browser acceptance.
 

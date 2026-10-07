@@ -108,6 +108,9 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
     let body: unknown = [];
     if (path.endsWith("/auth/test-token")) body = { id: 7, email: "test@example.org", username: "test", is_active: true,
       role: { id: 1, name: "Super Admin" }, profile: { first_name: "Test", last_name: "Staff" } };
+    else if (path.endsWith("/admin/zone-updates/counts")) body = {};
+    else if (path.endsWith("/admin/zones/9/updates")) body = { updates: [], next_before_id: null, is_active: true, can_review: true };
+    else if (path.endsWith("/admin/zones/9")) body = zone;
     else if (path.endsWith("/reports/merge-candidates")) body = {
       primary_report: growthReport, candidates: [], total_candidates: 0, detected_conflicts: [],
       suggested_merged_geometry: null, zone_candidates: [{ zone_id: 9, event_id: 6,
@@ -124,6 +127,12 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
       mergePayloads.push(route.request().postDataJSON());
       body = { message: "Reviewed update published", zone_id: 9, zone_name: "Ongoing flood", merged_count: 1,
         awarded_user_ids: [], zone: { id: 9, event_id: 6, severity: "medium", depth: "knee", geometry: report.geometry } };
+    }
+    else if (path.endsWith("/zones/9/update-context")) body = { start: [121.08,14.57], end: [121.081,14.571], name: zone.name, depth: zone.depth, is_bidirectional: false };
+    else if (path.endsWith("/reports/preview-bidirectional")) {
+      const data = route.request().postDataJSON();
+      const line = { type: "LineString", coordinates: [data.start, data.end] };
+      body = { original: line, opposite: null, coverage_geometry: line, validation_status: "validated", road_type: "LOCAL", message: "Selected road verified." };
     }
     else if (path.endsWith("/notifications")) body = { notifications: [], total: 0, unread_count: 0, has_more: false };
     else if (path.endsWith("/admin/zones/all") && ["panel_details", "news_zone"].includes(mode)) body = { zones: [zone], total: 1 };
@@ -646,4 +655,274 @@ test("active zones share report styling and keep zone-specific actions and contr
   await zone.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.getByText(/Edit Zone #9/, { exact: true }).first()).toBeVisible();
   expect(writes).toEqual([]);
+});
+
+test("active zone public updates stay pending until an explicit staff review", async ({ page }, info) => {
+  await setup(page, "panel_details");
+  let reviewed = false;
+  const update = { id: 501, zone_id: 9, author_id: 21, author_name: "Witness", condition: "no_floodwater",
+    observed_at: new Date().toISOString(), submitted_at: new Date().toISOString(), observed_location: "Eastbound bridge approach",
+    description: "No water on this side of the bridge.", depth: null, severity: null, latitude: null, longitude: null,
+    passable_vehicles: null, hidden_hazards: "unsure", media_urls: ["https://example.org/zone-evidence.png"], review_state: "pending", review: null };
+  await page.route("**/api/v1/admin/zone-updates/counts?**", route => route.fulfill({ json: reviewed ? {} : { "9": 1 } }));
+  await page.route("**/api/v1/admin/zones/9/updates", route => route.fulfill({ json: { updates: [{ ...update, review_state: reviewed ? "reviewed" : "pending", review: reviewed ? { note: "Keep zone; one dry spot only", reviewed_at: new Date().toISOString() } : null }], next_before_id: null, is_active: true, can_review: true } }));
+  await page.route("**/api/v1/admin/zones/9/updates/501/review", async route => {
+    expect(route.request().postDataJSON()).toEqual({ decision: "reviewed", note: "Keep zone; one dry spot only" });
+    reviewed = true; await route.fulfill({ json: { ...update, review_state: "reviewed" } });
+  });
+  await page.getByRole("button", { name: /Active Zones/ }).click();
+  const zone = page.getByRole("article", { name: "Zone #9", exact: true });
+  await expect(zone.getByRole("button", { name: "Info for Zone #9" })).toBeVisible();
+  await zone.getByRole("button", { name: "1 new update", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Flood Zone Details" });
+  await expect(dialog.getByRole("article", { name: "Public update #501" })).toBeVisible();
+  await expect(dialog.locator("..")).toHaveCSS("opacity", "1");
+  expect(reviewed).toBe(false);
+  await page.screenshot({ path: info.outputPath("zone-community-updates.png") });
+  await dialog.getByRole("button", { name: "View evidence (1)", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Evidence viewer" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Close media viewer" })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Evidence viewer" })).toHaveCount(0);
+  await expect(dialog).toBeVisible();
+  await dialog.getByLabel("Review note").fill("Keep zone; one dry spot only");
+  await dialog.getByRole("button", { name: "Mark reviewed", exact: true }).click();
+  await expect(dialog.getByText("Reviewed", { exact: true })).toBeVisible();
+  await dialog.getByRole("button", { name: "Close flood zone details" }).click();
+  await expect(zone.getByRole("button", { name: "1 new update", exact: true })).toHaveCount(0);
+  await zone.getByRole("button", { name: "Info for Zone #9" }).click();
+  await expect(dialog.getByText("Official depth", { exact: true })).toBeVisible();
+  await dialog.getByRole("button", { name: "Edit zone", exact: true }).click();
+  await expect(page.getByText("Edit Zone #9", { exact: true }).first()).toBeVisible();
+});
+
+test("public zone observation keeps evidence and the submission ID on upload retry", async ({ page }, info) => {
+  await setup(page, "panel_details");
+  await page.route("**/photon.komoot.io/api/**", route => route.fulfill({ json: { features: [] } }));
+  await page.route("**/api/v1/auth/test-token", route => route.fulfill({ json: { id: 21, username: "Witness", is_active: true, role: { name: "Commuter" } } }));
+  let attempts = 0;
+  const requests: string[] = [];
+  await page.route("**/api/v1/zones/9/updates", async route => {
+    attempts++; requests.push(route.request().postData() ?? "");
+    await route.fulfill({ status: attempts === 1 ? 502 : 200, json: attempts === 1 ? { detail: "Attachment failed. Please retry." } : { id: 501 } });
+  });
+  await page.goto("/map?zone_update=9&zone_condition=no_floodwater");
+  await expect(page.getByRole("button", { name: "No floodwater", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByLabel("Observed depth")).toHaveCount(0);
+  await expect(page.getByPlaceholder("e.g. Ortigas Ave, Pasig (Start)")).toHaveValue("14.57000, 121.08000");
+  await expect(page.getByLabel("Observed at", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Observed spot / road direction")).toHaveCount(0);
+  await page.getByPlaceholder("e.g. C. Raymundo Ave (End)").fill("121.082,14.572");
+  await expect(page.getByText("Coordinates: 121.08200, 14.57200", { exact: true })).toBeAttached();
+  await page.getByText("Coordinates: 121.08200, 14.57200", { exact: true }).click();
+  await page.getByRole("button", { name: "Next Step", exact: true }).click();
+  await page.getByRole("button", { name: "Take Survey", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Community Survey", exact: true })).toBeVisible();
+  await page.getByRole("checkbox", { name: "Pedestrians", exact: true }).check();
+  await page.getByRole("button", { name: "No", exact: true }).click();
+  await page.getByRole("button", { name: "Done & Return", exact: true }).click();
+  await expect(page.getByText("Survey complete. Thank you!", { exact: true })).toBeVisible();
+  await page.getByLabel("Description", { exact: true }).fill("No visible water on the bridge approach.");
+  await expect(page.getByLabel("Capture flood photo or video")).toHaveAttribute("capture", "environment");
+  await expect(page.getByLabel("Capture flood photo or video")).toHaveAttribute("accept", "image/*,video/*");
+  await expect(page.getByRole("button", { name: /^(Take photo|Record video|Choose files)$/ })).toHaveCount(0);
+  await page.getByLabel("Attach flood zone photos or videos").setInputFiles({ name: "bridge.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9kAAAAASUVORK5CYII=", "base64") });
+  await expect(page.getByRole("button", { name: "Remove bridge.png", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Open camera", exact: true }).scrollIntoViewIfNeeded();
+  await page.getByLabel("Description", { exact: true }).blur();
+  await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toBeInViewport();
+  await page.screenshot({ path: info.outputPath("zone-public-observation.png") });
+  await page.getByRole("button", { name: "Submit update", exact: true }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "Attachment failed. Please retry." })).toHaveText("Attachment failed. Please retry.");
+  await expect(page.getByRole("button", { name: "Remove bridge.png", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Submit update", exact: true }).click();
+  await expect(page.getByText("Update received", { exact: true })).toBeVisible();
+  const ids = requests.map(body => body.match(/"request_id":"([^"]+)"/)?.[1]);
+  expect(ids[0]).toBeTruthy(); expect(ids[0]).toEqual(ids[1]);
+  expect(requests[0]).toContain('"depth":null');
+  expect(requests[0]).toContain('filename="bridge.png"');
+  expect(requests[0]).toContain('"road_start":[121.08,14.57]');
+  expect(requests[0]).toContain('"road_end":[121.082,14.572]');
+  expect(requests[0]).toContain('"passable_vehicles":["walk"]');
+  expect(requests[0]).not.toContain('"observed_at"');
+});
+
+test("public zone popup quick action opens the shared observation panel", async ({ page }, info) => {
+  await setup(page, "panel_details");
+  await page.route("**/api/v1/auth/test-token", route => route.fulfill({ json: { id: 21, username: "Witness", is_active: true, role: { name: "Commuter" } } }));
+  await page.goto("/map?lat=14.57025&lng=121.08075&zoom=16");
+  await expect(async () => {
+    if (await page.getByRole("button", { name: "Still flooded", exact: true }).isVisible()) return;
+    // Locate the fixture's yellow flood pin/area in actual rendered pixels;
+    // mobile map framing differs from the desktop camera center.
+    const bounds = (await page.locator(".maplibregl-canvas").boundingBox())!;
+    const png = await page.screenshot({ scale: "css", clip: bounds });
+    const point = await page.evaluate(async base64 => {
+      const image = new Image(); image.src = `data:image/png;base64,${base64}`; await image.decode();
+      const canvas = document.createElement("canvas"); canvas.width = image.width; canvas.height = image.height;
+      const context = canvas.getContext("2d")!; context.drawImage(image, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let x = 0, y = 0, count = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i] > 200 && pixels[i + 1] > 150 && pixels[i + 1] < 240 && pixels[i + 2] < 210
+          && pixels[i] > pixels[i + 1] + 5 && pixels[i + 1] > pixels[i + 2] + 30) {
+          x += (i / 4) % canvas.width; y += Math.floor(i / 4 / canvas.width); count++;
+        }
+      }
+      return count ? { x: x / count, y: y / count } : null;
+    }, png.toString("base64"));
+    expect(point).toBeTruthy();
+    const x = bounds.x + point!.x, y = bounds.y + point!.y;
+    if (info.project.name === "mobile-chromium") await page.touchscreen.tap(x, y);
+    else await page.mouse.move(x, y);
+    await expect(page.getByRole("button", { name: "Still flooded", exact: true })).toBeVisible({ timeout: 2000 });
+  }).toPass({ timeout: 20000 });
+  await page.screenshot({ path: info.outputPath("zone-popup-quick-actions.png") });
+  await page.getByRole("button", { name: "Still flooded", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toHaveCount(1);
+  await expect(page.getByText("Updating existing flood zone", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Still flooded", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Depth unsure", exact: true })).toHaveCount(0);
+  await expect(page.getByPlaceholder("e.g. Ortigas Ave, Pasig (Start)")).toBeVisible();
+});
+
+test("shared Report Flood panel preserves the new report draft when switching out of a zone update", async ({ page }, info) => {
+  const { writes } = await setup(page, "panel_details");
+  await page.route("**/api/v1/auth/test-token", route => route.fulfill({ json: { id: 21, username: "Witness", is_active: true, role: { name: "Commuter" } } }));
+  await page.goto("/map");
+  await page.evaluate(async () => {
+    const original = new File(["original report photo"], "original-report.jpg", { type: "image/jpeg" });
+    const draft = { version: 1, ownerId: "21", updatedAt: new Date().toISOString(), active: {
+      floodStart: { coords: [121.08, 14.57], label: "Original report start" },
+      floodEnd: { coords: [121.081, 14.571], label: "Original report end" },
+      floodPreviewGeometry: { type: "LineString", coordinates: [[121.08,14.57],[121.081,14.571]] },
+      floodOppositeGeometry: null, floodIsBidirectional: false, startInput: "Original report start", endInput: "Original report end",
+      visualOption: "gutter", passableVehicles: ["Large Trucks / Buses"], hiddenHazards: "no", showSurvey: false,
+      description: "My unfinished new flood report", mediaFiles: [original], isPublic: false, step: 2,
+    }, queuedDrafts: [] };
+    await new Promise<void>((resolve, reject) => {
+      const request = indexedDB.open("keyval-store");
+      request.onupgradeneeded = () => request.result.createObjectStore("keyval");
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const tx = request.result.transaction("keyval", "readwrite");
+        tx.objectStore("keyval").put(draft, "lanes:flood-report-draft:v1:21");
+        tx.oncomplete = () => { request.result.close(); resolve(); };
+        tx.onerror = () => reject(tx.error);
+      };
+    });
+  });
+  await page.goto("/map?zone_update=9&zone_condition=still_flooded");
+  await expect(page.getByText("Draft Restored", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: "Update Flood Zone", exact: true })).toHaveCount(0);
+  await expect(page.getByPlaceholder("e.g. Ortigas Ave, Pasig (Start)")).toHaveValue("14.57000, 121.08000");
+  await page.getByRole("group", { name: "Flood Severity", exact: true }).getByRole("button", { name: /^Waist/ }).click();
+  await page.getByRole("button", { name: "Next Step", exact: true }).click();
+  await page.getByLabel("Description", { exact: true }).fill("Different witness observation");
+  await expect(page.getByRole("button", { name: "Remove original-report.jpg", exact: true })).toHaveCount(0);
+  await page.getByLabel("Attach flood zone photos or videos").setInputFiles({ name: "zone-only.png", mimeType: "image/png", buffer: Buffer.from("separate evidence") });
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await page.getByRole("button", { name: "Other change / Unsure", exact: true }).click();
+  await page.getByRole("button", { name: "Next Step", exact: true }).click();
+  await expect(page.getByLabel("Description", { exact: true })).toHaveValue("Different witness observation");
+  await expect(page.getByRole("button", { name: "Remove zone-only.png", exact: true })).toBeVisible();
+  if (info.project.name === "mobile-chromium") await page.setViewportSize({ width: 320, height: 700 });
+  await page.screenshot({ path: info.outputPath("shared-report-update-mode.png") });
+  const newReport = page.getByRole("button", { name: "New report", exact: true });
+  const header = page.getByRole("heading", { name: "Report Flood", exact: true });
+  await expect(header).toBeInViewport();
+  expect(await header.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  const buttonBounds = (await newReport.boundingBox())!, headingBounds = (await header.boundingBox())!;
+  expect(Math.abs((buttonBounds.y + buttonBounds.height / 2) - (headingBounds.y + headingBounds.height / 2))).toBeLessThan(3);
+  await newReport.click();
+  await expect(page.getByRole("heading", { name: "Discard this update?", exact: true })).toBeVisible();
+  await expect(page.getByText("Your current Flood Zone update fields and attachments will be lost. Your unfinished flood report will be kept.", { exact: true })).toBeVisible();
+  const cancelBounds = (await page.getByRole("button", { name: "Keep editing", exact: true }).boundingBox())!;
+  const confirmBounds = (await page.getByRole("button", { name: "Discard", exact: true }).boundingBox())!;
+  expect(cancelBounds.x).toBeGreaterThanOrEqual(16);
+  expect(confirmBounds.x + confirmBounds.width).toBeLessThanOrEqual((await page.evaluate(() => window.innerWidth)) - 16);
+  await page.screenshot({ path: info.outputPath("new-report-discard-warning.png") });
+  await page.getByRole("button", { name: "Keep editing", exact: true }).click();
+  await expect(page.getByLabel("Description", { exact: true })).toHaveValue("Different witness observation");
+  await expect(page.getByRole("button", { name: "Remove zone-only.png", exact: true })).toBeVisible();
+  await newReport.click();
+  await page.getByRole("button", { name: "Discard", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toHaveCount(1);
+  await expect(page.getByLabel("Description", { exact: true })).toHaveValue("My unfinished new flood report");
+  await expect(page.getByRole("button", { name: "Remove original-report.jpg", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Remove zone-only.png", exact: true })).toHaveCount(0);
+  await expect(newReport).toHaveCount(0);
+  await expect(page.getByLabel("Observed at", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("When did you observe this flood? (Optional)")).toHaveCount(0);
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByPlaceholder("e.g. Ortigas Ave, Pasig (Start)")).toHaveValue("Original report start");
+  await expect(page.getByPlaceholder("e.g. C. Raymundo Ave (End)")).toHaveValue("Original report end");
+  await page.screenshot({ path: info.outputPath("shared-report-restored-draft.png") });
+  expect(writes.filter(path => !path.endsWith("/preview-bidirectional"))).toEqual([]);
+});
+
+test("zone update road endpoints can be selected on the map without losing the report panel", async ({ page }, info) => {
+  await setup(page, "panel_details");
+  await page.route("**/api/v1/auth/test-token", route => route.fulfill({ json: { id: 21, username: "Witness", is_active: true, role: { name: "Commuter" } } }));
+  await page.route("**/photon.komoot.io/api/**", route => route.fulfill({ json: { features: [] } }));
+  await page.goto("/map?zone_update=9&zone_condition=still_flooded");
+  const end = page.getByPlaceholder("e.g. C. Raymundo Ave (End)");
+  await expect(end).toHaveValue("14.57100, 121.08100");
+  await end.click();
+  await page.getByRole("button", { name: "Choose on Map", exact: true }).click();
+  if (info.project.name === "mobile-chromium") {
+    await expect(page.getByRole("button", { name: "Set Flood End", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toBeHidden();
+    await page.getByRole("button", { name: "Set Flood End", exact: true }).click();
+  } else {
+    const canvas = page.locator(".maplibregl-canvas");
+    const bounds = (await canvas.boundingBox())!;
+    await canvas.click({ position: { x: bounds.width * .4, y: bounds.height * .5 } });
+  }
+  await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toBeVisible();
+  await expect(end).not.toHaveValue("14.57100, 121.08100");
+  await expect(end).not.toHaveValue("");
+  await expect(page.getByRole("button", { name: "Next Step", exact: true })).toBeEnabled();
+  await page.screenshot({ path: info.outputPath("zone-update-map-picker.png") });
+});
+
+test("guest zone updates use the identical original Report Flood login view", async ({ page }, info) => {
+  const { writes } = await setup(page, "panel_details");
+  await page.route("**/api/v1/auth/test-token", route => route.fulfill({ status: 401, json: { detail: "Sign in required" } }));
+  await page.goto("/map?action=report");
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("lanes_token"))).toBeNull();
+  if (info.project.name === "mobile-chromium") {
+    await page.getByRole("button", { name: "Report Flood Hazard" }).click();
+    await page.getByRole("button", { name: "Flood Report", exact: true }).click();
+  } else {
+    await page.getByRole("button", { name: "Expand panel", exact: true }).click();
+  }
+  const heading = page.getByRole("heading", { name: "Login Required", exact: true });
+  await expect(heading).toBeVisible();
+  const original = await heading.locator("..").evaluate(element => {
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.querySelector("a")?.removeAttribute("href");
+    return { html: clone.outerHTML, width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height };
+  });
+  await page.screenshot({ path: info.outputPath("original-report-login.png") });
+  await page.goto("/map?zone_update=9&zone_condition=no_floodwater");
+  await expect(heading).toBeVisible();
+  const update = await heading.locator("..").evaluate(element => {
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.querySelector("a")?.removeAttribute("href");
+    return { html: clone.outerHTML, width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height };
+  });
+  expect(update.html).toEqual(original.html);
+  expect(update.width).toBeCloseTo(original.width, 2);
+  expect(update.height).toBeCloseTo(original.height, 2);
+  await expect(page.getByRole("button", { name: "Go to Login", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Go to Login", exact: true })).toHaveAttribute("href", "/login?redirect=%2Fmap%3Fzone_update%3D9%26zone_condition%3Dno_floodwater");
+  await expect(page.getByText("Updating existing flood zone", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Official depth:", { exact: false })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Return to new flood report", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "New report", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toHaveCount(1);
+  await page.screenshot({ path: info.outputPath("zone-update-report-login.png") });
+  expect(writes.filter(path => !path.endsWith("/preview-bidirectional"))).toEqual([]);
 });

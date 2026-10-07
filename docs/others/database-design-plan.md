@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 08, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 8 zone-observation storage (local):** Existing audit JSON stores private `ZONE_PUBLIC_OBSERVATION` and immutable `ZONE_PUBLIC_OBSERVATION_REVIEW`. Observation metadata now includes proposed road start/end/labels/direction and server-rebuilt proposed geometry, road type, verification status/message; missing observed time remains null with `observation_time_recorded=false`, distinct from submission time. Existing model fields supply original source/primary report centreline endpoints; drawn polygons do not manufacture road endpoints. Locks protect idempotency, rate checks and review. General audit browsing excludes private actions. No model/table/column/index/migration/package change; existing Alembic head applies in generated, removed loopback databases during sixteen native checks. Official zones remain unchanged by submission/review. [Acceptance](../evaluations/flood-zone-community-updates-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 community hotspots storage checkpoint:** Ranking reads existing `community_posts`, `flood_reports` and `users` using parameterized PostGIS aggregation. No model, table, column, index or Alembic definition changed. Existing migrations reach head during nine native hotspot checks in a fresh disposable loopback database, removed afterward; application/cloud data remains unchanged. [Verification](../evaluations/community-trending-hotspots-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

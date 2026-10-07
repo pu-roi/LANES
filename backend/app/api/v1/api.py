@@ -1,8 +1,10 @@
 from fastapi import APIRouter
+from app.api.v1.endpoints import zone_update
 from app.api.v1.endpoints import admin_review, admin_news_publication, news_alerts, flood_duration, flood_followup
 from app.api.v1.endpoints import users, reports, routes, auth, admin, admin_news, roles, data, settings, sse, feed, comments, weather, public, posts, notifications, analytics, sync, hotlines
 
 api_router = APIRouter()
+api_router.include_router(zone_update.router, tags=["zone observations"])
 
 # Group endpoints by domain with appropriate URL prefixes and tags
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])

@@ -1,0 +1,56 @@
+# Active Flood Zone community updates — local acceptance
+
+> **Last Updated:** October 08, 2026, 02:42 AM
+> **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Delivered behavior
+
+The public popup Still flooded, No floodwater and Update actions select a mode in the existing Report Flood panel. There is one panel instance. A body-only `ZoneUpdateForm` uses shared `FloodReportFields` and `useFloodMedia`, preserving the original orange shell, two-step behavior and independent new-report draft state. Zone name/depth are populated, and saved road endpoints load for editing through the authenticated context endpoint. Area zones without saved road endpoints require a selected road; multiple sections are disclosed. LocationInputGroup handles autocomplete, coordinates, map selection, current location and swapping; the both-directions control and existing eight depth buttons remain. The new-report timestamp field and all update time/spot/depth-unsure controls are removed.
+
+Step two uses the original Take Survey button/separate survey view, description and large Add photos or videos picker plus one Open camera action accepting image/video capture. Optional evidence previews/removal and server file limits are retained. No-floodwater has no wet depth. Files/text survive failed uploads and unchanged retries reuse the UUID. `ZoneUpdatePanel` is removed; new-report descriptions/files/endpoints survive switching back. The shared autocomplete now tracks moving input bounds and respects viewport space above mobile navigation, with suggestions above sheets.
+
+Updates record proposed road endpoints/labels and direction. The server rebuilds a proposed extent using the existing carriageway service and stores its geometry/verification status in private audit JSON; provider or preview failure prevents partial observation persistence. An absent observed timestamp remains null, with a distinct submission clock, rather than implying a witnessed time. Official geometry/depth/expiry/routing remain unchanged.
+
+Private review appears only in `/admin/map` → Active Zones. Existing cards retain View on map, Edit and Deactivate, with a matching **Info** button and a message/count indicator for unreviewed observations. Info opens Overview; the count opens Community updates. Details display current official depth, observation/submission clocks, condition/depth, spot/coordinates, description, vehicles/hazards, witness and attachments. Staff explicitly marks Reviewed or dismisses with a reason. Opening details does not change the count or official conditions. The existing Edit workspace remains responsible for official changes; Deactivate remains responsible for verified clearance. Reviews record staff assessment separately, without automatically claiming an Edit/Deactivate happened.
+
+## Backend and privacy contract
+
+- `POST /api/v1/zones/{zone_id}/updates`: authenticated active-account multipart observation (`body` JSON and optional `media`), including proposed road endpoints. The backend rebuilds proposed coverage; missing observation time stays null. Locks the zone for eligibility/idempotency/rate checks; only active zones accept new evidence. Same UUID/different content or author is rejected. Limit: five submissions per author/zone/hour. Observation alone never changes geometry, depth, expiry, lifecycle or routing.
+- `GET /api/v1/zones/{zone_id}/update-context`: authenticated active account; active-zone road endpoints from source/primary report geometry, public zone context and multiple-section flag. Does not manufacture road endpoints for a drawn polygon.
+- `GET /api/v1/admin/zone-updates/counts?zone_ids=…`: staff `zones=view/full`; bounded batch of up to 100 zone IDs, active-zone unreviewed counts only.
+- `GET /api/v1/admin/zones/{zone_id}/updates`: private staff `zones=view/full`; bounded newest-submission pagination with distinct observed timestamps.
+- `POST /api/v1/admin/zones/{zone_id}/updates/{update_id}/review`: staff `zones=full`, matching zone/observation, independent reviewer, required assessment/reason and immutable review. Identical retries by the same reviewer are idempotent.
+
+All new routes enforce session checks and return no-store responses. `ZONE_PUBLIC_OBSERVATION` and `ZONE_PUBLIC_OBSERVATION_REVIEW` use the existing append-only `audit_logs.metadata_json` storage and are excluded from the generic audit feed. No new SQLAlchemy model, column, index, migration or dependency. The original owner-only Pasig citizen follow-up workflow is unchanged; new zone witnesses are not entered into Flood Report Moderation or that follow-up dataset.
+
+The existing `GET /admin/zones/{id}` undefined-body defect is repaired by relocating the ended-event reactivation guard into PUT. Shared media viewing now manages keyboard focus/Escape separately from the surrounding details dialog. Shared Panel mobile positioning uses navigation/safe-area variables; the new sheet sits above the public Report action. Popup placement includes the new action-footer height, preventing clipped desktop controls.
+
+## Verification
+
+- **16 backend checks pass** in a fresh generated `lanes_settings_test_zone_updates_*` loopback PostgreSQL/PostGIS database. The existing Alembic chain upgrades to head; the disposable database is removed afterward. Coverage includes schema/timestamp/location/road-endpoint checks, retry conflicts, counts, reading without review, private generic-audit exclusion, inactive zones, upload failure/success, file limits/types, restricted staff, self-review prevention, wrong-zone review, authenticated HTTP reads/submission and the existing zone reader, context authentication, proposed extent rebuilding/storage, absent-clock semantics and failed road previews. Official zone fields remain unchanged after public submission/review.
+- **18 browser scenarios pass** across desktop Chromium and iPhone-sized mobile Chromium: ten feature checks cover private explicit review/counts, quick-action opening, preserved new-report drafts, map-picked endpoints and upload retries; six original-report checks cover legacy timestamp omission/server feedback and attachment retention, and two guest checks compare the exact original login markup/dimensions and redirects. The update submission checks were rerun with edited end coordinates, the Take Survey view, one camera input, no extra fields/actions and canonical survey values. A mobile follow-up verifies dropdown placement during sheet movement and the panel header inside the viewport.
+- TypeScript passes. New feature files and changed Panel/details shell pass focused lint with warnings only. Existing MapCanvas, zone-layer hook, popup and media-viewer lint errors remain at their HEAD baseline counts (11, 10, 7 and 1 respectively); this change introduces no additional errors there.
+- Screenshots inspected for desktop/mobile popup, public sheet and staff details, plus existing 320px Active Zones layout. Visual follow-up fixed desktop clipping and mobile Report-button overlap.
+
+Browser commands use the existing Playwright setup against the local dev server:
+
+```powershell
+npx playwright test tests/spatial-review.spec.ts -g "active zone public updates|public zone observation|public zone popup|shared Report Flood|road endpoints can" --workers=1
+npx playwright test tests/citizen-observation.spec.ts tests/flood-report-media.spec.ts --workers=1
+```
+
+Native tests use the existing `settings_factory`, requiring `LANES_SETTINGS_TEST_DATABASE_URL` to point to a fresh disposable loopback database whose name starts with `lanes_settings_test_`. Never point this fixture at an application database.
+
+**Guest-screen parity follow-up:** Both modes now directly render the original `FloodReportLoginGate`, including badge, heading, message, spacing and Go to Login. Zone banners/return links are absent before authentication; desktop header controls match the original. Two desktop/mobile checks compare exact markup (excluding redirect URL) and dimensions, verify preserved zone/condition login return and capture screenshots. Two signed-in upload/survey/coordinate regressions also pass; TypeScript and focused lint pass.
+
+**Header return follow-up:** New report is now a two-word action beside the Report Flood title, with no body return link. ConfirmDialog warns about discarding current update fields/attachments, supports Keep editing/Discard and restores the independent original draft only after confirmation. Header clicks do not collapse/drag the panel; submission disables the action. Two desktop/mobile mode-switch scenarios check warning, cancellation/files, confirmed restoration and header/title alignment, including 320px warning bounds. Two guest parity checks also pass; TypeScript/scoped lint and screenshots verify the change.
+
+**Senior-planner publication checkpoint:** All eight authoritative documents were audited and the catalog synchronized. New imports use declared dependencies; requirements/manifests/lockfiles and SQLAlchemy/Alembic definitions are unchanged. Native acceptance applied the existing `d7e4b9a21c60` head in disposable loopback PostGIS databases removed afterward. Final frontend acceptance comprises eighteen report/update/login scenarios; four [WebGL recovery scenarios](cloud-performance-20261007.md#october-8-webgl-recovery) separately pass. This is cumulative evidence from the recorded task runs, not a claim of rerunning every suite during the docs-only push turn. TypeScript, scoped lint/baselines and whitespace checks pass. Trending Hotspots source files remain untouched.
+
+## Release limits
+
+**October 8 final interface follow-up:** The single Report Flood panel is implemented, with shared fields/media, existing survey button/view and editable update endpoints. Backend acceptance passes sixteen checks. Browser acceptance covers original report drafts/media, mode switching, quick actions, survey/camera, coordinate/extent submission, upload retries, explicit admin review and desktop/mobile map picking. TypeScript and focused lint/whitespace verification are recorded with the final task results. Provider uploads, real camera behavior and production release remain separate gates. [Design contract](../plans/flood-zone-community-updates.md#october-8-follow-up-reuse-the-report-flood-panel).
+
+Implemented and verified locally. The user-authorized `roi-branch` documentation/publication checkpoint is prepared; commit/push results are reported separately in the task. No production deployment is included. Matching backend/frontend release, real Cloudinary upload and physical Android/iOS camera/PWA/wrapper verification remain pending. Camera behavior depends on the browser/device; HEIC and unsupported media fail visibly rather than claiming upload success. Uploads already accepted by the provider before a later file fails may remain as unreferenced provider assets; no partial observation is saved. The broader legacy Create/Edit partial-upload and advertised-limit gaps are separate existing work, not claimed fixed by this feature.
+
+Review is deliberately staff-controlled. A dry spot cannot establish clearance across all roads/carriageways. Legacy explicit observation times remain visibly dated; absent observation time is disclosed instead of inferred. Neither submission nor review automatically refreshes official evidence.
