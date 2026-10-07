@@ -123,13 +123,17 @@ class ClaimedEvaluation:
 
 def claim_due_evaluation(db: Session, now: datetime, *, policy_fingerprint: str,
                          run_id: int | None = None,
-                         exclude_evaluation_ids: tuple[int, ...] = ()) -> ClaimedEvaluation | None:
+                         exclude_evaluation_ids: tuple[int, ...] = (), source_ids: tuple[str, ...] | None = None) -> ClaimedEvaluation | None:
     now = require_utc(now)
     row_type = NewsClaimEvaluation
     due = or_(row_type.status == "pending",
               (row_type.status == "retry_wait") & (row_type.next_attempt_at <= now),
               (row_type.status == "processing") & (row_type.lease_expires_at <= now))
     query = select(row_type).join(NewsClaimSource).where(due, row_type.policy_fingerprint == policy_fingerprint)
+    if source_ids is not None:
+        query = query.join(NewsExtractionRun, NewsExtractionRun.id == NewsClaimSource.extraction_run_id).join(
+            NewsArticleVersion, NewsArticleVersion.id == NewsExtractionRun.article_version_id).where(
+                NewsArticleVersion.input_snapshot["publisher"].as_string().in_(source_ids))
     if exclude_evaluation_ids:
         query = query.where(row_type.id.not_in(exclude_evaluation_ids))
     if run_id is not None:

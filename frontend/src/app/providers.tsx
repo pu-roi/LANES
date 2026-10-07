@@ -2,10 +2,13 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { ToastProvider, SmoothScroll } from "@/shared/ui";
-import GlobalMap from "@/features/map/GlobalMap";
 import { useSSE } from "@/hooks/useSSE";
 import { useLiveSync } from "@/hooks/useLiveSync";
+
+const GlobalMap = dynamic(() => import("@/features/map/GlobalMap"), { ssr: false });
 
 function AppHooks() {
   useSSE();
@@ -35,12 +38,19 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isMapRoute = pathname === "/map" || pathname === "/analytics" || pathname === "/admin/analytics";
+  const [hasOpenedMap, setHasOpenedMap] = useState(false);
+  // Once opened, retain route/report state and map navigation listeners across
+  // commuter pages. A first visit to Home or Feed need not initialize WebGL.
+  if (isMapRoute && !hasOpenedMap) setHasOpenedMap(true);
+
   return (
     <>
-      <AppHooks />
       <ToastProvider>
+        <AppHooks />
         <SmoothScroll>
-          <GlobalMap />
+          {(isMapRoute || hasOpenedMap) && <GlobalMap />}
           {children}
         </SmoothScroll>
       </ToastProvider>

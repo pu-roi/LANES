@@ -25,6 +25,9 @@ def validate_active_target(zone: FloodAvoidanceZone) -> None:
 def compose_reviewed_coverage(db: Session, final: MergedZoneFinalData,
         target: FloodAvoidanceZone | None, mode: str) -> tuple[Any, Any, dict]:
     """Never fill a dry gap with a convex hull or replace coverage during extension."""
+    if "buffer_radius" not in final.model_fields_set:
+        from app.services.configuration_service import read_configuration
+        final = final.model_copy(update={"buffer_radius": read_configuration(db).staff_road_buffer_metres})
     if target:
         validate_active_target(target)
     if mode == "corroborate":

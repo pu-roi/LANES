@@ -1,0 +1,108 @@
+{
+  "experiment_version": "pasig-conditional-aft-research-v1",
+  "target_version": "remaining_time_from_first_recorded_wet_to_reported_subsidence_continuity_assumed_v1",
+  "status": "conditional_research_baseline_fitted",
+  "model_fitted": true,
+  "operational_prediction_finished": false,
+  "deployment_eligible": false,
+  "original_wet_count": 819,
+  "experimental_projections": 37,
+  "positive_lower_bound_projections": 35,
+  "shared_outcomes": 3,
+  "production_training_admitted": 0,
+  "assumptions": [
+    "assumed_uninterrupted_episode",
+    "conditional_collective_scope",
+    "only_three_shared_summaries",
+    "outcome_selected_cohort",
+    "unknown_historical_feature_availability",
+    "no_independent_final_holdout",
+    "reported_subsidence_not_measured_dry_or_passable"
+  ],
+  "distribution_from_first_recorded_wet": {
+    "schema_version": "pasig-reported-subsidence-lognormal-aft-v1",
+    "target_version": "remaining_time_from_first_recorded_wet_to_reported_subsidence_continuity_assumed_v1",
+    "shadow_only": true,
+    "elapsed_minutes": 0.0,
+    "conditioning": "none",
+    "quantiles": [
+      {
+        "quantile": 0.1,
+        "total_minutes": 586.2263145481006,
+        "remaining_minutes": 586.2263145481006
+      },
+      {
+        "quantile": 0.5,
+        "total_minutes": 1057.9183084363647,
+        "remaining_minutes": 1057.9183084363647
+      },
+      {
+        "quantile": 0.9,
+        "total_minutes": 1909.145187703832,
+        "remaining_minutes": 1909.145187703832
+      }
+    ],
+    "horizon_probabilities": [],
+    "physical_dry_or_passability_established": false
+  },
+  "fit_diagnostics": {
+    "observation_count": 37,
+    "parameter_count": 2,
+    "normalized_negative_log_likelihood": 2.2312799697670416,
+    "weight_policy": "caller_supplied_normalized_for_optimization",
+    "converged_start_count": 5,
+    "attempted_start_count": 5,
+    "observed_hessian_min_eigenvalue": 1.7497644487960935,
+    "observed_hessian_condition_number": 2.5926977438018093,
+    "numerical_log_scale_limits": [
+      -8.0,
+      8.0
+    ],
+    "independent_event_sufficiency_established": false,
+    "predictive_validation_established": false
+  },
+  "sensitivity": [
+    {
+      "held_out_summary": "OBS-7d1d5441f76ee802",
+      "status": "fitted_sensitivity",
+      "training_shared_summaries": 2,
+      "held_out_projections": 1,
+      "held_out_mean_interval_negative_log_likelihood": 2.4888047704762672,
+      "p10_minutes": 519.0914150517002,
+      "median_minutes": 1084.1638027728336,
+      "p90_minutes": 2264.36253261053,
+      "prospective_accuracy_established": "false"
+    },
+    {
+      "held_out_summary": "OBS-aed0c046a22c54b0",
+      "status": "fitted_sensitivity",
+      "training_shared_summaries": 2,
+      "held_out_projections": 28,
+      "held_out_mean_interval_negative_log_likelihood": 3.304369809470328,
+      "p10_minutes": 905.7005288095995,
+      "median_minutes": 1356.8882836110924,
+      "p90_minutes": 2032.8417127247922,
+      "prospective_accuracy_established": "false"
+    },
+    {
+      "held_out_summary": "OBS-c33d857e974b018d",
+      "status": "fitted_sensitivity",
+      "training_shared_summaries": 2,
+      "held_out_projections": 8,
+      "held_out_mean_interval_negative_log_likelihood": 6.574568193937972,
+      "p10_minutes": 573.6379739185539,
+      "median_minutes": 803.6271561198805,
+      "p90_minutes": 1125.8261053425672,
+      "prospective_accuracy_established": "false"
+    }
+  ],
+  "model_sha256": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6",
+  "input_sha256": {
+    "docs/evaluations/pasig-duration-followup-20261005/pasig_wet_observations.csv": "ecd5e920f433eb0e7194190fd057cae3641b538489e4685d29170801852f6a63",
+    "docs/evaluations/pasig-duration-followup-20261005/proxy_label_register.csv": "ae502fb560746d5827896daeea1d627ad198935adb18b18deb3804c3f99c3ee5",
+    "docs/evaluations/pasig-duration-followup-20261005/dataset_manifest.json": "fea920a6eaaff2f47a79a5b68d40b2e02e7b934eb519594ea0ffddd5fe0b5e00"
+  },
+  "verified_capture_artifacts": 70,
+  "automated_tests_run": false,
+  "runtime_expiry_modified": false
+}

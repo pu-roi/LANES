@@ -211,6 +211,8 @@ export default function MapCanvas() {
   const altLayerIds = useRef<string[]>([]);
   const altSourceIds = useRef<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const pathname = usePathname();
+  const isMapVisible = pathname === "/map" || pathname === "/analytics" || pathname === "/admin/analytics";
 
   const [zoneStatusUnavailable, setZoneStatusUnavailable] = useState(false);
   const { data: activeZonesData } = useQuery({
@@ -226,7 +228,11 @@ export default function MapCanvas() {
         return await getFloodsOffline();
       }
     },
-    refetchInterval: 15000,
+    enabled: isMapVisible,
+    staleTime: 15000,
+    // SSE changes refresh immediately; this bounded fallback covers worker
+    // processes, expiry and unavailable streams without a second 15s loop.
+    refetchInterval: 60000,
   });
 
   const isTouchDevice = useMediaQuery("(max-width: 640px), (pointer: coarse)");
@@ -241,7 +247,6 @@ export default function MapCanvas() {
 
   const isTouchDeviceRef = useRef(isTouchDevice);
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const router = useRouter();
 
   const {

@@ -138,6 +138,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
   const [passableVehicles, setPassableVehicles] = useState<string[]>([]);
   const [hiddenHazards, setHiddenHazards] = useState<"yes" | "no" | "unsure" | null>(null);
   const [showSurvey, setShowSurvey] = useState(false);
+  const [observedAt, setObservedAt] = useState("");
   const [description, setDescription] = useState("");
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const mediaPreviewUrlsRef = useRef(new WeakMap<File, string>());
@@ -212,6 +213,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setHiddenHazards(null);
     setShowSurvey(false);
     setDescription("");
+    setObservedAt("");
     clearMediaFiles();
     setIsPublic(false);
     setStep(1);
@@ -248,6 +250,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         setHiddenHazards(active.hiddenHazards);
         setShowSurvey(active.showSurvey);
         setDescription(active.description);
+        setObservedAt(active.observedAt || "");
         setMediaFiles(active.mediaFiles);
         setIsPublic(active.isPublic);
         setStep(active.step);
@@ -298,6 +301,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         hiddenHazards,
         showSurvey,
         description,
+      observedAt,
         mediaFiles,
         isPublic,
         step,
@@ -316,7 +320,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         error("Draft Not Saved", "Your changes could not be saved on this device.");
       }
     });
-  }, [canPersistDraft, description, draftReports, endInput, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, hiddenHazards, isBidirectional, isPublic, mediaFiles, passableVehicles, showSurvey, startInput, step, userId, visualOption]);
+  }, [canPersistDraft, description, observedAt, draftReports, endInput, error, floodEnd, floodOppositeGeometry, floodPreviewGeometry, floodStart, hiddenHazards, isBidirectional, isPublic, mediaFiles, passableVehicles, showSurvey, startInput, step, userId, visualOption]);
 
   // ── Map-pick: listen to the shared map-center-changed event ────────────────
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
@@ -350,6 +354,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setFloodStartLabel("");
     setFloodEndLabel("");
     setDescription("");
+    setObservedAt("");
     setVisualOption(null);
     setPassableVehicles([]);
     setHiddenHazards(null);
@@ -397,6 +402,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       setHiddenHazards(null);
       setShowSurvey(false);
       setDescription("");
+    setObservedAt("");
       clearMediaFiles();
       setIsPublic(false);
     }
@@ -502,6 +508,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       severity,
       depth,
       description,
+      observedAt,
       mediaFiles: [...mediaFiles],
       startLabel: startInput,
       endLabel: endInput,
@@ -530,6 +537,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     setStartInput(draft.startLabel || "");
     setEndInput(draft.endLabel || "");
     setDescription(draft.description);
+    setObservedAt(draft.observedAt || "");
     const option = VISUAL_OPTIONS.find((item) => item.id === draft.depth)
       || VISUAL_OPTIONS.find((item) => item.severity === draft.severity && item.label === draft.depth)
       || VISUAL_OPTIONS.find((item) => item.severity === draft.severity);
@@ -562,6 +570,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       const fd = new FormData();
       fd.append("raw_text", data.description.trim());
       fd.append("source", "direct_user");
+      if (data.observedAt) fd.append("observed_at", new Date(data.observedAt).toISOString());
       fd.append("severity", data.severity);
       if (data.depth) fd.append("depth", data.depth);
       if (data.humanReadableLocation) fd.append("human_readable_location", data.humanReadableLocation);
@@ -595,6 +604,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       formsToSubmit.push(
         createFormData({
           description: draft.description,
+          observedAt: draft.observedAt,
           severity: draft.severity,
           depth: draft.depth,
           humanReadableLocation: draftHint,
@@ -602,8 +612,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
           isBidirectional: draft.isBidirectional,
           geometry: draft.geometry,
           oppositeGeometry: draft.oppositeGeometry,
-          passableVehicles: null, // Let's just pass null for drafts for now
-          hiddenHazards: "unsure",
+          passableVehicles: draft.passableVehicles?.join(",") || null,
+          hiddenHazards: draft.hiddenHazards || "unsure",
           mediaFiles: draft.mediaFiles,
         })
       );
@@ -622,6 +632,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       formsToSubmit.push(
         createFormData({
           description: description,
+          observedAt,
           severity: selectedOption.severity,
           depth: selectedOption.id,
           humanReadableLocation: currentHint,
@@ -642,15 +653,17 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
     }
 
     setIsSubmitting(true);
+    let automaticallyApproved = false;
+    let automationUnavailable = false;
     try {
       if (isAdminMode && onAdminSubmit) {
         for (const fd of formsToSubmit) {
            await onAdminSubmit(fd);
         }
       } else {
-        await Promise.all(
-          formsToSubmit.map((fd) => apiClient.post<{ id: number }>("/reports", fd))
-        );
+        const results = await Promise.all(formsToSubmit.map((fd) => apiClient.post<{ id: number; status: string; automatic_review_reason?: string }>("/reports", fd)));
+        automaticallyApproved = results.some((result) => result.status === "approved");
+        automationUnavailable = results.some((result) => result.automatic_review_reason === "automatic_approval_unavailable");
       }
 
       // Reset everything
@@ -666,7 +679,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         }
       }
       
-      success(isAdminMode ? "Zones Created" : "Reports Submitted", isAdminMode ? "Official zones are now active." : "Thank you! Your reports are now in review.");
+      success(isAdminMode ? "Zones Created" : "Reports Submitted", isAdminMode ? "Official zones are now active." : automaticallyApproved ? "Eligible reports were automatically approved. Check My Reports for each report status." : "Thank you! Your reports are now in review.");
+      if (automationUnavailable) error("Automatic Approval Unavailable", "Your report was saved and remains available for staff review.");
       if (onClose) onClose();
     } catch (err: unknown) {
       console.error("Error submitting flood reports:", err);
@@ -709,6 +723,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
       hiddenHazards,
       showSurvey,
       description,
+      observedAt,
       mediaFiles,
       isPublic,
       step,
@@ -860,6 +875,14 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
                 )}
               </Button>
            </div>
+        </div>
+      )}
+
+      {!isViewingDrafts && !isAdminMode && (
+        <div className="space-y-1">
+          <label htmlFor="flood-observed-at" className="text-sm font-medium text-gray-700">When did you observe this flood? (Optional)</label>
+          <input id="flood-observed-at" type="datetime-local" value={observedAt} onChange={(event) => setObservedAt(event.target.value)} className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm" />
+          <p className="text-xs text-gray-500">Use your local time. An explicit recent observation time is required for automatic approval. Without it, staff review your report.</p>
         </div>
       )}
 

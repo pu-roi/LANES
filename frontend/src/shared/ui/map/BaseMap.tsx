@@ -601,8 +601,16 @@ export default function BaseMap({
   }, [actionControls, onMapInit, onMapLoad, on3DChange]);
 
   useEffect(() => {
-    preloadOfflineEngine();
-  }, []);
+    // Render the map first, then warm the offline worker during browser idle
+    // time. A timeout preserves offline readiness on busy or older browsers.
+    if (!isLoaded) return;
+    if (typeof window.requestIdleCallback === "function") {
+      const idleId = window.requestIdleCallback(() => preloadOfflineEngine(), { timeout: 2000 });
+      return () => window.cancelIdleCallback(idleId);
+    }
+    const timer = setTimeout(() => preloadOfflineEngine(), 500);
+    return () => clearTimeout(timer);
+  }, [isLoaded]);
 
   // Map creation intentionally uses the initial viewport only. Updating these
   // props must not recreate the WebGL map; callback props are read via refs.

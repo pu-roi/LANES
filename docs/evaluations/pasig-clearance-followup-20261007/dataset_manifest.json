@@ -1,0 +1,56 @@
+{
+  "register_version": "pasig-clearance-followup-overlay-v2-independent-review",
+  "built_at": "2026-10-07T12:24:18.960328+00:00",
+  "geography": "Pasig City",
+  "counts": {
+    "new_captured_sources": 5,
+    "new_capture_artifacts": 10,
+    "reviewed_observations": 33,
+    "wet_observations": 30,
+    "new_explicit_subsidence_outcomes": 1,
+    "new_subsidence_duration_pairs": 0,
+    "passability_projections": 9,
+    "passability_shared_outcomes": 2,
+    "passability_direct_location_projections": 1,
+    "passability_collective_projections": 8,
+    "verified_independent_storms": 0,
+    "production_training_admitted": 0
+  },
+  "status_counts": {
+    "flood_observed": 30,
+    "passability_recovered_summary": 1,
+    "reported_subsidence": 1,
+    "city_flood_context": 1
+  },
+  "ancestor_dataset_preserved": true,
+  "verified_ancestor_capture_artifacts": 70,
+  "source_review": "coordinator reconstructed exact captured source lines and clocks",
+  "independent_capture_review_completed": true,
+  "independent_reviewer": "/root/followup_capture_final_review",
+  "review_limitation": "Source accuracy review does not establish continuity, historical availability, storm independence or training eligibility.",
+  "input_sha256": {
+    "docs/evaluations/pasig-clearance-followup-20261007/review_rules.json": "61568d580e2a558ea6911495d88088f98cdd110d20b930656f5ae08684f9ee93",
+    "docs/evaluations/pasig-clearance-followup-20261007/pasig-seeds.json": "9fa1104a6e4f003b63251930fe3a46a8b47821ea3544429a2987747238d26c1a",
+    "docs/evaluations/pasig-clearance-followup-20261007/publisher-seeds.json": "8f887aa9f6c5279d860f4bb194b6349d94bed6e40978ae005c789a122526bf01",
+    "docs/evaluations/pasig-clearance-followup-20261007/independent_review.json": "23755d33b58d94fb82d786cfeae5b15a8c143e90ccf9e5b07449391fe6b0899d",
+    "docs/evaluations/pasig-clearance-followup-20261007/official/source_manifest.json": "578dc2b94195138c2e3b9b062aeefa1c75efeb51794ecfc0265dfb1c6d17dec4",
+    "docs/evaluations/pasig-clearance-followup-20261007/publishers/source_manifest.json": "bea23db40522ee6c9eb42f1b075d7892a08e4d2b54da1bdcaf7c5fb9564df9a7",
+    "backend/scripts/build_pasig_clearance_followup.py": "109af3da95939b7d4eefa4c0787c4b1c5276394be6dc2e88f0da332bb1f519b9",
+    "backend/scripts/collect_flood_duration_pilot.py": "eb956808aa16859427b7be106c5dbd716f8d89e54b8a2a5f3b56c284c5f9ab55",
+    "backend/scripts/collect_flood_report_archive.py": "960ea79034bcb701ab55a0125f1ea5027215c9f3876e227fe40397a7c3f02b27",
+    "docs/evaluations/pasig-duration-followup-20261005/dataset_manifest.json": "fea920a6eaaff2f47a79a5b68d40b2e02e7b934eb519594ea0ffddd5fe0b5e00",
+    "docs/evaluations/pasig-duration-followup-20261005/pasig_wet_observations.csv": "ecd5e920f433eb0e7194190fd057cae3641b538489e4685d29170801852f6a63",
+    "docs/evaluations/pasig-duration-followup-20261005/proxy_label_register.csv": "ae502fb560746d5827896daeea1d627ad198935adb18b18deb3804c3f99c3ee5",
+    "backend/runtime_data/flood-duration/conditional_aft.json": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6"
+  },
+  "output_sha256": {
+    "observations.csv": "f6be22474ef175ac241d5dfb42de5dd4a34b147c5963341a47460193021e4046",
+    "passability_followup_pairs.csv": "93f4430a07fefc8ba7cba43ecf2981ffe7407bf9663c2b236bc750d0ec98cc4b",
+    "subsidence_outcomes.csv": "0404e08fe513ed63ef77dc6e008774d87dfba2e202031ec02310ec36928d82f6",
+    "source_register.json": "626d87de06459f0f65a305e01eddeea3de0412b26823c7420f0f9ad5bd6cb5fe"
+  },
+  "model_retrained": false,
+  "runtime_expiry_modified": false,
+  "automated_tests_run": false,
+  "prospective_prediction_admitted": false
+}

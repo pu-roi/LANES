@@ -1,0 +1,24 @@
+{
+  "reviewer": "/root/followup_capture_final_review",
+  "completed_at": "2026-10-07T20:23:00+08:00",
+  "independent_capture_review_completed": true,
+  "source_text_sha256": {
+    "PASIG-20241024-2330": "d097c4304b6b9e07ab532fb6345c91d662ea66da84b428e0f58180d0dc3bf3b5",
+    "PASIG-20241025-0230": "4fd3604175f58a0793199b6f2e4953178627c5e4a2dd82efbdb0c32eb258e2e4",
+    "PASIG-20241025-1900": "ed29ef6c03af581cf9046c16021bac5b0189bdd7dc9d12461fd1844c81aad868",
+    "PASIG-20240903-1200": "0ad495d79064be3389538a0ec30cd95e9f88b245ecbef8fe5f7f4ce705316b7c",
+    "GMA-20251010-1318": "990eaddab89191dd3550f730b22e878a87b60d2bf680af24dc5c8ad37cd91f32"
+  },
+  "checked_counts": {"new_capture_artifacts":10,"observations":33,"wet_observations":30,"subsidence_outcomes":1,"passability_pairs":9,"passability_shared_outcomes":2},
+  "findings": [
+    "All 10 HTML/text hashes and all 33 source evidence spans match.",
+    "GMA October 10 Pasig C5 Ortigas southbound subsided by12:49; advisory12:55 and HTML publication13:18:20 are later, not earlier wet references.",
+    "Eight October25 collective passability brackets(0,90] and one September3 direct bracket(0,180] are correct, but establish neither dryness nor uninterrupted flood duration.",
+    "October25 page displays October24; use explicitly dated body clocks. September3 hero asset path includes September6; historical availability remains unverified.",
+    "Original819/37 exports, all12 recorded input hashes and four output hashes match the reviewed version. Original model remains unchanged."
+  ],
+  "new_subsidence_duration_pairs":0,
+  "production_training_admitted":0,
+  "limitations_remaining":["historical_availability","continuity","storm_independence","precise_spatial_section","training_eligibility"],
+  "automated_tests_run":false
+}

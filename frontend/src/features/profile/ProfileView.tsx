@@ -25,6 +25,7 @@ import { LeftSidebar } from "../feed/LeftSidebar";
 import { RightSidebar } from "../feed/RightSidebar";
 import { useToast, Button, Tabs, TabContentPanel, Modal, ConfirmDialog } from "@/shared/ui";
 import PasswordOtpModal from "./components/PasswordOtpModal";
+import { FollowupSubmission } from "../flood-followups/FollowupSubmission";
 
 export default function ProfileView() {
   const { user, isLoading: authLoading, logout } = useAuth();
@@ -537,6 +538,7 @@ export default function ProfileView() {
                   report.status === "Rejected" ? "text-red-600" : "text-amber-600"
                 }>{report.status}</span>
               </div>
+              <FollowupSubmission reportId={report.id} />
             </div>
           ))}
         </div>
@@ -879,7 +881,7 @@ export default function ProfileView() {
   }
 
   return (
-    <div className="flex-1 bg-slate-50 flex flex-col min-h-screen relative pb-20 lg:pb-8">
+    <div className="flex-1 bg-slate-50 flex flex-col min-h-screen relative pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] lg:pb-8">
       {/* Common Header / Cover */}
       <div className="transition-all block">
         <div 

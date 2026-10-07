@@ -1,8 +1,20 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 05, 2026, 12:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 8:40 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
+
+## 25. Database-governed operational policy and fixed automation tick
+
+**Date:** October 7, 2026
+
+**Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Status:** Implemented and verified locally; production rollout pending.
+
+Use one typed, revisioned policy in existing JSONB for API handlers and workers. Settings and their audit commit atomically. Keep a fixed 15-minute Cloud Scheduler tick and determine due collection from the database (15/30/60 minutes, default 30); session advisory locking prevents overlaps and durable work remains idempotent. The application needs no permission to change cloud schedules. Publisher URLs remain in the verified server registry.
+
+Evidence expiry is an operational freshness deadline, never a learned water-clearance estimate. Snapshot deadlines from supported observation time and do not extend or resurrect old decisions on settings edits. Citizen auto approval uses documented human history, explicit recent observations, validated road geometry and distinct evidence; automatic outcomes cannot raise eligibility. Preserve explicit staff deadlines and independent contributors. [Contract](plans/functional-system-settings.md), [verification](evaluations/functional-system-settings-20261007.md).
 
 ## 24. Purpose-specific reported-subsidence proxy and prospective prediction reference
 
@@ -21,6 +33,10 @@ This document tracks major technical decisions, architecture shifts, and the rea
 **Reasoning and operational boundary:** Exact endpoints are unnecessary for valid interval evidence, but declaring a proxy does not solve collective scope, reporting bias, outcome dependence, reference selection or model identifiability. Study empirical interval-aware baselines, then supported AFT comparisons when held-out outcomes permit them. Evidence-based Active/Unconfirmed/Cleared implementation proceeds through existing approval gates; reaching a predicted time cannot establish confirmed clearance. Full [target contract](plans/pasig-reported-subsidence-target.md).
 
 ---
+
+**October 7 experimental implementation:** A separate first-recorded-wet target and fitted intercept-only lognormal AFT sensitivity baseline are delivered under explicit uninterrupted-episode/collective-scope assumptions. This does not replace the original proxy register or grant prospective/production admission. Group-balanced composite likelihood limits shared-summary influence; leave-one-summary-out fits remain sensitivity, not final accuracy evaluation. The strict JSON artifact and staff research preview are shadow-only, with no expiry or routing effect. Feature-based/production model selection remains pending. [Implementation](plans/pasig-subsidence-model-implementation.md), [actual experiment](evaluations/pasig-duration-model-20261007/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Prospective evidence collection consequence:** Owner follow-ups and separate independent staff reviews preserve actual observed/available/submitted/reviewed clocks and immutable report-location identity in existing append-only storage. A reviewed still-flooded/subsided source claim is distinct from an operational clearance and from a training-admitted duration outcome; no model self-training or automated map clearance follows acceptance. The [collection contract](plans/flood-followup-evidence-plan.md) implements that separation locally, with runtime acceptance pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## 23. Metro Manila product coverage, Pasig duration study and separated evidence datasets
 

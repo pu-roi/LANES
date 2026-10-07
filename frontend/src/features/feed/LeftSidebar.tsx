@@ -50,7 +50,7 @@ export function LeftSidebar() {
   const hiddenPlaces = sortedPlaces.slice(3);
 
   const handleSavedPlaceClick = (latitude: number, longitude: number) => {
-    router.push('/map');
+    router.push(`/map?lat=${latitude}&lng=${longitude}&zoom=16`);
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('fly-to-location', {
         detail: { latitude, longitude, zoom: 16, duration: 1500 },

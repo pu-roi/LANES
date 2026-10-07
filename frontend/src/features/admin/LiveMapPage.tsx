@@ -289,7 +289,8 @@ export default function LiveMapPage() {
   const { data: mapZones, refetch: refetchMap } = useQuery({
     queryKey: ["activeZonesMap"],
     queryFn: () => apiClient.get<any[]>("/reports/active-zones"),
-    refetchInterval: 15000,
+    staleTime: 15000,
+    refetchInterval: 60000,
   });
 
   const { data: pendingReports, refetch: refetchPending } = useQuery({

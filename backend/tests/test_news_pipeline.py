@@ -12,6 +12,38 @@ from app.services.news_publication_service import PublicationSummary
 from app.services.news_footprint_worker_service import FootprintWorkerSummary
 
 
+@pytest.fixture(autouse=True)
+def isolated_configuration(monkeypatch):
+    from app.schemas.configuration import OperationalSettings
+    monkeypatch.setattr(pipeline, "runtime_configuration", lambda factory, sources: (OperationalSettings(), sources))
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("processing,publication_enabled", [(True,False),(False,True),(False,False)])
+async def test_news_stage_switches_are_independent_and_keep_maintenance(monkeypatch, processing, publication_enabled):
+    from app.schemas.configuration import OperationalSettings
+    config = OperationalSettings(news_processing_enabled=processing, news_publication_enabled=publication_enabled)
+    monkeypatch.setattr(pipeline, "runtime_configuration", lambda factory, sources: (config, sources))
+    monkeypatch.setattr(pipeline, "evaluation_policy", lambda *args: object())
+    calls=[]
+    async def extract(*args, **kwargs): calls.append("extract"); return ProcessingSummary()
+    async def evaluate(*args, **kwargs): calls.append("evaluate"); return EvaluationSummary()
+    def seed(*args, **kwargs): calls.append("seed"); return EvaluationSummary()
+    def publish(*args, **kwargs): calls.append(("maintenance", kwargs["maintenance_only"])); return PublicationSummary()
+    def footprint(*args, **kwargs): calls.append("footprint"); return FootprintWorkerSummary()
+    monkeypatch.setattr(pipeline,"process_saved_news",extract)
+    monkeypatch.setattr(pipeline,"seed_claim_evaluations",seed)
+    monkeypatch.setattr(pipeline,"evaluate_news_claims",evaluate)
+    monkeypatch.setattr(publication,"process_news_publications",publish)
+    monkeypatch.setattr(pipeline,"process_news_footprints",footprint)
+    result=await pipeline.run_news_pipeline(lambda:None,auditor=object())
+    assert ("extract" in calls) == processing
+    assert ("evaluate" in calls) == processing
+    assert ("footprint" in calls) == publication_enabled
+    assert ("maintenance",not publication_enabled) in calls
+    assert not pipeline.pipeline_has_failures(result)
+
+
 @pytest.mark.asyncio
 async def test_pipeline_handoff_uses_committed_stages_and_still_expires_after_provider_failure(monkeypatch):
     order=[]
@@ -37,7 +69,7 @@ async def test_pipeline_handoff_uses_committed_stages_and_still_expires_after_pr
     monkeypatch.setattr(pipeline,"process_saved_news",process)
     monkeypatch.setattr(pipeline,"seed_claim_evaluations",seed)
     monkeypatch.setattr(pipeline,"evaluate_news_claims",evaluate)
-    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _:policy)
+    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _, configuration=None:policy)
     monkeypatch.setattr(publication,"process_news_publications",publish)
     def footprints(actual,**kwargs):
         assert actual is factory and kwargs["policy"] is policy
@@ -71,7 +103,7 @@ async def test_pipeline_storage_failure_never_reports_publication_success(monkey
     def unexpected(*_,**__):
         raise AssertionError("Publication must not run after a lost extraction commit")
     monkeypatch.setattr(pipeline,"process_saved_news",unavailable)
-    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _:object())
+    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _, configuration=None:object())
     monkeypatch.setattr(publication,"process_news_publications",unexpected)
     with pytest.raises(SQLAlchemyError):
         await pipeline.run_news_pipeline(lambda:None,auditor=object())

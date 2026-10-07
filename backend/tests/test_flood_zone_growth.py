@@ -16,15 +16,13 @@ from app.api import deps
 from app.core.config import settings
 from app.core.database import engine, get_db
 from app.main import app
-from scripts.seed_local_news_replay import require_local_test_database
 
 
 @pytest.fixture
-def growth_db(monkeypatch, request):
-    require_local_test_database(settings.DATABASE_URL)
+def growth_db(monkeypatch, request, settings_factory):
     from app.services import merge_service
     monkeypatch.setattr(merge_service, "trace_road_attributes", lambda *_args: None)
-    connection = engine.connect()
+    connection = settings_factory.kw["bind"].connect()
     outer = connection.begin()
     db = Session(bind=connection, join_transaction_mode="create_savepoint")
     saved = dict(app.dependency_overrides)

@@ -86,6 +86,9 @@ class FloodReportCreate(FloodReportBase):
 
 
 class FloodReportResponse(FloodReportBase):
+    observed_at: Optional[datetime] = None
+    automatic_review_reason: Optional[str] = None
+    approval_kind: Optional[str] = None
     id: int
     status: ReportStatus
     geometry: Optional[Union[PointGeometry, LineStringGeometry, MultiLineStringGeometry, PolygonGeometry, GeometryCollectionGeometry]] = None

@@ -1,6 +1,108 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 07, 2026, 12:51 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-119] System Settings saved unused values and could fail after persisting
+
+- **Status:** Fixed and verified locally; matching production release remains pending.
+- **Severity:** Medium — stored settings could be ineffective or a save could fail after changing values.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The four legacy controls had no runtime consumers. Legacy saving committed before an incorrectly called audit function, so an error could follow a persisted change.
+- **Resolution:** Typed shared policy replaces legacy writes. Known keys/ranges and capabilities are checked; advisory serialization plus revision conflicts protects edits. Settings, revision and audit share one transaction. The response is constructed before commit, so response assembly errors also roll back. Legacy rows/read access remain for history. Mobile/desktop drafts survive save errors and edit conflicts. [Verification](../evaluations/functional-system-settings-20261007.md).
+
+- **Pre-push verification:** The fresh 174 native settings/lifecycle/growth checks pass with existing migrations in removed disposable PostGIS databases. Changes include `backend/app/api/v1/endpoints/settings.py`, `backend/app/services/configuration_service.py`, `backend/app/schemas/configuration.py`, settings-consuming worker/zone/report services and `frontend/src/features/admin/SystemSettingsPage.tsx`. No new production release is claimed. [Audit](../evaluations/pasig-subsidence-validation-20261007/README.md#senior-planner-pre-push-checkpoint).
+
+### October 7: Docker socket startup recovery repeated during settings verification
+
+The ingest socket failure recurred, followed by a second stale Secrets Engine socket. Only recognized crashed Docker processes were stopped. Zero-byte runtime socket directories were moved to recoverable backups, then recreated. `lanes_postgis_db` and `lanes_valhalla` returned to running state; databases, volumes and application data were preserved. Backups are recorded in the [settings verification](../evaluations/functional-system-settings-20261007.md). This is a workaround for the [reported Docker Desktop startup defect](https://github.com/docker/desktop-feedback/issues/554), not a permanent Docker fix. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-118] Private follow-up evidence leaks through the generic audit feed
+
+- **Status:** Resolved in local code; actual API/privacy acceptance and deployment pending.
+- **Severity:** High — non-Commuter staff without Reports permission could otherwise read private citizen/staff follow-up evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Independent source/security review of the new follow-up workflow found `/admin/audit-logs` returns generic `metadata_json` under a dependency that excludes only Commuter. The new dedicated follow-up routes correctly restrict evidence, but the generic reader could bypass that capability boundary.
+
+#### 2. Root Cause Analysis
+
+Follow-up observations/reviews reuse the existing append-only audit JSON pattern. Generic `get_audit_logs` previously selected every action type without excluding private feature records.
+
+#### 3. Solution & Architectural Strategy
+
+Exclude `FLOOD_FOLLOWUP_OBSERVATION` and `FLOOD_FOLLOWUP_REVIEW` from the generic audit query before action filters, count and pagination. Even an explicit action filter cannot retrieve those records there. Ownership/Reports-capability checked follow-up reads remain the sole evidence interface, with no-store responses. No source record is deleted or redacted in persistence.
+
+#### 4. Files Modified / Verification
+
+`backend/app/crud/audit.py` uses the centralized follow-up action constants and preserves unrelated/legacy-null action behavior. An independent reviewer re-read the fix and found the source-level access path closed; Python syntax/diff checks pass. Actual API/database privacy tests were not requested/run. [Implementation and limits](../evaluations/structured-flood-followups-20261007.md).
+
+### [BUG-117] Live free auditor times out at the normal worker deadline
+
+- **Status:** Investigating availability; fail-closed behavior verified, current-article acceptance pending.
+- **Severity:** Medium — eligible current news can be deferred to review instead of automatic publication.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The October 7 live-news audit verified `openrouter/free` configuration, then made one historical synthetic probe at the default 20-second worker deadline. It returned `probe_failed`, `unavailable`, `auditor_timeout`, and no HTTP status. Earlier successful synthetic responses do not establish consistent availability.
+
+#### 2. Root Cause Analysis (RCA)
+
+The client deadline elapsed before a usable response. The specific provider/network/server cause is unverified; production has no claim evaluations with which to measure current-article failure rates. This is distinct from BUG-114's repaired quote-offset formatting defect.
+
+#### 3. Solution & Architectural Strategy
+
+Retain required independent confirmation and failure-to-review behavior. Measure availability/latency with representative current articles before declaring unattended activation accepted. No paid fallback, persistence-timeout change, safety-gate relaxation or repeated synthetic probe was used.
+
+#### 4. Files Modified / What Changed
+
+No application/provider configuration change. Record the safe probe result, acceptance tasks and verification limits in `docs/evaluations/news-live-operational-audit-20261007.md`, `docs/task_plan.md` and `docs/progress.md`. The synthetic probe has no database/publication access. [Audit](../evaluations/news-live-operational-audit-20261007.md).
+
+### [BUG-116] Sync database work scales with clients; weather blocks the API loop
+
+- **Status:** Fixed and deployed; 37 backend/16 desktop-mobile regressions and real API/public smoke checks pass. Sustained load/physical-device speedup remain unverified.
+- **Severity:** Medium for responsiveness and load growth.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The second performance audit found one flood DB query per SSE client every 15 seconds and blocking Open-Meteo calls inside async weather handlers. Offline engine warm-up also started alongside first map rendering. The small live request sample had a first-wave 1.27–1.31-second cluster, with later active-zone reads at 13–16 ms; it is not a controlled user-speedup benchmark.
+
+#### 2. Root Cause Analysis (RCA)
+
+Independent client polling repeats the same read/serialization. A synchronous weather SDK blocks the async event loop, so unrelated requests share its wait. Offline warm-up competes for startup resources even though it can wait until the map appears.
+
+#### 3. Solution & Architectural Strategy
+
+Use one shared DB-backed poll per worker with 100 reserved subscriptions, latest-result queues and idle/shutdown cleanup; retain init/update/unavailable behavior and independent routing safety reads. Run current/forecast handlers in FastAPI's worker pool. Schedule offline warm-up after render/idle with a timeout and older-browser timer fallback.
+
+#### 4. Files Modified / What Changed
+
+`services/flood_sync_service.py`, `endpoints/sync.py`, application lifespan, weather current/forecast signatures, `BaseMap.tsx`, snapshot/broker/weather tests and desktop/mobile map performance tests. No new schema/library/auth or cloud capacity change. [Research, tests and release details](../evaluations/cloud-performance-20261007.md#second-pass-shared-polling-and-responsive-weather-handlers).
+
+### [BUG-115] Cold starts, redundant flood refreshes and blocking route searches
+
+- **Status:** API/job/frontend fixes deployed and browser smoke checks passed; next scheduled discovery-run memory and sustained/physical-device acceptance remain unverified.
+- **Severity:** Medium for interactive latency; High for separate discovery-job memory failures.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The developer reported a slower newer version. Cloud logs showed 18–21-second API startup waits, duplicate flood-refresh paths and two 512-MiB discovery-job memory-limit failures. Production browser tests also exposed full-page reloads on reconnect that cleared open news panels.
+
+#### 2. Root Cause Analysis (RCA)
+
+Scale-to-zero, synchronous Valhalla/database waits in asynchronous routing, repeated empty exclusions, unchanged SSE snapshots triggering HTTP refetches alongside 15-second map polling, eager hidden map work and the PWA plugin's default online reload. Database/API/frontend metrics did not justify general resource upgrades under observed traffic.
+
+#### 3. Solution & Architectural Strategy
+
+Keep one API instance warm and give discovery 1 GiB. Offload synchronous waits and overlap at most two searches; preserve all flood gates and wait for in-flight calls before fallback. Send changed snapshots with keepalives, retain offline data on failed reads, use a 60-second map fallback, defer initial map/panels and keep PWA state during reconnect.
+
+#### 4. Files Modified / What Changed
+
+Backend routing, sync and retention services/endpoints; providers, live-sync hook, map/admin polling, GlobalMap, feed coordinate navigation, PWA configuration, Cloud Build and focused tests. **32 backend and 14 distinct desktop/mobile browser tests**, frontend build/type/lint and public desktop/mobile smoke checks passed. Exact rollout and browser results are maintained in the [evaluation](../evaluations/cloud-performance-20261007.md); next scheduled news-run RAM and physical phones remain unverified.
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
@@ -337,6 +439,8 @@ Validate aliases against actual barangays/exact parents; retain qualified barang
 - **Status:** Local startup recovered; upstream cause and recurrence prevention unverified.
 - **Severity:** High — blocks native PostGIS/migration verification.
 - **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 7, 6:29 PM recurrence:** Starting Docker for the live-news audit reproduced the user-reported `sailor-ingest.sock` access/rename failure. Stop identified crashed Docker processes, verify their exit, preserve both inspected socket directories as `run.lanes-audit-backup-20261007-182011` and `docker-secrets-engine.lanes-audit-backup-20261007-182011`, recreate the runtime directories and start once. Engine 29.8.0 and the original PostGIS/Valhalla containers resume; 131 native lifecycle tests then pass in a separate disposable database. No original volume/database reset; recurrence prevention remains unverified. [Audit](../evaluations/news-live-operational-audit-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 #### 1. Problem Description
 

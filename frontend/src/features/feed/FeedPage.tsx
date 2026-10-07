@@ -305,7 +305,7 @@ export function FeedPage() {
 
   const handleSavedPlaceClick = (latitude: number, longitude: number) => {
     closeMenu();
-    router.push('/map');
+    router.push(`/map?lat=${latitude}&lng=${longitude}&zoom=16`);
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('fly-to-location', {
         detail: { latitude, longitude, zoom: 16, duration: 1500 },
@@ -525,11 +525,9 @@ export function FeedPage() {
                   post={post} 
                   onVote={handleVote}
                   onViewMap={(lat, lng) => {
-                    // Navigate to /map first (clean URL, no query params), then fire the
-                    // fly-to-location event. Using query params was unreliable because
-                    // MapCanvas is a persistent component — its searchParams useEffect
-                    // dep sometimes didn't change, so the flyTo never triggered.
-                    router.push('/map');
+                    // The URL also carries the target if the deferred map has
+                    // not mounted yet. The event handles an already-open map.
+                    router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`);
                     setTimeout(() => {
                       window.dispatchEvent(new CustomEvent('fly-to-location', {
                         detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }

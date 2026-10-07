@@ -1,0 +1,21 @@
+{
+  "search_date": "2026-10-07",
+  "timezone": "Asia/Manila",
+  "scope": "Bounded follow-up search for Pasig City same-location flood and reported subsidence; passability retained separately",
+  "coverage_limit": "Selected searches and public archive pages, not exhaustive coverage or proof of missing reports",
+  "investigations": [
+    {"area":"2021-2023","queries":["Pasig subsided 2021 2022 2023 MMDA","Pasig humupa na 2021 baha","Pasig humupa na 2022 baha"],"result":"No new fully captured and clock-supported subsidence pair recovered. Existing 2021 historical Subsided rows have occurrence dates, not clearance clocks."},
+    {"area":"2023 Mega Market","url":"https://mb.com.ph/2023/8/31/classes-work-suspended-in-ncr-provinces-due-to-heavy-rains-floods","result":"Indexed text contains Pasig Mega Market flooding and subsequent subsidence, but no qualified Pasig clock. Full fetch remained403. The nearby13:00 subsidence concerns Pasay. No captured observation/label admitted."},
+    {"area":"Pasig archive2024","pages_inspected_by_coordinator":[100,101,102,103,104,105,106,107,108,109,110,111],"url_pattern":"https://pasigcity.gov.ph/news-and-releases?page={page}","result":"Discovered Oct24/25Kristine wet/passability reports; captured separately. Existing July25reports601/968 remain wet or nonpassable. No inferred subsidence from dropping off later lists."},
+    {"area":"Pasig archive2023","pages_inspected_by_search_agent":[130,131,132,133,134,135,136,137,138,139,140,141,142],"result":"Search investigator reported no new usable subsidence pair. Coordinator separately inspected page134. Agent final completion interrupted by usage limit; no blanket independent qualification claimed."},
+    {"area":"Sep3,2024","url":"https://pasigcity.gov.ph/news-and-releases/flood-update-september-3-2024-201","result":"New direct light-vehicle passability follow-up at InfantJesusMetrovilleManggahan. Noon report still states2-3inches water; excluded from subsidence target."},
+    {"area":"Nov8,2024","url":"https://pasigcity.gov.ph/news-and-releases/handog-ng-mga-pasigueno-para-sa-mga-nasalanta-ng-bagyong-julian-at-kristine-965","result":"Generic quick recession, no specific road/time pair. Context only; no new capture in this bundle."},
+    {"area":"July2025","urls":["https://pasigcity.gov.ph/news-and-releases/updates-mula-kay-mayor-vico-sotto-july-25-2025-773","https://pasigcity.gov.ph/news-and-releases/response-updates-as-of-0400pm-july-26-2025-483","https://pasigcity.gov.ph/news-and-releases/updates-mula-kay-mayor-vico-sotto-july-27-2025-495"],"result":"Search investigator found general recession/returning evacuees/demobilization, not explicit same-road clearance clocks. No new captured duration pair."},
+    {"area":"Oct10,2025","queries":["C5 Ortigas October10,2025","C5 Ortigas Service12:49","C5 Ortigas Oct.10 2025 flood","C5 Ortigas October9,2025 flood"],"result":"New GMA961956 full capture contains explicit PasigCity southbound subsidence by12:49. No preceding timed wet report recovered in targeted GMA/ABS/TV5/indexedMMDA searches. Advisory12:55 and publication13:18 are later and cannot become wet-reference clocks."},
+    {"area":"2026","queries":["site:pasigcity.gov.ph flood subsided","site:pasigcity.gov.ph baha humupa na"],"result":"Recovered existing Aug11/18/30outcomes and reports concerning other cities. No additional qualified pair from this search."},
+    {"area":"NDRRMC geography","url":"https://ndrrmc.gov.ph/attachments/article/4293/SitRep_No_42_for_the_SWM_and_TCs_CRISING_DANTE_EMONG_2025.pdf","result":"Search investigator established the indexed Pasig row is a barangay under Candaba,Pampanga; not PasigCity. Similar older-year name matches excluded. DirectPDF fetch403; no row admitted."}
+  ],
+  "new_qualified_subsidence_duration_pairs": 0,
+  "independent_capture_review_completed": true,
+  "independent_review_record": "independent_review.json"
+}

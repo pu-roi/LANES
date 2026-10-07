@@ -51,6 +51,7 @@ from app.services.operational_footprint_evidence_service import (
 from app.services.news_claim_auditor import canonical_claim_sha256, _classify, _validate_evidence
 from app.services.news_evaluation_service import EvaluationPolicy, preliminary_reason, publication_is_current, source_is_approved
 from app.services.news_sources import NewsSource, load_news_sources
+from app.services.configuration_service import read_configuration, configuration_lock, selected_news_sources
 
 
 class _PublicationSettings(BaseSettings):
@@ -135,6 +136,8 @@ def _load(db: Session, evaluation_id: int, policy: EvaluationPolicy, now: dateti
         claim = extraction.claims[source.claim_ordinal]
     except (ValueError, ValidationError, IndexError, TypeError, KeyError) as exc:
         raise NewsPublicationError("invalid_immutable_evidence") from exc
+    if claim.condition != "subsided":
+        sources = selected_news_sources(db, sources)
     if canonical_claim_sha256(claim) != source.claim_sha256:
         raise NewsPublicationError("claim_identity_mismatch")
     reason = None
@@ -175,7 +178,7 @@ def _load(db: Session, evaluation_id: int, policy: EvaluationPolicy, now: dateti
             except (ValidationError, ValueError, TypeError, KeyError):
                 reason = "invalid_independent_audit"
     if not reason:
-        reason = preliminary_reason(claim, now)
+        reason = preliminary_reason(claim, now, policy)
     if not reason and (audit is None or audit.evidence is None):
         reason = "independent_audit_unavailable"
     if reason and not re.fullmatch(r"[a-z][a-z0-9_]{0,99}", reason):
@@ -196,7 +199,8 @@ def _snapshot(source: NewsClaimSource, version: NewsArticleVersion, claim: Extra
         claim_sha256=source.claim_sha256, incident_identity=_incident(claim), article_id=version.article_id,
         public=public, private_reason=private_reason, target_case_id=target,
         previous_decision_id=previous.id if previous else None, deferred_until=deferred_until,
-        unconfirmed_retention_hours=unconfirmed_retention_hours(),
+        unconfirmed_retention_hours=policy.retention_hours if policy.retention_hours is not None else unconfirmed_retention_hours(),
+        evidence_expiry_minutes=policy.expiry_minutes or {},
         geometry_reason=geometry_reason,
         linked_zone_ids=linked_zone_ids or [], operational_provenance=operational_provenance)
 
@@ -205,6 +209,7 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
             claim: ExtractedClaim, audit: IndependentAuditResult, now: datetime,
             sources: tuple[NewsSource, ...],
             *,
+            policy: EvaluationPolicy | None = None,
             geometry_precision: str = "text_only",
             display_geojson: dict | None = None,
             affects_routing: bool = False,
@@ -222,7 +227,7 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
         location_qualifier=_safe(", ".join(value for value in (claim.canonical_barangay, claim.canonical_city, claim.road_segment_raw) if value), 500),
         depth_label=depth, condition_label="Reported rising flood" if claim.condition == "rising" else "Reported active flood",
         passability_label=access, observed_at=claim.event_time_resolved,
-        expires_at=claim.event_time_resolved + timedelta(hours=2), updated_at=now,
+        expires_at=claim.event_time_resolved + timedelta(minutes=(policy.expiry_minutes.get(claim.depth_canonical or "unknown", 120) if policy and policy.expiry_minutes else 120)), updated_at=now,
         source_title=_safe(article.title, 500), source_publisher=_safe(publisher, 160),
         source_url=article.canonical_url, source_published_at=article.published_at,
         evidence_excerpt=_safe(claim.evidence_sentence, 700),
@@ -266,6 +271,13 @@ def _write(db: Session, case: NewsClaimCase, decision_id: int, request_id: UUID,
            operation: str = "evaluate", state: str = "unpublished", review: str = "needs_review",
            reason: str = "needs_independent_review", observed: datetime | None = None,
            expiry: datetime | None = None) -> NewsClaimDecision:
+    if actor_kind == "automatic" and state in ("active_alert", "active_zone"):
+        configuration_lock(db)
+        config = read_configuration(db)
+        if not config.news_publication_enabled:
+            raise NewsPublicationError("automatic_publication_paused")
+        if snapshot.evidence_expiry_minutes and snapshot.evidence_expiry_minutes != config.evidence_expiry_minutes:
+            raise NewsPublicationError("publication_policy_changed")
     # PostgreSQL JSON text adds spaces; enforce the database's representation
     # bound conservatively before INSERT so no partially flushed history leaks.
     if len(json.dumps(snapshot.model_dump(mode="json"), ensure_ascii=False, allow_nan=False).encode()) > 60_000:
@@ -284,6 +296,7 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                                  request_id: UUID | None = None, sources: tuple[NewsSource, ...] | None = None) -> NewsClaimDecision:
     now = require_utc(now)
     sources = sources if sources is not None else load_news_sources()
+    configuration_lock(db)
     request_id = request_id or uuid5(NAMESPACE_URL, f"lanes-news-evaluation:{evaluation_id}:{policy.fingerprint}")
     digest = canonical_sha256({"operation": "evaluate", "evaluation_id": evaluation_id, "policy": policy.fingerprint})
     publication_lock(db, canonical_sha256({"request_id": str(request_id)}))
@@ -292,6 +305,8 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
         return existing
     loaded = _load(db, evaluation_id, policy, now, sources)
     evaluation, source, run, version, article, claim, audit, reason = loaded
+    if reason == "unapproved_article_source" and source_is_approved(article, sources):
+        raise NewsPublicationError("automatic_source_paused")
     publication_lock(db, _incident(claim))
     case = lock_case(db, source.case_id)
     previous = latest_decision(db, case.id)
@@ -420,7 +435,7 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                         is_active_zone, refresh_provenance = False, None
                         refresh_failure = exc.code
                 refreshed = _public(
-                    target_case, decision_id, article, claim, audit, now, sources,
+                    target_case, decision_id, article, claim, audit, now, sources, policy=policy,
                     geometry_precision="operational_polygon" if is_active_zone else "text_only",
                     display_geojson=target_snapshot.public.display_geojson if is_active_zone else None,
                     affects_routing=is_active_zone,
@@ -466,7 +481,7 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
         if duplicate and not reason:
             reason = "source_continuity_requires_review"
         if not reason:
-            public = _public(case, decision_id, article, claim, audit, now, sources)
+            public = _public(case, decision_id, article, claim, audit, now, sources, policy=policy)
     snapshot = _snapshot(source, version, claim, policy, digest,
         evaluation_id=evaluation.id, public=public,
         private_reason=reason, previous=previous)
@@ -551,8 +566,8 @@ def _withdraw_support(db: Session, previous: NewsClaimDecision | None, now: date
         creation = db.scalar(select(NewsClaimZoneLink).where(NewsClaimZoneLink.zone_id == zone_id, NewsClaimZoneLink.relation == "created"))
         if zone is None or creation is None or zone.curated_by_admin_id is not None:
             continue
-        citizen = db.scalar(select(FloodReport.id).where(FloodReport.zone_id == zone_id,
-            FloodReport.status == ReportStatus.APPROVED, FloodReport.deleted_at.is_(None)).limit(1))
+        from app.services.citizen_approval_service import has_active_citizen_support
+        citizen = has_active_citizen_support(db, zone_id, now)
         news = db.scalar(select(NewsClaimDecision.id).join(NewsClaimCase, NewsClaimCase.id == NewsClaimDecision.case_id)
             .join(NewsClaimZoneLink, NewsClaimZoneLink.decision_id == NewsClaimDecision.id)
             .where(NewsClaimZoneLink.zone_id == zone_id, NewsClaimDecision.revision == NewsClaimCase.revision,
@@ -791,7 +806,7 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
 
             sev_val = zone_attributes["severity_override"]
             event_obj = None
-            expiry_time = claim.event_time_resolved + timedelta(hours=2)
+            expiry_time = claim.event_time_resolved + timedelta(minutes=(policy.expiry_minutes.get(claim.depth_canonical or "unknown", 120) if policy and policy.expiry_minutes else 120))
             for idx, part in enumerate(val.polygon_parts):
                 poly_in = PolygonGeometry(**part)
                 zone_in = FloodAvoidanceZoneCreate(
@@ -837,7 +852,7 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
     decision_id = reserve_decision_id(db)
     if request.operation == "correct":
         public = _public(
-            case, decision_id, article, claim, audit, now, sources,
+            case, decision_id, article, claim, audit, now, sources, policy=policy,
             geometry_precision="operational_polygon" if state == "active_zone" else "text_only",
             display_geojson=display_geojson,
             affects_routing=(state == "active_zone"),
@@ -929,6 +944,7 @@ def activate_operational_footprint(
     MultiPolygons are split into distinct FloodAvoidanceZone records without bridging gaps.
     """
     now = require_utc(now)
+    configuration_lock(db)
     if type(expected_revision) is not int or expected_revision < 0:
         raise NewsPublicationError("invalid_expected_revision")
     if parent_boundary is not None and (
@@ -1016,7 +1032,7 @@ def activate_operational_footprint(
 
     decision_id = reserve_decision_id(db)
     sev_val = zone_attributes["severity_override"]
-    expiry_time = claim.event_time_resolved + timedelta(hours=2)
+    expiry_time = claim.event_time_resolved + timedelta(minutes=(policy.expiry_minutes.get(claim.depth_canonical or "unknown", 120) if policy and policy.expiry_minutes else 120))
 
     linked_zone_ids: list[int] = []
     event_obj = None
@@ -1048,7 +1064,7 @@ def activate_operational_footprint(
             linked_zone_ids.append(created_zone.id)
 
     public = _public(
-        case, decision_id, article, claim, audit, now, sources,
+        case, decision_id, article, claim, audit, now, sources, policy=policy,
         geometry_precision="operational_polygon",
         display_geojson=val.geojson,
         affects_routing=True,
@@ -1089,26 +1105,47 @@ class PublicationSummary:
 
 def process_news_publications(session_factory: Callable[[], Session], *, policy: EvaluationPolicy,
                               limit: int = 50, clock: Callable[[], datetime] = utc_now,
-                              sources: tuple[NewsSource, ...] | None = None) -> PublicationSummary:
+                              sources: tuple[NewsSource, ...] | None = None, maintenance_only: bool = False) -> PublicationSummary:
     if not 1 <= limit <= 200:
         raise ValueError("Invalid publication limit")
     summary = PublicationSummary()
     with session_factory() as db:
+        maintenance_only = maintenance_only or not read_configuration(db).news_publication_enabled
+        selected_ids = tuple(source.id for source in selected_news_sources(db, sources))
+        clearance = NewsClaimEvaluation.result["audit"]["evidence"]["status"]["classification"].astext == "subsided"
         protected_case = exists(select(NewsClaimDecision.id).join(NewsClaimCase, NewsClaimCase.id == NewsClaimDecision.case_id)
             .where(NewsClaimCase.id == NewsClaimSource.case_id, NewsClaimDecision.revision == NewsClaimCase.revision,
                 ~((NewsClaimDecision.public_state == "unpublished") &
                   NewsClaimDecision.actor_kind.in_(("automatic", "maintenance")) &
                   (NewsClaimDecision.operation == "evaluate"))))
         ids = list(db.scalars(select(NewsClaimEvaluation.id).join(NewsClaimSource,
-            NewsClaimSource.id == NewsClaimEvaluation.claim_source_id).where(NewsClaimEvaluation.status.in_(("completed", "failed")),
-            NewsClaimEvaluation.policy_fingerprint == policy.fingerprint,
+            NewsClaimSource.id == NewsClaimEvaluation.claim_source_id).join(NewsExtractionRun, NewsExtractionRun.id == NewsClaimSource.extraction_run_id)
+            .join(NewsArticleVersion, NewsArticleVersion.id == NewsExtractionRun.article_version_id)
+            .where(NewsClaimEvaluation.status.in_(("completed", "failed")),
+            clearance | NewsArticleVersion.input_snapshot["publisher"].astext.in_(selected_ids),
+            ((NewsClaimEvaluation.policy_fingerprint == policy.fingerprint) |
+             (NewsClaimEvaluation.result["audit"]["evidence"]["status"]["classification"].astext == "subsided")),
             ~protected_case,
+            (NewsClaimEvaluation.result["audit"]["evidence"]["status"]["classification"].astext == "subsided") if maintenance_only else True,
             ~exists(select(NewsClaimDecision.id).where(NewsClaimDecision.evaluation_id == NewsClaimEvaluation.id)))
             .order_by(NewsClaimEvaluation.id).limit(limit)))
     for evaluation_id in ids:
         try:
             with session_factory() as db, db.begin():
-                decision = publish_completed_evaluation(db, evaluation_id, policy=policy, now=clock(), sources=sources)
+                active_policy = policy
+                evaluation = db.get(NewsClaimEvaluation, evaluation_id)
+                verified_clearance = (evaluation.result or {}).get("audit", {}) or {}
+                if verified_clearance.get("evidence", {}).get("status", {}).get("classification") == "subsided":
+                    # Preserve qualified clearance across expiry-only policy edits.
+                    # _load still verifies immutable inputs and the current auditor identity.
+                    active_policy = EvaluationPolicy(evaluation.policy_fingerprint, policy.pipeline_version,
+                        policy.auditor_identity, policy.expiry_minutes, policy.retention_hours)
+                if maintenance_only:
+                    _, _, _, _, _, claim, _, reason = _load(db, evaluation_id, active_policy, clock(), load_news_sources() if sources is None else sources)
+                    if claim.condition != "subsided" or reason:
+                        continue
+                decision = publish_completed_evaluation(db, evaluation_id, policy=active_policy, now=clock(),
+                    sources=load_news_sources() if verified_clearance.get("evidence", {}).get("status", {}).get("classification") == "subsided" and sources is None else sources)
                 state = decision.public_state
                 operation = decision.operation
             outcome = "cleared" if operation == "clear" else "published" if state in ("active_alert", "active_zone") else "needs_review"

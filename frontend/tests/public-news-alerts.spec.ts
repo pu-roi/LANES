@@ -17,6 +17,10 @@ const active: PublicNewsAlert = {
   display_geojson: null, current_status_unknown: false, affects_routing: false,
 };
 
+test.beforeEach(async ({ page }) => {
+  await page.clock.install({ time: new Date(active.updated_at) });
+});
+
 async function setup(page: Page) {
   const control = { failure: false, empty: false, refreshGate: null as Promise<void> | null, item: { ...active }, requests: [] as number[], writes: [] as string[] };
   const hydrationErrors: string[] = [];
@@ -161,7 +165,6 @@ test("makes offline and refresh failures explicit and never presents cached Acti
 });
 
 test("polls server status at a bounded interval and handles empty projections", async ({ page }, info) => {
-  await page.clock.install();
   const control = await setup(page);
   await openAlerts(page, info);
   await expect(page.getByText("News status: Active", { exact: true })).toBeVisible();

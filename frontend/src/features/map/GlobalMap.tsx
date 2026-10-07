@@ -11,14 +11,14 @@ import { ReportFab } from "@/features/hazards/ReportFab";
 import { FloodReportPanel } from "@/features/hazards/FloodReportPanel";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/hooks/useAuth";
-import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
-import { SavePlacePanel } from "@/features/places/SavePlacePanel";
 import { Panel } from "@/shared/ui/layout";
 import { NewsAlertsPanel } from "@/features/news/NewsAlertsPanel";
 import { useQueryClient } from "@tanstack/react-query";
 
 
 const MapCanvas = dynamic(() => import("./MapCanvas"), { ssr: false });
+const AnalyticsPanel = dynamic(() => import("@/features/analytics/AnalyticsPanel").then((mod) => mod.AnalyticsPanel), { ssr: false });
+const SavePlacePanel = dynamic(() => import("@/features/places/SavePlacePanel").then((mod) => mod.SavePlacePanel), { ssr: false });
 
 // ── Animation Variants ─────────────────────────────────────────────────────────
 
@@ -255,7 +255,7 @@ function MapLayout() {
         {isAnalyticsOpen && <AnalyticsPanel />}
       </AnimatePresence>
       <AnimatePresence>
-        <SavePlacePanel />
+        {(isSavePlacePanelOpen || (isPickingOnMap && activePoint === "save_place_location")) && <SavePlacePanel />}
       </AnimatePresence>
       {isMobile && pathname === "/map" && is3DMode && (
         <Panel

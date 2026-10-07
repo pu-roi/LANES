@@ -1698,7 +1698,7 @@ async def test_saved_pipeline_commits_zone_retries_and_expires_on_native_postgis
         db.flush()
         article_id=saved.id
 
-    def capture_target(db,limit):
+    def capture_target(db,limit,source_ids=None):
         # Restrict fixture admission; all queue leases/commits are real.
         return int(queue.enqueue_article(db,db.get(NewsArticle,article_id)) is not None)
     async def fixture_extract(article):
@@ -1725,7 +1725,7 @@ async def test_saved_pipeline_commits_zone_retries_and_expires_on_native_postgis
         monkeypatch.setattr(module,"current_pipeline_version",lambda:POLICY.pipeline_version)
     monkeypatch.setattr(processing,"capture_pending_inputs",capture_target)
     monkeypatch.setattr(processing,"extract_captured_news_article",fixture_extract)
-    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _:POLICY)
+    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _, configuration=None:POLICY)
     before=operational_counts(factory)
     result=await pipeline.run_news_pipeline(factory,limit=200,auditor=FixtureAuditor(),sources=SOURCES,
         unbound_only=True,clock=lambda:NOW)
@@ -1755,3 +1755,79 @@ async def test_saved_pipeline_commits_zone_retries_and_expires_on_native_postgis
         current=db.scalar(select(NewsClaimDecision).where(NewsClaimDecision.case_id==case_id)
             .order_by(NewsClaimDecision.revision.desc()))
         assert current.public_state=="expired" and public_projection(current,NOW+timedelta(hours=2)).status=="Unconfirmed"
+
+
+def test_publication_paused_during_projection_rolls_back_atomically(publication_factory, monkeypatch):
+    from app.services import news_publication_service as publication
+    from app.schemas.configuration import OperationalSettings
+    config = OperationalSettings()
+    monkeypatch.setattr(publication, "read_configuration", lambda db: config)
+    evaluation_id, case_id, _ = seed_evaluation(publication_factory)
+    original = publication._public
+    def pause_after_projection(*args, **kwargs):
+        result = original(*args, **kwargs)
+        config.news_publication_enabled = False
+        return result
+    monkeypatch.setattr(publication, "_public", pause_after_projection)
+    before = operational_counts(publication_factory)
+    with pytest.raises(NewsPublicationError, match="automatic_publication_paused"):
+        with publication_factory() as db, db.begin():
+            publish_completed_evaluation(db, evaluation_id, policy=POLICY, now=NOW, sources=SOURCES)
+    assert operational_counts(publication_factory) == before
+    with publication_factory() as db:
+        assert latest_decision(db, case_id) is None
+
+
+def test_qualified_clearance_maintains_while_publication_paused_and_policy_changes(publication_factory, monkeypatch):
+    from app.services import news_publication_service as publication
+    from app.schemas.configuration import OperationalSettings
+    config = OperationalSettings(news_publication_enabled=False)
+    evaluation_id, case_id, article_id = seed_evaluation(publication_factory)
+    with publication_factory() as db, db.begin():
+        publish_completed_evaluation(db, evaluation_id, policy=POLICY, now=NOW, sources=SOURCES)
+    clear_id, _, _ = seed_evaluation(publication_factory, article_id=article_id, condition="subsided", observed=NOW)
+    monkeypatch.setattr(publication, "read_configuration", lambda db: config)
+    altered = EvaluationPolicy("b"*64, POLICY.pipeline_version, POLICY.auditor_identity,
+        dict.fromkeys(config.evidence_expiry_minutes, 30), 24)
+    result = process_news_publications(
+        publication_factory, policy=altered, clock=lambda:NOW, sources=SOURCES, maintenance_only=True, limit=200)
+    assert result.cleared >= 1, result
+    with publication_factory() as db:
+        decision = latest_decision(db, case_id)
+        assert decision.operation == "clear"
+        assert public_projection(decision, NOW).status == "Cleared"
+
+
+def test_disabled_publisher_preserves_pending_publication_for_resume(publication_factory, monkeypatch):
+    from app.services import news_publication_service as publication
+    evaluation_id, case_id, _ = seed_evaluation(publication_factory)
+    monkeypatch.setattr(publication, "selected_news_sources", lambda db, sources=None: ())
+    process_news_publications(publication_factory, policy=POLICY, clock=lambda:NOW, sources=SOURCES, limit=200)
+    with publication_factory() as db:
+        assert latest_decision(db, case_id) is None
+    monkeypatch.setattr(publication, "selected_news_sources", lambda db, sources=None: SOURCES)
+    process_news_publications(publication_factory, policy=POLICY, clock=lambda:NOW, sources=SOURCES, limit=200)
+    with publication_factory() as db:
+        assert latest_decision(db, case_id).public_state == "active_alert"
+
+
+def test_depth_policy_snapshot_expires_at_read_time_without_retroactive_extension(publication_factory, monkeypatch):
+    from app.services import news_publication_service as publication
+    from app.schemas.configuration import OperationalSettings
+    config = OperationalSettings()
+    config.evidence_expiry_minutes["knee"] = 30
+    policy = EvaluationPolicy(POLICY.fingerprint, POLICY.pipeline_version, POLICY.auditor_identity,
+        config.evidence_expiry_minutes.copy(), 24)
+    monkeypatch.setattr(publication, "read_configuration", lambda db: config)
+    evaluation_id, case_id, _ = seed_evaluation(publication_factory, policy=policy)
+    with publication_factory() as db, db.begin():
+        decision = publish_completed_evaluation(db, evaluation_id, policy=policy, now=NOW, sources=SOURCES)
+        assert decision.expires_at == NOW + timedelta(minutes=25)
+        assert decision.snapshot["evidence_expiry_minutes"]["knee"] == 30
+    config.evidence_expiry_minutes["knee"] = 120
+    with publication_factory() as db:
+        decision = latest_decision(db, case_id)
+        assert decision.public_state == "active_alert"  # Maintenance intentionally delayed.
+        assert public_projection(decision, NOW+timedelta(minutes=25)).status == "Unconfirmed"
+        assert not public_projection(decision, NOW+timedelta(minutes=25)).affects_routing
+        assert decision.expires_at == NOW+timedelta(minutes=25)

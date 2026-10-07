@@ -46,6 +46,7 @@ def main() -> int:
     mode.add_argument("--open-leads", action="store_true", help="Read-only index/feed fallback diagnostic")
     mode.add_argument("--extract-saved", action="store_true", help="Preview rules extraction of saved pending articles; requires --dry-run")
     mode.add_argument("--process-saved", action="store_true", help="Persist rules extraction of captured pending inputs and due retries")
+    parser.add_argument("--scheduled", action="store_true", help="Apply database cadence, switches and worker overlap protection; requires --discover --pipeline")
     parser.add_argument("--process", action="store_true", help="Process saved/due work after --discover, including unchanged feeds")
     parser.add_argument("--pipeline", action="store_true", help="Run saved extraction, independent audit, publication, expiry and verified footprints; may incur configured AI fees")
     parser.add_argument("--limit", type=int, help="Saved preview/processing batch size, 1-200 (default 50)")
@@ -87,6 +88,18 @@ def main() -> int:
         parser.error("--open-leads requires --article-url and --title")
     if not args.open_leads and (args.article_url or args.title or args.excerpt or args.published_at or args.retrieve_articles or args.trace_network):
         parser.error("Article lookup and trace options require --open-leads")
+
+    if args.scheduled:
+        if not args.discover or not args.pipeline or args.dry_run or args.source:
+            parser.error("--scheduled requires --discover --pipeline without --dry-run/--source")
+        from app.services.news_scheduler_service import run_scheduled_news_tick
+        try:
+            result = asyncio.run(run_scheduled_news_tick(SessionLocal, limit=args.limit or 50, sources=load_news_sources(args.sources_file)))
+        except Exception:
+            print("scheduled_news_worker_failed", file=sys.stderr)
+            return 1
+        print(json.dumps(result, ensure_ascii=False, default=str))
+        return int(result.get("outcome") == "requires_attention")
 
     if args.process_saved:
         if args.pipeline:

@@ -31,6 +31,7 @@ export interface MapPoint {
 }
 
 export interface DraftReport {
+  observedAt?: string;
   id: string;
   geometry: RouteGeometry;
   oppositeGeometry: RouteGeometry | null;

@@ -1,0 +1,12 @@
+﻿hypothesized_median_minutes,fixed_log_scale,original_upper_only_group_balanced_negative_log_likelihood,interpretation
+0.1,1.0,2.2406368670909607e-13,likelihood_diagnostic_not_a_trained_model
+1,1.0,2.86602318164969e-07,likelihood_diagnostic_not_a_trained_model
+5,1.0,0.00026332350945213845,likelihood_diagnostic_not_a_trained_model
+15,1.0,0.0072930151414542475,likelihood_diagnostic_not_a_trained_model
+30,1.0,0.03616246449907352,likelihood_diagnostic_not_a_trained_model
+60,1.0,0.1303584815147449,likelihood_diagnostic_not_a_trained_model
+120,1.0,0.3624588631540456,likelihood_diagnostic_not_a_trained_model
+240,1.0,0.8202862138742946,likelihood_diagnostic_not_a_trained_model
+480,1.0,1.583511147722685,likelihood_diagnostic_not_a_trained_model
+960,1.0,2.7108779101792435,likelihood_diagnostic_not_a_trained_model
+1920,1.0,4.241003334667141,likelihood_diagnostic_not_a_trained_model

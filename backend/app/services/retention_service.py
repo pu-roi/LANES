@@ -81,18 +81,23 @@ def purge_expired_archived_records(db: Session, retention_days: int = 30) -> Dic
     return purged_counts
 
 
-async def run_periodic_retention_purge(interval_seconds: int = 86400, retention_days: int = 30):
+def _run_retention_purge(retention_days: int) -> None:
+    """Own the database session inside the worker thread."""
+    db = SessionLocal()
+    try:
+        purge_expired_archived_records(db=db, retention_days=retention_days)
+    finally:
+        db.close()
+
+
+async def run_periodic_retention_purge(interval_seconds: int = 86400, retention_days: int = 30) -> None:
     """
     Background worker that runs daily to purge expired archived records.
     """
     logger.info(f"Retention background worker started. Running every {interval_seconds}s with {retention_days}-day window.")
     while True:
         try:
-            db = SessionLocal()
-            try:
-                purge_expired_archived_records(db=db, retention_days=retention_days)
-            finally:
-                db.close()
+            await asyncio.to_thread(_run_retention_purge, retention_days)
         except Exception as e:
             logger.error(f"Retention worker encountered an error: {e}", exc_info=True)
 
