@@ -1,0 +1,36 @@
+{
+  "version": "pasig-clearance-followup-review-v1",
+  "reviewer": "coordinator_source_review",
+  "independent_capture_review_completed": true,
+  "source_text_sha256": {
+    "PASIG-20241024-2330": "d097c4304b6b9e07ab532fb6345c91d662ea66da84b428e0f58180d0dc3bf3b5",
+    "PASIG-20241025-0230": "4fd3604175f58a0793199b6f2e4953178627c5e4a2dd82efbdb0c32eb258e2e4",
+    "PASIG-20241025-1900": "ed29ef6c03af581cf9046c16021bac5b0189bdd7dc9d12461fd1844c81aad868",
+    "PASIG-20240903-1200": "0ad495d79064be3389538a0ec30cd95e9f88b245ecbef8fe5f7f4ce705316b7c",
+    "GMA-20251010-1318": "990eaddab89191dd3550f730b22e878a87b60d2bf680af24dc5c8ad37cd91f32"
+  },
+  "wet_frames": [
+    {"source_id":"PASIG-20241024-2330","clock_line":4,"observation_at":"2024-10-24T23:30:00+08:00","status_line":5,"locations":[[6,"Dela Paz"],[7,"Pinagbuhatan"],[8,"Pinagbuhatan"],[9,""],[10,"Pinagbuhatan"],[11,"Maybunga"],[12,"Rosario"],[13,"San Miguel"],[14,"San Nicolas"],[15,"Ugong"]]},
+    {"source_id":"PASIG-20241024-2330","clock_line":22,"observation_at":"2024-10-24T21:15:00+08:00","status_line":23,"locations":[[24,"Pinagbuhatan"],[25,""],[26,"Pinagbuhatan"],[27,"San Miguel"],[28,"San Nicolas"],[29,"Ugong"]]},
+    {"source_id":"PASIG-20241025-0230","clock_line":10,"observation_at":"2024-10-25T01:00:00+08:00","status_line":11,"locations":[[12,"Dela Paz"],[13,"Pinagbuhatan"],[14,"Pinagbuhatan"],[15,"Pinagbuhatan"],[16,"Rosario"],[17,"San Miguel"],[18,"San Nicolas"],[19,"Ugong"]]},
+    {"source_id":"PASIG-20240903-1200","clock_line":28,"observation_at":"2024-09-03T02:00:00+08:00","status_line":29,"locations":[[30,"Dela Paz"],[31,"Manggahan"]]},
+    {"source_id":"PASIG-20240903-1200","clock_line":19,"observation_at":"2024-09-03T06:00:00+08:00","status_line":20,"locations":[[21,"Dela Paz"],[22,"Manggahan"]]},
+    {"source_id":"PASIG-20240903-1200","clock_line":11,"observation_at":"2024-09-03T09:00:00+08:00","status_line":12,"locations":[[12,"Manggahan"]]}
+  ],
+  "passability_recovery": [
+    {"source_id":"PASIG-20241025-0230","clock_line":3,"outcome_at":"2024-10-25T02:30:00+08:00","outcome_line":4,"scope":"all areas in retained reported list","scope_linkage_class":"collective_conditional","wet_clock":"2024-10-25T01:00:00+08:00","wet_lines":[12,13,14,15,16,17,18,19]},
+    {"source_id":"PASIG-20240903-1200","clock_line":4,"outcome_at":"2024-09-03T12:00:00+08:00","outcome_line":5,"scope":"Infant Jesus St., Metroville, Brgy. Manggahan","scope_linkage_class":"direct_location","wet_clock":"2024-09-03T09:00:00+08:00","wet_lines":[12],"water_still_present":true,"raw_depth":"2-3 inches","raw_gauge_qualifier":"gutter deep"}
+  ],
+  "subsidence_outcomes": [
+    {"source_id":"GMA-20251010-1318","city_line":12,"outcome_line":13,"date_source":"title and HTML datePublished","outcome_at":"2025-10-10T12:49:00+08:00","city":"Pasig","barangay":"","location_raw":"C5 Ortigas Service road SB","raw_depth":"8 inches","reference_status":"preceding wet clock unresolved; article advisory 12:55 is later than 12:49","endpoint_interpretation":"subsided as of is an upper bound, not measured exact end"}
+  ],
+  "context": [
+    {"source_id":"PASIG-20241025-1900","clock_line":5,"evidence_line":7,"observation_at":"2024-10-25T15:00:00+08:00","location_raw":"city-level remaining flooding, unnamed areas","reason":"pumping to manage remaining flood water; no road identity, depth or dry time"}
+  ],
+  "source_notes": {
+    "PASIG-20241025-0230":"Displayed page date October 24 differs from title/body October 25. Observation clocks follow explicitly dated body, not page date. Passability does not mean subsidence.",
+    "PASIG-20240903-1200":"12:00 PASSABLE still has 2-3 inches of water; gutter-deep qualifier retained verbatim despite numeric mismatch. Hero asset path includes September 6, not proof of pre-noon source availability. F. Manalo reopening is traffic context, not subsidence.",
+    "GMA-20251010-1318":"HTML datePublished/dateModified 2025-10-10T13:18:20+08:00; both after subsidence. Adjacent C5 Eagle St. NB has no status and inherits nothing. Retained depth has no supported pre-outcome clock.",
+    "PASIG-20241025-1900":"Duplicate repeated body paragraph is one city-context claim. Evacuation closure/tree clearing does not establish flood clearance. Remaining flooding later does not identify reflooding at one of the earlier named roads."
+  }
+}

@@ -65,7 +65,7 @@ def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str 
         NewsExtractionRun.mode == "rules_only"))
 
 
-def capture_pending_inputs(db: Session, limit: int) -> int:
+def capture_pending_inputs(db: Session, limit: int, source_ids: tuple[str, ...] | None = None) -> int:
     """Bounded migration/restart handoff; skip captured runs and moderated history."""
     captured = exists(select(NewsExtractionRun.id).join(
         NewsArticleVersion, NewsArticleVersion.id == NewsExtractionRun.article_version_id,
@@ -74,6 +74,7 @@ def capture_pending_inputs(db: Session, limit: int) -> int:
         NewsArticle.review_state == "pending", NewsArticle.article_error.is_(None),
         func.length(func.trim(NewsArticle.article_text)) > 0,
         func.length(NewsArticle.article_text) <= MAX_ARTICLE_CHARS, ~captured,
+        NewsArticle.publisher_source_id.in_(source_ids) if source_ids is not None else True,
     ).order_by(NewsArticle.id).limit(limit)).all()
     return sum(enqueue_article(db, article) is not None for article in articles)
 
@@ -89,12 +90,14 @@ class ClaimedExtraction:
     exhausted: bool = False
 
 
-def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None) -> ClaimedExtraction | None:
+def claim_due_run(db: Session, now: datetime, *, article_id: int | None = None, source_ids: tuple[str, ...] | None = None) -> ClaimedExtraction | None:
     """Caller commits the short claim transaction before doing CPU extraction."""
     run = NewsExtractionRun
     due = or_(run.status == "pending", (run.status == "retry_wait") & (run.next_attempt_at <= now),
               (run.status == "processing") & (run.lease_expires_at <= now))
     query = select(run).join(NewsArticleVersion).where(due, run.pipeline_version == current_pipeline_version())
+    if source_ids is not None:
+        query = query.join(NewsArticle, NewsArticle.id == NewsArticleVersion.article_id).where(NewsArticle.publisher_source_id.in_(source_ids))
     if article_id is not None:
         query = query.where(NewsArticleVersion.article_id == article_id)
     while True:

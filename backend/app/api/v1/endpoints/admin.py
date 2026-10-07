@@ -86,6 +86,8 @@ def get_flood_report_moderation_cases(
         ))
 
     reports = query.order_by(models.FloodReport.created_at.desc()).limit(limit).all()
+    from app.services.citizen_approval_service import attach_automatic_evidence
+    attach_automatic_evidence(db, reports)
     cases: list[dict] = []
     for report in reports:
         outcome = (
@@ -119,6 +121,9 @@ def get_flood_report_moderation_cases(
             "internal_note": outcome.internal_note if outcome else None,
             "resolved_at": schemas.serialize_utc_datetime(outcome.acted_at) if outcome else None,
             "acting_admin": acting_admin.username if acting_admin else None,
+            "approval_kind": getattr(report, "approval_kind", None),
+            "automatic_review_reason": getattr(report, "automatic_review_reason", None),
+            "observed_at": schemas.serialize_utc_datetime(getattr(report, "observed_at", None)),
             "latitude": latitude,
             "longitude": longitude,
         })
@@ -284,7 +289,8 @@ def get_report_for_spatial_review(
     report = crud.get_flood_report(db=db, report_id=report_id)
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
-    return report
+    from app.services.citizen_approval_service import attach_automatic_evidence
+    return attach_automatic_evidence(db, [report])[0]
 
 
 @router.get("/flood-events/{event_id}/summary")
@@ -533,7 +539,11 @@ async def approve_report(
     Awards Trust Score credit to the reporter.
     Requires admin privileges.
     """
-    report = crud.get_flood_report(db, report_id=report_id)
+    from sqlalchemy import select
+    from app.services.configuration_service import configuration_lock
+    configuration_lock(db)
+    report = db.scalar(select(models.FloodReport).where(models.FloodReport.id == report_id,
+        models.FloodReport.deleted_at.is_(None)).with_for_update())
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
     # A completed report carries its immutable event/zone association. Returning
@@ -649,39 +659,21 @@ async def approve_report(
             is_linestring = geom_type == "ST_LineString"
             is_collection = geom_type in ["ST_GeometryCollection", "ST_MultiLineString"]
 
-            # For bidirectional reports stored as a GeometryCollection (original + opposite line),
-            # we collect both lines and buffer together so the resulting polygon accurately wraps
-            # both carriageways instead of just inflating one line.
-            if is_collection:
-                # Use a tighter per-line buffer since both roads are already included in the collection
-                buffer_radius = body.buffer_radius if (body and body.buffer_radius) else 0.00015
-                buffered_geojson_str = db.query(
-                    func.ST_AsGeoJSON(
-                        func.ST_ConvexHull(
-                            func.ST_Collect(
-                                func.ST_Buffer(
-                                    func.ST_GeometryN(report.geometry, 1),  # Original line
-                                    buffer_radius
-                                ),
-                                func.ST_Buffer(
-                                    func.ST_GeometryN(report.geometry, 2),  # Opposite line
-                                    buffer_radius
-                                )
-                            )
-                        )
-                    )
-                ).scalar()
+            from app.services.configuration_service import read_configuration
+            # Existing explicitly supplied legacy degree buffers retain their contract;
+            # otherwise apply the configured staff road margin in metres.
+            if body and body.buffer_radius:
+                buffered = func.ST_Buffer(report.geometry, body.buffer_radius)
             else:
-                # Fallback: single LineString or Point — use original logic
-                default_buffer = 0.00015 if is_linestring else 0.0005
-                buffer_radius = body.buffer_radius if (body and body.buffer_radius) else default_buffer
-                buffered_geojson_str = db.query(
-                    func.ST_AsGeoJSON(func.ST_Buffer(report.geometry, buffer_radius))
-                ).scalar()
+                margin = read_configuration(db).staff_road_buffer_metres if is_linestring or is_collection else 55
+                buffered = func.ST_Transform(func.ST_Buffer(func.ST_Transform(report.geometry, 32651), margin), 4326)
+            buffered_geojson_str = db.query(func.ST_AsGeoJSON(buffered)).scalar()
 
             if buffered_geojson_str:
                 import json
                 polygon_data = json.loads(buffered_geojson_str)
+                if polygon_data.get("type") != "Polygon":
+                    raise HTTPException(422, "The selected coverage is disconnected. Review separate road sections.")
                 polygon = schemas.PolygonGeometry(
                     type="Polygon",
                     coordinates=polygon_data["coordinates"]
@@ -689,6 +681,8 @@ async def approve_report(
                 zone_in = schemas.FloodAvoidanceZoneCreate(
                     report_id=report.id,
                     geometry=polygon,
+                    source_geometry=json.loads(db.query(func.ST_AsGeoJSON(report.geometry)).scalar()) if is_linestring or is_collection else None,
+                    curated_by_admin_id=current_user.id,
                     is_active=True
                 )
                 _, target_zone = create_verified_event_with_zone(
@@ -782,7 +776,7 @@ def preview_merge_coverage(payload: schemas.MergePreviewRequest, db: Session = D
             geometry, _ = synthesize_merged_geometry(selected, db)
             if not geometry:
                 raise ValueError("These reports need an explicitly reviewed affected boundary.")
-            final = schemas.MergedZoneFinalData.model_validate({**final.model_dump(), "geometry": geometry})
+            final = schemas.MergedZoneFinalData.model_validate({**final.model_dump(exclude_unset=True), "geometry": geometry})
         return compose_reviewed_coverage(db, final, target, payload.merge_mode)[2]
     except ValueError as exc:
         raise HTTPException(422, str(exc)) from exc
@@ -1421,6 +1415,8 @@ async def update_zone(
         raise HTTPException(status_code=404, detail="Avoidance zone not found")
     if payload.is_active is True and existing_zone.flood_event and existing_zone.flood_event.status == models.FloodEventStatus.ENDED:
         raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
+    if payload.expires_at is not None:
+        existing_zone.curated_by_admin_id = current_user.id
     if payload.is_active is False:
         if payload.expires_at is not None:
             existing_zone.expires_at = payload.expires_at
@@ -2095,22 +2091,12 @@ async def create_official_zone(
     zone_geometry: Any = payload.geometry
     source_geometry: Any = None
     if payload.geometry.type in {"LineString", "MultiLineString"}:
-        # Official zones are stored as polygons, while the line-mode UI sends a
-        # routed road centreline. Buffer it by roughly 25 metres to create the
-        # actual avoidance corridor without changing the client contract.
         source_geometry = payload.geometry
-        buffer_degrees = 25.0 / 111000.0
-        buffered_geojson = db.query(
-            func.ST_AsGeoJSON(
-                func.ST_Buffer(
-                    func.ST_SetSRID(
-                        func.ST_GeomFromGeoJSON(payload.geometry.model_dump_json()),
-                        4326,
-                    ),
-                    buffer_degrees,
-                )
-            )
-        ).scalar()
+        from app.services.configuration_service import read_configuration
+        margin = read_configuration(db).staff_road_buffer_metres
+        centreline = func.ST_SetSRID(func.ST_GeomFromGeoJSON(payload.geometry.model_dump_json()), 4326)
+        buffered_geojson = db.query(func.ST_AsGeoJSON(func.ST_Transform(
+            func.ST_Buffer(func.ST_Transform(centreline, 32651), margin), 4326))).scalar()
         if not buffered_geojson:
             raise HTTPException(status_code=422, detail="The road segment could not be converted into an avoidance zone.")
 
@@ -2230,8 +2216,10 @@ async def update_zone(
                 func.ST_GeomFromGeoJSON(body.geometry.model_dump_json()),
                 4326,
             )
+            from app.services.configuration_service import read_configuration
             buffered_geojson = db.query(
-                func.ST_AsGeoJSON(func.ST_Buffer(source_expression, 25.0 / 111000.0))
+                func.ST_AsGeoJSON(func.ST_Transform(func.ST_Buffer(func.ST_Transform(source_expression, 32651),
+                    read_configuration(db).staff_road_buffer_metres), 4326))
             ).scalar()
             if not buffered_geojson:
                 raise HTTPException(status_code=422, detail="The road segment could not be converted into an avoidance zone.")

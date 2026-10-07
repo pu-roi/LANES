@@ -9,6 +9,9 @@
 # Preserve bytes on every OS so manifest verification survives a Git checkout.
 /docs/evaluations/pasig-duration-*/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/pasig-duration-*/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-clearance-followup-20261007/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-clearance-followup-20261007/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/build_pasig_clearance_followup.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/flood-duration-pilot-20261004/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/flood-duration-pilot-20261004/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/plans/pasig-reported-subsidence-target.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
@@ -22,3 +25,14 @@
 # Preserve analytical manifest identity through Windows/Linux checkouts.
 /backend/runtime_data/noah-placement/*.json -text
 /backend/runtime_data/noah-placement/**/*.gz binary
+
+# Fitted research and validation provenance must survive cross-platform clones.
+/backend/runtime_data/flood-duration/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/app/services/flood_duration_model.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/train_pasig_duration.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/evaluate_pasig_duration.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/tests/test_flood_duration_model.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/tests/test_flood_duration_api.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-subsidence-validation-20261007/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-subsidence-validation-20261007/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-subsidence-validation-20261007/*.xml -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

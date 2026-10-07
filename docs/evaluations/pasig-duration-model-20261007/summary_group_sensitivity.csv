@@ -1,0 +1,4 @@
+﻿held_out_summary,status,training_shared_summaries,held_out_projections,held_out_mean_interval_negative_log_likelihood,p10_minutes,median_minutes,p90_minutes,prospective_accuracy_established
+OBS-7d1d5441f76ee802,fitted_sensitivity,2,1,2.4888047704762672,519.0914150517002,1084.1638027728336,2264.36253261053,false
+OBS-aed0c046a22c54b0,fitted_sensitivity,2,28,3.304369809470328,905.7005288095995,1356.8882836110924,2032.8417127247922,false
+OBS-c33d857e974b018d,fitted_sensitivity,2,8,6.574568193937972,573.6379739185539,803.6271561198805,1125.8261053425672,false

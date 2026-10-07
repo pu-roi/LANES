@@ -1,6 +1,8 @@
 # News-zone release: exact operator steps
 
-> **Last Updated:** October 07, 2026, 12:45 AM, Asia/Manila
+**Functional Settings release follow-up:** Use the [System Settings rollout](system-settings-rollout.md) after the matching API/job/frontend release. The new job command adds `--scheduled`; only then change the existing three-hour Scheduler trigger to a fixed 15-minute tick. Database configuration defaults to 30-minute collection. Keep production citizen approval paused until release acceptance. This implementation has not changed the live schedule.
+
+> **Last Updated:** October 07, 2026, 6:29 PM, Asia/Manila
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Current state and responsibility
@@ -8,10 +10,18 @@
 The developer has configured `lanes-api` and `lanes-news-discovery` in Google
 Cloud with `LANES_NEWS_AUDITOR_PROVIDER=openrouter`,
 `LANES_NEWS_AUDITOR_MODEL=openrouter/free`, and an OpenRouter key. These were
-verified by read-only Cloud Run inspection. The deployed job still uses
-`--process`; the new pipeline and map integration remain local/uncommitted.
-The last cloud database check returned `c5a7e9d2104f`; the required existing
-publication migration is `d7e4b9a21c60`.
+verified by read-only Cloud Run inspection. The matching API/job/frontend release
+is now deployed; discovery uses `--discover --pipeline --limit 50` at 1 GiB.
+Read-only cloud migration head is `d7e4b9a21c60`. Six inspected scheduled runs
+succeed through October 7, 6 PM; the latest parses 94 feed entries but admits
+zero flood candidates, and production has no news claim/zone records yet.
+Real-current-article and physical PWA acceptance remain open. Review the
+three-hour collector/two-hour evidence timing gap before acceptance.
+[Current audit](../evaluations/news-live-operational-audit-20261007.md).
+
+The earlier pre-release checkpoint used `--process` and migration
+`c5a7e9d2104f`; the ordered commands below remain release/reverification
+instructions, not a request to repeat the completed production migration/deploy.
 
 Repository preparation is agent/developer work, not another key-copying task:
 the Metro Manila NOAH bundle is now under `backend/runtime_data/noah-placement`,
@@ -131,7 +141,7 @@ This guide does not claim those actions have already happened.
    `d7e4b9a21c60`; read-only verification should confirm the revision.
 7. Open **Cloud Run → Jobs → lanes-news-discovery → View and edit job
    configuration**. Verify command `python` and separate arguments
-   `-m scripts.run_news_discovery --discover --pipeline --limit 50`. Check that
+   `-m scripts.run_news_discovery --discover --pipeline --scheduled --limit 50`. Check that
    the configured free auditor variables/key remain present.
 8. Open **Cloud Run → Services → lanes-api → Revision History**. Confirm the
    new revision is ready and serves traffic, with the same reviewed image as

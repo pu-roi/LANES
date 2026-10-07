@@ -1,9 +1,10 @@
 from typing import Optional, List, Tuple
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_
 from sqlalchemy.orm import Session
 
 from app.models.audit import AuditLog
 from app.schemas.audit import AuditLogCreate
+from app.crud.flood_followup import OBSERVATION_ACTION, REVIEW_ACTION
 
 
 def create_audit_log(db: Session, audit_in: AuditLogCreate, commit: bool = True) -> AuditLog:
@@ -37,7 +38,10 @@ def get_audit_logs(
     """
     Retrieves a paginated list of audit logs and the total matching count.
     """
-    query = select(AuditLog)
+    # Private observation/review evidence is readable only through the
+    # ownership/capability-checked follow-up endpoints, never this general feed.
+    query = select(AuditLog).where(or_(AuditLog.action_type.is_(None),
+        AuditLog.action_type.not_in((OBSERVATION_ACTION, REVIEW_ACTION))))
     
     if action_type:
         query = query.where(AuditLog.action_type == action_type)

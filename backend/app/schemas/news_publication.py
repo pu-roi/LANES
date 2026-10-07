@@ -124,6 +124,7 @@ class NewsDecisionSnapshot(NewsPublicationModel):
     target_case_id: int | None = Field(default=None, gt=0)
     previous_decision_id: int | None = Field(default=None, gt=0)
     deferred_until: datetime | None = None
+    evidence_expiry_minutes: dict[str, int] = Field(default_factory=dict)
     unconfirmed_retention_hours: int = Field(default=24, ge=1, le=72)
     geometry_reason: Literal[
         "operational_geometry_not_verified",

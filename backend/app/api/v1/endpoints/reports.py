@@ -1,7 +1,9 @@
-from typing import List
+from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, status, Form, UploadFile, File
 from sqlalchemy.orm import Session
 import json
+from datetime import datetime, timezone
+import hashlib
 
 from app import crud, schemas
 from app.core.database import get_db
@@ -28,6 +30,7 @@ async def create_report(
     is_bidirectional: bool = Form(False),
     geometry: str = Form(None),
     survey_data: str = Form(None),
+    observed_at: Annotated[datetime | None, Form()] = None,
     media: List[UploadFile] = File([]),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
@@ -35,9 +38,17 @@ async def create_report(
     """
     Submit a new flood report (raw Taglish text and optional coordinates/image).
     """
+    if observed_at is not None and (observed_at.tzinfo is None or observed_at > datetime.now(timezone.utc)):
+        raise HTTPException(422, "Observation time must include a timezone and cannot be in the future.")
+    media_hashes = []
     media_urls = []
     for file in media:
         if file and file.filename:
+            digest = hashlib.sha256()
+            for chunk in iter(lambda: file.file.read(1024 * 1024), b""):
+                digest.update(chunk)
+            media_hashes.append(digest.hexdigest())
+            file.file.seek(0)
             url = upload_image(file)
             if not url:
                 raise HTTPException(
@@ -74,7 +85,9 @@ async def create_report(
         geometry=geom_obj,
         media_urls=media_urls,
         user_id=current_user.id,
-        survey_data=survey_obj
+        survey_data=survey_obj,
+        observed_at=observed_at,
+        media_hashes=media_hashes,
     )
 
 
@@ -89,7 +102,8 @@ def read_my_reports(
     Retrieve flood reports submitted by the current user.
     """
     try:
-        return crud.get_flood_reports_by_user(db=db, user_id=current_user.id, skip=skip, limit=limit)
+        from app.services.citizen_approval_service import attach_automatic_evidence
+        return attach_automatic_evidence(db, crud.get_flood_reports_by_user(db=db, user_id=current_user.id, skip=skip, limit=limit))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database is offline: {e}")
 

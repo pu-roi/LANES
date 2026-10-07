@@ -1,6 +1,64 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 07, 2026, 2:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-119] System Settings saved unused values and could fail after persisting
+
+- **Status:** Fixed and verified locally; matching production release remains pending.
+- **Severity:** Medium — stored settings could be ineffective or a save could fail after changing values.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The four legacy controls had no runtime consumers. Legacy saving committed before an incorrectly called audit function, so an error could follow a persisted change.
+- **Resolution:** Typed shared policy replaces legacy writes. Known keys/ranges and capabilities are checked; advisory serialization plus revision conflicts protects edits. Settings, revision and audit share one transaction. The response is constructed before commit, so response assembly errors also roll back. Legacy rows/read access remain for history. Mobile/desktop drafts survive save errors and edit conflicts. [Verification](../evaluations/functional-system-settings-20261007.md).
+
+- **Pre-push verification:** The fresh 174 native settings/lifecycle/growth checks pass with existing migrations in removed disposable PostGIS databases. Changes include `backend/app/api/v1/endpoints/settings.py`, `backend/app/services/configuration_service.py`, `backend/app/schemas/configuration.py`, settings-consuming worker/zone/report services and `frontend/src/features/admin/SystemSettingsPage.tsx`. No new production release is claimed. [Audit](../evaluations/pasig-subsidence-validation-20261007/README.md#senior-planner-pre-push-checkpoint).
+
+### October 7: Docker socket startup recovery repeated during settings verification
+
+The ingest socket failure recurred, followed by a second stale Secrets Engine socket. Only recognized crashed Docker processes were stopped. Zero-byte runtime socket directories were moved to recoverable backups, then recreated. `lanes_postgis_db` and `lanes_valhalla` returned to running state; databases, volumes and application data were preserved. Backups are recorded in the [settings verification](../evaluations/functional-system-settings-20261007.md). This is a workaround for the [reported Docker Desktop startup defect](https://github.com/docker/desktop-feedback/issues/554), not a permanent Docker fix. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-118] Private follow-up evidence leaks through the generic audit feed
+
+- **Status:** Resolved in local code; actual API/privacy acceptance and deployment pending.
+- **Severity:** High — non-Commuter staff without Reports permission could otherwise read private citizen/staff follow-up evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Independent source/security review of the new follow-up workflow found `/admin/audit-logs` returns generic `metadata_json` under a dependency that excludes only Commuter. The new dedicated follow-up routes correctly restrict evidence, but the generic reader could bypass that capability boundary.
+
+#### 2. Root Cause Analysis
+
+Follow-up observations/reviews reuse the existing append-only audit JSON pattern. Generic `get_audit_logs` previously selected every action type without excluding private feature records.
+
+#### 3. Solution & Architectural Strategy
+
+Exclude `FLOOD_FOLLOWUP_OBSERVATION` and `FLOOD_FOLLOWUP_REVIEW` from the generic audit query before action filters, count and pagination. Even an explicit action filter cannot retrieve those records there. Ownership/Reports-capability checked follow-up reads remain the sole evidence interface, with no-store responses. No source record is deleted or redacted in persistence.
+
+#### 4. Files Modified / Verification
+
+`backend/app/crud/audit.py` uses the centralized follow-up action constants and preserves unrelated/legacy-null action behavior. An independent reviewer re-read the fix and found the source-level access path closed; Python syntax/diff checks pass. Actual API/database privacy tests were not requested/run. [Implementation and limits](../evaluations/structured-flood-followups-20261007.md).
+
+### [BUG-117] Live free auditor times out at the normal worker deadline
+
+- **Status:** Investigating availability; fail-closed behavior verified, current-article acceptance pending.
+- **Severity:** Medium — eligible current news can be deferred to review instead of automatic publication.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The October 7 live-news audit verified `openrouter/free` configuration, then made one historical synthetic probe at the default 20-second worker deadline. It returned `probe_failed`, `unavailable`, `auditor_timeout`, and no HTTP status. Earlier successful synthetic responses do not establish consistent availability.
+
+#### 2. Root Cause Analysis (RCA)
+
+The client deadline elapsed before a usable response. The specific provider/network/server cause is unverified; production has no claim evaluations with which to measure current-article failure rates. This is distinct from BUG-114's repaired quote-offset formatting defect.
+
+#### 3. Solution & Architectural Strategy
+
+Retain required independent confirmation and failure-to-review behavior. Measure availability/latency with representative current articles before declaring unattended activation accepted. No paid fallback, persistence-timeout change, safety-gate relaxation or repeated synthetic probe was used.
+
+#### 4. Files Modified / What Changed
+
+No application/provider configuration change. Record the safe probe result, acceptance tasks and verification limits in `docs/evaluations/news-live-operational-audit-20261007.md`, `docs/task_plan.md` and `docs/progress.md`. The synthetic probe has no database/publication access. [Audit](../evaluations/news-live-operational-audit-20261007.md).
 
 ### [BUG-116] Sync database work scales with clients; weather blocks the API loop
 
@@ -381,6 +439,8 @@ Validate aliases against actual barangays/exact parents; retain qualified barang
 - **Status:** Local startup recovered; upstream cause and recurrence prevention unverified.
 - **Severity:** High — blocks native PostGIS/migration verification.
 - **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 7, 6:29 PM recurrence:** Starting Docker for the live-news audit reproduced the user-reported `sailor-ingest.sock` access/rename failure. Stop identified crashed Docker processes, verify their exit, preserve both inspected socket directories as `run.lanes-audit-backup-20261007-182011` and `docker-secrets-engine.lanes-audit-backup-20261007-182011`, recreate the runtime directories and start once. Engine 29.8.0 and the original PostGIS/Valhalla containers resume; 131 native lifecycle tests then pass in a separate disposable database. No original volume/database reset; recurrence prevention remains unverified. [Audit](../evaluations/news-live-operational-audit-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 #### 1. Problem Description
 

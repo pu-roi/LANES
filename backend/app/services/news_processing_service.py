@@ -24,7 +24,7 @@ class ProcessingSummary:
 
 
 async def process_saved_news(session_factory: Callable[[], Session], *, limit: int = 50,
-                             article_id: int | None = None,
+                             article_id: int | None = None, obey_configuration: bool = False, sources=None,
                              clock: Callable[[], datetime] = utc_now) -> ProcessingSummary:
     if not 1 <= limit <= 200:
         raise ValueError("Processing limit must be between 1 and 200")
@@ -33,10 +33,24 @@ async def process_saved_news(session_factory: Callable[[], Session], *, limit: i
     current_pipeline_version()
     if article_id is None:
         with session_factory() as db, db.begin():
-            summary.captured = capture_pending_inputs(db, limit)
+            if obey_configuration:
+                from app.services.configuration_service import read_configuration, selected_news_sources
+                if not read_configuration(db).news_processing_enabled:
+                    return summary
+                selected = tuple(source.id for source in selected_news_sources(db, sources))
+                summary.captured = capture_pending_inputs(db, limit, source_ids=selected)
+            else:
+                summary.captured = capture_pending_inputs(db, limit)
     for _ in range(limit):
         with session_factory() as db, db.begin():
-            claim = claim_due_run(db, clock(), article_id=article_id)
+            if obey_configuration:
+                from app.services.configuration_service import read_configuration, selected_news_sources
+                if not read_configuration(db).news_processing_enabled:
+                    break
+                selected = tuple(source.id for source in selected_news_sources(db, sources))
+                claim = claim_due_run(db, clock(), article_id=article_id, source_ids=selected)
+            else:
+                claim = claim_due_run(db, clock(), article_id=article_id)
         if claim is None:
             break
         if claim.exhausted:

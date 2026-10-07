@@ -35,15 +35,18 @@ class EvaluationPolicy:
     fingerprint: str
     pipeline_version: str
     auditor_identity: dict
+    expiry_minutes: dict[str, int] | None = None
+    retention_hours: int | None = None
 
 
-def evaluation_policy(auditor: NewsClaimAuditor) -> EvaluationPolicy:
+def evaluation_policy(auditor: NewsClaimAuditor, configuration=None) -> EvaluationPolicy:
     identity = auditor.policy_identity()
     pipeline = current_pipeline_version()
+    configuration_identity = ({"expiry_minutes": configuration.evidence_expiry_minutes, "retention_hours": configuration.news_unconfirmed_retention_hours} if configuration is not None else {})
     fingerprint = canonical_sha256({"version": EVALUATION_POLICY_VERSION, "pipeline_version": pipeline,
                                     "auditor": identity, "admission_seconds": 43200,
-                                    "observation_fallback_seconds": 7200})
-    return EvaluationPolicy(fingerprint, pipeline, identity)
+                                    "observation_fallback_seconds": 7200, **configuration_identity})
+    return EvaluationPolicy(fingerprint, pipeline, identity, configuration.evidence_expiry_minutes if configuration is not None else None, configuration.news_unconfirmed_retention_hours if configuration is not None else None)
 
 
 def source_is_approved(article: NewsArticleExtractorInput, sources: tuple[NewsSource, ...]) -> bool:
@@ -57,7 +60,7 @@ def publication_is_current(article: NewsArticleExtractorInput, now: datetime) ->
                 and timedelta(0) <= now - published <= ADMISSION_AGE)
 
 
-def preliminary_reason(claim: ExtractedClaim, now: datetime) -> str | None:
+def preliminary_reason(claim: ExtractedClaim, now: datetime, policy: EvaluationPolicy | None = None) -> str | None:
     """Local evidence gates reduce needless external calls; never confirm a claim."""
     if not metro_manila_claim(claim):
         return "unsupported_locality"
@@ -80,7 +83,7 @@ def preliminary_reason(claim: ExtractedClaim, now: datetime) -> str | None:
         return "missing_supported_observation_time"
     if not timedelta(0) <= now - observed <= ADMISSION_AGE:
         return "observation_outside_admission_window"
-    if claim.condition in ("active", "rising", "receding") and now >= observed + OBSERVATION_FALLBACK:
+    if claim.condition in ("active", "rising", "receding") and now >= observed + timedelta(minutes=(policy.expiry_minutes.get(claim.depth_canonical or "unknown", 120) if policy and policy.expiry_minutes else 120)):
         return "observation_evidence_expired"
     return None
 
@@ -102,7 +105,7 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
                            now: datetime, limit: int = 50, after_run_id: int = 0,
                            run_id: int | None = None,
                            sources: tuple[NewsSource, ...] | None = None,
-                           unbound_only: bool = False) -> EvaluationSummary:
+                           unbound_only: bool = False, obey_configuration: bool = False) -> EvaluationSummary:
     """Bounded explicit handoff after extraction commits, with a resumable cursor."""
     now = require_utc(now)
     if not 1 <= limit <= 200 or after_run_id < 0 or (run_id is not None and run_id <= 0):
@@ -135,6 +138,11 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
         summary.next_after_run_id = selected_id
         # One run per transaction; a bad run never rolls back other runs' work.
         with session_factory() as db, db.begin():
+            if obey_configuration:
+                from app.services.configuration_service import read_configuration, selected_news_sources
+                if not read_configuration(db).news_processing_enabled:
+                    break
+                sources = selected_news_sources(db, sources)
             run = db.get(NewsExtractionRun, selected_id)
             version = db.get(NewsArticleVersion, run.article_version_id)
             try:
@@ -159,7 +167,7 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
 async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit: int = 50,
                                run_id: int | None = None, auditor: NewsClaimAuditor | None = None,
                                policy: EvaluationPolicy | None = None,
-                               client: httpx.AsyncClient | None = None,
+                               client: httpx.AsyncClient | None = None, obey_configuration: bool = False,
                                sources: tuple[NewsSource, ...] | None = None,
                                clock: Callable[[], datetime] = utc_now) -> EvaluationSummary:
     if not 1 <= limit <= 200:
@@ -171,8 +179,17 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
     visited: list[int] = []
     for _ in range(limit):
         with session_factory() as db, db.begin():
-            owned = claim_due_evaluation(db, require_utc(clock()), policy_fingerprint=policy.fingerprint,
-                                         run_id=run_id, exclude_evaluation_ids=tuple(visited))
+            if obey_configuration:
+                from app.services.configuration_service import read_configuration, selected_news_sources
+                if not read_configuration(db).news_processing_enabled:
+                    break
+                sources = selected_news_sources(db, sources)
+                if not sources:
+                    break
+            parameters = {"run_id": run_id, "exclude_evaluation_ids": tuple(visited)}
+            if obey_configuration:
+                parameters["source_ids"] = tuple(source.id for source in sources)
+            owned = claim_due_evaluation(db, require_utc(clock()), policy_fingerprint=policy.fingerprint, **parameters)
         if owned is None:
             break
         visited.append(owned.evaluation_id)
@@ -194,7 +211,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
             elif auditor.policy_identity() != policy.auditor_identity or current_pipeline_version() != policy.pipeline_version:
                 error_code = "evaluation_policy_changed"
             else:
-                reason = preliminary_reason(claim, require_utc(clock()))
+                reason = preliminary_reason(claim, require_utc(clock()), policy)
                 audit = None
                 if reason is None:
                     # The claim transaction has committed; no DB lock/connection is held here.
@@ -227,7 +244,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
             # Preserve a confirmation while recording freshness lost during an audit.
             result["freshness_reason_at_completion"] = (
                 "publication_outside_admission_window" if not publication_is_current(article, now)
-                else preliminary_reason(claim, now))
+                else preliminary_reason(claim, now, policy))
             if len(json.dumps(result, ensure_ascii=False, allow_nan=False).encode()) > 65536:
                 result, error_code, retryable = None, "evaluation_result_oversized", False
         with session_factory() as db, db.begin():

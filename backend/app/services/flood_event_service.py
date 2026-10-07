@@ -435,6 +435,7 @@ def create_verified_event_with_zone(
     zone_attributes: Optional[dict[str, Any]] = None,
     commit: bool = True,
     first_reported_at: Optional[datetime] = None,
+    credit_reputation: bool = True,
 ) -> tuple[models.FloodEvent, models.FloodAvoidanceZone]:
     """Create a verified event and its first operational zone atomically."""
     if source_report and source_report.event_id is not None:
@@ -475,7 +476,7 @@ def create_verified_event_with_zone(
                     acted_by_user_id=acted_by_user_id,
                     acted_at=verified_at,
                 ))
-            if source_report.user_id:
+            if source_report.user_id and credit_reputation:
                 credit_user_verified_report(db, source_report.user_id, commit=False)
 
         _append_timeline(
@@ -548,8 +549,9 @@ def link_supporting_report(
     report: models.FloodReport,
     event: models.FloodEvent,
     zone: models.FloodAvoidanceZone,
-    acted_by_user_id: int,
+    acted_by_user_id: Optional[int],
     commit: bool = True,
+    credit_reputation: bool = True,
 ) -> models.FloodReport:
     """Approve a corroborating report without creating another event."""
     if zone.event_id != event.id:
@@ -589,7 +591,7 @@ def link_supporting_report(
             db, event.id, "report_linked", "Supporting flood report linked to this event.",
             {"report_id": report.id, "zone_id": zone.id}, acted_at,
         )
-        if report.user_id:
+        if report.user_id and credit_reputation:
             credit_user_verified_report(db, report.user_id, commit=False)
         if commit:
             db.commit()
@@ -699,5 +701,9 @@ def expire_due_zones(db: Session, now: Optional[datetime] = None) -> int:
         models.FloodAvoidanceZone.expires_at <= cutoff,
     ).all()
     for zone in due_zones:
+        if zone.event_id:
+            _append_timeline(db, zone.event_id, "evidence_expired",
+                "Evidence deadline passed; current condition is Unconfirmed, not observed cleared.",
+                {"zone_id": zone.id, "expires_at": zone.expires_at.isoformat(), "condition": "Unconfirmed"}, cutoff)
         deactivate_zone_and_end_event_if_final(db=db, zone=zone, occurred_at=cutoff)
     return len(due_zones)

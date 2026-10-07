@@ -61,6 +61,9 @@ export interface FloodReport {
   updated_at: string;
   approved_at?: string | null;
   survey?: ReportSurvey | null;
+  observed_at?: string | null;
+  approval_kind?: "automatic" | "human" | "pending_review" | null;
+  automatic_review_reason?: string | null;
   reporter_name?: string | null;
   reporter_username?: string | null;
   reporter_role?: string | null;
@@ -502,14 +505,48 @@ export async function cleanupData(dateFrom: string, dateTo: string, confirm: boo
   });
 }
 
-export type SystemSettings = Record<string, any>;
-
-export async function getSettings(): Promise<SystemSettings> {
-  return apiClient.get<SystemSettings>('/admin/settings');
+export interface SystemSettings {
+  staff_road_buffer_metres: number;
+  evidence_expiry_minutes: Record<string, number>;
+  news_unconfirmed_retention_hours: number;
+  citizen_auto_approval_enabled: boolean;
+  citizen_min_trust: number;
+  citizen_min_accuracy: number;
+  citizen_min_human_reviews: number;
+  news_collection_enabled: boolean;
+  news_processing_enabled: boolean;
+  news_publication_enabled: boolean;
+  news_collection_interval_minutes: number;
+  news_source_ids: string[];
 }
-
-export async function updateSettings(settings: SystemSettings): Promise<SystemSettings> {
-  return apiClient.put<SystemSettings>('/admin/settings', { settings });
+export interface SettingsConfiguration {
+  settings: SystemSettings;
+  revision: number;
+  can_edit: boolean;
+  updated_at: string | null;
+  updated_by: number | null;
+  automatic_news_buffer_metres: number;
+  supported_options: Record<string, unknown>;
+  depth_options: { key: string; label: string }[];
+  source_options: { id: string; publisher: string }[];
+  runtime: {
+    last_started_at: string | null;
+    last_finished_at: string | null;
+    last_successful_at: string | null;
+    next_collection_at: string | null;
+    running: boolean;
+    error_code: string | null;
+    stage_counts: Record<string, Record<string, number>>;
+    stage_outcomes: Record<string, string>;
+    stages: Record<string, { last_attempt_at: string | null; last_success_at: string | null; outcome: string; counts: Record<string, number>; errors: string[] }>;
+    scheduler_tick_minutes: number;
+  };
+}
+export async function getSettings(): Promise<SettingsConfiguration> {
+  return apiClient.get<SettingsConfiguration>('/admin/settings/configuration');
+}
+export async function updateSettings(update: { revision: number; settings: SystemSettings }): Promise<SettingsConfiguration> {
+  return apiClient.put<SettingsConfiguration>('/admin/settings/configuration', update);
 }
 
 export interface DashboardChartsData {

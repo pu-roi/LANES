@@ -1,6 +1,18 @@
 # LANES documentation
 
-> **Last Updated:** October 07, 2026, 2:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+[Duration-model follow-up search notes](evaluations/pasig-duration-model-20261007/followup-search-notes.md) — source acquisition notes and evidence limitations for the conditional study.
+
+[Pasig subsidence model validation](evaluations/pasig-subsidence-validation-20261007/README.md) — numerical/API tests, reproduced source-verified candidates and held-summary lognormal versus exponential comparison; operational prediction remains gated.
+
+[Functional System Settings verification](evaluations/functional-system-settings-20261007.md) — atomic versioned configuration, citizen corroboration, independent news stages, per-depth evidence deadlines, desktop/mobile acceptance and explicit release limits.
+
+[System Settings rollout](guides/system-settings-rollout.md) — matching API/worker/frontend release, fixed 15-minute Scheduler tick, 30-minute database interval, approval activation and rollback.
+
+[Implemented System Settings contract](plans/functional-system-settings.md) — operational rules, retained history and staged activation.
+
+[Live news collection and plotting audit](evaluations/news-live-operational-audit-20261007.md) — successful scheduled six-feed collection, empty eligible cloud claim state, 404 backend checks, desktop/mobile fixture verification, Docker recovery, a live free-auditor timeout and remaining real-article/cadence/PWA acceptance.
 
 [Senior-planner pre-push checkpoint](evaluations/cloud-performance-20261007.md#senior-planner-pre-push-checkpoint) — eight-record audit, reconciled deployed behavior, unchanged dependencies/schema, migration head and user-authorized `roi-branch` delivery.
 
@@ -35,6 +47,10 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
+- [Structured Pasig flood follow-up evidence](plans/flood-followup-evidence-plan.md) — owner observations, independent staff review, existing append-only storage and later duration-dataset qualification.
+
+- [Pasig subsidence model implementation](plans/pasig-subsidence-model-implementation.md) — fitted conditional research AFT baseline, distinct first-recorded-wet target, protected preview API and pending operational validation.
+
 - [Pasig reported-subsidence target](plans/pasig-reported-subsidence-target.md) — adopted proxy target, 37 conditional projections/three summary outcomes, prospective references, source availability and model gates.
 
 - [Flood evidence lifecycle and duration estimation](plans/flood-evidence-lifecycle-and-duration-plan.md) — Metro Manila collection/plotting, Pasig evaluation, reviewed conditional proxy labels and pending prospective training export, conditional two-hour Unconfirmed fallback and model/storage/routing/release gates.
@@ -52,6 +68,12 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Structured Pasig flood follow-ups](evaluations/structured-flood-followups-20261007.md) — local owner observation/staff review/JSON export implementation, existing append-only storage, privacy safeguards, completed source review and pending runtime/browser acceptance.
+
+- [Pasig additional follow-up acquisition](evaluations/pasig-clearance-followup-20261007/README.md) — five new captures, one outcome-only subsidence report and separate vehicle-passability comparisons; independent source review complete, zero new subsidence-duration pairs.
+
+- [Pasig conditional duration-model experiment](evaluations/pasig-duration-model-20261007/README.md) — actual fitted intercept-only AFT artifact, 37 assumption-qualified projections/three summaries, composite interval likelihood, sensitivity/graphs and zero production admission.
 
 - [Exact-source free-auditor evidence options](evaluations/phase-36-auditor-evidence-options-20261007.md) - 170 passing checks, strict source spans, safe HTTP status and successful synthetic free probes at the 20/60-second limits; real-article/deployment acceptance remains open.
 

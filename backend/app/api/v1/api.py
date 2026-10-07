@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import admin_review, admin_news_publication, news_alerts
+from app.api.v1.endpoints import admin_review, admin_news_publication, news_alerts, flood_duration, flood_followup
 from app.api.v1.endpoints import users, reports, routes, auth, admin, admin_news, roles, data, settings, sse, feed, comments, weather, public, posts, notifications, analytics, sync, hotlines
 
 api_router = APIRouter()
@@ -8,10 +8,12 @@ api_router = APIRouter()
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(reports.router, prefix="/reports", tags=["reports"])
+api_router.include_router(flood_followup.router, tags=["flood follow-up evidence"])
 api_router.include_router(routes.router, prefix="/routes", tags=["routes"])
 api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
 api_router.include_router(admin_news.router, prefix="/admin/news", tags=["admin news"])
 api_router.include_router(admin_news_publication.router, prefix="/admin/news", tags=["news decisions"])
+api_router.include_router(flood_duration.router, prefix="/admin/news", tags=["duration research"])
 api_router.include_router(news_alerts.router, prefix="/news", tags=["public news alerts"])
 api_router.include_router(admin_review.router, prefix="/admin/review", tags=["spatial review"])
 api_router.include_router(roles.router, prefix="/admin/roles", tags=["admin roles"])

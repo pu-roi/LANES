@@ -5,6 +5,8 @@ geoalchemy2==0.15.0
 psycopg[binary]
 spacy==3.7.5
 scikit-learn==1.5.0
+# Explicit interval-AFT optimizer; compatible with spaCy's NumPy 1.x runtime.
+scipy==1.14.1
 seqeval==1.2.2
 httpx==0.27.0
 pydantic==2.7.4

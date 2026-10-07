@@ -17,8 +17,9 @@ from app.services.news_publication_read_service import browse_news_claim_history
 router = APIRouter()
 
 
-def publication_policy() -> EvaluationPolicy:
-    return evaluation_policy(NewsClaimAuditor())
+def publication_policy(db: Session = Depends(get_db)) -> EvaluationPolicy:
+    from app.services.configuration_service import read_configuration
+    return evaluation_policy(NewsClaimAuditor(), read_configuration(db))
 
 
 @router.get("/claims/{case_id}", response_model=NewsClaimDetail)

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Optional, List, Any
 from sqlalchemy.orm import Session
 from app.schemas.report import FloodReportCreate
@@ -89,7 +90,9 @@ async def process_new_report(
     geometry: dict = None,
     media_urls: list[str] = None,
     user_id: int = None,
-    survey_data: dict = None
+    survey_data: dict = None,
+    observed_at: datetime | None = None,
+    media_hashes: list[str] | None = None,
 ):
     """
     Business logic for processing a new flood report.
@@ -117,6 +120,7 @@ async def process_new_report(
         except Exception as e:
             logger.error(f"Failed to reverse geocode report location: {e}")
 
+    road_validated = False
     # Preview geometry is advisory. Rebuild every submitted road segment so the
     # stored geometry is always the authoritative snapped road-only coverage.
     if geometry and geometry.get("type") in {"LineString", "MultiLineString"}:
@@ -126,6 +130,7 @@ async def process_new_report(
                 human_readable_location,
                 is_bidirectional,
             )
+            road_validated = road_type in {"NARROW_TWO_WAY", "DIVIDED_CARRIAGEWAY", "TRUE_ONE_WAY", "MIXED_TOPOLOGY", "SINGLE_DIRECTION"}
             if road_type == "DIVIDED_CARRIAGEWAY":
                 logger.info(
                     "[process_new_report] Bidirectional: successfully combined original + "
@@ -173,6 +178,18 @@ async def process_new_report(
         except Exception as e:
             logger.error(f"[process_new_report] Failed to auto-create CommunityPost for report #{created_report.id}: {e}")
 
+    from app.services.citizen_approval_service import record_observation, approve_citizen_report
+    try:
+        record_observation(db, created_report, observed_at=observed_at, road_validated=road_validated, media_hashes=media_hashes or [])
+        reason = approve_citizen_report(db, created_report.id)
+    except Exception:
+        db.rollback()
+        logger.exception("Citizen automatic approval failed; submitted report remains pending")
+        reason = "automatic_approval_unavailable"
+    db.refresh(created_report)
+    created_report.observed_at = observed_at
+    created_report.automatic_review_reason = reason
+    created_report.approval_kind = "automatic" if created_report.status.value == "approved" else "pending_review"
     return created_report
 
 

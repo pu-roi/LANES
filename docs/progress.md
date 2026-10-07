@@ -1,7 +1,40 @@
 # LANES — Progress Tracker
 
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 07, 2026, 2:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 09:39 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Senior-planner pre-push checkpoint
+
+- [x] Audit all eight authoritative records and index the settings, follow-up and duration evaluations/plans; preserve historical verification and open release gates. **174 native PostGIS checks pass** after existing migrations to `d7e4b9a21c60`, and disposable databases are removed. The latest **89 focused ML/settings/pipeline checks** and a fresh frontend production build including TypeScript pass. SciPy is declared; hashed research artifacts/builders are preserved across operating systems. Commit/push to `roi-branch` is user-authorized; its result is reported separately after Git completes. [Pre-push audit](evaluations/pasig-subsidence-validation-20261007/README.md#senior-planner-pre-push-checkpoint). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Subsidence ML baseline comparison and tests completed locally
+
+- [x] Rebuild the original source-verified 37 projections/three shared summaries and reproduce the existing fit; implement summary-held-out lognormal versus exponential comparison with saved fold artifacts and scientific PNG/PDF. Exponential has lower equal-summary interval NLL (2.801 versus 4.123), without establishing prospective accuracy. **89 numerical/API/settings/pipeline checks pass**. Existing data/runtime artifact, operational expiry, schema and deployment are unchanged. [Validation](evaluations/pasig-subsidence-validation-20261007/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Functional System Settings implemented and verified locally
+
+- [x] Replace inactive sliders with typed, revision-guarded operational configuration: staff road margin, per-depth evidence deadlines, human-history citizen eligibility and three independent news stages/publisher controls. Settings and audit commit together; permissions, conflict recovery, recorded stage health and mobile/desktop observation input are connected. No schema/migration or settings-related dependency addition. Production rollout and real-current-news plotting remain separate gates. [Verification](evaluations/functional-system-settings-20261007.md), [rollout](guides/system-settings-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Structured Pasig follow-up collection implemented locally
+
+- [x] Complete independent review of the five new source captures and regenerate reviewed metadata/hashes without admitting a new subsidence-duration pair. Add owner still-flooded/subsided observations, independent staff review and paged JSON export using existing append-only audit/timeline storage; preserve original geometry/reporter/source availability separately from observation/submission/review clocks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Integrate Profile/Reports and staff moderation narrow/wide layouts, explicit time/evidence, same-draft retry UUIDs, permission-aware actions and visible errors. Exclude private follow-up records from general audit reads (BUG-118) and use mobile navigation/safe-area padding. TypeScript/AST, independent source/security inspection and hash/diff checks pass. No schema/dependency/model fitting or operational expiry change; actual DB/API/browser/PWA acceptance and deployment remain pending. [Evaluation](evaluations/structured-flood-followups-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Additional Pasig follow-ups captured with separate outcome targets
+
+- [x] Capture five new official/publisher reports with ten immutable HTML/text artifacts. Publish 33 source-reviewed claims (30 wet), one C5 Ortigas southbound October 10, 2025 subsidence outcome with unresolved earlier wet reference, and nine descriptive light-vehicle passability comparisons sharing two outcomes. No new subsidence-duration pair, independent storm verification or production admission. Preserve original 819 wet rows/37 proxies/70 captures and current model; no fitting/runtime/DB/test/deployment change. The initially interrupted independent capture review completed at the later checkpoint above. [Acquisition and source register](evaluations/pasig-clearance-followup-20261007/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 7: Conditional Pasig subsidence model fitted and research preview implemented
+
+- [x] Fit a real intercept-only lognormal AFT research baseline using 37 conditional projections/three shared summaries, with 35 positive bounds only under explicit uninterrupted-episode assumptions. Publish source-linked first/last reference rows, JSON artifact, composite-likelihood diagnostics, three summary-removal sensitivities, evidence and model graphs. All 819 source rows and 70 capture artifacts remain preserved. Median sensitivity is about 13.39–22.61 hours from first recorded wet evidence; no prospective accuracy or depth/locality effects are established. [Experiment](evaluations/pasig-duration-model-20261007/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement timezone-aware authenticated staff duration status/preview APIs, explicit assumptions/abstention, bounded JSON loading and no publication/expiry/routing writes. Add explicit SciPy 1.14.1; replace incompatible local 1.18.0 while preserving NumPy 1.26.4. Actual fitting/manual service preview and independent source/runtime audits completed; automated/API/auth/browser tests and deployment remain unperformed. No SQLAlchemy/Alembic or frontend change. Production training admission remains zero; operational prediction is not finished. [Contract](plans/pasig-subsidence-model-implementation.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+### October 7: Live news collection and controlled plotting/lifecycle audit
+
+- [x] Verify six successful scheduled full-pipeline executions after the 1 GiB release. Latest 6 PM run parses 94 entries from six feeds with no saved eligible flood report; read-only cloud checks show all 24 saved articles excluded and zero published claim/zone records. Production API and existing migration head are healthy. This establishes collection, not real-current-news plotting acceptance. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify **404 distinct backend checks**, including 131 native PostGIS activation/routing/refresh/clearance/expiry cases, and ten public desktop/mobile browser cases. Four distinct staff cases pass across runs, with a documented desktop timing failure and successful isolated rerun. Pin public browser fixture clocks; verify the 897-tile/20-qualified-barangay runtime bundle. Recover recurring Docker socket startup using preserved runtime-folder backups. [Audit and limitations](evaluations/news-live-operational-audit-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Complete real-current-article and physical PWA acceptance; evaluate the three-hour collector versus two-hour evidence lifetime. One live free synthetic auditor request timed out at the normal 20-second deadline, so current provider availability remains unaccepted (BUG-117). Staff geometry-editor handoff, coverage and duration-model acceptance remain open. No public data, schedule, deployment, schema or dependency change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 7: Senior-planner audit before the authorized performance push
 

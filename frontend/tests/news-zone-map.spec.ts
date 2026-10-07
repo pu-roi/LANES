@@ -39,6 +39,7 @@ async function pixels(page: Page) {
 }
 
 test("news zone reuses the solid core and transparent aura with source details", async ({ page }, info) => {
+  await page.clock.install({ time: new Date(news.updated_at) });
   await page.addInitScript(() => sessionStorage.setItem("lanes_map_viewport", JSON.stringify({ center: [121.08, 14.57], zoom: 16 })));
   await page.route("**/api.maptiler.com/maps/**/style.json?**", (route) => route.fulfill({ json: {
     version: 8, sources: {}, layers: [{ id: "background", type: "background", paint: { "background-color": "#f1f5f9" } }],

@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 07, 2026, 2:17 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 07, 2026, 8:40 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 7 operational governance checkpoint (local):** Existing news intelligence, verified flood-zone lifecycle and RBAC modules now consume one typed server policy. Staff defaults affect future operations; automatic deadlines retain their observation-time snapshots; expiry becomes Unconfirmed. Citizen auto approval requires documented human history and independently corroborated, validated road evidence. Admin capability checks and saved worker health are connected on desktop/mobile. This does not adopt the separate duration research model or establish live current-news plotting acceptance. [Verification](evaluations/functional-system-settings-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 exact-source auditor repair (current):** The backend now supplies exact quote/offset options; the model copies selected supporting spans, and strict immutable-source validation remains unchanged. **170 focused checks pass**. Live free synthetic probes passed at both 60 seconds and the normal 20-second worker limit, producing historical review without database/public writes. Prompt v2 changes the existing evaluation policy identity; no new package/model/migration or UI design. Matching release, real-article/map/routing and physical PWA acceptance remain open. [Verification](evaluations/phase-36-auditor-evidence-options-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
