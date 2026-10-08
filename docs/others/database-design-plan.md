@@ -1,6 +1,21 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 08, 2026, 03:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current ML evidence storage — October 8
+
+The future LANES collection path extends **existing private audit JSONB**, not the relational schema. No SQLAlchemy model, table, column, index or Alembic definition is added. The recorded comprehensive acceptance applies existing head `d7e4b9a21c60` in disposable PostGIS databases; this documentation audit makes no database write.
+
+| Existing audit source/action | New snapshot/provenance content | Interpretation |
+| --- | --- | --- |
+| `CITIZEN_OBSERVATION`, `CREATE_OFFICIAL_ZONE`, `UPDATE_ZONE` | Versioned `prediction_features`: geometry digest/coordinates, canonical barangay, boundary revision, depth basis, actual/null observation clock, recorded/capture clocks and cached-or-missing context | Freeze inputs available at recording; registration time is not observed flood onset. |
+| `ZONE_PUBLIC_OBSERVATION` | Frozen features plus `model_evidence` event ID, zone version, claimed-point/validated-proposed-road/official-context geometry basis and explicit spot/road scope | A no-floodwater claim does not manufacture numeric zero, whole-zone dryness or a matched duration endpoint. |
+| `ZONE_PUBLIC_OBSERVATION_REVIEW` | Independent reviewer, review decision/time, `reviewed_zone_version`, `training_admitted=false` | A source assessment is separate from evidence application and model admission. |
+| `FLOOD_FOLLOWUP_OBSERVATION` | Actual supplied numeric depth and explicit observation time, with frozen input features | Existing private owner/staff/export DTOs retain the snapshot; an old report gauge is not reused as current numeric depth. |
+
+Legacy records retain missing features/clocks; no historical weather or observation time is backfilled. Provider absence stays explicit and does not delay normal writes. The bounded staff `model-evidence` export exposes source/review IDs, scope, clocks and qualification blockers without names, free text, media URLs or request UUIDs. Missing observation clocks, independent reviews, verified extent, event identity and qualified wet/outcome matching remain admission blockers. Exported records are still `training_admitted=false`; no automatic retraining, generated physical dry label or status/expiry/routing write occurs. [Collection acceptance](../evaluations/pasig-location-feature-models-20261008/README.md#developer-selected-future-lanes-evidence-collection), [API contracts](system-documentation.md#current-automatic-prediction-workflow--october-8). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 8 ML prediction/simulation storage audit:** The zone prediction GET reads existing reports/events, current news decisions/links, citizen/public-update audit history and unchanged CREATE_OFFICIAL_ZONE records. Registration audit time is explicitly a simulation proxy; it does not populate an observed_at column, wet label or zone expires_at. Predictions, pooled-transfer metadata and passability artifacts use response schemas/runtime JSON, without adding SQLAlchemy models, tables, columns, indexes or Alembic migrations. Existing case suggestions retain private AuditLog JSONB contracts. The recorded 127-check acceptance applied existing head d7e4b9a21c60 in disposable PostGIS databases. Forecast-to-Unconfirmed persistence/retention remains future work; this planner audit makes no database or migration write. [Acceptance](../evaluations/case-linked-ml-review-assistant-20261008.md#october-8-pooled-research-transfer-transport-target-and-automatic-registration-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 8 community-evidence application storage:** Existing UPDATE_ZONE audit JSON now records a selected community_update_id, actual applied_fields, staff assessment, before/after facts and resulting zone_version in the same transaction as the official edit/event timeline. Immutable observation/review records stay separate. expected_updated_at is an API concurrency token, not a new column. Original-report/location/direction fields are read projections. No SQLAlchemy/Alembic schema changes; the existing migration head applies during 39 native observation/editor/growth checks in generated disposable databases. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -638,6 +653,8 @@ When designing relational schemas, handling deletion cascades is critical to pre
 ---
 
 ## 5. Audit Log Action Types & Metadata Schemas
+
+**October 8 ML assistance storage:** Private `FLOOD_ML_REVIEW_SUGGESTION` records target `flood_reports` in existing `audit_logs.metadata_json`. Contract v1 stores normalized idempotency request, immutable saved suggestion (report/location/geometry/reporter/event/zone/version, evidence/review IDs, observed/available/issued clocks, issuing staff, model target/checksum/quantiles and continuity assumption) and an evidence signature for subsequent validity reads. Report row locks serialize request reuse and the 100-suggestion bound; record and metadata commit together. Latest-per-report selection precedes keyset pagination. General audit read/count/filter excludes this action; dedicated APIs enforce Reports capabilities. Existing model/table/column/index/migration definitions are unchanged; the existing migration chain applies in removed disposable databases during 119 focused checks. [Acceptance](../evaluations/case-linked-ml-review-assistant-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 To ensure structured logging and avoid raw text entries, the `action_type` string must conform to a predefined category catalog. The `metadata_json` field contains a JSONB structure specific to each type.
 

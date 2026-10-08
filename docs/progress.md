@@ -1,7 +1,71 @@
 # LANES — Progress Tracker
 
+> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 > Tracking completed milestones, delivered features, and past sprints.
-> **Last Updated:** October 08, 2026, 04:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Senior-planner tech stack and system documentation reconciliation
+
+- Audit all eight core records against the current ML services/endpoints, dependency manifests, audit actions and hashed runtime artifacts. Register selected AFT baselines versus unselected feature candidates, complete prediction locality versus separate news geometry, current Overview/private API contracts and future-report JSON storage. Correct the latest acceptance link and stale catalog wording; explicitly record the delivered future collection/export task. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Preserve Decision 24 and its future LANES source choice after review; no routine architecture decision is added. Street-specific model improvement, forecast-to-Unconfirmed/public retention, release and physical PWA acceptance remain open. This documentation-only audit reuses recorded verification and does not rerun application tests, migrate, deploy, commit or push. [Audit](evaluations/pasig-location-feature-models-20261008/README.md#senior-planner-documentation-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Future LANES model-evidence collection path
+
+- At the developer's selection, extend snapshots to public zone condition reports and owner follow-ups; preserve actual/null observation versus post-validation recorded clocks, numeric versus gauge/unknown depth, proposed-road/spot/official-context scope and causal environmental availability. Independent reviews remain source assessments, not automatic training admission. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Add bounded private per-zone model-evidence export with Reports+Zones capability, keyset/no-store/privacy guards and qualification blockers; existing owner/staff exports include frozen feature snapshots. Final comprehensive 256 backend/model checks pass, preserving operational state and both runtime baselines. Existing 38 responsive checks remain applicable; no new UI controls are added in this collection follow-up. [Acceptance](evaluations/pasig-location-feature-models-20261008/README.md#developer-selected-future-lanes-evidence-collection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Complete prediction locality and source-qualified feature pipeline
+
+- Extract all 30 Pasig source polygons and the source-consistent city from licensed OCHA/HDX COD data using bounded ZIP ranges. Validate exact PSGC identities, unchanged source rings, disjoint interiors and full city partition; install the separate prediction-locality catalog. Old 20-record OSM/NOAH news footprint/activation gates stay intact. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Freeze model-input snapshots in new citizen/official-create/edit audit records without UI fields or schema changes; preserve missing clocks, gauge proxy meaning and cache-only write behavior. Add protected source-context reads and lazy existing calculation-details inspection with bounded Open-Meteo/Copernicus modelling, visible errors and no invented zero/drainage capacity. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Evaluate depth AFT on 36 qualified rows and depth/location regression on 251 adjacent pairs across three episodes. One AFT fold is unidentifiable and remaining scores are worse; trajectory MAE is worse than persistence in every held episode. Keep both feature candidates unselected and existing baseline artifacts unchanged. More independent outcomes/available street features remain required. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Comprehensive 256 backend/model checks, 38 responsive workflows, TypeScript/scoped lint, runtime asset verification and two actual Zone #17 context/lookup flows pass. The final run includes rainfall precision and future-source/export coverage. Native migrations reach existing head in disposed local databases. No SQL model/schema, package, production/status/expiry/routing write or branch publication; runtime baseline artifacts remain unchanged. [Acceptance](evaluations/pasig-location-feature-models-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Record pooled Pasig/new-street prediction decision
+
+- At the developer's request, amend Decision 24 with explicitly pooled experimental support for all 30 canonical Pasig barangays and streets absent from training data. Record source/reference assumptions, separate subsidence/passability targets, unchanged training-label admission and actual 20-polygon automatic-location limit. Forecast-to-Unconfirmed/public updates and independent accuracy remain pending; no runtime/code/database/release change is made. [Amendment](decisions.md#october-8-amendment-pooled-pasig-prediction-on-new-streets). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Senior-planner ML completion and next-task audit
+
+- Reconcile all eight authoritative records, model/evidence plans and evaluation index with the source/artifact state. Preserve local delivery versus deployment/accuracy: 127 recorded backend checks, 34 responsive workflows and two actual Zone #17 browser flows; no tests, runtime, database or application code changed during this planner update. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Correct stale Zone #17/unavailable and four-barangay coverage wording, distinguish 30 historical/experimental identities from 20 geometry polygons and actual four/seven training cohorts, and separate passability, subsidence and registration simulations. Order the next task as forecast-to-Unconfirmed → public retention → citizen/admin updates → routing/verification, with independent data/model qualification and release still open. [Current checkpoint](task_plan.md#current-ml-checkpoint-and-next-task), [acceptance](evaluations/case-linked-ml-review-assistant-20261008.md#october-8-pooled-research-transfer-transport-target-and-automatic-registration-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Pooled research transfer, Ugong transport model and automatic zone simulation
+
+- Fit the separate light-vehicle-passability AFT target using nine source-bound road projections/seven barangays/two summaries, including Ugong. Original dry/subsidence labels and parameters remain preserved; both targets use explicit pooled experimental transfer metadata across 30 canonical Pasig identities, without claiming geography accuracy. One passability held-out fit is unidentifiable. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Automatically simulate subsidence from an unchanged official registration audit when actual observation time is absent; keep the proxy separate from source/training evidence and label it in the existing Overview without form inputs. Fix refresh conditioning so the deadline remains anchored until new evidence arrives. Real Zone #17 now displays October 8 around 5:13 PM PHT, a broad interval and unknown-observation qualifier on both sizes; no expiry/status write. 127 native/model/API checks, 34 desktop/mobile workflow cases, TypeScript/scoped lint and two actual browser flows pass. [Acceptance](evaluations/case-linked-ml-review-assistant-20261008.md#october-8-pooled-research-transfer-transport-target-and-automatic-registration-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Operational forecast-to-Unconfirmed, public retained-zone updates, independent accuracy and release remain separate open work. No observed-label imputation, schema/package, public map content or deployment change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Full Pasig historical coverage and Ugong evidence reconciliation
+
+- Add canonical PSGC coverage views for all 30 barangays and a source-linked Ugong index. Annual data covers 29, main wet claims cover 20, and their union covers all 30; main plus October 7 overlay wet claims cover 21. Ugong has eight annual, seven main wet, three overlay wet and one passability projection, but zero matched subsidence-duration rows in retained exports. Current four-barangay model scope is a training-subset limit, not missing collection geography. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Verify 80 retained captures, manifest-bound exports, deterministic rebuild, aggregate counts and unchanged model/input identity. Preserve all raw/versioned datasets; repair coverage reporting/alias grouping without admitting outcomes, adding UI fields or widening the model flag. Broader outcome recovery, pooled-model/location-transfer evaluation, ten missing boundary identities and operational expiry remain open. [Audit](evaluations/pasig-barangay-coverage-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Automatic geometry/evidence prediction without test inputs
+
+- Replace the rejected hypothetical form and save/acknowledgment controls with read-only Overview calculation on entry/refresh. Server location comes from the full polygon and reviewed boundaries; candidate-only 500 m discovery follows Needs Review. Qualified same-zone/event citizen or current linked news evidence supplies explicit clocks. Positive predictions/abstention pass 69 native checks, 30 responsive browser scenarios, TypeScript/scoped lint, and two actual desktop/mobile Zone #17 browser flows. Zone #17 resolves to Ugong but lacks timed linked evidence and supported model coverage; no forecast is invented. [Acceptance](evaluations/case-linked-ml-review-assistant-20261008.md#automatic-zone-prediction--october-8-correction). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Correct the data explanation: reported subsidence bounds exist; 37 conditional rows share three summaries. Wider model/admin boundary coverage, matched independent outcomes, prospective accuracy and operational expiry/release remain open. No SQL model, migration, package or public-map change in this correction. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Earlier live backend model test (UI withdrawn) in Flood Zone Overview
+
+- Add a collapsed Test model calculation control using the existing authenticated read-only duration API and artifact-supplied barangay choices. Explicit hypothetical PHT inputs produce a median and interval; errors/abstention remain visible and edits discard the old preview. Restore responding local API/frontend servers with their existing encrypted configuration. Inspect shared Zone #17 without writes: no linked report/news or observation time; notes identify unsupported Ugong. The test is separate from real-zone prediction coverage and does not change zone status/expiry. [Acceptance](evaluations/case-linked-ml-review-assistant-20261008.md#live-model-test-calculation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Compact admin prediction display
+
+- Finish the existing Info Overview prediction summary after timestamps: saved median, remaining time, model interval, inline evidence/model details and visible unavailable, changed/stale, elapsed and retry states. Preserve the original expiry field, map bubble content and Moderation Center scope. 54 distinct desktop/mobile checks pass across recorded runs, with TypeScript/scoped lint and screenshot review. Live Zone #17 confirms the unlinked-report unavailable state; backend coverage for official/news/manual zones and automatic forecasting remain pending. [Acceptance](evaluations/case-linked-ml-review-assistant-20261008.md#compact-overview-prediction-ui). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+**October 8 bubble badge only:** The existing status badge displays the supplied news status (Active/Unconfirmed/Cleared), defaulting to Active for existing active-zone records. All other bubble content, styling and controls remain unchanged. TypeScript and the two existing desktop/mobile map scenarios pass. Backend retained-state delivery is unchanged and remains separate work. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Restore Moderation Center report-status scope
+
+- Remove the ML review assistant list, Flood condition follow-ups queue and per-report ML button from `FloodModerationQueue.tsx`. The developer confirms Moderation Center tracks pending/approved/rejected outcomes; active-zone operations belong in Spatial Operations. Existing filters/cards/Info/Review on Map are retained. Both removed queue components are currently unmounted; no replacement section is added. Backend APIs, Profile owner follow-ups and the existing Active Zone suggestion remain unchanged. Responsive acceptance is recorded in the [current evaluation](evaluations/case-linked-ml-review-assistant-20261008.md#moderation-center-placement-correction). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Case-linked ML staff review assistant and follow-up acceptance
+
+- Connect the existing conditional Pasig model to recorded citizen-case evidence; save immutable inputs, observation/availability/issuance clocks, model checksum, staff assumptions and review suggestions in existing private audit JSONB. Staff Reports permissions, bounded latest-per-case pagination, serialized UUID retries and abstention prevent missing times, changed correspondence or pending/accepted subsidence evidence from being bypassed. Later public zone observations signal review even without an observation time; stale evidence remains a request for a current update. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Add ML review assistant to Flood Report moderation and share the case panel with Active Zone Overview on desktop/mobile. Verify owner timed follow-up retry and independent staff review/export against real disposable PostGIS/FastAPI; fix two pre-existing follow-up React lint issues (BUG-126). **119 focused backend checks and 16 distinct responsive browser scenarios pass**, with TypeScript, zero scoped lint errors and one existing warning. Both layouts were visually inspected. Existing migrations apply and generated databases are removed. [Acceptance](evaluations/case-linked-ml-review-assistant-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Model artifact, schema definitions, dependencies, public status/expiry/routing and training admission are unchanged. Matching deployment, physical PWA, monitored pilot, qualified prospective outcomes and feature-model accuracy remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 8: Admin-comparison senior-planner completion audit
 
@@ -119,7 +183,7 @@
 ### October 7: Free-auditor timeout diagnosed; provider acceptance pending
 
 - [x] Add bounded `--timeout-seconds` for the synthetic probe and transport; preserve the 20-second worker default, exact free-router guard and all evidence/publication checks. **134 focused tests pass**. [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [x] Execute one 60-second free synthetic retry. The provider responded, but invalid evidence offsets were rejected (`audit_evidence_offset_mismatch`). No database/public writes or deployment. This is a diagnosed reliability gap, not successful live acceptance. [Evidence](evaluations/phase-36-news-runtime-packaging-20261007.md#october-7-live-timeout-follow-up). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Execute one 60-second free synthetic retry. The provider responded, but invalid evidence offsets were rejected (`audit_evidence_offset_mismatch`). No database/public writes or deployment. This is a diagnosed reliability gap, not successful live acceptance. [Evidence](evaluations/phase-36-news-runtime-packaging-20261007.md#october-7-live-timeout-follow-up-earlier-diagnosis). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 7: Runtime assets packaged and Docker startup recovered
 

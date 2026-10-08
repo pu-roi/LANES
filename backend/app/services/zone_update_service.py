@@ -17,6 +17,9 @@ from app.services.flood_followup_service import FollowupError, require_active_us
 from app.services.cloudinary_service import upload_image
 from app.services.carriageway_service import build_road_segment_preview
 from geoalchemy2.shape import to_shape
+from app.services.flood_feature_service import capture_features
+from shapely.geometry import shape,Point
+from geoalchemy2.shape import from_shape
 
 MAX_MEDIA = 5
 MAX_BYTES = 10 * 1024 * 1024
@@ -119,8 +122,22 @@ def submit(db: Session, zone_id: int, user: User, payload: ZoneObservationCreate
         if not url:
             raise FollowupError(502, "An attachment could not be uploaded. Your update was not submitted; please retry.")
         urls.append(url)
+    # This is source-input collection, never a whole-zone dry label or clock backfill.
+    if proposal and proposal.get("validation_status")=="validated":
+        feature_geometry=from_shape(shape(proposal["geometry"]),srid=4326)
+        geometry_basis="validated_proposed_road"
+    elif payload.latitude is not None and payload.longitude is not None:
+        feature_geometry=from_shape(Point(payload.longitude,payload.latitude),srid=4326)
+        geometry_basis="claimed_spot_point"
+    else:
+        feature_geometry=zone.geometry
+        geometry_basis="official_zone_context_only"
+    recorded=datetime.now(timezone.utc)
     row = append_audit(db, action=store.OBSERVATION_ACTION, target_table="flood_avoidance_zones",
-        target_id=zone.id, actor_id=user.id, created_at=now, metadata={**details,
+        target_id=zone.id, actor_id=user.id, created_at=recorded, metadata={**details,
+            "prediction_features": capture_features(feature_geometry,payload.depth,observed_at=payload.observed_at,now=recorded),
+            "model_evidence": {"schema_version":1,"geometry_basis":geometry_basis,"event_id":zone.event_id,
+                "scope":"spot_or_proposed_road_claim_not_whole_zone_clearance","training_admitted":False},
             "proposed_extent": proposal, "observation_time_recorded": payload.observed_at is not None,
             "author_id": user.id, "author_name": user.username, "media_urls": urls, "media_hashes": hashes,
             "severity": severity_for_flood_depth(payload.depth).value if payload.depth else None,
@@ -151,11 +168,60 @@ def counts(db: Session, ids: list[int], user: User) -> dict[int, int]:
     return store.pending_counts(db, ids)
 
 
+def model_evidence(db: Session, zone_id: int, user: User, limit: int, before_id: int | None) -> dict:
+    """Bounded future-data export; independent review is not training admission."""
+    require_staff_permission(user,write=False)
+    from app.services.flood_followup_service import require_staff_permission as require_report_reader
+    require_report_reader(user,write=False)
+    zone=store.zone(db,zone_id)
+    if zone is None:
+        raise FollowupError(404,"Flood Zone not found.")
+    if not 1<=limit<=100 or (before_id is not None and before_id<1):
+        raise FollowupError(422,"Invalid model-evidence pagination.")
+    rows=store.observations(db,zone_id,limit=limit,before_id=before_id)
+    has_more=len(rows)>limit
+    rows=rows[:limit]
+    reviews=store.reviews(db,[row.id for row in rows])
+    records=[]
+    for row in rows:
+        data=row.metadata_json or {};assessment=reviews.get(row.id)
+        review_data=assessment.metadata_json if assessment else {}
+        source=data.get("model_evidence") or {}
+        blockers=[]
+        if data.get("condition") not in {"still_flooded","no_floodwater"}:
+            blockers.append("condition_is_not_a_wet_or_clearance_claim")
+        features=data.get("prediction_features")
+        if not features or features.get("coordinates") is None or features.get("errors"):
+            blockers.append("source_location_features_missing_or_unresolved")
+        if data.get("observed_at") is None:blockers.append("explicit_observation_clock_missing")
+        if assessment is None or review_data.get("decision")!="reviewed" or assessment.admin_id==row.admin_id:
+            blockers.append("independent_source_review_missing_or_dismissed")
+        if source.get("geometry_basis")!="validated_proposed_road":blockers.append("observation_extent_not_verified")
+        if source.get("event_id") is None:blockers.append("episode_identity_missing")
+        # A reviewed spot is never a whole-zone dry endpoint or automatically
+        # paired to a wet observation from a different extent/episode.
+        blockers.extend(["matched_wet_reference_and_scope_need_qualification","independent_episode_and_feature_availability_need_qualification"])
+        records.append({"observation_id":row.id,"zone_id":zone_id,"source_author_id":row.admin_id,
+            "condition":data.get("condition"),"observed_at":data.get("observed_at"),
+            "recorded_at":row.created_at.isoformat(),"clock_basis":"explicit_observation" if data.get("observed_at") else "submission_proxy_only",
+            "prediction_features":data.get("prediction_features"),"event_id":source.get("event_id"),
+            "geometry_basis":source.get("geometry_basis","legacy_unknown"),"zone_version_at_submission":data.get("zone_version"),
+            "scope":"spot_or_proposed_road_claim_not_whole_zone_clearance",
+            "review_id":assessment.id if assessment else None,"reviewer_id":assessment.admin_id if assessment else None,
+            "reviewed_at":assessment.created_at.isoformat() if assessment else None,
+            "review_state":review_data.get("decision","pending"),"reviewed_zone_version":review_data.get("reviewed_zone_version"),
+            "qualification_blockers":blockers,"training_admitted":False,"physical_dry_label_generated":False})
+    return {"schema_version":1,"generated_at":datetime.now(timezone.utc).isoformat(),
+        "records":records,"next_before_id":rows[-1].id if has_more and rows else None,
+        "training_admitted":False,"changes_status_expiry_or_routing":False}
+
+
 def review(db: Session, zone_id: int, update_id: int, user: User,
            payload: ZoneObservationReview) -> dict[str, Any]:
     require_staff_permission(user, write=True)
     # Same lock order as submission, serializing decisions with operational zone writes.
-    if store.zone(db, zone_id, lock=True) is None:
+    zone=store.zone(db, zone_id, lock=True)
+    if zone is None:
         raise FollowupError(404, "Flood Zone not found.")
     row = db.scalar(select(AuditLog).where(AuditLog.id == update_id,
         AuditLog.action_type == store.OBSERVATION_ACTION, AuditLog.target_id == zone_id,
@@ -173,7 +239,8 @@ def review(db: Session, zone_id: int, update_id: int, user: User,
         raise FollowupError(409, "This update has already been reviewed.")
     entry = append_audit(db, action=store.REVIEW_ACTION, target_table="audit_logs", target_id=row.id,
         actor_id=user.id, created_at=datetime.now(timezone.utc), metadata={**payload.model_dump(),
-            "reviewer_id": user.id, "zone_id": zone_id, "zone_update_id": row.id})
+            "reviewer_id": user.id, "zone_id": zone_id, "zone_update_id": row.id,
+            "reviewed_zone_version":zone.updated_at.isoformat(),"training_admitted":False})
     result = _response(row, entry)
     db.commit()
     return result

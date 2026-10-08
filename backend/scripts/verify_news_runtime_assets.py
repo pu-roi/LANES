@@ -14,6 +14,7 @@ from app.services.news_placement_preview_service import NewsPlacementPreviewServ
 from app.services.news_road_placement_service import DEFAULT_CATALOG_DIR, NewsRoadPlacementProvider
 from app.services.noah_vector_catalog_service import DEFAULT_DIRECTORY as NOAH_DIRECTORY, NoahVectorCatalog
 from app.services.pasig_historical_service import DEFAULT_PASIG_CLEAN_CSV
+from app.services.flood_location_service import FloodLocationProvider, DEFAULT_DIRECTORY as FLOOD_LOCATION_DIRECTORY
 
 
 def verify_assets(noah_directory: Path, osm_directory: Path, barangay_directory: Path,
@@ -54,9 +55,15 @@ def main() -> None:
     parser.add_argument("--barangay-directory", type=Path,
         default=Path(os.environ.get("LANES_NEWS_BARANGAY_DIR", str(BARANGAY_DIRECTORY))))
     parser.add_argument("--history-path", type=Path, default=DEFAULT_PASIG_CLEAN_CSV)
+    parser.add_argument("--flood-location-directory",type=Path,
+        default=Path(os.environ.get("LANES_FLOOD_LOCATION_DIR",str(FLOOD_LOCATION_DIRECTORY))))
     args = parser.parse_args()
     try:
         result = verify_assets(args.noah_directory, args.osm_directory, args.barangay_directory, args.history_path)
+        location = FloodLocationProvider(args.flood_location_directory)
+        if location.error:
+            raise ValueError(location.error)
+        result.update(prediction_barangay_count=len(location.records),prediction_location_sha256=location.digest)
     except ValueError as error:
         print(json.dumps(dict(status="assets_invalid", reason=str(error))))
         raise SystemExit(1) from None

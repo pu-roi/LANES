@@ -1,6 +1,38 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 08, 2026, 03:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-128] Incomplete automatic prediction locality and unsupported feature-effect claims
+
+- **Status:** In Progress — locality coverage resolved locally; source-feature capture/evaluation and future LANES evidence collection/export implemented. Learned street-specific model improvement remains open because tested candidates fail comparative selection.
+- **Severity:** Medium - ten missing locality polygons prevented automatic detection; adding unqualified features would not establish accuracy.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Prediction reused a 20-record OSM catalog and shared intercept-only duration pattern, including on new streets.
+- **Root cause:** Missing/unclosed OSM administrative relations and source-parent constraints; actual training has three subsidence/two transport summaries and no qualified street drainage/terrain/rainfall effect histories. Many depth pairs are unchanged and source/availability uncertainty persists.
+- **Solution:** Validate a separate complete 30-record OCHA/HDX COD source-parent partition with current PSGC crosswalk, without weakening news footprint gates. Freeze source/versioned input snapshots and expose bounded current context in existing read-only details. Compare whole-summary/episode feature models and retain baselines when they perform worse. The developer-selected future LANES reporting/review path now captures public updates and owner follow-ups with bounded private source export; qualified independent wet/outcome episodes still need to accumulate before a better model can be selected. Never generate observed dry labels or guessed hydraulic capacity.
+- **Files/verification:** flood_location/flood_feature services; private context endpoint and audit hooks; COD range extractor/catalog builder/runtime assets; source feature evaluator; existing Overview details/API. 256 comprehensive backend/model and 38 responsive workflows pass, with TypeScript/lint, asset verification and two real Zone #17 flows; the final run includes precision and future-source/export cases. [Evaluation](../evaluations/pasig-location-feature-models-20261008/README.md). No package/schema/operational expiry/status/routing/deployment change.
+
+### [BUG-127] Prediction UI required hypothetical inputs instead of resolving zone evidence
+
+- **Status:** Resolved locally for automatic UI/registration simulation. Independent model accuracy and operational forecast-to-Unconfirmed/public retention remain open.
+- **Severity:** Low - rejected test controls did not fulfill the automatic prediction workflow.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Overview required hypothetical barangay/time inputs and an acknowledgment checkbox; Zone #17 had no displayed result.
+- **Root cause:** The initial saved-suggestion adapter was report-bound, followed by a hypothetical test form. The live record had no qualified observation clock; its Ugong location was outside the four-location subsidence cohort. Collection coverage, training cohort, prediction transfer and boundary geometry had been conflated.
+- **Solution:** Remove test/save/checkbox controls. Resolve the authoritative polygon, select qualified linked same-zone/event citizen/current news evidence, and keep nearby reports candidate-only. Enable explicitly labeled pooled experimental transfer; provide a separate simulation from an unchanged recent official registration audit when actual observation time is absent. Keep unknown observation time, source admission and operational expiry unchanged. Freeze issuance anchors so refresh cannot move the forecast indefinitely.
+- **Current files / verification:** zone_prediction schema/CRUD/service/private GET; subsidence scope/status contracts; separate passability kernel target/service/artifact/API/trainer; existing Overview/component/API integration. Recorded verification: 127 focused backend checks, 34 desktop/mobile workflows, two real Zone #17 flows, TypeScript/scoped lint. #17's audit #140 simulation shows around 5:13 PM PHT on October 8; this is a saved verification observation, not a newly measured outcome. [Acceptance](../evaluations/case-linked-ml-review-assistant-20261008.md#october-8-pooled-research-transfer-transport-target-and-automatic-registration-simulation).
+- **Data correction:** Annual/main wet union covers 30 barangays; main/overlay named wet claims cover 21. Ugong has eight annual, seven main wet, three overlay wet and one passability projection. Actual subsidence cohort remains four locations/37 projections/three summaries; the separate passability fit uses seven locations/nine projections/two summaries. Experimental transfer across 30 identities and the 20-polygon catalog are distinct. No dry labels are imputed. [Coverage audit](../evaluations/pasig-barangay-coverage-20261008/README.md).
+- **History:** Initial report-bound/saved suggestion and rejected hypothetical test controls were superseded. Initial automatic-adapter verification recorded 69 backend/30 responsive cases; later model/simulation acceptance above is the current checkpoint. No SQL/schema/package, public routing/status/expiry write or deployment is claimed.
+
+### [BUG-126] Structured owner follow-up uses rejected React state/ref patterns
+
+- **Status:** Resolved and verified locally.
+- **Severity:** Low — scoped lint rejected the existing implementation; no failed production submission is claimed.
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Verification of the previously untested owner flow found `set-state-in-effect` and `refs` lint errors in timezone initialization and retry-button rendering.
+- **Root cause:** Device timezone was copied into state synchronously during an effect, while rendered retry text inspected `attempt.current` directly.
+- **Solution:** Read device timezone when opening the follow-up panel; track retry display state explicitly while retaining the immutable request in an event-handler ref. Draft changes reset both. No default observation clock is introduced.
+- **Files / verification:** `frontend/src/features/flood-followups/FollowupSubmission.tsx`, `frontend/tests/flood-review-suggestions.spec.ts`. Owner timed-entry/same-UUID failure-retry scenarios pass on desktop/mobile, as part of sixteen responsive scenarios. TypeScript and scoped lint pass with zero errors and one unrelated existing moderation warning. [Acceptance](../evaluations/case-linked-ml-review-assistant-20261008.md).
 
 ### [BUG-125] Active Zone details diverge from Needs Review and do not hand off selected community evidence
 

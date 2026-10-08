@@ -15,6 +15,7 @@ from app.schemas.configuration import OperationalSettings
 from app.services.configuration_service import configuration_lock, evidence_deadline, read_configuration
 from app.services.flood_depth import severity_for_flood_depth
 from app.services.flood_event_service import create_verified_event_with_zone, link_supporting_report
+from app.services.flood_feature_service import capture_features
 
 OBSERVATION_ACTION = "CITIZEN_OBSERVATION"
 APPROVAL_ACTION = "CITIZEN_AUTO_APPROVAL"
@@ -23,10 +24,13 @@ APPROVAL_LOCK = 614296503
 
 def record_observation(db: Session, report: models.FloodReport, *, observed_at: datetime | None,
                        road_validated: bool, media_hashes: list[str]) -> None:
+    clock = datetime.now(timezone.utc)
     db.add(AuditLog(action_type=OBSERVATION_ACTION, target_table="flood_reports", target_id=report.id,
+        created_at=clock,
         metadata_json={"user_id": report.user_id, "observed_at": observed_at.isoformat() if observed_at else None,
             "road_validated": road_validated, "geometry_sha256": geometry_hash(report),
-            "media_sha256": media_hashes, "geometry_provenance": "server_road_reconstruction" if road_validated else "unvalidated_submission"}))
+            "media_sha256": media_hashes, "geometry_provenance": "server_road_reconstruction" if road_validated else "unvalidated_submission",
+            "prediction_features": capture_features(report.geometry,report.depth,observed_at=observed_at,now=clock)}))
     db.commit()
 
 

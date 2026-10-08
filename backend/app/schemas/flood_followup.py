@@ -1,6 +1,6 @@
 """Private, structured same-location observations; review is not model admission."""
 from datetime import datetime, timezone
-from typing import Literal
+from typing import Literal,Any
 from urllib.parse import urlsplit
 from uuid import UUID
 
@@ -124,6 +124,7 @@ class FloodFollowupResponse(BaseModel):
     review: FloodFollowupReviewResponse | None
     source_claim_only: Literal[True] = True
     model_admitted: Literal[False] = False
+    prediction_features: dict[str,Any] | None = None
 
     @field_serializer("observed_at", "submitted_at", "original_observed_at", "original_available_at")
     def serialize_followup_times(self, value: datetime | None) -> str | None:

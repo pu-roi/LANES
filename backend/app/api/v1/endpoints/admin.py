@@ -29,6 +29,7 @@ from app.services.flood_event_service import (
 )
 from app.services.visitor_analytics_service import get_visitor_analytics
 from app.services.flood_zone_growth_service import compose_reviewed_coverage, validate_active_target
+from app.services.flood_feature_service import capture_features
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -2157,7 +2158,8 @@ async def create_official_zone(
             action_type="CREATE_OFFICIAL_ZONE",
             target_table="flood_avoidance_zones",
             target_id=zone.id,
-            metadata_json={"zone_id": zone.id, "media_count": len(media_urls)},
+            metadata_json={"zone_id": zone.id, "media_count": len(media_urls),
+                "prediction_features": capture_features(zone.geometry,zone.depth)},
             ip_address=client_ip
         )
     )

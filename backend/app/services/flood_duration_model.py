@@ -22,7 +22,8 @@ from scipy.special import log_ndtr, ndtri_exp
 SCHEMA_VERSION = "pasig-reported-subsidence-lognormal-aft-v1"
 TARGET_VERSION = "remaining_time_from_supported_wet_reference_to_scope_matched_reported_subsidence_v1"
 EXPERIMENT_TARGET_VERSION = "remaining_time_from_first_recorded_wet_to_reported_subsidence_continuity_assumed_v1"
-SUPPORTED_TARGET_VERSIONS = frozenset((TARGET_VERSION, EXPERIMENT_TARGET_VERSION))
+PASSABILITY_TARGET_VERSION = "remaining_time_from_first_recorded_nonpassable_to_reported_light_vehicle_passability_continuity_assumed_v1"
+SUPPORTED_TARGET_VERSIONS = frozenset((TARGET_VERSION, EXPERIMENT_TARGET_VERSION, PASSABILITY_TARGET_VERSION))
 LOG_SCALE_LIMITS = (-8.0, 8.0)
 
 

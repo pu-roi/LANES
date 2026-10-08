@@ -158,7 +158,7 @@ export const FloodZonePopup: React.FC<FloodZonePopupProps> = ({ properties, onTo
             </span>
           ) : (
             <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-white/25 text-white tracking-wider backdrop-blur-xs shrink-0">
-              Active Zone
+              {news[0]?.status ?? "Active"}
             </span>
           )}
         </div>

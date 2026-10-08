@@ -64,6 +64,13 @@ def read(zone_id: int = Path(ge=1), limit: int = Query(default=50, ge=1, le=100)
     return run(db, lambda: service.list_updates(db, zone_id, user, limit, before_id))
 
 
+@router.get("/admin/zones/{zone_id}/model-evidence")
+def model_evidence(zone_id: int = Path(ge=1),limit: int = Query(default=50,ge=1,le=100),
+                   before_id: int | None = Query(default=None,ge=1),db: Session = Depends(get_db),
+                   user: User = Depends(get_current_user)) -> Any:
+    return run(db,lambda:service.model_evidence(db,zone_id,user,limit,before_id))
+
+
 @router.post("/admin/zones/{zone_id}/updates/{update_id}/review")
 def review(payload: ZoneObservationReview, zone_id: int = Path(ge=1), update_id: int = Path(ge=1),
            db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> Any:

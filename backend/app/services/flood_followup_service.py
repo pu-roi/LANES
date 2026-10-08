@@ -17,6 +17,7 @@ from app.schemas.flood_followup import (
     OwnerFloodFollowupsResponse, StaffFloodFollowupsResponse,
 )
 from app.services.citizen_approval_service import geometry_hash
+from app.services.flood_feature_service import capture_features
 
 CONTRACT_VERSION = 1
 PASIG_CITY_ALIASES = frozenset({"pasig", "pasig city", "city of pasig"})
@@ -120,7 +121,8 @@ def _response(row: AuditLog, review: AuditLog | None) -> FloodFollowupResponse:
         location_snapshot=metadata["location_snapshot"], original_observed_at=metadata["original_observed_at"],
         original_available_at=metadata.get("original_available_at"),
         original_observation_audit_id=metadata.get("original_observation_audit_id"),
-        review_state=review_response.decision if review_response else "pending", review=review_response)
+        review_state=review_response.decision if review_response else "pending", review=review_response,
+        prediction_features=metadata.get("prediction_features"))
 
 
 def list_owner_followups(db: Session, report_id: int, user: User) -> OwnerFloodFollowupsResponse:
@@ -165,6 +167,8 @@ def submit_followup(db: Session, report_id: int, user: User,
         "original_available_at": _utc_string(original_available_at) if original_available_at else None,
         "original_observation_audit_id": original_audit_id,
         "source_claim_only": True, "model_admitted": False}
+    metadata["prediction_features"]=capture_features(report.geometry,None,observed_at=payload.observed_at,
+        now=now,measured_depth_cm=payload.depth_cm)
     row = store.append_audit(db, action=store.OBSERVATION_ACTION, target_table="flood_reports",
         target_id=report.id, actor_id=user.id, metadata=metadata, created_at=now)
     response = _response(row, None)

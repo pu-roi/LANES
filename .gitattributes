@@ -35,4 +35,21 @@
 /backend/tests/test_flood_duration_api.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/pasig-subsidence-validation-20261007/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/pasig-subsidence-validation-20261007/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Source-bound coverage views and separate transport-recovery experiment.
+/docs/evaluations/pasig-barangay-coverage-20261008/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-barangay-coverage-20261008/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-passability-model-20261008/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-passability-model-20261008/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/audit_pasig_barangay_coverage.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/train_pasig_passability.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Complete source-consistent prediction locality and feature-model evaluation.
+/backend/runtime_data/flood-location/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/runtime_data/flood-location/*.geojson -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-location-feature-models-20261008/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/pasig-location-feature-models-20261008/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/build_pasig_location_catalog.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/fetch_pasig_cod_boundaries.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/evaluate_pasig_feature_models.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/pasig-subsidence-validation-20261007/*.xml -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

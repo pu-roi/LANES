@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Button, Input, Select } from "@/shared/ui";
@@ -25,10 +25,10 @@ function OwnerFollowupPanel({ reportId, userId }: { reportId: number; userId: nu
   const [timezone, setTimezone] = useState("device local timezone");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [hasAttempt, setHasAttempt] = useState(false);
   const attempt = useRef<FollowupSubmissionPayload | null>(null);
   const queryKey = ownerFollowupKey(userId, reportId);
   const followups = useQuery({ queryKey, queryFn: () => getOwnerFollowups(reportId), enabled: expanded, retry: false });
-  useEffect(() => { setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone); }, []);
   const mutation = useMutation({
     mutationFn: (payload: FollowupSubmissionPayload) => submitFollowup(reportId, payload),
     retry: false,
@@ -37,11 +37,13 @@ function OwnerFollowupPanel({ reportId, userId }: { reportId: number; userId: nu
       setError("");
       void queryClient.invalidateQueries({ queryKey });
       void queryClient.invalidateQueries({ queryKey: ["flood-follow-ups", "admin"] });
+      void queryClient.invalidateQueries({ queryKey: ["flood-review-suggestions"] });
     },
     onError: (err) => setError(err instanceof Error ? err.message : "Could not save this follow-up. Try again."),
   });
   const draftChanged = () => {
     attempt.current = null;
+    setHasAttempt(false);
     setSubmitted(false);
     setError("");
   };
@@ -59,6 +61,7 @@ function OwnerFollowupPanel({ reportId, userId }: { reportId: number; userId: nu
           source_url: source === "" ? null : source,
           same_location_confirmed: true,
         };
+        setHasAttempt(true);
       }
       setError("");
       mutation.mutate(attempt.current);
@@ -68,7 +71,7 @@ function OwnerFollowupPanel({ reportId, userId }: { reportId: number; userId: nu
   };
 
   return <section className="mt-4 space-y-3" aria-label={`Follow-ups for report ${reportId}`}>
-    <Button type="button" variant="outline" size="sm" className="w-full sm:w-auto" aria-expanded={expanded} aria-controls={`${id}-panel`} onClick={() => setExpanded(!expanded)}>
+    <Button type="button" variant="outline" size="sm" className="w-full sm:w-auto" aria-expanded={expanded} aria-controls={`${id}-panel`} onClick={() => { setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone); setExpanded(!expanded); }}>
       {expanded ? "Hide follow-ups" : "Record or view a flood follow-up"}
     </Button>
     {expanded && <div id={`${id}-panel`} className="space-y-4">
@@ -92,7 +95,7 @@ function OwnerFollowupPanel({ reportId, userId }: { reportId: number; userId: nu
           <label className="flex items-start gap-2 text-sm text-slate-700"><input type="checkbox" required checked={sameLocation} onChange={(event) => setSameLocation(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-blue-600" /><span>I confirm this observation concerns the exact same road section as my original report.</span></label>
         </fieldset>
         {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
-        <Button type="submit" className="w-full sm:w-auto" disabled={mutation.isPending || !condition || !sameLocation || submitted}>{mutation.isPending ? "Saving…" : submitted ? "Follow-up saved" : error && attempt.current ? "Retry same follow-up" : "Submit follow-up for review"}</Button>
+        <Button type="submit" className="w-full sm:w-auto" disabled={mutation.isPending || !condition || !sameLocation || submitted}>{mutation.isPending ? "Saving…" : submitted ? "Follow-up saved" : error && hasAttempt ? "Retry same follow-up" : "Submit follow-up for review"}</Button>
       </form>}
       {followups.data && <div className="space-y-3">
         <h4 className="text-sm font-semibold text-slate-900">Recorded follow-ups</h4>

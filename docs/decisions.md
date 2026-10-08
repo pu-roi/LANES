@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 07, 2026, 8:40 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 02:50 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -22,7 +22,7 @@ Evidence expiry is an operational freshness deadline, never a learned water-clea
 
 **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Status:** Adopted offline research target/admission contract; no model or runtime forecast adopted.
+**Status:** Research target/admission contract adopted; experimental fits, explicitly pooled transfer and admin registration simulations implemented locally. Production forecast/expiry adoption and independent accuracy qualification remain open.
 
 **Decision:** The initial Pasig prediction study targets elapsed time from supported wet evidence until scope-matched **reported subsidence**. Treat collective-source outcomes as conditional reported-location proxies, preserving scope class, bounds, shared outcome IDs and physical-section uncertainty. Proxy admission and training admission are separate. Unknown physical dry conditions or passability cannot be filled by the proxy.
 
@@ -37,6 +37,34 @@ Evidence expiry is an operational freshness deadline, never a learned water-clea
 **October 7 experimental implementation:** A separate first-recorded-wet target and fitted intercept-only lognormal AFT sensitivity baseline are delivered under explicit uninterrupted-episode/collective-scope assumptions. This does not replace the original proxy register or grant prospective/production admission. Group-balanced composite likelihood limits shared-summary influence; leave-one-summary-out fits remain sensitivity, not final accuracy evaluation. The strict JSON artifact and staff research preview are shadow-only, with no expiry or routing effect. Feature-based/production model selection remains pending. [Implementation](plans/pasig-subsidence-model-implementation.md), [actual experiment](evaluations/pasig-duration-model-20261007/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Prospective evidence collection consequence:** Owner follow-ups and separate independent staff reviews preserve actual observed/available/submitted/reviewed clocks and immutable report-location identity in existing append-only storage. A reviewed still-flooded/subsided source claim is distinct from an operational clearance and from a training-admitted duration outcome; no model self-training or automated map clearance follows acceptance. The [collection contract](plans/flood-followup-evidence-plan.md) implements that separation locally, with runtime acceptance pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8 amendment: pooled Pasig prediction on new streets
+
+**Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Decision:** Permit the existing pooled research duration models to calculate experimental estimates for any of Pasig's 30 canonical barangays, including roads/streets absent from the training-location list. A matching historical street row is not required. Keep geographic input acceptance separate from actual training coverage, automatic geometry resolution and measured accuracy.
+
+**Prediction policy:** These intercept-only lognormal AFT models share a Pasig duration pattern; they do not currently learn street drainage, elevation, rainfall or depth effects. Record actual training-cohort identities as supported_barangays and experimental prediction identities as prediction_barangays. Out-of-cohort calculation requires explicit server-controlled pooled transfer and exposes its uncertainty; accepting all 30 names does not establish 30 independently trained models or accurate forecasts on every new street. Unknown/non-Pasig identities remain unavailable.
+
+**Data and target policy:** Preserve the original subsidence model's four-barangay/37-projection/three-summary cohort. The separate passability fit has seven barangays/nine projections/two summaries, including Ugong. A light-vehicle-passability outcome can train its own transport target; it supplies neither exact depth nor observed dry/subsided labels. Model estimates for missing outcomes remain predictions/simulations and cannot be admitted as observed training truth.
+
+**Automatic street workflow:** Resolve the full saved zone polygon against reviewed boundaries and use qualified same-zone/event timed evidence. For an unchanged recent official zone without an observation clock, a matching admin registration audit can supply a distinctly labeled registration-time simulation; actual observation remains unknown. Nearby data provides candidates and cannot establish incident correspondence from distance alone. Keep forecast issuance anchored until qualified evidence changes, rather than moving it on every display refresh.
+
+**Initial coverage checkpoint:** Both backend models accept all 30 canonical barangays for pooled experimental testing. The first automatic-location adapter used 20 OSM community records; the October 8 continuation below completes prediction locality with a distinct 30-record source catalog. Cross-boundary/ambiguous footprints remain explicit, and matched independent outcomes/location-transfer/prospective evaluation are still required.
+
+**Operational consequence:** The requested next workflow is forecast-triggered Unconfirmed, retained public visibility and citizen updates for admin review, with explicit vehicle-aware routing choice. It remains pending. Neither a subsidence estimate, a passability estimate nor a registration simulation can establish observed Cleared, silently change a staff deadline or manufacture an observed outcome. This amendment adopts research scope/reference handling, not a production expiry trigger or safety certification.
+
+[Coverage audit](evaluations/pasig-barangay-coverage-20261008/README.md), [separate passability experiment](evaluations/pasig-passability-model-20261008/README.md), [implemented prediction/simulation](evaluations/case-linked-ml-review-assistant-20261008.md#october-8-pooled-research-transfer-transport-target-and-automatic-registration-simulation), [next implementation](task_plan.md#current-ml-checkpoint-and-next-task).
+
+### October 8 continuation: complete locality sources and evidence-based model selection
+
+Use a separate, source-consistent OCHA/HDX COD Pasig catalog for prediction locality: all 30 current PSGC identities, unchanged valid shapes and full partition of the source parent city. Preserve humanitarian administrative provenance/licence and avoid claiming cadastral/field verification. The older 20-record OSM/NOAH news catalog remains separate; complete prediction locality does not grant news activation or certify inundated width.
+
+Record versioned location/depth/environment context in existing observation/official-create/edit audits, keeping actual observation clocks separate from registration/capture clocks. Missing cache, unknown capacity and coarse modelled rain/surface elevation remain explicit. No user prediction fields, historical backfill or schema change is adopted.
+
+Feature effects require measured benefit under group-aware comparison. The tested depth AFT and depth/location trajectory models are not selected: one summary fold is unidentifiable and the completed comparisons are worse than their baselines. Retain existing research models while collecting/qualifying independent timed outcomes and available features. More complex algorithms or copied simulated labels cannot establish learned street drainage. [Implementation/evaluation](evaluations/pasig-location-feature-models-20261008/README.md), [plan](plans/pasig-location-and-feature-duration.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Future data-source choice (October 8):** The developer chooses future LANES reports and independent admin reviews to build more evidence. Freeze available source features and keep actual observation clocks separate from submission/registration/capture clocks. Public no-floodwater spot claims do not establish whole-zone dryness or numeric zero; source review and model admission remain distinct. Preserve historical missing features, expose qualification blockers through private bounded exports, and perform a separate versioned evaluation before any retraining/selection. [Implemented collection](evaluations/pasig-location-feature-models-20261008/README.md#developer-selected-future-lanes-evidence-collection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## 23. Metro Manila product coverage, Pasig duration study and separated evidence datasets
 
