@@ -66,7 +66,25 @@ def model_status(artifact: DurationModelArtifact | None, checksum: str | None) -
     return DurationModelStatus(status="research_model_available", model_fitted=True,
         target_version=artifact.target_version, model_sha256=checksum,
         projections=artifact.lineage["projection_count"], shared_outcomes=artifact.lineage["shared_outcome_count"],
+        supported_barangays=artifact.lineage["supported_barangays"],
+        prediction_barangays=pasig_prediction_barangays(),
         limitations=artifact.lineage["limitations"])
+
+
+def pasig_prediction_barangays() -> list[str]:
+    from app.services.philippine_location_service import get_philippine_location_service
+    return sorted(get_philippine_location_service().get_pasig_barangays())
+
+
+def research_barangay_name(value: str, supported: list[str]) -> str | None:
+    """PSGC aliases resolve identity; they never expand the fitted cohort."""
+    from app.services.philippine_location_service import get_philippine_location_service
+    locations = get_philippine_location_service()
+    canonical = locations.normalize_barangay_name(value, "Pasig")
+    if canonical is None:
+        return None
+    return next((name for name in supported
+        if locations.normalize_barangay_name(name, "Pasig") == canonical), None)
 
 
 def preview_subsidence(request: DurationPreviewRequest, *, now: datetime | None = None) -> DurationPreviewResponse:
@@ -82,9 +100,11 @@ def preview_subsidence(request: DurationPreviewRequest, *, now: datetime | None 
         return abstain("conditional_research_assumptions_not_acknowledged")
     if request.city.strip().casefold() not in {"pasig", "pasig city", "city of pasig"}:
         return abstain("outside_pasig_research_scope")
-    barangays = {name.casefold() for name in artifact.lineage["supported_barangays"]}
-    if request.barangay.strip().casefold() not in barangays:
-        return abstain("barangay_not_represented_in_conditional_experiment")
+    in_cohort = research_barangay_name(request.barangay, artifact.lineage["supported_barangays"]) is not None
+    if not in_cohort:
+        if not request.allow_pooled_pasig_transfer or research_barangay_name(request.barangay, pasig_prediction_barangays()) is None:
+            return abstain("barangay_not_represented_in_conditional_experiment")
+        response.pooled_geographic_transfer = True
     clock = now or datetime.now(timezone.utc)
     if request.prediction_as_of_at > clock + timedelta(minutes=1):
         return abstain("future_issuance_time")

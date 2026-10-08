@@ -28,6 +28,7 @@ function ReviewQueue({ userId, canReview }: { userId: number; canReview: boolean
     setMessage(`Follow-up #${item.id} ${item.review_state}. The evidence review has been recorded.`);
     void queryClient.invalidateQueries({ queryKey: adminFollowupKey(userId) });
     void queryClient.invalidateQueries({ queryKey: ownerFollowupKey(item.user_id, item.report_id) });
+    void queryClient.invalidateQueries({ queryKey: ["flood-review-suggestions"] });
   };
   const exportPage = async () => {
     setExporting(true);

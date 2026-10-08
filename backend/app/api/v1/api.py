@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from app.api.v1.endpoints import zone_update
+from app.api.v1.endpoints import flood_review_suggestion
 from app.api.v1.endpoints import admin_review, admin_news_publication, news_alerts, flood_duration, flood_followup
 from app.api.v1.endpoints import users, reports, routes, auth, admin, admin_news, roles, data, settings, sse, feed, comments, weather, public, posts, notifications, analytics, sync, hotlines
 
@@ -11,6 +12,7 @@ api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(reports.router, prefix="/reports", tags=["reports"])
 api_router.include_router(flood_followup.router, tags=["flood follow-up evidence"])
+api_router.include_router(flood_review_suggestion.router, tags=["staff ML review assistance"])
 api_router.include_router(routes.router, prefix="/routes", tags=["routes"])
 api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
 api_router.include_router(admin_news.router, prefix="/admin/news", tags=["admin news"])

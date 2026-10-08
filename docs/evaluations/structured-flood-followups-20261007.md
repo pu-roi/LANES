@@ -1,8 +1,14 @@
 # Structured Pasig flood follow-ups — local implementation
 
-> **Last Updated:** October 07, 2026, 8:35 PM (Asia/Manila)
+> **Last Updated:** October 08, 2026, 10:12 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Code implemented locally and source-reviewed; database/API/browser acceptance and deployment pending.
+> **Status:** Local database/API/owner-flow acceptance complete; staff queue placement and physical PWA/deployment pending.
+
+## October 8 continuation
+
+**Placement correction:** The developer subsequently removed Flood condition follow-ups and ML review assistant from Moderation Center, including per-report ML controls. The two staff queue components are unmounted and replacement UI placement is unfinished; native API acceptance and owner follow-ups remain. Existing Active Zone Overview retains its case suggestion. Historical staff queue verification below does not establish acceptance of its location.
+
+Local database/authenticated API and desktop/mobile follow-up acceptance is now complete, and the experimental case-linked staff review assistant is implemented. See [current acceptance](case-linked-ml-review-assistant-20261008.md). The historical checkpoint below preserves what was known on October 7. Physical PWA/deployment, the monitored pilot and qualified prospective model evaluation remain open. No automatic clearance, schema/dependency change or training admission is introduced. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Delivered
 

@@ -57,6 +57,7 @@ async def test_staff_can_inspect_read_only_model_and_preview(api):
         status = await client.get('/admin/news/duration-model')
         assert status.status_code == 200 and status.headers['cache-control'] == 'no-store'
         assert status.json()['shared_outcomes'] == 3
+        assert set(status.json()['supported_barangays']) == {'Maybunga', 'Dela Paz', 'Santolan', 'Sta. Lucia'}
         response = await client.post('/admin/news/duration-preview', json=payload())
         assert response.status_code == 200 and response.headers['cache-control'] == 'no-store'
         body = response.json()

@@ -6,6 +6,7 @@ from app.models.audit import AuditLog
 from app.schemas.audit import AuditLogCreate
 from app.crud.flood_followup import OBSERVATION_ACTION, REVIEW_ACTION
 from app.crud.zone_update import OBSERVATION_ACTION as ZONE_OBSERVATION, REVIEW_ACTION as ZONE_REVIEW
+from app.crud.flood_review_suggestion import SUGGESTION_ACTION
 
 
 def create_audit_log(db: Session, audit_in: AuditLogCreate, commit: bool = True) -> AuditLog:
@@ -42,7 +43,7 @@ def get_audit_logs(
     # Private observation/review evidence is readable only through the
     # ownership/capability-checked follow-up endpoints, never this general feed.
     query = select(AuditLog).where(or_(AuditLog.action_type.is_(None),
-        AuditLog.action_type.not_in((OBSERVATION_ACTION, REVIEW_ACTION, ZONE_OBSERVATION, ZONE_REVIEW))))
+        AuditLog.action_type.not_in((OBSERVATION_ACTION, REVIEW_ACTION, ZONE_OBSERVATION, ZONE_REVIEW, SUGGESTION_ACTION))))
     
     if action_type:
         query = query.where(AuditLog.action_type == action_type)

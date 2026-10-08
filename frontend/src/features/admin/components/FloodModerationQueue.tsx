@@ -8,7 +8,6 @@ import type { FloodReport } from "../adminApi";
 import { apiClient } from "@/lib/apiClient";
 import { formatFloodDepth } from "@/lib/floodDepth";
 import { AutocompleteInput, Button, Card, CardContent, DatePicker, FloodReportDetailsModal, LocationAutocomplete, Select, Skeleton } from "@/shared/ui";
-import { FollowupReviewQueue } from "../../flood-followups/FollowupReviewQueue";
 
 type FloodModerationCase = {
   report_id: number;
@@ -114,6 +113,5 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
       {caseItem.resolved_at && <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-500"><CheckCircle2 className="h-4 w-4 text-emerald-600" />{caseItem.resolution === "linked" ? "Linked" : "Resolved"} {new Date(caseItem.resolved_at).toLocaleString()}{caseItem.acting_admin ? ` by ${caseItem.acting_admin}` : ""}</p>}
     </CardContent></Card>)}
     <FloodReportDetailsModal report={detailCase ? ({ id: detailCase.report_id, status: detailCase.status, source: detailCase.source, raw_text: detailCase.raw_text, severity: detailCase.severity, depth: detailCase.depth, created_at: detailCase.submitted_at, updated_at: detailCase.submitted_at, human_readable_location: detailCase.location, reporter_username: detailCase.reporter } as FloodReport) : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => router.push(`/admin/map?focus_report_id=${report.id}&tab=pending&review_token=${nextReviewToken()}`)} />
-    <FollowupReviewQueue />
   </div>;
 }

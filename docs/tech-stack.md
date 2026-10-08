@@ -1,6 +1,21 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 08, 2026, 03:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current ML runtime and data stack — October 8
+
+| Component | Adopted technology/source | Current use and limit |
+| --- | --- | --- |
+| Subsidence and passability duration | NumPy + SciPy 1.14.1; separate lognormal AFT JSON artifacts in `backend/runtime_data/flood-duration/` | Selected experimental pooled baselines; four/seven training barangays and three/two shared outcome summaries respectively. Neither model learns street drainage, terrain or rainfall effects. |
+| Automatic prediction locality | Existing Shapely 2.1.2/GeoAlchemy2 and a checksummed OCHA/HDX COD-AB catalog attributed to NAMRIA/PSA, CC BY-IGO | `backend/runtime_data/flood-location/` has all 30 canonical Pasig barangays and the same-source city polygon. `LANES_FLOOD_LOCATION_DIR` can select a versioned catalog. Administrative locality does not prove flooded extent. |
+| Environmental input context | Existing HTTPX 0.27.0; fixed Open-Meteo elevation/forecast endpoints | Copernicus GLO-90 modelled surface elevation (90 m), and ECMWF IFS 0.25-degree rainfall background. Bounded requests/cache, source and availability clocks, explicit missing/error states; these inputs are captured/inspected but are not predictors in the selected baselines. |
+| Feature-model comparisons | Existing scikit-learn 1.5.0 Ridge/OneHotEncoder/StandardScaler and NumPy/SciPy AFT kernel | Depth AFT and depth/location Ridge candidates remain unselected after worse held-group comparisons. XGBoost/lifelines are not adopted dependencies. |
+| Future LANES evidence | Existing FastAPI/Pydantic, SQLAlchemy/PostGIS and private audit JSONB | Automatic feature snapshots for citizen/official/public-update/owner-follow-up sources, independent review provenance and bounded staff exports. Source review does not automatically admit a training row. |
+| Admin presentation | Existing React/TanStack/shared controls | Automatic summary and lazy calculation details in Active Zone Info → Overview; no extra ML page, prediction inputs or public prediction text. |
+
+Dependency manifests, SQLAlchemy models and Alembic definitions are unchanged by this continuation. Docker's existing `runtime_data` COPY includes the COD assets; the asset verifier checks prediction-locality **30** separately from news-qualified **20**. The original OSM/NOAH news catalog and activation gates remain separate. Existing migration head `d7e4b9a21c60` was applied in the recorded disposable-PostGIS acceptance; this documentation audit runs no migration, build or deployment. [Implementation/acceptance](evaluations/pasig-location-feature-models-20261008/README.md), [eight-document audit](evaluations/pasig-location-feature-models-20261008/README.md#senior-planner-documentation-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 8 ML planner dependency/runtime audit:** Subsidence and separate passability lognormal AFT fits reuse declared NumPy/SciPy; automatic zone selection uses existing FastAPI/Pydantic, SQLAlchemy/GeoAlchemy2/PostGIS/Shapely and administrative references. The existing Overview uses React/TanStack/shared controls, with no new frontend package. New passability JSON and checksummed CSV/JSON views are runtime/research assets, not SQL models; Docker's existing COPY includes runtime_data. Dependency manifests and schema definitions are unchanged. Recorded acceptance applies existing Alembic head d7e4b9a21c60 in disposable databases; this planner pass runs no build/migration/test or deployment. [Acceptance](evaluations/case-linked-ml-review-assistant-20261008.md#october-8-pooled-research-transfer-transport-target-and-automatic-registration-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 8 admin-evidence comparison dependency audit:** Shared React/TanStack/Lucide facts, SVG geometry rendering and existing editor/draft storage; backend FastAPI/Pydantic, SQLAlchemy/PostGIS, existing event lifecycle and audit JSON. No new dependency or SQLAlchemy/Alembic definition. Existing head applies during 39 native follow-up checks in disposable databases. [Acceptance](evaluations/flood-zone-community-updates-20261008.md#admin-comparison-follow-up-october-8). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -113,7 +128,7 @@ The Linux image also installs Debian `libexpat1`, required by the existing `osmi
 * **Offline Spatial Audit:** **Pyosmium (`osmium`) & Shapely**
   * *Role:* Reading a local Metro Manila OSM PBF and measuring bounded road-centerline overlap with original NOAH hazard polygons in `backend/scripts/audit_noah_road_intersections.py`. These small geospatial libraries are declared in `backend/requirements.txt`; the script is read-only and is not a production news-zone service.
 * **Offline Research Figures:** **Matplotlib 3.10.7**
-  * *Role:* Standard Python scientific plots for the saved Pasig duration pilot, exported as 300 dpi PNG and vector PDF/SVG. The collector uses the shared offline plotting helper; Matplotlib and NumPy-compatible ContourPy 1.3.2 are declared in `backend/requirements.txt`. These figures describe dataset coverage and candidate intervals; no fitted duration model is claimed.
+  * *Role:* Standard Python scientific plots for the saved Pasig duration pilot, exported as 300 dpi PNG and vector PDF/SVG. The collector uses the shared offline plotting helper; Matplotlib and NumPy-compatible ContourPy 1.3.2 are declared in `backend/requirements.txt`. These figures describe dataset coverage and candidate intervals. The later fitted research AFT baselines and unselected feature-model comparisons are registered in the current ML stack above; historical figures alone do not demonstrate prediction accuracy.
 * **NOAH Display Asset Export:** **Pillow**
   * *Role:* Rendering the three local Metro Manila NOAH polygon archives into compact transparent PNGs for the commuter map's optional 3D hazard display. This offline presentation export does not supply current flood observations or routing geometry.
 * **Encrypted Secrets & Environment Orchestration:** **@dotenvx/dotenvx**  

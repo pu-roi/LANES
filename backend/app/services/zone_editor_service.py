@@ -16,6 +16,7 @@ from app.services.flood_depth import severity_for_flood_depth
 from app.services.flood_followup_service import FollowupError
 from app.services.zone_update_service import editor_proposal, require_staff_permission
 from app.services.flood_event_service import record_zone_update, deactivate_zone_and_end_event_if_final
+from app.services.flood_feature_service import capture_features
 
 
 def snapshot(db: Session, zone: models.FloodAvoidanceZone) -> dict[str, Any]:
@@ -81,7 +82,8 @@ def save_zone(db: Session, zone_id: int, user: models.User, body: FloodAvoidance
         db.flush()
         db.refresh(zone)
         after = snapshot(db, zone)
-        metadata: dict[str, Any] = {"zone_id": zone.id, "zone_version": zone.updated_at.isoformat(), "changes": changes}
+        metadata: dict[str, Any] = {"zone_id": zone.id, "zone_version": zone.updated_at.isoformat(), "changes": changes,
+            "prediction_features": capture_features(zone.geometry,zone.depth_override if zone.depth_override is not None else zone.depth,now=zone.updated_at)}
         if source:
             # Provenance describes actual changed facts, not every checkbox/opened editor.
             applied = [field for field in dict.fromkeys(source.fields) if before[field] != after[field]]

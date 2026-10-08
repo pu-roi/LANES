@@ -1,8 +1,20 @@
 # Structured Pasig flood follow-up evidence
 
-> **Last Updated:** October 07, 2026, 8:35 PM (Asia/Manila)
+> **Last Updated:** October 08, 2026, 02:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Local implementation and source review complete; API/database/browser acceptance and deployment pending. [Recorded verification](../evaluations/structured-flood-followups-20261007.md).
+> **Status:** Local backend/owner-flow acceptance complete; staff queue placement, physical PWA and deployment pending. [Recorded verification](../evaluations/structured-flood-followups-20261007.md).
+
+**October 8 future LANES source collection:** Public zone updates and owner follow-ups freeze versioned model inputs/actual-or-null observation clocks and independent review provenance. Public metadata records claimed-point/proposed-road/official-context basis and spot-only scope; new review JSON includes reviewed_zone_version and training_admitted=false. Existing private follow-up exports retain numeric/unknown feature snapshots. Authenticated GET `/admin/zones/{zone_id}/model-evidence` requires both Reports and Zones read capability, uses bounded keyset pagination/no-store, omits personal/free-text/media/request fields and returns explicit qualification blockers without operational writes or automatic training. The data source is the developer-selected future LANES reporting/review workflow; no new input fields or historical backfill. [Acceptance](../evaluations/pasig-location-feature-models-20261008/README.md#developer-selected-future-lanes-evidence-collection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 8 continuation
+
+**Placement correction:** The developer subsequently removed Flood condition follow-ups and ML review assistant from Moderation Center, including per-report ML controls. The two staff queue components are unmounted and replacement UI placement is unfinished; native API acceptance and owner follow-ups remain. Existing Active Zone Overview now uses automatic geometry/evidence prediction and a labeled official registration simulation; former case save/test inputs are withdrawn. Actual observation clocks and independently reviewed follow-up admission remain separate. Historical staff queue verification below does not establish acceptance of its location.
+
+Local database/authenticated API and desktop/mobile follow-up acceptance is now complete, and the experimental case-linked staff review assistant is implemented. See [current acceptance](../evaluations/case-linked-ml-review-assistant-20261008.md). The historical checkpoint below preserves what was known on October 7. Physical PWA/deployment, the monitored pilot and qualified prospective model evaluation remain open. No automatic clearance, schema/dependency change or training admission is introduced. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 8 model-input continuation
+
+New citizen observations and official create/edit audits now freeze versioned location/gauge/source-clock inputs and cached-or-missing environmental context. This adds no observed time when absent, does not backfill older audits or admit a training label. Protected input inspection fetches current coarse Open-Meteo/Copernicus background; it cannot reconstruct historical availability. Complete 30-barangay prediction locality and failed feature-model comparisons are recorded in [the current evaluation](../evaluations/pasig-location-feature-models-20261008/README.md). More independent matched outcomes are still required; follow-up acceptance, operational clearance and model-label admission remain separate.
 
 ## Purpose
 
