@@ -196,3 +196,164 @@ def test_restricted_staff_conflicting_retry_and_wrong_zone(evidence_db):
     assert service.list_updates(db, zone.id, staff, 50, None)["can_review"] is False
     with pytest.raises(FollowupError, match="Spatial Operations"):
         service.review(db, zone.id, submitted["id"], staff, ZoneObservationReview(decision="reviewed", note="View only role"))
+
+
+def editor_selection(**changes):
+    from app.schemas.zone_update import ZoneObservationEditorRequest
+    return ZoneObservationEditorRequest(fields=["depth"], reason="Verified the bridge approach against the attached evidence.", **changes)
+
+
+def wet_payload(**changes):
+    return ZoneObservationCreate(request_id=uuid4(), condition="still_flooded", observed_location="Bridge approach",
+        description="Water is waist deep along the entire bridge.", depth="waist", **changes)
+
+
+def test_individual_authors_and_repeat_author_are_never_combined(evidence_db):
+    db, staff, witness, zone = evidence_db
+    authors = [witness]
+    for number in range(2):
+        author = models.User(username=f"witness-{number}", email=f"witness-{number}@example.invalid", hashed_password="fixture", role_id=witness.role_id)
+        db.add(author); authors.append(author)
+    db.commit()
+    ids = [service.submit(db, zone.id, author, wet_payload(), [])["id"] for author in [*authors, witness]]
+    result = service.list_updates(db, zone.id, staff, 50, None)["updates"]
+    assert len(result) == 4 and len({row["author_id"] for row in result}) == 3
+    assert [row["id"] for row in result] == list(reversed(ids))
+    service.review(db, zone.id, ids[1], staff, ZoneObservationReview(decision="dismissed", note="This witness observed a different street."))
+    assert service.counts(db, [zone.id], staff) == {zone.id: 3}
+    assert sum(row["review_state"] == "dismissed" for row in service.list_updates(db, zone.id, staff, 50, None)["updates"]) == 1
+
+
+def test_editor_is_read_only_until_successful_atomic_save(evidence_db):
+    from app.schemas.report import FloodAvoidanceZoneUpdate
+    from app.services.zone_editor_service import save_zone
+    db, staff, witness, zone = evidence_db
+    row = service.submit(db, zone.id, witness, wet_payload(), [])
+    before_version = zone.updated_at
+    proposed = service.editor_proposal(db, zone.id, row["id"], staff, editor_selection())
+    assert proposed["patch"] == {"depth_override": "waist", "severity_override": "high"}
+    assert zone.depth == "knee" and zone.updated_at == before_version
+    assert service.list_updates(db, zone.id, staff, 50, None)["updates"][0]["applications"] == []
+    saved = save_zone(db, zone.id, staff, FloodAvoidanceZoneUpdate(**proposed["patch"],
+        expected_updated_at=proposed["expected_updated_at"], community_update=proposed["community_update"]))
+    assert saved.depth == "waist" and saved.severity == "high" and saved.updated_at != before_version
+    result = service.list_updates(db, zone.id, staff, 50, None)["updates"][0]
+    assert result["review_state"] == "pending"  # application and review remain distinct
+    assert result["applications"][0]["fields"] == ["depth"]
+    audit = db.scalar(select(AuditLog).where(AuditLog.action_type == "UPDATE_ZONE", AuditLog.target_id == zone.id))
+    assert audit.metadata_json["before"]["depth"] == "knee"
+    assert audit.metadata_json["after"]["depth"] == "waist"
+
+
+def test_version_conflict_no_change_and_audit_failure_leave_no_application(evidence_db, monkeypatch):
+    from app.schemas.report import FloodAvoidanceZoneUpdate
+    from app.services import zone_editor_service as editor
+    from sqlalchemy.exc import SQLAlchemyError
+    db, staff, witness, zone = evidence_db
+    row = service.submit(db, zone.id, witness, wet_payload(), [])
+    proposed = service.editor_proposal(db, zone.id, row["id"], staff, editor_selection())
+    stale = FloodAvoidanceZoneUpdate(**proposed["patch"], expected_updated_at=zone.updated_at-timedelta(seconds=1), community_update=proposed["community_update"])
+    with pytest.raises(FollowupError, match="Another administrator"): editor.save_zone(db, zone.id, staff, stale)
+    unchanged = FloodAvoidanceZoneUpdate(depth_override="knee", expected_updated_at=zone.updated_at, community_update=proposed["community_update"])
+    with pytest.raises(FollowupError, match="None of the selected"): editor.save_zone(db, zone.id, staff, unchanged)
+    def broken_audit(*args, **kwargs): raise SQLAlchemyError("simulated storage outage")
+    monkeypatch.setattr(editor, "append_audit", broken_audit)
+    with pytest.raises(FollowupError, match="could not be saved"):
+        editor.save_zone(db, zone.id, staff, FloodAvoidanceZoneUpdate(**proposed["patch"], expected_updated_at=proposed["expected_updated_at"], community_update=proposed["community_update"]))
+    db.refresh(zone)
+    assert zone.depth == "knee"
+    assert service.list_updates(db, zone.id, staff, 50, None)["updates"][0]["applications"] == []
+
+
+def test_unknown_clearance_mismatched_zone_and_permission_gates(evidence_db):
+    from app.schemas.zone_update import ZoneObservationEditorRequest
+    from app.schemas.report import FloodAvoidanceZoneUpdate
+    from app.services.zone_editor_service import save_zone
+    db, staff, witness, zone = evidence_db
+    dry = service.submit(db, zone.id, witness, payload(), [])
+    for fields in [["depth"], ["passable_vehicles"], ["hidden_hazards"], ["geometry"]]:
+        with pytest.raises(FollowupError): service.editor_proposal(db, zone.id, dry["id"], staff, ZoneObservationEditorRequest(fields=fields, reason="Scope verified"))
+    with pytest.raises(FollowupError): service.editor_proposal(db, zone.id + 999, dry["id"], staff, editor_selection())
+    with pytest.raises(FollowupError): service.editor_proposal(db, zone.id, dry["id"], witness, editor_selection())
+    with pytest.raises(FollowupError): save_zone(db, zone.id, witness, FloodAvoidanceZoneUpdate(depth_override="waist"))
+    role = models.Role(name="Zone-reader", permissions={"zones": "view"}); db.add(role); db.flush()
+    reader = models.User(username="zone-reader", email="reader@example.invalid", hashed_password="fixture", role_id=role.id); db.add(reader); db.commit()
+    assert service.list_updates(db, zone.id, reader, 50, None)["can_review"] is False
+    with pytest.raises(FollowupError): save_zone(db, zone.id, reader, FloodAvoidanceZoneUpdate(depth_override="waist"))
+    mine = service.submit(db, zone.id, staff, wet_payload(), [])
+    with pytest.raises(FollowupError, match="own observation"): service.editor_proposal(db, zone.id, mine["id"], staff, editor_selection())
+
+
+def test_dismissed_evidence_and_invalid_severity_cannot_be_applied(evidence_db):
+    from app.schemas.report import FloodAvoidanceZoneUpdate
+    from app.services.zone_editor_service import save_zone
+    db, staff, witness, zone = evidence_db
+    row = service.submit(db, zone.id, witness, wet_payload(), [])
+    service.review(db, zone.id, row["id"], staff, ZoneObservationReview(decision="dismissed", note="Wrong road in description"))
+    with pytest.raises(FollowupError, match="dismissed"): service.editor_proposal(db, zone.id, row["id"], staff, editor_selection())
+    with pytest.raises(FollowupError, match="Severity must match"): save_zone(db, zone.id, staff, FloodAvoidanceZoneUpdate(depth_override="waist", severity_override="low"))
+    db.refresh(zone); assert zone.depth == "knee"
+
+
+def test_proposed_road_geometry_handoff_and_empty_survey(evidence_db, monkeypatch):
+    from app.schemas.zone_update import ZoneObservationEditorRequest
+    from app.schemas.report import FloodAvoidanceZoneUpdate
+    from app.services.zone_editor_service import save_zone
+    db, staff, witness, zone = evidence_db
+    geometry = {"type":"LineString", "coordinates":[[121.08,14.57],[121.081,14.571]]}
+    monkeypatch.setattr(service, "build_road_segment_preview", lambda **kw: {"coverage_geometry":geometry,"validation_status":"validated","road_type":"LOCAL","message":"Verified road proposal"})
+    row = service.submit(db, zone.id, witness, wet_payload(road_start=geometry["coordinates"][0], road_end=geometry["coordinates"][1], passable_vehicles=[], hidden_hazards="yes"), [])
+    selection = ZoneObservationEditorRequest(fields=["geometry", "passable_vehicles", "hidden_hazards"], reason="Road, hazards and vehicle evidence verified")
+    proposed = service.editor_proposal(db, zone.id, row["id"], staff, selection)
+    saved = save_zone(db, zone.id, staff, FloodAvoidanceZoneUpdate(**proposed["patch"], expected_updated_at=proposed["expected_updated_at"], community_update=proposed["community_update"]))
+    assert to_shape(saved.source_geometry).geom_type == "LineString"
+    assert to_shape(saved.geometry).geom_type == "Polygon"
+    assert saved.passable_vehicles_override == "" and saved.hidden_hazards_override == "yes"
+    assert set(service.list_updates(db, zone.id, staff, 50, None)["updates"][0]["applications"][0]["fields"]) == {"geometry", "passable_vehicles", "hidden_hazards"}
+
+
+def test_editor_and_save_http_routes_use_authorized_version_and_source_projection(evidence_db):
+    from app.models.report import FloodReport, ReportStatus, ReportSource
+    db, staff, witness, zone = evidence_db
+    report = FloodReport(raw_text="Original citizen submission", source=ReportSource.USER_REPORT,
+        severity=models.ReportSeverity.MEDIUM, depth="knee", status=ReportStatus.APPROVED,
+        zone_id=zone.id, user_id=witness.id, human_readable_location="Maybunga bridge")
+    db.add(report); zone.admin_notes = "Operational description"; db.commit(); db.expire_all()
+    row = service.submit(db, zone.id, witness, wet_payload(), [])
+    app.dependency_overrides[get_db] = lambda: db
+    app.dependency_overrides[get_current_user] = lambda: staff
+    try:
+        with TestClient(app) as client:
+            details = client.get(f"/api/v1/admin/zones/{zone.id}")
+            assert details.json()["original_report_text"] == "Original citizen submission"
+            assert details.json()["report_text"] == "Operational description"
+            path = f"/api/v1/admin/zones/{zone.id}/updates/{row['id']}/editor"
+            response = client.post(path, json=editor_selection().model_dump(mode="json"))
+            assert response.status_code == 200 and response.headers["cache-control"] == "no-store"
+            proposal = response.json()
+            saved = client.put(f"/api/v1/admin/zones/{zone.id}", json={**proposal["patch"], "expected_updated_at": proposal["expected_updated_at"], "community_update": proposal["community_update"]})
+            assert saved.status_code == 200 and saved.json()["depth"] == "waist"
+            app.dependency_overrides[get_current_user] = lambda: witness
+            assert client.post(path, json=editor_selection().model_dump(mode="json")).status_code == 403
+            assert client.put(f"/api/v1/admin/zones/{zone.id}", json={"depth_override":"waist"}).status_code == 403
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_event_peak_timeline_and_edit_rollback_together(evidence_db, monkeypatch):
+    from app.schemas.report import FloodAvoidanceZoneUpdate
+    from app.services import zone_editor_service as editor
+    from sqlalchemy.exc import SQLAlchemyError
+    db, staff, witness, zone = evidence_db
+    event = models.FloodEvent(status=models.FloodEventStatus.ACTIVE, verified_at=datetime.now(timezone.utc),
+        peak_severity=models.ReportSeverity.MEDIUM, peak_depth="knee")
+    db.add(event); db.flush(); zone.event_id = event.id; db.commit()
+    row = service.submit(db, zone.id, witness, wet_payload(), [])
+    proposed = service.editor_proposal(db, zone.id, row["id"], staff, editor_selection())
+    def broken_audit(*args, **kwargs): raise SQLAlchemyError("audit outage")
+    monkeypatch.setattr(editor, "append_audit", broken_audit)
+    with pytest.raises(FollowupError): editor.save_zone(db, zone.id, staff, FloodAvoidanceZoneUpdate(**proposed["patch"],
+        expected_updated_at=proposed["expected_updated_at"], community_update=proposed["community_update"]))
+    db.refresh(zone); db.refresh(event)
+    assert zone.depth == "knee" and event.peak_depth == "knee" and event.peak_severity == models.ReportSeverity.MEDIUM
+    assert db.scalar(select(func.count()).select_from(models.FloodEventTimelineEntry).where(models.FloodEventTimelineEntry.event_id == event.id)) == 0

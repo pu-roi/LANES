@@ -11,7 +11,7 @@ from app.crud import zone_update as store
 from app.crud.flood_followup import append_audit
 from app.models.audit import AuditLog
 from app.models.user import User
-from app.schemas.zone_update import ZoneObservationCreate, ZoneObservationReview
+from app.schemas.zone_update import ZoneObservationCreate, ZoneObservationReview, ZoneObservationEditorRequest
 from app.services.flood_depth import severity_for_flood_depth
 from app.services.flood_followup_service import FollowupError, require_active_user
 from app.services.cloudinary_service import upload_image
@@ -140,7 +140,8 @@ def list_updates(db: Session, zone_id: int, user: User, limit: int, before_id: i
     has_more = len(rows) > limit
     rows = rows[:limit]
     reviews = store.reviews(db, [row.id for row in rows])
-    return {"updates": [_response(row, reviews.get(row.id)) for row in rows],
+    applications = store.applications(db, zone_id, [row.id for row in rows])
+    return {"updates": [{**_response(row, reviews.get(row.id)), "applications": applications.get(row.id, [])} for row in rows],
         "next_before_id": rows[-1].id if has_more else None,
         "is_active": zone.is_active, "can_review": user.role.permissions.get("zones") == "full"}
 
@@ -176,3 +177,42 @@ def review(db: Session, zone_id: int, update_id: int, user: User,
     result = _response(row, entry)
     db.commit()
     return result
+
+
+def editor_proposal(db: Session, zone_id: int, update_id: int, user: User,
+                    payload: ZoneObservationEditorRequest) -> dict[str, Any]:
+    """Explicit field selection; unknown answers never replace current values."""
+    require_staff_permission(user, write=True)
+    zone = store.zone(db, zone_id)
+    if zone is None:
+        raise FollowupError(404, "Flood Zone not found.")
+    if not zone.is_active:
+        raise FollowupError(409, "This zone is no longer active. Refresh its details.")
+    row = db.scalar(select(AuditLog).where(AuditLog.id == update_id,
+        AuditLog.action_type == store.OBSERVATION_ACTION, AuditLog.target_id == zone_id,
+        AuditLog.target_table == "flood_avoidance_zones"))
+    if row is None:
+        raise FollowupError(404, "Update not found for this zone.")
+    if row.admin_id == user.id:
+        raise FollowupError(403, "You cannot apply your own observation.")
+    review = store.reviews(db, [row.id]).get(row.id)
+    if review and review.metadata_json["decision"] == "dismissed":
+        raise FollowupError(409, "A dismissed update cannot be used in the editor.")
+    data = row.metadata_json
+    patch: dict[str, Any] = {}
+    for field in dict.fromkeys(payload.fields):
+        if field == "depth" and data.get("depth") and data["condition"] != "no_floodwater":
+            patch.update(depth_override=data["depth"], severity_override=severity_for_flood_depth(data["depth"]).value)
+        elif field == "passable_vehicles" and data.get(field) is not None:
+            patch["passable_vehicles_override"] = ",".join(data[field])
+        elif field == "hidden_hazards" and data.get(field) in {"yes", "no"}:
+            patch["hidden_hazards_override"] = data[field]
+        elif field == "geometry" and (data.get("proposed_extent") or {}).get("validation_status") == "validated":
+            geometry = data["proposed_extent"].get("geometry")
+            if not geometry or geometry.get("type") not in {"LineString", "MultiLineString"}:
+                raise FollowupError(422, "The proposed road cannot be opened in the editor.")
+            patch["geometry"] = geometry
+        else:
+            raise FollowupError(422, f"The update has no usable {field.replace('_', ' ')} value. Keep the current value.")
+    return {"patch": patch, "expected_updated_at": zone.updated_at.isoformat(),
+        "community_update": {"update_id": update_id, "fields": list(dict.fromkeys(payload.fields)), "reason": payload.reason}}

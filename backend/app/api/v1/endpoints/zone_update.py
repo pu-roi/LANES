@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.models.user import User
-from app.schemas.zone_update import ZoneObservationCreate, ZoneObservationReview
+from app.schemas.zone_update import ZoneObservationCreate, ZoneObservationReview, ZoneObservationEditorRequest
 from app.services import zone_update_service as service
 from app.services.flood_followup_service import FollowupError
 
@@ -68,3 +68,9 @@ def read(zone_id: int = Path(ge=1), limit: int = Query(default=50, ge=1, le=100)
 def review(payload: ZoneObservationReview, zone_id: int = Path(ge=1), update_id: int = Path(ge=1),
            db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> Any:
     return run(db, lambda: service.review(db, zone_id, update_id, user, payload))
+
+
+@router.post("/admin/zones/{zone_id}/updates/{update_id}/editor")
+def editor(payload: ZoneObservationEditorRequest, zone_id: int = Path(ge=1), update_id: int = Path(ge=1),
+           db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> Any:
+    return run(db, lambda: service.editor_proposal(db, zone_id, update_id, user, payload))

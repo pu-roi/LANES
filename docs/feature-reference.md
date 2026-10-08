@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 03:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 operational governance checkpoint (local):** Existing news intelligence, verified flood-zone lifecycle and RBAC modules now consume one typed server policy. Staff defaults affect future operations; automatic deadlines retain their observation-time snapshots; expiry becomes Unconfirmed. Citizen auto approval requires documented human history and independently corroborated, validated road evidence. Admin capability checks and saved worker health are connected on desktop/mobile. This does not adopt the separate duration research model or establish live current-news plotting acceptance. [Verification](evaluations/functional-system-settings-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -150,6 +150,8 @@ This document serves as the central technical reference for all currently implem
 ---
 
 ### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
+
+**October 8 individual evidence comparison (local):** Active Info reuses Needs Review flood-fact presentation with readable survey values, original-source/operational-note separation and fixed actions. Each witness submission has its own Review/detail/comparison/media; Use in editor selects available fields through the backend, then the existing editor incorporates them only after confirmation. Draft and version guards preserve earlier edits, and successful atomic saves link actual changed fields to the chosen source update. Whole-zone clearance and immutable review remain separate staff decisions. [Follow-up verification](evaluations/flood-zone-community-updates-20261008.md#admin-comparison-follow-up-october-8). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 8 Active Zone observations (local):** Public quick actions reuse the existing Report Flood panel with shared depth/survey/description/media, original Take Survey view, large media picker plus one camera action and editable start/end. Proposed road extent is rebuilt on the backend and recorded as private evidence; it does not alter official geometry/routing. Info/count opens per-zone Community updates solely in Active Zones, with existing Edit/Deactivate and explicit review. The original login view and New report header/discard warning preserve the existing reporting UI and unfinished drafts. Sixteen native and eighteen responsive report/update/login checks pass; provider/device/release limits remain in [acceptance](evaluations/flood-zone-community-updates-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

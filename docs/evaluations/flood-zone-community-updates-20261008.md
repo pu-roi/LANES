@@ -1,7 +1,23 @@
 # Active Flood Zone community updates — local acceptance
 
-> **Last Updated:** October 08, 2026, 02:42 AM
+> **Last Updated:** October 08, 2026, 04:01 AM
 > **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Senior-planner completion audit (October 8)
+
+All eight authoritative records, the documentation index and feature plan were checked against the final local implementation and recorded acceptance. Completed tasks, individual-update editor provenance, unchanged package/model/migration definitions and BUG-125 are synchronized. Architectural decisions remain unchanged because this is an extension of the existing Spatial Operations workflow. The verified delivery remains local and uncommitted on `roi-branch`; no push or deployment was requested for this completion audit. Physical camera/media-provider and matching release acceptance remain open. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Admin comparison follow-up (October 8)
+
+Implemented shared Overview facts, individual summary/review flow, source-note separation, selected-field editor handoff, draft-preserving confirmation, stale-draft inspection, expected-version saves and atomic UPDATE_ZONE source references. The approved implementation is described in [the feature plan](../plans/flood-zone-community-updates.md#admin-details-and-individual-update-review).
+
+Native verification: `venv/Scripts/python.exe scripts/verify_settings_postgis.py tests/test_zone_updates.py tests/test_flood_zone_growth.py` → **39 passed**, comprising 24 observation/editor checks and 15 existing growth/event checks. Existing Alembic head applied in fresh disposable loopback PostGIS databases; generated databases removed afterward. Cases cover three distinct authors/four submissions, independent review, read-only editor preparation, actual field provenance, no-change rejection, mismatched/self/dismissed evidence, full/view/commuter permissions, stale versions, audit rollback including event peak/timeline, source projection, authenticated HTTP save and road buffering. Cloudinary is mocked; no deployment or production database mutation.
+
+Browser verification: **14 distinct desktop/mobile scenarios pass across recorded runs** in `tests/spatial-review.spec.ts`: cards/contributors, explicit individual review, shared Overview/source separation including 320px, multiple independent submissions/comparison/media/clearance scope, selected evidence with preserved draft/save failure/retry/application, stale-draft inspect/cancel/explicit replacement, and existing Needs Review details. Desktop and mobile screenshots were visually inspected. The final handoff/stale-draft run passed all four cases, including mobile navigation-rail bounds. Initial runs hit two development-page loading timeouts while Next.js was rebuilding; targeted reruns after the edits settled passed. A missing selected-review badge on mobile and editor overlap with the navigation rail were fixed and verified. These browser fixtures mock API/media-provider responses; native HTTP/PostGIS tests above validate the server contract separately.
+
+TypeScript passes. New comparison/facts/API/formatting components have zero scoped lint findings. LiveMapPage retains the existing 15 errors/14 warnings; OfficialZoneDrawer retains its existing 9 errors/6 warnings in the final comparison against HEAD. These legacy errors are not reported as a globally clean lint run. RecordDetailsDialog footer and final drawer checks are included in final verification.
+
+The geometry diagram is an explicitly labeled SVG comparison without a basemap; operational map verification uses the existing zone editor. Each application references one chosen source update; no automatic winner/majority selection, automatic clearance or witness-media publication. Existing release/physical-device limitations below remain.
 
 ## Delivered behavior
 

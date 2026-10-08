@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Loader2, CheckCircle, Shield, Pencil, Info, MessageSquare } from "lucide-react";
 import { ActiveZoneDetails } from "./ActiveZoneDetails";
 import { getZoneUpdateCounts } from "@/features/hazards/zoneUpdatesApi";
+import type { ZoneEditorProposal } from "@/features/hazards/zoneUpdatesApi";
 import { ZoneContributors } from "./ZoneContributors";
 import { FloodRecordSummary, SpatialPanelButton as Button, floodRecordTime } from "./FloodRecordSummary";
 import { Pagination } from "@/shared/ui";
@@ -28,7 +29,8 @@ interface ActiveZonesPanelProps {
   flyToZone: (zone: AvoidanceZone) => void;
   setConfirmId: (id: number | null) => void;
   onCreateOfficialZone?: () => void;
-  onEditZone?: (zone: AvoidanceZone) => void;
+  onEditZone?: (zone: AvoidanceZone, proposal?: ZoneEditorProposal) => void;
+  zoneEditorOpen?: boolean;
 }
 
 export function ActiveZonesPanel({
@@ -50,6 +52,7 @@ export function ActiveZonesPanel({
   setConfirmId,
   onCreateOfficialZone,
   onEditZone,
+  zoneEditorOpen,
 }: ActiveZonesPanelProps) {
   const [expandedZoneIds, setExpandedZoneIds] = useState<number[]>([]);
   const [details, setDetails] = useState<{ zone: AvoidanceZone; tab: "overview" | "updates" } | null>(null);
@@ -244,6 +247,6 @@ export function ActiveZonesPanel({
       <div className="p-3 border-t border-gray-200 bg-white">
         <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </div>
-    </section>{showing && details && <ActiveZoneDetails key={details.zone.id} zone={details.zone} initialTab={details.tab} onClose={closeDetails} onEdit={onEditZone} />}</>
+    </section>{showing && details && <ActiveZoneDetails key={details.zone.id} zone={details.zone} initialTab={details.tab} onClose={closeDetails} onEdit={onEditZone} editorOpen={zoneEditorOpen} onViewMap={flyToZone} onDeactivate={() => { closeDetails(); setConfirmId(details.zone.id); }} />}</>
   );
 }

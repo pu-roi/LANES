@@ -219,6 +219,7 @@ export default function LiveMapPage() {
   const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
   const [rejectionReport, setRejectionReport] = useState<FloodReport | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
+  const [communityProposal, setCommunityProposal] = useState<import("@/features/hazards/zoneUpdatesApi").ZoneEditorProposal | null>(null);
   const [editingZone, setEditingZone] = useState<AvoidanceZone | null>(null);
   const previousAdminId = useRef<string | null>(null);
 
@@ -421,7 +422,9 @@ export default function LiveMapPage() {
     setIsCreateZoneDrawerOpen(true);
   };
 
-  const openEditZoneWorkspace = useCallback((zone: AvoidanceZone) => {
+  const openEditZoneWorkspace = useCallback((zone: AvoidanceZone, proposal?: import("@/features/hazards/zoneUpdatesApi").ZoneEditorProposal) => {
+    if (proposal) setCommunityProposal(proposal);
+    else if (editingZone?.id !== zone.id) setCommunityProposal(null);
     setIsMergeDrawerOpen(false);
     setIsMergeMobileMapVisible(false);
     setMergePreviewCandidates([]);
@@ -431,7 +434,7 @@ export default function LiveMapPage() {
     markSecondaryWorkspaceOpened("edit");
     setIsCreateZoneDrawerOpen(false);
     setIsEditZoneDrawerOpen(true);
-  }, [markSecondaryWorkspaceOpened]);
+  }, [editingZone?.id, markSecondaryWorkspaceOpened]);
 
   const handleReportFocusChange = useCallback((id: number | null) => {
     setSelectedReportId(id);
@@ -943,8 +946,9 @@ export default function LiveMapPage() {
               onCreateOfficialZone={() => {
                 openCreateZoneWorkspace();
               }}
-              onEditZone={(zone) => {
-                openEditZoneWorkspace(zone);
+              zoneEditorOpen={isEditZoneDrawerOpen}
+              onEditZone={(zone, proposal) => {
+                openEditZoneWorkspace(zone, proposal);
                 flyToZone(zone);
               }}
             />
@@ -1207,7 +1211,7 @@ export default function LiveMapPage() {
             transition={{ width: { duration: 0.35, ease: [0.32, 0.72, 0, 1] } }}
             className={isMergeDrawerOpen || isCreateZoneDrawerOpen
               ? "absolute inset-0 hidden"
-              : `${isEditZoneDrawerOpen ? "fixed inset-0 z-50 md:relative md:inset-auto md:z-30" : "relative z-30 hidden md:flex"} flex h-full min-w-0 shrink-0 ${isEditZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
+              : `${isEditZoneDrawerOpen ? "absolute inset-0 z-50 md:relative md:inset-auto md:z-30" : "relative z-30 hidden md:flex"} flex h-full min-w-0 shrink-0 ${isEditZoneDrawerOpen ? "pointer-events-auto" : "pointer-events-none md:pointer-events-auto"}`
             }
             onAnimationComplete={() => mapInstance?.resize()}
           >
@@ -1222,6 +1226,8 @@ export default function LiveMapPage() {
                 }}
                 isAdminMode={true}
                 onZoneUpdated={() => {
+                  void queryClient.invalidateQueries({ queryKey: ["zone-details"] });
+                  void queryClient.invalidateQueries({ queryKey: ["zone-public-updates"] });
                   refetchList();
                   refetchMap();
                   setIsEditZoneDrawerOpen(false);
@@ -1229,6 +1235,8 @@ export default function LiveMapPage() {
                   removeSecondaryWorkspace("edit");
                 }}
                 editingZone={editingZone}
+                communityProposal={communityProposal}
+                onReturnToZones={() => { setIsEditZoneDrawerOpen(false); void queryClient.invalidateQueries({ queryKey: ["zone-details"] }); }}
                 mapInstance={mapInstance}
                 onSwitchWorkspace={openCreateZoneWorkspace}
                 switchWorkspaceLabel="Create Zone"

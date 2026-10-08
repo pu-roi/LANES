@@ -679,6 +679,7 @@ test("active zone public updates stay pending until an explicit staff review", a
   await expect(dialog.locator("..")).toHaveCSS("opacity", "1");
   expect(reviewed).toBe(false);
   await page.screenshot({ path: info.outputPath("zone-community-updates.png") });
+  await dialog.getByRole("button", { name: "Review update #501", exact: true }).click();
   await dialog.getByRole("button", { name: "View evidence (1)", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Evidence viewer" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Close media viewer" })).toBeFocused();
@@ -687,11 +688,11 @@ test("active zone public updates stay pending until an explicit staff review", a
   await expect(dialog).toBeVisible();
   await dialog.getByLabel("Review note").fill("Keep zone; one dry spot only");
   await dialog.getByRole("button", { name: "Mark reviewed", exact: true }).click();
-  await expect(dialog.getByText("Reviewed", { exact: true })).toBeVisible();
+  await expect(dialog.getByRole("region", { name: "Review update #501" }).getByText("Reviewed", { exact: true })).toBeVisible();
   await dialog.getByRole("button", { name: "Close flood zone details" }).click();
   await expect(zone.getByRole("button", { name: "1 new update", exact: true })).toHaveCount(0);
   await zone.getByRole("button", { name: "Info for Zone #9" }).click();
-  await expect(dialog.getByText("Official depth", { exact: true })).toBeVisible();
+  await expect(dialog.getByText("Water Level", { exact: true })).toBeVisible();
   await dialog.getByRole("button", { name: "Edit zone", exact: true }).click();
   await expect(page.getByText("Edit Zone #9", { exact: true }).first()).toBeVisible();
 });
@@ -925,4 +926,178 @@ test("guest zone updates use the identical original Report Flood login view", as
   await expect(page.getByRole("heading", { name: "Report Flood", exact: true })).toHaveCount(1);
   await page.screenshot({ path: info.outputPath("zone-update-report-login.png") });
   expect(writes.filter(path => !path.endsWith("/preview-bidirectional"))).toEqual([]);
+});
+
+
+const communityZone = { id: 9, report_id: 2, name: "Maybunga bridge", is_active: true,
+  created_at: "2026-10-04T06:00:00Z", updated_at: "2026-10-04T06:00:00Z", expires_at: null,
+  severity: "medium", depth: "knee", severity_override: "medium", depth_override: "knee",
+  admin_notes: "Keep the bridge approach clear.", report_text: "Keep the bridge approach clear.",
+  original_report_text: "The bridge approach is flooded.", location_label: "Dr. Sixto Antonio Avenue, Maybunga",
+  passable_vehicles: "Walk,Bicycle,Heavy", passable_vehicles_override: "walk,bicycle,heavy", hidden_hazards: "no", hidden_hazards_override: "no", is_bidirectional: false,
+  geometry: { type: "Polygon", coordinates: [[[121.08,14.57],[121.081,14.57],[121.081,14.571],[121.08,14.57]]] },
+  report_geometry: { type: "LineString", coordinates: [[121.08,14.57],[121.081,14.571]] },
+  media_urls: [], report_media_urls: [], contributors: [], report_source: "direct_user", reporter_name: "Original witness" };
+const communityObservations = [
+  { id: 603, zone_id: 9, author_id: 23, author_name: "User 3", condition: "no_floodwater", depth: null, severity: null, description: "Only the westbound shoulder is dry.", passable_vehicles: null, hidden_hazards: "unsure" },
+  { id: 602, zone_id: 9, author_id: 22, author_name: "User 2", condition: "still_flooded", depth: "waist", severity: "high", description: "The complete bridge approach remains waist deep.", passable_vehicles: ["heavy"], hidden_hazards: "yes" },
+  { id: 601, zone_id: 9, author_id: 21, author_name: "User 1", condition: "still_flooded", depth: "knee", severity: "medium", description: "Water on the eastbound approach.", passable_vehicles: ["walk"], hidden_hazards: "no" },
+  { id: 600, zone_id: 9, author_id: 21, author_name: "User 1", condition: "other_change", depth: null, severity: null, description: "Earlier observation from the same witness.", passable_vehicles: null, hidden_hazards: "unsure" },
+].map(row => ({ ...row, observed_at: null, submitted_at: "2026-10-08T02:00:00Z", observed_location: null,
+  road_start: [121.08,14.57], road_end: [121.082,14.572], start_label: "Bridge entrance", end_label: "Bridge exit", is_bidirectional: false,
+  proposed_extent: { geometry: { type: "LineString", coordinates: [[121.08,14.57],[121.082,14.572]] }, validation_status: "validated", road_type: "LOCAL", message: "Verified road proposal" },
+  latitude: null, longitude: null, media_urls: [`https://example.org/evidence-${row.id}.png`], review_state: "pending", review: null, applications: [] }));
+
+async function communityFixture(page: Page) {
+  await setup(page, "panel_details");
+  const state = { zone: { ...communityZone }, updates: communityObservations.map(row => ({ ...row })), saves: [] as Record<string, unknown>[], failSave: false };
+  await page.route("**/api/v1/admin/zones/9", async route => {
+    if (route.request().method() === "PUT") {
+      const payload = route.request().postDataJSON(); state.saves.push(payload);
+      if (state.failSave) return route.fulfill({ status: 409, json: { detail: "Another administrator changed this zone. Your draft is kept." } });
+      Object.assign(state.zone, { depth: payload.depth_override, severity: payload.severity_override, depth_override: payload.depth_override, severity_override: payload.severity_override, admin_notes: payload.admin_notes, updated_at: "2026-10-08T02:05:00Z" });
+      if (payload.community_update) {
+        const row = state.updates.find(update => update.id === payload.community_update.update_id)!;
+        (row.applications as unknown[]) = [{ id: 900, fields: payload.community_update.fields, saved_at: state.zone.updated_at, reason: payload.community_update.reason, zone_version: state.zone.updated_at }];
+      }
+    }
+    return route.fulfill({ json: state.zone });
+  });
+  await page.route("**/api/v1/admin/zones/9/updates", route => route.fulfill({ json: { updates: state.updates, next_before_id: null, is_active: true, can_review: true } }));
+  await page.route("**/api/v1/admin/zone-updates/counts?**", route => route.fulfill({ json: { "9": 4 } }));
+  await page.route("**/api/v1/admin/zones/9/updates/602/editor", route => {
+    expect(route.request().postDataJSON()).toEqual({ fields: ["depth"], reason: "Verified complete bridge coverage and evidence." });
+    return route.fulfill({ json: { patch: { depth_override: "waist", severity_override: "high" }, expected_updated_at: state.zone.updated_at, community_update: { update_id: 602, fields: ["depth"], reason: "Verified complete bridge coverage and evidence." } } });
+  });
+  await page.getByRole("button", { name: /Active Zones/ }).click();
+  await page.getByRole("button", { name: "Info for Zone #9" }).click();
+  return state;
+}
+
+test("active overview shares report fact tiles and separates source submission from operational notes", async ({ page }, info) => {
+  if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
+  await communityFixture(page);
+  const dialog = page.getByRole("dialog", { name: "Flood Zone Details" });
+  await expect(dialog.getByText("Passable Vehicles", { exact: true })).toBeVisible();
+  await expect(dialog.getByText("Pedestrians, Bicycles / E-Bikes, Large Trucks / Buses", { exact: true })).toBeVisible();
+  await expect(dialog.getByText("Keep the bridge approach clear.", { exact: true })).toHaveCount(1);
+  await expect(dialog.getByText("The bridge approach is flooded.", { exact: true })).toBeAttached();
+  await expect(dialog.getByText("Water Level", { exact: true })).toBeVisible();
+  await expect(dialog.getByText("One direction", { exact: true })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "View on Map", exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath("active-zone-overview.png") });
+  if (info.project.name === "mobile-chromium") {
+    await page.setViewportSize({ width: 320, height: 700 });
+    expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath("active-zone-overview-320.png") });
+  }
+});
+
+test("each community submission has separate comparison media and clearance scope", async ({ page }, info) => {
+  if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
+  await communityFixture(page);
+  const dialog = page.getByRole("dialog", { name: "Flood Zone Details" });
+  await dialog.getByRole("button", { name: "Community updates", exact: true }).click();
+  await expect(dialog.getByRole("article", { name: /^Public update #/ })).toHaveCount(4);
+  await dialog.getByRole("button", { name: "Review update #602", exact: true }).click();
+  const review = dialog.getByRole("region", { name: "Review update #602" });
+  await expect(review.getByText("The complete bridge approach remains waist deep.", { exact: true })).toBeVisible();
+  await expect(review.getByText("Hazardous (High)", { exact: true })).toBeVisible();
+  await expect(review.getByText("Observation time not recorded", { exact: false })).toBeVisible();
+  await expect(review.getByRole("img", { name: /Current official boundary/ })).toBeVisible();
+  await review.getByRole("button", { name: "View evidence (1)", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Evidence viewer" }).locator("img")).toHaveAttribute("src", /evidence-602/);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeVisible();
+  await page.screenshot({ path: info.outputPath("individual-update-comparison.png") });
+  expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+  await dialog.getByRole("button", { name: "Back to updates" }).click();
+  await dialog.getByRole("button", { name: "Review update #603", exact: true }).click();
+  await expect(dialog.getByRole("button", { name: "Assess clearance", exact: true })).toBeDisabled();
+  await expect(dialog.getByRole("checkbox", { name: "Water level", exact: true })).toBeDisabled();
+  if (info.project.name === "mobile-chromium") {
+    await page.setViewportSize({ width: 320, height: 700 });
+    expect(await dialog.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+    await page.screenshot({ path: info.outputPath("community-clearance-320.png") });
+  }
+});
+
+test("selected evidence preserves the editor draft and only a successful save records application", async ({ page }, info) => {
+  if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
+  const state = await communityFixture(page);
+  const dialog = page.getByRole("dialog", { name: "Flood Zone Details" });
+  await dialog.getByRole("button", { name: "Edit zone", exact: true }).click();
+  const editor = page.getByRole("complementary", { name: "Official Avoidance Zone Workspace", exact: true });
+  await editor.locator("textarea").fill("Preserve this unfinished operational note.");
+  await editor.getByRole("button", { name: "Back to zones", exact: true }).click();
+  if (!await dialog.isVisible()) await page.getByRole("button", { name: "Info for Zone #9" }).click();
+  await dialog.getByRole("button", { name: "Community updates", exact: true }).click();
+  await dialog.getByRole("button", { name: "Review update #602", exact: true }).click();
+  await dialog.getByRole("checkbox", { name: "Water level", exact: true }).check();
+  await dialog.getByLabel("Review note").fill("Verified complete bridge coverage and evidence.");
+  await dialog.getByRole("button", { name: "Use in editor", exact: true }).click();
+  await expect(editor.locator("textarea")).toHaveValue("Preserve this unfinished operational note.");
+  expect(state.saves).toHaveLength(0);
+  await editor.getByRole("button", { name: "Incorporate fields", exact: true }).click();
+  await page.getByRole("button", { name: "Incorporate", exact: true }).click();
+  await expect(editor.getByText("Draft uses community update #602", { exact: true })).toBeVisible();
+  expect(await editor.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+  if (info.project.name === "mobile-chromium") {
+    const rail = page.getByRole("navigation", { name: "Admin navigation" });
+    const railBox = (await rail.boundingBox())!, editorBox = (await editor.boundingBox())!;
+    expect(editorBox.x).toBeGreaterThanOrEqual(railBox.x + railBox.width - 1);
+  }
+  await page.screenshot({ path: info.outputPath("community-update-editor.png") });
+  state.failSave = true;
+  await editor.getByRole("button", { name: "Save Changes", exact: true }).click();
+  await expect(page.getByText("Another administrator changed this zone. Your draft is kept.", { exact: false }).last()).toBeVisible();
+  await expect(editor.locator("textarea")).toHaveValue("Preserve this unfinished operational note.");
+  expect(state.updates.find(row => row.id === 602)?.applications).toHaveLength(0);
+  state.failSave = false;
+  await editor.getByRole("button", { name: "Save Changes", exact: true }).click();
+  await expect(dialog.getByRole("region", { name: "Review update #602" }).getByText(/Used in saved zone edit/)).toBeVisible();
+  expect(state.saves.at(-1)?.community_update).toEqual({ update_id: 602, fields: ["depth"], reason: "Verified complete bridge coverage and evidence." });
+  expect(state.saves.at(-1)?.depth_override).toBe("waist");
+  expect(state.saves.at(-1)?.admin_notes).toBe("Preserve this unfinished operational note.");
+});
+
+
+test("a newer official version preserves the earlier edit until the admin explicitly replaces it", async ({ page }, info) => {
+  if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
+  const state = await communityFixture(page);
+  const dialog = page.getByRole("dialog", { name: "Flood Zone Details" });
+  await dialog.getByRole("button", { name: "Edit zone", exact: true }).click();
+  const editor = page.getByRole("complementary", { name: "Official Avoidance Zone Workspace", exact: true });
+  await editor.locator("textarea").fill("Keep this earlier operational note.");
+  // Observe persistence rather than sleeping before simulating a concurrent save.
+  await expect.poll(async () => page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("keyval-store"); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error);
+    });
+    return new Promise<string>(resolve => {
+      const transaction = database.transaction("keyval", "readonly");
+      const request = transaction.objectStore("keyval").get("lanes:admin-edit-zone-draft:v2:7:9");
+      request.onsuccess = () => resolve(request.result?.adminNotes ?? ""); transaction.oncomplete = () => database.close();
+    });
+  })).toBe("Keep this earlier operational note.");
+  state.zone.updated_at = "2026-10-08T02:10:00Z";
+  state.zone.admin_notes = "Another administrator's current note.";
+  const refreshed = page.waitForResponse(response => response.url().endsWith("/admin/zones/9") && response.request().method() === "GET");
+  await editor.getByRole("button", { name: "Back to zones", exact: true }).click();
+  await refreshed;
+  await expect(dialog.getByText("Another administrator's current note.", { exact: true })).toBeVisible();
+  await dialog.getByRole("button", { name: "Edit zone", exact: true }).click();
+  await expect(editor.getByText("A newer zone version is available", { exact: true })).toBeVisible();
+  await expect(editor.getByRole("button", { name: "Save Changes", exact: true })).toBeDisabled();
+  await editor.getByText("Inspect earlier draft", { exact: true }).click();
+  await expect(editor.getByText("Keep this earlier operational note.", { exact: true })).toBeVisible();
+  await editor.getByRole("button", { name: "Start from latest", exact: true }).click();
+  await page.getByRole("button", { name: "Keep draft", exact: true }).click();
+  await expect(editor.getByText("Keep this earlier operational note.", { exact: true })).toBeVisible();
+  await page.screenshot({ path: info.outputPath("stale-zone-draft-preserved.png") });
+  await editor.getByRole("button", { name: "Start from latest", exact: true }).click();
+  await page.getByRole("button", { name: "Use latest", exact: true }).click();
+  await expect(editor.locator("textarea")).toHaveValue("Another administrator's current note.");
+  await expect(editor.getByRole("button", { name: "Save Changes", exact: true })).toBeEnabled();
+  expect(state.saves).toHaveLength(0);
 });

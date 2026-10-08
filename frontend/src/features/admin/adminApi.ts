@@ -246,6 +246,8 @@ export interface AvoidanceZone {
   hidden_hazards?: string | null;
   merge_rationale?: string | null;
   report_text?: string;
+  original_report_text?: string | null;
+  location_label?: string | null;
   report_source?: string;
   reporter_name?: string;
   reporter_trust_score?: number;
@@ -578,6 +580,8 @@ export async function updateZoneExpiration(zoneId: number, expiresAt: string | n
 }
 
 export interface AvoidanceZoneUpdatePayload {
+  expected_updated_at?: string;
+  community_update?: { update_id: number; fields: ("depth" | "passable_vehicles" | "hidden_hazards" | "geometry")[]; reason: string };
   name?: string;
   severity_override?: "low" | "medium" | "high" | "extreme";
   depth_override?: string | null;
