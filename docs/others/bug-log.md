@@ -1,6 +1,17 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 03:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-125] Active Zone details diverge from Needs Review and do not hand off selected community evidence
+
+- **Status:** Resolved and verified locally; release pending.
+- **Severity:** Medium.
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Active Info showed sparse raw vehicle values and duplicated notes, while Needs Review used structured flood facts. Opening Edit from community updates carried only the official zone, with no selected evidence reference. Existing stale draft restoration silently removed older local edits.
+- **RCA:** Separate renderers/formatters, legacy report_text prioritizing admin_notes, no selected-update/editor contract, independent non-atomic zone/audit commits, and an automatic stale-draft deletion branch.
+- **Solution:** Shared facts and source projection, independent update list/detail/comparison, backend-selected patch, explicit incorporation, retained stale draft inspection, expected-version lock and atomic save/provenance. Reviewed/dismissed states remain independent; whole-zone clearance requires scope assessment. Separate media failure reports partial success.
+- **Files:** shared FloodFacts/RecordDetailsDialog/floodSurvey, ActiveZoneDetails/ZoneObservationReview/ZoneGeometryComparison, ActiveZonesPanel/LiveMapPage, existing OfficialZoneDrawer/draft storage, zone_update schema/CRUD/service/endpoint, zone_editor_service and admin zone GET/PUT projection.
+- **Verification:** 39 native observation/editor/growth checks and 14 distinct desktop/mobile scenarios pass across recorded runs; TypeScript passes. Mobile editor rail placement and a visible selected-update review badge were checked after fixes. [Responsive and release acceptance](../evaluations/flood-zone-community-updates-20261008.md#admin-comparison-follow-up-october-8).
 
 ### [BUG-124] Blocked WebGL initialization crashes the map page
 

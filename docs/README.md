@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 03:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 [Community Trending Hotspots verification](evaluations/community-trending-hotspots-20261007.md) — server-ranked place activity, bounded 24/48-hour fallback, consistent desktop/mobile states, nine native PostGIS checks and ten browser checks.
 
@@ -73,7 +73,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Evaluations and simulations
 
-- [Active Zone community updates acceptance](evaluations/flood-zone-community-updates-20261008.md) — sixteen native checks, eighteen responsive panel/road/media/login scenarios, existing storage/privacy and pending provider/device/release verification.
+- [Active Zone community updates acceptance](evaluations/flood-zone-community-updates-20261008.md) — original report/update acceptance plus 39 native admin-comparison/editor/growth checks and 14 distinct desktop/mobile scenarios, individual evidence handoff and responsive draft/media review; provider/device/release verification remains pending.
 
 - [Structured Pasig flood follow-ups](evaluations/structured-flood-followups-20261007.md) — local owner observation/staff review/JSON export implementation, existing append-only storage, privacy safeguards, completed source review and pending runtime/browser acceptance.
 

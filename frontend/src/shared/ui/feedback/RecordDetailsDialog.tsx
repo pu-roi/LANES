@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 import { Button } from "../forms/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../layout/Card";
 
-export function RecordDetailsDialog({ title, subtitle, closeLabel, onClose, children, placement = "center", size = "default", bodyLayout = "flow" }: { title: string; subtitle?: string; closeLabel: string; onClose: () => void; children: ReactNode; placement?: "center" | "drawer"; size?: "default" | "wide"; bodyLayout?: "flow" | "panels" }) {
+export function RecordDetailsDialog({ title, subtitle, closeLabel, onClose, children, footer, placement = "center", size = "default", bodyLayout = "flow" }: { title: string; subtitle?: string; closeLabel: string; onClose: () => void; children: ReactNode; footer?: ReactNode; placement?: "center" | "drawer"; size?: "default" | "wide"; bodyLayout?: "flow" | "panels" }) {
   const titleId = useId();
   const dialog = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -42,7 +42,8 @@ export function RecordDetailsDialog({ title, subtitle, closeLabel, onClose, chil
           <div className="min-w-0"><CardTitle id={titleId}>{title}</CardTitle>{subtitle && <p className="mt-1 break-words text-xs text-gray-500">{subtitle}</p>}</div>
           <span ref={(node) => { closeButton.current = node?.querySelector("button") ?? null; }}><Button variant="ghost" size="sm" aria-label={closeLabel} onClick={onClose} className="min-h-11 min-w-11 px-2"><X className="size-5" aria-hidden="true" /></Button></span>
         </CardHeader>
-        <CardContent className={`min-h-0 p-4 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] sm:p-6 sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))] ${bodyLayout === "panels" ? "flex flex-1 flex-col overflow-hidden" : "space-y-5 overflow-y-auto"}`}>{children}</CardContent>
+        <CardContent className={`min-h-0 p-4 sm:p-6 ${footer ? "" : "pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]"} ${bodyLayout === "panels" ? "flex flex-1 flex-col overflow-hidden" : "space-y-5 overflow-y-auto"}`}>{children}</CardContent>
+        {footer && <div className="shrink-0 border-t border-slate-100 bg-slate-50/80 px-4 py-3 pb-[calc(0.75rem+var(--bottom-nav-height)+env(safe-area-inset-bottom))] sm:px-6 sm:pb-[calc(0.75rem+env(safe-area-inset-bottom))]">{footer}</div>}
       </Card>
     </motion.div>
   </motion.div>, document.body);

@@ -72,3 +72,16 @@ class ZoneObservationReview(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
     decision: Literal["reviewed", "dismissed"]
     note: str = Field(min_length=3, max_length=2000)
+
+
+UpdateField = Literal["depth", "passable_vehicles", "hidden_hazards", "geometry"]
+
+
+class ZoneObservationEditorRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    fields: list[UpdateField] = Field(min_length=1, max_length=4)
+    reason: str = Field(min_length=3, max_length=2000)
+
+
+class ZoneObservationApplication(ZoneObservationEditorRequest):
+    update_id: int = Field(ge=1)

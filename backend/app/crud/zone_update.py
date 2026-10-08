@@ -32,6 +32,22 @@ def reviews(db: Session, ids: list[int]) -> dict[int, AuditLog]:
     return result
 
 
+def applications(db: Session, zone_id: int, ids: list[int]) -> dict[int, list[dict]]:
+    if not ids:
+        return {}
+    rows = db.scalars(select(AuditLog).where(AuditLog.action_type == "UPDATE_ZONE",
+        AuditLog.target_table == "flood_avoidance_zones", AuditLog.target_id == zone_id,
+        AuditLog.metadata_json["community_update_id"].astext.in_([str(value) for value in ids]))
+        .order_by(AuditLog.id.desc()))
+    result: dict[int, list[dict]] = {}
+    for row in rows:
+        data = row.metadata_json
+        result.setdefault(data["community_update_id"], []).append({"id": row.id,
+            "saved_at": row.created_at.isoformat(), "fields": data["applied_fields"],
+            "reason": data["reason"], "zone_version": data["zone_version"], "staff_id": row.admin_id})
+    return result
+
+
 def pending_counts(db: Session, ids: list[int]) -> dict[int, int]:
     review = aliased(AuditLog)
     has_review = select(review.id).where(review.action_type == REVIEW_ACTION,

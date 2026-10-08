@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 08, 2026, 02:42 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 08, 2026, 03:58 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 8 community-evidence application storage:** Existing UPDATE_ZONE audit JSON now records a selected community_update_id, actual applied_fields, staff assessment, before/after facts and resulting zone_version in the same transaction as the official edit/event timeline. Immutable observation/review records stay separate. expected_updated_at is an API concurrency token, not a new column. Original-report/location/direction fields are read projections. No SQLAlchemy/Alembic schema changes; the existing migration head applies during 39 native observation/editor/growth checks in generated disposable databases. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 8 zone-observation storage (local):** Existing audit JSON stores private `ZONE_PUBLIC_OBSERVATION` and immutable `ZONE_PUBLIC_OBSERVATION_REVIEW`. Observation metadata now includes proposed road start/end/labels/direction and server-rebuilt proposed geometry, road type, verification status/message; missing observed time remains null with `observation_time_recorded=false`, distinct from submission time. Existing model fields supply original source/primary report centreline endpoints; drawn polygons do not manufacture road endpoints. Locks protect idempotency, rate checks and review. General audit browsing excludes private actions. No model/table/column/index/migration/package change; existing Alembic head applies in generated, removed loopback databases during sixteen native checks. Official zones remain unchanged by submission/review. [Acceptance](../evaluations/flood-zone-community-updates-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

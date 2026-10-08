@@ -4,6 +4,7 @@ from typing import Any, Literal, Optional, Union
 from pydantic import BaseModel, ConfigDict, field_serializer, field_validator, model_validator
 from geoalchemy2.elements import WKBElement
 from app.schemas.news_publication import PublicNewsAlert
+from app.schemas.zone_update import ZoneObservationApplication
 
 from app.schemas.common import (
     PointGeometry,
@@ -165,6 +166,15 @@ class FloodAvoidanceZoneUpdate(BaseModel):
     hidden_hazards_override: Optional[str] = None
     admin_notes: Optional[str] = None
     is_active: Optional[bool] = None
+    expected_updated_at: Optional[datetime] = None
+    community_update: Optional["ZoneObservationApplication"] = None
+
+    @field_validator("expected_updated_at")
+    @classmethod
+    def require_zone_version_timezone(cls, value: Optional[datetime]) -> Optional[datetime]:
+        if value is not None and (value.tzinfo is None or value.utcoffset() is None):
+            raise ValueError("The zone version must include a timezone.")
+        return value
     # A zone persists its operational avoidance area as a Polygon. Road
     # centrelines are accepted here and buffered by the secured admin route.
     geometry: Optional[Union[LineStringGeometry, MultiLineStringGeometry, PolygonGeometry]] = None
@@ -283,6 +293,9 @@ class FloodAvoidanceZoneResponse(FloodAvoidanceZoneBase):
     updated_at: datetime
     
     report_text: Optional[str] = None
+    original_report_text: Optional[str] = None
+    location_label: Optional[str] = None
+    is_bidirectional: Optional[bool] = None
     report_source: Optional[str] = None
     reporter_name: Optional[str] = None
     reporter_role: Optional[str] = None

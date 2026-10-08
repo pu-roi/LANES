@@ -260,6 +260,11 @@ def _attach_report_media(zone: models.FloodAvoidanceZone) -> schemas.FloodAvoida
     return response.model_copy(
         update={
             "report_media_urls": report_media,
+            "original_report_text": zone.primary_report.raw_text if zone.primary_report else None,
+            "location_label": zone.primary_report.human_readable_location if zone.primary_report else None,
+            "is_bidirectional": zone.primary_report.is_bidirectional if zone.primary_report else None,
+            "passable_vehicles": zone.passable_vehicles_override if zone.passable_vehicles_override is not None else zone.passable_vehicles,
+            "reporter_name": response.reporter_name if zone.primary_report else None,
             "media_urls": list(zone.media_urls or []),
         }
     )
@@ -2173,6 +2178,12 @@ def get_zone(
     current_user: models.User = Depends(deps.get_current_active_admin),
 ) -> Any:
     """Return the current shared version before resuming a local zone edit."""
+    from app.services.zone_update_service import require_staff_permission
+    from app.services.flood_followup_service import FollowupError
+    try:
+        require_staff_permission(current_user, write=False)
+    except FollowupError as exc:
+        raise HTTPException(exc.status_code, exc.detail) from exc
     zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
@@ -2190,75 +2201,13 @@ async def update_zone(
     """
     Update an existing flood avoidance zone's overrides (DRRMO Edit Map Info).
     """
-    zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
-    if not zone:
-        raise HTTPException(status_code=404, detail="Zone not found")
-        
-    if body.is_active is True and zone.flood_event and zone.flood_event.status == models.FloodEventStatus.ENDED:
-        raise HTTPException(status_code=409, detail="Ended Flood Events cannot be reopened. Verify a new flooding event instead.")
-    if body.name is not None:
-        zone.name = body.name
-    if body.severity_override is not None:
-        zone.severity_override = body.severity_override
-    if body.depth_override is not None:
-        zone.depth_override = body.depth_override
-    if body.admin_notes is not None:
-        zone.admin_notes = body.admin_notes
-    if body.passable_vehicles_override is not None:
-        zone.passable_vehicles_override = body.passable_vehicles_override
-    if body.hidden_hazards_override is not None:
-        zone.hidden_hazards_override = body.hidden_hazards_override
-    if body.geometry is not None:
-        if body.geometry.type in {"LineString", "MultiLineString"}:
-            # Preserve the exact routed centreline for later editing while the
-            # polygon remains the authoritative routing barrier.
-            source_expression = func.ST_SetSRID(
-                func.ST_GeomFromGeoJSON(body.geometry.model_dump_json()),
-                4326,
-            )
-            from app.services.configuration_service import read_configuration
-            buffered_geojson = db.query(
-                func.ST_AsGeoJSON(func.ST_Transform(func.ST_Buffer(func.ST_Transform(source_expression, 32651),
-                    read_configuration(db).staff_road_buffer_metres), 4326))
-            ).scalar()
-            if not buffered_geojson:
-                raise HTTPException(status_code=422, detail="The road segment could not be converted into an avoidance zone.")
-            buffered_geometry = json.loads(buffered_geojson)
-            # The existing column is intentionally a Polygon. A disconnected
-            # line set cannot be stored as one operational zone safely.
-            if buffered_geometry.get("type") != "Polygon":
-                raise HTTPException(status_code=422, detail="The selected road geometry must form one continuous avoidance zone.")
-            zone.source_geometry = source_expression
-            zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(buffered_geometry)), 4326)
-        else:
-            zone.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(body.geometry.model_dump_json()), 4326)
-            zone.source_geometry = None
+    from app.services.zone_editor_service import save_zone
+    from app.services.flood_followup_service import FollowupError
+    try:
+        zone = save_zone(db, zone_id, current_user, body, request.client.host if request.client else None)
+    except FollowupError as exc:
+        raise HTTPException(exc.status_code, exc.detail) from exc
 
-    changes = body.model_dump(exclude_none=True, mode="json")
-    if body.is_active is False:
-        zone = deactivate_zone_and_end_event_if_final(db=db, zone=zone)
-    else:
-        if body.is_active is True:
-            zone.is_active = True
-        if zone.event_id:
-            record_zone_update(db=db, zone=zone, changes=changes)
-        else:
-            db.commit()
-            db.refresh(zone)
-    
-    client_ip = request.client.host if request.client else None
-    crud.create_audit_log(
-        db,
-        audit_in=schemas.AuditLogCreate(
-            admin_id=current_user.id,
-            action_type="UPDATE_ZONE",
-            target_table="flood_avoidance_zones",
-            target_id=zone.id,
-            metadata_json={"zone_id": zone.id},
-            ip_address=client_ip
-        )
-    )
-    
     from app.core.sse import manager
     await manager.broadcast({
         "event": "zone_updated",
