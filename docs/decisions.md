@@ -1,8 +1,32 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 08, 2026, 02:50 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
+
+## 26. Cross-location learning as a source-bound research comparison
+
+**Date:** October 9, 2026 (Asia/Manila); implementation and experiments recorded October 8.
+
+**Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Status:** Research modelling and private automatic comparison adopted and implemented locally. Primary baseline replacement, prospective accuracy, operational expiry and deployment remain unqualified.
+
+**Decision:** Share a depth-duration relationship across eligible Pasig locations and restrain local effects through partial pooling, instead of requiring an independently fitted model for every street. A location without historical outcomes may borrow the shared relationship with explicit additional uncertainty. Geographic identity, input acceptance and hydraulic similarity remain different concepts; this implementation assumes a shared population and does not learn a drainage graph or certify nearby flood correspondence.
+
+**Initial method:** Use a separate fixed-prior penalized lognormal AFT candidate with one standardized depth effect and canonical-barangay offsets. Compare pooled depth and local prior scales 0.15, 0.35 and 0.70 using the existing NumPy/SciPy dependencies. The default comparison prior 0.35 is predeclared, not selected on the holdout results. Unknown local effects contribute prior variance; predictive spread also includes approximate coefficient uncertainty conditional on fitted residual scale. Residual/prior-scale uncertainty, source bias and independent storm dependence remain incompletely represented. This is not calibrated safety/confidence evidence or a validated physical depth-duration law.
+
+**Evidence and evaluation policy:** Preserve original sources and baseline artifacts. Recompute group-balanced likelihood weights and fit preprocessing within training folds. Hold out shared summaries/reporting episodes together; unseen-location evaluation removes target-location records and purges their shared summaries/episodes. Forward tests use only earlier outcome clocks. Record unsupported or failed folds explicitly. Source review, historical conditional eligibility and prospective production admission are distinct; model predictions never become observed endpoints.
+
+**Selection consequence:** The current candidate has 36 conditional depth rows from four locations sharing three subsidence summaries, with zero production admission. The final 60 model-fold comparisons have 34 unsupported combinations, and supported results vary. The partial-pooling candidate improves one summary against lognormal, worsens another and cannot cover the collective-summary holdout's depth range. Keep the existing subsidence/passability baselines selected. Independent matched outcomes, issued predictor histories, sparse-history tests, uncertainty calibration and stable comparative benefit are required before primary adoption. No universal minimum row count is adopted.
+
+**Automatic interface policy:** Show the candidate separately in existing Active Zone Overview calculation details through an authenticated Reports+Zones read-only, no-store endpoint. Read only the exact immutable audit selected by existing zone/episode eligibility, with action/table/target identity and frozen source geometry/locality/clocks. An eligible numeric-depth snapshot supports a research comparison; a consistent frozen gauge conversion is explicitly a proxy-depth simulation. Registration/submission scenarios preserve unknown actual observation time. Current values and later weather cannot backfill historical features. Multi-barangay footprints, unsupported depth, unresolved/missing snapshots and stale/closed/review-pending evidence abstain; storage/request failures remain visible.
+
+**Operational and storage boundary:** Enforce `selected_for_primary=false` and `changes_status_expiry_or_routing=false`. This comparison cannot clear zones, change evidence deadlines/routing, automatically train or replace the primary model through a flag change. It adds response/model files and reads existing audit JSONB, with no SQLAlchemy/Alembic schema changes. Future depth trajectory, vehicle passability and reported subsidence remain separate targets. Decision 22's lifecycle boundaries and Decision 24's reference/proxy policies still apply.
+
+**Verification scope:** The recorded 131 backend/model/API checks and 24 desktop/mobile cases establish numerical/source/interface behaviour, not prospective flood accuracy. Browser authentication/API responses are fixtures. Native PostGIS, physical PWA, matching API/frontend release and monitored field acceptance remain open. Publishing this work to `roi-branch` is version control delivery, not deployment or model promotion.
+
+[Research](research/cross-location-flood-prediction.md), [implementation contract](plans/cross-location-flood-prediction.md), [final evaluation and acceptance](evaluations/cross-location-duration-20261008/README.md), [remaining work](task_plan.md#recorded-ml-deliveries-and-remaining-gates).
 
 ## 25. Database-governed operational policy and fixed automation tick
 
@@ -22,7 +46,7 @@ Evidence expiry is an operational freshness deadline, never a learned water-clea
 
 **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Status:** Research target/admission contract adopted; experimental fits, explicitly pooled transfer and admin registration simulations implemented locally. Production forecast/expiry adoption and independent accuracy qualification remain open.
+**Status:** Research target/admission contract adopted; experimental fits, pooled transfer and official/citizen recording-time simulations implemented locally. [Decision 26](#26-cross-location-learning-as-a-source-bound-research-comparison) adds a separate depth/location comparison without baseline promotion. Production forecast/expiry adoption and independent accuracy qualification remain open.
 
 **Decision:** The initial Pasig prediction study targets elapsed time from supported wet evidence until scope-matched **reported subsidence**. Treat collective-source outcomes as conditional reported-location proxies, preserving scope class, bounds, shared outcome IDs and physical-section uncertainty. Proxy admission and training admission are separate. Unknown physical dry conditions or passability cannot be filled by the proxy.
 
@@ -65,6 +89,12 @@ Record versioned location/depth/environment context in existing observation/offi
 Feature effects require measured benefit under group-aware comparison. The tested depth AFT and depth/location trajectory models are not selected: one summary fold is unidentifiable and the completed comparisons are worse than their baselines. Retain existing research models while collecting/qualifying independent timed outcomes and available features. More complex algorithms or copied simulated labels cannot establish learned street drainage. [Implementation/evaluation](evaluations/pasig-location-feature-models-20261008/README.md), [plan](plans/pasig-location-and-feature-duration.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Future data-source choice (October 8):** The developer chooses future LANES reports and independent admin reviews to build more evidence. Freeze available source features and keep actual observation clocks separate from submission/registration/capture clocks. Public no-floodwater spot claims do not establish whole-zone dryness or numeric zero; source review and model admission remain distinct. Preserve historical missing features, expose qualification blockers through private bounded exports, and perform a separate versioned evaluation before any retraining/selection. [Implemented collection](evaluations/pasig-location-feature-models-20261008/README.md#developer-selected-future-lanes-evidence-collection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8 amendment: approved-citizen submission proxies and shared footprints
+
+At the developer's request to fix Zone #18, a valid footprint wholly inside the source-consistent Pasig parent may use the current shared intercept-only baseline across multiple barangays. Retain every intersected identity and check each for pooled transfer; a point/partial city intersection does not qualify the whole footprint, and area shares are not learned model weights.
+
+An unchanged, staff-approved citizen report with validated matching road/episode/source records and no observed clock may supply a separately labeled submission-time simulation. Its immutable submission audit is the recording proxy and the approval audit is the fixed forecast-availability anchor. Preserve actual observation time as unknown; reject invalid/future clocks, source/approval/version mismatch, later evidence, stale/closed cases and edited zones. Prefer qualified actual observations when available. This extends the existing recording-proxy policy, not observed onset imputation, automatic training admission, clearance or operational ML expiry. Different zone clocks can yield different forecast dates, but validated road/depth/weather duration effects remain a separate model-improvement gate. [Acceptance](evaluations/zone18-submission-simulation-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## 23. Metro Manila product coverage, Pasig duration study and separated evidence datasets
 

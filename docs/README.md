@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+[Zone #18 approved-citizen simulation](evaluations/zone18-submission-simulation-20261008.md) - full Pasig cross-barangay footprints, immutable submission/approval proxies, preserved unknown observation time and stable read-only forecasts; 77 backend/model/location and 12 targeted responsive checks.
+
+[Calculation details walkthrough](evaluations/calculation-details-walkthrough-20261008.md) - existing Overview explanation of actual AFT coefficients, elapsed-time conditioning and forecast-date arithmetic; source records remain accessible, with no new inputs or prediction behavior change.
 
 [Complete prediction locality and feature-model evaluation](evaluations/pasig-location-feature-models-20261008/README.md) - validated COD geometry for all 30 barangays, future LANES source/review snapshots and private evidence export, actual held-group comparison failures and explicit unselected feature candidates; 256 backend/38 responsive checks and live source-context verification. Includes the [eight-document senior-planner audit](evaluations/pasig-location-feature-models-20261008/README.md#senior-planner-documentation-audit).
 
@@ -50,6 +54,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Project records
 
+- [Cross-location learning decision](decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) — adopts the implemented private research comparison, source/uncertainty contract and evaluation gates while retaining primary baselines and operational lifecycle separation.
+
 - [Task plan](task_plan.md) — active sprint and backlog.
 - [Progress tracker](progress.md) — delivery history.
 - [Feature reference](feature-reference.md) — major platform capabilities.
@@ -60,6 +66,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Bug log](others/bug-log.md) — investigated issues and fixes.
 
 ## Plans
+
+- [Cross-location flood prediction implementation](plans/cross-location-flood-prediction.md) — qualified fixed-prior depth/location AFT experiments and source-bound automatic comparison; primary model promotion remains gated.
 
 - [Flood Zone community updates](plans/flood-zone-community-updates.md) — shared Report Flood panel, editable road extent, New report discard confirmation, Still flooded / No floodwater actions and optional camera evidence and private review exclusively under Spatial Operations → Active Zones; implemented locally.
 
@@ -84,6 +92,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [Cross-location duration implementation and evaluation](evaluations/cross-location-duration-20261008/README.md) — 36 conditional rows/three summaries, purged transfer/forward tests and verified research bundle; 131 backend and 24 responsive cases, primary baseline retained.
 
 - [Active Zone community updates acceptance](evaluations/flood-zone-community-updates-20261008.md) — original report/update acceptance plus 39 native admin-comparison/editor/growth checks and 14 distinct desktop/mobile scenarios, individual evidence handoff and responsive draft/media review; provider/device/release verification remains pending.
 
@@ -171,6 +181,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Vehicle passability](guides/vehicle-passability.md)
 
 ## Research and capstone
+
+- [Cross-location flood prediction research](research/cross-location-flood-prediction.md) — literature-backed regionalization, partial pooling, transfer learning and ensembles; current model/dataset audit, recommended depth-aware AFT investigation, uncertainty limits and staged integration/acceptance. Research and a separate local comparison are delivered; primary model selection remains pending.
 
 - [Research documentation follow-up notes](research/chapter1-3-revision-notes.md) — scope alignment, authentic Chapter III result boundary, and items to revisit after system features are implemented and evaluated; working notes only.
 

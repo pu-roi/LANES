@@ -27,6 +27,10 @@ This work does not implement the separate forecast-to-Unconfirmed/public retenti
 
 ## Delivery checkpoint
 
+**October 9 cross-location modelling record:** [Decision 26](../decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) and the [implemented comparison](../evaluations/cross-location-duration-20261008/README.md) extend this investigation with fixed-prior shared-depth/location AFT, purged holdouts and automatic source-bound research details. Primary model replacement remains open because three summaries and mixed/unsupported holdouts do not establish reliable improvement. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Approved-citizen/multiple-barangay continuation:** Full footprints verified inside the Pasig parent can use the shared baseline while retaining every detected name; outside-city extents still abstain. Untimed, unchanged, staff-approved citizen cases can supply a separately labeled submission/approval-audit simulation without fabricating onset time. Actual observed evidence remains preferred; version, geometry, event, chronology and later-evidence guards apply. Real Zone #18 verifies this adapter path; it does not improve learned street-specific accuracy or implement operational expiry. Per-zone evidence clocks are separate from the future location/depth/weather parameter-learning gate. [Acceptance](../evaluations/zone18-submission-simulation-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 [Actual source/implementation/evaluation](../evaluations/pasig-location-feature-models-20261008/README.md) records complete 30-barangay COD coverage, immutable input snapshots, cached-or-missing write context, bounded current provider inspection, depth AFT and trajectory Ridge comparisons, 256 comprehensive backend checks, 38 responsive workflows and live Zone #17 calls. The shared baselines remain active because the tested feature candidates are worse/unidentifiable; obtain more independent matched wet/subsided episodes and available feature histories before claiming the second limit solved.
 
 ## Selected acquisition path

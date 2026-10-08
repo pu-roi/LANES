@@ -1,0 +1,1393 @@
+{
+  "schema_version": "pasig-cross-location-evaluation-v1",
+  "qualified_rows": 36,
+  "rejected_rows": 1,
+  "shared_outcomes": 3,
+  "verified_independent_storms": 0,
+  "production_training_admitted": 0,
+  "prior_scales": [
+    0.0,
+    0.15,
+    0.35,
+    0.7
+  ],
+  "folds": [
+    {
+      "mode": "summary",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-aed0c046a22c54b0",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 2.492699864081915
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-aed0c046a22c54b0",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 3.1342974194474786
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-aed0c046a22c54b0",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 35.79037037037038,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.3364399830366174
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-aed0c046a22c54b0",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 35.79037037037038,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.325458937827121
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-aed0c046a22c54b0",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 35.79037037037038,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.2723054550895583
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-aed0c046a22c54b0",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 35.79037037037038,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.171451553476757
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 3.3324839783639777
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 1.8194141611312529
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 6.502643872086177
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 3.4491432056366733
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 4.310439103929873
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 4.113415551450736
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.659410463549233
+    },
+    {
+      "mode": "summary",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.36921393666647
+    },
+    {
+      "mode": "location",
+      "held_identity": "Dela Paz",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 5,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Dela Paz",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 5,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Dela Paz",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 5,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Dela Paz",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 5,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Dela Paz",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 5,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Dela Paz",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 5,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Maybunga",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 6.502643872086177
+    },
+    {
+      "mode": "location",
+      "held_identity": "Maybunga",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 3.4491432056366733
+    },
+    {
+      "mode": "location",
+      "held_identity": "Maybunga",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 4.310439103929873
+    },
+    {
+      "mode": "location",
+      "held_identity": "Maybunga",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 4.113415551450736
+    },
+    {
+      "mode": "location",
+      "held_identity": "Maybunga",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.659410463549233
+    },
+    {
+      "mode": "location",
+      "held_identity": "Maybunga",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-aed0c046a22c54b0"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "evaluated",
+      "training_depth_mean": 62.460370370370384,
+      "training_depth_support": [
+        5.0,
+        91.44
+      ],
+      "group_equal_interval_nll": 3.36921393666647
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santa Lucia",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 12,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 2.545287249341792
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santa Lucia",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 12,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 1.8583292981806359
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santa Lucia",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 12,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santa Lucia",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 12,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santa Lucia",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 12,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santa Lucia",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 12,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santolan",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 11,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 2.8943042887527266
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santolan",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 11,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 1.8277632268982111
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santolan",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 11,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santolan",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 11,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santolan",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 11,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "location",
+      "held_identity": "Santolan",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 11,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "intercept_lognormal",
+      "training_outcomes": [],
+      "training_episodes": [],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "intercept_exponential",
+      "training_outcomes": [],
+      "training_episodes": [],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [],
+      "training_episodes": [],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [],
+      "training_episodes": [],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [],
+      "training_episodes": [],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-c33d857e974b018d",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [],
+      "training_episodes": [],
+      "held_rows": 8,
+      "held_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-7d1d5441f76ee802",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11"
+      ],
+      "held_rows": 1,
+      "held_outcomes": [
+        "OBS-7d1d5441f76ee802"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG17-18"
+      ],
+      "state": "unsupported",
+      "reason": "Fewer than two independent outcome-summary identities remain after purging."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "intercept_lognormal",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 3.3324839783639777
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "intercept_exponential",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "evaluated",
+      "group_equal_interval_nll": 1.8194141611312529
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0.15",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0.35",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    },
+    {
+      "mode": "forward",
+      "held_identity": "OBS-aed0c046a22c54b0",
+      "model": "cross_location_tau_0.7",
+      "training_outcomes": [
+        "OBS-7d1d5441f76ee802",
+        "OBS-c33d857e974b018d"
+      ],
+      "training_episodes": [
+        "PASIG-2026-AUG10-11",
+        "PASIG-2026-AUG17-18"
+      ],
+      "held_rows": 27,
+      "held_outcomes": [
+        "OBS-aed0c046a22c54b0"
+      ],
+      "held_episodes": [
+        "PASIG-2026-AUG29-30"
+      ],
+      "state": "unsupported",
+      "reason": "Depth outside the fitted evidence support."
+    }
+  ],
+  "unsupported_model_folds": 34,
+  "selected_for_primary": false,
+  "deployment_eligible": false,
+  "selection_blockers": [
+    "only_three_shared_outcomes",
+    "no_verified_independent_storms",
+    "outcome_selected_cohort",
+    "collective_scope_and_continuity_assumed",
+    "historical_predictor_availability_unverified",
+    "no_prospective_calibration",
+    "fixed_prior_and_residual_scale_uncertainty_not_fully_modelled"
+  ],
+  "artifacts": {
+    "0.0": {
+      "filename": "candidate_tau_0.json",
+      "sha256": "379ba707a0a88514c5156300990cb23658d4bf35ef90af5db161bc85ce70d753"
+    },
+    "0.15": {
+      "filename": "candidate_tau_0.15.json",
+      "sha256": "4e54bfb35ea3990b7eab8e1b1700b1b090efb7ea45ccc050ae3d1e24f6d4bc92"
+    },
+    "0.35": {
+      "filename": "candidate_tau_0.35.json",
+      "sha256": "5b8d26553543041b25fe84ebdadbf733b26c28f4825df5ab4e0759c6c679b95f"
+    },
+    "0.7": {
+      "filename": "candidate_tau_0.7.json",
+      "sha256": "a0bd0ebb79f0ec62bc922971b16917b501ab6c9a619a3787f342c7a88daef82b"
+    }
+  },
+  "default_comparison_prior": 0.35,
+  "default_prior_policy": "predeclared_not_holdout_selected",
+  "input_sha256": {
+    "backend/runtime_data/flood-duration/conditional_aft.json": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6",
+    "backend/runtime_data/flood-duration/passability_aft.json": "391eaa894717722963d38b6fd34276ef737a33e3224351433b794aa88ddf958c",
+    "data/pasig_barangay_reference.csv": "e036f86a005b6a7148c798baf462e220b40783c6a3f715f43de23c7da45af06a",
+    "docs/evaluations/pasig-duration-followup-20261005/dataset_manifest.json": "fea920a6eaaff2f47a79a5b68d40b2e02e7b934eb519594ea0ffddd5fe0b5e00",
+    "docs/evaluations/pasig-duration-followup-20261005/pasig_wet_observations.csv": "ecd5e920f433eb0e7194190fd057cae3641b538489e4685d29170801852f6a63",
+    "docs/evaluations/pasig-duration-model-20261007/conditional_training_candidates.csv": "7389df1ab1efd303a4d9d355f86a3dd2a21eb2c550f25c296404ffcce408d567",
+    "docs/evaluations/pasig-duration-model-20261007/experiment_report.json": "71fecb36520c810c7d9a5c55d1d7a5b12de445cb1ca07d9f7a867c7910c7dc71"
+  },
+  "evaluator_sha256": "35479ab85983fcb8fa905d0c7c667f13d604434c12b66e0322738549242e5b6e",
+  "kernel_sha256": "b314aa845b4e56651395076467439be54ff759a5132d554a18eec06c6a9f1a52",
+  "runtime_baselines_modified": false,
+  "sparse_history_and_prospective_calibration_established": false
+}

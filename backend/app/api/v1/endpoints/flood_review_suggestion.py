@@ -11,8 +11,21 @@ from app.schemas.flood_review_suggestion import CaseReviewSuggestion, ReviewSugg
 from app.services import flood_review_suggestion_service as service
 from app.schemas.zone_prediction import ZonePrediction
 from app.services import zone_prediction_service
+from app.schemas.cross_location_prediction import CrossLocationPrediction
+from app.services import cross_location_prediction_service
 
 router = APIRouter(dependencies=[Depends(_private_response)])
+
+
+@router.get("/admin/zones/{zone_id}/cross-location-prediction", response_model=CrossLocationPrediction)
+def cross_location_prediction(zone_id: int = Path(ge=1), db: Session = Depends(get_db),
+                              user: User = Depends(get_current_user)) -> CrossLocationPrediction:
+    try:
+        return _run(db, lambda: cross_location_prediction_service.compare_zone(db, zone_id, user))
+    except (OSError, ValueError, TypeError, KeyError, OverflowError, ShapelyError) as exc:
+        db.rollback()
+        raise HTTPException(503, "The cross-location comparison could not be calculated. Please retry.",
+                            headers={"Cache-Control": "no-store"}) from exc
 
 
 @router.get("/admin/zones/{zone_id}/prediction-features")

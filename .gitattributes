@@ -53,3 +53,9 @@
 /backend/scripts/fetch_pasig_cod_boundaries.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/scripts/evaluate_pasig_feature_models.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/pasig-subsidence-validation-20261007/*.xml -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Cross-location comparisons retain artifact, evaluator and kernel identities.
+/docs/evaluations/cross-location-duration-20261008/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/cross-location-duration-20261008/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/scripts/evaluate_cross_location_duration.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/app/services/cross_location_duration_model.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

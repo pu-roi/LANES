@@ -1,8 +1,16 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Current ML runtime and data stack — October 8
+
+**October 9 planner audit:** [Decision 26](decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) records the implemented cross-location experiment using existing declared packages and separate checked runtime files. Primary baseline selection, environmental-feature limitations and deployment remain as recorded; no dependency or SQL migration is introduced by publication. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Cross-location comparison:** Existing SciPy/NumPy implement fixed-prior penalized depth/location AFT and conditional coefficient-curvature uncertainty; no inference library is added. A separate checked candidate/evaluation bundle is verified at build/runtime while primary baselines remain selected. Existing FastAPI/Pydantic and React/TanStack provide automatic private research comparison with explicit proxy/abstention states. [Results](evaluations/cross-location-duration-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Cross-barangay/citizen adapter check:** Full-city containment and intersected memberships reuse existing Shapely/COD assets; audit qualification uses existing SQLAlchemy/PostGIS, hashing and Pydantic response contracts. Preview scope checks all footprint barangays against the same intercept-only artifact. Existing React disclosures distinguish submission/registration proxies. No package, artifact/kernel or SQL schema/migration definition is added. [Acceptance](evaluations/zone18-submission-simulation-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Calculation walkthrough dependency check:** Exact response metadata reuses Python `math` and existing SciPy `log_ndtr`; the frontend uses existing React/Tailwind and native disclosures. No package or model/schema migration is introduced. The fitted artifact and mathematical kernel remain unchanged. [Verification](evaluations/calculation-details-walkthrough-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 | Component | Adopted technology/source | Current use and limit |
 | --- | --- | --- |

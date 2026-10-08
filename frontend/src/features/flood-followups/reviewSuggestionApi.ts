@@ -59,9 +59,26 @@ export interface DurationPreview {
   abstention_reason: string | null;
   reference_at: string;
   prediction_as_of_at: string;
+  input_provenance?: "staff_supplied_hypothetical_not_verified_case_evidence" | "admin_registration_proxy_simulation" | "citizen_submission_proxy_simulation";
   model: DurationModelStatus;
   quantiles: { quantile: number; remaining_minutes: number; estimated_reported_subsidence_at: string }[];
   pooled_geographic_transfer?: boolean;
+  calculation?: DurationCalculation | null;
+}
+export interface DurationCalculation {
+  schema_version: "lognormal_aft_calculation_v1";
+  reference_at: string;
+  prediction_as_of_at: string;
+  elapsed_minutes: number;
+  log_duration_location: number;
+  log_duration_scale: number;
+  probability_before_anchor: number;
+  quantiles: (DurationPreview["quantiles"][number] & {
+    total_minutes: number;
+    adjusted_probability: number;
+    normal_score: number;
+    remaining_duration_display: string;
+  })[];
 }
 export const getDurationModel = () => apiClient.get<DurationModelStatus>("/admin/news/duration-model");
 export const previewDuration = (payload: DurationPreviewRequest) => apiClient.post<DurationPreview>("/admin/news/duration-preview", payload);
@@ -88,6 +105,11 @@ export interface ZonePrediction {
   warnings?: string[];
   registration_simulation?: DurationPreview | null;
   registration_audit_id?: number | null;
+  submission_simulation?: DurationPreview | null;
+  submission_report_id?: number | null;
+  submission_audit_id?: number | null;
+  submission_approval_audit_id?: number | null;
+  calculation?: DurationCalculation | null;
 }
 export const getZonePrediction = (zoneId: number) => apiClient.get<ZonePrediction>(`/admin/zones/${zoneId}/subsidence-prediction`);
 export interface PredictionFeatures {
@@ -100,6 +122,41 @@ export interface PredictionFeatures {
   environment: { elevation_m?: number | null; rainfall_previous_3h_mm?: number | null; errors?: string[] } | null;
 }
 export const getPredictionFeatures = (zoneId: number) => apiClient.get<PredictionFeatures>(`/admin/zones/${zoneId}/prediction-features`);
+export interface CrossLocationPrediction {
+  zone_id: number;
+  status: "research_comparison" | "abstained" | "model_unavailable";
+  reason: string | null;
+  selected_for_primary: false;
+  changes_status_expiry_or_routing: false;
+  validation_summary: string | null;
+  selection_blockers: string[];
+  model_sha256: string | null;
+  qualified_rows: number;
+  shared_outcomes: number;
+  trained_locations: string[];
+  target_location: string | null;
+  depth_cm: number | null;
+  depth_basis: string | null;
+  reference_basis: "observed_reference" | "registration_proxy" | "submission_proxy" | null;
+  source_audit_id: number | null;
+  reference_at: string | null;
+  source_observed_at: string | null;
+  prediction_as_of_at: string | null;
+  quantiles: DurationPreview["quantiles"];
+  warnings: string[];
+  calculation: {
+    log_duration_location: number;
+    predictive_log_scale: number;
+    shared_depth_effect: number;
+    local_effect: number;
+    coefficient_variance: number;
+    unseen_location_variance: number;
+    location_outcomes: number;
+    transfer_basis: "partial_pooling" | "shared_depth_with_unseen_location_prior";
+    uncertainty_method: string;
+  } | null;
+}
+export const getCrossLocationPrediction = (zoneId: number) => apiClient.get<CrossLocationPrediction>(`/admin/zones/${zoneId}/cross-location-prediction`);
 export function getSuggestionQueue(beforeId: number | null, actionableOnly: boolean) {
   const params = new URLSearchParams({ limit: "25", actionable_only: String(actionableOnly) });
   if (beforeId !== null) params.set("before_id", String(beforeId));

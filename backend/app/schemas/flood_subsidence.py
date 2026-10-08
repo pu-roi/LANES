@@ -9,6 +9,7 @@ class DurationPreviewRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
     city: str = Field(min_length=1, max_length=80)
     barangay: str = Field(min_length=1, max_length=80)
+    footprint_barangays: list[str] = Field(default_factory=list, max_length=30)
     reference_at: datetime
     prediction_as_of_at: datetime
     reference_policy: Literal["first_recorded_wet_in_episode"]
@@ -60,13 +61,31 @@ class DurationHorizonProbability(BaseModel):
     conditional_probability_reported_subsidence: float
 
 
+class DurationCalculationQuantile(DurationQuantile):
+    total_minutes: float
+    adjusted_probability: float
+    normal_score: float
+    remaining_duration_display: str
+
+
+class DurationCalculation(BaseModel):
+    schema_version: Literal["lognormal_aft_calculation_v1"] = "lognormal_aft_calculation_v1"
+    reference_at: datetime
+    prediction_as_of_at: datetime
+    elapsed_minutes: float
+    log_duration_location: float
+    log_duration_scale: float
+    probability_before_anchor: float
+    quantiles: list[DurationCalculationQuantile]
+
+
 class DurationPreviewResponse(BaseModel):
     status: Literal["research_estimate", "abstained"]
     model: DurationModelStatus
     reference_at: datetime
     prediction_as_of_at: datetime
     reference_policy: str
-    input_provenance: Literal["staff_supplied_hypothetical_not_verified_case_evidence", "admin_registration_proxy_simulation"] = "staff_supplied_hypothetical_not_verified_case_evidence"
+    input_provenance: Literal["staff_supplied_hypothetical_not_verified_case_evidence", "admin_registration_proxy_simulation", "citizen_submission_proxy_simulation"] = "staff_supplied_hypothetical_not_verified_case_evidence"
     assumed_continuous_wet: bool
     abstention_reason: str | None = None
     quantiles: list[DurationQuantile] = Field(default_factory=list)
@@ -74,6 +93,7 @@ class DurationPreviewResponse(BaseModel):
     changes_status_expiry_or_routing: Literal[False] = False
     confirms_physical_dryness_or_passability: Literal[False] = False
     pooled_geographic_transfer: bool = False
+    calculation: DurationCalculation | None = None
 
 
 class PassabilityPreviewRequest(BaseModel):

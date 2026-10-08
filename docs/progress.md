@@ -1,8 +1,33 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Tracking completed milestones, delivered features, and past sprints.
+
+### October 9: Senior-planner cross-location decision and publication audit
+
+- Reconcile all eight core records against the implemented model/service/router/UI, evaluation manifests and actual verification. Record [Decision 26](decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) for source-bound partial pooling as a separate research comparison; maintain the primary baselines, conditional training admission and operational lifecycle boundaries. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Preserve the recorded 131 backend/model/API and 24 responsive acceptance, with native Docker/PostGIS, prospective calibration, physical PWA and deployment gates open. Requirements/Node manifests and SQLAlchemy/Alembic definitions are unchanged. The developer authorizes committing all working changes and pushing to `roi-branch` after pre-push verification; this audit does not deploy or promote a model. [Results](evaluations/cross-location-duration-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Implement automatic cross-location research comparison
+
+- Add separate fixed-prior depth/location AFT and hash-verified qualification/comparison, with purged dependent-source/location/forward folds and declared prior sensitivity. Thirty-six conditional rows share three summaries; unsupported/mixed tests leave primary baselines unchanged. Approximate coefficient/unseen-location uncertainty is explicit. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Connect authenticated Reports+Zones no-store source-audit reads to existing calculation details on both layouts. Preserve frozen depth and actual/null clocks, labelled gauge/recording proxies, abstention and visible retry. 131 backend/model/API checks and 24 distinct responsive cases pass across runs, plus TypeScript/scoped lint and runtime validation. Native PostGIS/build/release and prospective accuracy remain open; no schema/package/push/deployment changes. [Results](evaluations/cross-location-duration-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Document cross-location flood prediction research
+
+- Save the literature review, local model/dataset findings, source scope, failed feature comparisons and recommended depth-aware AFT partial-pooling investigation in [research notes](research/cross-location-flood-prediction.md). Record the developer's intent to proceed and the qualification, grouped transfer evaluation, uncertainty and automatic integration stages as pending work. Index the document and synchronize research completion with the task plan. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- This is documentation of the research already performed: CSV/artifact inspection and matching prior-evaluation input checksums, not a new model training or application test run. Application code, models, dependencies, SQL schema, operational state and release are unchanged by this documentation task. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Support approved-citizen simulations across Pasig barangays
+
+- Remove the single-barangay restriction for full footprints verified inside the source-consistent Pasig parent. Validate every footprint identity for pooled transfer, retain all detected names and reject outside-city extents. Add immutable source/approval qualification for untimed approved citizen reports; malformed clocks, changed source/zone versions, missing approval, later follow-ups/public evidence and closed/stale cases do not produce simulations. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- The existing Overview and calculation walkthrough distinguish report-submission versus official-registration proxies without new inputs. Real Zone #18/report #16 returns a read-only simulation based on audits #164/#166, median October 9, 2:52:59 PM PHT, with actual observation still null and unchanged operational fields. Seventy-seven backend/model/location checks, twelve targeted responsive workflows, TypeScript and scoped lint pass. Native disposable-DB recheck remains blocked by Docker; no artifact, SQL schema, package, push or deployment change. [Acceptance](evaluations/zone18-submission-simulation-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 8: Explain the actual prediction calculation in existing Overview
+
+- Refine View calculation details into a reference-clock → fitted formula → duration/date walkthrough, with real backend coefficients/conditional percentile values and explicitly rounded display arithmetic. Preserve actual/registration-proxy distinctions and stable forecast anchors; keep source records/model checksum available in a separate disclosure. No new input, tab/page, bubble or Moderation content. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Twenty mathematical/API-preview checks pass, including independent normal-CDF validation and stable refresh results; the new walkthrough passes desktop/mobile workflows. TypeScript and scoped lint pass. Local Docker socket/WSL startup failures block native PostGIS rechecks; the runtime folders are preserved and Docker is stopped, with no data reset. No artifact/kernel, SQL schema/dependency, operational status/expiry/routing or cloud release change. [Evaluation](evaluations/calculation-details-walkthrough-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 8: Senior-planner tech stack and system documentation reconciliation
 

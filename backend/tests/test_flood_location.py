@@ -39,11 +39,12 @@ def test_outside_pasig_and_cross_barangay_extent_remain_explicit():
     result, reasons = resolve_location(SimpleNamespace(geometry=from_shape(box(120,13,120.01,13.01),srid=4326)))
     assert reasons and result["barangays"] == []
     provider = get_flood_location_provider()
-    parts = [p for _,p in provider.records.values()]
-    a = parts[0].representative_point(); b = parts[1].representative_point()
-    extent = box(min(a.x,b.x)-.0001,min(a.y,b.y)-.0001,max(a.x,b.x)+.0001,max(a.y,b.y)+.0001)
+    from shapely.ops import unary_union
+    parts = [p for r,p in provider.records.values() if r.barangay in {"San Nicolas", "Santo Tomas"}]
+    extent = unary_union(parts)
     result, reasons = resolve_location(SimpleNamespace(geometry=from_shape(extent,srid=4326)))
-    assert reasons and len(result["barangays"]) > 1
+    assert not reasons and result["barangays"] == ["San Nicolas", "Santo Tomas"]
+    assert result["location_policy"] == "pooled_pasig_multi_barangay"
 
 
 def test_wrong_parent_checksum_disables_catalog_instead_of_guessing(tmp_path):

@@ -7,10 +7,12 @@ import math
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from scipy.special import log_ndtr
 
 from app.schemas.flood_subsidence import (
     DurationModelStatus, DurationPreviewRequest, DurationPreviewResponse,
     DurationQuantile, DurationHorizonProbability,
+    DurationCalculation, DurationCalculationQuantile,
 )
 from app.services.flood_duration_model import DurationModelArtifact, DurationModelError, predict_duration_distribution
 
@@ -100,9 +102,12 @@ def preview_subsidence(request: DurationPreviewRequest, *, now: datetime | None 
         return abstain("conditional_research_assumptions_not_acknowledged")
     if request.city.strip().casefold() not in {"pasig", "pasig city", "city of pasig"}:
         return abstain("outside_pasig_research_scope")
-    in_cohort = research_barangay_name(request.barangay, artifact.lineage["supported_barangays"]) is not None
+    names = request.footprint_barangays or [request.barangay]
+    if any(research_barangay_name(name, pasig_prediction_barangays()) is None for name in names):
+        return abstain("barangay_not_represented_in_conditional_experiment")
+    in_cohort = all(research_barangay_name(name, artifact.lineage["supported_barangays"]) is not None for name in names)
     if not in_cohort:
-        if not request.allow_pooled_pasig_transfer or research_barangay_name(request.barangay, pasig_prediction_barangays()) is None:
+        if not request.allow_pooled_pasig_transfer:
             return abstain("barangay_not_represented_in_conditional_experiment")
         response.pooled_geographic_transfer = True
     clock = now or datetime.now(timezone.utc)
@@ -118,9 +123,32 @@ def preview_subsidence(request: DurationPreviewRequest, *, now: datetime | None 
     result = predict_duration_distribution(artifact, {}, elapsed_minutes=age,
         continuously_wet_confirmed=request.assume_continuous_wet, horizons_minutes=(60, 120, 240))
     return response.model_copy(update={"status": "research_estimate", "abstention_reason": None,
+        "calculation": _calculation_details(artifact, request, result),
         "quantiles": [DurationQuantile(quantile=item["quantile"], remaining_minutes=item["remaining_minutes"],
             estimated_reported_subsidence_at=request.prediction_as_of_at + timedelta(minutes=item["remaining_minutes"]))
             for item in result["quantiles"]],
         "horizon_probabilities": [DurationHorizonProbability(horizon_minutes=item["horizon_minutes"],
             conditional_probability_reported_subsidence=item["probability_reported_subsidence"])
             for item in result["horizon_probabilities"]]})
+
+
+def _calculation_details(artifact: DurationModelArtifact, request: DurationPreviewRequest,
+                         result: dict) -> DurationCalculation:
+    """Explain the kernel's returned values without changing its forecasts."""
+    age = result["elapsed_minutes"]
+    mu, sigma = artifact.coefficients[0], artifact.scale
+    log_survival = 0.0 if age == 0 else float(log_ndtr(-(math.log(age)-mu)/sigma))
+    before_anchor = -math.expm1(log_survival)
+    rows = []
+    for item in result["quantiles"]:
+        hours, minutes = divmod(round(item["remaining_minutes"]), 60)
+        display = f"{hours}h {minutes}m" if hours else f"{minutes}m"
+        rows.append(DurationCalculationQuantile(**{key: item[key] for key in
+            ("quantile", "remaining_minutes", "total_minutes")},
+            adjusted_probability=before_anchor + item["quantile"]*math.exp(log_survival),
+            normal_score=(math.log(item["total_minutes"])-mu)/sigma,
+            remaining_duration_display=display,
+            estimated_reported_subsidence_at=request.prediction_as_of_at+timedelta(minutes=item["remaining_minutes"])))
+    return DurationCalculation(reference_at=request.reference_at, prediction_as_of_at=request.prediction_as_of_at,
+        elapsed_minutes=age, log_duration_location=mu, log_duration_scale=sigma,
+        probability_before_anchor=before_anchor, quantiles=rows)
