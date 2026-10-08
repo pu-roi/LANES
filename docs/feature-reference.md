@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 operational governance checkpoint (local):** Existing news intelligence, verified flood-zone lifecycle and RBAC modules now consume one typed server policy. Staff defaults affect future operations; automatic deadlines retain their observation-time snapshots; expiry becomes Unconfirmed. Citizen auto approval requires documented human history and independently corroborated, validated road evidence. Admin capability checks and saved worker health are connected on desktop/mobile. This does not adopt the separate duration research model or establish live current-news plotting acceptance. [Verification](evaluations/functional-system-settings-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -150,6 +150,14 @@ This document serves as the central technical reference for all currently implem
 ---
 
 ### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
+
+**October 9 decision audit:** [Decision 26](decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) records the private comparison as a refinement of this module, with frozen source clocks, restrained location effects and explicit uncertainty. It does not select a primary replacement, add public forecast content or certify local accuracy. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Cross-location comparison (local):** Existing Overview calculation details show a separate depth/location partial-pooling candidate, frozen source inputs, local support and approximate uncertainty. The baseline remains primary because 36 records share three outcomes and holdouts are incomplete/mixed. Real/gauge/recording proxies and abstention are explicit; no new flagship feature or prediction form. [Results](evaluations/cross-location-duration-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Approved-citizen simulation refinement:** Existing zone predictions retain multiple barangay identities for verified Pasig footprints and automatically show a labeled submission-time simulation for unchanged, validated, staff-approved citizen cases lacking observation time. The calculation/source details identify the actual proxy records and fixed approval anchor; observed clocks and operational status remain separate. No public UI, input or Moderation module is added. [Acceptance](evaluations/zone18-submission-simulation-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Calculation walkthrough refinement:** Existing Active Zone Overview calculation details now explain the start/reference clock, fitted duration formula and conversion into a forecast date using exact backend-returned values. A separate source/model disclosure preserves records and checksum; no prediction form, page, public-bubble or Moderation content is added. [Verification](evaluations/calculation-details-walkthrough-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 8 Spatial Operations prediction-location continuation:** Automatic private zone locality now covers all 30 Pasig barangays using a distinct source-consistent COD catalog. The existing calculation details inspect source-labelled modelled surface/rainfall context. Citizen/official-create/edit/public-condition/owner-follow-up audits freeze available inputs and preserve actual versus unknown observation time, without new user fields. Independent review provenance and a bounded private per-zone model-evidence export support the developer-selected future LANES dataset; source review does not automatically qualify a matched duration training row. Tested depth/location candidates did not improve held-group results and remain unselected; street-specific duration accuracy and forecast-to-Unconfirmed/public retention are open. Separate OSM/NOAH activation geometry and current operational routing remain unchanged. [Acceptance](evaluations/pasig-location-feature-models-20261008/README.md), [current interface/API contracts](others/system-documentation.md#current-automatic-prediction-workflow--october-8). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

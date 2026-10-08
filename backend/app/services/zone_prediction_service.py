@@ -1,5 +1,6 @@
 """Automatically resolve stored geometry/evidence; never mutate operational data."""
 from datetime import datetime, timezone
+import hashlib
 
 from geoalchemy2.shape import to_shape
 from shapely.errors import ShapelyError
@@ -7,7 +8,9 @@ from shapely.geometry import shape
 from sqlalchemy.orm import Session
 
 from app.crud import zone_prediction as store
-from app.models.report import FloodAvoidanceZone, FloodEventStatus, ReportSource, ReportStatus
+from app.crud import flood_followup as evidence_store
+from app.models.report import FloodAvoidanceZone, FloodReport, FloodEventStatus, ReportSource, ReportStatus
+from app.models.audit import AuditLog
 from app.models.user import User
 from app.schemas.flood_subsidence import DurationPreviewRequest
 from app.schemas.news_publication import NewsDecisionSnapshot
@@ -37,29 +40,33 @@ def feature_context(db: Session, zone_id: int, user: User) -> dict:
 
 def resolve_location(zone: FloodAvoidanceZone) -> tuple[dict, list[str]]:
     provider = get_flood_location_provider()
-    result = {"boundary_revision": provider.revision}
+    result = {"boundary_revision": provider.revision, "barangays": [], "city": None}
     try:
         if zone.geometry.srid != 4326:
             return result, ["The zone needs valid geometry in SRID 4326."]
         polygon = to_shape(zone.geometry)
-        if polygon.is_empty or not polygon.is_valid:
+        if polygon.is_empty or not polygon.is_valid or polygon.geom_type not in {"Polygon", "MultiPolygon"}:
             return result, ["The zone geometry is invalid."]
         point = polygon.representative_point()
         result["coordinates"] = (point.x, point.y)
         if provider.error:
             return result, ["The reviewed barangay boundary catalog is unavailable."]
+        if not provider.city_boundary.covers(polygon):
+            return result, ["The zone extends outside the reviewed Pasig city boundary."]
         # Resolve the entire authoritative avoidance boundary, not a guessed pin.
         covered = [record for record, boundary in provider.records.values() if boundary.covers(polygon)]
         if len(covered) == 1:
             result.update(city="Pasig" if locality(covered[0].city) == "pasig" else covered[0].city,
-                barangays=[covered[0].barangay])
+                barangays=[covered[0].barangay], location_policy="single_barangay")
             return result, []
         intersecting = [record for record, boundary in provider.records.values()
             if boundary.intersection(polygon).area > 0]
         result.update(city="Pasig" if intersecting and all(locality(r.city) == "pasig" for r in intersecting) else None,
             barangays=sorted({r.barangay for r in intersecting}))
-        return result, ["The zone crosses or has ambiguous barangay boundaries; one location cannot represent its full footprint."
-            if intersecting else "No reviewed barangay boundary covers this zone."]
+        if intersecting and result["city"] == "Pasig":
+            result["location_policy"] = "pooled_pasig_multi_barangay"
+            return result, []
+        return result, ["No reviewed barangay boundary covers this zone."]
     except (TypeError, ValueError, AttributeError, ShapelyError):
         return result, ["The zone geometry could not be validated."]
 
@@ -102,6 +109,28 @@ def _news_evidence(db: Session, zone: FloodAvoidanceZone, now: datetime) -> tupl
     return wet, reasons
 
 
+def _submission_source(db: Session, report: FloodReport, zone: FloodAvoidanceZone,
+                       now: datetime) -> tuple[AuditLog, AuditLog] | None:
+    """Immutable untimed submission + matching approval; never an observed onset."""
+    original = evidence_store.original_observation(db, report.id)
+    approval = store.submission_approval(db, report.id)
+    if original is None or approval is None or report.approved_at is None:
+        return None
+    data, decision = original.metadata_json or {}, approval.metadata_json or {}
+    if (data.get("observed_at") is not None or data.get("user_id") != report.user_id
+            or data.get("road_validated") is not True
+            or data.get("geometry_sha256") != hashlib.sha256(to_shape(report.geometry).wkb).hexdigest()
+            or approval.admin_id is None or decision.get("report_id") != report.id
+            or decision.get("zone_id") != zone.id
+            or not (utc(report.created_at) <= utc(original.created_at) <= utc(report.approved_at)
+                    <= utc(approval.created_at) <= now)
+            or utc(report.updated_at) > utc(approval.created_at)
+            or utc(zone.updated_at) > utc(approval.created_at)
+            or evidence_store.report_followups(db, report.id)):
+        return None
+    return original, approval
+
+
 def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None = None) -> ZonePrediction:
     require_staff_permission(user, write=False)
     require_zone_reader(user, write=False)
@@ -121,14 +150,17 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
     result.model = model_status(artifact, checksum)
     if artifact is None:
         reasons.append("The backend research model is unavailable.")
-    barangay = research_barangay_name(result.barangays[0], pasig_prediction_barangays()) if len(result.barangays) == 1 else None
+    names = [research_barangay_name(name, pasig_prediction_barangays()) for name in result.barangays]
+    barangay = names[0] if names and all(names) else None
+    if result.location_policy == "pooled_pasig_multi_barangay":
+        result.warnings = ["Shared Pasig estimate across these barangays; separate street or barangay effects are not learned, and local accuracy is unverified."]
     if result.city and locality(result.city) != "pasig":
         reasons.append("This location is outside the Pasig model scope.")
-    if artifact and len(result.barangays) == 1 and barangay is None:
-        reasons.append(f"{result.barangays[0]} is not a recognized Pasig barangay.")
+    if artifact and barangay is None:
+        reasons.append("The zone needs recognized Pasig barangay identities.")
     reports = store.linked_reports(db, zone.id)
     result.nearby_report_count = store.nearby_report_count(db, zone, distance_metres=MAX_GROUP_DISTANCE_M)
-    wet, evidence_reasons = [], []
+    wet, evidence_reasons, submissions = [], [], []
     if len(reports) > store.MAX_RECORDS:
         evidence_reasons.append("This zone has too many report links to resolve automatically.")
         reports = []
@@ -142,7 +174,7 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
         if report.city and result.city and locality(report.city) != locality(result.city):
             evidence_reasons.append("A report's recorded city conflicts with the zone geometry.")
             continue
-        if (report.barangay and barangay and research_barangay_name(report.barangay, pasig_prediction_barangays()) != barangay):
+        if (report.barangay and names and research_barangay_name(report.barangay, pasig_prediction_barangays()) not in names):
             evidence_reasons.append("A report's recorded barangay conflicts with the zone geometry.")
             continue
         observations, rejection = _wet_evidence(db, report, clock)
@@ -150,6 +182,10 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
             evidence_reasons.append(rejection)
         if _pending_signal(db, report):
             evidence_reasons.append("New citizen evidence needs review before recalculating this episode.")
+        if not observations and not rejection:
+            source = _submission_source(db, report, zone, clock)
+            if source is not None:
+                submissions.append((source[0], source[1], report.id))
         wet.extend(ZonePredictionEvidence(source_kind=item.provenance, source_id=item.audit_id,
             report_id=report.id, observed_at=item.observed_at, available_at=item.available_at) for item in observations)
     news, news_reasons = _news_evidence(db, zone, clock)
@@ -174,13 +210,33 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
     if reasons:
         # An unchanged official registration can exercise the model automatically,
         # but remains a separately labelled proxy simulation, not zone evidence.
-        if not wet and not evidence_reasons and not reasons[:-1] and artifact and barangay:
+        missing_clock = "No qualified observation time is recorded for this zone; creation time is not a flood observation."
+        only_missing = all(reason == missing_clock or reason.startswith("Nearby reports were found") for reason in reasons)
+        if not wet and not evidence_reasons and only_missing and artifact and barangay:
+            if submissions and not store.zone_has_edits(db, zone):
+                original, approval, report_id = min(submissions, key=lambda row: (utc(row[0].created_at), row[0].id))
+                if (clock-utc(original.created_at)).total_seconds()/60 <= artifact.lineage["reference_age_support_max_minutes"]:
+                    simulation = preview_subsidence(DurationPreviewRequest(city=result.city, barangay=barangay,
+                        footprint_barangays=result.barangays, reference_at=utc(original.created_at),
+                        prediction_as_of_at=utc(approval.created_at), reference_policy="first_recorded_wet_in_episode",
+                        acknowledge_research_limitations=True, assume_continuous_wet=True,
+                        allow_pooled_pasig_transfer=True), now=clock)
+                    if simulation.status == "research_estimate":
+                        result.submission_simulation = simulation.model_copy(update={
+                            "input_provenance": "citizen_submission_proxy_simulation",
+                            "reference_policy": "citizen_submission_proxy_not_observed_onset"})
+                        result.submission_audit_id, result.submission_report_id = original.id, report_id
+                        result.submission_approval_audit_id = approval.id
+            # An invalid/timed linked report must not fall back to an unrelated registration.
+            if reports or result.submission_simulation is not None:
+                return result.model_copy(update={"reasons": list(dict.fromkeys(reasons))})
             registration = store.unchanged_official_registration(db, zone)
             if (registration is not None and registration.admin_id is not None
                     and (registration.metadata_json or {}).get("zone_id") == zone.id
                     and utc(zone.updated_at) <= utc(registration.created_at) <= clock
                     and (clock-utc(registration.created_at)).total_seconds()/60 <= artifact.lineage["reference_age_support_max_minutes"]):
                 simulation = preview_subsidence(DurationPreviewRequest(city=result.city, barangay=barangay,
+                    footprint_barangays=result.barangays,
                     reference_at=utc(registration.created_at), prediction_as_of_at=utc(registration.created_at),
                     reference_policy="first_recorded_wet_in_episode", acknowledge_research_limitations=True,
                     assume_continuous_wet=True, allow_pooled_pasig_transfer=True), now=clock)
@@ -195,6 +251,7 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
     if (clock-wet[0].observed_at).total_seconds()/60 > artifact.lineage["reference_age_support_max_minutes"]:
         return result.model_copy(update={"reasons": ["The recorded observation is older than the model's supported reference age."]})
     preview = preview_subsidence(DurationPreviewRequest(city=result.city, barangay=barangay,
+        footprint_barangays=result.barangays,
         reference_at=wet[0].observed_at, prediction_as_of_at=issuance,
         reference_policy="first_recorded_wet_in_episode", acknowledge_research_limitations=True,
         assume_continuous_wet=True, allow_pooled_pasig_transfer=True), now=clock)
@@ -203,7 +260,8 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
             preview.abstention_reason, "The model cannot estimate from the recorded evidence.")
         return result.model_copy(update={"reasons": [reason]})
     return result.model_copy(update={"state": "estimated", "quantiles": preview.quantiles,
+        "calculation": preview.calculation,
         "model": preview.model, "continuity_assumed": True,
         "prediction_as_of_at": issuance,
         "pooled_geographic_transfer": preview.pooled_geographic_transfer,
-        "warnings": ["Pooled Pasig transfer: this barangay has no subsidence outcomes in the training cohort; location accuracy is unverified."] if preview.pooled_geographic_transfer else []})
+        "warnings": result.warnings or (["Pooled Pasig transfer: this barangay has no subsidence outcomes in the training cohort; location accuracy is unverified."] if preview.pooled_geographic_transfer else [])})

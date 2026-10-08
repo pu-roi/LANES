@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/shared/ui";
 import { getZonePrediction, getPredictionFeatures, type CaseReviewSuggestion as CaseSuggestion } from "./reviewSuggestionApi";
+import { CalculationExplanation } from "./CalculationExplanation";
+import { CrossLocationComparison } from "./CrossLocationComparison";
 
 export const suggestionTime = (value: string) => new Date(value).toLocaleString("en-PH", { timeZone: "Asia/Manila", dateStyle: "medium", timeStyle: "short" });
 export const suggestionStateLabel = {
@@ -53,7 +55,8 @@ function ZonePredictionPanel({ zoneId, userId }: { zoneId: number; userId: numbe
   const median = item?.quantiles.find(q => q.quantile === .5);
   const lower = item?.quantiles.find(q => q.quantile === .1);
   const upper = item?.quantiles.find(q => q.quantile === .9);
-  const simulation = item?.registration_simulation;
+  const submissionProxy = !!item?.submission_simulation;
+  const simulation = item?.submission_simulation ?? item?.registration_simulation;
   const simulatedMedian = simulation?.quantiles.find(q => q.quantile === .5);
   const simulatedLower = simulation?.quantiles.find(q => q.quantile === .1);
   const simulatedUpper = simulation?.quantiles.find(q => q.quantile === .9);
@@ -74,18 +77,23 @@ function ZonePredictionPanel({ zoneId, userId }: { zoneId: number; userId: numbe
       </>}
       {!simulatedMedian && item.reasons.map(reason => <p key={reason} className="text-sm text-amber-800">{reason}</p>)}
       {item.warnings?.map(warning => <p key={warning} className="text-xs text-amber-800">{warning}</p>)}
-      {simulation && simulatedMedian && <div aria-label="Registration-based subsidence simulation" className="space-y-2">
-        <p className="font-semibold">Subsidence simulation · registration time proxy</p>
+      {simulation && simulatedMedian && <div aria-label={submissionProxy ? "Submission-based subsidence simulation" : "Registration-based subsidence simulation"} className="space-y-2">
+        <p className="font-semibold">Subsidence simulation · {submissionProxy ? "report submission time proxy" : "registration time proxy"}</p>
         <p className="text-base font-semibold">{query.isError ? "Previous simulation:" : "Around"} {suggestionTime(simulatedMedian.estimated_reported_subsidence_at)} (PHT)</p>
         {!query.isError && <p>{remainingLabel(simulatedMedian.estimated_reported_subsidence_at, asOf)}</p>}
         {simulatedLower && simulatedUpper && <p>Simulation interval: {suggestionTime(simulatedLower.estimated_reported_subsidence_at)} – {suggestionTime(simulatedUpper.estimated_reported_subsidence_at)} (PHT)</p>}
-        <p className="text-xs leading-5 text-slate-500">Uses the admin’s flood registration at {suggestionTime(simulation.reference_at)} (PHT), assuming uninterrupted flooding. Actual observation time is unknown; this simulation does not confirm clearance or change expiry.</p>
-        {simulation.pooled_geographic_transfer && <p className="text-xs text-amber-800">Pooled Pasig estimate; this barangay has no subsidence outcomes in the training cohort. Location accuracy is unverified.</p>}
+        <p className="text-xs leading-5 text-slate-500">Uses {submissionProxy ? `approved report #${item.submission_report_id} submitted` : "the admin’s flood registration"} at {suggestionTime(simulation.reference_at)} (PHT), assuming uninterrupted flooding. Actual observation time is unknown; this simulation does not confirm clearance or change expiry.</p>
+        {simulation.pooled_geographic_transfer && !item.warnings?.length && <p className="text-xs text-amber-800">Pooled Pasig estimate; one or more detected barangays have no subsidence outcomes in the training cohort. Location accuracy is unverified.</p>}
       </div>}
       {item.state === "estimated" && <p className="text-xs leading-5 text-slate-500">Assumes uninterrupted flooding since the recorded observation. Accuracy is unverified; the estimate does not confirm clearance or change evidence expiry.</p>}
     </div>}
     {item && <Button variant="ghost" size="sm" className="min-h-11 w-full justify-start px-0 text-blue-700 sm:w-auto" aria-expanded={expanded} aria-controls={`${id}-prediction`} onClick={() => setExpanded(!expanded)}>{expanded ? "Hide calculation details" : "View calculation details"}</Button>}
     {expanded && item && <div id={`${id}-prediction`} className="space-y-3 text-sm text-slate-600">
+      <CalculationExplanation calculation={simulation?.calculation ?? item.calculation} registrationProxy={!!simulatedMedian} submissionProxy={submissionProxy} formatTime={suggestionTime} />
+      <CrossLocationComparison zoneId={zoneId} userId={userId} formatTime={suggestionTime} />
+      <details>
+      <summary className="min-h-11 cursor-pointer py-3 text-xs font-medium text-blue-700">Source records and model information</summary>
+      <div className="space-y-3 pt-2">
       <dl className="grid gap-3 sm:grid-cols-2">
         <div><dt className="font-medium">First recorded flooding</dt><dd>{item.reference ? `${suggestionTime(item.reference.observed_at)} (PHT)` : "No qualified observation time"}</dd></div>
         <div><dt className="font-medium">Latest recorded wet evidence</dt><dd>{item.latest_wet ? `${suggestionTime(item.latest_wet.observed_at)} (PHT)` : "No qualified wet evidence"}</dd></div>
@@ -96,6 +104,9 @@ function ZonePredictionPanel({ zoneId, userId }: { zoneId: number; userId: numbe
       {!!item.nearby_report_count && <p className="text-xs">{item.nearby_report_count} nearby report candidates. Distance alone does not link them to this flood episode.</p>}
       {item.model && <><p className="text-xs">The current model uses a pooled duration pattern; it has no learned depth or rainfall effects. Research cohort: {item.model.supported_barangays.join(", ") || "unavailable"}.</p>{item.model.model_sha256 && <p className="break-all text-xs">Model checksum: {item.model.model_sha256}</p>}</>}
       {item.registration_audit_id && <p className="text-xs">Simulation registration record #{item.registration_audit_id}. Recorded time is a proxy, separate from observed wet evidence.</p>}
+      {item.submission_audit_id && <p className="text-xs">Simulation submission record #{item.submission_audit_id} · Approved report #{item.submission_report_id} · Approval record #{item.submission_approval_audit_id}. Submission time is a proxy, separate from observed wet evidence.</p>}
+      </div>
+      </details>
       <div className="space-y-2 border-t border-slate-100 pt-3">
         <p className="text-xs font-medium">Current model input context</p>
         {inputs.isPending && <p role="status" className="text-xs">Loading model input context…</p>}

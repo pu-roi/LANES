@@ -1,8 +1,16 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Current ML evidence storage — October 8
+
+**October 9 publication audit:** [Decision 26](../decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) adopts read-only source-bound research modelling with existing audit JSONB and filesystem artifacts. No SQL model, migration or production training-label write is added. Current migration definitions are unchanged; prior migration acceptance and the current native verification gap remain distinct. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Cross-location comparison storage audit:** The private comparison reads exact existing source audits and frozen `prediction_features`; new Pydantic response contracts and separate filesystem model/evaluation manifests add no table, column, index, SQLAlchemy definition or migration. Historical qualification remains conditional with zero production admission, and comparison reads append no label/audit/operational writes. [Results](../evaluations/cross-location-duration-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Untimed approved-citizen response audit:** Submission simulations read existing `CITIZEN_OBSERVATION` and matching staff `APPROVE_REPORT` records. Source owner/geometry hash/validated road, approval report/zone/actor, current event/versions and chronological clocks must match; later follow-ups or zone edits block the fallback. Optional response-only submission/report/approval IDs and simulation metadata add no SQL column/model/migration. Actual `observed_at` remains null, and no generated wet/dry training label or operational deadline is persisted. Real Zone #18 was verified in a repeatable-read, read-only transaction through the local ASGI route. [Acceptance](../evaluations/zone18-submission-simulation-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Calculation walkthrough response contract:** `DurationCalculation`/`DurationCalculationQuantile` add optional, read-only Pydantic response metadata to the subsidence preview and zone prediction, including registration simulations. Formula coefficients, forecast/reference clocks, elapsed age, conditional probabilities and returned quantiles are computed from the already selected artifact/kernel result. They add no SQLAlchemy fields, audit writes, table/index or Alembic definition; forecasts and operational state remain unchanged. [Verification](../evaluations/calculation-details-walkthrough-20261008.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 The future LANES collection path extends **existing private audit JSONB**, not the relational schema. No SQLAlchemy model, table, column, index or Alembic definition is added. The recorded comprehensive acceptance applies existing head `d7e4b9a21c60` in disposable PostGIS databases; this documentation audit makes no database write.
 

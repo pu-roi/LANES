@@ -61,6 +61,9 @@ def test_automatic_spatial_evidence_prediction_is_read_only(zone_db):
     assert result.state == "estimated" and result.city == "Pasig" and result.barangays == ["Maybunga"], result.reasons
     assert result.reference.observed_at == now-timedelta(hours=1) != zone.created_at
     assert len(result.quantiles) == 3 and result.continuity_assumed
+    assert result.calculation.prediction_as_of_at == result.prediction_as_of_at
+    assert result.calculation.elapsed_minutes == pytest.approx(60)
+    assert result.calculation.quantiles[1].estimated_reported_subsidence_at == result.quantiles[1].estimated_reported_subsidence_at
     assert result.reference.report_id == item.id and result.model.model_sha256
     assert not result.changes_status_expiry_or_routing
     refreshed = service.predict_zone(db, zone.id, staff, now=now+timedelta(minutes=1))
@@ -216,6 +219,8 @@ def test_official_registration_is_separate_automatic_simulation_not_wet_evidence
     assert result.registration_simulation.status == "research_estimate"
     assert result.registration_simulation.input_provenance == "admin_registration_proxy_simulation"
     assert result.registration_simulation.reference_at == registration.created_at
+    assert result.registration_simulation.calculation.elapsed_minutes == 0
+    assert result.registration_simulation.calculation.reference_at == registration.created_at
     assert result.registration_audit_id == registration.id
     later = service.predict_zone(db, zone.id, staff, now=now+timedelta(minutes=1))
     assert result.registration_simulation.quantiles == later.registration_simulation.quantiles

@@ -1,6 +1,8 @@
 """Staff preview authorization, abstention and visible artifact failures."""
 import hashlib
 import json
+import math
+from statistics import NormalDist
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
@@ -15,6 +17,26 @@ from app.services import flood_subsidence_prediction_service as service
 
 
 NOW = datetime(2026, 10, 7, tzinfo=timezone.utc)
+
+
+@pytest.mark.parametrize('age', [0, 60, 1100])
+def test_calculation_explanation_matches_conditional_forecast_and_fixed_anchor(age):
+    request = DurationPreviewRequest(**payload(reference_at=(NOW-timedelta(minutes=age)).isoformat(),
+        assume_continuous_wet=True))
+    forecast = service.preview_subsidence(request, now=NOW)
+    details = forecast.calculation
+    assert details.reference_at == request.reference_at and details.prediction_as_of_at == NOW
+    assert details.elapsed_minutes == age
+    normal = NormalDist()
+    previous = 0 if age == 0 else normal.cdf((math.log(age)-details.log_duration_location)/details.log_duration_scale)
+    for row, output in zip(details.quantiles, forecast.quantiles):
+        assert row.remaining_minutes == output.remaining_minutes
+        assert row.estimated_reported_subsidence_at == output.estimated_reported_subsidence_at
+        assert row.total_minutes-row.remaining_minutes == pytest.approx(age)
+        probability = normal.cdf((math.log(row.total_minutes)-details.log_duration_location)/details.log_duration_scale)
+        assert (probability-previous)/(1-previous) == pytest.approx(row.quantile)
+    later = service.preview_subsidence(request, now=NOW+timedelta(minutes=10))
+    assert later.calculation == details and later.quantiles == forecast.quantiles
 
 
 def payload(**changes):
@@ -108,6 +130,17 @@ def test_missing_artifact_abstains(monkeypatch, tmp_path):
     monkeypatch.setenv('LANES_FLOOD_DURATION_MODEL_PATH', str(tmp_path / 'missing.json'))
     result = service.preview_subsidence(DurationPreviewRequest(**payload()), now=NOW)
     assert result.abstention_reason == 'research_model_unavailable'
+
+
+def test_full_footprint_checks_all_barangays_without_changing_pooled_parameters():
+    single = service.preview_subsidence(DurationPreviewRequest(**payload()), now=NOW)
+    multi = service.preview_subsidence(DurationPreviewRequest(**payload(
+        footprint_barangays=['Maybunga', 'San Nicolas'], allow_pooled_pasig_transfer=True)), now=NOW)
+    assert multi.status == 'research_estimate' and multi.pooled_geographic_transfer
+    assert multi.quantiles == single.quantiles
+    invalid = service.preview_subsidence(DurationPreviewRequest(**payload(
+        footprint_barangays=['Maybunga', 'Not a Pasig barangay'], allow_pooled_pasig_transfer=True)), now=NOW)
+    assert invalid.status == 'abstained' and not invalid.quantiles
 
 
 def test_checksum_pin_and_incompatible_lineage_reject(monkeypatch, tmp_path):

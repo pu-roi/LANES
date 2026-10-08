@@ -1,0 +1,119 @@
+{
+  "depth_mean": 54.340246913580216,
+  "depth_scale": 29.981134725777245,
+  "depth_min": 5.0,
+  "depth_max": 91.44,
+  "locations": [
+    "Dela Paz",
+    "Maybunga",
+    "Santa Lucia",
+    "Santolan"
+  ],
+  "coefficients": [
+    6.928022598674013,
+    0.01593606426122616,
+    -0.0697236818039823,
+    0.2727010171703746,
+    -0.09808388035038101,
+    -0.1048937510772268
+  ],
+  "coefficient_covariance": [
+    [
+      0.08918461653117263,
+      0.0034954579143259058,
+      -0.043958055203695307,
+      -0.040725615160693555,
+      -0.0198053192074933,
+      -0.018011010022723907
+    ],
+    [
+      0.003495457914325904,
+      0.05976005981205882,
+      -0.03340064601234428,
+      0.0185406158710704,
+      0.00633486501508528,
+      0.008525164484028102
+    ],
+    [
+      -0.043958055203695307,
+      -0.033400646012344284,
+      0.10405962416105607,
+      0.002218420473979553,
+      0.009015888933842866,
+      0.007206065728613877
+    ],
+    [
+      -0.04072561516069354,
+      0.0185406158710704,
+      0.0022184204739795475,
+      0.12698081410993342,
+      -0.0028251417669147546,
+      -0.0038740947624796526
+    ],
+    [
+      -0.0198053192074933,
+      0.006334865015085275,
+      0.009015888933842866,
+      -0.0028251417669147598,
+      0.10476098180170602,
+      0.011548271606841874
+    ],
+    [
+      -0.018011010022723904,
+      0.008525164484028095,
+      0.007206065728613879,
+      -0.0038740947624796556,
+      0.011548271606841872,
+      0.10761975814423318
+    ]
+  ],
+  "residual_scale": 0.3882512098395938,
+  "location_prior_sd": 0.35,
+  "depth_prior_sd": 0.5,
+  "location_outcomes": {
+    "Dela Paz": 2,
+    "Maybunga": 1,
+    "Santa Lucia": 1,
+    "Santolan": 1
+  },
+  "lineage": {
+    "input_sha256": {
+      "backend/runtime_data/flood-duration/conditional_aft.json": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6",
+      "backend/runtime_data/flood-duration/passability_aft.json": "391eaa894717722963d38b6fd34276ef737a33e3224351433b794aa88ddf958c",
+      "data/pasig_barangay_reference.csv": "e036f86a005b6a7148c798baf462e220b40783c6a3f715f43de23c7da45af06a",
+      "docs/evaluations/pasig-duration-followup-20261005/dataset_manifest.json": "fea920a6eaaff2f47a79a5b68d40b2e02e7b934eb519594ea0ffddd5fe0b5e00",
+      "docs/evaluations/pasig-duration-followup-20261005/pasig_wet_observations.csv": "ecd5e920f433eb0e7194190fd057cae3641b538489e4685d29170801852f6a63",
+      "docs/evaluations/pasig-duration-model-20261007/conditional_training_candidates.csv": "7389df1ab1efd303a4d9d355f86a3dd2a21eb2c550f25c296404ffcce408d567",
+      "docs/evaluations/pasig-duration-model-20261007/experiment_report.json": "71fecb36520c810c7d9a5c55d1d7a5b12de445cb1ca07d9f7a867c7910c7dc71"
+    },
+    "limitations": [
+      "only_three_shared_outcomes",
+      "no_verified_independent_storms",
+      "outcome_selected_cohort",
+      "collective_scope_and_continuity_assumed",
+      "historical_predictor_availability_unverified",
+      "no_prospective_calibration",
+      "fixed_prior_and_residual_scale_uncertainty_not_fully_modelled"
+    ],
+    "reference_age_support_max_minutes": 2000.0,
+    "reference_policy": "first_recorded_wet_in_outcome_selected_candidate_timeline",
+    "city": "Pasig",
+    "projection_count": 36,
+    "shared_outcome_count": 3,
+    "production_training_admitted": 0,
+    "deployment_eligible": false,
+    "prospective_validation_established": false
+  },
+  "diagnostics": {
+    "objective": 6.577709241954193,
+    "converged_starts": 3,
+    "constant_depth_prior_driven": false,
+    "hessian_min_eigenvalue": 2.232382271000439,
+    "weight_policy": "each_shared_summary_total_one",
+    "residual_and_prior_scale_uncertainty_included": false
+  },
+  "schema_version": "pasig-cross-location-aft-v1",
+  "target_version": "remaining_time_from_first_recorded_wet_to_reported_subsidence_continuity_assumed_v1",
+  "uncertainty_method": "conditional_composite_laplace_coefficients_plus_unseen_location_prior",
+  "shadow_only": true
+}

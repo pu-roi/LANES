@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
-import type { CaseReviewSuggestion, ReviewSuggestionState, WetEvidence, ZonePrediction } from "../src/features/flood-followups/reviewSuggestionApi";
+import type { CaseReviewSuggestion, ReviewSuggestionState, WetEvidence, ZonePrediction, DurationCalculation, CrossLocationPrediction } from "../src/features/flood-followups/reviewSuggestionApi";
+import calculations from "./fixtures/subsidence-calculation.json";
 
 test.setTimeout(90_000);
 test.use({ browserName: "chromium" });
@@ -19,7 +20,7 @@ const followup = { id: 42, report_id: 2, user_id: 8, request_id: "1d884c7c-934c-
   location_snapshot: { report_id: 2, city: "Pasig", barangay: "Maybunga", human_readable_location: "Maybunga bridge", geometry_sha256: "fixture", zone_id: 9, event_id: null },
   review_state: "pending", review: null, source_claim_only: true, model_admitted: false };
 
-async function setup(page: Page, options: { readOnly?: boolean; missing?: boolean; failure?: boolean; due?: boolean; owner?: boolean; review?: boolean; queueError?: boolean; zone?: boolean; state?: ReviewSuggestionState; getFailure?: boolean; unlinked?: boolean; unsupported?: boolean; registrationSimulation?: boolean; pooled?: boolean } = {}) {
+async function setup(page: Page, options: { readOnly?: boolean; missing?: boolean; failure?: boolean; due?: boolean; owner?: boolean; review?: boolean; queueError?: boolean; zone?: boolean; state?: ReviewSuggestionState; getFailure?: boolean; unlinked?: boolean; unsupported?: boolean; registrationSimulation?: boolean; pooled?: boolean; crossLocation?: "estimate" | "missing" | "failure" | "proxy" } = {}) {
   await page.clock.install({ time: new Date(options.due ? "2026-10-08T05:00:00Z" : stamp) });
   let state: CaseReviewSuggestion = { ...baseCase, can_issue: !options.readOnly && !options.missing,
     ineligibility_reason: options.missing ? "An explicit observation time is required." : null,
@@ -31,6 +32,7 @@ async function setup(page: Page, options: { readOnly?: boolean; missing?: boolea
   let reviewed = false;
   let ownerSaved: Record<string, unknown> | null = null;
   let getRequests = 0;
+  let comparisonRequests = 0;
   const zone = { id: 9, report_id: options.unlinked ? null : 2, name: "Maybunga bridge", is_active: true, created_at: stamp, updated_at: stamp,
     expires_at: "2026-10-10T00:00:00Z", severity: "medium", depth: "knee", report_source: "direct_user", original_report_text: "Water at the bridge.",
     location_label: "Maybunga bridge", contributors: [], geometry: { type: "Polygon", coordinates: [[[121.08,14.57],[121.081,14.57],[121.081,14.571],[121.08,14.57]]] } };
@@ -51,6 +53,27 @@ async function setup(page: Page, options: { readOnly?: boolean; missing?: boolea
         submitted_at: stamp, location: "Maybunga bridge", reporter: "Fixture", ...item }));
       const filter = url.searchParams.get("status_filter");
       return route.fulfill({ json: filter === "all" ? cases : cases.filter(item => item.status === filter) });
+    }
+    if (path.endsWith("/cross-location-prediction")) {
+      expect(route.request().method()).toBe("GET");
+      if (options.crossLocation === "failure" && ++comparisonRequests === 1) return route.fulfill({ status: 503, json: { detail: "Comparison source storage is unavailable." } });
+      const available = options.crossLocation && options.crossLocation !== "missing";
+      const result: CrossLocationPrediction = {
+        zone_id: 9, status: available ? "research_comparison" : "abstained", selected_for_primary: false,
+        changes_status_expiry_or_routing: false, reason: available ? null : "No frozen depth features were captured with this source; current values are not backfilled.",
+        validation_summary: "36 conditional records share 3 subsidence summaries. Holdouts are incomplete and results vary; prospective accuracy is unverified. The baseline remains the primary estimate.",
+        selection_blockers: ["no_prospective_calibration"], model_sha256: "fixture-cross-location", qualified_rows: 36, shared_outcomes: 3,
+        trained_locations: ["Maybunga", "Dela Paz", "Santolan", "Santa Lucia"], target_location: "Ugong",
+        depth_cm: available ? 40 : null, depth_basis: options.crossLocation === "proxy" ? "reported_canonical_gauge_proxy" : "reported_numeric_centimeters",
+        reference_basis: options.crossLocation === "proxy" ? "registration_proxy" : "observed_reference", source_audit_id: 140,
+        reference_at: wet.observed_at, source_observed_at: options.crossLocation === "proxy" ? null : wet.observed_at,
+        prediction_as_of_at: stamp, quantiles: available ? saved.quantiles : [],
+        calculation: available ? { log_duration_location: 6.9, predictive_log_scale: .8, shared_depth_effect: .02, local_effect: 0,
+          coefficient_variance: .2, unseen_location_variance: .1225, location_outcomes: 0,
+          transfer_basis: "shared_depth_with_unseen_location_prior", uncertainty_method: "conditional_composite_laplace_coefficients_plus_unseen_location_prior" } : null,
+        warnings: options.crossLocation === "proxy" ? ["Depth is a canonical gauge proxy, not measured centimetres. This comparison is a proxy-depth simulation."] : [],
+      };
+      return route.fulfill({ json: result });
     }
     if (path.endsWith("/subsidence-prediction")) {
       expect(route.request().method()).toBe("GET");
@@ -129,6 +152,49 @@ async function expectNoManualFields(panel: ReturnType<Page["getByRole"]>) {
   await expect(panel.getByRole("button", { name: /test|save|calculate/i })).toHaveCount(0);
 }
 
+for (const state of ["estimate", "missing", "failure", "proxy"] as const) {
+  test(`cross-location comparison ${state} preserves the baseline and automatic flow`, async ({ page }, info) => {
+    const requests: string[] = [];
+    page.on("request", request => { if (request.url().includes("cross-location-prediction")) requests.push(request.method()); });
+    const posts = await setup(page, { zone: true, crossLocation: state });
+    const panel = await openPrediction(page);
+    await expect(panel.getByText(/Around/).first()).toBeVisible();
+    const baseline = await panel.getByText(/Around/).first().textContent();
+    expect(requests).toHaveLength(0);
+    await panel.getByRole("button", { name: "View calculation details" }).click();
+    const comparison = panel.getByRole("region", { name: "Depth and location research comparison" });
+    if (state === "failure") {
+      await expect(comparison.getByRole("alert")).toContainText("Comparison source storage is unavailable.");
+      await comparison.getByRole("button", { name: "Retry comparison" }).click();
+    }
+    await expect(comparison.getByText(/36 conditional records share 3/)).toBeVisible();
+    if (state === "missing") {
+      await expect(comparison.getByText(/No frozen depth features/)).toBeVisible();
+      await expect(comparison.getByText(/Candidate comparison:/)).toHaveCount(0);
+    } else {
+      await expect(comparison.getByText(/Candidate comparison:/)).toBeVisible();
+      await expect(comparison.getByText("Ugong: 0 shared summaries")).toBeVisible();
+      await expect(comparison.getByText(/added uncertainty for an unseen location/)).toBeVisible();
+      if (state === "proxy") {
+        await expect(comparison.getByText(/proxy-depth simulation/)).toBeVisible();
+        await expect(comparison.getByText(/actual observation unknown/)).toBeVisible();
+      }
+    }
+    expect(await panel.getByText(/Around/).first().textContent()).toBe(baseline);
+    await expectNoManualFields(panel);
+    expect(await comparison.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+    await comparison.getByRole("heading").evaluate(element => element.scrollIntoView({ block: "start" }));
+    await page.screenshot({ path: info.outputPath(`cross-location-${state}.png`) });
+    await comparison.getByText(/Training locations:/).scrollIntoViewIfNeeded();
+    const last = await comparison.getByText(/Training locations:/).boundingBox();
+    const footer = await page.getByRole("button", { name: "Edit zone", exact: true }).boundingBox();
+    expect(last && footer && last.y + last.height <= footer.y).toBe(true);
+    await page.screenshot({ path: info.outputPath(`cross-location-${state}-support.png`) });
+    expect(posts).toHaveLength(0);
+    expect(requests.every(method => method === "GET")).toBe(true);
+  });
+}
+
 test("Moderation Center excludes active-zone ML and flood follow-up sections", async ({ page }, info) => {
   const evidenceRequests: string[] = [];
   page.on("request", request => { if (/flood-review-suggestions|review-suggestion|flood-follow-ups/.test(request.url())) evidenceRequests.push(request.url()); });
@@ -205,6 +271,7 @@ test("Overview automatically displays an estimate and recorded evidence without 
   expect(close!.y + close!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   await page.screenshot({ path: info.outputPath("automatic-zone-prediction.png"), scale: "css" });
   await details.click();
+  await panel.getByText("Source records and model information", { exact: true }).click();
   await expect(panel.getByText("First recorded flooding", { exact: true })).toBeVisible();
   await expect(panel.getByText("Model checksum: fixture-model-checksum")).toBeVisible();
   await panel.getByRole("button", { name: "Hide calculation details" }).click();
@@ -298,6 +365,7 @@ test("official registration simulation is automatic and visibly distinct from an
   await expect(dialog.getByText("Expires", { exact: true })).toBeVisible();
   await page.screenshot({ path: info.outputPath("automatic-registration-simulation.png") });
   await panel.getByRole("button", { name: "View calculation details" }).click();
+  await panel.getByText("Source records and model information", { exact: true }).click();
   await expect(panel.getByText(/Simulation registration record #140/)).toBeVisible();
   expect(posts).toHaveLength(0);
 });
@@ -339,4 +407,72 @@ test("input context failure is visible and retries without losing the forecast",
   await panel.getByRole("button",{name:"Retry model inputs"}).click();
   await expect(panel.getByText("Modelled elevation unavailable; no value was substituted.")).toBeVisible();
   await expectNoManualFields(panel);
+});
+
+for (const [mode, age] of [["registration proxy", "0"], ["recorded observation", "360"]] as const) {
+  test(`calculation walkthrough explains the real formula for ${mode}`, async ({ page }, info) => {
+    const posts = await setup(page, { zone: true });
+    const calculation = calculations[age] as DurationCalculation;
+    const simulation = age === "0";
+    const model = { status: "research_model_available", supported_barangays: ["Dela Paz", "Maybunga", "Santolan", "Sta. Lucia"], model_sha256: "fixture" };
+    await page.route("**/admin/zones/9/subsidence-prediction", route => route.fulfill({ json: {
+      zone_id: 9, state: simulation ? "unavailable" : "estimated", city: "Pasig", barangays: ["Maybunga"],
+      evaluated_at: stamp, prediction_as_of_at: stamp, reasons: [], evidence: [], nearby_report_count: 0, model,
+      reference: simulation ? null : { observed_at: calculation.reference_at, available_at: stamp, source_id: 4, source_kind: "original_citizen_observation" }, latest_wet: null,
+      quantiles: simulation ? [] : calculation.quantiles, calculation: simulation ? null : calculation,
+      registration_simulation: simulation ? { status: "research_estimate", reference_at: calculation.reference_at, prediction_as_of_at: stamp, quantiles: calculation.quantiles, model, calculation } : null,
+    } }));
+    const panel = await openPrediction(page);
+    await panel.getByRole("button", { name: "View calculation details" }).click();
+    const walkthrough = panel.locator('[aria-label="Calculation walkthrough"]');
+    await expect(walkthrough.getByRole("heading", { name: "How this estimate is calculated" })).toBeVisible();
+    await expect(walkthrough.getByText("ln(T) = μ + σ × Z", { exact: true })).toBeVisible();
+    await expect(walkthrough.getByText(/Total duration = exp\(6.964058/)).toBeVisible();
+    await expect(walkthrough.getByText(/Remaining at anchor =/)).toBeVisible();
+    await expect(walkthrough.getByText(/Turn the duration into a date/)).toBeVisible();
+    await expect(walkthrough.getByText(/does not mean the forecast is proven 80% accurate/)).toBeVisible();
+    if (simulation) await expect(walkthrough.getByText(/We do not know when flooding actually began/)).toBeVisible();
+    await walkthrough.getByText("Elapsed-time formula", { exact: true }).click();
+    await expect(walkthrough.getByText("p = F(a) + q × (1 − F(a))", { exact: true })).toBeVisible();
+    await expect(walkthrough.getByText(new RegExp(`Here a = ${age} minutes`))).toBeVisible();
+    await expectNoManualFields(panel);
+    expect(await walkthrough.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+    await walkthrough.getByText("Elapsed-time formula", { exact: true }).click();
+    await walkthrough.getByRole("heading", { name: "How this estimate is calculated" }).scrollIntoViewIfNeeded();
+    await page.screenshot({ path: info.outputPath(`calculation-${age}-steps.png`) });
+    await walkthrough.getByText(/Turn the duration into a date/).scrollIntoViewIfNeeded();
+    await page.screenshot({ path: info.outputPath(`calculation-${age}-result.png`) });
+    expect(posts).toHaveLength(0);
+  });
+}
+
+test("approved citizen submission simulates a cross-barangay zone without claiming an observation", async ({ page }, info) => {
+  const posts = await setup(page, { zone: true });
+  const calculation = calculations["0"] as DurationCalculation;
+  const model = { status: "research_model_available", supported_barangays: ["Dela Paz", "Maybunga", "Santolan", "Sta. Lucia"], model_sha256: "fixture" };
+  await page.route("**/admin/zones/9/subsidence-prediction", route => route.fulfill({ json: {
+    zone_id: 9, state: "unavailable", city: "Pasig", barangays: ["San Nicolas", "Santo Tomas"],
+    evaluated_at: stamp, reasons: ["No qualified observation time is recorded for this zone; creation time is not a flood observation."],
+    evidence: [], reference: null, latest_wet: null, quantiles: [], model,
+    warnings: ["Shared Pasig estimate across these barangays; separate street or barangay effects are not learned, and local accuracy is unverified."],
+    submission_simulation: { status: "research_estimate", input_provenance: "citizen_submission_proxy_simulation",
+      reference_at: calculation.reference_at, prediction_as_of_at: stamp, quantiles: calculation.quantiles,
+      model, calculation, pooled_geographic_transfer: true },
+    submission_report_id: 16, submission_audit_id: 164, submission_approval_audit_id: 166,
+  } }));
+  const panel = await openPrediction(page);
+  await expect(panel.getByText("Detected location: San Nicolas / Santo Tomas, Pasig")).toBeVisible();
+  await expect(panel.getByText("Subsidence simulation · report submission time proxy")).toBeVisible();
+  await expect(panel.getByText(/Uses approved report #16 submitted/)).toBeVisible();
+  await expect(panel.getByText(/Actual observation time is unknown/)).toBeVisible();
+  await expect(panel.getByText("Estimate unavailable", { exact: true })).toHaveCount(0);
+  await expect(panel.getByText(/crosses or has ambiguous barangay/)).toHaveCount(0);
+  await panel.getByRole("button", { name: "View calculation details" }).click();
+  await expect(panel.getByText(/Citizen report submitted:/)).toBeVisible();
+  await expect(panel.getByText(/First recorded flooding:/)).toHaveCount(0);
+  await expectNoManualFields(panel);
+  expect(await panel.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await panel.getByText(/Citizen report submitted:/).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: info.outputPath("citizen-submission-simulation.png") });
+  expect(posts).toHaveLength(0);
 });

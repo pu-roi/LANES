@@ -15,6 +15,7 @@ from app.services.news_road_placement_service import DEFAULT_CATALOG_DIR, NewsRo
 from app.services.noah_vector_catalog_service import DEFAULT_DIRECTORY as NOAH_DIRECTORY, NoahVectorCatalog
 from app.services.pasig_historical_service import DEFAULT_PASIG_CLEAN_CSV
 from app.services.flood_location_service import FloodLocationProvider, DEFAULT_DIRECTORY as FLOOD_LOCATION_DIRECTORY
+from app.services.cross_location_prediction_service import load_comparison
 
 
 def verify_assets(noah_directory: Path, osm_directory: Path, barangay_directory: Path,
@@ -64,6 +65,10 @@ def main() -> None:
         if location.error:
             raise ValueError(location.error)
         result.update(prediction_barangay_count=len(location.records),prediction_location_sha256=location.digest)
+        candidate, evaluation, checksum = load_comparison()
+        result.update(cross_location_model_sha256=checksum,
+                      cross_location_shared_outcomes=evaluation["shared_outcomes"],
+                      cross_location_selected_for_primary=False)
     except ValueError as error:
         print(json.dumps(dict(status="assets_invalid", reason=str(error))))
         raise SystemExit(1) from None

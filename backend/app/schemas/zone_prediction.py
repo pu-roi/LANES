@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.schemas.flood_subsidence import DurationModelStatus, DurationQuantile
+from app.schemas.flood_subsidence import DurationModelStatus, DurationQuantile, DurationCalculation
 from app.schemas.flood_subsidence import DurationPreviewResponse
 
 
@@ -25,6 +25,7 @@ class ZonePrediction(BaseModel):
     barangays: list[str] = Field(default_factory=list)
     coordinates: tuple[float, float] | None = None
     boundary_revision: str | None = None
+    location_policy: Literal["single_barangay", "pooled_pasig_multi_barangay"] | None = None
     nearby_report_count: int = 0
     evaluated_at: datetime
     prediction_as_of_at: datetime | None = None
@@ -40,3 +41,8 @@ class ZonePrediction(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     registration_simulation: DurationPreviewResponse | None = None
     registration_audit_id: int | None = None
+    submission_simulation: DurationPreviewResponse | None = None
+    submission_audit_id: int | None = None
+    submission_report_id: int | None = None
+    submission_approval_audit_id: int | None = None
+    calculation: DurationCalculation | None = None

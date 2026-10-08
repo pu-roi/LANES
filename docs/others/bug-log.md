@@ -1,8 +1,32 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 08, 2026, 03:07 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-130] Valid cross-barangay citizen zones have no automatic simulation
+
+- **Status:** Resolved locally; matching API/frontend deployment remains pending.
+- **Severity:** Medium — approved Zone #18 could not exercise the subsidence model.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Zone #18 in San Nicolas/Santo Tomas displayed boundary ambiguity and missing observation time. It was fully inside Pasig, but the adapter required one barangay and supported only official-registration recording proxies.
+- **Root cause:** Single-identity resolution/preview scope plus a missing approved-citizen source-time path. Report #16 has immutable submission audit #164 with `observed_at=null`, valid road geometry, and matching approval #166; submission time cannot become an observed onset.
+- **Solution:** Require complete Pasig parent containment, retain all intersected names and validate every identity for the shared model. Derive a separately labeled submission simulation from unchanged qualified source/approval records; stop on conflicts, invalid clocks, edits, later evidence, closure or unsupported age. Existing Overview distinguishes source types automatically.
+- **Files/verification:** Zone prediction CRUD/schema/service, subsidence request/response/scope service, existing Overview/API types/calculation component and focused tests. Seventy-seven backend/model/location and twelve responsive checks pass; real Zone #18 ASGI read in a read-only transaction preserves observation, geometry, status and expiry and yields a stable forecast. [Acceptance](../evaluations/zone18-submission-simulation-20261008.md). No model fit, SQL schema, dependency or cloud release change.
+
+### [BUG-129] Local Docker startup blocks disposable PostGIS verification
+
+- **Status:** Investigating — preserved/recreated runtime socket folders; controlled restart still reproduces the socket failure. Docker is stopped. Native database checks remain blocked pending host recovery.
+- **Severity:** Low — local verification environment; deployed LANES is independent of this Docker instance.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Starting Docker for calculation-response spatial/API verification fails while renaming `sailor-ingest.sock` to `.stale`, with Windows reporting the file cannot be accessed. The user supplied the same Desktop error twice.
+- **Root cause evidence:** The symptom matches [Docker's reported Windows stale AF_UNIX socket issue](https://github.com/docker/desktop-feedback/issues/554). After the first runtime-directory recovery, logs also report a WSL timeout mounting the existing data disk. A deeper host/filesystem cause is not verified.
+- **Strategy/result:** Validate explicit absolute socket-directory targets and confirm Desktop/backend stopped, then preserve the two runtime parents under sibling backup names. No VM disk, container volume, WSL registration or application data is removed. Desktop force-stop and Docker-distribution termination succeed; the subsequent start again fails. Leave Docker closed and recommend a Windows restart before further startup diagnostics.
+- **Files/verification:** No LANES source change is made for this environment issue. Backup locations and exact blocked checks are recorded in the [calculation walkthrough evaluation](../evaluations/calculation-details-walkthrough-20261008.md#local-docker-interruption). Mathematical/API-unit and browser verification continue separately; native acceptance is not claimed.
 
 ### [BUG-128] Incomplete automatic prediction locality and unsupported feature-effect claims
+
+- **October 9 planner disposition:** Keep In Progress for demonstrated local accuracy. [Decision 26](../decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) records the delivered partial-pooling comparison and its incomplete/mixed holdouts; version-control publication does not resolve the evidence/calibration or Docker/release gaps. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- **Cross-location follow-up:** Fixed-prior depth/location AFT, purged comparisons and an automatic source-bound research panel are implemented locally. Thirty-six records still share three summaries; partial/mixed or unsupported tests do not establish improvement. BUG-128 remains In Progress for learned local accuracy. 131 backend/model/API checks and 24 responsive cases verify behaviour, not field accuracy. [Results](../evaluations/cross-location-duration-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - **Status:** In Progress — locality coverage resolved locally; source-feature capture/evaluation and future LANES evidence collection/export implemented. Learned street-specific model improvement remains open because tested candidates fail comparative selection.
 - **Severity:** Medium - ten missing locality polygons prevented automatic detection; adding unqualified features would not establish accuracy.

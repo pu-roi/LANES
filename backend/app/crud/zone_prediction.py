@@ -9,10 +9,33 @@ from app.models.audit import AuditLog
 MAX_RECORDS = 100
 
 
+def comparison_source_audit(db: Session, audit_id: int, source_kind: str, target_id: int) -> AuditLog | None:
+    """Only the exact audit already selected by the automatic evidence adapter."""
+    actions = {"original_citizen_observation": ("CITIZEN_OBSERVATION", "flood_reports"),
+        "accepted_owner_followup": ("FLOOD_FOLLOWUP_OBSERVATION", "flood_reports"),
+        "submission_proxy": ("CITIZEN_OBSERVATION", "flood_reports"),
+        "registration_proxy": ("CREATE_OFFICIAL_ZONE", "flood_avoidance_zones")}
+    if source_kind not in actions:
+        return None
+    action, table = actions[source_kind]
+    return db.scalar(select(AuditLog).where(AuditLog.id == audit_id,
+        AuditLog.action_type == action, AuditLog.target_table == table, AuditLog.target_id == target_id))
+
+
+def zone_has_edits(db: Session, zone: FloodAvoidanceZone) -> bool:
+    return db.scalar(select(AuditLog.id).where(AuditLog.target_table == "flood_avoidance_zones",
+        AuditLog.target_id == zone.id, AuditLog.action_type == "UPDATE_ZONE").limit(1)) is not None
+
+
+def submission_approval(db: Session, report_id: int) -> AuditLog | None:
+    return db.scalar(select(AuditLog).where(AuditLog.target_table == "flood_reports",
+        AuditLog.target_id == report_id, AuditLog.action_type == "APPROVE_REPORT")
+        .order_by(AuditLog.id.desc()).limit(1))
+
+
 def unchanged_official_registration(db: Session, zone: FloodAvoidanceZone) -> AuditLog | None:
     """A recording clock for simulations, never a physical observation clock."""
-    if db.scalar(select(AuditLog.id).where(AuditLog.target_table == "flood_avoidance_zones",
-            AuditLog.target_id == zone.id, AuditLog.action_type == "UPDATE_ZONE").limit(1)) is not None:
+    if zone_has_edits(db, zone):
         return None
     return db.scalar(select(AuditLog).where(AuditLog.target_table == "flood_avoidance_zones",
         AuditLog.target_id == zone.id, AuditLog.action_type == "CREATE_OFFICIAL_ZONE").order_by(AuditLog.id).limit(1))
