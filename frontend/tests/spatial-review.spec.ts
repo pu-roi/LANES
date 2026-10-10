@@ -207,7 +207,17 @@ test("mixed queue keeps news inspection separate from user-report actions", asyn
   await expect(suggestions).toHaveCount(2);
   await expect(suggestions.first()).toHaveAttribute("aria-pressed", "false");
   await expect(suggestions.last()).toHaveAttribute("aria-pressed", "false");
+  await expect(panel.getByText(/Inspect one suggestion at a time/)).toBeVisible();
+  if (info.project.name === "desktop-chromium") await expect.poll(() => suggestionPixels(page)).toBe(0);
   await suggestions.last().click();
+  await expect(suggestions.last()).toHaveAttribute("aria-pressed", "true");
+  await panel.getByRole("button", { name: "Clear suggestion", exact: true }).click();
+  await expect(suggestions.last()).toHaveAttribute("aria-pressed", "false");
+  if (info.project.name === "desktop-chromium") await expect.poll(() => suggestionPixels(page)).toBe(0);
+  await suggestions.first().click();
+  await expect(suggestions.first()).toHaveAttribute("aria-pressed", "true");
+  await suggestions.last().click();
+  await expect(suggestions.first()).toHaveAttribute("aria-pressed", "false");
   await expect(suggestions.last()).toHaveAttribute("aria-pressed", "true");
   await expect(panel.getByRole("button", { name: "Approve", exact: true })).toHaveCount(0);
   await expect(panel.getByText(/do not confirm current flooding or change routing/)).toBeVisible();

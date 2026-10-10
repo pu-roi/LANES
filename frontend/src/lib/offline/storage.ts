@@ -1,3 +1,5 @@
+import { getSessionStorageKey } from "@/lib/localNewsSimulation";
+
 /**
  * Handles downloading and storing massive offline data (Valhalla tiles) in the OPFS.
  */
@@ -134,8 +136,9 @@ const DB_NAME = 'lanes-offline-db';
 const STORE_NAME = 'floods';
 
 async function getDB(): Promise<IDBDatabase> {
+  const databaseName = await getSessionStorageKey(DB_NAME);
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
+    const request = indexedDB.open(databaseName, 1);
     request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {

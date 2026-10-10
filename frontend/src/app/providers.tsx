@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { ToastProvider, SmoothScroll } from "@/shared/ui";
 import { useSSE } from "@/hooks/useSSE";
 import { useLiveSync } from "@/hooks/useLiveSync";
+import { LocalReconstructionNotice } from "@/features/news/LocalReconstructionNotice";
 
 const GlobalMap = dynamic(() => import("@/features/map/GlobalMap"), { ssr: false });
 
@@ -32,6 +33,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <LocalReconstructionNotice />
       {children}
     </QueryClientProvider>
   );

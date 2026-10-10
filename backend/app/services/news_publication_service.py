@@ -51,7 +51,7 @@ from app.services.operational_footprint_evidence_service import (
 from app.services.news_claim_auditor import canonical_claim_sha256, _classify, _validate_evidence
 from app.services.news_evaluation_service import EvaluationPolicy, preliminary_reason, publication_is_current, source_is_approved
 from app.services.news_sources import NewsSource, load_news_sources
-from app.services.configuration_service import read_configuration, configuration_lock, selected_news_sources
+from app.services.configuration_service import read_configuration, configuration_lock, selected_news_sources, unexpired_deadline
 
 
 class _PublicationSettings(BaseSettings):
@@ -146,7 +146,7 @@ def _load(db: Session, evaluation_id: int, policy: EvaluationPolicy, now: dateti
         reason = "publication_policy_changed"
     elif not source_is_approved(article, sources):
         reason = "unapproved_article_source"
-    elif not publication_is_current(article, now):
+    elif not publication_is_current(article, now, policy):
         reason = "publication_outside_admission_window"
     elif evaluation.status != "completed":
         reason = (evaluation.error_code or "evaluation_failed") if evaluation.status == "failed" else "evaluation_not_completed"
@@ -201,6 +201,7 @@ def _snapshot(source: NewsClaimSource, version: NewsArticleVersion, claim: Extra
         previous_decision_id=previous.id if previous else None, deferred_until=deferred_until,
         unconfirmed_retention_hours=policy.retention_hours if policy.retention_hours is not None else unconfirmed_retention_hours(),
         evidence_expiry_minutes=policy.expiry_minutes or {},
+        publication_admission_at=policy.publication_admission_at,
         geometry_reason=geometry_reason,
         linked_zone_ids=linked_zone_ids or [], operational_provenance=operational_provenance)
 
@@ -236,10 +237,13 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
         affects_routing=affects_routing, geometry_basis=geometry_basis)
 
 
-def public_projection(decision: NewsClaimDecision | None, now: datetime, *, include_retained: bool = False) -> PublicNewsAlert | None:
+def public_projection(decision: NewsClaimDecision | None, now: datetime, *, include_retained: bool = False,
+                      automatic_expiry_enabled: bool = True, expiry_override: datetime | None = None) -> PublicNewsAlert | None:
     now = require_utc(now)
     if decision is None or decision.public_state == "unpublished":
         return None
+    from app.services.local_news_scenario_service import scoped_clock
+    now = scoped_clock(decision.case_id, "case", now)
     snapshot = NewsDecisionSnapshot.model_validate(decision.snapshot)
     public = snapshot.public
     if public is None or public.case_id != decision.case_id or public.decision_id != decision.id or public.revision != decision.revision:
@@ -252,10 +256,10 @@ def public_projection(decision: NewsClaimDecision | None, now: datetime, *, incl
             "condition_label": "Reported cleared; vehicle passability remains separate", "updated_at": decision.decided_at})
     if decision.public_state == "withdrawn":
         return None
-    expiry = decision.expires_at
+    expiry = expiry_override or decision.expires_at
     if expiry is None:
         return None
-    if now >= expiry or decision.public_state == "expired":
+    if (automatic_expiry_enabled and now >= expiry) or decision.public_state == "expired":
         if not include_retained and now >= expiry + timedelta(hours=snapshot.unconfirmed_retention_hours):
             return None
         return public.model_copy(update={"status": "Unconfirmed", "current_status_unknown": True, "affects_routing": False,
@@ -263,7 +267,7 @@ def public_projection(decision: NewsClaimDecision | None, now: datetime, *, incl
             "passability_label": "Last report: " + public.passability_label.removeprefix("Last report: "),
             "depth_label": "Last reported: " + public.depth_label.removeprefix("Last reported: ") if public.depth_label else None,
             "updated_at": decision.decided_at})
-    return public.model_copy(update={"status": "Active", "current_status_unknown": False})
+    return public.model_copy(update={"status": "Active", "current_status_unknown": False, "expires_at": expiry})
 
 
 def _write(db: Session, case: NewsClaimCase, decision_id: int, request_id: UUID,
@@ -290,6 +294,27 @@ def _write(db: Session, case: NewsClaimCase, decision_id: int, request_id: UUID,
             "operation": operation, "public_state": state, "actor_kind": actor_kind, "reason_code": reason}))
     db.flush()
     return decision
+
+
+def _same_observation_reprocessing(db: Session, target: NewsClaimDecision,
+                                  version: NewsArticleVersion, claim: ExtractedClaim, now: datetime) -> bool:
+    """Upgrade automatic text evidence without duplicating or renewing an observation."""
+    if (target.public_state != "active_alert" or target.actor_kind != "automatic"
+            or target.operation != "evaluate" or target.observed_at != claim.event_time_resolved
+            or target.expires_at is None or target.expires_at <= now):
+        return False
+    snapshot = NewsDecisionSnapshot.model_validate(target.snapshot)
+    if snapshot.public is None or snapshot.input_sha256 != version.input_fingerprint:
+        return False
+    original_source = db.get(NewsClaimSource, snapshot.claim_source_id)
+    original_run = db.get(NewsExtractionRun, original_source.extraction_run_id)
+    _, original_result = validate_run(original_run, db.get(NewsArticleVersion, original_run.article_version_id))
+    original = original_result.claims[original_source.claim_ordinal]
+    # Placement and advisory output may improve in a new extraction. The
+    # source spans, observation, status, depth and access must remain identical.
+    advisory = {"placement_preview", "road_placement", "ranked_location", "audit_result",
+                "action_type", "action_rationale", "confidence_score", "uncertainty_reasons"}
+    return original.model_dump(mode="json", exclude=advisory) == claim.model_dump(mode="json", exclude=advisory)
 
 
 def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: EvaluationPolicy, now: datetime,
@@ -339,12 +364,20 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
     if not reason and claim.condition in ("active", "rising"):
         if _clearance_supersedes(db, claim, article) or _wet_supersedes(db, claim, article):
             reason = "source_observation_superseded"
+        refresh_targets = list(db.scalars(select(NewsClaimDecision).join(NewsClaimCase, NewsClaimCase.id == NewsClaimDecision.case_id)
+            .where(NewsClaimDecision.revision == NewsClaimCase.revision,
+                NewsClaimDecision.case_id != case.id,
+                NewsClaimDecision.public_state.in_(("active_alert", "active_zone", "expired")),
+                NewsClaimDecision.snapshot["incident_identity"].astext == _incident(claim),
+                NewsClaimDecision.snapshot["article_id"].as_integer() == article.article_id).order_by(NewsClaimCase.id)))
+        reprocessed_target = (refresh_targets[0] if len(refresh_targets) == 1 and
+            _same_observation_reprocessing(db, refresh_targets[0], version, claim, now) else None)
         repeated = db.scalar(select(NewsClaimDecision.id).where(NewsClaimDecision.case_id != case.id,
             NewsClaimDecision.public_state.in_(("active_alert", "active_zone")),
             NewsClaimDecision.snapshot["incident_identity"].astext == _incident(claim),
             NewsClaimDecision.snapshot["article_id"].as_integer() == article.article_id,
             NewsClaimDecision.observed_at == claim.event_time_resolved).limit(1))
-        if repeated and not reason:
+        if repeated and not reason and reprocessed_target is None:
             reason = "source_observation_already_recorded"
         newer = db.scalar(select(NewsClaimDecision).join(NewsClaimCase, NewsClaimCase.id == NewsClaimDecision.case_id)
             .where(NewsClaimDecision.revision == NewsClaimCase.revision,
@@ -354,14 +387,8 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                 NewsClaimDecision.observed_at >= claim.event_time_resolved,
                 NewsClaimDecision.public_state.in_(("active_alert", "active_zone", "expired", "withdrawn")))
             .limit(1))
-        if newer:
+        if newer and (reprocessed_target is None or newer.id != reprocessed_target.id):
             reason = "source_observation_superseded"
-        refresh_targets = list(db.scalars(select(NewsClaimDecision).join(NewsClaimCase, NewsClaimCase.id == NewsClaimDecision.case_id)
-            .where(NewsClaimDecision.revision == NewsClaimCase.revision,
-                NewsClaimDecision.case_id != case.id,
-                NewsClaimDecision.public_state.in_(("active_alert", "active_zone", "expired")),
-                NewsClaimDecision.snapshot["incident_identity"].astext == _incident(claim),
-                NewsClaimDecision.snapshot["article_id"].as_integer() == article.article_id).order_by(NewsClaimCase.id)))
         if not reason and len(refresh_targets) == 1 and _supported_section(claim, article):
             target = refresh_targets[0]
             target_snapshot = NewsDecisionSnapshot.model_validate(target.snapshot)
@@ -371,8 +398,9 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
             original_claim = original_result.claims[original_source.claim_ordinal]
             if (target_snapshot.public is not None
                     and _supported_section(original_claim, original_article)
-                    and target_snapshot.public.observed_at < claim.event_time_resolved
-                    <= target_snapshot.public.observed_at + timedelta(hours=12)):
+                    and (reprocessed_target is not None or
+                         target_snapshot.public.observed_at < claim.event_time_resolved
+                         <= target_snapshot.public.observed_at + timedelta(hours=12))):
                 target_case = lock_case(db, target.case_id)
                 if target_case.revision != target.revision:
                     raise NewsPublicationError("stale_case_revision", 409, revision=target_case.revision)
@@ -441,6 +469,10 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                     affects_routing=is_active_zone,
                     geometry_basis=target_snapshot.public.geometry_basis if is_active_zone else None,
                 )
+                if reprocessed_target is not None:
+                    # A policy/placement replay cannot give old evidence a new
+                    # lifetime, even if configured expiry has since increased.
+                    refreshed = refreshed.model_copy(update={"expires_at": min(refreshed.expires_at, target.expires_at)})
                 if is_active_zone and linked_zones:
                     for lz_id in linked_zones:
                         z_obj = db.get(FloodAvoidanceZone, lz_id)
@@ -458,6 +490,7 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                 decision = _write(db, target_case, decision_id, request_id, snapshot, now,
                     state="active_zone" if is_active_zone else "active_alert",
                     review="resolved", reason=("newer_observation_footprint_unverified" if refresh_failure
+                                               else "same_observation_reprocessed" if reprocessed_target is not None
                                                else "newer_matched_flood_observation"),
                     observed=claim.event_time_resolved, expiry=refreshed.expires_at)
                 # The existing DB trigger requires the active decision to exist
@@ -467,6 +500,9 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                                            relation="supported", created_at=now))
                 if supported_zone_ids:
                     db.flush()
+                from app.services.pasig_ml_expiry_service import apply_zone_policy
+                for zone_id in snapshot.linked_zone_ids:
+                    apply_zone_policy(db, zone_id, now=now)
                 if was_active_zone and not is_active_zone:
                     _withdraw_support(db, target, now)
                 return decision
@@ -493,18 +529,25 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
 
 
 def _operational_zone_attributes(claim: ExtractedClaim, audit: IndependentAuditResult | None) -> dict[str, Any]:
-    """Persist verified news measurements and restrictions, never inferred access."""
+    """Persist verified flood measurements and passability, never inferred access."""
     if audit is None or audit.evidence is None:
         raise NewsPublicationError("independent_audit_unavailable")
-    if claim.road_passability == "passable_all" or audit.evidence.access.classification == "passable_all":
-        raise NewsPublicationError("reported_passable_to_all_vehicles")
     measurement = get_flood_depth_measurement(claim.depth_canonical)
     if measurement is None or not audit.evidence.depth.confirmed:
         raise NewsPublicationError("operational_depth_not_verified")
-    if claim.road_passability != "unknown" and not audit.evidence.access.confirmed:
+    if claim.road_passability != "unknown" and (
+        not audit.evidence.access.confirmed
+        or audit.evidence.access.classification != claim.road_passability
+    ):
         raise NewsPublicationError("operational_access_not_verified")
+    # Keep explicit all-vehicle passability from becoming a closure under the
+    # existing depth-based routing matrix. Conflicting deeper reports require
+    # review rather than silently overruling either piece of source evidence.
+    if claim.road_passability == "passable_all" and measurement.severity.value != "low":
+        raise NewsPublicationError("operational_depth_access_conflict")
     access = {
         "unknown": None,
+        "passable_all": "All vehicles",
         "light_vehicle_closed": "Light vehicles prohibited",
         "impassable_all": "No vehicles",
         "passable_with_caution": "Passable with caution; vehicle types unspecified",
@@ -571,7 +614,7 @@ def _withdraw_support(db: Session, previous: NewsClaimDecision | None, now: date
         news = db.scalar(select(NewsClaimDecision.id).join(NewsClaimCase, NewsClaimCase.id == NewsClaimDecision.case_id)
             .join(NewsClaimZoneLink, NewsClaimZoneLink.decision_id == NewsClaimDecision.id)
             .where(NewsClaimZoneLink.zone_id == zone_id, NewsClaimDecision.revision == NewsClaimCase.revision,
-                NewsClaimDecision.public_state == "active_zone", NewsClaimDecision.expires_at > now,
+                NewsClaimDecision.public_state == "active_zone", unexpired_deadline(db, NewsClaimDecision.expires_at, now),
                 # The newly current decision may retain this same case's
                 # support; only the withdrawn decision itself is excluded.
                 NewsClaimDecision.id != previous.id).limit(1))
@@ -586,7 +629,7 @@ def _withdraw_support(db: Session, previous: NewsClaimDecision | None, now: date
             db.flush()
             remaining = db.scalar(select(FloodAvoidanceZone.id).where(FloodAvoidanceZone.event_id == zone.event_id,
                 FloodAvoidanceZone.is_active.is_(True),
-                (FloodAvoidanceZone.expires_at.is_(None)) | (FloodAvoidanceZone.expires_at > now)).limit(1))
+                unexpired_deadline(db, FloodAvoidanceZone.expires_at, now)).limit(1))
             if event and not remaining:
                 event.status, event.ended_at = FloodEventStatus.ENDED, now
                 db.add(FloodEventTimelineEntry(event_id=event.id, entry_type="news_support_ended", occurred_at=now,
@@ -645,14 +688,27 @@ def clear_case_from_evaluation(db: Session, case_id: int, evaluation_id: int, *,
         operation="clear", state="withdrawn", review="resolved", reason="matched_clearance_observed",
         observed=claim.event_time_resolved, expiry=previous.expires_at)
     _withdraw_support(db, previous, now)
+    if decision.public_state == "active_zone":
+        from app.services.pasig_ml_expiry_service import apply_zone_policy
+        for zone_id in snapshot.linked_zone_ids:
+            apply_zone_policy(db, zone_id, now=now)
     return decision
 
 
 def expire_case(db: Session, case_id: int, *, now: datetime) -> NewsClaimDecision | None:
+    configuration_lock(db)
+    if not read_configuration(db).automatic_expiry_enabled:
+        return None
+    from app.services.local_news_scenario_service import scoped_clock
+    now = scoped_clock(case_id, "case", now)
     now = require_utc(now)
     publication_lock(db, canonical_sha256({"maintenance_case": case_id}))
     case = lock_case(db, case_id)
     previous = latest_decision(db, case.id)
+    from app.crud.news_publication_read import operational_deadline
+    effective_expiry = operational_deadline(db, previous) if previous is not None else None
+    if effective_expiry is not None and effective_expiry > now:
+        return None
     if previous is None or previous.public_state not in ("active_alert", "active_zone") or previous.expires_at > now:
         return None
     request_id = uuid5(NAMESPACE_URL, f"lanes-news-expiry:{case_id}:{previous.id}")
@@ -667,6 +723,10 @@ def expire_case(db: Session, case_id: int, *, now: datetime) -> NewsClaimDecisio
         operation="expire", state="expired", review="resolved", reason="observation_evidence_expired",
         observed=previous.observed_at, expiry=previous.expires_at)
     _withdraw_support(db, previous, now)
+    if decision.public_state == "active_zone":
+        from app.services.pasig_ml_expiry_service import apply_zone_policy
+        for zone_id in snapshot.linked_zone_ids:
+            apply_zone_policy(db, zone_id, now=now)
     return decision
 
 
@@ -873,6 +933,10 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
         db.flush()
 
     _withdraw_support(db, previous, now)
+    if decision.public_state == "active_zone":
+        from app.services.pasig_ml_expiry_service import apply_zone_policy
+        for zone_id in snapshot.linked_zone_ids:
+            apply_zone_policy(db, zone_id, now=now)
     return decision
 
 
@@ -1033,6 +1097,8 @@ def activate_operational_footprint(
     decision_id = reserve_decision_id(db)
     sev_val = zone_attributes["severity_override"]
     expiry_time = claim.event_time_resolved + timedelta(minutes=(policy.expiry_minutes.get(claim.depth_canonical or "unknown", 120) if policy and policy.expiry_minutes else 120))
+    if previous.expires_at is not None:
+        expiry_time = min(expiry_time, previous.expires_at)
 
     linked_zone_ids: list[int] = []
     event_obj = None
@@ -1070,6 +1136,7 @@ def activate_operational_footprint(
         affects_routing=True,
         geometry_basis="estimated_road_corridor" if estimated_road else "verified_current_footprint",
     )
+    public = public.model_copy(update={"expires_at": expiry_time})
     snapshot = _snapshot(
         source, version, claim, policy, digest, evaluation_id=evaluation.id,
         previous=previous, public=public, target=case.id,
@@ -1091,6 +1158,10 @@ def activate_operational_footprint(
     db.flush()
 
     _withdraw_support(db, previous, now)
+    if decision.public_state == "active_zone":
+        from app.services.pasig_ml_expiry_service import apply_zone_policy
+        for zone_id in snapshot.linked_zone_ids:
+            apply_zone_policy(db, zone_id, now=now)
     return decision
 
 
@@ -1109,6 +1180,8 @@ def process_news_publications(session_factory: Callable[[], Session], *, policy:
     if not 1 <= limit <= 200:
         raise ValueError("Invalid publication limit")
     summary = PublicationSummary()
+    from app.services.local_news_scenario_service import sql_clock
+    expiry_clock = sql_clock(NewsClaimCase.id, "case", clock())
     with session_factory() as db:
         maintenance_only = maintenance_only or not read_configuration(db).news_publication_enabled
         selected_ids = tuple(source.id for source in selected_news_sources(db, sources))
@@ -1157,8 +1230,8 @@ def process_news_publications(session_factory: Callable[[], Session], *, policy:
     with session_factory() as db:
         cases = list(db.scalars(select(NewsClaimCase.id).join(NewsClaimDecision, NewsClaimDecision.case_id == NewsClaimCase.id)
             .where(NewsClaimDecision.revision == NewsClaimCase.revision,
-                NewsClaimDecision.public_state.in_(("active_alert", "active_zone")), NewsClaimDecision.expires_at <= clock())
-            .order_by(NewsClaimCase.id).limit(limit)))
+                NewsClaimDecision.public_state.in_(("active_alert", "active_zone")), NewsClaimDecision.expires_at <= expiry_clock)
+            .order_by(NewsClaimCase.id).limit(limit))) if read_configuration(db).automatic_expiry_enabled else []
     for case_id in cases:
         try:
             with session_factory() as db, db.begin():

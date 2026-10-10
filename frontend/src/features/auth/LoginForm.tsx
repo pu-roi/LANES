@@ -1,4 +1,5 @@
 "use client";
+import { getApiBaseUrl } from "@/lib/apiClient";
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -67,7 +68,7 @@ export default function LoginForm({ initialView, onViewChange }: LoginFormProps 
       const data = await login(formData);
       
       // Determine role by fetching profile
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      const baseUrl = await getApiBaseUrl();
       const profileResponse = await fetch(`${baseUrl}/auth/test-token`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${data.access_token}` }
@@ -118,7 +119,7 @@ export default function LoginForm({ initialView, onViewChange }: LoginFormProps 
       try {
         const parsed = JSON.parse(err.message);
         if (parsed.code === "UNVERIFIED_ACCOUNT") {
-          const resendUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+          const resendUrl = await getApiBaseUrl();
           await fetch(`${resendUrl}/auth/resend-otp`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

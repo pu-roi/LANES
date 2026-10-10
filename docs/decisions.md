@@ -1,8 +1,28 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
+
+## 27. Experimental Pasig ML deadlines as an operational expiry policy
+
+**Date:** October 10, 2026 (Asia/Manila)
+
+**Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Status:** Implemented locally and released to the shared cloud API/news/independent expiry workers at the developer's explicit request; prospective accuracy remains open.
+
+The earlier read-only prediction prototype did not implement ML expiry. The developer requested making Pasig ML expiry work. A separate server-owned policy now saves an eligible cross-location or pooled model p90 deadline. Other cities, unsupported cases and explicit staff deadlines retain fixed policy. A 48-hour issuance bound and visible fallback limit this experiment; they do not establish accuracy.
+
+Operational recovery qualifies source identity, geometry, versions and review state at the real current clock, while computing the forecast at immutable original issuance. Research preview staleness remains enforced. Policy v2 invalidates cached null fallbacks and retains saved quantiles/model/issuance in existing audit JSON for historical Info. This recovers overdue original deadlines without granting a new duration or inventing observed onset. **Pasig coverage and abstention:** Eligible Pasig polygons can use the shared Pasig model even when their barangay has no local historical outcomes. This is not guaranteed inference for every record. Unverified location, missing observation time without an accepted registration/submission proxy, incompatible depth snapshots, changed/review-pending evidence or unavailable model assets can still produce an explicit unavailable/fixed-fallback state. A saved operational forecast remains visible after expiry even when the current research preview is inactive or stale. Expiry means Unconfirmed, not observed flood clearance; p90 is an experimental policy estimate, not calibrated certainty.
+
+Existing settings JSON, zone deadlines and audit storage hold the policy. Global pause overrides ML. Source/model fingerprints keep deadlines stable; original fixed deadlines and source edit clocks are preserved. Missing observed clocks remain labelled recording proxies. The existing expiry lifecycle ends zones/events as Unconfirmed, never inferred dry or passable. Linked news uses an effective operational deadline while immutable source snapshots remain unchanged.
+
+The private no-store expiry-policy endpoint and responsive details expose the applied method and deadline. The ML flag uses the configuration envelope for legacy strict-schema compatibility; old workers ignore the new behavior. Matching API and workers are now deployed; the independent minute job prevents news collection failures from stopping expiry. The local UI exposes the new control; cloud frontend release is separate. Decision 26 continues to govern research and training qualification; this decision supersedes the earlier absence of an operational bridge. No artifact is promoted as scientifically validated and production training admission remains zero.
+
+**October 10, 9:15 PM recovery accepted:** policy v2 recovers immutable original forecasts after late initialization without bypassing current source/review gates. #17/#18 are now inactive with original p90 deadlines October 9, 7:25:02 AM / October 10, 5:04:13 AM (PHT); event timelines say Unconfirmed. #19/#20/#21 retain their deadlines. Production API `lanes-api-00069-fey` serves 100% traffic; cloud jobs use the matching recovery image and minute scheduling is enabled. The local map exposes saved p10/p50/p90 forecasts at Active Zones → All History → Info, verified on actual desktop/mobile records. 106 backend checks, 10 responsive fixtures and four actual Info workflows pass. Accuracy remains experimental; cloud frontend release is separate. [Acceptance](evaluations/pasig-ml-automatic-expiry-20261010.md#legacy-recovery-and-saved-ui-acceptance--october-10-915-pm). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical initial bridge acceptance: 386 distinct backend/database checks and 10 desktop/mobile scenarios pass. Three existing zone deadlines were applied by the local worker and read back. Cloud runtime independently reproduces the three saved deadlines and scheduled maintenance succeeds. Field validation remains separate. [Evidence](evaluations/pasig-ml-automatic-expiry-20261010.md).
 
 ## 26. Cross-location learning as a source-bound research comparison
 
@@ -11,6 +31,8 @@ This document tracks major technical decisions, architecture shifts, and the rea
 **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Status:** Research modelling and private automatic comparison adopted and implemented locally. Primary baseline replacement, prospective accuracy, operational expiry and deployment remain unqualified.
+
+**October 10 continuation:** The comparison API retains its read-only contract and research flags. Separate server-owned operational consumption of eligible cross-location/pooled outputs, including deployed late recovery, is now authorized and governed by Decision 27 above. This supersedes the October 9 absence of an operational bridge without promoting the artifacts as validated models.
 
 **Decision:** Share a depth-duration relationship across eligible Pasig locations and restrain local effects through partial pooling, instead of requiring an independently fitted model for every street. A location without historical outcomes may borrow the shared relationship with explicit additional uncertainty. Geographic identity, input acceptance and hydraulic similarity remain different concepts; this implementation assumes a shared population and does not learn a drainage graph or certify nearby flood correspondence.
 

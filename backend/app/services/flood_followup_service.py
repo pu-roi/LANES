@@ -225,6 +225,9 @@ def review_followup(db: Session, followup_id: int, user: User,
                 "condition": metadata["condition"], "observed_at": metadata["observed_at"],
                 "reviewed_at": _utc_string(now), "source_claim_only": True, "model_admitted": False})
     response = _response(row, review)
+    if report is not None and report.zone_id is not None:
+        from app.services.pasig_ml_expiry_service import apply_zone_policy
+        apply_zone_policy(db, report.zone_id, now=now)
     db.commit()
     return response
 

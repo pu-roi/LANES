@@ -508,6 +508,8 @@ export async function cleanupData(dateFrom: string, dateTo: string, confirm: boo
 }
 
 export interface SystemSettings {
+  automatic_expiry_enabled: boolean;
+  pasig_ml_expiry_enabled: boolean;
   staff_road_buffer_metres: number;
   evidence_expiry_minutes: Record<string, number>;
   news_unconfirmed_retention_hours: number;

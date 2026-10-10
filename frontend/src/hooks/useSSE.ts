@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { getSseUrl } from "@/lib/sse";
+import { getSessionSseUrl } from "@/lib/sse";
+import { useToast } from "@/shared/ui/feedback/Toast";
 
 const INITIAL_BACKOFF_MS = 1000;
 const MAX_BACKOFF_MS = 30000;
@@ -8,17 +9,25 @@ const MAX_RETRIES = 20;
 
 export function useSSE() {
   const queryClient = useQueryClient();
+  const { error: showError } = useToast();
   const eventSourceRef = useRef<EventSource | null>(null);
   const backoffRef = useRef(INITIAL_BACKOFF_MS);
   const retriesRef = useRef(0);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
 
-  const connect = useCallback(function connect() {
+  const connect = useCallback(async function connect() {
     if (!mountedRef.current) return;
     if (typeof window === "undefined") return;
 
-    const sseUrl = getSseUrl("/sse/stream");
+    let sseUrl: string;
+    try {
+      sseUrl = await getSessionSseUrl("/sse/stream");
+    } catch {
+      if (mountedRef.current) showError("Live updates unavailable", "Could not load the current API session.");
+      return;
+    }
+    if (!mountedRef.current) return;
     console.log(`Connecting to SSE at: ${sseUrl}`);
 
     const eventSource = new EventSource(sseUrl, { withCredentials: true });
@@ -77,7 +86,7 @@ export function useSSE() {
         connect();
       }, delay);
     };
-  }, [queryClient]);
+  }, [queryClient, showError]);
 
   useEffect(() => {
     mountedRef.current = true;

@@ -12,7 +12,7 @@ from app import models
 from app.models.audit import AuditLog
 from app.schemas.report import FloodAvoidanceZoneCreate
 from app.schemas.configuration import OperationalSettings
-from app.services.configuration_service import configuration_lock, evidence_deadline, read_configuration
+from app.services.configuration_service import configuration_lock, evidence_deadline, read_configuration, unexpired_deadline
 from app.services.flood_depth import severity_for_flood_depth
 from app.services.flood_event_service import create_verified_event_with_zone, link_supporting_report
 from app.services.flood_feature_service import capture_features
@@ -128,7 +128,7 @@ def approve_citizen_report(db: Session, report_id: int, *, now: datetime | None 
         # Spatial proximity only shortlists; containment/conditions decide approval.
         zones = list(db.scalars(select(models.FloodAvoidanceZone).join(models.FloodEvent).where(
             models.FloodAvoidanceZone.is_active.is_(True), models.FloodEvent.status == models.FloodEventStatus.ACTIVE,
-            (models.FloodAvoidanceZone.expires_at.is_(None)) | (models.FloodAvoidanceZone.expires_at > now),
+            unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, now),
             func.ST_Intersects(models.FloodAvoidanceZone.geometry, report.geometry)).with_for_update()))
         if zones:
             if len(zones) != 1:
@@ -225,6 +225,9 @@ def approve_citizen_report(db: Session, report_id: int, *, now: datetime | None 
                 summary="Current citizen observation automatically approved without reputation credit.",
                 snapshot_json={"report_id": item.id, "zone_id": zone.id, "observed_at": observed.isoformat(),
                     "expires_at": deadline.isoformat(), "reason_code": reason}))
+        db.flush()
+        from app.services.pasig_ml_expiry_service import apply_zone_policy
+        apply_zone_policy(db, zone.id, now=now)
         db.commit()
         return reason
     except Exception:
@@ -236,7 +239,8 @@ def approve_citizen_report(db: Session, report_id: int, *, now: datetime | None 
 
 
 def has_active_citizen_support(db: Session, zone_id: int, now: datetime) -> bool:
-    """Expired automatic contributions never keep news coverage active."""
+    """Apply the expiry policy to existing approved contributions, not new admissions."""
+    expiry_enabled = read_configuration(db).automatic_expiry_enabled
     reports = list(db.scalars(select(models.FloodReport.id).where(models.FloodReport.zone_id == zone_id,
         models.FloodReport.status == models.ReportStatus.APPROVED, models.FloodReport.deleted_at.is_(None))))
     for report_id in reports:
@@ -244,7 +248,7 @@ def has_active_citizen_support(db: Session, zone_id: int, now: datetime) -> bool
             AuditLog.target_id == report_id).order_by(AuditLog.id.desc()).limit(1))
         if automated is None:
             return True  # Explicit human approval keeps its staff-managed deadline.
-        if datetime.fromisoformat(automated["expires_at"]) > now:
+        if not expiry_enabled or datetime.fromisoformat(automated["expires_at"]) > now:
             return True
     return False
 

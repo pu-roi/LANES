@@ -6,7 +6,7 @@
 
 The developer authorizes implementing the [cross-location research](../research/cross-location-flood-prediction.md). Build a reproducible offline qualification/comparison pipeline and an automatic private comparison in existing Active Zone calculation details. Keep the selected baseline while prospective admission and independent accuracy remain unestablished.
 
-The October 9 [Decision 26](../decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) records this method and its source/uncertainty/selection boundaries. The developer now authorizes `roi-branch` publication; this does not authorize deployment or primary model promotion.
+The October 9 [Decision 26](../decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) records this method and its source/uncertainty/selection boundaries. At the October 8 research checkpoint, the developer authorized `roi-branch` publication without deployment or primary model promotion. Subsequent October 10 authorization delivered a separate operational expiry policy to the local app/shared cloud workers under [Decision 27](../decisions.md#27-experimental-pasig-ml-deadlines-as-an-operational-expiry-policy). Research API flags and scientific qualification remain unchanged; eligible shared Pasig inference retains explicit unavailable/fallback gates. See [current acceptance](../evaluations/pasig-ml-automatic-expiry-20261010.md).
 
 ## Model contract
 

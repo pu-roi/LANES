@@ -4,6 +4,8 @@
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Research documented; offline qualification/comparison and automatic private research integration are implemented locally. Primary model selection and operational acceptance remain pending. [Results](../evaluations/cross-location-duration-20261008/README.md).
 
+**October 10 operational continuation:** The developer authorized a separate experimental policy that consumes eligible estimates and saves expiry deadlines. Research views remain read-only; field accuracy and scientific qualification remain open. [Decision 27](../decisions.md#27-experimental-pasig-ml-deadlines-as-an-operational-expiry-policy), [local acceptance](../evaluations/pasig-ml-automatic-expiry-20261010.md).
+
 ## 1. Research question and recommendation
 
 The implemented local comparison and its selection boundaries are now recorded in [Decision 26](../decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison), dated October 9. The literature review below remains the October 8 research record; model promotion is still an evaluation gate.

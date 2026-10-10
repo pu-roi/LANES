@@ -14,7 +14,7 @@ function configuration(canEdit = true) {
   return {
     revision: 1, updated_at: null, updated_by: 1, can_edit: canEdit,
     automatic_news_buffer_metres: 25,
-    settings: { staff_road_buffer_metres: 25, evidence_expiry_minutes: Object.fromEntries(depths.map(depth => [depth.key, 120])),
+    settings: { staff_road_buffer_metres: 25, automatic_expiry_enabled: true, pasig_ml_expiry_enabled: true, evidence_expiry_minutes: Object.fromEntries(depths.map(depth => [depth.key, 120])),
       news_unconfirmed_retention_hours: 24, citizen_auto_approval_enabled: false,
       citizen_min_trust: 75, citizen_min_accuracy: 90, citizen_min_human_reviews: 5,
       news_collection_enabled: true, news_processing_enabled: true, news_publication_enabled: true,
@@ -61,6 +61,26 @@ async function switchTab(page: Page, name: string) {
   await page.getByRole("navigation", { name: "Settings sections" }).getByRole("button", { name, exact: true }).click();
 }
 
+test("automatic expiry toggle persists without changing saved durations", async ({ page }, info) => {
+  await setup(page);
+  await switchTab(page, "Evidence expiry");
+  const toggle = page.getByRole("checkbox", { name: "Enable automatic expiry", exact: true });
+  await expect(toggle).toBeChecked();
+  await toggle.uncheck();
+  await expect(page.getByText(/Already inactive records stay inactive/)).toBeVisible();
+  await page.getByRole("button", { name: "Save settings", exact: true }).click();
+  await expect(page.getByText("Saved configuration · revision 2")).toBeVisible();
+  await page.reload();
+  await switchTab(page, "Evidence expiry");
+  await expect(toggle).not.toBeChecked();
+  await expect(page.getByRole("spinbutton", { name: "Half-Knee expiry (minutes)", exact: true })).toHaveValue("120");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("expiry-paused.png"), scale: "css" });
+  await toggle.check();
+  await page.getByRole("button", { name: "Save settings", exact: true }).click();
+  await expect(page.getByText("Saved configuration · revision 3")).toBeVisible();
+});
+
 test("settings save and revert work with actual units and recorded health", async ({ page }, info) => {
   await setup(page);
   await expect(page.getByRole("heading", { name: "System Settings", exact: true })).toBeVisible();
@@ -90,6 +110,8 @@ test("view permission allows status inspection and disables all editing", async 
   await setup(page, { readOnly: true });
   await expect(page.getByText(/You have view-only access/)).toBeVisible();
   await expect(page.getByRole("spinbutton", { name: "Staff road buffer (metres)" })).toBeDisabled();
+  await switchTab(page, "Evidence expiry");
+  await expect(page.getByRole("checkbox", { name: "Enable automatic expiry", exact: true })).toBeDisabled();
   await switchTab(page, "Citizen approval");
   await expect(page.getByRole("checkbox", { name: "Enable citizen automatic approval" })).toBeDisabled();
   await switchTab(page, "News automation");
@@ -203,4 +225,20 @@ test("unsaved settings require confirmation before sidebar navigation", async ({
   await page.getByRole("link", { name: "Dashboard", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/settings$/);
   await expect(page.getByRole("spinbutton", { name: "Staff road buffer (metres)" })).toHaveValue("40");
+});
+
+test("Pasig ML expiry saves independently from the global pause", async ({ page }, info) => {
+  test.setTimeout(90_000);
+  await setup(page);
+  await switchTab(page, "Evidence expiry");
+  const ml = page.getByRole("checkbox", { name: "Use ML expiry for Pasig", exact: true });
+  await expect(ml).toBeChecked();
+  await ml.uncheck();
+  await page.getByRole("button", { name: "Save settings", exact: true }).click();
+  await expect(page.getByText(/Saved configuration.*revision 2/)).toBeVisible();
+  await page.reload(); await switchTab(page, "Evidence expiry");
+  await expect(ml).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Enable automatic expiry", exact: true })).toBeChecked();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("pasig-ml-toggle.png"), scale: "css" });
 });

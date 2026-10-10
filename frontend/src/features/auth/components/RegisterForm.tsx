@@ -1,4 +1,6 @@
 "use client";
+import { getSessionStorageKey } from "@/lib/localNewsSimulation";
+import { getApiBaseUrl } from "@/lib/apiClient";
 
 import { Fragment, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -84,7 +86,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
     }
     setOtpLoading(true);
     try {
-      const resUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      const resUrl = await getApiBaseUrl();
       const res = await fetch(`${resUrl}/auth/request-signup-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -126,7 +128,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
     }
     setOtpLoading(true);
     try {
-      const resUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      const resUrl = await getApiBaseUrl();
       const res = await fetch(`${resUrl}/auth/verify-signup-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -491,7 +493,7 @@ export function RegisterForm({ redirectTo }: { redirectTo?: string }) {
           profile: formData.profile,
           address: formData.address,
         });
-        localStorage.setItem("lanes_token", data.access_token);
+        localStorage.setItem(await getSessionStorageKey("lanes_token"), data.access_token);
         sessionStorage.removeItem("lanes_registration_draft");
         await queryClient.invalidateQueries({ queryKey: ["auth-user"] });
         success("Welcome to LANES!", "Your account and citizen profile have been created successfully.");

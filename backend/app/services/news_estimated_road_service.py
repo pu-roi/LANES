@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from shapely import set_srid
+from shapely import set_srid, union_all
 from shapely.affinity import scale
-from shapely.geometry import MultiPolygon, mapping, shape
+from shapely.geometry import MultiLineString, MultiPolygon, mapping, shape
 
 from app.crud.news_evaluation import canonical_sha256
 from app.crud.news_publication import NewsPublicationError
@@ -20,7 +20,7 @@ from app.schemas.news_publication import EstimatedRoadEvidence
 from app.services.news_placement_preview_service import NewsPlacementPreviewService, get_news_placement_preview_service
 from app.services.noah_vector_catalog_service import X_METRES, Y_METRES, metric_geometry
 from app.services.operational_footprint_service import validate_operational_shape
-from app.services.placement_geometry_service import line_parts
+from app.services.placement_geometry_service import LINE_PRECISION_METRES, line_parts
 
 
 @dataclass(frozen=True)
@@ -48,6 +48,11 @@ def build_estimated_road_zone(claim: ExtractedClaim, *,
     if len(selected) != 1:
         raise NewsPublicationError("estimated_road_selection_ambiguous")
     candidate = selected[0]
+    if candidate.carriageway_candidate_ids and claim.road_passability != "passable_all":
+        # A road-level location estimate must not turn unknown lane access into
+        # a closure on both mapped carriageways. Depth/access is independently
+        # rechecked at persistence; deeper conflicts remain review-only.
+        raise NewsPublicationError("estimated_corridor_access_unresolved")
     if candidate.article_place_level < 1 or candidate.ambiguous_carriageway:
         raise NewsPublicationError("estimated_road_requires_grounded_section")
     if candidate.fragment_status != "available" or not candidate.preview_geometry or not candidate.modeled_fragments:
@@ -65,12 +70,19 @@ def build_estimated_road_zone(claim: ExtractedClaim, *,
     parent = set_srid(parent, 4326)
     line = shape(candidate.preview_geometry)
     original = shape(candidate.centerline_geojson)
-    if line.geom_type not in ("LineString", "MultiLineString") or not line.is_valid or not parent.covers(line) or not original.covers(line):
+    if (line.geom_type not in ("LineString", "MultiLineString") or not line.is_valid
+            or not parent.covers(line)
+            or not metric_geometry(original).buffer(LINE_PRECISION_METRES).covers(metric_geometry(line))
+            or metric_geometry(line).length > metric_geometry(original).length + LINE_PRECISION_METRES):
         raise NewsPublicationError("estimated_road_line_outside_supported_section")
     parts = line_parts(line)
     if not 1 <= len(parts) <= 25 or sum(len(part.coords) for part in parts) > 10000:
         raise NewsPublicationError("estimated_road_component_limit")
-    polygons, cores = [], []
+    polygons, cores, owners = [], [], []
+    original_parts = line_parts(original)
+    continuous_owners = {index for index, source in enumerate(original_parts)
+                         if any(metric_geometry(part).buffer(LINE_PRECISION_METRES).covers(metric_geometry(source))
+                                for part in parts)}
     for part in parts:
         # Generate inside the qualified parent; never clip an external supplied
         # footprint. Do not dissolve separate buffered fragments across gaps.
@@ -78,10 +90,36 @@ def build_estimated_road_zone(claim: ExtractedClaim, *,
                          yfact=1 / Y_METRES, origin=(0, 0)).intersection(parent)
         if buffered.geom_type != "Polygon" or not buffered.is_valid or not buffered.covers(part):
             raise NewsPublicationError("estimated_road_corridor_incomplete")
-        if any(buffered.intersects(existing) for existing in polygons):
+        supported_by = [index for index, source in enumerate(original_parts)
+                        if metric_geometry(source).buffer(LINE_PRECISION_METRES).covers(metric_geometry(part))]
+        if len(supported_by) != 1:
+            raise NewsPublicationError("estimated_road_component_source_ambiguous")
+        owner = supported_by[0]
+        if any(buffered.intersects(existing) and (
+                not candidate.carriageway_candidate_ids
+                or (owner == existing_owner and not (continuous_owners - {owner})))
+               for existing, existing_owner in zip(polygons, owners)):
             raise NewsPublicationError("estimated_road_corridors_would_bridge_gap")
         polygons.append(buffered)
         cores.append(mapping(part))
+        owners.append(owner)
+    if candidate.carriageway_candidate_ids:
+        # Dissolve overlapping policy margins for this certified single road
+        # corridor. Keep both exact source lines and their modeled gaps; there
+        # is no interpolated median or duplicate translucent polygon.
+        # An uninterrupted supported carriageway can carry the corridor margin
+        # past a modeled gap on its counterpart, but no gap is filled in either
+        # source core. A gap across both carriageways still fails above.
+        merged = union_all(polygons)
+        if merged.geom_type not in ("Polygon", "MultiPolygon") or not merged.is_valid:
+            raise NewsPublicationError("estimated_road_corridor_incomplete")
+        polygons = [merged] if merged.geom_type == "Polygon" else list(merged.geoms)
+        cores = []
+        for polygon in polygons:
+            contained = [part for part in parts if polygon.covers(part)]
+            if not contained:
+                raise NewsPublicationError("estimated_road_corridor_incomplete")
+            cores.append(mapping(contained[0] if len(contained) == 1 else MultiLineString(contained)))
     extent = polygons[0] if len(polygons) == 1 else MultiPolygon(polygons)
     validated = validate_operational_shape(set_srid(extent, 4326), geometry_srid=4326, parent_boundary=parent)
     if not validated.is_eligible:
@@ -89,8 +127,10 @@ def build_estimated_road_zone(claim: ExtractedClaim, *,
     # Match each line to the exact validated polygon component.
     by_hash = {canonical_sha256(mapping(polygon)): core for polygon, core in zip(polygons, cores)}
     ordered = [by_hash[canonical_sha256(part)] for part in validated.polygon_parts]
-    evidence = EstimatedRoadEvidence(candidate_id=candidate.candidate_id, placement_revision=service.revision,
+    policy_version = "news-estimated-road-v2" if candidate.carriageway_candidate_ids else "news-estimated-road-v1"
+    evidence = EstimatedRoadEvidence(policy_version=policy_version,
+        candidate_id=candidate.candidate_id, placement_revision=service.revision,
         osm_catalog_sha256=preview.osm_catalog_sha256, noah_catalog_sha256=preview.noah_catalog_sha256,
-        component_centerlines=ordered)
+        component_centerlines=ordered, carriageway_candidate_ids=candidate.carriageway_candidate_ids)
     checksum = canonical_sha256({"evidence": evidence.model_dump(mode="json"), "geometry": validated.geojson})
-    return EstimatedRoadZone(validated.geojson, evidence, "news-estimated-road-v1", checksum)
+    return EstimatedRoadZone(validated.geojson, evidence, policy_version, checksum)

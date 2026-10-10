@@ -70,6 +70,19 @@ def publication_factory():
         patch.undo()
 
 
+@pytest.fixture(autouse=True)
+def fixed_expiry_regression_policy(monkeypatch):
+    """This suite exercises the fixed-timer contract, including its OFF toggle.
+
+    ML-on deadlines and news coordination are tested on native PostGIS in
+    test_pasig_ml_expiry.py. Keep this existing suite explicit about ML OFF.
+    """
+    from app.services import pasig_ml_expiry_service as expiry_policy
+    read = expiry_policy.read_configuration
+    monkeypatch.setattr(expiry_policy, "read_configuration", lambda db:
+        read(db).model_copy(update={"pasig_ml_expiry_enabled": False}))
+
+
 def seed_evaluation(factory, *, policy=POLICY, article_id=None, condition="active", observed=None,
                     depth="knee", status="completed", body_suffix="", evaluation_result_changes=None,
                     audit_access=False, bind=True, extraction_result_changes=None, **changes):
@@ -104,9 +117,12 @@ def seed_evaluation(factory, *, policy=POLICY, article_id=None, condition="activ
         article = NewsArticleExtractorInput(article_id=row.id, canonical_url=row.canonical_url, publisher="fixture",
             title="Observed flooding", article_text=body, published_at=NOW)
         snapshot, fingerprint = extraction_input_snapshot(article)
-        version = NewsArticleVersion(article_id=row.id, input_snapshot=snapshot, input_fingerprint=fingerprint)
-        db.add(version)
-        db.flush()
+        version = db.scalar(select(NewsArticleVersion).where(NewsArticleVersion.article_id == row.id,
+            NewsArticleVersion.input_fingerprint == fingerprint))
+        if version is None:
+            version = NewsArticleVersion(article_id=row.id, input_snapshot=snapshot, input_fingerprint=fingerprint)
+            db.add(version)
+            db.flush()
         result = NewsExtractionResult(article_id=row.id, canonical_url=row.canonical_url, is_metadata_only=False,
             processed_text_length=len(body), claims=[value])
         if extraction_result_changes:
@@ -371,6 +387,97 @@ def test_older_observation_cannot_reappear_after_newer_clearance(publication_fac
     with factory() as db:
         row = db.get(NewsClaimDecision, decision_id)
         assert row.public_state == "unpublished" and row.reason_code == "source_observation_superseded"
+
+
+def test_same_observation_reprocessing_activates_existing_case_without_renewal(publication_factory, estimated_assets, monkeypatch):
+    from app.services.news_footprint_worker_service import process_news_footprints
+    from app.services import news_publication_service as publication
+    from app.schemas.configuration import OperationalSettings
+    from app.crud.spatial_review import review_rows
+    factory = publication_factory
+    initial, case_id, article_id = seed_evaluation(factory, action_type="flagged_review")
+    first_id, _ = publish(factory, initial)
+    config = OperationalSettings()
+    config.evidence_expiry_minutes["knee"] = 240
+    monkeypatch.setattr(publication, "read_configuration", lambda db: config)
+    upgraded_policy = EvaluationPolicy("b" * 64, "publication-fixture-v2", IDENTITY,
+                                      expiry_minutes=config.evidence_expiry_minutes.copy())
+    reprocessed, evidence_case, _ = seed_evaluation(factory, policy=upgraded_policy, article_id=article_id,
+        action_type="flagged_review",
+        extraction_result_changes={"extractor_version": "reprocessed-placement-v2"})
+    with factory() as db:
+        source = db.get(NewsClaimSource, db.get(NewsClaimEvaluation, reprocessed).claim_source_id)
+        reprocessed_run_id = source.extraction_run_id
+        rows = review_rows(db, NOW)
+        assert db.scalar(select(rows.c.record_id).where(rows.c.record_id == reprocessed_run_id)) is not None
+    decision_id, matched_case = publish(factory, reprocessed, policy=upgraded_policy)
+    assert matched_case == case_id and evidence_case != case_id
+    assert publish(factory, reprocessed, policy=upgraded_policy) == (decision_id, case_id)
+    before = operational_counts(factory)
+    batch = process_news_footprints(factory, policy=upgraded_policy, clock=lambda: NOW,
+                                   sources=SOURCES, after_case_id=case_id-1, limit=1)
+    assert batch.estimated_activated == 1 and not batch.skipped
+    with factory() as db:
+        reprocessed_decision = db.get(NewsClaimDecision, decision_id)
+        current = latest_decision(db, case_id)
+        first = db.get(NewsClaimDecision, first_id)
+        assert reprocessed_decision.reason_code == "same_observation_reprocessed"
+        assert current.public_state == "active_zone" and current.observed_at == first.observed_at
+        assert current.expires_at == first.expires_at == reprocessed_decision.expires_at
+        assert current.snapshot["public"]["expires_at"] == first.snapshot["public"]["expires_at"]
+        assert db.get(NewsClaimCase, evidence_case).revision == 0
+        assert db.get(FloodAvoidanceZone, current.snapshot["linked_zone_ids"][0]).expires_at == first.expires_at
+        rows = review_rows(db, NOW)
+        assert db.scalar(select(rows.c.record_id).where(rows.c.record_id == reprocessed_run_id)) is None
+    assert operational_counts(factory) == tuple(value+1 for value in before)
+    process_news_footprints(factory, policy=upgraded_policy, clock=lambda: NOW, sources=SOURCES,
+                           after_case_id=case_id-1, limit=1)
+    assert operational_counts(factory) == tuple(value+1 for value in before)
+
+
+@pytest.mark.parametrize("changes", [{"body_suffix": " Revised article content."}, {"depth": "waist"},
+                                    {"road_passability": "impassable_all", "audit_access": True}])
+def test_same_observation_changed_source_or_facts_requires_review(publication_factory, changes):
+    factory = publication_factory
+    initial, case_id, article_id = seed_evaluation(factory)
+    original = publish(factory, initial)
+    reprocessed, separate_case, _ = seed_evaluation(factory, article_id=article_id, **changes)
+    decision_id, rejected_case = publish(factory, reprocessed)
+    assert rejected_case == separate_case and separate_case != case_id
+    with factory() as db:
+        decision = db.get(NewsClaimDecision, decision_id)
+        assert decision.public_state == "unpublished" and decision.reason_code == "source_observation_superseded"
+        assert latest_decision(db, case_id).id == original[0]
+
+
+@pytest.mark.parametrize("prior", ["active_zone", "expired", "withdrawn"])
+def test_same_observation_reprocessing_preserves_active_zone_expiry_and_staff_choices(publication_factory, estimated_assets, prior):
+    factory = publication_factory
+    initial, case_id, article_id = seed_evaluation(factory)
+    publish(factory, initial)
+    clock = NOW
+    if prior == "active_zone":
+        footprint_batch(factory, after_case_id=case_id-1, limit=1)
+    elif prior == "expired":
+        clock = NOW + timedelta(hours=2)
+        with factory() as db, db.begin():
+            expire_case(db, case_id, now=clock)
+    else:
+        actor = staff_user(factory)
+        with factory() as db, db.begin():
+            apply_staff_decision(db, case_id, NewsStaffDecisionRequest(request_id=uuid4(), expected_revision=1,
+                operation="reject", reason="Staff withdrew the observation"), actor_user_id=actor,
+                policy=POLICY, now=NOW, sources=SOURCES)
+    with factory() as db:
+        prior_id = latest_decision(db, case_id).id
+    before = operational_counts(factory)
+    upgraded_policy = EvaluationPolicy("b" * 64, "publication-fixture-v2", IDENTITY)
+    reprocessed, _, _ = seed_evaluation(factory, article_id=article_id, policy=upgraded_policy)
+    decision_id, _ = publish(factory, reprocessed, now=clock, policy=upgraded_policy)
+    with factory() as db:
+        assert db.get(NewsClaimDecision, decision_id).public_state == "unpublished"
+        assert latest_decision(db, case_id).id == prior_id
+    assert operational_counts(factory) == before
 
 
 def test_qualified_newer_observation_refreshes_same_case_once(publication_factory):
@@ -654,13 +761,44 @@ def operational_counts(factory):
                      for model in (FloodEvent, FloodAvoidanceZone, NewsClaimZoneLink))
 
 
+@pytest.mark.parametrize("access", ["unknown", "passable_all"])
+def test_simulation_public_reader_and_admin_list_share_persisted_zone_and_expiry(publication_factory, monkeypatch, access):
+    """Native persisted activation; no public-map preview or synthetic demo overlay."""
+    from app.crud import report as readers
+    from app.services import news_zone_projection_service as projection
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory, depth="gutter", road_passability=access,
+                                                audit_access=access != "unknown")
+    publish(factory, evaluation_id)
+    decision_id = activation(factory, case_id)
+    monkeypatch.setattr(projection, "utc_now", lambda: NOW)
+    with factory() as db:
+        decision = db.get(NewsClaimDecision, decision_id)
+        zone_id = decision.snapshot["linked_zone_ids"][0]
+        public = readers.get_active_avoidance_zones(db, now=NOW)
+        admin, total = readers.get_all_avoidance_zones_filtered(db, active_only=True, now=NOW)
+        assert total == len(admin)
+        assert zone_id in {z.id for z in public} == {z.id for z in admin}
+        details = next(z for z in projection.zone_responses_with_news(db, public) if z.id == zone_id)
+        assert details.news[0].status == "Active"
+        assert details.passable_vehicles == ("All vehicles" if access == "passable_all" else None)
+        assert details.news[0].source_url.startswith("https://example.org/")
+        later = decision.expires_at + timedelta(seconds=1)
+        assert zone_id not in {z.id for z in readers.get_active_avoidance_zones(db, now=later)}
+        archived_active, _ = readers.get_all_avoidance_zones_filtered(db, active_only=True, now=later)
+        assert zone_id not in {z.id for z in archived_active}
+        for reader in (readers.get_active_avoidance_zones, readers.get_all_avoidance_zones_filtered):
+            with pytest.raises(ValueError, match="timezone offset"):
+                reader(db, now=NOW.replace(tzinfo=None))
+
+
 @pytest.mark.parametrize("scenario,reason", [
     ("expired", "observation_evidence_expired"),
     ("changed_policy", "publication_policy_changed"),
     ("unapproved_source", "unapproved_article_source"),
     ("stale_revision", "stale_case_revision"),
     ("unknown_depth", "operational_depth_not_verified"),
-    ("passable_all", "reported_passable_to_all_vehicles"),
+    ("passable_all", "operational_access_not_verified"),
 ])
 def test_activation_rechecks_current_evidence_before_any_operational_write(publication_factory, scenario, reason):
     from dataclasses import replace
@@ -685,6 +823,23 @@ def test_activation_rechecks_current_evidence_before_any_operational_write(publi
     assert operational_counts(factory) == before
     with factory() as db:
         assert db.get(NewsClaimCase, case_id).revision == 1
+
+
+def test_geometry_review_queue_explains_current_blocker_instead_of_old_passability_rationale(publication_factory):
+    from app.crud.spatial_review import review_rows
+    from app.services.news_publication_service import require_geometry_review
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory, depth="gutter", road_passability="passable_all",
+        audit_access=True, action_type="flagged_review", action_rationale="Passable road; no avoidance closure.")
+    publish(factory, evaluation_id)
+    with factory() as db, db.begin():
+        require_geometry_review(db, case_id, expected_revision=1, reason="top_section_has_arbitrary_bounds",
+                                now=NOW, asset_revision="fixture")
+    with factory() as db:
+        run_id = db.scalar(select(NewsClaimSource.extraction_run_id).where(NewsClaimSource.case_id == case_id))
+        rows = review_rows(db, NOW)
+        row = db.execute(select(rows).where(rows.c.source == "news_claim", rows.c.record_id == run_id)).mappings().one()
+        assert row["review_reason"] == "Flood evidence is verified; the affected road geometry still requires resolution."
 
 
 @pytest.mark.parametrize("changed", ["geometry", "source", "checksum", "actor", "policy", "revision", "parent"])
@@ -883,6 +1038,7 @@ def staff_activation(factory, case_id, evaluation_id, **changes):
 @pytest.mark.parametrize("path", ["automatic", "staff"])
 @pytest.mark.parametrize("depth,access,expected_access", [
     ("gutter", "unknown", None),
+    ("gutter", "passable_all", "All vehicles"),
     ("knee", "unknown", None),
     ("waist", "unknown", None),
     ("neck", "unknown", None),
@@ -933,6 +1089,7 @@ def test_every_news_polygon_persists_verified_metadata(publication_factory, path
 @pytest.mark.asyncio
 @pytest.mark.parametrize("depth,access,expected", [
     ("gutter", "unknown", {"walk": "passable", "motorcycle": "passable", "light": "passable", "heavy": "passable"}),
+    ("gutter", "passable_all", {"walk": "passable", "motorcycle": "passable", "light": "passable", "heavy": "passable"}),
     ("gutter", "light_vehicle_closed", {"walk": "passable", "motorcycle": "blocked", "light": "blocked", "heavy": "passable"}),
     ("gutter", "impassable_all", {"walk": "passable", "motorcycle": "blocked", "light": "blocked", "heavy": "blocked"}),
     ("waist", "passable_with_caution", {"walk": "cautious", "motorcycle": "blocked", "light": "blocked", "heavy": "blocked"}),
@@ -984,7 +1141,7 @@ async def test_public_zone_api_and_native_routing_read_news_metadata(publication
 
 @pytest.mark.parametrize("depth,access,reason", [
     (None, "unknown", "operational_depth_not_verified"),
-    ("gutter", "passable_all", "reported_passable_to_all_vehicles"),
+    ("gutter", "passable_all", "operational_access_not_verified"),
     ("gutter", "light_vehicle_closed", "operational_access_not_verified"),
 ])
 def test_staff_geometry_cannot_invent_operational_measurements_or_access(publication_factory, depth, access, reason):
@@ -999,7 +1156,7 @@ def test_staff_geometry_cannot_invent_operational_measurements_or_access(publica
         assert db.get(NewsClaimCase, case_id).revision == 1
 
 
-@pytest.mark.parametrize("access", ["light_vehicle_closed", "impassable_all"])
+@pytest.mark.parametrize("access", ["passable_all", "light_vehicle_closed", "impassable_all"])
 def test_automatic_zone_requires_independently_verified_known_access(publication_factory, access):
     factory = publication_factory
     evaluation_id, case_id, _ = seed_evaluation(factory, road_passability=access)
@@ -1007,6 +1164,21 @@ def test_automatic_zone_requires_independently_verified_known_access(publication
     before = operational_counts(factory)
     with pytest.raises(NewsPublicationError, match="operational_access_not_verified"):
         activation(factory, case_id)
+    assert operational_counts(factory) == before
+
+
+@pytest.mark.parametrize("path", ["automatic", "staff"])
+@pytest.mark.parametrize("depth", ["knee", "waist", "neck"])
+def test_verified_passable_all_cannot_become_depth_based_closure(publication_factory, path, depth):
+    factory = publication_factory
+    evaluation_id, case_id, _ = seed_evaluation(factory, depth=depth, road_passability="passable_all", audit_access=True)
+    publish(factory, evaluation_id)
+    before = operational_counts(factory)
+    with pytest.raises(NewsPublicationError, match="operational_depth_access_conflict"):
+        if path == "automatic":
+            activation(factory, case_id)
+        else:
+            staff_activation(factory, case_id, evaluation_id)
     assert operational_counts(factory) == before
 
 
@@ -1725,7 +1897,7 @@ async def test_saved_pipeline_commits_zone_retries_and_expires_on_native_postgis
         monkeypatch.setattr(module,"current_pipeline_version",lambda:POLICY.pipeline_version)
     monkeypatch.setattr(processing,"capture_pending_inputs",capture_target)
     monkeypatch.setattr(processing,"extract_captured_news_article",fixture_extract)
-    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _, configuration=None:POLICY)
+    monkeypatch.setattr(pipeline,"evaluation_policy",lambda _, configuration=None, *, publication_admission_at=None:POLICY)
     before=operational_counts(factory)
     result=await pipeline.run_news_pipeline(factory,limit=200,auditor=FixtureAuditor(),sources=SOURCES,
         unbound_only=True,clock=lambda:NOW)
@@ -1778,10 +1950,11 @@ def test_publication_paused_during_projection_rolls_back_atomically(publication_
         assert latest_decision(db, case_id) is None
 
 
-def test_qualified_clearance_maintains_while_publication_paused_and_policy_changes(publication_factory, monkeypatch):
+@pytest.mark.parametrize("expiry_enabled", [True, False])
+def test_qualified_clearance_maintains_while_publication_paused_and_policy_changes(publication_factory, monkeypatch, expiry_enabled):
     from app.services import news_publication_service as publication
     from app.schemas.configuration import OperationalSettings
-    config = OperationalSettings(news_publication_enabled=False)
+    config = OperationalSettings(news_publication_enabled=False, automatic_expiry_enabled=expiry_enabled)
     evaluation_id, case_id, article_id = seed_evaluation(publication_factory)
     with publication_factory() as db, db.begin():
         publish_completed_evaluation(db, evaluation_id, policy=POLICY, now=NOW, sources=SOURCES)
@@ -1831,3 +2004,321 @@ def test_depth_policy_snapshot_expires_at_read_time_without_retroactive_extensio
         assert public_projection(decision, NOW+timedelta(minutes=25)).status == "Unconfirmed"
         assert not public_projection(decision, NOW+timedelta(minutes=25)).affects_routing
         assert decision.expires_at == NOW+timedelta(minutes=25)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("qualifier", ["near First Street", "at the corner of First Street"])
+@pytest.mark.parametrize("corridor", [False, True])
+async def test_discovered_corner_article_automatically_plots_through_active_zones_api(
+        publication_factory, estimated_assets, monkeypatch, qualifier, corridor):
+    """Real RSS parsing/extraction/storage/geometry; fixture HTTP/assets/auditor.
+
+    No provider or publisher network request and no shared database writes.
+    Unlike seeded-claim tests, the near/corner evidence enters through discovery.
+    """
+    import json
+    from email.utils import format_datetime
+    import httpx
+    from shapely.geometry import shape
+    from types import SimpleNamespace
+    from sqlalchemy import literal
+    from app.core.database import get_db
+    from app.main import app
+    from app.crud import news_processing as queue, report as report_crud
+    from app.services import news_discovery_service as discovery
+    from app.services import news_processing_service as processing
+    from app.services import news_pipeline_service as pipeline
+    from app.services import news_road_placement_service as roads
+    from app.services import news_placement_preview_service as previews
+    from app.services import news_zone_projection_service as projection
+    from app.services import flood_routing_policy as routing
+    if corridor:
+        from shapely.geometry import box, mapping
+        from test_news_road_placement import write_catalog
+        _ = estimated_assets.roads.revision
+        road_ways = [way.model_dump() for way in estimated_assets.roads.catalog.ways]
+        road_ways += [
+            dict(osm_id=11,name="Sample Road",nodes=[(11,121.00008,14.63),(13,121.00008,14.631)]),
+            dict(osm_id=21,name="First Street",nodes=[(14,121.0002,14.63),(11,121.00008,14.63)]),
+            dict(osm_id=31,name="Second Street",nodes=[(13,121.00008,14.631),(15,121.0002,14.631)])]
+        estimated_assets.roads = write_catalog(estimated_assets.roads.directory, road_ways,
+            cities=[dict(name="City of Pasig",relation_id=106569,boundary=mapping(box(120.99,14.60,121.03,14.67)))])
+
+    factory = publication_factory
+    article_url = f"https://example.org/flood/corner-{uuid4()}"
+    depth_text = "10-inch flooding" if corridor else "knee-deep flooding"
+    access_text = "The road remained passable to all types of vehicles. " if corridor else ""
+    body = (f"As of 10:55 a.m. today, {depth_text} was reported on "
+            f"Sample Road {qualifier} in Pasig City. "
+            + access_text +
+            "The field team recorded the water level during its morning inspection. "
+            "This is a synthetic article used only for a local automated test.")
+    feed = (f"<rss><channel><title>Fixture News</title><item>"
+            f"<title>Flooding in Pasig City</title><link>{article_url}</link>"
+            f"<pubDate>{format_datetime(NOW)}</pubDate></item></channel></rss>").encode()
+
+    class FixtureClock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return NOW.astimezone(tz) if tz else NOW.replace(tzinfo=None)
+
+    monkeypatch.setattr(discovery, "datetime", FixtureClock)
+    monkeypatch.setattr(queue, "utc_now", lambda: NOW)
+    monkeypatch.setattr(roads, "get_news_road_placement_provider", lambda: estimated_assets.roads)
+    monkeypatch.setattr(previews, "get_news_placement_preview_service", lambda: estimated_assets)
+    requests = []
+
+    def publisher(request):
+        requests.append(str(request.url))
+        if str(request.url) == SOURCES[0].feed_urls[0]:
+            return httpx.Response(200, content=feed, headers={"content-type": "application/rss+xml"})
+        assert str(request.url) == article_url, "Unrecorded publisher request"
+        return httpx.Response(200, text=f"<html><body><article><p>{body}</p></article></body></html>",
+                              headers={"content-type": "text/html"})
+
+    with factory() as db, httpx.Client(transport=httpx.MockTransport(publisher)) as client:
+        collected = discovery.discover_news(SOURCES, client, db)
+        assert len(collected.candidates) == 1
+        article = db.scalar(select(NewsArticle).where(NewsArticle.canonical_url == article_url))
+        assert article.article_text == body
+        article_id = article.id
+        db.commit()
+    assert requests == [SOURCES[0].feed_urls[0], article_url]
+
+    def capture_target(db, limit, source_ids=None):
+        return int(queue.enqueue_article(db, db.get(NewsArticle, article_id)) is not None)
+
+    monkeypatch.setattr(processing, "capture_pending_inputs", capture_target)
+
+    class FixtureAuditor:
+        def policy_identity(self):
+            return IDENTITY
+
+        async def audit(self, claim, article, **kwargs):
+            assert claim.canonical_road == "Sample Road"
+            assert claim.road_segment_raw.endswith(qualifier)
+            audit_evidence = evidence(claim, article)
+            if corridor:
+                assert claim.road_passability == "passable_all"
+                start = article.article_text.index(access_text.strip())
+                audit_evidence["access"] = {"confirmed": True, "classification": "passable_all",
+                    "evidence": [{"start": start, "end": start + len(access_text.strip()),
+                                  "quote": access_text.strip()}]}
+            return IndependentAuditResult(outcome="verified", reason_code="claim_evidence_verified",
+                provider="openrouter", model="fixture/model", prompt_version=IDENTITY["prompt_version"],
+                response_version=IDENTITY["response_version"], input_sha256=extraction_input_snapshot(article)[1],
+                claim_sha256=canonical_claim_sha256(claim),
+                evidence=ProviderClaimAudit.model_validate_json(json.dumps(audit_evidence)))
+
+    result = await pipeline.run_news_pipeline(factory, limit=200, auditor=FixtureAuditor(),
+        sources=SOURCES, unbound_only=True, clock=lambda: NOW)
+    assert result["extraction"]["completed"] == 1, result
+    assert result["footprints"]["estimated_activated"] == 1, result
+    with factory() as db:
+        source = db.scalar(select(NewsClaimSource).join(NewsExtractionRun,
+            NewsExtractionRun.id == NewsClaimSource.extraction_run_id).join(NewsArticleVersion,
+            NewsArticleVersion.id == NewsExtractionRun.article_version_id)
+            .where(NewsArticleVersion.article_id == article_id, NewsClaimSource.claim_ordinal == 0))
+        decision = latest_decision(db, source.case_id)
+        assert decision.public_state == "active_zone" and decision.actor_kind == "automatic"
+        zone_id = decision.snapshot["linked_zone_ids"][0]
+    monkeypatch.setattr(projection, "utc_now", lambda: NOW)
+    monkeypatch.setattr(report_crud, "func", SimpleNamespace(now=lambda: literal(NOW)))
+    monkeypatch.setattr(routing, "func", SimpleNamespace(now=lambda: literal(NOW), ST_AsGeoJSON=func.ST_AsGeoJSON))
+
+    def database():
+        with factory() as db:
+            yield db
+
+    previous_overrides = dict(app.dependency_overrides)
+    app.dependency_overrides[get_db] = database
+    try:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.get("/api/v1/reports/active-zones")
+        assert response.status_code == 200
+        public = next(item for item in response.json() if item["id"] == zone_id)
+        assert public["geometry"]["type"] == "Polygon"
+        assert public["report_geometry"]["type"] == ("MultiLineString" if corridor else "LineString")
+        assert shape(public["geometry"]).covers(shape(public["report_geometry"]))
+        assert public["news"][0]["geometry_basis"] == "estimated_road_corridor"
+        assert public["news"][0]["source_url"] == article_url
+        with factory() as db:
+            zone = next(item for item in routing.get_active_flood_zones(db) if item.id == zone_id)
+            assert routing.zone_decision("light", zone) == ("passable" if corridor else "blocked")
+            if corridor:
+                assert public["passable_vehicles"] == "All vehicles"
+                assert len(decision.snapshot["operational_provenance"]["binding"]["estimated_road"]["carriageway_candidate_ids"]) == 2
+    finally:
+        app.dependency_overrides.clear()
+        app.dependency_overrides.update(previous_overrides)
+
+
+@pytest.mark.asyncio
+async def test_connected_scenario_preserves_source_expiry_and_regular_deactivation(publication_factory, estimated_assets, monkeypatch):
+    import httpx
+    from app.core.database import get_db
+    from app.main import app
+    from app.crud import report as report_crud
+    from app.services import local_news_scenario_service as scenario
+    from app.services import flood_routing_policy as routing
+    from app.services.flood_event_service import expire_due_zones, deactivate_zone_and_end_event_if_final
+
+    factory = publication_factory
+    evaluation, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation)
+    result = footprint_batch(factory, after_case_id=case_id-1, limit=1)
+    assert result.estimated_activated == 1
+    with factory() as db:
+        decision = latest_decision(db, case_id)
+        zone_id = decision.snapshot["linked_zone_ids"][0]
+        original = decision.snapshot["public"]
+        expires = db.get(FloodAvoidanceZone, zone_id).expires_at
+    monkeypatch.setattr(scenario, "read_scenario", lambda: {
+        "clock": NOW, "case_ids": [case_id], "zone_ids": [zone_id]})
+    def database():
+        with factory() as db:
+            yield db
+    previous = dict(app.dependency_overrides)
+    app.dependency_overrides[get_db] = database
+    try:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.get("/api/v1/reports/active-zones")
+            assert response.status_code == 200
+            zone = next(item for item in response.json() if item["id"] == zone_id)
+            assert zone["news"][0]["source_url"] == original["source_url"]
+            assert datetime.fromisoformat(zone["news"][0]["observed_at"]) == datetime.fromisoformat(original["observed_at"])
+            assert datetime.fromisoformat(zone["expires_at"]) == expires
+            with factory() as db:
+                assert zone_id in {z.id for z in report_crud.get_all_avoidance_zones_filtered(db, active_only=True)[0]}
+                assert zone_id in {z.id for z in routing.get_active_flood_zones(db)}
+                expire_due_zones(db, now=NOW+timedelta(days=5))
+                assert db.get(FloodAvoidanceZone, zone_id).is_active
+                assert expire_case(db, case_id, now=NOW+timedelta(days=5)) is None
+                deactivate_zone_and_end_event_if_final(db, db.get(FloodAvoidanceZone, zone_id))
+            hidden = await client.get("/api/v1/reports/active-zones")
+            assert zone_id not in {z["id"] for z in hidden.json()}
+            with factory() as db:
+                assert zone_id not in {z.id for z in routing.get_active_flood_zones(db)}
+                assert db.get(FloodAvoidanceZone, zone_id).expires_at == expires
+    finally:
+        app.dependency_overrides.clear()
+        app.dependency_overrides.update(previous)
+
+
+@pytest.mark.asyncio
+async def test_expiry_toggle_controls_saved_news_zone_public_admin_routing_and_worker(publication_factory, estimated_assets, monkeypatch):
+    """Exercise the real settings API and publication lifecycle in disposable PostGIS."""
+    import httpx
+    from app.api import deps
+    from app.core.database import get_db
+    from app.main import app
+    from app.crud import report as report_crud
+    from app.services import configuration_service as configuration
+    from app.services import local_news_scenario_service as scenario
+    from app.services import flood_routing_policy as routing
+    from app.services import news_zone_projection_service as projection
+    from app.services.flood_event_service import expire_due_zones, deactivate_zone_and_end_event_if_final, get_event_metrics
+    from app.services.news_publication_read_service import browse_public_news_alerts
+    from app.models.report import FloodEventStatus
+    from app.models.setting import SystemSetting
+
+    factory = publication_factory
+    monkeypatch.setattr(scenario, "read_scenario", lambda: None)
+    evaluation, case_id, _ = seed_evaluation(factory)
+    publish(factory, evaluation)
+    assert footprint_batch(factory, after_case_id=case_id-1, limit=1).estimated_activated == 1
+    with factory() as db:
+        original_config = configuration.read_configuration(db)
+        decision = latest_decision(db, case_id)
+        zone_id = decision.snapshot["linked_zone_ids"][0]
+        original_snapshot = decision.snapshot
+        zone = db.get(FloodAvoidanceZone, zone_id)
+        expiry, original_geometry, event_id = zone.expires_at, bytes(zone.geometry.data), zone.event_id
+        # A second staff-managed zone tests event finalization while timed
+        # coverage is paused. All fixture writes stay in this disposable DB.
+        other = FloodAvoidanceZone(name="Other event section", geometry=zone.geometry,
+            source_geometry=zone.source_geometry, is_active=True, event_id=event_id, expires_at=expiry)
+        db.add(other)
+        token = uuid4().hex
+        role = Role(name=token, permissions={"settings": "full", "zones": "full"})
+        db.add(role); db.flush()
+        actor = User(username=token, email=token+"@example.invalid", hashed_password="fixture", role_id=role.id)
+        db.add(actor); db.commit()
+        actor_id, other_id = actor.id, other.id
+
+    later = expiry + timedelta(days=3)
+    monkeypatch.setattr(projection, "utc_now", lambda: later)
+    from sqlalchemy import literal
+    from types import SimpleNamespace
+    monkeypatch.setattr(report_crud, "func", SimpleNamespace(now=lambda: literal(later)))
+    monkeypatch.setattr(routing, "func", SimpleNamespace(now=lambda: literal(later), ST_AsGeoJSON=func.ST_AsGeoJSON))
+
+    def database():
+        with factory() as db:
+            yield db
+
+    def user():
+        with factory() as db:
+            actor = db.get(User, actor_id)
+            actor.role  # Load permissions before this session closes.
+            return actor
+
+    previous = dict(app.dependency_overrides)
+    app.dependency_overrides[get_db] = database
+    app.dependency_overrides[deps.get_current_user] = user
+    path = "/api/v1/admin/settings/configuration"
+    try:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            response = await client.get(path)
+            assert response.status_code == 200
+            settings = response.json()["settings"]
+            settings["automatic_expiry_enabled"] = False
+            paused = await client.put(path, json={"revision": response.json()["revision"], "settings": settings})
+            assert paused.status_code == 200
+            public = await client.get("/api/v1/reports/active-zones")
+            assert public.status_code == 200
+            item = next(z for z in public.json() if z["id"] == zone_id)
+            assert item["news"][0]["source_url"] == original_snapshot["public"]["source_url"]
+            assert item["report_text"] == original_snapshot["public"]["evidence_excerpt"]
+            assert item["news"][0]["status"] == "Active"
+            with factory() as db:
+                assert zone_id in {z.id for z in report_crud.get_all_avoidance_zones_filtered(db, active_only=True, now=later)[0]}
+                assert zone_id in {z.id for z in routing.get_active_flood_zones(db)}
+                assert expire_due_zones(db, now=later) == 0
+                assert expire_case(db, case_id, now=later) is None
+                assert next(a for a in browse_public_news_alerts(db, page=1, page_size=100, now=later, sources=SOURCES).items if a.case_id == case_id).status == "Active"
+                deactivate_zone_and_end_event_if_final(db, db.get(FloodAvoidanceZone, other_id), occurred_at=later)
+                event = db.get(FloodEvent, event_id)
+                assert event.status == FloodEventStatus.ACTIVE
+                assert get_event_metrics(db, event, now=later)["active_zone_count"] == 1
+                assert db.get(FloodAvoidanceZone, zone_id).expires_at == expiry
+                assert bytes(db.get(FloodAvoidanceZone, zone_id).geometry.data) == original_geometry
+                assert latest_decision(db, case_id).snapshot == original_snapshot
+
+            settings["automatic_expiry_enabled"] = True
+            resumed = await client.put(path, json={"revision": paused.json()["revision"], "settings": settings})
+            assert resumed.status_code == 200
+            assert zone_id not in {z["id"] for z in (await client.get("/api/v1/reports/active-zones")).json()}
+            with factory() as db:
+                assert expire_due_zones(db, now=later) >= 1
+                assert expire_case(db, case_id, now=later).public_state == "expired"
+                db.commit()
+                assert not db.get(FloodAvoidanceZone, zone_id).is_active
+                assert db.get(FloodEvent, event_id).status == FloodEventStatus.ENDED
+                assert db.get(FloodAvoidanceZone, zone_id).expires_at == expiry
+                assert bytes(db.get(FloodAvoidanceZone, zone_id).geometry.data) == original_geometry
+            settings["automatic_expiry_enabled"] = False
+            assert (await client.put(path, json={"revision": resumed.json()["revision"], "settings": settings})).status_code == 200
+            assert zone_id not in {z["id"] for z in (await client.get("/api/v1/reports/active-zones")).json()}
+            with factory() as db:
+                assert public_projection(latest_decision(db, case_id), later, include_retained=True,
+                    automatic_expiry_enabled=False).status == "Unconfirmed"
+    finally:
+        app.dependency_overrides.clear()
+        app.dependency_overrides.update(previous)
+        from app.schemas.configuration import ConfigurationUpdate
+        with factory() as db:
+            row = db.get(SystemSetting, configuration.CONFIG_KEY)
+            if row:
+                configuration.save_configuration(db, ConfigurationUpdate(revision=row.value["revision"],
+                    settings=original_config), actor_id=actor_id)

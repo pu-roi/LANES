@@ -2,10 +2,119 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "LANES: Reconstruct Connected Boni",
+            "type": "shell",
+            "command": "npx",
+            "args": [
+                "--yes",
+                "@dotenvx/dotenvx@2.21.0",
+                "run",
+                "-f",
+                ".env",
+                "--",
+                ".\\venv\\Scripts\\python.exe",
+                "-m",
+                "scripts.reconstruct_connected_news",
+                "--authorize-connected-reconstruction",
+                "--at",
+                "2026-09-24T16:39:00+08:00",
+                "--output",
+                "../data/news-replay/connected-boni-task-result.json"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "presentation": {
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "LANES: Reconstruction Backend",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/backend/start-persisted-news-simulation.ps1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "LANES_NEWS_SIMULATION_AT": "2026-09-24T16:39:00+08:00",
+                    "LANES_NEWS_RECONSTRUCTION_PUBLICATION_AT": "2026-09-25T04:42:00+08:00"
+                }
+            },
+            "presentation": {
+                "group": "lanes-reconstruction",
+                "panel": "dedicated"
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "LANES: Use Current Data",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/frontend/start-persisted-news-simulation.ps1",
+                "-Current"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "LANES: Reconstruction Frontend",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/frontend/start-persisted-news-simulation.ps1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "group": "lanes-reconstruction",
+                "panel": "dedicated"
+            },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Start LANES Reconstruction",
+            "dependsOn": [
+                "LANES: Reconstruction Backend",
+                "LANES: Reconstruction Frontend"
+            ],
+            "dependsOrder": "parallel",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "LANES: Backend",
             "type": "shell",
             "command": "npx",
-            "args": ["--yes", "@dotenvx/dotenvx@2.21.0", "run", "-f", ".env", "--", ".\\venv\\Scripts\\uvicorn.exe", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"],
+            "args": [
+                "--yes",
+                "@dotenvx/dotenvx@2.21.0",
+                "run",
+                "-f",
+                ".env",
+                "--",
+                ".\\venv\\Scripts\\uvicorn.exe",
+                "app.main:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8000",
+                "--reload"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}/backend"
             },
@@ -20,7 +129,10 @@
             "label": "LANES: Frontend",
             "type": "shell",
             "command": "npm",
-            "args": ["run", "dev"],
+            "args": [
+                "run",
+                "dev"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
             },
@@ -35,7 +147,8 @@
             "label": "Start LANES Dev Server",
             "dependsOn": [
                 "LANES: Backend",
-                "LANES: Frontend"
+                "LANES: Frontend",
+                "LANES: Zone Expiry Worker"
             ],
             "dependsOrder": "parallel",
             "group": {
@@ -48,7 +161,10 @@
             "label": "LANES: Frontend (Production)",
             "type": "shell",
             "command": "npm",
-            "args": ["run", "prod"],
+            "args": [
+                "run",
+                "prod"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
             },
@@ -63,10 +179,38 @@
             "label": "Start LANES Production Server",
             "dependsOn": [
                 "LANES: Backend",
-                "LANES: Frontend (Production)"
+                "LANES: Frontend (Production)",
+                "LANES: Zone Expiry Worker"
             ],
             "dependsOrder": "parallel",
             "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "LANES: Zone Expiry Worker",
+            "type": "shell",
+            "command": "npx",
+            "args": [
+                "--yes",
+                "@dotenvx/dotenvx@2.21.0",
+                "run",
+                "-f",
+                ".env",
+                "--",
+                ".\\venv\\Scripts\\python.exe",
+                "-m",
+                "scripts.run_zone_expiry",
+                "--interval",
+                "60"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "presentation": {
+                "group": "lanes-dev",
+                "panel": "dedicated"
+            },
+            "isBackground": true,
             "problemMatcher": []
         }
     ]

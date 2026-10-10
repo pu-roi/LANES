@@ -8,13 +8,12 @@ from dataclasses import asdict
 from functools import lru_cache
 from pathlib import Path
 
-from shapely import union_all, line_merge
 from shapely.geometry import shape, mapping
 from shapely.errors import ShapelyError
 
 from app.schemas.news_extraction import ExtractedClaim, RoadPlacementEvidence
 from app.schemas.news_placement import NewsPlacementPreview, PlacementFragment, PlacementHistoryRow, PlacementSection
-from app.services.placement_geometry_service import geometry_id, line_parts
+from app.services.placement_geometry_service import geometry_id, line_parts, source_aligned_line_union
 from app.services.flood_depth import get_flood_depth_measurement
 from app.services.article_road_context_service import match_article_road_context
 from app.services.article_road_match_service import OSMRoadSection
@@ -22,6 +21,8 @@ from app.services.news_road_placement_service import NewsRoadPlacementProvider, 
 from app.services.noah_road_prediction_service import RoadSectionEvidence, rank_measured_road_sections
 from app.services.noah_vector_catalog_service import NoahAssetError, NoahVectorCatalog, get_noah_vector_catalog, metric_geometry
 from app.services.pasig_historical_service import DEFAULT_PASIG_CLEAN_CSV
+from app.services.news_placement_display_service import placement_display_sections, resolved_placement_display_zone
+from app.services.news_road_corridor_service import bounded_road_corridors
 
 
 class NewsPlacementPreviewService:
@@ -44,7 +45,7 @@ class NewsPlacementPreviewService:
 
     @property
     def revision(self) -> str:
-        return f"fragments-v1:osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
+        return f"corridors-v3:osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
 
     def preview(self, claim: ExtractedClaim, placement: RoadPlacementEvidence | None = None) -> NewsPlacementPreview:
         placement = placement or self.roads.resolve(claim)
@@ -149,9 +150,21 @@ class NewsPlacementPreviewService:
                 # The display is the modeled envelope across all three scenarios.
                 # Dissolve duplicate overlap to avoid stacking transparent colors;
                 # merge only touching linework, preserving every real gap.
-                display = line_merge(union_all(parts)) if parts else None
+                display = source_aligned_line_union(shape(candidate.centerline_geojson), parts) if parts else None
                 candidate.preview_geometry = mapping(display) if display is not None else None
                 candidate.fragment_status = "available" if parts else "no_modeled_overlap"
+            corridors = bounded_road_corridors(output) if not placement.candidates_truncated else []
+            if len(output) + len(corridors) > 25:
+                corridors = []
+            members = {identity for corridor in corridors for identity in corridor.carriageway_candidate_ids}
+            evidence = [item for item in evidence if item.section_id not in members]
+            for corridor in corridors:
+                output.append(corridor)
+                by_id[corridor.candidate_id] = corridor
+                measurements[corridor.candidate_id] = corridor.modeled_overlap_m
+                evidence.append(RoadSectionEvidence(corridor.candidate_id,
+                    metric_geometry(shape(corridor.centerline_geojson)), placement.source_id or "",
+                    corridor.article_place_level, len(corridor.matching_history), True))
             prediction = rank_measured_road_sections(evidence, measurements, metadata.get("noah_source_ids", {}))
         except (NoahAssetError, ValueError, ShapelyError) as exc:
             for candidate in output:
@@ -162,12 +175,16 @@ class NewsPlacementPreviewService:
             return NewsPlacementPreview(status="source_unavailable", reason=reason, candidates=output,
                                         uncertainty_reasons=uncertainties, **metadata)
         indices = {section.section_id: i for i, section in enumerate(prediction.ranked_sections)}
-        output.sort(key=lambda item: indices[item.candidate_id])
+        output.sort(key=lambda item: (indices.get(item.candidate_id, len(indices)), item.candidate_id))
+        metadata["total_candidate_count"] = max(metadata["total_candidate_count"], len(output))
         for candidate in output:
             candidate.modeled_overlap_fraction = {
                 p: min(1.0, sum(values.values()) / candidate.approximate_length_m)
                 for p, values in measurements[candidate.candidate_id].items()}
         selected, reason = prediction.predicted_section_id, prediction.reason
+        if (reason == "top_section_has_arbitrary_bounds"
+                and by_id[prediction.ranked_sections[0].section_id].ambiguous_carriageway):
+            reason = "ambiguous_road_carriageway"
         # Incomplete candidate sets or ungrounded article qualifiers cannot be
         # promoted merely because a hazard score picked one remaining section.
         if placement.candidates_truncated:
@@ -181,10 +198,14 @@ class NewsPlacementPreviewService:
               or "location_context_only" in claim.uncertainty_reasons):
             selected, reason = None, "claim_is_not_reported_flood_evidence"
         selected_candidate = by_id.get(selected) if selected else None
-        return NewsPlacementPreview(status="predicted_candidate" if selected else "ambiguous",
+        display_sections = placement_display_sections(output)
+        preview = NewsPlacementPreview(status="predicted_candidate" if selected else "ambiguous",
             reason=reason, selected_candidate_id=selected,
             placement_kind=("reported" if selected_candidate.kind == "reported_span" else "predicted") if selected_candidate else None,
-            candidates=output, uncertainty_reasons=uncertainties, **metadata)
+            candidates=output, display_sections=display_sections,
+            uncertainty_reasons=uncertainties, **metadata)
+        preview.display_zone = resolved_placement_display_zone(preview)
+        return preview
 
 
 def get_news_placement_preview_service() -> NewsPlacementPreviewService:

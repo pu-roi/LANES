@@ -23,6 +23,7 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
                             seed_cursor: int = 0, auditor: NewsClaimAuditor | None = None,
                             footprint_cursor: int = 0, unbound_only: bool = False,
                             sources: tuple[NewsSource, ...] | None = None,
+                            publication_admission_at: datetime | None = None,
                             clock: Callable[[], datetime] = utc_now) -> dict:
     """Only call after operator configuration; auditing may incur provider fees.
 
@@ -36,7 +37,7 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
     auditor = auditor or NewsClaimAuditor()
     maintenance_sources = sources
     config, sources = runtime_configuration(session_factory, sources)
-    policy = evaluation_policy(auditor, config)
+    policy = evaluation_policy(auditor, config, publication_admission_at=publication_admission_at)
     from app.services.news_processing_service import ProcessingSummary
     from app.services.news_evaluation_service import EvaluationSummary
     from app.services.news_footprint_worker_service import FootprintWorkerSummary

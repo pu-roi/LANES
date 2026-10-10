@@ -11,6 +11,7 @@ from sqlalchemy import func, select
 
 from app import models
 from app.api.deps import get_current_user
+from app.crud.news_publication import reserve_decision_id
 from app.core.database import get_db
 from app.main import app
 from app.models.audit import AuditLog
@@ -154,26 +155,32 @@ def test_location_catalog_failure_abstains_without_text_guess(zone_db, monkeypat
     assert result.state == "unavailable" and result.barangays == []
 
 
-def test_current_linked_news_supplies_clock_without_citizen_report(zone_db):
+@pytest.mark.parametrize("geometry_reason", ["staff_reviewed_footprint", "verified_incident_footprint", "estimated_road_corridor"])
+def test_current_linked_news_supplies_clock_without_citizen_report(zone_db, geometry_reason):
     db, staff, zone, item, now = zone_db
     item.zone_id = None; db.commit()
     case = NewsClaimCase(revision=1); db.add(case); db.flush()
     observed = now-timedelta(minutes=30)
-    decision = NewsClaimDecision(case_id=case.id, revision=1, request_id=uuid4(), actor_kind="staff",
+    decision = NewsClaimDecision(id=reserve_decision_id(db), case_id=case.id, revision=1, request_id=uuid4(), actor_kind="staff",
         actor_user_id=staff.id, operation="correct", public_state="active_zone", review_state="resolved",
         reason_code="verified_current_footprint", snapshot={}, observed_at=observed,
         expires_at=now+timedelta(hours=1), decided_at=now)
-    public = PublicNewsAlert(case_id=case.id, decision_id=1, revision=1, status="Active",
+    public = PublicNewsAlert(case_id=case.id, decision_id=decision.id, revision=1, status="Active",
         location_label="Maybunga", condition_label="Reported flooding", passability_label="Unknown",
         observed_at=observed, expires_at=decision.expires_at, updated_at=now, source_title="Fixture",
         source_publisher="Fixture", source_url="https://example.com/flood", evidence_excerpt="Recorded wet observation",
         geometry_precision="operational_polygon", display_geojson=mapping(geometry()[0]), affects_routing=True)
     decision.snapshot = NewsDecisionSnapshot(request_sha256="1"*64, policy_fingerprint="2"*64,
         claim_source_id=1, input_sha256="3"*64, claim_sha256="4"*64, incident_identity="5"*64,
-        article_id=1, public=public, linked_zone_ids=[zone.id], geometry_reason="staff_reviewed_footprint").model_dump(mode="json")
+        article_id=1, public=public, linked_zone_ids=[zone.id], geometry_reason=geometry_reason).model_dump(mode="json")
     db.add(decision); db.flush()
     db.add(NewsClaimZoneLink(decision_id=decision.id, zone_id=zone.id, relation="created")); db.commit()
     result = service.predict_zone(db, zone.id, staff, now=now)
+    if geometry_reason == "estimated_road_corridor":
+        assert result.state != "estimated" and not result.quantiles
+        assert result.reference is None
+        assert any("No qualified observation time" in reason for reason in result.reasons)
+        return
     assert result.state == "estimated" and result.reference.source_kind == "news_decision"
     case.revision = 2
     next_decision = NewsClaimDecision(case_id=case.id, revision=2, request_id=uuid4(), actor_kind="staff",
@@ -183,6 +190,21 @@ def test_current_linked_news_supplies_clock_without_citizen_report(zone_db):
     db.add(next_decision); db.flush()
     db.add(NewsClaimZoneLink(decision_id=next_decision.id, zone_id=zone.id, relation="supported")); db.commit()
     assert service.predict_zone(db, zone.id, staff, now=now).state == "needs_review"
+
+
+def test_active_zone_reader_uses_simulated_present_without_changing_expiry(zone_db):
+    from app.crud.report import get_active_avoidance_zones
+    db, _, zone, _, _ = zone_db
+    simulated_at = datetime(2026, 9, 24, 8, tzinfo=timezone.utc)
+    zone.expires_at = simulated_at + timedelta(hours=2)
+    db.commit()
+    assert zone.id not in [row.id for row in get_active_avoidance_zones(db)]
+    assert zone.id in [row.id for row in get_active_avoidance_zones(db, now=simulated_at)]
+    assert zone.id not in [row.id for row in get_active_avoidance_zones(db, now=zone.expires_at)]
+    with pytest.raises(ValueError, match="timezone offset"):
+        get_active_avoidance_zones(db, now=simulated_at.replace(tzinfo=None))
+    db.refresh(zone)
+    assert zone.expires_at == simulated_at + timedelta(hours=2) and zone.is_active
 
 
 def test_authenticated_get_needs_both_read_permissions_and_has_no_writes(zone_db):

@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
-import type { LineString, MultiLineString } from "geojson";
+import type { LineString, MultiLineString, Polygon, MultiPolygon } from "geojson";
 import type { FloodReport } from "../adminApi";
 import type { NewsClaim, NewsResultDetail } from "@/features/news/newsApi";
 
@@ -76,6 +76,10 @@ export interface PlacementPreview {
   status: "predicted_candidate" | "ambiguous" | "unresolved" | "source_unavailable";
   reason: string; selected_candidate_id: string | null; placement_kind: "reported" | "predicted" | null;
   candidates: PlacementSection[]; total_candidate_count: number; candidates_truncated: boolean;
+  display_sections?: { display_id: string; candidate_ids: string[]; geometry: LineString | MultiLineString }[];
+  // Two-layer presentation for the resolved candidate only; null for alternatives.
+  display_zone?: { candidate_ids: string[]; core_geometry: LineString | MultiLineString;
+    aura_geometry: Polygon | MultiPolygon } | null;
   osm_source_id: string | null; osm_catalog_sha256: string | null; osm_snapshot_at: string | null;
   noah_catalog_sha256: string | null; noah_source_ids: Record<string, string>; noah_attribution: string | null;
   history_status: "not_applicable" | "available" | "source_unavailable";
@@ -90,6 +94,8 @@ export interface PlacementEnvelope {
   run_id: number; claim_index: number; input_fingerprint: string;
   evidence_pipeline_version: string; placement_revision: string; claim: NewsClaim; preview: PlacementPreview;
   read_only: true;
+  // Presentation metadata from the already-loaded article; not placement evidence.
+  source?: { title: string; canonical_url: string; publisher?: string; published_at?: string | null };
 }
 export interface ReviewFilters { q: string; city: string; barangay: string; severity: string }
 export function getReviewPage(source: ReviewSource, page: number, signal?: AbortSignal, filters?: ReviewFilters) {

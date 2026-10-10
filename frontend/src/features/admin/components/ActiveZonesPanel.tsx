@@ -186,8 +186,8 @@ export function ActiveZonesPanel({
                 }`}
               >
                 <FloodRecordSummary title={`Zone #${zone.id}`} severity={zone.severity} depth={zone.depth}
-                  aside={zone.is_active ? <Button variant="outline" aria-label={`Info for Zone #${zone.id}`} className="gap-1 border-blue-200 text-blue-700" onClick={(event) => { event.stopPropagation(); setDetails({ zone, tab: "overview" }); }}><Info className="size-3.5" />Info</Button> : undefined}
-                  timestamp={zone.created_at} text={zone.report_text} location={zone.name}
+                  aside={<Button variant="outline" aria-label={`Info for Zone #${zone.id}`} className="gap-1 border-blue-200 text-blue-700" onClick={(event) => { event.stopPropagation(); setDetails({ zone, tab: "overview" }); }}><Info className="size-3.5" />Info</Button>}
+                  timestamp={zone.news?.[0]?.observed_at || zone.created_at} text={zone.report_text} location={zone.name}
                   headingExtra={<>
                     {zone.is_active && <input type="checkbox" aria-label={`Select Zone #${zone.id}`} checked={selectedIds.includes(zone.id)} onChange={(event) => handleSelectRow(zone.id, event.target.checked)} onClick={(event) => event.stopPropagation()} className="size-4 rounded border-gray-300 text-blue-600" />}
                     <span className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${zone.is_active ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"}`}>{zone.is_active ? "Active" : "Inactive"}</span>

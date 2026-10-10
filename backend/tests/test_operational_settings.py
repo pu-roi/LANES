@@ -17,6 +17,8 @@ from app.services.news_claim_auditor import NewsClaimAuditor
     {"news_processing_enabled": "false"}, {"staff_road_buffer_metres": float("nan")},
     {"news_source_ids": ["unverified"]}, {"evidence_expiry_minutes": {"knee": 120}},
     {"news_unconfirmed_retention_hours": 73},
+    {"automatic_expiry_enabled": "false"}, {"automatic_expiry_enabled": 0},
+    {"pasig_ml_expiry_enabled": "false"}, {"pasig_ml_expiry_enabled": 0},
 ])
 def test_invalid_policy_cannot_be_saved(change):
     with pytest.raises(ValidationError):
@@ -29,6 +31,13 @@ def test_deadlines_use_observation_and_depth_not_received_time():
     observed = datetime(2026, 10, 7, tzinfo=timezone.utc)
     assert evidence_deadline(config, observed, "Knee") == observed + timedelta(minutes=30)
     assert evidence_deadline(config, observed, None) == observed + timedelta(hours=2)
+    config.automatic_expiry_enabled = False
+    assert evidence_deadline(config, observed, "Knee") == observed + timedelta(minutes=30)
+
+
+def test_legacy_settings_default_to_enabled():
+    assert OperationalSettings.model_validate({}).automatic_expiry_enabled is True
+    assert OperationalSettings.model_validate({}).pasig_ml_expiry_enabled is True
 
 
 @pytest.mark.parametrize("role", [None, SimpleNamespace(permissions={}), SimpleNamespace(permissions={"settings": "none"})])
@@ -49,6 +58,8 @@ def test_evidence_changes_version_evaluation_but_switches_do_not():
     config = OperationalSettings()
     baseline = evaluation_policy(auditor, config)
     config.news_publication_enabled = False
+    assert evaluation_policy(auditor, config).fingerprint == baseline.fingerprint
+    config.automatic_expiry_enabled = False
     assert evaluation_policy(auditor, config).fingerprint == baseline.fingerprint
     config.evidence_expiry_minutes["knee"] = 30
     assert evaluation_policy(auditor, config).fingerprint != baseline.fingerprint

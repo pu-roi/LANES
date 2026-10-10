@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { saveFloodsOffline } from '@/lib/offline/storage';
 import { useQueryClient } from '@tanstack/react-query';
-import { getSseUrl } from '@/lib/sse';
+import { getSessionSseUrl } from '@/lib/sse';
 import { useToast } from '@/shared/ui/feedback/Toast';
 
 const INITIAL_BACKOFF_MS = 1000;
@@ -19,14 +19,15 @@ export function useLiveSync() {
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
 
-  const connect = useCallback(function connect() {
+  const connect = useCallback(async function connect() {
     if (!mountedRef.current) return;
     if (typeof window === 'undefined' || !window.EventSource) return;
 
-    const sseUrl = getSseUrl('/sync/stream');
     let source: EventSource | null = null;
 
     try {
+      const sseUrl = await getSessionSseUrl('/sync/stream');
+      if (!mountedRef.current) return;
       source = new EventSource(sseUrl);
       eventSourceRef.current = source;
 

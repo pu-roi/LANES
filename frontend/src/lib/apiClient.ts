@@ -1,3 +1,11 @@
+import { getLocalNewsSimulation, getSessionStorageKey } from "./localNewsSimulation";
+
+export async function getApiBaseUrl(): Promise<string> {
+  if (await getLocalNewsSimulation() === "persisted") return "/simulation/api/v1";
+  return process.env.NEXT_PUBLIC_API_URL || (typeof window !== "undefined"
+    ? "/api/v1" : "http://127.0.0.1:8000/api/v1");
+}
+
 /**
  * Custom API Error class for structured error handling
  */
@@ -63,20 +71,16 @@ export const apiClient = {
   async request<T>(endpoint: string, options: RequestInit): Promise<T> {
     // We assume backend API is exposed via a local proxy or directly at /api/v1
     // Adjust base URL if needed depending on environment variables
-    let baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (!baseUrl) {
-      if (typeof window !== "undefined") {
-        baseUrl = "/api/v1"; // Uses Next.js rewrites to proxy to backend
-      } else {
-        baseUrl = "http://127.0.0.1:8000/api/v1"; // Server-side fetching
-      }
-    }
     const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    // Legacy preview mode is additive; persisted mode routes the entire
+    // separate session through getApiBaseUrl, including auth and zone actions.
+    const baseUrl = cleanEndpoint === "/news/simulation" && await getLocalNewsSimulation() === "september24"
+      ? "/simulation/api/v1" : await getApiBaseUrl();
     const url = `${baseUrl}${cleanEndpoint}`; 
     
     // Inject JWT token if available
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("lanes_token");
+      const token = localStorage.getItem(await getSessionStorageKey("lanes_token"));
       if (token) {
         options.headers = {
           ...options.headers,
@@ -90,7 +94,7 @@ export const apiClient = {
       
       if (!response.ok) {
         if (response.status === 401 && typeof window !== "undefined") {
-          localStorage.removeItem("lanes_token");
+          localStorage.removeItem(await getSessionStorageKey("lanes_token"));
         }
         // Attempt to parse JSON error message from FastAPI if it exists
         let errorMsg = `API request failed with status ${response.status}`;
@@ -124,11 +128,11 @@ export const apiClient = {
   },
 
   async download(endpoint: string, filename: string): Promise<void> {
-    let baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+    let baseUrl = await getApiBaseUrl();
     const url = `${baseUrl}${endpoint}`;
     const headers: Record<string, string> = {};
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('lanes_token');
+      const token = localStorage.getItem(await getSessionStorageKey("lanes_token"));
       if (token) headers['Authorization'] = `Bearer ${token}`;
     }
     const response = await fetch(url, { method: 'GET', headers });

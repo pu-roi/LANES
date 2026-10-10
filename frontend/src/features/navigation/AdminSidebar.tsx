@@ -61,8 +61,8 @@ export default function AdminSidebar() {
     setIsSidebarExpanded(window.matchMedia("(min-width: 768px)").matches && !!event.currentTarget.closest("aside")?.matches(":hover"));
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     window.location.href = "/login";
   };
 

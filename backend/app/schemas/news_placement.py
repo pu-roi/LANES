@@ -30,6 +30,9 @@ class PlacementSection(BaseModel):
     osm_way_ids: list[int]
     cross_streets: list[list[str]]
     ambiguous_carriageway: bool
+    # A road-level estimate can retain both close, source-mapped carriageways
+    # without claiming the article confirmed flooding in both directions.
+    carriageway_candidate_ids: list[str] = Field(default_factory=list, max_length=2)
     article_place_level: int = Field(ge=0, le=3)
     approximate_length_m: float = Field(ge=0)
     modeled_overlap_m: dict[int, dict[int, float]] = Field(default_factory=dict)
@@ -40,12 +43,27 @@ class PlacementSection(BaseModel):
     fragment_status: Literal["available", "no_modeled_overlap", "source_unavailable"] = "source_unavailable"
 
 
+class PlacementDisplaySection(BaseModel):
+    display_id: str
+    candidate_ids: list[str]
+    geometry: dict
+
+
+class PlacementDisplayZone(BaseModel):
+    """Resolved placement's visual core/halo; never an operational footprint."""
+    candidate_ids: list[str]
+    core_geometry: dict
+    aura_geometry: dict
+
+
 class NewsPlacementPreview(BaseModel):
     status: Literal["predicted_candidate", "ambiguous", "unresolved", "source_unavailable"]
     reason: str
     selected_candidate_id: str | None = None
     placement_kind: Literal["reported", "predicted"] | None = None
     candidates: list[PlacementSection] = Field(default_factory=list, max_length=25)
+    display_sections: list[PlacementDisplaySection] = Field(default_factory=list)
+    display_zone: PlacementDisplayZone | None = None
     total_candidate_count: int = 0
     candidates_truncated: bool = False
     osm_source_id: str | None = None

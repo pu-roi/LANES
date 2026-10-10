@@ -1,5 +1,39 @@
 # System Settings rollout and rollback
 
+> **Last Updated:** October 10, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 10 legacy recovery release (current)
+
+Current API revision **`lanes-api-00069-fey`**, 100% traffic; both jobs use `pasig-ml-expiry-recovery-20261010-2105`, digest `sha256:bdddcaceef2b5f8cb0fb2283725144c79de763d70635981a7bc2619736889382`. Policy v2 recovers valid original issuance forecasts after a late first run while preserving current evidence/review checks. #17/#18 have expired as Unconfirmed; no inactive zone is revived. #19–#21 retain their saved dates. Minute Scheduler is ENABLED, existing three-hour news cadence/configuration is preserved, local API/worker run the matching code. Existing migration head remains `d7e4b9a21c60`; no schema/dependency/settings change.
+
+Local UI: refresh `/admin/map` → Active Zones → All History → Info to review inactive saved forecasts. Cloud frontend remains a separate release. Recovery uses existing audit JSON for quantiles, original issuance and model checksum. [Acceptance](../evaluations/pasig-ml-automatic-expiry-20261010.md#legacy-recovery-and-saved-ui-acceptance--october-10-915-pm). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+For rollback of this recovery release, coordinate API and both jobs back to revision `lanes-api-00067-zox` / image `pasig-ml-expiry-20261010-1928`; pause minute scheduling while versions differ. That historical v1 lacks late recovery and saved quantile display. Rolling back an image does not undo deactivation or resurrect #17/#18. Keep audit/source rows. The older pre-bridge rollback instructions below refer to a different release boundary.
+
+## October 10 Pasig ML cloud expiry release
+
+The developer authorized **Local app and shared cloud worker**. Matching API revision `lanes-api-00067-zox` now serves 100% of traffic. Both `lanes-news-discovery` and independent `lanes-zone-expiry` use image `pasig-ml-expiry-20261010-1928` with digest `sha256:4c48fb60f211e35753953e0577c8cc821b86621496d69b140c0041fdb4579fee`, in project `lanes-project-508809`, region `asia-east1`. Existing runtime account, database connectivity and other environment bindings are preserved. No schema/dependency changes, cloud migration, settings save, Git push or cloud frontend release occurred. [Cloud execution evidence](../evaluations/pasig-ml-automatic-expiry-20261010.md#actual-shared-cloud-release--october-10-836-pm).
+
+`lanes-zone-expiry-every-minute` invokes the new job every minute through the existing OAuth scheduler account, with job-scoped `roles/run.invoker`. The job runs `python -m scripts.run_zone_expiry` once at 1 GiB, with a 300-second timeout. It synchronizes saved model deadlines before deactivation and does not collect news or call external AI providers. Scheduler HTTP 200 delivery and a completed scheduled execution were verified. The existing news Scheduler keeps its three-hour cadence; news/provider failures cannot stop this independent expiry path. Root `cloudbuild.yaml` updates both jobs to the matching API image on future backend releases.
+
+The local updated UI on port 3000 exposes **Use ML expiry for Pasig** and **Enable automatic expiry**. Both flags currently read true in the cloud runtime; the shared settings record was not changed. Global pause takes precedence. Ineligible/outside-Pasig zones keep fixed fallback; existing null deadlines remain visibly unscheduled. Due expiry means Unconfirmed, never observed dry/passable. Source timestamps, immutable news decisions and model qualification flags remain unchanged. The cloud frontend remains on its previous release, so use the updated local UI for these new controls.
+
+For an immediate maintenance check:
+
+```powershell
+gcloud run jobs execute lanes-zone-expiry --region=asia-east1 --project=lanes-project-508809 --wait
+```
+
+Inspect the execution and logs for successful completion; repeated maintenance must preserve unchanged model deadlines. Read-only cloud inference already reproduced zone 19/20/21 deadlines exactly. This verifies operational integration, not predictive accuracy.
+
+For policy rollback, disable **Use ML expiry for Pasig** through the updated versioned settings UI and run maintenance so original fixed deadlines are restored. Review overdue restored deadlines: normal expiry can then end those records as Unconfirmed. No inactive zones are revived. For a runtime rollback, first complete that policy restoration, pause only `lanes-zone-expiry-every-minute`, restore API traffic to the recorded previous revision `lanes-api-00058-hx4`, and restore the news job's previous image `gcr.io/lanes-project-508809/github.com/pu-roi/lanes:2260c7e07358e4c3c12c06738b87dc11ac4b7bda`. Retain all evidence/audit rows; an old image does not contain the new expiry command. Keep API/worker versions together. The older release instructions below are historical and should not be repeated as new migration/schedule work.
+
+## Automatic expiry control — October 10 local addition
+
+System Settings → Evidence expiry → **Enable automatic expiry** controls both scheduled expiry and deadline-based public/Admin/news/routing visibility. Default ON preserves current behavior. OFF keeps existing active records available past saved deadlines; it does not revive inactive records, bypass new evidence admission, alter source timestamps or stop manual deactivation/qualified clearance. ON resumes saved deadlines immediately, with overdue records ended on the next worker run. The separate experimental Pasig operational policy now applies fitted deadlines under Decision 27; research prediction GETs remain read-only.
+
+Use the matching updated settings client **before saving the shared policy**. The flags are persisted in the existing atomic configuration envelope outside legacy nested settings; old strict-schema workers can continue reading known fields, but do not honor the pause. An old settings writer can drop the new envelope flags. The cloud API/workers now match; the local updated settings UI remains on frontend 3000/backend 8000. The earlier toggle-only test did not deploy or save cloud policy; the cloud release above supersedes its deployment state. [Earlier verification and files](../evaluations/automatic-expiry-toggle-20261010.md).
+
 > **Date:** October 7, 2026, Asia/Manila
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **State:** Prepared release steps; no production setting/schedule change was performed by this task.
@@ -50,6 +84,6 @@ The previous automatic three-hour cadence was recorded during the September 25 r
 
 ## Rollback
 
-Pause collection/processing/publication independently before reverting the application release. Keep expiry and qualified clearance maintenance running. Disable citizen approval if its acceptance fails. Save the current revision and configuration first; use the versioned endpoint to restore reviewed policy values, never direct legacy writes. Saved policy snapshots and old deadlines remain immutable and must not be extended or resurrected by rollback.
+Pause collection/processing/publication independently before reverting the application release. Leave automatic expiry enabled unless a deliberate expiry pause is required; qualified clearance maintenance continues independently. Disable citizen approval if its acceptance fails. Save the current revision and configuration first; use the versioned endpoint to restore reviewed policy values, never direct legacy writes. Saved policy snapshots and old deadlines remain immutable and must not be extended or resurrected by rollback.
 
 If reverting to the previous worker, restore the previously verified three-hour Scheduler cadence and command before enabling collection; the old worker does not use database due checks. Retain evidence/audit rows and existing database volumes. Review API/worker/frontend versions together.

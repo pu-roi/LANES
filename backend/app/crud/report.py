@@ -5,6 +5,7 @@ from sqlalchemy import func, or_
 
 from app import models, schemas
 from app.schemas.common import ensure_utc
+from app.services.configuration_service import expired_deadline, unexpired_deadline
 
 
 def get_flood_report(db: Session, report_id: int) -> Optional[models.FloodReport]:
@@ -143,14 +144,21 @@ def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> model
     return db_report
 
 
-def get_active_avoidance_zones(db: Session) -> List[models.FloodAvoidanceZone]:
+def get_active_avoidance_zones(db: Session, *, now: datetime | None = None) -> List[models.FloodAvoidanceZone]:
     """
     Selects all avoidance zones that are marked active and whose expiry dates
-    are either null (infinite) or in the future.
+    are either null (infinite) or in the future. Normal reads use the database
+    clock; a caller running an isolated simulation can supply its aware clock.
     """
+    if now is not None and (now.tzinfo is None or now.utcoffset() is None):
+        raise ValueError("Active zone simulation clock requires a timezone offset")
+    clock = now.astimezone(timezone.utc) if now is not None else func.now()
+    if now is None:
+        from app.services.local_news_scenario_service import sql_clock
+        clock = sql_clock(models.FloodAvoidanceZone.id, "zone", clock)
     return db.query(models.FloodAvoidanceZone).filter(
         models.FloodAvoidanceZone.is_active == True,
-        (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, clock)
     ).all()
 
 
@@ -178,7 +186,7 @@ def get_nearby_active_avoidance_zones(
         distance_expr.label("distance_meters")
     ).filter(
         models.FloodAvoidanceZone.is_active == True,
-        (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now()),
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, func.now()),
         func.ST_DWithin(
             func.ST_Transform(models.FloodAvoidanceZone.geometry, 3857),
             func.ST_Transform(target_report.geometry, 3857),
@@ -295,9 +303,11 @@ def get_admin_dashboard_stats(db: Session) -> dict:
         models.FloodReport.deleted_at.is_(None)
     ).count()
     
+    from app.services.local_news_scenario_service import sql_clock
+    active_clock = sql_clock(models.FloodAvoidanceZone.id, "zone", func.now())
     total_active_zones = db.query(models.FloodAvoidanceZone).filter(
         models.FloodAvoidanceZone.is_active == True,
-        (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, active_clock)
     ).count()
 
     total_approved_today = db.query(models.FloodReport).filter(
@@ -347,21 +357,28 @@ def get_all_avoidance_zones_filtered(
     limit: int = 100,
     active_only: bool = False,
     archived: bool = False,
-    search: Optional[str] = None
+    search: Optional[str] = None,
+    *, now: Optional[datetime] = None,
 ) -> tuple[List[models.FloodAvoidanceZone], int]:
+    if now is not None and (now.tzinfo is None or now.utcoffset() is None):
+        raise ValueError("Active zone simulation clock requires a timezone offset")
+    clock = now if now is not None else func.now()
+    if now is None:
+        from app.services.local_news_scenario_service import sql_clock
+        clock = sql_clock(models.FloodAvoidanceZone.id, "zone", clock)
     query = db.query(models.FloodAvoidanceZone)
     if archived:
         query = query.filter(
             models.FloodAvoidanceZone.event_id.is_(None),
             or_(
                 models.FloodAvoidanceZone.is_active == False,
-                (models.FloodAvoidanceZone.expires_at.is_not(None)) & (models.FloodAvoidanceZone.expires_at <= func.now())
+                expired_deadline(db, models.FloodAvoidanceZone.expires_at, clock)
             )
         )
     elif active_only:
         query = query.filter(
             models.FloodAvoidanceZone.is_active == True,
-            (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
+            unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, clock)
         )
 
     if search:
@@ -387,11 +404,12 @@ def get_all_avoidance_zones_filtered(
 
 
 def restore_flood_avoidance_zone(db: Session, zone_id: int) -> Optional[models.FloodAvoidanceZone]:
+    from app.services.configuration_service import read_configuration
     zone = db.query(models.FloodAvoidanceZone).filter(models.FloodAvoidanceZone.id == zone_id).first()
     if not zone:
         return None
     zone.is_active = True
-    if zone.expires_at and ensure_utc(zone.expires_at) <= datetime.now(timezone.utc):
+    if read_configuration(db).automatic_expiry_enabled and zone.expires_at and ensure_utc(zone.expires_at) <= datetime.now(timezone.utc):
         zone.expires_at = None
     db.commit()
     db.refresh(zone)

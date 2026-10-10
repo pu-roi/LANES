@@ -70,11 +70,57 @@ def test_c5_news_name_matches_osm_numbered_road_alias(tmp_path, name):
     ({"canonical_barangay":"Santo Domingo"},"missing_valid_barangay_boundary"),
     ({"canonical_city":"City of Pasig"},"reported_city_not_covered"),
     ({"canonical_road":None},"no_reported_road"),
-    ({"road_segment_raw":"near Atok Street"},"missing_explicit_bounded_span"),
+    ({"road_segment_raw":"near Missing Street"},"local_place_not_grounded"),
 ])
 def test_missing_context_never_falls_back_to_whole_road(tmp_path,changes,reason):
     result=write_catalog(tmp_path).resolve(claim(**changes))
     assert result.status=="unresolved" and result.reason==reason and not result.candidates
+
+
+@pytest.mark.parametrize("span", ["near Atok Street", "at the corner of Atok Street", "corner Atok Street"])
+def test_crossing_qualifier_reaches_bounded_sections_without_claiming_a_reported_span(tmp_path, span):
+    result = write_catalog(tmp_path).resolve(claim(span=span))
+    assert result.reason == "article_scoped_road_sections"
+    assert len(result.candidates) == 1
+    assert result.candidates[0].kind == "road_section"
+    assert result.candidates[0].cross_streets == [["Atok Street"], ["Calamba Street"]]
+    assert not result.proves_current_flood and not result.may_affect_routing
+
+
+def test_local_crossing_is_filtered_before_candidate_limit(tmp_path):
+    nodes = [(i + 1, 121, 14.63 + i * .0001) for i in range(32)]
+    roads = [dict(osm_id=10, name="Santo Domingo Avenue", nodes=nodes)]
+    roads += [dict(osm_id=100 + i, name=f"Crossing {i} Street",
+                   nodes=[node, (1000 + i, 121.001, node[2])]) for i, node in enumerate(nodes)]
+    provider = write_catalog(tmp_path, roads)
+    unscoped = provider.resolve(claim(span=None))
+    assert unscoped.total_candidate_count == 31 and unscoped.candidates_truncated
+    scoped = provider.resolve(claim(span="near Crossing 30 Street"))
+    assert scoped.total_candidate_count == 2 and not scoped.candidates_truncated
+    assert all(["Crossing 30 Street"] in c.cross_streets for c in scoped.candidates)
+
+
+@pytest.mark.parametrize("span", ["between Atok Street", "from Atok Street", "westbound near Atok Street"])
+def test_incomplete_span_or_unresolved_direction_cannot_become_corner_estimate(tmp_path, span):
+    result = write_catalog(tmp_path).resolve(claim(span=span))
+    assert not result.candidates and result.status == "unresolved"
+
+
+def test_incomplete_corner_crossing_never_disappears_from_candidate_evidence(tmp_path):
+    provider = write_catalog(tmp_path, incomplete_ways=[dict(osm_id=99, name="Atok Street", aliases=[])])
+    result = provider.resolve(claim(span="near Atok Street"))
+    assert result.reason == "incomplete_named_road_coverage" and not result.candidates
+
+
+def test_disconnected_parallel_carriageways_are_retained_as_ambiguous(tmp_path):
+    roads = ways() + [
+        dict(osm_id=11, name="Santo Domingo Avenue", nodes=[(11,121.0001,14.63),(13,121.0001,14.631)]),
+        dict(osm_id=21, name="Atok Street", nodes=[(14,121.0002,14.63),(11,121.0001,14.63)]),
+        dict(osm_id=31, name="Calamba Street", nodes=[(13,121.0001,14.631),(15,121.0002,14.631)]),
+    ]
+    result = write_catalog(tmp_path, roads).resolve(claim(span="near Atok Street"))
+    assert len(result.candidates) == 2
+    assert all(c.ambiguous_carriageway for c in result.candidates)
 
 
 def test_alternative_carriageway_is_not_hidden_by_shorter_path(tmp_path):

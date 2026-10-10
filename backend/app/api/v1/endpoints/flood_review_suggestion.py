@@ -13,8 +13,20 @@ from app.schemas.zone_prediction import ZonePrediction
 from app.services import zone_prediction_service
 from app.schemas.cross_location_prediction import CrossLocationPrediction
 from app.services import cross_location_prediction_service
+from app.schemas.zone_expiry import ZoneExpiryPolicy
 
 router = APIRouter(dependencies=[Depends(_private_response)])
+
+
+@router.get("/admin/zones/{zone_id}/expiry-policy", response_model=ZoneExpiryPolicy)
+def zone_expiry_policy(zone_id: int = Path(ge=1), db: Session = Depends(get_db),
+                       user: User = Depends(get_current_user)) -> ZoneExpiryPolicy:
+    from app.services.pasig_ml_expiry_service import expiry_status
+    def read() -> ZoneExpiryPolicy:
+        zone_prediction_service.require_staff_permission(user, write=False)
+        zone_prediction_service.require_zone_reader(user, write=False)
+        return ZoneExpiryPolicy(**expiry_status(db, zone_id))
+    return _run(db, read)
 
 
 @router.get("/admin/zones/{zone_id}/cross-location-prediction", response_model=CrossLocationPrediction)

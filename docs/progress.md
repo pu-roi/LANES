@@ -1,8 +1,114 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 09, 2026, 12:05 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Documentation and roi-branch pre-push acceptance
+
+- Synchronize deployed recovery, saved historical UI and eligible Pasig coverage/explicit abstention. Scientific accuracy and cloud frontend release remain open. Repeat 63 native PostGIS cases successfully with existing Alembic upgrade to head; changed packages/models/migrations are absent, staged secret/artifact checks pass and changed documentation links/catalog resolve. Preserve previous 106 backend/10 responsive/four actual Info acceptance without double-counting the repeat. Prepare all current working-tree changes for the developer-requested `roi-branch` push under AGENTS.md. [Evidence](evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Recover legacy ML expiry and saved Info forecasts
+
+**October 10, 9:15 PM recovery accepted:** policy v2 recovers immutable original forecasts after late initialization without bypassing current source/review gates. #17/#18 are now inactive with original p90 deadlines October 9, 7:25:02 AM / October 10, 5:04:13 AM (PHT); event timelines say Unconfirmed. #19/#20/#21 retain their deadlines. Production API `lanes-api-00069-fey` serves 100% traffic; cloud jobs use the matching recovery image and minute scheduling is enabled. The local map exposes saved p10/p50/p90 forecasts at Active Zones → All History → Info, verified on actual desktop/mobile records. 106 backend checks, 10 responsive fixtures and four actual Info workflows pass. Accuracy remains experimental; cloud frontend release is separate. [Acceptance](evaluations/pasig-ml-automatic-expiry-20261010.md#legacy-recovery-and-saved-ui-acceptance--october-10-915-pm). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10, 8:48 PM: Legacy investigation checkpoint (superseded by recovery above)
+
+- Complete read-only RCA for #17/#18 after reviewing all four developer-linked conversations and live source audits. Shared Pasig transfer and valid registration/submission proxies exist; preview wall-clock age gates suppress the first late worker application, leaving cached null fixed fallbacks. Original reconstructed p90 values are October 9, 7:25:02 AM and October 10, 5:04:13 AM PHT, both overdue. No operational/source/configuration changes; runtime recovery/testing/release are open. [Evidence](evaluations/pasig-ml-automatic-expiry-20261010.md#follow-up-investigation-legacy-zones-17-and-18--october-10-848-pm). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Pasig ML expiry activated locally and in the cloud
+
+**October 10, 8:36 PM: Pasig ML expiry is operational locally and in the shared cloud worker.** API revision `lanes-api-00067-zox` serves 100% of cloud traffic. Independent job `lanes-zone-expiry` runs every minute; the matching news worker also completed successfully. Cloud inference reproduced saved deadlines for pooled zones 19/20 and cross-location zone 21 exactly. Fixed fallback, global pause, source preservation and Unconfirmed expiry remain explicit. Local controls are available on port 3000; the cloud frontend was not released in this scope. Scientific accuracy remains unverified. [386 backend/10 responsive checks and live cloud verification](evaluations/pasig-ml-automatic-expiry-20261010.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Automatic expiry toggle and fixed-timer clarification
+
+- Delivered locally under System Settings → Evidence expiry, with existing audited permission/revision flow and shared scheduled expiry/public/Admin/news/routing behavior. OFF preserves active records without changing deadlines; manual deactivation/qualified clearance remain active; no resurrection. Fixed deadlines apply across cities, while Pasig ML remains research-only. 51 targeted, 186 native PostGIS and 18 unique responsive scenarios pass; actual port-3000 desktop/mobile reads pass. Native databases use existing migrations. Shared cloud policy/deployment remain unchanged. #23 expired at 6:00:29 PM, superseding earlier availability claims; developer review and matching worker rollout are pending. Additional legacy merge duplicate-location failure is tracked separately. [Evidence](evaluations/automatic-expiry-toggle-20261010.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Restore actual news content alongside cloud zones on port 3000
+
+- Delivered actual automatic **Zone #23** through the existing services and live independent auditor; source excerpt/title/URL, original observation/expiry and geometry match private #56. Deactivated wrong official #22; other 18 zone responses unchanged; both active readers return `[17,18,19,20,21,23]`. Scoped local clocks preserve historical eligibility without source retiming. Actual desktop/mobile layers/details/link/sign-in/Admin card/deactivation target pass; 117 targeted and 160 native PostGIS tests plus TypeScript/ESLint pass. Developer acceptance and separate clearance exceptions remain open. [Evidence](evaluations/news-boni-corridor-reconstruction-20261010.md#connected-source-fidelity-correction). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Source-fidelity checkpoint after cloud-test rejection
+
+- Read-only live comparison identifies the regression: official #22 lacks a news link and uses operator notes/creation time; actual historical #56 retains source evidence/URL/observation. Record the user's requirement to simulate the real system without altered labels or content. Prior rendering checks are insufficient and developer acceptance remains rejected. Full news-lifecycle coexistence/source-fidelity correction is pending; no database repair is claimed. [RCA](evaluations/news-boni-corridor-reconstruction-20261010.md#source-fidelity-rejection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Show Boni display test alongside cloud data
+
+- Following developer authorization, create **Zone #22 — [TEST] Boni reconstruction** using the historical system-generated road core through existing staff APIs. Set a two-hour test expiry (7:03 PM Manila) and restore normal data on port 3000. Public/Admin return existing active IDs 17–21 plus 22; all 18 preexisting zone responses remain unchanged. Preserve original article observation/expiry and private automatic reconstruction separately. Actual desktop/mobile shared layers, test details, real sign-in, Admin card and correct Deactivate confirmation pass; cancel confirmation so the developer can test and deactivate it. [Evidence](evaluations/news-boni-corridor-reconstruction-20261010.md#shared-cloud-visibility-follow-up). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Move reconstructed Boni viewing to port 3000
+
+- Correct the testing-origin mismatch: the same port 3000 frontend now selects private historical backend 8001 explicitly. Preserve normal login and dynamic offline floods with session-scoped storage; label reconstruction on desktop/mobile and add the reversible Current Data task. Public/Admin APIs return Zone #56; twelve session regressions and TypeScript pass. Real desktop/mobile public/Admin layers, source details, real UI login, desktop logout and normal-token preservation pass on port 3000; neither screen sends normal API requests while reconstruction is enabled. The Current Data task restores normal zone IDs `[17,18,19,20,21]` in an actual browser. [Current steps](guides/local-news-replay.md#current-persisted-boni-reconstruction). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10 afternoon: Original Boni persisted-zone reconstruction
+
+- Deliver bounded paired-carriageway placement, exact core/gap preservation and dissolved outer margin; repair same-observation continuity and consumed-evidence review filtering. The original collector/extractor/live auditor/publisher/worker creates Zone #56 in the private historical session, with unchanged 4:34 PM observation/6:34 PM expiry and all-vehicle passability. Public/Admin return `[56]`; the stale review item is absent; repeat processing creates no zone. Actual desktop/mobile layers, source details and interactions pass. 152 focused backend and 159 native lifecycle checks pass; four responsive fixture cases pass after one standalone desktop timeout retry. Add the VS Code reconstruction task and recover Docker without deleting volumes. Developer visual acceptance and other time/clearance exceptions remain open. [Evidence](evaluations/news-boni-corridor-reconstruction-20261010.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Reconcile reconstruction outcome before shutdown
+
+- Confirm from saved real-service replay and API evidence that the historical reconstruction ran but did not create the original Boni Active Zone. Port-3000 screenshots show existing manual zones 17/18; private public/Admin readers both return no active polygons. Record the remaining road-geometry investigation, service rerun and map acceptance in the task plan. This documentation checkpoint does not deliver a geometry fix or successful plotting. [Handoff](evaluations/news-reconstruction-activation-fixes-20261010.md#shutdown-handoff-and-acceptance-status). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 10 reconstruction/activation corrections:** Registered Daily Tribune, repaired capture source identity, allowed independently verified low-depth passable flooding to create persisted zones, and added guarded historical reconstruction with unchanged observation expiry. Deeper passability/depth conflicts remain review-only. Corrected Needs Review's publication clock and current geometry explanation. Actual original-source services/provider publish Boni as a text alert after retry; four ambiguous sections still prevent a polygon. 180 backend, 47 PostGIS and four responsive checks pass; developer review and geometry/clearance-auditor fixes remain open. [Evidence](evaluations/news-reconstruction-activation-fixes-20261010.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 10 persisted simulation session:** Deliver explicit private port-3001 API/auth/SSE routing, shared public/Admin zone clock and genuine persisted-activation/expiry regressions. Docker recovered through backed-up runtime sockets. Real Boni replay still yields zero zones under unchanged policy; developer acceptance remains open. [Evidence](evaluations/news-persisted-simulation-session-20261010.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 10: Separate road alternatives from zone display
+
+- Restrict Active-style preview core/halo to the server-resolved candidate; retain unresolved alternatives for explicit one-at-a-time Admin inspection. Stop fitting public camera bounds to excluded alternatives. Preserve genuine gaps and shared rendering; no database/schema/activation changes. Read-only connected records identify the Boni issue as parallel candidate strokes rather than persisted duplicates. Developer acceptance and cross-article reconciliation remain open. [Evidence](evaluations/news-placement-alternatives-20261010.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 > Tracking completed milestones, delivered features, and past sprints.
+
+### October 10: Automatic plot solid inner line and transparent outer area
+
+- Deliver the explicitly requested two-layer public automatic-plot appearance through canonical Active core/fill paint. Backend supplies one claim-level core and dissolved decorative 25-m halo; the adapter maps both to existing zone geometry inputs. Preserve source/review status, routing/publication gates and Admin Needs Review styling. Forty-six backend checks, TypeScript/scoped lint, responsive automatic-plot checks and read-only live original Boni fly/hover pass. No SQL/dependency/live publication changes. Developer visual acceptance remains pending. [Evidence and exact responsibilities](evaluations/news-shared-map-renderer-20261009.md#october-10-requested-solid-inner-line-and-transparent-outer-area). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Correct shared news map rendering after developer review
+
+- Replace the separate news painter/controller with an adapter into `useFloodZonesLayer`. Use canonical status paint, zoom-14 layer visibility, shared hover/mobile tap, desktop fly-only clicks, measured popup positioning and mobile close/reopen. Backend presentation-only union joins exact endpoints and removes duplicate coverage while preserving candidate evidence, real gaps and separate carriageways. Original Boni returns four candidates/three drawable sections and remains Needs Review. Forty-eight backend checks, TypeScript/scoped lint and read-only real-source desktop fly/hover pass; responsive acceptance is recorded in the linked evaluation. The preceding Phase 1 checkpoint was rejected for incomplete parity and is superseded. Activation/staff-list parity remains open; await developer visual review. [Correction and limits](evaluations/news-shared-map-renderer-20261009.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Automatic news map Phase 1 UI checkpoint
+
+- Reuse shared FloodZonePopup for news placement hover/tap, original-source information and explicit Needs Review status. Stabilize candidate layers, scale review stroke widths, preserve true gaps/carriageways, isolate selected camera bounds and measure/reposition longer desktop popups. Seventeen browser checks, TypeScript/scoped lint and read-only live Boni hover/zoom-17 focus verification pass, including narrow/landscape mobile details and existing active-news public/admin fixtures. Repository-wide lint and actual original-source activation are not claimed. Await developer visual review before backend grouping/activation work. [Verification](evaluations/news-map-ui-phase1-20261009.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Preserve current zones and add the requested original article
+
+- Remove the unrequested simulation status box from the public map, News Intelligence and shared desktop/mobile news-alert content. Keep September 24 records, road previews, normal database routing and existing zones. Drawing/request errors use the existing map toast; News Intelligence remains available if optional snapshot metadata fails. TypeScript/scoped lint and HTTP page compilation pass; no browser or database mutation in this correction. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- Correct the global private API switch that hid cloud zones. Keep existing interface/work; normal API/login/SSE again use the connected database. Add original captured Tribune article through normal capture/extraction services as Cloud SQL article 25/run 61, yielding five locations; scoped evaluation stops at `unapproved_article_source`. The real estimated-road builder rejects all five sections, so no active polygon is inserted. Full zone snapshots confirm 17/18 unchanged. Retained review overlay uses the connected run identity, and camera bounds include original zones plus replay. Eleven backend checks, TypeScript/scoped lint and browser-free additive map/routing checks pass. No schema/dependency/report-panel changes or browser use. [Current steps](guides/local-news-replay.md#current-port-3000-simulation-session). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Initial private frontend connection (global routing superseded)
+
+- Connect development localhost API/password login/profile and live SSE to guarded private backend 8001. Port 3000 returns five real Tribune locations and four Boni review candidates. Public map reuses the transparent review layer, keeps these previews visible below zoom 14 and focuses candidate bounds. Nine backend guard/clock tests, TypeScript/scoped lint, HTTP page compilation and browser-free map/routing checks pass. No report panel, schema/dependency or cloud publication changes. Physical visual and complete active-zone/subsidence acceptance remain open. [Current steps](guides/local-news-replay.md#current-port-3000-simulation-session). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Check simulated-present flood zones and subsidence
+
+- Add timestamp-aware September 24 collector checkpoints, future-source exclusion, actual zone-reader projection and explicit prediction-stage results. Repair backend-only Active Zones clock injection; normal database-clock behavior is preserved. Forty-three focused and 23 native checks pass. Separate read-only cloud zone 17/18 controls calculate labeled proxy research estimates. Selected news still creates zero zones; estimated news corridors are excluded by the existing prediction adapter, so complete-chain acceptance remains open. No report panel/interface changes. [Evidence](evaluations/september24-plotting-simulation-20261009.md#september-24-as-the-simulated-present-zone-and-subsidence-checks). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Verify the database behind the empty news interface
+
+- Confirm normal port 3000 uses backend 8000 and the configured Cloud SQL `lanes-db` database, while replay ports 3001/8001 use isolated `lanes_news_test`. Cloud stores 24 excluded articles and zero eligible news locations/claim cases/linked zones; selected September 24 replay is absent. Both normal public API paths return zero alerts and existing zone IDs 17/18. Latest collector #63 retains Rappler partial failure. Read-only inspection explains the screenshots; no successful real-news map activation or cloud write is asserted. [Evidence](evaluations/news-live-plotting-check-20261009.md#october-9-318-am-screenshot-and-connected-database-reconciliation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Correct replay scope and repair map-coordinate handoff
+
+- Capture actual September 24 coverage and run existing collector/pipeline under original chronology/registry. Two GMA feed items admit no flood candidates; Tribune is unapproved, so zero new zones/provider calls result. Archive the rejected invented zone 55 in the private test DB; shared zones remain unchanged. Fifty-three backend checks pass. Successful real-news plotting remains open. [Evidence](evaluations/september24-plotting-simulation-20261009.md#latest-correction-actual-source-collector-and-pipeline-replay). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Move shared public-map URL cleanup after its delayed camera action, preventing Next search updates from cancelling the zoom. TypeScript and a browser-free effect harness pass at two fixture widths; physical mobile/desktop verification remains pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Earlier fabricated plotting demonstration (subsequently rejected)
+
+- The labeled synthetic Quirino Avenue article goes through normal RSS capture, extraction, checked bundled OSM/NOAH, audit evidence validation and automatic PostGIS publication. Zone 55 is present in public and staff APIs, with polygon/core and finite expiry. Publisher/provider responses are offline fixtures; 17 demo/guard checks pass. Shared data and original historical article are preserved. Public preview returns 200; browser acceptance remains open. [Demo links and assumptions](guides/local-news-replay.md#october-9-developer-requested-active-plotting-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Prepare developer-selected September 24 archived map inspection
+
+- Seed the captured article offline into the guarded local test database, apply its missing existing publication migration and expose a separate loopback preview on port 3001. Add a shared News Details map handoff that selects archived inspection without changing review eligibility. HTTP authentication/results/detail/placement/map checks pass: five roads, four Boni previews, inspection-only permissions and zero local Active Zones; original zones 17/18 remain unchanged. TypeScript and scoped dialog lint pass. [Manual steps](guides/local-news-replay.md#october-9-september-24-manual-map-inspection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- No browser/visual verification, provider request, production write, new schema definition/dependency, deployment or push. The responsive shared button and existing mobile/desktop evidence layouts are retained; user visual acceptance remains pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Recover Docker and verify automatic news plotting on native PostGIS
+
+- Preserve failed runtime socket parents and restart Docker successfully without changing database volumes. Existing migrations apply to fresh disposable targets; final combined native suite passes 137 checks, including two new RSS-parser/real-extractor near/corner cases, alongside 116 focused regressions (253 distinct this turn). The synthetic acceptance produces automatically active estimated polygons, road cores, public API source metadata and routing blocks. [Evidence](evaluations/news-auto-plotting-backend-test-20261009.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- No browser/provider/publisher network use, live publication, schema/dependency/frontend changes, deployment or push. Real-news and visual/PWA acceptance remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 9: Review existing automatic news plotting and repair local placement defects
+
+- Confirm the committed pipeline already derives OSM/NOAH estimated polygons and activates qualified audited current claims. Repair local near/corner qualifier handling, locality-before-limit filtering, parallel-carriageway uncertainty and numerical scenario-overlap reconstruction. **221 focused backend checks pass**. Actual September 24 Boni now has four modeled review previews; ambiguous geometry and original stale evidence still prevent activation. [Review and limits](evaluations/september24-plotting-simulation-20261009.md#backend-review-and-local-repair-follow-up). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- No model/migration/dependency/frontend changes, provider calls, browser use, database publication, deployment or push. Broader qualified location coverage and positive real-current-article/PostGIS/map acceptance remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 9: Senior-planner cross-location decision and publication audit
 

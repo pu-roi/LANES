@@ -144,7 +144,13 @@ export default function LiveMapPage() {
   // Pending Moderation State
   const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [isolatedReportId, setIsolatedReportId] = useState<number | null>(null);
-  const [selectedReviewKey, setSelectedReviewKey] = useState<string | null>(null);
+  // Saved news can be inspected after it leaves the current review queue.
+  // The backend still owns eligibility, permissions and publication decisions.
+  const [selectedReviewKey, setSelectedReviewKey] = useState<string | null>(() => {
+    const newsIdentity = searchParams.get("review_news");
+    return newsIdentity && /^[1-9]\d{0,18}:\d{1,9}$/.test(newsIdentity)
+      ? `news_claim:${newsIdentity}` : null;
+  });
   const [reviewReport, setReviewReport] = useState<FloodReport | null>(null);
   const [reviewCount, setReviewCount] = useState<number | undefined>(undefined);
   const [newsPlacement, setNewsPlacement] = useState<PlacementEnvelope | null>(null);
@@ -494,7 +500,7 @@ export default function LiveMapPage() {
   const newsPreviewEnabled = reviewingNews && activeTab === "pending" && pathname === "/admin/map"
     && !isCreateZoneDrawerOpen && !isEditZoneDrawerOpen && !isMergeDrawerOpen;
   useNewsPlacementLayer(mapInstance, isLoaded, newsPlacement, selectedNewsCandidate, newsPreviewEnabled,
-    !isMobile || isMobileMapVisible, setSelectedNewsCandidate, setNewsLayerError);
+    !isMobile || isMobileMapVisible, setSelectedNewsCandidate, setNewsLayerError, undefined, isMobile);
   const selectQueueReportFromMap = useCallback((id: number | null) => {
     handleReportFocusChange(id);
     selectReview(id === null ? null : `user_report:${id}`);
