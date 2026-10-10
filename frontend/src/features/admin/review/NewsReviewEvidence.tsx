@@ -19,9 +19,13 @@ export function NewsReviewEvidence({ detail, active, selectedId, onSelect, onPre
     queryFn: ({ signal }) => getPlacementPreview(news.item.run_id, news.item.claim_index, signal),
     enabled: active, staleTime: 5 * 60_000, retry: false, refetchOnWindowFocus: false });
   useEffect(() => {
-    onPreview(active ? query.data ?? null : null);
+    onPreview(active && query.data ? { ...query.data, source: {
+      title: news.captured_input.title, canonical_url: news.captured_input.canonical_url,
+      publisher: news.item.publisher, published_at: news.captured_input.published_at,
+    } } : null);
     return () => onPreview(null);
-  }, [active, query.data, onPreview]);
+  }, [active, query.data, onPreview, news.captured_input.title, news.captured_input.canonical_url,
+    news.captured_input.published_at, news.item.publisher]);
   const preview = query.data?.preview;
   return <div className="space-y-6 p-4">
     <div><p className="text-xs font-semibold uppercase tracking-wide text-blue-700">News claim · {detail.news_actions_available ? "exception review" : "inspection only"}</p>
@@ -40,8 +44,8 @@ export function NewsReviewEvidence({ detail, active, selectedId, onSelect, onPre
         {preview.status === "source_unavailable" && <p role="alert" className="text-sm text-amber-800">An analytical source is unavailable. Any shown geometry is an unverified suggestion.</p>}
         {!preview.candidates.length && <p className="text-sm text-slate-500">No supported map geometry. Evidence remains available for review.</p>}
         {preview.candidates_truncated && <p className="text-xs text-amber-800">Showing {preview.candidates.length} of {preview.total_candidate_count} candidates. The candidate set is incomplete.</p>}
-        <p className="text-xs text-slate-500">Transparent auras show estimated road pieces overlapping the NOAH scenarios, with gaps preserved. Color follows reported depth; gray means depth is unknown. Selection does not confirm flooding.</p>
-        {selectedId && <Button variant="ghost" size="sm" onClick={() => onSelect(null)}>Show all suggestions</Button>}
+        <p className="text-xs text-slate-500">Inspect one suggestion at a time to compare possible road placements. Its transparent aura shows modeled overlap with gaps preserved. Color follows reported depth; gray means depth is unknown. Inspection does not confirm flooding or affect both carriageways.</p>
+        {selectedId && <Button variant="ghost" size="sm" onClick={() => onSelect(null)}>Clear suggestion</Button>}
         <div className="divide-y divide-slate-100">{preview.candidates.map((candidate, index) => <div key={candidate.candidate_id} className="py-3">
           <Button variant={selectedId === candidate.candidate_id ? "primary" : "outline"} className="w-full justify-start" aria-pressed={selectedId === candidate.candidate_id} onClick={() => onSelect(candidate.candidate_id)}>Inspect suggestion {index + 1} · {Math.round(candidate.approximate_length_m)} m</Button>
           <p className="mt-2 break-words text-xs text-slate-600">{candidate.kind === "reported_span" ? "Reported span" : "Road section"}{candidate.cross_streets.length ? ` · ${candidate.cross_streets.map((names) => names.join(" / ")).join(" — ")}` : ""}</p>

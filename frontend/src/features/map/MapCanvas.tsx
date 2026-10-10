@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ZoneCondition } from "@/features/hazards/zoneUpdatesApi";
 import { useZoneRoadPreview } from "@/features/hazards/useZoneRoadPreview";
 import maplibregl from "maplibre-gl";
@@ -20,6 +20,8 @@ import { useFloodZonesLayer } from "./hooks/useFloodZonesLayer";
 import { useNoahHazardLayer } from "./hooks/useNoahHazardLayer";
 import type { NoahHazardScenario } from "./MapContext";
 import { useToast } from "@/shared/ui";
+import { useNewsPlacementLayer } from "@/features/admin/review/useNewsPlacementLayer";
+import { useNewsSimulation } from "@/features/news/useNewsSimulation";
 
 let hasZoomedToPasigForAnalytics = false;
 let hasZoomedToPasigForMap = false;
@@ -215,6 +217,9 @@ export default function MapCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const pathname = usePathname();
   const isMapVisible = pathname === "/map" || pathname === "/analytics" || pathname === "/admin/analytics";
+  const simulation = useNewsSimulation();
+  const [simulationCandidate, setSimulationCandidate] = useState<string | null>(null);
+  const [simulationMapError, setSimulationMapError] = useState<string | null>(null);
 
   const [zoneStatusUnavailable, setZoneStatusUnavailable] = useState(false);
   const { data: activeZonesData } = useQuery({
@@ -238,7 +243,30 @@ export default function MapCanvas() {
   });
 
   const isTouchDevice = useMediaQuery("(max-width: 640px), (pointer: coarse)");
+  const simulationContextCoordinates = useMemo(() => {
+    const coordinates: number[][] = [];
+    const visit = (value: unknown) => {
+      if (!Array.isArray(value)) return;
+      if (value.length >= 2 && typeof value[0] === "number" && typeof value[1] === "number") {
+        coordinates.push([value[0], value[1]]);
+      } else value.forEach(visit);
+    };
+    for (const zone of activeZonesData ?? []) visit(zone.geometry?.coordinates);
+    return coordinates;
+  }, [activeZonesData]);
+  const simulationPlacement = useMemo(() => simulation.data?.placement ? {
+    ...simulation.data.placement, source: { title: simulation.data.article_title, canonical_url: simulation.data.source_url },
+  } : null, [simulation.data]);
+  useNewsPlacementLayer(mapInstance, isLoaded, simulationPlacement,
+    simulationCandidate, pathname === "/map" && !!simulation.data?.placement,
+    isMapVisible, setSimulationCandidate, setSimulationMapError, simulationContextCoordinates, isTouchDevice, true);
+
   const { error: showError } = useToast();
+  useEffect(() => {
+    if (pathname !== "/map") return;
+    const message = simulationMapError || simulation.configurationError || (simulation.isError ? simulation.error.message : null);
+    if (message) showError("Flood zone preview unavailable", message);
+  }, [pathname, simulationMapError, simulation.configurationError, simulation.isError, simulation.error, showError]);
   useEffect(() => {
     if (zoneStatusUnavailable) showError("Flood zone status unavailable", "Could not refresh the flood zones. Cached map data may be out of date.");
   }, [zoneStatusUnavailable, showError]);
@@ -314,6 +342,9 @@ export default function MapCanvas() {
     // Ensure map is resized to the active route's container dimensions
     mapRef.current.resize();
 
+    // The replay's backend placement layer focuses the reported road candidates.
+    if (pathname === "/map" && simulation.enabled) return;
+
     // If navigated with specific coordinates, skip default city bounds zoom
     const hasTargetCoords = !!(searchParams.get("lat") && searchParams.get("lng"));
     if (hasTargetCoords) {
@@ -347,7 +378,7 @@ export default function MapCanvas() {
         [121.1077, 14.6186]  // Northeast (Approx Pasig City NE)
       ], { padding: 120, duration: 1000 });
     }
-  }, [pathname, isLoaded, searchParams]);
+  }, [pathname, isLoaded, searchParams, simulation.enabled]);
 
   // Listen for lat/lng in URL to fly to location
   useEffect(() => {
@@ -433,16 +464,16 @@ export default function MapCanvas() {
           setTimeout(() => {
             marker.remove();
           }, 3000);
-        }, 50);
 
-        // Clean up URL query parameters so on page refresh it doesn't re-trigger
-        try {
+          // Next synchronizes replaceState with useSearchParams. Clear the
+          // handoff only after applying it; doing this before the timeout
+          // reruns the effect and cancels the pending camera movement.
           const url = new URL(window.location.href);
           url.searchParams.delete("lat");
           url.searchParams.delete("lng");
           url.searchParams.delete("zoom");
           window.history.replaceState({}, "", url.pathname + (url.search ? url.search : ""));
-        } catch (e) {}
+        }, 50);
 
         return () => clearTimeout(timer);
       }

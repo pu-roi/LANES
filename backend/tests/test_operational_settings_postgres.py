@@ -261,11 +261,19 @@ async def test_configuration_http_permissions_validation_and_legacy_contract(iso
             path = "/api/v1/admin/settings/configuration"
             response = await client.get(path)
             assert response.status_code == 200 and response.headers["cache-control"] == "no-store"
+            assert response.json()["settings"]["automatic_expiry_enabled"] is True
             assert response.json()["supported_options"]["collection_intervals_minutes"] == [15,30,60]
             db.add(SystemSetting(key="legacy_fixture", value=0.5)); db.commit()
-            payload = {"revision": 0, "settings": OperationalSettings(staff_road_buffer_metres=30).model_dump()}
+            payload = {"revision": 0, "settings": OperationalSettings(staff_road_buffer_metres=30, automatic_expiry_enabled=False).model_dump()}
             assert (await client.put(path, json={**payload, "unknown": True})).status_code == 422
             assert (await client.put(path, json=payload)).status_code == 200
+            assert (await client.get(path)).json()["settings"]["automatic_expiry_enabled"] is False
+            saved = db.get(SystemSetting, settings.CONFIG_KEY)
+            assert saved.value["automatic_expiry_enabled"] is False
+            assert "automatic_expiry_enabled" not in saved.value["settings"]
+            audit = db.scalar(select(AuditLog).where(AuditLog.action_type == "UPDATE_SETTINGS").order_by(AuditLog.id.desc()))
+            assert audit.metadata_json["before"]["automatic_expiry_enabled"] is True
+            assert audit.metadata_json["after"]["automatic_expiry_enabled"] is False
             assert (await client.put(path, json=payload)).status_code == 409
             legacy = await client.get("/api/v1/admin/settings")
             assert legacy.json()["legacy_fixture"] == 0.5

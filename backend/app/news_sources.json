@@ -1,6 +1,14 @@
 {
   "sources": [
     {
+      "id": "daily-tribune",
+      "publisher": "Daily Tribune",
+      "article_domains": ["tribune.net.ph"],
+      "feed_urls": ["https://tribune.net.ph/rss.xml"],
+      "verified_at": "2026-10-10",
+      "enabled": true
+    },
+    {
       "id": "feedspot-01",
       "publisher": "GMA News Online",
       "article_domains": [

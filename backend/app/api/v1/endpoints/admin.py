@@ -727,6 +727,10 @@ async def approve_report(
         )
     )
 
+    from app.services.pasig_ml_expiry_service import apply_zone_policy
+    apply_zone_policy(db, report.zone_id)
+    db.commit()
+
     # 6. Broadcast real-time signal via SSE
     from app.core.sse import manager
     await manager.broadcast({
@@ -2163,6 +2167,10 @@ async def create_official_zone(
             ip_address=client_ip
         )
     )
+
+    from app.services.pasig_ml_expiry_service import apply_zone_policy
+    apply_zone_policy(db, zone.id)
+    db.commit()
 
     from app.core.sse import manager
     await manager.broadcast({

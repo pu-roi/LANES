@@ -8,6 +8,7 @@ from app.crud.news_processing import utc_now
 from app.models.news_publication import NewsClaimCase, NewsClaimDecision, NewsClaimZoneLink
 from app.schemas.report import FloodAvoidanceZoneResponse
 from app.services.news_publication_service import public_projection
+from app.services.configuration_service import read_configuration
 
 
 def zone_responses_with_news(db: Session, zones: list) -> list[FloodAvoidanceZoneResponse]:
@@ -21,8 +22,11 @@ def zone_responses_with_news(db: Session, zones: list) -> list[FloodAvoidanceZon
                NewsClaimDecision.revision == NewsClaimCase.revision,
                NewsClaimDecision.public_state == "active_zone"))
     now = utc_now()
+    automatic_expiry_enabled = read_configuration(db).automatic_expiry_enabled
     for zone_id, decision in rows:
-        public = public_projection(decision, now)
+        from app.crud.news_publication_read import operational_deadline
+        public = public_projection(decision, now, automatic_expiry_enabled=automatic_expiry_enabled,
+            expiry_override=operational_deadline(db, decision))
         if public and public.status == "Active" and public.affects_routing:
             by_zone[zone_id].append(public)
     responses = []

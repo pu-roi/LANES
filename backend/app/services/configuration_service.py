@@ -1,8 +1,9 @@
 """Shared database policy, atomic configuration changes and bounded run status."""
 from datetime import datetime, timedelta, timezone
-from sqlalchemy import text
+from sqlalchemy import and_, false, or_, text, true
+from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.orm import Session
-from app.crud.audit import create_audit_log
+from app.models.audit import AuditLog
 from app.models.setting import SystemSetting
 from app.schemas.audit import AuditLogCreate
 from app.schemas.configuration import ConfigurationResponse, ConfigurationRuntime, ConfigurationUpdate, OperationalSettings, NewsStageHealth
@@ -12,6 +13,13 @@ from app.services.news_sources import NewsSource, load_news_sources
 CONFIG_KEY = "operational_configuration_v1"
 RUNTIME_KEY = "news_automation_runtime_v1"
 CONFIG_LOCK = 614296501
+
+
+def create_audit_log(db: Session, audit_in: AuditLogCreate, commit: bool = True) -> AuditLog:
+    # Import the CRUD package only when writing, after configuration predicates
+    # exist. Standalone expiry workers otherwise encounter report/config cycles.
+    from app.crud.audit import create_audit_log as append
+    return append(db, audit_in, commit=commit)
 
 
 class ConfigurationConflict(ValueError):
@@ -24,7 +32,22 @@ def configuration_lock(db: Session) -> None:
 
 def read_configuration(db: Session) -> OperationalSettings:
     row = db.get(SystemSetting, CONFIG_KEY, populate_existing=True)
-    return OperationalSettings.model_validate(row.value["settings"], context={"persisted_history": True}) if row else OperationalSettings()
+    if row is None:
+        return OperationalSettings()
+    saved = dict(row.value["settings"])
+    for flag in ("automatic_expiry_enabled", "pasig_ml_expiry_enabled"):
+        if flag in row.value:
+            saved[flag] = row.value[flag]
+    return OperationalSettings.model_validate(saved, context={"persisted_history": True})
+
+
+def unexpired_deadline(db: Session, deadline: ColumnElement, clock: ColumnElement | datetime) -> ColumnElement:
+    """Shared visibility/routing policy; pausing never changes stored deadlines."""
+    return or_(deadline.is_(None), deadline > clock) if read_configuration(db).automatic_expiry_enabled else true()
+
+
+def expired_deadline(db: Session, deadline: ColumnElement, clock: ColumnElement | datetime) -> ColumnElement:
+    return and_(deadline.is_not(None), deadline <= clock) if read_configuration(db).automatic_expiry_enabled else false()
 
 
 def selected_news_sources(db: Session, sources: tuple[NewsSource, ...] | None = None) -> tuple[NewsSource, ...]:
@@ -87,7 +110,15 @@ def save_configuration(db: Session, update: ConfigurationUpdate, *, actor_id: in
             if row is None:
                 row = SystemSetting(key=CONFIG_KEY)
                 db.add(row)
-            row.value = {"revision": revision + 1, "settings": after}
+            # Older workers validate the nested settings with extra="forbid".
+            # Keep the new policy in the same atomic JSON record's envelope so
+            # a mixed-version rollout does not break their other news stages.
+            stored = dict(after)
+            expiry_enabled = stored.pop("automatic_expiry_enabled")
+            pasig_enabled = stored.pop("pasig_ml_expiry_enabled")
+            row.value = {"revision": revision + 1, "settings": stored,
+                         "automatic_expiry_enabled": expiry_enabled,
+                         "pasig_ml_expiry_enabled": pasig_enabled}
             row.last_updated_by = actor_id
             create_audit_log(db, AuditLogCreate(admin_id=actor_id, action_type="UPDATE_SETTINGS",
                 target_table="system_settings", metadata_json={"revision": revision + 1, "before": before, "after": after}), commit=False)

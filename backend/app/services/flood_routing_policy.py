@@ -32,13 +32,15 @@ class ActiveFloodZone:
 
 def get_active_flood_zones(db: Session) -> list[ActiveFloodZone]:
     """Load active, unexpired authoritative PostGIS zone geometries once."""
+    from app.services.local_news_scenario_service import sql_clock
+    from app.services.configuration_service import unexpired_deadline
+    clock = sql_clock(models.FloodAvoidanceZone.id, "zone", func.now())
     rows = db.query(
         models.FloodAvoidanceZone,
         func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson"),
     ).filter(
         models.FloodAvoidanceZone.is_active.is_(True),
-        (models.FloodAvoidanceZone.expires_at.is_(None))
-        | (models.FloodAvoidanceZone.expires_at > func.now()),
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, clock),
     ).all()
 
     zones: list[ActiveFloodZone] = []

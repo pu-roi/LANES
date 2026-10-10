@@ -16,6 +16,8 @@ def default_sources() -> list[str]:
 class OperationalSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
     staff_road_buffer_metres: float = Field(default=25, ge=1, le=100, allow_inf_nan=False, strict=True)
+    automatic_expiry_enabled: StrictBool = True
+    pasig_ml_expiry_enabled: StrictBool = True
     evidence_expiry_minutes: dict[str, Minutes] = Field(default_factory=lambda: dict.fromkeys(DEPTH_KEYS, 120))
     news_unconfirmed_retention_hours: StrictInt = Field(default=24, ge=1, le=72)
     citizen_auto_approval_enabled: StrictBool = False

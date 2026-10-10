@@ -108,4 +108,3 @@ export const PENDING_REPORT_POINT_AURA_PAINT: any = {
   ],
   "circle-stroke-width": 0,
 };
-

@@ -140,3 +140,5 @@ infrastructure/valhalla/artifacts/
 !infrastructure/valhalla/artifacts/
 !infrastructure/valhalla/artifacts/.gitkeep
 graphhopper_data/
+frontend/public/news-simulation.local.json
+frontend/.next-news-simulation/

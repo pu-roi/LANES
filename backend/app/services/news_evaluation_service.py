@@ -26,6 +26,7 @@ from app.services.news_feed_service import canonical_article_url
 from app.services.news_sources import NewsSource, load_news_sources
 
 EVALUATION_POLICY_VERSION = "independent-claim-evaluation-v1"
+OPERATIONAL_ZONE_POLICY_VERSION = "audited-flood-depth-access-reprocessing-v3"
 ADMISSION_AGE = timedelta(hours=12)
 OBSERVATION_FALLBACK = timedelta(hours=2)
 
@@ -37,16 +38,40 @@ class EvaluationPolicy:
     auditor_identity: dict
     expiry_minutes: dict[str, int] | None = None
     retention_hours: int | None = None
+    publication_admission_at: datetime | None = None
+
+    def __post_init__(self) -> None:
+        if self.publication_admission_at is None:
+            return
+        require_utc(self.publication_admission_at)
+        from app.services.local_news_scenario_service import admits_connected_reconstruction
+        if admits_connected_reconstruction(self.publication_admission_at):
+            return
+        # Later-published evidence may be used to reconstruct an earlier
+        # observation only in the dedicated private replay database.
+        from app.core.config import settings
+        from app.core.database import engine
+        from sqlalchemy.engine import make_url
+        configured = make_url(settings.DATABASE_URL)
+        if (configured != engine.url or configured.get_backend_name() != "postgresql"
+            or configured.host not in {"localhost", "127.0.0.1", "::1"}
+            or configured.database != "lanes_news_test"
+            or any(key in configured.query for key in {"host", "hostaddr", "service", "dbname", "database", "port"})):
+            raise ValueError("Historical reconstruction requires the dedicated loopback replay database")
 
 
-def evaluation_policy(auditor: NewsClaimAuditor, configuration=None) -> EvaluationPolicy:
+def evaluation_policy(auditor: NewsClaimAuditor, configuration=None, *,
+                      publication_admission_at: datetime | None = None) -> EvaluationPolicy:
     identity = auditor.policy_identity()
     pipeline = current_pipeline_version()
     configuration_identity = ({"expiry_minutes": configuration.evidence_expiry_minutes, "retention_hours": configuration.news_unconfirmed_retention_hours} if configuration is not None else {})
     fingerprint = canonical_sha256({"version": EVALUATION_POLICY_VERSION, "pipeline_version": pipeline,
+                                    "operational_zone_policy": OPERATIONAL_ZONE_POLICY_VERSION,
                                     "auditor": identity, "admission_seconds": 43200,
-                                    "observation_fallback_seconds": 7200, **configuration_identity})
-    return EvaluationPolicy(fingerprint, pipeline, identity, configuration.evidence_expiry_minutes if configuration is not None else None, configuration.news_unconfirmed_retention_hours if configuration is not None else None)
+                                    "observation_fallback_seconds": 7200,
+                                    "publication_admission_at": publication_admission_at.isoformat() if publication_admission_at else None,
+                                    **configuration_identity})
+    return EvaluationPolicy(fingerprint, pipeline, identity, configuration.evidence_expiry_minutes if configuration is not None else None, configuration.news_unconfirmed_retention_hours if configuration is not None else None, publication_admission_at)
 
 
 def source_is_approved(article: NewsArticleExtractorInput, sources: tuple[NewsSource, ...]) -> bool:
@@ -54,10 +79,15 @@ def source_is_approved(article: NewsArticleExtractorInput, sources: tuple[NewsSo
                and canonical_article_url(article.canonical_url, source) is not None for source in sources)
 
 
-def publication_is_current(article: NewsArticleExtractorInput, now: datetime) -> bool:
+def publication_is_current(article: NewsArticleExtractorInput, now: datetime,
+                           policy: EvaluationPolicy | None = None) -> bool:
+    from app.services.local_news_scenario_service import admitted_source_matches
+    if not admitted_source_matches(article.canonical_url):
+        return False
     published = article.published_at
+    admission_at = policy.publication_admission_at if policy and policy.publication_admission_at else now
     return bool(published is not None and published.tzinfo is not None
-                and timedelta(0) <= now - published <= ADMISSION_AGE)
+                and timedelta(0) <= admission_at - published <= ADMISSION_AGE)
 
 
 def preliminary_reason(claim: ExtractedClaim, now: datetime, policy: EvaluationPolicy | None = None) -> str | None:
@@ -128,7 +158,8 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
             query = query.join(NewsArticleVersion, NewsArticleVersion.id == NewsExtractionRun.article_version_id).join(
                 NewsArticle, NewsArticle.id == NewsArticleVersion.article_id).where(
                 NewsExtractionRun.pipeline_version == policy.pipeline_version, nonempty_claims, ~evaluated,
-                NewsArticle.published_at >= now - ADMISSION_AGE, NewsArticle.published_at <= now)
+                NewsArticle.published_at >= (policy.publication_admission_at or now) - ADMISSION_AGE,
+                NewsArticle.published_at <= (policy.publication_admission_at or now))
         if run_id is not None:
             query = query.where(NewsExtractionRun.id == run_id)
         else:
@@ -152,7 +183,7 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
                 continue
             reason = ("stale_extraction_policy" if run.pipeline_version != policy.pipeline_version else
                       "unapproved_article_source" if not source_is_approved(article, sources) else
-                      "publication_outside_admission_window" if not publication_is_current(article, now) else None)
+                      "publication_outside_admission_window" if not publication_is_current(article, now, policy) else None)
             if reason:
                 summary.skipped.append({"run_id": selected_id, "reason_code": reason})
                 continue
@@ -206,7 +237,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
             if (extraction_input_snapshot(article)[1] != owned.input_fingerprint
                     or canonical_claim_sha256(claim) != owned.claim_sha256):
                 error_code = "immutable_evidence_mismatch"
-            elif not source_is_approved(article, sources) or not publication_is_current(article, require_utc(clock())):
+            elif not source_is_approved(article, sources) or not publication_is_current(article, require_utc(clock()), policy):
                 error_code = "source_admission_changed"
             elif auditor.policy_identity() != policy.auditor_identity or current_pipeline_version() != policy.pipeline_version:
                 error_code = "evaluation_policy_changed"
@@ -228,6 +259,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                     result = {"schema_version": EVALUATION_POLICY_VERSION,
                               "policy_fingerprint": owned.policy_fingerprint,
                               "policy_identity": policy.auditor_identity,
+                              "publication_admission_at": policy.publication_admission_at.isoformat() if policy.publication_admission_at else None,
                               "input_sha256": owned.input_fingerprint, "claim_sha256": owned.claim_sha256,
                               "reason_code": reason, "audit": audit,
                               "publication_permitted": False, "may_affect_routing": False}
@@ -243,7 +275,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
         if result is not None:
             # Preserve a confirmation while recording freshness lost during an audit.
             result["freshness_reason_at_completion"] = (
-                "publication_outside_admission_window" if not publication_is_current(article, now)
+                "publication_outside_admission_window" if not publication_is_current(article, now, policy)
                 else preliminary_reason(claim, now, policy))
             if len(json.dumps(result, ensure_ascii=False, allow_nan=False).encode()) > 65536:
                 result, error_code, retryable = None, "evaluation_result_oversized", False

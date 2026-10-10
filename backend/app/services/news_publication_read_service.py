@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.crud.news_publication_read import (
-    list_decision_history, list_public_decisions, read_latest_decision, source_input_for_decision,
+    list_decision_history, list_public_decisions, read_latest_decision, source_input_for_decision, operational_deadline,
 )
 from app.models.news import NewsArticleVersion, NewsExtractionRun
 from app.models.news_publication import NewsClaimCase, NewsClaimDecision, NewsClaimEvaluation, NewsClaimSource
@@ -16,6 +16,7 @@ from app.schemas.news_publication import (
 from app.schemas.news_publication_reads import StaffNewsDecision, StaffNewsDecisionPage
 from app.services.news_evaluation_service import source_is_approved
 from app.services.news_sources import NewsSource, load_news_sources
+from app.services.configuration_service import read_configuration
 
 
 def publication_read_clock() -> datetime:
@@ -44,13 +45,15 @@ def browse_public_news_alerts(db: Session, *, page: int, page_size: int,
     rows, total, actual_page = list_public_decisions(db, now=now, page=page, page_size=page_size,
         approved_source_ids=tuple(source.id for source in sources if source.enabled and source.verified_at is not None))
     items = []
+    expiry_enabled = read_configuration(db).automatic_expiry_enabled
     for decision in rows:
         NewsDecisionSnapshot.model_validate(decision.snapshot)
         if not _approved_public_source(db, decision, sources):
             # A source-domain policy change must not expose stale unsafe links.
             # Raise a safe feed error instead of returning an inconsistent page.
             raise ValueError("Published source is no longer approved")
-        item = public_projection(decision, now)
+        item = public_projection(decision, now, automatic_expiry_enabled=expiry_enabled,
+            expiry_override=operational_deadline(db, decision))
         if item is None:
             raise ValueError("Published projection is inconsistent with current feed")
         items.append(item)
@@ -68,7 +71,9 @@ def read_public_news_alert(db: Session, case_id: int, *, now: datetime | None = 
     sources = sources if sources is not None else load_news_sources()
     if not _approved_public_source(db, decision, sources):
         return None
-    return public_projection(decision, now or publication_read_clock(), include_retained=True)
+    return public_projection(decision, now or publication_read_clock(), include_retained=True,
+        automatic_expiry_enabled=read_configuration(db).automatic_expiry_enabled,
+        expiry_override=operational_deadline(db, decision))
 
 
 def _evaluation_options(db: Session, case_id: int) -> list[NewsEvaluationOption]:
@@ -125,7 +130,9 @@ def read_news_claim_detail(db: Session, case_id: int, *, can_write: bool = False
     return NewsClaimDetail(case_id=case_id, revision=case.revision,
         allowed_actions=allowed_news_actions(case, current, can_write=can_write, options=options),
         current=decision_summary(current) if current else None,
-        public=public_projection(current, now, include_retained=True) if current else None,
+        public=public_projection(current, now, include_retained=True,
+            automatic_expiry_enabled=read_configuration(db).automatic_expiry_enabled,
+            expiry_override=operational_deadline(db, current)) if current else None,
         decisions=[decision_summary(row) for row in rows], evaluation_options=options)
 
 

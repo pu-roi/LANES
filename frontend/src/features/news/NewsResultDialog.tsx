@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, History, MapPin } from "lucide-react";
 import { Button, FloodLocationSummary, RecordDetailsDialog, RecordDetailsPanels, Skeleton, Tabs, TabContentPanel } from "@/shared/ui";
@@ -16,6 +17,7 @@ type SourcePane = "article" | "history";
 const sourcePanes = [{ id: "article", label: "Article", icon: FileText }, { id: "history", label: "Processing history", icon: History }] satisfies { id: SourcePane; label: string; icon: typeof MapPin }[];
 
 export function NewsResultDialog({ runId, claimIndex, onClose }: { runId: number; claimIndex: number; onClose: () => void }) {
+  const router = useRouter();
   const [tab, setTab] = useState<DetailTab>("flood");
   const [direction, setDirection] = useState(1);
   const [mobileHistory, setMobileHistory] = useState(false);
@@ -50,6 +52,10 @@ export function NewsResultDialog({ runId, claimIndex, onClose }: { runId: number
           {data.item.summary.reading_reason && <p className="text-sm text-amber-800">Needs checking: {data.item.summary.reading_reason}</p>}
           <div className="space-y-2"><h4 className="text-sm font-semibold">What the article says</h4><blockquote className="whitespace-pre-wrap break-words border-l-2 border-blue-200 pl-3 text-sm leading-6 text-slate-600">{data.claim.evidence_sentence}</blockquote>{data.claim.event_time_raw && <p className="text-xs text-slate-500">Time wording: {data.claim.event_time_raw}</p>}</div>
           <p className="text-xs text-slate-500">Times shown in Philippine time. This is the flood described by the article, not confirmation of flooding now.</p>
+          <Button variant="outline" className="min-h-11 w-full gap-2 sm:w-auto"
+            onClick={() => router.push(`/admin/map?review_news=${runId}:${claimIndex}`)}>
+            <MapPin className="size-4" aria-hidden="true" />Inspect placement on map
+          </Button>
         </section> : <NewsSourceArticle articleId={data.item.article_id} source={data.captured_input} publisher={data.item.publisher} savedAt={data.item.saved_at} presentation="reader" />}
       </TabContentPanel>} aside={tab === "source" ? <NewsProcessingDetails articleId={data.item.article_id} currentRunId={runId} presentation="panel" onInspectRun={inspectRun} /> : undefined} />
       </div>

@@ -87,7 +87,7 @@ export default function SystemSettingsPage() {
   };
   const numeric = (field: "staff_road_buffer_metres" | "news_unconfirmed_retention_hours" | "citizen_min_trust" | "citizen_min_accuracy" | "citizen_min_human_reviews", label: string, min: number, max: number) =>
     <NumberInput aria-label={label} label={label} value={draft[field]} min={min} max={max} step={field === "staff_road_buffer_metres" ? 0.5 : 1} required disabled={disabled} onChange={(event) => update(field, event.target.value === "" ? NaN : event.target.valueAsNumber)} />;
-  const toggle = (field: "citizen_auto_approval_enabled" | "news_collection_enabled" | "news_processing_enabled" | "news_publication_enabled", label: string, explanation: string) =>
+  const toggle = (field: "automatic_expiry_enabled" | "pasig_ml_expiry_enabled" | "citizen_auto_approval_enabled" | "news_collection_enabled" | "news_processing_enabled" | "news_publication_enabled", label: string, explanation: string) =>
     <Checkbox label={label} description={explanation} checked={draft[field]} disabled={disabled} onChange={(event) => update(field, event.target.checked)} />;
   return <form onSubmit={save} noValidate className={pageClassName}>
     <header className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
@@ -126,6 +126,9 @@ export default function SystemSettingsPage() {
     </Section>
 
     <Section id="evidence-expiry" active={activeSection === "evidence-expiry"} icon={Clock} title="Evidence Expiry by Depth" description="When evidence expires, current conditions become Unconfirmed. This does not establish clearance or predict when water will subside. Fresh, qualified observations can refresh their contribution.">
+      {toggle("automatic_expiry_enabled", "Enable automatic expiry", "Applies to timed flood zones and news evidence in all covered cities. Turn off to pause scheduled expiry and deadline-based map hiding; manual deactivation and verified clearance still work.")}
+      {toggle("pasig_ml_expiry_enabled", "Use ML expiry for Pasig", "Eligible Pasig zones use the experimental model’s upper duration estimate. Other cities and unsupported cases retain fixed deadlines. Field accuracy is unverified; expiry means Unconfirmed, not dry.")}
+      {!draft.automatic_expiry_enabled && <p role="status" className="text-sm text-amber-800">Active records stay active past their saved deadlines. Already inactive records stay inactive. Turning expiry back on applies the original deadlines immediately.</p>}
       <fieldset className="min-w-0 space-y-3">
         <legend className="text-sm font-semibold text-gray-900">Observation freshness</legend>
         <p className="text-xs text-gray-500">Each depth can retain evidence for 30–120 minutes.</p>
@@ -133,7 +136,7 @@ export default function SystemSettingsPage() {
       </fieldset>
       <div className="grid items-start gap-4 border-t border-gray-100 pt-4 sm:grid-cols-2">
         {numeric("news_unconfirmed_retention_hours", "News retention after expiry (hours)", 1, 72)}
-        <p className="text-sm leading-relaxed text-gray-500">Existing decisions retain their saved deadlines. Explicit staff-managed zone deadlines remain separate. Duration-model development is separate work.</p>
+        <p className="text-sm leading-relaxed text-gray-500">Pasig ML deadlines are anchored to recorded evidence or an explicitly labelled recording-time proxy. Refreshing the page does not extend them. The next worker run synchronizes policy changes; manual deactivation remains available.</p>
       </div>
     </Section>
 
@@ -148,7 +151,7 @@ export default function SystemSettingsPage() {
       <p className="border-t border-gray-100 pt-4 text-sm leading-relaxed text-gray-500">Observation time must be explicit and no more than 30 minutes old. Known depth, matching conditions and validated continuous road geometry are required. Conflicts, copied evidence and incomplete reports remain in review.</p>
     </Section>
 
-    <Section id="news-automation" active={activeSection === "news-automation"} icon={Newspaper} title="News Automation" description="Pause stages independently. Saved evidence remains available; expiry and qualified clearance maintenance continue.">
+    <Section id="news-automation" active={activeSection === "news-automation"} icon={Newspaper} title="News Automation" description="Pause stages independently. Saved evidence remains available. Qualified clearance continues; automatic expiry follows the Evidence expiry toggle.">
       <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
         <fieldset className="min-w-0 space-y-5">
           <legend className="mb-3 text-sm font-semibold text-gray-900">Automation stages</legend>

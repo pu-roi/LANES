@@ -13,7 +13,7 @@ from app.models.news_publication import NewsClaimCase, NewsClaimDecision, NewsCl
 from app.services.hybrid_extraction_service import MAX_AUTO_ACTIVATION_AGE
 
 
-def review_rows(db: Session, now: datetime) -> Subquery:
+def review_rows(db: Session, now: datetime, *, publication_admission_at: datetime | None = None) -> Subquery:
     report = FloodReport
     reports = select(
         literal("user_report").label("source"), report.id.label("record_id"),
@@ -29,9 +29,15 @@ def review_rows(db: Session, now: datetime) -> Subquery:
         # A preserved extraction action is not a durable current decision.
         # Select the case's latest revision before excluding resolved/deferred
         # work, so an old needs-review decision cannot resurrect an active case.
-        current = select(NewsClaimSource.id).join(NewsClaimCase, NewsClaimCase.id == NewsClaimSource.case_id).join(
-            NewsClaimDecision, and_(NewsClaimDecision.case_id == NewsClaimCase.id,
-                                   NewsClaimDecision.revision == NewsClaimCase.revision)).where(
+        # New extraction evidence can be consumed by an existing incident case.
+        # Check that case's current decision as well as the source's own case;
+        # an obsolete exception on the latter must not resurrect resolved work.
+        decision_source = or_(NewsClaimDecision.case_id == NewsClaimSource.case_id,
+            NewsClaimDecision.snapshot["claim_source_id"].as_integer() == NewsClaimSource.id)
+        current = select(NewsClaimSource.id).select_from(NewsClaimSource).join(
+            NewsClaimDecision, decision_source).join(NewsClaimCase,
+            and_(NewsClaimDecision.case_id == NewsClaimCase.id,
+                 NewsClaimDecision.revision == NewsClaimCase.revision)).where(
             NewsClaimSource.extraction_run_id == NewsExtractionRun.id,
             NewsClaimSource.claim_ordinal == news.selected_columns.claim_index,
             or_(NewsClaimDecision.review_state == "resolved",
@@ -39,11 +45,26 @@ def review_rows(db: Session, now: datetime) -> Subquery:
                      cast(NewsClaimDecision.snapshot["deferred_until"].astext, DateTime(timezone=True)) > now)),
         ).correlate_except(NewsClaimSource, NewsClaimCase, NewsClaimDecision).exists()
         news = news.where(~current)
+        geometry_review = select(literal(
+            "Flood evidence is verified; the affected road geometry still requires resolution."
+        )).select_from(NewsClaimSource).join(NewsClaimDecision, decision_source).join(NewsClaimCase,
+            and_(NewsClaimDecision.case_id == NewsClaimCase.id,
+                 NewsClaimDecision.revision == NewsClaimCase.revision)).where(
+            NewsClaimSource.extraction_run_id == NewsExtractionRun.id,
+            NewsClaimSource.claim_ordinal == news.selected_columns.claim_index,
+            NewsClaimDecision.review_state == "needs_review",
+            NewsClaimDecision.reason_code == "estimated_road_needs_review",
+        ).correlate_except(NewsClaimSource, NewsClaimCase, NewsClaimDecision).limit(1).scalar_subquery()
+        news = news.add_columns(geometry_review.label("lifecycle_review_reason"))
+    else:
+        news = news.add_columns(literal(None, Text).label("lifecycle_review_reason"))
     # Explicit historical observations must not become current merely because
     # somebody reprocessed an old captured article today.
     timestamp = lambda item: cast(item, DateTime(timezone=True)) if db.get_bind().dialect.name == "postgresql" else func.julianday(item)
-    start, end = now - MAX_AUTO_ACTIVATION_AGE, now
-    fresh = lambda item: timestamp(item).between(timestamp(literal(start)), timestamp(literal(end)))
+    start = now - MAX_AUTO_ACTIVATION_AGE
+    publication_now = publication_admission_at or now
+    publication_start = publication_now - MAX_AUTO_ACTIVATION_AGE
+    fresh = lambda item: timestamp(item).between(timestamp(literal(publication_start)), timestamp(literal(publication_now)))
     news = news.where(
         readable_claim(value), readable_run(db), value("action_type") == "flagged_review",
         value("condition").not_in(["subsided", "receding"]),
@@ -63,7 +84,7 @@ def review_rows(db: Session, now: datetime) -> Subquery:
         news.c.captured_at.label("queued_at"), news.c.title,
         func.coalesce(field("canonical_road"), field("raw_place_name"), "Location unresolved").label("location"),
         field("evidence_sentence").label("evidence"),
-        func.coalesce(field("action_rationale"), "Incomplete or conflicting flood evidence.").label("review_reason"),
+        func.coalesce(news.c.lifecycle_review_reason, field("action_rationale"), "Incomplete or conflicting flood evidence.").label("review_reason"),
         literal(None, Text).label("severity"), field("depth_raw").label("depth"),
         field("canonical_city").label("city"), field("canonical_barangay").label("barangay"),
     )

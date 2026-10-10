@@ -12,9 +12,9 @@ const initialFilters: NewsResultFilters = { page: 1, search: "", publisher: "", 
 const conditionOptions = [{ value: "active", label: "Flooding reported" }, { value: "rising", label: "Water rising" }, { value: "receding", label: "Water receding" }, { value: "subsided", label: "Floodwater subsided" }, { value: "unknown", label: "Condition not stated" }];
 const placementOptions = [{ value: "bounded_candidate", label: "Needs map confirmation" }, { value: "ambiguous", label: "Several map locations" }, { value: "unresolved", label: "Exact location unknown" }, { value: "source_unavailable", label: "Map data unavailable" }, { value: "not_recorded", label: "Not checked" }];
 
-export function NewsResults({ active }: { active: boolean }) {
-  const [filters, setFilters] = useState(initialFilters);
-  const [search, setSearch] = useState("");
+export function NewsResults({ active, defaultSearch = "" }: { active: boolean; defaultSearch?: string }) {
+  const [filters, setFilters] = useState({ ...initialFilters, search: defaultSearch });
+  const [search, setSearch] = useState(defaultSearch);
   const [selected, setSelected] = useState<NewsResultItem | null>(null);
   const trigger = useRef<HTMLButtonElement | null>(null);
   const query = useQuery({ queryKey: ["news-results", filters], queryFn: ({ signal }) => getNewsResults(filters, signal), enabled: active, retry: false, staleTime: 30_000, refetchOnWindowFocus: false });

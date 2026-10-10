@@ -46,6 +46,9 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
     """Save article plus feed provenance; repeated URLs/GUIDs update their seen time."""
     from app.crud.news_processing import enqueue_article
 
+    if candidate is not None and (candidate.source_id != entry.source_id or candidate.article_url != entry.article_url):
+        raise ValueError("Captured article identity does not match its feed entry")
+
     now = datetime.now(timezone.utc)
     fingerprint = content_fingerprint(entry)
     article = get_article(db, entry.article_url)
@@ -80,6 +83,11 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
         if candidate is not None:
             article.fetched_at = candidate.fetched_at
             if candidate.article_text is not None:
+                # Preserve the old immutable input above, then bind the new
+                # body to its actual capture identity. Admission still checks
+                # the registered ID and host; an unregistered refresh must not
+                # inherit approval from an older body.
+                article.publisher_source_id = entry.source_id
                 article.article_text = candidate.article_text
                 article.article_error = None
             else:

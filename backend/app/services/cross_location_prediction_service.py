@@ -85,6 +85,12 @@ def compare_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
     zones.require_zone_reader(user, write=False)
     clock = now or datetime.now(timezone.utc)
     baseline = zones.predict_zone(db, zone_id, user, now=clock)
+    return compare_resolved_zone(db, baseline, now=clock)
+
+
+def compare_resolved_zone(db: Session, baseline: zones.ZonePrediction, *, now: datetime) -> CrossLocationPrediction:
+    """Internal calculation shared with the audited expiry policy, without HTTP access."""
+    clock, zone_id = now, baseline.zone_id
     result = CrossLocationPrediction(zone_id=zone_id)
     try:
         model, evaluation, checksum = load_comparison()

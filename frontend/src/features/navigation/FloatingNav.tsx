@@ -127,8 +127,8 @@ export default function FloatingNav() {
           <>
             <span className="w-px h-5 bg-gray-200 hidden sm:block ml-2 shrink-0" />
             <button
-              onClick={() => {
-                logout();
+              onClick={async () => {
+                await logout();
                 router.push("/feed");
               }}
               className={cn(

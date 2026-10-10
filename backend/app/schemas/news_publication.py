@@ -73,13 +73,14 @@ class PublicNewsAlertPage(NewsPublicationModel):
 
 
 class EstimatedRoadEvidence(NewsPublicationModel):
-    policy_version: Literal["news-estimated-road-v1"] = "news-estimated-road-v1"
+    policy_version: Literal["news-estimated-road-v1", "news-estimated-road-v2"] = "news-estimated-road-v1"
     candidate_id: str = Field(min_length=1, max_length=300)
     placement_revision: str = Field(min_length=1, max_length=500)
     osm_catalog_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     noah_catalog_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     buffer_radius_metres: Literal[25.0] = 25.0
     component_centerlines: list[dict] = Field(min_length=1, max_length=25)
+    carriageway_candidate_ids: list[str] = Field(default_factory=list, max_length=2)
 
 
 class OperationalFootprintBinding(NewsPublicationModel):
@@ -125,6 +126,7 @@ class NewsDecisionSnapshot(NewsPublicationModel):
     previous_decision_id: int | None = Field(default=None, gt=0)
     deferred_until: datetime | None = None
     evidence_expiry_minutes: dict[str, int] = Field(default_factory=dict)
+    publication_admission_at: datetime | None = None
     unconfirmed_retention_hours: int = Field(default=24, ge=1, le=72)
     geometry_reason: Literal[
         "operational_geometry_not_verified",

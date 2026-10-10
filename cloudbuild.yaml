@@ -72,5 +72,22 @@ steps:
       - '--region'
       - 'asia-east1'
 
+  # Keep the independent expiry worker on the same API/model image.
+  # Its existing database binding and minute scheduler are provisioned separately.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'jobs'
+      - 'deploy'
+      - 'lanes-zone-expiry'
+      - '--memory=1Gi'
+      - '--command=python'
+      - '--args=-m,scripts.run_zone_expiry'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
+      - '--region'
+      - 'asia-east1'
+
 images:
   - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'

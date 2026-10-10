@@ -41,12 +41,23 @@ def rss(items: str) -> bytes:
 
 def test_registry_enables_only_dated_verified_feeds() -> None:
     sources = load_news_sources()
-    assert len(sources) == 6
+    assert len(sources) == 7
     assert {item.id for item in sources} == {
-        "feedspot-01", "feedspot-02", "feedspot-03", "feedspot-05", "feedspot-07", "feedspot-14"
+        "feedspot-01", "feedspot-02", "feedspot-03", "feedspot-05", "feedspot-07", "feedspot-14", "daily-tribune"
     }
     assert all(item.enabled and item.verified_at is not None and len(item.feed_urls) == 1 for item in sources)
     assert len(PASIG_BARANGAYS) == 30
+
+
+def test_tribune_admission_requires_registered_identity_and_publisher_host() -> None:
+    from app.schemas.news_extraction import NewsArticleExtractorInput
+    from app.services.news_evaluation_service import source_is_approved
+    article = NewsArticleExtractorInput(article_id=1, publisher="daily-tribune", title="Flood news",
+        canonical_url="https://tribune.net.ph/2026/09/24/minor-flooding-hits-some-metro-areas")
+    sources = load_news_sources()
+    assert source_is_approved(article, sources)
+    assert not source_is_approved(article.model_copy(update={"publisher": "unregistered-tribune"}), sources)
+    assert not source_is_approved(article.model_copy(update={"canonical_url": "https://example.org/flood"}), sources)
 
 
 @pytest.mark.parametrize("content,headers,expected", [
@@ -674,6 +685,44 @@ def test_same_url_new_publication_refreshes_body_and_preserves_failed_snapshot(b
         engine.dispose()
 
 
+def test_unchanged_article_recaptures_changed_publisher_identity_without_losing_history() -> None:
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    tables = TELEMETRY_TABLES + [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
+    NewsArticle.metadata.create_all(engine, tables=tables)
+    body = "Knee-deep flooding affected Laguna Street in Pasig City. " * 4
+    requests = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(str(request.url))
+        if str(request.url) == FEED_URL:
+            return httpx.Response(200, content=rss(f'<item><guid>same</guid><title>Flood in Pasig</title><link>{ARTICLE_URL}</link></item>'))
+        return httpx.Response(200, text=f'<article><p>{body}</p></article>', headers={"content-type": "text/html"})
+
+    try:
+        with httpx.Client(transport=httpx.MockTransport(handler)) as client, Session(engine) as db:
+            discover_news((source(),), client, db)
+            stored = db.scalar(select(NewsArticle))
+            stored.publisher_source_id = source().publisher
+            db.commit()
+            from app.crud.news_processing import enqueue_article
+            enqueue_article(db, stored)
+            db.commit()
+            original = list(db.scalars(select(NewsArticleVersion.input_snapshot)))
+            refreshed = discover_news((source(),), client, db)
+            assert len(refreshed.candidates) == 1
+            assert requests.count(ARTICLE_URL) == 2
+            assert stored.publisher_source_id == source().id
+            assert stored.article_text == body.strip()
+            snapshots = list(db.scalars(select(NewsArticleVersion.input_snapshot)))
+            assert all(item in snapshots for item in original)
+            assert any(item["publisher"] == source().publisher for item in snapshots)
+            assert any(item["publisher"] == source().id for item in snapshots)
+            discover_news((source(),), client, db)
+            assert requests.count(ARTICLE_URL) == 2
+    finally:
+        engine.dispose()
+
+
 @pytest.mark.parametrize("fallback_path", ["index", "publisher_feed"])
 @pytest.mark.parametrize("retained_body", [None, "Previous article body retained after a blocked refresh."])
 def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monkeypatch: pytest.MonkeyPatch, fallback_path: str, retained_body: str | None) -> None:
@@ -713,8 +762,8 @@ def test_staff_source_api_requires_authentication_and_lists_runtime_sources(monk
             try:
                 response = client.get("/api/v1/admin/news/sources")
                 assert response.status_code == 200
-                assert len(response.json()) == 6
-                assert sum(item["enabled"] for item in response.json()) == 6
+                assert len(response.json()) == 7
+                assert sum(item["enabled"] for item in response.json()) == 7
                 assert client.post("/api/v1/admin/news/sources/news5/probe").status_code == 404
                 manual = client.post("/api/v1/admin/news/manual-candidate", json={
                     "title": "Baha sa Ortigas",

@@ -497,7 +497,8 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                                     (entry.published_at is None or (existing.published_at is not None and
                                      utc(entry.published_at) == utc(existing.published_at))))
                 if (existing is not None and existing.content_fingerprint == digest
-                        and existing.article_text is not None and existing.article_error is None and same_publication):
+                        and existing.article_text is not None and existing.article_error is None and same_publication
+                        and existing.publisher_source_id == entry.source_id):
                     if body_has_metro_manila_flood_claim(entry, existing.article_text):
                         accepted_urls.add(entry.article_url)
                         if entry.excerpt:

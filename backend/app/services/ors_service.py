@@ -18,12 +18,15 @@ def get_active_flood_polygons(db: Session) -> Tuple[List[List[List[float]]], Lis
     Fetches active flood avoidance zones and groups them by severity.
     Returns lists of GeoJSON polygon exterior rings.
     """
+    from app.services.local_news_scenario_service import sql_clock
+    from app.services.configuration_service import unexpired_deadline
+    clock = sql_clock(models.FloodAvoidanceZone.id, "zone", func.now())
     zones_query = db.query(
         models.FloodAvoidanceZone,
         func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson")
     ).filter(
         models.FloodAvoidanceZone.is_active == True,
-        (models.FloodAvoidanceZone.expires_at == None) | (models.FloodAvoidanceZone.expires_at > func.now())
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, clock)
     ).all()
     
     red, orange, yellow = [], [], []

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import maplibregl, { Map } from "maplibre-gl";
 import { createRoot, type Root } from "react-dom/client";
-import { FloodZonePopup } from "../components/FloodZonePopup";
+import { FloodZonePopup, type FloodPlacementPopupDetails } from "../components/FloodZonePopup";
 import type { ZoneCondition, ZoneUpdateContext } from "@/features/hazards/zoneUpdatesApi";
 import {
   SEVERITY_COLORS,
@@ -10,8 +10,16 @@ import {
   PIN_CIRCLE_PAINT,
   ACTIVE_ZONE_POLYGON_FILL_PAINT,
   ACTIVE_ZONE_ROAD_CORE_PAINT,
+  PENDING_REPORT_ROAD_AURA_PAINT,
 } from "../mapStyles";
 import { computeCenterCoordinate, flyToCoordinates } from "../mapGeoUtils";
+import { floodPopupAnchor } from "../mapPopupUtils";
+
+export interface FloodZoneLayerOptions {
+  namespace?: string;
+  mode?: "active" | "review";
+  onError?: (message: string | null) => void;
+}
 
 export function useFloodZonesLayer(
   map: Map | null,
@@ -23,9 +31,31 @@ export function useFloodZonesLayer(
   setSelectedZoneId?: (id: number | null) => void,
   selectedContributorId?: number | null,
   setSelectedContributorId?: (id: number | null) => void,
-  onZoneUpdate?: (zone: ZoneUpdateContext, condition: ZoneCondition) => void
+  onZoneUpdate?: (zone: ZoneUpdateContext, condition: ZoneCondition) => void,
+  options?: FloodZoneLayerOptions
 ) {
-  const activePopupRef = useRef<{ popup: maplibregl.Popup | null; root: Root; zoneId?: number } | null>(null);
+  const activePopupRef = useRef<{ popup: maplibregl.Popup | null; root: Root; zoneId?: number;
+    container: HTMLElement; lngLat: { lng: number; lat: number }; color: string } | null>(null);
+  const namespace = options?.namespace ?? "active-zones";
+  const reviewMode = options?.mode === "review";
+  const onError = options?.onError;
+  const sourceId = `${namespace}-source`;
+  const fillLayer = `${namespace}-layer`;
+  const roadLayer = `${namespace}-road-core-layer`;
+  const pinLayer = `${namespace}-circle-layer`;
+  const interaction = useRef({ activeZonesData, selectedZoneId, setSelectedZoneId, onZoneUpdate });
+  useEffect(() => {
+    interaction.current = { activeZonesData, selectedZoneId, setSelectedZoneId, onZoneUpdate };
+  }, [activeZonesData, selectedZoneId, setSelectedZoneId, onZoneUpdate]);
+
+  useEffect(() => {
+    if (!map || !isLoaded || namespace === "active-zones") return;
+    return () => {
+      if (!map.getStyle()) return;
+      for (const layer of [pinLayer, roadLayer, fillLayer]) if (map.getLayer(layer)) map.removeLayer(layer);
+      if (map.getSource(sourceId)) map.removeSource(sourceId);
+    };
+  }, [map, isLoaded, namespace, sourceId, fillLayer, roadLayer, pinLayer]);
 
   useEffect(() => {
     console.log("[useFloodZonesLayer] hook execution started", { mapExists: !!map, isLoaded, activeZonesLength: activeZonesData?.length });
@@ -35,7 +65,6 @@ export function useFloodZonesLayer(
       console.log("[useFloodZonesLayer] setupLayers triggered", { activeZonesDataLength: activeZonesData?.length, activeTab });
       if (!map.getStyle()) return;
 
-      const sourceId = "active-zones-source";
       const existingSource = map.getSource(sourceId) as maplibregl.GeoJSONSource;
 
       if (!activeZonesData || activeZonesData.length === 0 || activeTab !== "zones") {
@@ -51,8 +80,8 @@ export function useFloodZonesLayer(
       const features: any[] = [];
       activeZonesData.forEach((zone: any) => {
         const severity = (zone.severity || "medium").toLowerCase();
-        const color = SEVERITY_COLORS[severity] || "#eab308";
-        const borderColor = SEVERITY_BORDER_COLORS[severity] || "#a16207";
+        const color = SEVERITY_COLORS[severity] || (reviewMode ? "#94a3b8" : "#eab308");
+        const borderColor = SEVERITY_BORDER_COLORS[severity] || (reviewMode ? "#64748b" : "#a16207");
         const isSelected = selectedZoneId === zone.id;
 
         // Check if a specific contributor in this zone is being inspected
@@ -140,6 +169,9 @@ export function useFloodZonesLayer(
           created_at: zone.created_at,
           expires_at: zone.expires_at,
           depth: zone.depth,
+          depth_formatted: zone.depth_formatted,
+          is_pending: zone.is_pending ?? reviewMode,
+          placement_json: zone.placement_details ? JSON.stringify(zone.placement_details) : undefined,
           report_text: zone.report_text,
           reporter_name: zone.reporter_name,
           reporter_role: zone.reporter_role,
@@ -201,60 +233,83 @@ export function useFloodZonesLayer(
       }
 
       // Layer 1: Avoidance Buffer Polygon Aura (Street Level: Zoom > 14 - pure transparent buffer, no border)
-      if (!map.getLayer("active-zones-layer")) {
+      if (!map.getLayer(fillLayer)) {
         map.addLayer({
-          id: "active-zones-layer",
+          id: fillLayer,
           type: "fill",
           source: sourceId,
+          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
           paint: ACTIVE_ZONE_POLYGON_FILL_PAINT,
           filter: ["in", ["geometry-type"], ["literal", ["Polygon", "MultiPolygon"]]],
         });
       }
 
       // Layer 2: Solid Inner Centerline for Road Segments (Street Level: Zoom > 14)
-      if (!map.getLayer("active-zones-road-core-layer")) {
+      if (!map.getLayer(roadLayer)) {
         map.addLayer({
-          id: "active-zones-road-core-layer",
+          id: roadLayer,
           type: "line",
           source: sourceId,
+          minzoom: ZOOM_THRESHOLDS.DETAILED_MIN_ZOOM,
           layout: {
             "line-join": "round",
             "line-cap": "round",
           },
-          paint: ACTIVE_ZONE_ROAD_CORE_PAINT,
+          paint: reviewMode ? PENDING_REPORT_ROAD_AURA_PAINT : ACTIVE_ZONE_ROAD_CORE_PAINT,
           filter: [
             "all",
             ["!=", ["get", "is_zoomed_out_point"], true],
             ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
           ],
         });
+      } else {
+        // The same source can switch presentation modes without retaining its
+        // previous pending stroke. Painting still comes from canonical tokens.
+        const paint = reviewMode ? PENDING_REPORT_ROAD_AURA_PAINT : ACTIVE_ZONE_ROAD_CORE_PAINT;
+        for (const [property, value] of Object.entries(paint)) map.setPaintProperty(roadLayer, property, value);
       }
 
       // Layer 3: Standardized Map Pin Circles (City Overview: Zoom <= 14)
-      if (!map.getLayer("active-zones-circle-layer")) {
+      if (!map.getLayer(pinLayer)) {
         map.addLayer({
-          id: "active-zones-circle-layer",
+          id: pinLayer,
           type: "circle",
           source: sourceId,
+          maxzoom: ZOOM_THRESHOLDS.PIN_MAX_ZOOM,
           paint: PIN_CIRCLE_PAINT,
           filter: ["==", ["get", "is_zoomed_out_point"], true],
         });
       }
     };
 
-    setupLayers();
+    const draw = () => {
+      try { setupLayers(); onError?.(null); }
+      catch (error) {
+        if (!onError) throw error;
+        onError(`Flood zones could not be drawn. ${error instanceof Error ? error.message : "Reload the map to retry."}`);
+      }
+    };
+    draw();
 
     // MapLibre GL JS v5 fires 'style.load' (not just 'styledata') after setTerrain()
     // wipes custom layers. Listening here ensures flood zones are always re-applied.
     const handleMapStyleData = () => {
-      setupLayers();
+      draw();
     };
     map.on("style.load", handleMapStyleData);
+
+    return () => { map.off("style.load", handleMapStyleData); };
+  }, [map, isLoaded, activeZonesData, activeTab, selectedZoneId, selectedContributorId,
+    reviewMode, sourceId, fillLayer, roadLayer, pinLayer, onError]);
+
+  useEffect(() => {
+    if (!map || !isLoaded || activeTab !== "zones") return;
 
     // Popups and Interactivity
     const closeTimeoutRef = { current: null as any };
     const openTimeoutRef = { current: null as any };
     const pendingHoverIdRef = { current: null as number | null };
+    let positionFrame: number | undefined;
 
     const clearCloseTimeout = () => {
       if (closeTimeoutRef.current) {
@@ -274,9 +329,31 @@ export function useFloodZonesLayer(
     const removeActivePopup = () => {
       const activePopup = activePopupRef.current;
       if (!activePopup) return;
+      activePopupRef.current = null;
+      if (positionFrame !== undefined) cancelAnimationFrame(positionFrame);
       activePopup.popup?.remove();
       activePopup.root.unmount();
-      activePopupRef.current = null;
+    };
+
+    const attachPopup = (container: HTMLElement, lngLat: { lng: number; lat: number }, color: string, height: number) => {
+      const anchor = floodPopupAnchor(map, lngLat, height);
+      const point = map.project(lngLat);
+      const centeredY = Math.max(height / 2 + 80,
+        Math.min(point.y, map.getCanvas().clientHeight - height / 2 - 16));
+      const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, maxWidth: "360px",
+        offset: anchor === "left" || anchor === "right" ? [anchor === "left" ? 14 : -14, centeredY - point.y] : 14,
+        anchor, className: "flood-zone-popup" }).setLngLat(lngLat).setDOMContent(container).addTo(map);
+      const tip = popup.getElement().querySelector<HTMLElement>(".maplibregl-popup-tip");
+      if (tip && anchor.startsWith("top")) tip.style.borderBottomColor = color;
+      return popup;
+    };
+    const reposition = () => {
+      const active = activePopupRef.current;
+      if (!active?.popup) return;
+      const height = active.container.offsetHeight;
+      if (!height) return;
+      active.popup.remove();
+      active.popup = attachPopup(active.container, active.lngLat, active.color, height);
     };
 
     const scheduleClose = () => {
@@ -309,118 +386,41 @@ export function useFloodZonesLayer(
       popupContainer.addEventListener("mouseenter", clearCloseTimeout);
       popupContainer.addEventListener("mouseleave", scheduleClose);
 
-      // Determine smart anchor placement based on screen position
-      let smartAnchor: maplibregl.PositionAnchor = "bottom";
-      let projectedPoint: { x: number; y: number } = { x: 0, y: 0 };
-      try {
-        projectedPoint = map.project(lngLat);
-      } catch (err) {
-        projectedPoint = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-      }
-
-      const mapCanvas = map.getCanvas();
-      const width = mapCanvas.clientWidth || window.innerWidth;
-      const height = mapCanvas.clientHeight || window.innerHeight;
-
-      const { x, y } = projectedPoint;
-
-      const spaceAbove = y;
-      const spaceBelow = height - y;
-      const spaceLeft = x;
-      const spaceRight = width - x;
-
-      // Floating nav bar sits at top (Y: 0 to ~100px) and popup is ~360px tall + 14px offset.
-      // To safely place the popup above without colliding with the top navigation,
-      // we need at least 500px of clearance above AND more space above than below.
-      const popupHeight = (properties.news_json && properties.news_json !== "[]" ? 550 : 360) + (onZoneUpdate ? 132 : 0);
-      const canSafelyFitAbove = spaceAbove >= Math.max(500, popupHeight + 100) && spaceAbove >= spaceBelow;
-      const canFitBelow = spaceBelow >= popupHeight;
-      const isNearLeft = spaceLeft < 190;
-      const isNearRight = spaceRight < 190;
-
-      if (canSafelyFitAbove) {
-        if (isNearLeft) smartAnchor = "bottom-left";
-        else if (isNearRight) smartAnchor = "bottom-right";
-        else smartAnchor = "bottom";
-      } else if (canFitBelow) {
-        if (isNearLeft) smartAnchor = "top-left";
-        else if (isNearRight) smartAnchor = "top-right";
-        else smartAnchor = "top";
-      } else {
-        // If vertical space is constrained, place to the side with more horizontal room
-        // Prefer the left side when the full popup fits, leaving the existing
-        // public report/map controls on the right accessible.
-        if (spaceLeft >= 360) {
-          smartAnchor = "right";
-        } else if (spaceRight >= spaceLeft) {
-          smartAnchor = "left";
-        } else {
-          smartAnchor = "right";
-        }
-      }
+      const popupHeight = (properties.placement_json || (properties.news_json && properties.news_json !== "[]") ? 550 : 360) + (interaction.current.onZoneUpdate ? 132 : 0);
 
       const root = createRoot(popupContainer);
 
-      const closeMobileModal = () => {
-        root.unmount();
-        if (activePopupRef.current?.root === root) {
-          activePopupRef.current = null;
-        }
-      };
-
       const popup = isTouchDevice
         ? null
-        : new maplibregl.Popup({
-            closeButton: false,
-            closeOnClick: false,
-            maxWidth: "360px",
-            offset: 14,
-            anchor: smartAnchor,
-            className: "flood-zone-popup",
-          })
-            .setLngLat(lngLat)
-            .setDOMContent(popupContainer)
-            .addTo(map);
+        : attachPopup(popupContainer, lngLat, properties.color || "#eab308", popupHeight);
 
-      // Colorize the popup tip to match the header when anchored at the top
-      if (popup) {
-        const tip = popup.getElement()?.querySelector(".maplibregl-popup-tip") as HTMLElement;
-        if (tip) {
-          if (smartAnchor.startsWith("top")) {
-            tip.style.borderBottomColor = properties.color || "#eab308";
-          } else if (smartAnchor.startsWith("bottom")) {
-            tip.style.borderTopColor = "#f9fafb";
-          }
-        }
-      }
-
+      const record = interaction.current.activeZonesData?.find(zone => zone.id === Number(properties.id));
+      const placementPreview: FloodPlacementPopupDetails | undefined = record?.placement_details;
       root.render(React.createElement(FloodZonePopup, {
         properties,
         compact: !isTouchDevice,
         modal: isTouchDevice,
-        onClose: closeMobileModal,
-        onUpdate: onZoneUpdate ? (condition: ZoneCondition) => {
-          const zone = activeZonesData?.find(zone => zone.id === Number(properties.id));
-          if (zone) onZoneUpdate(zone, condition);
+        onClose: () => {
+          removeActivePopup();
+          interaction.current.setSelectedZoneId?.(null);
+        },
+        placementPreview,
+        onUpdate: interaction.current.onZoneUpdate ? (condition: ZoneCondition) => {
+          const zone = interaction.current.activeZonesData?.find(zone => zone.id === Number(properties.id));
+          if (zone) interaction.current.onZoneUpdate?.(zone, condition);
           setTimeout(removeActivePopup, 0);
         } : undefined,
       }));
 
-      if (popup) {
-        popup.on("close", () => {
-          setTimeout(() => root.unmount(), 0);
-          if (activePopupRef.current?.popup === popup) {
-            activePopupRef.current = null;
-          }
-        });
-      }
-
-      activePopupRef.current = { popup, root, zoneId: Number(properties.id) };
+      activePopupRef.current = { popup, root, zoneId: Number(properties.id), container: popupContainer,
+        lngLat, color: properties.color || "#eab308" };
+      if (popup) positionFrame = requestAnimationFrame(() => { positionFrame = requestAnimationFrame(reposition); });
     };
 
     const handleMouseEnterOrMove = (e: any) => {
       map.getCanvas().style.cursor = "pointer";
       if (isTouchDevice) return;
+      if (map.isMoving()) return;
       if (!e.features || e.features.length === 0) return;
       const feature = e.features[0];
       const properties = feature.properties;
@@ -460,15 +460,18 @@ export function useFloodZonesLayer(
 
     const handleZoneClick = (e: any) => {
       if (!e.features || e.features.length === 0) return;
+      clearOpenTimeout();
       const id = e.features[0].properties.id;
-      const isSelecting = selectedZoneId !== Number(id);
-      if (setSelectedZoneId && id) {
-        setSelectedZoneId(isSelecting ? Number(id) : null);
+      const isSelecting = interaction.current.selectedZoneId !== Number(id);
+      if (interaction.current.setSelectedZoneId && id) {
+        interaction.current.setSelectedZoneId(isSelecting ? Number(id) : null);
       }
+      if (!isTouchDevice) removeActivePopup();
 
       // Center, angle, and zoom into the clicked active zone ONLY on select
       if (isSelecting && e.lngLat) {
-        flyToCoordinates(map, [e.lngLat.lng, e.lngLat.lat], { zoom: 16, pitch: map.getPitch(), duration: 1500 });
+        flyToCoordinates(map, [e.lngLat.lng, e.lngLat.lat], { zoom: 16, pitch: map.getPitch(),
+          duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1500 });
       }
 
       if (isTouchDevice && isSelecting) {
@@ -477,9 +480,9 @@ export function useFloodZonesLayer(
     };
 
     const activeLayers = [
-      "active-zones-layer",
-      "active-zones-road-core-layer",
-      "active-zones-circle-layer",
+      fillLayer,
+      roadLayer,
+      pinLayer,
     ];
 
     const handleMapClick = (e: maplibregl.MapMouseEvent) => {
@@ -490,7 +493,7 @@ export function useFloodZonesLayer(
 
       clearOpenTimeout();
       removeActivePopup();
-      setSelectedZoneId?.(null);
+      interaction.current.setSelectedZoneId?.(null);
     };
 
     activeLayers.forEach((layer) => {
@@ -500,10 +503,11 @@ export function useFloodZonesLayer(
       map.on("click", layer, handleZoneClick);
     });
     map.on("click", handleMapClick);
+    map.on("moveend", reposition);
 
     return () => {
-      map.off("style.load", handleMapStyleData);
       map.off("click", handleMapClick);
+      map.off("moveend", reposition);
       clearOpenTimeout();
       clearCloseTimeout();
       if (activePopupRef.current) {
@@ -516,5 +520,5 @@ export function useFloodZonesLayer(
         map.off("click", layer, handleZoneClick);
       });
     };
-  }, [map, isLoaded, activeZonesData, isTouchDevice, activeTab, selectedZoneId, setSelectedZoneId, selectedContributorId, onZoneUpdate]);
+  }, [map, isLoaded, activeZonesData, isTouchDevice, activeTab, fillLayer, roadLayer, pinLayer]);
 }

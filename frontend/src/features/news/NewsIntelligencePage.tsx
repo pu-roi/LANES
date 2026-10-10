@@ -7,9 +7,11 @@ import { Button } from "@/shared/ui";
 import { NewsResults } from "./NewsResults";
 import { NewsCollectionDrawer } from "./NewsCollectionDrawer";
 import { NewsSourcesDrawer } from "./NewsSourcesDrawer";
+import { useNewsSimulation } from "./useNewsSimulation";
 
 export default function NewsIntelligencePage() {
   const router = useRouter();
+  const simulation = useNewsSimulation();
   const [collectionOpen, setCollectionOpen] = useState(false);
   const closeCollection = useCallback(() => setCollectionOpen(false), []);
   const [sourcesOpen, setSourcesOpen] = useState(false);
@@ -30,7 +32,9 @@ export default function NewsIntelligencePage() {
           </Button>
         </div>
       </div>
-      <NewsResults active />
+      <NewsResults key={simulation.data?.article_title ?? "normal"}
+        active
+        defaultSearch={simulation.data?.article_title} />
       {collectionOpen && <NewsCollectionDrawer onClose={closeCollection} />}
       {sourcesOpen && <NewsSourcesDrawer onClose={closeSources} />}
     </div>

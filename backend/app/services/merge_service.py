@@ -395,11 +395,12 @@ def find_merge_candidates(report_id: int, db: Session) -> MergeCandidatesListRes
 
 def find_active_zone_candidates(primary: FloodReport, db: Session) -> list[MergeZoneCandidate]:
     """An ongoing zone may be older than two hours; its active lifecycle is the gate."""
+    from app.services.configuration_service import unexpired_deadline
     distance = func.ST_Distance(func.ST_Transform(primary.geometry, 32651),
         func.ST_Transform(FloodAvoidanceZone.geometry, 32651))
     rows = db.query(FloodAvoidanceZone, distance.label("distance_m")).join(FloodEvent).filter(
         FloodAvoidanceZone.is_active.is_(True), FloodEvent.status == FloodEventStatus.ACTIVE,
-        or_(FloodAvoidanceZone.expires_at.is_(None), FloodAvoidanceZone.expires_at > datetime.now(timezone.utc)),
+        unexpired_deadline(db, FloodAvoidanceZone.expires_at, datetime.now(timezone.utc)),
         func.ST_DWithin(func.ST_Transform(primary.geometry, 32651), func.ST_Transform(FloodAvoidanceZone.geometry, 32651), 500),
     ).order_by(distance, FloodAvoidanceZone.id).limit(20).all()
     return [MergeZoneCandidate(zone_id=zone.id, event_id=zone.event_id, name=zone.name,

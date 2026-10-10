@@ -1,6 +1,8 @@
 # RSS News Discovery Plan for LANES
 
-> **Last Updated:** October 04, 2026, 3:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 10, 2026, 2:39 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 10 registry update:** Seven runtime feeds are registered. Daily Tribune's publisher-owned `/rss.xml` returned HTTP 200 and 40 parsed publisher-domain entries through the bounded feed service; `daily-tribune` is verified on October 10. Existing persisted source selection remains operator-controlled. Successful recapture preserves prior immutable inputs and repairs source identity; historical labels are not automatically approved. The six-feed counts below describe earlier checks. [Verification](../evaluations/news-reconstruction-activation-fixes-20261010.md).
 
 **Current sequencing:** Priorities 3/4 have documented production rules extraction and OSM evidence. Local v10 adds exact NOAH/section-matched Pasig history previews, and Priority 5 F5 inspection is locally implemented. Fresh live positive matching, verified operational geometry, independent auditing and durable public-alert/zone decisions/correction/expiry remain open. [Backend readiness assessment](news-publication-readiness-plan.md) is complete; five-table schema/expiry approval precedes F6/F7 implementation. Production is last documented as v4 and was not rechecked in the October 4 audit. Older local/pre-release notes below retain their dated scope. See the [current frontend plan](news-publication-review-frontend-plan.md) and [assessment evidence](../evaluations/phase-36-publication-readiness-audit.md).
 
@@ -99,7 +101,7 @@ To repeat the local check from `backend/` on Windows, run `venv\Scripts\python.e
 
 ### All 50 Feedspot candidates
 
-The following research inventory preserves the directory's ordering as observed on September 24, 2026. **These rows are not loaded by the collector; only the six verified entries in `backend/app/news_sources.json` are runtime sources.** Site domains are transcribed from the directory and are **not independently validated by the directory**. This inventory records URL leads from Feedspot; the original runtime registry also recorded leads discovered from Plenary or publisher pages. A dash means Feedspot did not confirm a publisher feed URL. Feedspot's “Generate RSS” label is intentionally not converted into a feed URL.
+The following research inventory preserves the directory's ordering as observed on September 24, 2026. **These rows are not loaded by the collector; only verified entries in `backend/app/news_sources.json` are runtime sources (seven after the October 10 Daily Tribune registration).** Site domains are transcribed from the directory and are **not independently validated by the directory**. This inventory records URL leads from Feedspot; the original runtime registry also recorded leads discovered from Plenary or publisher pages. A dash means Feedspot did not confirm a publisher feed URL. Feedspot's “Generate RSS” label is intentionally not converted into a feed URL.
 
 | # | Publisher | Site shown by Feedspot | Feed URL lead from Feedspot |
 |---:|---|---|---|
@@ -189,7 +191,7 @@ The local pilot above established an initial working set. Re-run the same source
 
 | Path | Status | Purpose |
 |---|---|---|
-| `backend/app/news_sources.json` | Implemented | Six verified runtime feeds only. The 50 Feedspot candidates plus News5 remain historical research leads in this plan. |
+| `backend/app/news_sources.json` | Implemented | Seven verified runtime feeds, including Daily Tribune added October 10. The 50 Feedspot candidates plus News5 remain historical research leads in this plan. |
 | `backend/app/services/news_sources.py` | Implemented | Source validation, allowed publisher domains, and verified/enabled gating. |
 | `backend/app/services/news_feed_service.py` | Implemented | Bounded `httpx` polling, conditional headers, RSS/Atom parsing, entry normalization, and explicit per-feed failures. |
 | `backend/app/services/news_discovery_service.py` | Implemented in current source | Metro Manila metadata/body shortlisting with a five-extra-probe bound, visible discovery notices, safe retrieval, checkpoint-aware polling, deduplication, and read-only extraction diagnostics. |

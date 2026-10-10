@@ -1,3 +1,13 @@
+import { getLocalNewsSimulation } from "./localNewsSimulation";
+
+export async function getSessionSseUrl(endpoint: string): Promise<string> {
+  if (await getLocalNewsSimulation() === "persisted") {
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    return `http://127.0.0.1:8001/api/v1${cleanEndpoint}`;
+  }
+  return getSseUrl(endpoint);
+}
+
 /**
  * Utility for resolving Server-Sent Events (SSE) streaming URLs.
  * 

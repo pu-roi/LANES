@@ -7,6 +7,7 @@ import { Button } from "@/shared/ui";
 import { getZonePrediction, getPredictionFeatures, type CaseReviewSuggestion as CaseSuggestion } from "./reviewSuggestionApi";
 import { CalculationExplanation } from "./CalculationExplanation";
 import { CrossLocationComparison } from "./CrossLocationComparison";
+import ZoneExpiryPolicy from "./ZoneExpiryPolicy";
 
 export const suggestionTime = (value: string) => new Date(value).toLocaleString("en-PH", { timeZone: "Asia/Manila", dateStyle: "medium", timeStyle: "short" });
 export const suggestionStateLabel = {
@@ -63,6 +64,7 @@ function ZonePredictionPanel({ zoneId, userId }: { zoneId: number; userId: numbe
   const asOf = item ? Date.parse(item.evaluated_at) + Math.max(0, now - query.dataUpdatedAt) : now;
   const labels = { estimated: "", unavailable: "Estimate unavailable", needs_review: "Evidence needs review", expired: "Evidence expired — needs current evidence", inactive: "Flood zone inactive" };
   return <section aria-label={`Automatic subsidence prediction for zone ${zoneId}`} className="space-y-3 border-t border-slate-100 pt-4">
+    <ZoneExpiryPolicy zoneId={zoneId} userId={userId} />
     <div className="flex flex-wrap items-center gap-2"><h3 className="text-sm font-semibold text-slate-900">Estimated subsidence</h3><span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-800">Experimental</span></div>
     {query.isPending && <p role="status" className="text-sm text-slate-500">Calculating from recorded zone evidence…</p>}
     {query.isError && <div role="alert" className="space-y-2 text-sm text-red-700"><p>Prediction unavailable: {query.error.message}</p><Button size="sm" variant="outline" className="min-h-11" onClick={() => query.refetch()}>Retry prediction</Button></div>}

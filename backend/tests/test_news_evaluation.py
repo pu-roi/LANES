@@ -63,3 +63,37 @@ def test_unknown_depth_can_be_audited_without_inventing_a_measurement():
     value = claim(depth_canonical=None, depth_raw=None, depth_meters=None)
     assert preliminary_reason(value, NOW) is None
     assert value.depth_meters is None
+
+
+@pytest.mark.parametrize("database", ["postgresql+psycopg://example.org/lanes_news_test",
+    "postgresql+psycopg://127.0.0.1/lanes", "postgresql+psycopg://127.0.0.1/lanes_news_test?host=example.org"])
+def test_historical_publication_clock_cannot_be_used_on_normal_or_shared_database(monkeypatch, database):
+    from types import SimpleNamespace
+    from sqlalchemy.engine import make_url
+    from app.core.config import settings
+    from app.core import database as connection
+    from app.services.news_evaluation_service import EvaluationPolicy
+    monkeypatch.setattr(settings, "DATABASE_URL", database)
+    monkeypatch.setattr(connection, "engine", SimpleNamespace(url=make_url(database)))
+    with pytest.raises(ValueError, match="dedicated loopback replay database"):
+        EvaluationPolicy("a" * 64, "fixture", {}, publication_admission_at=NOW)
+
+
+def test_private_reconstruction_uses_later_evidence_without_extending_observation_expiry(monkeypatch):
+    from types import SimpleNamespace
+    from sqlalchemy.engine import make_url
+    from app.core.config import settings
+    from app.core import database
+    from app.services.news_evaluation_service import EvaluationPolicy
+    target = "postgresql+psycopg://127.0.0.1/lanes_news_test"
+    monkeypatch.setattr(settings, "DATABASE_URL", target)
+    monkeypatch.setattr(database, "engine", SimpleNamespace(url=make_url(target)))
+    later = NOW + timedelta(hours=12)
+    policy = EvaluationPolicy("a" * 64, "fixture", {}, publication_admission_at=later)
+    article = NewsArticleExtractorInput(article_id=1, publisher="fixture", title="Flood",
+        canonical_url="https://example.org/flood", published_at=later)
+    assert not publication_is_current(article, NOW)
+    assert publication_is_current(article, NOW, policy)
+    assert article.published_at == later
+    assert preliminary_reason(claim(), NOW, policy) is None
+    assert preliminary_reason(claim(), NOW + timedelta(hours=2), policy) == "observation_evidence_expired"

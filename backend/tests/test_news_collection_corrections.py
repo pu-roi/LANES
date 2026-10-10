@@ -69,3 +69,33 @@ async def test_unsupported_history_does_not_turn_legacy_retrieval_failures_into_
     with queue_db() as db:
         assert collection(db).total == 0
         assert collection(db, "all").items[0].collection_status == "excluded"
+
+
+@pytest.mark.parametrize("refresh", ["registered", "failed", "wrong_host", "unregistered"])
+def test_registered_refresh_repairs_import_source_without_rewriting_history(queue_db, refresh) -> None:
+    from app.services.news_sources import NewsSource
+    from app.services.news_evaluation_service import source_is_approved
+    from app.schemas.news_extraction import NewsArticleExtractorInput
+    now = datetime.now(timezone.utc)
+    registered = NewsSource("example", "Example", ("example.org",), ("https://example.org/rss",), now.date(), True)
+    article_url = "https://other.example/flood" if refresh == "wrong_host" else "https://example.org/flood"
+    imported = NewsEntry("operator-import", "Example", article_url, "1", "Flood in Pasig", "", article_url, now)
+    capture = NewsCandidate(imported.source_id, imported.publisher, imported.feed_id, article_url,
+        imported.title, "", now, now, ORIGINAL, None)
+    with queue_db() as db, db.begin():
+        saved = save_candidate(db, imported, capture)
+        article_id = saved.id
+    current = replace(imported, source_id="unregistered" if refresh == "unregistered" else registered.id,
+                      feed_url=registered.feed_urls[0])
+    revised = replace(capture, source_id=current.source_id,
+        article_text=None if refresh == "failed" else ORIGINAL,
+        article_error="Article HTTP 503" if refresh == "failed" else None)
+    with queue_db() as db, db.begin():
+        saved = save_candidate(db, current, revised)
+        assert saved.id == article_id
+        assert saved.publisher_source_id == ("operator-import" if refresh == "failed" else current.source_id)
+        snapshots = list(db.scalars(select(NewsArticleVersion).order_by(NewsArticleVersion.id)))
+        assert [version.input_snapshot["publisher"] for version in snapshots] == (
+            ["operator-import"] if refresh == "failed" else ["operator-import", current.source_id])
+        latest = NewsArticleExtractorInput.model_validate({**snapshots[-1].input_snapshot, "article_id": article_id})
+        assert source_is_approved(latest, (registered,)) is (refresh == "registered")

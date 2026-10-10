@@ -1,4 +1,6 @@
 "use client";
+import { getApiBaseUrl } from "@/lib/apiClient";
+import { getSessionStorageKey } from "@/lib/localNewsSimulation";
 
 import { useState, useEffect } from "react";
 import { LocationPickerModal, LocationItem } from "@/features/auth/components/LocationPickerModal";
@@ -214,8 +216,8 @@ export function EditProfileForm({
     setUsernameStatus("checking");
     setUsernameFeedback("Checking availability...");
     try {
-      const resUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
-      const token = typeof window !== "undefined" ? localStorage.getItem("lanes_token") : null;
+      const resUrl = await getApiBaseUrl();
+      const token = typeof window !== "undefined" ? localStorage.getItem(await getSessionStorageKey("lanes_token")) : null;
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       if (token) headers["Authorization"] = `Bearer ${token}`;
 

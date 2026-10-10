@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 from sqlalchemy import text
+from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
 
 from app.api import deps
@@ -109,6 +110,33 @@ def test_newer_failure_does_not_fall_back_and_old_article_stays_out(review_db):
     review_db.clear()
     page = spatial_review_service.browse_spatial_review(db, source="all", page=1, page_size=20)
     assert page.total == 2 and page.counts["news_claims"] == 0
+    generator.close()
+
+
+def test_reconstruction_admits_later_publication_but_keeps_observation_freshness(review_db):
+    from app.crud.spatial_review import review_rows
+    generator = app.dependency_overrides[get_db]()
+    db = next(generator)
+    run = db.get(NewsExtractionRun, 2)
+    version = db.get(NewsArticleVersion, run.article_version_id)
+    later = NOW + timedelta(hours=12)
+    version.input_snapshot = {**version.input_snapshot, "published_at": later.isoformat()}
+    result = deepcopy(run.result)
+    result["claims"] = [{**result["claims"][0], "event_time_resolved": NOW.isoformat()}]
+    run.result = result
+    db.commit()
+    review_db.clear()
+    def news_count(**kwargs):
+        rows = review_rows(db, NOW, **kwargs)
+        return len(list(db.execute(select(rows).where(rows.c.source == "news_claim"))))
+    assert news_count() == 0
+    assert news_count(publication_admission_at=later) == 1
+    result = deepcopy(run.result)
+    result["claims"][0]["event_time_resolved"] = (NOW - timedelta(days=1)).isoformat()
+    run.result = result
+    db.commit()
+    review_db.clear()
+    assert news_count(publication_admission_at=later) == 0
     generator.close()
 
 

@@ -9,6 +9,7 @@ import gzip
 import hashlib
 import json
 import os
+import re
 from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
@@ -21,8 +22,9 @@ from shapely.geometry.base import BaseGeometry
 from app.schemas.news_extraction import ExtractedClaim, RoadPlacementCandidate, RoadPlacementEvidence
 from app.services.barangay_boundary_service import BarangayBoundaryProvider, get_barangay_boundary_provider
 from app.services.placement_geometry_service import geometry_id, line_parts
+from app.services.article_road_context_service import _contains_name, match_article_road_context
 from app.services.article_road_match_service import (
-    OSMRoadWay, ROAD_SUFFIXES, _span_cross_streets, _way_matches, match_article_road_span,
+    OSMRoadWay, OSMRoadSection, ROAD_SUFFIXES, _span_cross_streets, _way_matches, match_article_road_span,
     normalize_name, split_named_road_at_intersections,
 )
 
@@ -233,8 +235,11 @@ class NewsRoadPlacementProvider:
         if not claim.canonical_road:
             return RoadPlacementEvidence(status="unresolved", reason="no_reported_road", **metadata)
         names = [claim.canonical_road, *(_span_cross_streets(claim.road_segment_raw) or ())]
+        local_clue = " ".join(filter(None, (claim.road_segment_raw, claim.local_area_raw)))
         if any(_way_matches(OSMRoadWay(w.osm_id,w.name,(),road_aliases(w)), name)
-               for w in self.catalog.incomplete_ways for name in names):
+               for w in self.catalog.incomplete_ways for name in names) or any(
+                   _contains_name(local_clue, name) for w in self.catalog.incomplete_ways
+                   for name in (w.name, *road_aliases(w)) if local_clue):
             return RoadPlacementEvidence(status="unresolved", reason="incomplete_named_road_coverage", **metadata)
         barangay_boundary = None
         if claim.canonical_barangay:
@@ -250,7 +255,11 @@ class NewsRoadPlacementProvider:
                             barangay_psgc_code=record.psgc_code, barangay_osm_relation_id=record.osm_relation_id,
                             barangay_source_url=record.source_url, barangay_source_classification=catalog.source_classification)
         boundary = self.boundaries[key]
-        if claim.road_segment_raw:
+        explicit_span = _span_cross_streets(claim.road_segment_raw)
+        if claim.road_segment_raw and explicit_span is None and re.search(
+                r"\b(?:between|from)\b", claim.road_segment_raw, re.I):
+            return RoadPlacementEvidence(status="unresolved", reason="missing_explicit_bounded_span", **metadata)
+        if explicit_span is not None:
             selected: dict[int, OSMRoadWay] = {}
             for name in names:
                 selected.update(self._name_index.get(normalize_name(name),{}))
@@ -265,7 +274,12 @@ class NewsRoadPlacementProvider:
             return RoadPlacementEvidence(status="bounded_candidate" if candidates else "unresolved",
                 reason=match.reason if candidates else "reported_road_outside_barangay",
                 candidates=candidates[:25], total_candidate_count=len(candidates), candidates_truncated=len(candidates)>25, **metadata)
-        # Road-name-only and landmark mentions cannot choose one flooded span.
+        # A corner/nearby crossing is location evidence, not a supplied span.
+        # Use mapped junction-to-junction sections and preserve all alternatives
+        # for the existing article/NOAH selector rather than inventing a radius.
+        if re.search(r"\b(?:northbound|southbound|eastbound|westbound)\b",
+                     " ".join(filter(None, (claim.road_segment_raw, claim.local_area_raw))), re.I):
+            return RoadPlacementEvidence(status="unresolved", reason="reported_carriageway_requires_review", **metadata)
         main = self._name_index.get(normalize_name(claim.canonical_road),{})
         nodes = {n[0] for way in main.values() for n in way.nodes}
         related = [w for w in self.ways if w.osm_id in main or any(n[0] in nodes for n in w.nodes)] if nodes else []
@@ -276,8 +290,32 @@ class NewsRoadPlacementProvider:
             for s in sections]
         if barangay_boundary is not None:
             candidates = self._clip_candidates(candidates, barangay_boundary)
+        # Disconnected parallel carriageways do not create a graph alternative,
+        # but two lines joining the same named crossings still require review.
+        endpoint_groups: dict[tuple, list[RoadPlacementCandidate]] = {}
+        for candidate in candidates:
+            if all(candidate.cross_streets):
+                endpoints = tuple(sorted(tuple(sorted(normalize_name(name) for name in end))
+                                         for end in candidate.cross_streets))
+                endpoint_groups.setdefault(endpoints, []).append(candidate)
+        for group in endpoint_groups.values():
+            if len(group) > 1:
+                for candidate in group:
+                    candidate.ambiguous_carriageway = True
+        if candidates and (claim.road_segment_raw or claim.local_area_raw):
+            scoped_sections = [OSMRoadSection(
+                c.candidate_id, claim.canonical_road, c.centerline_geojson, tuple(c.osm_way_ids),
+                tuple(tuple(end) for end in c.cross_streets), self.catalog.source_id, c.ambiguous_carriageway)
+                for c in candidates]
+            context = match_article_road_context(claim, scoped_sections, boundary,
+                                                 barangay_boundary=barangay_boundary)
+            if context.reason == "local_place_not_grounded":
+                return RoadPlacementEvidence(status="unresolved", reason=context.reason, **metadata)
+            selected_ids = set(context.candidate_section_ids)
+            candidates = [c for c in candidates if c.candidate_id in selected_ids]
         return RoadPlacementEvidence(status="ambiguous" if candidates else "unresolved",
-            reason="reported_road_extent_unbounded" if candidates else "named_road_sections_not_found",
+            reason=("article_scoped_road_sections" if candidates and (claim.road_segment_raw or claim.local_area_raw)
+                    else "reported_road_extent_unbounded" if candidates else "named_road_sections_not_found"),
             candidates=candidates[:25], total_candidate_count=len(candidates), candidates_truncated=len(candidates)>25, **metadata)
 
 

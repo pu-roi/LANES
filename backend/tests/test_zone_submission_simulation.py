@@ -74,7 +74,8 @@ def test_submission_proxy_retains_both_names_real_clocks_and_stable_forecast(sou
 @pytest.mark.parametrize('change', ['pending','event','report_geometry','city','barangay','observed_clock',
     'source_owner','source_geometry','road_unvalidated','approval_actor','approval_zone','approval_report',
     'future_submission','report_edited','zone_edited','zone_edit_audit','owner_followup','public_update','too_old'])
-def test_invalid_or_changed_inputs_cannot_supply_submission_simulation(source,monkeypatch,change):
+@pytest.mark.parametrize('recover', [False, True])
+def test_invalid_or_changed_inputs_cannot_supply_submission_simulation(source,monkeypatch,change,recover):
     zone,report,original,approval,staff=source
     if change=='pending':report.status=models.ReportStatus.PENDING
     if change=='event':report.event_id=None
@@ -98,8 +99,19 @@ def test_invalid_or_changed_inputs_cannot_supply_submission_simulation(source,mo
         monkeypatch.setattr(zone_update,'reviews',lambda *args:{})
     if change=='too_old':
         report.created_at=NOW-timedelta(minutes=2201);original.created_at=NOW-timedelta(minutes=2200)
-    result=service.predict_zone(object(),18,staff,now=NOW)
+    result=service.resolve_zone_prediction(object(),18,now=NOW,recover_issuance=recover)
     assert result.submission_simulation is None and not result.quantiles and result.reference is None
+
+
+def test_late_submission_recovery_retains_current_checks_and_original_issuance(source):
+    *_,staff=source
+    original=service.predict_zone(object(),18,staff,now=NOW)
+    later=NOW+timedelta(days=3)
+    assert service.predict_zone(object(),18,staff,now=later).submission_simulation is None
+    recovered=service.resolve_zone_prediction(object(),18,now=later,recover_issuance=True)
+    assert recovered.submission_simulation.quantiles==original.submission_simulation.quantiles
+    assert recovered.submission_simulation.prediction_as_of_at==original.submission_simulation.prediction_as_of_at
+    assert recovered.reference is None and not recovered.changes_status_expiry_or_routing
 
 
 @pytest.mark.parametrize('state',['inactive','expired'])

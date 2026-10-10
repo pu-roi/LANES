@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.schemas.common import ensure_utc, serialize_utc_datetime
+from app.services.configuration_service import unexpired_deadline
 from app.crud.report import create_flood_avoidance_zone, credit_user_verified_report, penalize_user_rejected_report
 from app.models.notification import Notification, NotificationType
 
@@ -102,7 +103,7 @@ def get_event_metrics(
     active_zone_count = db.query(models.FloodAvoidanceZone.id).filter(
         models.FloodAvoidanceZone.event_id == event.id,
         models.FloodAvoidanceZone.is_active.is_(True),
-        (models.FloodAvoidanceZone.expires_at.is_(None)) | (models.FloodAvoidanceZone.expires_at > as_of),
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, as_of),
     ).count()
     end_time = ensure_utc(event.ended_at) or as_of
     start_time = ensure_utc(event.verified_at) or as_of
@@ -671,7 +672,7 @@ def deactivate_zone_and_end_event_if_final(
                 models.FloodAvoidanceZone.event_id == event.id,
                 models.FloodAvoidanceZone.id != zone.id,
                 models.FloodAvoidanceZone.is_active.is_(True),
-                (models.FloodAvoidanceZone.expires_at.is_(None)) | (models.FloodAvoidanceZone.expires_at > occurred_at),
+                unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, occurred_at),
             ).first()
             if not remaining:
                 event.status = models.FloodEventStatus.ENDED
@@ -695,15 +696,32 @@ def deactivate_zone_and_end_event_if_final(
 def expire_due_zones(db: Session, now: Optional[datetime] = None) -> int:
     """End all due zones through the same lifecycle path as manual deactivation."""
     cutoff = ensure_utc(now) or datetime.now(timezone.utc)
+    from app.services.configuration_service import configuration_lock, read_configuration
+    configuration_lock(db)
+    if not read_configuration(db).automatic_expiry_enabled:
+        return 0
+    from app.services.pasig_ml_expiry_service import synchronize_active_zones
+    synchronize_active_zones(db, now=cutoff)
+    db.commit()
+    configuration_lock(db)
+    from app.services.local_news_scenario_service import sql_clock
+    eligibility_clock = sql_clock(models.FloodAvoidanceZone.id, "zone", cutoff)
     due_zones = db.query(models.FloodAvoidanceZone).filter(
         models.FloodAvoidanceZone.is_active.is_(True),
         models.FloodAvoidanceZone.expires_at.is_not(None),
-        models.FloodAvoidanceZone.expires_at <= cutoff,
+        models.FloodAvoidanceZone.expires_at <= eligibility_clock,
     ).all()
+    expired_count = 0
     for zone in due_zones:
+        # Each lifecycle commit releases the policy lock. Reacquire it before
+        # the next zone so a saved pause cannot be bypassed by a queued batch.
+        configuration_lock(db)
+        if not read_configuration(db).automatic_expiry_enabled:
+            break
         if zone.event_id:
             _append_timeline(db, zone.event_id, "evidence_expired",
                 "Evidence deadline passed; current condition is Unconfirmed, not observed cleared.",
                 {"zone_id": zone.id, "expires_at": zone.expires_at.isoformat(), "condition": "Unconfirmed"}, cutoff)
         deactivate_zone_and_end_event_if_final(db=db, zone=zone, occurred_at=cutoff)
-    return len(due_zones)
+        expired_count += 1
+    return expired_count

@@ -68,6 +68,8 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  // Let the private port-3001 session run alongside normal development.
+  distDir: process.env.NEWS_SIMULATION_DIST_DIR || ".next",
   devIndicators: false,
   outputFileTracingRoot: path.resolve(__dirname),
   // @ts-ignore - allowedDevOrigins is suggested by Next.js CLI but may lack TS definitions
@@ -79,6 +81,10 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
+      ...(process.env.NODE_ENV === 'development' ? [{
+        source: '/simulation/api/v1/:path*',
+        destination: `${process.env.NEWS_SIMULATION_BACKEND_URL || 'http://127.0.0.1:8001'}/api/v1/:path*`,
+      }] : []),
       {
         source: '/api/v1/:path*',
         destination: `${process.env.BACKEND_URL || 'http://127.0.0.1:8000'}/api/v1/:path*`,

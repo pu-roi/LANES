@@ -390,7 +390,7 @@ export default function ProfileView() {
         "Account Deactivated",
         "Your account has been deactivated. You have a 30-day grace period to log back in before your profile is permanently deleted."
       );
-      logout();
+      await logout();
       router.push("/login");
     } catch (err: any) {
       showError(
@@ -1136,9 +1136,9 @@ export default function ProfileView() {
                   </Button>
                   <Button 
                     variant="danger"
-                    onClick={() => {
+                    onClick={async () => {
                       setShowLogoutConfirm(false);
-                      logout();
+                      await logout();
                     }}
                     className="flex-1 shadow-sm shadow-red-200"
                   >

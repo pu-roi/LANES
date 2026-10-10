@@ -50,6 +50,29 @@ def test_retention_hides_current_feed_but_keeps_last_known_detail():
     assert public_projection(row, later, include_retained=True).status == "Unconfirmed"
 
 
+def test_paused_expiry_preserves_original_public_evidence_after_deadline_and_retention():
+    row = decision()
+    original = dict(row.snapshot["public"])
+    later = row.expires_at + timedelta(days=3)
+    result = public_projection(row, later, automatic_expiry_enabled=False)
+    assert result.status == "Active" and not result.current_status_unknown
+    for field in ("source_url", "source_title", "source_publisher", "evidence_excerpt"):
+        assert getattr(result, field) == original[field]
+    assert result.observed_at == row.observed_at and result.expires_at == row.expires_at
+    assert row.snapshot["public"] == original
+    assert public_projection(row, later) is None
+
+
+@pytest.mark.parametrize("state,operation,status", [
+    ("expired", "expire", "Unconfirmed"), ("withdrawn", "reject", None),
+    ("unpublished", "evaluate", None), ("withdrawn", "clear", "Cleared"),
+])
+def test_paused_expiry_does_not_revive_expired_withdrawn_private_or_cleared_decisions(state, operation, status):
+    result = public_projection(decision(state=state, operation=operation), NOW + timedelta(hours=3),
+        include_retained=True, automatic_expiry_enabled=False)
+    assert (result.status if result else None) == status
+
+
 def test_clearance_status_requires_clear_operation_and_preserves_last_wet_clock():
     row = decision(state="withdrawn", operation="clear")
     row.observed_at = NOW + timedelta(minutes=20)

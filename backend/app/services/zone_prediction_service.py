@@ -71,13 +71,13 @@ def resolve_location(zone: FloodAvoidanceZone) -> tuple[dict, list[str]]:
         return result, ["The zone geometry could not be validated."]
 
 
-def _news_evidence(db: Session, zone: FloodAvoidanceZone, now: datetime) -> tuple[list[ZonePredictionEvidence], list[str]]:
+def _news_evidence(db: Session, zone: FloodAvoidanceZone, now: datetime, *, ignore_deadline: bool = False) -> tuple[list[ZonePredictionEvidence], list[str]]:
     current = store.current_news(db, zone.id)
     if len(current) > store.MAX_RECORDS:
         return [], ["This zone has too many source links to resolve automatically."]
     wet, reasons = [], []
     for decision in current:
-        public = public_projection(decision, now)
+        public = public_projection(decision, now, automatic_expiry_enabled=not ignore_deadline)
         if (public is None or public.status != "Active" or not public.affects_routing
                 or decision.public_state != "active_zone" or decision.review_state != "resolved"):
             reasons.append("Linked news evidence is expired, closed or awaiting review.")
@@ -134,6 +134,18 @@ def _submission_source(db: Session, report: FloodReport, zone: FloodAvoidanceZon
 def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None = None) -> ZonePrediction:
     require_staff_permission(user, write=False)
     require_zone_reader(user, write=False)
+    return resolve_zone_prediction(db, zone_id, now=now)
+
+
+def resolve_zone_prediction(db: Session, zone_id: int, *, now: datetime | None = None,
+                            ignore_deadline: bool = False,
+                            recover_issuance: bool = False) -> ZonePrediction:
+    """Validate current sources; expiry alone may recover their original forecast.
+
+    Recovery never moves the qualification clock into the past. The preview
+    still validates reference-to-issuance age using the recorded source clocks.
+    Public research callers retain their current-evidence staleness checks.
+    """
     zone = store.get_zone(db, zone_id)
     if zone is None:
         raise FollowupError(404, "Flood Zone not found.")
@@ -144,7 +156,7 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
         return result.model_copy(update={"reasons": reasons})
     if not zone.is_active or (zone.flood_event and zone.flood_event.status != FloodEventStatus.ACTIVE):
         return result.model_copy(update={"state": "inactive", "reasons": ["The flood zone or incident is inactive."]})
-    if zone.expires_at is not None and utc(zone.expires_at) <= clock:
+    if not ignore_deadline and zone.expires_at is not None and utc(zone.expires_at) <= clock:
         return result.model_copy(update={"state": "expired", "reasons": ["Zone evidence has expired; current flood conditions need confirmation."]})
     artifact, checksum = load_research_model()
     result.model = model_status(artifact, checksum)
@@ -188,7 +200,8 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
                 submissions.append((source[0], source[1], report.id))
         wet.extend(ZonePredictionEvidence(source_kind=item.provenance, source_id=item.audit_id,
             report_id=report.id, observed_at=item.observed_at, available_at=item.available_at) for item in observations)
-    news, news_reasons = _news_evidence(db, zone, clock)
+    news, news_reasons = (_news_evidence(db, zone, clock, ignore_deadline=True) if ignore_deadline
+                         else _news_evidence(db, zone, clock))
     wet.extend(news)
     evidence_reasons.extend(news_reasons)
     # Public spot observations are review signals, not whole-zone duration labels.
@@ -215,7 +228,7 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
         if not wet and not evidence_reasons and only_missing and artifact and barangay:
             if submissions and not store.zone_has_edits(db, zone):
                 original, approval, report_id = min(submissions, key=lambda row: (utc(row[0].created_at), row[0].id))
-                if (clock-utc(original.created_at)).total_seconds()/60 <= artifact.lineage["reference_age_support_max_minutes"]:
+                if recover_issuance or (clock-utc(original.created_at)).total_seconds()/60 <= artifact.lineage["reference_age_support_max_minutes"]:
                     simulation = preview_subsidence(DurationPreviewRequest(city=result.city, barangay=barangay,
                         footprint_barangays=result.barangays, reference_at=utc(original.created_at),
                         prediction_as_of_at=utc(approval.created_at), reference_policy="first_recorded_wet_in_episode",
@@ -234,7 +247,7 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
             if (registration is not None and registration.admin_id is not None
                     and (registration.metadata_json or {}).get("zone_id") == zone.id
                     and utc(zone.updated_at) <= utc(registration.created_at) <= clock
-                    and (clock-utc(registration.created_at)).total_seconds()/60 <= artifact.lineage["reference_age_support_max_minutes"]):
+                    and (recover_issuance or (clock-utc(registration.created_at)).total_seconds()/60 <= artifact.lineage["reference_age_support_max_minutes"])):
                 simulation = preview_subsidence(DurationPreviewRequest(city=result.city, barangay=barangay,
                     footprint_barangays=result.barangays,
                     reference_at=utc(registration.created_at), prediction_as_of_at=utc(registration.created_at),
@@ -248,7 +261,8 @@ def predict_zone(db: Session, zone_id: int, user: User, *, now: datetime | None 
     # Anchor issuance to recorded evidence availability. Display refreshes must
     # not recondition on hypothetical continued flooding and move the deadline.
     issuance = max(item.available_at for item in wet)
-    if (clock-wet[0].observed_at).total_seconds()/60 > artifact.lineage["reference_age_support_max_minutes"]:
+    age_clock = issuance if recover_issuance else clock
+    if (age_clock-wet[0].observed_at).total_seconds()/60 > artifact.lineage["reference_age_support_max_minutes"]:
         return result.model_copy(update={"reasons": ["The recorded observation is older than the model's supported reference age."]})
     preview = preview_subsidence(DurationPreviewRequest(city=result.city, barangay=barangay,
         footprint_barangays=result.barangays,

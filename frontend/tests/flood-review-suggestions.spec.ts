@@ -20,7 +20,7 @@ const followup = { id: 42, report_id: 2, user_id: 8, request_id: "1d884c7c-934c-
   location_snapshot: { report_id: 2, city: "Pasig", barangay: "Maybunga", human_readable_location: "Maybunga bridge", geometry_sha256: "fixture", zone_id: 9, event_id: null },
   review_state: "pending", review: null, source_claim_only: true, model_admitted: false };
 
-async function setup(page: Page, options: { readOnly?: boolean; missing?: boolean; failure?: boolean; due?: boolean; owner?: boolean; review?: boolean; queueError?: boolean; zone?: boolean; state?: ReviewSuggestionState; getFailure?: boolean; unlinked?: boolean; unsupported?: boolean; registrationSimulation?: boolean; pooled?: boolean; crossLocation?: "estimate" | "missing" | "failure" | "proxy" } = {}) {
+async function setup(page: Page, options: { readOnly?: boolean; missing?: boolean; failure?: boolean; due?: boolean; owner?: boolean; review?: boolean; queueError?: boolean; zone?: boolean; inactive?: boolean; state?: ReviewSuggestionState; getFailure?: boolean; unlinked?: boolean; unsupported?: boolean; registrationSimulation?: boolean; pooled?: boolean; expiryMethod?: "ml_cross_location" | "ml_pooled" | "fixed_fallback"; expiryFailure?: boolean; crossLocation?: "estimate" | "missing" | "failure" | "proxy" } = {}) {
   await page.clock.install({ time: new Date(options.due ? "2026-10-08T05:00:00Z" : stamp) });
   let state: CaseReviewSuggestion = { ...baseCase, can_issue: !options.readOnly && !options.missing,
     ineligibility_reason: options.missing ? "An explicit observation time is required." : null,
@@ -33,7 +33,7 @@ async function setup(page: Page, options: { readOnly?: boolean; missing?: boolea
   let ownerSaved: Record<string, unknown> | null = null;
   let getRequests = 0;
   let comparisonRequests = 0;
-  const zone = { id: 9, report_id: options.unlinked ? null : 2, name: "Maybunga bridge", is_active: true, created_at: stamp, updated_at: stamp,
+  const zone = { id: 9, report_id: options.unlinked ? null : 2, name: "Maybunga bridge", is_active: !options.inactive, created_at: stamp, updated_at: stamp,
     expires_at: "2026-10-10T00:00:00Z", severity: "medium", depth: "knee", report_source: "direct_user", original_report_text: "Water at the bridge.",
     location_label: "Maybunga bridge", contributors: [], geometry: { type: "Polygon", coordinates: [[[121.08,14.57],[121.081,14.57],[121.081,14.571],[121.08,14.57]]] } };
   await page.addInitScript(() => localStorage.setItem("lanes_token", "synthetic-review-fixture"));
@@ -74,6 +74,14 @@ async function setup(page: Page, options: { readOnly?: boolean; missing?: boolea
         warnings: options.crossLocation === "proxy" ? ["Depth is a canonical gauge proxy, not measured centimetres. This comparison is a proxy-depth simulation."] : [],
       };
       return route.fulfill({ json: result });
+    }
+    if (path.endsWith("/expiry-policy")) {
+      if (options.expiryFailure) return route.fulfill({ status: 503, json: { detail: "Expiry policy storage is unavailable." } });
+      return route.fulfill({ json: { automatic_expiry_enabled: true, pasig_ml_expiry_enabled: true,
+        method: options.expiryMethod ?? "ml_cross_location", deadline: "2026-10-09T09:00:00Z",
+        reason: options.expiryMethod === "fixed_fallback" ? "Model source is unavailable; fixed deadline retained." : "Experimental upper-quantile expiry.",
+        reference_basis: options.expiryMethod === "ml_pooled" ? "registration_proxy" : "observed_reference",
+        experimental: options.expiryMethod !== "fixed_fallback", accuracy_verified: false, expires_as: "Unconfirmed" } });
     }
     if (path.endsWith("/subsidence-prediction")) {
       expect(route.request().method()).toBe("GET");
@@ -475,4 +483,57 @@ test("approved citizen submission simulates a cross-barangay zone without claimi
   await panel.getByText(/Citizen report submitted:/).scrollIntoViewIfNeeded();
   await page.screenshot({ path: info.outputPath("citizen-submission-simulation.png") });
   expect(posts).toHaveLength(0);
+});
+
+for (const method of ["ml_cross_location", "ml_pooled", "fixed_fallback"] as const) {
+  test(`automatic expiry policy is visible for ${method}`, async ({ page }, info) => {
+    await setup(page, { zone: true, expiryMethod: method });
+    const panel = await openPrediction(page);
+    const expiry = panel.getByLabel("Automatic zone expiry");
+    await expect(expiry.getByText("Automatic zone expiry", { exact: true })).toBeVisible();
+    await expect(expiry.getByText(/Deadline:/)).toBeVisible();
+    if (method === "fixed_fallback") await expect(expiry.getByText(/Fixed timer.*ML unavailable/)).toBeVisible();
+    else await expect(expiry.getByText(/Experimental ML expiry/)).toBeVisible();
+    if (method === "ml_pooled") await expect(expiry.getByText(/actual flood observation time is unknown/)).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await expiry.scrollIntoViewIfNeeded();
+    await page.screenshot({ path: info.outputPath(`expiry-${method}.png`), scale: "css" });
+  });
+}
+test("automatic expiry storage error is visible", async ({ page }) => {
+  await setup(page, { zone: true, expiryFailure: true });
+  const panel = await openPrediction(page);
+  await expect(panel.getByLabel("Automatic zone expiry").getByRole("alert")).toContainText("Expiry policy storage is unavailable.");
+  await expect(panel.getByRole("button", { name: "Retry expiry policy" })).toBeVisible();
+});
+
+test("saved legacy ML estimate remains visible when the research preview is stale", async ({ page }, info) => {
+  await setup(page, { zone: true, missing: true, inactive: true });
+  await page.route("**/admin/zones/9/expiry-policy", route => route.fulfill({ json: {
+    automatic_expiry_enabled: true, pasig_ml_expiry_enabled: true, method: "ml_pooled",
+    deadline: "2026-10-10T05:04:13+08:00", reason: "Experimental upper-quantile expiry; current condition becomes Unconfirmed.",
+    reference_basis: "submission_proxy", experimental: true, accuracy_verified: false,
+    expires_as: "Unconfirmed", zone_is_active: false, prediction_as_of_at: "2026-10-08T21:15:49+08:00",
+    quantiles: [
+      { quantile: .1, estimated_reported_subsidence_at: "2026-10-09T07:15:00+08:00" },
+      { quantile: .5, estimated_reported_subsidence_at: "2026-10-09T14:52:00+08:00" },
+      { quantile: .9, estimated_reported_subsidence_at: "2026-10-10T05:04:13+08:00" },
+    ],
+  } }));
+  await page.getByRole("button", { name: /Active Zones/ }).click();
+  await page.getByRole("button", { name: "All History" }).click();
+  await page.getByRole("button", { name: "Info for Zone #9" }).click();
+  const dialog = page.getByRole("dialog", { name: "Flood Zone Details" });
+  await expect(dialog.getByText(/#9.*Inactive/)).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Deactivate zone", exact: true })).toHaveCount(0);
+  const panel = dialog.getByRole("region", { name: "Automatic subsidence prediction for zone 9" });
+  const saved = panel.getByLabel("Saved ML subsidence estimate");
+  await saved.scrollIntoViewIfNeeded();
+  await expect(saved.getByText("Saved ML subsidence estimate", { exact: true })).toBeVisible();
+  await expect(saved.getByText(/Around.*2026/)).toBeVisible();
+  await expect(saved.getByText(/Forecast anchored/)).toBeVisible();
+  await expect(saved.getByText(/This zone is inactive/)).toBeVisible();
+  await expect(panel.getByLabel("Automatic zone expiry").getByText(/recording-time proxy/)).toBeVisible();
+  expect(await saved.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("legacy-saved-subsidence.png"), scale: "css" });
 });
