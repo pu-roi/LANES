@@ -1,6 +1,14 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 1:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Local Updates documentation and pre-push audit
+
+- Audit all eight core records and synchronize delivered Local Updates behavior, source/date filters, desktop/mobile coverage, actual empty saved-data result and pending cloud release. Public metadata/security and dependency/schema checks reuse the verified final implementation; no code changes or repeated tests are needed. Prepare all changes for the developer-requested `roi-branch` publication. [Audit](evaluations/community-local-updates-20261011.md#planner-and-pre-push-audit--october-11-144-am-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Community Feed Local Updates connected
+
+- Replace sample headlines with a public read-only collected-article endpoint and shared desktop sidebar/mobile expandable news card. Approved recent Metro Manila flood stories show source links, publisher and publication date before durable extraction/public-alert approval; private diagnostics and current-flood activation remain separate. Loading/empty/retry/offline/cache states are implemented. 24 backend checks, 10 responsive browser checks, TypeScript and scoped lint pass; an actual read-only PostgreSQL check returns no qualifying recent articles. No schema/dependency/cloud release or map-alert removal. [Verification](evaluations/community-local-updates-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 10: Documentation and roi-branch pre-push acceptance
 

@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 1:43 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Community Feed Local Updates:** recent collected flood articles now replace sample news in the desktop sidebar and shared mobile/tablet expandable card. Public article metadata does not depend on alert publication. [Implementation, filtering, 24 backend/10 responsive checks and release limits](evaluations/community-local-updates-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Pasig coverage and abstention:** Eligible Pasig polygons can use the shared Pasig model even when their barangay has no local historical outcomes. This is not guaranteed inference for every record. Unverified location, missing observation time without an accepted registration/submission proxy, incompatible depth snapshots, changed/review-pending evidence or unavailable model assets can still produce an explicit unavailable/fixed-fallback state. A saved operational forecast remains visible after expiry even when the current research preview is inactive or stale. Expiry means Unconfirmed, not observed flood clearance; p90 is an experimental policy estimate, not calibrated certainty. [Evidence](evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

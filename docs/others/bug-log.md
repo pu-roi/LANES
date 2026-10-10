@@ -1,6 +1,8 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 1:43 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-140: Local Updates showed sample news and was absent on mobile. Status: Resolved locally; matching release pending. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: Community Feed's right panel displayed two fixed headlines with fake relative times and no source links. RCA: `RightSidebar.tsx` contained static markup and is hidden below the desktop breakpoint; no public collected-article connection existed. Solution: add bounded read-only `GET /news/local-updates`, reuse discovery's source/current-body local-flood rules, return only article metadata, and share one list between desktop sidebar and mobile/tablet expandable feed card. Files: API registration and new `local_news.py` route/CRUD/schema/service; `LocalUpdates.tsx`, `localNewsApi.ts`, `RightSidebar.tsx`, `FeedPage.tsx`, backend and Playwright regressions. Verification: 24 backend/10 responsive cases, TypeScript/scoped lint, screenshot inspection and actual read-only PostgreSQL empty result. No schema/dependency or public-map-alert change. [Evidence](../evaluations/community-local-updates-20261011.md).
 
 **BUG-139 documentation follow-up:** Coverage is conditional across Pasig; missing local history alone can use pooled transfer, while invalid/missing source evidence and model failures retain explicit abstention/fallback. Recovery is resolved; scientific accuracy and cloud frontend release remain separate. Repeat native acceptance passes before requested branch publication. [Evidence](../evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
