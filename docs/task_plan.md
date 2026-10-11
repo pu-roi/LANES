@@ -1,6 +1,14 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 11: Automatic weather-based news scheduling
+
+- [x] Audit the eight core records and affected settings/rollout documentation; expand Decision 25 with controller rationale, weather/evidence boundaries, OIDC identity, uncertain-dispatch policy and coordinated release/rollback. Verify dependency/migration synchronization and documentation references before the requested `roi-branch` commit/push. Reuse the completed 146 backend/native and 43 browser acceptance results; this continuation changes documentation only. [Publication audit](evaluations/news-weather-scheduling-20261011/README.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Implement sampled 17-LGU/upstream Open-Meteo and official PAGASA readers, 60/15/30-minute policy, freshness/cooldown and current-evidence gates. Add machine-only OIDC controller with JSON persistence, locks and durable dispatch reconciliation; share worker due checks. [Plan](plans/news-weather-scheduling.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Remove interval editing while preserving legacy values; extend existing desktop/mobile automation status, visible failures and read-only refresh. Verify 146 backend/native checks, 28 adaptive/settings and 15 existing news browser cases (one intended desktop skip), TypeScript/scoped lint and real read-only provider probes. No schema/dependency change. [Acceptance](evaluations/news-weather-scheduling-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Release matching API, worker and frontend, configure scoped runtime job permissions and exact Scheduler OIDC identity, then switch the recorded three-hour OAuth worker trigger to the 15-minute controller endpoint. Verify unattended checks/executions and record request durations, provider issues and worker starts; retain coordinated rollback. [Runbook](guides/news-weather-scheduling-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: News plotting repairs verified locally
 
@@ -272,7 +280,7 @@ State recorded at the early-morning handoff: one Boni text alert, one Needs Revi
 **October 7 Functional System Settings:** Local implementation and controlled acceptance are complete. Shared typed policy controls staff buffers, snapshotted depth deadlines, conservative citizen corroboration and independently paused RSS/extraction/publication. Existing JSONB/audit/timeline storage is reused. [Verification](evaluations/functional-system-settings-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] Implement atomic revision/audit saves, settings capability checks, legacy-read compatibility, stage controls, bounded citizen approval and responsive settings/observation interfaces. [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Release matching API, worker (`--scheduled`) and frontend before changing `lanes-news-discovery-every-3-hours` to a 15-minute tick. Keep the database interval at its accepted 30-minute default; enable citizen approval after release acceptance. Current cloud schedule has not been changed by this implementation. [Concrete rollout](guides/system-settings-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Release matching API, worker (`--scheduled`) and frontend before changing `lanes-news-discovery-every-3-hours` to the adaptive controller's 15-minute OIDC tick. Legacy interval values are preserved and no longer editable; 60/15/30-minute backend weather policy supersedes the old fixed setting. Enable citizen approval after its separate release acceptance. [Current rollout](guides/news-weather-scheduling-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Record real-current-news independent evaluation, publication, plotted geometry and routing acceptance separately from controlled fixtures and successful zero-candidate collections. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 7 live acceptance audit:** Six scheduled full-pipeline executions succeed after the 1 GiB release. The 6 PM run reads 94 entries from six feeds, but admits zero current flood candidates. Cloud storage has 24 excluded articles and zero claim evaluations/decisions/zone links. **404 distinct backend checks**, ten public desktop/mobile browser cases and four distinct staff cases across runs pass; the staff desktop timing failure/isolated rerun and Docker socket recovery are documented. Real-current-news plotting remains unproven. [Audit](evaluations/news-live-operational-audit-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)

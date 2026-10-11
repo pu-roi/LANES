@@ -24,7 +24,8 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
                             footprint_cursor: int = 0, unbound_only: bool = False,
                             sources: tuple[NewsSource, ...] | None = None,
                             publication_admission_at: datetime | None = None,
-                            clock: Callable[[], datetime] = utc_now) -> dict:
+                            clock: Callable[[], datetime] = utc_now,
+                            on_stage: Callable[[str, dict | None], None] | None = None) -> dict:
     """Only call after operator configuration; auditing may incur provider fees.
 
     No discovery is performed here. A collector can keep capturing articles
@@ -41,14 +42,31 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
     from app.services.news_processing_service import ProcessingSummary
     from app.services.news_evaluation_service import EvaluationSummary
     from app.services.news_footprint_worker_service import FootprintWorkerSummary
-    processed = (await process_saved_news(session_factory, limit=limit, clock=clock, obey_configuration=True, sources=sources)
-                 if config.news_processing_enabled else ProcessingSummary())
-    seeded = seed_claim_evaluations(session_factory, policy, now=clock(), limit=limit, after_run_id=seed_cursor,
-                                    sources=sources, unbound_only=unbound_only, obey_configuration=True) if config.news_processing_enabled else EvaluationSummary()
-    evaluated = await evaluate_news_claims(session_factory, limit=limit, auditor=auditor, policy=policy, clock=clock, sources=sources, obey_configuration=True) if config.news_processing_enabled else EvaluationSummary()
+    def report(stage: str, summary: dict | None = None) -> None:
+        if on_stage is not None:
+            on_stage(stage, summary)
+
+    processed, seeded, evaluated = ProcessingSummary(), EvaluationSummary(), EvaluationSummary()
+    if config.news_processing_enabled:
+        report("extraction")
+        processed = await process_saved_news(session_factory, limit=limit, clock=clock, obey_configuration=True, sources=sources)
+        report("extraction", asdict(processed))
+        report("seed")
+        seeded = seed_claim_evaluations(session_factory, policy, now=clock(), limit=limit, after_run_id=seed_cursor,
+                                        sources=sources, unbound_only=unbound_only, obey_configuration=True)
+        report("seed", asdict(seeded))
+        report("evaluation")
+        evaluated = await evaluate_news_claims(session_factory, limit=limit, auditor=auditor, policy=policy, clock=clock, sources=sources, obey_configuration=True)
+        report("evaluation", asdict(evaluated))
+    report("publication")
     published = process_news_publications(session_factory, policy=policy, limit=limit, clock=clock, sources=maintenance_sources, maintenance_only=not config.news_publication_enabled)
-    footprints = process_news_footprints(session_factory, policy=policy, limit=limit, clock=clock,
-                                        after_case_id=footprint_cursor, sources=sources) if config.news_publication_enabled else FootprintWorkerSummary()
+    report("publication", asdict(published))
+    footprints = FootprintWorkerSummary()
+    if config.news_publication_enabled:
+        report("footprints")
+        footprints = process_news_footprints(session_factory, policy=policy, limit=limit, clock=clock,
+                                            after_case_id=footprint_cursor, sources=sources)
+        report("footprints", asdict(footprints))
     return {"extraction": asdict(processed), "seed": asdict(seeded), "evaluation": asdict(evaluated),
             "publication": asdict(published), "footprints": asdict(footprints),
             "stage_outcomes": {"processing": "enabled" if config.news_processing_enabled else "paused", "publication": "enabled" if config.news_publication_enabled else "paused"},

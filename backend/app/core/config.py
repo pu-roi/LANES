@@ -4,6 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     PROJECT_NAME: str = "LANES"
+    NEWS_SCHEDULER_AUDIENCE: str = ""
+    NEWS_SCHEDULER_SERVICE_ACCOUNT: str = ""
+    NEWS_CLOUD_RUN_JOB: str = ""
     API_VERSION: str = "0.1.0"
     
     # Database Configuration

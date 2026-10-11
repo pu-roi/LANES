@@ -1,10 +1,10 @@
-"""A fixed scheduler tick runs due collection and independent lifecycle work."""
+"""The news job rechecks adaptive collection due time and pipeline policy."""
 from datetime import datetime, timedelta, timezone
 import httpx
 from sqlalchemy import select, text
 from app.models.setting import SystemSetting
 from app.models.news_telemetry import NewsDiscoveryRun
-from app.schemas.configuration import ConfigurationRuntime, NewsStageHealth
+from app.schemas.configuration import ConfigurationRuntime, NewsStageHealth, NewsCycleSummary
 from app.services.configuration_service import RUNTIME_KEY, read_configuration, selected_news_sources, write_runtime
 from app.services.news_discovery_service import discover_news
 from app.services.news_pipeline_service import run_news_pipeline, pipeline_has_failures
@@ -30,19 +30,48 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
                 runtime.running = True
                 runtime.error_code = None
                 runtime.stage_outcomes = {}
+                # Retain a distinct completed-cycle snapshot while this cycle
+                # records its own progress and counts.
+                if runtime.last_cycle is None and runtime.last_finished_at and row:
+                    old = ConfigurationRuntime.model_validate(row.value)
+                    if old.last_started_at and old.last_finished_at >= old.last_started_at:
+                        runtime.last_cycle = NewsCycleSummary(started_at=old.last_started_at,
+                            finished_at=old.last_finished_at, counts=old.stage_counts,
+                            outcome="requires_attention" if old.error_code else "completed", error_code=old.error_code)
+                runtime.stage_counts = {}
+                runtime.current_stage = "maintenance"
+                runtime.stage_started_at = runtime.last_started_at
+                runtime.last_progress_at = runtime.last_started_at
                 write_runtime(db, runtime)
+
+            def report_stage(stage: str, summary: dict | None = None) -> None:
+                runtime.last_progress_at = clock()
+                if summary is None:
+                    runtime.current_stage = stage
+                    runtime.stage_started_at = runtime.last_progress_at
+                else:
+                    runtime.stage_counts[stage] = {k: v for k, v in summary.items()
+                                                   if isinstance(v, int) and not isinstance(v, bool)}
+                with session_factory() as progress_db:
+                    write_runtime(progress_db, runtime)
+
             try:
+                from app.services.news_weather_controller_service import adaptive_decision
                 with session_factory() as db:
                     from app.services.flood_event_service import expire_due_zones
                     expire_due_zones(db, now=clock())
-                due = previous is None or clock() >= previous + timedelta(minutes=config.news_collection_interval_minutes)
+                    interval = adaptive_decision(db, clock()).interval_minutes
+                due = previous is None or clock() >= previous + timedelta(minutes=interval)
                 if config.news_collection_enabled and active and due:
                     with session_factory() as db, httpx.Client(timeout=httpx.Timeout(12, connect=5)) as client:
                         # Recheck immediately before network work; publisher URLs remain registry-owned.
                         current = read_configuration(db)
                         selected = selected_news_sources(db, active)
-                        if current.news_collection_enabled and selected:
+                        interval = adaptive_decision(db, clock()).interval_minutes
+                        due = previous is None or clock() >= previous + timedelta(minutes=interval)
+                        if current.news_collection_enabled and selected and due:
                             try:
+                                report_stage("collection")
                                 run = discover_news(selected, client, db)
                                 runtime.stage_counts["collection"] = {
                                     "entries_read": sum(p.entry_count for p in run.probes),
@@ -56,6 +85,7 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
                                     outcome=runtime.stage_outcomes["collection"], counts=runtime.stage_counts["collection"],
                                     errors=["feed_" + probe.status for probe in bad_feeds])
                                 previous = runtime.last_started_at
+                                report_stage("collection", runtime.stage_counts["collection"])
                             except Exception:
                                 runtime.stage_outcomes["collection"] = "failed"
                                 runtime.stages["collection"] = NewsStageHealth(last_attempt_at=runtime.last_started_at,
@@ -66,7 +96,9 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
                             runtime.stage_outcomes["collection"] = "paused"
                 else:
                     runtime.stage_outcomes["collection"] = "paused" if not config.news_collection_enabled else "no_enabled_sources" if not active else "not_due"
-                result = await run_news_pipeline(session_factory, limit=limit, unbound_only=True, sources=sources, clock=clock)
+                report_stage("pipeline")
+                result = await run_news_pipeline(session_factory, limit=limit, unbound_only=True, sources=sources, clock=clock,
+                                                 on_stage=report_stage)
                 for stage, value in result.items():
                     if isinstance(value, dict) and stage != "stage_outcomes":
                         runtime.stage_counts[stage] = {k: v for k, v in value.items() if isinstance(v, int) and not isinstance(v, bool)}
@@ -92,10 +124,16 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
             finally:
                 runtime.running = False
                 runtime.last_finished_at = clock()
-                runtime.next_collection_at = (previous + timedelta(minutes=config.news_collection_interval_minutes)) if previous and config.news_collection_enabled and active else None
+                runtime.current_stage = None
+                runtime.stage_started_at = None
+                runtime.last_progress_at = runtime.last_finished_at
+                runtime.last_cycle = NewsCycleSummary(started_at=runtime.last_started_at,
+                    finished_at=runtime.last_finished_at, counts=runtime.stage_counts,
+                    outcome="requires_attention" if runtime.error_code else "completed", error_code=runtime.error_code)
                 with session_factory() as db:
                     current = read_configuration(db)
-                    runtime.next_collection_at = previous + timedelta(minutes=current.news_collection_interval_minutes) if previous and current.news_collection_enabled and selected_news_sources(db, sources) else None
+                    interval = adaptive_decision(db, clock()).interval_minutes
+                    runtime.next_collection_at = previous + timedelta(minutes=interval) if previous and current.news_collection_enabled and selected_news_sources(db, sources) else None
                     write_runtime(db, runtime)
         finally:
             connection.execute(text("SELECT pg_advisory_unlock(:key)"), {"key": WORKER_LOCK})

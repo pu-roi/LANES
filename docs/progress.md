@@ -1,6 +1,14 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Adaptive scheduling documentation and publication audit
+
+- Audit all eight core records and expand existing Decision 25 with the controller rationale, conservative weather policy, exact machine identity, durable uncertainty handling, legacy compatibility and pending cloud activation/rollback. Keep the completed 146 backend/native and 43 browser checks separate from deployment or flood-prediction accuracy. No source/dependency/schema changes in this continuation; the developer requests committing/pushing all current work to `roi-branch`. [Publication audit](evaluations/news-weather-scheduling-20261011/README.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Adaptive news scheduling accepted locally
+
+- Implement sampled Open-Meteo/PAGASA scheduling, positive-risk precedence, 30-minute freshness and 60-minute cooldown; 60/15/30-minute policy is shared by worker/controller. Add Google OIDC machine endpoint, separate existing-setting JSON state, PostgreSQL locks, dispatch reservations and execution reconciliation. Preserve paused-collection processing/maintenance and independent expiry. Remove interval editing, preserve stored legacy values and extend desktop/mobile automation health with source clocks, coverage, due reason and failures. 146 backend/native checks, 28 adaptive/settings browser checks and 15 news regressions pass (one intended desktop skip), with TypeScript/scoped lint and actual read-only provider probes. No new package/model/migration. Cloud inspection confirms the three-hour trigger remains unchanged; matching deployment, unattended acceptance and savings measurement are separate gates. [Evidence](evaluations/news-weather-scheduling-20261011/README.md), [rollout](guides/news-weather-scheduling-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Three news flood zones and searchable history verified locally
 

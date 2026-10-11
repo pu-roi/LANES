@@ -8,6 +8,7 @@ import { NewsResults } from "./NewsResults";
 import { NewsCollectionDrawer } from "./NewsCollectionDrawer";
 import { NewsSourcesDrawer } from "./NewsSourcesDrawer";
 import { useNewsSimulation } from "./useNewsSimulation";
+import { NewsAutomationPanel } from "./NewsAutomationPanel";
 
 export default function NewsIntelligencePage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function NewsIntelligencePage() {
           </Button>
         </div>
       </div>
+      <NewsAutomationPanel />
       <NewsResults key={simulation.data?.article_title ?? "normal"}
         active
         defaultSearch={simulation.data?.article_title} />

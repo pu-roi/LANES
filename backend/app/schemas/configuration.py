@@ -80,6 +80,18 @@ class ConfigurationRuntime(BaseModel):
     stage_outcomes: dict[str, str] = Field(default_factory=dict)
     stages: dict[str, NewsStageHealth] = Field(default_factory=dict)
     scheduler_tick_minutes: int = 15
+    current_stage: str | None = None
+    stage_started_at: datetime | None = None
+    last_progress_at: datetime | None = None
+    last_cycle: "NewsCycleSummary | None" = None
+
+
+class NewsCycleSummary(BaseModel):
+    started_at: datetime
+    finished_at: datetime
+    outcome: str
+    counts: dict[str, dict[str, int]] = Field(default_factory=dict)
+    error_code: str | None = None
 
 
 class ConfigurationResponse(BaseModel):
@@ -92,5 +104,7 @@ class ConfigurationResponse(BaseModel):
     source_options: list[dict[str, str]]
     automatic_news_buffer_metres: float = 25
     supported_options: dict[str, Any] = Field(default_factory=lambda: {
-        "configuration_schema": OperationalSettings.model_json_schema(), "collection_intervals_minutes": [15, 30, 60]})
+        "configuration_schema": OperationalSettings.model_json_schema(), "collection_intervals_minutes": [15, 30, 60],
+        "collection_interval_editable": False, "news_scheduling_mode": "adaptive",
+        "adaptive_intervals_minutes": {"quiet": 60, "risk": 15, "unavailable": 30}})
     runtime: ConfigurationRuntime

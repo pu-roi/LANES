@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 11, 2026, 2:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Adaptive scheduling storage audit (October 11):** No SQLAlchemy model, table, column, index or Alembic migration changed. Existing SystemSetting JSON key `news_weather_controller_v1` stores versioned provider snapshots, clocks, dispatch reservations/reconciliation and counters, separately from editable policy/runtime records. Session advisory locks serialize controllers and preserve worker overlap protection. Fresh guarded PostgreSQL/PostGIS acceptance applied existing migrations through `d7e4b9a21c60`; legacy interval saves preserve stored values. Ordinary local/shared schemas were not altered. [Native verification](../evaluations/news-weather-scheduling-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 11 expiry v3 storage audit:** No SQLAlchemy model, Alembic migration, table, column or index changed. A fresh disposable PostGIS database successfully applied all existing migrations through `d7e4b9a21c60`; shared read-only acceptance confirms the same head. Existing expiry-policy audit JSON now retains selected calculations/locality/depth and explicit fallback basis. `RECONCILE_REPORT_LOCALITY` uses existing immutable audit storage for old/new labels, final geometry fingerprint, PSGC identities and preserved clocks. Label changes preserve source `updated_at`; accepted review and training admission remain separate. [Acceptance and storage tests](../evaluations/pasig-subsidence-v3-acceptance-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

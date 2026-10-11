@@ -374,6 +374,10 @@ async def test_scheduler_cadence_publishers_overlap_pause_and_failure(settings_f
         assert response.runtime.stages["collection"].counts == {"entries_read": 94, "eligible_candidates": 0}
         config.news_collection_interval_minutes = 15
         settings.save_configuration(db, ConfigurationUpdate(revision=response.revision, settings=config), actor_id=actor_id)
+        assert settings.read_configuration(db).news_collection_interval_minutes == 30
+        from app.crud.news_weather import save_controller
+        from app.schemas.news_weather import NewsWeatherController, WeatherProvider
+        save_controller(db, NewsWeatherController(last_positive_at=now[0], providers=[WeatherProvider(name="Open-Meteo", source_url="https://open-meteo.com", checked_at=now[0], status="risk")]))
     now[0] += timedelta(minutes=15)
     await tick()
     assert len(collected) == 3
@@ -436,3 +440,56 @@ def test_concurrent_administrators_cannot_overwrite_each_other(settings_factory)
     with settings_factory() as db:
         assert settings.read_configuration(db).staff_road_buffer_metres in (40,45)
         settings.save_configuration(db, ConfigurationUpdate(revision=revision+1, settings=original), actor_id=actor_id)
+
+
+@pytest.mark.asyncio
+async def test_scheduler_progress_is_committed_for_readers_and_finally_cleared(settings_factory, monkeypatch):
+    from types import SimpleNamespace
+    from app.services import news_scheduler_service as worker
+    from app.schemas.configuration import ConfigurationRuntime, NewsCycleSummary
+    from app.services.news_sources import load_news_sources
+    now = datetime.now(timezone.utc) + timedelta(days=1)
+    stages = []
+    config = OperationalSettings()
+    with settings_factory() as db:
+        row = db.get(SystemSetting, settings.CONFIG_KEY)
+        if row is None:
+            row = SystemSetting(key=settings.CONFIG_KEY); db.add(row)
+        row.value = {"revision": 1, "settings": config.model_dump(mode="json")}
+        settings.write_runtime(db, ConfigurationRuntime(last_cycle=NewsCycleSummary(
+            started_at=now-timedelta(hours=3), finished_at=now-timedelta(hours=3)+timedelta(seconds=20),
+            outcome="completed", counts={"extraction": {"completed": 9}})))
+
+    def check(stage):
+        with settings_factory() as db:
+            value = db.get(SystemSetting, settings.RUNTIME_KEY).value
+            assert value["running"] and value["current_stage"] == stage
+            assert value["last_cycle"]["counts"]["extraction"]["completed"] == 9
+            stages.append(stage)
+
+    def collect(sources, client, db):
+        check("collection")
+        db.add(models.NewsDiscoveryRun(trigger="collector", status="completed", started_at=now, finished_at=now))
+        db.commit()
+        return SimpleNamespace(probes=[SimpleNamespace(entry_count=20, status="parsed")], candidates=[])
+
+    async def pipeline(factory, **kwargs):
+        kwargs["on_stage"]("extraction", None)
+        check("extraction")
+        kwargs["on_stage"]("extraction", {"completed": 2})
+        with factory() as db:
+            assert db.get(SystemSetting, settings.RUNTIME_KEY).value["stage_counts"]["extraction"]["completed"] == 2
+        kwargs["on_stage"]("footprints", None)
+        check("footprints")
+        raise RuntimeError("fixture worker interruption")
+
+    monkeypatch.setattr(worker, "discover_news", collect)
+    monkeypatch.setattr(worker, "run_news_pipeline", pipeline)
+    with pytest.raises(RuntimeError, match="fixture worker interruption"):
+        await worker.run_scheduled_news_tick(settings_factory, sources=load_news_sources(), clock=lambda: now)
+    assert stages == ["collection", "extraction", "footprints"]
+    with settings_factory() as db:
+        value = db.get(SystemSetting, settings.RUNTIME_KEY).value
+        assert not value["running"] and value["current_stage"] is None
+        assert value["last_cycle"]["outcome"] == "requires_attention"
+        assert value["last_cycle"]["counts"]["extraction"]["completed"] == 2

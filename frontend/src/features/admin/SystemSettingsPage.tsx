@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSettings, updateSettings, type SettingsConfiguration, type SystemSettings } from "@/features/admin/adminApi";
-import { Button, Card, CardContent, CardHeader, CardTitle, Checkbox, NumberInput, Select, Tabs } from "@/shared/ui";
+import { Button, Card, CardContent, CardHeader, CardTitle, Checkbox, NumberInput, Tabs } from "@/shared/ui";
 import { Activity, Clock, CloudRain, Newspaper, RefreshCw, Save, ShieldCheck, type LucideIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { ApiError } from "@/lib/apiClient";
@@ -160,7 +160,11 @@ export default function SystemSettingsPage() {
           {toggle("news_publication_enabled", "Automatic publication and plotting", "Publish eligible alerts and activate qualified road zones.")}
         </fieldset>
         <div className="min-w-0 space-y-6 border-t border-gray-100 pt-5 lg:border-t-0 lg:pt-0">
-          <Select label="Collection interval (minutes)" disabled={disabled} value={draft.news_collection_interval_minutes} onChange={(event) => update("news_collection_interval_minutes", Number(event.target.value))} options={[15, 30, 60].map((value) => ({ value, label: `${value} minutes` }))} />
+          <div className="space-y-2 text-sm leading-relaxed text-gray-600">
+            <p className="font-semibold text-gray-900">Automatic collection schedule</p>
+            <p>The backend selects 60 minutes in quiet conditions, 15 minutes during relevant rain risk or current flooding, and 30 minutes when weather information is incomplete or unavailable.</p>
+            <p>View weather sources, scheduling reasons and actual worker activity in News Intelligence.</p>
+          </div>
           <fieldset className="min-w-0">
             <legend className="mb-3 text-sm font-semibold text-gray-900">Verified news publishers</legend>
             <div className="grid gap-4 sm:grid-cols-2">{current.source_options.map((source) => <Checkbox key={source.id} label={source.publisher} disabled={disabled} checked={draft.news_source_ids.includes(source.id)} onChange={(event) => update("news_source_ids", event.target.checked ? [...draft.news_source_ids, source.id] : draft.news_source_ids.filter((id) => id !== source.id))} />)}</div>
