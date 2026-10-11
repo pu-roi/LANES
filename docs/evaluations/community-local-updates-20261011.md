@@ -103,4 +103,17 @@ During real 1024-pixel verification the existing three-column minimum widths exc
 - TypeScript passes. RightSidebar ESLint has zero errors and its two existing image warnings. FeedPage retains six errors/four warnings; programmatic comparison against HEAD confirms every diagnostic is unchanged by the breakpoint class. This scope does not fix unrelated existing hooks/entities lint errors.
 - Desktop/mobile screenshots `frontend/test-results/commuter-sidebar-1440.png` and `commuter-sidebar-390.png` are inspected. The first CSS check ran before development styles settled; load/poll-based acceptance confirms the existing hidden scrollbar rules apply. No new automated regression fixture is added for this small wrapper change; the earlier 143 backend/10 responsive commuter suite remains the coverage baseline.
 
-Matching frontend rollout and live UI acceptance remain pending at this checkpoint. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+Matching frontend rollout and live UI acceptance are accepted in the follow-up below. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Sidebar live acceptance — October 11, 12:23 PM PHT
+
+Frontend commit `b93dc0b7b4735025ba83ebf2720d731806d43044` is pushed to `roi-branch`. App Hosting build `build-2026-10-11-003` (Cloud Build `ca3f2568-9ec5-4e4a-bac6-a3a1527c15ae`) compiles successfully, the rollout succeeds, and Cloud Run `lanes-frontend-build-2026-10-11-003` serves 100% traffic. The already accepted commuter API/workers remain on `429dd19`; the UI release adds no backend behavior or schema/dependency changes.
+
+- Re-run `npx playwright test tests/local-updates.spec.ts --workers=1` after the breakpoint update: **10 passed (42.1 seconds)**. Covers desktop/mobile source/date display, empty state, failure/retry, cached refresh and offline behavior. TypeScript passes; existing FeedPage lint diagnostics remain unchanged as recorded above.
+- Actual unmocked public `https://navlanes.live/feed` at widths 1920, 1440, 1280, 1024, 768 and 390: news **200/five articles** and main feed **200**, with real posts rendered. Original links/dates are verified for every story; no local-news error or horizontal overflow.
+- Large screens: exact 344-pixel panel, transparent idle scrollbar, visible hover/focus thumb, native mouse wheel and PageDown scrolling, no page movement when the sidebar reaches its end.
+- Smaller screens: sidebar hidden, shared expandable news visible, source-linked five articles and actual refresh click returning **200**. At 390 pixels the refresh control is reachable above fixed bottom navigation through normal page scrolling.
+- Live desktop/mobile screenshots `frontend/test-results/commuter-sidebar-live-1440.png` and `commuter-sidebar-live-390.png` are inspected. Test-result images are local ignored verification artifacts; the repeat Playwright run cleans earlier transient screenshots, so these final live captures are the current images.
+- BUG-143 is resolved live; progress/task/system/rollback documentation is synchronized. No new library/model/migration is introduced, so dependency and database-design records require no entry. Minor scrollbar/layout refinement is recorded in the existing feed documentation rather than a new flagship feature or architectural decision.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).

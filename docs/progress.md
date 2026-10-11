@@ -1,10 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 12:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:23 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Quieter and slightly wider Community Feed sidebar
 
-- Increase the large-screen right sidebar from 320 to 344 pixels, reuse the existing hidden-until-hover/focus scrollbar, and keep wheel scrolling contained with keyboard access. Below 1280 pixels, use the shared expandable Local Updates card to avoid the cramped three-column laptop layout. Actual local checks at 1920/1440/1280/1024/768/390 widths pass; mobile refresh is reachable and returns 200. TypeScript passes; RightSidebar lint has only its two existing image warnings. FeedPage's six errors/four warnings are identical before/after this class-only change. Frontend rollout is pending. [Acceptance](evaluations/community-local-updates-20261011.md#sidebar-scrolling-and-width--october-11-1215-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Increase the large-screen right sidebar from 320 to 344 pixels, reuse the existing hidden-until-hover/focus scrollbar, and keep wheel scrolling contained with keyboard access. Below 1280 pixels, use the shared expandable Local Updates card to avoid the cramped three-column laptop layout. Actual local checks at 1920/1440/1280/1024/768/390 widths pass; mobile refresh is reachable and returns 200. TypeScript passes; RightSidebar lint has only its two existing image warnings. FeedPage's six errors/four warnings are identical before/after this class-only change. Frontend rollout `build-2026-10-11-003` is accepted live from `b93dc0b`; all six actual live widths pass, and ten responsive Local Updates regressions pass after the UI change. [Acceptance](evaluations/community-local-updates-20261011.md#sidebar-scrolling-and-width--october-11-1215-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Local Updates commuter coverage
 
