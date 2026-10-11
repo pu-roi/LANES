@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: News Intelligence organized into two views
+
+- Overview summarizes worker status, next collection, pipeline switches, recent counts and weather health using existing admin components. Flooded Areas retains reported-location cards, search/filtering and source inspection, with state preserved across tabs. Advisory clocks, coverage and run diagnostics remain expandable; source/dispatch issues remain visible in the summary. Shared Tabs opts into accessible panels and keyboard navigation. **37 browser checks pass (three intentional skips)** with TypeScript/scoped lint and desktop/mobile screenshot review. [Local acceptance](evaluations/news-intelligence-tabs-20261011/README.md); cloud release is separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Adaptive scheduling documentation and publication audit
 

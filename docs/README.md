@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**News Intelligence tabs (local):** [Layout and responsive acceptance](evaluations/news-intelligence-tabs-20261011/README.md) covers the concise Overview, separate Flooded Areas view, shared admin components, expandable diagnostics and preserved read-only workflows. Cloud release remains separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Adaptive scheduling publication audit:** [Decision 25](decisions.md#25-database-governed-operational-policy-and-fixed-automation-tick) now records the controller rationale, weather/evidence boundaries, exact Google identity, dispatch reconciliation and release/rollback consequences. [Planner audit](evaluations/news-weather-scheduling-20261011/README.md#planner-and-publication-audit) covers the eight core records, preserved test evidence and dependency/migration state for the requested `roi-branch` push. Cloud trigger activation remains a separate gate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

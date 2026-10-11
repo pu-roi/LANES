@@ -1,6 +1,6 @@
 # Automatic weather-based news scheduling
 
-> **Last Updated:** October 11, 2026, 10:52 PM
+> **Last Updated:** October 11, 2026, 11:56 PM
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **State:** Implemented and verified locally on `roi-branch`; coordinated cloud activation remains a separate release.
 
@@ -44,6 +44,6 @@ No SQLAlchemy model, Alembic migration or package was added. Controller snapshot
 
 ## Admin status and acceptance
 
-The staff-protected automation GET remains read-only and reports effective interval/reason, due time, sampled points, provider health and issue/validity times, controller heartbeat, dispatch errors, last request duration and cumulative check/provider-issue/accepted-worker-start counters. Desktop/mobile News Intelligence shows these with source links and explicit stale/failure states. System Settings retains collection and other pipeline switches while removing interval editing. A completed worker cycle refreshes displayed flood results.
+The staff-protected automation GET remains read-only and reports effective interval/reason, due time, sampled points, provider health and issue/validity times, controller heartbeat, dispatch errors, last request duration and cumulative check/provider-issue/accepted-worker-start counters. Desktop/mobile News Intelligence places concise status and provider health in Overview, with source links and visible stale/failure states. Weather details and run diagnostics are expandable; Flooded Areas holds existing searchable reported-location cards. Polling remains mounted across tabs and completed cycles invalidate those cards. [Presentation acceptance](../evaluations/news-intelligence-tabs-20261011/README.md). System Settings retains collection and other pipeline switches while removing interval editing.
 
 [Local verification](../evaluations/news-weather-scheduling-20261011/README.md) separates disposable-database tests, responsive fixtures and actual read-only provider probes from cloud acceptance. [Rollout and rollback](../guides/news-weather-scheduling-rollout.md) require matching API, worker and frontend releases before changing the existing three-hour trigger. After activation, verify autonomous checks and executions with the browser closed; measure starts and provider failures over representative quiet/rain periods before claiming cost savings.

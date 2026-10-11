@@ -71,7 +71,7 @@ async function setup(page: Page, articleDetail: unknown = detail, fail = { list:
     return fulfill(route, []);
   });
   await page.goto("/admin/news", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: "Flood Locations from News", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "News Intelligence", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Collection status", exact: true }).click();
   return { reads, mutations };
 }
@@ -184,6 +184,7 @@ test("a saved publisher article renders its actual captured body and extraction"
 test("Info keeps processing history inside Source Article with responsive panes", async ({ page }) => {
   await setup(page);
   await page.getByRole("button", { name: "Close collection status" }).click();
+  await page.getByRole("tab", { name: "Flooded Areas" }).click();
   const open = page.getByRole("button", { name: /^Info: Maybunga/ });
   await open.click();
   const dialog = page.getByRole("dialog", { name: "News Flood Details", exact: true });

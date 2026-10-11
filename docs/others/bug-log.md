@@ -1,6 +1,13 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 11, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-148: News automation mobile checks inherited a different browser engine.**
+
+- **Status:** Resolved locally. **Severity:** Low (test harness). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The mobile automation suite failed at browser launch when `PLAYWRIGHT_CHROME_PATH` selected Chrome.
+- **RCA:** The iPhone device preset defaults to WebKit, while this suite did not explicitly select Chromium like the other news suites. A Chrome executable was passed to the WebKit launcher (`--inspector-pipe`).
+- **Solution:** Explicitly select Chromium in `frontend/tests/news-automation.spec.ts`; use the installed bundled browser for acceptance. No production browser/authentication behavior changes. [Verification](../evaluations/news-intelligence-tabs-20261011/README.md).
 
 **BUG-147: An uncertain news dispatch could lose its resend guard when reconciliation failed.**
 

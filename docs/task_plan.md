@@ -1,6 +1,11 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 11: News Intelligence presentation
+
+- [x] Inspect existing admin pages and shared components; separate Overview and Flooded Areas with concise status, expandable weather/run diagnostics, visible failures and keyboard tab navigation. Preserve search, article/history inspection, drawers, read-only refresh and completed-cycle invalidation. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Complete desktop/mobile screenshot inspection, 37 browser checks (three intentional skips), TypeScript and scoped lint. Save [local acceptance](evaluations/news-intelligence-tabs-20261011/README.md) separately from cloud release; no backend, dependency or schema changes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Automatic weather-based news scheduling
 
