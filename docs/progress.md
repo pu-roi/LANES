@@ -1,10 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 12:27 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: More visible right-panel width increase
 
-- Respond to developer feedback that the first 24-pixel increase was too subtle. Increase the outer sidebar from 344 to 376 pixels and reduce horizontal padding from 24 to 16 pixels, giving cards 344 pixels instead of 296 (48 additional usable pixels). Actual local desktop widths 1920/1440/1280 and smaller 1024/390 checks pass with five articles and no horizontal overflow. TypeScript passes; sidebar lint retains only existing image warnings. The existing scrollbar and responsive breakpoint remain. Live frontend rollout is pending. [Evidence](evaluations/community-local-updates-20261011.md#visible-sidebar-width-follow-up--october-11-1227-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Respond to developer feedback that the first 24-pixel increase was too subtle. Increase the outer sidebar from 344 to 376 pixels and reduce horizontal padding from 24 to 16 pixels, giving cards 344 pixels instead of 296 (48 additional usable pixels). Actual local desktop widths 1920/1440/1280 and smaller 1024/390 checks pass with five articles and no horizontal overflow. TypeScript passes; sidebar lint retains only existing image warnings. The existing scrollbar and responsive breakpoint remain. Frontend rollout `build-2026-10-11-004` from `37f59e1` now serves 100% traffic; actual live desktop/tablet/mobile checks confirm the new widths, scrolling, five articles and no horizontal overflow. [Evidence](evaluations/community-local-updates-20261011.md#visible-sidebar-width-follow-up--october-11-1227-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Quieter and slightly wider Community Feed sidebar
 

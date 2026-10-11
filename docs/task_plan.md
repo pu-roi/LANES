@@ -1,11 +1,11 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 12:27 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Community Feed Local Updates
 
 - [x] Make the right-panel width increase more visible after developer feedback: 376-pixel outer panel, 16-pixel side padding and 344-pixel cards, 48 more usable pixels than the first revision. Check local desktop/mobile layout and scrolling. [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Release and verify the visible width follow-up live. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Release and verify the visible width follow-up live: rollout `build-2026-10-11-004`, actual 376-pixel panel/344-pixel cards and desktop/mobile news acceptance pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] Make the sidebar 24 pixels wider on large screens, hide its scrollbar until hover/focus, retain keyboard scrolling and contain wheel scroll. Align the narrower-screen expandable news card with the sidebar breakpoint; verify six actual widths and mobile refresh. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Complete frontend rollout `build-2026-10-11-003` and actual live sidebar checks at six widths; ten responsive Local Updates regressions also pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
