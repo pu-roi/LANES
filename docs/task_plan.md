@@ -1,8 +1,10 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 4:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:13 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Pasig expiry v3 delivered; depth accuracy remains open
+
+**Additional source search:** Official public-source screening did not establish a new qualified episode. August 30 Pasig is already in the historical cohort; the MMDA Quezon City example has a different target/reference, and the NDRRMC lead could not be retrieved. Preserve duplicate/clock/scope blockers rather than increasing sample counts with reused summaries. [Sources and limits](research/pasig-flood-recession-depth-and-availability-20261011.md#official-source-screening-continuation--october-11-413-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] Complete the senior-planner audit and pre-push verification for the developer-requested `roi-branch` publication: eight core documents and catalog synchronized; fresh 166 native backend/database and 88 model/dataset checks pass, existing migrations upgrade to head, TypeScript/scoped lint pass, and dependencies/SQL schemas are unchanged. Retain real-outcome accuracy and hosted forecast UI as separate open gates. [Audit](evaluations/pasig-subsidence-v3-acceptance-20261011.md#planner-and-pre-push-audit--october-11-408-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

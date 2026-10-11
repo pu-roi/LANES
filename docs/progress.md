@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 4:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:13 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Additional official outcome-source screening
+
+- Check public Pasig/MMDA/NDRRMC evidence for independent wet-to-clearance observations. Confirm the August 30 city bulletin is already represented by the existing shared outcome; the Quezon City MMDA example uses a different reference clock and lacks numeric initial depth, while the NDRRMC lead remains unfetched. No new qualified event, refit, admission or deployment. Preserve sources and acquisition limits in the [research continuation](research/pasig-flood-recession-depth-and-availability-20261011.md#official-source-screening-continuation--october-11-413-pm-pht). Real reviewed outcomes remain the scientific gate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Pasig documentation and pre-push audit
 

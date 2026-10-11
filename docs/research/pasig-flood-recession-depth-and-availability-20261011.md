@@ -84,6 +84,14 @@ The immediate recommendation is to fix availability and evidence handling first,
 
 ## Research limits
 
+### Official-source screening continuation — October 11, 4:13 PM PHT
+
+Looked for public evidence that could remove the real-outcome blocker without inventing clearance labels. The official [August 30 Pasig bulletin](https://pasigcity.gov.ph/news-and-releases/southwest-monsoon-habagat-flood-update-as-of-1100-am-of-august-30-2026-965) contains 05:00 depth readings and an 11:00 collective subsidence statement. Repository cross-check confirms this is already outcome `OBS-aed0c046a22c54b0` in the existing cohort, not a new independent event. Reusing its street projections would not increase outcome diversity or establish separate street clearance times.
+
+The [PNA account of MMDA's faster recession](https://www.pna.gov.ph/articles/1282416) describes a Quezon City example measured from rain stopping to reported road reopening. Its clock, city and lack of a numeric initial depth differ from LANES' wet-reference target; it cannot be admitted as a Pasig training duration. It is a context/source lead only.
+
+An indexed [NDRRMC 2017 report](https://ndrrmc.gov.ph/attachments/article/4154/22_NDRRMC_LANNIE_MARING_2017.pdf) mentions Pasig and subsided water, but direct retrieval returned 403. Its full chronology and section identity are unverified; no outcome was extracted. Searches did not establish a new qualified road-section event. These acquisition limits do not prove that no usable public records exist. More specific archived source links or independently reviewed field observations remain needed. No runtime artifact, record, source review or training admission changed.
+
 **Implementation follow-up:** The read-only investigation described below preceded the authorized repair. [Expiry v3 acceptance](../evaluations/pasig-subsidence-v3-acceptance-20261011.md) records negative-cache retry, geometry-derived locality, distinct activation-based retention and the saved-forecast UI. Matching local/shared API and workers are deployed; new frontend is local only. The [offline depth-shape experiment](../evaluations/pasig-depth-shape-candidate-20261011/README.md) leaves the shallow/deep relationship almost unchanged and was not promoted. The developer confirmed the manual reports were application tests; real reviewed wet/clearance evidence remains required under the [collection guide](../guides/pasig-recession-observation-collection.md). These repairs do not demonstrate predictive accuracy.
 
 The live inspection was observational; no deadline, moderation decision, schema, runtime model, cloud configuration or flood record was changed. No new model was trained or downloaded. Numerical sweeps demonstrate the deployed artifacts' behavior, not predictive accuracy. The reviewed external models use different targets/locations and have not been benchmarked on LANES. Ground truth and source-quality limitations remain the main constraints.
