@@ -117,3 +117,11 @@ Frontend commit `b93dc0b7b4735025ba83ebf2720d731806d43044` is pushed to `roi-bra
 - BUG-143 is resolved live; progress/task/system/rollback documentation is synchronized. No new library/model/migration is introduced, so dependency and database-design records require no entry. Minor scrollbar/layout refinement is recorded in the existing feed documentation rather than a new flagship feature or architectural decision.
 
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Visible sidebar width follow-up — October 11, 12:27 PM PHT
+
+Developer reports that the first width change is not sufficiently visible. The first revision increased outer width to 344 pixels but retained 24-pixel side padding, leaving only 296 pixels for cards. Update the existing `RightSidebar.tsx` wrapper to 376 pixels and 16-pixel horizontal padding. Cards now measure 344 pixels, 48 more usable pixels than the first revision and 72 more than the initial 272-pixel cards. The three-column visibility breakpoint and hidden-until-hover/focus scrollbar are preserved.
+
+Actual local browser checks at 1920/1440/1280 widths measure exactly 376-pixel sidebar and 344-pixel Local Updates card; native wheel scrolling works and there is no horizontal overflow. At 1024 and 390, the sidebar is hidden and the expandable five-article card remains accessible without horizontal overflow. Actual news reads return 200/five articles. Desktop screenshot `frontend/test-results/sidebar-wider-1920.png` is inspected. TypeScript passes and RightSidebar lint retains zero errors/two existing image warnings. No new test fixture, dependency, model or migration is needed for the two-class refinement. Matching live frontend rollout is pending at this checkpoint.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).

@@ -83,7 +83,7 @@ export function RightSidebar() {
     <aside
       aria-label="Community updates"
       tabIndex={0}
-      className="w-[344px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto overscroll-contain scrollbar-auto-hide hidden xl:flex px-6 py-6 space-y-6 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+      className="w-[376px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto overscroll-contain scrollbar-auto-hide hidden xl:flex px-4 py-6 space-y-6 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
     >
       
       {/* Weather Widget */}
