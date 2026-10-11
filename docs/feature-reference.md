@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 11, 2026, 1:43 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 9 preserved-news inspection:** News Details now opens saved placement on Spatial Operations through a validated run/ordinal handoff, including expired articles absent from the current queue. Existing server-owned inspection status, permissions and transparent review layers apply. The selected September 24 local replay returns four Boni modeled candidates without creating an active historical zone. Shared desktop/mobile UI passes TypeScript/scoped dialog lint; visual acceptance is pending. [Manual replay](guides/local-news-replay.md#october-9-september-24-manual-map-inspection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -315,7 +315,7 @@ This document serves as the central technical reference for all currently implem
 
 ### 16. Community Feed & Social Validation
 
-**Local Updates (October 11, local implementation):** Desktop sidebar and mobile/tablet expandable feed card now show recent collected Metro Manila flood articles with publisher, publication date and source link. A bounded public metadata reader reuses discovery relevance/domain rules and does not wait for recorded extraction or public-alert approval. Loading/empty/retry/offline/cache states and minute refresh are verified by 24 backend/10 responsive checks; current saved-data inspection is empty. Matching backend/frontend deployment and broader commuter-news scope remain separate. [Verification](evaluations/community-local-updates-20261011.md).
+**Local Updates (October 11, live acceptance):** Desktop sidebar and mobile/tablet expandable feed card now show recent collected Metro Manila flood articles with publisher, publication date and source link. A bounded public metadata reader reuses discovery relevance/domain rules and does not wait for recorded extraction or public-alert approval. Loading/empty/retry/offline/cache states and minute refresh are verified by 24 backend/10 responsive checks; current saved-data inspection is empty. Live desktop/mobile reads now pass after correcting pinned Cloud Run traffic; broader commuter-news scope remains separate. [Verification](evaluations/community-local-updates-20261011.md).
 *   **Purpose:** Provides commuters with localized, real-time crowdsourced updates, general disaster discussion, and enables peer validation of flood reports.
 *   **What it does:** Displays a 3-column feed containing shared `FloodReport`s and general `CommunityPost`s. Enables highly interactive community discussions via a rich, threaded comments section supporting quote replies, user mentions, upvote/downvote sorting, auto-collapsing low-score replies, and admin pinning.
 *   **How it works:**

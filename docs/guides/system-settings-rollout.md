@@ -1,8 +1,12 @@
 # System Settings rollout and rollback
 
-> **Last Updated:** October 10, 2026, 9:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-## October 10 legacy recovery release (current)
+## October 11 Local Updates traffic correction (current)
+
+API revision **`lanes-api-00064-kjc`** now serves 100% traffic. Its image is commit `9ab8979118871c4a466bd78aeba5af4ff646c2f4`, digest `sha256:b077c3301e43b1ff810d262acbd61bbbc62f1781f779ec7d80ce3c9976d4e549`; both existing news/expiry jobs already use that commit image. Successful builds had preserved traffic pinned to the October 10 recovery revision, causing the new Local Updates endpoint to return 404. Preview and actual public desktop/mobile reads now pass. The previous `lanes-api-00069-fey` remains available with its `ml-expiry` tag for rollback; if reverting runtime images, keep API/workers coordinated. No setting, scheduler, source data or schema was modified. Root Cloud Build now names the prepared API revision `lanes-api-build-$BUILD_ID`, leaves traffic unchanged until both workers deploy, and explicitly promotes that exact revision. This build change is statically checked; its next real build remains unexecuted. [Acceptance](../evaluations/community-local-updates-20261011.md#live-loading-failure-and-traffic-repair--october-11-1130-am-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 10 legacy recovery release (historical)
 
 Current API revision **`lanes-api-00069-fey`**, 100% traffic; both jobs use `pasig-ml-expiry-recovery-20261010-2105`, digest `sha256:bdddcaceef2b5f8cb0fb2283725144c79de763d70635981a7bc2619736889382`. Policy v2 recovers valid original issuance forecasts after a late first run while preserving current evidence/review checks. #17/#18 have expired as Unconfirmed; no inactive zone is revived. #19–#21 retain their saved dates. Minute Scheduler is ENABLED, existing three-hour news cadence/configuration is preserved, local API/worker run the matching code. Existing migration head remains `d7e4b9a21c60`; no schema/dependency/settings change.
 

@@ -1,8 +1,26 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 11, 2026, 1:43 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:33 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**BUG-140: Local Updates showed sample news and was absent on mobile. Status: Resolved locally; matching release pending. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: Community Feed's right panel displayed two fixed headlines with fake relative times and no source links. RCA: `RightSidebar.tsx` contained static markup and is hidden below the desktop breakpoint; no public collected-article connection existed. Solution: add bounded read-only `GET /news/local-updates`, reuse discovery's source/current-body local-flood rules, return only article metadata, and share one list between desktop sidebar and mobile/tablet expandable feed card. Files: API registration and new `local_news.py` route/CRUD/schema/service; `LocalUpdates.tsx`, `localNewsApi.ts`, `RightSidebar.tsx`, `FeedPage.tsx`, backend and Playwright regressions. Verification: 24 backend/10 responsive cases, TypeScript/scoped lint, screenshot inspection and actual read-only PostgreSQL empty result. No schema/dependency or public-map-alert change. [Evidence](../evaluations/community-local-updates-20261011.md).
+**BUG-141: Live Local Updates could not load**
+
+- **Status:** Resolved live on October 11, 2026. Deployment prevention is committed and statically verified; its next real Cloud Build run remains pending.
+- **Severity:** Medium.
+- **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem Description:** Open `https://navlanes.live/feed`. Local Updates displayed “Couldn’t load local news” and a retry button. `GET /api/v1/news/local-updates?limit=5` returned HTTP 404 instead of articles or a successful empty result.
+
+**2. Root Cause Analysis:** Cloud Build succeeded and created the backend revision containing the new endpoint, but Cloud Run retained 100% traffic pinned to the older manual recovery revision `lanes-api-00069-fey`. That revision did not contain Local Updates. Ready revision `lanes-api-00064-kjc` received no traffic; creating a revision alone did not update the serving version.
+
+**3. Solution & Architectural Strategy:** Verify the new revision through a temporary preview URL, then promote `lanes-api-00064-kjc` to 100% traffic. Remove the preview tag and retain the old revision for rollback. Prepare future API releases with `--no-traffic` and a unique `--revision-suffix=build-$BUILD_ID`; explicitly promote `lanes-api-build-$BUILD_ID` only after the existing migration and both worker deployments succeed. This targets the exact build and prevents an old traffic pin from silently retaining the previous API.
+
+**4. Files Modified / What Changed:** `cloudbuild.yaml` adds explicit preparation/promotion. The Local Updates evaluation, rollout guide, bug log and synchronized feature/system/progress/task records document actual live acceptance. Implementation commit `ff67bdf` and deployment-fix commit `29c2f27` were pushed to `roi-branch`. No application source, dependencies, SQLAlchemy models, Alembic migrations, settings or scheduler changes were needed for this traffic repair.
+
+**Verification:** Actual live Local Updates API returns HTTP 200 with `items: []`; the database health check succeeds, existing public alerts return 200, and unauthenticated staff collection remains 401. Unmocked desktop (1440×1000) and mobile (390×844) browser checks show “No recent local flood news is available.” without the loading error; both screenshots were inspected. The empty result means no qualifying recent collected articles, not confirmation that there is no flooding. YAML parsing and deployment-order/revision-target checks pass. The revised build workflow has not yet been executed in Cloud Build.
+
+[Full verification and deployment evidence](../evaluations/community-local-updates-20261011.md#live-loading-failure-and-traffic-repair--october-11-1130-am-pht).
+
+**BUG-140: Local Updates showed sample news and was absent on mobile. Status: Resolved locally and verified live October 11. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: Community Feed's right panel displayed two fixed headlines with fake relative times and no source links. RCA: `RightSidebar.tsx` contained static markup and is hidden below the desktop breakpoint; no public collected-article connection existed. Solution: add bounded read-only `GET /news/local-updates`, reuse discovery's source/current-body local-flood rules, return only article metadata, and share one list between desktop sidebar and mobile/tablet expandable feed card. Files: API registration and new `local_news.py` route/CRUD/schema/service; `LocalUpdates.tsx`, `localNewsApi.ts`, `RightSidebar.tsx`, `FeedPage.tsx`, backend and Playwright regressions. Verification: 24 backend/10 responsive cases, TypeScript/scoped lint, screenshot inspection and actual read-only PostgreSQL empty result. No schema/dependency or public-map-alert change. [Evidence](../evaluations/community-local-updates-20261011.md).
 
 **BUG-139 documentation follow-up:** Coverage is conditional across Pasig; missing local history alone can use pooled transfer, while invalid/missing source evidence and model failures retain explicit abstention/fallback. Recovery is resolved; scientific accuracy and cloud frontend release remain separate. Repeat native acceptance passes before requested branch publication. [Evidence](../evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

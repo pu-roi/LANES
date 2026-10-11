@@ -2,6 +2,8 @@
 
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**October 11, 11:30 AM live follow-up:** the loading failure is resolved; live desktop/mobile use the endpoint successfully and show no qualifying recent articles. Earlier local-only release statements below describe the initial implementation.
+
 ## Delivered behavior
 
 Replace the two static Local Updates headlines with up to five recent collected news articles. The developer selected collected articles with publisher, publication date and original-source link, without waiting for recorded extraction or public-alert approval.
@@ -33,3 +35,21 @@ Reviewed the public endpoint and response allowlist using the Security skill. Th
 Publication target is `roi-branch`, authorized by the developer. Documentation distinguishes Git publication from backend/frontend deployment and leaves wider commuter-news collection and changes to News Intelligence/public map alerts as follow-up work. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 Staged audit checked 18 intended files and eight added relative documentation links with no missing targets, embedded-credential matches or private/runtime artifacts. Python source syntax parses successfully; no models/migrations or dependency manifests changed. Removed extra blank lines at the end of seven new source/test files under the already-applied API/UI/Test skills; this formatting-only cleanup does not change verified behavior.
+
+## Live loading failure and traffic repair — October 11, 11:30 AM PHT
+
+The developer reported “Couldn’t load local news” on the live feed. `https://navlanes.live/api/v1/news/local-updates?limit=5` returned HTTP 404 while the existing alerts endpoint returned 200. Public OpenAPI lacked the new route. Cloud Run `lanes-api` in project `lanes-project-508809`, region `asia-east1`, still sent 100% traffic to October 10 recovery revision `lanes-api-00069-fey`.
+
+Cloud Build `cac64f6f-4027-431b-abc0-7cba056678b4` succeeded for main commit `9ab8979118871c4a466bd78aeba5af4ff646c2f4`, which includes Local Updates commit `ff67bdf`. Its newer revision `lanes-api-00064-kjc` was ready but received no traffic. Revision numbers are not chronological here; the new revision was created October 11 at 1:55 AM PHT. Both news/expiry jobs already use the new commit image.
+
+Added temporary tag `local-updates-check` to the new revision, verified healthy database connectivity and HTTP 200 with `items: []`, then explicitly promoted that revision to 100%. Removed the temporary tag after acceptance; old recovery revision/tag remains available. No new build, image, migration, database write, policy save, scheduler change, AI call or worker execution was required for this traffic repair.
+
+Actual production verification:
+
+- Public site `/api/v1/news/local-updates?limit=5`: **200**, empty items with current `as_of`; a healthy empty result, not a claim that there is no flooding.
+- Cloud API `/health`: **200**, database connected. Existing public alerts: **200**. Unauthenticated staff collection: **401**.
+- Unmocked Chromium at 1440×1000 and 390×844: actual news request **200**, visible “No recent local flood news is available.”, no Local Updates error. Mobile expanded through the real summary control. Both card screenshots were inspected.
+
+Durable prevention in `cloudbuild.yaml`: prepare the API with `--no-traffic` and unique `--revision-suffix=build-$BUILD_ID`; after the existing migration and both worker deployments, use `--to-revisions=lanes-api-build-$BUILD_ID=100`. This avoids preserved manual rollback pins and targets the exact build rather than a potentially different latest revision. Existing gcloud help confirms naming/no-traffic semantics. YAML parsing and assertions verify the preparation flags, final exact revision promotion and preceding worker steps. A new Cloud Build execution of this configuration has not been performed. No new application tests, package imports or SQLAlchemy/Alembic changes were needed for this deployment-only fix.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
