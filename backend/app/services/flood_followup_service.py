@@ -194,6 +194,10 @@ def list_staff_followups(db: Session, user: User, *, review_state: str = "pendin
 def review_followup(db: Session, followup_id: int, user: User,
                     payload: FloodFollowupReviewCreate) -> FloodFollowupResponse:
     require_staff_permission(user, write=True)
+    # The review refreshes expiry after its write. Take the configuration lock
+    # before report/audit locks, matching approval and expiry-worker ordering.
+    from app.services.configuration_service import configuration_lock
+    configuration_lock(db)
     row = store.get_followup(db, followup_id, lock=True)
     if row is None:
         raise FollowupError(404, "Follow-up not found.")
@@ -204,8 +208,9 @@ def review_followup(db: Session, followup_id: int, user: User,
         raise FollowupError(409, "This follow-up already has an immutable review.")
     report = store.get_report(db, row.target_id, lock=True)
     if payload.decision == "accepted":
+        from app.services.report_locality_service import snapshot_matches_reconciled_locality
         if (report is None or report.deleted_at is not None or _ineligibility(report) is not None
-                or _location_snapshot(report) != metadata["location_snapshot"]):
+                or not snapshot_matches_reconciled_locality(db, report, metadata["location_snapshot"])):
             raise FollowupError(409, "The original report location or event link changed; this claim cannot be accepted.")
     now = datetime.now(timezone.utc)
     review_metadata = {**payload.model_dump(mode="json"), "contract_version": CONTRACT_VERSION,

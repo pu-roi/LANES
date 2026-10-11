@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 2:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 11 expiry v3 dependency audit:** Locality reconciliation, negative-cache retry, saved selected calculations and optional offline depth-shape fitting reuse declared Shapely/SQLAlchemy/Pydantic/SciPy/NumPy and existing React/TanStack/Playwright. No new package/version or dependency/lockfile changes. Runtime duration artifacts are unchanged; the constrained offline candidate was not promoted. Matching Cloud Run API/expiry/news jobs use the verified v3 image; hosted frontend remains rollout 004. [Engineering acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Pre-push dependency audit:** Changed Python source parses and uses existing registered runtime libraries; no requirements/package/lockfile changes are needed. No new SQL model/migration files are staged. [Evidence](evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

@@ -105,6 +105,7 @@ def evaluate_fold(train: list[CrossLocationObservation], held: list[CrossLocatio
     observations = [DurationObservation(r.lower_minutes, r.upper_minutes, 1/counts[r.outcome_group]) for r in train]
     entries = []
     names = ["intercept_lognormal", "intercept_exponential"] + [f"cross_location_tau_{tau:g}" for tau in PRIORS]
+    names.append("nondecreasing_depth_tau_0.35")
     for name in names:
         entry = {"mode": mode, "held_identity": identity, "model": name,
                  "training_outcomes": sorted(counts), "training_episodes": sorted({r.episode for r in train}),
@@ -121,7 +122,10 @@ def evaluate_fold(train: list[CrossLocationObservation], held: list[CrossLocatio
                 scores = [exponential_log_likelihood(r.lower_minutes, r.upper_minutes, mean) for r in held]
             else:
                 tau = float(name.rsplit("_", 1)[1])
-                candidate = fit_cross_location(train, location_prior_sd=tau)
+                shape = "nondecreasing" if name.startswith("nondecreasing_depth_") else "unconstrained"
+                candidate = fit_cross_location(train, location_prior_sd=tau, depth_shape=shape)
+                entry["depth_shape"] = shape
+                entry["depth_constraint_active"] = candidate.diagnostics["depth_constraint_active"]
                 scores = []
                 for r in held:
                     p = prediction_parameters(candidate, r.depth_cm, r.location)
@@ -170,6 +174,14 @@ def evaluate(output: Path) -> dict[str, Any]:
         name = f"candidate_tau_{tau:g}.json"
         (output/name).write_text(json.dumps(model.to_dict(), indent=2, allow_nan=False)+"\n", encoding="utf-8")
         artifacts[str(tau)] = {"filename": name, "sha256": digest(output/name)}
+    constrained = fit_cross_location(rows, depth_shape="nondecreasing", lineage={
+        "input_sha256": input_hashes, "limitations": BLOCKERS,
+        "depth_assumption": "nondecreasing_log_duration_center_holding_other_inputs_fixed",
+        "reference_age_support_max_minutes": max(r.upper_minutes for r in rows),
+        "reference_policy": "first_recorded_wet_in_outcome_selected_candidate_timeline"})
+    name = "candidate_nondecreasing_depth_tau_0.35.json"
+    (output/name).write_text(json.dumps(constrained.to_dict(), indent=2, allow_nan=False)+"\n", encoding="utf-8")
+    artifacts["nondecreasing_depth_tau_0.35"] = {"filename": name, "sha256": digest(output/name)}
     folds = []
     for mode, identities in (("summary", {r.outcome_group for r in rows}), ("location", {r.location for r in rows})):
         for identity in sorted(identities):

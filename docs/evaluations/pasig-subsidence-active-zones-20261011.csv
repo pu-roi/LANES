@@ -1,0 +1,23 @@
+zone_id,depth_gauge,severity,barangays,saved_method,saved_deadline_pht,saved_median_remaining_hours,reference_basis,current_proxy_available,current_review_state,cross_location_reason,unavailable_reasons
+34,half-knee,low,Oranbo / San Antonio / Ugong,ml_pooled,2026-10-12T18:25:27.188332+08:00,17.632,registration_proxy,True,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,
+35,half-tire,medium,Bagong Ilog / Caniogan,ml_pooled,2026-10-12T18:27:38.765083+08:00,17.632,registration_proxy,True,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,
+36,half-knee,low,Maybunga / Ugong,fixed_fallback,,,,True,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,No qualified observation time is recorded for this zone; creation time is not a flood observation.
+37,gutter,low,Rosario,ml_cross_location,2026-10-13T01:23:06.051004+08:00,16.7031,registration_proxy,True,unavailable,,
+38,gutter,low,Caniogan / Maybunga,ml_pooled,2026-10-12T18:32:27.895013+08:00,17.632,registration_proxy,True,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,
+39,knee,medium,Caniogan / San Miguel,ml_pooled,2026-10-12T18:33:20.220639+08:00,17.632,registration_proxy,True,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,
+40,neck,extreme,Pinagbuhatan,ml_pooled,2026-10-12T18:34:18.382425+08:00,17.632,registration_proxy,True,unavailable,The source depth is outside the fitted 5–91.44 cm evidence range.,
+41,tires,high,Bambang / Santa Rosa / Sumilang,ml_pooled,2026-10-12T18:35:45.577082+08:00,17.632,registration_proxy,True,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,
+42,half-knee,low,Bambang,ml_cross_location,2026-10-13T00:52:45.174116+08:00,16.74,submission_proxy,True,unavailable,,
+43,half-knee,low,Pinagbuhatan,ml_cross_location,2026-10-13T00:52:45.417111+08:00,16.738,submission_proxy,True,unavailable,,
+44,half-tire,medium,Kalawaan,ml_cross_location,2026-10-13T00:08:48.933139+08:00,16.8049,submission_proxy,True,unavailable,,
+46,half-knee,low,Ugong,ml_cross_location,2026-10-13T01:04:45.607439+08:00,16.6008,submission_proxy,True,unavailable,,
+47,half-knee,low,Ugong,fixed_fallback,,,,False,needs_review,"Current zone evidence is inactive, expired or awaiting review.",No qualified observation time is recorded for this zone; creation time is not a flood observation.; New citizen evidence needs review before recalculating this episode.
+48,half-knee,low,Ugong,ml_cross_location,2026-10-13T01:10:24.485553+08:00,16.6935,submission_proxy,True,unavailable,,
+49,gutter,low,Manggahan,fixed_fallback,,,,False,needs_review,"Current zone evidence is inactive, expired or awaiting review.",No qualified observation time is recorded for this zone; creation time is not a flood observation.; A report's recorded barangay conflicts with the zone geometry.
+50,gutter,low,Manggahan,fixed_fallback,,,,False,needs_review,"Current zone evidence is inactive, expired or awaiting review.",No qualified observation time is recorded for this zone; creation time is not a flood observation.; A report's recorded barangay conflicts with the zone geometry.
+51,gutter,low,Bagong Ilog,ml_cross_location,2026-10-13T01:33:14.506967+08:00,15.2797,submission_proxy,True,unavailable,,
+52,half-knee,low,Bagong Ilog / Caniogan,ml_pooled,2026-10-12T14:09:49.319445+08:00,11.7002,submission_proxy,True,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,
+53,half-knee,low,Caniogan,ml_cross_location,2026-10-12T21:06:10.771313+08:00,11.4829,submission_proxy,True,unavailable,,
+54,half-knee,low,Ugong,fixed_fallback,,,,False,unavailable,No eligible observed reference or unchanged recording-time simulation is available.,No qualified observation time is recorded for this zone; creation time is not a flood observation.
+55,gutter,low,Maybunga,fixed_fallback,,,,False,unavailable,No eligible observed reference or unchanged recording-time simulation is available.,No qualified observation time is recorded for this zone; creation time is not a flood observation.
+56,knee,medium,Maybunga / Rosario,fixed_fallback,,,,False,unavailable,A single verified Pasig locality is required; one depth cannot describe a multi-barangay footprint.,No qualified observation time is recorded for this zone; creation time is not a flood observation.

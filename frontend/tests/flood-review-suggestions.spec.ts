@@ -537,3 +537,45 @@ test("saved legacy ML estimate remains visible when the research preview is stal
   expect(await saved.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
   await page.screenshot({ path: info.outputPath("legacy-saved-subsidence.png"), scale: "css" });
 });
+
+test("selected depth forecast is primary and retains its saved calculation", async ({ page }, info) => {
+  await setup(page, { zone: true });
+  await page.route("**/admin/zones/9/expiry-policy", route => route.fulfill({ json: {
+    automatic_expiry_enabled: true, pasig_ml_expiry_enabled: true, method: "ml_cross_location",
+    deadline: "2026-10-09T09:00:00Z", reason: "Experimental upper-quantile expiry.",
+    reference_basis: "observed_reference", experimental: true, accuracy_verified: false,
+    expires_as: "Unconfirmed", zone_is_active: true, prediction_as_of_at: stamp,
+    city: "Pasig", barangays: ["Manggahan"], depth_cm: 20.32,
+    depth_basis: "reported_canonical_gauge_proxy", target_location: "Manggahan",
+    quantiles: saved.quantiles.map(row => ({ ...row, estimated_reported_subsidence_at: "2026-10-09T01:00:00Z" })),
+    calculation: { log_duration_location: 6.9, predictive_log_scale: .8, shared_depth_effect: .02,
+      local_effect: 0, coefficient_variance: .2, unseen_location_variance: .1225, location_outcomes: 0,
+      transfer_basis: "shared_depth_with_unseen_location_prior", uncertainty_method: "conditional_composite_laplace_coefficients_plus_unseen_location_prior" },
+  } }));
+  const panel = await openPrediction(page);
+  const primary = panel.getByLabel("Saved ML subsidence estimate");
+  await expect(primary.getByText("Detected location: Manggahan, Pasig")).toBeVisible();
+  await expect(primary.getByText(/Source depth: 20.32 cm.*gauge proxy/)).toBeVisible();
+  await expect(panel.getByRole("heading", { name: "Secondary pooled research preview" })).toBeHidden();
+  await primary.getByText("Saved forecast calculation", { exact: true }).click();
+  await expect(primary.getByText(/Manggahan: 0 shared outcome summaries/)).toBeVisible();
+  expect(await primary.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath("selected-depth-forecast.png"), scale: "css" });
+  await panel.getByRole("button", { name: "View calculation details" }).click();
+  await expect(panel.getByRole("heading", { name: "Secondary pooled research preview" })).toBeVisible();
+  await expect(panel.getByText(/separate baseline preview does not set the saved deadline/)).toBeVisible();
+});
+
+test("activation retention is clearly separate from a subsidence prediction", async ({ page }) => {
+  await setup(page, { zone: true, missing: true, expiryMethod: "fixed_fallback" });
+  await page.route("**/admin/zones/9/expiry-policy", route => route.fulfill({ json: {
+    automatic_expiry_enabled: true, pasig_ml_expiry_enabled: true, method: "fixed_fallback",
+    deadline: "2026-10-08T03:00:00Z", reason: "No original timed observation is available.",
+    reference_basis: null, experimental: false, accuracy_verified: false,
+    expires_as: "Unconfirmed", fallback_basis: "activation_retention", quantiles: [],
+  } }));
+  const panel = await openPrediction(page);
+  await expect(panel.getByLabel("Automatic zone expiry").getByText(/not a predicted clearing time/)).toBeVisible();
+  await expect(panel.getByLabel("Saved ML subsidence estimate")).toHaveCount(0);
+  await expect(panel.getByText("Estimate unavailable", { exact: true })).toBeVisible();
+});
