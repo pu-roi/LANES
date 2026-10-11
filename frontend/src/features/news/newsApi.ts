@@ -315,3 +315,51 @@ export function getNewsFeedCheckpoints(signal?: AbortSignal) {
     return data;
   });
 }
+
+export interface NewsAutomationStatus {
+  weather?: {
+    mode: string; catalog_version: string; coverage_label: string;
+    points: { locality: string; latitude: number; longitude: number; role: string; relevance: string }[];
+    providers: { name: string; source_url: string; checked_at: string; status: string; risk_locations: string[]; error_code: string | null;
+      bulletins: { identity: string; issued_at: string; valid_until: string; relevant: boolean; locations: string[] }[] }[];
+    effective_interval_minutes: number; reason: string; last_positive_at: string | null;
+    controller_heartbeat_at: string | null; controller_stale: boolean; dispatch_state: string;
+    dispatch_error: string | null; last_dispatch_at: string | null; last_tick_duration_ms: number;
+    checks: number; provider_failures: number; worker_starts: number;
+  } | null;
+  read_only: true;
+  checked_at: string;
+  state: string;
+  status_label: string;
+  running: boolean;
+  current_stage: string | null;
+  stage_label: string | null;
+  stage_started_at: string | null;
+  last_progress_at: string | null;
+  collection_enabled: boolean;
+  processing_enabled: boolean;
+  publication_enabled: boolean;
+  enabled_sources: number;
+  collection_interval_minutes: number;
+  scheduler_tick_target_minutes: number;
+  next_collection_due_at: string | null;
+  collection_overdue: boolean;
+  last_started_at: string | null;
+  last_finished_at: string | null;
+  last_successful_at: string | null;
+  last_cycle: { started_at: string; finished_at: string; outcome: string; counts: Record<string, Record<string, number>>; error_code: string | null } | null;
+  stages: Record<string, { last_attempt_at: string | null; last_success_at: string | null; outcome: string; counts: Record<string, number>; errors: string[] }>;
+  latest_collection_at: string | null;
+  feed_counts: Record<string, number>;
+  queue_counts: Record<string, number>;
+  error_code: string | null;
+}
+
+export function getNewsAutomation(signal?: AbortSignal) {
+  return apiClient.get<NewsAutomationStatus>("/admin/news/automation", { signal, cache: "no-store" }).then((data) => {
+    if (data.read_only !== true || !data.status_label || !data.feed_counts || !data.queue_counts) {
+      throw new Error("News automation status is unavailable. Update the backend and worker together.");
+    }
+    return data;
+  });
+}

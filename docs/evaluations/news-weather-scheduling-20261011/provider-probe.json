@@ -1,0 +1,207 @@
+{
+  "read_only": true,
+  "checked_at": "2026-10-11T14:39:53.434914+00:00",
+  "catalog_version": "ncr-upstream-v1",
+  "points": [
+    {
+      "locality": "Caloocan",
+      "latitude": 14.6507,
+      "longitude": 120.9676,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Las Piñas",
+      "latitude": 14.4445,
+      "longitude": 120.9939,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Makati",
+      "latitude": 14.5547,
+      "longitude": 121.0244,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Malabon",
+      "latitude": 14.6681,
+      "longitude": 120.9658,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Mandaluyong",
+      "latitude": 14.5794,
+      "longitude": 121.0359,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Manila",
+      "latitude": 14.5995,
+      "longitude": 120.9842,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Marikina",
+      "latitude": 14.6507,
+      "longitude": 121.1029,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Muntinlupa",
+      "latitude": 14.4081,
+      "longitude": 121.0415,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Navotas",
+      "latitude": 14.6668,
+      "longitude": 120.9417,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Parañaque",
+      "latitude": 14.4793,
+      "longitude": 121.0198,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Pasay",
+      "latitude": 14.5378,
+      "longitude": 121.0014,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Pasig",
+      "latitude": 14.5731,
+      "longitude": 121.0594,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Pateros",
+      "latitude": 14.5454,
+      "longitude": 121.0687,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Quezon City",
+      "latitude": 14.676,
+      "longitude": 121.0437,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "San Juan",
+      "latitude": 14.6019,
+      "longitude": 121.0355,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Taguig",
+      "latitude": 14.5176,
+      "longitude": 121.0509,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Valenzuela",
+      "latitude": 14.7011,
+      "longitude": 120.983,
+      "role": "metro",
+      "relevance": "Metro Manila representative sample"
+    },
+    {
+      "locality": "Rodriguez",
+      "latitude": 14.732,
+      "longitude": 121.145,
+      "role": "upstream",
+      "relevance": "Pasig–Marikina watershed rain context"
+    },
+    {
+      "locality": "San Mateo",
+      "latitude": 14.6965,
+      "longitude": 121.1218,
+      "role": "upstream",
+      "relevance": "Pasig–Marikina watershed rain context"
+    },
+    {
+      "locality": "Antipolo",
+      "latitude": 14.66,
+      "longitude": 121.23,
+      "role": "upstream",
+      "relevance": "Pasig–Marikina watershed rain context"
+    }
+  ],
+  "providers": [
+    {
+      "name": "Open-Meteo",
+      "source_url": "https://api.open-meteo.com/v1/forecast",
+      "checked_at": "2026-10-11T14:39:53.434914Z",
+      "status": "risk",
+      "risk_locations": [
+        "Caloocan",
+        "Las Piñas",
+        "Makati",
+        "Malabon",
+        "Mandaluyong",
+        "Manila",
+        "Marikina",
+        "Muntinlupa",
+        "Navotas",
+        "Parañaque",
+        "Pasay",
+        "Pasig",
+        "Pateros",
+        "Quezon City",
+        "San Juan",
+        "Taguig",
+        "Valenzuela",
+        "Rodriguez",
+        "San Mateo",
+        "Antipolo"
+      ],
+      "bulletins": [],
+      "error_code": null
+    },
+    {
+      "name": "PAGASA",
+      "source_url": "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd",
+      "checked_at": "2026-10-11T14:39:53.434914Z",
+      "status": "risk",
+      "risk_locations": [
+        "Metro Manila",
+        "Rizal upstream"
+      ],
+      "bulletins": [
+        {
+          "identity": "Rainfall Advisory No. 6 #NCR_PRSD",
+          "issued_at": "2026-10-11T12:00:00Z",
+          "valid_until": "2026-10-11T15:00:00Z",
+          "relevant": true,
+          "locations": [
+            "Metro Manila",
+            "Rizal upstream"
+          ]
+        }
+      ],
+      "error_code": "advisory_timestamp_missing"
+    }
+  ],
+  "decision": {
+    "interval_minutes": 15,
+    "reason": "Relevant weather risk",
+    "last_positive_at": "2026-10-11T14:39:53.434914Z"
+  }
+}

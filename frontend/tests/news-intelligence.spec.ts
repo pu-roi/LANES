@@ -12,6 +12,7 @@ if (process.env.PLAYWRIGHT_CHROME_PATH) {
 // Mock the existing session/API boundary; never sign in to production for UI checks.
 async function mockSession(page: Page, role = "Super Admin") {
   await page.addInitScript(() => localStorage.setItem("lanes_token", "test-only-token"));
+  await page.route("**/news-simulation.local.json", route => route.fulfill({ status: 404, json: {} }));
   await page.route("**/api/v1/**", (route) => {
     const path = new URL(route.request().url()).pathname;
     let body: unknown = [];
@@ -23,6 +24,11 @@ async function mockSession(page: Page, role = "Super Admin") {
       body = { items: [], total: 0, page: 1, limit: 10, pages: 0 };
     } else if (path.endsWith("/admin/news/results")) {
       body = { items: [], total: 0, page: 1, page_size: 12, pages: 1, publishers: [], scope: "latest_reported_locations", read_only: true };
+    } else if (path.endsWith("/admin/news/automation")) {
+      body = { read_only: true, checked_at: "2026-10-11T13:00:00Z", state: "not_recorded", status_label: "No worker cycle recorded",
+        running: false, collection_enabled: true, processing_enabled: true, publication_enabled: true,
+        enabled_sources: 7, collection_interval_minutes: 30, scheduler_tick_target_minutes: 15,
+        feed_counts: {}, queue_counts: {}, stages: {}, last_cycle: null };
     } else if (path.endsWith("/admin/news/collection")) {
       body = { items: [], total: 0, page: 1, page_size: 12, pages: 1, publishers: [], counts: { ready: 0, needs_checking: 0, excluded: 0, no_locations: 0, waiting: 0, processing: 0, processing_failed: 0, retrieval_failed: 0, missing_text: 0 } };
     }
@@ -50,7 +56,7 @@ test("staff can inspect locations and collection status without fabricated news 
   await page.keyboard.press("Escape");
   await expect(collection).toBeFocused();
   expect(newsRequests.length).toBeGreaterThan(0);
-  expect(newsRequests.every((url) => /\/admin\/news\/(collection|results)$/.test(new URL(url).pathname))).toBe(true);
+  expect(newsRequests.every((url) => /\/admin\/news\/(collection|results|automation)$/.test(new URL(url).pathname))).toBe(true);
   await page.screenshot({ path: testInfo.outputPath("news-foundation.png") });
   await page.getByRole("button", { name: "Spatial Operations", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/map$/);

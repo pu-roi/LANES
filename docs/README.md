@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Adaptive scheduling publication audit:** [Decision 25](decisions.md#25-database-governed-operational-policy-and-fixed-automation-tick) now records the controller rationale, weather/evidence boundaries, exact Google identity, dispatch reconciliation and release/rollback consequences. [Planner audit](evaluations/news-weather-scheduling-20261011/README.md#planner-and-publication-audit) covers the eight core records, preserved test evidence and dependency/migration state for the requested `roi-branch` push. Cloud trigger activation remains a separate gate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Automatic weather-based news scheduling:** [Implemented policy and sampled coverage](plans/news-weather-scheduling.md), [local acceptance and real provider probe](evaluations/news-weather-scheduling-20261011/README.md), and [coordinated rollout/rollback](guides/news-weather-scheduling-rollout.md). Collection now follows backend 60/15/30-minute policy; interval editing is removed. Machine-only controller, durable dispatch reconciliation and desktop/mobile status are accepted locally. Cloud remains on its recorded three-hour worker trigger until the separate release. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **News documentation/publication audit:** The eight core records, placement/activation plans and replay guide now distinguish accepted local repairs from open clearance-history, fresh v16 evaluation and shared-release gates. Dependency/SQL migration state is unchanged; catalog lineage, source syntax, local Markdown targets and added-content checks pass. The developer requested publication on `roi-branch`; pushing does not deploy the code or transfer the local simulation database. [Audit record](evaluations/news-shared-context-and-history-20261011.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

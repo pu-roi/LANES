@@ -1,6 +1,14 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-147: An uncertain news dispatch could lose its resend guard when reconciliation failed.**
+
+- **Status:** Resolved locally before release. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** A job-start timeout followed by a failed operation/execution read could permit another external start without establishing whether the first was accepted.
+- **RCA:** The controller exception path preserved only a newly reserved state and marked already-unknown/submitted reservations failed, bypassing reconciliation on the next tick.
+- **Solution:** Preserve reserved/submitted/unknown token state as unknown on reconciliation failure; block resends until running/completed/failed execution or proven absence is established. Clear dispatch errors after confirmed running reconciliation, and count accepted starts discovered after uncertainty. Include soft-deleted executions in bounded paged reads.
+- **Files:** `backend/app/services/news_weather_controller_service.py`, `news_job_dispatch_service.py`, `backend/tests/test_news_weather_postgres.py` and `test_news_weather.py`. Native regression covers repeated lookup failures with exactly one external start. [Acceptance](../evaluations/news-weather-scheduling-20261011/README.md).
 
 **BUG-146: Shared news clocks, short road aliases and missing event locations prevent complete flood processing.**
 

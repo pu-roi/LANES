@@ -1,6 +1,6 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
@@ -56,13 +56,23 @@ Historical initial bridge acceptance: 386 distinct backend/database checks and 1
 
 ## 25. Database-governed operational policy and fixed automation tick
 
-**Date:** October 7, 2026
+**October 11 amendment: adopt an adaptive news controller.** After coordinated release, the fixed 15-minute Cloud Scheduler wake-up targets a lightweight FastAPI POST controller authenticated with Google OIDC. It checks weather and database due work, then dispatches the existing Cloud Run news job only when collection or pending processing/publication maintenance is due. The controller and worker share the same backend due calculation, and the worker rechecks saved switches before collection. Collection pause does not discard pending work or stop required maintenance; independent minute zone expiry remains separate. [Policy](plans/news-weather-scheduling.md), [rollout](guides/news-weather-scheduling-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Reasoning:** Frequent weather checks should not require starting the full news worker on every tick. Combining sampled model estimates with dated official advisories gives a conservative scheduling signal while existing article evidence, audit and spatial gates continue to determine flood publication and plotting. Reduced worker starts are an intended consequence; cost savings require measured quiet/rain-period acceptance after deployment.
+
+**Scheduling policy:** Both fresh providers supporting quiet conditions selects 60 minutes. Any relevant rain/advisory signal or eligible current active flood evidence selects 15 minutes and takes priority over missing data. Incomplete, stale or unavailable coverage selects 30 minutes. Start with an engineering threshold of 0.2 mm in any current/next-two-hour Open-Meteo slot across 17 NCR and three upstream locality samples; this is not a validated flood-probability threshold or street-level detection. Snapshots expire after 30 minutes, and positive signals hold the faster interval for 60 minutes. PAGASA rainfall/thunderstorm sections require dated issue/validity clocks; undated no-advisory text cannot establish quiet conditions. Historical records retained only by paused expiry cannot supply current risk.
+
+**Identity and failure boundary:** Verify Google signatures, the exact configured OIDC audience, verified service-account email and exact Scheduler identity; application user JWTs cannot invoke the controller. The API runtime receives scoped job execution-with-overrides and operation/execution-read permissions, without Scheduler management permissions. Persist separate `news_weather_controller_v1` state in existing SystemSetting JSON, serialize ticks with a PostgreSQL advisory lock, commit a dispatch token before the external start and reconcile accepted/uncertain operations and executions before resending. Lookup failure or incomplete execution listings retain uncertainty and cannot establish absence. Existing worker locking remains independent.
+
+**Compatibility and observability:** Remove interval editing from System Settings, preserve the saved legacy field and ignore submitted changes; intervals are backend policy. Protected automation GET stays read-only and exposes sampled coverage, provider/advisory freshness, interval/reason, due time, heartbeat, dispatch errors and counters in the desktop/mobile status panel. No SQLAlchemy model, Alembic migration or new package is required. Publishing the matching code to `roi-branch` does not complete the cloud trigger switch.
+
+**Date:** October 7, 2026; adaptive controller amendment October 11, 2026 (Asia/Manila).
 
 **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Status:** Implemented and verified locally; production rollout pending.
+**Status:** Adaptive controller, worker policy and frontend verified locally. The recorded cloud trigger remains three-hour direct-job OAuth; matching release, scoped machine permissions, 15-minute OIDC target switch and unattended execution acceptance remain pending. Preserve coordinated prior-version/three-hour rollback. [Acceptance](evaluations/news-weather-scheduling-20261011/README.md).
 
-Use one typed, revisioned policy in existing JSONB for API handlers and workers. Settings and their audit commit atomically. Keep a fixed 15-minute Cloud Scheduler tick and determine due collection from the database (15/30/60 minutes, default 30); session advisory locking prevents overlaps and durable work remains idempotent. The application needs no permission to change cloud schedules. Publisher URLs remain in the verified server registry.
+The October 7 design used one typed, revisioned policy in existing JSONB for API handlers and workers, with 15/30/60-minute editable collection (default 30) on a fixed 15-minute worker tick. The amendment above supersedes that cadence control. Settings and audit still commit atomically; session advisory locking prevents overlaps and durable work remains idempotent. The application needs no permission to change cloud schedules. Publisher URLs remain in the verified server registry.
 
 Evidence expiry is an operational freshness deadline, never a learned water-clearance estimate. Snapshot deadlines from supported observation time and do not extend or resurrect old decisions on settings edits. Citizen auto approval uses documented human history, explicit recent observations, validated road geometry and distinct evidence; automatic outcomes cannot raise eligibility. Preserve explicit staff deadlines and independent contributors. [Contract](plans/functional-system-settings.md), [verification](evaluations/functional-system-settings-20261007.md).
 

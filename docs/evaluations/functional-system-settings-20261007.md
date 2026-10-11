@@ -1,5 +1,7 @@
 # Functional System Settings verification
 
+**October 11 continuation:** This remains the historical fixed-interval settings checkpoint. [Adaptive scheduling acceptance](news-weather-scheduling-20261011/README.md) supersedes interval editing and direct worker scheduling with backend weather policy and a machine-only controller. The [current rollout](../guides/news-weather-scheduling-rollout.md) keeps actual cloud activation separate.
+
 > **Date:** October 7, 2026, Asia/Manila
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Boundary:** Local code and controlled verification; production rollout/live plotting remain open.

@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Adaptive news scheduling (local):** Batched Open-Meteo hourly precipitation estimates and official PAGASA NCR rainfall/thunderstorm HTML sections use existing HTTPX and standard-library parsing; Google OIDC verification/Cloud Run dispatch use existing google-auth. Existing PostgreSQL advisory locks and SystemSetting JSON hold controller state. The monitoring reader has its own freshness policy, independent of the landing widget cache. No package/version/lockfile additions; separate cloud activation is pending. [Plan](plans/news-weather-scheduling.md), [acceptance](evaluations/news-weather-scheduling-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current hosted frontend:** App Hosting rollout `build-2026-10-11-005` from `e150fea` serves 100%; real forecast/calculation and four-width feed acceptance pass. API/workers remain on the accepted v3 release. No package, dependency, model or schema change. Earlier rollout-004/local-only entries are historical. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

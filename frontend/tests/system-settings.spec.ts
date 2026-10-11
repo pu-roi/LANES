@@ -1,4 +1,7 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect as baseExpect, test, type Page } from "@playwright/test";
+
+test.setTimeout(90_000);
+const expect = baseExpect.configure({ timeout: 30_000 });
 
 test.use({ browserName: "chromium" });
 if (process.env.PLAYWRIGHT_CHROME_PATH) test.use({ launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROME_PATH } });
@@ -32,6 +35,7 @@ function configuration(canEdit = true) {
 async function setup(page: Page, options: { readOnly?: boolean; forbidden?: boolean; failure?: boolean; conflict?: boolean } = {}) {
   let state = configuration(!options.readOnly);
   await page.addInitScript(() => localStorage.setItem("lanes_token", "synthetic-settings-fixture"));
+  await page.route("**/news-simulation.local.json", route => route.fulfill({ status: 404, json: {} }));
   await page.route("**/api.maptiler.com/**", route => route.fulfill({ json: { version: 8, sources: {}, layers: [] } }));
   await page.route("**/api/v1/**", async route => {
     const path = new URL(route.request().url()).pathname;
@@ -54,7 +58,7 @@ async function setup(page: Page, options: { readOnly?: boolean; forbidden?: bool
     if (path.endsWith("/reports/latest-snapshot")) return route.fulfill({ json: { zones: [], alerts: [], version: "fixture" } });
     return route.fulfill({ json: [] });
   });
-  await page.goto("/admin/settings");
+  await page.goto("/admin/settings", { waitUntil: "domcontentloaded" });
 }
 
 async function switchTab(page: Page, name: string) {
@@ -89,8 +93,8 @@ test("settings save and revert work with actual units and recorded health", asyn
   await page.screenshot({ path: info.outputPath("settings-overview.png"), scale: "css" });
   await buffer.fill("35");
   await switchTab(page, "News automation");
-  await page.getByRole("button", { name: "Collection interval (minutes)" }).click();
-  await page.getByRole("button", { name: "15 minutes", exact: true }).click();
+  await expect(page.getByText("Automatic collection schedule", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Collection interval (minutes)" })).toHaveCount(0);
   await page.getByRole("button", { name: "Save settings" }).click();
   await expect(page.getByText("Saved configuration · revision 2")).toBeVisible();
   await switchTab(page, "Flood zones");
@@ -116,7 +120,7 @@ test("view permission allows status inspection and disables all editing", async 
   await expect(page.getByRole("checkbox", { name: "Enable citizen automatic approval" })).toBeDisabled();
   await switchTab(page, "News automation");
   await expect(page.getByLabel("Automatic RSS collection", { exact: false })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Collection interval (minutes)" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Collection interval (minutes)" })).toHaveCount(0);
   await expect(page.getByRole("checkbox", { name: "Verified publisher" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Save settings" })).toBeDisabled();
 });
@@ -126,14 +130,14 @@ test("settings shares Admin gutters and separate tabs preserve unsaved controls"
   await setup(page);
   const settingsForm = page.locator("form").filter({ has: page.getByRole("heading", { name: "System Settings", exact: true }) });
   const settingsBounds = await settingsForm.boundingBox();
-  await page.goto("/admin/roles");
+  await page.goto("/admin/roles", { waitUntil: "domcontentloaded" });
   const rolesBounds = await page.getByRole("heading", { name: "Role Management", exact: true }).locator("../..").locator("..").boundingBox();
   expect(settingsBounds).not.toBeNull();
   expect(rolesBounds).not.toBeNull();
   expect(settingsBounds!.x).toBeCloseTo(rolesBounds!.x, 0);
   expect(settingsBounds!.width).toBeCloseTo(rolesBounds!.width, 0);
 
-  await page.goto("/admin/settings");
+  await page.goto("/admin/settings", { waitUntil: "domcontentloaded" });
   await expect(page.getByRole("region", { name: "Flood Zone Configuration" })).toBeVisible();
   await expect(page.getByRole("region", { name: "Citizen Automatic Approval", includeHidden: true })).toBeHidden();
   await page.getByRole("spinbutton", { name: "Staff road buffer (metres)" }).fill("40");
@@ -142,15 +146,14 @@ test("settings shares Admin gutters and separate tabs preserve unsaved controls"
   await expect(page.getByRole("region", { name: "Flood Zone Configuration", includeHidden: true })).toBeHidden();
   await page.getByRole("checkbox", { name: "Automatic RSS collection", exact: true }).uncheck();
   await page.getByRole("checkbox", { name: "Verified publisher" }).uncheck();
-  await page.getByRole("button", { name: "Collection interval (minutes)" }).click();
-  await page.getByRole("button", { name: "60 minutes", exact: true }).click();
+  await expect(page.getByText("Automatic collection schedule", { exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await expect(page.getByRole("button", { name: "Save settings" })).toBeInViewport();
   await page.screenshot({ path: info.outputPath("settings-controls.png"), scale: "css" });
   await page.getByRole("button", { name: "Revert", exact: true }).click();
   await expect(page.getByRole("checkbox", { name: "Automatic RSS collection", exact: true })).toBeChecked();
   await expect(page.getByRole("checkbox", { name: "Verified publisher" })).toBeChecked();
-  await expect(page.getByRole("button", { name: "Collection interval (minutes)" })).toHaveText("30 minutes");
+  await expect(page.getByRole("button", { name: "Collection interval (minutes)" })).toHaveCount(0);
   await switchTab(page, "Flood zones");
   await expect(page.getByRole("spinbutton", { name: "Staff road buffer (metres)" })).toHaveValue("25");
 });

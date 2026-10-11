@@ -47,9 +47,25 @@ from app.services.news_monitoring_service import read_news_monitoring
 from app.crud.news_telemetry import AttemptKind
 from app.schemas.news_telemetry import NewsTelemetryPage
 from app.services.news_telemetry_service import browse_telemetry
+from app.schemas.news_automation import NewsAutomationStatus
+from app.services.news_automation_service import read_news_automation
 
 
 router = APIRouter()
+
+
+@router.get("/automation", response_model=NewsAutomationStatus)
+def news_automation_status(
+    response: Response,
+    db: Session = Depends(get_db),
+    _staff: object = Depends(deps.get_current_active_admin),
+) -> NewsAutomationStatus:
+    """Read persisted worker progress; never starts collection or publication."""
+    response.headers["Cache-Control"] = "no-store"
+    try:
+        return read_news_automation(db)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News automation status is unavailable") from exc
 
 
 @router.get("/monitoring/{kind}", response_model=NewsTelemetryPage)

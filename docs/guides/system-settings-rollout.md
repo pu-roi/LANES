@@ -1,6 +1,8 @@
 # System Settings rollout and rollback
 
-> **Last Updated:** October 11, 2026, 12:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current news scheduling contract:** [Automatic weather rollout/rollback](news-weather-scheduling-rollout.md) supersedes the earlier editable interval and direct 15-minute worker target. The local implementation removes interval editing and uses a Google OIDC controller POST with 60/15/30-minute adaptive due checks. Matching API/worker/frontend release and scoped API job-dispatch/read permissions are required before switching the recorded three-hour trigger. Historical hosted checkpoints below remain evidence of their original releases, not adaptive cloud activation.
 
 ## October 11 commuter-news release (current)
 
@@ -79,14 +81,8 @@ Installed Chrome may be selected with `PLAYWRIGHT_CHROME_PATH` on machines witho
    ```
 
 2. Release the matching frontend through the configured Firebase workflow. Root Cloud Build deploys the API/job, not the frontend. Verify the four groups, recorded health, view-only permissions and atomic saves against the actual versioned API. Keep citizen automatic approval disabled during mixed-version deployment.
-3. Confirm one controlled job execution runs the scheduled path, persists stage health and leaves paused stages untouched. Verify job service-account/HTTP targeting against its existing configuration. Do not provision cloud-management permissions to the web application.
-4. **Only after those checks**, change the existing Scheduler job `lanes-news-discovery-every-3-hours`, in project `lanes-project-508809`, region `asia-east1`, to the fixed 15-minute tick:
-
-   ```powershell
-   gcloud scheduler jobs update http lanes-news-discovery-every-3-hours --project=lanes-project-508809 --location=asia-east1 --schedule="*/15 * * * *" --time-zone=Asia/Manila
-   ```
-
-   Preserve the existing target/authentication and all other fields. Its historical name need not change. The database default is **30-minute collection**, so alternate ticks normally perform lifecycle maintenance without RSS collection. Administrators can subsequently select 15/30/60 minutes without editing Google Cloud.
+3. Confirm one controlled job execution runs the scheduled path, persists stage health and respects saved switches. Configure exact machine OIDC identity and scoped API-runtime execution/read permissions as specified in the adaptive rollout; no Scheduler-management permission is needed by the application.
+4. **Only after matching API/worker/frontend and identity checks**, follow the [adaptive rollout command](news-weather-scheduling-rollout.md#coordinated-release-gate) to replace the three-hour direct-job OAuth target with a 15-minute OIDC controller POST. Backend policy selects 60/15/30 minutes; System Settings retains switches and preserves legacy interval values without editing them. Simply changing the cron while preserving the old target would start a full worker on every tick and is no longer the accepted design.
 5. In System Settings, verify trust 75, reviewed accuracy 90 and five human reviews, then enable citizen automatic approval after release acceptance. Incomplete/older-client reports remain pending. Inspect staff moderation labels and existing zone correction/deactivation controls.
 6. Record actual scheduled attempts, feed counts, errors and due/not-due behavior. Separately record a genuine current article's independent evaluation, publication, plotted road coverage and routing effect. Zero eligible articles cannot satisfy that final live plotting check.
 

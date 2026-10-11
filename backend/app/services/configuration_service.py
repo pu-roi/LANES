@@ -68,7 +68,8 @@ def configuration_response(db: Session, *, can_edit: bool) -> ConfigurationRespo
     row = db.get(SystemSetting, CONFIG_KEY)
     runtime_row = db.get(SystemSetting, RUNTIME_KEY)
     runtime = ConfigurationRuntime.model_validate(runtime_row.value) if runtime_row else ConfigurationRuntime()
-    if runtime.last_started_at and datetime.now(timezone.utc) - runtime.last_started_at > timedelta(minutes=12):
+    progress_at = runtime.last_progress_at or runtime.last_started_at
+    if progress_at and datetime.now(timezone.utc) - progress_at > timedelta(minutes=12):
         if runtime.running:
             runtime.running = False
             runtime.error_code = "worker_interrupted"
@@ -86,7 +87,12 @@ def configuration_response(db: Session, *, can_edit: bool) -> ConfigurationRespo
                     "eligible_candidates": sum(feed.candidates_saved for feed in feeds)},
             errors=[feed.error_code for feed in feeds if feed.error_code])
     if latest and config.news_collection_enabled and selected_news_sources(db):
-        runtime.next_collection_at = latest.started_at + timedelta(minutes=config.news_collection_interval_minutes)
+        collection_started_at = latest.started_at
+        if collection_started_at.tzinfo is None:
+            collection_started_at = collection_started_at.replace(tzinfo=timezone.utc)
+        from app.services.news_weather_controller_service import adaptive_decision
+        interval = adaptive_decision(db, datetime.now(timezone.utc)).interval_minutes
+        runtime.next_collection_at = collection_started_at + timedelta(minutes=interval)
     elif not config.news_collection_enabled or not selected_news_sources(db):
         runtime.next_collection_at = None
     return ConfigurationResponse(settings=config, revision=row.value["revision"] if row else 0,
@@ -106,6 +112,9 @@ def save_configuration(db: Session, update: ConfigurationUpdate, *, actor_id: in
             raise ConfigurationConflict("Settings changed elsewhere. Reload before saving your draft.")
         before = read_configuration(db).model_dump(mode="json")
         after = update.settings.model_dump(mode="json")
+        # Compatibility field for older full-settings clients; scheduling is
+        # server-owned and an old client must not change its stored legacy value.
+        after["news_collection_interval_minutes"] = before["news_collection_interval_minutes"]
         if before != after:
             if row is None:
                 row = SystemSetting(key=CONFIG_KEY)
