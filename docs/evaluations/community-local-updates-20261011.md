@@ -90,3 +90,17 @@ Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 - Ten commuter captures remain separate from flood processing; this release does not perform public-map activation or change policy/scheduler state. Existing eight-record documentation audit confirms no dependency/schema/architectural decision additions are needed. BUG-142 is resolved live; other News Intelligence/News Alert changes remain separate.
 
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Sidebar scrolling and width — October 11, 12:15 PM PHT
+
+Developer asks for the right scrollbar to stay hidden until panel interaction, and a small width increase. `RightSidebar.tsx` uses the existing `scrollbar-auto-hide` style, increases 320 to 344 pixels, adds a named keyboard-focusable complementary region with a visible focus ring and `overscroll-contain`. Native wheel/touch/keyboard scrolling is retained. The scrollbar is transparent while idle and thin/slate on hover or focus, with the existing standard and WebKit rules; no new global styling or animation is needed.
+
+During real 1024-pixel verification the existing three-column minimum widths exceeded the viewport by four pixels. Show the wider sidebar from Tailwind `xl` (1280 pixels), and change the `FeedPage.tsx` expandable-card visibility to the same breakpoint. Phones/tablets/narrower laptops therefore retain source-linked news without forcing three columns. No dependency, API, database or migration change.
+
+- Actual unmocked local checks at 1920×1080, 1440×1000 and 1280×800: sidebar width exactly 344, idle transparent scrollbar, visible hover/focus thumb, native wheel scrolling moves only the panel, PageDown scrolls the focused panel, and wheel-at-bottom does not move the page.
+- 1024×800 and 768×800: right panel hidden, shared expandable news visible with five actual articles and reachable refresh. All tested widths have no horizontal overflow.
+- 390×844: expandable news shows five actual articles; after ordinary page scrolling, refresh is above the fixed bottom navigation and clicking it produces actual HTTP 200. A first check used scrollIntoViewIfNeeded, which considered an element under the fixed bar already visible; centering it through native page scrolling verifies actual reachable/clickable behavior without changing mobile code.
+- TypeScript passes. RightSidebar ESLint has zero errors and its two existing image warnings. FeedPage retains six errors/four warnings; programmatic comparison against HEAD confirms every diagnostic is unchanged by the breakpoint class. This scope does not fix unrelated existing hooks/entities lint errors.
+- Desktop/mobile screenshots `frontend/test-results/commuter-sidebar-1440.png` and `commuter-sidebar-390.png` are inspected. The first CSS check ran before development styles settled; load/poll-based acceptance confirms the existing hidden scrollbar rules apply. No new automated regression fixture is added for this small wrapper change; the earlier 143 backend/10 responsive commuter suite remains the coverage baseline.
+
+Matching frontend rollout and live UI acceptance remain pending at this checkpoint. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
