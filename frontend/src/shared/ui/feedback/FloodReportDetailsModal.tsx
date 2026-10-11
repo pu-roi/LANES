@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { format } from "date-fns";
 import { parseUtcDate } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -57,6 +58,7 @@ interface FloodReportDetailsModalProps {
   presentation?: "dialog" | "panel";
   onClose: () => void;
   onViewOnMap?: (report: FloodReportDetails) => void;
+  showMapFocusAction?: boolean;
   onApprove?: (reportId: number) => void;
   onReject?: (reportId: number) => void;
   isApproveLoading?: boolean;
@@ -84,7 +86,12 @@ const formatCoordinates = (geometry?: FloodReportDetailsGeometry | null) => {
   return `~${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E (${count} ${label[geometry.type] ?? geometry.type})`;
 };
 
-export function FloodReportDetailsModal({ report, isOpen, presentation = "dialog", onClose, onViewOnMap, onApprove, onReject, isApproveLoading = false, isRejectLoading = false }: FloodReportDetailsModalProps) {
+const subscribeToClient = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+
+export function FloodReportDetailsModal({ report, isOpen, presentation = "dialog", onClose, onViewOnMap, showMapFocusAction = true, onApprove, onReject, isApproveLoading = false, isRejectLoading = false }: FloodReportDetailsModalProps) {
+  const mounted = useSyncExternalStore(subscribeToClient, clientSnapshot, serverSnapshot);
   const [mediaViewer, setMediaViewer] = useState<{ urls: string[]; initialIndex: number } | null>(null);
   useEffect(() => {
     if (!isOpen) return;
@@ -98,7 +105,7 @@ export function FloodReportDetailsModal({ report, isOpen, presentation = "dialog
   const handleMapView = () => { if (report && onViewOnMap) { onClose(); onViewOnMap(report); } };
   const isPanel = presentation === "panel";
 
-  return <><AnimatePresence>{isOpen && report && <motion.div aria-labelledby="flood-report-details-title" aria-modal={isPanel ? undefined : "true"} className={isPanel ? "h-full min-h-0 w-full" : "fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-xs sm:p-4"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={isPanel ? undefined : onClose} role={isPanel ? "region" : "dialog"}>
+  const content = <><AnimatePresence>{isOpen && report && <motion.div aria-labelledby="flood-report-details-title" aria-modal={isPanel ? undefined : "true"} className={isPanel ? "h-full min-h-0 w-full" : "fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-xs sm:p-4"} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={isPanel ? undefined : onClose} role={isPanel ? "region" : "dialog"}>
     <motion.div className={isPanel ? "relative flex h-full min-h-0 w-full flex-col overflow-hidden border-l border-slate-200 bg-white" : "relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:max-h-[90vh]"} initial={isPanel ? { opacity: 0, x: 24 } : { opacity: 0, scale: 0.97, y: 12 }} animate={isPanel ? { opacity: 1, x: 0 } : { opacity: 1, scale: 1, y: 0 }} exit={isPanel ? { opacity: 0, x: 24 } : { opacity: 0, scale: 0.97, y: 12 }} transition={{ duration: 0.18 }} onMouseDown={(event) => event.stopPropagation()}>
       <div className="flex items-start justify-between gap-3 border-b border-slate-100 bg-slate-50/80 px-4 py-4 sm:items-center sm:px-6"><div className="flex min-w-0 items-center gap-3"><div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm">#{report.id}</div><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><h2 id="flood-report-details-title" className="text-base font-bold text-slate-900">Flood Report Details</h2>{statusBadge(report.status)}</div><p className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-500"><Calendar className="size-3.5 text-slate-400" />{format(parseUtcDate(report.created_at) || new Date(report.created_at), "MMMM d, yyyy • h:mm a")}</p></div></div><button aria-label="Close flood report details" className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-slate-200/60 hover:text-slate-700" onClick={onClose} type="button"><X className="size-5" /></button></div>
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
@@ -109,7 +116,8 @@ export function FloodReportDetailsModal({ report, isOpen, presentation = "dialog
         <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200/70 bg-slate-50/80 p-4"><div className="flex min-w-0 items-center gap-3"><div className={`flex size-10 shrink-0 items-center justify-center rounded-full ${isOfficialReporter ? "bg-blue-600 text-white" : "bg-slate-200 text-slate-700"}`}>{isOfficialReporter ? <ShieldCheck className="size-5" /> : <User className="size-5" />}</div><div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><span className="truncate text-sm font-bold text-slate-900">{report.reporter_name || "System Ingestion"}</span>{report.reporter_role && <span className="rounded-full border border-blue-200 bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase text-blue-700">{report.reporter_role}</span>}</div><span className="text-xs text-slate-500">{report.reporter_username ? `@${report.reporter_username}` : "Verified Citizen Contributor"}</span></div></div>{report.reporter_trust_score != null && <div className="flex shrink-0 flex-col items-end"><span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Trust Score</span><span className="flex items-center gap-1 text-sm font-extrabold text-blue-600"><Shield className="size-3.5 text-blue-500" />{report.reporter_trust_score}%</span></div>}</div>
         {report.media_urls && report.media_urls.length > 0 && <div className="space-y-2"><div className="text-xs font-bold uppercase tracking-wider text-slate-400">Attached Flood Evidence ({report.media_urls.length})</div><div className="grid grid-cols-1 gap-2 sm:grid-cols-2">{report.media_urls.map((url, index) => <button key={url} className="group relative flex max-h-48 min-h-32 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-950/5 text-left" onClick={() => setMediaViewer({ urls: report.media_urls!, initialIndex: index })} type="button">{url.match(/\.(mp4|webm|mov|ogg)$/i) || url.includes("/video/upload/") ? <video className="h-full max-h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105" src={url} /> : <img alt={`Flood evidence ${index + 1}`} className="h-full max-h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105" src={url} />}<span className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/40 text-xs font-semibold text-white opacity-0 backdrop-blur-xs transition-opacity group-hover:opacity-100"><ExternalLink className="size-4" />View</span></button>)}</div></div>}
       </div>
-      {(onViewOnMap || canModerate) && <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/80 px-4 py-4 sm:flex-row sm:px-6">{onViewOnMap && <Button className="flex w-full items-center justify-center gap-2 border-blue-200 text-sm font-semibold text-blue-600 hover:bg-blue-50 sm:w-auto" onClick={handleMapView} variant="outline"><MapIcon className="size-4 text-blue-600" />View on Map (Focus)</Button>}{canModerate && <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto"><Button className="flex-1 gap-1.5 border-rose-200 text-sm font-semibold text-rose-600 hover:bg-rose-50 sm:flex-none" disabled={isRejectLoading} onClick={() => onReject(report.id)} variant="outline">{isRejectLoading ? <Loader2 className="size-4 animate-spin" /> : <XCircle className="size-4" />}Reject</Button><Button className="flex-1 gap-1.5 bg-emerald-600 text-sm font-semibold text-white hover:bg-emerald-700 sm:flex-none" disabled={isApproveLoading} onClick={() => onApprove(report.id)}>{isApproveLoading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle className="size-4" />}Approve</Button></div>}</div>}
+      {(showMapFocusAction && onViewOnMap || canModerate) && <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/80 px-4 py-4 sm:flex-row sm:px-6">{showMapFocusAction && onViewOnMap && <Button className="flex w-full items-center justify-center gap-2 border-blue-200 text-sm font-semibold text-blue-600 hover:bg-blue-50 sm:w-auto" onClick={handleMapView} variant="outline"><MapIcon className="size-4 text-blue-600" />View on Map (Focus)</Button>}{canModerate && <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto"><Button className="flex-1 gap-1.5 border-rose-200 text-sm font-semibold text-rose-600 hover:bg-rose-50 sm:flex-none" disabled={isRejectLoading} onClick={() => onReject(report.id)} variant="outline">{isRejectLoading ? <Loader2 className="size-4 animate-spin" /> : <XCircle className="size-4" />}Reject</Button><Button className="flex-1 gap-1.5 bg-emerald-600 text-sm font-semibold text-white hover:bg-emerald-700 sm:flex-none" disabled={isApproveLoading} onClick={() => onApprove(report.id)}>{isApproveLoading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle className="size-4" />}Approve</Button></div>}</div>}
     </motion.div>
   </motion.div>}</AnimatePresence><MediaViewer initialIndex={mediaViewer?.initialIndex} isOpen={mediaViewer !== null} mediaUrls={mediaViewer?.urls ?? []} onClose={() => setMediaViewer(null)} /></>;
+  return isPanel ? content : mounted ? createPortal(content, document.body) : null;
 }

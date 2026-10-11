@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Users } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 import { useToast } from "@/shared/ui";
@@ -17,11 +18,22 @@ interface VisitorActivityResponse extends PublicStats {
 const VISITOR_ID_STORAGE_KEY = "lanes_visitor_id";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+function generateFallbackUUID(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 function getOrCreateVisitorId(): string {
   const existingId = localStorage.getItem(VISITOR_ID_STORAGE_KEY);
   if (existingId && UUID_PATTERN.test(existingId)) return existingId;
 
-  const visitorId = crypto.randomUUID();
+  const visitorId =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : generateFallbackUUID();
   localStorage.setItem(VISITOR_ID_STORAGE_KEY, visitorId);
   return visitorId;
 }
@@ -32,73 +44,69 @@ function errorMessage(error: unknown, fallback: string): string {
 
 export function HomeStats() {
   const { error: showError } = useToast();
-  const [stats, setStats] = useState<PublicStats>({ daily_verified_reports: 0, total_visitors: 0 });
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const { data: stats, isPending: loading, error } = useQuery({
+    queryKey: ["publicStats"],
+    queryFn: () => apiClient.get<PublicStats>("/public/stats", { cache: "no-store" }),
+    refetchInterval: 60_000,
+  });
+
+  useEffect(() => {
+    if (error) showError("Stats Error", errorMessage(error, "Failed to fetch public stats"));
+  }, [error, showError]);
 
   useEffect(() => {
     let cancelled = false;
     let trackingStarted = false;
 
-    async function fetchStats() {
-      try {
-        const data = await apiClient.get<PublicStats>("/public/stats");
-        if (!cancelled) setStats(data);
-      } catch (err: unknown) {
-        if (!cancelled) showError("Stats Error", errorMessage(err, "Failed to fetch public stats"));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
     async function trackVisibleVisit() {
       if (trackingStarted) return;
       trackingStarted = true;
       try {
-        const data = await apiClient.post<VisitorActivityResponse>("/public/visits", {
+        await apiClient.post<VisitorActivityResponse>("/public/visits", {
           visitor_id: getOrCreateVisitorId(),
         });
-        if (!cancelled) setStats(data);
+        // Refetch current counts rather than overwriting a newer live snapshot
+        // with a visitor request that started before a moderation action.
+        if (!cancelled) void queryClient.invalidateQueries({ queryKey: ["publicStats"] });
       } catch (err: unknown) {
         if (!cancelled) {
           console.warn("Visitor telemetry could not be recorded:", err);
-          await fetchStats();
+          showError("Visitor Count Unavailable", "Your visit could not be recorded. Flood statistics are still checked separately.");
+          void queryClient.invalidateQueries({ queryKey: ["publicStats"] });
         }
-      } finally {
-        if (!cancelled) setLoading(false);
       }
     }
 
     const onVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        document.removeEventListener("visibilitychange", onVisibilityChange);
         void trackVisibleVisit();
+        void queryClient.invalidateQueries({ queryKey: ["publicStats"] });
       }
     };
 
     if (document.visibilityState === "visible") {
       void trackVisibleVisit();
-    } else {
-      void fetchStats();
-      document.addEventListener("visibilitychange", onVisibilityChange);
     }
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
       cancelled = true;
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [showError]);
+  }, [queryClient, showError]);
 
   return (
     <div className="p-2 flex items-center justify-center gap-10 h-full">
-      {/* Floods Today */}
+      {/* Current zones use the same eligibility rules as the public map. */}
       <div className="flex flex-col items-center text-center">
         <div className="bg-white/10 p-2.5 rounded-full text-white mb-2">
           <AlertTriangle className="w-5 h-5" />
         </div>
         <span className="text-3xl font-bold text-white">
-          {loading ? "..." : stats.daily_verified_reports}
+          {loading ? "..." : stats?.daily_verified_reports ?? "—"}
         </span>
-        <span className="text-xs font-medium text-white mt-1">Floods Today</span>
+        <span className="text-xs font-medium text-white mt-1" title="Active map zones created today, counted once per zone using the UTC date.">Floods Today (UTC)</span>
       </div>
 
       <div className="h-16 w-px bg-blue-400/50"></div>
@@ -109,7 +117,7 @@ export function HomeStats() {
           <Users className="w-5 h-5" />
         </div>
         <span className="text-3xl font-bold text-white">
-          {loading ? "..." : stats.total_visitors.toLocaleString()}
+          {loading ? "..." : stats?.total_visitors.toLocaleString() ?? "—"}
         </span>
         <span className="text-xs font-medium text-white mt-1">Site Visitors</span>
       </div>

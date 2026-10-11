@@ -1,6 +1,12 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 11:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: Roi team integration
+
+- [x] Commit/push existing News Intelligence work first (`c32646d`); review refreshed Jace/Chris branches and integrate compatible Jace changes into `roi-branch`. Chris is already an ancestor. Preserve both documentation histories and resolve duplicate bug identifiers. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Repair the mobile report-dialog overlap found during screenshot review; verify the final source with TypeScript, scoped lint, 133 backend checks, clean dependency install and existing migrations on disposable PostGIS. Accept 103 distinct desktop/mobile browser cases across combined/final runs, retaining three intentional skips and documenting the serial retry. [Integration record](evaluations/roi-team-integration-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Developer manually merges the accepted `roi-branch` into `main`; deployment and adaptive trigger activation follow their separate coordinated release gates. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: News Intelligence presentation
 
@@ -14,6 +20,15 @@
 - [x] Implement sampled 17-LGU/upstream Open-Meteo and official PAGASA readers, 60/15/30-minute policy, freshness/cooldown and current-evidence gates. Add machine-only OIDC controller with JSON persistence, locks and durable dispatch reconciliation; share worker due checks. [Plan](plans/news-weather-scheduling.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Remove interval editing while preserving legacy values; extend existing desktop/mobile automation status, visible failures and read-only refresh. Verify 146 backend/native checks, 28 adaptive/settings and 15 existing news browser cases (one intended desktop skip), TypeScript/scoped lint and real read-only provider probes. No schema/dependency change. [Acceptance](evaluations/news-weather-scheduling-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Release matching API, worker and frontend, configure scoped runtime job permissions and exact Scheduler OIDC identity, then switch the recorded three-hour OAuth worker trigger to the 15-minute controller endpoint. Verify unattended checks/executions and record request durations, provider issues and worker starts; retain coordinated rollback. [Runbook](guides/news-weather-scheduling-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 11: Moderation and Community publication audit
+
+- [x] Synchronize the eight core records for complete moderation details, persisted-status map navigation, removal of the duplicate detail action, pending/approved/rejected owner notifications, notification ownership/hydration, daily active-zone UTC statistics and Community filters. Preserve post warnings, staff permissions and existing workflows. [Publication audit](evaluations/jace-moderation-feed-publication-20261011.md) records local validation and the included manifest/lock refresh; no database schema changes or deployment. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+- [x] Verify `jace-branch`, manifest/lock consistency, unchanged SQL models/migrations, whitespace and changed-content credential patterns. Remove credential-bearing VS Code overrides before publication; existing tasks use `.env`. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
+## October 11: Community filtering — local implementation
+
+- [x] Add server-side newest/oldest ordering, All Time/UTC Today/rolling date filters, existing active/ended lifecycle and severity filters, and strict optional Nearby radii. Preserve profile/saved-place location fallback, owned My Posts access, post interactions and existing refresh mechanisms. URL-persisted controls and pagination support both screen sizes. Local verification is recorded in [the acceptance report](evaluations/community-feed-filters-20261011.md); branch publication is requested and production deployment is separate. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
 
 ## October 11: News plotting repairs verified locally
 

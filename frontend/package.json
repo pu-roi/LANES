@@ -2,6 +2,11 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "allowScripts": {
+    "core-js-pure": true,
+    "sharp": true,
+    "unrs-resolver": true
+  },
   "scripts": {
     "dev": "dotenvx run -f .env.local -- next dev --webpack -H 0.0.0.0",
     "build": "dotenvx run -f .env.local -- next build --webpack",

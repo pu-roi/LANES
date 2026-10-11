@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 11, 2026, 10:55 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 9 preserved-news inspection:** News Details now opens saved placement on Spatial Operations through a validated run/ordinal handoff, including expired articles absent from the current queue. Existing server-owned inspection status, permissions and transparent review layers apply. The selected September 24 local replay returns four Boni modeled candidates without creating an active historical zone. Shared desktop/mobile UI passes TypeScript/scoped dialog lint; visual acceptance is pending. [Manual replay](guides/local-news-replay.md#october-9-september-24-manual-map-inspection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -325,11 +325,15 @@ This document serves as the central technical reference for all currently implem
 
 ### 16. Community Feed & Social Validation
 
+**October 11 local controls:** Newest/oldest publication ordering, All Time/UTC Today/rolling date windows, existing active/ended event and report severity filters, and optional strict Nearby radii are applied server-side before pagination. Public readers exclude linked pending/rejected/private/archived reports; owners retain My Posts access. URL-backed controls preserve filters through tabs, refresh and paging; comments/votes remain intact. [Local acceptance](evaluations/community-feed-filters-20261011.md). Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
+**October 11 owner updates and moderation consistency:** Existing SYSTEM notifications cover entry into the pending moderation queue and approval alongside rejection/post warnings. Report references open owner-authorized details; read mutation is ownership-scoped and the detail portal waits for hydration. Moderation Info reads complete report data; Spatial Location navigation rechecks persisted approval state and focuses the existing map's linked zone or review report. The homepage daily UTC statistic counts active map zones created today. [Publication audit](evaluations/jace-moderation-feed-publication-20261011.md). Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
 **Local Updates (October 11, commuter coverage):** Desktop sidebar and mobile/tablet expandable card show recent collected Metro Manila weather, traffic, transport, safety/service advisories and flood reports with publisher/date/source link. The bounded public reader checks current body relevance and source/domain/recency; no public-alert approval is required. National weather headlines qualify only when their bodies cover Metro Manila. Commuter-only articles use the existing `local_update` state and never enqueue flood extraction; later observed flooding can enter normal processing. 143 backend/10 responsive checks and actual local reads pass. Matching cloud release and actual live desktop/mobile five-article acceptance pass. [Verification](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht).
 *   **Purpose:** Provides commuters with localized, real-time crowdsourced updates, general disaster discussion, and enables peer validation of flood reports.
 *   **What it does:** Displays a 3-column feed containing shared `FloodReport`s and general `CommunityPost`s. Enables highly interactive community discussions via a rich, threaded comments section supporting quote replies, user mentions, upvote/downvote sorting, auto-collapsing low-score replies, and admin pinning.
 *   **How it works:**
-    1. Fetches feed items using PostGIS `<->` operators for distance-based sorting or chronological ordering.
+    1. Filters Nearby eligibility using existing PostGIS geography `ST_DWithin` calculations, then sorts both tabs by publication timestamp and ID in the selected direction before pagination.
     2. Users interact via upvote/downvote and comments, which updates the `post_interactions` and `comments` tables.
     3. The Comment Engine structures threads recursively in the backend, supporting infinite nesting via adjacency lists (`parent_comment_id`).
     4. The frontend utilizes React `useRef` based focus-within compound input forms to safely manage complex multi-input layouts without triggering React re-renders or cursor jumping.

@@ -1,6 +1,14 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 11, 2026, 11:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-153: Admin sidebar obscures mobile flood-report dialogs.**
+
+- **Status:** Resolved locally; deployment separate. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Integration screenshots show the left edge of Moderation's report detail covered by the admin sidebar on mobile, despite the existing visibility assertions passing.
+- **RCA:** The fixed dialog renders inside AdminLayout's page/map stacking context beneath the sidebar. Increasing a child's z-index alone cannot escape that context.
+- **Solution:** Render dialog presentation through a client-mounted body portal using the existing shared modal layer (`z-[100]`); retain inline panel presentation for Flood History. Add a foreground hit-test assertion at the report badge, which reproduces the overlap before the fix.
+- **Files:** `frontend/src/shared/ui/feedback/FloodReportDetailsModal.tsx`, `frontend/tests/flood-moderation-map.spec.ts`. Final responsive rerun passes 18 moderation/map and 18 notification cases with hydration/foreground assertions; TypeScript and scoped lint pass, retaining the existing image warning. [Integration acceptance and before/after screenshots](../evaluations/roi-team-integration-20261012.md). No backend, dependency or schema change.
 
 **BUG-148: News automation mobile checks inherited a different browser engine.**
 
@@ -30,6 +38,46 @@
 **October 11 local acceptance:** Actual provider retries verify Quirino, and the unchanged NOAH footprint worker automatically creates Zone/Event **#59**. Both frontend/backend public-zone APIs return Boni **#58** and Quirino **#59** Active; actual browser News alerts confirms Quirino's existing estimated-corridor/depth/source labels. Missing local Boni event locations are repaired from validated saved evidence; actual authenticated history searches return Events **58/59**. Gov. Pascual still needs a bounded Sitio 6 match; East has no verified previous wet event, and Aurora's provider transfers unrelated access information and is rejected. [Detailed acceptance](../evaluations/news-shared-context-and-history-20261011.md#actual-provider-public-map-and-history-acceptance).
 
 **October 11 numbered-locality continuation:** Numeric-only Sitio extraction and literal locality comparisons missed equivalent English/native Filipino/Spanish-derived names. Research-backed deterministic cardinal matching now recognizes units, teens, tens and larger compounds after numbered-place designators, preserves original labels/evidence offsets, and prevents different numbers, letter suffixes, fractions and ranges from becoming the same locality. Pipeline v15 retains earlier runs. **465 focused checks pass**; the prior 162 native lifecycle checks are not rerun for this text-only change. No historical replay, database writes or server restart in this continuation. [Research, coverage and limitations](../evaluations/news-shared-context-and-history-20261011.md#numbered-locality-nlp-repair). Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**BUG-149: Homepage flood count and feed chronology differ from their intended meaning. Status: Resolved locally; production deployment separate. Severity: Medium. Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** The daily homepage metric counted submissions rather than the developer-selected active map zones created today. Community engagement scoring could place older posts above newer publications.
+
+**2. Root Cause Analysis:** Homepage aggregation used report creation/approval instead of the shared active-zone predicate, while Community ordering used engagement/age/distance scores. Visitor telemetry could replace the current statistics snapshot.
+
+**3. Solution & Architectural Strategy:** Count each current active zone created on today's UTC date once, retain the response contract and explicit daily label, and refresh the independent query through polling/SSE. Order both feed tabs by publication timestamp and ID in the selected direction. Display failures without a false zero.
+
+**4. Files Modified:** `backend/app/services/public_stats_service.py`, public endpoint and feed/report CRUD; `frontend/src/features/landing/HomeStats.tsx`, `features/feed/FeedPage.tsx`, `hooks/useLiveSync.ts`, `hooks/useSSE.ts`; homepage/order tests. [Audit](../evaluations/jace-moderation-feed-publication-20261011.md).
+
+**BUG-150: Missing report status notifications, read ownership and portal hydration mismatch. Status: Resolved locally; production deployment separate. Severity: High (ownership mutation). Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** Owners received no pending-review/approval updates, and the notification read endpoint mutated a row before checking its recipient. The browser rendered an empty report portal absent from server HTML, producing a hydration mismatch.
+
+**2. Root Cause Analysis:** Outcome notification logic existed only for rejection. Read CRUD selected by notification ID alone. A browser-only portal branch participated in the first client render.
+
+**3. Solution & Architectural Strategy:** Stage status-specific SYSTEM notifications with the persisted action transaction and deduplicate existing report/action payloads. Use the developer-approved pending queue as Under Review, preserve rejection reasons/post warnings, scope read updates by recipient before mutation, fetch report references through an owner-only endpoint and mount the detail portal after hydration only when details exist.
+
+**4. Files Modified:** `backend/app/services/report_notification_service.py`, `services/flood_event_service.py`, report/notification CRUD and endpoints; `frontend/src/features/notifications/NotificationBell.tsx`, `notificationsApi.ts`; report notification tests. [Audit](../evaluations/jace-moderation-feed-publication-20261011.md).
+
+**BUG-151: Incomplete moderation report details and incorrect map tab. Status: Resolved locally; production deployment separate. Severity: Medium. Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** Moderation Info omitted hazards, road coverage and passable vehicles; its map action sent approved reports to Needs Review and displayed a redundant View on Map Focus action.
+
+**2. Root Cause Analysis:** The dialog received a partial object assembled from summary fields, and its map callback hardcoded the pending tab. The shared dialog exposed an additional footer map action.
+
+**3. Solution & Architectural Strategy:** Reuse the full report endpoint for detail and current status, carry the selected ID to the existing map, resolve approved linked zones/contributors in Active Zones and pending evidence in Needs Review, and preserve rejected inspection/error behavior. Disable only the redundant action for this moderation caller.
+
+**4. Files Modified:** `frontend/src/features/admin/components/FloodModerationQueue.tsx`, `features/admin/LiveMapPage.tsx`, `shared/ui/feedback/FloodReportDetailsModal.tsx`, `tests/flood-moderation-map.spec.ts`. [Audit](../evaluations/jace-moderation-feed-publication-20261011.md).
+
+**BUG-152: Community feed linked-report visibility and filter escape. Status: Resolved locally; deployment not performed. Severity: High (visibility). Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** Public feed readers could return linked pending, rejected, private or archived flood reports. The old date-window fallback could return older content outside an explicitly selected period; automatic Nearby expansion could exceed an explicitly selected radius.
+
+**2. Root Cause Analysis:** The shared list/single-post queries checked post deletion/hiding without enforcing the attached report's public approval state. Recent window and Nearby radius fallback were unconditional. A vote rollback also used the current feed key, potentially restoring old results after the selected filters changed.
+
+**3. Solution & Architectural Strategy:** Apply one public linked-report predicate before filtering/counting/pagination; keep unpublished access confined to the author via My Posts/owned detail. Default to All Time and never abandon selected date/status/severity constraints. Expand Nearby only in automatic radius mode. Use the originating cache key for vote results/rollback. Reuse map eligibility for Active; require persisted ended status and absence of an active zone for Resolved, including restored-zone handling.
+
+**4. Files Modified:** `backend/app/crud/feed.py`, `crud/report.py`, `schemas/feed.py`, `services/community_feed_service.py`, feed/posts endpoints; `frontend/src/features/feed/feedApi.ts`, `FeedPage.tsx`, `components/CommunityFeedFilters.tsx`, and focused backend/browser tests. [Acceptance](../evaluations/community-feed-filters-20261011.md). Existing submission/moderation data and workflows remain unchanged; no model/migration/dependency edits.
 
 **BUG-145: Pasig expiry can retain a transient null prediction; shallow-flood depth sensitivity remains inadequate.**
 

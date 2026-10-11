@@ -47,6 +47,7 @@ export function useLiveSync() {
             void queryClient.invalidateQueries({ queryKey: ['activeZonesMap'] });
             void queryClient.invalidateQueries({ queryKey: ['adminZones'] });
             void queryClient.invalidateQueries({ queryKey: ['publicNewsAlerts'] });
+            void queryClient.invalidateQueries({ queryKey: ['publicStats'] });
           }
         } catch (err) {
           console.warn('Failed to save live flood snapshot:', err);

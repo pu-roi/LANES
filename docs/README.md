@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 11:59 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Roi team integration:** [Branch scope, preserved records and final acceptance](evaluations/roi-team-integration-20261012.md). News Intelligence work is pushed first; Jace's compatible updates and the mobile dialog repair are accepted locally, and Chris is already included. 133 backend checks and 103 distinct desktop/mobile browser cases pass across final acceptance runs. The developer retains the manual merge to `main`. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **News Intelligence tabs (local):** [Layout and responsive acceptance](evaluations/news-intelligence-tabs-20261011/README.md) covers the concise Overview, separate Flooded Areas view, shared admin components, expandable diagnostics and preserved read-only workflows. Cloud release remains separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -11,6 +13,10 @@
 **News documentation/publication audit:** The eight core records, placement/activation plans and replay guide now distinguish accepted local repairs from open clearance-history, fresh v16 evaluation and shared-release gates. Dependency/SQL migration state is unchanged; catalog lineage, source syntax, local Markdown targets and added-content checks pass. The developer requested publication on `roi-branch`; pushing does not deploy the code or transfer the local simulation database. [Audit record](evaluations/news-shared-context-and-history-20261011.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Gov. Pascual local acceptance:** The source-preserving OSM locality catalog now connects Sitio Sais/6 to a bounded estimated road candidate. The existing OSM/NOAH worker creates **Zone/Event #60** from the previously verified report. Public APIs and authenticated history searches return **Boni #58, Quirino #59 and Gov. Pascual #60**; source text, labels and per-road facts remain unchanged. **493 focused and 163 native PostGIS checks pass.** This uses the local September simulation; shared/cloud deployment and clearance-only prior-event history remain separate gates. [Fix, provenance and verification](evaluations/news-shared-context-and-history-20261011.md#source-locality-to-road-repair-and-gov-pascual-acceptance).
+
+**Jace branch publication audit:** [Moderation details/map handoff, owner notifications, hydration, daily UTC homepage statistics and Community filters](evaluations/jace-moderation-feed-publication-20261011.md). Includes recorded local acceptance, dependency/credential checks and the requested branch-push scope; production deployment is separate. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
+**Community filtering (local):** [API contract, visibility correction and desktop/mobile acceptance](evaluations/community-feed-filters-20261011.md). Sorting/date/status/severity/radius filters reuse the existing feed and map lifecycle; no schema/dependency change or deployment. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
 
 **What to expect when testing:** [Runtime behavior, acceptance steps and remaining accuracy work](guides/pasig-recession-observation-collection.md#what-to-expect-when-running-the-system) explain the saved selected model, eligibility/fallback, fixed issuance, p90 deadline and Unconfirmed expiry. Depth-sensitive predictive accuracy remains unvalidated even though local/cloud integration and hosted display are accepted. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
