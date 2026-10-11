@@ -5,9 +5,10 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_serializer
 from app.schemas.news_placement import NewsPlacementPreview
 from app.schemas.news_audit import IndependentAuditResult
+from app.schemas.news_locality import LocalityAnchorEvidence
 
 
 CanonicalDepth = Literal[
@@ -113,6 +114,7 @@ class RoadPlacementEvidence(BaseModel):
     catalog_sha256: str | None = None
     osm_sha256: str | None = None
     city_relation_id: int | None = None
+    locality_anchor: LocalityAnchorEvidence | None = None
     barangay_catalog_sha256: str | None = None
     barangay_source_id: str | None = None
     barangay_psgc_code: str | None = None
@@ -125,6 +127,14 @@ class RoadPlacementEvidence(BaseModel):
     candidates_truncated: bool = False
     proves_current_flood: Literal[False] = False
     may_affect_routing: Literal[False] = False
+
+    @model_serializer(mode="wrap")
+    def serialize_optional_anchor(self, handler):
+        payload = handler(self)
+        # Preserve saved claim hashes from catalogs predating locality points.
+        if self.locality_anchor is None:
+            payload.pop("locality_anchor", None)
+        return payload
 
 
 class ExtractedClaim(BaseModel):

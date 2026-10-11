@@ -1,6 +1,14 @@
 # Local News Intelligence replay
 
-> **Last Updated:** October 10, 2026, 6:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 11 local snapshot acceptance
+
+The latest inspection uses loopback database `lanes_plotting_20261011`, local backend **8003** and frontend **3000**. The ignored database-bound scenario keeps September 24 **16:43** as the read clock only for selected Cases **13/27/28** and Zones **58/59/60**. It preserves actual activation/deactivation and original article/observation/expiry timestamps. Public-zone APIs return Boni, Quirino and Gov. Pascual Active; authenticated Flood History searches find all three events. The original article has three active observations and two clearances; missing prior wet events are not manufactured.
+
+Gov. Pascual **60** was created by the existing footprint worker from saved verified evaluation **83**, using source-backed Sitio Sais/6 and bundled OSM/NOAH assets, with zero duplicate activation on a second sweep. No supplied coordinate or manual polygon was persisted. New code/catalog identity is v16, while this worker retry retains the original saved extraction/audit policy. It does not establish a fresh collector/new-v16-provider run. [Scope, exact provenance, tests and remaining gates](../evaluations/news-shared-context-and-history-20261011.md#source-locality-to-road-repair-and-gov-pascual-acceptance).
+
+The per-session launchers/results/screenshots are ignored under `data/news-replay/`; pushing this fix does not transfer the local database, scenario or credentials. Ordinary startup tasks may select a different backend/data set. Verify the active frontend backend target and database before replaying; never repoint a local reconstruction command at shared/cloud storage. The older connected/Boni checkpoints below are historical and are not the current local snapshot.
 
 **Current connected availability:** #23 was deactivated at October 10, 6:00:29 PM by a shared scheduled worker with the real clock. The earlier connected reconstruction described below succeeded, but #23 is now inactive; its original data remains stored. A local frozen clock never overrides deactivation. System Settings → Evidence expiry now has an automatic-expiry toggle; matching shared API/worker rollout is required before changing cloud policy. It preserves active records only and does not restore #23. [Details](../evaluations/automatic-expiry-toggle-20261010.md).
 

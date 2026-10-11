@@ -29,6 +29,7 @@ from app.services.flood_depth import (
     get_flood_depth_measurement,
 )
 from app.services.news_evidence_policy import HYPOTHETICAL_FLOOD_PATTERN, NON_OBSERVATION_PATTERN, non_observation_only
+from app.services.locality_number_service import numbered_localities
 from app.services.philippine_location_service import (
     COMMON_ALIASES,
     get_philippine_location_service,
@@ -617,7 +618,18 @@ def find_place_mentions(sentence: str, sent_offset_start: int) -> list[dict[str,
                 road_mention["local_area_raw"] = trailing_area
             mentions.append(road_mention)
 
-    for pattern in (r"\bSitio\s+\d+\b", r"\bCentral Market(?:\s+area)?\b", r"\bDr\.\s+[A-Z][a-z]+\b"):
+    for local in numbered_localities(sentence):
+        if local.kind in {"barangay", "brgy"}:
+            continue  # Official barangay resolution retains its existing parent checks.
+        mentions.append({
+            "raw_place_name": sentence[local.start:local.end],
+            "canonical_barangay": None,
+            "place_type": "landmark",
+            "char_start": sent_offset_start + local.start,
+            "char_end": sent_offset_start + local.end,
+        })
+
+    for pattern in (r"\bCentral Market(?:\s+area)?\b", r"\bDr\.\s+[A-Z][a-z]+\b"):
         for m in re.finditer(pattern, sentence, re.I):
             mentions.append({
                 "raw_place_name": m.group(0),
@@ -1317,8 +1329,16 @@ def extract_claims_from_sentence(
             r"\s+in\s+((?:Sitio\s+\d+)|(?:[A-Z][\wÀ-ÿ.-]*(?:\s+[A-Z][\wÀ-ÿ.-]*){0,2}))\b",
             sentence[local_place_end:],
         )
+        numbered_area_raw = None
+        area_lead = re.match(r"\s+in\s+", sentence[local_place_end:], re.I)
+        if area_lead:
+            area_start = local_place_end + area_lead.end()
+            numbered_area = next(numbered_localities(sentence[area_start:]), None)
+            if numbered_area and numbered_area.start == 0:
+                numbered_area_raw = sentence[area_start:area_start + numbered_area.end]
         local_area_raw = (
             place.get("local_area_raw")
+            or numbered_area_raw
             or (local_area_match.group(1) if local_area_match else None)
             or (nearby_sites[place["char_start"]][0] if place["char_start"] in nearby_sites else None)
             or (scoped_barangay if place["place_type"] in ("street", "landmark") else None)
@@ -1682,6 +1702,48 @@ def mark_city_summaries_as_context(claims: list[ExtractedClaim]) -> None:
             break
 
 
+def apply_shared_update_times(claims: list[ExtractedClaim], body: str) -> None:
+    """Retain a nearby narrative update clock without transferring other facts.
+
+    Shared clocks are explicitly marked for independent auditing. A clearance,
+    chronology/source change, or unrelated long passage ends the update scope.
+    Original per-road evidence and explicit observation clocks stay intact.
+    """
+    anchor: ExtractedClaim | None = None
+    boundary = re.compile(
+        r"\b(?:meanwhile|earlier|later|yesterday|tomorrow|subsided|cleared|receded|"
+        r"no longer|according to|forecast|on (?:Monday|Tuesday|Wednesday|Thursday|"
+        r"Friday|Saturday|Sunday))\b", re.I,
+    )
+    for claim in sorted(claims, key=lambda item: item.place_char_start):
+        if claim.place_type not in {"street", "landmark"}:
+            continue
+        if {"photo_caption_only", "metadata_only_lead", "location_context_only",
+                "city_context_ambiguous", "contradictory_update", "non_observation_list_context"}.intersection(
+                claim.uncertainty_reasons):
+            anchor = None
+            continue
+        if claim.is_forecast or claim.is_negated or claim.is_historical or claim.condition == "subsided":
+            anchor = None
+            continue
+        if claim.event_time_resolved is not None:
+            anchor = (claim if claim.event_time_kind == "observation"
+                      and (claim.event_time_raw or "").lower().startswith("as of")
+                      and claim.condition in {"active", "rising"} else None)
+            continue
+        if anchor is None or not claim.flood_mentioned or claim.condition not in {"active", "rising"}:
+            continue
+        gap = body[anchor.evidence_sentence_offset[1]:claim.place_char_start]
+        if len(gap) > 2000 or boundary.search(gap) or extract_event_time_from_text(gap)[0]:
+            anchor = None
+            continue
+        claim.event_time_raw = anchor.event_time_raw
+        claim.event_time_resolved = anchor.event_time_resolved
+        claim.event_time_kind = "observation"
+        claim.uncertainty_reasons = [reason for reason in claim.uncertainty_reasons if reason != "event_time_unknown"]
+        claim.uncertainty_reasons.append("shared_update_observation_time")
+
+
 def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> NewsExtractionResult:
     """Execute evidence-linked Taglish extraction on an article.
     Handles full text when present, or marks metadata-only leads when absent.
@@ -1953,6 +2015,8 @@ def extract_taglish_flood_facts(article_input: NewsArticleExtractorInput) -> New
         previous_sentence = sent_text
         previous_claims = claims
 
+    if has_full_text:
+        apply_shared_update_times(all_claims, text_to_process)
     mark_contradictory_updates(all_claims)
     mark_city_summaries_as_context(all_claims)
     return NewsExtractionResult(

@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 import osmium
-from shapely.geometry import mapping
+from shapely.geometry import mapping, Point
 from shapely.ops import polygonize_full, unary_union
 from shapely.geometry import LineString
 
@@ -47,6 +47,21 @@ class NamedRoads(osmium.SimpleHandler):
         self.unnamed_highways = 0
         self.incomplete_ways: list[dict] = []
         self.route_references = route_references or {}
+        self.localities: list[dict] = []
+
+    def node(self, node: osmium.osm.Node) -> None:
+        place = node.tags.get("place")
+        if place not in {"neighbourhood", "quarter", "suburb", "hamlet", "locality", "village"}:
+            return
+        name = node.tags.get("name") or node.tags.get("name:en")
+        if not name or not node.location.valid():
+            return
+        aliases = [n.strip() for n in node.tags.get("alt_name", "").split(";") if n.strip()]
+        if node.tags.get("name:en") and node.tags["name:en"] != name:
+            aliases.append(node.tags["name:en"])
+        self.localities.append(dict(osm_node_id=node.id, name=name, aliases=aliases, place=place,
+            city=node.tags.get("is_in:city", ""), quarter=node.tags.get("is_in:quarter") or None,
+            longitude=node.location.lon, latitude=node.location.lat))
 
     def way(self, way: osmium.osm.Way) -> None:
         if "highway" not in way.tags:
@@ -95,12 +110,20 @@ def build_catalog(pbf: Path, output: Path) -> dict:
     routes.apply_file(str(pbf), locations=False)
     roads = NamedRoads(routes.references)
     roads.apply_file(str(pbf), locations=True)
+    from app.services.news_road_placement_service import city_key
+    localities = []
+    for locality in roads.localities:
+        point = Point(locality["longitude"], locality["latitude"])
+        parents = [name for name, polygon in boundaries.items() if polygon.covers(point)]
+        if len(parents) != 1 or (locality["city"] and city_key(locality["city"]) != city_key(parents[0])):
+            continue
+        localities.append({**locality, "city": parents[0]})
     osm_digest = hashlib.sha256(pbf.read_bytes()).hexdigest()
     source_id = f"osm-ncr:{snapshot_at}:{osm_digest[:16]}"
     payload = dict(format_version=1, source_id=source_id, snapshot_at=snapshot_at, osm_sha256=osm_digest,
         attribution="OpenStreetMap contributors (ODbL); https://www.openstreetmap.org/copyright",
         cities=[dict(name=name, relation_id=relations[name], boundary=mapping(boundaries[name])) for name in sorted(boundaries)],
-        ways=roads.ways, incomplete_ways=roads.incomplete_ways)
+        ways=roads.ways, incomplete_ways=roads.incomplete_ways, localities=localities)
     raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False).encode()
     if len(raw)>MAX_CATALOG_BYTES:
         raise ValueError("Expanded road catalog exceeds runtime limit")
@@ -114,6 +137,7 @@ def build_catalog(pbf: Path, output: Path) -> dict:
                    unnamed_highways=roads.unnamed_highways, cities=len(boundaries),
                    incomplete_named_ways=len(roads.incomplete_ways),
                    route_referenced_named_ways=sum(bool(way["route_references"]) for way in roads.ways),
+                   localities=len(localities),
                    compressed_bytes=len(compressed), expanded_bytes=len(raw))
     (output / "manifest.json").write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8")
     return summary

@@ -32,7 +32,7 @@ from app.crud.news_publication import (
 from app.models.news import NewsArticleVersion, NewsExtractionRun
 from app.models.audit import AuditLog
 from app.models.news_publication import NewsClaimCase, NewsClaimDecision, NewsClaimEvaluation, NewsClaimSource, NewsClaimZoneLink
-from app.models.report import FloodAvoidanceZone, FloodEvent, FloodEventStatus, FloodEventTimelineEntry, FloodReport, ReportStatus
+from app.models.report import FloodAvoidanceZone, FloodEvent, FloodEventStatus, FloodEventTimelineEntry, FloodEventLocationType, FloodReport, ReportStatus
 from app.schemas.common import PolygonGeometry
 from app.schemas.report import FloodAvoidanceZoneCreate
 from app.crud.report import create_flood_avoidance_zone
@@ -42,7 +42,7 @@ from app.schemas.news_publication import (
     NewsDecisionEffect, NewsDecisionSnapshot, NewsStaffDecisionRequest,
     OperationalFootprintProvenance, PublicNewsAlert,
 )
-from app.services.flood_event_service import create_verified_event_with_zone
+from app.services.flood_event_service import create_verified_event_with_zone, record_event_locations
 from app.services.flood_depth import get_flood_depth_measurement
 from app.services.operational_footprint_service import OperationalFootprintValidation, validate_operational_shape
 from app.services.operational_footprint_evidence_service import (
@@ -478,6 +478,8 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
                         z_obj = db.get(FloodAvoidanceZone, lz_id)
                         if z_obj and z_obj.is_active:
                             z_obj.expires_at = refreshed.expires_at
+                            if z_obj.event_id:
+                                _record_news_locations(db, db.get(FloodEvent, z_obj.event_id), claim)
                             supported_zone_ids.append(lz_id)
                 snapshot = _snapshot(
                     source, version, claim, policy, digest, evaluation_id=evaluation.id,
@@ -526,6 +528,14 @@ def publish_completed_evaluation(db: Session, evaluation_id: int, *, policy: Eva
         state="active_alert" if public else "unpublished", review="resolved" if public else "needs_review",
         reason="supported_flood_alert" if public else reason or "needs_independent_review",
         observed=claim.event_time_resolved if public else None, expiry=public.expires_at if public else None)
+
+
+def _record_news_locations(db: Session, event: FloodEvent, claim: ExtractedClaim) -> None:
+    record_event_locations(db, event, (
+        (FloodEventLocationType.ROAD, claim.road_segment_raw or claim.canonical_road or claim.raw_place_name),
+        (FloodEventLocationType.BARANGAY, claim.canonical_barangay),
+        (FloodEventLocationType.CITY, claim.canonical_city),
+    ))
 
 
 def _operational_zone_attributes(claim: ExtractedClaim, audit: IndependentAuditResult | None) -> dict[str, Any]:
@@ -885,6 +895,7 @@ def apply_staff_decision(db: Session, case_id: int, request: NewsStaffDecisionRe
                         commit=False,
                         first_reported_at=claim.event_time_resolved,
                     )
+                    _record_news_locations(db, event_obj, claim)
                     linked_zone_ids.append(created_zone.id)
                 else:
                     created_zone = create_flood_avoidance_zone(db, zone_in, event_id=event_obj.id, commit=False)
@@ -1122,6 +1133,7 @@ def activate_operational_footprint(
                 commit=False,
                 first_reported_at=claim.event_time_resolved,
             )
+            _record_news_locations(db, event_obj, claim)
             linked_zone_ids.append(created_zone.id)
         else:
             created_zone = create_flood_avoidance_zone(db, zone_in, event_id=event_obj.id, commit=False)

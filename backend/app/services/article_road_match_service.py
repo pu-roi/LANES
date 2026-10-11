@@ -18,18 +18,28 @@ from shapely.geometry import LineString
 from shapely.geometry.base import BaseGeometry
 
 from app.schemas.news_extraction import ExtractedClaim
+from app.services.locality_number_service import normalize_locality_numbers
 
 
 ROAD_SUFFIXES = {"street", "avenue", "road", "boulevard", "highway", "drive", "lane"}
 ALIASES = {"sto": "santo", "sta": "santa", "st": "street", "ave": "avenue",
-           "rd": "road", "blvd": "boulevard", "hwy": "highway", "dr": "drive"}
+           "rd": "road", "blvd": "boulevard", "hwy": "highway", "dr": "drive", "gov": "governor"}
 
 
 def normalize_name(value: str) -> str:
+    value = normalize_locality_numbers(value)
     folded = "".join(char for char in unicodedata.normalize("NFKD", value.casefold())
                      if not unicodedata.combining(char))
     folded = re.sub(r"\bc[\s-]*5\b", "c5", folded)
     return " ".join(ALIASES.get(word, word) for word in re.findall(r"[a-z0-9]+", folded))
+
+
+def governor_road_alias(name: str) -> str | None:
+    """Recognize a shortened governor road name; callers must check locality ties."""
+    words = normalize_name(name).split()
+    if len(words) >= 4 and words[0] == "governor" and words[-1] in ROAD_SUFFIXES:
+        return " ".join((words[0], words[-2], words[-1]))
+    return None
 
 
 @dataclass(frozen=True)
@@ -195,7 +205,7 @@ def split_named_road_at_intersections(
             continue
         for node_id, _, _ in way.nodes:
             if node_id in main_nodes:
-                crossings[node_id].add(way.name)
+                crossings[node_id].update((way.name, *way.aliases))
     points = {node_id: (lon, lat) for way in main for node_id, lon, lat in way.nodes}
     graph: dict[int, dict[int, float]] = defaultdict(dict)
     edge_ways: dict[frozenset[int], set[int]] = defaultdict(set)

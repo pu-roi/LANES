@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**News documentation/publication audit:** The eight core records, placement/activation plans and replay guide now distinguish accepted local repairs from open clearance-history, fresh v16 evaluation and shared-release gates. Dependency/SQL migration state is unchanged; catalog lineage, source syntax, local Markdown targets and added-content checks pass. The developer requested publication on `roi-branch`; pushing does not deploy the code or transfer the local simulation database. [Audit record](evaluations/news-shared-context-and-history-20261011.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Gov. Pascual local acceptance:** The source-preserving OSM locality catalog now connects Sitio Sais/6 to a bounded estimated road candidate. The existing OSM/NOAH worker creates **Zone/Event #60** from the previously verified report. Public APIs and authenticated history searches return **Boni #58, Quirino #59 and Gov. Pascual #60**; source text, labels and per-road facts remain unchanged. **493 focused and 163 native PostGIS checks pass.** This uses the local September simulation; shared/cloud deployment and clearance-only prior-event history remain separate gates. [Fix, provenance and verification](evaluations/news-shared-context-and-history-20261011.md#source-locality-to-road-repair-and-gov-pascual-acceptance).
 
 **What to expect when testing:** [Runtime behavior, acceptance steps and remaining accuracy work](guides/pasig-recession-observation-collection.md#what-to-expect-when-running-the-system) explain the saved selected model, eligibility/fallback, fixed issuance, p90 deadline and Unconfirmed expiry. Depth-sensitive predictive accuracy remains unvalidated even though local/cloud integration and hosted display are accepted. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -152,6 +156,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Smart auto-activation and hybrid NLP plan](plans/smart-auto-activation-and-hybrid-nlp-plan.md)
 
 ## Evaluations and simulations
+
+- [News shared context and history repair](evaluations/news-shared-context-and-history-20261011.md) — narrative-clock, road/locality alias, exact audit-reference and history fixes; automatic Boni/Quirino/Gov. Pascual Zones/Events 58/59/60 verified locally; 493 focused plus 163 native checks; clearance-only prior-event history and production release remain open.
 
 - [Cross-location duration implementation and evaluation](evaluations/cross-location-duration-20261008/README.md) — 36 conditional rows/three summaries, purged transfer/forward tests and verified research bundle; 131 backend and 24 responsive cases, primary baseline retained.
 

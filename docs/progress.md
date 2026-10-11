@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Three news flood zones and searchable history verified locally
+
+- Repair shared narrative clocks, supported short road/crossing aliases, independently validated provider evidence references and missing news event-location records. Add researched numbered-locality normalization and 1,374 source-backed OSM place points; match unique locality names to nearby bounded road candidates before existing NOAH/grade/ambiguity and automatic publication checks. Preserve original labels, raw evidence, depth/access and temporal gates; maintain legacy claim hashes and version new runs as v16. The local September scenario returns Boni Zone/Event 58, Quirino 59 and newly automatic Gov. Pascual 60 on public APIs and authenticated history searches; the actual map shows Gov. Pascual Active with the existing estimated-corridor label. Duplicate worker activation is zero. 493 focused and 163 native PostGIS tests pass; existing migrations upgrade to head, and a strengthened source-locality native test passes separately. Audit all eight core records and affected plans/runbook for the requested `roi-branch` push. No SQL schema, dependency or frontend changes. Clearance-only prior-event matching, Aurora audit disagreement, fresh v16 collection/evaluation and shared/cloud release remain open. [Evidence and publication audit](evaluations/news-shared-context-and-history-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Runtime expectations and remaining accuracy gates documented
 
