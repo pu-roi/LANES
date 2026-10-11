@@ -4,7 +4,7 @@ from __future__ import annotations
 import hashlib
 import csv
 import io
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from functools import lru_cache
 from pathlib import Path
 
@@ -18,6 +18,7 @@ from app.services.flood_depth import get_flood_depth_measurement
 from app.services.article_road_context_service import match_article_road_context
 from app.services.article_road_match_service import OSMRoadSection
 from app.services.news_road_placement_service import NewsRoadPlacementProvider, city_key, get_news_road_placement_provider
+from app.services.news_locality_anchor_service import match_locality_anchor
 from app.services.noah_road_prediction_service import RoadSectionEvidence, rank_measured_road_sections
 from app.services.noah_vector_catalog_service import NoahAssetError, NoahVectorCatalog, get_noah_vector_catalog, metric_geometry
 from app.services.pasig_historical_service import DEFAULT_PASIG_CLEAN_CSV
@@ -45,13 +46,14 @@ class NewsPlacementPreviewService:
 
     @property
     def revision(self) -> str:
-        return f"corridors-v3:osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
+        return f"corridors-v5:osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
 
     def preview(self, claim: ExtractedClaim, placement: RoadPlacementEvidence | None = None) -> NewsPlacementPreview:
         placement = placement or self.roads.resolve(claim)
         is_pasig = city_key(claim.canonical_city or "") == "pasig"
         depth = get_flood_depth_measurement(claim.depth_canonical)
         metadata = dict(total_candidate_count=placement.total_candidate_count,
+                        locality_anchor=placement.locality_anchor,
                         reported_severity=depth.severity.value if depth else None,
                         barangay_catalog_sha256=placement.barangay_catalog_sha256,
                         barangay_source_id=placement.barangay_source_id,
@@ -95,6 +97,20 @@ class NewsPlacementPreviewService:
                          self.history_path if is_pasig and self.history_available else None,
                          barangay_boundary=barangay_boundary,
                          reported_span_section_ids=frozenset(c.candidate_id for c in placement.candidates if c.kind == "reported_span"))
+            if placement.locality_anchor is not None:
+                # Recompute from the checked catalog; caller-supplied evidence
+                # cannot grant place specificity or substitute a point.
+                checked = self.roads.resolve(claim)
+                if (checked.locality_anchor != placement.locality_anchor
+                        or checked.candidates != placement.candidates):
+                    return NewsPlacementPreview(status="unresolved", reason="placement_source_mismatch", **metadata)
+                anchor = match_locality_anchor(claim, self.roads.localities.get(city_key(claim.canonical_city or ""), ()),
+                    placement.candidates, barangay_boundary if barangay_boundary is not None else boundary)
+                if (not anchor.section_ids or anchor.locality.osm_node_id != placement.locality_anchor.osm_node_id
+                        or anchor.section_ids != frozenset(c.candidate_id for c in placement.candidates)):
+                    return NewsPlacementPreview(status="unresolved", reason="placement_source_mismatch", **metadata)
+                context = replace(context, candidate_section_ids=tuple(c.candidate_id for c in placement.candidates),
+                    article_place_levels={c.candidate_id: 2 for c in placement.candidates}, reason="matched_article_place")
         except (OSError, ValueError, ShapelyError) as exc:
             return NewsPlacementPreview(status="source_unavailable", reason="invalid_placement_context",
                                         uncertainty_reasons=[type(exc).__name__], **metadata)

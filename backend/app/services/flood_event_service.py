@@ -74,6 +74,15 @@ def _record_report_location_rows(db: Session, event: models.FloodEvent, report: 
         (models.FloodEventLocationType.BARANGAY, report.barangay),
         (models.FloodEventLocationType.CITY, report.city),
     )
+    record_event_locations(db, event, locations)
+
+
+def record_event_locations(
+    db: Session,
+    event: models.FloodEvent,
+    locations: tuple[tuple[models.FloodEventLocationType, Optional[str]], ...],
+) -> None:
+    """Keep verified report/news locations searchable in permanent event history."""
     for location_type, name in locations:
         if not name or not name.strip():
             continue

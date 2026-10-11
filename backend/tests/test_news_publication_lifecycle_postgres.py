@@ -1584,6 +1584,10 @@ async def test_worker_estimate_creates_public_zone_core_and_routing_then_expires
         assert binding["evidence_kind"] == "estimated_news_road"
         zone = db.get(FloodAvoidanceZone, decision.snapshot["linked_zone_ids"][0])
         assert to_shape(zone.geometry).covers(to_shape(zone.source_geometry))
+        from app.services.flood_event_service import build_flood_event_history_query
+        event = build_flood_event_history_query(db, search="Sample Road").filter(FloodEvent.id == zone.event_id).one()
+        assert {location.location_type.value for location in event.locations} == {"road", "city"}
+        assert build_flood_event_history_query(db, road="Sample Road", status_filter="active").filter(FloodEvent.id == event.id).count() == 1
         response = projection.zone_responses_with_news(db, [zone])[0]
         assert response.report_geometry.type == "LineString" and response.news[0].affects_routing
         assert response.news[0].source_url.startswith("https://example.org/")
@@ -1623,6 +1627,35 @@ async def test_worker_estimate_creates_public_zone_core_and_routing_then_expires
         assert zone.id not in {item.id for item in routing.get_active_flood_zones(db)}
 
 
+def test_source_locality_estimate_worker_records_history_and_does_not_duplicate(publication_factory, estimated_assets):
+    from test_news_locality_anchor import locality
+    from test_news_road_placement import ways, write_catalog
+    from shapely.geometry import box, mapping
+    from app.services.flood_event_service import build_flood_event_history_query
+
+    network = ways()
+    for road, name in zip(network, ["Sample Road", "First Street", "Second Street"]):
+        road["name"] = name
+    estimated_assets.roads = write_catalog(estimated_assets.roads.directory, network,
+        localities=[locality(city="City of Pasig")],
+        cities=[dict(name="City of Pasig", relation_id=106569, boundary=mapping(box(120.99,14.60,121.03,14.67)))])
+    factory = publication_factory
+    evaluation, case_id, _ = seed_evaluation(factory, road_segment_raw=None, local_area_raw="Sitio 6",
+        body_suffix=" The affected section is in Sitio 6.")
+    publish(factory, evaluation)
+    before = operational_counts(factory)
+    result = footprint_batch(factory, after_case_id=case_id-1, limit=1)
+    assert result.estimated_activated == 1 and not result.skipped and not result.unresolved
+    assert operational_counts(factory) == tuple(value + 1 for value in before)
+    assert footprint_batch(factory, after_case_id=case_id-1, limit=1).activated == 0
+    with factory() as db:
+        decision = latest_decision(db, case_id)
+        assert decision.public_state == "active_zone"
+        zone = db.get(FloodAvoidanceZone, decision.snapshot["linked_zone_ids"][0])
+        event = build_flood_event_history_query(db,search="Sample Road").filter(FloodEvent.id==zone.event_id).one()
+        assert {location.location_type.value for location in event.locations} == {"road", "city"}
+
+
 @pytest.mark.parametrize("changes", [{"road_segment_raw": None}, {"depth": None}])
 def test_unresolved_estimate_enters_review_and_retries_without_history_spam(publication_factory, estimated_assets, changes):
     factory = publication_factory
@@ -1641,11 +1674,18 @@ def test_unresolved_estimate_enters_review_and_retries_without_history_spam(publ
 
 
 def test_estimate_refresh_rechecks_assets_and_keeps_existing_zone(publication_factory, estimated_assets):
+    from sqlalchemy import delete
+    from app.models.report import FloodEventLocation
+    from app.services.flood_event_service import build_flood_event_history_query
     factory = publication_factory
     evaluation, case_id, article_id = seed_evaluation(factory)
     publish(factory, evaluation)
     footprint_batch(factory, after_case_id=case_id-1, limit=1)
     before = operational_counts(factory)
+    # Reproduce a legacy news event whose location rows were never populated.
+    with factory() as db, db.begin():
+        event_id = db.scalar(select(FloodAvoidanceZone.event_id).order_by(FloodAvoidanceZone.id.desc()).limit(1))
+        db.execute(delete(FloodEventLocation).where(FloodEventLocation.event_id == event_id))
     newer, _, _ = seed_evaluation(factory, article_id=article_id, observed=NOW-timedelta(minutes=1))
     _, refreshed_case = publish(factory, newer)
     assert refreshed_case == case_id
@@ -1654,6 +1694,8 @@ def test_estimate_refresh_rechecks_assets_and_keeps_existing_zone(publication_fa
         assert decision.public_state == "active_zone"
         assert decision.snapshot["public"]["geometry_basis"] == "estimated_road_corridor"
         assert decision.snapshot["operational_provenance"]["binding"]["observed_at"].startswith("2026-10-05T02:59")
+        event = build_flood_event_history_query(db, search="Sample Road").filter(FloodEvent.id == event_id).one()
+        assert {location.location_type.value for location in event.locations} == {"road", "city"}
     assert operational_counts(factory) == (before[0], before[1], before[2]+1)
 
 

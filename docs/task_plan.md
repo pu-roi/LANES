@@ -1,6 +1,15 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 11: News plotting repairs verified locally
+
+- [x] Repair shared observation context, supported road/crossing aliases and deterministic English/Filipino/Spanish-derived numbered-locality matching while preserving source text, offsets, depth and per-road passability. Version new processing as v16; retain old immutable claim hashes when optional locality evidence is absent. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Import 1,374 checked-city OSM locality points and source aliases; connect complete unique locality matches to nearby junction-bounded road candidates. Preserve NOAH, ambiguity, grade, source/audit/time and publication gates. The 500-metre locality-centre association limit is not flooded extent or a zone buffer. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify the existing worker creates Gov. Pascual Zone/Event 60 from saved verified evidence without duplicate activation. Public backend/frontend and authenticated Flood History searches return Boni 58, Quirino 59 and Gov. Pascual 60 in the local September scenario; preserve all original labels and facts. Run 493 focused and 163 native PostGIS checks, with existing migrations upgraded to head, plus the strengthened locality-source test separately. [Acceptance](evaluations/news-shared-context-and-history-20261011.md#source-locality-to-road-repair-and-gov-pascual-acceptance). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Audit the eight core records, affected placement plans, replay guide and documentation index for the requested `roi-branch` publication. No new dependency, SQL schema or frontend changes. [Pre-push audit](evaluations/news-shared-context-and-history-20261011.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Resolve clearance-only history using supported prior wet-event identity and investigate Aurora's provider access disagreement; do not invent an earlier wet event or copy another road's access. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Verify a fresh collector/new-v16-auditor run and matching shared/cloud release separately; local spatial-worker acceptance does not establish production or real-current-event accuracy. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Pasig expiry v3 delivered; depth accuracy remains open
 

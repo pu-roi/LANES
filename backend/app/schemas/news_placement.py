@@ -2,7 +2,8 @@
 from typing import Literal
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_serializer
+from app.schemas.news_locality import LocalityAnchorEvidence
 
 
 class PlacementHistoryRow(BaseModel):
@@ -70,6 +71,7 @@ class NewsPlacementPreview(BaseModel):
     osm_catalog_sha256: str | None = None
     osm_snapshot_at: datetime | None = None
     city_relation_id: int | None = None
+    locality_anchor: LocalityAnchorEvidence | None = None
     barangay_catalog_sha256: str | None = None
     barangay_source_id: str | None = None
     barangay_psgc_code: str | None = None
@@ -88,3 +90,11 @@ class NewsPlacementPreview(BaseModel):
     proves_current_flood: Literal[False] = False
     may_affect_routing: Literal[False] = False
     read_only: Literal[True] = True
+
+    @model_serializer(mode="wrap")
+    def serialize_optional_anchor(self, handler):
+        payload = handler(self)
+        # Preserve immutable historical claims when no anchor was recorded.
+        if self.locality_anchor is None:
+            payload.pop("locality_anchor", None)
+        return payload

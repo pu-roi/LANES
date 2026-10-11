@@ -50,6 +50,31 @@ def evidence(claim: ExtractedClaim, article: NewsArticleExtractorInput) -> dict:
     }
 
 
+def test_shared_update_audit_requires_both_clock_and_target_road_evidence():
+    from app.schemas.news_audit import ProviderClaimAudit
+    from app.services.news_claim_auditor import _validate_evidence, _evidence_options
+    from test_news_september24_replay import article, roads
+    source = article()
+    claim = roads()["Quirino Avenue"]
+    body = source.article_text
+    begin, end = claim.evidence_sentence_offset
+    road_span = dict(start=begin, end=end, quote=body[begin:end])
+    clock_begin = body.index("As of")
+    clock_end = body.index("\n", clock_begin)
+    clock_span = dict(start=clock_begin, end=clock_end, quote=body[clock_begin:clock_end])
+    result = evidence(claim, source)
+    for fact in ("place", "status", "depth"):
+        result[fact]["evidence"] = [road_span]
+    result["time"]["evidence"] = [clock_span, road_span]
+    audit = ProviderClaimAudit.model_validate_json(json.dumps(result))
+    assert _validate_evidence(audit, claim, source, canonical_claim_sha256(claim)) is None
+    result["time"]["evidence"] = [clock_span]
+    assert _validate_evidence(ProviderClaimAudit.model_validate_json(json.dumps(result)), claim, source,
+                              canonical_claim_sha256(claim)) == "audit_shared_time_place_evidence_missing"
+    options = _evidence_options(body, begin, end)
+    assert any("As of 4:34" in span["quote"] and "Quirino Avenue" in span["quote"] for span in options)
+
+
 def auditor(provider: str = "openrouter", **updates) -> NewsClaimAuditor:
     return NewsClaimAuditor(AuditorConfig(**{
         "provider": provider, "model": "fixture/model" if provider == "openrouter" else "fixture-model",
@@ -68,6 +93,52 @@ async def run_response(result: dict) -> object:
     claim, article = inputs()
     async with httpx.AsyncClient(transport=httpx.MockTransport(lambda req: reply(result))) as client:
         return await auditor().audit(claim, article, client=client)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("provider", ["openrouter", "gemini"])
+async def test_provider_selects_exact_backend_source_spans_without_offset_arithmetic(provider):
+    claim, article = inputs()
+    response = evidence(claim, article)
+    for name in ("place", "status", "time", "depth"):
+        response[name]["evidence"] = [{"option_index": 0}]
+    def handler(request):
+        data = json.loads(request.content)
+        schema = (data["response_format"]["json_schema"]["schema"] if provider == "openrouter"
+                  else data["generationConfig"]["responseJsonSchema"])
+        assert set(schema["$defs"]["AuditEvidenceReference"]["properties"]) == {"option_index"}
+        return reply(response, provider)
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        result = await auditor(provider).audit(claim, article, client=client)
+    assert result.outcome == "verified"
+    span = result.evidence.time.evidence[0]
+    assert article.article_text[span.start:span.end] == span.quote == claim.evidence_sentence
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("reference", [
+    {"option_index": 128}, {"option_index": -1}, {"option_index": True},
+    {"option_index": "0"}, {"option_index": 0, "quote": "invented flooding"},
+])
+async def test_provider_reference_cannot_cite_absent_options_or_inject_evidence(reference):
+    claim, article = inputs()
+    response = evidence(claim, article)
+    for name in ("place", "status", "time", "depth"):
+        response[name]["evidence"] = [reference]
+    result = await run_response(response)
+    assert result.outcome == "invalid" and result.evidence is None
+
+
+@pytest.mark.asyncio
+async def test_valid_source_reference_does_not_confirm_an_unrelated_target_road():
+    claim, article = inputs()
+    response = evidence(claim, article)
+    article.article_text += "\nAnother Road in Pasig City was flooded knee deep."
+    for name in ("place", "status", "time", "depth"):
+        response[name]["evidence"] = [{"option_index": 1}]
+    async with httpx.AsyncClient(transport=httpx.MockTransport(lambda request: reply(response))) as client:
+        result = await auditor().audit(claim, article, client=client)
+    assert result.outcome == "invalid" and result.reason_code == "audit_place_evidence_missing"
 
 
 @pytest.mark.asyncio

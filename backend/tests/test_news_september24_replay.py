@@ -41,6 +41,19 @@ def roads(body: str = BODY) -> dict:
     return {c.canonical_road: c for c in extract_taglish_flood_facts(article(body)).claims if c.place_type == "street"}
 
 
+def test_shared_clock_does_not_flow_from_caption_or_context_claim() -> None:
+    from app.services.taglish_extraction_service import apply_shared_update_times
+    claims = roads()
+    anchor = claims["Boni Avenue"]
+    target = claims["Quirino Avenue"]
+    anchor.uncertainty_reasons.append("photo_caption_only")
+    target.event_time_raw = None
+    target.event_time_resolved = None
+    target.event_time_kind = "unknown"
+    apply_shared_update_times([anchor, target], BODY)
+    assert target.event_time_resolved is None
+
+
 def test_replay_keeps_five_reported_sites_and_crossing_roads_as_qualifiers() -> None:
     claims = roads()
     assert set(claims) == {"Boni Avenue", "Quirino Avenue", "Gov. Pascual Avenue", "East Avenue", "Aurora Boulevard"}
@@ -126,6 +139,30 @@ def test_replay_cleared_roads_are_subsided_with_distinct_original_times() -> Non
         assert claim.condition == "subsided"
         assert claim.event_time_resolved.isoformat() == f"2026-09-24T{clock}:00+08:00"
         assert claim.event_time_kind == "observation"
+
+
+def test_shared_narrative_update_keeps_active_roads_current_without_transferring_depth() -> None:
+    claims = roads()
+    for name in ("Quirino Avenue", "Gov. Pascual Avenue"):
+        claim = claims[name]
+        assert claim.condition == "active"
+        assert claim.event_time_resolved == claims["Boni Avenue"].event_time_resolved
+        assert "shared_update_observation_time" in claim.uncertainty_reasons
+        assert "event_time_unknown" not in claim.uncertainty_reasons
+        assert "8" in claim.depth_raw and "10" not in claim.depth_raw
+        start, end = claim.evidence_sentence_offset
+        assert BODY[start:end] == claim.evidence_sentence
+    assert "shared_update_observation_time" not in claims["Boni Avenue"].uncertainty_reasons
+    assert all("shared_update_observation_time" not in claims[name].uncertainty_reasons
+               for name in ("East Avenue", "Aurora Boulevard"))
+
+
+@pytest.mark.parametrize("boundary", ["Earlier that day, ", "Meanwhile, ", "According to another agency, ", "On Wednesday, "])
+def test_shared_update_time_does_not_cross_chronology_or_source_changes(boundary: str) -> None:
+    changed = BODY.replace("In Manila,", boundary + "in Manila,")
+    claims = roads(changed)
+    assert claims["Quirino Avenue"].event_time_resolved is None
+    assert claims["Gov. Pascual Avenue"].event_time_resolved is None
 
 
 def test_replay_reader_sql_and_detail_agree_and_offsets_remain_exact() -> None:

@@ -65,6 +65,41 @@ class ProviderClaimAudit(BaseModel):
     access: AuditedAccess
 
 
+class AuditEvidenceReference(BaseModel):
+    """Provider selects a backend-owned exact source slice, never invents offsets."""
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+    option_index: int = Field(ge=0, lt=256)
+
+
+class SelectedPlace(AuditedPlace):
+    evidence: tuple[AuditEvidenceReference, ...] = Field(max_length=12)
+
+
+class SelectedStatus(AuditedStatus):
+    evidence: tuple[AuditEvidenceReference, ...] = Field(max_length=12)
+
+
+class SelectedTime(AuditedTime):
+    evidence: tuple[AuditEvidenceReference, ...] = Field(max_length=12)
+
+
+class SelectedDepth(AuditedDepth):
+    evidence: tuple[AuditEvidenceReference, ...] = Field(max_length=12)
+
+
+class SelectedAccess(AuditedAccess):
+    evidence: tuple[AuditEvidenceReference, ...] = Field(max_length=12)
+
+
+class ProviderClaimAuditSelection(ProviderClaimAudit):
+    """Wire contract only; stored audit evidence retains full exact source spans."""
+    place: SelectedPlace
+    status: SelectedStatus
+    time: SelectedTime
+    depth: SelectedDepth
+    access: SelectedAccess
+
+
 class IndependentAuditResult(BaseModel):
     """Safe internal result saved independently from immutable extraction."""
     model_config = ConfigDict(extra="forbid", frozen=True)

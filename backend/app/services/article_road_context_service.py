@@ -16,6 +16,7 @@ from shapely.geometry import LineString
 from shapely.geometry.base import BaseGeometry
 
 from app.schemas.news_extraction import ExtractedClaim
+from app.services.locality_number_service import numbered_localities
 from app.services.article_road_match_service import (
     OSMRoadSection,
     _span_cross_streets,
@@ -47,7 +48,13 @@ def _contains_name(text: str, name: str) -> bool:
     value, target = normalize_name(text), normalize_name(name)
     if not value or not target:
         return False
-    if re.search(r"(?:^|\s)" + re.escape(target) + r"(?:\s|$)", value):
+    if re.fullmatch(r"(?:sitio|purok|zone|phase|block|barangay) \d+[a-z]?", target):
+        return any(normalize_name(text[place.start:place.end]) == target
+                   for place in numbered_localities(text))
+    for exact in re.finditer(r"(?:^|\s)" + re.escape(target) + r"(?=\s|$)", value):
+        if re.search(r"\b(?:sitio|purok|zone|phase|block|barangay) \d+$", target) and re.match(
+                r"\s+(?:\d+|[a-z])(?:\s|$)", value[exact.end():]):
+            continue  # Purok 5-A / 5/6 cannot become Purok 5.
         return True
     parts = target.split()
     suffixes = {"street", "avenue", "road", "boulevard", "highway", "drive", "lane"}
@@ -125,8 +132,22 @@ def match_article_road_context(
             local_area = None  # The verified administrative scope is not a missing landmark.
         local_clue = " ".join(filter(None, (local_area, claim.road_segment_raw)))
         if local_clue:
+            # A publisher may use a surname while the mapped crossing retains
+            # the full name. Accept only one full-name identity of that suffix
+            # among the city-contained sections of this specific road.
+            shortened_names: dict[str, set[str]] = {}
             for section in eligible:
-                if any(_contains_name(local_clue, name) for end in section.end_cross_streets for name in end):
+                for end in section.end_cross_streets:
+                    for name in end:
+                        full = normalize_name(name)
+                        words = full.split()
+                        if len(words) >= 3 and words[-1] in {"street", "avenue", "road", "boulevard", "highway", "drive", "lane"}:
+                            shortened_names.setdefault(" ".join(words[-2:]), set()).add(full)
+            for section in eligible:
+                if any(_contains_name(local_clue, name) or (
+                        len(shortened_names.get(" ".join(normalize_name(name).split()[-2:]), ())) == 1
+                        and _contains_name(local_clue, " ".join(normalize_name(name).split()[-2:])))
+                        for end in section.end_cross_streets for name in end):
                     levels[section.section_id] = 2
         strongest = max(levels.values())
         matched = tuple(section_id for section_id, level in levels.items()

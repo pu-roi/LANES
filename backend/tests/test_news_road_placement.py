@@ -57,6 +57,52 @@ def test_broad_road_never_selects_even_a_single_mapped_section(tmp_path):
     assert result.candidates[0].kind=="road_section"
 
 
+def test_short_governor_name_finds_city_road_but_keeps_unmapped_sitio_unresolved(tmp_path):
+    roads = ways()
+    roads[0]["name"] = "Governor Wenceslao Pascual Avenue"
+    provider = write_catalog(tmp_path, roads)
+    evidence = claim(span=None, raw_place_name="Gov. Pascual Avenue", canonical_road="Gov. Pascual Avenue")
+    result = provider.resolve(evidence)
+    assert result.candidates[0].osm_way_ids == [10]
+    evidence.local_area_raw = "Sitio 6"
+    unresolved = provider.resolve(evidence)
+    assert unresolved.reason == "local_place_not_grounded" and not unresolved.candidates
+
+
+def test_short_governor_alias_does_not_merge_different_named_roads(tmp_path):
+    roads = ways()
+    roads[0]["name"] = "Governor Wenceslao Pascual Avenue"
+    roads.append(dict(osm_id=11, name="Governor Andres Pascual Avenue",
+                      nodes=[(11,121.001,14.63),(12,121.001,14.631)]))
+    result = write_catalog(tmp_path, roads).resolve(claim(span=None, canonical_road="Gov. Pascual Avenue"))
+    assert result.reason == "ambiguous_reported_road_alias" and not result.candidates
+
+
+def test_short_governor_alias_preserves_incomplete_coverage_rejection(tmp_path):
+    roads = ways()
+    roads[0]["name"] = "Governor Wenceslao Pascual Avenue"
+    provider = write_catalog(tmp_path, roads, incomplete_ways=[
+        dict(osm_id=99, name="Governor Wenceslao Pascual Avenue")])
+    result = provider.resolve(claim(span=None, canonical_road="Gov. Pascual Avenue"))
+    assert result.reason == "incomplete_named_road_coverage" and not result.candidates
+
+
+def test_short_crossing_name_matches_unique_full_name_and_source_alias(tmp_path):
+    roads = ways()
+    roads[1].update(name="Paz Mendoza Guazon Avenue", aliases=["Paz Mendoza Guazon Street"])
+    result = write_catalog(tmp_path, roads).resolve(claim(span="near Guazon Street"))
+    assert result.reason == "article_scoped_road_sections" and len(result.candidates) == 1
+    assert "Paz Mendoza Guazon Street" in result.candidates[0].cross_streets[0]
+
+
+def test_short_crossing_surname_stays_unresolved_when_two_full_names_match(tmp_path):
+    roads = ways()
+    roads[1]["name"] = "C. Raymundo Street"
+    roads[2]["name"] = "G. Raymundo Street"
+    result = write_catalog(tmp_path, roads).resolve(claim(span="near Raymundo Street"))
+    assert result.reason == "local_place_not_grounded" and not result.candidates
+
+
 @pytest.mark.parametrize("name", ["C5", "C-5", "C5 Road", "C-5 Road"])
 def test_c5_news_name_matches_osm_numbered_road_alias(tmp_path, name):
     road_ways = ways()

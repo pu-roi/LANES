@@ -20,6 +20,20 @@ def test_estimate_uses_article_bounded_road_and_retains_existing_design_core(tmp
     assert estimate.checksum == build_estimated_road_zone(claim(), service=engine).checksum
 
 
+def test_short_crossing_alias_uses_noah_automatically_without_manual_coordinates(tmp_path):
+    engine = service(tmp_path)
+    roads = ways()
+    roads[1].update(name="Paz Mendoza Guazon Avenue", aliases=["Paz Mendoza Guazon Street"])
+    engine.roads = write_catalog(tmp_path / "roads", roads)
+    evidence = claim(span="near Guazon Street")
+    original = evidence.model_dump()
+    estimate = build_estimated_road_zone(evidence, service=engine)
+    assert shape(estimate.geometry).is_valid and shape(estimate.geometry).area > 0
+    assert estimate.evidence.noah_catalog_sha256 == engine.noah.digest
+    assert shape(estimate.geometry).covers(shape(estimate.evidence.component_centerlines[0]))
+    assert evidence.model_dump() == original
+
+
 def test_separated_noah_sections_remain_separate_zones(tmp_path):
     hazard = box(120.999, 14.629, 121.001, 14.632).difference(box(120.9995, 14.6302, 121.0005, 14.6308))
     estimate = build_estimated_road_zone(claim(), service=service(tmp_path, polygon=hazard))

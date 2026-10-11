@@ -74,8 +74,8 @@ async def main() -> None:
     }
     expected = {
         "Boni Avenue": ("City of Mandaluyong", "half-knee", "active", "2026-09-24T16:34:00+08:00"),
-        "Quirino Avenue": ("City of Manila", "gutter", "active", None),
-        "Gov. Pascual Avenue": ("City of Malabon", "gutter", "active", None),
+        "Quirino Avenue": ("City of Manila", "gutter", "active", "2026-09-24T16:34:00+08:00"),
+        "Gov. Pascual Avenue": ("City of Malabon", "gutter", "active", "2026-09-24T16:34:00+08:00"),
         "East Avenue": ("Quezon City", None, "subsided", "2026-09-24T15:20:00+08:00"),
         "Aurora Boulevard": ("Quezon City", None, "subsided", "2026-09-24T15:29:00+08:00"),
     }

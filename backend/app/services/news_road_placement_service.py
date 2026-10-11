@@ -15,7 +15,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field
-from shapely.geometry import shape, mapping
+from shapely.geometry import shape, mapping, Point
 from shapely.errors import ShapelyError
 from shapely.geometry.base import BaseGeometry
 
@@ -23,9 +23,10 @@ from app.schemas.news_extraction import ExtractedClaim, RoadPlacementCandidate, 
 from app.services.barangay_boundary_service import BarangayBoundaryProvider, get_barangay_boundary_provider
 from app.services.placement_geometry_service import geometry_id, line_parts
 from app.services.article_road_context_service import _contains_name, match_article_road_context
+from app.services.news_locality_anchor_service import CatalogLocality, match_locality_anchor
 from app.services.article_road_match_service import (
     OSMRoadWay, OSMRoadSection, ROAD_SUFFIXES, _span_cross_streets, _way_matches, match_article_road_span,
-    normalize_name, split_named_road_at_intersections,
+    normalize_name, split_named_road_at_intersections, governor_road_alias,
 )
 
 MAX_CATALOG_BYTES = 96 * 1024 * 1024
@@ -54,7 +55,8 @@ class CatalogRouteReference(BaseModel):
 def road_aliases(item: CatalogWay | IncompleteWay) -> tuple[str, ...]:
     """Route membership is source evidence; the road suffix is a display form."""
     references = [name for route in item.route_references for name in (route.reference, f"{route.reference} Road")]
-    return tuple(dict.fromkeys([*item.aliases, *references]))
+    shortened = [alias for name in (item.name, *item.aliases) if (alias := governor_road_alias(name))]
+    return tuple(dict.fromkeys([*item.aliases, *references, *shortened]))
 
 
 class CatalogWay(BaseModel):
@@ -94,6 +96,7 @@ class RoadCatalog(BaseModel):
     cities: list[CatalogCity] = Field(min_length=1, max_length=17)
     ways: list[CatalogWay] = Field(max_length=100000)
     incomplete_ways: list[IncompleteWay] = Field(default_factory=list, max_length=100000)
+    localities: list[CatalogLocality] = Field(default_factory=list, max_length=20000)
 
 
 class NewsRoadPlacementProvider:
@@ -107,6 +110,7 @@ class NewsRoadPlacementProvider:
         self.boundaries: dict = {}
         self.cities: dict[str, CatalogCity] = {}
         self._name_index: dict[str, dict[int, OSMRoadWay]] = {}
+        self.localities: dict[str, list[CatalogLocality]] = {}
         self._loaded = False
         try:
             manifest_path = directory / "manifest.json"
@@ -205,6 +209,14 @@ class NewsRoadPlacementProvider:
                 ways.append(OSMRoadWay(item.osm_id, item.name, tuple(item.nodes), road_aliases(item),
                                        item.bridge, item.tunnel, item.layer))
             self.catalog, self.ways, self.cities, self.boundaries = catalog, tuple(ways), cities, boundaries
+            locality_ids: set[int] = set()
+            for locality in catalog.localities:
+                parent_key = city_key(locality.city)
+                if (locality.osm_node_id in locality_ids or parent_key not in boundaries
+                        or not boundaries[parent_key].covers(Point(locality.longitude, locality.latitude))):
+                    raise ValueError("invalid locality parent identity")
+                locality_ids.add(locality.osm_node_id)
+                self.localities.setdefault(parent_key, []).append(locality)
             for item in catalog.incomplete_ways:
                 if item.osm_id in ids:
                     raise ValueError("duplicate incomplete OSM way")
@@ -281,6 +293,13 @@ class NewsRoadPlacementProvider:
                      " ".join(filter(None, (claim.road_segment_raw, claim.local_area_raw))), re.I):
             return RoadPlacementEvidence(status="unresolved", reason="reported_carriageway_requires_review", **metadata)
         main = self._name_index.get(normalize_name(claim.canonical_road),{})
+        if normalize_name(claim.canonical_road).startswith("governor "):
+            local_main = {id: way for id, way in main.items()
+                          if any(boundary.covers(shape({"type": "Point", "coordinates": [lon, lat]}))
+                                 for _, lon, lat in way.nodes)}
+            if len({normalize_name(way.name) for way in local_main.values()}) > 1:
+                return RoadPlacementEvidence(status="unresolved", reason="ambiguous_reported_road_alias", **metadata)
+            main = local_main
         nodes = {n[0] for way in main.values() for n in way.nodes}
         related = [w for w in self.ways if w.osm_id in main or any(n[0] in nodes for n in w.nodes)] if nodes else []
         sections = split_named_road_at_intersections(claim.canonical_road, related, boundary, self.catalog.source_id)
@@ -310,7 +329,17 @@ class NewsRoadPlacementProvider:
             context = match_article_road_context(claim, scoped_sections, boundary,
                                                  barangay_boundary=barangay_boundary)
             if context.reason == "local_place_not_grounded":
-                return RoadPlacementEvidence(status="unresolved", reason=context.reason, **metadata)
+                anchor = match_locality_anchor(claim, self.localities.get(key, ()), candidates,
+                                               barangay_boundary if barangay_boundary is not None else boundary)
+                if not anchor.section_ids:
+                    return RoadPlacementEvidence(status="unresolved", reason=anchor.reason, **metadata)
+                metadata["locality_anchor"] = dict(osm_node_id=anchor.locality.osm_node_id,
+                    name=anchor.locality.name, source_url=f"https://www.openstreetmap.org/node/{anchor.locality.osm_node_id}",
+                    distance_metres=anchor.distance_metres)
+                candidates = [c for c in candidates if c.candidate_id in anchor.section_ids]
+                return RoadPlacementEvidence(status="ambiguous", reason=anchor.reason,
+                    candidates=candidates[:25], total_candidate_count=len(candidates),
+                    candidates_truncated=len(candidates)>25, **metadata)
             selected_ids = set(context.candidate_section_ids)
             candidates = [c for c in candidates if c.candidate_id in selected_ids]
         return RoadPlacementEvidence(status="ambiguous" if candidates else "unresolved",
