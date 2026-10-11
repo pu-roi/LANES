@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 4:08 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current hosted UI acceptance:** [Rollout 005 and actual desktop/mobile forecast/calculation checks](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht) complete the frontend release gate. Earlier local-only checkpoints are historical. The developer has no additional government files yet; [prepared acquisition specification and verified FOI limitations](guides/pasig-recession-observation-collection.md#government-data-acquisition-specification--october-11-continuation) support the remaining real-outcome/model-accuracy work. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Planner publication checkpoint:** [Eight-document audit and fresh pre-push verification](evaluations/pasig-subsidence-v3-acceptance-20261011.md#planner-and-pre-push-audit--october-11-408-pm-pht) records 166 native backend/database and 88 model/dataset checks, migration compatibility and separate operational, accuracy and hosted-UI status. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

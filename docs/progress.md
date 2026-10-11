@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 4:13 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Hosted saved-forecast UI released and verified
+
+- Resume the remaining hosted UI gate at the developer's request. App Hosting rollout 005 from `e150fea` serves 100%; Cloud Build `60d53a00-4dcb-40da-8bd5-fe8fb79b5ab2` succeeds. Six actual desktop/mobile Info flows plus six expanded-calculation checks pass for #50/#37/#36. Shared v3 API and scheduled expiry stay accepted. Four live feed widths also verify the pushed navigation-spacing preview, news HTTP 200 and no overflow. No application source, dependency, schema, model or policy changes. Developer confirms no additional government flood-history files; prepare precise acquisition fields and record FOI lead limitations. Accuracy remains open. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Additional official outcome-source screening
 

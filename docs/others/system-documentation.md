@@ -1,6 +1,8 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 11, 2026, 2:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Hosted screen status:** App Hosting rollout 005 now serves the selected saved forecast and calculation at Admin map → Active Zones → Info. Actual #50/#37/#36 desktop/mobile flows and expanded calculations pass. The previously pushed feed navigation spacing is also live, verified at four widths. Earlier local-only UI checkpoints below are historical. No API endpoint, schema or model change accompanies this frontend release. [Acceptance](../evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Offline dataset entry point:** `python -m scripts.build_recession_dataset` reads complete existing staff follow-up export pages plus optional explicit episode-review rules through `recession_dataset_service.py`. It emits sanitized conditional research bounds and blockers, keeping test data and production admission separate. No new HTTP route/UI flow, DB write or runtime fit. [File contract](../guides/pasig-recession-observation-collection.md#offline-pairing-and-qualification) and [live collection readiness](../evaluations/pasig-recession-collection-readiness-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

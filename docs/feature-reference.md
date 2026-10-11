@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 11, 2026, 2:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 9 preserved-news inspection:** News Details now opens saved placement on Spatial Operations through a validated run/ordinal handoff, including expired articles absent from the current queue. Existing server-owned inspection status, permissions and transparent review layers apply. The selected September 24 local replay returns four Boni modeled candidates without creating an active historical zone. Shared desktop/mobile UI passes TypeScript/scoped dialog lint; visual acceptance is pending. [Manual replay](guides/local-news-replay.md#october-9-september-24-manual-map-inspection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -155,6 +155,8 @@ This document serves as the central technical reference for all currently implem
 ---
 
 ### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
+
+**Current hosted forecast UI:** Rollout 005 now serves the saved primary forecast and expanded calculation on desktop/mobile; six real Info and six expanded checks pass. Existing source, expiry-to-Unconfirmed and experimental accuracy contracts remain. Earlier local-only release statements are historical. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Future model evidence:** An offline research builder now pairs complete existing follow-up exports with independently reviewed real episode/extent/continuity declarations. It preserves interval/right censoring and frozen depth; tests and administrative expiry cannot become observed clearance. The actual export has zero eligible episodes; no primary model replacement or new public/Admin flow. [26 checks and collection readiness](evaluations/pasig-recession-collection-readiness-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

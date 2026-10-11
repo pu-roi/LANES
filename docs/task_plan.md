@@ -1,8 +1,10 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 4:13 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Pasig expiry v3 delivered; depth accuracy remains open
+
+**Resumed release accepted:** Hosted rollout 005 now serves 100%; real desktop/mobile saved forecast and expanded calculation checks pass. The developer confirms no additional government flood-history files. A concrete acquisition specification is prepared; independent real outcomes/calibration remain the accuracy gate. Earlier local-only hosted-UI checkpoints are historical. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Additional source search:** Official public-source screening did not establish a new qualified episode. August 30 Pasig is already in the historical cohort; the MMDA Quezon City example has a different target/reference, and the NDRRMC lead could not be retrieved. Preserve duplicate/clock/scope blockers rather than increasing sample counts with reused summaries. [Sources and limits](research/pasig-flood-recession-depth-and-availability-20261011.md#official-source-screening-continuation--october-11-413-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -18,7 +20,8 @@
 - [x] Implement/evaluate an optional nondecreasing central-depth candidate offline. No demonstrated improvement: coefficient unchanged, three supported/seven unsupported candidate folds, zero supported forward-time folds. Preserve deployed artifacts. [Results](evaluations/pasig-depth-shape-candidate-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Collect genuinely observed, independently reviewed wet-to-clearance bounds and evaluate depth/context/location effects and calibration on separated episodes/time/locations. Groupmate's manual test reports are workflow checks, not observed clearance labels. Follow the [collection guide](guides/pasig-recession-observation-collection.md); pending #47/#49 claims still require authorized source review and legacy #54–#56 lack their original timed wet evidence. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Implement offline qualification of complete follow-up exports and explicit episode reviews: frozen first depth, interval/right censoring, source/episode identity and clocks, simulated hindcast provenance, test/self-review/recurrence rejection, byte/code lineage and sanitized outputs. 26 tests pass; actual shared export has three pending follow-ups/two reports/no numeric depths/zero candidates. No automatic admission or model replacement. [Evidence](evaluations/pasig-recession-collection-readiness-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Release and verify the new forecast UI on the cloud frontend if requested; current hosted rollout remains `build-2026-10-11-004`. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Release and verify the new forecast UI on the cloud frontend after the developer requested resuming all remaining work. App Hosting rollout `build-2026-10-11-005` from `e150fea` serves 100%; six actual Info and six expanded-calculation checks pass on desktop/mobile. Existing shared API/expiry worker stays accepted. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prepare an actionable [government-data acquisition specification](guides/pasig-recession-observation-collection.md#government-data-acquisition-specification--october-11-continuation), after confirmation that no additional files are available. Screened FOI status does not establish acquired data; no request was sent or source admitted. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Community Feed Local Updates
 

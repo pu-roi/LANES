@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 11, 2026, 2:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current hosted frontend:** App Hosting rollout `build-2026-10-11-005` from `e150fea` serves 100%; real forecast/calculation and four-width feed acceptance pass. API/workers remain on the accepted v3 release. No package, dependency, model or schema change. Earlier rollout-004/local-only entries are historical. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 11 expiry v3 dependency audit:** Locality reconciliation, negative-cache retry, saved selected calculations and optional offline depth-shape fitting reuse declared Shapely/SQLAlchemy/Pydantic/SciPy/NumPy and existing React/TanStack/Playwright. No new package/version or dependency/lockfile changes. Runtime duration artifacts are unchanged; the constrained offline candidate was not promoted. Matching Cloud Run API/expiry/news jobs use the verified v3 image; hosted frontend remains rollout 004. [Engineering acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

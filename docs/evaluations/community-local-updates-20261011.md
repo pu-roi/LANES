@@ -152,4 +152,10 @@ All seven views receive actual news HTTP 200 and show real community posts witho
 
 This is a local preview, prepared for the requested roi-branch publication; no new frontend deployment is performed during this layout iteration. Production remains on rollout 004, and the accepted backend remains on 429dd19. No dependency/model/migration change. Existing feature, architecture, stack and database records require no new entries for this layout refinement.
 
+## Navigation spacing hosted release — October 11, 4:25 PM PHT
+
+The developer requested resuming all remaining work. App Hosting rollout `build-2026-10-11-005` from pushed `e150fea` includes the previously pushed navigation spacing and the saved-forecast UI. Cloud Build `60d53a00-4dcb-40da-8bd5-fe8fb79b5ab2` succeeds; revision `lanes-frontend-build-2026-10-11-005` serves 100%. Current API remains the accepted subsidence-v3 revision; no collector/schema/model/settings change accompanies this frontend release.
+
+Actual hosted feed at widths 1920/1280/1024/390 receives news HTTP 200 and has no horizontal overflow. Desktop navigation/right panels measure 280/376 pixels; the feed is 720 pixels at 1920 and 488 at 1280. At 1024 navigation is 256, the right panel is hidden and the feed is 672; at 390 both side panels are hidden and the shared Local Updates widget is visible. Screenshots were inspected. The initial diagnostic measured the outer page main; the corrected selector measured the inner capped feed, producing the figures above. Earlier local-only layout acceptance remains historical. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).

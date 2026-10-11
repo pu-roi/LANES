@@ -2,7 +2,20 @@
 
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 > **Database acceptance:** October 11, 2026, 1:49:25 PM, Asia/Manila.
-> **Scope:** local app, shared API and matching cloud workers. Scientific accuracy remains unqualified; the new frontend is verified locally only.
+> **Scope:** local app, shared API and matching cloud workers; hosted forecast UI accepted in the October 11, 4:25 PM continuation below. Scientific accuracy remains unqualified.
+
+## Hosted UI continuation — October 11, 4:25 PM PHT
+
+The developer requested resuming all remaining work. Firebase App Hosting rollout **`build-2026-10-11-005`** is accepted from pushed commit `e150fea0a5cfafb55edea95df79c49e00a459f80`. Cloud Build **`60d53a00-4dcb-40da-8bd5-fe8fb79b5ab2`** succeeded at 4:20:50 PM PHT; Cloud Run revision **`lanes-frontend-build-2026-10-11-005` serves 100% traffic**. The [hosted Admin map](https://lanes-frontend--lanes-project-508809.asia-east1.hosted.app/admin/map) now includes the saved primary forecasts and calculations. Earlier local-only/rollout-004 checkpoints below are historical.
+
+- Six actual hosted Info flows pass: zones #50/#37/#36 on desktop 1280×900 and mobile 390×844. Saved medians/deadlines, #50 Manggahan locality, secondary preview initially hidden and no primary overflow are verified against the real shared API.
+- Six additional expanded-calculation checks pass on those same zones/screens. Cross-location values and the pooled walkthrough are visible with no overflow. Screenshots of desktop and mobile forecast/calculation flows were inspected; private screenshots remain ignored.
+- Matching production API still serves revision `lanes-api-subsidence-v3-20261011-1350` at 100%. Health/database and protected expiry reads pass; historical #17/#18, pooled/cross-location forecasts and activation-retention fallbacks remain intact. Existing scheduled expiry execution `lanes-zone-expiry-qrtrj` completes successfully with one succeeded task. No API/worker/settings/schema/model change was made by this frontend release.
+- Four actual public feed widths pass (1920/1280/1024/390): news HTTP 200, no horizontal overflow; desktop navigation/right panels measure 280/376 pixels, tablet navigation 256 pixels, mobile panels hidden. The capped feed measures 720 pixels at 1920 and 488 at 1280. This release also ships the previously pushed navigation spacing preview. [Feed acceptance](community-local-updates-20261011.md#navigation-spacing-hosted-release--october-11-425-pm-pht).
+
+The developer confirms **no additional government flood-history files yet**. Public FOI leads expose a pending request, a referral or delivery to a requester's email rather than an acquired training dataset. Add a prepared [government-data acquisition specification](../guides/pasig-recession-observation-collection.md#government-data-acquisition-specification--october-11-continuation), including section identity, depth basis, successive observations, clearance definition, independent episodes, missing/censored outcomes and provenance. No external request was sent or unverified source admitted.
+
+All eight core documents were audited for this continuation; README indexes the existing acceptance/guide. Database storage and dependency definitions remain unchanged. Previously verified 254 backend/model checks, migration upgrade, TypeScript/scoped lint and 66 responsive fixtures remain applicable because no application source changed. **The hosted UI gate is complete; improved field accuracy remains unproven and requires qualified real outcomes.**
 
 The [initial investigation](pasig-subsidence-availability-audit-20261011.md) found seven unscheduled records among 22 active Pasig zones. Policy `pasig-experimental-ml-expiry-v3` repairs the cache/lifecycle defects and reconciles source locality using the reviewed Pasig geometry catalog. The post-release, repeatable-read, read-only database audit finds **17 active Pasig zones: eight pooled and nine cross-location forecasts, zero unscheduled active zones**. These are snapshot counts, not a guarantee that every future report qualifies for a scientific estimate. The [sanitized acceptance table](pasig-subsidence-v3-active-zones-20261011.csv) records the saved methods, depths and deadlines without reporter identity.
 
@@ -59,7 +72,7 @@ No new Python/Node package is imported; declared requirements/package/lock files
 | Cloud workers | `lanes-zone-expiry` and `lanes-news-discovery` use the matching final digest; existing arguments, environment, permissions and schedules preserved. |
 | Expiry execution | `lanes-zone-expiry-vvsk9` succeeded; scheduled executions `4c45c` and `9qbxb` also succeeded. News discovery was not triggered just for validation. |
 | Local app | Matching API on port 8000, independent 60-second expiry worker and actual Next.js map on port 3000 verified. |
-| Cloud frontend | Remains App Hosting `build-2026-10-11-004`. **This release does not include the new forecast UI on the hosted frontend.** |
+| Initial cloud frontend (1:49 PM) | App Hosting `build-2026-10-11-004`; the hosted forecast UI was subsequently accepted in rollout 005 above. |
 
 The API was prepared with zero traffic, checked, then explicitly promoted only after matching workers. Existing rollback references remain available. Workspace changes are on `roi-branch`; this acceptance records direct runtime release, not a new Git commit/push.
 

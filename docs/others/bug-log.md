@@ -1,8 +1,12 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 11, 2026, 2:24 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **BUG-145: Pasig expiry can retain a transient null prediction; shallow-flood depth sensitivity remains inadequate.**
+
+**October 11, 4:25 PM hosted acceptance:** Rollout 005 serves 100%; six actual Info and six expanded-calculation checks pass on desktop/mobile. The shared API/expiry worker remains healthy. This closes the hosted saved-forecast display gate; BUG-145 remains In Progress solely for scientific accuracy qualification. Developer confirms no additional government files; the acquisition specification is prepared, with no source/review/admission write. [Acceptance](../evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-144 hosted continuation:** The previously pushed 280-pixel navigation/24-pixel outer gutter now ships in rollout 005. Four actual live feed widths (1920/1280/1024/390) pass panel sizing, real news HTTP 200 and no horizontal overflow. Earlier local-only entries are historical. [Acceptance](../evaluations/community-local-updates-20261011.md#navigation-spacing-hosted-release--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 11 evidence continuation:** `recession_dataset_service.py` and `scripts/build_recession_dataset.py` provide tested offline interval/right-censored episode qualification, simulated versus issued-clock provenance and sanitized immutable input hashes. 26 checks pass. Current complete shared export has three pending sources across two reports and zero numeric depths/eligible episodes. This confirms the remaining real-outcome/calibration gate rather than fixing it with simulated data. No model/schema/dependency or new cloud release. [Evidence](../evaluations/pasig-recession-collection-readiness-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
