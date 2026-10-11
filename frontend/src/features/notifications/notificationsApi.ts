@@ -1,11 +1,12 @@
 import { apiClient } from '@/lib/apiClient';
+import type { FloodReportDetails } from '@/shared/ui/feedback/FloodReportDetailsModal';
 
 export interface Notification {
   id: number;
   user_id: number;
   type: string;
   message: string;
-  payload: Record<string, any> | null;
+  payload: Record<string, unknown> | null;
   is_read: boolean;
   created_at: string;
 }
@@ -28,3 +29,6 @@ export const markAsRead = async (notificationId: number): Promise<Notification> 
 export const markAllAsRead = async (): Promise<{ message: string }> => {
   return await apiClient.post<{ message: string }>(`/notifications/read-all`);
 };
+
+export const getNotificationReport = (reportId: number): Promise<FloodReportDetails> =>
+  apiClient.get<FloodReportDetails>(`/reports/me/${reportId}`);

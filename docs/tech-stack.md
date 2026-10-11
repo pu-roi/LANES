@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:15 PM by Jace H. Bellen (Git author Jace; jace-branch), with Codex
+
+**October 11 Jace publication dependency audit:** Moderation/notification/homepage/feed changes reuse existing runtime packages. The requested all-changes publication includes the previously present Node build-script allowlist for `core-js-pure`, `sharp` and `unrs-resolver`, plus a transitive lockfile refresh. Manifest/lock dependency declarations agree; no new direct dependency or Python requirement is added. Locked Next.js is 16.2.9 and Tailwind/PostCSS are 4.3.3. Existing model/migration definitions remain unchanged. [Audit](evaluations/jace-moderation-feed-publication-20261011.md). Jace H. Bellen (Git author Jace; jace-branch), with Codex.
 
 **Current hosted frontend:** App Hosting rollout `build-2026-10-11-005` from `e150fea` serves 100%; real forecast/calculation and four-width feed acceptance pass. API/workers remain on the accepted v3 release. No package, dependency, model or schema change. Earlier rollout-004/local-only entries are historical. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

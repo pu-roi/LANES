@@ -18,7 +18,7 @@ from app import models, schemas
 from app.schemas.common import ensure_utc, serialize_utc_datetime
 from app.services.configuration_service import unexpired_deadline
 from app.crud.report import create_flood_avoidance_zone, credit_user_verified_report, penalize_user_rejected_report
-from app.models.notification import Notification, NotificationType
+from app.services.report_notification_service import stage_report_status_notification
 
 
 _SEVERITY_ORDER = {
@@ -479,6 +479,7 @@ def create_verified_event_with_zone(
                 ))
             if source_report.user_id and credit_reputation:
                 credit_user_verified_report(db, source_report.user_id, commit=False)
+            stage_report_status_notification(db, source_report)
 
         _append_timeline(
             db,
@@ -594,6 +595,7 @@ def link_supporting_report(
         )
         if report.user_id and credit_reputation:
             credit_user_verified_report(db, report.user_id, commit=False)
+        stage_report_status_notification(db, report)
         if commit:
             db.commit()
             db.refresh(report)
@@ -633,19 +635,16 @@ def reject_report(
             # The reporter receives the decision and its structured public
             # reason in the existing notification bell. Staff-only notes must
             # never be included in this payload or message.
-            db.add(Notification(
-                user_id=report.user_id,
-                type=NotificationType.SYSTEM,
+            stage_report_status_notification(
+                db, report,
                 message=(
                     "Your flood report was reviewed and was not added to the live map "
                     f"because it had {_REJECTION_NOTIFICATION_REASONS[rejection_reason]}."
                 ),
-                payload={
-                    "report_id": report.id,
-                    "action": "flood_report_rejected",
+                extra_payload={
                     "rejection_reason": rejection_reason.value,
                 },
-            ))
+            )
         db.commit()
         db.refresh(report)
         return report

@@ -34,8 +34,8 @@ def mark_read(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    notif = crud_notification.mark_as_read(db, notification_id)
-    if not notif or notif.user_id != current_user.id:
+    notif = crud_notification.mark_as_read(db, notification_id, current_user.id)
+    if not notif:
         raise HTTPException(status_code=404, detail="Notification not found")
     return notif
 

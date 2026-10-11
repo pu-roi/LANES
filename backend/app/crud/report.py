@@ -1,6 +1,6 @@
 from typing import List, Optional
 from datetime import datetime, timezone
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Query, Session, selectinload
 from sqlalchemy import func, or_
 
 from app import models, schemas
@@ -21,6 +21,14 @@ def get_flood_reports_by_user(db: Session, user_id: int, skip: int = 0, limit: i
         models.FloodReport.user_id == user_id,
         models.FloodReport.deleted_at.is_(None)
     ).order_by(models.FloodReport.created_at.desc()).offset(skip).limit(limit).all()
+
+
+def get_flood_report_by_user(db: Session, report_id: int, user_id: int) -> Optional[models.FloodReport]:
+    return db.query(models.FloodReport).filter(
+        models.FloodReport.id == report_id,
+        models.FloodReport.user_id == user_id,
+        models.FloodReport.deleted_at.is_(None),
+    ).first()
 
 
 def get_pending_flood_reports(db: Session, skip: int = 0, limit: int = 100) -> List[models.FloodReport]:
@@ -127,24 +135,26 @@ def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> model
         user_id=report.user_id,
         media_urls=report.media_urls
     )
-    db.add(db_report)
-    db.commit()
-    db.refresh(db_report)
-    
-    if report.survey_data:
-        db_survey = models.FloodReportSurvey(
-            report_id=db_report.id,
-            passable_vehicles=report.survey_data.passable_vehicles,
-            hidden_hazards=report.survey_data.hidden_hazards
-        )
-        db.add(db_survey)
+    try:
+        db.add(db_report)
+        db.flush()
+        if report.survey_data:
+            db.add(models.FloodReportSurvey(
+                report_id=db_report.id,
+                passable_vehicles=report.survey_data.passable_vehicles,
+                hidden_hazards=report.survey_data.hidden_hazards,
+            ))
+        from app.services.report_notification_service import stage_report_status_notification
+        stage_report_status_notification(db, db_report)
         db.commit()
-        db.refresh(db_report) # refresh to get the relationship
-
+        db.refresh(db_report)
+    except Exception:
+        db.rollback()
+        raise
     return db_report
 
 
-def get_active_avoidance_zones(db: Session, *, now: datetime | None = None) -> List[models.FloodAvoidanceZone]:
+def get_active_avoidance_zone_query(db: Session, *, now: datetime | None = None) -> Query[models.FloodAvoidanceZone]:
     """
     Selects all avoidance zones that are marked active and whose expiry dates
     are either null (infinite) or in the future. Normal reads use the database
@@ -159,7 +169,11 @@ def get_active_avoidance_zones(db: Session, *, now: datetime | None = None) -> L
     return db.query(models.FloodAvoidanceZone).filter(
         models.FloodAvoidanceZone.is_active == True,
         unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, clock)
-    ).all()
+    )
+
+
+def get_active_avoidance_zones(db: Session, *, now: datetime | None = None) -> List[models.FloodAvoidanceZone]:
+    return get_active_avoidance_zone_query(db, now=now).all()
 
 
 def get_nearby_active_avoidance_zones(

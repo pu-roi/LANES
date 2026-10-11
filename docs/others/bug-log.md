@@ -1,6 +1,47 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:15 PM by Jace H. Bellen (Git author Jace; jace-branch), with Codex
+
+**BUG-149: Homepage flood count and feed chronology differ from their intended meaning. Status: Resolved locally; production deployment separate. Severity: Medium. Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** The daily homepage metric counted submissions rather than the developer-selected active map zones created today. Community engagement scoring could place older posts above newer publications.
+
+**2. Root Cause Analysis:** Homepage aggregation used report creation/approval instead of the shared active-zone predicate, while Community ordering used engagement/age/distance scores. Visitor telemetry could replace the current statistics snapshot.
+
+**3. Solution & Architectural Strategy:** Count each current active zone created on today's UTC date once, retain the response contract and explicit daily label, and refresh the independent query through polling/SSE. Order both feed tabs by publication timestamp and ID in the selected direction. Display failures without a false zero.
+
+**4. Files Modified:** `backend/app/services/public_stats_service.py`, public endpoint and feed/report CRUD; `frontend/src/features/landing/HomeStats.tsx`, `features/feed/FeedPage.tsx`, `hooks/useLiveSync.ts`, `hooks/useSSE.ts`; homepage/order tests. [Audit](../evaluations/jace-moderation-feed-publication-20261011.md).
+
+**BUG-148: Missing report status notifications, read ownership and portal hydration mismatch. Status: Resolved locally; production deployment separate. Severity: High (ownership mutation). Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** Owners received no pending-review/approval updates, and the notification read endpoint mutated a row before checking its recipient. The browser rendered an empty report portal absent from server HTML, producing a hydration mismatch.
+
+**2. Root Cause Analysis:** Outcome notification logic existed only for rejection. Read CRUD selected by notification ID alone. A browser-only portal branch participated in the first client render.
+
+**3. Solution & Architectural Strategy:** Stage status-specific SYSTEM notifications with the persisted action transaction and deduplicate existing report/action payloads. Use the developer-approved pending queue as Under Review, preserve rejection reasons/post warnings, scope read updates by recipient before mutation, fetch report references through an owner-only endpoint and mount the detail portal after hydration only when details exist.
+
+**4. Files Modified:** `backend/app/services/report_notification_service.py`, `services/flood_event_service.py`, report/notification CRUD and endpoints; `frontend/src/features/notifications/NotificationBell.tsx`, `notificationsApi.ts`; report notification tests. [Audit](../evaluations/jace-moderation-feed-publication-20261011.md).
+
+**BUG-147: Incomplete moderation report details and incorrect map tab. Status: Resolved locally; production deployment separate. Severity: Medium. Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** Moderation Info omitted hazards, road coverage and passable vehicles; its map action sent approved reports to Needs Review and displayed a redundant View on Map Focus action.
+
+**2. Root Cause Analysis:** The dialog received a partial object assembled from summary fields, and its map callback hardcoded the pending tab. The shared dialog exposed an additional footer map action.
+
+**3. Solution & Architectural Strategy:** Reuse the full report endpoint for detail and current status, carry the selected ID to the existing map, resolve approved linked zones/contributors in Active Zones and pending evidence in Needs Review, and preserve rejected inspection/error behavior. Disable only the redundant action for this moderation caller.
+
+**4. Files Modified:** `frontend/src/features/admin/components/FloodModerationQueue.tsx`, `features/admin/LiveMapPage.tsx`, `shared/ui/feedback/FloodReportDetailsModal.tsx`, `tests/flood-moderation-map.spec.ts`. [Audit](../evaluations/jace-moderation-feed-publication-20261011.md).
+
+**BUG-146: Community feed linked-report visibility and filter escape. Status: Resolved locally; deployment not performed. Severity: High (visibility). Resolver: Jace H. Bellen (Git author Jace; jace-branch), with Codex.**
+
+**1. Problem Description:** Public feed readers could return linked pending, rejected, private or archived flood reports. The old date-window fallback could return older content outside an explicitly selected period; automatic Nearby expansion could exceed an explicitly selected radius.
+
+**2. Root Cause Analysis:** The shared list/single-post queries checked post deletion/hiding without enforcing the attached report's public approval state. Recent window and Nearby radius fallback were unconditional. A vote rollback also used the current feed key, potentially restoring old results after the selected filters changed.
+
+**3. Solution & Architectural Strategy:** Apply one public linked-report predicate before filtering/counting/pagination; keep unpublished access confined to the author via My Posts/owned detail. Default to All Time and never abandon selected date/status/severity constraints. Expand Nearby only in automatic radius mode. Use the originating cache key for vote results/rollback. Reuse map eligibility for Active; require persisted ended status and absence of an active zone for Resolved, including restored-zone handling.
+
+**4. Files Modified:** `backend/app/crud/feed.py`, `crud/report.py`, `schemas/feed.py`, `services/community_feed_service.py`, feed/posts endpoints; `frontend/src/features/feed/feedApi.ts`, `FeedPage.tsx`, `components/CommunityFeedFilters.tsx`, and focused backend/browser tests. [Acceptance](../evaluations/community-feed-filters-20261011.md). Existing submission/moderation data and workflows remain unchanged; no model/migration/dependency edits.
+
 
 **BUG-145: Pasig expiry can retain a transient null prediction; shallow-flood depth sensitivity remains inadequate.**
 

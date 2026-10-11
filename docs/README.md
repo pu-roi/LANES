@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:15 PM by Jace H. Bellen (Git author Jace; jace-branch), with Codex
+
+**Jace branch publication audit:** [Moderation details/map handoff, owner notifications, hydration, daily UTC homepage statistics and Community filters](evaluations/jace-moderation-feed-publication-20261011.md). Includes recorded local acceptance, dependency/credential checks and the requested branch-push scope; production deployment is separate. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
+**Community filtering (local):** [API contract, visibility correction and desktop/mobile acceptance](evaluations/community-feed-filters-20261011.md). Sorting/date/status/severity/radius filters reuse the existing feed and map lifecycle; no schema/dependency change or deployment. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
 
 **What to expect when testing:** [Runtime behavior, acceptance steps and remaining accuracy work](guides/pasig-recession-observation-collection.md#what-to-expect-when-running-the-system) explain the saved selected model, eligibility/fallback, fixed issuance, p90 deadline and Unconfirmed expiry. Depth-sensitive predictive accuracy remains unvalidated even though local/cloud integration and hosted display are accepted. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

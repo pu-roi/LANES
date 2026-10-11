@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { AlertTriangle, CheckCircle2, Flag, Info, MapPin } from "lucide-react";
-import type { FloodReport } from "../adminApi";
+import { getReportForSpatialReview } from "../adminApi";
 import { apiClient } from "@/lib/apiClient";
 import { formatFloodDepth } from "@/lib/floodDepth";
-import { AutocompleteInput, Button, Card, CardContent, DatePicker, FloodReportDetailsModal, LocationAutocomplete, Select, Skeleton } from "@/shared/ui";
+import { AutocompleteInput, Button, Card, CardContent, DatePicker, FloodReportDetailsModal, LocationAutocomplete, Select, Skeleton, useToast } from "@/shared/ui";
 
 type FloodModerationCase = {
   report_id: number;
@@ -53,6 +53,7 @@ const severityStyles: Record<string, string> = {
 
 export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?: "all" | FloodModerationCase["status"] }) {
   const router = useRouter();
+  const toast = useToast();
   const reviewToken = useRef(0);
   const [status, setStatus] = useState<"all" | FloodModerationCase["status"]>(initialStatus);
   const [location, setLocation] = useState("");
@@ -62,6 +63,13 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [detailCase, setDetailCase] = useState<FloodModerationCase | null>(null);
+  const detail = useQuery({
+    queryKey: ["flood-moderation-detail", detailCase?.report_id],
+    queryFn: () => getReportForSpatialReview(detailCase!.report_id),
+    enabled: detailCase !== null,
+    staleTime: 0,
+    retry: false,
+  });
   const cases = useQuery({
     queryKey: ["flood-moderation-cases", status, location, reporter, reason, source, dateFrom, dateTo],
     queryFn: () => {
@@ -78,15 +86,19 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
   const reporterSuggestions = [...new Set((cases.data || []).map((caseItem) => caseItem.reporter).filter((name) => name && name !== "System"))];
   const nextReviewToken = () => String(++reviewToken.current);
 
-  const reviewOnMap = (caseItem: FloodModerationCase) => {
-    const params = new URLSearchParams({ focus_report_id: String(caseItem.report_id), tab: caseItem.status === "approved" ? "zones" : "pending", review_token: nextReviewToken() });
-    if (caseItem.zone_id && caseItem.status === "approved") params.set("focus_zone_id", String(caseItem.zone_id));
-    if (caseItem.latitude != null && caseItem.longitude != null) {
-      params.set("lat", String(caseItem.latitude));
-      params.set("lng", String(caseItem.longitude));
-      params.set("zoom", "16");
+  const reviewOnMap = async (reportId: number) => {
+    try {
+      // Re-read persisted status: a case may have been resolved since the list loaded.
+      const report = await getReportForSpatialReview(reportId);
+      if (report.id !== reportId) throw new Error("The selected report is unavailable. Please refresh.");
+      const params = new URLSearchParams({ focus_report_id: String(report.id), review_token: nextReviewToken() });
+      if (report.status === "approved") params.set("tab", "zones");
+      else if (report.status === "pending") params.set("tab", "pending");
+      // Rejected evidence uses Spatial Operations' existing inspection-only view.
+      router.push(`/admin/map?${params.toString()}`);
+    } catch (error) {
+      toast.error("Could not open report on map", error instanceof Error ? error.message : "Please refresh and try again.");
     }
-    router.push(`/admin/map?${params.toString()}`);
   };
 
   return <div className="space-y-4">
@@ -104,7 +116,7 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
     {cases.isError && <Card className="border-red-200 bg-red-50"><CardContent className="flex gap-3 text-sm text-red-800"><AlertTriangle className="h-5 w-5 shrink-0" />Could not load Flood Report moderation cases. Please refresh and try again.</CardContent></Card>}
     {cases.data?.length === 0 && <Card><CardContent className="py-16 text-center text-sm text-gray-500"><Flag className="mx-auto mb-2 h-6 w-6 text-slate-400" />No Flood Report moderation cases match these filters.</CardContent></Card>}
     {cases.data?.map((caseItem) => <Card key={caseItem.report_id} className="shadow-sm"><CardContent className="p-5">
-      <div className="flex flex-col justify-between gap-3 sm:flex-row"><div><div className="flex flex-wrap items-center gap-2"><p className="font-semibold text-gray-900">Flood report #{caseItem.report_id}</p><span className={`rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${caseItem.status === "pending" ? "bg-amber-100 text-amber-800" : caseItem.status === "approved" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>{caseItem.resolution || caseItem.status}</span></div><p className="mt-1 text-xs text-slate-500">{caseItem.source.replaceAll("_", " ")} · Submitted {new Date(caseItem.submitted_at).toLocaleString()} · Reporter: {caseItem.reporter}</p></div><div className="flex gap-2"><Button size="sm" variant="outline" onClick={() => setDetailCase(caseItem)}><Info className="mr-1 h-4 w-4" />Info</Button><Button size="sm" variant="outline" onClick={() => reviewOnMap(caseItem)}><MapPin className="mr-1 h-4 w-4" />Review on Map</Button></div></div>
+      <div className="flex flex-col justify-between gap-3 sm:flex-row"><div><div className="flex flex-wrap items-center gap-2"><p className="font-semibold text-gray-900">Flood report #{caseItem.report_id}</p><span className={`rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${caseItem.status === "pending" ? "bg-amber-100 text-amber-800" : caseItem.status === "approved" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>{caseItem.resolution || caseItem.status}</span></div><p className="mt-1 text-xs text-slate-500">{caseItem.source.replaceAll("_", " ")} · Submitted {new Date(caseItem.submitted_at).toLocaleString()} · Reporter: {caseItem.reporter}</p></div><div className="flex gap-2"><Button size="sm" variant="outline" onClick={() => setDetailCase(caseItem)}><Info className="mr-1 h-4 w-4" />Info</Button><Button size="sm" variant="outline" onClick={() => void reviewOnMap(caseItem.report_id)}><MapPin className="mr-1 h-4 w-4" />Review on Map</Button></div></div>
       <p className="mt-4 whitespace-pre-wrap text-sm text-slate-700">{caseItem.raw_text}</p>
       <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2"><p><span className="font-medium text-slate-800">Flood level:</span> <span className={`ml-1 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${severityStyles[caseItem.severity] || "bg-slate-100 text-slate-700"}`}>{caseItem.severity}</span>{caseItem.depth && <span className="ml-2 text-slate-600 font-medium">{formatFloodDepth(caseItem.depth, { compact: true })}</span>}</p><p><span className="font-medium text-slate-800">Location:</span> {caseItem.location || "Not supplied"}</p></div>
       {caseItem.approval_kind === "automatic" && <p className="mt-3 text-sm text-blue-800">Automatically approved · {caseItem.automatic_review_reason?.replaceAll("_", " ")}. No reputation credit was awarded.</p>}
@@ -112,6 +124,8 @@ export function FloodModerationQueue({ initialStatus = "all" }: { initialStatus?
       {caseItem.status === "rejected" && <div className="mt-4 rounded-lg border border-rose-100 bg-rose-50 p-3 text-sm text-rose-900"><p><span className="font-semibold">Reason:</span> {caseItem.rejection_reason ? rejectionLabels[caseItem.rejection_reason] : "Not recorded"}</p>{caseItem.internal_note && <p className="mt-1"><span className="font-semibold">Internal note:</span> {caseItem.internal_note}</p>}</div>}
       {caseItem.resolved_at && <p className="mt-4 flex items-center gap-1.5 text-xs text-slate-500"><CheckCircle2 className="h-4 w-4 text-emerald-600" />{caseItem.resolution === "linked" ? "Linked" : "Resolved"} {new Date(caseItem.resolved_at).toLocaleString()}{caseItem.acting_admin ? ` by ${caseItem.acting_admin}` : ""}</p>}
     </CardContent></Card>)}
-    <FloodReportDetailsModal report={detailCase ? ({ id: detailCase.report_id, status: detailCase.status, source: detailCase.source, raw_text: detailCase.raw_text, severity: detailCase.severity, depth: detailCase.depth, created_at: detailCase.submitted_at, updated_at: detailCase.submitted_at, human_readable_location: detailCase.location, reporter_username: detailCase.reporter } as FloodReport) : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => router.push(`/admin/map?focus_report_id=${report.id}&tab=pending&review_token=${nextReviewToken()}`)} />
+    {detailCase && detail.isFetching && <p role="status" className="text-sm text-slate-500">Loading flood report details…</p>}
+    {detailCase && detail.isError && <div role="alert" className="flex flex-wrap items-center gap-3 text-sm text-red-800">Could not load flood report details. {detail.error.message}<Button variant="outline" size="sm" onClick={() => detail.refetch()}>Retry details</Button><Button variant="ghost" size="sm" onClick={() => setDetailCase(null)}>Dismiss</Button></div>}
+    <FloodReportDetailsModal showMapFocusAction={false} report={detailCase && !detail.isFetching && !detail.isError && detail.data?.id === detailCase.report_id ? detail.data : null} isOpen={detailCase !== null} onClose={() => setDetailCase(null)} onViewOnMap={(report) => void reviewOnMap(report.id)} />
   </div>;
 }

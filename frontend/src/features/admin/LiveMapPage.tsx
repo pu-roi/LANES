@@ -135,6 +135,7 @@ export default function LiveMapPage() {
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const showMapError = toast.error;
   const { user, isAuthenticated } = useAuth();
   const createZoneDraftUserId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   
@@ -293,7 +294,7 @@ export default function LiveMapPage() {
   }, [createZoneDraftUserId, isAuthenticated, markSecondaryWorkspaceOpened]);
 
   // Queries
-  const { data: mapZones, refetch: refetchMap } = useQuery({
+  const { data: mapZones, refetch: refetchMap, isError: mapZonesError, isFetching: mapZonesFetching } = useQuery({
     queryKey: ["activeZonesMap"],
     queryFn: () => apiClient.get<any[]>("/reports/active-zones"),
     staleTime: 15000,
@@ -306,12 +307,16 @@ export default function LiveMapPage() {
     refetchInterval: 10000,
   });
   const focusedReportId = Number(searchParams.get("focus_report_id")) || null;
-  const { data: focusedModerationReport } = useQuery({
-    queryKey: ["adminFocusedModerationReport", focusedReportId],
+  const { data: focusedModerationReport, isError: focusedReportError, isFetching: focusedReportFetching } = useQuery({
+    queryKey: ["adminFocusedModerationReport", focusedReportId, searchParams.get("review_token")],
     queryFn: () => getReportForSpatialReview(focusedReportId!),
-    enabled: focusedReportId !== null,
+    enabled: isAuthenticated && focusedReportId !== null,
     retry: 1,
   });
+
+  useEffect(() => {
+    if (focusedReportError) showMapError("Could not locate the selected flood report. It may be unavailable or no longer exist.");
+  }, [focusedReportError, focusedReportId, showMapError]);
 
   // Track last focused query to avoid duplicate re-flying
   const lastFocusedParamRef = useRef<string | null>(null);
@@ -334,17 +339,13 @@ export default function LiveMapPage() {
     // A Moderation Center handoff needs the selected report's geometry before
     // it can be isolated. Do not mark the URL as handled while that query is
     // still loading; otherwise the follow-up render has nothing left to focus.
-    if (focusId && !focusedModerationReport) return;
-
-    if (tabParam === "zones" || tabParam === "pending") {
-      setActiveTab(tabParam);
-    }
-
     if (lastFocusedParamRef.current === queryKey) return;
+    if (focusId && (focusedReportFetching || focusedReportError || !focusedModerationReport)) return;
+    if (focusedModerationReport?.status === "approved" && mapZonesFetching) return;
 
     const executeFocus = () => {
       // 1. Direct coordinates passed from Reports Page
-      if (latStr && lngStr) {
+      if (!focusId && latStr && lngStr) {
         const lat = parseFloat(latStr);
         const lng = parseFloat(lngStr);
         const zoom = zoomStr ? parseFloat(zoomStr) : 16;
@@ -357,32 +358,51 @@ export default function LiveMapPage() {
       if (focusId) {
         const idNum = Number(focusId);
         const targetReport = focusedModerationReport?.id === idNum ? focusedModerationReport : null;
-        if (targetReport) {
+        if (targetReport?.status === "approved") {
+          // Resolve through the persisted zone link, including merged contributors.
+          // URL tab hints never override the current report approval status.
+          setActiveTab("zones");
+          setSelectedReportId(null);
+          setSelectedReviewKey(null);
+          setReviewReport(null);
+          setNewsPlacement(null);
+          setSelectedNewsCandidate(null);
+          setIsolatedReportId(null);
+          const targetZone = (mapZones || []).find((zone: AvoidanceZone) =>
+            targetReport.zone_id != null ? zone.id === targetReport.zone_id :
+              zone.report_id === idNum || zone.contributors?.some((contributor) => contributor.report_id === idNum));
+          setSelectedZoneId(targetZone?.id ?? null);
+          setSelectedContributorId(targetZone ? idNum : null);
+          if (targetZone) {
+            flyToFeature(mapInstance, targetReport.geometry || targetZone.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
+          } else {
+            showMapError(mapZonesError ? "Could not load active flood zones. Please refresh and try again." : "This approved report no longer has an available active zone.");
+          }
+          lastPrimaryTabRef.current = "zones";
+          lastFocusedParamRef.current = queryKey;
+        } else if (targetReport?.status === "pending" || targetReport?.status === "rejected") {
+          // Rejected reports are preserved evidence; the review panel disables decisions.
           setActiveTab("pending");
+          setSelectedZoneId(null);
+          setSelectedContributorId(null);
           setSelectedReportId(idNum);
           setSelectedReviewKey(`user_report:${idNum}`);
           setNewsPlacement(null);
           setSelectedNewsCandidate(null);
           setIsolatedReportId(idNum);
 
-          if (targetReport.geometry && (!latStr || !lngStr)) {
+          if (targetReport.geometry) {
             flyToFeature(mapInstance, targetReport.geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
           }
+          else showMapError("This flood report has no mapped location.");
+          lastPrimaryTabRef.current = "pending";
           lastFocusedParamRef.current = queryKey;
         } else {
-          const targetZone = (mapZones || []).find(
-            (z: any) => z.report_id === idNum || (z.contributors || []).some((c: any) => c.report_id === idNum)
-          );
-          if (targetZone) {
-            setActiveTab("zones");
-            setSelectedZoneId(targetZone.id);
-            if (targetZone.geometry && (!latStr || !lngStr)) {
-              flyToFeature(mapInstance, targetZone.geometry, targetZone.report_geometry, { zoom: 16, pitch: mapInstance.getPitch(), duration: 1500 });
-            }
-            lastFocusedParamRef.current = queryKey;
-          }
+          showMapError("The selected flood report cannot be opened in Spatial Operations. Please refresh.");
+          lastFocusedParamRef.current = queryKey;
         }
       } else {
+        if (tabParam === "zones" || tabParam === "pending") setActiveTab(tabParam);
         lastFocusedParamRef.current = queryKey;
       }
     };
@@ -390,7 +410,7 @@ export default function LiveMapPage() {
     // Small delay ensures MapLibre terrain and canvas resizing are settled
     const timer = setTimeout(executeFocus, 250);
     return () => clearTimeout(timer);
-  }, [searchParams, focusedModerationReport, mapZones, mapInstance, isLoaded]);
+  }, [searchParams, focusedModerationReport, focusedReportFetching, focusedReportError, mapZones, mapZonesFetching, mapZonesError, mapInstance, isLoaded, showMapError]);
 
   const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
     queryKey: ["adminZones", page, activeOnly],
@@ -899,7 +919,19 @@ export default function LiveMapPage() {
                 size="sm"
                 onClick={() => {
                   setIsMobileMapVisible(true);
-                  window.setTimeout(() => mapInstance?.resize(), 0);
+                  window.setTimeout(() => {
+                    if (!mapInstance) return;
+                    mapInstance.resize();
+                    // A flight started on the hidden mobile canvas uses its old dimensions.
+                    // Restore the selected location after the visible canvas has resized.
+                    const geometry = activeTab === "pending" ? selectedReport?.geometry
+                      : selectedContributorId === focusedModerationReport?.id
+                        ? focusedModerationReport?.geometry || selectedZone?.geometry
+                        : selectedZone?.geometry;
+                    if (geometry) {
+                      flyToFeature(mapInstance, geometry, null, { zoom: 16, pitch: mapInstance.getPitch(), duration: 0 });
+                    }
+                  }, 0);
                 }}
                 className="min-h-11 flex-1 rounded-xl bg-white"
                 title="Open map"

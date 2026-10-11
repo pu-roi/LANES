@@ -1,6 +1,15 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:15 PM by Jace H. Bellen (Git author Jace; jace-branch), with Codex
+
+### October 11: Moderation, notification and homepage publication checkpoint
+
+- Complete authoritative report details and status-based map focus; retain one Spatial Location map action. Notify report owners when entering the existing pending queue and receiving approval, preserving rejection reasons/post warnings. Protect notification read ownership and report-detail hydration. Count active zones created today in UTC on the homepage and refresh through existing polling/SSE. Audit all eight core records and synchronize dependency/lock state for the requested `jace-branch` push. Local acceptance includes 51 backend and the final 30 feed/home browser checks, with earlier 18 map and 18 notification checks recorded separately. No model/migration change or production deployment. [Audit and limitations](evaluations/jace-moderation-feed-publication-20261011.md). Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
+### October 11: Community feed filtering implemented locally
+
+- Extend the existing feed API with validated sort/date/status/severity/radius parameters applied before pagination. Default to newest publication and All Time; retain UTC Today and existing Nearby location logic. Shared desktop/mobile controls persist through refresh and tabs, support Reset Filters and 20-post pagination, and protect cache rollback when a pending vote finishes after filters change. Public readers now exclude linked pending/rejected/private/archived reports, preserving owned My Posts access. [Local acceptance](evaluations/community-feed-filters-20261011.md); no schema/dependency/workflow changes or deployment. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
 
 ### October 11: Runtime expectations and remaining accuracy gates documented
 

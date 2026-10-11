@@ -1,6 +1,16 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 10:15 PM by Jace H. Bellen (Git author Jace; jace-branch), with Codex
+
+## October 11: Moderation and Community publication audit
+
+- [x] Synchronize the eight core records for complete moderation details, persisted-status map navigation, removal of the duplicate detail action, pending/approved/rejected owner notifications, notification ownership/hydration, daily active-zone UTC statistics and Community filters. Preserve post warnings, staff permissions and existing workflows. [Publication audit](evaluations/jace-moderation-feed-publication-20261011.md) records local validation and the included manifest/lock refresh; no database schema changes or deployment. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+- [x] Verify `jace-branch`, manifest/lock consistency, unchanged SQL models/migrations, whitespace and changed-content credential patterns. Remove credential-bearing VS Code overrides before publication; existing tasks use `.env`. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
+## October 11: Community filtering — local implementation
+
+- [x] Add server-side newest/oldest ordering, All Time/UTC Today/rolling date filters, existing active/ended lifecycle and severity filters, and strict optional Nearby radii. Preserve profile/saved-place location fallback, owned My Posts access, post interactions and existing refresh mechanisms. URL-persisted controls and pagination support both screen sizes. Local verification is recorded in [the acceptance report](evaluations/community-feed-filters-20261011.md); branch publication is requested and production deployment is separate. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
 
 ## October 11: Pasig expiry v3 delivered; depth accuracy remains open
 

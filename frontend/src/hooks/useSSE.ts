@@ -35,6 +35,8 @@ export function useSSE() {
 
     eventSource.onopen = () => {
       queryClient.invalidateQueries({ queryKey: ["publicNewsAlerts"] });
+      queryClient.invalidateQueries({ queryKey: ["publicStats"] });
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
       console.log("SSE connected successfully");
       // Connection succeeded — reset backoff
       backoffRef.current = INITIAL_BACKOFF_MS;
@@ -48,6 +50,8 @@ export function useSSE() {
 
         const { event: eventName } = payload;
         queryClient.invalidateQueries({ queryKey: ["publicNewsAlerts"] });
+        queryClient.invalidateQueries({ queryKey: ["publicStats"] });
+        queryClient.invalidateQueries({ queryKey: ["feed"] });
         if (eventName === "report_approved" || eventName === "report_rejected") {
           queryClient.invalidateQueries({ queryKey: ["adminReports"] });
           queryClient.invalidateQueries({ queryKey: ["activeZones"] });

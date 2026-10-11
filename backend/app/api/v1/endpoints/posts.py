@@ -115,7 +115,8 @@ def get_my_posts(
         user_id=current_user.id,
         skip=skip,
         limit=limit,
-        author_id=current_user.id
+        author_id=current_user.id,
+        include_own_unpublished=True,
     )
 
 
