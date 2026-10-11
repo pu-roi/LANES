@@ -131,3 +131,25 @@ Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 Commit `37f59e1630634ed4247c9295cf69d8b3d79319f4` is pushed to `roi-branch`. App Hosting rollout `build-2026-10-11-004` succeeds (Cloud Build `37017cdb-b19b-4a18-8991-90bda816c882`); revision `lanes-frontend-build-2026-10-11-004` serves 100% traffic. Actual unmocked public feed at 1920 and 1280 pixels measures sidebar **376** and Local Updates card **344**; wheel scrolling and transparent idle scrollbar pass. At 1024 and 390 the shared expandable card remains visible. All four live views return 200/five articles and have no horizontal overflow. Live panel/mobile screenshots `frontend/test-results/sidebar-wider-live-panel.png` and `sidebar-wider-live-390.png` are inspected. Earlier local 1440 acceptance, TypeScript and zero-error sidebar lint apply to the same two-class change; no new dependency/model/migration/backend change. Documentation and requested `roi-branch` publication are synchronized.
 
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Navigation spacing preview — October 11, 12:49 PM PHT
+
+The developer withdrew the matching 376-pixel left-panel experiment because it felt oversized and compressed the feed. That experiment was never committed or deployed. Final navigation increases from 256 to 280 pixels only at the existing 1280-pixel breakpoint; tablets retain 256 pixels and mobile retains its drawer. The subsequent request removes the outer left blank space: the page no longer uses a centered 1,600-pixel cap, navigation starts inside a 24-pixel desktop gutter, and a responsive grid centers the 720-pixel-capped feed in its own column beside the existing 376-pixel updates panel.
+
+Actual unmocked local browser checks:
+
+| Viewport width | Navigation width / left gutter | Feed width | Updates panel |
+|---|---|---|---|
+| 1920 | 280 / 24 | 720 | 376 |
+| 1600 | 280 / 24 | 720 | 376 |
+| 1440 | 280 / 24 | 648 | 376 |
+| 1280 | 280 / 24 | 488 | 376 |
+| 1024 | 256 / 16 | 672 | Shared inline card |
+| 768 | 256 / 16 | 448 | Shared inline card |
+| 390 | Mobile drawer | 390 | Shared inline card |
+
+All seven views receive actual news HTTP 200 and show real community posts without horizontal overflow or column overlap. Mobile drawer opens and its Community Feed action closes it. Desktop/mobile screenshots `frontend/test-results/feed-gutter-1920.png` and `feed-gutter-390.png` are inspected. TypeScript and ESLint for both changed source files pass. An initial checker selected the application's outer main element instead of the feed main and falsely reported compression; correcting the selector established the actual 720-pixel width. No production change was needed to fix that checker.
+
+This is a local preview, prepared for the requested roi-branch publication; no new frontend deployment is performed during this layout iteration. Production remains on rollout 004, and the accepted backend remains on 429dd19. No dependency/model/migration change. Existing feature, architecture, stack and database records require no new entries for this layout refinement.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).

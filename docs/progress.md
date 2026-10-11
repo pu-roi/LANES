@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 12:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:49 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Modest navigation width and smaller outer margin
+
+- Undo the unpublished 376-pixel left-panel experiment after developer feedback. Use 280 pixels on large screens (24 more than before), retain 256 pixels on tablets and the existing mobile drawer. Remove the centered 1,600-pixel page cap, place navigation inside a 24-pixel desktop outer gutter, and center the capped 720-pixel feed within its own grid column beside the existing 376-pixel updates panel. Seven actual local widths (1920/1600/1440/1280/1024/768/390) pass, including real news responses, mobile navigation and no horizontal overflow; TypeScript and scoped lint pass. This is a local layout preview; production remains on rollout 004. [Evidence](evaluations/community-local-updates-20261011.md#navigation-spacing-preview--october-11-1249-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: More visible right-panel width increase
 

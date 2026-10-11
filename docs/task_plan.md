@@ -1,8 +1,10 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 12:33 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:49 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Community Feed Local Updates
+
+- [x] Replace the unpublished full-width left-panel experiment with a modest 280-pixel desktop navigation panel and reduce its outer gutter to 24 pixels. Center the 720-pixel feed within its own column; verify seven actual local widths, news loading, mobile drawer, no overflow, TypeScript and scoped lint. Production remains on rollout 004 during the layout preview. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] Make the right-panel width increase more visible after developer feedback: 376-pixel outer panel, 16-pixel side padding and 344-pixel cards, 48 more usable pixels than the first revision. Check local desktop/mobile layout and scrolling. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Release and verify the visible width follow-up live: rollout `build-2026-10-11-004`, actual 376-pixel panel/344-pixel cards and desktop/mobile news acceptance pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
