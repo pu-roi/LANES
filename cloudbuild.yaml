@@ -43,13 +43,15 @@ steps:
       - '--region'
       - 'asia-east1'
 
-  # 4. Automatically deploy the new image to Cloud Run web service
+  # 4. Prepare this build's API revision without changing serving traffic yet.
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
       - 'run'
       - 'deploy'
       - 'lanes-api'
+      - '--no-traffic'
+      - '--revision-suffix=build-$BUILD_ID'
       - '--min=1'
       - '--image'
       - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
@@ -86,6 +88,19 @@ steps:
       - '--args=-m,scripts.run_zone_expiry'
       - '--image'
       - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
+      - '--region'
+      - 'asia-east1'
+
+  # Promote the exact revision only after migration and both worker deploys pass.
+  # Explicit promotion also clears traffic pinned by an earlier manual rollback.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'update-traffic'
+      - 'lanes-api'
+      - '--to-revisions=lanes-api-build-$BUILD_ID=100'
       - '--region'
       - 'asia-east1'
 

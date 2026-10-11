@@ -1,13 +1,14 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 1:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Community Feed Local Updates
 
 - [x] Audit all eight core documents, confirm existing dependencies and unchanged models/migrations, review public metadata exposure and prepare the final changes for the developer-requested `roi-branch` push. [Audit](evaluations/community-local-updates-20261011.md#planner-and-pre-push-audit--october-11-144-am-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] Connect collected articles to Local Updates using a bounded public reader, approved source/domain and current-body local-flood screening, without waiting for recorded extraction/publication. Replace placeholders on desktop and add a shared mobile/tablet expandable view; verify source/date display and loading/empty/retry/offline/cache states. 24 backend and 10 responsive checks, TypeScript/scoped lint and actual read-only PostgreSQL inspection pass. [Verification](evaluations/community-local-updates-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Deploy matching backend/frontend separately. Broader commuter-news collection, changes to Admin News Intelligence and public map News Alerts remain follow-up scope. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Restore live Local Updates by promoting verified API revision `lanes-api-00064-kjc`; the already deployed frontend now loads successfully on desktop/mobile. Prevent preserved rollback traffic in future Cloud Build releases with explicit promotion of the build-specific revision after worker deployments. [Live acceptance](evaluations/community-local-updates-20261011.md#live-loading-failure-and-traffic-repair--october-11-1130-am-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Broader commuter-news collection, changes to Admin News Intelligence and public map News Alerts remain follow-up scope. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 10, 9:15 PM recovery accepted:** policy v2 recovers immutable original forecasts after late initialization without bypassing current source/review gates. #17/#18 are now inactive with original p90 deadlines October 9, 7:25:02 AM / October 10, 5:04:13 AM (PHT); event timelines say Unconfirmed. #19/#20/#21 retain their deadlines. Production API `lanes-api-00069-fey` serves 100% traffic; cloud jobs use the matching recovery image and minute scheduling is enabled. The local map exposes saved p10/p50/p90 forecasts at Active Zones → All History → Info, verified on actual desktop/mobile records. 106 backend checks, 10 responsive fixtures and four actual Info workflows pass. Accuracy remains experimental; cloud frontend release is separate. [Acceptance](evaluations/pasig-ml-automatic-expiry-20261010.md#legacy-recovery-and-saved-ui-acceptance--october-10-915-pm). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

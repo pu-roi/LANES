@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 1:44 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Live Local Updates loading failure resolved
+
+- Live `/news/local-updates` returned 404 because Cloud Run traffic remained pinned to recovery revision `lanes-api-00069-fey` after a successful newer build. Verify the newer revision through a temporary preview, promote `lanes-api-00064-kjc` to 100%, and remove the preview tag. Live desktop/mobile reads now return 200 and display the actual empty state; health/database and unauthenticated staff denial pass. Update Cloud Build to prepare a unique build revision without traffic and explicitly promote it after both worker deployments. No schema/dependency/settings/schedule change. [Evidence](evaluations/community-local-updates-20261011.md#live-loading-failure-and-traffic-repair--october-11-1130-am-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Local Updates documentation and pre-push audit
 
