@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/apiClient";
+import { apiClient, getApiBaseUrl } from "@/lib/apiClient";
 
 export interface ProfileCreate {
   first_name: string;
@@ -50,7 +50,7 @@ export const authClient = {
     profile?: any;
     address?: any;
   }) => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+    const baseUrl = await getApiBaseUrl();
     const res = await fetch(`${baseUrl}/auth/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -1,0 +1,76 @@
+{
+  "purpose": "In-sample hypothetical service preview; historical source availability not established; not a prospective prediction or accuracy check.",
+  "request": {
+    "city": "Pasig",
+    "barangay": "Maybunga",
+    "reference_at": "2026-08-10T00:30:00+08:00",
+    "prediction_as_of_at": "2026-08-11T05:30:00+08:00",
+    "reference_policy": "first_recorded_wet_in_episode",
+    "acknowledge_research_limitations": true,
+    "assume_continuous_wet": true
+  },
+  "response": {
+    "status": "research_estimate",
+    "model": {
+      "status": "research_model_available",
+      "algorithm": "intercept_only_lognormal_aft",
+      "model_fitted": true,
+      "research_only": true,
+      "deployment_eligible": false,
+      "target_version": "remaining_time_from_first_recorded_wet_to_reported_subsidence_continuity_assumed_v1",
+      "model_sha256": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6",
+      "projections": 37,
+      "shared_outcomes": 3,
+      "prospective_accuracy_established": false,
+      "learns_depth_or_location_effects": false,
+      "limitations": [
+        "assumed_uninterrupted_episode",
+        "conditional_collective_scope",
+        "only_three_shared_summaries",
+        "outcome_selected_cohort",
+        "unknown_historical_feature_availability",
+        "no_independent_final_holdout",
+        "reported_subsidence_not_measured_dry_or_passable"
+      ]
+    },
+    "reference_at": "2026-08-10T00:30:00+08:00",
+    "prediction_as_of_at": "2026-08-11T05:30:00+08:00",
+    "reference_policy": "first_recorded_wet_in_episode",
+    "input_provenance": "staff_supplied_hypothetical_not_verified_case_evidence",
+    "assumed_continuous_wet": true,
+    "abstention_reason": null,
+    "quantiles": [
+      {
+        "quantile": 0.1,
+        "remaining_minutes": 53.045428558114466,
+        "estimated_reported_subsidence_at": "2026-08-11T06:23:02.725713+08:00"
+      },
+      {
+        "quantile": 0.5,
+        "remaining_minutes": 347.7214086537742,
+        "estimated_reported_subsidence_at": "2026-08-11T11:17:43.284519+08:00"
+      },
+      {
+        "quantile": 0.9,
+        "remaining_minutes": 1170.8585396302362,
+        "estimated_reported_subsidence_at": "2026-08-12T01:00:51.512378+08:00"
+      }
+    ],
+    "horizon_probabilities": [
+      {
+        "horizon_minutes": 60.0,
+        "conditional_probability_reported_subsidence": 0.11236465871796332
+      },
+      {
+        "horizon_minutes": 120.0,
+        "conditional_probability_reported_subsidence": 0.2123440829580147
+      },
+      {
+        "horizon_minutes": 240.0,
+        "conditional_probability_reported_subsidence": 0.3800773911197875
+      }
+    ],
+    "changes_status_expiry_or_routing": false,
+    "confirms_physical_dryness_or_passability": false
+  }
+}

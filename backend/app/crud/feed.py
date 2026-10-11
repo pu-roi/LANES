@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
-from sqlalchemy import func, case, text, Float, String, and_, or_
+from sqlalchemy import func, case, text, Float, String, and_, or_, cast
+from geoalchemy2 import Geography
 from app.models.report import FloodReport
 from app.models.interaction import PostInteraction
 from app.models.user import User
@@ -108,14 +109,14 @@ def get_feed_posts(
 
         # Distance from flood report geometry (if the post has a linked report)
         report_distance = func.ST_Distance(
-            func.cast(FloodReport.geometry, text("GEOGRAPHY")),
-            func.cast(user_pt, text("GEOGRAPHY"))
+            cast(FloodReport.geometry, Geography),
+            cast(user_pt, Geography)
         )
 
         # Distance from post's own location coordinates
         post_distance = func.ST_Distance(
-            func.cast(post_pt, text("GEOGRAPHY")),
-            func.cast(user_pt, text("GEOGRAPHY"))
+            cast(post_pt, Geography),
+            cast(user_pt, Geography)
         )
 
         # Prefer flood report geometry distance; fall back to post location distance
@@ -128,7 +129,7 @@ def get_feed_posts(
                 ),
                 post_distance
             ),
-            else_=func.cast(None, Float)
+            else_=cast(None, Float)
         ).label("distance_meters")
         select_fields.append(distance_col)
 
@@ -139,9 +140,10 @@ def get_feed_posts(
             # Posts with no location data at all are excluded.
             has_report_nearby = and_(
                 CommunityPost.flood_report_id.isnot(None),
+                FloodReport.geometry.isnot(None),
                 func.ST_DWithin(
-                    func.cast(FloodReport.geometry, text("GEOGRAPHY")),
-                    func.cast(user_pt, text("GEOGRAPHY")),
+                    cast(FloodReport.geometry, Geography),
+                    cast(user_pt, Geography),
                     radius
                 )
             )
@@ -149,20 +151,20 @@ def get_feed_posts(
                 CommunityPost.location_lat.isnot(None),
                 CommunityPost.location_lng.isnot(None),
                 func.ST_DWithin(
-                    func.cast(post_pt, text("GEOGRAPHY")),
-                    func.cast(user_pt, text("GEOGRAPHY")),
+                    cast(post_pt, Geography),
+                    cast(user_pt, Geography),
                     radius
                 )
             )
             base_query = base_query.filter(or_(has_report_nearby, has_post_location_nearby))
     else:
         # Placeholder for distance if no location is given
-        select_fields.append(func.cast(None, Float).label("distance_meters"))
+        select_fields.append(cast(None, Float).label("distance_meters"))
 
     if user_interaction_sq is not None:
         select_fields.append(user_interaction_sq.c.user_interaction)
     else:
-        select_fields.append(func.cast(None, String).label("user_interaction"))
+        select_fields.append(cast(None, String).label("user_interaction"))
 
     # Join the subqueries
     query = base_query.with_entities(*select_fields)
@@ -201,9 +203,12 @@ def get_feed_posts(
     # ── Ordering ─────────────────────────────────────────────────────────
     if tab == "nearby" and distance_col is not None:
         # Nearby: blend distance relevance (60%) with engagement (40%)
-        effective_radius = func.coalesce(func.cast(radius, Float), 5000.0)
-        distance_score = func.greatest(
-            1.0 - (distance_col / effective_radius),
+        effective_radius = func.coalesce(cast(radius, Float), 5000.0)
+        distance_score = func.coalesce(
+            func.greatest(
+                1.0 - (distance_col / effective_radius),
+                0.0
+            ),
             0.0
         )
 
@@ -212,7 +217,7 @@ def get_feed_posts(
         nearby_engagement_norm = func.log(func.greatest(nearby_engagement, 1) + 1)
 
         nearby_score = (0.6 * distance_score) + (0.4 * nearby_engagement_norm)
-        query = query.order_by(nearby_score.desc(), CommunityPost.created_at.desc())
+        query = query.order_by(nearby_score.desc().nulls_last(), CommunityPost.created_at.desc())
     else:
         # Recent: HN-inspired hot score with civic boosts and gravity decay
         gravity = 1.5
@@ -385,12 +390,12 @@ def get_feed_post(
     ]
 
     # No distance logic needed for a single post view by ID unless requested, we just return null for distance
-    select_fields.append(func.cast(None, Float).label("distance_meters"))
+    select_fields.append(cast(None, Float).label("distance_meters"))
 
     if user_interaction_sq is not None:
         select_fields.append(user_interaction_sq.c.user_interaction)
     else:
-        select_fields.append(func.cast(None, String).label("user_interaction"))
+        select_fields.append(cast(None, String).label("user_interaction"))
 
     # Join the subqueries
     query = base_query.with_entities(*select_fields)

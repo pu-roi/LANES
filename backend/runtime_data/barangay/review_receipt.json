@@ -1,0 +1,110 @@
+{
+  "catalog_sha256": "4b596be585945502fffd1ca9e14f282fb5a10e3b844c3ca2b21eda1a157894c2",
+  "source_sha256": "0fa54508ad7fe5e9debd6f46b6cd5ca01eeb57b26e2ba5d5b751a5539b6b2b1d",
+  "osm_catalog_sha256": "5edd1284a00003ed2d97ff7d500f02b58d7f53521864e149311628df3d338386",
+  "source_classification": "osm_community",
+  "review_method": "Automated review by Codex geometry agent: exact PSGC current/correspondence reference, barangay name and Pasig parent cross-check; complete source rings without cuts/dangles; valid unsimplified WGS84 polygon and strict containment in checked same-snapshot OSM city. Community map geometry; no human, cadastral, field or legal-boundary verification.",
+  "license_url": "https://www.openstreetmap.org/copyright",
+  "psgc_reference_sha256": "d8804c4b576ed4f98db758f482eedc931eed92252fe95af819f41921b8ea6aa1",
+  "accepted_records": 20,
+  "excluded_relations": [
+    {
+      "osm_relation_id": 103702,
+      "name": "San Antonio",
+      "ref": "1380300023",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 104053,
+      "name": "Santa Cruz",
+      "ref": "1380300026",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 104865,
+      "name": "Santa Cruz",
+      "ref": "137404104",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 1552388,
+      "name": "San Antonio",
+      "ref": "1381300096",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 1580818,
+      "name": "Santa Lucia",
+      "ref": "1381400018",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 1693445,
+      "name": "San Jose",
+      "ref": "137404100",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 1751068,
+      "name": "Santa Lucia",
+      "ref": "137404105",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 1780142,
+      "name": "San Joaquin",
+      "ref": "137403020",
+      "reason": "unclosed_boundary_rings"
+    },
+    {
+      "osm_relation_id": 1780143,
+      "name": "Kalawaan",
+      "ref": "137403007",
+      "reason": "unclosed_boundary_rings"
+    },
+    {
+      "osm_relation_id": 1792245,
+      "name": "San Jose",
+      "ref": "1380500025",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 6113143,
+      "name": "San Antonio",
+      "ref": null,
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 6116611,
+      "name": "San Antonio",
+      "ref": "1381000012",
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 18323640,
+      "name": "San Miguel",
+      "ref": null,
+      "reason": "no_explicit_pasig_psgc_reference"
+    },
+    {
+      "osm_relation_id": 18323642,
+      "name": "Pinagbuhatan",
+      "ref": "137403015",
+      "reason": "unclosed_boundary_rings"
+    }
+  ],
+  "missing_or_excluded_barangays": [
+    "Bambang",
+    "Kalawaan",
+    "Malinao",
+    "Palatiw",
+    "Pinagbuhatan",
+    "San Joaquin",
+    "San Miguel",
+    "San Nicolas",
+    "Santa Cruz",
+    "Santo Tomas"
+  ],
+  "proves_current_flood": false,
+  "may_affect_routing": false
+}

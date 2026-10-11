@@ -1,4 +1,11 @@
 export { Modal } from "./Modal";
+export { RecordDetailsDialog } from "./RecordDetailsDialog";
+export { RecordDetailsPanels } from "./RecordDetailsPanels";
+export { RecordTimeline } from "./RecordTimeline";
+export type { RecordTimelineEntry } from "./RecordTimeline";
+export { FloodDetailMetric } from "./FloodDetailMetric";
+export { FloodLocationSummary } from "./FloodLocationSummary";
+export type { FloodLocationSummaryData } from "./FloodLocationSummary";
 export { FloodReportDetailsModal } from "./FloodReportDetailsModal";
 export type { FloodReportDetails, FloodReportDetailsGeometry } from "./FloodReportDetailsModal";
 export { FloodZoneDetailsModal } from "./FloodZoneDetailsModal";

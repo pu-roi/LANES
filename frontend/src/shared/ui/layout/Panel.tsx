@@ -64,6 +64,7 @@ interface PanelProps {
   entranceDelay?: number;
   /** Fixed mobile sheet height for panels that should share a consistent footprint. */
   mobileHeight?: string;
+  mobileClassName?: string;
 }
 
 /**
@@ -94,6 +95,7 @@ export function Panel({
   panelId,
   entranceDelay = 0,
   mobileHeight,
+  mobileClassName,
 }: PanelProps) {
   const dragControls = useDragControls();
   const dragStartPos = useRef({ x: 0, y: 0 });
@@ -229,11 +231,11 @@ export function Panel({
             animate={{ y: isCollapsed ? "calc(100% - 72px)" : 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-x-0 z-40 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] bg-white border-t border-gray-200"
+            className={cn("fixed inset-x-0 z-40 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] bg-white border-t border-gray-200", mobileClassName)}
             style={{ 
               height: mobileHeight,
-              maxHeight: "calc(100vh - 80px - 4rem - env(safe-area-inset-bottom, 0px))",
-              bottom: "calc(4rem + env(safe-area-inset-bottom, 0px))"
+              maxHeight: "calc(100dvh - 80px - var(--bottom-nav-height) - env(safe-area-inset-bottom, 0px))",
+              bottom: "calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px))"
             }}
           >
             <div 

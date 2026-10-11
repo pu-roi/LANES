@@ -1,0 +1,19 @@
+{
+  "verified_at": "2026-10-07T21:34:19.033268+08:00",
+  "tests": 89,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "duration_model_tests": 45,
+  "duration_api_tests": 17,
+  "existing_settings_and_pipeline_regressions": 27,
+  "real_training_outcomes_added": 0,
+  "production_or_database_modified": false,
+  "synthetic_numerical_tests_establish_live_accuracy": false,
+  "files_sha256": {
+    "docs/evaluations/pasig-subsidence-validation-20261007/pytest-results.xml": "cdbfa1008d936cbc893f662513e2e41d33a99a671403278bffef95c47ccfb08b",
+    "backend/tests/test_flood_duration_model.py": "b4c8b3dc9bf0bf82c108f4425fe9f468113b79e512343868f357a8d311ab5cb5",
+    "backend/tests/test_flood_duration_api.py": "91c83b1b3286d80f4190990892e3e93fe35abfe80ec12a633d71cd9073b7ca7d",
+    "docs/evaluations/pasig-subsidence-validation-20261007/evaluation_report.json": "fc093b2d521598b0fd416898e99cc6595c44b0c70b7ecaee5ab2759848aca143"
+  }
+}

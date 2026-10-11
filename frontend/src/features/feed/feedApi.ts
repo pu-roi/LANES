@@ -41,7 +41,28 @@ export interface FeedResponse {
   posts: FeedPost[];
   total: number;
   has_more: boolean;
+  expanded_radius?: boolean;
+  resolved_location_name?: string;
 }
+
+export interface TrendingHotspot {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  post_count: number;
+  contributor_count: number;
+  latest_post_at: string;
+}
+
+export interface TrendingHotspotsResponse {
+  hotspots: TrendingHotspot[];
+  window_hours: number;
+  as_of: string;
+}
+
+export const getTrendingHotspots = (): Promise<TrendingHotspotsResponse> =>
+  apiClient.get<TrendingHotspotsResponse>('/feed/hotspots');
 
 export interface CommentResponse {
   id: number;
@@ -231,4 +252,3 @@ export const deletePost = async (postId: number, payload?: DeletePostPayload): P
     body: payload ? JSON.stringify(payload) : undefined,
   });
 };
-

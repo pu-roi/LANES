@@ -1,11 +1,1527 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** September 30, 2026, 3:20 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:49 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-144: Matching both sidebar widths compressed the feed during local preview. Status: Resolved locally October 11, 2026; unpublished experiment reverted. Severity: Low. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Increasing navigation to 376 pixels consumed space inside the centered 1,600-pixel shell and reduced the center feed. The developer withdrew the matching-width request and chose a modest increase, then requested removal of the outer left margin. Final `LeftSidebar.tsx` uses 280 pixels from 1280 pixels and retains 256 pixels on tablets. `src/app/feed/layout.tsx` removes the page cap and centers the capped feed in a separate responsive grid column. Actual local 1920/1600 views retain a 720-pixel feed; 1440/1280 adapt to 648/488 pixels. All seven checked widths through 390 pixels have no overlap or horizontal overflow and receive actual news HTTP 200; mobile navigation, TypeScript and scoped lint pass. No dependencies, schema or backend changes. Production remains on rollout 004. [Evidence](../evaluations/community-local-updates-20261011.md#navigation-spacing-preview--october-11-1249-pm-pht).
+
+**BUG-143: Narrow laptop feed columns overflowed horizontally. Status: Resolved locally and live October 11, 2026. Severity: Low. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: while verifying the requested quieter/wider right panel, the 1024-pixel layout exceeded the viewport by four pixels. RCA: all three columns were enabled at 1024 pixels, while the feed's minimum content width, navigation and right sidebar did not fit. Solution: show the modestly wider 344-pixel sidebar from 1280 pixels, and expose the same expandable Local Updates card below that breakpoint. Files: `frontend/src/features/feed/RightSidebar.tsx` and `FeedPage.tsx`. Actual local and live browser checks at 1920/1440/1280/1024/768/390 widths show no horizontal overflow and accessible news. Frontend rollout `build-2026-10-11-003` serves 100% traffic from `b93dc0b`; ten responsive Local Updates regressions pass after the change. Desktop wheel/keyboard scrolling, idle/hover/focus scrollbar colors and mobile actual refresh pass; TypeScript passes. Existing FeedPage lint diagnostics are unchanged. No package/schema/backend change. [Evidence](../evaluations/community-local-updates-20261011.md#sidebar-scrolling-and-width--october-11-1215-pm-pht).
+
+**Sidebar width follow-up (October 11, 12:33 PM):** Developer found the first width increase too subtle. `RightSidebar.tsx` now uses 376-pixel outer width and 16-pixel side padding, giving cards 344 pixels instead of 296. App Hosting rollout `build-2026-10-11-004` serves 100% from `37f59e1`; actual local/live desktop/mobile checks confirm dimensions, scrolling and no horizontal overflow. This preserves BUG-143 responsive correction. [Evidence](../evaluations/community-local-updates-20261011.md#visible-sidebar-width-follow-up--october-11-1227-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-142: Local Updates remained empty outside flood coverage. Status: Resolved locally and live October 11, 2026. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: after fixing the live API 404, Local Updates showed no news because no recent observed-flood articles qualified. RCA: both collection and the public reader were restricted to actual flood observations, despite the developer needing useful commuter news outside flooding. Solution: admit body-grounded Metro Manila weather/traffic/transport/safety/service advisories and add official category feeds for the already approved GMA publisher. Store non-flood articles as `local_update` using the existing string field; never enqueue them for flood extraction, and classify them as excluded from flood attention. Actual later flooding can enter normal processing without resetting moderation. Files: `local_news_relevance.py`, local-news reader, discovery collector, article CRUD, Collection status, source JSON, primary-publisher fallback probe selection, shared `LocalUpdates.tsx` and tests. Verification: 143 backend/10 responsive checks; ten actual collected articles, zero flood candidates, extraction runs unchanged at 84; actual local and live desktop/mobile show five source-linked articles. Matching API/workers/frontend use commit `429dd19`; successful Cloud Build verifies migration and exact revision promotion. No model/schema/migration/dependency or schedule change. [Evidence](../evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht).
+
+**BUG-141: Live Local Updates could not load**
+
+- **Status:** Resolved live on October 11, 2026. Deployment prevention is verified by successful Cloud Build `86a78939-ca6d-4bce-9d18-db533a8e1c23`, which promotes its exact prepared revision after both worker deployments.
+- **Severity:** Medium.
+- **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem Description:** Open `https://navlanes.live/feed`. Local Updates displayed “Couldn’t load local news” and a retry button. `GET /api/v1/news/local-updates?limit=5` returned HTTP 404 instead of articles or a successful empty result.
+
+**2. Root Cause Analysis:** Cloud Build succeeded and created the backend revision containing the new endpoint, but Cloud Run retained 100% traffic pinned to the older manual recovery revision `lanes-api-00069-fey`. That revision did not contain Local Updates. Ready revision `lanes-api-00064-kjc` received no traffic; creating a revision alone did not update the serving version.
+
+**3. Solution & Architectural Strategy:** Verify the new revision through a temporary preview URL, then promote `lanes-api-00064-kjc` to 100% traffic. Remove the preview tag and retain the old revision for rollback. Prepare future API releases with `--no-traffic` and a unique `--revision-suffix=build-$BUILD_ID`; explicitly promote `lanes-api-build-$BUILD_ID` only after the existing migration and both worker deployments succeed. This targets the exact build and prevents an old traffic pin from silently retaining the previous API.
+
+**4. Files Modified / What Changed:** `cloudbuild.yaml` adds explicit preparation/promotion. The Local Updates evaluation, rollout guide, bug log and synchronized feature/system/progress/task records document actual live acceptance. Implementation commit `ff67bdf` and deployment-fix commit `29c2f27` were pushed to `roi-branch`. No application source, dependencies, SQLAlchemy models, Alembic migrations, settings or scheduler changes were needed for this traffic repair.
+
+**Verification:** Actual live Local Updates API returns HTTP 200 with `items: []`; the database health check succeeds, existing public alerts return 200, and unauthenticated staff collection remains 401. Unmocked desktop (1440×1000) and mobile (390×844) browser checks show “No recent local flood news is available.” without the loading error; both screenshots were inspected. The empty result means no qualifying recent collected articles, not confirmation that there is no flooding. YAML parsing and deployment-order/revision-target checks pass. The revised build workflow later succeeds in Cloud Build `86a78939-ca6d-4bce-9d18-db533a8e1c23`; commuter coverage now produces five live articles as recorded under BUG-142.
+
+[Full verification and deployment evidence](../evaluations/community-local-updates-20261011.md#live-loading-failure-and-traffic-repair--october-11-1130-am-pht).
+
+**BUG-140: Local Updates showed sample news and was absent on mobile. Status: Resolved locally and verified live October 11. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: Community Feed's right panel displayed two fixed headlines with fake relative times and no source links. RCA: `RightSidebar.tsx` contained static markup and is hidden below the desktop breakpoint; no public collected-article connection existed. Solution: add bounded read-only `GET /news/local-updates`, reuse discovery's source/current-body local-flood rules, return only article metadata, and share one list between desktop sidebar and mobile/tablet expandable feed card. Files: API registration and new `local_news.py` route/CRUD/schema/service; `LocalUpdates.tsx`, `localNewsApi.ts`, `RightSidebar.tsx`, `FeedPage.tsx`, backend and Playwright regressions. Verification: 24 backend/10 responsive cases, TypeScript/scoped lint, screenshot inspection and actual read-only PostgreSQL empty result. No schema/dependency or public-map-alert change. [Evidence](../evaluations/community-local-updates-20261011.md).
+
+**BUG-139 documentation follow-up:** Coverage is conditional across Pasig; missing local history alone can use pooled transfer, while invalid/missing source evidence and model failures retain explicit abstention/fallback. Recovery is resolved; scientific accuracy and cloud frontend release remain separate. Repeat native acceptance passes before requested branch publication. [Evidence](../evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-139 legacy expiry and missing saved UI forecast — Resolved locally and in cloud API/workers; High. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: #17/#18 stayed active with null deadlines; Info did not show reconstructed forecasts. RCA: wall-clock research staleness blocked late first operational initialization and cached null fallback; inactive list rows also hid Info. Solution: qualify current source at the real clock, recover immutable issuance forecasts, bump policy to v2, persist quantiles/model/issuance in existing audit JSON, expose saved estimates through protected DTO/Info and allow historical Info. Files: `zone_prediction_service.py`, `pasig_ml_expiry_service.py`, `zone_expiry.py`, `ZoneExpiryPolicy.tsx`, `ActiveZonesPanel.tsx`, source/native/Playwright regressions. Verify: 106 backend, 10 responsive and four actual UI checks; #17/#18/events ended Unconfirmed, #19–#21 unchanged; matching local/cloud API/workers deployed and scheduled expiry succeeds. No SQL schema, dependencies or model artifact changes. [Acceptance](../evaluations/pasig-ml-automatic-expiry-20261010.md#legacy-recovery-and-saved-ui-acceptance--october-10-915-pm).
+
+**BUG-139: Pasig predictions were not connected to automatic expiry. Status: Resolved locally and in the shared cloud API/workers; model accuracy remains experimental. Severity: High. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: testing exposed that fitted estimates never set operational deadlines. RCA: implemented services were read-only research previews while the worker used fixed timers across cities. Fix: add a separate audited experimental deadline policy, stable fingerprints, reversible fallback, protected status UI, linked-news coordination and local worker. Files: `pasig_ml_expiry_service.py`, `zone_expiry.py`, prediction/configuration/lifecycle/read services, `run_zone_expiry.py`, admission hooks, settings/zone UI, tests/tasks. Verify: 386 backend/database and 10 responsive checks, existing migrations and committed model deadlines for zones 19/20/21. Original artifacts remain research-qualified; field accuracy remains pending. Cloud release is completed as recorded below. [Evidence](../evaluations/pasig-ml-automatic-expiry-20261010.md). Matching API revision `lanes-api-00067-zox`, independent minute maintenance, successful scheduled expiry and a completed news run are now verified. Cloud recomputation matches all three saved ML deadlines.
+
+**BUG-138 expiry follow-up — Local control implemented; cloud rollout/acceptance pending. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: connected historical Boni #23 disappeared after successful public/Admin checks. RCA: another scheduled worker used the real October clock against its unchanged September 24 deadline, deactivating the zone at 6:00:29 PM; local scenario settings did not govern that worker. This is fixed-timer expiry without a city filter, not Pasig ML. Strategy: add an audited global toggle shared by scheduled expiry and active read predicates; preserve source/deadline/geometry, manual/qualified clearance and fresh-evidence admissions. Already inactive records remain inactive. Files: configuration schema/service, flood-event/news publication/read/projection services, report CRUD, routing/ORS, merge candidate/citizen support predicates, existing SystemSettingsPage/adminApi and targeted/native/responsive tests. 51 targeted, 186 native and 18 unique UI scenarios plus actual port-3000 reads pass. Shared configuration is unchanged; matching remote rollout remains open. Earlier #23 availability entries below are historical. [Evidence](../evaluations/automatic-expiry-toggle-20261010.md).
+
+**Related reviewed-merge failure — Investigating, Medium; investigator [@roicambe](https://github.com/roicambe) (Roi Cambe).** The additional legacy merging integration test returns 500 because reviewed event creation submits the normalized city twice and violates the event-location unique constraint. Candidate retrieval succeeds; this failure is outside the expiry predicate and was not patched in this phase. New local fixture reports/posts were cleaned up by exact ownership/time/ID checks. No cloud data was changed. Track separately from expiry-toggle delivery.
+
+**BUG-138 source fidelity — Corrected locally; developer validation pending. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** RCA: an official-zone copy omitted actual news lineage, replacing excerpt/date/link with notes/System; unchanged-body discovery also retained the legacy display-name publisher identity. Fix: collector recaptures mismatched identity, preserves versions; explicit connected development reconstruction runs actual extractor/live auditor/publisher/worker and creates source-linked #23. Local selected clocks preserve original observation/expiry without retiming; maintenance/public/Admin/feed/routing stay consistent; regular deactivation wins; Admin timestamp uses observed time. Retire #22 via authenticated deactivation, preserve all other 18 cloud zone responses. Files: `local_news_scenario_service.py`, `reconstruct_connected_news.py`, `news_discovery_service.py`, evaluation/publication/read services, report CRUD, flood-event/routing/ORS services, `ActiveZonesPanel.tsx`, tests/tasks. Verification: 117 targeted +160 fresh native PostGIS tests, TypeScript/ESLint, actual desktop/mobile public/Admin article/link/date/layers/interactions and deactivation target; repeat worker creates no duplicates. Two unrelated clearance auditor responses remain rejected. [Evidence](../evaluations/news-boni-corridor-reconstruction-20261010.md#connected-source-fidelity-correction).
+
+**BUG-138 cloud coexistence follow-up — Resolved for the authorized display test; developer visual acceptance pending. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: selecting private reconstruction on port 3000 hides normal cloud records from that session. RCA: one selected backend per session; an unchanged September 24 zone is also expired under the normal October clock. Strategy: after developer authorization, create labeled temporary staff **Zone #22** through existing official-zone APIs using original reconstructed linework; set a two-hour test expiry, disclose historical dates, and restore normal port-3000 data. Existing records remain untouched: all 18 preexisting zone-response hashes match; both readers now include `[17,18,19,20,21,22]`. Actual desktop/mobile public/Admin layers/details/sign-in and the Deactivate confirmation target pass; cancel the confirmation to leave testing available. Files changed in this step: documentation only, plus ignored operational helpers/evidence. Original automatic historical Zone #56 remains separate. [Verification](../evaluations/news-boni-corridor-reconstruction-20261010.md#shared-cloud-visibility-follow-up).
+
+**BUG-138 port correction — In Progress, Medium; resolver [@roicambe](https://github.com/roicambe) (Roi Cambe):** Problem: developer's usual port 3000 shows only manual zones despite successful private reconstruction. RCA: the session resolver allowed only dedicated port 3001, while normal 3000 read backend 8000. Fix: explicitly select/reuse 3000 with private backend 8001; use shared session storage-key resolution for token reads/writes/cleanup and dynamic offline floods, retaining normal login/cache; show a responsive historical-session notice and add a reversible Current Data task. Files: `localNewsSimulation.ts`, API client, auth/navigation/feed/profile token consumers, offline storage, providers/notice, frontend launcher, VS Code tasks and session tests. Actual API parity and twelve session regressions pass; actual desktop/mobile map/login checks pass; switching back to normal data also passes in an actual browser. [Evidence](../evaluations/news-boni-corridor-reconstruction-20261010.md#port-3000-correction).
+
+**BUG-138 original Boni activation — Resolved locally; developer visual acceptance pending. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: the real article yielded only a text alert, absent from both Active Zone maps. RCA: bounded parallel carriageways were marked arbitrary; individual modeled margins overlapped; reprocessed same-time evidence was suppressed as superseded; the review queue ignored evidence consumed by an existing case. Strategy: preserve and group eligible mapped carriageways, dissolve their outer policy margin, retain exact inner cores/gaps, refresh only identical independently audited source facts on the original automatic text-alert case without renewing expiry, and check consumer-case decisions in review reads. Files: `news_road_corridor_service.py`, placement/estimated-road/publication/evaluation services, news JSON schemas/processing revision, spatial review CRUD, native/geometry tests and `.vscode/tasks.json`. Actual system creates Zone #56; public/Admin `[56]`, zero obsolete Boni review rows and repeat-run idempotence are verified. Actual desktop/mobile shared layers/details pass. No normal/cloud historical activation or schema/dependency change. General article reconciliation and remaining time/clearance cases remain open. [Full RCA and verification](../evaluations/news-boni-corridor-reconstruction-20261010.md).
+
+Earlier BUG-138 checkpoints below retain the state at those earlier investigations.
+
+**BUG-138 shutdown handoff — In Progress, Medium; resolver [@roicambe](https://github.com/roicambe) (Roi Cambe):** The developer's current public/Admin screenshots still have no automatic Boni zone. Saved private replay confirms `estimated_activated=0`, four candidate sections and `top_section_has_arbitrary_bounds`; the Active text-alert label does not mean a persisted map polygon. Geometry implementation is still unfinished. Next strategy: trace section bounds and junction/carriageway evidence, correct supported placement, rerun the actual pipeline and verify public/Admin persisted-zone parity and responsive appearance. This handoff modifies documentation only. [Acceptance status](../evaluations/news-reconstruction-activation-fixes-20261010.md#shutdown-handoff-and-acceptance-status).
+
+**BUG-138 final replay checks:** Admin Needs Review also compared later article publication against the earlier reconstruction time and showed zero Boni items. `app/crud/spatial_review.py` now uses the guarded admission clock for publication and the flood clock for observation freshness; its current geometry decision replaces the old extraction passability explanation. The actual private frontend proxy returns one Boni review item, five road results, one verified text alert and matching empty public/Admin active IDs. Verified low-depth passability can activate; deeper depth/access conflicts remain review-only to prevent source-contradicting closures. Forty-seven native checks cover both paths. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-138 activation update — In Progress, Medium; resolver [@roicambe](https://github.com/roicambe) (Roi Cambe):** Problem: real automatic flooding absent from public/Admin Active Zones despite a credible source and time. RCA: missing Tribune registration, stale capture publisher ID, blanket rejection of passable floods, and conflation of observation/publication replay clocks. Fix: verified feed registration; source-bound recapture preserving snapshots; audited passable-zone metadata/activation; guarded separate historical publication admission recorded in policy/decision JSON. Files: source registry, news CRUD, evaluation/publication/pipeline services, publication response schema and replay scripts/tests. Actual original Boni audit verifies on retry and produces a text alert, but four arbitrary road-section alternatives still block geometry. Two clearance audits remain invalid; no fake polygon or successful clearance. [System verification](../evaluations/news-reconstruction-activation-fixes-20261010.md).
+
+**BUG-138 simulation parity update — In Progress, Medium; resolver [@roicambe](https://github.com/roicambe) (Roi Cambe):** Problem: public Active-style preview absent from Admin. RCA: preview-only redirect, no zone insert and inconsistent read clocks. Correction: explicit persisted session on port 3001, all API/auth/SSE private routing, shared eligibility/detail/list clock; no fabricated activation. Files: session resolver/client/SSE/config, launchers, replay server, Admin CRUD reader and tests. Real Boni remains blocked by unchanged policy. Docker socket recovery also verified with volumes preserved. [Evidence](../evaluations/news-persisted-simulation-session-20261010.md).
+
+**Latest BUG-138 overlap correction:** The claim-level display joined all four ambiguous Boni candidates, including opposite carriageways, despite no selected section. Approximately 8-m road separation is narrower than the solid stroke at zoom 16. Connected records contain no news-created zone or intersecting active polygons. `news_placement_display_service.py`, preview service and replay launcher now build the core/halo only for resolved placement. `useNewsPlacementLayer.ts` draws one inspected candidate in Admin and rejects combined alternatives on public simulation; `NewsReviewEvidence.tsx` explains inspection and clearing. All candidates remain evidence. Local correction awaits developer acceptance; cross-article spatial reconciliation remains open. [@roicambe](https://github.com/roicambe) (Roi Cambe) [Verification](../evaluations/news-placement-alternatives-20261010.md).
+
+### [BUG-138] Public news review overlays appear inconsistent with Active Zones and lack details/focus
+
+- **Status:** In Progress — initial Phase 1 rejected for incomplete rendering/interaction parity; shared-renderer correction implemented locally, developer review pending. Real-news activation/admin parity remain open.
+- **Severity:** Medium — misleading visual status and missing map interactions; no new routing activation is established.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **October 10 requested layer fix:** Sharing the hook still left automatic simulation `geometry` null and review paint selected, so the solid core and wide polygon aura were missing. Backend display service now returns a separate original core and a single dissolved decorative halo. Preview response schema/service and saved launcher supply it; public MapCanvas/news adapter select canonical Active appearance while preserving truthful pending status. Shared hook separates `is_pending` from paint and updates mode paint without stale layers. Desktop/mobile automatic-path pixel checks and live original Boni core/fill/fly/hover pass; source activation remains a separate open issue. [Verification](../evaluations/news-shared-map-renderer-20261009.md#october-10-requested-solid-inner-line-and-transparent-outer-area).
+- **Latest RCA / correction:** The original fix still owned a separate news paint/popup/camera controller and wrongly tested desktop click-to-open. Opacity-only hiding also left invisible overview features interactive; closing mobile details left selection set. Replace the news implementation with an adapter into the shared zone hook, add real min/max zoom visibility, retain common hover/fly-only/mobile tap behavior and clear explicit close selection. The server now merges exact adjoining/coincident preview linework for display while retaining source candidates, separate carriageways and real gaps. Four Boni candidates become three drawable parts. No review candidate is promoted into Active or used as a routing polygon. Exact files, backend checks, responsive/live evidence and the unresolved original-source activation are in [shared-renderer correction](../evaluations/news-shared-map-renderer-20261009.md). The initial fix below is historical and superseded.
+- **Problem:** Developer screenshots from public /map show Boni strokes overlapping, no hover information and unexpected click focus; the simulated lines are absent from Admin Active Zones.
+- **RCA:** Read-only current endpoints confirm only actual zones 17/18. The additive snapshot returns four ambiguous Needs Review candidates with routing_affected=false. useNewsPlacementLayer draws all candidate road auras, only changes cursor on hover and includes unrelated active-zone context in selected fitBounds. Its candidate features do not carry popup details. Saved geometry contains distinct parallel carriageways and adjoining sections, not four identical lines; one actual modeled gap is retained.
+- **Proposed solution:** Keep activated zones on shared active rendering, add explicit preview-aware shared information and selected-only camera focus, check rendering overlap without joining unsupported geometry. Genuine original-news activation/public-admin persistence belongs to a later reviewed backend phase.
+- **Phase 1 fix / verification:** Shared preview-aware popup and source metadata, stable candidate layers, zoom-scaled aura, selected-only camera bounds and measured desktop popup positioning. Seventeen responsive checks plus read-only actual Boni hover/focus and TypeScript pass; existing broader lint violations remain. Separate carriageways/model gaps remain unchanged; reducing visual overlap does not establish complete backend deduplication. Exact application files and screenshot evidence are in [Phase 1 verification](../evaluations/news-map-ui-phase1-20261009.md). No backend, database, schema, dependency or deployment changes in this phase. Await developer review.
+
+### [BUG-137] Global replay routing hides existing cloud Active Zones
+
+- **Status:** Routing corrected locally; full real-news activation remains open.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Cause:** The initial BUG-136 workaround redirected all local API/auth/SSE requests to a private database with zero active zones. Cloud zones 17/18 were not deleted; normal `/api/v1/reports/active-zones` still returned both. Camera focus on Boni also moved away from their Pasig locations.
+- **Fix:** Retain interface/work as subsequently requested. Restore normal API/auth/SSE; restrict private routing to the additional snapshot only. Add the original captured article through connected-database capture/extraction as article 25/run 61; this is an explicit operator addition, not reconstructed feed acceptance. The snapshot reuses the connected service-produced artifact and identity. Camera bounds include original zones and replay candidates.
+- **Verification:** Full normal public-zone JSON is identical before/after. Scoped evaluation reports `unapproved_article_source`; actual estimated-road generation rejects all five placements, so no active polygon is manufactured. Eleven backend guard/addition/clock checks, TypeScript/scoped lint and browser-free additive bounds/routing contracts pass. Normal staff API verification uses an in-memory short-lived test token and prints no credentials. No existing record deletion, schema/dependency change or browser call. [Current steps](../guides/local-news-replay.md#current-port-3000-simulation-session).
+
+### [BUG-136] Private news evidence never reaches the frontend used by the developer (initial global routing superseded by BUG-137)
+
+- **Status:** Frontend connection resolved locally; physical visual and active-zone acceptance open.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Cause:** Developer uses port 3000/cloud data; private replay is on 8001. API routing alone leaves password login and SSE on cloud, and shared review paint has zero opacity below zoom 14.
+- **Fix:** Development localhost configuration, private rewrite, shared API/password/profile resolver, private SSE resolver, visible notice and automatic public-map review placement. Add opt-in overview transparency; normal staff opacity remains unchanged. Skip default Pasig camera movement when simulation placement focuses reported candidates.
+- **Verification:** Port 3000 serves both pages with HTTP 200, authenticated original results total five, placement four and active zones zero. Nine private-target/clock checks, TypeScript/scoped lint and browser-free map/routing contracts pass. Cloud tokens do not authenticate the private DB, so use its existing local admin account. No browser, new schema/dependency or cloud publication. [Evidence](../evaluations/september24-plotting-simulation-20261009.md#current-port-3000-frontend-connection).
+
+### [BUG-135] Active Zones simulation reads use the real database clock
+
+- **Status:** Resolved locally for explicit backend simulation reads; UI/server-wide simulated-clock acceptance is not delivered.
+- **Severity:** Medium — a zone valid at the simulated present can be hidden by real-time expiry.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/RCA:** The pipeline can receive a historical simulation clock, but `get_active_avoidance_zones` always compares expiry to PostgreSQL `now()`. Patching Python datetime does not change that database expression.
+- **Solution/files:** Add optional aware `now` to `backend/app/crud/report.py`; default requests retain database time. `scripts/replay_september24_pipeline.py` passes its simulated present and filters future publisher evidence; no HTTP clock override or panel work. Current prediction geometry/scope exclusions remain visible, not bypassed.
+- **Validation:** Native expiry regression verifies visibility at the simulated clock, absence at real time, exclusive expiry and unchanged stored state. Total 23 native zone prediction/permission checks and 43 focused pipeline/replay checks pass. Actual September 24 timeline creates zero zones, leaving full-chain acceptance open. [Evidence](../evaluations/september24-plotting-simulation-20261009.md#september-24-as-the-simulated-present-zone-and-subsidence-checks).
+
+### [BUG-134] Replay inspection is confused with the normal cloud interface
+
+- **Status:** Investigated; successful actual-news map acceptance remains open.
+- **Severity:** Medium — simulation results were described without establishing visible results on the developer's interface.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/RCA:** Screenshots show normal port 3000, routed to backend 8000 and Cloud SQL database `lanes`. Historical replay was persisted only in private loopback database `lanes_news_test` through ports 3001/8001. The cloud has no selected September 24 article or news claim/zone records. Separately, corrected actual-source replay generated no active polygon, so switching ports does not establish successful plotting.
+- **Investigation/files:** Read-only checks reconcile configured host with Cloud SQL `lanes-db`, inspect saved tables and invoke actual result/collection readers. Cloud contains 24 excluded articles, 60 completed extraction runs and zero readable locations, cases, evaluations, decisions or zone links. Both normal public HTTP paths return zero alerts and non-news zones 17/18. Ignored operational audit script/output under `data/news-replay/`; [recorded evidence](../evaluations/news-live-plotting-check-20261009.md#october-9-318-am-screenshot-and-connected-database-reconciliation).
+- **Verification/limits:** Transactions explicitly read-only and rolled back; no cloud publication, database/schema changes, browser use or process repointing. Historical source/time/geometry blockers remain under BUG-132; latest Rappler feed failure remains under BUG-131. No additional application change is made for this diagnosis.
+
+### [BUG-133] Public map coordinate handoff cancels its own camera action
+
+- **Status:** Resolved locally; rendered desktop/mobile acceptance pending.
+- **Severity:** Medium — a map link can remain at the overview instead of its requested flood location.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/RCA:** `MapCanvas.tsx` schedules a 50-ms coordinate fly-to, then immediately removes query parameters with `history.replaceState`. Next synchronizes history with `useSearchParams`; its changed dependency can run cleanup and cancel the pending timer. Screenshot remains at zoom 10.3 instead of the requested 17; this mechanism is reproduced independently without asserting the screenshot's URL.
+- **Solution/files:** Move history cleanup into the timer after the actual camera action and marker setup in shared `frontend/src/features/map/MapCanvas.tsx`, preserving mobile/desktop reuse.
+- **Validation:** TypeScript passes. A Node VM harness executes the original/corrected effect with history cleanup and timers, reproducing zero original movements and one corrected movement at 390/1365 fixture widths. No browser is launched; physical visual acceptance remains open.
+
+### [BUG-132] September 9 news replay cannot generate plotting geometry
+
+- **Corrected actual-source acceptance:** Developer rejects invented article/audit fixture as a September 24 simulation. Capture three actual publisher snapshots and run normal collector/pipeline at first Tribune publication availability, preserving source approvals. Two approved GMA items are weather advisories; Tribune is unapproved. Zero candidates/new zones/provider calls result, with existing evidence/placement blockers retained. Archive only rejected private fixture zone 55; normal shared zones 17/18 stay unchanged. Added `scripts/replay_september24_pipeline.py` and three refusal tests; 53 backend checks pass. [Actual evidence](../evaluations/september24-plotting-simulation-20261009.md#latest-correction-actual-source-collector-and-pipeline-replay). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- **Later active simulation checkpoint:** A developer-requested synthetic article using `Quirino Avenue from Asuncion Street to Camia Street` automatically creates zone 55 with bundled OSM/NOAH. Public/staff APIs pass; provider/feed answers are fixtures. Initial `between Asuncion Street and Camia Street` wording lost its span and created separate road claims, leaving the primary claim truncated/Needs Review. That extraction limitation remains open; original September evidence is preserved. Added guarded `seed_local_news_simulation.py`, five demo tests (17 including existing guards), runbook and acceptance notes. [Details](../guides/local-news-replay.md#october-9-developer-requested-active-plotting-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- **Status:** In Progress — local qualifier/geometry defects repaired; broader coverage and real-event acceptance remain open.
+- **Severity:** Medium — supported news observations outside qualified placement coverage cannot automatically become zones.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Evidence:** Three actual captured reports yield 33 readable locations. Thirty pass local evidence prerequisites just after their available snapshots, but the actual estimated-road builder generates zero polygons: 22 missing valid barangay boundaries, seven missing canonical roads, two truncated candidate sets, one missing road section and one missing bounded span. News boundaries currently cover 20 Pasig barangays; affected qualified claims here include Quezon City and Malabon.
+- **Verification/limits:** 84 focused replay/extraction/estimate checks pass. No independent provider audit or PostGIS publication was run; Docker/local database remains unavailable under BUG-129. Original dates, production data and activation gates are preserved. [Simulation evidence](../evaluations/september9-plotting-simulation-20261009.md).
+- **September 24 follow-up:** Five readable roads also generate zero polygons (four missing bounded spans and one unresolved road). Publication-time replay additionally finds stale/missing observations, two correctly subsided roads and no approved Tribune publisher. These are explicit admission/placement limitations, not a demonstrated map-renderer failure. Existing replay checks pass; no new database/provider/browser execution. [Details](../evaluations/september24-plotting-simulation-20261009.md).
+- **RCA and local solution:** Existing automatic corridor activation is already committed. Non-span qualifiers bypassed its context matcher, filtering happened after candidate truncation, disconnected parallel roads could escape ambiguity flags, and coincident NOAH scenario fragments accumulated numerical slivers. Route near/corner clues through the existing matcher before truncation; preserve parallel/direction uncertainty; rebuild overlaps along the original centerline with numerical-only precision and real-gap preservation. Actual Boni now has four modeled review previews but no safely selected lane, and its stale evidence remains blocked.
+- **Files/verification:** `news_road_placement_service.py`, `news_placement_preview_service.py`, `placement_geometry_service.py`, `news_estimated_road_service.py`, processing identity in `crud/news_processing.py` and focused regression tests. **221 focused tests pass**. No schema/dependency/frontend changes or live publication/release; isolated PostGIS remains blocked by BUG-129. September 9 counts above are the original baseline, not a post-repair rerun.
+- **October 9 native follow-up:** Docker recovery enables disposable publication tests: 135 existing native cases and two new real-parser/extractor RSS near/corner cases pass independently, plus 116 current focused regressions. Synthetic fixtures produce automatic polygon/core Active Zones responses and routing blocks; real historical/coverage blockers remain. [Acceptance](../evaluations/news-auto-plotting-backend-test-20261009.md).
+- **Historical inspection follow-up:** The selected September 24 replay is processed locally as run 57. Upgrade the persistent test database's existing publication migration to fix a missing `news_claim_sources` reader table (HTTP 503), then add shared `NewsResultDialog.tsx` map navigation and validated `LiveMapPage.tsx` archived selection. Current-queue absence is correct for expired evidence; inspection returns four Boni previews with no actions/active zones. TypeScript/scoped dialog lint and authenticated frontend-proxy API/page checks pass; browser acceptance is pending. [Manual preview](../guides/local-news-replay.md#october-9-september-24-manual-map-inspection).
+
+### [BUG-131] Live news cadence mismatch and partial feed failure
+
+- **Status:** Investigated; external schedule alignment and Rappler diagnosis remain open.
+- **Severity:** Medium — delayed collection can miss fresh evidence; one publisher is unavailable.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Evidence:** Cloud Scheduler still invokes every three hours while database collection settings specify 30 minutes and evidence expires after two hours. Collector runs #61/#62 record partial failure; Rappler's checkpoint reports a feed size/XML-declaration validation error. Five other feeds parsed 84 entries with zero eligible candidates. Latest overall job success/`not_due` does not erase the retained failed collection stage.
+- **Result:** Read-only verification confirms zero news cases/evaluations/decisions/zone links and two existing non-news public zones. Automatic plotting is connected but has no real-current-article acceptance. 106 focused backend checks and offline asset verification pass. No application/cloud/database change or live auditor request. [Current audit](../evaluations/news-live-plotting-check-20261009.md).
+
+### [BUG-130] Valid cross-barangay citizen zones have no automatic simulation
+
+- **Status:** Resolved locally; matching API/frontend deployment remains pending.
+- **Severity:** Medium — approved Zone #18 could not exercise the subsidence model.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Zone #18 in San Nicolas/Santo Tomas displayed boundary ambiguity and missing observation time. It was fully inside Pasig, but the adapter required one barangay and supported only official-registration recording proxies.
+- **Root cause:** Single-identity resolution/preview scope plus a missing approved-citizen source-time path. Report #16 has immutable submission audit #164 with `observed_at=null`, valid road geometry, and matching approval #166; submission time cannot become an observed onset.
+- **Solution:** Require complete Pasig parent containment, retain all intersected names and validate every identity for the shared model. Derive a separately labeled submission simulation from unchanged qualified source/approval records; stop on conflicts, invalid clocks, edits, later evidence, closure or unsupported age. Existing Overview distinguishes source types automatically.
+- **Files/verification:** Zone prediction CRUD/schema/service, subsidence request/response/scope service, existing Overview/API types/calculation component and focused tests. Seventy-seven backend/model/location and twelve responsive checks pass; real Zone #18 ASGI read in a read-only transaction preserves observation, geometry, status and expiry and yields a stable forecast. [Acceptance](../evaluations/zone18-submission-simulation-20261008.md). No model fit, SQL schema, dependency or cloud release change.
+
+### [BUG-129] Local Docker startup blocks disposable PostGIS verification
+
+- **Status:** Recovered for the October 9 news acceptance run; recurrence/root host cause remain unverified.
+- **Severity:** Low — local verification environment; deployed LANES is independent of this Docker instance.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Starting Docker for calculation-response spatial/API verification fails while renaming `sailor-ingest.sock` to `.stale`, with Windows reporting the file cannot be accessed. The user supplied the same Desktop error twice.
+- **Root cause evidence:** The symptom matches [Docker's reported Windows stale AF_UNIX socket issue](https://github.com/docker/desktop-feedback/issues/554). After the first runtime-directory recovery, logs also report a WSL timeout mounting the existing data disk. A deeper host/filesystem cause is not verified.
+- **Strategy/result:** Validate explicit absolute socket-directory targets and confirm Desktop/backend stopped, then preserve the two runtime parents under sibling backup names. No VM disk, container volume, WSL registration or application data is removed. Desktop force-stop and Docker-distribution termination succeed; the subsequent start again fails. Leave Docker closed and recommend a Windows restart before further startup diagnostics.
+- **Files/verification:** No LANES source change is made for this environment issue. Backup locations and exact blocked checks are recorded in the [calculation walkthrough evaluation](../evaluations/calculation-details-walkthrough-20261008.md#local-docker-interruption). Mathematical/API-unit and browser verification continue separately; native acceptance is not claimed.
+- **October 9 recovery:** After the user reported the same error, force-stop Desktop, confirm backend/Desktop exited, verify literal socket-parent paths and preserve both parents under `run.backup-20261009-013727` and `docker-secrets-engine.backup-20261009-013727`. Restart hidden; Docker engine 29.8.0 responds and original PostGIS/Valhalla containers resume. Native news migrations/lifecycle checks now pass. No reset, volume/VM-disk deletion, WSL unregister or reboot. The earlier calculation-specific blocked check was not rerun. [Recovery and news acceptance](../evaluations/news-auto-plotting-backend-test-20261009.md).
+
+### [BUG-128] Incomplete automatic prediction locality and unsupported feature-effect claims
+
+- **October 9 planner disposition:** Keep In Progress for demonstrated local accuracy. [Decision 26](../decisions.md#26-cross-location-learning-as-a-source-bound-research-comparison) records the delivered partial-pooling comparison and its incomplete/mixed holdouts; version-control publication does not resolve the evidence/calibration or Docker/release gaps. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- **Cross-location follow-up:** Fixed-prior depth/location AFT, purged comparisons and an automatic source-bound research panel are implemented locally. Thirty-six records still share three summaries; partial/mixed or unsupported tests do not establish improvement. BUG-128 remains In Progress for learned local accuracy. 131 backend/model/API checks and 24 responsive cases verify behaviour, not field accuracy. [Results](../evaluations/cross-location-duration-20261008/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- **Status:** In Progress — locality coverage resolved locally; source-feature capture/evaluation and future LANES evidence collection/export implemented. Learned street-specific model improvement remains open because tested candidates fail comparative selection.
+- **Severity:** Medium - ten missing locality polygons prevented automatic detection; adding unqualified features would not establish accuracy.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Prediction reused a 20-record OSM catalog and shared intercept-only duration pattern, including on new streets.
+- **Root cause:** Missing/unclosed OSM administrative relations and source-parent constraints; actual training has three subsidence/two transport summaries and no qualified street drainage/terrain/rainfall effect histories. Many depth pairs are unchanged and source/availability uncertainty persists.
+- **Solution:** Validate a separate complete 30-record OCHA/HDX COD source-parent partition with current PSGC crosswalk, without weakening news footprint gates. Freeze source/versioned input snapshots and expose bounded current context in existing read-only details. Compare whole-summary/episode feature models and retain baselines when they perform worse. The developer-selected future LANES reporting/review path now captures public updates and owner follow-ups with bounded private source export; qualified independent wet/outcome episodes still need to accumulate before a better model can be selected. Never generate observed dry labels or guessed hydraulic capacity.
+- **Files/verification:** flood_location/flood_feature services; private context endpoint and audit hooks; COD range extractor/catalog builder/runtime assets; source feature evaluator; existing Overview details/API. 256 comprehensive backend/model and 38 responsive workflows pass, with TypeScript/lint, asset verification and two real Zone #17 flows; the final run includes precision and future-source/export cases. [Evaluation](../evaluations/pasig-location-feature-models-20261008/README.md). No package/schema/operational expiry/status/routing/deployment change.
+
+### [BUG-127] Prediction UI required hypothetical inputs instead of resolving zone evidence
+
+- **Status:** Resolved locally for automatic UI/registration simulation. Independent model accuracy and operational forecast-to-Unconfirmed/public retention remain open.
+- **Severity:** Low - rejected test controls did not fulfill the automatic prediction workflow.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Overview required hypothetical barangay/time inputs and an acknowledgment checkbox; Zone #17 had no displayed result.
+- **Root cause:** The initial saved-suggestion adapter was report-bound, followed by a hypothetical test form. The live record had no qualified observation clock; its Ugong location was outside the four-location subsidence cohort. Collection coverage, training cohort, prediction transfer and boundary geometry had been conflated.
+- **Solution:** Remove test/save/checkbox controls. Resolve the authoritative polygon, select qualified linked same-zone/event citizen/current news evidence, and keep nearby reports candidate-only. Enable explicitly labeled pooled experimental transfer; provide a separate simulation from an unchanged recent official registration audit when actual observation time is absent. Keep unknown observation time, source admission and operational expiry unchanged. Freeze issuance anchors so refresh cannot move the forecast indefinitely.
+- **Current files / verification:** zone_prediction schema/CRUD/service/private GET; subsidence scope/status contracts; separate passability kernel target/service/artifact/API/trainer; existing Overview/component/API integration. Recorded verification: 127 focused backend checks, 34 desktop/mobile workflows, two real Zone #17 flows, TypeScript/scoped lint. #17's audit #140 simulation shows around 5:13 PM PHT on October 8; this is a saved verification observation, not a newly measured outcome. [Acceptance](../evaluations/case-linked-ml-review-assistant-20261008.md#october-8-pooled-research-transfer-transport-target-and-automatic-registration-simulation).
+- **Data correction:** Annual/main wet union covers 30 barangays; main/overlay named wet claims cover 21. Ugong has eight annual, seven main wet, three overlay wet and one passability projection. Actual subsidence cohort remains four locations/37 projections/three summaries; the separate passability fit uses seven locations/nine projections/two summaries. Experimental transfer across 30 identities and the 20-polygon catalog are distinct. No dry labels are imputed. [Coverage audit](../evaluations/pasig-barangay-coverage-20261008/README.md).
+- **History:** Initial report-bound/saved suggestion and rejected hypothetical test controls were superseded. Initial automatic-adapter verification recorded 69 backend/30 responsive cases; later model/simulation acceptance above is the current checkpoint. No SQL/schema/package, public routing/status/expiry write or deployment is claimed.
+
+### [BUG-126] Structured owner follow-up uses rejected React state/ref patterns
+
+- **Status:** Resolved and verified locally.
+- **Severity:** Low — scoped lint rejected the existing implementation; no failed production submission is claimed.
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Verification of the previously untested owner flow found `set-state-in-effect` and `refs` lint errors in timezone initialization and retry-button rendering.
+- **Root cause:** Device timezone was copied into state synchronously during an effect, while rendered retry text inspected `attempt.current` directly.
+- **Solution:** Read device timezone when opening the follow-up panel; track retry display state explicitly while retaining the immutable request in an event-handler ref. Draft changes reset both. No default observation clock is introduced.
+- **Files / verification:** `frontend/src/features/flood-followups/FollowupSubmission.tsx`, `frontend/tests/flood-review-suggestions.spec.ts`. Owner timed-entry/same-UUID failure-retry scenarios pass on desktop/mobile, as part of sixteen responsive scenarios. TypeScript and scoped lint pass with zero errors and one unrelated existing moderation warning. [Acceptance](../evaluations/case-linked-ml-review-assistant-20261008.md).
+
+### [BUG-125] Active Zone details diverge from Needs Review and do not hand off selected community evidence
+
+- **Status:** Resolved and verified locally; release pending.
+- **Severity:** Medium.
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Active Info showed sparse raw vehicle values and duplicated notes, while Needs Review used structured flood facts. Opening Edit from community updates carried only the official zone, with no selected evidence reference. Existing stale draft restoration silently removed older local edits.
+- **RCA:** Separate renderers/formatters, legacy report_text prioritizing admin_notes, no selected-update/editor contract, independent non-atomic zone/audit commits, and an automatic stale-draft deletion branch.
+- **Solution:** Shared facts and source projection, independent update list/detail/comparison, backend-selected patch, explicit incorporation, retained stale draft inspection, expected-version lock and atomic save/provenance. Reviewed/dismissed states remain independent; whole-zone clearance requires scope assessment. Separate media failure reports partial success.
+- **Files:** shared FloodFacts/RecordDetailsDialog/floodSurvey, ActiveZoneDetails/ZoneObservationReview/ZoneGeometryComparison, ActiveZonesPanel/LiveMapPage, existing OfficialZoneDrawer/draft storage, zone_update schema/CRUD/service/endpoint, zone_editor_service and admin zone GET/PUT projection.
+- **Verification:** 39 native observation/editor/growth checks and 14 distinct desktop/mobile scenarios pass across recorded runs; TypeScript passes. Mobile editor rail placement and a visible selected-update review badge were checked after fixes. [Responsive and release acceptance](../evaluations/flood-zone-community-updates-20261008.md#admin-comparison-follow-up-october-8).
+
+### [BUG-124] Blocked WebGL initialization crashes the map page
+
+- **Status:** Application recovery fixed and verified locally; browser/device GPU availability remains external.
+- **Severity:** High - browser refusal of a WebGL context surfaced as an uncaught Next.js runtime error instead of a usable page.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** MapLibre construction throws Failed to initialize WebGL with status Web page caused context loss and was blocked. Changing map styles still requires the same graphics context.
+- **Root cause:** BaseMap did not catch constructor failure or present context loss. Cleanup already removed initialized maps, but the immediate effect still allocated an extra development Strict Mode context. The browser's underlying resource/block reason cannot be established from the error alone.
+- **Solution:** Schedule creation on a cancellable animation frame, catch failed construction and remove partial canvas DOM, show Map unavailable/Retry map without automatic graphics retry loops, handle context loss and clear the error after a restored render, suspend style retries while lost and clear delayed compass/resize work on cleanup. Map/report state is not reset by the recovery screen.
+- **Files / validation:** `frontend/src/shared/ui/map/BaseMap.tsx`, `frontend/tests/webgl-recovery.spec.ts`. Four desktop/mobile checks reproduce browser refusal, verify one initial allocation under Strict Mode, handle failed/successful manual retries with no page errors and recover a real simulated lost context. Two flood-zone popup regressions also pass. TypeScript/whitespace checks pass; BaseMap's eight lint errors/seven warnings equal HEAD baseline. No package/model/migration changes and no deployment. [Details](../evaluations/cloud-performance-20261007.md#october-8-webgl-recovery).
+
+### [BUG-123] Public update interface diverged from Report Flood
+
+- **Status:** Reworked locally; provider/device/release verification pending.
+- **Severity:** Medium — separate panel/inconsistent controls and missing editable extent prevented the requested reporting workflow.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Updates used a separate panel, then a shared shell with a survey dropdown, three attachment actions, time/spot/depth-unsure fields and no editable road anchors. Mobile autocomplete could place suggestions outside the viewport.
+- **Root cause:** Update presentation/state was built independently of the original reporting fields; original survey/location interactions were not reused. Portal placement measured input bounds before mobile keyboard/sheet movement and sat below sheets.
+- **Solution:** One Report Flood shell, shared depth/media/description and Take Survey/separate survey view; original large picker plus one camera action; remove extra controls; authenticate original road context and allow editing through the existing location/map preview workflow. Server rebuilds proposed extent into private audit evidence, without operational edits or fabricated observation clocks. Dropdown tracks open input bounds, chooses viewport space and sits above sheets. Independent road/form state preserves original report drafts.
+- **Files / verification:** `FloodReportPanel`, `FloodReportFields`, `ZoneUpdateForm`, `useFloodMedia`, `useZoneRoadPreview`, `MapContext`, `GlobalMap`, `MapCanvas`, shared `LocationAutocomplete`, `zone_update` schema/API/service and staff `ActiveZoneDetails`; native and responsive tests. Sixteen native checks pass; [acceptance](../evaluations/flood-zone-community-updates-20261008.md) records browser/provider/release evidence. No model/migration/package change.
+
+- **Guest-screen follow-up:** Both modes now render the exact original `FloodReportLoginGate` (badge, heading, message, spacing, button); signed-out updates show no zone header/return link or extra desktop close button. The selected zone/condition remains encoded in login return. Two desktop/mobile parity checks compare markup/dimensions, plus two signed-in upload regression checks; TypeScript/scoped lint pass.
+
+- **Header return follow-up:** Move the body return link to a compact New report header action. Existing ConfirmDialog warns about losing the current update fields/files, with Keep editing and Discard. Cancel retains edits; confirmation restores the unrelated unfinished report. Tests check header alignment/full title, 320px warning bounds, cancellation/media retention and original draft restoration; guest parity remains. Popup confirmation wording is short enough for narrow screens.
+
+### [BUG-122] Unwanted observation-time field in Report Flood
+
+- **Status:** Removed and verified locally; release pending.
+- **Severity:** Low — unexpected extra field disrupts the existing public report interface.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The new-report panel displays “When did you observe this flood? (Optional)” above road selection, although the developer wants the existing workflow preserved.
+- **Root cause:** Commit `f04108c` added observation-time collection/state/draft submission for conservative citizen automatic approval on October 7; this was separate from the current Active Zone update panel.
+- **Solution:** Remove that field and new-report timestamp handling, including submission from older queued drafts. Preserve backend observation support and policy; reports lacking explicit observed time remain for staff review. Update-only observation time remains in the current zone observation form.
+- **Files modified / verification:** `FloodReportPanel.tsx`, `floodReportDraftStorage.ts`, `MapContext.tsx`, `tests/citizen-observation.spec.ts`. Six desktop/mobile browser checks pass for legacy drafts, multipart timestamp omission, backend feedback and existing report media. Shared-panel consolidation is recommended separately, not claimed delivered.
+
+### [BUG-121] Existing-zone reader uses an undefined update request
+
+- **Status:** Fixed and verified locally; matching release pending.
+- **Severity:** Medium — reading an existing zone can fail and block refreshed details/edit recovery.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** An authenticated staff GET to `/admin/zones/{zone_id}` for an existing zone reaches a reference to `body.is_active`, although the reader accepts no request body.
+- **Root cause:** An ended-event reactivation guard is placed in `get_zone`; `body` is only defined in the separate `update_zone` handler.
+- **Solution:** Remove the undefined request check from GET and enforce ended-event reactivation protection in PUT. Native authenticated HTTP acceptance verifies existing-zone reads alongside private observation endpoints.
+- **Files modified / verification:** `backend/app/api/v1/endpoints/admin.py`, `backend/tests/test_zone_updates.py`. Ten native checks and eight desktop/mobile browser checks pass for the integrated update feature. Visual acceptance also corrected its popup footer height and mobile sheet stacking/safe-area positioning. The broader legacy Create/Edit upload/description gaps remain unmodified. [Acceptance](../evaluations/flood-zone-community-updates-20261008.md).
+
+### [BUG-120] Community Trending Hotspots displayed fixed example places
+
+- **Status:** Fixed and verified locally; deployment pending.
+- **Severity:** Medium — fixed counts/places falsely suggested current community activity.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Open the desktop feed sidebar or mobile navigation; España, Taft and EDSA-Kamuning always appeared with the same counts even when the feed had no current activity.
+- **Root cause:** Both layouts contained duplicated hardcoded labels, counts and map coordinates, with no backend ranking or freshness policy.
+- **Solution:** Parameterized public aggregation of named/located posts with a default 24-hour window and bounded 48-hour fallback only if nothing qualifies, two distinct contributors, per-author latest activity weight with a six-hour half-life, and deterministic top-three ordering. Match normalized case/whitespace labels and PostGIS proximity (500 projected metres in EPSG:3857, approximately 484 ground metres around Metro Manila). Use a representative saved report point or post coordinates for map links. Public pending and approved shares count as community activity, without asserting flood confirmation. Deleted/hidden/private/rejected content, old report reshares, inactive/deleted accounts and missing/invalid locations do not count. Different aliases are not automatically merged.
+- **Files:** `backend/app/api/v1/endpoints/feed.py`, `schemas/feed.py`, new `services/trending_hotspots_service.py`, `crud/trending_hotspots.py`; `frontend/src/features/feed/feedApi.ts`, new `components/TrendingHotspots.tsx`, `LeftSidebar.tsx`, `FeedPage.tsx`; native PostGIS and responsive Playwright tests.
+- **Verification:** 13 focused backend checks pass after applying existing Alembic migrations to a fresh disposable PostgreSQL/PostGIS database; TypeScript and focused lint pass. Eight Chromium Playwright checks pass across desktop and iPhone-sized mobile viewports, covering navigation, empty/error/retry states and automatic expiry refresh; both screenshots reviewed. No SQLAlchemy model, migration or dependency addition.
+
+- **Sidebar design follow-up:** Align loading/empty states with Saved Places and compact list rows/actions across desktop/mobile; remove the technical ranking footer. Eight browser checks and TypeScript/scoped lint pass; screenshots reviewed. The existing navigation check now waits for the mobile drawer animation before measuring bounds.
+
+- **Final acceptance record:** [Community hotspots verification](../evaluations/community-trending-hotspots-20261007.md) records the final nine native/ten browser checks, unchanged schema/dependencies and release limits.
+
+- **Bounded freshness follow-up:** The selected window is returned by the backend and displayed by both sidebar layouts. One qualifying place prevents older filler; fallback excludes posts/report sources beyond 48 hours, preserves privacy and distinct-author protections, and returns to 24 hours when fresh activity qualifies. Nine native PostGIS/API checks and ten desktop/mobile browser checks pass, plus TypeScript/scoped lint. Existing migrations apply in the generated local database, which is removed after acceptance; no model/migration/dependency changes.
+
+### [BUG-119] System Settings saved unused values and could fail after persisting
+
+- **Status:** Fixed and verified locally; matching production release remains pending.
+- **Severity:** Medium — stored settings could be ineffective or a save could fail after changing values.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The four legacy controls had no runtime consumers. Legacy saving committed before an incorrectly called audit function, so an error could follow a persisted change.
+- **Resolution:** Typed shared policy replaces legacy writes. Known keys/ranges and capabilities are checked; advisory serialization plus revision conflicts protects edits. Settings, revision and audit share one transaction. The response is constructed before commit, so response assembly errors also roll back. Legacy rows/read access remain for history. Mobile/desktop drafts survive save errors and edit conflicts. [Verification](../evaluations/functional-system-settings-20261007.md).
+
+- **Pre-push verification:** The fresh 174 native settings/lifecycle/growth checks pass with existing migrations in removed disposable PostGIS databases. Changes include `backend/app/api/v1/endpoints/settings.py`, `backend/app/services/configuration_service.py`, `backend/app/schemas/configuration.py`, settings-consuming worker/zone/report services and `frontend/src/features/admin/SystemSettingsPage.tsx`. No new production release is claimed. [Audit](../evaluations/pasig-subsidence-validation-20261007/README.md#senior-planner-pre-push-checkpoint).
+
+### October 7: Docker socket startup recovery repeated during settings verification
+
+The ingest socket failure recurred, followed by a second stale Secrets Engine socket. Only recognized crashed Docker processes were stopped. Zero-byte runtime socket directories were moved to recoverable backups, then recreated. `lanes_postgis_db` and `lanes_valhalla` returned to running state; databases, volumes and application data were preserved. Backups are recorded in the [settings verification](../evaluations/functional-system-settings-20261007.md). This is a workaround for the [reported Docker Desktop startup defect](https://github.com/docker/desktop-feedback/issues/554), not a permanent Docker fix. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### [BUG-118] Private follow-up evidence leaks through the generic audit feed
+
+- **Status:** Resolved in local code; actual API/privacy acceptance and deployment pending.
+- **Severity:** High — non-Commuter staff without Reports permission could otherwise read private citizen/staff follow-up evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Independent source/security review of the new follow-up workflow found `/admin/audit-logs` returns generic `metadata_json` under a dependency that excludes only Commuter. The new dedicated follow-up routes correctly restrict evidence, but the generic reader could bypass that capability boundary.
+
+#### 2. Root Cause Analysis
+
+Follow-up observations/reviews reuse the existing append-only audit JSON pattern. Generic `get_audit_logs` previously selected every action type without excluding private feature records.
+
+#### 3. Solution & Architectural Strategy
+
+Exclude `FLOOD_FOLLOWUP_OBSERVATION` and `FLOOD_FOLLOWUP_REVIEW` from the generic audit query before action filters, count and pagination. Even an explicit action filter cannot retrieve those records there. Ownership/Reports-capability checked follow-up reads remain the sole evidence interface, with no-store responses. No source record is deleted or redacted in persistence.
+
+#### 4. Files Modified / Verification
+
+`backend/app/crud/audit.py` uses the centralized follow-up action constants and preserves unrelated/legacy-null action behavior. An independent reviewer re-read the fix and found the source-level access path closed; Python syntax/diff checks pass. Actual API/database privacy tests were not requested/run. [Implementation and limits](../evaluations/structured-flood-followups-20261007.md).
+
+### [BUG-117] Live free auditor times out at the normal worker deadline
+
+- **Status:** Investigating availability; fail-closed behavior verified, current-article acceptance pending.
+- **Severity:** Medium — eligible current news can be deferred to review instead of automatic publication.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The October 7 live-news audit verified `openrouter/free` configuration, then made one historical synthetic probe at the default 20-second worker deadline. It returned `probe_failed`, `unavailable`, `auditor_timeout`, and no HTTP status. Earlier successful synthetic responses do not establish consistent availability.
+
+#### 2. Root Cause Analysis (RCA)
+
+The client deadline elapsed before a usable response. The specific provider/network/server cause is unverified; production has no claim evaluations with which to measure current-article failure rates. This is distinct from BUG-114's repaired quote-offset formatting defect.
+
+#### 3. Solution & Architectural Strategy
+
+Retain required independent confirmation and failure-to-review behavior. Measure availability/latency with representative current articles before declaring unattended activation accepted. No paid fallback, persistence-timeout change, safety-gate relaxation or repeated synthetic probe was used.
+
+#### 4. Files Modified / What Changed
+
+No application/provider configuration change. Record the safe probe result, acceptance tasks and verification limits in `docs/evaluations/news-live-operational-audit-20261007.md`, `docs/task_plan.md` and `docs/progress.md`. The synthetic probe has no database/publication access. [Audit](../evaluations/news-live-operational-audit-20261007.md).
+
+### [BUG-116] Sync database work scales with clients; weather blocks the API loop
+
+- **Status:** Fixed and deployed; 37 backend/16 desktop-mobile regressions and real API/public smoke checks pass. Sustained load/physical-device speedup remain unverified.
+- **Severity:** Medium for responsiveness and load growth.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The second performance audit found one flood DB query per SSE client every 15 seconds and blocking Open-Meteo calls inside async weather handlers. Offline engine warm-up also started alongside first map rendering. The small live request sample had a first-wave 1.27–1.31-second cluster, with later active-zone reads at 13–16 ms; it is not a controlled user-speedup benchmark.
+
+#### 2. Root Cause Analysis (RCA)
+
+Independent client polling repeats the same read/serialization. A synchronous weather SDK blocks the async event loop, so unrelated requests share its wait. Offline warm-up competes for startup resources even though it can wait until the map appears.
+
+#### 3. Solution & Architectural Strategy
+
+Use one shared DB-backed poll per worker with 100 reserved subscriptions, latest-result queues and idle/shutdown cleanup; retain init/update/unavailable behavior and independent routing safety reads. Run current/forecast handlers in FastAPI's worker pool. Schedule offline warm-up after render/idle with a timeout and older-browser timer fallback.
+
+#### 4. Files Modified / What Changed
+
+`services/flood_sync_service.py`, `endpoints/sync.py`, application lifespan, weather current/forecast signatures, `BaseMap.tsx`, snapshot/broker/weather tests and desktop/mobile map performance tests. No new schema/library/auth or cloud capacity change. [Research, tests and release details](../evaluations/cloud-performance-20261007.md#second-pass-shared-polling-and-responsive-weather-handlers).
+
+### [BUG-115] Cold starts, redundant flood refreshes and blocking route searches
+
+- **Status:** API/job/frontend fixes deployed and browser smoke checks passed; next scheduled discovery-run memory and sustained/physical-device acceptance remain unverified.
+- **Severity:** Medium for interactive latency; High for separate discovery-job memory failures.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The developer reported a slower newer version. Cloud logs showed 18–21-second API startup waits, duplicate flood-refresh paths and two 512-MiB discovery-job memory-limit failures. Production browser tests also exposed full-page reloads on reconnect that cleared open news panels.
+
+#### 2. Root Cause Analysis (RCA)
+
+Scale-to-zero, synchronous Valhalla/database waits in asynchronous routing, repeated empty exclusions, unchanged SSE snapshots triggering HTTP refetches alongside 15-second map polling, eager hidden map work and the PWA plugin's default online reload. Database/API/frontend metrics did not justify general resource upgrades under observed traffic.
+
+#### 3. Solution & Architectural Strategy
+
+Keep one API instance warm and give discovery 1 GiB. Offload synchronous waits and overlap at most two searches; preserve all flood gates and wait for in-flight calls before fallback. Send changed snapshots with keepalives, retain offline data on failed reads, use a 60-second map fallback, defer initial map/panels and keep PWA state during reconnect.
+
+#### 4. Files Modified / What Changed
+
+Backend routing, sync and retention services/endpoints; providers, live-sync hook, map/admin polling, GlobalMap, feed coordinate navigation, PWA configuration, Cloud Build and focused tests. **32 backend and 14 distinct desktop/mobile browser tests**, frontend build/type/lint and public desktop/mobile smoke checks passed. Exact rollout and browser results are maintained in the [evaluation](../evaluations/cloud-performance-20261007.md); next scheduled news-run RAM and physical phones remain unverified.
 
 
 This document records bugs, regressions, and unintended system behaviors that have been investigated, are pending resolution, or have been resolved in LANES. Each entry documents the bug context, root cause analysis, resolution strategy, and exact files modified to ensure a clear audit trail.
 
 ---
+
+### [BUG-114] Free-auditor quote positions fail exact article grounding
+
+- **Status:** Repaired and verified locally with exact-source options; broader real-article/deployment acceptance remains pending.
+- **Severity:** Medium - a returned structured audit can fail before eligible news publication.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After a twenty-second timeout, a sixty-second synthetic probe received structured evidence with positions that did not match its quotes in the article. The validator correctly rejected it with `audit_evidence_offset_mismatch`.
+
+#### 2. Root Cause Analysis (RCA)
+
+The prompt required the model to count Python character positions. This introduces a formatting burden even when quotes are available in immutable text. The discarded response does not establish the exact counting mistake; exact source validation remains required.
+
+#### 3. Solution & Architectural Strategy
+
+Calculate bounded exact quote/start/end options on the server and instruct the independent model to select/copy them. Keep full article context, strict immutable-substring checks and existing fact/status/time/identity gates. Prompt v2 changes the evaluation fingerprint. Return only safe numeric HTTP status for transport failures; never raw provider messages or automatic paid fallback.
+
+#### 4. Files Modified / What Changed
+
+`news_claim_auditor.py`, internal `news_audit.py` result metadata, `scripts/check_news_auditor.py` and representative tests. **170 distinct checks pass**, including native evaluation/policy/history. Live synthetic free probes validate at both sixty and twenty seconds and remain historical review; Linux image/offline asset checks pass. No dependency/model/migration/cloud write or new UI design. [Evidence](../evaluations/phase-36-auditor-evidence-options-20261007.md).
+
+### [BUG-113] NOAH analytical tiles are absent from the API/job image
+
+- **Status:** Resolved and verified locally; matching cloud rollout remains pending.
+- **Severity:** High - automatic estimated road placement lacks a required runtime input.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Local placement uses the approximately 90 MB NOAH catalog, while an image built from `backend` cannot access ignored root `data/noah-placement`. The rendered public hazard overlay does not supply those analytical vectors.
+
+#### 2. Root Cause Analysis (RCA)
+
+The catalog default points outside the Docker build context. Existing runtime bundling contains OSM/history/boundaries but not NOAH; deployment therefore cannot reproduce local placement.
+
+#### 3. Solution & Architectural Strategy
+
+Preserve the checked bounded catalog in `backend/runtime_data/noah-placement`, retain ODbL attribution and manifest hashes, and verify all declared tiles plus qualified parent coverage during Docker build. Local defaults use the bundle; Docker sets `/data/noah-placement`; explicit configuration overrides remain. No modeled polygon becomes current evidence merely because packaging passes.
+
+#### 4. Files Modified / What Changed
+
+`noah_vector_catalog_service.py`, `backend/Dockerfile`, runtime README/bundle, `.gitattributes`, packaging/verifier scripts and focused fixtures. **188 focused tests**, final Linux image build and offline asset verification pass. No new dependency/model/migration or deployed cloud change. [Evidence](../evaluations/phase-36-news-runtime-packaging-20261007.md).
+
+### [BUG-112] News-created road zones omit the existing solid road core
+
+- **Status:** Resolved locally for automatic estimated road corridors; catalog-only polygons require separately supported road geometry.
+- **Severity:** Medium — active road-zone presentation cannot display both expected layers.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+News activation persists an operational polygon, but an active road zone needs the existing solid centerline plus transparent outer area on both public and staff maps. Source tracing shows news activation supplies only the area.
+
+#### 2. Root Cause Analysis (RCA)
+
+`activate_operational_footprint` constructs `FloodAvoidanceZoneCreate` without source_geometry or a road report. `FloodAvoidanceZone.report_geometry` resolves source_geometry or primary-report geometry. `useFloodZonesLayer` creates the solid-core feature only for LineString/MultiLineString report_geometry; its polygon feature uses the transparent fill.
+
+#### 3. Solution & Architectural Strategy
+
+Bind accepted bounded news road linework to the operational area and persist it through existing source_geometry where supported. Keep exact component ownership/containment and disconnected spans. Reuse existing mapStyles/useFloodZonesLayer on both screen sizes. Complete placement-to-activation acceptance separately; a preview ranking alone is not field-verified geometry. No schema/model change is part of this audit.
+
+#### 4. Files Modified / What Changed
+
+`news_estimated_road_service.py` derives each accepted component and its road line; `news_publication_service.py` persists the core through existing source_geometry and rechecks it on refresh. Safe public/staff news projection and existing popup/summary facts expose source/time/status/basis. Shared paints remain unchanged. Native storage/HTTP/routing checks and actual desktop/mobile core/aura pixel tests pass. No model/migration or new design. Arbitrary catalog polygons do not acquire invented centerlines. [Verification](../evaluations/phase-36-estimated-road-zone-integration-20261006.md).
+
+### [BUG-111] Scheduled news command stops before publication and footprint activation
+
+- **Status:** Resolved locally; release/current-source provisioning remains pending.
+- **Severity:** High — saved flood claims never reach operational activation through the configured command.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The local Cloud Build news-job command selected `--discover --process`, which performs durable extraction only. The explicit publication pipeline did not call the footprint activation helper. Repeated stateless batches could also revisit completed handoffs instead of later claims.
+
+#### 2. Root Cause Analysis (RCA)
+
+The configured command and service handoffs predated the publication/footprint contracts. Seed batching included already-bound and empty extraction runs; activation had no worker-stage caller.
+
+#### 3. Solution & Architectural Strategy
+
+Add opt-in discovery `--pipeline`, prepared local job args, restart seeding filters and an exact approved-catalog activation stage after publication/expiry. Keep activation atomic and revision/evidence guarded; staff choices remain protected. Scan bounded catalog candidates past failures while limiting successful activations. Sanitized errors appear in summaries and CLI exit status. Missing catalog is normal text-only fallback; invalid configured catalog is an error. No real source is provisioned and no deployed job was changed.
+
+#### 4. Files Modified / What Changed
+
+New `backend/app/services/news_footprint_worker_service.py`; existing pipeline/evaluation/publication services; discovery and pipeline CLIs; local `cloudbuild.yaml`; worker/native lifecycle/pipeline/CLI tests and guarded verification runner. **456 distinct checks pass** overall. No schema or dependency changes. [Verification](../evaluations/phase-36-automatic-footprint-worker.md).
+
+### [BUG-110] Operational shape validation is treated as verified incident evidence
+
+- **Status:** Resolved locally; **398 distinct checks pass**. Actual current source provisioning and map integration remain open; worker connection is verified in [the subsequent worker checkpoint](../evaluations/phase-36-automatic-footprint-worker.md).
+- **Severity:** High — arbitrary source labels and partial locality overlap previously authorized operational geometry.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A valid polygon partly outside its reported locality passed with a nonempty arbitrary source label; shape acceptance was not proof of a current affected footprint.
+
+#### 2. Root Cause Analysis (RCA)
+
+The optional parent predicate used intersection; provenance checked only string presence and coordinate bounds substituted for explicit CRS. No trusted exact current article/claim/incident approval or component binding existed, and newer observations could renew old geometry.
+
+#### 3. Solution & Architectural Strategy
+
+Separate shape validation from server approval. Resolve qualified locality assets and require full coverage, explicit SRID and all valid disconnected parts. Bind exact current evidence to an operator-approved catalog record or stored active/capable staff review. Client labels/checksums and modeled geometry cannot approve a zone. Preview/save share gates; relinks verify article/incident/component/metadata ownership. Unsupported renewal becomes an alert with a private reason and withdraws unsupported old links; immutable history stays intact. No real current catalog is provisioned.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/operational_footprint_service.py`, new `operational_footprint_evidence_service.py` and `news_permissions.py`, `news_publication_service.py`, `news_road_placement_service.py`, publication schema/API/dependencies, geometry/catalog/road/native lifecycle tests and the guarded runner. Sixty added targeted checks cover geometry limits/coverage/provenance, catalog integrity and native incident/actor/preview/refresh/relink rejection. No SQLAlchemy models or Alembic definitions changed. [Verification](../evaluations/phase-36-trusted-footprint-contract.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
+
+### [BUG-109] Correcting an active news case to retain its own zone deactivates that zone
+
+- **Status:** Resolved locally; **289 distinct checks pass** across the repair and related regressions.
+- **Severity:** High — operational map/routing/lifecycle behavior differs from accepted news evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+An audited same-case correction appended an active-zone supported link but immediately deactivated its retained zone and truncated expiry.
+
+#### 2. Root Cause Analysis (RCA)
+
+`_withdraw_support` excluded `previous.case_id` rather than the prior decision, ignoring the newly current support revision. Retained active labels consequently pointed to inactive coverage.
+
+#### 3. Solution & Architectural Strategy
+
+Exclude only the previous decision ID, retaining current-revision, active-state, unexpired linked support from any case. Preserve original expiry on retention/retry; reject expired target zones. Final withdrawal ends solely news-supported coverage and its final event without deleting history. Existing independent news/citizen and manual-owner exemptions remain intact.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/news_publication_service.py` and native lifecycle tests. Six retained-support final-state cases, replacement, concurrency, two rollback cases and expired-zone rejection pass; existing shared-source/citizen coverage regression also passes. [Repair verification](../evaluations/phase-36-zone-metadata-support-repair.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
+
+### [BUG-108] News-created zones lose accepted flood depth and severity
+
+- **Status:** Resolved locally; **289 distinct checks pass** across the repair and related regressions.
+- **Severity:** High — operational map/routing/lifecycle behavior differs from accepted news evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A waist-depth claim created a high/waist event but its zone read medium/null. Native public-zone verification also found polygon contributor geometry failed response validation.
+
+#### 2. Root Cause Analysis (RCA)
+
+Creation populated event peaks without existing zone override fields. Routing reads zone metadata. `ZoneContributorResponse` permitted PolygonGeometry but omitted Polygon EWKB decoding.
+
+#### 3. Solution & Architectural Strategy
+
+A shared news-only validator supplies supported depth/severity and independently confirmed access metadata to every created component via existing fields. Unknown depth and passable-all activation reject; unknown access stays unset. Explicit vehicle prohibitions can only tighten depth policy, without inferring other allowed classes or pedestrian closure. Decode valid contributor polygons through the existing parser.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/news_publication_service.py`, `backend/app/services/flood_routing_policy.py`, `backend/app/schemas/report.py`, native lifecycle tests and the preserved runner. Sixteen MultiPolygon metadata cases, five real public API/native vehicle-policy matrices and five measurement/access rejections pass. No SQLAlchemy model/migration or new request-level override field. [Repair verification](../evaluations/phase-36-zone-metadata-support-repair.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
+
+### [BUG-107] Operational activation fails decoding its stored independent audit
+
+- **Status:** Resolved locally; both original regressions and 23 added guard/retry/transaction checks pass. BUG-108/109 are subsequently repaired; BUG-110 is subsequently repaired locally; operational integration still depends on actual current source provisioning and worker/map acceptance.
+- **Severity:** High — activation and refresh could not complete on the approved database.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Fresh migration/pytest reproduced an AttributeError after invalid strict audit decoding was swallowed. After repairing decoding, native tests exposed an unsupported decision operation and insertion of refresh support links before the referenced active decision existed.
+
+#### 2. Root Cause Analysis (RCA)
+
+`activate_operational_footprint` used strict Python-object validation for stored JSON instead of `_load`'s strict JSON path. It omitted current evidence/revision checks and hashed only the source label. The approved operation check rejects `activate_zone`; the existing link trigger requires the active decision before support insertion.
+
+#### 3. Solution & Architectural Strategy
+
+Reuse `_load`, reject malformed/missing/stale evidence safely, validate source/policy/claim/depth/passability/historical observation identity, require expected revision and recheck under incident-then-case locks. Bind the request to geometry/checksum/parent/actor/policy/revision; exact retries return the original decision without resetting expiry. Record private geometry attribution in existing JSONB. Use approved evaluate/correct operations and append the refresh decision before its links within the outer transaction. Provenance attribution does not resolve BUG-110 source trust.
+
+#### 4. Files Modified / What Changed
+
+`backend/app/services/news_publication_service.py`, `backend/app/schemas/news_publication.py`, `backend/tests/test_news_publication_lifecycle_postgres.py`, the disposable verification runner and synchronized records. No SQLAlchemy model, migration definition or dependency change. **103 targeted + 133 auditor/evaluation + four event = 240 distinct passing checks**. [Repair evidence](../evaluations/phase-36-bug107-activation-repair.md); [original reproduction](../evaluations/phase-36-integration-audit-20261005/README.md).
+
+### [BUG-106] Shared Select menu opens outside the available viewport
+
+- **Status:** Resolved; staff desktop/mobile checks and four existing filter/Active Zone regressions pass.
+- **Severity:** Medium — staff cannot reliably choose audited evidence or decisions near the screen bottom.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Actual browser verification of the new staff decision controls found that the shared portal dropdown extended below the visible screen instead of remaining reachable. Small/mobile viewports and lower form controls reproduce it.
+
+#### 2. Root Cause Analysis (RCA)
+
+The fixed portal always opened below the trigger and did not constrain its option-list height/position to available visual viewport space.
+
+#### 3. Solution & Architectural Strategy
+
+Measure visual viewport bounds and respond to viewport scroll/resize; choose upward opening when needed, cap menu height and keep horizontal bounds visible. Preserve the existing shared component, backend-owned options and independent report/zone behavior.
+
+#### 4. Files Modified / What Changed
+
+- `frontend/src/shared/ui/forms/Select.tsx`: viewport-aware dropdown flipping, bounds and height.
+- `frontend/tests/news-decisions.spec.ts`: staff decision/evidence flows on desktop/mobile.
+- Existing location-filter/Active Zone checks verify the shared-control/style behavior still works. [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md).
+
+### [BUG-105] Correcting original wet evidence can roll back a newer matched observation
+
+- **Status:** Resolved locally; two native lifecycle regressions pass in the final checkpoint.
+- **Severity:** High — current alert depth/status and observation expiry can regress to superseded evidence.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After a newer qualified wet report refreshes a stable alert, correcting the original evidence on that same case could restore the older observation/depth. The same rollback remained possible after an administrative review transition.
+
+#### 2. Root Cause Analysis (RCA)
+
+The case/evaluation identity and clearance barrier were valid, but correction did not compare the proposed wet observation to prior append-only wet decisions. Current-state filtering can lose that newer observation after withdrawal/reopening.
+
+#### 3. Solution & Architectural Strategy
+
+`_wet_supersedes` consults same-article, exact-qualified-incident active wet history and blocks an older wet observation. Both automatic publication and shared preview/final correction apply the history barrier. Newer source evidence remains traceable and its accepted clock cannot be rolled back by an older correction.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_publication_service.py`: historical newer-wet query used at automatic and staff write gates.
+- `backend/tests/test_news_publication_lifecycle_postgres.py`: immediate same-case correction and correction after administrative rejection.
+- [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md): all 21 native lifecycle checks.
+
+### [BUG-104] Staff correction bypasses stable-case continuity after observation refresh
+
+- **Status:** Fixed locally; final native regression checkpoint recorded in the lifecycle evaluation.
+- **Severity:** High — duplicate or superseded Active source alerts can survive a correction path.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+An automatic newer qualified observation refreshes the stable target alert while its immutable source stays bound to a separate evidence case. Correcting that separate source case using the already-consumed evaluation could publish a second Active alert. Preview and final correction also differed in supersession checks.
+
+#### 2. Root Cause Analysis (RCA)
+
+Staff correction checked its source/case and current audit but did not use the incident serialization, evaluation-consumption and same-lineage continuity gates applied to automatic publication. `allowed_actions` only guides the interface and is not a write-boundary authorization check.
+
+#### 3. Solution & Architectural Strategy
+
+Share correction continuity/supersession validation between preview and final submission. Reject an evaluation consumed on another case and conflicting same-lineage public cases. Acquire incident advisory lock before the target case lock; retain expected revision and globally unique request identity. Staff clearance now hashes the complete validated request body, so changing any payload field under a reused UUID returns identity conflict. Supported evidence remains immutable; a retry cannot create another decision or extend expiry.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_publication_service.py`: `_correction_checks`, incident-before-case ordering and shared preview/final gates.
+- `backend/tests/test_news_publication_lifecycle_postgres.py`: native separate-case refresh/correction regressions.
+- [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md): final scope and checkpoint.
+
+### [BUG-103] Administrative review choices erase a matched-clearance barrier
+
+- **Status:** Fixed locally; final native regression checkpoint recorded in the lifecycle evaluation.
+- **Severity:** High — recently cleared flooding could be republished from an older wet observation.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Publish a supported wet observation, record a newer matched clearance, then reopen/reject/defer the case. While the old wet observation is still inside its two-hour horizon, a correction or separate replay could make it Active again despite the preserved clearance evidence.
+
+#### 2. Root Cause Analysis (RCA)
+
+Supersession checked only the latest decision. Nonpublic review decisions carry no observation clock and replace the latest clear operation, hiding its clock from automatic and staff correction guards.
+
+#### 3. Solution & Architectural Strategy
+
+`_clearance_supersedes` checks immutable historical clearance for the same article lineage and exact qualified incident identity. Wet evidence at/before that observed clearance remains superseded after any later administrative choice. Both automatic publication and shared preview/final correction use this barrier; no clearance history is rewritten.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_publication_service.py`: historical matched-clearance query and automatic/staff supersession gates.
+- `backend/tests/test_news_publication_lifecycle_postgres.py`: clear → reopen/reject/defer → old-wet correction regressions.
+- [Lifecycle verification](../evaluations/phase-36-news-publication-lifecycle.md): final native checks and operational limitations.
+
+### [BUG-102] Git newline normalization breaks SHA-bound research replay
+
+- **Status:** Pre-push byte-preservation repair; staged manifest verification is required before commit.
+- **Severity:** High — a fresh checkout can fail recorded input/output provenance despite equivalent displayed CSV values.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The pre-push audit found 17 SHA-bound research files whose working bytes would be changed by Git newline normalization. Recorded dataset manifests and replay builders validate exact bytes, so normalized staged files would fail after cloning.
+
+#### 2. Root Cause Analysis (RCA)
+
+`core.autocrlf=true` normalizes text into Git blobs while manifests hash the original working files. Existing source-capture protection did not cover all derived CSV/JSON inputs, the three hashed collector/builder scripts or the hashed target plan.
+
+#### 3. Solution & Architectural Strategy
+
+Extend `.gitattributes` with `-text` for the dated research CSV/JSON bundles and specifically hashed scripts/target plan. Renormalize only the affected research files into their verified original bytes, then compare staged Git blob hashes with all 30 manifest input/output/builder checks before commit. Preserve source evidence and logical data: 819 wet observations, 37 conditional projections and zero training admission remain unchanged.
+
+#### 4. Files Modified / What Changed
+
+- `.gitattributes`: explicit byte-preservation patterns for hashed research artifacts.
+- Existing dated Pasig research inputs: stage their original verified bytes instead of newline-normalized equivalents; no row/value or label-admission change.
+- Qualification/follow-up evaluation notes record the reproducibility constraint. Commit/push outcome is reported separately after Git completes.
+
+### [BUG-101] City aliases escape as barangays and news previews hide hazard gaps
+
+- **Status:** Code/preview defects, C5/Pasig route coverage and twenty-barangay Pasig community preview provisioning resolved locally; omitted administrative areas and operational footprints remain pending.
+- **Severity:** High — blocks qualified locality placement and misrepresents disconnected modeled road pieces.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+`C5 in Pasig City` could set canonical barangay to `City of Pasig`. Named barangays had no supported polygon loader. Placement returned whole candidate centerlines and NOAH lengths; the blue dashed map treatment could not express separate modeled intersections.
+
+#### 2. Root Cause Analysis (RCA)
+
+A shared alias map includes cities and barangays; normalization returned alias targets without validating level/parent. OSM also tokenized C5 and C-5 differently, and the article city could be misread as an ungrounded landmark. Barangay metadata was rejected unconditionally in the OSM provider. NOAH intersections were reduced to lengths, and the preview hook rendered candidate centerlines.
+
+#### 3. Solution & Architectural Strategy
+
+Validate aliases against actual barangays/exact parents; retain qualified barangay context. Load reviewed checksummed polygons and clip only within supported administrative geometry. Return source-identified disconnected intersection fragments and dissolved modeled display geometry without bridging gaps. Reuse shared pending aura styles, with reported depth controlling severity and unknown depth staying neutral. Preserve read-only/current-flood/routing gates and prior extraction history; new processing identity is v11.
+
+**Earlier source-coverage probe (before route-relation enrichment):** C5/C-5 aliases now match, but all 85 indexed ways under those names lie outside the checked Pasig polygon. The constructed city-only C5 probe therefore returns `named_road_sections_not_found`; the Ugong probe returns `missing_valid_barangay_boundary`. Reviewed OSM alias/road coverage and real polygon assets must be provisioned before these cases resolve. A separate constructed C. Raymundo probe produced 25 candidates/141 modeled fragments, with disconnected display geometry on 13 candidates; this establishes preview behavior, not current flood confirmation or routing eligibility.
+
+**Subsequent coverage repair:** the same September 27 PBF now contributes explicit C5 road-route relations 417210/14448353, resolving 45 Pasig member ways and 14 ambiguous sections without renaming original roads. Read-only asset checks, parent mismatch reasons and immutable provisioning tooling are delivered; the later same-snapshot OSM community review packages twenty Pasig polygons including Ugong with explicit automated-review and ODbL provenance. Ten barangays remain omitted; no human/official/legal/field extent is claimed. GeoRisk requires a token and the old Pasig atlas lacks Ugong/has parent/licensing limits, so neither alternative was installed. The C5/Ugong probe has thirteen clipped candidates/250 modeled fragments, eleven disconnected previews and zero linework outside Ugong; no operational footprint is claimed. [Current verification](../evaluations/phase-36-independent-evaluation-and-spatial-coverage.md).
+
+#### 4. Files Modified / What Changed
+
+- Backend: `philippine_location_service.py`, `taglish_extraction_service.py`, new `barangay_boundary_service.py`/`placement_geometry_service.py`, road matching/context/placement/NOAH services, extraction/placement Pydantic contracts and processing version.
+- Coverage follow-up: `backend/scripts/build_news_osm_catalog.py`, bundled `runtime_data/osm/roads.json.gz`/`manifest.json`/README, `news_road_placement_service.py` and `barangay_boundary_service.py`; new `scripts/audit_news_spatial_assets.py`/`provision_news_barangay_catalog.py`/`build_news_barangay_catalog.py`, `runtime_data/barangay/` catalog/review/provisioning receipts and spatial-asset tests preserve explicit relation provenance, safe coverage failures and immutable provisioning.
+- Frontend: `reviewApi.ts`, `useNewsPlacementLayer.ts`, `NewsReviewEvidence.tsx`; browser fixtures now carry disconnected preview geometry.
+- Tests: extraction, new `test_barangay_placement.py`, placement regressions and existing spatial browser flows. 226 backend checks and 14 browser cases pass; TypeScript/lint pass. [Evaluation](../evaluations/phase-36-disconnected-news-placement.md).
+
+### [BUG-100] Local Docker startup fails on stale Windows Unix sockets
+
+- **Status:** Local startup recovered; upstream cause and recurrence prevention unverified.
+- **Severity:** High — blocks native PostGIS/migration verification.
+- **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 7, 6:29 PM recurrence:** Starting Docker for the live-news audit reproduced the user-reported `sailor-ingest.sock` access/rename failure. Stop identified crashed Docker processes, verify their exit, preserve both inspected socket directories as `run.lanes-audit-backup-20261007-182011` and `docker-secrets-engine.lanes-audit-backup-20261007-182011`, recreate the runtime directories and start once. Engine 29.8.0 and the original PostGIS/Valhalla containers resume; 131 native lifecycle tests then pass in a separate disposable database. No original volume/database reset; recurrence prevention remains unverified. [Audit](../evaluations/news-live-operational-audit-20261007.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Docker Desktop 4.91.0 failed to start with Windows file-access errors when renaming `Docker/run/sailor-ingest.sock`, then `docker-secrets-engine/engine.sock`. Restarting only the second folder encountered a new stale ingest socket left by the preceding failed launch. Database/Valhalla services were initially unavailable.
+
+#### 2. Root Cause Analysis (RCA)
+
+Local runtime entries were zero-byte Archive/ReparsePoint socket objects. Docker's startup could not rename them. Exact kernel/filesystem cause is not established; the symptom and multi-listener sequence match a first-hand [Docker issue](https://github.com/docker/desktop-feedback/issues/554). This is an environment failure, not a LANES schema or service defect.
+
+#### 3. Solution & Architectural Strategy
+
+Stop Docker Desktop with its CLI and verify Desktop/backend processes exit. Verify exact absolute target directories and that their parents are ordinary directories. Preserve both socket directories under unique backup names, recreate both runtime folders, and launch once. The existing PostGIS and Valhalla containers then appeared in `docker ps`; 60 focused backend/storage checks passed. No factory reset, uninstall, Docker volumes/data removal, WSL distro deletion, cloud action or secret-content read. Backup socket objects remain preserved; a permanent upstream fix is not claimed.
+
+#### 4. Files Modified / What Changed
+
+No LANES application file was changed to repair Docker. Runtime folders `C:/Users/roicambe/AppData/Local/Docker/run` and `C:/Users/roicambe/AppData/Local/docker-secrets-engine` were recreated. Preserved backups: `run.stale-20261005-8c9d325c`, `run.stale-20261005-d134ed73` beneath `Docker`; `docker-secrets-engine.stale-20261005-dddafe6a` and `docker-secrets-engine.stale-20261005-12fd9ecd` beneath Local AppData. [Storage and recovery evaluation](../evaluations/phase-36-news-publication-storage.md).
+
+---
+
+### [BUG-099] Offline duration pilot mishandles spaced list numbering and conflicting alternate units
+
+- **Status:** Resolved for captured official-page formats in collector v3, with separate offline replay and source qualification. Original v2 snapshots and reviewed v1 overlays remain preserved.
+- **Severity:** Research data-quality defect; no application writes
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Evidence / cause:** The August 29, 2026 20:30 source contains `5 . Caliwag St.`; the old numbered-item pattern missed the location and reused the preceding pending row for its depth. Alternate values such as `12.7 cm (6 inches)` were reduced to the first unit without an inconsistency flag.
+- **Change:** `backend/scripts/collect_flood_duration_pilot.py` v2 accepts spaced numbering, compares alternate units with a conservative 0.25 cm tolerance, preserves raw values and leaves conflicting canonical depths blank. Unsupported later bullet lists become explicit review exceptions. Original captures remain immutable.
+- **Evidence after rebuild:** Caliwag is present under its own location; 16 unit-disagreement rows, 14 unsupported bullets and two same-clock depth-conflict entries are retained in the expanded pilot. Saved source text and selected derived records were inspected. No automated tests were added or run. See [pilot report](../evaluations/flood-duration-pilot-20261004/README.md).
+
+#### October 5 source-qualification follow-up
+
+**Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+1. **Problem:** A. Policarpio's consistent 2–3 in / 5.08–7.62 cm range was falsely flagged and its San Joaquin heading lost. Fourteen 20 cm / 8 in rounded pairs were withheld by the strict tolerance. Two Metroville 10.64cm / 4 in disagreements were missed. Wet evidence remains supported in each case.
+2. **Root cause:** `depth_bounds` reads only the first scalar in a repeated-unit metric range; heading extraction requires Brgy/Barangay prefixes; the alternate-unit detector's `\bcm\b` misses digit-adjacent `10.64cm`. The 0.25 cm tolerance classifies a plausible 0.32 cm whole-number conversion rounding as disagreement. Source Kabutihan 12.7 cm / 6 in remains an actual unresolved conflict.
+3. **Strategy/status:** Preserve original parser outputs/captures and apply explicit reviewed feature overrides in a separate versioned qualification layer: A. Policarpio range/barangay restored, 14 source-reported metric features tagged with rounding uncertainty, three genuine unresolved unit conflicts blank in qualified numeric fields. These evidence-specific overrides do not repair the general collector parser or establish model outcomes. General extraction repair was pending at this v1 review; the v3 repair below now addresses the captured formats.
+4. **Files changed:** new `backend/scripts/qualify_pasig_duration_data.py`, `docs/evaluations/pasig-duration-qualification-20261005/review_rules.json`, derived review CSVs/manifest/report and synchronized plan/progress/index. Original collector, capture files and base CSVs are unchanged. [Qualification evidence](../evaluations/pasig-duration-qualification-20261005/README.md#observation-corrections-and-unresolved-features). No application tests, new dependency, schema or training change.
+
+---
+
+#### October 5 general collector repair and follow-up integration
+
+1. **Observed cause:** Repeated-unit ranges and numeric-adjacent unit tokens were mishandled; the San Joaquin/plain Sta. Lucia headings and singular foot were missed. No-space `4.Rosario` could reuse an emitted Morales row; repeated punctuation `29..` needed preservation. Maybunga source qualifiers polluted the canonical name. Whole-centimeter rounding needed a separate uncertainty category.
+2. **Resolution:** Collector v3 handles supported ranges/units/headings/numbered formats, canonical qualifiers and pending-row reuse; preserves raw evidence and blanks genuine conflicting numerical conversions. Add offline `--source-bundle` replay and standard-library `--skip-figures`; original captures/outputs remain untouched. The merged builder preserves old raw fields, exposes parser overlays, labels 68 new qualitative depths correctly and follows existing timeline/snapshot hash conventions.
+3. **Evidence:** Original replay retains all 398 claim identities/location/evidence/clocks and 37 bounds, with 33 exceptions. Eight new captures produce 352 unique source-verified wet observations, no false duplicates and supported multi-clock frames. Independent review plus the builder checks original 467 rows, 35 source identities and 70 artifact hashes. No automated tests, dependencies, application schema or runtime changes.
+4. **Files:** `backend/scripts/collect_flood_duration_pilot.py`, new `backend/scripts/build_pasig_duration_followup.py`, and [versioned exports/source-review report](../evaluations/pasig-duration-followup-20261005/README.md). **Resolver:** ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+
+### [BUG-098] Dormant news auditor uses the wrong credential provider and omits article context
+
+- **Status:** Resolved locally for independent auditing and leased evaluation; live provider/model acceptance and automatic publication remain pending.
+- **Severity:** High when connected to automatic publication; completed extraction remains independent.
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The old independent audit could send a Google credential to OpenRouter, inspect only one sentence and accept a positive response without structured place/time confirmation. It missed article-wide clearance/conflict evidence. Original reproduction used mocked transport; no live credential/request or publication was performed.
+
+#### 2. Root Cause Analysis (RCA)
+
+`HybridExtractionService.audit_claim_with_llm` selected `OPENROUTER_API_KEY or GEMINI_API_KEY`, always used the OpenRouter endpoint and omitted complete immutable article context. The legacy result lacked explicit place/time evidence. The dormant ingestion prototype also lacks durable publication identity/finite expiry and remains unsuitable for live activation.
+
+#### 3. Solution & Architectural Strategy
+
+Delegate hybrid auditing to a dedicated adapter with explicitly configured provider/model/config revision, provider-specific credential transport and no credential fallback. Send complete bounded immutable article evidence beneath trusted instructions, validate strict place/status/time/depth/access dimensions and exact quote offsets, and keep modeled placement/status predictions out of independent evidence. Unavailable, malformed, conflicting and unsupported responses remain safe review/failure outcomes.
+
+Bind completed extraction using immutable input/claim hashes and ordinal identity, then evaluate through separate bounded seed/evaluate commands under leased ownership in the approved tables. External requests occur after lease commit; retries/config revision recovery preserve immutable failed history. Recheck freshness/admission at completion, surface safe errors and create no decisions, reports, zones or routing effects. [Verification](../evaluations/phase-36-independent-evaluation-and-spatial-coverage.md), [operator guide](../guides/news-claim-evaluation.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_claim_auditor.py`, `backend/app/schemas/news_audit.py`: provider adapter and strict independent evidence contract.
+- `backend/app/services/hybrid_extraction_service.py`, `backend/app/schemas/news_extraction.py`: safe delegation/projection; extraction stays independent.
+- `backend/app/crud/news_evaluation.py`, `backend/app/services/news_evaluation_service.py`, `backend/scripts/evaluate_news_claims.py`: immutable source binding, leased evaluation and explicit bounded handoff.
+- Auditor/evaluation/hybrid/passability/native PostgreSQL regressions exercise transport, evidence, concurrency, lost leases, retries/config recovery, admission and no public/domain writes. No new schema/dependency, endpoint, frontend integration or deployment.
+
+---
+
+### [BUG-097] Primary Panel duplicates report/zone presentation and omits group context
+
+- **Status:** Resolved locally; developer visual acceptance pending
+- **Severity:** Low (administrator context and UI consistency)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Needs Review cards emphasize the anchor road but do not summarize grouped cities/barangays, conflicting severity/depth or latest evidence. The Primary Panel lacks location/search organization for large queues. Pending evidence and published zones use separate detail layouts and inconsistent button heights.
+
+#### 2. Root Cause Analysis (RCA)
+
+Queue previews previously hydrate only three members and expose no all-member location/condition summaries or search facets. Report and zone panels duplicate badge, fact and action markup, with unconditional 44 px report actions versus 28 px zone actions. The unused legacy pending-panel trust selector implies filtering that is not implemented.
+
+#### 3. Solution & Architectural Strategy
+
+Read existing queue facts in the backend, group under the unchanged spatial/time policy, match all criteria against any one member, retain complete canonical groups and paginate afterwards. Return city-scoped facets and all-member summaries, keeping global source counts distinct from filtered card/record counts. Reuse existing locality normalization for city aliases. The UI preserves source colors and the detail-based Related reports list, shares a flat record summary, removes unused legacy frontend filter controls, and uses shared small buttons with 44 px touch minimums. Contributor map inspection/restore is keyboard-accessible; report actions still target each original report.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/crud/spatial_review.py`, `schemas/spatial_review.py`, `services/spatial_review_service.py`, `api/v1/endpoints/admin_review.py`: existing-data summaries, validated protected filters, facet and count contracts; no model/migration/publication writes.
+- `frontend/src/features/admin/components/FloodRecordSummary.tsx`, `ZoneContributors.tsx`, `PendingReportsPanel.tsx`, `ActiveZonesPanel.tsx`: shared presentation, useful facts and compact/touch-aware actions.
+- `frontend/src/features/admin/review/{NeedsReviewPanel,ReviewQueueCard,RelatedReviewReports,NewsReviewEvidence}.tsx`, `reviewApi.ts`: filters, contextual cards and consistent action sizing.
+- `backend/tests/test_spatial_review.py`, `frontend/tests/spatial-review.spec.ts`: 300-record search, intact cross-boundary groups, validation/zero results, filter retention, narrow/landscape bounds and independent zone actions.
+
+[Verification](../evaluations/phase-36-needs-review-inspection.md#october-4-primary-panel-search-and-detail-consistency).
+
+### [BUG-096] Cross-boundary flood growth lacks a consistent review and extension workflow
+
+- **Status:** Resolved in the reviewed roi-branch checkpoint; developer acceptance and production rollout pending
+- **Severity:** Medium (candidate visibility and preservation of existing zone coverage)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The developer identified that an expanding flood can cross streets/barangays and may need to extend an existing zone. Current display grouping excludes known different barangays and different normalized road names. Existing merge actions do not consistently mean geographic extension.
+
+#### 2. Root Cause Analysis (RCA)
+
+The inspection grouper uses administrative/road labels as hard conditions, while actual merge suggestions award locality points rather than imposing a barangay boundary. `find_merge_candidates` queries nearby pending reports, not active zones, despite its broader docstring. `/zones/{id}/merge-pending` links supporting evidence without changing coverage. `/reports/merge` assigns the submitted final polygon to the target zone; selecting an existing destination does not itself union its old boundary into that payload. `MergeWorkspacePanel` initializes the final geometry from the primary report. Road synthesis projects endpoints onto the longest submitted line, which cannot reliably extend past that baseline or represent connected branches.
+
+This is primarily a workflow/geometry gap: `FloodEvent.locations`, `reports` and `zones` already support multiple affected places and sections, and `link_supporting_report` records each report's road/barangay/city. The Phase 33 design explicitly supports multi-road/cross-barangay incidents.
+
+#### 3. Solution & Architectural Strategy
+
+Implemented server-owned boundary-crossing review without automatic incident merging. Same-road/same-city grouping allows 500 m; different roads/cities use 50 m; pairwise report time remains two hours and complete-link grouping prevents chains. Active event-owned zones within 500 m are suggested independently of the original event age. The admin explicitly chooses extension, evidence-only corroboration, or a separate section of the same event. Shared PostGIS preview/publication unions existing coverage and road cores during extension, buffers all reviewed road branches in projected metres, rejects points/invalid/disconnected coverage, and preserves original evidence. Legacy approval also preserves old coverage; batch merge remains corroboration only. Publication, moderation outcomes and audit commit together. Existing event location/zone tables handle multiple places and different per-section conditions; no schema/dependency change.
+
+#### 4. Files Investigated / What Changed
+
+- Changed `services/spatial_review_grouping.py`, `services/merge_service.py`, new `services/flood_zone_growth_service.py`, `api/v1/endpoints/admin.py`, `crud/audit.py`, request/response schemas, frontend `adminApi.ts`, `MergeWorkspacePanel.tsx` and the mobile drawer placement in `LiveMapPage.tsx`.
+- Added native local PostGIS/API rollback-isolated growth tests and desktop/mobile review-action regressions. Existing database containers were restored after Docker runtime socket failures; no volumes or databases were reset.
+- Verification and remaining limits: [implementation evaluation](../evaluations/phase-36-needs-review-inspection.md#october-4-cross-boundary-growth-implementation). Actual report #2/#3 coordinates/incident membership are not present in the dedicated test database and remain unverified.
+
+
+### [BUG-095] Map selection retains another queue card's related reports
+
+- **Status:** Resolved locally; native database verification pending
+- **Severity:** Medium (incorrect report relationships in inspection)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Selecting #2 or #4 shows the other report, but selecting #3 on the map can show both #2 and #4. The screenshots label #3 Rosario and #2/#4 Maybunga.
+
+#### 2. Root Cause Analysis (RCA)
+
+`NeedsReviewPanel.openedGroup` changed only when a queue card was clicked. `LiveMapPage.selectQueueReportFromMap` selected new evidence without updating that group. The previous card's members therefore remained below an unrelated report. The member endpoint also resolved only the oldest-ID group anchor, preventing direct lookup by another selected member.
+
+#### 3. Solution & Architectural Strategy
+
+Remove retained card membership from the panel. Query the protected member endpoint by the selected report's identity; the backend resolves that identity's current group and returns its canonical key and grouping reason. Hide the related section for singleton groups, preserve pagination and individual actions, and retain existing locality/distance/time rules. Known different barangays remain separate even when nearby; this fix does not change merge eligibility. Regression verification is recorded in the [evaluation](../evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-selected-report-group-resolution). A guarded read-only attempt against the dedicated local PostGIS test database timed out; exact real distances and live membership remain unverified.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/spatial_review_service.py`, `schemas/spatial_review.py`: resolve members by any current identity and return the server grouping reason; no database model/migration change.
+- `frontend/src/features/admin/review/NeedsReviewPanel.tsx`, `RelatedReviewReports.tsx`, `reviewApi.ts`: selected-identity member query, no retained queue-group fallback, singleton hiding and explicit read failure/retry.
+- `backend/tests/test_spatial_review_grouping.py`, `frontend/tests/spatial-review.spec.ts`: reciprocal lookup, different-barangay exclusion, non-anchor pagination and map/external selection regressions.
+
+### [BUG-094] Needs Review flattens related reports and lacks source card styling
+
+- **Status:** Resolved locally; actual database grouping/developer acceptance pending
+- **Severity:** Medium (queue readability and repeated location rows)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Developer screenshots show three nearby Dr. Sixto Antonio reports as separate plain rows. User and news sources have text labels but little visual separation compared with existing report details.
+
+#### 2. Root Cause Analysis (RCA)
+
+The combined reader originally paginated individual identities, and its row renderer omitted the previous report card's background/measurement presentation. Grouping only the returned frontend page would split related reports at page boundaries. Calling the full merge engine on each polled card would also perform road tracing and geometry synthesis.
+
+#### 3. Solution & Architectural Strategy
+
+Group eligible pending user metadata in the backend before card pagination, reusing merge road normalization and conservative same-locality, pairwise 500 m/two-hour rules. Keep all original evidence and conflicts. Distinguish light blue user groups and light violet independent news cards; open report details for the related list and individual actions, and paginate larger member sets through a protected read. The developer requested the queue dropdown be removed; related reports now appear inside evidence. Actual merges remain explicit. 95 backend checks and 18 distinct current browser checks pass; TypeScript/scoped lint pass. [Evidence](../evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-related-cards-and-source-styling).
+
+The subsequent related-detail presentation originally used compact links and duplicated the selected report. The developer requested the existing full report layout throughout. Related members now use protected full-detail reads and the same `PendingReportsPanel`, with individual actions and no duplicated selected row. Approving/rejecting another member preserves the current detail. [Follow-up](../evaluations/phase-36-needs-review-inspection.md#october-4-follow-up-consistent-related-report-layout).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/crud/spatial_review.py`, `services/spatial_review_grouping.py`, `services/spatial_review_service.py`, `schemas/spatial_review.py`, `api/v1/endpoints/admin_review.py`: compact metadata, grouped card/member contracts, projected geometry and bounded evidence reads; no schema/migration writes.
+- `frontend/src/features/admin/review/ReviewQueueCard.tsx`, `NeedsReviewPanel.tsx`, `reviewApi.ts`, `LiveMapPage.tsx`: source styles, measurements, expansion, error/focus preservation and moderation cache refresh.
+- `backend/tests/test_spatial_review.py`, `test_spatial_review_grouping.py`, `frontend/tests/spatial-review.spec.ts`: auth, exclusions, anti-chain bounds, conflicting measurements, pagination and desktop/mobile coverage.
+
+### [BUG-093] Spatial Operations mobile map switching fails in touch landscape
+
+- **Status:** Resolved locally; developer visual acceptance pending
+- **Severity:** Medium (map and evidence workspace visibility)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+During Needs Review integration, touch landscape could display both the sidebar and map, or hide the return control despite selecting the mobile map workspace. Narrow layouts also required explicit overflow checks.
+
+#### 2. Root Cause Analysis (RCA)
+
+The JavaScript mobile test included coarse pointers and a 640px breakpoint, while Tailwind desktop classes started at 768px. Unconditional `md:flex` and `md:hidden` overrode mobile visibility on landscape touch devices.
+
+#### 3. Solution & Architectural Strategy
+
+Align the viewport threshold to 768px and use the same responsive state for the primary sidebar/map and mobile controls. Preserve the mounted map and drawing sessions. Browser checks cover a 320px evidence viewport, 844×390 touch landscape switching, and desktop inspection. [Verification](../evaluations/phase-36-needs-review-inspection.md).
+
+#### 4. Files Modified / What Changed
+
+- `frontend/src/features/admin/LiveMapPage.tsx`: consistent responsive layout, Map/Evidence visibility and 44px controls.
+- `frontend/tests/spatial-review.spec.ts`: narrow/landscape overflow and workspace-switching coverage.
+
+### [BUG-092] News details overstate depth and attach unrelated province labels
+
+- **Status:** Resolved locally in v9/v1.7; production release pending
+- **Severity:** High for misleading source/location facts
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The four-article re-audit found gutter-only observations displayed as measured numbers, an approximate depth displayed as exact, two explicit generally passable corridors displayed as unstated, four Metro Manila roads labeled with unrelated provinces and clearance clocks labeled as flooding observations.
+
+#### 2. Root Cause Analysis (RCA)
+
+Presentation preferred normalized gauges to raw measurements. No claim value represented general passability without vehicle classes. Geometry ranking preserved a homonym's province after accepting a different grounded parent city. Time labels used observation kind without considering cleared condition or the source's by bound.
+
+#### 3. Solution & Architectural Strategy
+
+Prefer raw reported depth with legacy formatted fallback. Add delegated/approved `passable_unspecified`, bounded same-paragraph evidence and an explicit no-closure guard. Derive parent province/island together from grounded city/PSGC. Label resolved clearance observations by status and bound. Preserve previous snapshots/runs, exclusion policy and unknown facts. 595 tests and final 38-detail database/API parity pass. Caption-provenance explanations remain an open refinement, with no caption promotion. [Audit](../evaluations/phase-36-four-article-source-audit.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_presentation_service.py`, `backend/app/schemas/news_presentation.py`: source depth, passability, clearance and exclusion labels.
+- `backend/app/schemas/news_extraction.py`, `taglish_extraction_service.py`, `hybrid_extraction_service.py`: unspecified vehicle passability and safety guard.
+- `backend/app/services/nationwide_geometry_service.py`: grounded parent-field consistency.
+- `backend/app/crud/news_processing.py`: v9 identity; extractor is v1.7.
+- New depth-presentation, generic-passability and geometry-parent tests; existing summary expectation updated to source wording. Affected core records, evaluation and runbook synchronized. No model/migration/dependency or frontend source changed.
+
+### [BUG-091] Collection timing and unchanged RSS can miss current publisher updates
+
+- **Status:** Investigating; refresh policy and production schedule unchanged
+- **Severity:** High for the intended near-real-time news workflow
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+An article may change from flooded to subsided while RSS title/excerpt/publication remain identical. Discovery reuses stored text or receives no entries on HTTP 304. It never sees the edit. Production Scheduler inspection confirms collection every three hours; minute-scale extraction retry due times do not start a worker themselves.
+
+#### 2. Root Cause Analysis (RCA)
+
+RSS metadata/checkpoints are used as article-body freshness signals. There is no independent bounded body revisit or publisher retrieval-retry queue. Scheduler launch retries differ from extraction and publisher retry. News itself can also lag actual conditions.
+
+#### 3. Solution & Architectural Strategy
+
+Document actual timing and distinguish retry from refresh. The developer questioned the hourly/24-hour proposal; it remains unapproved. Agree on discovery/update latency, publisher request limits, retry bounds and stale-observation behavior before changing code or production scheduling. [Evidence](../evaluations/phase-36-news-workflow-follow-up.md#freshness-investigation-open-unchanged).
+
+#### 4. Files Modified / What Changed
+
+Evaluation, task plan and system/progress records only for this timing finding. Read-only `gcloud scheduler` list/describe inspection; no scheduler, source registry or retrieval interval changed.
+
+### [BUG-090] Existing news workflow mixes facts and drops publisher corrections
+
+- **Status:** Resolved locally in v8/v1.6; production release pending
+- **Severity:** High (stale/misleading flood facts and hidden retrieval issues)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Caution became unrestricted passability; independently conjoined roads shared the wrong depth/clock; bare narrative retained a list time. Successful publisher denials or changed-city corrections were rejected and left older active evidence current. Failed refreshes with newer pending/failed extraction, or after a denial, disappeared from Collection attention. UI exposed a permanently empty filter and omitted structured passability from details.
+
+#### 2. Root Cause Analysis (RCA)
+
+Claim enum lacked caution; conjunction/list rules lacked independent-predicate scope. New-article admission rules were also applied to existing publisher corrections. Failed-refresh visibility considered only current/latest evidence, ignoring credible history. Frontend options/facts lagged backend behavior.
+
+#### 3. Solution & Architectural Strategy
+
+Use the explicitly approved caution category with source provenance and a no-automatic-closure guard. Preserve independently stated road facts while keeping shared qualifiers/subjects together. Version successful corrections and retain immutable old history; keep new irrelevant stories excluded. Use current-or-history recognition for failed fetch diagnostics and Collection attention without reviving old main rows. Add backend-owned passability labels and remove the dead UI option. All 452 related backend tests, TypeScript, scoped lint and 33-site private API/source checks pass. No database migration, dependency, deployment or current-zone creation. [Evaluation](../evaluations/phase-36-news-workflow-follow-up.md).
+
+#### 4. Files Modified / What Changed
+
+- `taglish_extraction_service.py`, `schemas/news_extraction.py`, `hybrid_extraction_service.py`, `crud/news_processing.py`: scoped facts, explicit caution/guard and v8/v1.6 identity.
+- `news_discovery_service.py`, `crud/news_collection.py`: existing corrections, credible-history diagnostics and attention state.
+- `schemas/news_presentation.py`, `news_presentation_service.py`, frontend `newsApi.ts`, `NewsResultDialog.tsx`, `NewsCollectionDrawer.tsx`: server passability labels, shared responsive details and selectable statuses.
+- New passability/correction/Collection tests; extended September 9 tests and source-supported caution expectations. Affected evaluation/core/runbook records are synchronized.
+
+### [BUG-089] Multi-location September 9 reports lose sites and scoped facts
+
+- **Status:** Resolved locally in v7/v1.5; production release pending
+- **Severity:** High (missing observations and incorrect temporal/context attribution)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Three September 9 reporting bodies expose an omitted depthless list road, missing Blumentritt, missed singular vehicle-passability wording, unresolved afternoon clocks in a morning-published/afternoon-updated article, and missing road/barangay separation. Regression review also finds forecast/drill headings lost on measured rows and list clocks leaking into short independent narrative roads. The local test server loses its socket on Windows auto-reload and leaves an empty API served at the local address.
+
+#### 2. Root Cause Analysis (RCA)
+
+Street, qualifier and passability rules omit source forms; row-local evidence ignores a credible list introduction. Clock anchoring only knows original publication. List scope lacks inherited non-observation flags and treats short finite-verb narrative as telegraphic entries. The local reload child fails while reconstructing its inherited socket.
+
+#### 3. Solution & Architectural Strategy
+
+Retain exact source offsets and contiguous list provenance; validate barangays against parent-city PSGC; parse coordinated roads and explicit singular passability. Use the approved narrow GMA-only matching publication/update header without changing publication or schema. Carry disqualifying context through rows, reset at independent narrative, and leave unsupported facts unknown. Version to v7/v1.5 and retain immutable earlier runs. Disable auto-reload only in the private replay launcher; restart explicitly after edits. All 410 related tests and 33 audited source locations pass. Actual authenticated API/frontend proxy details match. Browser verification is separately blocked by saved permission policy. [Evaluation](../evaluations/phase-36-september9-production-day-replay.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`: road/PSGC/passability parsing, scoped evidence, observation anchor and narrative/non-observation boundaries.
+- `backend/app/services/news_evidence_policy.py`: affirmative affected-road/area wording shared by SQL and readers.
+- `backend/app/crud/news_processing.py`: v7 identity.
+- `backend/scripts/replay_september9_news.py`: guarded captured-body/reconstructed-RSS replay, private persistence and idempotence verification.
+- `backend/tests/test_news_september9_extraction.py`, `test_news_september9_replay.py`, `test_news_temporal_scope.py`: conservative attribution, update/header guards, history/isolation and temporal scope regressions.
+- `backend/start-local-news-test.ps1`: stable loopback worker without Windows auto-reload.
+- Evaluation, local guide and affected core records: exact evidence, source audit and remaining acceptance/recommendations. No schema, dependency, frontend or production change.
+
+### [BUG-088] City summaries appear as additional flood sites beside street details
+
+- **Status:** Resolved locally in v6/v1.4; production release pending
+- **Severity:** Medium (redundant admin flood cards and confusing missing-street details)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The September 24 replay shows a broad Mandaluyong card followed by the specific Boni/F. Ortigas report, and a broad Quezon City summary beside East/Aurora reports. Seven readable mentions appear to be seven separate flood sites; the broad cards have no street or observation clock.
+
+#### 2. Root Cause Analysis (RCA)
+
+Same-sentence city qualifiers were already marked context only. Standalone summaries in another paragraph remained separate observations because extraction lacked reconciliation across the article. Streets were correctly extracted; their city summaries were counted again.
+
+#### 3. Solution & Architectural Strategy
+
+Reconcile city summaries against credible specific observations in that same resolved city after per-sentence extraction. Retain summaries as `location_context_only`, preserving original evidence/offsets and each street's facts. Keep city-only reports, different cities, explicit different times and cases where the specific evidence is speculative, caption-only, ambiguous or conflicting. Version the correction and reprocess into a new immutable local run. Actual authenticated API/browser show five street cards and zero attention items; 224 related backend tests pass. Production data/releases remain unchanged.
+
+#### 4. Files Modified / What Changed
+
+Updated `taglish_extraction_service.py` reconciliation/extractor version, `crud/news_processing.py` pipeline identity, local seeder expectations and replay regressions. Existing SQL readability/Collection gates exclude context without new frontend filtering, models, migrations or dependencies. Updated the existing evaluation/runbook and core documentation. The known local backend stalled during auto-reload and was restarted using its guarded loopback launcher before real page verification.
+
+### [BUG-087] Docker runtime socket errors block the private local replay
+
+- **Status:** Resolved on this computer; no factory reset
+- **Severity:** High (local PostgreSQL unavailable; testing blocked)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Docker Desktop 4.91.0 could not rename `sailor-ingest.sock`, then Secrets Engine `engine.sock`, with Windows error 1920. The Linux engine pipe was unavailable. Separately, the original historical replay used isolated in-memory storage, so the normal page had no saved test article.
+
+#### 2. Root Cause Analysis (RCA)
+
+Windows could not access Docker's runtime socket objects. Resolving only one directory permitted startup to reach another failed socket; each failed start left additional unusable objects. The precise underlying OS/Docker cause is not established. The empty LANES page was a storage-scope mismatch, not evidence that successful extraction had been saved to its database.
+
+#### 3. Solution & Architectural Strategy
+
+Stop Docker completely, preserve both socket directories as recoverable backups and start with fresh runtime directories. The original containers/volumes resumed. Create separate `lanes_news_test`, apply existing migrations, seed the actual historical evidence using existing processing services and run local frontend/backend with ignored environment overrides. Authenticating against the separate local database makes seven locations/five roads visible. Replays are idempotent and create no zones. All 29 focused tests pass. Production and the original local database remain preserved. [Operational details](../guides/local-news-replay.md).
+
+#### 4. Files Modified / What Changed
+
+Added `backend/scripts/seed_local_news_replay.py`, `backend/tests/test_local_news_replay.py`, loopback launchers in backend/frontend, ignored `backend/.env.test.local` and ignored captured source data. Added the local replay guide and updated evaluation/progress/task/system references. Runtime directory backups remain outside the repository. No SQLAlchemy model, Alembic migration or dependency was introduced.
+
+### [BUG-086] Genuine September 24 flooding loses body paragraphs and per-road facts
+
+- **Status:** Resolved locally; v5 release pending
+- **Severity:** High (missed actual flooding and incorrect place/clearance attribution)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Replay the September 24 Daily Tribune flood event, published September 25. Regular retrieval produced only 182 characters and no flood claims. AMP retrieval exposed missing compound depths/intersections, false Manila agency-name matches, wrong city attribution, missed clearance times/states, lost adjacent passability and duplicate qualifiers. A regression additionally exposed Roxas Boulevard's unrelated barangay PSGC code.
+
+#### 2. Root Cause Analysis (RCA)
+
+The publisher streams its body after the article closes. Road/measurement/time patterns omit ordinary narrative forms. City context persists from an earlier paragraph and raw-name PSGC resolution can survive an explicit road parent-city override. Qualifier mentions were counted as independent sites or questionable claims. Existing tests did not cover this reporting structure.
+
+#### 3. Solution & Architectural Strategy
+
+Read only Tribune reporting containers; retain exact offsets and road qualifiers/directions; parse compound measurements and cleared/receded states. Resolve a sole recent explicit weekday through aware publication time while refusing ambiguous dates. Attach passability only to one immediately preceding road in the same paragraph. Use the explicit road parent-city PSGC code. Preserve context qualifiers without main/attention counts. v5/v1.3 preserve prior runs on later release. All 373 related tests pass (one disposable PostgreSQL migration skip), plus 19 PostgreSQL policy and 11 real-claim comparisons. No production writes/deployment or schema change. [Full evaluation](../evaluations/phase-36-september24-historical-replay.md).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_discovery_service.py`: streamed publisher body adapter.
+- `backend/app/services/taglish_extraction_service.py`: evidence attribution, compounds, narrative road relations/directions, clocks, passability, qualifiers and PSGC identity.
+- `backend/app/services/news_evidence_policy.py`: affirmative cleared/receded evidence.
+- `backend/app/services/news_presentation_service.py`, `backend/app/crud/news_results.py`, `backend/app/crud/news_collection.py`: context explanations and matching SQL counts.
+- `backend/app/crud/news_processing.py`: v5 pipeline identity.
+- `backend/scripts/replay_september24_news.py`, `backend/scripts/audit_news_display.py`: real/offline replay and read-only PostgreSQL parity checks.
+- `backend/tests/test_news_september24_replay.py`: 17 replay regression cases.
+
+### [BUG-085] News Intelligence displays foreign floods and prevention projects as flood observations
+
+- **Status:** Resolved and deployed, including the strict v4 collection follow-up
+- **Severity:** High (misleading main-list content; unsafe input for planned automatic plotting)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The developer reports foreign flood and flood-control content on News Intelligence. Read-only inspection of the configured database confirms 24 saved articles and nine local main-list claims: five QC prevention-project claims, three Bangkok claims, and one UP-PGH infrastructure-purpose claim. Pure local rules reproduce the extraction errors. The deployed API also returns 404 for the current frontend's `/api/v1/admin/news/results` route.
+
+#### 2. Root Cause Analysis (RCA)
+
+Explicit flood-control phrase suppression misses purpose/prevention and habitual descriptions. Main-list SQL and summary screening lack a Metro Manila grounding gate. Generic `interior` is incorrectly resolved to a Philippine barangay; captured publisher/related-content fragments add noise. Shortlisting changes do not invalidate existing stored artifacts. API/collector use the older `news-osm-20261002-v4-expat` image, while local reading code uses a later route. Scheduled rules/OSM services are used; optional LLM auditing remains disconnected. See the [full investigation](../evaluations/phase-36-news-content-quality-investigation.md).
+
+#### 3. Solution & Architectural Strategy
+
+**Collection follow-up (October 3):** block new unreadable bodies from candidate admission; require affirmative actual flooding instead of a bare topic word; screen forecasts, simulations, drills and habitual descriptions; exclude caption-only legacy claims. Completed zero-qualified extractions and unverified legacy leads now have an explicit `excluded` status outside default attention, preserving article/run history. All 341 backend tests, 15 PostgreSQL checks, TypeScript and 15 deployed desktop/mobile cases pass (API/session mocked). Matching v4 API/collector/frontend releases and saved/normal executions succeeded. Additional changes: `news_evidence_policy.py`, discovery/processing/extraction services, Collection CRUD/schemas/labels, `NewsCollectionDrawer.tsx`, `newsApi.ts`, read-only audit and article-screening/Collection/telemetry/Playwright tests. No model/schema/dependency changes.
+
+Implemented shared observation/scope classification, real positive/negative regressions and a readable-body gate even for local RSS headlines. Main-list/Collection SQL screen evidence before counts and pagination; historical detail explains exclusions. Prevention and habitual flooding no longer establish active observations; generic interior/market words require a named spatial mention. Versioned processing preserves earlier artifacts. All 306 backend tests and eight read-only PostgreSQL checks pass; the nine false rows are excluded from the same 24 articles. The approved production migration, reprocessing and synchronized release succeeded.
+
+#### 4. Files Modified / What Changed
+
+**Release verified:** API `00048-xc7`, the same collector digest and Firebase frontend `build-2026-10-03-001` are live. Migration and corrective/normal collector executions succeed. Ten new v3 runs preserve 20 earlier runs and all 24 articles. Eight final PostgreSQL checks and 13 deployed desktop/mobile asset checks pass (API/session mocked). See [production evidence](../evaluations/phase-36-news-content-quality-investigation.md#completed-production-release).
+
+- `backend/scripts/audit_news_display.py`: bounded read-only stored-claim trace and optional pure local rules comparison; no hybrid/HTTP/external AI calls or database commits.
+- Investigation, documentation index, task plan and progress: record evidence, deployment mismatch and revised immediate priority.
+- `news_evidence_policy.py`, Taglish extraction, discovery, results CRUD and presentation: shared evidence/geography gates and body-bypass correction; pipeline/extractor version bump.
+- Extraction, discovery/results and desktop/mobile tests: real false-positive passages, positive retention, pagination/history parity and subpixel precision.
+- Backend Docker/Firebase upload ignores: exclude environment credentials and local frontend artifacts from release uploads.
+- No new schema or dependency was introduced by the content correction; the release uses the separately approved telemetry migration.
+
+### [BUG-084] Windows Application Control blocks osmium during pipeline verification
+
+- **Status:** Runtime import coupling resolved; Windows native PBF-reader restriction remains
+- **Severity:** Low residual limitation (raw-PBF tooling on this Windows host)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The October 3 automatic-plan audit ran five focused backend suites: 81 checks passed and 26 failed while importing the installed `osmium` native extension. This prevents confirming collection/processing/OSM regressions in the current local environment; it does not establish a production failure.
+
+#### 2. Root Cause Analysis (RCA)
+
+All 26 failures in the concise normal-access run report `DLL load failed while importing _osmium: An Application Control policy has blocked this file.` `article_road_match_service.py` imports `osmium`, and the operational road provider imports that matcher. Initial sandbox temporary-directory access errors disappeared on normal-access reruns, but the native-module policy block remained. No evidence identifies why Windows started rejecting this dependency or attributes it to telemetry code.
+
+Read-only Windows Code Integrity event inspection confirms events 3033 and 3077 at October 3, 2:08:46 AM Philippine time. The process is Codex's bundled Python runtime; the rejected file is `backend/venv/Lib/site-packages/osmium/_osmium.cp312-win_amd64.pyd`. Windows reports that it does not meet Enterprise signing-level requirements (policy ID `0283ac0f-fff1-49ae-ada1-8a933130cad6`). This establishes an enforced native-extension signing-policy rejection during this invocation, not 26 independent application assertion failures. The log does not establish when/why the policy or trust decision changed, or whether another authorized runtime would have the same outcome.
+
+#### 3. Solution & Architectural Strategy
+
+The runtime provider already reads a validated JSON catalog and only needs the pure road graph/geometry routines. `article_road_match_service.py` unnecessarily loaded the native PBF parser at module import. Moved the existing native import and handler definition inside `load_bounded_osm_roads`, after bounding-box validation. The raw reader still requires the real dependency and propagates its import error; no substitute parser, fake geometry, suppressed errors or security-policy changes were introduced.
+
+Post-fix verification: **140 passed**, including all original 107 checks plus road-placement, road-matching and NOAH-ranking checks. A fresh-process regression rejects all `osmium` imports, confirms the runtime catalog provider imports normally, and confirms raw-PBF reading still requires its native reader. Existing dependencies and schemas are unchanged. Local signature inspection reports the extension is unsigned; the blocking policy GUID is the built-in Smart App Control policy identified in [Microsoft's policy registry](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/operations/inbox-appcontrol-policies). Raw-PBF tooling still needs a dependency accepted by the applicable policy; [Microsoft recommends valid publisher signing](https://support.microsoft.com/en-us/windows/security/threat-malware-protection/smart-app-control-frequently-asked-questions).
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/article_road_match_service.py`: loads the native parser only for raw-PBF reading, retaining its existing filtering and bounded-reader behavior.
+- `backend/tests/test_article_road_match_service.py`: adds the fresh-process native-dependency isolation regression.
+- Evaluation, task/progress, feature/system references and documentation index: record the runtime fix, 140 passing checks and remaining raw-PBF restriction. No schema, dependency, UI or security-policy changes.
+
+### [BUG-083] Source Article save date appears inconsistent with processing history
+
+- **Status:** Resolved investigation; displayed dates verified correct for the reported article
+- **Severity:** Low (date meaning is unclear; no timestamp corruption found)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The BusinessWorld article "Thousands huddle in Bangkok shelters as Thai flood damages seen at $320 million" shows publication September 28, 2026, 5:09 PM and Saved in LANES September 28, 6:00 PM, while extraction history shows October 2. The developer questioned whether the save date was working.
+
+#### 2. Root Cause Analysis (RCA)
+
+Read-only queries against the dotenvx-configured database identify article #12. Its publication is `2026-09-28T09:09:39Z`; article and feed provenance independently record first collection at `2026-09-28T10:00:34.180964Z`. Immutable version #4 was created October 2 at 1:22 PM Philippine time. Runs #4 and #14 completed October 2 at 1:22 PM and 2:19 PM. Collection and extraction occurred on different days. The fallback local database contains different articles; it is not the database supplying this screenshot.
+
+#### 3. Solution & Architectural Strategy
+
+The result-detail service returns the article's `first_seen_at` as `saved_at`; article detail agrees. Executing the actual frontend `newsDate` formatter returns September 28 5:09 PM publication, September 28 6:00 PM first save and October 2 2:19 PM processing. UTC-to-Philippine formatting is correct. The save date means first collection, not extraction or copying into a local database. No timestamp correction is needed. A future wording refinement can use "First collected in LANES" to make this distinction explicit; no UI change is claimed in this investigation.
+
+#### 4. Files Modified / What Changed
+
+- `docs/others/bug-log.md`: records the reported article, stored evidence and formatter verification.
+- No application, schema, dependency or stored data changes. All database queries used `SET TRANSACTION READ ONLY`; no browser or service was started.
+
+### [BUG-082] Portalled Select escapes the news drawer's keyboard containment
+
+- **Status:** Code fix implemented; developer keyboard/browser acceptance pending
+- **Severity:** Low (keyboard interaction in the new drawer)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Static review of Collection status finds that the shared Select renders options outside the drawer DOM. Escape reaches the enclosing dialog, and its focus trap excludes the option buttons.
+
+#### 2. Root Cause Analysis
+
+Select has no dropdown Escape handler; RecordDetailsDialog gathers focusable controls only beneath its own DOM ref. The portalled options are missing from that set.
+
+#### 3. Solution & Architectural Strategy
+
+Shared Select handles Escape in capture phase while open, closes only its dropdown and returns focus to its trigger. RecordDetailsDialog includes options for its own open shared Select in the focus cycle. Expanded state and a trigger marker identify the open control. TypeScript/lint and updated keyboard fixture cover the code contract; browser checks are prohibited by the developer, so interactive acceptance remains manual.
+
+#### 4. Files Modified / What Changed
+
+- frontend/src/shared/ui/forms/Select.tsx: Escape handling, trigger focus and expanded-state marker.
+- frontend/src/shared/ui/feedback/RecordDetailsDialog.tsx: portalled option focus containment.
+- frontend/tests/news-articles.spec.ts: dropdown Escape keeps the collection drawer open; fixture updated but not browser-executed.
+
+### [BUG-081] Local Docker runtime cannot start the PostgreSQL engine
+
+- **Status:** Resolved; Docker engine and existing PostgreSQL container recovered
+- **Severity:** Medium (local development environment unavailable)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+During F2 verification, configured local PostgreSQL returns an OperationalError and Docker has no Linux engine pipe. Docker Desktop starts but exits its engine initialization before the LANES database is available.
+
+#### 2. Root Cause Analysis
+
+The Docker backend first fails to rename `sailor-ingest.sock` in its runtime directory. After that directory is recreated, startup reports the same error against the separate Secrets Engine `engine.sock`. Their special reparse points return Windows error 1920, "The file cannot be accessed by the system," during individual inspection/deletion attempts. This matches the reported [Docker startup issue](https://github.com/docker/desktop-feedback/issues/554); the exact underlying Windows cause remains unverified.
+
+#### 3. Solution & Architectural Strategy
+
+Individual socket cleanup fails, but parent directory moves succeed. With Docker stopped, preserved `%LOCALAPPDATA%/Docker/run` and `%LOCALAPPDATA%/docker-secrets-engine` in timestamped quarantine directories and recreated clean runtime directories. The Secrets Engine directory was verified to contain only its two socket files. Docker then starts successfully; the existing PostgreSQL and Valhalla containers are running and PostgreSQL queries succeed. Container/database data was retained. The local database initially remained at `a83c1d4e7b92`; after separate explicit developer approval, existing extraction migration `f29b6c8d104e` applied successfully. Live authenticated F2 article/detail reads pass on desktop/mobile. No factory reset or model/migration definition change was needed.
+
+#### 4. Files Modified / What Changed
+
+- `docs/others/bug-log.md` and the F2 evaluation record the environment limitation.
+- No Docker configuration, database model, migration or application authentication source was modified for this issue.
+
+### [BUG-080] Existing AdminLayout fails current ESLint rules
+
+- **Status:** Investigating; confirmed present in HEAD before F1
+- **Severity:** Low (lint verification limitation; no demonstrated access regression)
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Running ESLint on the F1 changed-file set reports three errors in `frontend/src/features/admin/AdminLayout.tsx`: one `react-hooks/set-state-in-effect` error and two `@typescript-eslint/no-explicit-any` errors. New News Intelligence route/feature/test files pass lint; AdminSidebar has only its existing avatar-image warning. TypeScript and mocked desktop/mobile access/navigation checks pass.
+
+#### 2. Root Cause Analysis
+
+The existing mount effect calls `setIsMounted(true)` synchronously, and both existing role checks cast `user as any`. All three statements were verified in HEAD. F1 changes only the layout's responsive padding; these lint errors were not introduced by News Intelligence.
+
+#### 3. Solution & Architectural Strategy
+
+Address the mount/hydration pattern and typed session role access in a dedicated follow-up, preserving existing loading, redirect, staff roles and persistent-map behavior. Do not suppress rules or rewrite authentication while adjusting F1 presentation. No fix is claimed here.
+
+#### 4. Files Modified / What Changed
+
+- `docs/others/bug-log.md`: records the existing lint limitation.
+- F1 source edits in `AdminLayout.tsx` affect padding only; its mount and role code is unchanged.
+
+### [BUG-079] Linux OSM runtime lacked libexpat
+
+- **Status:** Resolved; corrected Linux import, durable processing, and historical article matching verified
+- **Severity:** High (new map-aware processing could not import its native reader)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The initial Priority 4 image passed API health but its production placement probe failed before processing with `ImportError: libexpat.so.1`. Windows-based matching tests had passed. Priority 3 extraction did not import the OSM reader and remained unaffected.
+
+#### 2. Root Cause Analysis (RCA)
+
+The declared `osmium` Linux wheel requires Debian's `libexpat1` runtime library. The slim backend image did not install it. API health does not execute the map-provider import, so it could not detect this native-library gap.
+
+#### 3. Solution & Architectural Strategy
+
+Restored traffic to verified API revision `lanes-api-00045-spg` and restored the Priority 3 collector image while rebuilding with `libexpat1`. Production placement/storage/idempotency verification must pass before this fix is closed. No schema rollback or public-data deletion is involved.
+
+The corrected image is now active at API revision `lanes-api-00047-59t`. Production execution `lanes-news-discovery-lmvj5` passes native import, catalog validation, ten persisted map-aware runs, repeat idempotency, unchanged public counts, and actual historical GMA span matching. No failure remains open for this dependency.
+
+#### 4. Files Modified / What Changed
+
+`backend/Dockerfile` adds `libexpat1` to the existing apt installation; the Python package remains declared in `backend/requirements.txt`. Evaluation and tech-stack records capture the platform-specific release verification.
+
+### [BUG-078] Fallback API fixture occasionally generated a future publication
+
+- **Status:** Resolved; focused broad suite passes 135 cases
+- **Severity:** Low (test clock/setup error; production future-date guard remains intact)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+One fallback API test intermittently expected a retrieved article but its fake publisher feed was rejected as future-dated. The first Priority 4 broad run had 133 passes and this one failure.
+
+#### 2. Root Cause Analysis (RCA)
+
+The fake feed sampled `datetime.now()` after the lookup had already captured its reference clock. Depending on clock resolution, its publication was slightly in the future. Its TestClient also unnecessarily booted database seeding/retention against the configured local database despite supplying a dedicated SQLite session.
+
+#### 3. Solution & Architectural Strategy
+
+The simulated feed publication now precedes lookup by one second, and the endpoint fixture uses an isolated no-op lifespan. Authentication, fallback retrieval, preserved original evidence, and table assertions stay intact. Production future-date validation was not changed.
+
+#### 4. Files Modified / What Changed
+
+`backend/tests/test_news_discovery.py` corrects only the fixture clock and startup isolation.
+
+### [BUG-077] Backend container omitted extraction reference datasets
+
+- **Status:** Resolved; production reference checksums verified
+- **Severity:** High (location/history resolution differed from development)
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Production release preparation found that the extractor reads administrative and Pasig history CSVs from repository `data/`, while the backend-only image omitted that directory. Development tests saw local files, masking the runtime packaging gap.
+
+#### 2. Root Cause Analysis (RCA)
+
+Inside `/app`, both reference services resolve their repository data directory to `/data`. The prior Dockerfile copied only the backend context and `.dockerignore` excluded backend `data/`; absent files leave the providers empty. This is a packaging defect, not proof that earlier local article evaluations were wrong.
+
+#### 3. Solution & Architectural Strategy
+
+Bundle the three reviewed CSV snapshots in `backend/runtime_data/` and explicitly copy them to `/data`. Production SHA-256 verification matches all three development source files; the location service loads all 30 Pasig barangays. The release also enables the approved worker after migration. Ten RSS-linked backlog bodies now produce typed, source-linked stored results, with no duplicate or public flood writes. Historical rows remain context rather than live evidence.
+
+#### 4. Files Modified / What Changed
+
+`backend/Dockerfile` adds the reference copy; `backend/runtime_data/` holds the three snapshots and refresh/build instructions; `.gcloudignore` excludes backend environment files; `cloudbuild.yaml` selects bounded collector processing. Existing evaluation/progress/task/system/feature records document the release. No reference service, model, migration definition, or runtime dependency changed.
+
+### [BUG-076] Full backend tests lack isolated database and auth fixtures
+
+- **Status:** Investigated; pre-existing test infrastructure gap; remediation pending
+- **Severity:** Medium (prevents a trustworthy all-suite integration result; no new runtime regression established)
+- **Date Reported / Updated:** October 02, 2026
+- **Author / Investigator:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The new-branch review collects 398 cases, but some older integration modules use configured shared database sessions/live providers, install auth overrides at import time, or request a nonexistent `db` fixture. Running them with the isolated news/authorization tests could contaminate dependency state or write to an unintended database. The review therefore explicitly separates these cases and does not claim a full-suite pass.
+
+#### 2. Root Cause Analysis (RCA)
+
+`tests/conftest.py` exposes `db_session` from the application SessionLocal rather than an isolated test database. `test_auth_endpoints.py` requests `db`, which that conftest does not define. `test_audit_trail.py`, `test_flood_report_merging.py`, `test_spatial_archive.py`, and `test_spatial_merging.py` mutate shared app auth overrides during collection without universal per-case cleanup. Other legacy tests call SessionLocal/live geocoding directly. All these files are unchanged from roi-branch; this was not introduced by the new worker.
+
+#### 3. Solution & Architectural Strategy
+
+Pending: add a guarded disposable PostgreSQL/PostGIS harness, restore auth/dependency/limiter state per test, mock external providers, and resolve fixture naming while preserving every failing test. First validate against the baseline and then the new revision; distinguish old test failures from feature regressions. The current review validates 371 distinct cases and explicitly leaves twenty-three database/live cases plus four guarded PostgreSQL cases unverified in this run. The earlier migration/four-PostgreSQL verification remains documented separately.
+
+#### 4. Files Modified / What Changed
+
+- No production or test runtime file changed during this investigation.
+- Existing evaluation, task/progress, and this issue record document the evidence, affected pre-existing test files, and remaining integration acceptance.
+
+**Later pre-push mitigation (October 2):** Running selected legacy modules in separate processes against a guarded disposable PostgreSQL/PostGIS database passes existing flood-event (4), profile/password (1), OTP (1), archive (2), saved-place (1), and login-limit (1) cases. Four queue cases also pass. An explicit-ID seed sequence error was corrected in disposable setup, not application code. This improves confidence to 385 distinct validated cases but does not repair universal fixture isolation or claim full-suite coverage; thirteen legacy/live cases remain open. See [verification](../evaluations/phase-36-open-article-fallback-check.md#additional-pre-push-verification--october-2). ([@roicambe](https://github.com/roicambe) (Roi Cambe))
+
+### [BUG-075] Flood-control discussions were classified as active flooding
+
+- **Status:** Resolved locally; 13 focused and 207 combined regressions pass; one real administrative body rejected as flood evidence; broad live validation/deployment pending
+- **Severity:** High (policy discussion could create a false flood candidate)
+- **Date Reported / Updated:** October 02, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A constructed report discussing flood control projects in Taguig yielded an active, body-grounded local flood claim despite having no flood observation. Project height measurements and rising funding could also become depth/status evidence. The preview remained review-only; no public zone was written.
+
+#### 2. Root Cause Analysis (RCA)
+
+The active-word expression matched `flood` inside infrastructure/program phrases. Generic depth and condition rules then interpreted administrative wording as physical flood evidence, allowing unknown-scope discovery probes to accept the story.
+
+#### 3. Solution & Architectural Strategy
+
+Mask flood-control/mitigation/prevention/management/protection and anti-flood phrases only when checking evidence words; retain original source text and offsets. Exclude policy-only sentences and clauses before extracting measurements or borrowing another clause's flood evidence. Preserve explicit flood-depth gauges and genuine water observations in mixed-topic articles. Regression development caught and repaired an overly broad first guard that suppressed knee-deep water beside a flood-control mention. Metadata-local headlines may remain review leads; policy text cannot become observations. No schema or dependency change.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/taglish_extraction_service.py`: Shared evidence-word masking and policy-only sentence/clause guards with explicit-gauge preservation.
+- `backend/tests/test_taglish_extraction.py`: Twelve cases for administrative terms, project dimensions, metadata-only input, mixed actual floods, clause boundaries, and source offsets.
+- `backend/tests/test_news_discovery.py`: Real RSS/body parsing through mock HTTP rejects an unknown-scope policy story with a visible no-local-claim notice.
+- Existing evaluation, task/progress, feature/system reference, and RSS plan: Record local repair, fresh empty live shortlist, successful manual live negative after a permitted approval retry, and deferred Priority 3.
+
+### [BUG-074] Later flood updates were blanket conflicts and same-URL revisions reused old bodies
+
+**Later scope correction:** The broad Priority 3 hold is superseded. Priority 2 comparison repairs pass controlled tests; live matching remains unverified. Durable grouping/retry and zone updates are later integration requirements. The developer authorized saved-extraction preparation, with durable storage pending explicit schema approval.
+
+- **Status:** Resolved locally with 141 combined regression tests; live update verification and deployment pending
+- **Severity:** High (updates could be rejected or an old body relabeled as a newer version)
+- **Date Reported / Updated:** October 02, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Knee-deep flooding followed by a later chest-deep observation was treated as a depth conflict; observed clearance was also flagged as conflicting. Feed retrieval could choose older coverage before newer reports. A same-URL publication revision with unchanged wording reused the stored body; a failed fetch could keep old text while updating its metadata/date.
+
+#### 2. Root Cause Analysis (RCA)
+
+Comparison used depth/status differences and article-wide time lists rather than per-city/road observation order. Alternate feed selection stopped at the first three matches. Cached-body reuse checked title/summary fingerprint but ignored publication revisions. Persistence relabeled old text after failed refresh, and duplicate provenance could repeat that metadata update.
+
+#### 3. Solution & Architectural Strategy
+
+Compare latest explicit observations per city-qualified road, distinguish later changes/clearance from older/stale observations and genuine simultaneous conflicts, expose segment and recurrence ambiguity, and retain missing verification. Choose newest eligible alternate publications across bounded feeds and newest-first probes within discovery feeds. Refresh same-URL publication revisions, preserve successful body/date on failure, surface errors, and prevent older feed overwrites. Retained errored bodies cannot activate even with cached approval. The authenticated fallback can inspect them. No schema or dependency change; no production extraction wiring. Unchanged-feed retries, durable versions/grouping, and live acceptance remain open; Priority 3 is held.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: newest alternate selection and per-road observation decisions.
+- `backend/app/schemas/news_candidate.py`: typed `road_updates` response.
+- `backend/app/services/news_discovery_service.py`, `backend/app/crud/news.py`: publication refresh, ordering, older-version rejection, retained snapshot/error handling.
+- `backend/app/services/news_auto_ingestion_service.py`: failed-refresh body and activation guards.
+- `backend/app/api/v1/endpoints/admin_news.py`: protected fallback eligibility for retained errored bodies.
+- `backend/tests/test_news_open_search.py`, `backend/tests/test_news_discovery.py`, `backend/tests/test_news_auto_ingestion.py`: update ordering, bounded freshness, revision persistence, fallback auth, and no-write regression coverage.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md), task plan, progress, existing flagship Feature 1, system documentation, RSS plan, and tech stack: synchronized scope, validation, and hold.
+
+### [BUG-073] Feed location filtering discarded body-only Metro Manila flood reports
+
+- **Status:** Resolved locally with controlled coverage; live flood-candidate verification and deployment pending
+- **Severity:** Medium (local flood reports could be skipped before retrieval)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A headline such as “Several roads flooded” was discarded if its feed summary omitted the city, even when its article body explicitly reported a Pasig flooded road. Alternate-report retrieval exposed bodies but supplied no structured comparison or copied-body warning.
+
+#### 2. Root Cause Analysis (RCA)
+
+Discovery used only flood/place regexes on feed metadata. Alternate retrieval labeled all accessible bodies as review leads without comparing source-linked dates, city-qualified roads, or duplicate content. Duplicate feed processing could also save an unaccepted lead if acceptance and seen-request state were conflated.
+
+#### 3. Solution & Architectural Strategy
+
+Prioritize metadata-local leads and permit five additional unknown-scope article probes per run. Require an extracted body-grounded local flood claim; skip explicit non-local city/province metadata and future-dated entries. Return notices for unresolved/blocked/out-of-scope/budget outcomes. Track accepted URLs separately from seen requests, preserving rejected scope through duplicates and accepted cached-body reuse. Alternate review compares specific places, city-qualified roads, dates, depth/status, and normalized body hashes. Every overlap remains unverified; copied bodies do not count as independent evidence. No DB schema, dependencies, external auditor, or activation path changed.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_discovery_service.py`: bounded body-location probes, extracted scope, future-date checks, notices, and accepted/seen duplicate handling.
+- `backend/app/services/news_open_search_service.py`: structured event-review clues and duplicate-body warning.
+- `backend/app/schemas/news_candidate.py`, `backend/app/api/v1/endpoints/admin_news.py`: typed run notices and alternate event-review serialization through staff-authenticated routes.
+- `backend/scripts/run_news_discovery.py`: CLI notices and alternate review output.
+- `backend/tests/test_news_discovery.py`, `backend/tests/test_news_open_search.py`: body-only locations, incidental weather clues, run-wide budget, duplicates/repeats, city-qualified roads, dates/depth/status, and copied bodies.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): controlled results and remaining live limitations.
+
+### [BUG-072] Inquirer RSS HTML character references broke XML parsing
+
+- **Status:** Resolved locally; all six configured feeds parsed live; deployment pending
+- **Severity:** Medium (one configured publisher's feed was excluded before discovery)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+The ordinary LANES client received HTTP 200 from Inquirer's configured full feed but returned `Invalid feed XML` and no entries. The failure response also discarded the received HTTP status, making this data-format error resemble a connection failure. A valid empty feed could additionally cause the discovery CLI to report failure.
+
+#### 2. Root Cause Analysis (RCA)
+
+The RSS used undeclared HTML character names (`hellip`, `nbsp`, and `rsquo`) outside CDATA. ElementTree rejected an undefined entity at line 92, column 54. The feed probe's exception branch always set HTTP status to null, and the discovery success check omitted the healthy `empty` status. These problems are distinct from the original article's Cloudflare challenge.
+
+#### 3. Solution & Architectural Strategy
+
+Convert only standard HTML named characters outside CDATA to numeric XML references. Preserve XML's predefined escapes and CDATA; reject unknown custom entities, DTD declarations, and oversized normalized data. Retain HTTP status for parsing errors, explicitly reject HTML/challenge responses, and treat valid empty feeds as healthy. A final live run parsed all six feeds, including 20 Inquirer entries, without feed errors. The combined discovery, fallback, ingestion, and hybrid suite passed 107 tests. Article-page recovery remains unverified.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_feed_service.py`: bounded known-character normalization, CDATA/XML escaping preservation, retained parse-error HTTP status, and HTML/challenge diagnostics.
+- `backend/scripts/run_news_discovery.py`: healthy empty-feed outcome and read-only extraction diagnostics.
+- `backend/app/services/news_discovery_service.py`: shared collection-to-rules extraction diagnostic with per-candidate errors and no ingestion calls.
+- `backend/tests/test_news_discovery.py`: live-failure regressions, custom-entity rejection, controlled RSS/body/extraction flow, no DB/auditor calls, and honest empty/blocked/error outcomes.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): live measurements and remaining integration boundaries.
+
+### [BUG-071] Staff index lookup timed out before slow TLS could finish
+
+- **Status:** Resolved locally with regression coverage; deployment and successful live automatic recovery pending
+- **Severity:** Medium (fallback could time out before receiving a provider response)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+After the original Inquirer article returned a Cloudflare challenge, GDELT checks returned throttling or connection timeouts. Cooldowns suppressed repeat requests but did not identify where connection time was spent.
+
+#### 2. Root Cause Analysis (RCA)
+
+Local tracing completed TCP in 0.41 seconds and TLS at 8.83 seconds; a read-only Cloud Run diagnostic completed TCP in 0.19 seconds and TLS at 11.05 seconds. TLS alone exceeded the staff client's 3-second connect timeout and, in Cloud Run, a 10-second diagnostic budget. The completed connections returned HTTP 429 with the provider's five-second request-spacing notice. The cause of the slow handshake and the exact provider rate-limit bucket remain unknown; these are separate from Inquirer's Cloudflare challenge.
+
+#### 3. Solution & Architectural Strategy
+
+Override only GDELT requests with a 15-second connect / 20-second read timeout, retain per-process pacing/cooldowns, and reject malformed provider result shapes. Add optional place/date queries and independent approved-publisher feed shortlisting for recent originals, followed by the existing bounded body parser. Keep event review mandatory and preserve visible failures and original evidence. Add a read-only diagnostic mode to the existing collector script. The combined suite passes 87 tests, including recovery from simulated GDELT 429 through an RSS feed and unchanged database originals. Live provider throttling persists; no live automatic recovery is claimed.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: provider timeout, response validation, place/date search, approved recent-feed fallback, and accurate unavailable-body status.
+- `backend/app/api/v1/endpoints/admin_news.py`: publication context and independent feed fallback in retrieval mode.
+- `backend/app/schemas/news_candidate.py`: feed lead publication timestamp, separate from index-seen time.
+- `backend/scripts/run_news_discovery.py`: read-only open-leads diagnostic, safe network timing/status summaries, and truthful exit status.
+- `backend/tests/test_news_open_search.py`, `backend/tests/test_news_discovery.py`: timeout override, malformed payload, date/place filtering, feed recovery, API serialization, and no-write checks.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): local/Cloud Run traces and remaining live limits.
+
+### [BUG-070] GDELT lookups lacked shared pacing and cooldowns
+
+- **Status:** Request handling repaired locally; live provider success remains unverified
+- **Severity:** Medium (repeated or concurrent staff lookups could amplify provider throttling)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+Live GDELT checks returned HTTP 429. Separate lookups could repeat searches without a provider-wide interval or shared cooldown. A successful title search could also immediately issue a phrase search. The observed external 429's original cause is unconfirmed.
+
+#### 2. Root Cause Analysis (RCA)
+
+The staff route's per-client limit did not coordinate individual upstream queries across concurrent calls. The service had no success cache, failure cooldown state, or Retry-After parsing.
+
+#### 3. Solution & Architectural Strategy
+
+Use a single in-flight query gate per process, a 10-second gap, a bounded 10-minute cache, and exponential cooldowns starting at 60 seconds. Respect longer Retry-After seconds/dates, recognize HTTP-200 throttle notices, and expose structured wait metadata. Long waits return immediately and no failed query is automatically retried. A real HTTP 429 plus an immediate repeat generated one outbound request total. This does not coordinate multiple processes/replicas or clear external limits.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: pacing, cache, cooldowns, and provider failure handling.
+- `backend/app/schemas/news_candidate.py`: optional `retry_after_seconds`.
+- `backend/app/api/v1/endpoints/admin_news.py`: Retry-After response header.
+- `backend/tests/test_news_open_search.py`, `backend/tests/test_news_discovery.py`: concurrency, timing, cache, backoff, HTTP-date, failure, and response metadata regressions.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): verification and process-scope limits.
+
+### [BUG-069] Malformed indexed article URLs crashed the staff lookup
+
+- **Status:** Resolved locally with regression coverage
+- **Severity:** Medium (external search metadata could fail the lookup)
+- **Date Reported / Updated:** October 01, 2026
+- **Author / Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+#### 1. Problem Description
+
+A GDELT-style result containing `https://[invalid/flood` raised an uncaught `ValueError`. Invalid/nonstandard ports could also survive lead validation. Live checks additionally returned HTTP 429, which the response labeled only as `HTTPStatusError`.
+
+#### 2. Root Cause Analysis (RCA)
+
+Article identity parsing ran outside the provider-error handler and did not catch URL parsing failures or validate the port. Provider failures used only the exception class, and a failed title search could still immediately trigger an excerpt search.
+
+#### 3. Solution & Architectural Strategy
+
+Skip malformed URLs and nonstandard ports, retain valid results, return HTTP status codes without provider body text, and stop immediate phrase searches after failed title requests. Alternate bodies remain separate and require event review. HTTP 429 availability remains an operational limitation, not a resolved provider issue.
+
+#### 4. Files Modified / What Changed
+
+- `backend/app/services/news_open_search_service.py`: URL validation and failure handling.
+- `backend/tests/test_news_open_search.py`: malformed URL, malformed/oversized response, disabled-source, and 429 regressions.
+- `backend/tests/test_news_discovery.py`: retrieval-option response and unchanged stored original integration checks.
+- [Fallback evaluation](../evaluations/phase-36-open-article-fallback-check.md): offline and live verification details.
 
 ### [BUG-068] Mobile flood report media selection did not attach picked files
 

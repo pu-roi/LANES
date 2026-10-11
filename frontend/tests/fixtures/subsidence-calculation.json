@@ -1,0 +1,78 @@
+{
+  "0": {
+    "schema_version": "lognormal_aft_calculation_v1",
+    "reference_at": "2026-10-08T01:00:00Z",
+    "prediction_as_of_at": "2026-10-08T01:00:00Z",
+    "elapsed_minutes": 0.0,
+    "log_duration_location": 6.964058396239009,
+    "log_duration_scale": 0.4606544869441319,
+    "probability_before_anchor": -0.0,
+    "quantiles": [
+      {
+        "quantile": 0.1,
+        "remaining_minutes": 586.2263145481006,
+        "estimated_reported_subsidence_at": "2026-10-08T10:46:13.578873Z",
+        "total_minutes": 586.2263145481006,
+        "adjusted_probability": 0.1,
+        "normal_score": -1.2815515655446,
+        "remaining_duration_display": "9h 46m"
+      },
+      {
+        "quantile": 0.5,
+        "remaining_minutes": 1057.9183084363647,
+        "estimated_reported_subsidence_at": "2026-10-08T18:37:55.098506Z",
+        "total_minutes": 1057.9183084363647,
+        "adjusted_probability": 0.5,
+        "normal_score": 0.0,
+        "remaining_duration_display": "17h 38m"
+      },
+      {
+        "quantile": 0.9,
+        "remaining_minutes": 1909.145187703832,
+        "estimated_reported_subsidence_at": "2026-10-09T08:49:08.711262Z",
+        "total_minutes": 1909.145187703832,
+        "adjusted_probability": 0.9,
+        "normal_score": 1.2815515655446,
+        "remaining_duration_display": "31h 49m"
+      }
+    ]
+  },
+  "360": {
+    "schema_version": "lognormal_aft_calculation_v1",
+    "reference_at": "2026-10-07T19:00:00Z",
+    "prediction_as_of_at": "2026-10-08T01:00:00Z",
+    "elapsed_minutes": 360.0,
+    "log_duration_location": 6.964058396239009,
+    "log_duration_scale": 0.4606544869441319,
+    "probability_before_anchor": 0.009640588571788728,
+    "quantiles": [
+      {
+        "quantile": 0.1,
+        "remaining_minutes": 239.32039533137657,
+        "estimated_reported_subsidence_at": "2026-10-08T04:59:19.223720Z",
+        "total_minutes": 599.3203953313766,
+        "adjusted_probability": 0.10867652971460987,
+        "normal_score": -1.2335971395845537,
+        "remaining_duration_display": "3h 59m"
+      },
+      {
+        "quantile": 0.5,
+        "remaining_minutes": 703.8231835017369,
+        "estimated_reported_subsidence_at": "2026-10-08T12:43:49.391010Z",
+        "total_minutes": 1063.823183501737,
+        "adjusted_probability": 0.5048202942858944,
+        "normal_score": 0.012082979958591962,
+        "remaining_duration_display": "11h 44m"
+      },
+      {
+        "quantile": 0.9,
+        "remaining_minutes": 1553.9995453985887,
+        "estimated_reported_subsidence_at": "2026-10-09T02:53:59.972724Z",
+        "total_minutes": 1913.999545398589,
+        "adjusted_probability": 0.9009640588571789,
+        "normal_score": 1.2870642858450418,
+        "remaining_duration_display": "25h 54m"
+      }
+    ]
+  }
+}

@@ -7,6 +7,7 @@ NOAH return periods and Var classes never replace article depth or status.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
@@ -61,9 +62,23 @@ def rank_noah_road_sections(
     must separately assess article recency, active condition, conflicts,
     corroboration, expiry, and routing geometry before any public write.
     """
+    if set(noah_archives) != set(RETURN_PERIODS):
+        raise ValueError("All three Metro Manila NOAH scenarios are required")
+    return rank_measured_road_sections(sections, {
+        section.section_id: {period: overlap_provider(noah_archives[period], section.metric_centerline)
+                            for period in RETURN_PERIODS} for section in sections
+    }, {period: str(noah_archives[period]) for period in RETURN_PERIODS})
+
+
+def rank_measured_road_sections(
+    sections: Sequence[RoadSectionEvidence],
+    measurements: Mapping[str, Mapping[int, dict[int, float]]],
+    source_ids: Mapping[int, str],
+) -> RoadPrediction:
+    """Share the research ranking with indexed runtime source-vector measurements."""
     if not sections or len({section.section_id for section in sections}) != len(sections):
         raise ValueError("Provide one or more uniquely identified road sections")
-    if set(noah_archives) != set(RETURN_PERIODS):
+    if set(source_ids) != set(RETURN_PERIODS):
         raise ValueError("All three Metro Manila NOAH scenarios are required")
     for section in sections:
         if (section.metric_centerline.is_empty or section.metric_centerline.length <= 0
@@ -76,9 +91,11 @@ def rank_noah_road_sections(
     for section in sections:
         overlap_by_scenario: dict[int, dict[int, float]] = {}
         fractions: dict[int, float] = {}
+        if set(measurements.get(section.section_id, {})) != set(RETURN_PERIODS):
+            raise ValueError("Incomplete NOAH scenario measurements")
         for period in RETURN_PERIODS:
-            measured = overlap_provider(noah_archives[period], section.metric_centerline)
-            if set(measured) != {1, 2, 3} or any(length < 0 for length in measured.values()):
+            measured = measurements[section.section_id][period]
+            if set(measured) != {1, 2, 3} or any(not math.isfinite(length) or length < 0 for length in measured.values()):
                 raise ValueError(f"Incomplete NOAH class coverage for {period}-year scenario")
             if sum(measured.values()) > section.metric_centerline.length + 0.1:
                 raise ValueError(f"Overlapping NOAH classes exceed road length for {period}-year scenario")
@@ -124,5 +141,5 @@ def rank_noah_road_sections(
     return RoadPrediction(
         ranked_sections=tuple(ranked), predicted_section_id=chosen,
         reason=reason,
-        noah_source_ids={period: str(noah_archives[period]) for period in RETURN_PERIODS},
+        noah_source_ids=dict(source_ids),
     )

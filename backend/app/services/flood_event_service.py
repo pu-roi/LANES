@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.schemas.common import ensure_utc, serialize_utc_datetime
+from app.services.configuration_service import unexpired_deadline
 from app.crud.report import create_flood_avoidance_zone, credit_user_verified_report, penalize_user_rejected_report
 from app.models.notification import Notification, NotificationType
 
@@ -102,7 +103,7 @@ def get_event_metrics(
     active_zone_count = db.query(models.FloodAvoidanceZone.id).filter(
         models.FloodAvoidanceZone.event_id == event.id,
         models.FloodAvoidanceZone.is_active.is_(True),
-        (models.FloodAvoidanceZone.expires_at.is_(None)) | (models.FloodAvoidanceZone.expires_at > as_of),
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, as_of),
     ).count()
     end_time = ensure_utc(event.ended_at) or as_of
     start_time = ensure_utc(event.verified_at) or as_of
@@ -429,10 +430,13 @@ def create_verified_event_with_zone(
     zone_input: schemas.FloodAvoidanceZoneCreate,
     peak_severity: models.ReportSeverity | str,
     peak_depth: Optional[str],
-    acted_by_user_id: int,
+    acted_by_user_id: Optional[int] = None,
     source_report: Optional[models.FloodReport] = None,
     zone_snapshot: Optional[dict[str, Any]] = None,
     zone_attributes: Optional[dict[str, Any]] = None,
+    commit: bool = True,
+    first_reported_at: Optional[datetime] = None,
+    credit_reputation: bool = True,
 ) -> tuple[models.FloodEvent, models.FloodAvoidanceZone]:
     """Create a verified event and its first operational zone atomically."""
     if source_report and source_report.event_id is not None:
@@ -443,10 +447,11 @@ def create_verified_event_with_zone(
         raise ValueError("The report has an incomplete existing Flood Event link and cannot be re-approved.")
     severity = _severity_value(peak_severity)
     verified_at = datetime.now(timezone.utc)
+    onset_at = ensure_utc(first_reported_at) or (ensure_utc(source_report.created_at) if source_report else None)
     try:
         event = models.FloodEvent(
             status=models.FloodEventStatus.ACTIVE,
-            first_reported_at=ensure_utc(source_report.created_at) if source_report else None,
+            first_reported_at=onset_at,
             verified_at=verified_at,
             peak_severity=severity,
             peak_depth=peak_depth,
@@ -463,15 +468,16 @@ def create_verified_event_with_zone(
             source_report.status = models.ReportStatus.APPROVED
             source_report.approved_at = verified_at
             _record_report_location_rows(db, event, source_report)
-            db.add(models.FloodReportModerationOutcome(
-                report_id=source_report.id,
-                outcome=models.ReportModerationOutcomeType.APPROVED,
-                event_id=event.id,
-                zone_id=zone.id,
-                acted_by_user_id=acted_by_user_id,
-                acted_at=verified_at,
-            ))
-            if source_report.user_id:
+            if acted_by_user_id is not None:
+                db.add(models.FloodReportModerationOutcome(
+                    report_id=source_report.id,
+                    outcome=models.ReportModerationOutcomeType.APPROVED,
+                    event_id=event.id,
+                    zone_id=zone.id,
+                    acted_by_user_id=acted_by_user_id,
+                    acted_at=verified_at,
+                ))
+            if source_report.user_id and credit_reputation:
                 credit_user_verified_report(db, source_report.user_id, commit=False)
 
         _append_timeline(
@@ -490,12 +496,16 @@ def create_verified_event_with_zone(
             {"zone_id": zone.id, **(zone_snapshot or {})},
             verified_at,
         )
-        db.commit()
-        db.refresh(event)
-        db.refresh(zone)
+        if commit:
+            db.commit()
+            db.refresh(event)
+            db.refresh(zone)
+        else:
+            db.flush()
         return event, zone
     except Exception:
-        db.rollback()
+        if commit:
+            db.rollback()
         raise
 
 
@@ -540,8 +550,9 @@ def link_supporting_report(
     report: models.FloodReport,
     event: models.FloodEvent,
     zone: models.FloodAvoidanceZone,
-    acted_by_user_id: int,
+    acted_by_user_id: Optional[int],
     commit: bool = True,
+    credit_reputation: bool = True,
 ) -> models.FloodReport:
     """Approve a corroborating report without creating another event."""
     if zone.event_id != event.id:
@@ -581,7 +592,7 @@ def link_supporting_report(
             db, event.id, "report_linked", "Supporting flood report linked to this event.",
             {"report_id": report.id, "zone_id": zone.id}, acted_at,
         )
-        if report.user_id:
+        if report.user_id and credit_reputation:
             credit_user_verified_report(db, report.user_id, commit=False)
         if commit:
             db.commit()
@@ -647,6 +658,7 @@ def deactivate_zone_and_end_event_if_final(
     db: Session,
     zone: models.FloodAvoidanceZone,
     occurred_at: Optional[datetime] = None,
+    commit: bool = True,
 ) -> models.FloodAvoidanceZone:
     """Deactivate one zone and end the event only when no live zones remain."""
     occurred_at = ensure_utc(occurred_at) or datetime.now(timezone.utc)
@@ -660,7 +672,7 @@ def deactivate_zone_and_end_event_if_final(
                 models.FloodAvoidanceZone.event_id == event.id,
                 models.FloodAvoidanceZone.id != zone.id,
                 models.FloodAvoidanceZone.is_active.is_(True),
-                (models.FloodAvoidanceZone.expires_at.is_(None)) | (models.FloodAvoidanceZone.expires_at > occurred_at),
+                unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, occurred_at),
             ).first()
             if not remaining:
                 event.status = models.FloodEventStatus.ENDED
@@ -669,22 +681,47 @@ def deactivate_zone_and_end_event_if_final(
                     db, event.id, "event_ended", "All live flood zones for this event have ended.",
                     {"final_zone_id": zone.id}, occurred_at,
                 )
-        db.commit()
-        db.refresh(zone)
+        if commit:
+            db.commit()
+            db.refresh(zone)
+        else:
+            db.flush()
         return zone
     except Exception:
-        db.rollback()
+        if commit:
+            db.rollback()
         raise
 
 
 def expire_due_zones(db: Session, now: Optional[datetime] = None) -> int:
     """End all due zones through the same lifecycle path as manual deactivation."""
     cutoff = ensure_utc(now) or datetime.now(timezone.utc)
+    from app.services.configuration_service import configuration_lock, read_configuration
+    configuration_lock(db)
+    if not read_configuration(db).automatic_expiry_enabled:
+        return 0
+    from app.services.pasig_ml_expiry_service import synchronize_active_zones
+    synchronize_active_zones(db, now=cutoff)
+    db.commit()
+    configuration_lock(db)
+    from app.services.local_news_scenario_service import sql_clock
+    eligibility_clock = sql_clock(models.FloodAvoidanceZone.id, "zone", cutoff)
     due_zones = db.query(models.FloodAvoidanceZone).filter(
         models.FloodAvoidanceZone.is_active.is_(True),
         models.FloodAvoidanceZone.expires_at.is_not(None),
-        models.FloodAvoidanceZone.expires_at <= cutoff,
+        models.FloodAvoidanceZone.expires_at <= eligibility_clock,
     ).all()
+    expired_count = 0
     for zone in due_zones:
+        # Each lifecycle commit releases the policy lock. Reacquire it before
+        # the next zone so a saved pause cannot be bypassed by a queued batch.
+        configuration_lock(db)
+        if not read_configuration(db).automatic_expiry_enabled:
+            break
+        if zone.event_id:
+            _append_timeline(db, zone.event_id, "evidence_expired",
+                "Evidence deadline passed; current condition is Unconfirmed, not observed cleared.",
+                {"zone_id": zone.id, "expires_at": zone.expires_at.isoformat(), "condition": "Unconfirmed"}, cutoff)
         deactivate_zone_and_end_event_if_final(db=db, zone=zone, occurred_at=cutoff)
-    return len(due_zones)
+        expired_count += 1
+    return expired_count

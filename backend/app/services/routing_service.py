@@ -1,5 +1,6 @@
 """Provider orchestration for online flood-safe routing."""
 
+import asyncio
 import logging
 from typing import Any
 
@@ -21,7 +22,9 @@ async def calculate_route(payload: schemas.RouteRequest, db: Session) -> dict[st
     """Generate provider candidates, then apply one flood policy and ranker."""
     # Keep the legacy request field for older clients, but never let a public
     # navigation request opt out of hard flood exclusions.
-    zones = get_active_flood_zones(db)
+    # SQLAlchemy and the legacy Valhalla client are synchronous. Keep their
+    # network waits off the API event loop so other requests and SSE stay live.
+    zones = await asyncio.to_thread(get_active_flood_zones, db)
     hard_polygons = polygons_for(zones, payload.vehicle_profile, {"blocked"})
     cautious_polygons = polygons_for(zones, payload.vehicle_profile, {"cautious"})
 
@@ -32,7 +35,8 @@ async def calculate_route(payload: schemas.RouteRequest, db: Session) -> dict[st
                 exclude_polygons=exclusions, vehicle_profile=payload.vehicle_profile,
                 preference=preference,
             )
-        return valhalla_service.fetch_route_candidates(
+        return await asyncio.to_thread(
+            valhalla_service.fetch_route_candidates,
             start=payload.start, end=payload.end,
             exclude_polygons=exclusions, vehicle_profile=payload.vehicle_profile,
             heading=payload.heading,
@@ -43,16 +47,32 @@ async def calculate_route(payload: schemas.RouteRequest, db: Session) -> dict[st
         # The unfiltered baseline is never navigable by itself. It lets LANES
         # explain an unsafe direct route only after actual intersection checks.
         exclusions = [[]]
-        if zones:
+        if hard_polygons:
             exclusions.append(hard_polygons)
-            if cautious_polygons:
-                exclusions.append(hard_polygons + cautious_polygons)
+        if cautious_polygons:
+            exclusions.append(hard_polygons + cautious_polygons)
         # Both providers use the same search passes. The shortest pass can
         # expose walkable shortcuts and distinct routes missed by fastest.
+        # Bound provider pressure while overlapping independent network waits.
+        # gather preserves pass ordering for stable route ranking. Wait for all
+        # passes before fallback so Valhalla work cannot overlap ORS retries.
+        semaphore = asyncio.Semaphore(2)
+
+        async def search(excluded: list[list[list[float]]], preference: str) -> list[dict[str, Any]]:
+            async with semaphore:
+                return await fetch(engine, excluded, preference)
+
+        batches = await asyncio.gather(
+            *(search(excluded, preference)
+              for preference in ("fastest", "shortest")
+              for excluded in exclusions),
+            return_exceptions=True,
+        )
         raw_candidates = []
-        for preference in ("fastest", "shortest"):
-            for excluded in exclusions:
-                raw_candidates.extend(await fetch(engine, excluded, preference))
+        for batch in batches:
+            if isinstance(batch, BaseException):
+                raise batch
+            raw_candidates.extend(batch)
         evaluated = [evaluate_route(candidate, zones, payload.vehicle_profile) for candidate in raw_candidates]
         routes, baseline = rank_routes(evaluated)
         baseline_summary = None

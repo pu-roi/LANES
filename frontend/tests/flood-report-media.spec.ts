@@ -10,11 +10,16 @@ if (process.env.PLAYWRIGHT_CHROME_PATH) {
 
 test("keeps selected photo and video attached in the flood report panel", async ({ page }, testInfo) => {
   await page.addInitScript(() => localStorage.setItem("lanes_token", "test-only-token"));
-  await page.route("**/auth/test-token", (route) => route.fulfill({
-    status: 200,
-    contentType: "application/json",
-    body: JSON.stringify({ id: 987654, username: "media-test" }),
-  }));
+  await page.route("**/api.maptiler.com/**", route => route.fulfill({ json: { version: 8, sources: {}, layers: [] } }));
+  await page.route("**/api/v1/**", route => {
+    const path = new URL(route.request().url()).pathname;
+    if (path.endsWith("/auth/test-token")) return route.fulfill({ json: {
+      id: 987654, username: "media-test", is_active: true,
+      role: { name: "Commuter", permissions: {} },
+    } });
+    if (path.endsWith("/feed")) return route.fulfill({ json: { posts: [], total: 0, has_more: false } });
+    return route.fulfill({ json: [] });
+  });
 
   await page.goto("/map?action=report");
   await page.evaluate(async () => {
@@ -43,11 +48,12 @@ test("keeps selected photo and video attached in the flood report panel", async 
     };
     await new Promise<void>((resolve, reject) => {
       const request = indexedDB.open("keyval-store");
+      request.onupgradeneeded = () => request.result.createObjectStore("keyval");
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
         const transaction = request.result.transaction("keyval", "readwrite");
         transaction.objectStore("keyval").put(draft, "lanes:flood-report-draft:v1:987654");
-        transaction.oncomplete = () => resolve();
+        transaction.oncomplete = () => { request.result.close(); resolve(); };
         transaction.onerror = () => reject(transaction.error);
       };
     });
@@ -57,7 +63,7 @@ test("keeps selected photo and video attached in the flood report panel", async 
   if (testInfo.project.name === "mobile-chromium") {
     await page.getByRole("button", { name: "Report Flood Hazard" }).click();
     await page.getByRole("button", { name: "Flood Report", exact: true }).click();
-  }
+  } else await page.getByRole("button", { name: "Expand panel" }).click();
 
   const picker = page.getByLabel("Add photos or videos to flood report");
   await expect(picker).toBeVisible();

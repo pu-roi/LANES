@@ -32,13 +32,15 @@ class ActiveFloodZone:
 
 def get_active_flood_zones(db: Session) -> list[ActiveFloodZone]:
     """Load active, unexpired authoritative PostGIS zone geometries once."""
+    from app.services.local_news_scenario_service import sql_clock
+    from app.services.configuration_service import unexpired_deadline
+    clock = sql_clock(models.FloodAvoidanceZone.id, "zone", func.now())
     rows = db.query(
         models.FloodAvoidanceZone,
         func.ST_AsGeoJSON(models.FloodAvoidanceZone.geometry).label("geojson"),
     ).filter(
         models.FloodAvoidanceZone.is_active.is_(True),
-        (models.FloodAvoidanceZone.expires_at.is_(None))
-        | (models.FloodAvoidanceZone.expires_at > func.now()),
+        unexpired_deadline(db, models.FloodAvoidanceZone.expires_at, clock),
     ).all()
 
     zones: list[ActiveFloodZone] = []
@@ -75,6 +77,13 @@ def _override_allows(profile: VehicleProfile, value: str | None) -> bool | None:
     if not value:
         return None
     raw_value = value.lower()
+    # News restrictions describe prohibited vehicle classes, not an allowlist.
+    # They can tighten depth-based policy without implying pedestrian closure
+    # or permission for an unmentioned class.
+    if profile != "walk" and raw_value == "no vehicles":
+        return False
+    if profile in {"motorcycle", "light"} and raw_value == "light vehicles prohibited":
+        return False
     normalized = {item.strip().lower() for item in value.replace("/", ",").split(",") if item.strip()}
     if profile == "walk":
         if any(phrase in raw_value for phrase in ("no pedestrians", "pedestrians prohibited", "no walking", "walking prohibited")):

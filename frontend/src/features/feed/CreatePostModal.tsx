@@ -1,3 +1,4 @@
+import { getSessionStorageKey } from "@/lib/localNewsSimulation";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
@@ -388,9 +389,9 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
       queryClient.invalidateQueries({ queryKey: ['feed'] });
       onClose();
     },
-    onError: (err: any) => {
+    onError: async (err: any) => {
       if (err.status === 401 || err.message.includes('401') || err.message.includes('authenticated') || err.message.includes('credentials') || err.message.includes('logged in')) {
-        localStorage.removeItem('lanes_token');
+        localStorage.removeItem(await getSessionStorageKey("lanes_token"));
         setShowAuthPrompt(true);
       } else if (
         err.status === 413 || 
@@ -409,14 +410,14 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) {
       showError("Please enter a description for your post.");
       return;
     }
     
-    if (!localStorage.getItem('lanes_token')) {
+    if (!localStorage.getItem(await getSessionStorageKey("lanes_token"))) {
       if (typeof window !== 'undefined') {
         const draftData = JSON.stringify({
           content,

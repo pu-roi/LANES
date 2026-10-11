@@ -2,7 +2,7 @@
 
 Verifies:
   1. Primary extraction by Taglish rules & PSGC reference grounding.
-  2. Gemini 1.5 Flash strictly in supporting / double-check auditor role.
+  2. Independent auditor strictly in supporting / double-check role.
   3. Fail-closed activation decisions:
      - Auditor-confirmed active flood without verified segment/time -> staff review.
      - Subsided flood ("humupa na") -> suppressed_subsided.
@@ -24,7 +24,9 @@ from app.services.hybrid_extraction_service import (
 
 
 @pytest.fixture
-def hybrid_service() -> HybridExtractionService:
+def hybrid_service(monkeypatch) -> HybridExtractionService:
+    monkeypatch.setenv("LANES_NEWS_AUDITOR_PROVIDER", "")
+    monkeypatch.setenv("LANES_NEWS_AUDITOR_MODEL", "")
     return get_hybrid_extraction_service()
 
 
@@ -235,10 +237,12 @@ def test_activation_requires_independent_audit_recent_observation_and_verified_s
         geometry_provenance="verified_segment",
         is_auto_approvable=True,
     )
-    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True)
+    audit = LLMAuditResult(is_confirmed=True, status_classification="active", depth_confirmed=True, place_confirmed=True, time_confirmed=True)
     published = now - timedelta(minutes=5)
 
     assert hybrid_service.evaluate_claim_action(claim, audit, location, published)[0] == "auto_approved"
+    legacy_audit = audit.model_copy(update={"place_confirmed": False, "time_confirmed": False})
+    assert hybrid_service.evaluate_claim_action(claim, legacy_audit, location, published)[0] == "flagged_review"
     assert hybrid_service.evaluate_claim_action(claim, None, location, published)[0] == "flagged_review"
     assert hybrid_service.evaluate_claim_action(claim, audit, location.model_copy(update={"geometry_provenance": "offline_anchor"}), published)[0] == "flagged_review"
     assert hybrid_service.evaluate_claim_action(claim, audit, location, None)[0] == "flagged_review"

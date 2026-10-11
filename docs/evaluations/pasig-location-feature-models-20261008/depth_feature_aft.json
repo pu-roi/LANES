@@ -1,0 +1,42 @@
+{
+  "coefficients": [
+    6.987198816732882,
+    -0.030076132138036858
+  ],
+  "feature_means": [
+    36.11722222222222
+  ],
+  "feature_names": [
+    "depth_cm"
+  ],
+  "feature_scales": [
+    23.60329692261833
+  ],
+  "fit_diagnostics": {
+    "attempted_start_count": 5,
+    "converged_start_count": 5,
+    "independent_event_sufficiency_established": false,
+    "normalized_negative_log_likelihood": 2.231445528579013,
+    "numerical_log_scale_limits": [
+      -8.0,
+      8.0
+    ],
+    "observation_count": 36,
+    "observed_hessian_condition_number": 6.977097179608077,
+    "observed_hessian_min_eigenvalue": 1.7184360573785507,
+    "parameter_count": 3,
+    "predictive_validation_established": false,
+    "weight_policy": "caller_supplied_normalized_for_optimization"
+  },
+  "lineage": {
+    "deployment_eligible": false,
+    "experiment": "qualified_first_depth_comparison",
+    "production_training_admitted": 0,
+    "prospective_accuracy_established": false
+  },
+  "missing_indicator_features": [],
+  "scale": 0.4598105807927939,
+  "schema_version": "pasig-reported-subsidence-lognormal-aft-v1",
+  "shadow_only": true,
+  "target_version": "remaining_time_from_first_recorded_wet_to_reported_subsidence_continuity_assumed_v1"
+}

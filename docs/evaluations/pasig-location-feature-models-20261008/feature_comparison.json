@@ -1,0 +1,112 @@
+{
+  "aft_features": [
+    "depth_cm"
+  ],
+  "aft_summary_holdouts": [
+    {
+      "held_rows": 1,
+      "held_summary": "OBS-7d1d5441f76ee802",
+      "mean_interval_nll": 2.492699864081915,
+      "model": "intercept_aft",
+      "state": "fitted"
+    },
+    {
+      "held_rows": 1,
+      "held_summary": "OBS-7d1d5441f76ee802",
+      "mean_interval_nll": 2.5031619579470545,
+      "model": "depth_feature_aft",
+      "state": "fitted"
+    },
+    {
+      "held_rows": 27,
+      "held_summary": "OBS-aed0c046a22c54b0",
+      "mean_interval_nll": 3.332483978363978,
+      "model": "intercept_aft",
+      "state": "fitted"
+    },
+    {
+      "held_rows": 27,
+      "held_summary": "OBS-aed0c046a22c54b0",
+      "model": "depth_feature_aft",
+      "reason": "Observed likelihood is flat, indefinite or numerically nonidentifiable.",
+      "state": "unidentifiable"
+    },
+    {
+      "held_rows": 8,
+      "held_summary": "OBS-c33d857e974b018d",
+      "mean_interval_nll": 6.502643872086177,
+      "model": "intercept_aft",
+      "state": "fitted"
+    },
+    {
+      "held_rows": 8,
+      "held_summary": "OBS-c33d857e974b018d",
+      "mean_interval_nll": 13.766706766456505,
+      "model": "depth_feature_aft",
+      "state": "fitted"
+    }
+  ],
+  "builder_sha256": "b6ccdefa3af8fcb4f879d118cf786fdda7ae4203a3be43fd112351c5d60b0c41",
+  "depth_feature_model_selected": false,
+  "excluded_unknown_or_uncertain_depth_rows": 1,
+  "full_fit_coefficients": [
+    6.987198816732882,
+    -0.030076132138036858
+  ],
+  "input_sha256": {
+    "backend/runtime_data/flood-duration/conditional_aft.json": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6",
+    "backend/runtime_data/flood-duration/passability_aft.json": "391eaa894717722963d38b6fd34276ef737a33e3224351433b794aa88ddf958c",
+    "data/pasig_barangay_reference.csv": "e036f86a005b6a7148c798baf462e220b40783c6a3f715f43de23c7da45af06a",
+    "docs/evaluations/pasig-duration-followup-20261005/dataset_manifest.json": "fea920a6eaaff2f47a79a5b68d40b2e02e7b934eb519594ea0ffddd5fe0b5e00",
+    "docs/evaluations/pasig-duration-followup-20261005/pasig_wet_observations.csv": "ecd5e920f433eb0e7194190fd057cae3641b538489e4685d29170801852f6a63",
+    "docs/evaluations/pasig-duration-model-20261007/conditional_training_candidates.csv": "7389df1ab1efd303a4d9d355f86a3dd2a21eb2c550f25c296404ffcce408d567",
+    "docs/evaluations/pasig-duration-model-20261007/experiment_report.json": "71fecb36520c810c7d9a5c55d1d7a5b12de445cb1ca07d9f7a867c7910c7dc71"
+  },
+  "observed_dry_labels_generated": false,
+  "prospective_accuracy_established": false,
+  "qualified_aft_rows": 36,
+  "runtime_models_modified": false,
+  "selection_reason": "Insufficient independent outcomes, an unidentifiable AFT fold and worse held-episode trajectory errors; retain current research baselines.",
+  "street_drainage_capacity_learned": false,
+  "terrain_rainfall_effects_learned": false,
+  "trajectory_directions": {
+    "falling": 13,
+    "rising": 14,
+    "unchanged": 224
+  },
+  "trajectory_episodes": 3,
+  "trajectory_holdouts": [
+    {
+      "depth_location_ridge_mae_cm": 22.561313140876123,
+      "held_episode": "PASIG-2025-JUL21-25",
+      "held_pairs": 185,
+      "persistence_baseline_mae_cm": 4.585729729729729,
+      "training_episodes": [
+        "PASIG-2026-AUG17-18",
+        "PASIG-2026-AUG29-30"
+      ]
+    },
+    {
+      "depth_location_ridge_mae_cm": 4.600525802555707,
+      "held_episode": "PASIG-2026-AUG17-18",
+      "held_pairs": 35,
+      "persistence_baseline_mae_cm": 0.0,
+      "training_episodes": [
+        "PASIG-2025-JUL21-25",
+        "PASIG-2026-AUG29-30"
+      ]
+    },
+    {
+      "depth_location_ridge_mae_cm": 17.959720922171737,
+      "held_episode": "PASIG-2026-AUG29-30",
+      "held_pairs": 31,
+      "persistence_baseline_mae_cm": 11.227096774193548,
+      "training_episodes": [
+        "PASIG-2025-JUL21-25",
+        "PASIG-2026-AUG17-18"
+      ]
+    }
+  ],
+  "trajectory_model_selected": false,
+  "trajectory_pairs": 251
+}

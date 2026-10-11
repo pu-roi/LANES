@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from html.parser import HTMLParser
+from html.entities import html5
 from urllib.parse import urljoin, urlsplit, urlunsplit
 from xml.etree import ElementTree
 
@@ -116,6 +118,34 @@ def parse_feed(content: bytes, source: NewsSource, feed_url: str) -> tuple[NewsE
     if (len(content) > MAX_FEED_BYTES or b"\x00" in content[:200] or
             b"<!doctype" in content.lower() or b"<!entity" in content.lower()):
         raise ValueError("Feed exceeds size limit or contains an XML declaration not allowed here")
+    # Some publisher RSS uses HTML character names outside CDATA, which XML
+    # only permits after a declaration. Map known names to numeric references;
+    # never load a DTD, expand custom entities, or decode XML's own escaping.
+    def character_reference(match: re.Match[bytes]) -> bytes:
+        name = match[1].decode("ascii")
+        if name in {"amp", "lt", "gt", "apos", "quot"}:
+            return match[0]
+        characters = html5.get(name + ";")
+        return ("".join(f"&#{ord(char)};" for char in characters).encode("ascii")
+                if characters else match[0])
+
+    parts: list[bytes] = []
+    cursor = 0
+    while cursor < len(content):
+        start = content.find(b"<![CDATA[", cursor)
+        if start < 0:
+            parts.append(re.sub(rb"&([A-Za-z][A-Za-z0-9]+);", character_reference, content[cursor:]))
+            break
+        parts.append(re.sub(rb"&([A-Za-z][A-Za-z0-9]+);", character_reference, content[cursor:start]))
+        end = content.find(b"]]>", start + 9)
+        if end < 0:
+            parts.append(content[start:])  # Preserve malformed CDATA for XML rejection.
+            break
+        parts.append(content[start:end + 3])
+        cursor = end + 3
+    content = b"".join(parts)
+    if len(content) > MAX_FEED_BYTES:
+        raise ValueError("Normalized feed exceeds size limit")
     try:
         root = ElementTree.fromstring(content)
     except ElementTree.ParseError as exc:
@@ -194,12 +224,17 @@ def probe_feed(
         headers["If-None-Match"] = etag
     if last_modified:
         headers["If-Modified-Since"] = last_modified
+    status: int | None = None
     try:
         status, response_headers, content = _read_bounded_feed(client, feed_url, headers)
         if status == 304:
             return FeedProbe(source.id, source.publisher, feed_url, "unchanged", status, 0, 0, None, etag, last_modified), ()
         if status != 200:
             return FeedProbe(source.id, source.publisher, feed_url, "http_error", status, 0, 0, None, error=f"HTTP {status}"), ()
+        if response_headers.get("cf-mitigated", "").casefold() == "challenge":
+            raise ValueError("Feed access blocked by publisher challenge (HTTP 200)")
+        if content.lstrip().lower().startswith((b"<!doctype html", b"<html")):
+            raise ValueError("Feed response is HTML, not RSS/Atom")
         entries = parse_feed(content, source, feed_url)
         newest = max((entry.published_at for entry in entries if entry.published_at), default=None)
         last_modified = response_headers.get("last-modified")
@@ -211,4 +246,4 @@ def probe_feed(
                           response_headers.get("etag"), last_modified)
         return probe, entries
     except (httpx.HTTPError, ValueError) as exc:
-        return FeedProbe(source.id, source.publisher, feed_url, "failed", None, 0, 0, None, error=str(exc)), ()
+        return FeedProbe(source.id, source.publisher, feed_url, "failed", status, 0, 0, None, error=str(exc)), ()

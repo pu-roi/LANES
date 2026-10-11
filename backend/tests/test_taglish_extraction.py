@@ -16,6 +16,27 @@ from app.services.taglish_extraction_service import (
 )
 
 
+@pytest.mark.parametrize("qualifier,barangay", [("Pasig City", None), ("Barangay Ugong, Pasig City", "Ugong")])
+def test_c5_parent_city_is_never_a_barangay(qualifier, barangay):
+    source = NewsArticleExtractorInput(article_id=999, canonical_url="https://example.org/c5",
+        publisher="Fixture", title="Flood update", published_at=datetime(2026, 10, 5, tzinfo=timezone.utc),
+        article_text=f"As of 8 AM, knee-deep flooding along C5 in {qualifier}.")
+    road = next(c for c in extract_taglish_flood_facts(source).claims if c.canonical_road == "C5")
+    assert road.canonical_city == "City of Pasig"
+    assert road.canonical_barangay == barangay
+    assert road.local_area_raw and road.depth_canonical == "knee"
+
+
+def test_barangay_aliases_validate_level_and_exact_parent():
+    from app.services.philippine_location_service import get_philippine_location_service
+    locations = get_philippine_location_service()
+    assert locations.normalize_barangay_name("Pasig City", None) is None
+    assert locations.normalize_barangay_name("QC", "Quezon City") is None
+    assert locations.normalize_barangay_name("Maybunnga", "Pasig City") == "Maybunga"
+    assert locations.normalize_barangay_name("Maybunnga", "Valenzuela") is None
+    assert locations.normalize_barangay_name("Ugong", "Pasig City") == "Ugong"
+
+
 def test_psgc_barangay_normalization():
     assert normalize_barangay_name("Maybunga") == "Maybunga"
     assert normalize_barangay_name("Barangay Maybunga") == "Maybunga"
@@ -78,6 +99,75 @@ def _article_claims(title: str, text: str):
         article_id=200, canonical_url="https://example.com/flood", publisher="Test News",
         title=title, article_text=text,
     )).claims
+
+
+@pytest.mark.parametrize("text", [
+    "Officials discussed an investigation into flood control projects in Taguig City.",
+    "The flood-control project in Taguig City has a wall measuring 3 meters.",
+    "Inimbestigahan ang anti-flood projects sa Taguig City.",
+    "Funding for flood mitigation and flood prevention in Taguig City is rising.",
+])
+def test_flood_control_discussion_is_not_a_flood_observation(text: str) -> None:
+    assert not _article_claims("Taguig flood control investigation", text)
+
+
+@pytest.mark.parametrize("text", [
+    "QC school gets detention basin under covered court to curb flooding.",
+    "A newly installed detention basin sits beneath the covered basketball court of Masambong Elementary School in Quezon City to help mitigate localized flooding during heavy rains.",
+    "Quezon City Mayor Joy Belmonte said the detention basin was installed to help prevent flooding at the school, which is regularly submerged during heavy downpours.",
+    "The DPWH is fast-tracking the construction of drainage facilities and septic tanks at UP-PGH in Manila to help address flooding.",
+    "The school in Pasig City is regularly flooded during heavy downpours.",
+])
+def test_prevention_and_habitual_descriptions_are_not_current_observations(text: str) -> None:
+    assert not _article_claims("Flood prevention infrastructure", text)
+
+
+@pytest.mark.parametrize("observation", [
+    "knee-deep floodwater was observed", "streets are flooded", "floodwater was seen", "residents reported flooding",
+])
+def test_prevention_story_preserves_independent_observation(observation: str) -> None:
+    text = "A basin was installed to prevent flooding. In Pasig City, " + observation + " on Laguna Street."
+    assert any(c.canonical_road == "Laguna Street" and c.condition == "active" for c in _article_claims("Pasig basin and flooding", text))
+
+
+def test_foreign_report_does_not_geocode_interior_ministry_or_market_heading() -> None:
+    text = "The permanent secretary of the interior ministry said residents in Bangkok were flooded. FLOATING FLOOD MARKET Residents waded through waist-deep waters in Bang Kapi."
+    claims = _article_claims("Thousands huddle in Bangkok shelters as Thai flood damages rise", text)
+    assert not any(c.raw_place_name.casefold() in {"interior", "market"} for c in claims)
+
+
+@pytest.mark.parametrize("prefix", [
+    "Flood-control teams reported ",
+    "Officials investigated flood control projects in Taguig City. Residents reported ",
+])
+@pytest.mark.parametrize("observation", ["knee-deep floodwater", "knee-deep water", "knee-deep"])
+def test_flood_control_context_preserves_actual_flood_evidence(prefix: str, observation: str) -> None:
+    text = prefix + observation + " on Laguna Street in Pasig City."
+    claims = _article_claims("Flood control investigation and road flooding", text)
+    road = next(c for c in claims if c.canonical_road == "Laguna Street")
+    assert road.flood_mentioned and road.condition == "active"
+    assert road.depth_canonical == "knee"
+    assert not any(c.canonical_city == "City of Taguig" for c in claims)
+    assert text[road.place_char_start:road.place_char_end] == road.raw_place_name
+    start, end = road.evidence_sentence_offset
+    assert text[start:end] == road.evidence_sentence
+
+
+def test_flood_control_clause_does_not_borrow_another_roads_flood() -> None:
+    text = ("Officials discussed flood-control projects on Laguna Street in Pasig City; "
+            "knee-deep floodwater was observed on España Boulevard in Manila.")
+    claims = _article_claims("Flood control and observed flooding", text)
+    assert not any(c.canonical_road == "Laguna Street" for c in claims)
+    road = next(c for c in claims if c.raw_place_name == "España Boulevard")
+    assert road.flood_mentioned and road.depth_canonical == "knee"
+
+
+def test_flood_control_metadata_is_not_a_flood_observation() -> None:
+    result = extract_taglish_flood_facts(NewsArticleExtractorInput(
+        article_id=201, canonical_url="https://example.com/control", publisher="Test News",
+        title="Taguig flood-control investigation", excerpt="Officials discussed project funding.",
+    ))
+    assert result.is_metadata_only and not result.claims
 
 
 def test_gma_road_segment_and_observation_time():
@@ -494,7 +584,7 @@ def test_metro_manila_article_list_headings_scope_city_barangay_and_passability(
     assert banawe.road_passability == "impassable_all"
     assert taft.canonical_city == "City of Manila"
     assert taft.depth_raw == "8 inches"
-    assert taft.road_passability == "passable_all"
+    assert taft.road_passability == "passable_with_caution"
 
 
 def test_article_list_keeps_intersections_inline_barangays_and_report_time():
@@ -732,6 +822,50 @@ def test_multi_city_report_keeps_each_road_closure_and_time_local():
     assert not any(c.evidence_sentence.startswith("Courtesy:") for c in claims)
     assert zapote.canonical_city == alido.canonical_city == "City of Las Piñas"
     assert all(c.event_time_raw != "as of 12:44 p.m." for c in claims if "Zapote" in c.evidence_sentence)
+
+
+def test_multi_city_sentence_assigns_each_location_its_local_city():
+    inp = NewsArticleExtractorInput(
+        article_id=129,
+        canonical_url="https://example.com/multi-city-sites",
+        publisher="Test News",
+        title="Metro Manila flooding",
+        article_text=(
+            "Floodwaters hit Barangay Plainview, Mandaluyong City, and "
+            "Caruncho Avenue, Pasig City."
+        ),
+    )
+
+    claims = extract_taglish_flood_facts(inp).claims
+    plainview = next(c for c in claims if c.raw_place_name == "Barangay Plainview")
+    caruncho = next(c for c in claims if c.raw_place_name == "Caruncho Avenue")
+
+    assert plainview.canonical_city == "City of Mandaluyong"
+    assert caruncho.canonical_city == "City of Pasig"
+    assert "city_context_ambiguous" not in caruncho.uncertainty_reasons
+
+
+def test_multi_city_landmark_keeps_its_city_and_barangay_scope():
+    inp = NewsArticleExtractorInput(
+        article_id=130,
+        canonical_url="https://example.com/multi-city-landmark",
+        publisher="Test News",
+        title="Metro Manila flooding",
+        article_text=(
+            "Floodwaters reached Maysilo Circle, Barangay Plainview, Mandaluyong City, "
+            "as well as Caruncho Avenue, Pasig City."
+        ),
+    )
+
+    claims = extract_taglish_flood_facts(inp).claims
+    maysilo = next(c for c in claims if c.raw_place_name == "Maysilo Circle")
+    caruncho = next(c for c in claims if c.raw_place_name == "Caruncho Avenue")
+
+    assert maysilo.place_type == "landmark"
+    assert maysilo.canonical_city == "City of Mandaluyong"
+    assert maysilo.canonical_barangay == "Plainview"
+    assert caruncho.canonical_city == "City of Pasig"
+    assert caruncho.canonical_barangay is None
 
 
 def test_newest_first_clearing_update_flags_the_older_same_section_only():

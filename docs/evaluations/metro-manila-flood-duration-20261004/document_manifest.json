@@ -1,0 +1,19 @@
+[
+  {
+    "source_id": "NDRRMC-20210801-FABIAN-SITREP10",
+    "title": "Situational Report for Southwest Monsoon Enhanced by TC Fabian: SitRep No. 10",
+    "publisher": "NDRRMC; public copy hosted by ASEAN AHA Centre",
+    "url": "https://adinet.ahacentre.org/assets/uploads/supported_doc/20210802-SITUATION_REPORT_TCFABIAN-SWMonsoon-Aug1.pdf",
+    "status": "captured",
+    "fetched_at": "2026-10-04T10:40:18.947107+00:00",
+    "report_as_of": "2021-08-01T08:00:00+08:00",
+    "pdf_path": "sources/NDRRMC-20210801-FABIAN-SITREP10.70705fc29490.pdf",
+    "pdf_sha256": "70705fc29490c71d477b752a42325a1dc5dff43a76fbc25ad68fd20df176f3ba",
+    "text_path": "sources/NDRRMC-20210801-FABIAN-SITREP10.70705fc29490.txt",
+    "text_sha256": "78ddf0157c55886b2a5b68c5b017674b1691cb26d4f1e5da7e000fefe4897c2f",
+    "capture_version": "70705fc29490",
+    "reuse_terms": "Unverified; public source copy",
+    "pages": 123,
+    "admission_status": "historical_incident_candidates_not_training_admitted"
+  }
+]

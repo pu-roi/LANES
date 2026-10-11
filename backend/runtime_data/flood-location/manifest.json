@@ -1,0 +1,19 @@
+{
+  "catalog_sha256": "65d88755d7e0f25d4f1648406cfa16ed76244bae6d4849098ed233b22a1b9724",
+  "city_sha256": "ec4134725657a52a26dbcc54b2b3b7bc502549b36840d172a9afe28966b7c594",
+  "source_subset_sha256": "a2c20c736a71590f00f2580504ec9518028eb2f9b64721f39ff966c7c1eeb767",
+  "expected_pasig_barangays": 30,
+  "source_url": "https://data.humdata.org/dataset/cod-ab-phl",
+  "licence": "Creative Commons Attribution for Intergovernmental Organisations (CC BY-IGO)",
+  "licence_id": "cc-by-igo",
+  "purpose": "prediction_locality_not_news_activation_or_flood_footprint",
+  "builder_sha256": "72fb666536367129c4dfff99686841527daa51af7ff57db4df73428a49b77517",
+  "source_input_sha256": {
+    "pasig-cod-adm3.geojson": "4bc97d16a3b8f7a76b1d76b82e1f4ba3a7f4b5e2d85eca4d08cce7292e5f692f",
+    "pasig-cod-adm4.geojson": "08f2ce2d15b213575f5cf3b1e960c2434874d7b6b9d6bfa2e018b3ae9e114a85",
+    "hdx-metadata.json": "8fd0f93924aac429af4956de18dcc2a9c5425e7f596f7500d1169d6b4bacf8db"
+  },
+  "geometry_modified": false,
+  "proves_current_flood": false,
+  "may_affect_routing": false
+}

@@ -5,7 +5,7 @@ description: Backend API specialist. Use this skill when building or modifying F
 
 # API Agent Guidelines
 
-You are the Backend API Specialist for LANES. Your domain is `d:\Documents\Github\LANES\backend`.
+You are the Backend API Specialist for LANES. Your domain is `backend/` in the active repository checkout. Resolve all paths from that checkout so this skill also works in worktrees.
 
 ## Core Focus
 - **FastAPI Endpoints**: Build robust, documented REST APIs in `app/api/`.

@@ -1,107 +1,52 @@
 import asyncio
 import json
-import logging
-from fastapi import APIRouter, Request, HTTPException
+
+from fastapi import APIRouter, HTTPException, Request
 from sse_starlette.sse import EventSourceResponse
-from sqlalchemy.exc import OperationalError
+from starlette.background import BackgroundTask
 
-from app.core.database import SessionLocal
-from app.services.report_service import get_active_floods
-
-logger = logging.getLogger(__name__)
+from app.services.flood_sync_service import FloodSyncService, SyncCapacityError, flood_sync
 
 router = APIRouter()
 
-# --- Connection cap to prevent pool exhaustion ---
-MAX_SYNC_CLIENTS = 100
-_active_sync_clients = 0
 
-
-def _get_active_floods_safe():
-    """
-    Acquire a short-lived DB session, fetch active floods, and immediately close the session.
-    Guarantees connections are returned to the pool instantly and never held during SSE streaming.
-    Returns None on pool exhaustion or DB errors so the stream can send a keepalive instead.
-    """
-    db = SessionLocal()
+async def flood_event_generator(
+    request: Request,
+    queue: asyncio.Queue[str | None],
+    service: FloodSyncService = flood_sync,
+):
+    """Send the shared poll result, preserving each client's change tracking."""
+    previous_snapshot = None
+    first_poll = True
     try:
-        return get_active_floods(db)
-    except OperationalError as exc:
-        logger.warning(f"DB pool exhaustion during live sync poll: {exc}")
-        return None
-    except Exception as exc:
-        logger.warning(f"Error fetching active floods for live sync: {exc}")
-        return None
-    finally:
-        db.close()
-
-
-async def flood_event_generator(request: Request):
-    """
-    Generator that yields server-sent events for live flood sync.
-    Runs DB queries in a worker thread and strictly closes DB sessions immediately.
-    Gracefully handles pool exhaustion by sending keepalive events instead of crashing.
-    """
-    global _active_sync_clients
-    _active_sync_clients += 1
-    logger.info(f"Sync stream client connected. Active: {_active_sync_clients}/{MAX_SYNC_CLIENTS}")
-
-    try:
-        # Send an initial snapshot immediately
-        initial_data = await asyncio.to_thread(_get_active_floods_safe)
-
-        if initial_data is not None:
-            yield {
-                "event": "init",
-                "data": json.dumps(initial_data)
-            }
-        else:
-            # Pool was exhausted even for the initial fetch; send empty init
-            yield {
-                "event": "init",
-                "data": json.dumps([])
-            }
-
-        # Polling loop for updates
-        while True:
-            if await request.is_disconnected():
-                break
-
-            await asyncio.sleep(15)  # 15s interval to reduce DB pressure (was 10s)
-
-            if await request.is_disconnected():
-                break
-
-            current_data = await asyncio.to_thread(_get_active_floods_safe)
-
-            if current_data is not None:
-                yield {
-                    "event": "update",
-                    "data": json.dumps(current_data)
-                }
+        while not await request.is_disconnected():
+            try:
+                snapshot = await asyncio.wait_for(queue.get(), timeout=1)
+            except asyncio.TimeoutError:
+                continue
+            if snapshot is None:
+                yield {"event": "keepalive", "data": json.dumps({"status": "pool_busy"})}
+            elif snapshot != previous_snapshot:
+                yield {"event": "init" if first_poll else "update", "data": snapshot}
+                previous_snapshot = snapshot
             else:
-                # Pool exhausted — send a keepalive so the client knows we're alive
-                yield {
-                    "event": "keepalive",
-                    "data": json.dumps({"status": "pool_busy"})
-                }
+                yield {"event": "keepalive", "data": json.dumps({"status": "unchanged"})}
+            first_poll = False
     finally:
-        _active_sync_clients -= 1
-        logger.info(f"Sync stream client disconnected. Active: {_active_sync_clients}/{MAX_SYNC_CLIENTS}")
+        service.unsubscribe(queue)
 
 
 @router.get("/stream")
 async def sync_stream(request: Request):
-    """
-    Live sync stream (Server-Sent Events) for offline/PWA synchronization.
-    Pushes flood polygons in real-time without holding database connections.
+    """Public PWA flood sync with bounded subscribers and shared database polls."""
+    try:
+        queue = flood_sync.subscribe()
+    except SyncCapacityError:
+        raise HTTPException(status_code=503, detail="Too many active sync streams. Please retry later.")
+    async def release_subscription() -> None:
+        flood_sync.unsubscribe(queue)
 
-    Returns HTTP 503 when the max concurrent sync client limit is reached
-    to prevent database connection pool exhaustion.
-    """
-    if _active_sync_clients >= MAX_SYNC_CLIENTS:
-        raise HTTPException(
-            status_code=503,
-            detail=f"Too many active sync streams ({MAX_SYNC_CLIENTS}). Please retry later."
-        )
-    return EventSourceResponse(flood_event_generator(request))
+    return EventSourceResponse(
+        flood_event_generator(request, queue),
+        background=BackgroundTask(release_subscription),
+    )

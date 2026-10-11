@@ -1,0 +1,32 @@
+[
+  {
+    "source_id": "MB-20230831-PASIG-MEGA-MARKET",
+    "url": "https://mb.com.ph/2023/8/31/classes-work-suspended-in-ncr-provinces-due-to-heavy-rains-floods",
+    "status": "publisher_body_not_acquired",
+    "access_result": "HTTP 403; indexed lead only",
+    "scope": "Pasig Mega Market; date-level minor-flooding/subsided claim; clocks unknown",
+    "admission": "No observation or duration row exported"
+  },
+  {
+    "source_id": "FOI-2022-BAGONG-ILOG",
+    "url": "https://www.foi.gov.ph/requests/flood-data-in-barangay-bagong-ilog/",
+    "attachment_url": "https://www.foi.gov.ph/documents/203508/Flooded_Areas_Bagong_Ilog_2022.xlsx",
+    "status": "workbook_not_acquired",
+    "access_result": "Temporary-maintenance response; schema/count/clocks unverified",
+    "admission": "No observation or duration row exported"
+  },
+  {
+    "source_id": "BM-20210724-IMELDA",
+    "url": "https://businessmirror.com.ph/2021/07/24/dpwh-5-roads-closed-7-with-limited-access-due-to-flooding/",
+    "status": "publisher_body_not_acquired",
+    "access_result": "HTTP 403; indexed lead only",
+    "admission": "No observation exported"
+  },
+  {
+    "source_id": "MMDA-749533655822",
+    "url": "https://www.foi.gov.ph/agencies/mmda/historical-flood-reports-in-metro-manila-2022-to-2025/",
+    "status": "dataset_not_acquired",
+    "access_result": "Successful FOI reply says data emailed to requester; no public attachment",
+    "admission": "No dataset or labels acquired; no outreach sent"
+  }
+]

@@ -1,0 +1,31 @@
+barangay,psgc_code,annual_location_depth_rows,main_wet_observation_rows,overlay_wet_observation_rows,conditional_duration_projections,shared_subsidence_summary_groups,passability_projections_separate_target,boundary_catalog_present,prediction_location_catalog_present,current_research_model_cohort,passability_research_model_cohort,pooled_pasig_experimental_prediction_identity,production_training_admitted,retained_label_spellings
+Bagong Ilog,1381200001,42,9,0,0,0,0,True,True,False,False,True,False,Bagong Ilog
+Bagong Katipunan,1381200002,0,1,0,0,0,0,True,True,False,False,True,False,Bagong Katipunan
+Bambang,1381200003,10,1,0,0,0,0,False,True,False,False,True,False,Bambang
+Buting,1381200004,3,0,0,0,0,0,True,True,False,False,True,False,Buting
+Caniogan,1381200005,10,1,0,0,0,0,True,True,False,False,True,False,Caniogan
+Dela Paz,1381200006,29,61,4,6,2,1,True,True,True,True,True,False,Dela Paz | dela Paz
+Kalawaan,1381200007,16,0,0,0,0,0,False,True,False,False,True,False,Kalawaan
+Kapasigan,1381200008,4,0,0,0,0,0,True,True,False,False,True,False,Kapasigan
+Kapitolyo,1381200009,10,0,0,0,0,0,True,True,False,False,True,False,Kapitolyo
+Malinao,1381200010,19,1,0,0,0,0,False,True,False,False,True,False,Malinao
+Manggahan,1381200011,120,201,4,0,0,1,True,True,False,True,True,False,Manggahan
+Maybunga,1381200012,23,63,1,8,1,0,True,True,True,False,True,False,Maybunga
+Oranbo,1381200013,5,2,0,0,0,0,True,True,False,False,True,False,Oranbo
+Palatiw,1381200014,30,3,0,0,0,0,False,True,False,False,True,False,Palatiw
+Pinagbuhatan,1381200015,78,13,8,0,0,3,False,True,False,True,True,False,Pinagbuhatan
+Pineda,1381200016,8,0,0,0,0,0,True,True,False,False,True,False,Pineda
+Rosario,1381200017,40,19,2,0,0,1,True,True,False,True,True,False,Rosario
+Sagad,1381200018,6,6,0,0,0,0,True,True,False,False,True,False,Sagad
+San Antonio,1381200019,2,0,0,0,0,0,True,True,False,False,True,False,San Antonio
+San Joaquin,1381200020,23,3,0,0,0,0,False,True,False,False,True,False,San Joaquin
+San Jose,1381200021,2,0,0,0,0,0,True,True,False,False,True,False,San Jose
+San Miguel,1381200022,64,42,3,0,0,1,False,True,False,True,True,False,San Miguel
+San Nicolas,1381200023,32,0,3,0,0,1,False,True,False,True,True,False,San Nicolas
+Santa Cruz,1381200024,5,1,0,0,0,0,False,True,False,False,True,False,Santa Cruz | Sta. Cruz
+Santa Lucia,1381200030,77,224,0,12,1,0,True,True,True,False,True,False,Santa Lucia | Sta. Lucia
+Santa Rosa,1381200025,1,0,0,0,0,0,True,True,False,False,True,False,Santa Rosa
+Santo Tomas,1381200026,7,0,0,0,0,0,False,True,False,False,True,False,Santo Tomas
+Santolan,1381200027,33,124,0,11,1,0,True,True,True,False,True,False,Santolan
+Sumilang,1381200028,19,23,0,0,0,0,True,True,False,False,True,False,Sumilang
+Ugong,1381200029,8,7,3,0,0,1,True,True,False,True,True,False,Ugong

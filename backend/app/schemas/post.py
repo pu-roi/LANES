@@ -100,6 +100,7 @@ class CommunityPostResponse(CommunityPostBase):
     downvotes: int = 0
     comment_count: int = 0
     user_interaction: Optional[InteractionType] = None
+    distance_meters: Optional[float] = None
     
     # The attached flood report if any
     report: Optional[FloodReportResponse] = None
@@ -117,6 +118,8 @@ class CommunityPostPaginatedResponse(BaseModel):
     posts: List[CommunityPostResponse]
     total: int
     has_more: bool
+    expanded_radius: Optional[bool] = False
+    resolved_location_name: Optional[str] = None
 
 
 class ArchivedCommunityPostResponse(BaseModel):

@@ -1,0 +1,10 @@
+{
+  "raw_place_name": "C. Raymundo Avenue",
+  "canonical_road": "C. Raymundo Avenue",
+  "canonical_city": "Pasig",
+  "local_area_raw": "near Bernal Street",
+  "place_char_start": 0,
+  "place_char_end": 18,
+  "evidence_sentence": "Flooding on C. Raymundo Avenue near Bernal Street",
+  "evidence_sentence_offset": [0, 50]
+}

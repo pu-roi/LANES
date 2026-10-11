@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -13,6 +13,7 @@ export interface MediaViewerProps {
 }
 
 export function MediaViewer({ mediaUrls, initialIndex = 0, isOpen, onClose }: MediaViewerProps) {
+  const viewer = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [zoomScale, setZoomScale] = useState(1);
 
@@ -28,15 +29,26 @@ export function MediaViewer({ mediaUrls, initialIndex = 0, isOpen, onClose }: Me
   }, [isOpen, initialIndex]);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
+    if (!isOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const opener = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = 'hidden';
+    viewer.current?.querySelector<HTMLButtonElement>('button')?.focus();
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); onClose(); return; }
+      if (event.key !== 'Tab') return;
+      const nodes = Array.from(viewer.current?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], [tabindex="0"]') ?? []).filter(node => node.getClientRects().length > 0);
+      const first = nodes[0], last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     };
-  }, [isOpen]);
+    document.addEventListener('keydown', keydown, true);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', keydown, true);
+      opener?.focus({ preventScroll: true });
+    };
+  }, [isOpen, onClose]);
   
   // Touch swipe gestures
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -70,13 +82,15 @@ export function MediaViewer({ mediaUrls, initialIndex = 0, isOpen, onClose }: Me
   if (!isOpen || mediaUrls.length === 0 || typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[99999] bg-black flex flex-col">
+    <div ref={viewer} data-media-viewer role="dialog" aria-modal="true" aria-label="Evidence viewer" className="fixed inset-0 z-[99999] bg-black flex flex-col">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-50 bg-gradient-to-b from-black/60 to-transparent">
         <span className="text-white font-medium text-sm">
           {currentIndex + 1} of {mediaUrls.length}
         </span>
         <button 
+          type="button"
+          aria-label="Close media viewer"
           onClick={handleClose}
           className="text-white p-2 hover:bg-white/20 rounded-full transition-colors"
         >

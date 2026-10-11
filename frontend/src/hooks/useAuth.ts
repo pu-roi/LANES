@@ -1,4 +1,6 @@
 "use client";
+import { getSessionStorageKey } from "@/lib/localNewsSimulation";
+import { getApiBaseUrl } from "@/lib/apiClient";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 
@@ -10,12 +12,12 @@ export function useAuth() {
     queryKey: ['auth-user'],
     queryFn: async () => {
       // Return null if no token is found in localStorage to avoid unnecessary API requests
-      if (typeof window !== 'undefined' && !localStorage.getItem('lanes_token')) {
+      if (typeof window !== 'undefined' && !localStorage.getItem(await getSessionStorageKey("lanes_token"))) {
         return null;
       }
-      return apiClient.post('/auth/test-token').catch(() => {
+      return apiClient.post('/auth/test-token').catch(async () => {
         if (typeof window !== 'undefined') {
-          localStorage.removeItem('lanes_token');
+          localStorage.removeItem(await getSessionStorageKey("lanes_token"));
         }
         return null;
       });
@@ -27,7 +29,7 @@ export function useAuth() {
   // 2. Login Mutation
   const loginMutation = useMutation({
     mutationFn: async (credentials: URLSearchParams) => {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+      const baseUrl = await getApiBaseUrl();
       const response = await fetch(`${baseUrl}/auth/login/access-token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -55,15 +57,15 @@ export function useAuth() {
     },
     onSuccess: async (data) => {
       // Save token
-      localStorage.setItem("lanes_token", data.access_token);
+      localStorage.setItem(await getSessionStorageKey("lanes_token"), data.access_token);
       // Invalidate the auth-user cache so it immediately re-fetches the user
       await queryClient.invalidateQueries({ queryKey: ['auth-user'] });
     },
   });
 
   // 3. Logout function
-  const logout = () => {
-    localStorage.removeItem("lanes_token");
+  const logout = async () => {
+    localStorage.removeItem(await getSessionStorageKey("lanes_token"));
     // Immediately push null into the auth-user cache so all subscribers (FloatingNav,
     // ProfileView, etc.) re-render RIGHT AWAY without waiting for a re-fetch.
     // queryClient.clear() removes the cache but does NOT notify React Query observers,

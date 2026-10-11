@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
+import type { PublicNewsAlert } from "@/features/news/publicNewsApi";
 
 export interface PointGeometry {
   type: "Point";
@@ -60,6 +61,9 @@ export interface FloodReport {
   updated_at: string;
   approved_at?: string | null;
   survey?: ReportSurvey | null;
+  observed_at?: string | null;
+  approval_kind?: "automatic" | "human" | "pending_review" | null;
+  automatic_review_reason?: string | null;
   reporter_name?: string | null;
   reporter_username?: string | null;
   reporter_role?: string | null;
@@ -242,6 +246,8 @@ export interface AvoidanceZone {
   hidden_hazards?: string | null;
   merge_rationale?: string | null;
   report_text?: string;
+  original_report_text?: string | null;
+  location_label?: string | null;
   report_source?: string;
   reporter_name?: string;
   reporter_trust_score?: number;
@@ -253,6 +259,7 @@ export interface AvoidanceZone {
   /** Evidence later attached directly by an administrator to this zone. */
   media_urls?: string[];
   contributors?: ZoneContributor[];
+  news?: PublicNewsAlert[];
 }
 
 export interface PaginatedZonesResponse {
@@ -500,14 +507,50 @@ export async function cleanupData(dateFrom: string, dateTo: string, confirm: boo
   });
 }
 
-export type SystemSettings = Record<string, any>;
-
-export async function getSettings(): Promise<SystemSettings> {
-  return apiClient.get<SystemSettings>('/admin/settings');
+export interface SystemSettings {
+  automatic_expiry_enabled: boolean;
+  pasig_ml_expiry_enabled: boolean;
+  staff_road_buffer_metres: number;
+  evidence_expiry_minutes: Record<string, number>;
+  news_unconfirmed_retention_hours: number;
+  citizen_auto_approval_enabled: boolean;
+  citizen_min_trust: number;
+  citizen_min_accuracy: number;
+  citizen_min_human_reviews: number;
+  news_collection_enabled: boolean;
+  news_processing_enabled: boolean;
+  news_publication_enabled: boolean;
+  news_collection_interval_minutes: number;
+  news_source_ids: string[];
 }
-
-export async function updateSettings(settings: SystemSettings): Promise<SystemSettings> {
-  return apiClient.put<SystemSettings>('/admin/settings', { settings });
+export interface SettingsConfiguration {
+  settings: SystemSettings;
+  revision: number;
+  can_edit: boolean;
+  updated_at: string | null;
+  updated_by: number | null;
+  automatic_news_buffer_metres: number;
+  supported_options: Record<string, unknown>;
+  depth_options: { key: string; label: string }[];
+  source_options: { id: string; publisher: string }[];
+  runtime: {
+    last_started_at: string | null;
+    last_finished_at: string | null;
+    last_successful_at: string | null;
+    next_collection_at: string | null;
+    running: boolean;
+    error_code: string | null;
+    stage_counts: Record<string, Record<string, number>>;
+    stage_outcomes: Record<string, string>;
+    stages: Record<string, { last_attempt_at: string | null; last_success_at: string | null; outcome: string; counts: Record<string, number>; errors: string[] }>;
+    scheduler_tick_minutes: number;
+  };
+}
+export async function getSettings(): Promise<SettingsConfiguration> {
+  return apiClient.get<SettingsConfiguration>('/admin/settings/configuration');
+}
+export async function updateSettings(update: { revision: number; settings: SystemSettings }): Promise<SettingsConfiguration> {
+  return apiClient.put<SettingsConfiguration>('/admin/settings/configuration', update);
 }
 
 export interface DashboardChartsData {
@@ -539,6 +582,8 @@ export async function updateZoneExpiration(zoneId: number, expiresAt: string | n
 }
 
 export interface AvoidanceZoneUpdatePayload {
+  expected_updated_at?: string;
+  community_update?: { update_id: number; fields: ("depth" | "passable_vehicles" | "hidden_hazards" | "geometry")[]; reason: string };
   name?: string;
   severity_override?: "low" | "medium" | "high" | "extreme";
   depth_override?: string | null;
@@ -630,6 +675,8 @@ export interface MergeCandidatesListResponse {
   detected_conflicts: MergeConflict[];
   suggested_merged_geometry?: ReportGeometry | null;
   is_bidirectional_detected: boolean;
+  zone_candidates?: { zone_id: number; event_id: number; name?: string | null; distance_m: number;
+    severity?: string | null; depth?: string | null; match_reasons: string[] }[];
 }
 
 export interface MergedZoneFinalData {
@@ -650,6 +697,17 @@ export interface MergeReportsPayload {
   merged_report_ids: number[];
   target_zone_id?: number | null;
   final_data: MergedZoneFinalData;
+  merge_mode?: "extend" | "corroborate" | "add_section";
+}
+
+export interface MergeGeometryPreview {
+  geometry: ReportGeometry; source_geometry: ReportGeometry | null;
+  reviewed_geometry?: ReportGeometry;
+  preserves_existing_coverage: boolean; read_only: true;
+}
+
+export function getMergePreview(payload: MergeReportsPayload & { use_report_extents?: boolean }) {
+  return apiClient.post<MergeGeometryPreview>("/admin/reports/merge-preview", payload);
 }
 
 export interface MergeReportsResponse {

@@ -108,7 +108,7 @@ def _map_wmo_to_condition(wmo_code: int) -> str:
 
 
 @router.get("/current")
-async def get_current_weather(
+def get_current_weather(
     lat: float = Query(14.5731, description="Latitude, defaults to Pasig City"),
     lon: float = Query(121.0594, description="Longitude, defaults to Pasig City"),
 ) -> Any:
@@ -194,7 +194,7 @@ async def get_current_weather(
         }
 
 @router.get("/forecast")
-async def get_forecast(
+def get_forecast(
     lat: float = Query(14.5731, description="Latitude, defaults to Pasig City"),
     lon: float = Query(121.0594, description="Longitude, defaults to Pasig City"),
     count: int = Query(24, description="Number of hourly slots to return (max 72)"),

@@ -1,9 +1,10 @@
 "use client";
 
 import React from 'react';
-import { CloudRain, Newspaper, Trophy, Medal } from 'lucide-react';
+import { CloudRain, Trophy, Medal } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getTopReporters, TopReporter } from './feedApi';
+import { LocalUpdates } from '@/features/news/LocalUpdates';
 
 /** Rank badge colours for positions 1–3. */
 const RANK_STYLES: Record<number, string> = {
@@ -79,7 +80,11 @@ export function RightSidebar() {
   const { data: weather, isLoading: weatherLoading } = useWeather();
 
   return (
-    <aside className="w-80 flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto hidden lg:flex px-6 py-6 space-y-6">
+    <aside
+      aria-label="Community updates"
+      tabIndex={0}
+      className="w-[376px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto overscroll-contain scrollbar-auto-hide hidden xl:flex px-4 py-6 space-y-6 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+    >
       
       {/* Weather Widget */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
@@ -115,28 +120,7 @@ export function RightSidebar() {
         </div>
       </div>
 
-      {/* News Widget */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <Newspaper className="w-5 h-5 text-purple-500" />
-          <h3 className="font-semibold text-gray-900">Local Updates</h3>
-        </div>
-        <div className="space-y-3">
-          <div className="group cursor-pointer">
-            <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
-              City Council announces new drainage clearing schedule for the rainy season.
-            </p>
-            <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
-          </div>
-          <hr className="border-gray-100" />
-          <div className="group cursor-pointer">
-            <p className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
-              Main bridge repairs completed early, reducing bypass traffic.
-            </p>
-            <p className="text-xs text-gray-500 mt-1">5 hours ago</p>
-          </div>
-        </div>
-      </div>
+      <LocalUpdates />
 
       {/* Top Reporters Leaderboard */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">

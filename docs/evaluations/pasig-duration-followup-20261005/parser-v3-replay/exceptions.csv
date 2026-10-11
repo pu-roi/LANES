@@ -1,0 +1,34 @@
+﻿source_id,line,reason,evidence
+PASIG-20260829-2230,23,source_alternate_units_disagree,Water Level: 10.64cm (4 inches)
+PASIG-20260829-2230,41,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2230,44,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2230,47,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2230,50,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2230,53,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2230,56,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2230,59,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20240902-2100,5,bullet_without_explicit_flood_attribution_requires_review,"- Kabutihan St, Brgy. Dela Paz"
+PASIG-20240902-2100,6,bullet_without_explicit_flood_attribution_requires_review,"- Karangalan Gate 1 to Gate 5, Brgy. Manggahan"
+PASIG-20240902-2100,7,bullet_without_explicit_flood_attribution_requires_review,"- Infant Jesus St., Metroville, Brgy. Manggahan"
+PASIG-20240902-2100,16,bullet_without_explicit_flood_attribution_requires_review,"- Kabutihan St, Brgy. Dela Paz"
+PASIG-20240902-2100,17,bullet_without_explicit_flood_attribution_requires_review,"- Karangalan Gate 1 to Gate 5, Brgy. Manggahan"
+PASIG-20240902-2100,18,bullet_without_explicit_flood_attribution_requires_review,"- Infant Jesus St., Metroville, Brgy. Manggahan"
+PASIG-20240902-2100,27,bullet_without_explicit_flood_attribution_requires_review,"- Kabutihan St, Brgy. Dela Paz"
+PASIG-20240902-2100,28,bullet_without_explicit_flood_attribution_requires_review,"- Karangalan Gate 1 to Gate 5, Brgy. Manggahan"
+PASIG-20240902-2100,29,bullet_without_explicit_flood_attribution_requires_review,"- Infant Jesus St., Metroville, Brgy. Manggahan"
+PASIG-20240902-2100,38,bullet_without_explicit_flood_attribution_requires_review,"- Kabutihan St, Brgy. Dela Paz"
+PASIG-20240902-2100,39,bullet_without_explicit_flood_attribution_requires_review,"- Amsterdam cor. Stockholm, Brgy. Manggahan"
+PASIG-20240902-2100,40,bullet_without_explicit_flood_attribution_requires_review,"- Washington cor. Bern, Brgy. Manggahan"
+PASIG-20240902-2100,41,bullet_without_explicit_flood_attribution_requires_review,"- Karangalan Gate 1 to Gate 5, Brgy. Manggahan"
+PASIG-20240902-2100,42,bullet_without_explicit_flood_attribution_requires_review,"- Infant Jesus St., Metroville, Brgy. Manggahan"
+PASIG-20260829-2030,7,source_alternate_units_disagree,Water Level: 12.7 cm (6 inches)
+PASIG-20260829-2030,23,source_alternate_units_disagree,Water Level: 10.64cm (4 inches)
+PASIG-20260829-2030,41,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2030,44,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2030,47,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2030,50,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2030,53,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2030,56,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20260829-2030,59,alternate_unit_rounding_uncertain,Water Level: 20 cm (8 inches)
+PASIG-20250721-1900,5,same_clock_depth_conflict,"1. Karangalan Phase 2 A, Brgy. Dela Paz | Water Level: Knee Level"
+PASIG-20250721-1900,27,same_clock_depth_conflict,12. Karangalan Phase 2 A Brgy. Dela Paz | water level: 1 FT

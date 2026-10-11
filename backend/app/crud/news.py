@@ -42,8 +42,14 @@ def save_checkpoint(db: Session, probe: FeedProbe) -> NewsFeedCheckpoint:
     return checkpoint
 
 
-def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | None) -> NewsArticle:
+def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | None,
+                   *, local_update_only: bool = False) -> NewsArticle:
     """Save article plus feed provenance; repeated URLs/GUIDs update their seen time."""
+    from app.crud.news_processing import enqueue_article
+
+    if candidate is not None and (candidate.source_id != entry.source_id or candidate.article_url != entry.article_url):
+        raise ValueError("Captured article identity does not match its feed entry")
+
     now = datetime.now(timezone.utc)
     fingerprint = content_fingerprint(entry)
     article = get_article(db, entry.article_url)
@@ -60,22 +66,34 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
             article_text=candidate.article_text if candidate else None,
             article_error=candidate.article_error if candidate else None,
             content_fingerprint=fingerprint,
-            review_state="pending",
+            review_state="local_update" if local_update_only else "pending",
         )
         db.add(article)
         db.flush()
     else:
+        enqueue_article(db, article)  # Preserve the successful input before replacing it.
+        if article.review_state == "local_update" and not local_update_only:
+            article.review_state = "pending"  # Newly observed flooding follows normal processing.
         article.last_seen_at = now
-        article.title = entry.title
-        article.excerpt = entry.excerpt
-        article.published_at = entry.published_at or article.published_at
-        article.content_fingerprint = fingerprint
+        # A failed refresh must not relabel the last successful body as a newer
+        # observation. Preserve its metadata/time; expose the refresh failure.
+        failed_refresh = candidate is not None and candidate.article_text is None and article.article_text is not None
+        if not failed_refresh and (candidate is not None or article.article_text is None):
+            article.title = entry.title
+            article.excerpt = entry.excerpt
+            article.published_at = entry.published_at or article.published_at
+            article.content_fingerprint = fingerprint
         if candidate is not None:
             article.fetched_at = candidate.fetched_at
             if candidate.article_text is not None:
+                # Preserve the old immutable input above, then bind the new
+                # body to its actual capture identity. Admission still checks
+                # the registered ID and host; an unregistered refresh must not
+                # inherit approval from an older body.
+                article.publisher_source_id = entry.source_id
                 article.article_text = candidate.article_text
                 article.article_error = None
-            elif article.article_text is None:
+            else:
                 article.article_error = candidate.article_error
     feed_entry = db.scalar(select(NewsArticleFeedEntry).where(
         NewsArticleFeedEntry.source_id == entry.source_id,
@@ -97,6 +115,7 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
         feed_entry.last_seen_at = now
         feed_entry.article_id = article.id
     db.flush()
+    enqueue_article(db, article)
     return article
 
 

@@ -1,0 +1,37 @@
+{
+  "schema_version": "pasig-reported-subsidence-lognormal-aft-v1",
+  "target_version": "remaining_time_from_first_recorded_wet_to_reported_subsidence_continuity_assumed_v1",
+  "shadow_only": true,
+  "feature_names": [],
+  "feature_means": [],
+  "feature_scales": [],
+  "missing_indicator_features": [],
+  "coefficients": [
+    7.212949330440807
+  ],
+  "scale": 0.31543063272674654,
+  "lineage": {
+    "held_out_summary": "OBS-aed0c046a22c54b0",
+    "training_summaries": [
+      "OBS-7d1d5441f76ee802",
+      "OBS-c33d857e974b018d"
+    ],
+    "deployment_eligible": false
+  },
+  "fit_diagnostics": {
+    "observation_count": 9,
+    "parameter_count": 2,
+    "normalized_negative_log_likelihood": 2.312471598014652,
+    "weight_policy": "caller_supplied_normalized_for_optimization",
+    "converged_start_count": 5,
+    "attempted_start_count": 5,
+    "observed_hessian_min_eigenvalue": 1.9433061889197385,
+    "observed_hessian_condition_number": 5.099085177273105,
+    "numerical_log_scale_limits": [
+      -8.0,
+      8.0
+    ],
+    "independent_event_sufficiency_established": false,
+    "predictive_validation_established": false
+  }
+}

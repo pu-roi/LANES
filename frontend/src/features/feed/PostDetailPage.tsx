@@ -350,7 +350,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
         post={post}
         onVote={handleVote}
         onViewMap={(lat, lng) => {
-          router.push('/map');
+          router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`);
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('fly-to-location', {
               detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }

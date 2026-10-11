@@ -70,7 +70,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div 
             data-lenis-prevent="true"
             className={`relative z-10 h-full w-full overflow-y-auto bg-slate-100 ${
-              pathname === "/admin/profile" ? "p-0" : "p-6"
+              pathname === "/admin/profile" ? "p-0" : "p-3 sm:p-6"
             }`}
           >
             {children}

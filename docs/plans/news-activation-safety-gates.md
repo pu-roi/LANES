@@ -1,6 +1,14 @@
 # Phase 36: News Claim Activation Safety Gates
 
+> **Last Updated:** October 10, 2026, 4:09 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 10 original-source corridor acceptance:** The private real-service reconstruction persists Boni Zone #56. Paired checked junction sections may form one estimated corridor only for independently confirmed all-vehicle-passable claims; exact source cores and modeled gaps remain traceable, and uncertain lanes cannot become a two-way closure. Reprocessing identical source facts can upgrade an automatic text alert on the existing incident case without extending its lifetime, duplicating Active Zones or undoing staff/clearance history. Consumer-case decisions govern stale review exclusion. This is historical/local acceptance, with unmeasured flood extent disclosed and developer/release acceptance still pending. [Implementation and verification](../evaluations/news-boni-corridor-reconstruction-20261010.md).
+
 > **Drafted:** September 27, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 10 correction:** Independently audited low-depth `passable_all` flooding may create a visible, persisted Active Zone when all other gates pass. Passability is stored as `All vehicles`; vehicle routing remains open. Deeper all-vehicle-passable reports conflict with the conservative depth matrix and remain review-only, rather than generating a source-contradicting closure or overriding routing policy. Visibility and road closure are separate decisions. A private, fingerprinted historical reconstruction can admit later-published evidence while evaluating observation freshness/expiry at the reconstructed time; live admission remains unchanged. [System replay and remaining geometry/audit failures](../evaluations/news-reconstruction-activation-fixes-20261010.md).
+
+**October 6 current implementation:** The explicit pipeline supports strict approved current footprints and a distinct developer-requested estimated road-corridor path. Current independently audited news supplies condition/depth/access/time; a uniquely article-grounded checked OSM/NOAH section supplies placement. Server recomputation, qualified locality containment, asset/component binding, source centerline, conflict/freshness/revision and finite expiry guards are required. The existing 25 m margin is routing/display policy rather than measured water width. Preview scores/buffers alone remain ineligible. Estimates are publicly labeled, unsupported cases stay Needs Review, and real-event/release acceptance remains open. [Integration evidence](../evaluations/phase-36-estimated-road-zone-integration-20261006.md).
 
 ## Decision states
 
@@ -21,5 +29,7 @@ Each extracted location is an independent claim. A claim can be `flagged_review`
 The existing `0.95` and post-decision `0.98` values are ranking heuristics, not calibrated probabilities. They must not justify automatic publication. Keep a score only as an explainable suggestion ranking until a labeled real-article set measures false activations and the threshold is approved.
 
 ## Current rollout boundary
+
+**October 2 Priority 4 contract:** The shared processing path now attaches separate source-identified `RoadPlacementEvidence` using the bundled NCR OSM catalog. An explicit reported span can match a unique bounded centerline, while broad road mentions retain alternatives and coverage failures remain visible. The catalog snapshot, city relation, and full source checksums travel with the artifact, and catalog refresh creates a new pipeline result rather than rewriting earlier evidence. No placement result changes `ranked_location.geometry_provenance` to `verified_segment`, declares current flooding, supplies flooded width, or authorizes routing. Existing independent audit/current-status/time/depth/conflict gates still apply. This spatial connection is distinct from the future public-alert, operational-zone, correction, and expiry workflow. See [processing evaluation](../evaluations/phase-36-reusable-road-match-check.md#priority-4-processing-integration--october-2).
 
 The collector saves candidates and is not connected to `NewsAutoIngestionService`. The three August 2026 publisher examples are simulations. The activation code remains capable of automatic publication when every gate passes; the current geometry provider never marks a segment verified. Gate 3 will integrate spatial evidence, Gate 4 will connect fast alerts and automatic zones, and Gate 5 will provide staff exception decisions.

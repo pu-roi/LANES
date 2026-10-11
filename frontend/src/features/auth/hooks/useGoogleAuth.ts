@@ -1,4 +1,6 @@
 "use client";
+import { getSessionStorageKey } from "@/lib/localNewsSimulation";
+import { getApiBaseUrl } from "@/lib/apiClient";
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -97,13 +99,13 @@ export function useGoogleAuth() {
             });
 
             // Store token in localStorage per project PWA rules
-            localStorage.setItem("lanes_token", data.access_token);
+            localStorage.setItem(await getSessionStorageKey("lanes_token"), data.access_token);
 
             // Invalidate React Query cache so user profile is immediately available
             await queryClient.invalidateQueries({ queryKey: ["auth-user"] });
 
             // Fetch current user details to inspect roles
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+            const baseUrl = await getApiBaseUrl();
             const profileRes = await fetch(`${baseUrl}/auth/test-token`, {
               method: "POST",
               headers: { Authorization: `Bearer ${data.access_token}` },

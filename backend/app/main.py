@@ -67,6 +67,8 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
+        from app.services.flood_sync_service import flood_sync
+        await flood_sync.close()
         retention_task.cancel()
         try:
             await retention_task

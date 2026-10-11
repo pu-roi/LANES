@@ -1,0 +1,75 @@
+{
+  "evaluation_version": "pasig-conditional-baseline-comparison-v1",
+  "created_at": "2026-10-07T13:34:55.630704+00:00",
+  "projection_count": 37,
+  "shared_outcome_count": 3,
+  "verified_independent_storm_count": 0,
+  "new_followup_duration_pairs": 0,
+  "candidate_rebuild_and_parameter_reproduction_verified": true,
+  "group_equal_mean_interval_negative_log_likelihood": {
+    "lognormal_aft": 4.122580924628189,
+    "exponential": 2.800925549281537
+  },
+  "lower_nll_is_better": true,
+  "feature_audit": [
+    {
+      "shared_outcome_group": "OBS-7d1d5441f76ee802",
+      "projections": 1,
+      "qualified_depth_rows": 1,
+      "depth_qualifications": {
+        "usable_reported_numeric": 1
+      },
+      "verified_pre_issuance_availability_rows": 0,
+      "verified_continuity_rows": 0
+    },
+    {
+      "shared_outcome_group": "OBS-aed0c046a22c54b0",
+      "projections": 28,
+      "qualified_depth_rows": 27,
+      "depth_qualifications": {
+        "uncertain_alternate_units": 1,
+        "usable_reported_numeric": 27
+      },
+      "verified_pre_issuance_availability_rows": 0,
+      "verified_continuity_rows": 0
+    },
+    {
+      "shared_outcome_group": "OBS-c33d857e974b018d",
+      "projections": 8,
+      "qualified_depth_rows": 8,
+      "depth_qualifications": {
+        "usable_reported_numeric": 8
+      },
+      "verified_pre_issuance_availability_rows": 0,
+      "verified_continuity_rows": 0
+    }
+  ],
+  "feature_model_training_admitted": false,
+  "prospective_accuracy_established": false,
+  "deployment_eligible": false,
+  "runtime_artifact_modified": false,
+  "input_sha256": {
+    "docs/evaluations/pasig-duration-model-20261007/conditional_training_candidates.csv": "7389df1ab1efd303a4d9d355f86a3dd2a21eb2c550f25c296404ffcce408d567",
+    "docs/evaluations/pasig-duration-model-20261007/conditional_aft.json": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6",
+    "docs/evaluations/pasig-clearance-followup-20261007/dataset_manifest.json": "d141916714a2b39a837b79c51449f22b7bff09dcdf3820f682f5cfeb811288a2",
+    "backend/runtime_data/flood-duration/conditional_aft.json": "eef51e6c0f5ba03efbba44272f64a71ceccef0c0574e9b575d3d084b0c9f0bc6"
+  },
+  "scipy_version": "1.14.1",
+  "evaluator_sha256": "5a91a8f3ad35b2d07ceb965deb7e16f523f50f5dd653198f9a80330757c66e69",
+  "limitations": [
+    "three_shared_summaries_not_verified_independent_storms",
+    "conditional_continuity_and_collective_scope",
+    "outcome_selected_cohort",
+    "unknown_pre_issuance_feature_availability",
+    "summary_sensitivity_not_final_holdout",
+    "interval_nll_not_minute_error_or_calibrated_accuracy"
+  ],
+  "output_sha256": {
+    "held_summary_comparison.csv": "fa7e537b9088aff2daf4e7cbf3104be5a6fdd50806707259db48827100d0837e",
+    "baseline_comparison.png": "9154d3e0ee94d36da6bc7fa4a81b8078d34ba62a8d1c6f0ba343052c81d10104",
+    "baseline_comparison.pdf": "8d528e42f7899fe7c6bedfd66e93dbad4a7d15e7e790cd6d42df812dce51b4ce",
+    "lognormal-without-OBS-7d1d5441f76ee802.json": "12bcec2b6a87244df6fb7c85fe792a874f778aac50ac9011c1da892627e0e192",
+    "lognormal-without-OBS-aed0c046a22c54b0.json": "7c54a2a13e9a71eedc561170b97d8a1736d3482ae6a03f3b41e00eb185ab6bf4",
+    "lognormal-without-OBS-c33d857e974b018d.json": "c7d9f45470139bdd30697212f465897d96d175c2bef991f9b16f6d48201ea32b"
+  }
+}

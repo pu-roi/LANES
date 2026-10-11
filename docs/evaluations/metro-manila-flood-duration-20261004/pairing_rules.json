@@ -1,0 +1,32 @@
+[
+  {
+    "pair_id": "MANILA-20250722-FINANCE-TAFT",
+    "wet_rule_id": "GMA-20250722-953360-R0069",
+    "clear_rule_id": "GMA-20250722-953419-R0137",
+    "match_basis": "Exact publisher road label and same city/date"
+  },
+  {
+    "pair_id": "MANILA-20250722-JAS-RECTO",
+    "wet_rule_id": "GMA-20250722-953360-R0079",
+    "clear_rule_id": "GMA-20250722-953419-R0147",
+    "match_basis": "Exact publisher road label and same city/date"
+  },
+  {
+    "pair_id": "MANILA-20250722-AYALA-TAFT",
+    "wet_rule_id": "GMA-20250722-953360-R0084",
+    "clear_rule_id": "GMA-20250722-953419-R0152",
+    "match_basis": "Exact publisher road label including direction and same city/date"
+  },
+  {
+    "pair_id": "MANILA-20260710-TAFT-PGH",
+    "wet_rule_id": "GMA-20260710-994434-R0221",
+    "clear_rule_id": "GMA-20260710-994434-R0208",
+    "match_basis": "Exact publisher section label and same article/city/date"
+  },
+  {
+    "pair_id": "MANILA-20260710-ESPANA-MACEDA",
+    "wet_rule_id": "GMA-20260710-994434-R0222",
+    "clear_rule_id": "GMA-20260710-994434-R0207",
+    "match_basis": "Explicit accent-only Espana/España alias; same article/city/date"
+  }
+]

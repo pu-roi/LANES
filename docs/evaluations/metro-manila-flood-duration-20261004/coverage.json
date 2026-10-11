@@ -1,0 +1,230 @@
+{
+  "revision": "ncr-reviewed-capture-v1",
+  "built_at": "2026-10-04T10:56:02.578707+00:00",
+  "target_years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "cutoff_date": "2026-10-04",
+  "supplement_captured_sources": 17,
+  "supplement_failed_sources": 0,
+  "supplement_observations": 341,
+  "total_observations": 739,
+  "pasig_observations": 470,
+  "date_only_observations": 25,
+  "city_year_observation_counts": {
+    "Caloocan": {
+      "2021": 3,
+      "2025": 5
+    },
+    "Las Piñas": {
+      "2025": 6,
+      "2026": 2
+    },
+    "Makati": {
+      "2025": 2
+    },
+    "Malabon": {
+      "2021": 7,
+      "2025": 9,
+      "2026": 3,
+      "2022": 7
+    },
+    "Mandaluyong": {
+      "2025": 4,
+      "2026": 3,
+      "2021": 4
+    },
+    "Manila": {
+      "2021": 1,
+      "2023": 8,
+      "2025": 76,
+      "2026": 6,
+      "2022": 13
+    },
+    "Marikina": {
+      "2025": 4,
+      "2026": 1,
+      "2022": 1
+    },
+    "Muntinlupa": {
+      "2021": 4,
+      "2025": 2
+    },
+    "Navotas": {
+      "2021": 3,
+      "2025": 2,
+      "2022": 2
+    },
+    "Parañaque": {
+      "2021": 3,
+      "2025": 14,
+      "2026": 2
+    },
+    "Pasay": {
+      "2025": 4,
+      "2023": 1,
+      "2026": 1
+    },
+    "Pasig": {
+      "2024": 80,
+      "2025": 129,
+      "2026": 250,
+      "2021": 8,
+      "2022": 3
+    },
+    "Quezon City": {
+      "2021": 10,
+      "2023": 9,
+      "2025": 6,
+      "2026": 13,
+      "2022": 6
+    },
+    "San Juan": {},
+    "Taguig": {
+      "2021": 5
+    },
+    "Valenzuela": {
+      "2021": 4,
+      "2025": 7,
+      "2026": 1,
+      "2024": 5
+    },
+    "Pateros": {}
+  },
+  "base_bundle": "docs/evaluations/flood-duration-pilot-20261004",
+  "training_admitted_incidents": 0,
+  "model_trained": false,
+  "archive_exhaustive": false,
+  "limitations": [
+    "Reviewed source selection is not an exhaustive year/city archive",
+    "Multiple observations can share one storm",
+    "Date-only records cannot supply hourly clearance targets",
+    "No new exact onset or total flood durations inferred",
+    "Base pilot interval candidates remain separately traceable",
+    "Historical document occurrence clocks are not wet observation or clearance clocks; kept as a separate record type"
+  ],
+  "covered_lgus": 16,
+  "total_lgus": 17,
+  "new_candidate_clearance_pairs": 5,
+  "new_pair_date_groups": 2,
+  "temporal_conflict_exceptions": 8,
+  "supplement_exception_count": 8,
+  "storm_group_basis": "Conservative NCR observation-date grouping; longer storms still require event reconciliation",
+  "total_evidence_rows": 753,
+  "direct_report_observations": 739,
+  "historical_incident_records": 14,
+  "pasig_direct_observations": 470,
+  "pasig_historical_incidents": 12,
+  "historical_city_year_counts": {
+    "Caloocan": {},
+    "Las Piñas": {},
+    "Makati": {},
+    "Malabon": {},
+    "Mandaluyong": {},
+    "Manila": {},
+    "Marikina": {},
+    "Muntinlupa": {},
+    "Navotas": {},
+    "Parañaque": {},
+    "Pasay": {},
+    "Pasig": {
+      "2021": 12
+    },
+    "Quezon City": {},
+    "San Juan": {},
+    "Taguig": {},
+    "Valenzuela": {},
+    "Pateros": {
+      "2021": 2
+    }
+  },
+  "city_year_evidence_counts": {
+    "Caloocan": {
+      "2021": 3,
+      "2025": 5
+    },
+    "Las Piñas": {
+      "2025": 6,
+      "2026": 2
+    },
+    "Makati": {
+      "2025": 2
+    },
+    "Malabon": {
+      "2021": 7,
+      "2022": 7,
+      "2025": 9,
+      "2026": 3
+    },
+    "Mandaluyong": {
+      "2021": 4,
+      "2025": 4,
+      "2026": 3
+    },
+    "Manila": {
+      "2021": 1,
+      "2022": 13,
+      "2023": 8,
+      "2025": 76,
+      "2026": 6
+    },
+    "Marikina": {
+      "2022": 1,
+      "2025": 4,
+      "2026": 1
+    },
+    "Muntinlupa": {
+      "2021": 4,
+      "2025": 2
+    },
+    "Navotas": {
+      "2021": 3,
+      "2022": 2,
+      "2025": 2
+    },
+    "Parañaque": {
+      "2021": 3,
+      "2025": 14,
+      "2026": 2
+    },
+    "Pasay": {
+      "2023": 1,
+      "2025": 4,
+      "2026": 1
+    },
+    "Pasig": {
+      "2021": 20,
+      "2022": 3,
+      "2024": 80,
+      "2025": 129,
+      "2026": 250
+    },
+    "Quezon City": {
+      "2021": 10,
+      "2022": 6,
+      "2023": 9,
+      "2025": 6,
+      "2026": 13
+    },
+    "San Juan": {},
+    "Taguig": {
+      "2021": 5
+    },
+    "Valenzuela": {
+      "2021": 4,
+      "2024": 5,
+      "2025": 7,
+      "2026": 1
+    },
+    "Pateros": {
+      "2021": 2
+    }
+  },
+  "pasig_evidence_rows": 482,
+  "base_observations_sha256": "cc9517165f492cfdd3ff4d6fa665d5463ec7d8a35d42b36329906d08fa99ee92"
+}

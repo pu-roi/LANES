@@ -26,6 +26,4 @@ data/
 .gitignore
 
 # Environment secrets (provided via Cloud Run environment variables)
-.env
-.env.keys
-.env*.local
+.env*

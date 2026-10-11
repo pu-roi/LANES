@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
+import type { ZoneEditorProposal } from "@/features/hazards/zoneUpdatesApi";
 import {
   ShieldCheck,
   ShieldAlert,
@@ -41,6 +42,7 @@ import {
   hasZoneEditChanges,
   loadZoneEditDraft,
   saveZoneEditDraft,
+  type SavedZoneEditDraft,
 } from "./zoneEditDraftStorage";
 
 export interface OfficialZoneDrawerProps {
@@ -48,11 +50,13 @@ export interface OfficialZoneDrawerProps {
   onClose: () => void;
   mapInstance?: any;
   editingZone?: AvoidanceZone | null;
+  communityProposal?: ZoneEditorProposal | null;
   onAdminSubmit?: (items: ZoneSubmissionItem[]) => Promise<void>;
   onZoneUpdated?: () => void;
   onSwitchWorkspace?: () => void;
   switchWorkspaceLabel?: string;
   onShowMap?: () => void;
+  onReturnToZones?: () => void;
 }
 
 export interface ZoneSubmissionItem {
@@ -207,15 +211,24 @@ export function OfficialZoneDrawer({
   onClose,
   mapInstance,
   editingZone = null,
+  communityProposal = null,
   onAdminSubmit,
   onZoneUpdated,
   onSwitchWorkspace,
   switchWorkspaceLabel,
   onShowMap,
+  onReturnToZones,
 }: OfficialZoneDrawerProps) {
   const { success, error } = useToast();
   const { user, isAuthenticated } = useAuth();
   const isEditMode = Boolean(editingZone);
+  const [communityUpdate, setCommunityUpdate] = useState<ZoneEditorProposal["community_update"] | null>(null);
+  const [proposalIncorporated, setProposalIncorporated] = useState<string | null>(null);
+  const proposalKey = communityProposal ? JSON.stringify(communityProposal) : null;
+  const [editHydrated, setEditHydrated] = useState(false);
+  const [proposalConfirmOpen, setProposalConfirmOpen] = useState(false);
+  const [staleEditDraft, setStaleEditDraft] = useState<SavedZoneEditDraft | null>(null);
+  const [startLatestOpen, setStartLatestOpen] = useState(false);
   const userId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   const canPersistDraft = !isEditMode && isAuthenticated && userId !== null;
   const canPersistEdit = isEditMode && isAuthenticated && userId !== null && editingZone !== null;
@@ -433,6 +446,7 @@ export function OfficialZoneDrawer({
 
     let cancelled = false;
     const draftKey = `${userId}:${editingZone.id}`;
+    let restoreBlocked = false;
     hasHydratedEditDraft.current = false;
     hydratedEditKey.current = null;
     void loadZoneEditDraft(userId, editingZone.id).then((draft) => {
@@ -445,6 +459,7 @@ export function OfficialZoneDrawer({
         && areZoneEditValuesEqual(draft.baseline, baseline)
         && hasZoneEditChanges(getZoneEditValues(draft), draft.baseline, draft.mediaFiles)
       ) {
+        setCommunityUpdate(draft.communityUpdate ?? null);
         setEditorValues(draft.editorValues);
         setPassableVehicles(draft.passableVehicles);
         setHiddenHazards(draft.hiddenHazards);
@@ -510,18 +525,21 @@ export function OfficialZoneDrawer({
         }
         success("Edit Restored", `Your unfinished edits for Zone #${editingZone.id} are ready to continue.`);
       } else if (draft) {
-        void discardZoneEditDraft(userId, editingZone.id);
-        if (draft.baselineUpdatedAt !== editingZone.updated_at) {
-          error("Zone Updated", "Another administrator saved a newer version, so the latest zone details are shown.");
-        }
+        if (draft.baselineUpdatedAt !== editingZone.updated_at || !areZoneEditValuesEqual(draft.baseline, baseline)) {
+          restoreBlocked = true;
+          setStaleEditDraft(draft);
+          error("Zone Updated", "Your earlier edit is kept. Compare it with the latest zone before starting a new draft.");
+        } else void discardZoneEditDraft(userId, editingZone.id);
       }
     }).catch((err) => {
+      restoreBlocked = true;
       console.error("Failed to restore Edit Zone draft", err);
       if (!cancelled) error("Draft Unavailable", "Your unfinished zone edit could not be restored.");
     }).finally(() => {
       if (!cancelled) {
         hydratedEditKey.current = draftKey;
-        hasHydratedEditDraft.current = true;
+        hasHydratedEditDraft.current = !restoreBlocked;
+        setEditHydrated(!restoreBlocked);
       }
     });
     return () => { cancelled = true; };
@@ -546,6 +564,7 @@ export function OfficialZoneDrawer({
     }
     void saveZoneEditDraft(userId, editingZone.id, {
       baselineUpdatedAt: editingZone.updated_at,
+      communityUpdate,
       baseline,
       editorValues,
       passableVehicles,
@@ -559,7 +578,7 @@ export function OfficialZoneDrawer({
         error("Draft Not Saved", "Your unfinished zone edit could not be saved on this device.");
       }
     });
-  }, [adminNotes, canPersistEdit, editingZone, editorValues, error, hiddenHazards, isOpen, isSubmitting, mediaFiles, passableVehicles, userId]);
+  }, [adminNotes, canPersistEdit, communityUpdate, editingZone, editorValues, error, hiddenHazards, isOpen, isSubmitting, mediaFiles, passableVehicles, userId]);
 
   useEffect(() => () => {
     createdPreviewUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
@@ -746,6 +765,7 @@ export function OfficialZoneDrawer({
   const handleResetToBaseline = useCallback(() => {
     if (!editBaseline.current) return;
     const baseline = editBaseline.current;
+    setCommunityUpdate(null);
     const { editorValues: baselineValues, passableVehicles: vehicles } = baseline;
     setPassableVehicles(vehicles);
     setHiddenHazards(baseline.hiddenHazards);
@@ -1060,6 +1080,10 @@ export function OfficialZoneDrawer({
   // Handle Submit (Create mode or Edit mode)
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    if (isEditMode && !editHydrated) {
+      error("Draft Not Ready", "Finish reviewing the saved draft before saving this zone.");
+      return;
+    }
     const missingDraftDepth = drafts.some((draft) => !draft.depth);
     const missingCurrentDepth = Boolean(currentGeometry) && !editorValues.depth;
     if (missingDraftDepth || missingCurrentDepth || (isEditMode && !editorValues.depth)) {
@@ -1091,6 +1115,8 @@ export function OfficialZoneDrawer({
 
         // Edit Mode: PUT /admin/zones/{id}
         const payload: AvoidanceZoneUpdatePayload = {
+          expected_updated_at: editingZone.updated_at,
+          community_update: communityUpdate ?? undefined,
           name: editorValues.name,
           severity_override: editorValues.severity,
           depth_override: editorValues.depth,
@@ -1106,9 +1132,22 @@ export function OfficialZoneDrawer({
             : undefined,
         };
 
-        await updateZone(editingZone.id, payload);
+        const savedZone = await updateZone(editingZone.id, payload);
+        // The official edit and provenance are committed together. Media upload is
+        // separate: surface partial success and keep only the remaining upload draft.
         if (mediaFiles.length > 0) {
-          await addZoneMedia(editingZone.id, mediaFiles);
+          try { await addZoneMedia(editingZone.id, mediaFiles); }
+          catch {
+            setCommunityUpdate(null);
+            if (userId) await saveZoneEditDraft(userId, savedZone.id, {
+              baselineUpdatedAt: savedZone.updated_at, baseline: getZoneEditBaseline(savedZone),
+              editorValues, passableVehicles, hiddenHazards, adminNotes, mediaFiles, communityUpdate: null,
+            });
+            error("Zone Saved; Media Failed", "The official edit was saved. Your remaining attachments are kept; reopen Edit zone to retry them.");
+            onZoneUpdated?.();
+            onClose();
+            return;
+          }
         }
         if (userId) await discardZoneEditDraft(userId, editingZone.id);
         clearMediaFiles();
@@ -1250,6 +1289,58 @@ export function OfficialZoneDrawer({
     };
   }, [setFloodShowMarkers]);
 
+  const incorporateProposal = () => {
+    if (!communityProposal || !editingZone) return;
+    if (new Date(communityProposal.expected_updated_at).getTime() !== new Date(editingZone.updated_at).getTime()) {
+      error("Zone Changed", "Reopen the latest zone details and compare this update again.");
+      setProposalConfirmOpen(false);
+      return;
+    }
+    const patch = communityProposal.patch;
+    setEditorValues(previous => ({ ...previous,
+      depth: patch.depth_override ?? previous.depth,
+      severity: patch.severity_override ?? previous.severity,
+      geometry: patch.geometry ?? previous.geometry,
+      is_bidirectional: patch.geometry ? patch.geometry.type === "MultiLineString" : previous.is_bidirectional,
+    }));
+    if (patch.passable_vehicles_override !== undefined) setPassableVehicles(patch.passable_vehicles_override.split(",").filter(Boolean));
+    if (patch.hidden_hazards_override !== undefined) setHiddenHazards(patch.hidden_hazards_override);
+    if (patch.geometry && isRoadGeometry(patch.geometry)) {
+      const endpoints = roadEndpoints(patch.geometry);
+      const line = patch.geometry.type === "LineString" ? patch.geometry : { type: "LineString" as const, coordinates: patch.geometry.coordinates[0] };
+      const opposite = patch.geometry.type === "MultiLineString" ? { type: "LineString" as const, coordinates: patch.geometry.coordinates[1] ?? [] } : null;
+      clearDrawing();
+      setGeometryMode("line");
+      setIsEditingExistingShape(false);
+      setFloodShowMarkers(true);
+      restoreFloodReportMapState({
+        floodStart: endpoints ? { coords: endpoints.start, label: `${endpoints.start[1].toFixed(5)}, ${endpoints.start[0].toFixed(5)}` } : null,
+        floodEnd: endpoints ? { coords: endpoints.end, label: `${endpoints.end[1].toFixed(5)}, ${endpoints.end[0].toFixed(5)}` } : null,
+        floodPreviewGeometry: line, floodOppositeGeometry: opposite, floodIsBidirectional: patch.geometry.type === "MultiLineString",
+      });
+    }
+    setCommunityUpdate(communityProposal.community_update);
+    setProposalIncorporated(proposalKey);
+    setProposalConfirmOpen(false);
+    success("Fields Incorporated", "Review the draft and map before saving the official zone.");
+  };
+
+  const startFromLatest = async () => {
+    if (!userId || !editingZone) return;
+    try {
+      await discardZoneEditDraft(userId, editingZone.id);
+      handleResetToBaseline();
+      clearMediaFiles();
+      setStaleEditDraft(null);
+      setStartLatestOpen(false);
+      setCommunityUpdate(null);
+      hasHydratedEditDraft.current = true;
+      setEditHydrated(true);
+    } catch {
+      error("Draft Kept", "The earlier draft could not be removed. Please retry before editing this zone.");
+    }
+  };
+
   return (
     <aside
       aria-label="Official Avoidance Zone Workspace"
@@ -1257,26 +1348,26 @@ export function OfficialZoneDrawer({
     >
       {/* DRAWER HEADER */}
       <div className="p-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80 shrink-0">
-        <div className="flex items-center gap-2.5">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
           <div
-            className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shadow-xs text-white ${
+            className={`w-8 h-8 shrink-0 rounded-lg flex items-center justify-center font-bold text-xs shadow-xs text-white ${
               isEditMode ? "bg-amber-600" : "bg-blue-600"
             }`}
           >
             {isEditMode ? <ShieldAlert className="w-4 h-4" /> : <ShieldCheck className="w-4 h-4" />}
           </div>
-          <div>
-            <h2 className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5">
+          <div className="min-w-0">
+            <h2 className="text-xs font-bold text-slate-800 tracking-tight flex flex-wrap items-center gap-1.5">
               <span>{isEditMode ? `Edit Zone #${editingZone?.id}` : "Create Official Zone"}</span>
               <span
-                className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                className={`hidden text-[10px] font-semibold px-1.5 sm:inline-flex py-0.5 rounded-full ${
                   isEditMode ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"
                 }`}
               >
                 {isEditMode ? "Edit Mode" : "Official DRRMO"}
               </span>
             </h2>
-            <p className="text-[11px] text-slate-500 truncate max-w-[260px]">
+            <p className="hidden text-[11px] text-slate-500 truncate max-w-[260px] sm:block">
               {isEditMode
                 ? "Update zone severity, clearance, and operational notes"
                 : "Define routing detour barrier on Pasig City road graph"}
@@ -1284,7 +1375,7 @@ export function OfficialZoneDrawer({
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           {onSwitchWorkspace && switchWorkspaceLabel && (
             <Button
               type="button"
@@ -1311,7 +1402,7 @@ export function OfficialZoneDrawer({
           <button
             type="button"
             onClick={() => isEditMode ? setIsCancelEditDialogOpen(true) : onClose()}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
             title="Close drawer"
           >
             <X className="w-4 h-4" />
@@ -1321,6 +1412,10 @@ export function OfficialZoneDrawer({
 
       {/* DRAWER BODY (Scrollable) */}
       <div className="scrollbar-auto-hide flex-1 overflow-y-auto p-4 space-y-5">
+        {isEditMode && onReturnToZones && <Button variant="ghost" className="min-h-11" disabled={isSubmitting} onClick={onReturnToZones}>Back to zones</Button>}
+        {staleEditDraft && <div role="alert" className="space-y-3 bg-amber-50 p-3 text-sm text-amber-900"><p className="font-semibold">A newer zone version is available</p><p>Your earlier draft is kept on this device. The form shows the current official values; saving is paused until you choose to start from them.</p><details><summary className="flex min-h-11 cursor-pointer items-center font-semibold">Inspect earlier draft</summary><dl className="space-y-2 break-words text-xs"><div><dt>Water level</dt><dd>{staleEditDraft.editorValues.depth}</dd></div><div><dt>Passable vehicles</dt><dd>{staleEditDraft.passableVehicles.join(", ") || "None recorded"}</dd></div><div><dt>Submerged hazards</dt><dd>{staleEditDraft.hiddenHazards || "Not recorded"}</dd></div><div><dt>Operational notes</dt><dd className="whitespace-pre-line">{staleEditDraft.adminNotes}</dd></div><div><dt>Geometry</dt><dd className="max-h-36 overflow-auto font-mono">{JSON.stringify(staleEditDraft.editorValues.geometry)}</dd></div><div><dt>Attachments</dt><dd>{staleEditDraft.mediaFiles.map(file => file.name).join(", ") || "None"}</dd></div></dl></details><Button variant="outline" className="min-h-11" onClick={() => setStartLatestOpen(true)}>Start from latest</Button></div>}
+        {isEditMode && communityProposal && proposalIncorporated !== proposalKey && <div className="space-y-2 border-b border-slate-100 pb-4"><p className="text-sm font-semibold text-blue-800">Community update #{communityProposal.community_update.update_id}</p><p className="text-xs leading-5 text-slate-600">Your draft is kept. Incorporate only the selected fields: {communityProposal.community_update.fields.map(field => field.replaceAll("_", " ")).join(", ")}. Then verify the map and values before saving.</p><Button variant="outline" className="min-h-11" disabled={isSubmitting || !editHydrated} onClick={() => setProposalConfirmOpen(true)}>Incorporate fields</Button></div>}
+        {isEditMode && communityUpdate && <div className="space-y-2 border-b border-slate-100 pb-4"><p className="text-xs font-semibold text-blue-800">Draft uses community update #{communityUpdate.update_id}</p><p className="break-words text-xs leading-5 text-slate-600">{communityUpdate.reason}</p><Button variant="ghost" className="min-h-11" disabled={isSubmitting} onClick={() => setCommunityUpdate(null)}>Save without evidence link</Button></div>}
         {!isEditMode && isViewingDrafts ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-2">
@@ -1708,6 +1803,8 @@ export function OfficialZoneDrawer({
         )}
       </div>
 
+      <ConfirmDialog isOpen={proposalConfirmOpen} title="Incorporate community fields?" message="This replaces the selected fields in your current draft. Other fields and attachments are kept. The official zone changes only after you save." confirmLabel="Incorporate" cancelLabel="Keep draft" onConfirm={incorporateProposal} onCancel={() => setProposalConfirmOpen(false)} />
+      <ConfirmDialog isOpen={startLatestOpen} title="Replace earlier edit?" message="Your earlier draft fields and attachments will be removed from this device. The new draft starts with the latest official zone values." confirmLabel="Use latest" cancelLabel="Keep draft" onConfirm={() => void startFromLatest()} onCancel={() => setStartLatestOpen(false)} />
       <ConfirmDialog
         isOpen={isDiscardDialogOpen}
         title="Discard Create Zone drafts?"
@@ -1762,7 +1859,7 @@ export function OfficialZoneDrawer({
               type="button"
               size="sm"
               onClick={() => handleSubmit()}
-              disabled={isSubmitting || (!currentGeometry && drafts.length === 0)}
+              disabled={isSubmitting || (isEditMode && !editHydrated) || (!currentGeometry && drafts.length === 0)}
               className="flex-1 h-9 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
             >
               {isSubmitting ? (
@@ -1797,7 +1894,7 @@ export function OfficialZoneDrawer({
               type="button"
               size="sm"
               onClick={() => handleSubmit()}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !editHydrated}
               className="flex-1 h-9 rounded-xl text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-sm"
             >
               {isSubmitting ? (

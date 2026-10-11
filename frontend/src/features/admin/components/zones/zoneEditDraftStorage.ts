@@ -1,6 +1,7 @@
 import { del, get, keys, set } from "idb-keyval";
 import type { ZoneDataEditorValues } from "../ZoneDataEditorForm";
 import type { AvoidanceZone, ReportGeometry } from "../../adminApi";
+import type { ZoneEditorProposal } from "@/features/hazards/zoneUpdatesApi";
 
 const VERSION = 2;
 const PREFIX = "lanes:admin-edit-zone-draft:v2:";
@@ -19,6 +20,7 @@ export interface SavedZoneEditDraft {
   mediaFiles: File[];
   /** Immutable server-derived values used to prove this is a real edit. */
   baseline: ZoneEditValues;
+  communityUpdate?: ZoneEditorProposal["community_update"] | null;
 }
 
 export interface ZoneEditValues {

@@ -1,0 +1,51 @@
+{
+  "revision": "pasig-duration-pilot-v3",
+  "built_at": "2026-10-04T16:49:12.588868+00:00",
+  "seeded_sources": 18,
+  "captured_sources": 18,
+  "failed_sources": 0,
+  "observations": 398,
+  "flood_observations": 395,
+  "clearance_summary_observations": 3,
+  "duplicate_flags": 0,
+  "conflict_flags": 2,
+  "missing_clock_rows": 0,
+  "candidate_incident_bounds": 37,
+  "candidate_clearance_episode_groups": 3,
+  "candidate_episode_groups": 6,
+  "barangays": [
+    "Bagong Ilog",
+    "Caniogan",
+    "Dela Paz",
+    "Malinao",
+    "Manggahan",
+    "Maybunga",
+    "Oranbo",
+    "Pinagbuhatan",
+    "Rosario",
+    "San Joaquin",
+    "San Miguel",
+    "Santolan",
+    "Sta. Lucia",
+    "Sumilang",
+    "Ugong"
+  ],
+  "observation_year_counts": {
+    "2024": 77,
+    "2025": 129,
+    "2026": 192
+  },
+  "exceptions": 33,
+  "training_admitted_incidents": 0,
+  "model_trained": false,
+  "readiness": "pilot_only_not_validated_training_data",
+  "limits": [
+    "selected reports; not exhaustive archive",
+    "episode groups are candidate continuity groups, not proved independent storms",
+    "summary clearance lacks individual measured timestamps",
+    "no known flood onset for candidate incidents",
+    "no matched weather exports yet",
+    "2021-2023 archive coverage unverified",
+    "no local ML accuracy estimate"
+  ]
+}

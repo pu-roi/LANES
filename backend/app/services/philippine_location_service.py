@@ -176,34 +176,31 @@ class PhilippineLocationService:
         norm_sto = re.sub(r"^sto\.?\s+", "santo ", lowered)
         norm_dona = re.sub(r"^dona\s+", "doña ", lowered)
 
-        # Check aliases first
-        for candidate in (lowered, norm_sta, norm_sto, norm_dona):
-            if candidate in COMMON_ALIASES:
-                canonical_alias = COMMON_ALIASES[candidate]
-                if city_context:
-                    if city_context.lower() in ("pasig", "city of pasig"):
-                        if canonical_alias in self.pasig_barangays:
-                            return canonical_alias
-                    else:
-                        return canonical_alias
-                return canonical_alias
+        # Aliases span administrative levels. Validate their targets as actual
+        # barangays instead of returning city aliases (e.g. "Pasig City").
+        candidates = (lowered, norm_sta, norm_sto, norm_dona)
+        candidates += tuple(COMMON_ALIASES[c].lower() for c in candidates if c in COMMON_ALIASES)
+
+        def city_identity(name: str) -> str:
+            value = COMMON_ALIASES.get(name.lower(), name).lower()
+            return re.sub(r"^city of | city$", "", value).strip()
 
         # Direct Pasig check if Pasig context is requested
-        if city_context and city_context.lower() in ("pasig", "city of pasig"):
+        if city_context and city_identity(city_context) == "pasig":
             for b in self.pasig_barangays:
                 b_lower = b.lower()
-                if b_lower in (lowered, norm_sta, norm_sto):
+                if b_lower in candidates:
                     return b
             return None
 
         # General nationwide check
-        for candidate in (lowered, norm_sta, norm_sto, norm_dona):
+        for candidate in candidates:
             if candidate in self.barangays:
                 entries = self.barangays[candidate]
                 if city_context:
-                    ctx_lower = city_context.lower()
+                    ctx_lower = city_identity(city_context)
                     for e in entries:
-                        if ctx_lower in e.get("city_municipality", "").lower():
+                        if ctx_lower == city_identity(e.get("city_municipality", "")):
                             return e["name"]
                     continue
                 return entries[0]["name"]

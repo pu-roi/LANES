@@ -1,0 +1,16 @@
+{
+  "catalog_sha256": "4b596be585945502fffd1ca9e14f282fb5a10e3b844c3ca2b21eda1a157894c2",
+  "source_sha256": "0fa54508ad7fe5e9debd6f46b6cd5ca01eeb57b26e2ba5d5b751a5539b6b2b1d",
+  "source_id": "osm-pasig-barangays:2026-09-27T00:56:56+00:00:0fa54508ad7fe5e9",
+  "source_url": "https://download.openstreetmap.fr/extracts/asia/philippines/",
+  "license_url": "https://www.openstreetmap.org/copyright",
+  "license_reviewed_by": "Codex geometry agent (existing OSM ODbL attribution and source validation)",
+  "osm_catalog_sha256": "5edd1284a00003ed2d97ff7d500f02b58d7f53521864e149311628df3d338386",
+  "osm_source_id": "osm-ncr:2026-09-27T00:56:56Z:0fa54508ad7fe5e9",
+  "source_archive_mode": "already_archived_separately",
+  "source_archive_filename": "metro_manila_road_audit.osm.pbf",
+  "verified_record_count": 20,
+  "provisioned_at": "2026-10-05T09:53:56.183178+00:00",
+  "proves_current_flood": false,
+  "may_affect_routing": false
+}

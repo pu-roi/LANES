@@ -14,7 +14,6 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Iterable
 
-import osmium
 from shapely.geometry import LineString
 from shapely.geometry.base import BaseGeometry
 
@@ -29,6 +28,7 @@ ALIASES = {"sto": "santo", "sta": "santa", "st": "street", "ave": "avenue",
 def normalize_name(value: str) -> str:
     folded = "".join(char for char in unicodedata.normalize("NFKD", value.casefold())
                      if not unicodedata.combining(char))
+    folded = re.sub(r"\bc[\s-]*5\b", "c5", folded)
     return " ".join(ALIASES.get(word, word) for word in re.findall(r"[a-z0-9]+", folded))
 
 
@@ -69,35 +69,38 @@ class OSMRoadSection:
     ambiguous_carriageway: bool = False
 
 
-class _BoundedRoadReader(osmium.SimpleHandler):
-    def __init__(self, bbox: tuple[float, float, float, float]) -> None:
-        super().__init__()
-        self.bbox = bbox
-        self.ways: list[OSMRoadWay] = []
-
-    def way(self, way: osmium.osm.Way) -> None:
-        if "highway" not in way.tags or not way.tags.get("name"):
-            return
-        if any(not node.location.valid() for node in way.nodes):
-            return
-        nodes = tuple((node.ref, node.lon, node.lat) for node in way.nodes)
-        west, south, east, north = self.bbox
-        if len(nodes) < 2 or not any(west <= lon <= east and south <= lat <= north for _, lon, lat in nodes):
-            return
-        aliases = tuple(alias.strip() for alias in way.tags.get("alt_name", "").split(";") if alias.strip())
-        self.ways.append(OSMRoadWay(
-            osm_id=way.id, name=way.tags["name"], nodes=nodes, aliases=aliases,
-            bridge=way.tags.get("bridge", ""), tunnel=way.tags.get("tunnel", ""),
-            layer=way.tags.get("layer", ""),
-        ))
-
-
 def load_bounded_osm_roads(osm_pbf: str, bbox: tuple[float, float, float, float]) -> list[OSMRoadWay]:
-    """Read named highways from a small Metro Manila box in a local OSM PBF."""
+    """Read a bounded local PBF; catalog matching does not need this native reader."""
     west, south, east, north = bbox
     if not (120 <= west < east <= 123 and 13 <= south < north <= 16
             and east - west <= 0.15 and north - south <= 0.15):
         raise ValueError("OSM search box must be a bounded Metro Manila area")
+    # Native PBF parsing is an offline source-reading dependency. Do not load
+    # it when runtime placement matches the already validated JSON catalog.
+    import osmium
+
+    class _BoundedRoadReader(osmium.SimpleHandler):
+        def __init__(self, bbox: tuple[float, float, float, float]) -> None:
+            super().__init__()
+            self.bbox = bbox
+            self.ways: list[OSMRoadWay] = []
+
+        def way(self, way: osmium.osm.Way) -> None:
+            if "highway" not in way.tags or not way.tags.get("name"):
+                return
+            if any(not node.location.valid() for node in way.nodes):
+                return
+            nodes = tuple((node.ref, node.lon, node.lat) for node in way.nodes)
+            west, south, east, north = self.bbox
+            if len(nodes) < 2 or not any(west <= lon <= east and south <= lat <= north for _, lon, lat in nodes):
+                return
+            aliases = tuple(alias.strip() for alias in way.tags.get("alt_name", "").split(";") if alias.strip())
+            self.ways.append(OSMRoadWay(
+                osm_id=way.id, name=way.tags["name"], nodes=nodes, aliases=aliases,
+                bridge=way.tags.get("bridge", ""), tunnel=way.tags.get("tunnel", ""),
+                layer=way.tags.get("layer", ""),
+            ))
+
     reader = _BoundedRoadReader(bbox)
     reader.apply_file(osm_pbf, locations=True)
     return reader.ways
@@ -262,11 +265,14 @@ def match_article_road_span(
     city_boundary: BaseGeometry | None,
     source_id: str,
     barangay_boundary: BaseGeometry | None = None,
+    allow_partial_barangay: bool = False,
 ) -> RoadMatch:
     """Return one bounded OSM candidate only when source and geometry are unique.
 
     ``ways`` must come from a bounded, identified OSM extract. The caller must
     provide a checked city polygon; a named barangay also requires its polygon.
+    ``allow_partial_barangay`` is for a caller that immediately clips the
+    matched centerline to that checked polygon. Default callers remain strict.
     """
     reported_road = claim.canonical_road or claim.raw_place_name
     span = claim.road_segment_raw
@@ -331,7 +337,8 @@ def match_article_road_span(
     line = LineString(coords)
     if not city_boundary.covers(line):
         return unresolved("outside_reported_city")
-    if barangay_boundary is not None and not barangay_boundary.covers(line):
+    if barangay_boundary is not None and not barangay_boundary.covers(line) and not (
+            allow_partial_barangay and line.intersection(barangay_boundary).length > 0):
         return unresolved("outside_reported_barangay")
     grade_flags = sorted({f"{tag}={value}" for way in path_ways
                           for tag, value in (("bridge", way.bridge), ("tunnel", way.tunnel), ("layer", way.layer))
