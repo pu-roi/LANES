@@ -45,6 +45,18 @@ export interface FeedResponse {
   resolved_location_name?: string;
 }
 
+export interface FeedFilters {
+  sort: 'newest' | 'oldest';
+  dateRange: 'all' | 'today' | '24h' | '3d' | '7d';
+  floodStatus: 'all' | 'active' | 'resolved';
+  severity: 'all' | 'low' | 'medium' | 'high' | 'extreme';
+  radius: 'auto' | '1000' | '3000' | '5000' | '10000';
+}
+
+export const DEFAULT_FEED_FILTERS: FeedFilters = {
+  sort: 'newest', dateRange: 'all', floodStatus: 'all', severity: 'all', radius: 'auto',
+};
+
 export interface TrendingHotspot {
   id: string;
   name: string;
@@ -107,12 +119,18 @@ export const getFeed = async (
   tab: string = 'recent',
   skip: number = 0,
   limit: number = 20,
-  timeWindowHours?: number
+  timeWindowHours?: number,
+  filters: FeedFilters = DEFAULT_FEED_FILTERS,
 ): Promise<FeedResponse> => {
   const searchParams = new URLSearchParams();
   searchParams.append('tab', tab);
   searchParams.append('skip', skip.toString());
   searchParams.append('limit', limit.toString());
+  searchParams.set('sort', filters.sort);
+  searchParams.set('date_range', filters.dateRange);
+  searchParams.set('flood_status', filters.floodStatus);
+  if (filters.severity !== 'all') searchParams.set('severity', filters.severity);
+  if (tab === 'nearby' && filters.radius !== 'auto') searchParams.set('radius', filters.radius);
   
   if (lat !== undefined && lng !== undefined) {
     searchParams.append('lat', lat.toString());
@@ -123,7 +141,7 @@ export const getFeed = async (
     searchParams.append('time_window_hours', timeWindowHours.toString());
   }
   
-  return apiClient.get<FeedResponse>(`/feed?${searchParams.toString()}`);
+  return apiClient.get<FeedResponse>(`/feed?${searchParams.toString()}`, { cache: 'no-store' });
 };
 
 export const votePost = async (postId: number, interactionType: 'upvote' | 'downvote'): Promise<VoteResponse> => {

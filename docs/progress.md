@@ -1,6 +1,18 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 12: PR #128 merge-base discrepancy corrected
+
+- GitHub uses an older base (`0400eef`) from the two competing merge bases after Jace integration, reproducing twelve conflicts despite the clean local automatic preview. Synchronize current main history into `roi-branch`; the automatic merge preserves the exact application/document tree before adding this audit. Correct the premature GitHub-readiness claim and require a live PR metadata check after push. Source, dependencies and schemas are unchanged; previous acceptance remains applicable. [Cause and recovery](evaluations/roi-team-integration-20261012.md#conflict-resolution-and-retained-behavior). The developer retains the final merge into main. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 12: Teammate updates integrated into Roi branch
+
+- Push News Intelligence tabs first as `c32646d`; integrate Jace's moderation/map, owner notifications/ownership, daily UTC statistics and Community filter/visibility updates. Chris `622173d` is already included. Preserve both authors' records across eight documentation conflicts and remap Jace's reused BUG-146/147/148 to BUG-152/151/150. Screenshot review finds and repairs BUG-153 (mobile sidebar over report dialog) with the existing body portal/modal layer and a foreground regression. Fresh dependency installation, migration to existing head on disposable PostGIS, 133 backend checks, 103 distinct browser cases across combined/final responsive runs, TypeScript and scoped lint pass. The final rerun has 46 passes/two fixture skips; all three original skips are intentional. [Acceptance and screenshots](evaluations/roi-team-integration-20261012.md). The developer retains the manual merge to `main`; cloud release remains separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: News Intelligence organized into two views
+
+- Overview summarizes worker status, next collection, pipeline switches, recent counts and weather health using existing admin components. Flooded Areas retains reported-location cards, search/filtering and source inspection, with state preserved across tabs. Advisory clocks, coverage and run diagnostics remain expandable; source/dispatch issues remain visible in the summary. Shared Tabs opts into accessible panels and keyboard navigation. **37 browser checks pass (three intentional skips)** with TypeScript/scoped lint and desktop/mobile screenshot review. [Local acceptance](evaluations/news-intelligence-tabs-20261011/README.md); cloud release is separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Adaptive scheduling documentation and publication audit
 
@@ -9,6 +21,14 @@
 ### October 11: Adaptive news scheduling accepted locally
 
 - Implement sampled Open-Meteo/PAGASA scheduling, positive-risk precedence, 30-minute freshness and 60-minute cooldown; 60/15/30-minute policy is shared by worker/controller. Add Google OIDC machine endpoint, separate existing-setting JSON state, PostgreSQL locks, dispatch reservations and execution reconciliation. Preserve paused-collection processing/maintenance and independent expiry. Remove interval editing, preserve stored legacy values and extend desktop/mobile automation health with source clocks, coverage, due reason and failures. 146 backend/native checks, 28 adaptive/settings browser checks and 15 news regressions pass (one intended desktop skip), with TypeScript/scoped lint and actual read-only provider probes. No new package/model/migration. Cloud inspection confirms the three-hour trigger remains unchanged; matching deployment, unattended acceptance and savings measurement are separate gates. [Evidence](evaluations/news-weather-scheduling-20261011/README.md), [rollout](guides/news-weather-scheduling-rollout.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Moderation, notification and homepage publication checkpoint
+
+- Complete authoritative report details and status-based map focus; retain one Spatial Location map action. Notify report owners when entering the existing pending queue and receiving approval, preserving rejection reasons/post warnings. Protect notification read ownership and report-detail hydration. Count active zones created today in UTC on the homepage and refresh through existing polling/SSE. Audit all eight core records and synchronize dependency/lock state for the requested `jace-branch` push. Local acceptance includes 51 backend and the final 30 feed/home browser checks, with earlier 18 map and 18 notification checks recorded separately. No model/migration change or production deployment. [Audit and limitations](evaluations/jace-moderation-feed-publication-20261011.md). Jace H. Bellen (Git author Jace; jace-branch), with Codex.
+
+### October 11: Community feed filtering implemented locally
+
+- Extend the existing feed API with validated sort/date/status/severity/radius parameters applied before pagination. Default to newest publication and All Time; retain UTC Today and existing Nearby location logic. Shared desktop/mobile controls persist through refresh and tabs, support Reset Filters and 20-post pagination, and protect cache rollback when a pending vote finishes after filters change. Public readers now exclude linked pending/rejected/private/archived reports, preserving owned My Posts access. [Local acceptance](evaluations/community-feed-filters-20261011.md); no schema/dependency/workflow changes or deployment. Jace H. Bellen (Git author Jace; jace-branch), with Codex.
 
 ### October 11: Three news flood zones and searchable history verified locally
 

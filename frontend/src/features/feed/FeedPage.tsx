@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { getFeed, votePost, FeedPost, FeedResponse, VoteResponse } from './feedApi';
+import { getFeed, votePost, FeedPost, FeedResponse, VoteResponse, DEFAULT_FEED_FILTERS, type FeedFilters } from './feedApi';
+import { CommunityFeedFilters, FILTER_QUERY_KEYS, readFeedFilters } from './components/CommunityFeedFilters';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
 import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, Heart, Plus, ChevronDown, Pin, MapPin, AlertTriangle } from 'lucide-react';
@@ -22,7 +23,28 @@ export function FeedPage() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { error: showError, info: showInfo } = useToast();
-  const [tab, setTab] = useState<'recent' | 'nearby'>('recent');
+  const tab = searchParams.get('tab') === 'nearby' ? 'nearby' : 'recent';
+  const filters = readFeedFilters(searchParams);
+  const requestedPage = Number(searchParams.get('page') || 0);
+  const pageSize = 20;
+  const page = Number.isSafeInteger(requestedPage) && requestedPage >= 0 && requestedPage <= Math.floor(2147483647 / pageSize) ? requestedPage : 0;
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const activeFilterCount = [filters.sort !== 'newest', filters.dateRange !== 'all',
+    filters.floodStatus !== 'all', filters.severity !== 'all', tab === 'nearby' && filters.radius !== 'auto'].filter(Boolean).length;
+
+  function updateFeedQuery(next: FeedFilters, nextTab = tab, nextPage = 0) {
+    const params = new URLSearchParams(searchParams.toString());
+    for (const key of Object.keys(FILTER_QUERY_KEYS) as (keyof FeedFilters)[]) {
+      if (next[key] === DEFAULT_FEED_FILTERS[key]) params.delete(FILTER_QUERY_KEYS[key]);
+      else params.set(FILTER_QUERY_KEYS[key], next[key]);
+    }
+    if (nextTab === 'recent') params.delete('tab');
+    else params.set('tab', nextTab);
+    if (nextPage === 0) params.delete('page');
+    else params.set('page', String(nextPage));
+    router.replace(`/feed${params.size ? `?${params}` : ''}`, { scroll: false });
+  }
+  const setTab = (value: 'recent' | 'nearby') => updateFeedQuery(filters, value);
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [locationLabel, setLocationLabel] = useState<string | null>(null);
   const [locationSource, setLocationSource] = useState<'gps' | 'profile' | 'saved' | null>(null);
@@ -95,7 +117,9 @@ export function FeedPage() {
       // URL. window.history.replaceState was desync-ing the two, causing
       // useSearchParams() in CreatePostModal to return stale values on the
       // second+ "Choose on Map" round-trip.
-      router.replace('/feed', { scroll: false });
+      const params = new URLSearchParams(searchParams.toString());
+      for (const key of ['openPostModal', 'location_tag', 'lat', 'lng']) params.delete(key);
+      router.replace(`/feed${params.size ? `?${params}` : ''}`, { scroll: false });
     } else if (typeof window !== 'undefined') {
       const rawDraft = localStorage.getItem('lanes_draft_post') || sessionStorage.getItem('lanes_draft_post');
       if (rawDraft) {
@@ -177,11 +201,12 @@ export function FeedPage() {
     }
   }, [tab, userLocation, user, savedPlaces]);
 
-  const feedQueryKey = ['feed', tab, userLocation?.lat, userLocation?.lng, locationSource];
+  const feedQueryKey = ['feed', user?.id, tab, userLocation?.lat, userLocation?.lng, locationSource, filters, page];
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: feedQueryKey,
-    queryFn: () => getFeed(userLocation?.lat, userLocation?.lng, tab, 0, 50),
+    queryFn: () => getFeed(userLocation?.lat, userLocation?.lng, tab, page * pageSize, pageSize, undefined, filters),
+    refetchInterval: 60_000,
     enabled: tab === 'recent' || (tab === 'nearby' && (userLocation !== null || isAuthenticated)),
   });
 
@@ -249,11 +274,11 @@ export function FeedPage() {
         });
       }
 
-      return { previousFeed };
+      return { previousFeed, queryKey: feedQueryKey };
     },
-    onSuccess: (voteRes: VoteResponse, { postId }) => {
+    onSuccess: (voteRes: VoteResponse, { postId }, context) => {
       // Lock in authoritative backend numbers
-      queryClient.setQueryData<FeedResponse>(feedQueryKey, (old) => {
+      queryClient.setQueryData<FeedResponse>(context?.queryKey ?? feedQueryKey, (old) => {
         if (!old) return old;
         return {
           ...old,
@@ -274,7 +299,7 @@ export function FeedPage() {
     onError: (err: any, _vars, context) => {
       // Rollback to snapshot on failure
       if (context?.previousFeed) {
-        queryClient.setQueryData(feedQueryKey, context.previousFeed);
+        queryClient.setQueryData(context.queryKey, context.previousFeed);
       }
       if (err.status === 401) {
         showError('Login Required', 'Please log in first to interact with posts!');
@@ -373,14 +398,16 @@ export function FeedPage() {
                 </button>
               </div>
 
-              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600 text-xs sm:text-sm px-2 sm:px-3">
+              <Button variant="ghost" size="sm" aria-expanded={filtersOpen} aria-controls="community-feed-filters" onClick={() => setFiltersOpen(open => !open)} className="text-gray-500 hover:text-blue-600 text-xs sm:text-sm px-2 sm:px-3">
                 <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
-                Filters
+                Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
               </Button>
             </div>
           </div>
 
           <div className="px-3 sm:px-0 pt-3 sm:pt-4">
+            {filtersOpen && <CommunityFeedFilters filters={filters} nearby={tab === 'nearby'} onChange={next => updateFeedQuery(next)} />}
+            <p className="text-xs text-gray-500 mb-3" aria-live="polite">{filters.sort === 'newest' ? 'Newest first' : 'Oldest first'} · {filters.dateRange === 'all' ? 'All time' : filters.dateRange === 'today' ? 'Today (UTC)' : filters.dateRange === '24h' ? 'Last 24 hours' : filters.dateRange === '3d' ? 'Last 3 days' : 'Last 7 days'}{activeFilterCount > 0 && !filtersOpen ? ' · Filters applied' : ''}</p>
             <div className="mb-3 xl:hidden"><LocalUpdates collapsible /></div>
             {/* Create Post Input Trigger */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-3.5 sm:p-4 mb-3 sm:mb-4 flex items-center gap-3">
@@ -431,7 +458,7 @@ export function FeedPage() {
             </div>
 
             {/* Feed Content */}
-            <div className="space-y-3 sm:space-y-4 mb-20">
+            <div className="space-y-3 sm:space-y-4 mb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]">
               {tab === 'nearby' && (userLocation || locationLabel) && (
                 <div className="space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-medium text-blue-700 bg-blue-50/90 border border-blue-200/70 rounded-xl px-3.5 py-2.5 shadow-xs">
@@ -518,7 +545,8 @@ export function FeedPage() {
               {data && data.posts.length === 0 && (
                 <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-16 text-center text-gray-500">
                   <p className="font-medium text-lg text-gray-700">No reports found{tab === 'nearby' ? ' nearby' : ''}.</p>
-                  <p className="text-sm mt-1">{tab === 'nearby' ? 'No community posts or flood reports were found in your area.' : 'Check back later or submit a new report.'}</p>
+                  <p className="text-sm mt-1">{activeFilterCount > 0 ? 'No posts match these filters. Try a wider date range or reset your filters.' : tab === 'nearby' ? 'No community posts or flood reports were found in your area.' : 'Check back later or submit a new report.'}</p>
+                  {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="mt-3" onClick={() => updateFeedQuery({ ...DEFAULT_FEED_FILTERS })}>Reset Filters</Button>}
                 </div>
               )}
 
@@ -539,6 +567,13 @@ export function FeedPage() {
                   }}
                 />
               ))}
+              {data && (data.total > pageSize || page > 0) && (
+                <nav aria-label="Feed pagination" className="flex flex-wrap items-center justify-between gap-2 py-3">
+                  <Button variant="outline" size="sm" disabled={page === 0 || isLoading} onClick={() => updateFeedQuery(filters, tab, page - 1)}>Previous</Button>
+                  <span className="text-xs text-gray-500">Page {page + 1} · {data.total} posts</span>
+                  <Button variant="outline" size="sm" disabled={!data.has_more || isLoading} onClick={() => updateFeedQuery(filters, tab, page + 1)}>Next</Button>
+                </nav>
+              )}
             </div>
           </div>
 

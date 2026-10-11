@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Union, Any
+from typing import Literal, Optional, Union, Any
 from pydantic import BaseModel, ConfigDict, field_validator, field_serializer
 import struct
 from geoalchemy2.elements import WKBElement
@@ -7,7 +7,18 @@ from geoalchemy2.elements import WKBElement
 from app.schemas.common import PointGeometry, LineStringGeometry, parse_ewkb_point, parse_ewkb_linestring
 from app.schemas.report import FloodReportBase
 
-from app.models.report import ReportStatus
+from app.models.report import ReportSeverity, ReportStatus
+
+FeedSort = Literal["newest", "oldest"]
+FeedDateRange = Literal["all", "today", "24h", "3d", "7d"]
+FeedFloodStatus = Literal["all", "active", "resolved"]
+
+
+class CommunityFeedFilters(BaseModel):
+    sort: FeedSort = "newest"
+    date_range: FeedDateRange = "all"
+    flood_status: FeedFloodStatus = "all"
+    severity: Optional[ReportSeverity] = None
 
 class FeedPostResponse(FloodReportBase):
     id: int

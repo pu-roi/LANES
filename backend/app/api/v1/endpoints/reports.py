@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, Any, List
 from fastapi import APIRouter, Depends, HTTPException, status, Form, UploadFile, File
 from sqlalchemy.orm import Session
 import json
@@ -106,6 +106,20 @@ def read_my_reports(
         return attach_automatic_evidence(db, crud.get_flood_reports_by_user(db=db, user_id=current_user.id, skip=skip, limit=limit))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database is offline: {e}")
+
+
+@router.get("/me/{report_id}", response_model=schemas.FloodReportResponse)
+def read_own_report(
+    report_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+) -> Any:
+    """Open an owner's notification reference, including private reports."""
+    report = crud.get_flood_report_by_user(db, report_id=report_id, user_id=current_user.id)
+    if report is None:
+        raise HTTPException(status_code=404, detail="Flood report unavailable")
+    from app.services.citizen_approval_service import attach_automatic_evidence
+    return attach_automatic_evidence(db, [report])[0]
 
 
 @router.get("", response_model=List[schemas.FloodReportResponse])

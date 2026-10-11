@@ -44,9 +44,10 @@ test("staff can inspect locations and collection status without fabricated news 
     if (new URL(request.url()).pathname.includes("/api/v1/admin/news")) newsRequests.push(request.url());
   });
   await page.goto("/admin/news", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: "Flood Locations from News", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "News Intelligence", exact: true })).toBeVisible();
   const navigation = page.getByRole("navigation", { name: "Admin navigation" });
   await expect(navigation.getByRole("link", { name: "News Intelligence" })).toHaveAttribute("aria-current", "page");
+  await page.getByRole("tab", { name: "Flooded Areas" }).click();
   await expect(page.getByText(/No reported flood locations match these filters/)).toBeVisible();
   const collection = page.getByRole("button", { name: "Collection status", exact: true });
   await collection.focus();
@@ -61,7 +62,7 @@ test("staff can inspect locations and collection status without fabricated news 
   await page.getByRole("button", { name: "Spatial Operations", exact: true }).click();
   await expect(page).toHaveURL(/\/admin\/map$/);
   await navigation.getByRole("link", { name: "News Intelligence" }).click();
-  await expect(page.getByRole("heading", { name: "Flood Locations from News", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "News Intelligence", exact: true })).toBeVisible();
 });
 
 test("excluded project history stays outside attention and is accessible on desktop and mobile", async ({ page }, testInfo) => {
@@ -99,7 +100,7 @@ test("mobile menu shows labels and narrow layouts keep content within viewport",
   test.skip(testInfo.project.name !== "mobile-chromium", "Mobile navigation and narrow-screen coverage.");
   await mockSession(page);
   await page.goto("/admin/news", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: "Flood Locations from News", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "News Intelligence", exact: true })).toBeVisible();
   for (const viewport of [{ width: 390, height: 844 }, { width: 320, height: 640 }, { width: 844, height: 390 }]) {
     await page.setViewportSize(viewport);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -130,7 +131,7 @@ test("existing admin guard redirects a non-staff session", async ({ page }) => {
   await mockSession(page, "Citizen");
   await page.goto("/admin/news", { waitUntil: "domcontentloaded" });
   await expect(page).toHaveURL(/\/(?:map)?$/);
-  await expect(page.getByRole("heading", { name: "Flood Locations from News", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "News Intelligence", exact: true })).toHaveCount(0);
 });
 
 test("source monitoring reads recorded feed dates and errors without triggering collection", async ({ page }) => {

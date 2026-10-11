@@ -2,6 +2,7 @@ import { expect as baseExpect, test, type Page } from "@playwright/test";
 import type { NewsAutomationStatus } from "../src/features/news/newsApi";
 
 test.setTimeout(90_000);
+test.use({ browserName: "chromium" });
 const expect = baseExpect.configure({ timeout: 30_000 });
 if (process.env.PLAYWRIGHT_CHROME_PATH) test.use({ launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROME_PATH } });
 
@@ -44,6 +45,9 @@ test("polling reflects real stages and refreshes flood cards when the cycle fini
   state = { ...state, status_label: "Processing articles", current_stage: "extraction" };
   await expect(page.getByRole("status").filter({ hasText: "Processing articles" })).toBeVisible({ timeout: 25_000 });
   expect(reads).toBeGreaterThan(initialReads);
+  await page.getByRole("tab", { name: "Flooded Areas" }).click();
+  await expect(page.getByRole("tabpanel", { name: "Overview" })).toBeHidden();
+  await expect(page.getByText(/No reported flood locations match these filters/)).toBeVisible();
   state = { ...state, running: false, state: "idle", status_label: "Idle; last cycle finished", current_stage: null,
     last_finished_at: "2026-10-11T13:01:00Z",
     last_cycle: { started_at: "2026-10-11T13:00:00Z", finished_at: "2026-10-11T13:01:00Z", outcome: "completed",
@@ -100,14 +104,71 @@ test("adaptive weather sources, timestamps, coverage and dispatch failures are v
   const panel = page.getByRole("region", { name: "Weather-based scheduling" });
   await expect(panel.getByText("15-minute automatic interval")).toBeVisible();
   await expect(panel.getByRole("link", { name: "PAGASA", exact: true })).toHaveAttribute("href", "https://www.pagasa.dost.gov.ph/regional-forecast/ncrprsd");
+  await expect(panel.getByRole("alert").filter({ hasText: "Worker dispatch needs attention" })).toBeVisible();
+  await expect(panel.getByText(/Rainfall Advisory No. 6.*Issued.*Valid until/)).toBeHidden();
+  await page.screenshot({ path: info.outputPath("overview-compact.png"), fullPage: true });
+  await panel.getByText("Weather details", { exact: true }).click();
   await expect(panel.getByText(/Rainfall Advisory No. 6.*Issued.*Valid until/)).toBeVisible();
   await expect(panel.getByRole("alert").filter({ hasText: "news_dispatch_unavailable" })).toBeVisible();
-  await panel.getByText("Monitored locations and controller diagnostics").click();
   await expect(panel.getByText("Antipolo (upstream)", { exact: true })).toBeVisible();
+  await expect(page.getByText("Worker last started", { exact: true })).toBeHidden();
+  await page.getByText("Run details and diagnostics", { exact: true }).click();
+  await expect(page.getByText("Worker last started", { exact: true })).toBeVisible();
   for (const width of info.project.name === "mobile-chromium" ? [390, 320] : [1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
   expect(methods.every(method => method === "GET")).toBe(true);
   await page.screenshot({ path: info.outputPath("weather-scheduling.png"), fullPage: true });
+});
+
+
+test("tabs load areas on demand, support keyboard navigation and preserve search", async ({ page }) => {
+  let resultsReads = 0;
+  await setup(page, status, () => { resultsReads++; return { items: [], total: 0 }; });
+  await page.goto("/admin/news", { waitUntil: "domcontentloaded" });
+  const overview = page.getByRole("tab", { name: "Overview", exact: true });
+  const areas = page.getByRole("tab", { name: "Flooded Areas", exact: true });
+  await expect(overview).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("status").filter({ hasText: "Gathering news" })).toBeVisible();
+  expect(resultsReads).toBe(0);
+  await expect(page.getByRole("tabpanel", { name: "Flooded Areas" })).toBeHidden();
+  await expect(page.getByText("Worker last started", { exact: true })).toBeHidden();
+  await overview.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(areas).toBeFocused();
+  await expect(areas).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByText(/No reported flood locations match these filters/)).toBeVisible();
+  const search = page.getByRole("textbox", { name: "Search flood locations" });
+  await search.fill("Boni Avenue");
+  await areas.focus();
+  await page.keyboard.press("Home");
+  await expect(overview).toBeFocused();
+  await expect(page.getByRole("tabpanel", { name: "Flooded Areas" })).toBeHidden();
+  await page.keyboard.press("End");
+  await expect(areas).toBeFocused();
+  await expect(search).toHaveValue("Boni Avenue");
+  await page.keyboard.press("ArrowRight");
+  await expect(overview).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(areas).toBeFocused();
+});
+
+test("loading and paused collection keep overview status clear", async ({ page }) => {
+  await setup(page, status);
+  let release!: () => void;
+  const response = new Promise<void>(resolve => { release = resolve; });
+  await page.route("**/api/v1/admin/news/automation", async route => {
+    await response;
+    await route.fulfill({ json: { ...status(), running: false, collection_enabled: false,
+      status_label: "Collection paused", next_collection_due_at: null } });
+  });
+  await page.goto("/admin/news", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("status").filter({ hasText: "Loading status" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Refresh automation status" })).toBeDisabled();
+  release();
+  await expect(page.getByRole("status").filter({ hasText: "Collection paused" })).toBeVisible();
+  await expect(page.getByText("Collection paused", { exact: true })).toHaveCount(2);
+  await expect(page.getByText("Processing Enabled", { exact: true })).toBeVisible();
+  await expect(page.getByText("No saved weather checks. Refresh after the controller runs.")).toBeVisible();
 });

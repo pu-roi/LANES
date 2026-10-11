@@ -2,15 +2,13 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Request, Response, HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy import func
-import datetime
 
 from app.core.database import get_db
-from app.models.report import FloodReport, ReportStatus
 from app.core.limiter import limiter
 from app import models, schemas
 from app.services.email_service import send_contact_email_async
-from app.services.visitor_analytics_service import get_visitor_summary, record_visitor_activity
+from app.services.visitor_analytics_service import record_visitor_activity
+from app.services.public_stats_service import get_public_stats as public_stats
 from app.api import deps
 
 router = APIRouter()
@@ -19,20 +17,9 @@ router = APIRouter()
 def get_public_stats(db: Session = Depends(get_db)) -> schemas.PublicStatsResponse:
     """
     Retrieve public statistics for the landing page.
-    Includes daily verified flood reports and deduplicated first-party visitors.
+    Includes active public map zones and deduplicated first-party visitors.
     """
-    # 1. Daily Verified Reports
-    today = datetime.datetime.now(datetime.timezone.utc).date()
-    daily_verified_reports = db.query(FloodReport).filter(
-        FloodReport.status == ReportStatus.APPROVED,
-        func.date(FloodReport.created_at) == today
-    ).count()
-    
-    visitor_summary = get_visitor_summary(db)
-    return {
-        "daily_verified_reports": daily_verified_reports,
-        "total_visitors": visitor_summary["total_unique_visitors"],
-    }
+    return public_stats(db)
 
 
 @router.post("/visits", response_model=schemas.VisitorActivityResponse)
@@ -51,15 +38,8 @@ def record_public_visit(
         user_id=current_user.id if current_user else None,
         user_agent=request.headers.get("user-agent"),
     )
-    visitor_summary = get_visitor_summary(db)
-    today = datetime.datetime.now(datetime.timezone.utc).date()
-    daily_verified_reports = db.query(FloodReport).filter(
-        FloodReport.status == ReportStatus.APPROVED,
-        func.date(FloodReport.created_at) == today,
-    ).count()
     return schemas.VisitorActivityResponse(
-        daily_verified_reports=daily_verified_reports,
-        total_visitors=visitor_summary["total_unique_visitors"],
+        **public_stats(db).model_dump(),
         recorded=recorded,
     )
 

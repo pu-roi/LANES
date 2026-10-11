@@ -1,15 +1,30 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from sqlalchemy import func, case, text, Float, String, and_, or_, cast
+from sqlalchemy.sql.elements import ColumnElement
 from geoalchemy2 import Geography
-from app.models.report import FloodReport
+from app.models.report import FloodReport, FloodAvoidanceZone, FloodEvent, FloodEventStatus, ReportStatus
 from app.models.interaction import PostInteraction
 from app.models.user import User
 from app.models.profile import Profile
 from app.models.post import CommunityPost
 from app.models.comment import Comment
-from typing import Optional, List
-from app.schemas.feed import TopReporter
+from typing import Any, Optional, List
+from app.schemas.feed import CommunityFeedFilters, TopReporter
+from app.crud.report import get_active_avoidance_zone_query
+from app.services.community_feed_service import publication_bounds
+
+
+def public_report_clause() -> ColumnElement[bool]:
+    """A standalone post or a live, explicitly public, approved linked report."""
+    return or_(CommunityPost.flood_report_id.is_(None), and_(
+        FloodReport.id.is_not(None), FloodReport.deleted_at.is_(None),
+        FloodReport.is_public.is_(True), FloodReport.status == ReportStatus.APPROVED))
+
+
+def owned_post_clause(user_id: int) -> ColumnElement[bool]:
+    return and_(CommunityPost.user_id == user_id, or_(
+        CommunityPost.flood_report_id.is_(None), FloodReport.user_id == user_id))
 
 def get_feed_posts(
     db: Session,
@@ -21,19 +36,40 @@ def get_feed_posts(
     limit: int = 20,
     tab: str = "recent",
     author_id: Optional[int] = None,
-    time_window_hours: Optional[int] = None
-):
+    time_window_hours: Optional[int] = None,
+    filters: CommunityFeedFilters | None = None,
+    include_own_unpublished: bool = False,
+    now: datetime | None = None,
+) -> dict[str, Any]:
     # Base query for community posts
     base_query = db.query(CommunityPost).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id).filter(CommunityPost.deleted_at.is_(None))
-    if user_id is None:
-        base_query = base_query.filter(CommunityPost.hidden_at.is_(None))
+    public_post = and_(CommunityPost.hidden_at.is_(None), public_report_clause())
+    if include_own_unpublished and user_id is not None and author_id == user_id:
+        base_query = base_query.filter(or_(public_post, owned_post_clause(user_id)))
     else:
-        base_query = base_query.filter((CommunityPost.hidden_at.is_(None)) | (CommunityPost.user_id == user_id))
+        base_query = base_query.filter(public_post)
     if author_id:
         base_query = base_query.filter(CommunityPost.user_id == author_id)
+    filters = filters or CommunityFeedFilters()
+    clock = now or datetime.now(timezone.utc)
+    lower, upper = publication_bounds(filters.date_range, clock)
+    if lower is not None:
+        base_query = base_query.filter(CommunityPost.created_at >= lower, CommunityPost.created_at <= upper)
     if time_window_hours is not None:
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=time_window_hours)
+        cutoff = clock - timedelta(hours=time_window_hours)
         base_query = base_query.filter(CommunityPost.created_at >= cutoff)
+    if filters.severity is not None:
+        base_query = base_query.filter(FloodReport.severity == filters.severity)
+    if filters.flood_status != "all":
+        active_zones = get_active_avoidance_zone_query(db, now=now).with_entities(FloodAvoidanceZone.id)
+    if filters.flood_status == "active":
+        base_query = base_query.filter(FloodReport.zone_id.in_(active_zones))
+    elif filters.flood_status == "resolved":
+        # Ended is the persisted lifecycle outcome, rather than assuming every
+        # expired/unlinked report is proof that flood conditions have resolved.
+        base_query = base_query.filter(FloodReport.event_id.in_(
+            db.query(FloodEvent.id).filter(FloodEvent.status == FloodEventStatus.ENDED)),
+            or_(FloodReport.zone_id.is_(None), ~FloodReport.zone_id.in_(active_zones)))
 
     # Subqueries for upvotes and downvotes
     upvotes_query = db.query(
@@ -176,53 +212,12 @@ def get_feed_posts(
     if user_interaction_sq is not None:
         query = query.outerjoin(user_interaction_sq, CommunityPost.id == user_interaction_sq.c.post_id)
 
-    # ── Shared scoring components ──────────────────────────────────────────
-    # Age in hours (floored at 0.01 to avoid division-by-zero for brand-new posts)
-    age_hours = func.greatest(
-        func.extract('epoch', func.now() - CommunityPost.created_at) / 3600.0,
-        0.01
-    )
-
-    net_votes = func.greatest(
-        func.coalesce(upvotes_query.c.upvotes, 0) - func.coalesce(downvotes_query.c.downvotes, 0),
-        0
-    )
-
-    engagement_points = net_votes + (func.coalesce(comments_query.c.comment_count, 0) * 0.5)
-
-    # Content-type boost: flood reports get a head start, location-tagged posts get a smaller one
-    content_boost = case(
-        (CommunityPost.flood_report_id.isnot(None), 3.0),
-        (and_(
-            CommunityPost.location_lat.isnot(None),
-            CommunityPost.location_lng.isnot(None)
-        ), 1.0),
-        else_=0.0
-    )
-
-    # ── Ordering ─────────────────────────────────────────────────────────
-    if tab == "nearby" and distance_col is not None:
-        # Nearby: blend distance relevance (60%) with engagement (40%)
-        effective_radius = func.coalesce(cast(radius, Float), 5000.0)
-        distance_score = func.coalesce(
-            func.greatest(
-                1.0 - (distance_col / effective_radius),
-                0.0
-            ),
-            0.0
-        )
-
-        nearby_engagement = engagement_points + content_boost
-        # Log-scale engagement to prevent mega-upvoted posts from dominating distance
-        nearby_engagement_norm = func.log(func.greatest(nearby_engagement, 1) + 1)
-
-        nearby_score = (0.6 * distance_score) + (0.4 * nearby_engagement_norm)
-        query = query.order_by(nearby_score.desc().nulls_last(), CommunityPost.created_at.desc())
+    # Both tabs show newest publications first after their existing filters.
+    # IDs break timestamp ties before pagination; edits and votes never reorder posts.
+    if filters.sort == "oldest":
+        query = query.order_by(CommunityPost.created_at.asc(), CommunityPost.id.asc())
     else:
-        # Recent: HN-inspired hot score with civic boosts and gravity decay
-        gravity = 1.5
-        hot_score = (engagement_points + content_boost) / func.power(age_hours + 2, gravity)
-        query = query.order_by(hot_score.desc())
+        query = query.order_by(CommunityPost.created_at.desc(), CommunityPost.id.desc())
 
     total = base_query.count()
     results = query.offset(skip).limit(limit).all()
@@ -324,9 +319,10 @@ def get_feed_post(
     # Base query for community post
     base_query = db.query(CommunityPost).filter(CommunityPost.id == post_id, CommunityPost.deleted_at.is_(None)).outerjoin(FloodReport, CommunityPost.flood_report_id == FloodReport.id)
     if user_id is None:
-        base_query = base_query.filter(CommunityPost.hidden_at.is_(None))
+        base_query = base_query.filter(CommunityPost.hidden_at.is_(None), public_report_clause())
     else:
-        base_query = base_query.filter((CommunityPost.hidden_at.is_(None)) | (CommunityPost.user_id == user_id))
+        base_query = base_query.filter(or_(and_(CommunityPost.hidden_at.is_(None), public_report_clause()),
+                                          owned_post_clause(user_id)))
 
     # Subqueries for upvotes and downvotes
     upvotes_query = db.query(

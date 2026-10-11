@@ -11,6 +11,7 @@ export interface TabItem<T extends string = string> {
   badge?: string | number;
   badgeColor?: string;
   hideLabelOnMobile?: boolean;
+  panelId?: string;
 }
 
 export interface TabsProps<T extends string = string> {
@@ -22,6 +23,8 @@ export interface TabsProps<T extends string = string> {
   className?: string;
   tabClassName?: string;
   fullWidth?: boolean;
+  /** Opt into linked tab panels and arrow-key navigation. */
+  ariaLabel?: string;
 }
 
 /**
@@ -39,10 +42,26 @@ export function Tabs<T extends string = string>({
   className = "",
   tabClassName = "",
   fullWidth = false,
+  ariaLabel,
 }: TabsProps<T>) {
+  const tabListProps = ariaLabel ? { role: "tablist", "aria-label": ariaLabel } : {};
+  const tabProps = (tab: TabItem<T>, selected: boolean): React.ButtonHTMLAttributes<HTMLButtonElement> => ariaLabel ? {
+    role: "tab", id: `${layoutId}-${tab.id}`, "aria-selected": selected,
+    "aria-controls": tab.panelId, tabIndex: selected ? 0 : -1,
+    onKeyDown: (event) => {
+      const index = tabs.findIndex((item) => item.id === tab.id);
+      const next = event.key === "ArrowRight" ? (index + 1) % tabs.length
+        : event.key === "ArrowLeft" ? (index + tabs.length - 1) % tabs.length
+        : event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : null;
+      if (next === null) return;
+      event.preventDefault();
+      onChange(tabs[next].id);
+      event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]?.focus();
+    },
+  } : {};
   if (variant === "underline") {
     return (
-      <div className={cn("flex border-b border-slate-200 overflow-x-auto hide-scrollbar select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden", className)}>
+      <div {...tabListProps} className={cn("flex border-b border-slate-200 overflow-x-auto hide-scrollbar select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden", className)}>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -50,6 +69,7 @@ export function Tabs<T extends string = string>({
           return (
             <button
               key={tab.id}
+              {...tabProps(tab, isActive)}
               type="button"
               onClick={() => onChange(tab.id)}
               className={cn(
@@ -96,7 +116,7 @@ export function Tabs<T extends string = string>({
 
   if (variant === "pills") {
     return (
-      <div className={cn("flex items-center gap-2 p-1 select-none overflow-x-auto hide-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden", className)}>
+      <div {...tabListProps} className={cn("flex items-center gap-2 p-1 select-none overflow-x-auto hide-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden", className)}>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -104,6 +124,7 @@ export function Tabs<T extends string = string>({
           return (
             <button
               key={tab.id}
+              {...tabProps(tab, isActive)}
               type="button"
               onClick={() => onChange(tab.id)}
               className={cn(
@@ -139,6 +160,7 @@ export function Tabs<T extends string = string>({
   // Default: 'segmented' (Sleek container with sliding motion indicator)
   return (
     <div
+      {...tabListProps}
       className={cn(
         "relative flex items-center p-1 bg-slate-100/90 border border-slate-200/80 rounded-xl select-none overflow-hidden",
         className
@@ -151,6 +173,7 @@ export function Tabs<T extends string = string>({
         return (
           <button
             key={tab.id}
+            {...tabProps(tab, isActive)}
             type="button"
             onClick={() => onChange(tab.id)}
             className={cn(
