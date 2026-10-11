@@ -69,6 +69,19 @@ def test_disabling_ml_restores_original_fixed_deadline_and_reenabling_is_stable(
     db.commit(); assert zone.expires_at == model_deadline
 
 
+def test_inactive_older_policy_retains_forecast_across_policy_and_setting_changes(zone_db):
+    db,staff,zone,report,now = zone_db
+    result=policy.apply_zone_policy(db,zone.id,now=now); db.commit()
+    prior=policy.latest_policy(db,zone.id)
+    prior.metadata_json={**prior.metadata_json,'policy_version':'pasig-experimental-ml-expiry-v2'}
+    zone.is_active=False; db.commit()
+    configure(db,staff,enabled=False)
+    status=policy.expiry_status(db,zone.id)
+    assert status['method']==result['method'] and status['quantiles']==result['quantiles']
+    assert status['prediction_as_of_at']==result['prediction_as_of_at']
+    assert not status['zone_is_active'] and not status['pasig_ml_expiry_enabled']
+
+
 def test_global_pause_preserves_deadlines_and_prevents_maintenance(zone_db):
     db, staff, zone, report, now = zone_db
     policy.apply_zone_policy(db, zone.id, now=now); db.commit()
@@ -132,6 +145,8 @@ def test_new_frozen_numeric_depth_uses_cross_location_model(zone_db):
     assert result['method'] == 'ml_cross_location', result
     assert result['reference_basis'] == 'observed_reference'
     assert result['model_sha256']
+    assert result['depth_cm'] == 38.1 and result['calculation']['shared_depth_effect'] is not None
+    assert policy.expiry_status(db, zone.id)['calculation'] == result['calculation']
 
 
 def test_official_proxy_remains_labelled_and_toggle_does_not_destroy_source_clock(zone_db):
@@ -285,4 +300,80 @@ def test_late_official_recovery_cannot_ignore_current_evidence(zone_db,changed):
             admin_id=staff.id,metadata_json={},created_at=now))
     db.commit()
     result=policy.apply_zone_policy(db,zone.id,now=now); db.commit()
-    assert result['method']=='fixed_fallback' and zone.expires_at is None
+    assert result['method']=='fixed_fallback'
+    assert zone.expires_at==settings.evidence_deadline(settings.read_configuration(db),zone.created_at,zone.depth)
+    assert not result.get('quantiles')
+
+
+def test_future_source_clock_retries_same_signature_and_preserves_original_issuance(zone_db):
+    """A batch clock before concurrent creation must not permanently cache null."""
+    db, staff, zone, report, now = zone_db
+    report.zone_id = None
+    recorded = now + timedelta(seconds=2)
+    zone.created_at, zone.updated_at, zone.expires_at = now, now, None
+    db.add(AuditLog(action_type='CREATE_OFFICIAL_ZONE', target_table='flood_avoidance_zones',
+        target_id=zone.id, admin_id=staff.id, metadata_json={'zone_id':zone.id}, created_at=recorded))
+    db.commit()
+    rejected = policy.apply_zone_policy(db,zone.id,now=now); db.commit()
+    assert rejected['method']=='fixed_fallback' and not rejected.get('quantiles')
+    signature = rejected['source_signature']
+    assert policy.apply_zone_policy(db,zone.id,now=now+timedelta(seconds=3)) == rejected
+    db.commit()
+    recovered = policy.apply_zone_policy(db,zone.id,now=now+timedelta(seconds=61)); db.commit()
+    assert recovered['source_signature']==signature and recovered['method']=='ml_pooled'
+    assert recovered['prediction_as_of_at']==recorded.isoformat()
+    assert zone.updated_at==now
+    deadline = zone.expires_at
+    assert policy.apply_zone_policy(db,zone.id,now=now+timedelta(minutes=5))==recovered
+    assert zone.expires_at==deadline
+
+
+def test_repeated_negative_retry_does_not_append_identical_audits(zone_db):
+    db, staff, zone, report, now = zone_db
+    source = db.scalar(select(AuditLog).where(AuditLog.action_type=='CITIZEN_OBSERVATION',
+        AuditLog.target_id==report.id))
+    source.metadata_json = {**source.metadata_json,'observed_at':None}
+    zone.expires_at = None
+    db.commit()
+    result = policy.apply_zone_policy(db,zone.id,now=now); db.commit()
+    count = db.scalar(select(func.count()).select_from(AuditLog))
+    assert result['method']=='fixed_fallback'
+    assert policy.apply_zone_policy(db,zone.id,now=now+timedelta(minutes=2))==result
+    db.commit()
+    assert db.scalar(select(func.count()).select_from(AuditLog))==count
+
+
+def test_unavailable_legacy_evidence_gets_retention_without_fabricating_ml(zone_db):
+    db,staff,zone,report,now = zone_db
+    source = db.scalar(select(AuditLog).where(AuditLog.action_type=='CITIZEN_OBSERVATION',AuditLog.target_id==report.id))
+    db.delete(source)
+    zone.created_at,zone.expires_at = now-timedelta(minutes=30),None
+    db.commit()
+    result = policy.apply_zone_policy(db,zone.id,now=now); db.commit()
+    deadline = zone.expires_at
+    assert result['method']=='fixed_fallback' and deadline>now
+    assert 'not a subsidence prediction' in result['reason'] and not result.get('quantiles')
+    policy.apply_zone_policy(db,zone.id,now=now+timedelta(minutes=5)); db.commit()
+    assert zone.expires_at==deadline
+    assert expire_due_zones(db,deadline+timedelta(seconds=1))==1
+    assert zone.flood_event.status==FloodEventStatus.ENDED
+    entry=db.scalar(select(FloodEventTimelineEntry).where(FloodEventTimelineEntry.event_id==zone.event_id,
+        FloodEventTimelineEntry.entry_type=='evidence_expired'))
+    assert entry.snapshot_json['condition']=='Unconfirmed'
+
+
+def test_disabling_ml_preserves_generated_retention_for_legacy_null_timer(zone_db):
+    db,staff,zone,report,now = zone_db
+    source = db.scalar(select(AuditLog).where(AuditLog.action_type=='CITIZEN_OBSERVATION',AuditLog.target_id==report.id))
+    db.delete(source)
+    zone.created_at,zone.expires_at = now-timedelta(minutes=30),None
+    db.commit()
+    result = policy.apply_zone_policy(db,zone.id,now=now); db.commit()
+    deadline = zone.expires_at
+    configure(db,staff,enabled=False)
+    disabled = policy.apply_zone_policy(db,zone.id,now=now+timedelta(minutes=1)); db.commit()
+    assert disabled['method']=='fixed' and disabled['fallback_basis']=='activation_retention'
+    assert zone.expires_at==deadline and disabled['fixed_deadline'] is None
+    configure(db,staff,enabled=True)
+    assert policy.apply_zone_policy(db,zone.id,now=now+timedelta(minutes=2))['method']=='fixed_fallback'
+    assert zone.expires_at==deadline

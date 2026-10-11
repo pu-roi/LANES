@@ -99,3 +99,14 @@ def test_registered_refresh_repairs_import_source_without_rewriting_history(queu
             ["operator-import"] if refresh == "failed" else ["operator-import", current.source_id])
         latest = NewsArticleExtractorInput.model_validate({**snapshots[-1].input_snapshot, "article_id": article_id})
         assert source_is_approved(latest, (registered,)) is (refresh == "registered")
+
+
+def test_commuter_articles_do_not_appear_as_unprocessed_flood_attention(queue_db):
+    from test_news_processing import article
+    with queue_db() as db, db.begin():
+        db.add(article(1, review_state="local_update", title="MRT-3 service schedule", article_text="MRT-3 service follows a shortened schedule."))
+    with queue_db() as db:
+        assert collection(db).total == 0
+        page = collection(db, "all")
+        assert page.items[0].collection_status == "excluded"
+        assert page.items[0].processing_status == "not_recorded"

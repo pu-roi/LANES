@@ -45,7 +45,8 @@ def test_registry_enables_only_dated_verified_feeds() -> None:
     assert {item.id for item in sources} == {
         "feedspot-01", "feedspot-02", "feedspot-03", "feedspot-05", "feedspot-07", "feedspot-14", "daily-tribune"
     }
-    assert all(item.enabled and item.verified_at is not None and len(item.feed_urls) == 1 for item in sources)
+    assert all(item.enabled and item.verified_at is not None and item.feed_urls for item in sources)
+    assert len(next(item for item in sources if item.id == "feedspot-01").feed_urls) == 5
     assert len(PASIG_BARANGAYS) == 30
 
 

@@ -30,7 +30,7 @@ export function LocalUpdates({ collapsible = false }: { collapsible?: boolean })
     retry: false,
   });
   const content = <div className="space-y-3">
-    <p className="text-xs leading-relaxed text-gray-500">Recent Metro Manila flood news. Article reports may not reflect current conditions.</p>
+    <p className="text-xs leading-relaxed text-gray-500">Metro Manila weather, traffic, transport and local safety updates. Article reports may not reflect current conditions.</p>
     {offline && <p role="status" className="text-xs text-amber-800">Offline. Showing last downloaded news when available.</p>}
     {query.isError && <div className="space-y-2">
       <p role="alert" className="text-sm text-red-700">Couldn’t load local news. {query.data && "Previously downloaded articles are shown below."}</p>
@@ -40,7 +40,7 @@ export function LocalUpdates({ collapsible = false }: { collapsible?: boolean })
       <div aria-hidden="true" className="h-4 w-full rounded bg-gray-100 motion-safe:animate-pulse" />
       <div aria-hidden="true" className="h-4 w-2/3 rounded bg-gray-100 motion-safe:animate-pulse" />
     </div>}
-    {query.data?.items.length === 0 && <p className="text-sm text-gray-500">No recent local flood news is available.</p>}
+    {query.data?.items.length === 0 && <p className="text-sm text-gray-500">No recent local updates are available.</p>}
     {query.data && <>
       <ul className="divide-y divide-gray-100">
         {query.data.items.map((article) => {

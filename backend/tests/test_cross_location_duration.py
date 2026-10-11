@@ -50,6 +50,30 @@ def test_smaller_location_prior_shrinks_local_offsets(rows,model):
     assert np.linalg.norm(tight.coefficients[2:]) < np.linalg.norm(model.coefficients[2:])
 
 
+def test_nondecreasing_candidate_declares_assumption_without_inventing_fast_clearance(rows):
+    # Deliberately contrary synthetic evidence checks the declared shape,
+    # not real flood accuracy. The fitted shallow durations are not forced down.
+    contrary = [replace(row, lower_minutes=200000/row.lower_minutes,
+        upper_minutes=200000/row.upper_minutes) for row in rows]
+    free = fit_cross_location(contrary)
+    assert free.coefficients[1] < 0
+    # A boundary solution with unsupported curvature must abstain rather than
+    # invent a covariance for a coefficient forced away from the evidence.
+    with pytest.raises(ModelNotIdentifiableError,match='curvature'):
+        fit_cross_location(contrary, depth_shape="nondecreasing")
+    constrained = fit_cross_location(rows, depth_shape="nondecreasing")
+    assert constrained.coefficients[1] >= 0
+    assert constrained.diagnostics['depth_shape_is_structural_assumption']
+    assert not constrained.diagnostics['depth_constraint_active']
+    assert not constrained.diagnostics['constraint_boundary_uncertainty_calibrated']
+    assert not constrained.lineage['deployment_eligible']
+    low = predict_cross_location(constrained,10,"Ugong")['quantiles'][1]['remaining_minutes']
+    high = predict_cross_location(constrained,60,"Ugong")['quantiles'][1]['remaining_minutes']
+    assert high >= low
+    with pytest.raises(DurationModelError,match='depth-shape'):
+        fit_cross_location(rows,depth_shape='arbitrary_timers')
+
+
 def test_duplicate_shared_outcome_projections_do_not_add_weight(rows,model):
     duplicated = [replace(row, observation_id=row.observation_id+suffix) for row in rows for suffix in ("a","b")]
     duplicate_fit = fit_cross_location(duplicated)

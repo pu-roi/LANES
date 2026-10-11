@@ -12,8 +12,8 @@ async function setup(page: Page, info: TestInfo, state: "populated" | "empty" | 
       expect(route.request().method()).toBe("GET");
       if (control.state === "error") return route.fulfill({ status: 503, json: { detail: "Local news unavailable" } });
       return route.fulfill({ json: { items: control.state === "empty" ? [] : [
-        { id: 51, title: "Floodwaters reported along C5 Road in Pasig City", publisher: "Example News",
-          source_url: "https://example.org/news/flood", published_at: "2026-10-11T01:00:00Z" },
+        { id: 51, title: "MRT-3 service schedule adjusted this weekend", publisher: "Example News",
+          source_url: "https://example.org/news/transport", published_at: "2026-10-11T01:00:00Z" },
       ], as_of: "2026-10-11T01:10:00Z" } });
     }
     if (url.pathname.endsWith("/feed")) return route.fulfill({ json: { posts: [], total: 0, has_more: false } });
@@ -30,9 +30,9 @@ async function setup(page: Page, info: TestInfo, state: "populated" | "empty" | 
 
 test("shows collected article links and publisher dates on desktop and mobile", async ({ page }, info) => {
   const { panel } = await setup(page, info);
-  const link = panel.getByRole("link", { name: /Floodwaters reported along C5/ });
+  const link = panel.getByRole("link", { name: /MRT-3 service schedule/ });
   await expect(link).toBeVisible();
-  await expect(link).toHaveAttribute("href", "https://example.org/news/flood");
+  await expect(link).toHaveAttribute("href", "https://example.org/news/transport");
   await expect(link).toHaveAttribute("target", "_blank");
   await expect(link).toHaveAttribute("rel", "noopener noreferrer");
   await expect(panel.getByText("Example News", { exact: true })).toBeVisible();
@@ -47,7 +47,7 @@ test("shows collected article links and publisher dates on desktop and mobile", 
 
 test("shows an honest empty state", async ({ page }, info) => {
   const { panel } = await setup(page, info, "empty");
-  await expect(panel.getByText("No recent local flood news is available.")).toBeVisible();
+  await expect(panel.getByText("No recent local updates are available.")).toBeVisible();
   await expect(panel.getByRole("link")).toHaveCount(0);
 });
 
@@ -69,7 +69,7 @@ test("refreshes articles and preserves cached news on a failed refresh", async (
   await expect(panel.getByRole("link")).toBeVisible();
   control.state = "empty";
   await panel.getByRole("button", { name: "Retry local news" }).click();
-  await expect(panel.getByText("No recent local flood news is available.")).toBeVisible();
+  await expect(panel.getByText("No recent local updates are available.")).toBeVisible();
 });
 
 test("identifies offline cached articles", async ({ page, context }, info) => {

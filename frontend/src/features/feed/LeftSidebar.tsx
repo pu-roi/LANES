@@ -66,7 +66,7 @@ export function LeftSidebar() {
   ];
 
   return (
-    <aside className="w-64 flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] bg-transparent overflow-y-auto hidden md:flex px-4 border-r border-gray-200 custom-scrollbar [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full transition-colors duration-200">
+    <aside aria-label="Community navigation" className="w-64 xl:w-[280px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] bg-transparent overflow-y-auto hidden md:flex px-4 border-r border-gray-200 custom-scrollbar [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-transparent hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full transition-colors duration-200">
       <div className="flex-1 py-6 space-y-6">
         {/* Navigation */}
         <div className="space-y-1">

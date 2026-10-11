@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 9 preserved-news inspection:** News Details now opens saved placement on Spatial Operations through a validated run/ordinal handoff, including expired articles absent from the current queue. Existing server-owned inspection status, permissions and transparent review layers apply. The selected September 24 local replay returns four Boni modeled candidates without creating an active historical zone. Shared desktop/mobile UI passes TypeScript/scoped dialog lint; visual acceptance is pending. [Manual replay](guides/local-news-replay.md#october-9-september-24-manual-map-inspection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -155,6 +155,12 @@ This document serves as the central technical reference for all currently implem
 ---
 
 ### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
+
+**Current hosted forecast UI:** Rollout 005 now serves the saved primary forecast and expanded calculation on desktop/mobile; six real Info and six expanded checks pass. Existing source, expiry-to-Unconfirmed and experimental accuracy contracts remain. Earlier local-only release statements are historical. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Future model evidence:** An offline research builder now pairs complete existing follow-up exports with independently reviewed real episode/extent/continuity declarations. It preserves interval/right censoring and frozen depth; tests and administrative expiry cannot become observed clearance. The actual export has zero eligible episodes; no primary model replacement or new public/Admin flow. [26 checks and collection readiness](evaluations/pasig-recession-collection-readiness-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 11 current expiry contract:** Policy v3 retries transient negative results without moving original successful forecasts; geometry-derived COD/PSGC labels preserve submitted labels/clocks in correction audits. Eligible ML abstention with no saved timer uses explicitly labelled activation-based evidence retention. The shared API/both workers are deployed; 17 current active Pasig zones have saved ML deadlines, zero unscheduled. Local Info displays the selected saved method/depth/locality/calculation, with pooled research previews secondary; 66 responsive and six actual local desktop/mobile workflows pass. Cloud frontend remains rollout 004. Current artifacts retain weak/no depth response and unqualified accuracy; the offline constrained-depth candidate was not promoted. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Pasig coverage and abstention:** Eligible Pasig polygons can use the shared Pasig model even when their barangay has no local historical outcomes. This is not guaranteed inference for every record. Unverified location, missing observation time without an accepted registration/submission proxy, incompatible depth snapshots, changed/review-pending evidence or unavailable model assets can still produce an explicit unavailable/fixed-fallback state. A saved operational forecast remains visible after expiry even when the current research preview is inactive or stale. Expiry means Unconfirmed, not observed flood clearance; p90 is an experimental policy estimate, not calibrated certainty.
 
@@ -315,7 +321,7 @@ This document serves as the central technical reference for all currently implem
 
 ### 16. Community Feed & Social Validation
 
-**Local Updates (October 11, live acceptance):** Desktop sidebar and mobile/tablet expandable feed card now show recent collected Metro Manila flood articles with publisher, publication date and source link. A bounded public metadata reader reuses discovery relevance/domain rules and does not wait for recorded extraction or public-alert approval. Loading/empty/retry/offline/cache states and minute refresh are verified by 24 backend/10 responsive checks; current saved-data inspection is empty. Live desktop/mobile reads now pass after correcting pinned Cloud Run traffic; broader commuter-news scope remains separate. [Verification](evaluations/community-local-updates-20261011.md).
+**Local Updates (October 11, commuter coverage):** Desktop sidebar and mobile/tablet expandable card show recent collected Metro Manila weather, traffic, transport, safety/service advisories and flood reports with publisher/date/source link. The bounded public reader checks current body relevance and source/domain/recency; no public-alert approval is required. National weather headlines qualify only when their bodies cover Metro Manila. Commuter-only articles use the existing `local_update` state and never enqueue flood extraction; later observed flooding can enter normal processing. 143 backend/10 responsive checks and actual local reads pass. Matching cloud release and actual live desktop/mobile five-article acceptance pass. [Verification](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht).
 *   **Purpose:** Provides commuters with localized, real-time crowdsourced updates, general disaster discussion, and enables peer validation of flood reports.
 *   **What it does:** Displays a 3-column feed containing shared `FloodReport`s and general `CommunityPost`s. Enables highly interactive community discussions via a rich, threaded comments section supporting quote replies, user mentions, upvote/downvote sorting, auto-collapsing low-score replies, and admin pinning.
 *   **How it works:**

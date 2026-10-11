@@ -23,13 +23,15 @@ APPROVAL_LOCK = 614296503
 
 
 def record_observation(db: Session, report: models.FloodReport, *, observed_at: datetime | None,
-                       road_validated: bool, media_hashes: list[str]) -> None:
+                       road_validated: bool, media_hashes: list[str],
+                       submitted_location: dict | None = None, resolved_locality: dict | None = None) -> None:
     clock = datetime.now(timezone.utc)
     db.add(AuditLog(action_type=OBSERVATION_ACTION, target_table="flood_reports", target_id=report.id,
         created_at=clock,
         metadata_json={"user_id": report.user_id, "observed_at": observed_at.isoformat() if observed_at else None,
             "road_validated": road_validated, "geometry_sha256": geometry_hash(report),
             "media_sha256": media_hashes, "geometry_provenance": "server_road_reconstruction" if road_validated else "unvalidated_submission",
+            "submitted_location": submitted_location, "resolved_locality": resolved_locality,
             "prediction_features": capture_features(report.geometry,report.depth,observed_at=observed_at,now=clock)}))
     db.commit()
 

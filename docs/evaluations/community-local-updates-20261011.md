@@ -4,6 +4,8 @@ Author: [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 11, 11:30 AM live follow-up:** the loading failure is resolved; live desktop/mobile use the endpoint successfully and show no qualifying recent articles. Earlier local-only release statements below describe the initial implementation.
 
+**October 11 noon coverage correction:** the developer selected commuter news (weather, traffic, road closures, transport disruptions and safety advisories). The flood-only descriptions below are the initial implementation, superseded by the commuter coverage section at the end.
+
 ## Delivered behavior
 
 Replace the two static Local Updates headlines with up to five recent collected news articles. The developer selected collected articles with publisher, publication date and original-source link, without waiting for recorded extraction or public-alert approval.
@@ -51,5 +53,109 @@ Actual production verification:
 - Unmocked Chromium at 1440×1000 and 390×844: actual news request **200**, visible “No recent local flood news is available.”, no Local Updates error. Mobile expanded through the real summary control. Both card screenshots were inspected.
 
 Durable prevention in `cloudbuild.yaml`: prepare the API with `--no-traffic` and unique `--revision-suffix=build-$BUILD_ID`; after the existing migration and both worker deployments, use `--to-revisions=lanes-api-build-$BUILD_ID=100`. This avoids preserved manual rollback pins and targets the exact build rather than a potentially different latest revision. Existing gcloud help confirms naming/no-traffic semantics. YAML parsing and assertions verify the preparation flags, final exact revision promotion and preceding worker steps. A new Cloud Build execution of this configuration has not been performed. No new application tests, package imports or SQLAlchemy/Alembic changes were needed for this deployment-only fix.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Commuter news coverage — October 11 noon PHT
+
+The developer rejected the flood-only empty widget and explicitly chose relevant commuter news outside flooding. Both admission and the reader previously required observed Metro Manila flooding. Changing the empty-state text alone would not collect any useful articles.
+
+`local_news_relevance.py` admits weather forecasts/advisories, traffic changes/road closures, rail/bus/jeepney operations, safety/class-suspension and local service advisories supported by a current body sentence naming Metro Manila or a specific Metro rail line. A Manila dateline or weather-office address is not local impact. Broad national weather leads may be fetched within the bounded commuter budget, but the body must actually include Metro Manila. General politics, sports, entertainment, stock trading and non-local reports do not fill the widget. The original strict observed-flood admission remains separate.
+
+The approved GMA source now also uses its official Metro, weather, transportation and Walang Pasok RSS endpoints, found on [GMA's own feed listing](https://www.gmanetwork.com/news/rss/) and verified by actual parsed responses. No new publisher/source identity was enabled. Date/domain/readable-body checks remain in place. Up to 14 additional non-flood bodies are fetched per run, at most four per feed; they cannot exhaust the existing flood-location probe budget. Publisher fallback keeps one primary feed per source within its existing five-probe budget, preserving independent publisher coverage after adding the supplemental feeds.
+
+Commuter stories are saved in existing article/provenance tables with the existing string `review_state` set to `local_update`. They never enqueue immutable flood extraction runs. Collection labels them excluded from flood reports, so they do not become unprocessed flood attention. A later body with real flood observations can enter normal pending processing; rejected/suppressed articles are not revived. Duplicate URLs/GUIDs and unchanged bodies retain feed provenance without reclassifying local-only stories. Failed refreshed bodies are marked unavailable, and the public reader checks the newest saved body. No SQLAlchemy model or migration change is involved.
+
+Shared `LocalUpdates.tsx` describes weather/traffic/transport/safety coverage and uses the generic “No recent local updates are available.” only when no qualifying recent collected story exists. Publisher/date/source links and request/refresh/cache/offline behavior are unchanged.
+
+Verification:
+
+- 143 targeted backend tests pass across local-news/discovery/processing/collection correction/browsing/telemetry. Includes no-flood commuter reads, national forecast local body, nonlocal/dateline exclusion, no new extraction, duplicate/unchanged capture, valid flood promotion without moderation reset, failed refresh and separate fetch budgets.
+- TypeScript and scoped ESLint pass. All ten existing desktop/mobile Chromium cases pass using a non-flood MRT service story; initial execution found the local server stopped, so the normal development server was started and the suite rerun.
+- Actual approved-source collection through the configured database: six feeds parsed, **ten new commuter articles**, **zero flood candidates**, extraction runs **84 before/84 after**. Shared collection settings were already enabled and selected sources were respected. No audit, publication, map activation or schedule change occurred.
+- Actual local API and unmocked desktop 1440×1000/mobile 390×844 each return **200 with five articles**. Both card screenshots were inspected. An initial mobile probe failed during Uvicorn test-file reload; restart without reload and both reads pass.
+- Latest five include the October 11 Philstar weather forecast, today's La Naval traffic advisory, two GMA forecasts and a local Maynilad service notice. Article dates remain publication dates; the headline mentioning other regions qualifies because the actual body includes Metro Manila.
+
+Cloud API/workers/frontend release is accepted as recorded below. No new packages or schema changes are introduced.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Commuter news live release — October 11, 12:10 PM PHT
+
+- Commit `429dd19495d75c71859796cb75ccf0d7bed427b0` is pushed to `roi-branch`.
+- Root Cloud Build `86a78939-ca6d-4bce-9d18-db533a8e1c23` succeeds at 12:08:14 PM PHT, image digest `sha256:2614ca4bbf446cbb242e4c49edb1eb4af172ca15a8de416f28f643d6501445bd`. Existing migration execution `lanes-migration-nkhtg` succeeds; no new model/migration is added. Both news-discovery and zone-expiry jobs use the same commit image. The final step promotes exact prepared revision `lanes-api-build-86a78939-ca6d-4bce-9d18-db533a8e1c23` to 100%, exercising BUG-141 prevention in a real release.
+- Frontend App Hosting `build-2026-10-11-002` is READY and its rollout SUCCEEDED from the same commit. Source-upload deployment attempts were abandoned after upload failures; the successful release uses the pushed Git commit. Firebase source-deploy configuration is unchanged.
+- Actual `https://navlanes.live/api/v1/news/local-updates?limit=5`: 200 with five current collected articles. `/health`: 200, database connected. Public alerts: 200. Unauthenticated staff collection: 401.
+- Unmocked live Chromium at 1440×1000 and 390×844 receives the actual 200/five-item response. Publisher labels, publication timestamps, original HTTPS links and safe new-tab attributes are checked for every story. Broader commuter description is visible; no load error. Mobile expands through the actual summary; both cards stay inside viewport width. Screenshots `frontend/test-results/commuter-news-live-desktop.png` and `commuter-news-live-mobile.png` are visually inspected. An initial checker required exact accessible link names and failed because links include the intentional screen-reader “opens in a new tab” suffix; corrected checker verifies each actual title/link without changing production code.
+- Ten commuter captures remain separate from flood processing; this release does not perform public-map activation or change policy/scheduler state. Existing eight-record documentation audit confirms no dependency/schema/architectural decision additions are needed. BUG-142 is resolved live; other News Intelligence/News Alert changes remain separate.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Sidebar scrolling and width — October 11, 12:15 PM PHT
+
+Developer asks for the right scrollbar to stay hidden until panel interaction, and a small width increase. `RightSidebar.tsx` uses the existing `scrollbar-auto-hide` style, increases 320 to 344 pixels, adds a named keyboard-focusable complementary region with a visible focus ring and `overscroll-contain`. Native wheel/touch/keyboard scrolling is retained. The scrollbar is transparent while idle and thin/slate on hover or focus, with the existing standard and WebKit rules; no new global styling or animation is needed.
+
+During real 1024-pixel verification the existing three-column minimum widths exceeded the viewport by four pixels. Show the wider sidebar from Tailwind `xl` (1280 pixels), and change the `FeedPage.tsx` expandable-card visibility to the same breakpoint. Phones/tablets/narrower laptops therefore retain source-linked news without forcing three columns. No dependency, API, database or migration change.
+
+- Actual unmocked local checks at 1920×1080, 1440×1000 and 1280×800: sidebar width exactly 344, idle transparent scrollbar, visible hover/focus thumb, native wheel scrolling moves only the panel, PageDown scrolls the focused panel, and wheel-at-bottom does not move the page.
+- 1024×800 and 768×800: right panel hidden, shared expandable news visible with five actual articles and reachable refresh. All tested widths have no horizontal overflow.
+- 390×844: expandable news shows five actual articles; after ordinary page scrolling, refresh is above the fixed bottom navigation and clicking it produces actual HTTP 200. A first check used scrollIntoViewIfNeeded, which considered an element under the fixed bar already visible; centering it through native page scrolling verifies actual reachable/clickable behavior without changing mobile code.
+- TypeScript passes. RightSidebar ESLint has zero errors and its two existing image warnings. FeedPage retains six errors/four warnings; programmatic comparison against HEAD confirms every diagnostic is unchanged by the breakpoint class. This scope does not fix unrelated existing hooks/entities lint errors.
+- Desktop/mobile screenshots `frontend/test-results/commuter-sidebar-1440.png` and `commuter-sidebar-390.png` are inspected. The first CSS check ran before development styles settled; load/poll-based acceptance confirms the existing hidden scrollbar rules apply. No new automated regression fixture is added for this small wrapper change; the earlier 143 backend/10 responsive commuter suite remains the coverage baseline.
+
+Matching frontend rollout and live UI acceptance are accepted in the follow-up below. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Sidebar live acceptance — October 11, 12:23 PM PHT
+
+Frontend commit `b93dc0b7b4735025ba83ebf2720d731806d43044` is pushed to `roi-branch`. App Hosting build `build-2026-10-11-003` (Cloud Build `ca3f2568-9ec5-4e4a-bac6-a3a1527c15ae`) compiles successfully, the rollout succeeds, and Cloud Run `lanes-frontend-build-2026-10-11-003` serves 100% traffic. The already accepted commuter API/workers remain on `429dd19`; the UI release adds no backend behavior or schema/dependency changes.
+
+- Re-run `npx playwright test tests/local-updates.spec.ts --workers=1` after the breakpoint update: **10 passed (42.1 seconds)**. Covers desktop/mobile source/date display, empty state, failure/retry, cached refresh and offline behavior. TypeScript passes; existing FeedPage lint diagnostics remain unchanged as recorded above.
+- Actual unmocked public `https://navlanes.live/feed` at widths 1920, 1440, 1280, 1024, 768 and 390: news **200/five articles** and main feed **200**, with real posts rendered. Original links/dates are verified for every story; no local-news error or horizontal overflow.
+- Large screens: exact 344-pixel panel, transparent idle scrollbar, visible hover/focus thumb, native mouse wheel and PageDown scrolling, no page movement when the sidebar reaches its end.
+- Smaller screens: sidebar hidden, shared expandable news visible, source-linked five articles and actual refresh click returning **200**. At 390 pixels the refresh control is reachable above fixed bottom navigation through normal page scrolling.
+- Live desktop/mobile screenshots `frontend/test-results/commuter-sidebar-live-1440.png` and `commuter-sidebar-live-390.png` are inspected. Test-result images are local ignored verification artifacts; the repeat Playwright run cleans earlier transient screenshots, so these final live captures are the current images.
+- BUG-143 is resolved live; progress/task/system/rollback documentation is synchronized. No new library/model/migration is introduced, so dependency and database-design records require no entry. Minor scrollbar/layout refinement is recorded in the existing feed documentation rather than a new flagship feature or architectural decision.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Visible sidebar width follow-up — October 11, 12:27 PM PHT
+
+Developer reports that the first width change is not sufficiently visible. The first revision increased outer width to 344 pixels but retained 24-pixel side padding, leaving only 296 pixels for cards. Update the existing `RightSidebar.tsx` wrapper to 376 pixels and 16-pixel horizontal padding. Cards now measure 344 pixels, 48 more usable pixels than the first revision and 72 more than the initial 272-pixel cards. The three-column visibility breakpoint and hidden-until-hover/focus scrollbar are preserved.
+
+Actual local browser checks at 1920/1440/1280 widths measure exactly 376-pixel sidebar and 344-pixel Local Updates card; native wheel scrolling works and there is no horizontal overflow. At 1024 and 390, the sidebar is hidden and the expandable five-article card remains accessible without horizontal overflow. Actual news reads return 200/five articles. Desktop screenshot `frontend/test-results/sidebar-wider-1920.png` is inspected. TypeScript passes and RightSidebar lint retains zero errors/two existing image warnings. No new test fixture, dependency, model or migration is needed for the two-class refinement. Matching live frontend rollout is accepted in the follow-up below.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+### Width follow-up live acceptance — October 11, 12:33 PM PHT
+
+Commit `37f59e1630634ed4247c9295cf69d8b3d79319f4` is pushed to `roi-branch`. App Hosting rollout `build-2026-10-11-004` succeeds (Cloud Build `37017cdb-b19b-4a18-8991-90bda816c882`); revision `lanes-frontend-build-2026-10-11-004` serves 100% traffic. Actual unmocked public feed at 1920 and 1280 pixels measures sidebar **376** and Local Updates card **344**; wheel scrolling and transparent idle scrollbar pass. At 1024 and 390 the shared expandable card remains visible. All four live views return 200/five articles and have no horizontal overflow. Live panel/mobile screenshots `frontend/test-results/sidebar-wider-live-panel.png` and `sidebar-wider-live-390.png` are inspected. Earlier local 1440 acceptance, TypeScript and zero-error sidebar lint apply to the same two-class change; no new dependency/model/migration/backend change. Documentation and requested `roi-branch` publication are synchronized.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Navigation spacing preview — October 11, 12:49 PM PHT
+
+The developer withdrew the matching 376-pixel left-panel experiment because it felt oversized and compressed the feed. That experiment was never committed or deployed. Final navigation increases from 256 to 280 pixels only at the existing 1280-pixel breakpoint; tablets retain 256 pixels and mobile retains its drawer. The subsequent request removes the outer left blank space: the page no longer uses a centered 1,600-pixel cap, navigation starts inside a 24-pixel desktop gutter, and a responsive grid centers the 720-pixel-capped feed in its own column beside the existing 376-pixel updates panel.
+
+Actual unmocked local browser checks:
+
+| Viewport width | Navigation width / left gutter | Feed width | Updates panel |
+|---|---|---|---|
+| 1920 | 280 / 24 | 720 | 376 |
+| 1600 | 280 / 24 | 720 | 376 |
+| 1440 | 280 / 24 | 648 | 376 |
+| 1280 | 280 / 24 | 488 | 376 |
+| 1024 | 256 / 16 | 672 | Shared inline card |
+| 768 | 256 / 16 | 448 | Shared inline card |
+| 390 | Mobile drawer | 390 | Shared inline card |
+
+All seven views receive actual news HTTP 200 and show real community posts without horizontal overflow or column overlap. Mobile drawer opens and its Community Feed action closes it. Desktop/mobile screenshots `frontend/test-results/feed-gutter-1920.png` and `feed-gutter-390.png` are inspected. TypeScript and ESLint for both changed source files pass. An initial checker selected the application's outer main element instead of the feed main and falsely reported compression; correcting the selector established the actual 720-pixel width. No production change was needed to fix that checker.
+
+This is a local preview, prepared for the requested roi-branch publication; no new frontend deployment is performed during this layout iteration. Production remains on rollout 004, and the accepted backend remains on 429dd19. No dependency/model/migration change. Existing feature, architecture, stack and database records require no new entries for this layout refinement.
+
+## Navigation spacing hosted release — October 11, 4:25 PM PHT
+
+The developer requested resuming all remaining work. App Hosting rollout `build-2026-10-11-005` from pushed `e150fea` includes the previously pushed navigation spacing and the saved-forecast UI. Cloud Build `60d53a00-4dcb-40da-8bd5-fe8fb79b5ab2` succeeds; revision `lanes-frontend-build-2026-10-11-005` serves 100%. Current API remains the accepted subsidence-v3 revision; no collector/schema/model/settings change accompanies this frontend release.
+
+Actual hosted feed at widths 1920/1280/1024/390 receives news HTTP 200 and has no horizontal overflow. Desktop navigation/right panels measure 280/376 pixels; the feed is 720 pixels at 1920 and 488 at 1280. At 1024 navigation is 256, the right panel is hidden and the feed is 672; at 390 both side panels are hidden and the shared Local Updates widget is visible. Screenshots were inspected. The initial diagnostic measured the outer page main; the corrected selector measured the inner capped feed, producing the figures above. Earlier local-only layout acceptance remains historical. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).

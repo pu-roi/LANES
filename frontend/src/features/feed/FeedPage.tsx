@@ -381,7 +381,7 @@ export function FeedPage() {
           </div>
 
           <div className="px-3 sm:px-0 pt-3 sm:pt-4">
-            <div className="mb-3 lg:hidden"><LocalUpdates collapsible /></div>
+            <div className="mb-3 xl:hidden"><LocalUpdates collapsible /></div>
             {/* Create Post Input Trigger */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-3.5 sm:p-4 mb-3 sm:mb-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">

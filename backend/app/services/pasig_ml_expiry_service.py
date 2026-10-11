@@ -18,7 +18,7 @@ from sqlalchemy.orm.attributes import flag_modified
 from app.models.audit import AuditLog
 from app.models.report import FloodAvoidanceZone, FloodReport
 from app.schemas.cross_location_prediction import CrossLocationPrediction
-from app.services.configuration_service import configuration_lock, read_configuration
+from app.services.configuration_service import configuration_lock, read_configuration, evidence_deadline
 from app.services.flood_duration_model import DurationModelError
 from app.services import zone_prediction_service as predictions
 from app.services.cross_location_prediction_service import compare_resolved_zone
@@ -26,9 +26,10 @@ from app.services.local_news_scenario_service import scoped_clock
 from app.services.spatial_review_grouping import utc
 
 ACTION = "APPLY_ZONE_EXPIRY_POLICY"
-POLICY_VERSION = "pasig-experimental-ml-expiry-v2"
+POLICY_VERSION = "pasig-experimental-ml-expiry-v3"
 QUANTILE = 0.9
 MAX_POLICY_HOURS = 48
+NEGATIVE_RETRY_SECONDS = 60
 
 
 def latest_policy(db: Session, zone_id: int) -> AuditLog | None:
@@ -99,6 +100,13 @@ def choose_deadline(result: predictions.ZonePrediction, comparison: CrossLocatio
         reference_basis=basis, model_sha256=checksum,
         prediction_as_of_at=utc(issuance).isoformat(),
         quantiles=[q.model_dump(mode="json") for q in quantiles])
+    calculation = comparison.calculation if method == "ml_cross_location" else (
+        result.calculation if result.state == "estimated" else simulation.calculation)
+    decision.update(calculation=calculation.model_dump(mode="json") if calculation else None,
+        city=result.city, barangays=result.barangays,
+        depth_cm=comparison.depth_cm if method == "ml_cross_location" else None,
+        depth_basis=comparison.depth_basis if method == "ml_cross_location" else None,
+        target_location=comparison.target_location if method == "ml_cross_location" else None)
     return decision
 
 
@@ -113,20 +121,36 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
     clock = scoped_clock(zone.id, "zone", now or datetime.now(timezone.utc))
     if not config.automatic_expiry_enabled:
         return None
+    from app.services.report_locality_service import reconcile_report_locality
+    for report in predictions.store.linked_reports(db, zone.id):
+        reconcile_report_locality(db, report)
     signature = _source_signature(db, zone)
     prior = latest_policy(db, zone_id)
     saved = prior.metadata_json if prior else {}
+    # Qualification depends on source availability as well as its identity. A
+    # worker can select a just-created source after capturing its batch clock;
+    # caching that early rejection forever prevents later eligible inference.
+    retry_at = saved.get("retry_after")
+    try:
+        retry_at = utc(datetime.fromisoformat(retry_at)) if retry_at else None
+    except (TypeError, ValueError):
+        retry_at = None
+    retry_negative = saved.get("method") == "fixed_fallback" and (retry_at is None or clock >= retry_at)
     if (saved.get("policy_version") == POLICY_VERSION and saved.get("source_signature") == signature
             and saved.get("ml_enabled") == config.pasig_ml_expiry_enabled
-            and saved.get("deadline") == (utc(zone.expires_at).isoformat() if zone.expires_at else None)):
+            and saved.get("deadline") == (utc(zone.expires_at).isoformat() if zone.expires_at else None)
+            and not retry_negative):
         return saved
     current = utc(zone.expires_at) if zone.expires_at else None
     fallback = current
-    if saved.get("method", "").startswith("ml_") and saved.get("deadline") == (current.isoformat() if current else None):
+    if (saved.get("method", "").startswith("ml_") or saved.get("fallback_basis") == "activation_retention") and saved.get("deadline") == (current.isoformat() if current else None):
         fallback = datetime.fromisoformat(saved["fixed_deadline"]) if saved.get("fixed_deadline") else None
     if not config.pasig_ml_expiry_enabled:
         decision = {"method": "fixed", "deadline": fallback, "reason": "Pasig ML expiry is disabled.",
             "reference_basis": None, "model_sha256": None}
+        if saved.get("fallback_basis") == "activation_retention" and fallback is None:
+            decision.update(deadline=evidence_deadline(config, utc(zone.created_at), zone.depth),
+                fallback_basis="activation_retention")
     else:
         try:
             resolved = predictions.resolve_zone_prediction(db, zone.id, now=clock,
@@ -145,6 +169,15 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
     if manual is not None and (manual.metadata_json or {}).get("expires_at") is not None:
         decision = {"method": "fixed", "deadline": current,
             "reason": "Explicit staff deadline retained.", "reference_basis": None, "model_sha256": None}
+    if decision["method"] == "fixed_fallback" and decision["deadline"] is None:
+        # An abstention must not keep active evidence indefinitely. This uses
+        # the existing configurable retention policy, NOT a clearance model.
+        # Its clock is immutable activation, never the current retry/edit time.
+        activation = utc(zone.created_at)
+        if activation <= clock:
+            decision["deadline"] = evidence_deadline(config, activation, zone.depth)
+            decision["fallback_basis"] = "activation_retention"
+            decision["reason"] += " Evidence retention uses the configured timer from original zone activation; this is not a subsidence prediction."
     deadline = decision.pop("deadline")
     metadata = {"policy_version": POLICY_VERSION, "source_signature": signature,
         "ml_enabled": config.pasig_ml_expiry_enabled, **decision,
@@ -153,6 +186,14 @@ def apply_zone_policy(db: Session, zone_id: int, *, now: datetime | None = None)
         "quantile": QUANTILE if decision["method"].startswith("ml_") else None,
         "experimental": decision["method"].startswith("ml_"), "accuracy_verified": False,
         "expires_as": "Unconfirmed", "applied_at": clock.isoformat()}
+    if decision["method"] == "fixed_fallback":
+        metadata["retry_after"] = (clock + timedelta(seconds=NEGATIVE_RETRY_SECONDS)).isoformat()
+    # Retry computation without filling append-only storage with identical
+    # failures. A changed source, policy or recovered forecast still appends.
+    transient_fields = {"applied_at", "retry_after"}
+    if ({k: v for k, v in metadata.items() if k not in transient_fields}
+            == {k: v for k, v in saved.items() if k not in transient_fields}):
+        return saved
     zone.expires_at = deadline
     # Deadline policy writes have their own audit clock. Preserve the source
     # edit clock so applying/pausing policy cannot invalidate a source proxy.
@@ -181,7 +222,10 @@ def expiry_status(db: Session, zone_id: int) -> dict:
         raise FollowupError(404, "Flood Zone not found.")
     config, prior = read_configuration(db), latest_policy(db, zone_id)
     saved = prior.metadata_json if prior else {}
-    matches = (saved.get("policy_version") == POLICY_VERSION and saved.get("ml_enabled") == config.pasig_ml_expiry_enabled
+    historical = (not zone.is_active and saved.get("policy_version") in {
+        "pasig-experimental-ml-expiry-v1", "pasig-experimental-ml-expiry-v2", POLICY_VERSION})
+    matches = ((historical or (saved.get("policy_version") == POLICY_VERSION
+        and saved.get("ml_enabled") == config.pasig_ml_expiry_enabled))
         and saved.get("deadline") == (utc(zone.expires_at).isoformat() if zone.expires_at else None))
     return {"automatic_expiry_enabled": config.automatic_expiry_enabled,
         "pasig_ml_expiry_enabled": config.pasig_ml_expiry_enabled,
@@ -193,4 +237,11 @@ def expiry_status(db: Session, zone_id: int) -> dict:
         "prediction_as_of_at": saved.get("prediction_as_of_at") if matches else None,
         "quantiles": saved.get("quantiles", []) if matches else [],
         "model_sha256": saved.get("model_sha256") if matches else None,
+        "calculation": saved.get("calculation") if matches else None,
+        "city": saved.get("city") if matches else None,
+        "barangays": saved.get("barangays", []) if matches else [],
+        "depth_cm": saved.get("depth_cm") if matches else None,
+        "depth_basis": saved.get("depth_basis") if matches else None,
+        "target_location": saved.get("target_location") if matches else None,
+        "fallback_basis": saved.get("fallback_basis") if matches else None,
         "accuracy_verified": False, "expires_as": "Unconfirmed"}

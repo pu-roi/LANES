@@ -1,16 +1,20 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
 ## 27. Experimental Pasig ML deadlines as an operational expiry policy
 
-**Date:** October 10, 2026 (Asia/Manila)
+**Date:** October 10, 2026 (Asia/Manila); evidence-retention amendment October 11.
 
 **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Status:** Implemented locally and released to the shared cloud API/news/independent expiry workers at the developer's explicit request; prospective accuracy remains open.
+
+**October 11, 4:25 PM release continuation:** Hosted saved-forecast UI is now accepted in App Hosting rollout 005, with actual desktop/mobile Info and expanded calculations verified. Earlier local-only UI statements below are historical. The separate scientific qualification contract is unchanged; no additional government files or real training outcomes are established. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 11 amendment: prediction abstention and evidence retention are separate contracts.** Policy v3 retries transient negative results after 60 seconds while preserving original forecast issuance and successful deadlines. When ML abstains for an eligible Pasig record with no saved deadline, use the existing configured timer from immutable zone activation, explicitly named `activation_retention`; this is evidence ageing, not an inferred clearing time. Preserve staff deadlines, pause and source-review gates. Canonical labels follow reviewed administrative geometry of the final validated section; audited label corrections preserve geometry and source clocks and cannot qualify unrelated snapshots. Saved historical forecasts survive policy changes. The shared API/both workers are deployed; selected-forecast UI is local only. [Engineering acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 The earlier read-only prediction prototype did not implement ML expiry. The developer requested making Pasig ML expiry work. A separate server-owned policy now saves an eligible cross-location or pooled model p90 deadline. Other cities, unsupported cases and explicit staff deadlines retain fixed policy. A 48-hour issuance bound and visible fallback limit this experiment; they do not establish accuracy.
 
