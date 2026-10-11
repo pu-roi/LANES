@@ -1,10 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 12:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Local Updates commuter coverage
 
-- Correct the flood-only scope after developer clarification. Collect body-grounded Metro Manila commuter stories from the approved publishers, including GMA official Metro/weather/transport/Walang Pasok feeds. Persist non-flood stories in the existing article table with `local_update` state, without queuing flood extraction or changing schema. Display the latest five stories with broader shared desktop/mobile text. 143 backend and 10 responsive checks pass; actual collection saves ten articles while extraction runs remain 84, and unmocked local desktop/mobile reads show five articles. Cloud release is in progress. [Evidence](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Correct the flood-only scope after developer clarification. Collect body-grounded Metro Manila commuter stories from the approved publishers, including GMA official Metro/weather/transport/Walang Pasok feeds. Persist non-flood stories in the existing article table with `local_update` state, without queuing flood extraction or changing schema. Display the latest five stories with broader shared desktop/mobile text. 143 backend and 10 responsive checks pass; actual collection saves ten articles while extraction runs remain 84, and unmocked local desktop/mobile reads show five articles. Matching cloud API/workers/frontend release is accepted. Live desktop/mobile return 200 with five source-linked articles; health and staff denial pass, and the exact build revision promotion is verified in a real successful Cloud Build. [Evidence](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Live Local Updates loading failure resolved
 

@@ -1,11 +1,11 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 11, 2026, 12:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 11: Community Feed Local Updates
 
 - [x] Expand Local Updates to the developer-selected commuter topics, add verified existing-publisher category feeds, preserve source/date links, and keep non-flood articles out of extraction and the flood attention queue. 143 backend/10 responsive tests and actual collected-news local desktop/mobile acceptance pass. [Evidence](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Complete matching cloud API/workers/frontend release and actual live commuter-news acceptance. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Complete matching cloud API/workers/frontend release and actual live commuter-news acceptance: five articles, source/publisher/date links, healthy database, staff 401 and actual desktop/mobile checks pass. Build-specific API promotion runs successfully after both worker deployments. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] Audit all eight core documents, confirm existing dependencies and unchanged models/migrations, review public metadata exposure and prepare the final changes for the developer-requested `roi-branch` push. [Audit](evaluations/community-local-updates-20261011.md#planner-and-pre-push-audit--october-11-144-am-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

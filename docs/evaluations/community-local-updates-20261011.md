@@ -76,6 +76,17 @@ Verification:
 - Actual local API and unmocked desktop 1440×1000/mobile 390×844 each return **200 with five articles**. Both card screenshots were inspected. An initial mobile probe failed during Uvicorn test-file reload; restart without reload and both reads pass.
 - Latest five include the October 11 Philstar weather forecast, today's La Naval traffic advisory, two GMA forecasts and a local Maynilad service notice. Article dates remain publication dates; the headline mentioning other regions qualifies because the actual body includes Metro Manila.
 
-Cloud API/workers/frontend release is in progress. No new packages or schema changes require migration work.
+Cloud API/workers/frontend release is accepted as recorded below. No new packages or schema changes are introduced.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Commuter news live release — October 11, 12:10 PM PHT
+
+- Commit `429dd19495d75c71859796cb75ccf0d7bed427b0` is pushed to `roi-branch`.
+- Root Cloud Build `86a78939-ca6d-4bce-9d18-db533a8e1c23` succeeds at 12:08:14 PM PHT, image digest `sha256:2614ca4bbf446cbb242e4c49edb1eb4af172ca15a8de416f28f643d6501445bd`. Existing migration execution `lanes-migration-nkhtg` succeeds; no new model/migration is added. Both news-discovery and zone-expiry jobs use the same commit image. The final step promotes exact prepared revision `lanes-api-build-86a78939-ca6d-4bce-9d18-db533a8e1c23` to 100%, exercising BUG-141 prevention in a real release.
+- Frontend App Hosting `build-2026-10-11-002` is READY and its rollout SUCCEEDED from the same commit. Source-upload deployment attempts were abandoned after upload failures; the successful release uses the pushed Git commit. Firebase source-deploy configuration is unchanged.
+- Actual `https://navlanes.live/api/v1/news/local-updates?limit=5`: 200 with five current collected articles. `/health`: 200, database connected. Public alerts: 200. Unauthenticated staff collection: 401.
+- Unmocked live Chromium at 1440×1000 and 390×844 receives the actual 200/five-item response. Publisher labels, publication timestamps, original HTTPS links and safe new-tab attributes are checked for every story. Broader commuter description is visible; no load error. Mobile expands through the actual summary; both cards stay inside viewport width. Screenshots `frontend/test-results/commuter-news-live-desktop.png` and `commuter-news-live-mobile.png` are visually inspected. An initial checker required exact accessible link names and failed because links include the intentional screen-reader “opens in a new tab” suffix; corrected checker verifies each actual title/link without changing production code.
+- Ten commuter captures remain separate from flood processing; this release does not perform public-map activation or change policy/scheduler state. Existing eight-record documentation audit confirms no dependency/schema/architectural decision additions are needed. BUG-142 is resolved live; other News Intelligence/News Alert changes remain separate.
 
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
