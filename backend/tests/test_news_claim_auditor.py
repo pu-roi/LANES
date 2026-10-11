@@ -82,6 +82,8 @@ def auditor(provider: str = "openrouter", **updates) -> NewsClaimAuditor:
 
 
 def reply(result: dict, provider: str = "openrouter", finish: str | None = None) -> httpx.Response:
+    if "results" not in result:
+        result = {"results": [{"candidate_id": "single", **result}]}
     if provider == "openrouter":
         return httpx.Response(200, json={"id": "fixture-request-1", "choices": [{
             "finish_reason": finish or "stop", "message": {"content": json.dumps(result)}}]})
@@ -162,7 +164,7 @@ async def test_custom_timeout_bounds_http_and_whole_response_without_changing_de
         result = await service.audit(claim, article, client=client)
     assert result.outcome == "verified" and limits == [60.0]
     assert service.policy_identity()["timeout_seconds"] == 60
-    assert auditor().policy_identity()["timeout_seconds"] == 20
+    assert auditor().policy_identity()["timeout_seconds"] == 60
 
 
 @pytest.mark.asyncio
@@ -193,11 +195,11 @@ async def test_provider_uses_only_its_credential_and_complete_immutable_article(
             assert "systemInstruction" in data
             context = json.loads(data["contents"][0]["parts"][0]["text"])
             assert data["generationConfig"]["responseMimeType"] == "application/json"
-        assert context["article"] == original_article
+        assert context["article"] == {k: v for k, v in original_article.items() if k != "article_text"}
         assert context["evidence_text"] == article.article_text
-        assert context["claim"] == {key: value for key, value in original_claim.items()
+        assert context["candidates"][0]["claim"] == {key: value for key, value in original_claim.items()
                                     if key not in AUDIT_CANDIDATE_EXCLUDED_FIELDS}
-        assert context["claim_sha256"] == canonical_claim_sha256(claim)
+        assert context["candidates"][0]["claim_sha256"] == canonical_claim_sha256(claim)
         return reply(audit, provider)
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
@@ -256,7 +258,7 @@ async def test_bounded_span_options_keep_late_duplicate_occurrence_and_complete_
     def handler(request):
         context = json.loads(json.loads(request.content)["messages"][1]["content"])
         assert context["evidence_text"] == article.article_text
-        assert context["article"]["article_text"] == article.article_text
+        assert "article_text" not in context["article"]
         assert len(context["evidence_options"]) == MAX_EVIDENCE_OPTIONS
         selected = context["evidence_options"][0]
         assert selected == {"start": begin, "end": begin + len(sentence), "quote": sentence}
@@ -290,7 +292,7 @@ async def test_oversized_source_paragraph_has_only_schema_sized_exact_options():
 @pytest.mark.asyncio
 async def test_span_option_overhead_cannot_bypass_whole_request_size_limit():
     claim, article = inputs()
-    article.article_text += " " + "x" * 120_000
+    article.article_text += " " + "x" * 180_000
     def forbidden(request):
         raise AssertionError("An oversized indexed article must not reach the provider")
     async with httpx.AsyncClient(transport=httpx.MockTransport(forbidden)) as client:
@@ -438,7 +440,7 @@ async def test_stripped_offsets_still_send_full_original_article():
     response = evidence(claim, article)
     def handler(request):
         payload = json.loads(json.loads(request.content)["messages"][1]["content"])
-        assert payload["article"]["article_text"] == article.article_text
+        assert "article_text" not in payload["article"]
         assert payload["evidence_text"] == article.article_text.strip()
         return reply(response)
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
@@ -679,8 +681,8 @@ async def test_large_preview_is_hashed_but_cannot_bias_or_overflow_audit_prompt(
     response = evidence(claim, article)
     def handler(request):
         document = json.loads(json.loads(request.content)["messages"][1]["content"])
-        assert "ranked_location" not in document["claim"]
-        assert document["claim_sha256"] == canonical_claim_sha256(claim)
+        assert "ranked_location" not in document["candidates"][0]["claim"]
+        assert document["candidates"][0]["claim_sha256"] == canonical_claim_sha256(claim)
         assert len(request.content) < 20_000
         return reply(response)
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:

@@ -1,6 +1,28 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 12, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 4:06 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: Batch audit documentation and publication checkpoint
+
+Audited the eight core records against the batch/quota implementation and prior verification. Updated the plan, master catalog, task/progress and evaluation to reflect the developer's subsequent request to publish on `roi-branch`. Existing migrations and runtime manifests are unchanged; retained acceptance is 492 offline, 226 native PostgreSQL and 14 desktop/mobile checks. Real provider plotting/depth/history acceptance and the coordinated cloud rollout remain separate open gates. [Publication audit](evaluations/news-batch-audit-20261012/README.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: Batch auditing and quota diagnostics verified locally
+
+Implemented eight eligible claims per same-version/policy request, separate strict evidence results, zero-attempt quota deferrals, bounded safe failure JSON and persistent cooldowns in existing settings storage. Database ownership/leases survive interruptions; cooldown-only work does not hot-launch the worker. Existing Overview diagnostics expose request/claim/quota counts and deadlines on desktop/mobile. 492 offline, 226 native PostgreSQL and 14 browser checks pass, plus TypeScript/scoped lint. Original 60/15/30-minute policy, source facts, location labels, SQL schemas and dependencies remain unchanged. [Verification and plan](evaluations/news-batch-audit-20261012/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Fresh normal-worker replays retain 33 September 9 and five September 24 locations. Real OpenRouter 52/50/0 prevents audit dispatch; zero zones/history are recorded, and the original 19-inch/10-inch comparison cannot reach zone update logic. The isolated port-3004/8004 preview is available without replacing `lanes_plotting_20261011`. Positive real plotting acceptance and a coordinated cloud rollout remain open. Git publication was excluded from the original implementation task and subsequently authorized in the checkpoint above. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: News collection/extraction repairs verified locally
+
+Follow-up provider inspection confirms the current daily allowance is exhausted: 52 requests used, limit 50, zero remaining. The existing audit probe returns HTTP 429. Failed evaluation persistence also discards the auditor's returned HTTP status, preventing exact diagnosis of four earlier generic HTTP failures. This investigation changes no audit behavior/model/schema; successful plotting verification remains pending real auditor availability. [Evidence](evaluations/news-scheduled-historical-workflow-20261012.md#follow-up-current-provider-quota-and-diagnostic-loss). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The developer authorized article-refresh and heading/locality fixes. Existing capture timestamps bound periodic body checks to thirty minutes and twenty oldest captures per cycle across reviewed publishers, including unchanged/empty feeds. Scoped city/time/depth headings survive numbered addresses while per-road facts and original evidence offsets remain intact; v17 preserves previous extraction history. 271 focused checks pass. Final continuous replay retains all 26 QC sites and recaptures the later GMA body into a fourth immutable article version; provider HTTP 429/errors prevent zones/history. Successful operational-zone refresh remains unverified; no cloud release, schema or dependency change. [Evidence](evaluations/news-scheduled-historical-workflow-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Before these repairs, the real scheduled worker completed the September 24–25 sample-source scenario without manual stage processing: the two GMA advisories were local news; Tribune produced five road locations but its original observations exceeded twelve-hour admission, so no zones/history events were created. September 9 captured HTML processing finished with 33 road locations, provider failures/retries and zero zones/events. The indexed-text checkpoint comparison also reproduced stale-body capture and missing heading context; 26 continuous half-hour worker ticks reproduced those failures. Earlier indexed GMA text supplies a depth comparison but lacks original HTML and remains separately qualified. Full workflow acceptance is pending. [Evidence](evaluations/news-scheduled-historical-workflow-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 12: Local plotting connection restored
+
+- Restore backend 8003 for the existing `lanes_plotting_20261011` snapshot and point the normal port-3000 frontend at it through an ignored development override. Add the explicit local build task and reusable guarded private startup helpers. Both API paths return News Zones 58/59/60 Active, five news locations and searchable history for all three; desktop/mobile History lists show the saved events. Repeating startup preserves the same processes/records. Cloud records, application labels/source, schemas and expiry settings are unchanged. [Local startup instructions](guides/local-news-replay.md#october-12-restore-the-same-local-map-and-history). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 12: PR #128 merge-base discrepancy corrected
 

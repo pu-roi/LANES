@@ -1,6 +1,28 @@
 # Local News Intelligence replay
 
-> **Last Updated:** October 11, 2026, 8:45 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: Separate batch-audit replay preview
+
+[News Intelligence at `127.0.0.1:3004`](http://127.0.0.1:3004/admin/news) uses a separate loopback API at port 8004 and fresh replay database `lanes_workflow_20261012i`. The existing port-3000 configuration and `lanes_plotting_20261011` snapshot remain unchanged. The ordinary local bootstrap login is `admin` / `admin`. September 9 replay has 33 location cards, zero zones/history and saved real-provider allowance 52/50/0; zero dispatch prevents successful plotting acceptance. Provider quota uses real time while source/cycle clocks stay historical. Reading the preview/status does not run collection. [Full verification and retained limitations](../evaluations/news-batch-audit-20261012/README.md).
+
+The foreground Next.js preview was started with process-only `NEXT_PUBLIC_API_URL=/api/v1` and `BACKEND_URL=http://127.0.0.1:8004`; no encrypted/default environment file was edited. The existing Linux backend runtime exposes only `127.0.0.1:8004` and binds current backend source to the dedicated database. Ignored replay helpers and local credential handoff stay under `data/news-replay`; credentials are not committed or printed. On restart, use the same dedicated database/ports, never the shared cloud connection. This preview is separate from the snapshot launch task below.
+
+## October 12: Restore the same local map and history
+
+The local snapshot remains in `lanes_plotting_20261011`. Zones/Events **58, 59 and 60** are still active, with road/city history locations. The missing display was an environment mismatch: backend 8003 stopped and the frontend returned to the cloud-backed 8000 endpoint. Nothing was deleted from the local snapshot.
+
+Run **Start LANES Local Plotting** (the selected local VS Code build task), or run from the repository root:
+
+```powershell
+powershell.exe -NoProfile -File data/news-replay/start-local-plotting.ps1
+```
+
+The private launcher starts the existing guarded backend on **8003**, checks the three saved zone IDs, and starts the normal frontend on **3000**. The ignored `frontend/.env.development.local` sets `BACKEND_URL` to 8003 for subsequent frontend starts. The launcher reuses matching running processes; if another frontend uses different data, it reports the mismatch and requires that frontend to be stopped. It never silently selects a different port or copies records into cloud storage. Cold NLP imports can take over a minute; logs are under `data/news-replay/local-plotting-*.log`.
+
+The ordinary API paths and interface remain unchanged; no `news-simulation.local.json` mode is required. A cloud login token may need to be replaced by signing in to the local snapshot again. The original 8000 backend can remain running independently. To return to ordinary cloud-backed development, remove the ignored `frontend/.env.development.local`, restart the frontend, and select **Start LANES Dev Server** explicitly.
+
+This profile is machine-local: the database, private dotenv configuration, launch helpers and browser captures are ignored, and are not transferred by a Git push. The task requires this existing local setup. Backend and frontend-proxied authenticated history searches find all three events; both news readers return five locations, both public-zone readers return the three zones Active, and desktop/mobile History lists show Events 58/59/60. Repeated startup reuses the matching processes without creating duplicate zones. No application source, schema, source timestamps, expiry settings or shared cloud records changed.
 
 ## October 11 local snapshot acceptance
 

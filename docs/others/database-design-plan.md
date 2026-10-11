@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Batch-audit storage audit (October 12):** No SQLAlchemy definition, table/column/index/trigger or migration change. Existing `SystemSetting.value` JSON key `news_audit_quota_v1` stores policy/credential identity hash, cache marker, counters and cooldown; secrets/raw provider responses are excluded. Failed/retry `NewsClaimEvaluation.result` JSON retains bounded safe diagnostic fields, while completed evaluations remain immutable. Grouped token-owned leases and a database-scoped autocommit advisory lock serialize dispatch without provider IO inside transactions. Existing migrations applied cleanly to fresh guarded PostGIS databases through `d7e4b9a21c60`. [Evidence](../evaluations/news-batch-audit-20261012/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Adaptive scheduling storage audit (October 11):** No SQLAlchemy model, table, column, index or Alembic migration changed. Existing SystemSetting JSON key `news_weather_controller_v1` stores versioned provider snapshots, clocks, dispatch reservations/reconciliation and counters, separately from editable policy/runtime records. Session advisory locks serialize controllers and preserve worker overlap protection. Fresh guarded PostgreSQL/PostGIS acceptance applied existing migrations through `d7e4b9a21c60`; legacy interval saves preserve stored values. Ordinary local/shared schemas were not altered. [Native verification](../evaluations/news-weather-scheduling-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

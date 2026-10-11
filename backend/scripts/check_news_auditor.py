@@ -56,7 +56,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--probe", action="store_true")
     parser.add_argument("--timeout-seconds", type=float, default=AUDIT_TIMEOUT_SECONDS,
-                        help="Wait 1-120 seconds for the single probe (default: 20); no persistent setting change")
+                        help="Wait 1-60 seconds for the single probe (default: 60); no persistent setting change")
     args = parser.parse_args()
     result = asyncio.run(check_auditor(AuditorConfig.from_environment(), probe=args.probe,
                                      timeout_seconds=args.timeout_seconds))

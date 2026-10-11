@@ -77,6 +77,8 @@ def pipeline_has_failures(result: dict) -> bool:
     """Operational fallback without a configured catalog is normal, errors are not."""
     for stage in ("extraction", "seed", "evaluation", "publication", "footprints"):
         value = result.get(stage, {})
+        if value.get("error_code"):
+            return True
         if any(value.get(key, 0) for key in ("failed", "retry_wait", "lease_lost")):
             return True
         if any(item.get("reason_code") not in ("automatic_publication_paused", "automatic_source_paused") for item in value.get("skipped", [])):

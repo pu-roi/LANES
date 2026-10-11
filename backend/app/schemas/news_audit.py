@@ -115,4 +115,30 @@ class IndependentAuditResult(BaseModel):
     claim_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     provider_request_id: str | None = Field(default=None, max_length=200)
     provider_http_status: int | None = Field(default=None, ge=100, le=599)
+    retry_after_seconds: int | None = Field(default=None, ge=1, le=86400)
     evidence: ProviderClaimAudit | None = None
+
+
+class BatchClaimSelection(ProviderClaimAuditSelection):
+    candidate_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
+
+
+class ProviderBatchSelection(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+    results: tuple[BatchClaimSelection, ...] = Field(max_length=8)
+
+
+class AuditQuotaState(BaseModel):
+    """Credential-free state in the existing system-settings JSON table."""
+    model_config = ConfigDict(extra="forbid")
+    identity: str = ""
+    checked_at: str | None = None
+    quota_check_succeeded: bool = False
+    blocked_until: str | None = None
+    used: int | None = Field(default=None, ge=0)
+    limit: int | None = Field(default=None, ge=0)
+    remaining: int | None = Field(default=None, ge=0)
+    error_code: str | None = Field(default=None, pattern=r"^[a-z][a-z0-9_]{0,99}$")
+    http_status: int | None = Field(default=None, ge=100, le=599)
+    request_count: int = Field(default=0, ge=0)
+    claims_dispatched: int = Field(default=0, ge=0)

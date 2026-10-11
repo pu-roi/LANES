@@ -1,8 +1,9 @@
 """Bounded unpublished claim bindings and owned evaluation leases; never commit."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
@@ -123,7 +124,8 @@ class ClaimedEvaluation:
 
 def claim_due_evaluation(db: Session, now: datetime, *, policy_fingerprint: str,
                          run_id: int | None = None,
-                         exclude_evaluation_ids: tuple[int, ...] = (), source_ids: tuple[str, ...] | None = None) -> ClaimedEvaluation | None:
+                         exclude_evaluation_ids: tuple[int, ...] = (), source_ids: tuple[str, ...] | None = None,
+                         count_attempt: bool = True) -> ClaimedEvaluation | None:
     now = require_utc(now)
     row_type = NewsClaimEvaluation
     due = or_(row_type.status == "pending",
@@ -152,7 +154,7 @@ def claim_due_evaluation(db: Session, now: datetime, *, policy_fingerprint: str,
         row.completed_at = row.updated_at = now
     else:
         row.status = "processing"
-        row.attempt_count += 1
+        row.attempt_count += int(count_attempt)
         row.lease_token = uuid4()
         row.lease_expires_at = now + timedelta(seconds=LEASE_SECONDS)
         row.started_at = row.updated_at = now
@@ -168,16 +170,25 @@ def claim_due_evaluation(db: Session, now: datetime, *, policy_fingerprint: str,
 
 def finish_owned_evaluation(db: Session, claim: ClaimedEvaluation, now: datetime, *,
                             result: dict | None = None, error_code: str | None = None,
-                            retryable: bool = False) -> bool:
+                            retryable: bool = False, retry_at: datetime | None = None,
+                            diagnostic: dict | None = None) -> bool:
     """Terminal results are append-only; a lost lease cannot overwrite evidence."""
     now = require_utc(now)
     if error_code is not None and not re.fullmatch(r"[a-z][a-z0-9_]{0,99}", error_code):
         raise ValueError("Invalid safe evaluation error code")
     values: dict = {"lease_token": None, "lease_expires_at": None, "updated_at": now}
     if error_code:
+        if diagnostic is not None:
+            allowed = {"provider_http_status", "provider_request_id", "retry_after_seconds", "reason_code"}
+            if set(diagnostic) - allowed or len(json.dumps(diagnostic).encode()) > 2048:
+                raise ValueError("Invalid safe evaluation diagnostic")
+            if (diagnostic.get("provider_request_id") is not None and
+                    not re.fullmatch(r"[A-Za-z0-9_./:-]{1,200}", diagnostic["provider_request_id"])):
+                raise ValueError("Invalid provider request identifier")
         retry = retryable and claim.attempt_count < MAX_ATTEMPTS
-        values.update(status="retry_wait" if retry else "failed", error_code=error_code, result=None,
-                      next_attempt_at=now + timedelta(seconds=min(900, 60 * 2 ** (claim.attempt_count - 1))) if retry else None,
+        values.update(status="retry_wait" if retry else "failed", error_code=error_code,
+                      result={"diagnostic": diagnostic} if diagnostic else None,
+                      next_attempt_at=(require_utc(retry_at) if retry_at else now + timedelta(seconds=min(900, 60 * 2 ** max(0, claim.attempt_count - 1)))) if retry else None,
                       completed_at=None if retry else now)
     else:
         if not isinstance(result, dict) or len(json.dumps(result, ensure_ascii=False, allow_nan=False).encode()) > 65536:
@@ -189,3 +200,39 @@ def finish_owned_evaluation(db: Session, claim: ClaimedEvaluation, now: datetime
         NewsClaimEvaluation.policy_fingerprint == claim.policy_fingerprint,
     ).values(**values).execution_options(synchronize_session=False))
     return changed.rowcount == 1
+
+
+def claim_due_batch(db: Session, now: datetime, *, policy_fingerprint: str, limit: int = 8,
+                    run_id: int | None = None, exclude_evaluation_ids: tuple[int, ...] = (),
+                    source_ids: tuple[str, ...] | None = None,
+                    max_rows: int | None = None,
+                    eligibility_test: Callable[[ClaimedEvaluation], bool] | None = None) -> tuple[ClaimedEvaluation, ...]:
+    """Lease one extraction run atomically; attempts start only at dispatch."""
+    if not 1 <= limit <= 8 or (max_rows is not None and not 1 <= max_rows <= 200):
+        raise ValueError("Invalid evaluation group size")
+    first = claim_due_evaluation(db, now, policy_fingerprint=policy_fingerprint, run_id=run_id,
+        exclude_evaluation_ids=exclude_evaluation_ids, source_ids=source_ids, count_attempt=False)
+    if first is None:
+        return ()
+    rows = [first]
+    eligible = int(eligibility_test(first)) if eligibility_test else 1
+    while len(rows) < (max_rows or limit) and eligible < limit:
+        following = claim_due_evaluation(db, now, policy_fingerprint=policy_fingerprint, run_id=first.run_id,
+            exclude_evaluation_ids=exclude_evaluation_ids + tuple(r.evaluation_id for r in rows),
+            source_ids=source_ids, count_attempt=False)
+        if following is None:
+            break
+        rows.append(following)
+        eligible += int(eligibility_test(following)) if eligibility_test else 1
+    return tuple(rows)
+
+
+def start_owned_attempt(db: Session, claim: ClaimedEvaluation, now: datetime) -> ClaimedEvaluation | None:
+    count = db.scalar(update(NewsClaimEvaluation).where(
+        NewsClaimEvaluation.id == claim.evaluation_id, NewsClaimEvaluation.status == "processing",
+        NewsClaimEvaluation.lease_token == claim.lease_token, NewsClaimEvaluation.lease_expires_at > require_utc(now),
+        NewsClaimEvaluation.attempt_count < MAX_ATTEMPTS,
+    ).values(attempt_count=NewsClaimEvaluation.attempt_count + 1,
+             lease_expires_at=require_utc(now) + timedelta(seconds=LEASE_SECONDS)).returning(NewsClaimEvaluation.attempt_count)
+      .execution_options(synchronize_session=False))
+    return replace(claim, attempt_count=count) if count is not None else None

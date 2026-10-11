@@ -59,16 +59,16 @@ def factory():
         patch.undo()
 
 
-def seed(factory, *, published_at=NOW, **changes):
+def seed(factory, *, published_at=NOW, source_id="fixture", **changes):
     body = "C5 in Pasig City is flooded, knee-deep as of 10:55 AM on October 5, 2026."
     value = claim(**{"evidence_sentence": body, "evidence_sentence_offset": (0, len(body)), **changes})
     with factory() as db, db.begin():
         url = f"https://example.org/flood/{uuid4()}"
-        row = NewsArticle(canonical_url=url, publisher_source_id="fixture", title="Flood",
+        row = NewsArticle(canonical_url=url, publisher_source_id=source_id, title="Flood",
                           excerpt="", article_text=body, published_at=published_at, content_fingerprint="0" * 64)
         db.add(row)
         db.flush()
-        article = NewsArticleExtractorInput(article_id=row.id, publisher="fixture", title="Flood", excerpt="",
+        article = NewsArticleExtractorInput(article_id=row.id, publisher=source_id, title="Flood", excerpt="",
             article_text=body, published_at=published_at, canonical_url=url)
         snapshot, digest = extraction_input_snapshot(article)
         version = NewsArticleVersion(article_id=row.id, input_snapshot=snapshot, input_fingerprint=digest)
@@ -86,6 +86,190 @@ def seed(factory, *, published_at=NOW, **changes):
 def bind(factory, run_id, fingerprint=POLICY.fingerprint):
     with factory() as db, db.begin():
         return bind_completed_run(db, run_id, fingerprint, NOW)
+
+
+def seed_many(factory, count=26, ineligible=0):
+    from tests.test_news_batch_audit import sample
+    candidates, article = sample(count)
+    candidates = tuple(c.model_copy(update={"claim": c.claim.model_copy(update={"is_forecast": True})})
+        if i < ineligible else c for i, c in enumerate(candidates))
+    article.publisher = "fixture"
+    article.published_at = datetime(2026, 10, 5, 7, 1, tzinfo=timezone.utc)
+    article.canonical_url = f"https://example.org/flood/{uuid4()}"
+    with factory() as db, db.begin():
+        row = NewsArticle(canonical_url=article.canonical_url, publisher_source_id="fixture", title=article.title,
+            excerpt="", article_text=article.article_text, published_at=article.published_at, content_fingerprint="0"*64)
+        db.add(row)
+        db.flush()
+        article.article_id = row.id
+        snapshot, digest = extraction_input_snapshot(article)
+        version = NewsArticleVersion(article_id=row.id, input_snapshot=snapshot, input_fingerprint=digest)
+        db.add(version)
+        db.flush()
+        result = NewsExtractionResult(article_id=row.id, canonical_url=article.canonical_url,
+            is_metadata_only=False, processed_text_length=len(article.article_text), claims=[c.claim for c in candidates])
+        run = NewsExtractionRun(article_version_id=version.id, pipeline_version=POLICY.pipeline_version,
+            status="completed", completed_at=NOW, result=result.model_dump(mode="json"))
+        db.add(run)
+        db.flush()
+        return run.id, article, {canonical_claim_sha256(c.claim): c.claim for c in candidates}
+
+
+@pytest.mark.parametrize("remaining", [50, 0])
+@pytest.mark.parametrize("ineligible", [0, 7])
+def test_batch_requests_and_zero_quota_preserve_individual_rows(factory, monkeypatch, remaining, ineligible):
+    import json
+    from tests.test_news_batch_audit import rows
+    from app.schemas.news_audit_batch import AuditCandidate
+    run_id, article, claims = seed_many(factory, count=26+ineligible, ineligible=ineligible)
+    service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key=str(uuid4())))
+    policy = EvaluationPolicy(str(uuid4()).replace("-", "")*2, POLICY.pipeline_version, service.policy_identity())
+    now = datetime(2026, 10, 5, 7, 5, tzinfo=timezone.utc)
+    bind(factory, run_id, policy.fingerprint)
+    monkeypatch.setattr("app.services.news_evaluation_service.current_pipeline_version", lambda: POLICY.pipeline_version)
+    post_sizes, gets = [], []
+    def transport(request):
+        if request.method == "GET":
+            gets.append(request)
+            return httpx.Response(200, json={"data": {"free_model_daily_requests": {
+                "used": 50-remaining, "limit": 50, "remaining": remaining}}})
+        document = json.loads(json.loads(request.content)["messages"][1]["content"])
+        candidates = tuple(AuditCandidate(candidate_id=c["candidate_id"], claim=claims[c["claim_sha256"]]) for c in document["candidates"])
+        post_sizes.append(len(candidates))
+        return reply({"results": rows(candidates, article)[::-1]})
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+            return await evaluate_news_claims(factory, run_id=run_id, auditor=service, policy=policy,
+                sources=SOURCES, clock=lambda: now, client=client)
+    summary = asyncio.run(execute())
+    assert len(gets) == 1
+    with factory() as db:
+        evaluations = db.scalars(select(NewsClaimEvaluation).join(NewsClaimSource).where(NewsClaimSource.extraction_run_id == run_id)).all()
+        assert len(evaluations) == 26+ineligible
+        rejected = [e for e in evaluations if e.result and e.result.get("reason_code") == "forecast_claim"]
+        assert len(rejected) == ineligible and all(e.attempt_count == 0 for e in rejected)
+        dispatched_rows = [e for e in evaluations if e not in rejected]
+        if remaining:
+            assert post_sizes == [8, 8, 8, 2]
+            assert summary.request_count == 4 and summary.claims_dispatched == 26 and summary.completed == 26+ineligible
+            assert all(e.status == "completed" and e.attempt_count == 1 and e.result["audit"]["outcome"] == "verified" for e in dispatched_rows)
+        else:
+            assert not post_sizes and summary.quota_deferred == 26
+            assert all(e.status == "retry_wait" and e.attempt_count == 0 for e in dispatched_rows)
+    repeated = asyncio.run(execute())
+    assert not repeated.evaluations and len(post_sizes) == (4 if remaining else 0)
+
+
+def test_429_stops_cycle_and_saves_safe_diagnostics_for_dispatched_claims(factory, monkeypatch):
+    import json
+    run_id, _, _ = seed_many(factory)
+    service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key=str(uuid4())))
+    policy = EvaluationPolicy(uuid4().hex*2, POLICY.pipeline_version, service.policy_identity())
+    now = datetime(2026, 10, 5, 7, 5, tzinfo=timezone.utc)
+    bind(factory, run_id, policy.fingerprint)
+    monkeypatch.setattr("app.services.news_evaluation_service.current_pipeline_version", lambda: POLICY.pipeline_version)
+    requests = []
+    def transport(request):
+        if request.method == "GET":
+            return httpx.Response(200, json={"data": {"free_model_daily_requests": {"used": 0, "limit": 50, "remaining": 50}}})
+        requests.append(request)
+        return httpx.Response(429, headers={"retry-after": "600", "x-request-id": "fixture-429"},
+            json={"error": {"message": "unrestricted provider text and secret must never be saved"}})
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+            return await evaluate_news_claims(factory, run_id=run_id, auditor=service, policy=policy,
+                sources=SOURCES, clock=lambda: now, client=client)
+    summary = asyncio.run(execute())
+    assert len(requests) == summary.request_count == 1 and summary.claims_dispatched == 8
+    assert summary.retry_wait == 26 and summary.quota_deferred == 18
+    with factory() as db:
+        rows = db.scalars(select(NewsClaimEvaluation).join(NewsClaimSource).where(NewsClaimSource.extraction_run_id == run_id)
+            .order_by(NewsClaimEvaluation.id)).all()
+        assert sorted(e.attempt_count for e in rows) == [0]*18+[1]*8
+        assert all(e.status == "retry_wait" and e.next_attempt_at == now+timedelta(seconds=600) for e in rows[:8])
+        assert rows[0].result["diagnostic"]["provider_http_status"] == 429
+        assert rows[0].result["diagnostic"]["provider_request_id"] == "fixture-429"
+        assert "unrestricted" not in json.dumps([e.result for e in rows])
+    assert not asyncio.run(execute()).evaluations
+
+
+def test_dispatch_lock_stops_concurrent_worker_without_consuming_attempt(factory, monkeypatch):
+    from app.services.news_audit_quota_service import audit_dispatch_lock
+    run_id, _ = seed(factory)
+    bind(factory, run_id)
+    with audit_dispatch_lock(factory) as held:
+        assert held
+        result = asyncio.run(evaluate_news_claims(factory, run_id=run_id, auditor=FakeAuditor(factory, run_id),
+            policy=POLICY, sources=SOURCES, clock=lambda: NOW))
+    assert result.error_code == "auditor_already_running" and not result.evaluations
+    with factory() as db:
+        row = db.scalar(select(NewsClaimEvaluation).join(NewsClaimSource).where(NewsClaimSource.extraction_run_id == run_id))
+        assert row.status == "pending" and row.attempt_count == 0
+
+
+@pytest.mark.parametrize("http_status", [200, 500])
+def test_oversized_groups_split_before_dispatch_and_failures_never_fan_out(factory, monkeypatch, http_status):
+    import json
+    from app.schemas.news_audit_batch import AuditCandidate
+    from tests.test_news_batch_audit import rows
+    run_id, article, claims = seed_many(factory, count=8)
+    class SmallRequestAuditor(NewsClaimAuditor):
+        def batch_document(self, candidates, article):
+            document = super().batch_document(candidates, article)
+            if len(candidates) > 3:
+                raise ValueError("audit_input_oversized")
+            return document
+    service = SmallRequestAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key=uuid4().hex))
+    policy = EvaluationPolicy(uuid4().hex*2, POLICY.pipeline_version, service.policy_identity())
+    bind(factory, run_id, policy.fingerprint)
+    monkeypatch.setattr("app.services.news_evaluation_service.current_pipeline_version", lambda: POLICY.pipeline_version)
+    sizes = []
+    def transport(request):
+        if request.method == "GET":
+            return httpx.Response(200, json={"data": {"free_model_daily_requests": {"used": 0, "limit": 50, "remaining": 50}}})
+        document = json.loads(json.loads(request.content)["messages"][1]["content"])
+        candidates = tuple(AuditCandidate(candidate_id=c["candidate_id"], claim=claims[c["claim_sha256"]]) for c in document["candidates"])
+        sizes.append(len(candidates))
+        return reply({"results": rows(candidates, article)}) if http_status == 200 else httpx.Response(500)
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+            return await evaluate_news_claims(factory, run_id=run_id, auditor=service, policy=policy, sources=SOURCES,
+                clock=lambda: datetime(2026, 10, 5, 7, 5, tzinfo=timezone.utc), client=client)
+    summary = asyncio.run(execute())
+    assert sizes == [2, 2, 2, 2] and summary.request_count == 4 and summary.claims_dispatched == 8
+    assert summary.completed == (8 if http_status == 200 else 0)
+    assert summary.retry_wait == (0 if http_status == 200 else 8)
+    with factory() as db:
+        attempts = db.scalars(select(NewsClaimEvaluation.attempt_count).join(NewsClaimSource)
+            .where(NewsClaimSource.extraction_run_id == run_id)).all()
+        assert attempts == [1]*8
+
+
+def test_quota_cooldown_alone_does_not_wake_controller_but_evidence_maintenance_does(factory, monkeypatch):
+    from app.crud.news_weather import pending_pipeline_work
+    from app.schemas.configuration import OperationalSettings
+    from app.schemas.news_audit import AuditQuotaState
+    from app.services.news_audit_quota_service import quota_identity, save_quota, real_now
+    source_id = "fixture-"+uuid4().hex
+    run_id, _ = seed(factory, source_id=source_id)
+    fingerprint = uuid4().hex*2
+    bind(factory, run_id, fingerprint)
+    service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key=uuid4().hex))
+    monkeypatch.setattr("app.services.news_claim_auditor.NewsClaimAuditor", lambda: service)
+    monkeypatch.setattr("app.crud.news_processing.current_pipeline_version", lambda: POLICY.pipeline_version)
+    save_quota(factory, AuditQuotaState(identity=quota_identity(service), remaining=0,
+        blocked_until=(real_now()+timedelta(minutes=30)).isoformat()))
+    with factory() as db, db.begin():
+        owned = claim_due_evaluation(db, NOW, policy_fingerprint=fingerprint, run_id=run_id, count_attempt=False)
+        assert finish_owned_evaluation(db, owned, NOW, error_code="auditor_daily_quota_exhausted",
+            retryable=True, retry_at=NOW)
+    config = OperationalSettings(news_publication_enabled=False)
+    with factory() as db:
+        assert not pending_pipeline_work(db, NOW, config, (source_id,), policy_fingerprint=fingerprint, admission_age=timedelta(hours=12))
+        row = db.get(NewsClaimEvaluation, owned.evaluation_id)
+        row.error_code = "auditor_quota_evidence_due"
+        db.commit()
+        assert pending_pipeline_work(db, NOW, config, (source_id,), policy_fingerprint=fingerprint, admission_age=timedelta(hours=12))
 
 
 def test_repeat_and_changed_policy_preserve_source_and_terminal_history(factory):
@@ -162,6 +346,12 @@ class FakeAuditor:
 
     def policy_identity(self):
         return POLICY.auditor_identity
+
+    def batch_document(self, candidates, article):
+        return "fixture"
+
+    async def audit_batch(self, candidates, article, **kwargs):
+        return {c.candidate_id: await self.audit(c.claim, article, **kwargs) for c in candidates}
 
     async def audit(self, value, article, **kwargs):
         self.calls += 1
@@ -342,7 +532,10 @@ def test_real_provider_adapter_to_durable_evaluation_with_mock_http(factory, mon
 
     def mock_http(request):
         calls.append(request)
-        return reply(payload)
+        if request.method == "GET":
+            return httpx.Response(200, json={"data": {}})
+        document = __import__("json").loads(__import__("json").loads(request.content)["messages"][1]["content"])
+        return reply({"results": [{"candidate_id": document["candidates"][0]["candidate_id"], **payload}]})
 
     async def run():
         async with httpx.AsyncClient(transport=httpx.MockTransport(mock_http)) as client:
@@ -351,7 +544,7 @@ def test_real_provider_adapter_to_durable_evaluation_with_mock_http(factory, mon
 
     monkeypatch.setattr("app.services.news_evaluation_service.current_pipeline_version", lambda: POLICY.pipeline_version)
     summary = asyncio.run(run())
-    assert summary.completed == 1 and len(calls) == 1
+    assert summary.completed == 1 and len([r for r in calls if r.method == "POST"]) == 1
     with factory() as db:
         row = db.scalar(select(NewsClaimEvaluation).join(NewsClaimSource).where(NewsClaimSource.extraction_run_id == run_id))
         assert row.result["audit"]["outcome"] == "verified"

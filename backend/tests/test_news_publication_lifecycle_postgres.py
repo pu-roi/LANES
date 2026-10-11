@@ -1921,6 +1921,9 @@ async def test_saved_pipeline_commits_zone_retries_and_expires_on_native_postgis
             "article_id":article.article_id,"canonical_url":article.canonical_url}))
     class FixtureAuditor:
         def policy_identity(self): return IDENTITY
+        def batch_document(self, candidates, article): return "fixture"
+        async def audit_batch(self, candidates, article, **kwargs):
+            return {c.candidate_id: await self.audit(c.claim, article, **kwargs) for c in candidates}
         async def audit(self,claim,article,**kwargs):
             if article.article_id==article_id:
                 with factory() as db:
@@ -2133,6 +2136,9 @@ async def test_discovered_corner_article_automatically_plots_through_active_zone
     monkeypatch.setattr(processing, "capture_pending_inputs", capture_target)
 
     class FixtureAuditor:
+        def batch_document(self, candidates, article): return "fixture"
+        async def audit_batch(self, candidates, article, **kwargs):
+            return {c.candidate_id: await self.audit(c.claim, article, **kwargs) for c in candidates}
         def policy_identity(self):
             return IDENTITY
 

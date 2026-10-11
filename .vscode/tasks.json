@@ -153,7 +153,7 @@
             "dependsOrder": "parallel",
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "problemMatcher": []
         },
@@ -211,6 +211,24 @@
                 "panel": "dedicated"
             },
             "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Start LANES Local Plotting",
+            "type": "shell",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-File",
+                "${workspaceFolder}/data/news-replay/start-local-plotting.ps1"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": []
         }
     ]

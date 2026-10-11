@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.crud.news_automation import latest_collection_diagnostics
 from app.schemas.configuration import NewsCycleSummary
-from app.schemas.news_automation import NewsAutomationStatus
+from app.schemas.news_automation import NewsAutomationStatus, NewsAuditDiagnostics
 from app.services.configuration_service import configuration_response, selected_news_sources, RUNTIME_KEY
 from app.models.setting import SystemSetting
 from app.services.news_monitoring_service import read_news_monitoring
@@ -87,7 +87,17 @@ def read_news_automation(db: Session, *, now: datetime | None = None) -> NewsAut
         state, label = "idle", "Idle; last cycle finished"
     else:
         state, label = "not_recorded", "No worker cycle recorded"
-    return NewsAutomationStatus(checked_at=now, state=state, status_label=label, running=running,
+    from app.services.news_audit_quota_service import read_quota, quota_identity, deadline, real_now
+    from app.services.news_claim_auditor import NewsClaimAuditor
+    quota = read_quota(db, identity=quota_identity(NewsClaimAuditor()))
+    blocked = deadline(quota.blocked_until)
+    audit = NewsAuditDiagnostics(state="cooldown" if blocked and blocked > real_now() else
+        "awaiting_check" if blocked else
+        "unknown" if quota.checked_at and quota.remaining is None else "available" if quota.checked_at else "not_recorded",
+        checked_at=deadline(quota.checked_at), next_check_at=blocked,
+        used=quota.used, limit=quota.limit, remaining=quota.remaining, request_count=quota.request_count,
+        claims_dispatched=quota.claims_dispatched, http_status=quota.http_status, error_code=quota.error_code)
+    return NewsAutomationStatus(checked_at=now, state=state, status_label=label, running=running, audit=audit,
         current_stage=runtime.current_stage if running else None,
         stage_label=stage_label if running else None,
         stage_started_at=runtime.stage_started_at if running else None, last_progress_at=runtime.last_progress_at,
