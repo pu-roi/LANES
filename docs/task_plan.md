@@ -1,6 +1,31 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 12, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 4:06 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: Batch news audits with quota-aware retries
+
+- [x] Audit the eight core records and synchronize plan, catalog, evaluation and task/progress for the developer's subsequent `roi-branch` publication request. Verify unchanged runtime manifests/models/migrations and retain completed local acceptance; publishing Git does not transfer the replay database or deploy services. [Publication audit](evaluations/news-batch-audit-20261012/README.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement same-version/policy groups of eight eligible claims, strict per-candidate hash/evidence validation and single-candidate compatibility; preserve independent immutable evaluations and current publication/plotting services. [Plan](plans/news-batch-auditing.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Persist safe quota/cooldown state and bounded failure diagnostics in existing JSON; count attempts only on dispatch, stop on HTTP 429, retain evidence expiry and atomic/owned queue recovery. Extend existing protected Overview diagnostics and prevent cooldown-only controller launches. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify 492 offline, 226 native PostgreSQL and 14 desktop/mobile cases, TypeScript/scoped lint and unchanged migration/dependency state. Replay real historical sources through fresh scheduled-worker databases and expose a separate local preview; preserve all source facts and the current snapshot. [Evidence](evaluations/news-batch-audit-20261012/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Obtain real provider verification after quota recovers and observe actual map/history outcomes for the 19-inch/10-inch pair. Current real allowance 52/50/0 blocks positive acceptance; no NLP-only approval or deduplication/placement change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Coordinate the separate matching API/worker/frontend cloud release. The developer's subsequent Git push request does not authorize deployment. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: Historical scheduled news workflow
+
+**Remaining barrier:** The two source repairs are authorized and locally verified. Real auditor rate limits/HTTP errors still prevent a first operational zone; successful depth-update behavior is unverified. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Confirm current audit allowance through the read-only provider endpoint: 52 used, daily limit 50, zero remaining; the existing no-database probe returns HTTP 429. Trace provider-status loss in failed evaluation persistence without changing audit behavior or schema. [Follow-up evidence](evaluations/news-scheduled-historical-workflow-20261012.md#follow-up-current-provider-quota-and-diagnostic-loss). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Verify additional September 24 GMA advisory coverage and run the unchanged scheduled worker with publication-time availability; preserve original source dates, five road results and rejection reasons. [Evidence and replay limitations](evaluations/news-scheduled-historical-workflow-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Finish captured September 9 and indexed-text comparisons, including 26 consecutive half-hour scheduled-worker ticks; preserve source hashes and record capture/context/provider/placement failures. Do not force gates or insert records. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [ ] Prove successful same-area operational-zone/depth updates and distinguish refresh from duplicate activation after eligible evidence reaches those stages. Existing failing inputs and missing archives cannot establish that behavior. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Obtain repair authorization, implement bounded article recapture and scoped heading/locality extraction as v17, verify 271 focused checks and rerun the same reports through normal scheduled workers. All 26 QC sites retain city/depth/time; edited GMA yields a second immutable version. Provider failures still prevent plotting. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: Restore local plotting visibility
+
+- [x] Diagnose the stopped snapshot backend and cloud-backed frontend mismatch; restore the existing snapshot connection with a saved development override and explicit local startup task. Verify Zones/Events 58/59/60 through backend and frontend APIs, five news locations and desktop/mobile History lists; repeat startup without duplicate process/zone creation. [Startup and scope](guides/local-news-replay.md#october-12-restore-the-same-local-map-and-history). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12: Roi team integration
 

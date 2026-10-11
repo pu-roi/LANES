@@ -2,14 +2,15 @@
 
 import hashlib
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.news import NewsArticle, NewsArticleFeedEntry, NewsFeedCheckpoint
 from app.services.news_discovery_service import NewsCandidate
 from app.services.news_feed_service import FeedProbe, NewsEntry
+from app.services.news_sources import NewsSource
 
 
 def content_fingerprint(entry: NewsEntry) -> str:
@@ -23,6 +24,48 @@ def get_checkpoint(db: Session, feed_url: str) -> NewsFeedCheckpoint | None:
 
 def get_article(db: Session, canonical_url: str) -> NewsArticle | None:
     return db.scalar(select(NewsArticle).where(NewsArticle.canonical_url == canonical_url))
+
+
+def list_due_refresh_urls(db: Session, sources: tuple[NewsSource, ...], *, now: datetime,
+                         refresh_interval: timedelta, max_age: timedelta, limit: int) -> set[str]:
+    """Give the oldest captures a turn across all enabled, reviewed feeds."""
+    approved = [and_(NewsArticleFeedEntry.source_id == source.id,
+                     NewsArticleFeedEntry.feed_url.in_(source.feed_urls))
+                for source in sources if source.enabled and source.verified_at]
+    if not approved:
+        return set()
+    rows = db.execute(select(NewsArticle.canonical_url, NewsArticle.fetched_at, NewsArticle.id)
+        .join(NewsArticleFeedEntry, NewsArticleFeedEntry.article_id == NewsArticle.id).where(
+            or_(*approved), NewsArticle.publisher_source_id == NewsArticleFeedEntry.source_id,
+            NewsArticle.article_text.is_not(None),
+            or_(NewsArticle.fetched_at.is_(None), NewsArticle.fetched_at <= now - refresh_interval),
+            or_(NewsArticle.published_at.between(now - max_age, now),
+                (NewsArticle.published_at.is_(None) & NewsArticle.first_seen_at.between(now - max_age, now))),
+        ).distinct().order_by(NewsArticle.fetched_at.asc(), NewsArticle.id).limit(limit)).all()
+    return {row.canonical_url for row in rows}
+
+
+def list_due_feed_articles(db: Session, source: NewsSource, feed_url: str, *, now: datetime,
+                          refresh_interval: timedelta, max_age: timedelta, limit: int,
+                          refresh_urls: set[str]) -> list[NewsEntry]:
+    """Bounded saved feed provenance for body refresh when RSS returns 304."""
+    rows = db.execute(select(NewsArticle, NewsArticleFeedEntry).join(
+        NewsArticleFeedEntry, NewsArticleFeedEntry.article_id == NewsArticle.id,
+    ).where(
+        NewsArticleFeedEntry.source_id == source.id,
+        NewsArticleFeedEntry.feed_url == feed_url,
+        NewsArticle.publisher_source_id == source.id,
+        NewsArticle.canonical_url.in_(refresh_urls),
+        NewsArticle.article_text.is_not(None),
+        or_(NewsArticle.fetched_at.is_(None), NewsArticle.fetched_at <= now - refresh_interval),
+        or_(NewsArticle.published_at.between(now - max_age, now),
+            (NewsArticle.published_at.is_(None) & NewsArticle.first_seen_at.between(now - max_age, now))),
+    ).order_by(NewsArticle.fetched_at.asc(), NewsArticle.id, NewsArticleFeedEntry.id).limit(limit)).all()
+    return [NewsEntry(source.id, source.publisher, feed_url, feed.feed_guid,
+                      article.title, article.excerpt or "", article.canonical_url,
+                      article.published_at.replace(tzinfo=timezone.utc) if article.published_at
+                      and article.published_at.tzinfo is None else article.published_at)
+            for article, feed in rows]
 
 
 def save_checkpoint(db: Session, probe: FeedProbe) -> NewsFeedCheckpoint:

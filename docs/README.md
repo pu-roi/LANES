@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 4:06 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 12 batch auditing:** [Implementation plan](plans/news-batch-auditing.md) and [verification/preview](evaluations/news-batch-audit-20261012/README.md): eight eligible same-version claims share one bounded audit request while retaining separate results; quota-aware deferrals, safe diagnostics and existing Overview details are implemented. 492 offline, 226 native and 14 desktop/mobile checks pass. Real quota 52/50/0 prevents positive plotting acceptance. Separate port-3004 replay preview preserves the existing local snapshot. The developer subsequently authorized documentation updates and Git publication to `roi-branch`; cloud release remains separate. [Planner and publication audit](evaluations/news-batch-audit-20261012/README.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 12 historical news repairs (local):** Approved article-refresh and heading/locality fixes use existing capture timestamps, reviewed source provenance and scoped original evidence; processing advances to v17. 271 focused checks pass. Final continuous replay recaptures edited GMA content and retains all 26 QC sites plus the 19-inch/10-inch comparison, but real auditor rate limits/HTTP errors prevent any first operational zone. Successful zone-update behavior remains unverified. [Scope and evidence](evaluations/news-scheduled-historical-workflow-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Roi team integration:** [Branch scope, preserved records and final acceptance](evaluations/roi-team-integration-20261012.md). News Intelligence work is pushed first; Jace's compatible updates and the mobile dialog repair are accepted locally, and Chris is already included. 133 backend checks and 103 distinct desktop/mobile browser cases pass across final acceptance runs. The developer retains the manual merge to `main`. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

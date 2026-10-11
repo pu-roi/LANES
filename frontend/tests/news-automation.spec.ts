@@ -17,6 +17,35 @@ function status(): NewsAutomationStatus {
     stages: {}, queue_counts: { pending: 0, processing: 0, retry_wait: 0, failed: 0 }, error_code: null };
 }
 
+test("audit cooldown diagnostics preserve unknown quota and fit desktop/mobile", async ({ page }, info) => {
+  const state = status();
+  state.running = false;
+  state.status_label = "Last cycle needs attention";
+  state.audit = { state: "cooldown", checked_at: "2026-10-11T13:00:00Z", next_check_at: "2026-10-11T13:30:00Z",
+    used: 52, limit: 50, remaining: 0, request_count: 4, claims_dispatched: 26, http_status: 429,
+    error_code: "auditor_daily_quota_exhausted" };
+  const methods: string[] = [];
+  page.on("request", r => { if (r.url().includes("/admin/news/")) methods.push(r.method()); });
+  await setup(page, () => state);
+  await page.goto("/admin/news");
+  await page.getByText("Run details and diagnostics", { exact: true }).click();
+  const diagnostics = page.getByTestId("news-audit-diagnostics");
+  await expect(diagnostics).toBeVisible();
+  await expect(diagnostics).toContainText("auditor_daily_quota_exhausted");
+  await expect(diagnostics).toContainText("26");
+  await expect(diagnostics).toContainText("429");
+  const bounds = await diagnostics.boundingBox();
+  expect(bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(bounds!.x+bounds!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  await page.screenshot({ path: `test-results/news-audit-quota-${info.project.name}.png`, fullPage: true });
+  state.audit.remaining = null;
+  state.audit.used = null;
+  state.audit.limit = null;
+  await page.getByRole("button", { name: "Refresh automation status" }).click();
+  await expect(diagnostics).toContainText("Not recorded");
+  expect(methods.every(m => m === "GET")).toBeTruthy();
+});
+
 async function setup(page: Page, readStatus: () => object, readResults: () => object = () => ({ items: [], total: 0 })) {
   await page.addInitScript(() => localStorage.setItem("lanes_token", "fixture-news-status"));
   await page.route("**/news-simulation.local.json", route => route.fulfill({ status: 404, json: {} }));

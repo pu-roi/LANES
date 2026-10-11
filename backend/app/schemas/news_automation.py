@@ -5,6 +5,19 @@ from app.schemas.configuration import NewsCycleSummary, NewsStageHealth
 from app.schemas.news_weather import NewsWeatherStatus
 
 
+class NewsAuditDiagnostics(BaseModel):
+    state: str = "not_recorded"
+    checked_at: datetime | None = None
+    next_check_at: datetime | None = None
+    used: int | None = None
+    limit: int | None = None
+    remaining: int | None = None
+    request_count: int = 0
+    claims_dispatched: int = 0
+    http_status: int | None = None
+    error_code: str | None = None
+
+
 class NewsAutomationStatus(BaseModel):
     read_only: bool = True
     checked_at: datetime
@@ -33,3 +46,4 @@ class NewsAutomationStatus(BaseModel):
     queue_counts: dict[str, int] = Field(default_factory=dict)
     error_code: str | None = None
     weather: NewsWeatherStatus | None = None
+    audit: NewsAuditDiagnostics | None = None

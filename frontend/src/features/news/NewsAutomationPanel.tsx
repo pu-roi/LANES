@@ -23,7 +23,7 @@ export function NewsAutomationPanel() {
   const data = query.data;
   const cycle = data?.last_cycle;
   const weather = data?.weather;
-  const count = (value: number | undefined) => value === undefined ? "Not recorded" : value.toLocaleString();
+  const count = (value: number | null | undefined) => value == null ? "Not recorded" : value.toLocaleString();
   const attention = data && ["overdue", "partial", "requires_attention", "interrupted"].includes(data.state);
 
   return <div className="space-y-4">
@@ -155,6 +155,19 @@ export function NewsAutomationPanel() {
               </dl>
             </div>
             <p className="text-xs text-gray-600">Extraction queue: {count(data.queue_counts.pending)} waiting · {count(data.queue_counts.processing)} processing · {count(data.queue_counts.retry_wait)} awaiting retry · {count(data.queue_counts.failed)} failed.</p>
+            {data.audit && <div className="space-y-2" data-testid="news-audit-diagnostics">
+              <p className="text-xs font-medium text-gray-500">Audit diagnostics · {data.audit.state}</p>
+              <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3 xl:grid-cols-6">
+                <Metric label="Audit requests" value={count(data.audit.request_count)} />
+                <Metric label="Claims sent for audit" value={count(data.audit.claims_dispatched)} />
+                <Metric label="Daily requests used" value={count(data.audit.used)} />
+                <Metric label="Daily request limit" value={count(data.audit.limit)} />
+                <Metric label="Requests remaining" value={count(data.audit.remaining)} />
+                <Metric label="Next quota check" value={newsDate(data.audit.next_check_at)} />
+              </dl>
+              <p className="text-xs text-gray-500">Quota checked · {newsDate(data.audit.checked_at)} · Provider HTTP status · {data.audit.http_status ?? "Not recorded"}</p>
+              {data.audit.error_code && <p role="alert" className="break-words text-xs text-red-800">Audit diagnostic: {data.audit.error_code}</p>}
+            </div>}
             {data.error_code && <p role="alert" className="break-words text-xs text-red-800">Worker diagnostic: {data.error_code}</p>}
             {cycle?.error_code && <p role="alert" className="break-words text-xs text-red-800">Last completed cycle: {cycle.error_code}</p>}
             {Object.entries(data.stages).filter(([, stage]) => stage.errors.length > 0).map(([name, stage]) => <p key={name} role="alert" className="break-words text-xs text-red-800">{name}: {stage.errors.join(", ")}</p>)}

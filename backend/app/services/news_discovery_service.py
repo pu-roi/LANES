@@ -42,6 +42,8 @@ MAX_ARTICLE_BYTES = 1_000_000
 MAX_ARTICLE_CHARS = 100_000
 MIN_ARTICLE_CHARS = 120
 MAX_NEWS_AGE = timedelta(days=7)
+ARTICLE_REFRESH_INTERVAL = timedelta(minutes=30)
+MAX_ARTICLE_REFRESHES = 20
 MAX_LOCATION_BODY_PROBES = 5
 MAX_COMMUTER_BODY_PROBES = 14
 MAX_COMMUTER_BODY_PROBES_PER_FEED = 4
@@ -435,6 +437,10 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
     notices: list[DiscoveryNotice] = []
     body_probes = 0
     commuter_probes = 0
+    article_refreshes = 0
+    refresh_urls = news_crud.list_due_refresh_urls(db, sources, now=datetime.now(timezone.utc),
+        refresh_interval=ARTICLE_REFRESH_INTERVAL, max_age=MAX_NEWS_AGE,
+        limit=MAX_ARTICLE_REFRESHES) if db is not None else set()
     for source in sources:
         if not source.enabled or source.verified_at is None:
             continue
@@ -454,6 +460,15 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 last_modified=checkpoint.last_modified if checkpoint else None,
             )
             probes.append(probe)
+            if db is not None and probe.status in {"parsed", "unchanged", "empty"}:
+                # A feed's 304 only covers its metadata, not each linked body.
+                # Revisit bounded, due captures through their saved feed identity.
+                entries = (*entries, *(entry for entry in news_crud.list_due_feed_articles(
+                    db, source, feed_url, now=checked_at,
+                    refresh_interval=ARTICLE_REFRESH_INTERVAL, max_age=MAX_NEWS_AGE,
+                    limit=MAX_ARTICLE_REFRESHES,
+                    refresh_urls=refresh_urls,
+                ) if canonical_article_url(entry.article_url, source) == entry.article_url))
             # Keep metadata-local leads first; extra body probes cannot consume
             # their retrieval allowance. The five-probe budget covers the run.
             for entry in sorted(entries, key=lambda item: (
@@ -507,9 +522,16 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 same_publication = (existing is not None and
                                     (entry.published_at is None or (existing.published_at is not None and
                                      utc(entry.published_at) == utc(existing.published_at))))
-                if (existing is not None and existing.content_fingerprint == digest
+                same_capture_metadata = (existing is not None and existing.content_fingerprint == digest
                         and existing.article_text is not None and existing.article_error is None and same_publication
-                        and existing.publisher_source_id == entry.source_id):
+                        and existing.publisher_source_id == entry.source_id)
+                refresh_due = (existing is not None and (existing.fetched_at is None
+                               or utc(existing.fetched_at) <= now - ARTICLE_REFRESH_INTERVAL))
+                if same_capture_metadata and (not refresh_due or entry.article_url not in refresh_urls
+                                               or article_refreshes >= MAX_ARTICLE_REFRESHES):
+                    if refresh_due:
+                        notices.append(DiscoveryNotice(source.id, entry.article_url,
+                            "Article refresh limit reached; saved evidence retained"))
                     flood_body = body_has_metro_manila_flood_claim(entry, existing.article_text)
                     if flood_body or body_has_commuter_news(entry, existing.article_text):
                         accepted_urls.add(entry.article_url)
@@ -521,6 +543,8 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                     else:
                         notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
                     continue
+                if same_capture_metadata:
+                    article_refreshes += 1
                 commuter_only_probe = commuter_metadata and not has_flood_metadata
                 if commuter_only_probe:
                     if (commuter_probes >= MAX_COMMUTER_BODY_PROBES

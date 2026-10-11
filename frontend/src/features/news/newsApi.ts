@@ -317,6 +317,18 @@ export function getNewsFeedCheckpoints(signal?: AbortSignal) {
 }
 
 export interface NewsAutomationStatus {
+  audit?: {
+    state: string;
+    checked_at: string | null;
+    next_check_at: string | null;
+    used: number | null;
+    limit: number | null;
+    remaining: number | null;
+    request_count: number;
+    claims_dispatched: number;
+    http_status: number | null;
+    error_code: string | null;
+  } | null;
   weather?: {
     mode: string; catalog_version: string; coverage_label: string;
     points: { locality: string; latitude: number; longitude: number; role: string; relevance: string }[];

@@ -5,6 +5,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 import json
+from math import ceil
 
 import httpx
 from pydantic import ValidationError
@@ -12,14 +13,18 @@ from sqlalchemy import case, exists, func, select
 from sqlalchemy.orm import Session
 
 from app.crud.news_evaluation import (
-    bind_completed_run, canonical_sha256, claim_due_evaluation, finish_owned_evaluation,
+    bind_completed_run, canonical_sha256, finish_owned_evaluation, claim_due_batch, start_owned_attempt,
     require_utc, validate_run,
 )
 from app.crud.news_processing import current_pipeline_version, utc_now
 from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.models.news_publication import NewsClaimEvaluation, NewsClaimSource
 from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInput, NewsExtractionResult
-from app.services.news_claim_auditor import NewsClaimAuditor, canonical_claim_sha256
+from app.services.news_claim_auditor import NewsClaimAuditor, canonical_claim_sha256, MAX_BATCH_CLAIMS
+from app.schemas.news_audit import IndependentAuditResult
+from app.schemas.news_audit_batch import AuditCandidate
+from app.services.news_audit_quota_service import (audit_dispatch_lock, check_quota, dispatched, record_error,
+    deadline, real_now, save_quota)
 from app.services.news_discovery_service import extraction_input_snapshot
 from app.services.news_evidence_policy import has_flood_observation, metro_manila_claim
 from app.services.news_feed_service import canonical_article_url
@@ -127,6 +132,10 @@ class EvaluationSummary:
     failed: int = 0
     lease_lost: int = 0
     next_after_run_id: int = 0
+    request_count: int = 0
+    claims_dispatched: int = 0
+    quota_deferred: int = 0
+    error_code: str | None = None
     skipped: list[dict] = field(default_factory=list)
     evaluations: list[dict] = field(default_factory=list)
 
@@ -195,6 +204,28 @@ def seed_claim_evaluations(session_factory: Callable[[], Session], policy: Evalu
     return summary
 
 
+def _prepare(owned, auditor, policy, sources, now):
+    article = NewsArticleExtractorInput.model_validate(owned.input_snapshot)
+    extraction = NewsExtractionResult.model_validate(owned.extraction_result)
+    claim = extraction.claims[owned.claim_ordinal]
+    error = ("immutable_evidence_mismatch" if extraction_input_snapshot(article)[1] != owned.input_fingerprint
+             or canonical_claim_sha256(claim) != owned.claim_sha256 else
+             "source_admission_changed" if not source_is_approved(article, sources) or not publication_is_current(article, now, policy) else
+             "evaluation_policy_changed" if auditor.policy_identity() != policy.auditor_identity
+             or current_pipeline_version() != policy.pipeline_version else None)
+    return article, claim, error, preliminary_reason(claim, now, policy) if error is None else None
+
+
+def _completed_result(owned, policy, reason, audit, claim, article, now):
+    return {"schema_version": EVALUATION_POLICY_VERSION, "policy_fingerprint": owned.policy_fingerprint,
+        "policy_identity": policy.auditor_identity,
+        "publication_admission_at": policy.publication_admission_at.isoformat() if policy.publication_admission_at else None,
+        "input_sha256": owned.input_fingerprint, "claim_sha256": owned.claim_sha256, "reason_code": reason,
+        "audit": audit.model_dump(mode="json") if audit else None,
+        "freshness_reason_at_completion": "publication_outside_admission_window" if not publication_is_current(article, now, policy)
+            else preliminary_reason(claim, now, policy), "publication_permitted": False, "may_affect_routing": False}
+
+
 async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit: int = 50,
                                run_id: int | None = None, auditor: NewsClaimAuditor | None = None,
                                policy: EvaluationPolicy | None = None,
@@ -208,82 +239,168 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
     sources = sources if sources is not None else load_news_sources()
     summary = EvaluationSummary()
     visited: list[int] = []
-    for _ in range(limit):
-        with session_factory() as db, db.begin():
-            if obey_configuration:
-                from app.services.configuration_service import read_configuration, selected_news_sources
-                if not read_configuration(db).news_processing_enabled:
-                    break
-                sources = selected_news_sources(db, sources)
-                if not sources:
-                    break
-            parameters = {"run_id": run_id, "exclude_evaluation_ids": tuple(visited)}
-            if obey_configuration:
-                parameters["source_ids"] = tuple(source.id for source in sources)
-            owned = claim_due_evaluation(db, require_utc(clock()), policy_fingerprint=policy.fingerprint, **parameters)
-        if owned is None:
-            break
-        visited.append(owned.evaluation_id)
+    quota = None
+    stop_dispatch = False
+
+    def eligible_for_dispatch(owned):
         if owned.exhausted:
-            summary.failed += 1
-            summary.evaluations.append({"evaluation_id": owned.evaluation_id, "status": "failed",
-                                        "error_code": "lease_expired_exhausted"})
-            continue
-        error_code, retryable, result = None, False, None
+            return False
         try:
-            article = NewsArticleExtractorInput.model_validate(owned.input_snapshot)
-            extraction = NewsExtractionResult.model_validate(owned.extraction_result)
-            claim = extraction.claims[owned.claim_ordinal]
-            if (extraction_input_snapshot(article)[1] != owned.input_fingerprint
-                    or canonical_claim_sha256(claim) != owned.claim_sha256):
-                error_code = "immutable_evidence_mismatch"
-            elif not source_is_approved(article, sources) or not publication_is_current(article, require_utc(clock()), policy):
-                error_code = "source_admission_changed"
-            elif auditor.policy_identity() != policy.auditor_identity or current_pipeline_version() != policy.pipeline_version:
-                error_code = "evaluation_policy_changed"
-            else:
-                reason = preliminary_reason(claim, require_utc(clock()), policy)
-                audit = None
-                if reason is None:
-                    # The claim transaction has committed; no DB lock/connection is held here.
-                    audited = await auditor.audit(claim, article, client=client)
-                    if (audited.input_sha256 != owned.input_fingerprint
-                            or audited.claim_sha256 != owned.claim_sha256):
-                        error_code = "audit_evidence_mismatch"
-                    elif audited.outcome in ("unavailable", "invalid"):
-                        error_code, retryable = audited.reason_code, audited.retryable
-                    else:
-                        audit = audited.model_dump(mode="json")
-                        reason = audited.reason_code
-                if error_code is None:
-                    result = {"schema_version": EVALUATION_POLICY_VERSION,
-                              "policy_fingerprint": owned.policy_fingerprint,
-                              "policy_identity": policy.auditor_identity,
-                              "publication_admission_at": policy.publication_admission_at.isoformat() if policy.publication_admission_at else None,
-                              "input_sha256": owned.input_fingerprint, "claim_sha256": owned.claim_sha256,
-                              "reason_code": reason, "audit": audit,
-                              "publication_permitted": False, "may_affect_routing": False}
+            _, _, error, reason = _prepare(owned, auditor, policy, sources, require_utc(clock()))
+            return error is None and reason is None
         except (ValidationError, ValueError, IndexError, TypeError, KeyError):
-            error_code = "invalid_evaluation_evidence"
-        except Exception:
-            # Provider exceptions never expose credentials/body or undo extraction.
-            error_code, retryable = "auditor_exception", True
+            return False
+
+    def save(owned, article=None, claim=None, *, reason=None, audit=None, error=None, retryable=False, retry_at=None):
         now = require_utc(clock())
-        if result is not None and (auditor.policy_identity() != policy.auditor_identity
-                                  or current_pipeline_version() != policy.pipeline_version):
-            result, error_code = None, "evaluation_policy_changed"
-        if result is not None:
-            # Preserve a confirmation while recording freshness lost during an audit.
-            result["freshness_reason_at_completion"] = (
-                "publication_outside_admission_window" if not publication_is_current(article, now, policy)
-                else preliminary_reason(claim, now, policy))
+        result = None
+        diagnostic = None
+        if audit and (audit.input_sha256 != owned.input_fingerprint or audit.claim_sha256 != owned.claim_sha256):
+            error, retryable = "audit_evidence_mismatch", False
+        if audit and not error and audit.outcome in ("unavailable", "invalid"):
+            error, retryable = audit.reason_code, audit.retryable
+        if auditor.policy_identity() != policy.auditor_identity or current_pipeline_version() != policy.pipeline_version:
+            error, retryable = "evaluation_policy_changed", False
+        if error and audit:
+            diagnostic = {key: value for key, value in audit.model_dump(mode="json").items()
+                if key in {"provider_http_status", "provider_request_id", "retry_after_seconds", "reason_code"} and value is not None}
+        if error is None:
+            result = _completed_result(owned, policy, audit.reason_code if audit else reason, audit, claim, article, now)
             if len(json.dumps(result, ensure_ascii=False, allow_nan=False).encode()) > 65536:
-                result, error_code, retryable = None, "evaluation_result_oversized", False
+                result, error, retryable = None, "evaluation_result_oversized", False
         with session_factory() as db, db.begin():
-            saved = finish_owned_evaluation(db, owned, now, result=result, error_code=error_code, retryable=retryable)
-        status = ("lease_lost" if not saved else "retry_wait" if error_code and retryable and owned.attempt_count < 5
-                  else "failed" if error_code else "completed")
+            saved = finish_owned_evaluation(db, owned, now, result=result, error_code=error, retryable=retryable,
+                                           retry_at=retry_at, diagnostic=diagnostic)
+        status = "lease_lost" if not saved else "retry_wait" if error and retryable and owned.attempt_count < 5 else "failed" if error else "completed"
         setattr(summary, status, getattr(summary, status) + 1)
         summary.evaluations.append({"evaluation_id": owned.evaluation_id, "case_id": owned.case_id,
-                                    "status": status, "error_code": error_code})
+                                   "status": status, "error_code": error})
+
+    with audit_dispatch_lock(session_factory) as acquired:
+        if not acquired:
+            summary.error_code = "auditor_already_running"
+            return summary
+        while len(visited) < limit:
+            with session_factory() as db, db.begin():
+                if obey_configuration:
+                    from app.services.configuration_service import read_configuration, selected_news_sources
+                    if not read_configuration(db).news_processing_enabled:
+                        break
+                    sources = selected_news_sources(db, sources)
+                    if not sources:
+                        break
+                owned_batch = claim_due_batch(db, require_utc(clock()), policy_fingerprint=policy.fingerprint,
+                    limit=MAX_BATCH_CLAIMS, max_rows=limit-len(visited), eligibility_test=eligible_for_dispatch,
+                    run_id=run_id, exclude_evaluation_ids=tuple(visited),
+                    source_ids=tuple(s.id for s in sources) if obey_configuration else None)
+            if not owned_batch:
+                break
+            eligible = []
+            for owned in owned_batch:
+                visited.append(owned.evaluation_id)
+                if owned.exhausted:
+                    summary.failed += 1
+                    summary.evaluations.append({"evaluation_id": owned.evaluation_id, "status": "failed", "error_code": "lease_expired_exhausted"})
+                    continue
+                try:
+                    article, claim, error, reason = _prepare(owned, auditor, policy, sources, require_utc(clock()))
+                    if error or reason:
+                        save(owned, article, claim, error=error, reason=reason)
+                    else:
+                        eligible.append((owned, article, claim))
+                except (ValidationError, ValueError, IndexError, TypeError, KeyError):
+                    save(owned, error="invalid_evaluation_evidence")
+            if not eligible:
+                continue
+            if getattr(auditor, "config", None) and auditor.config.error_code():
+                for owned, article, claim in eligible:
+                    save(owned, article, claim, error=auditor.config.error_code())
+                continue
+            # Validate/size-bound groups before counting any provider attempt.
+            groups = [eligible]
+            while groups:
+                group = groups.pop(0)
+                candidates = tuple(AuditCandidate(candidate_id=str(o.evaluation_id), claim=c) for o, a, c in group)
+                try:
+                    auditor.batch_document(candidates, group[0][1])
+                except ValueError as exc:
+                    if str(exc) == "audit_input_oversized" and len(group) > 1:
+                        middle = len(group)//2
+                        groups[0:0] = [group[:middle], group[middle:]]
+                        continue
+                    for owned, article, claim in group:
+                        save(owned, article, claim, reason=str(exc))
+                    continue
+                if getattr(auditor, "config", None) and auditor.config.provider == "openrouter" and not auditor.config.error_code():
+                    quota = await check_quota(session_factory, auditor, client=client)
+                    from app.services.news_audit_quota_service import free_router
+                    if quota.remaining == 0 and free_router(auditor) and not deadline(quota.blocked_until):
+                        quota.blocked_until = (real_now()+timedelta(minutes=30)).isoformat()
+                        quota.error_code = "auditor_daily_quota_exhausted"
+                        save_quota(session_factory, quota)
+                blocked = deadline(quota.blocked_until) if quota else None
+                if stop_dispatch or (blocked and blocked > real_now()):
+                    delay = max(1, ceil((blocked-real_now()).total_seconds())) if blocked else 900
+                    for owned, article, claim in group:
+                        observation_deadline = claim.event_time_resolved + (timedelta(minutes=(policy.expiry_minutes or {}).get(claim.depth_canonical or "unknown", 120))
+                            if claim.condition != "subsided" else ADMISSION_AGE)
+                        quota_retry_at = require_utc(clock())+timedelta(seconds=delay)
+                        retry_at = min(quota_retry_at, observation_deadline)
+                        error = ("auditor_quota_evidence_due" if observation_deadline < quota_retry_at else
+                                 quota.error_code if quota and quota.error_code else "auditor_rate_limited")
+                        save(owned, article, claim, error=error,
+                             retryable=True, retry_at=retry_at)
+                        summary.quota_deferred += 1
+                    continue
+                ready = []
+                # Recheck current toggles/source policy and freshness after quota IO.
+                with session_factory() as db:
+                    if obey_configuration:
+                        from app.services.configuration_service import read_configuration, selected_news_sources
+                        allowed = read_configuration(db).news_processing_enabled
+                        sources = selected_news_sources(db, sources) if allowed else ()
+                for owned, article, claim in group:
+                    _, _, error, reason = _prepare(owned, auditor, policy, sources, require_utc(clock()))
+                    if error or reason:
+                        save(owned, article, claim, error=error, reason=reason)
+                        continue
+                    with session_factory() as db, db.begin():
+                        started = start_owned_attempt(db, owned, require_utc(clock()))
+                    if started is None:
+                        summary.lease_lost += 1
+                    else:
+                        ready.append((started, article, claim))
+                if not ready:
+                    continue
+                candidates = tuple(AuditCandidate(candidate_id=str(o.evaluation_id), claim=c) for o, a, c in ready)
+                summary.request_count += 1
+                summary.claims_dispatched += len(ready)
+                if quota:
+                    dispatched(session_factory, quota, len(ready))
+                try:
+                    results = await auditor.audit_batch(candidates, ready[0][1], client=client)
+                except Exception:
+                    results = {c.candidate_id: IndependentAuditResult(outcome="unavailable", reason_code="auditor_exception", retryable=True,
+                        prompt_version=policy.auditor_identity.get("prompt_version", "unknown"), response_version=policy.auditor_identity.get("response_version", "unknown"),
+                        input_sha256=extraction_input_snapshot(ready[0][1])[1], claim_sha256=canonical_claim_sha256(c.claim)) for c in candidates}
+                if quota:
+                    representative = next((r for r in results.values() if r.provider_http_status == 429),
+                        next((r for r in results.values() if r.outcome in ("invalid", "unavailable")), next(iter(results.values()))))
+                    record_error(session_factory, quota, representative)
+                for owned, article, claim in ready:
+                    audit = results[str(owned.evaluation_id)]
+                    if audit.provider_http_status == 429:
+                        stop_dispatch = True
+                    retry_at = None
+                    error = None
+                    if audit.retry_after_seconds or audit.provider_http_status == 429:
+                        delay = audit.retry_after_seconds or 900
+                        observation_deadline = claim.event_time_resolved + (timedelta(minutes=(policy.expiry_minutes or {}).get(claim.depth_canonical or "unknown", 120))
+                            if claim.condition != "subsided" else ADMISSION_AGE)
+                        provider_retry_at = require_utc(clock())+timedelta(seconds=delay)
+                        retry_at = min(provider_retry_at, observation_deadline)
+                        if audit.provider_http_status == 429 and observation_deadline < provider_retry_at:
+                            error = "auditor_quota_evidence_due"
+                    save(owned, article, claim, audit=audit, retry_at=retry_at, error=error,
+                         retryable=audit.retryable)
     return summary

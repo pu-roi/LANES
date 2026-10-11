@@ -104,6 +104,8 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
                         runtime.stage_counts[stage] = {k: v for k, v in value.items() if isinstance(v, int) and not isinstance(v, bool)}
                         errors = [item.get("error_code") or item.get("reason_code") for name in ("runs", "evaluations", "skipped")
                             for item in value.get(name, []) if (item.get("error_code") or item.get("reason_code")) and item.get("reason_code") not in ("automatic_publication_paused", "automatic_source_paused")]
+                        if value.get("error_code"):
+                            errors.append(value["error_code"])
                         prior = runtime.stages.get(stage, NewsStageHealth())
                         attempted = (config.news_processing_enabled if stage in ("extraction", "seed", "evaluation") else True)
                         if stage == "footprints": attempted = config.news_publication_enabled

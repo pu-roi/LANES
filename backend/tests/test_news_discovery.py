@@ -915,6 +915,140 @@ def test_persistent_discovery_reuses_checkpoint_and_article_evidence() -> None:
     engine.dispose()
 
 
+@pytest.mark.parametrize("feed_status", [200, 304, "empty"])
+@pytest.mark.parametrize("failed_refresh", [False, True])
+def test_known_body_refreshes_without_feed_metadata_changes(feed_status: int | str, failed_refresh: bool) -> None:
+    from app.services.news_discovery_service import ARTICLE_REFRESH_INTERVAL
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    tables = TELEMETRY_TABLES + [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
+    NewsArticle.metadata.create_all(engine, tables=tables)
+    body = "Knee-deep flooding affected Laguna Street in Pasig City. " * 4
+    revised_body = body.replace("Knee", "Chest")
+    body_requests = 0
+    revision = False
+    item = f'<item><guid>one</guid><title>Flood in Pasig</title><link>{ARTICLE_URL}</link></item>'
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal body_requests
+        if str(request.url) == FEED_URL:
+            if revision and feed_status == 304:
+                return httpx.Response(304)
+            if revision and feed_status == "empty":
+                return httpx.Response(200, content=rss(""))
+            return httpx.Response(200, content=rss(item), headers={"etag": '"unchanged"'})
+        body_requests += 1
+        if revision and failed_refresh:
+            return httpx.Response(403)
+        return httpx.Response(200, text=f'<article><p>{revised_body if revision else body}</p></article>',
+                              headers={"content-type": "text/html"})
+
+    try:
+        with httpx.Client(transport=httpx.MockTransport(handler)) as client, Session(engine) as db:
+            discover_news((source(),), client, db)
+            stored = db.scalar(select(NewsArticle))
+            first_versions = list(db.scalars(select(NewsArticleVersion.input_snapshot)))
+            revision = True
+            discover_news((source(),), client, db)
+            assert body_requests == 1  # The refresh interval bounds retrieval cost.
+            stored.fetched_at = datetime.now(timezone.utc) - ARTICLE_REFRESH_INTERVAL - timedelta(seconds=1)
+            db.commit()
+            discover_news((source(),), client, db)
+            assert body_requests == 2
+            assert db.scalar(select(func.count()).select_from(NewsArticle)) == 1
+            assert all(v in list(db.scalars(select(NewsArticleVersion.input_snapshot))) for v in first_versions)
+            if failed_refresh:
+                assert stored.article_text == body.strip() and stored.article_error == "Article HTTP 403"
+                assert db.scalar(select(func.count()).select_from(NewsArticleVersion)) == 1
+            else:
+                assert stored.article_text == revised_body.strip() and stored.article_error is None
+                assert db.scalar(select(func.count()).select_from(NewsArticleVersion)) == 2
+                discover_news((source(),), client, db)
+                assert body_requests == 2
+                assert db.scalar(select(func.count()).select_from(NewsArticleVersion)) == 2
+                stored.fetched_at = datetime.now(timezone.utc) - ARTICLE_REFRESH_INTERVAL - timedelta(seconds=1)
+                db.commit()
+                discover_news((source(),), client, db)
+                assert body_requests == 3
+                assert db.scalar(select(func.count()).select_from(NewsArticleVersion)) == 2
+    finally:
+        engine.dispose()
+
+
+def test_refresh_budget_rotates_oldest_captures_across_publishers(monkeypatch: pytest.MonkeyPatch) -> None:
+    from app.services.news_discovery_service import ARTICLE_REFRESH_INTERVAL
+    from email.utils import format_datetime
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    tables = TELEMETRY_TABLES + [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
+    NewsArticle.metadata.create_all(engine, tables=tables)
+    other = replace(source(), id="other", publisher="Other", feed_urls=(FEED_URL + "?other",))
+    requested = []
+    publication = format_datetime(datetime.now(timezone.utc) - timedelta(hours=1))
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        url = str(request.url)
+        if url in (FEED_URL, other.feed_urls[0]):
+            index = 1 if url == FEED_URL else 2
+            return httpx.Response(200, content=rss(f'<item><guid>{index}</guid><title>Flood in Pasig</title>'
+                f'<link>{ARTICLE_URL}/{index}</link><pubDate>{publication}</pubDate></item>'))
+        requested.append(url)
+        return httpx.Response(200, text='<article><p>' + 'Knee-deep flooding affected Laguna Street in Pasig City. ' * 4
+                              + '</p></article>', headers={"content-type": "text/html"})
+
+    try:
+        with httpx.Client(transport=httpx.MockTransport(handler)) as client, Session(engine) as db:
+            discover_news((source(), other), client, db)
+            rows = list(db.scalars(select(NewsArticle).order_by(NewsArticle.id)))
+            assert len(rows) == 2
+            for row in rows:
+                row.fetched_at = datetime.now(timezone.utc) - ARTICLE_REFRESH_INTERVAL - timedelta(minutes=5)
+            db.commit()
+            monkeypatch.setattr("app.services.news_discovery_service.MAX_ARTICLE_REFRESHES", 1)
+            discover_news((source(), other), client, db)
+            discover_news((source(), other), client, db)
+            assert requested.count(ARTICLE_URL + "/1") == requested.count(ARTICLE_URL + "/2") == 2
+            assert db.scalar(select(func.count()).select_from(NewsArticleVersion)) == 2
+    finally:
+        engine.dispose()
+
+
+@pytest.mark.parametrize("excluded", ["old", "future", "unregistered", "removed_feed"])
+def test_cached_feed_refresh_preserves_age_and_source_boundaries(excluded: str) -> None:
+    from app.services.news_discovery_service import ARTICLE_REFRESH_INTERVAL
+    engine = create_engine("sqlite+pysqlite:///:memory:")
+    tables = TELEMETRY_TABLES + [NewsFeedCheckpoint.__table__, NewsArticle.__table__, NewsArticleFeedEntry.__table__, NewsArticleVersion.__table__, NewsExtractionRun.__table__]
+    NewsArticle.metadata.create_all(engine, tables=tables)
+    requested = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEED_URL:
+            if request.headers.get("if-none-match"):
+                return httpx.Response(304)
+            return httpx.Response(200, content=rss(f'<item><guid>one</guid><title>Flood in Pasig</title>'
+                f'<link>{ARTICLE_URL}</link></item>'), headers={"etag": '"first"'})
+        requested.append(str(request.url))
+        return httpx.Response(200, text='<article><p>' + 'Knee-deep flooding affected Pasig roads. ' * 5
+                              + '</p></article>', headers={"content-type": "text/html"})
+
+    try:
+        with httpx.Client(transport=httpx.MockTransport(handler)) as client, Session(engine) as db:
+            discover_news((source(),), client, db)
+            stored = db.scalar(select(NewsArticle))
+            stored.fetched_at = datetime.now(timezone.utc) - ARTICLE_REFRESH_INTERVAL - timedelta(minutes=1)
+            if excluded == "old":
+                stored.published_at = datetime.now(timezone.utc) - timedelta(days=8)
+            elif excluded == "future":
+                stored.published_at = datetime.now(timezone.utc) + timedelta(days=1)
+            elif excluded == "unregistered":
+                stored.publisher_source_id = "unknown"
+            else:
+                db.scalar(select(NewsArticleFeedEntry)).feed_url = "https://feeds.example.org/unregistered.xml"
+            db.commit()
+            discover_news((source(),), client, db)
+            assert requested == [ARTICLE_URL]
+    finally:
+        engine.dispose()
+
+
 @pytest.mark.parametrize("local", [True, False])
 def test_body_scope_decision_survives_duplicate_entries_and_repeat_collection(local: bool) -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:")
