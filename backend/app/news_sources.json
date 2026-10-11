@@ -15,7 +15,11 @@
         "gmanetwork.com"
       ],
       "feed_urls": [
-        "https://data.gmanetwork.com/gno/rss/news/feed.xml"
+        "https://data.gmanetwork.com/gno/rss/news/feed.xml",
+        "https://data.gmanetwork.com/gno/rss/news/metro/feed.xml",
+        "https://data.gmanetwork.com/gno/rss/weather/feed.xml",
+        "https://data.gmanetwork.com/gno/rss/serbisyopubliko/transportation/feed.xml",
+        "https://data.gmanetwork.com/gno/rss/serbisyopubliko/walangpasok/feed.xml"
       ],
       "verified_at": "2026-09-24",
       "enabled": true

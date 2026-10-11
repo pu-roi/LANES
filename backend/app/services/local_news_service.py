@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.crud.local_news import recent_local_news_candidates
 from app.schemas.local_news import LocalNewsArticle, LocalNewsUpdates
-from app.services.news_discovery_service import MAX_NEWS_AGE, body_has_metro_manila_flood_claim
+from app.services.news_discovery_service import MAX_NEWS_AGE
+from app.services.local_news_relevance import body_has_local_news
 from app.services.news_feed_service import NewsEntry, canonical_article_url
 from app.services.news_sources import NewsSource, load_news_sources
 
@@ -29,10 +30,10 @@ def browse_local_news(db: Session, *, limit: int = 5, now: datetime | None = Non
         if source_url is None:
             continue
         # Previously saved articles can be unrelated or have revised bodies.
-        # Reuse discovery's local-evidence screen, without durable extraction or AI.
+        # Include commuter advisories as well as floods; no durable extraction or AI.
         entry = NewsEntry(source.id, source.publisher, "", "", article.title,
                           article.excerpt, source_url, article.published_at)
-        if not body_has_metro_manila_flood_claim(entry, article.article_text):
+        if not body_has_local_news(entry, article.article_text):
             continue
         published = article.published_at
         if published.tzinfo is None:

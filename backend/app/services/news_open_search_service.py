@@ -223,7 +223,9 @@ def append_publisher_feed_leads(
     probes = 0
     feed_hits: list[OpenSearchHit] = []
     for source in approved:
-        for feed_url in source.feed_urls:
+        # Preserve publisher diversity within the five-probe fallback budget.
+        # Supplemental commuter feeds must not crowd out other publishers.
+        for feed_url in source.feed_urls[:1]:
             if probes >= MAX_FEED_FALLBACK_PROBES:
                 break
             probes += 1

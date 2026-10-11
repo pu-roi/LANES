@@ -43,6 +43,8 @@ MAX_ARTICLE_CHARS = 100_000
 MIN_ARTICLE_CHARS = 120
 MAX_NEWS_AGE = timedelta(days=7)
 MAX_LOCATION_BODY_PROBES = 5
+MAX_COMMUTER_BODY_PROBES = 14
+MAX_COMMUTER_BODY_PROBES_PER_FEED = 4
 
 
 @dataclass(frozen=True)
@@ -423,6 +425,7 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
     """Run verified feeds; with a session, persist checkpoints and shortlisted evidence."""
     # Local import avoids coupling the read-only probe path to database operations.
     from app.crud import news as news_crud
+    from app.services.local_news_relevance import body_has_commuter_news, metadata_has_commuter_news
 
     probes: list[FeedProbe] = []
     candidates: list[NewsCandidate] = []
@@ -431,6 +434,7 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
     accepted_urls: set[str] = set()
     notices: list[DiscoveryNotice] = []
     body_probes = 0
+    commuter_probes = 0
     for source in sources:
         if not source.enabled or source.verified_at is None:
             continue
@@ -439,6 +443,7 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
             saved_urls: set[str] = set()
             body_errors = 0
             scope_unresolved = 0
+            feed_commuter_probes = 0
             if db is not None and db.get_bind().dialect.name == "postgresql":
                 # Cloud Scheduler may retry a job while the earlier run is active.
                 db.execute(text("SELECT pg_advisory_xact_lock(hashtext(:feed_url))"), {"feed_url": feed_url})
@@ -474,15 +479,20 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                     notices.append(DiscoveryNotice(source.id, entry.article_url, "Older feed revision cannot replace newer stored evidence"))
                     continue
                 metadata_local = likely_metro_manila_flood(entry)
+                commuter_metadata = metadata_has_commuter_news(entry)
                 has_flood_metadata = bool(FLOOD_TERMS.search(f"{entry.title} {entry.excerpt}"))
                 metadata_outside = not metadata_local and metadata_names_only_outside_metro_places(entry)
                 if not has_flood_metadata or metadata_outside:
-                    known_evidence = existing is not None and previously_verified_article(db, entry, existing)
-                    if not known_evidence:
+                    known_evidence = (existing is not None and existing.review_state != "local_update"
+                                      and previously_verified_article(db, entry, existing))
+                    if not known_evidence and not commuter_metadata:
                         if metadata_outside:
                             notices.append(DiscoveryNotice(source.id, entry.article_url, "Feed metadata names only non-Metro Manila places"))
                         continue
-                    metadata_local = True  # A known article correction needs no new location probe.
+                    if known_evidence:
+                        metadata_local = True  # A known correction needs no new location probe.
+                if commuter_metadata and not has_flood_metadata and entry.published_at is None:
+                    continue  # Public updates require the publisher's publication date.
                 normalized = " ".join(re.findall(r"\w+", f"{entry.title} {entry.excerpt}".casefold()))
                 digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
                 duplicate = (entry.article_url in seen_urls or
@@ -490,7 +500,8 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 seen_urls.add(entry.article_url)
                 if duplicate:
                     if db is not None and entry.article_url in accepted_urls:
-                        news_crud.save_candidate(db, entry, None)
+                        news_crud.save_candidate(db, entry, None,
+                            local_update_only=existing is not None and existing.review_state == "local_update")
                         saved_urls.add(entry.article_url)
                     continue
                 same_publication = (existing is not None and
@@ -499,17 +510,26 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 if (existing is not None and existing.content_fingerprint == digest
                         and existing.article_text is not None and existing.article_error is None and same_publication
                         and existing.publisher_source_id == entry.source_id):
-                    if body_has_metro_manila_flood_claim(entry, existing.article_text):
+                    flood_body = body_has_metro_manila_flood_claim(entry, existing.article_text)
+                    if flood_body or body_has_commuter_news(entry, existing.article_text):
                         accepted_urls.add(entry.article_url)
                         if entry.excerpt:
                             seen_fingerprints.add(fingerprint)
                         if db is not None:
-                            news_crud.save_candidate(db, entry, None)
+                            news_crud.save_candidate(db, entry, None, local_update_only=not flood_body)
                             saved_urls.add(entry.article_url)
                     else:
                         notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
                     continue
-                if not metadata_local:
+                commuter_only_probe = commuter_metadata and not has_flood_metadata
+                if commuter_only_probe:
+                    if (commuter_probes >= MAX_COMMUTER_BODY_PROBES
+                            or feed_commuter_probes >= MAX_COMMUTER_BODY_PROBES_PER_FEED):
+                        notices.append(DiscoveryNotice(source.id, entry.article_url, "Commuter article retrieval limit reached"))
+                        continue
+                    commuter_probes += 1
+                    feed_commuter_probes += 1
+                elif not metadata_local:
                     if body_probes >= MAX_LOCATION_BODY_PROBES:
                         scope_unresolved += 1
                         notices.append(DiscoveryNotice(source.id, entry.article_url, "Location body-probe limit reached; scope unresolved"))
@@ -523,13 +543,14 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                 # later retrieval failure visible for that known article too,
                 # including when the revised metadata lacks a local place clue.
                 if (article_text is None and db is not None and existing is not None
-                        and previously_verified_article(db, entry, existing)):
+                        and (existing.review_state == "local_update" or previously_verified_article(db, entry, existing))):
                     failed = NewsCandidate(source_id=entry.source_id, publisher=entry.publisher,
                         feed_id=entry.feed_id, article_url=entry.article_url, title=entry.title,
                         excerpt=entry.excerpt, published_at=entry.published_at,
                         fetched_at=datetime.now(timezone.utc), article_text=None, article_error=article_error)
-                    news_crud.save_candidate(db, entry, failed)
-                if not metadata_local:
+                    news_crud.save_candidate(db, entry, failed,
+                        local_update_only=existing.review_state == "local_update")
+                if not metadata_local and not commuter_only_probe:
                     if article_text is None:
                         scope_unresolved += 1
                         notices.append(DiscoveryNotice(source.id, entry.article_url,
@@ -542,7 +563,9 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                     notices.append(DiscoveryNotice(source.id, entry.article_url,
                         f"Article not collected: body verification unavailable ({article_error or 'no article text'})"))
                     continue
-                if article_text is not None and not body_has_metro_manila_flood_claim(entry, article_text):
+                flood_body = body_has_metro_manila_flood_claim(entry, article_text)
+                commuter_body = body_has_commuter_news(entry, article_text)
+                if not flood_body and not commuter_body:
                     notices.append(DiscoveryNotice(source.id, entry.article_url, "No body-grounded Metro Manila flood claim"))
                     # A successfully retrieved correction must supersede the
                     # current body of an article already admitted on verified
@@ -566,9 +589,13 @@ def _discover_news(sources: tuple[NewsSource, ...], client: httpx.Client, db: Se
                     article_text=article_text,
                     article_error=article_error,
                 )
-                candidates.append(candidate)
+                # General advisories are collected for the feed, never returned
+                # as flood extraction candidates. Existing flood corrections
+                # still use their normal immutable processing history.
+                if flood_body or (existing is not None and existing.review_state != "local_update"):
+                    candidates.append(candidate)
                 if db is not None:
-                    news_crud.save_candidate(db, entry, candidate)
+                    news_crud.save_candidate(db, entry, candidate, local_update_only=not flood_body)
                     saved_urls.add(entry.article_url)
             if db is not None:
                 news_crud.save_checkpoint(db, probe)

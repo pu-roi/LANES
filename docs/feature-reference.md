@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 9 preserved-news inspection:** News Details now opens saved placement on Spatial Operations through a validated run/ordinal handoff, including expired articles absent from the current queue. Existing server-owned inspection status, permissions and transparent review layers apply. The selected September 24 local replay returns four Boni modeled candidates without creating an active historical zone. Shared desktop/mobile UI passes TypeScript/scoped dialog lint; visual acceptance is pending. [Manual replay](guides/local-news-replay.md#october-9-september-24-manual-map-inspection). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -315,7 +315,7 @@ This document serves as the central technical reference for all currently implem
 
 ### 16. Community Feed & Social Validation
 
-**Local Updates (October 11, live acceptance):** Desktop sidebar and mobile/tablet expandable feed card now show recent collected Metro Manila flood articles with publisher, publication date and source link. A bounded public metadata reader reuses discovery relevance/domain rules and does not wait for recorded extraction or public-alert approval. Loading/empty/retry/offline/cache states and minute refresh are verified by 24 backend/10 responsive checks; current saved-data inspection is empty. Live desktop/mobile reads now pass after correcting pinned Cloud Run traffic; broader commuter-news scope remains separate. [Verification](evaluations/community-local-updates-20261011.md).
+**Local Updates (October 11, commuter coverage):** Desktop sidebar and mobile/tablet expandable card show recent collected Metro Manila weather, traffic, transport, safety/service advisories and flood reports with publisher/date/source link. The bounded public reader checks current body relevance and source/domain/recency; no public-alert approval is required. National weather headlines qualify only when their bodies cover Metro Manila. Commuter-only articles use the existing `local_update` state and never enqueue flood extraction; later observed flooding can enter normal processing. 143 backend/10 responsive checks and actual local reads pass. Matching cloud release is in progress. [Verification](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht).
 *   **Purpose:** Provides commuters with localized, real-time crowdsourced updates, general disaster discussion, and enables peer validation of flood reports.
 *   **What it does:** Displays a 3-column feed containing shared `FloodReport`s and general `CommunityPost`s. Enables highly interactive community discussions via a rich, threaded comments section supporting quote replies, user mentions, upvote/downvote sorting, auto-collapsing low-score replies, and admin pinning.
 *   **How it works:**

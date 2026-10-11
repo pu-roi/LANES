@@ -1,6 +1,8 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 11, 2026, 11:33 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-142: Local Updates remained empty outside flood coverage. Status: Implemented and verified locally; matching live release in progress. Severity: Medium. Resolver: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: after fixing the live API 404, Local Updates showed no news because no recent observed-flood articles qualified. RCA: both collection and the public reader were restricted to actual flood observations, despite the developer needing useful commuter news outside flooding. Solution: admit body-grounded Metro Manila weather/traffic/transport/safety/service advisories and add official category feeds for the already approved GMA publisher. Store non-flood articles as `local_update` using the existing string field; never enqueue them for flood extraction, and classify them as excluded from flood attention. Actual later flooding can enter normal processing without resetting moderation. Files: `local_news_relevance.py`, local-news reader, discovery collector, article CRUD, Collection status, source JSON, primary-publisher fallback probe selection, shared `LocalUpdates.tsx` and tests. Verification: 143 backend/10 responsive checks; ten actual collected articles, zero flood candidates, extraction runs unchanged at 84; actual local desktop/mobile show five source-linked articles. No model/schema/migration/dependency or schedule change. [Evidence](../evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht).
 
 **BUG-141: Live Local Updates could not load**
 

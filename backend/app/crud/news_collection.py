@@ -30,6 +30,7 @@ def collection_rows(db: Session) -> tuple[Select, ColumnElement]:
     unsupported_body = and_(location_count == 0, body.in_(["error", "missing"]), ~had_readable_evidence)
     processing = func.coalesce(NewsExtractionRun.status, "not_recorded")
     status = case(
+        (NewsArticle.review_state == "local_update", "excluded"),
         (unsupported_body, "excluded"),
         (body == "error", "retrieval_failed"), (body == "missing", "missing_text"),
         (processing == "not_recorded", "waiting"),

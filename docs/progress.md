@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Local Updates commuter coverage
+
+- Correct the flood-only scope after developer clarification. Collect body-grounded Metro Manila commuter stories from the approved publishers, including GMA official Metro/weather/transport/Walang Pasok feeds. Persist non-flood stories in the existing article table with `local_update` state, without queuing flood extraction or changing schema. Display the latest five stories with broader shared desktop/mobile text. 143 backend and 10 responsive checks pass; actual collection saves ten articles while extraction runs remain 84, and unmocked local desktop/mobile reads show five articles. Cloud release is in progress. [Evidence](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Live Local Updates loading failure resolved
 

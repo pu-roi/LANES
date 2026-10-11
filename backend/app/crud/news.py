@@ -42,7 +42,8 @@ def save_checkpoint(db: Session, probe: FeedProbe) -> NewsFeedCheckpoint:
     return checkpoint
 
 
-def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | None) -> NewsArticle:
+def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | None,
+                   *, local_update_only: bool = False) -> NewsArticle:
     """Save article plus feed provenance; repeated URLs/GUIDs update their seen time."""
     from app.crud.news_processing import enqueue_article
 
@@ -65,12 +66,14 @@ def save_candidate(db: Session, entry: NewsEntry, candidate: NewsCandidate | Non
             article_text=candidate.article_text if candidate else None,
             article_error=candidate.article_error if candidate else None,
             content_fingerprint=fingerprint,
-            review_state="pending",
+            review_state="local_update" if local_update_only else "pending",
         )
         db.add(article)
         db.flush()
     else:
         enqueue_article(db, article)  # Preserve the successful input before replacing it.
+        if article.review_state == "local_update" and not local_update_only:
+            article.review_state = "pending"  # Newly observed flooding follows normal processing.
         article.last_seen_at = now
         # A failed refresh must not relabel the last successful body as a newer
         # observation. Preserve its metadata/time; expose the refresh failure.

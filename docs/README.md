@@ -1,8 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 11:30 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 12:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Community Feed Local Updates:** recent collected flood articles now replace sample news in the desktop sidebar and shared mobile/tablet expandable card. Public article metadata does not depend on alert publication. Live API traffic was repaired October 11 at 11:30 AM; actual desktop/mobile checks now show the successful empty state. [Implementation, filtering, 24 backend/10 responsive checks and release limits](evaluations/community-local-updates-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+**Community Feed Local Updates:** coverage now includes Metro Manila weather, traffic, transport and safety/service advisories, as well as flood reports. The saved commuter-news path does not enqueue flood extraction. Local desktop/mobile checks show five actual articles from ten new captures, with publisher/date/source links. Matching cloud release is in progress. [Implementation and verification](evaluations/community-local-updates-20261011.md#commuter-news-coverage--october-11-noon-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Pasig coverage and abstention:** Eligible Pasig polygons can use the shared Pasig model even when their barangay has no local historical outcomes. This is not guaranteed inference for every record. Unverified location, missing observation time without an accepted registration/submission proxy, incompatible depth snapshots, changed/review-pending evidence or unavailable model assets can still produce an explicit unavailable/fixed-fallback state. A saved operational forecast remains visible after expiry even when the current research preview is inactive or stale. Expiry means Unconfirmed, not observed flood clearance; p90 is an experimental policy estimate, not calibrated certainty. [Evidence](evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

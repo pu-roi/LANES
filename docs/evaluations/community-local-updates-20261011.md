@@ -4,6 +4,8 @@ Author: [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 11, 11:30 AM live follow-up:** the loading failure is resolved; live desktop/mobile use the endpoint successfully and show no qualifying recent articles. Earlier local-only release statements below describe the initial implementation.
 
+**October 11 noon coverage correction:** the developer selected commuter news (weather, traffic, road closures, transport disruptions and safety advisories). The flood-only descriptions below are the initial implementation, superseded by the commuter coverage section at the end.
+
 ## Delivered behavior
 
 Replace the two static Local Updates headlines with up to five recent collected news articles. The developer selected collected articles with publisher, publication date and original-source link, without waiting for recorded extraction or public-alert approval.
@@ -51,5 +53,29 @@ Actual production verification:
 - Unmocked Chromium at 1440×1000 and 390×844: actual news request **200**, visible “No recent local flood news is available.”, no Local Updates error. Mobile expanded through the real summary control. Both card screenshots were inspected.
 
 Durable prevention in `cloudbuild.yaml`: prepare the API with `--no-traffic` and unique `--revision-suffix=build-$BUILD_ID`; after the existing migration and both worker deployments, use `--to-revisions=lanes-api-build-$BUILD_ID=100`. This avoids preserved manual rollback pins and targets the exact build rather than a potentially different latest revision. Existing gcloud help confirms naming/no-traffic semantics. YAML parsing and assertions verify the preparation flags, final exact revision promotion and preceding worker steps. A new Cloud Build execution of this configuration has not been performed. No new application tests, package imports or SQLAlchemy/Alembic changes were needed for this deployment-only fix.
+
+Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+## Commuter news coverage — October 11 noon PHT
+
+The developer rejected the flood-only empty widget and explicitly chose relevant commuter news outside flooding. Both admission and the reader previously required observed Metro Manila flooding. Changing the empty-state text alone would not collect any useful articles.
+
+`local_news_relevance.py` admits weather forecasts/advisories, traffic changes/road closures, rail/bus/jeepney operations, safety/class-suspension and local service advisories supported by a current body sentence naming Metro Manila or a specific Metro rail line. A Manila dateline or weather-office address is not local impact. Broad national weather leads may be fetched within the bounded commuter budget, but the body must actually include Metro Manila. General politics, sports, entertainment, stock trading and non-local reports do not fill the widget. The original strict observed-flood admission remains separate.
+
+The approved GMA source now also uses its official Metro, weather, transportation and Walang Pasok RSS endpoints, found on [GMA's own feed listing](https://www.gmanetwork.com/news/rss/) and verified by actual parsed responses. No new publisher/source identity was enabled. Date/domain/readable-body checks remain in place. Up to 14 additional non-flood bodies are fetched per run, at most four per feed; they cannot exhaust the existing flood-location probe budget. Publisher fallback keeps one primary feed per source within its existing five-probe budget, preserving independent publisher coverage after adding the supplemental feeds.
+
+Commuter stories are saved in existing article/provenance tables with the existing string `review_state` set to `local_update`. They never enqueue immutable flood extraction runs. Collection labels them excluded from flood reports, so they do not become unprocessed flood attention. A later body with real flood observations can enter normal pending processing; rejected/suppressed articles are not revived. Duplicate URLs/GUIDs and unchanged bodies retain feed provenance without reclassifying local-only stories. Failed refreshed bodies are marked unavailable, and the public reader checks the newest saved body. No SQLAlchemy model or migration change is involved.
+
+Shared `LocalUpdates.tsx` describes weather/traffic/transport/safety coverage and uses the generic “No recent local updates are available.” only when no qualifying recent collected story exists. Publisher/date/source links and request/refresh/cache/offline behavior are unchanged.
+
+Verification:
+
+- 143 targeted backend tests pass across local-news/discovery/processing/collection correction/browsing/telemetry. Includes no-flood commuter reads, national forecast local body, nonlocal/dateline exclusion, no new extraction, duplicate/unchanged capture, valid flood promotion without moderation reset, failed refresh and separate fetch budgets.
+- TypeScript and scoped ESLint pass. All ten existing desktop/mobile Chromium cases pass using a non-flood MRT service story; initial execution found the local server stopped, so the normal development server was started and the suite rerun.
+- Actual approved-source collection through the configured database: six feeds parsed, **ten new commuter articles**, **zero flood candidates**, extraction runs **84 before/84 after**. Shared collection settings were already enabled and selected sources were respected. No audit, publication, map activation or schedule change occurred.
+- Actual local API and unmocked desktop 1440×1000/mobile 390×844 each return **200 with five articles**. Both card screenshots were inspected. An initial mobile probe failed during Uvicorn test-file reload; restart without reload and both reads pass.
+- Latest five include the October 11 Philstar weather forecast, today's La Naval traffic advisory, two GMA forecasts and a local Maynilad service notice. Article dates remain publication dates; the headline mentioning other regions qualifies because the actual body includes Metro Manila.
+
+Cloud API/workers/frontend release is in progress. No new packages or schema changes require migration work.
 
 Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).
