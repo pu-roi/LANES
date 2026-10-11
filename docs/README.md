@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**What to expect when testing:** [Runtime behavior, acceptance steps and remaining accuracy work](guides/pasig-recession-observation-collection.md#what-to-expect-when-running-the-system) explain the saved selected model, eligibility/fallback, fixed issuance, p90 deadline and Unconfirmed expiry. Depth-sensitive predictive accuracy remains unvalidated even though local/cloud integration and hosted display are accepted. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current hosted UI acceptance:** [Rollout 005 and actual desktop/mobile forecast/calculation checks](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht) complete the frontend release gate. Earlier local-only checkpoints are historical. The developer has no additional government files yet; [prepared acquisition specification and verified FOI limitations](guides/pasig-recession-observation-collection.md#government-data-acquisition-specification--october-11-continuation) support the remaining real-outcome/model-accuracy work. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

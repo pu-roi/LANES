@@ -21,6 +21,26 @@ Existing records #47/#49 have pending subsided claims; staff must review them ra
 
 [Research](../research/pasig-flood-recession-depth-and-availability-20261011.md) · [Depth candidate result](../evaluations/pasig-depth-shape-candidate-20261011/README.md).
 
+## What to expect when running the system
+
+**October 11 runtime handoff:** local and shared API/expiry workers are accepted; the hosted frontend now serves rollout 005. These expectations describe the deployed experimental policy, not verified prediction accuracy. [Release evidence](../evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+| During testing | Expected behavior and limitation |
+| --- | --- |
+| Submit a public manual flood report | Submission alone does not create an approved operational zone. Once approved and activated, the server qualifies the source clocks, geometry, locality and review state. Final validated geometry supplies canonical city/barangay identity. |
+| Inspect an eligible Pasig zone | Admin map → Active Zones → Info shows the saved selected forecast, model method, original issuance, uncertainty and deadline. Expand calculation details to inspect the saved model calculation. Cross-location forecasts expose measured or gauge-proxy depth; the pooled model does not use depth or rainfall. |
+| Test a barangay with limited history | Qualified records may borrow the shared Pasig relationship. Missing local history adds uncertainty; it does not create new observed outcomes. Unsupported or incomplete source evidence can still make ML unavailable. |
+| Compare ankle/gutter and deeper floods | Do not expect reliably shorter shallow-flood forecasts yet. The current cross-location central depth response is weak (about 1.5% gutter-to-knee in the evaluated unseen locality), and pooled forecasts are depth-independent. Green severity alone is not a learned recession-duration rule. The offline depth constraint did not demonstrate improvement and was not promoted. |
+| See ML unavailable | Inspect the stated eligibility/failure reason. With no retained deadline, the policy assigns configured evidence retention from original activation when applicable; the UI labels this as a fixed fallback, not a subsidence forecast. Existing staff deadlines are preserved. Transient negative evaluations are retried after 60 seconds. |
+| Refresh Info or restart the app | A successful saved forecast remains anchored to its original issuance. Refreshing or retrying does not grant the flood a new lifetime. Historical forecasts remain inspectable after inactivity. |
+| Reach the deadline | With automatic expiry enabled and the worker running, scheduled expiry deactivates the zone and marks the condition **Unconfirmed**. The ML policy uses the upper p90 estimate, not the median. Worker processing is scheduled once per minute; disappearance is not a verified dry-road observation or a guarantee of expiry at the exact second. |
+| Pause automatic expiry | The global setting pauses deadline enforcement. Re-enabling applies original deadlines; inactive records are not resurrected. |
+| Test reports for model accuracy | Manual test entries validate workflow/display behavior. Their submitted depth and automatic expiry cannot be used as actual wet-to-clearance outcomes. |
+
+For a practical acceptance check, approve a test report with valid Pasig geometry and source evidence, inspect its selected method and original deadline on desktop and mobile, refresh to verify that the anchor stays fixed, then inspect the historical record after scheduled expiry. An unavailable forecast must show its reason and any retained/fallback timer; do not count a fixed timer as successful ML inference. Use explicit test provenance and keep those records out of real-outcome qualification.
+
+**Remaining accuracy work:** obtain genuinely observed, independently reviewed wet-to-clearance bounds with initial depth and the same section/episode; qualify them with the offline builder; compare held-out episode/location/forward-time performance, uncertainty coverage and shallow/deep behavior before promoting a replacement. The developer confirms no additional government files yet. Use the [acquisition specification](#government-data-acquisition-specification--october-11-continuation) for the required fields. Operational integration is delivered; calibrated depth-sensitive prediction remains open.
+
 ## Offline pairing and qualification
 
 The implemented `scripts.build_recession_dataset` is an offline research step, not an automatic training or clearance job. Export **all** review states from `GET /api/v1/admin/flood-follow-ups/export?review_state=all&limit=100`, starting without `before_id`. Follow each returned `next_before_id` with `before_id` until it is null. Keep private source text outside Git, for example under ignored `backend/data/`. Wrap the complete pages as:

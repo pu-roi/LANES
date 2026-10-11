@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 4:25 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Runtime expectations and remaining accuracy gates documented
+
+- Add a [system-testing handoff](guides/pasig-recession-observation-collection.md#what-to-expect-when-running-the-system) covering approved-zone eligibility, shared-location inference, saved calculations, original clocks, unavailable/fixed fallback and scheduled expiry as Unconfirmed. Explain that p90 drives operational expiry, pooled estimates ignore depth and the cross-location depth response remains weak. Audit the eight core records, retain existing Decisions 26/27 and BUG-145 accuracy status, and correct stale current-versus-historical hosted-release wording. No source, model, dependency, schema or deployment changes; prior engineering/migration and hosted desktop/mobile acceptance remain applicable. Real outcomes and calibrated depth-sensitive prediction remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Hosted saved-forecast UI released and verified
 
@@ -146,7 +150,7 @@
 
 ### October 9: Earlier fabricated plotting demonstration (subsequently rejected)
 
-- The labeled synthetic Quirino Avenue article goes through normal RSS capture, extraction, checked bundled OSM/NOAH, audit evidence validation and automatic PostGIS publication. Zone 55 is present in public and staff APIs, with polygon/core and finite expiry. Publisher/provider responses are offline fixtures; 17 demo/guard checks pass. Shared data and original historical article are preserved. Public preview returns 200; browser acceptance remains open. [Demo links and assumptions](guides/local-news-replay.md#october-9-developer-requested-active-plotting-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- The labeled synthetic Quirino Avenue article goes through normal RSS capture, extraction, checked bundled OSM/NOAH, audit evidence validation and automatic PostGIS publication. Zone 55 is present in public and staff APIs, with polygon/core and finite expiry. Publisher/provider responses are offline fixtures; 17 demo/guard checks pass. Shared data and original historical article are preserved. Public preview returns 200; browser acceptance remains open. [Demo links and assumptions](guides/local-news-replay.md#october-9-superseded-fabricated-active-plotting-demonstration). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 9: Prepare developer-selected September 24 archived map inspection
 
