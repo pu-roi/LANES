@@ -101,6 +101,7 @@ async def process_new_report(
     Handles opposite carriageway calculation for bidirectional reports.
     """
     # Auto-resolve missing location details using coordinates
+    submitted_location = {"city": city, "barangay": barangay}
     rep_coords = extract_representative_coordinates(geometry)
     if rep_coords and (not human_readable_location or not barangay or not city):
         try:
@@ -144,6 +145,13 @@ async def process_new_report(
         except Exception as e:
             logger.error(f"[process_new_report] Hybrid Strategy failed: {e}. Falling back to original geometry.")
 
+    # Resolve AFTER server road snapping. A submitted/Nominatim suburb may be
+    # stale or describe a nearby feature rather than the actual road footprint.
+    from app.services.report_locality_service import pasig_geometry_locality
+    resolved_locality = pasig_geometry_locality(geometry)
+    if resolved_locality is not None:
+        city, barangay = resolved_locality["city"], resolved_locality["barangay"]
+
     report_create = FloodReportCreate(
         raw_text=raw_text,
         source=source,
@@ -180,7 +188,9 @@ async def process_new_report(
 
     from app.services.citizen_approval_service import record_observation, approve_citizen_report
     try:
-        record_observation(db, created_report, observed_at=observed_at, road_validated=road_validated, media_hashes=media_hashes or [])
+        record_observation(db, created_report, observed_at=observed_at, road_validated=road_validated,
+            media_hashes=media_hashes or [], submitted_location=submitted_location,
+            resolved_locality=resolved_locality)
         reason = approve_citizen_report(db, created_report.id)
     except Exception:
         db.rollback()

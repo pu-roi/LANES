@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui";
 import { getZonePrediction, getPredictionFeatures, type CaseReviewSuggestion as CaseSuggestion } from "./reviewSuggestionApi";
 import { CalculationExplanation } from "./CalculationExplanation";
 import { CrossLocationComparison } from "./CrossLocationComparison";
-import ZoneExpiryPolicy from "./ZoneExpiryPolicy";
+import ZoneExpiryPolicy, { useZoneExpiryPolicy } from "./ZoneExpiryPolicy";
 
 export const suggestionTime = (value: string) => new Date(value).toLocaleString("en-PH", { timeZone: "Asia/Manila", dateStyle: "medium", timeStyle: "short" });
 export const suggestionStateLabel = {
@@ -43,6 +43,8 @@ function remainingLabel(estimate: string, asOf: number) {
 function ZonePredictionPanel({ zoneId, userId }: { zoneId: number; userId: number }) {
   const id = useId();
   const [expanded, setExpanded] = useState(false);
+  const expiry = useZoneExpiryPolicy(zoneId, userId);
+  const hasSavedForecast = !!expiry.data?.quantiles?.some(q => q.quantile === .5);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const update = () => setNow(Date.now());
@@ -65,7 +67,9 @@ function ZonePredictionPanel({ zoneId, userId }: { zoneId: number; userId: numbe
   const labels = { estimated: "", unavailable: "Estimate unavailable", needs_review: "Evidence needs review", expired: "Evidence expired — needs current evidence", inactive: "Flood zone inactive" };
   return <section aria-label={`Automatic subsidence prediction for zone ${zoneId}`} className="space-y-3 border-t border-slate-100 pt-4">
     <ZoneExpiryPolicy zoneId={zoneId} userId={userId} />
-    <div className="flex flex-wrap items-center gap-2"><h3 className="text-sm font-semibold text-slate-900">Estimated subsidence</h3><span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-800">Experimental</span></div>
+    <div hidden={hasSavedForecast && !expanded} className="space-y-3">
+    <div className="flex flex-wrap items-center gap-2"><h3 className="text-sm font-semibold text-slate-900">{hasSavedForecast ? "Secondary pooled research preview" : "Estimated subsidence"}</h3><span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-800">Experimental</span></div>
+    {hasSavedForecast && <p className="text-xs text-slate-500">This separate baseline preview does not set the saved deadline above. It can be unavailable when current evidence needs review.</p>}
     {query.isPending && <p role="status" className="text-sm text-slate-500">Calculating from recorded zone evidence…</p>}
     {query.isError && <div role="alert" className="space-y-2 text-sm text-red-700"><p>Prediction unavailable: {query.error.message}</p><Button size="sm" variant="outline" className="min-h-11" onClick={() => query.refetch()}>Retry prediction</Button></div>}
     {item && <div className="space-y-2 text-sm text-slate-700">
@@ -89,6 +93,7 @@ function ZonePredictionPanel({ zoneId, userId }: { zoneId: number; userId: numbe
       </div>}
       {item.state === "estimated" && <p className="text-xs leading-5 text-slate-500">Assumes uninterrupted flooding since the recorded observation. Accuracy is unverified; the estimate does not confirm clearance or change evidence expiry.</p>}
     </div>}
+    </div>
     {item && <Button variant="ghost" size="sm" className="min-h-11 w-full justify-start px-0 text-blue-700 sm:w-auto" aria-expanded={expanded} aria-controls={`${id}-prediction`} onClick={() => setExpanded(!expanded)}>{expanded ? "Hide calculation details" : "View calculation details"}</Button>}
     {expanded && item && <div id={`${id}-prediction`} className="space-y-3 text-sm text-slate-600">
       <CalculationExplanation calculation={simulation?.calculation ?? item.calculation} registrationProxy={!!simulatedMedian} submissionProxy={submissionProxy} formatTime={suggestionTime} />

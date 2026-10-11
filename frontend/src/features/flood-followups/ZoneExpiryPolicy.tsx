@@ -3,6 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/shared/ui";
+import { CalculationExplanation } from "./CalculationExplanation";
+import type { DurationCalculation, CrossLocationPrediction } from "./reviewSuggestionApi";
 
 type ExpiryPolicy = {
   automatic_expiry_enabled: boolean; pasig_ml_expiry_enabled: boolean;
@@ -11,12 +13,20 @@ type ExpiryPolicy = {
   experimental: boolean; accuracy_verified: false; expires_as: "Unconfirmed";
   zone_is_active?: boolean; prediction_as_of_at?: string | null;
   quantiles?: { quantile: number; estimated_reported_subsidence_at: string }[];
+  calculation?: DurationCalculation | CrossLocationPrediction["calculation"];
+  city?: string | null; barangays?: string[]; depth_cm?: number | null;
+  depth_basis?: string | null; target_location?: string | null;
+  fallback_basis?: "activation_retention" | null;
 };
 
-export default function ZoneExpiryPolicy({ zoneId, userId }: { zoneId: number; userId: number }) {
-  const query = useQuery({ queryKey: ["zoneExpiryPolicy", userId, zoneId],
+export function useZoneExpiryPolicy(zoneId: number, userId: number) {
+  return useQuery({ queryKey: ["zoneExpiryPolicy", userId, zoneId],
     queryFn: () => apiClient.get<ExpiryPolicy>(`/admin/zones/${zoneId}/expiry-policy`),
     staleTime: 30_000, refetchInterval: 60_000, retry: false });
+}
+
+export default function ZoneExpiryPolicy({ zoneId, userId }: { zoneId: number; userId: number }) {
+  const query = useZoneExpiryPolicy(zoneId, userId);
   const item = query.data;
   const median = item?.quantiles?.find(q => q.quantile === .5);
   const lower = item?.quantiles?.find(q => q.quantile === .1);
@@ -28,13 +38,25 @@ export default function ZoneExpiryPolicy({ zoneId, userId }: { zoneId: number; u
     {query.isError && <div role="alert" className="text-red-700"><p>{query.error.message || "Expiry policy is unavailable."}</p><Button variant="ghost" size="sm" onClick={() => query.refetch()}>Retry expiry policy</Button></div>}
     {item && <>
       <p>{!item.automatic_expiry_enabled ? "Paused" : item.method === "ml_cross_location" ? "ML · depth and cross-location estimate" : item.method === "ml_pooled" ? "ML · pooled Pasig duration estimate" : item.method === "pending_sync" ? "Waiting for policy synchronization" : item.method === "fixed_fallback" ? (item.deadline ? "Fixed timer · ML unavailable" : "ML unavailable · no saved deadline") : "Fixed timer"}</p>
+      {item.fallback_basis === "activation_retention" && <p className="text-xs text-amber-800">Evidence retention timer from original zone activation. This is not a predicted clearing time.</p>}
       <p>{item.deadline ? `Deadline: ${time(item.deadline)} (PHT)` : "No automatic deadline recorded"}</p>
       {median && <div className="space-y-1 pt-2" aria-label="Saved ML subsidence estimate">
         <p className="font-medium text-slate-800">Saved ML subsidence estimate</p>
+        {item.city && !!item.barangays?.length && <p className="text-xs text-slate-600">Detected location: {item.barangays.join(" / ")}, {item.city}</p>}
+        {item.method === "ml_pooled" && <p className="text-xs text-amber-800">Pooled duration estimate; this model does not use depth or rainfall.</p>}
+        {item.method === "ml_cross_location" && item.depth_cm != null && <p className="text-xs text-slate-600">Source depth: {item.depth_cm} cm · {item.depth_basis === "reported_canonical_gauge_proxy" ? "gauge proxy" : "reported measurement"}. Shared depth effect with location pooling; accuracy is unverified.</p>}
         <p>Around <strong>{time(median.estimated_reported_subsidence_at)} (PHT)</strong></p>
         {lower && upper && <p className="text-xs text-slate-600">Model interval: {time(lower.estimated_reported_subsidence_at)} – {time(upper.estimated_reported_subsidence_at)} (PHT)</p>}
         {item.prediction_as_of_at && <p className="text-xs text-slate-600">Forecast anchored {time(item.prediction_as_of_at)} (PHT). Expiry uses the upper estimate.</p>}
         {item.zone_is_active === false && <p className="text-xs text-slate-600">This zone is inactive. The saved forecast remains available for review.</p>}
+        {item.calculation && <details>
+          <summary className="min-h-11 cursor-pointer py-3 text-xs font-medium text-blue-700">Saved forecast calculation</summary>
+          {"schema_version" in item.calculation ? <CalculationExplanation calculation={item.calculation} registrationProxy={item.reference_basis === "registration_proxy"} submissionProxy={item.reference_basis === "submission_proxy"} formatTime={time} /> : <div className="space-y-2 text-xs leading-5">
+            <p>The fitted duration distribution combines a shared depth term and a restrained location term. Its upper percentile schedules expiry. Uncertainty includes coefficient uncertainty and added location uncertainty where local outcomes are missing.</p>
+            <p className="break-words font-mono">Log-duration centre {item.calculation.log_duration_location.toFixed(4)} · depth contribution {item.calculation.shared_depth_effect.toFixed(4)} · location contribution {item.calculation.local_effect.toFixed(4)} · predictive log spread {item.calculation.predictive_log_scale.toFixed(4)}</p>
+            <p>{item.target_location}: {item.calculation.location_outcomes} shared outcome summaries. These are saved calculation values from the forecast anchor.</p>
+          </div>}
+        </details>}
       </div>}
       {item.reason && <p className="text-xs text-slate-600">{item.reason}</p>}
       {item.reference_basis?.endsWith("proxy") && <p className="text-xs text-amber-800">Uses a recording-time proxy; the actual flood observation time is unknown.</p>}

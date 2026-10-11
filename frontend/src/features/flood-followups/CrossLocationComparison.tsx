@@ -15,7 +15,7 @@ export function CrossLocationComparison({ zoneId, userId, formatTime }: {
   const upper = item?.quantiles.find(row => row.quantile === .9);
   return <section aria-label="Depth and location research comparison" className="space-y-2 border-t border-slate-100 pt-3 text-xs leading-5">
     <h4 className="font-semibold text-slate-900">Depth and location comparison · research only</h4>
-    <p>The candidate shares a depth relationship across locations and restrains local adjustments when evidence is limited. The estimate above still uses the baseline.</p>
+    <p>The candidate shares a depth relationship across locations and restrains local adjustments when evidence is limited. This read-only comparison does not replace the saved operational forecast.</p>
     {query.isPending && <p role="status">Loading cross-location comparison…</p>}
     {query.isError && <div role="alert" className="space-y-1 text-red-700"><p>Cross-location comparison unavailable: {query.error.message}</p>
       <Button size="sm" variant="ghost" className="min-h-11" onClick={() => query.refetch()}>Retry comparison</Button></div>}

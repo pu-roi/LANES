@@ -13,6 +13,15 @@ class ParsedLocation(BaseModel):
     display_name: Optional[str] = None
 
 
+def _canonical_point_locality(parsed: ParsedLocation, lat: float, lng: float) -> ParsedLocation:
+    from app.services.report_locality_service import pasig_geometry_locality
+    resolved = pasig_geometry_locality({"type":"Point","coordinates":[lng,lat]})
+    if resolved and resolved["barangay"]:
+        parsed.city, parsed.barangay = resolved["city"], resolved["barangay"]
+        parsed.display_name = ", ".join(v for v in (parsed.street,parsed.barangay,parsed.city) if v)
+    return parsed
+
+
 def _clean_barangay_name(raw: Optional[str]) -> Optional[str]:
     """Strips leading 'Barangay', 'Brgy.', etc. for consistent clean storage."""
     if not raw:
@@ -78,12 +87,12 @@ async def reverse_geocode_structured(lat: float, lng: float) -> Optional[ParsedL
                 display_name = data.get("display_name")
 
                 if street or barangay or city or display_name:
-                    return ParsedLocation(
+                    return _canonical_point_locality(ParsedLocation(
                         street=street,
                         barangay=barangay,
                         city=city,
                         display_name=display_name
-                    )
+                    ), lat, lng)
     except Exception as e:
         logger.warning(f"Nominatim reverse geocode failed ({e}). Attempting Photon fallback...")
 
@@ -106,12 +115,12 @@ async def reverse_geocode_structured(lat: float, lng: float) -> Optional[ParsedL
                     parts = [street, barangay, city]
                     display_name = ", ".join([p for p in parts if p]) or None
 
-                    return ParsedLocation(
+                    return _canonical_point_locality(ParsedLocation(
                         street=street,
                         barangay=barangay,
                         city=city,
                         display_name=display_name
-                    )
+                    ), lat, lng)
     except Exception as e:
         logger.error(f"Photon reverse geocode failed: {e}")
 

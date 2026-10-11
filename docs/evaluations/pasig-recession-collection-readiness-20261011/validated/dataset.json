@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "target_version": "first_reviewed_recorded_wet_to_reported_same_section_subsidence_v1",
+  "source_observations": 3,
+  "source_reports": 2,
+  "episode_reviews": 0,
+  "source_review_states": {
+    "pending": 3
+  },
+  "numeric_depth_sources": 0,
+  "source_blocker_counts": {
+    "independent_accepted_source_review_missing": 3,
+    "same_section_pasig_episode_identity_missing": 1
+  },
+  "candidates": [],
+  "qualification": [],
+  "reports_without_episode_review": [
+    26,
+    29
+  ],
+  "production_training_admitted": false,
+  "changes_status_expiry_or_routing": false,
+  "limits": [
+    "human field/scope/continuity declarations are not automatically verified",
+    "unknown true onset; target begins at first selected recorded wet observation",
+    "source and episode reviews do not establish prospective calibration",
+    "one locality and frozen numeric depth required; environmental predictors not admitted"
+  ],
+  "generated_at": "2026-10-11T06:16:58.461596+00:00",
+  "input_sha256": {
+    "export": "e74a0cce132e20d89169461708e610d5a9da0a048aa3c9cbcc605e30a85ba50e"
+  },
+  "builder_sha256": "3161fb5f72d9414b3d4f0993f1ffacb4e9eeefe0167c2e3c4aee3c5f9cda8dec",
+  "qualifier_sha256": "503acd3fe9ae7093c5bdd73d64f45acabade81194872884d246f1b04e24845a4"
+}

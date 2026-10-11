@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import asdict, dataclass
 import math
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 import numpy as np
 from scipy.optimize import minimize
@@ -127,11 +127,14 @@ class CrossLocationArtifact:
 def fit_cross_location(
     observations: Sequence[CrossLocationObservation], *, location_prior_sd: float = .35,
     depth_prior_sd: float = .5, lineage: dict[str, Any] | None = None,
+    depth_shape: Literal["unconstrained", "nondecreasing"] = "unconstrained",
 ) -> CrossLocationArtifact:
     """Fit a penalized composite likelihood; fixed prior scales are sensitivity inputs."""
     rows = tuple(observations)
     tau = number(location_prior_sd, "location_prior_sd")
     depth_sd = number(depth_prior_sd, "depth_prior_sd")
+    if depth_shape not in {"unconstrained", "nondecreasing"}:
+        raise DurationModelError("Unsupported depth-shape assumption.")
     if not 0 <= tau <= 2 or not 0 < depth_sd <= 2:
         raise DurationModelError("Unsupported prior scale.")
     if not rows or any(not isinstance(row, CrossLocationObservation) for row in rows):
@@ -173,7 +176,8 @@ def fit_cross_location(
         start = np.zeros(design.shape[1] + 1)
         start[0], start[-1] = anchor, math.log(sigma)
         result = minimize(objective, start, method="L-BFGS-B",
-                          bounds=[(None, None)] * design.shape[1] + [(-5, 3)],
+                          bounds=[(None, None), (0 if depth_shape == "nondecreasing" else None, None)]
+                          + [(None, None)] * len(locations) + [(-5, 3)],
                           options={"maxiter": 1000, "ftol": 1e-11, "gtol": 1e-6})
         if result.success and np.all(np.isfinite(result.x)) and math.isfinite(result.fun):
             candidates.append(result)
@@ -200,6 +204,10 @@ def fit_cross_location(
                  "shared_outcome_count": len(groups), "production_training_admitted": 0,
                  "deployment_eligible": False, "prospective_validation_established": False},
         diagnostics={"objective": float(best.fun), "converged_starts": len(candidates),
+                     "depth_shape": depth_shape,
+                     "depth_shape_is_structural_assumption": depth_shape != "unconstrained",
+                     "depth_constraint_active": bool(depth_shape == "nondecreasing" and best.x[1] <= 1e-7),
+                     "constraint_boundary_uncertainty_calibrated": False,
                      "constant_depth_prior_driven": spread <= 1e-8,
                      "hessian_min_eigenvalue": float(eigenvalues[0]),
                      "weight_policy": "each_shared_summary_total_one",

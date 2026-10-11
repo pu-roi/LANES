@@ -52,6 +52,7 @@ def _closed(report: FloodReport, now: datetime) -> bool:
 
 
 def _wet_evidence(db: Session, report: FloodReport, now: datetime) -> tuple[list[WetEvidence], str | None]:
+    from app.services.report_locality_service import snapshot_matches_reconciled_locality
     wet: list[WetEvidence] = []
     original = evidence_store.original_observation(db, report.id)
     if original is not None:
@@ -65,7 +66,6 @@ def _wet_evidence(db: Session, report: FloodReport, now: datetime) -> tuple[list
                 available_at=available, provenance="original_citizen_observation"))
     rows = evidence_store.report_followups(db, report.id)
     reviews = evidence_store.latest_reviews(db, [row.id for row in rows])
-    snapshot = _location_snapshot(report)
     for row in rows:
         review = reviews.get(row.id)
         data = row.metadata_json
@@ -73,7 +73,7 @@ def _wet_evidence(db: Session, report: FloodReport, now: datetime) -> tuple[list
                 or review.metadata_json.get("same_location_verified") is not True
                 or review.admin_id == data.get("user_id")
                 or ensure_utc(review.created_at) > now or data.get("user_id") != report.user_id
-                or data.get("location_snapshot") != snapshot):
+                or not snapshot_matches_reconciled_locality(db, report, data.get("location_snapshot") or {})):
             continue
         available = ensure_utc(row.created_at)
         observed = _clock(data.get("observed_at"), available, now)

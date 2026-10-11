@@ -1,6 +1,35 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 11, 2026, 12:49 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 4:36 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Runtime expectations and remaining accuracy gates documented
+
+- Add a [system-testing handoff](guides/pasig-recession-observation-collection.md#what-to-expect-when-running-the-system) covering approved-zone eligibility, shared-location inference, saved calculations, original clocks, unavailable/fixed fallback and scheduled expiry as Unconfirmed. Explain that p90 drives operational expiry, pooled estimates ignore depth and the cross-location depth response remains weak. Audit the eight core records, retain existing Decisions 26/27 and BUG-145 accuracy status, and correct stale current-versus-historical hosted-release wording. No source, model, dependency, schema or deployment changes; prior engineering/migration and hosted desktop/mobile acceptance remain applicable. Real outcomes and calibrated depth-sensitive prediction remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Hosted saved-forecast UI released and verified
+
+- Resume the remaining hosted UI gate at the developer's request. App Hosting rollout 005 from `e150fea` serves 100%; Cloud Build `60d53a00-4dcb-40da-8bd5-fe8fb79b5ab2` succeeds. Six actual desktop/mobile Info flows plus six expanded-calculation checks pass for #50/#37/#36. Shared v3 API and scheduled expiry stay accepted. Four live feed widths also verify the pushed navigation-spacing preview, news HTTP 200 and no overflow. No application source, dependency, schema, model or policy changes. Developer confirms no additional government flood-history files; prepare precise acquisition fields and record FOI lead limitations. Accuracy remains open. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Additional official outcome-source screening
+
+- Check public Pasig/MMDA/NDRRMC evidence for independent wet-to-clearance observations. Confirm the August 30 city bulletin is already represented by the existing shared outcome; the Quezon City MMDA example uses a different reference clock and lacks numeric initial depth, while the NDRRMC lead remains unfetched. No new qualified event, refit, admission or deployment. Preserve sources and acquisition limits in the [research continuation](research/pasig-flood-recession-depth-and-availability-20261011.md#official-source-screening-continuation--october-11-413-pm-pht). Real reviewed outcomes remain the scientific gate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Pasig documentation and pre-push audit
+
+- Synchronize the eight core records and documentation catalog for the requested `roi-branch` publication. Fresh pre-push checks pass: 166 native PostGIS/backend tests with the existing Alembic chain upgraded to head, 88 model/dataset tests, TypeScript and scoped component lint. Preserve the earlier 66 responsive and six actual local Info workflow checks without counting them as new runs. No dependency, SQL model or migration changes. Operational repairs are delivered; real reviewed outcomes and scientific accuracy remain open, and hosted forecast UI release remains separate. [Audit](evaluations/pasig-subsidence-v3-acceptance-20261011.md#planner-and-pre-push-audit--october-11-408-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Reproducible recession-outcome qualification delivered locally
+
+- Add an offline builder for complete existing staff follow-up exports and explicit episode reviews. Derive same-section interval/right-censored bounds with frozen numeric depth, real/test exclusions, independent source reviews, scope/clock/recurrence guards, simulated hindcast versus actual forecast provenance and immutable byte/code hashes. No DB write, training admission, runtime model replacement or new deployment. 26 tests pass, including mutation-during-build lineage and sanitized-output checks. Actual authorized shared export has three pending follow-ups across reports #26/#29, no numeric depths and zero eligible episode candidates. Real observed outcomes and calibrated prediction improvement remain open; source/record-ID clarification is pending. [Evidence and reproducible contract](evaluations/pasig-recession-collection-readiness-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Pasig expiry v3 and geometry-derived locality accepted
+
+- Repair transient null caching without moving original forecast clocks; reconcile submitted locality to final validated geometry through the reviewed COD/PSGC catalog and auditable, clock-preserving corrections. #36 recovers pooled ML; reports #29/#30 now resolve to Manggahan and #50 receives cross-location ML. When ML abstains and no timer exists, use the existing configured retention deadline from zone activation, separately labelled from subsidence. #47/#49/#54/#55/#56 become Unconfirmed, with pending claims unreviewed. Shared API revision `lanes-api-subsidence-v3-20261011-1350` serves 100%, both cloud jobs use the matching image, and minute expiry succeeds. Repeatable-read acceptance finds 17 active Pasig zones, all with ML deadlines, zero unscheduled. Local Info shows the saved chosen forecast/calculation; 166 native backend/database checks, 62 distinct model checks across runs, 66 responsive scenarios and six actual local desktop/mobile workflows pass. Migration head and dependencies unchanged; hosted frontend remains rollout 004. [Acceptance and release](evaluations/pasig-subsidence-v3-acceptance-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- Implement and evaluate an optional nondecreasing depth-centre candidate offline. The constraint is inactive, shallow/deep medians remain about 1.5% apart, and none of its forward-time folds qualify. No runtime artifact promotion or demonstrated accuracy gain. Add a [reviewed observation collection guide](guides/pasig-recession-observation-collection.md); manual test reports and administrative expiry cannot become clearance ground truth. Scientific accuracy remains open. [Candidate evidence](evaluations/pasig-depth-shape-candidate-20261011/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 11: Pasig prediction availability and depth research completed
+
+- Read-only connected DB/protected production audit finds 22 active Pasig zones: 15 saved ML forecasts and seven unscheduled null fallbacks. Confirm #36 caches a transient early-clock rejection; distinguish pending subsided follow-up, conflicting Rosario/Manggahan records and legacy missing observation audits. Reproduce zero depth effect in the pooled model and only about 1.5% median change from gutter to knee in an unseen-location depth candidate. Three shared historical outcomes and uncalibrated uncertainty limit the scientific model. Save [individual record/numerical evidence](evaluations/pasig-subsidence-availability-audit-20261011.md) and [primary-source research with proposed fixes/model sequence](research/pasig-flood-recession-depth-and-availability-20261011.md). Implementation, evidence correction and validation remain open; no runtime/model/schema/dependency/cloud or flood-record mutation. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 11: Modest navigation width and smaller outer margin
 
@@ -121,7 +150,7 @@
 
 ### October 9: Earlier fabricated plotting demonstration (subsequently rejected)
 
-- The labeled synthetic Quirino Avenue article goes through normal RSS capture, extraction, checked bundled OSM/NOAH, audit evidence validation and automatic PostGIS publication. Zone 55 is present in public and staff APIs, with polygon/core and finite expiry. Publisher/provider responses are offline fixtures; 17 demo/guard checks pass. Shared data and original historical article are preserved. Public preview returns 200; browser acceptance remains open. [Demo links and assumptions](guides/local-news-replay.md#october-9-developer-requested-active-plotting-simulation). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- The labeled synthetic Quirino Avenue article goes through normal RSS capture, extraction, checked bundled OSM/NOAH, audit evidence validation and automatic PostGIS publication. Zone 55 is present in public and staff APIs, with polygon/core and finite expiry. Publisher/provider responses are offline fixtures; 17 demo/guard checks pass. Shared data and original historical article are preserved. Public preview returns 200; browser acceptance remains open. [Demo links and assumptions](guides/local-news-replay.md#october-9-superseded-fabricated-active-plotting-demonstration). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 9: Prepare developer-selected September 24 archived map inspection
 

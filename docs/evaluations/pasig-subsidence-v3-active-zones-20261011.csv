@@ -1,0 +1,18 @@
+zone,depth,barangays,method,deadline,reference_basis,prediction_as_of_at,quantiles
+34,half-knee,Oranbo / San Antonio / Ugong,ml_pooled,2026-10-12T10:25:27.188332+00:00,registration_proxy,2026-10-11T02:36:18.477070+00:00,3
+35,half-tire,Bagong Ilog / Caniogan,ml_pooled,2026-10-12T10:27:38.765083+00:00,registration_proxy,2026-10-11T02:38:30.053821+00:00,3
+36,half-knee,Maybunga / Ugong,ml_pooled,2026-10-12T10:29:36.281286+00:00,registration_proxy,2026-10-11T02:40:27.570024+00:00,3
+37,gutter,Rosario,ml_cross_location,2026-10-12T17:23:06.051004+00:00,registration_proxy,2026-10-11T02:42:03.753467+00:00,3
+38,gutter,Caniogan / Maybunga,ml_pooled,2026-10-12T10:32:27.895013+00:00,registration_proxy,2026-10-11T02:43:19.183751+00:00,3
+39,knee,Caniogan / San Miguel,ml_pooled,2026-10-12T10:33:20.220639+00:00,registration_proxy,2026-10-11T02:44:11.509377+00:00,3
+40,neck,Pinagbuhatan,ml_pooled,2026-10-12T10:34:18.382425+00:00,registration_proxy,2026-10-11T02:45:09.671163+00:00,3
+41,tires,Bambang / Santa Rosa / Sumilang,ml_pooled,2026-10-12T10:35:45.577082+00:00,registration_proxy,2026-10-11T02:46:36.865820+00:00,3
+42,half-knee,Bambang,ml_cross_location,2026-10-12T16:52:45.174116+00:00,submission_proxy,2026-10-11T02:50:43.443321+00:00,3
+43,half-knee,Pinagbuhatan,ml_cross_location,2026-10-12T16:52:45.417111+00:00,submission_proxy,2026-10-11T02:50:50.973882+00:00,3
+44,half-tire,Kalawaan,ml_cross_location,2026-10-12T16:08:48.933139+00:00,submission_proxy,2026-10-11T02:50:54.844993+00:00,3
+46,half-knee,Ugong,ml_cross_location,2026-10-12T17:04:45.607439+00:00,submission_proxy,2026-10-11T03:11:04.998136+00:00,3
+48,half-knee,Ugong,ml_cross_location,2026-10-12T17:10:24.485553+00:00,submission_proxy,2026-10-11T03:11:10.218406+00:00,3
+50,gutter,Manggahan,ml_cross_location,2026-10-12T17:54:41.217863+00:00,submission_proxy,2026-10-11T04:17:31.320056+00:00,3
+51,gutter,Bagong Ilog,ml_cross_location,2026-10-12T17:33:14.506967+00:00,submission_proxy,2026-10-11T04:17:36.426888+00:00,3
+52,half-knee,Bagong Ilog / Caniogan,ml_pooled,2026-10-12T06:09:49.319445+00:00,submission_proxy,2026-10-11T04:17:39.952147+00:00,3
+53,half-knee,Caniogan,ml_cross_location,2026-10-12T13:06:10.771313+00:00,submission_proxy,2026-10-11T04:17:43.075562+00:00,3

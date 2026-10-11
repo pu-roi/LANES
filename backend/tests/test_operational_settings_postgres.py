@@ -196,6 +196,9 @@ def test_fresh_existing_support_refreshes_only_its_saved_policy(isolated_db):
     original = zone.expires_at
     config = settings.read_configuration(db)
     config.evidence_expiry_minutes["knee"] = 30
+    # This verifies configured fixed-evidence refresh. Canonical locality
+    # repair can now qualify the separate ML path, which has its own tests.
+    config.pasig_ml_expiry_enabled = False
     settings.save_configuration(db, ConfigurationUpdate(revision=1, settings=config), actor_id=admin.id)
     db.refresh(zone)
     assert zone.expires_at == original  # A settings edit never extends/revives old evidence.

@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 10, 2026, 9:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 11, 2026, 2:02 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 11 expiry v3 storage audit:** No SQLAlchemy model, Alembic migration, table, column or index changed. A fresh disposable PostGIS database successfully applied all existing migrations through `d7e4b9a21c60`; shared read-only acceptance confirms the same head. Existing expiry-policy audit JSON now retains selected calculations/locality/depth and explicit fallback basis. `RECONCILE_REPORT_LOCALITY` uses existing immutable audit storage for old/new labels, final geometry fingerprint, PSGC identities and preserved clocks. Label changes preserve source `updated_at`; accepted review and training admission remain separate. [Acceptance and storage tests](../evaluations/pasig-subsidence-v3-acceptance-20261011.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Pre-push migration audit:** A fresh disposable PostGIS database successfully applied the existing Alembic chain to head during the repeated 63-case native acceptance run, then was removed. No production database/schema change or new migration was required. [Evidence](../evaluations/pasig-ml-automatic-expiry-20261010.md#documentation-and-pre-push-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
