@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+### October 12: PR #128 merge-base discrepancy corrected
+
+- GitHub uses an older base (`0400eef`) from the two competing merge bases after Jace integration, reproducing twelve conflicts despite the clean local automatic preview. Synchronize current main history into `roi-branch`; the automatic merge preserves the exact application/document tree before adding this audit. Correct the premature GitHub-readiness claim and require a live PR metadata check after push. Source, dependencies and schemas are unchanged; previous acceptance remains applicable. [Cause and recovery](evaluations/roi-team-integration-20261012.md#conflict-resolution-and-retained-behavior). The developer retains the final merge into main. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ### October 12: Teammate updates integrated into Roi branch
 

@@ -1,9 +1,10 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12: Roi team integration
 
+- [x] Reproduce PR #128's twelve conflicts using GitHub's selected merge base; synchronize current main history into Roi with an unchanged file tree before audit notes. Check live PR metadata after pushing before the final manual-main handoff. [Recovery record](evaluations/roi-team-integration-20261012.md#conflict-resolution-and-retained-behavior). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Commit/push existing News Intelligence work first (`c32646d`); review refreshed Jace/Chris branches and integrate compatible Jace changes into `roi-branch`. Chris is already an ancestor. Preserve both documentation histories and resolve duplicate bug identifiers. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Repair the mobile report-dialog overlap found during screenshot review; verify the final source with TypeScript, scoped lint, 133 backend checks, clean dependency install and existing migrations on disposable PostGIS. Accept 103 distinct desktop/mobile browser cases across combined/final runs, retaining three intentional skips and documenting the serial retry. [Integration record](evaluations/roi-team-integration-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Developer manually merges the accepted `roi-branch` into `main`; deployment and adaptive trigger activation follow their separate coordinated release gates. [@roicambe](https://github.com/roicambe) (Roi Cambe)

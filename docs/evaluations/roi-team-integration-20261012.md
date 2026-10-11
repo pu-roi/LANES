@@ -1,6 +1,6 @@
 # Roi branch team integration — October 12, 2026
 
-> **Last Updated:** October 12, 2026, 12:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 12:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 The developer authorized pushing current News Intelligence work before integrating all compatible teammate updates into `roi-branch`. The developer will merge this branch into `main` manually. Cloud deployment and the adaptive scheduler trigger remain separate release steps.
 
@@ -12,6 +12,10 @@ The developer authorized pushing current News Intelligence work before integrati
 - `main`, inspected at `d5c1e9d`, has the same tree as Roi's last published `aeb8ed2` release. This task does not publish or deploy to it.
 
 ## Conflict resolution and retained behavior
+
+**PR #128 continuation (October 12, 12:55 AM PHT):** The initial local merge preview was clean, but calling the branch ready for GitHub was premature. GitHub reports `mergeable=false` at the unchanged `main` (`d5c1e9d`) and Roi (`87647ab`) tips. There are two best merge bases: `aeb8ed2` and `0400eef`. The GitHub comparison selects `0400eef`; explicitly using that base locally reproduces the exact twelve conflicts shown in the PR (nine documentation files and three News Intelligence component/test files). Default local Git combines the bases and returns Roi's existing tree instead. The history was created by independently merging Roi commits into main and later bringing older main history back through Jace.
+
+Synchronizing `origin/main` into `roi-branch` gives GitHub one current base. The automatic synchronization is verified to preserve the exact file tree before the audit notes are added; no source changes, dependency edits or schema changes are needed. Existing tests remain applicable and are not rerun for history/documentation only. Live PR metadata must be checked after pushing before reporting merge readiness; the final merge into main remains the developer's action. See [PR #128](https://github.com/pu-roi/LANES/pull/128).
 
 Source code merged automatically. Eight documentation files overlapped: the index, feature reference, bug log, database plan, system documentation, progress, task plan and tech stack. Both branches' records and original authorship are retained. Roi's news event-location helper remains alongside Jace's transaction-staged status notifications; adaptive scheduling and the two-tab News Intelligence page remain intact.
 
