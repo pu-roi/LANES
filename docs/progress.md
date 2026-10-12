@@ -1,6 +1,22 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: roi-branch publication package
+
+The developer explicitly requested documentation synchronization followed by publication to `roi-branch`. The package includes the verified Gemini weather service/public error and responsive layout repair, prior encrypted runtime configuration/rotation records, schema/quota research, and existing feed summary/sidebar/Local Updates spacing edits. No dependency, SQLAlchemy definition or migration change; plaintext credential scan passes. Earlier verification is 151 backend checks and six responsive weather cases plus TypeScript/scoped weather lint. The separate unqualified auditor branch remains unmerged, 429 blocks live acceptance (shared 3/12), and cloud release is not part of this push. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Public weather error repair and measured Gemini quotas
+
+**October 13 weather/Gemini follow-up (roi-branch, local):** Public weather errors now use a safe message; backend explanations use Gemini with cache/cooldowns and strict output. 151 backend checks and TypeScript/scoped lint pass; six responsive cases pass for desktop/mobile errors, success and missing forecast. Fresh captured-news audit still returns 429 (shared 3/12 POSTs); scheduled worker extracted 11 articles with zero audits, so live Gemini news acceptance remains blocked. Direct issuing-project quota read confirms Flash 5/minute, 20/day; usage/remaining is unknown. Developer-authorized roi-branch publication is prepared; cloud deployment remains pending. [Follow-up verification](evaluations/gemini-weather-followup-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Gemini structured-request research
+
+Reviewed Google documentation and firsthand forum/GitHub reports, inspected the exact schema and current serving/worker images, and ran four bounded synthetic controls without DB writes. The same request succeeds with a minimal schema and fails with the full LANES schema. Two provider-demand 503 results prevent identifying a specific failing constraint. The proposed Gemini wire projection retains strict backend/evidence gates and requires real single/eight-claim qualification before release or historical replay. Research is complete; repair is pending. [Gemini request investigation](research/gemini-news-audit-invalid-argument-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Gemini selected for news auditing
+
+Local/default and existing isolated-preview configuration, the actual API serving revision and news worker use the replacement Gemini key (issuing project number `32816280739`, Secret Manager version 2). The old deployment version is destroyed; the developer confirmed deleting the original issuing key. Basic generation and health pass, resolving the original 402 billing error. The LANES structured audit still returns generic 400 INVALID_ARGUMENT; eight-claim/model and historical activation acceptance remain unverified. Earlier 123 deterministic checks cover unchanged source. [Runtime record](guides/news-gemini-runtime.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Goal status: Implementation complete; remaining live verification skipped by developer.** The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

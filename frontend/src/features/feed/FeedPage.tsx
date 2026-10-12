@@ -407,7 +407,7 @@ export function FeedPage() {
 
           <div className="px-3 sm:px-0 pt-3 sm:pt-4">
             {filtersOpen && <CommunityFeedFilters filters={filters} nearby={tab === 'nearby'} onChange={next => updateFeedQuery(next)} />}
-            <p className="text-xs text-gray-500 mb-3" aria-live="polite">{filters.sort === 'newest' ? 'Newest first' : 'Oldest first'} · {filters.dateRange === 'all' ? 'All time' : filters.dateRange === 'today' ? 'Today (UTC)' : filters.dateRange === '24h' ? 'Last 24 hours' : filters.dateRange === '3d' ? 'Last 3 days' : 'Last 7 days'}{activeFilterCount > 0 && !filtersOpen ? ' · Filters applied' : ''}</p>
+            <p className="sr-only" aria-live="polite">{filters.sort === 'newest' ? 'Newest first' : 'Oldest first'} · {filters.dateRange === 'all' ? 'All time' : filters.dateRange === 'today' ? 'Today (UTC)' : filters.dateRange === '24h' ? 'Last 24 hours' : filters.dateRange === '3d' ? 'Last 3 days' : 'Last 7 days'}{activeFilterCount > 0 && !filtersOpen ? ' · Filters applied' : ''}</p>
             <div className="mb-3 xl:hidden"><LocalUpdates collapsible /></div>
             {/* Create Post Input Trigger */}
             <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-3 sm:p-3.5 mb-2.5 sm:mb-3 flex items-center gap-2.5 sm:gap-3">

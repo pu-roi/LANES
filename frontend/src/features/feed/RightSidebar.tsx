@@ -83,11 +83,11 @@ export function RightSidebar() {
     <aside
       aria-label="Community updates"
       tabIndex={0}
-      className="w-[376px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto overscroll-contain scrollbar-auto-hide hidden xl:flex py-1 space-y-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+      className="w-[376px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto overscroll-contain scrollbar-auto-hide hidden xl:flex px-4 py-6 space-y-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
     >
       
       {/* Weather Widget */}
-      <div className="bg-white rounded-xl border border-gray-200/80 p-3.5 sm:p-4 shadow-xs">
+      <div className="bg-white rounded-xl border border-gray-200/80 p-5 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
           <CloudRain className="w-4.5 h-4.5 text-blue-500" />
           <h3 className="text-sm font-bold text-gray-900">Current Weather</h3>
@@ -123,7 +123,7 @@ export function RightSidebar() {
       <LocalUpdates />
 
       {/* Top Reporters Leaderboard */}
-      <div className="bg-white rounded-xl border border-gray-200/80 p-3.5 sm:p-4 shadow-xs">
+      <div className="bg-white rounded-xl border border-gray-200/80 p-5 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
           <Trophy className="w-4.5 h-4.5 text-yellow-500" />
           <h3 className="text-sm font-bold text-gray-900">Top Reporters</h3>

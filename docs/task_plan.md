@@ -1,8 +1,25 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Goal status: Implementation complete; remaining live verification skipped by developer.** The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+## October 13: Public weather/Gemini follow-up
+
+- [x] Trace public raw-error leak to independent hardcoded OpenRouter weather endpoint; replace with Gemini service, bounded cache/cooldowns and safe responsive failures on roi-branch. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Research official rate/schema docs; read issuing-project quotas and latest actual worker counters. Recheck captured claim once after cooldown: 429, shared count 3/12. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Confirm live quota usage and validated news evidence before releasing the unqualified auditor repair; qualify real weather generation when allowance is available. No automatic fallback/billing change. [Follow-up verification](evaluations/gemini-weather-followup-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prepare all primary roi-branch changes for the explicitly requested Git publication: synchronize records, verify branch/remote, encrypted configuration and unchanged dependencies/database definitions. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Deploy the public-weather fix; hosted page is unchanged until release. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Gemini auditor configuration
+
+- [x] Replace active OpenRouter selection with Gemini locally, in the existing historical preview and on Cloud Run API/news worker; verify the actual serving revision, secret reference and health. [Gemini runtime record](guides/news-gemini-runtime.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify 123 existing auditor/batch/hybrid tests with the dotenvx launcher; retain the real audit HTTP-402 billing failure. No schema/dependency/image release or Git push. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Replace the original billing-blocked key with the supplied new-project key locally/cloud/preview; destroy Secret Manager version 1 after verified version-2 binding. Developer confirms deletion of old issuing key; basic new-key generation succeeds. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Research generic Gemini HTTP 400 reports and inspect local/deployed v11 requests. Four bounded POSTs establish full-schema rejection versus minimal-schema success; exact keyword/bound isolation remains unproved after two 503 responses. [Gemini request investigation](research/gemini-news-audit-invalid-argument-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement and verify Gemini schema projection and provider diagnostics/readiness/circuit fixes on separate `codex/gemini-audit-repair` (`df16a02`); 243 targeted/234 native/two responsive checks pass there. This branch is unmerged into roi-branch. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Qualify actual Gemini single/eight/negative evidence, then match API/worker source images before separately scoped historical acceptance. Latest captured claim is 429 (shared 3/12); no successful structured audit or Santo Domingo replay is claimed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier OpenRouter task: Implementation complete; remaining live verification skipped by developer.** The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12 evening: End-to-end news reliability goal
 
