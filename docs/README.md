@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:34 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**PR #133 synchronization:** Current main history is integrated into roi-branch without source changes, preserving both Gemini repairs. The deleted temporary branch is no longer needed; its commits survive in roi history. [Resolution evidence](evaluations/gemini-repair-integration-20261013.md#pr-133-main-history-synchronization). No new inference or cloud release. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current combined integration:** Gemini news-auditor repair `df16a02` is integrated into roi-branch alongside weather repair `680118b`. Canonical evidence validation/publication gates remain strict. Both Gemini schema and weather settings are retained in `.env.example`; encrypted runtime configuration and existing feed edits are preserved. Live qualification remains blocked at shared 3/12 POSTs; no deployment or additional inference. [Merge acceptance](evaluations/gemini-repair-integration-20261013.md), [news repair plan](plans/news-gemini-audit-repair.md), [initial qualification](evaluations/news-gemini-qualification-20261013.md), [latest quota/weather evidence](evaluations/gemini-weather-followup-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
