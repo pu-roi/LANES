@@ -45,7 +45,7 @@ export function LocalUpdates({ collapsible = false }: { collapsible?: boolean })
       <ul className="divide-y divide-gray-100">
         {query.data.items.map((article) => {
           const link = publisherLink(article.source_url);
-          return <li key={article.id} className="py-3 first:pt-0 last:pb-0">
+          return <li key={article.id} className="py-2.5 first:pt-0 last:pb-0">
             {link ? <a href={link} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-start gap-2 rounded text-sm font-medium leading-relaxed text-gray-900 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
               <span className="min-w-0 break-words">{article.title}<span className="sr-only"> (opens in a new tab)</span></span>
               <ExternalLink className="mt-1 size-3.5 shrink-0 text-gray-400" aria-hidden="true" />
@@ -63,16 +63,16 @@ export function LocalUpdates({ collapsible = false }: { collapsible?: boolean })
       </div>
     </>}
   </div>;
-  return <section aria-label="Local Updates" className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+  return <section aria-label="Local Updates" className="rounded-xl border border-gray-200/80 bg-white p-3.5 sm:p-4 shadow-xs">
     {collapsible ? <details className="group">
-      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded font-semibold text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 [&::-webkit-details-marker]:hidden">
-        <Newspaper className="size-5 text-purple-500" aria-hidden="true" />
+      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded font-bold text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 [&::-webkit-details-marker]:hidden">
+        <Newspaper className="size-4.5 text-purple-500" aria-hidden="true" />
         <span className="flex-1">Local Updates</span>
         <ChevronDown className="size-4 text-gray-500 group-open:rotate-180" aria-hidden="true" />
       </summary>
-      <div className="pt-3">{content}</div>
+      <div className="pt-2.5">{content}</div>
     </details> : <>
-      <h3 className="mb-4 flex items-center gap-2 font-semibold text-gray-900"><Newspaper className="size-5 text-purple-500" aria-hidden="true" />Local Updates</h3>
+      <h3 className="mb-3 flex items-center gap-2 text-sm font-bold text-gray-900"><Newspaper className="size-4.5 text-purple-500" aria-hidden="true" />Local Updates</h3>
       {content}
     </>}
   </section>;

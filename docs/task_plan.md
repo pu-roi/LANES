@@ -1,6 +1,6 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 1:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Goal status: Implementation complete; remaining live verification skipped by developer.** The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -14,7 +14,19 @@
 - [x] Complete ordered five/twenty-six-checkpoint real replays on fresh DBs, inspect actual initial/later/final zones and authenticated History on desktop/mobile, and prove unchanged inputs create no duplicates/repeated completed audits. V19 creates three zones/events, all correctly expired/ended by the final tick. Nine real POSTs/57 claims, no timeout; original primary snapshot remains unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Implement separate conservative v20 generated-intersection construction and v11 occurrence/parent evidence locators; verify real-source strict containment, 161 focused and 35 native preflight checks. Complete the requested [manual chat review](evaluations/news-chat-source-review-20261013.md) without audit/publication writes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Verify final code with 507 combined checks, fresh v20 September 24 admission/idempotency replay, actual current asset hashes and current-code desktop/mobile 3004/8004 previews. Preserve v19 September 9 data and all prior snapshots. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prepare authorized `roi-branch` publication: preserve primary layout changes, resolve documentation conflicts, verify immutable Git asset bytes and finish merged TypeScript/news lint plus all 46 responsive cases across the main run/follow-up. No cloud deployment. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - **Skipped by developer:** Current v11 real qualification and fresh September 9 Santo Domingo target activation/depth-update replay. Latest confirmed allowance is 50/50/0; automatic acceptance remains unverified. All implementation/manual/independent checks are complete. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: News reliability repair research
+
+- [x] Inspect implementation/replay evidence, measure three saved audit payloads, verify Pasig-only placement catalog and review official/OpenRouter/GitHub/Reddit/DEV/Stack Overflow sources. Save the [ordered repair proposal](research/news-audit-reliability-20261012.md); no new inference or product changes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Superseded by completed implementation/current live-test skip above:** Implement and qualify request-phase diagnostics/client reuse, compact evidence-preserving batches and measured free-model selection under a bounded live request budget. Separately qualify Malabon/QC placement assets and repair preview failures before repeating positive map/history/depth-update acceptance. Scope and gates remain proposed; no blanket timeout increase or synthetic approval. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12 evening: Ordered historical replay retry
+
+- [x] Run September 24–25 first and September 9 second in fresh loopback databases using existing migrations and scheduled workers; retain previous source captures/results/snapshot. Six refusal checks and unchanged-checkpoint duplicate checks pass. [Evidence](evaluations/news-retry-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Recheck actual provider quota and trace the paired observations: 20 requests/131 dispatched claim attempts, four real verified text alerts, five/33 final locations, zero zones/history. The original 19-inch/10-inch claims expire after audit failures; this retry is not quota-exhaustion blocked. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Skipped by developer for this task; retained original criterion:** Positive real zone/history/depth-update acceptance: resolve supported footprint and audit reliability issues under a separately agreed repair scope. Do not manufacture geometry, alter source times, force approvals or treat extraction as acceptance. Preview navigation failures are retained in the evaluation. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12: Batch news audits with quota-aware retries
 
@@ -22,7 +34,7 @@
 - [x] Implement same-version/policy groups of eight eligible claims, strict per-candidate hash/evidence validation and single-candidate compatibility; preserve independent immutable evaluations and current publication/plotting services. [Plan](plans/news-batch-auditing.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Persist safe quota/cooldown state and bounded failure diagnostics in existing JSON; count attempts only on dispatch, stop on HTTP 429, retain evidence expiry and atomic/owned queue recovery. Extend existing protected Overview diagnostics and prevent cooldown-only controller launches. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Verify 492 offline, 226 native PostgreSQL and 14 desktop/mobile cases, TypeScript/scoped lint and unchanged migration/dependency state. Replay real historical sources through fresh scheduled-worker databases and expose a separate local preview; preserve all source facts and the current snapshot. [Evidence](evaluations/news-batch-audit-20261012/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Obtain real provider verification after quota recovers and observe actual map/history outcomes for the 19-inch/10-inch pair. Current real allowance 52/50/0 blocks positive acceptance; no NLP-only approval or deduplication/placement change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Observe actual map/history outcomes for the 19-inch/10-inch pair. Evening quota recovers and four other claims verify; the pair expires after failed audits and no eligible footprint creates a first zone. No NLP-only approval or deduplication/placement change. [Retry evidence](evaluations/news-retry-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Coordinate the separate matching API/worker/frontend cloud release. The developer's subsequent Git push request does not authorize deployment. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12: Historical scheduled news workflow

@@ -1,6 +1,13 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 1:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-161: Windows Git normalization changes immutable NCR catalog bytes.**
+
+- **Status:** Resolved for publication. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem/RCA:** Pre-push staged-object comparison found the new NCR manifest bytes differed from the locally verified asset. Existing Git attributes protected the older catalog directory, but not the new root and nested NCR JSON files; automatic line-ending conversion changes raw-byte SHA-256 identities.
+- **Solution:** Extend `.gitattributes` with `-text` rules for root/nested `backend/runtime_data/barangay-ncr` JSON. Re-stage original bytes; all nine staged asset objects now match the verified working files exactly. No geometry, manifest definitions or evidence policies were changed.
+- **Files/Verification:** `.gitattributes`; nine staged-asset byte comparisons, existing runtime hash verifier and catalog regressions. Keep source-license/provenance receipts and all exclusions.
 
 **BUG-159: Generated corridor overlay introduces vertices outside its exact parent.**
 
@@ -35,6 +42,10 @@
 - **Status:** Resolved locally. **Severity:** Low (test fixture). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
 - **Problem/RCA:** The uniform primary map mock returned 200 but first visual rendering exceeded the existing 1.5-second budget. Correct OSM fallback then used real colorful tiles; those colors violated the test's flood-only pixel ratio. Repeat failure and trace are retained.
 - **Solution/Files:** `news-zone-map.spec.ts` also supplies a uniform fallback tile. Product map behavior and assertions stay intact. Desktop/mobile follow-up passes two tests; actual preview retains the real OSM fallback.
+
+**Historical audit/placement research continuation — Investigating; High; [@roicambe](https://github.com/roicambe) (Roi Cambe).** Problem: real audits still time out or fail strict fact checks with quota available; verified Malabon/QC claims still cannot plot. RCA: HTTP-200 timeout records omit phase/model/progress, nonstreaming audit uses a sixty-second total bound and repeated client creation, measured batches contain repeated evidence/derived fields, and qualified placement catalog is twenty Pasig polygons only. Provider queue/generation versus body transport delay is not yet proven. Proposed strategy: instrument/reuse clients, compact without losing source context, benchmark specific free models, then qualify separate parent-city/PSGC assets and investigate preview delivery. Files changed in this continuation: research/index/task/progress/issue docs only; ignored read-only measurement helper and local metrics. No product fix or additional live audit. [Research and completion gates](../research/news-audit-reliability-20261012.md).
+
+**Historical scheduled-news workflow — October 12 evening follow-up. Status: Investigating. Severity: High. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).** Restored quota enables twenty actual batch calls; final provider GET is 20 used / 50 limit / 30 remaining. Four claims pass real verification, but Rizal/F. Sevilla/G. Araneta need valid barangay boundaries and Marcos Underloop remains ungrounded. The 19-inch/10-inch pair expires after timeout/missing-result retries; seven other terminal responses fail identity/locality/depth-qualifier checks. Five/33 cards and zero zones/history survive the ordered fresh replay. Strategy: preserve these stage-specific failures and require separate repair scope, rather than bypassing gates. Only ignored harnesses and evaluation/docs changed; no application/model/migration/dependency/provider change. Cold/blank preview navigation and MapTiler HTTP-403 fallback are retained as separate UI/runtime limitations. [Exact cases and verification](../evaluations/news-retry-20261012.md).
 
 **Repeated per-claim audits and quota diagnostic loss — Resolved locally. Severity: High. Author: [@roicambe](https://github.com/roicambe) (Roi Cambe).**
 

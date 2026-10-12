@@ -1,8 +1,8 @@
 # Batch news auditing with quota-aware retries
 
-> **Last Updated:** October 12, 2026, 4:06 AM
+> **Last Updated:** October 12, 2026, 9:13 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **State:** Implemented and verified locally on `roi-branch`; the developer subsequently authorized Git publication. Real positive plotting acceptance remains blocked by provider quota. Cloud rollout remains separate.
+> **State:** Implemented and verified locally on `roi-branch`; the developer subsequently authorized Git publication. October 12 evening quota recovery permits four real claim verifications, but audit reliability and footprint gates still prevent positive plotting/depth acceptance. Cloud rollout remains separate. [Ordered retry](../evaluations/news-retry-20261012.md).
 
 ## Contract and workflow
 
@@ -30,7 +30,7 @@ Grouped queue leases are atomic. A database-scoped session advisory lock seriali
 - [x] Missing/unknown/duplicate/malformed results, wrong hashes, cross-claim evidence, truncation/size limits, provider errors, timeout, quota exhaustion/recovery, expiry, leases, interrupted work and concurrency checked with isolated fixtures.
 - [x] Native queue/publication and desktop/mobile status verification; authentication/read-only response remains protected. Existing migrations apply cleanly; no model, migration, dependency or gathering-policy change.
 - [x] Historical reports replayed through normal scheduled workers into fresh databases, without synthetic auditor approvals. A separate port-3004 preview uses the September 9 replay database; existing port-3000 snapshot configuration is preserved.
-- [ ] Real successful provider verification followed by map/history creation and observed 19-inch-to-10-inch update outcome. Current real allowance is exhausted; do not claim positive acceptance or change placement/deduplication to obtain it.
+- [ ] Real successful provider verification followed by map/history creation and observed 19-inch-to-10-inch update outcome. Evening allowance recovers and four claims verify, but audit reliability/footprint gates still prevent zones; do not claim positive acceptance or change placement/deduplication to obtain it. [Retry evidence](../evaluations/news-retry-20261012.md).
 - [ ] Separate coordinated API/worker/frontend cloud rollout and activation. The subsequent Git publication request does not deploy or activate these services.
 
 See [verification, commands and screenshots](../evaluations/news-batch-audit-20261012/README.md), [existing historical source qualifications](../evaluations/news-scheduled-historical-workflow-20261012.md), [OpenRouter limits](https://openrouter.ai/docs/api_reference/limits) and [structured output](https://openrouter.ai/docs/guides/features/structured-outputs).

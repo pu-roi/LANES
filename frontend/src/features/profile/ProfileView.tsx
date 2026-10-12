@@ -867,15 +867,15 @@ export default function ProfileView() {
         
         <div className="bg-transparent text-gray-900 flex flex-col items-center w-full mt-0 sm:mt-2 relative fade-in sm:pt-[70px]">
           <div className="flex w-full px-0 sm:px-4 lg:px-4 xl:px-8 pt-0 sm:pt-2 max-w-[1600px]">
-          <LeftSidebar />
-          <div className="flex-1 flex justify-center min-w-0 px-0 sm:px-4 lg:px-8 gap-6">
-            <main className="w-full max-w-[720px] bg-transparent relative">
-              <PostDetailPage postId={viewingPostId} onBack={() => setViewingPostId(null)} />
-            </main>
-            <RightSidebar />
+            <LeftSidebar />
+            <div className="flex-1 flex justify-center items-start min-w-0 px-0 sm:px-4 lg:px-8 gap-5 xl:gap-6">
+              <main className="w-full max-w-[720px] bg-transparent relative">
+                <PostDetailPage postId={viewingPostId} onBack={() => setViewingPostId(null)} />
+              </main>
+              <RightSidebar />
+            </div>
           </div>
         </div>
-      </div>
       </>
     );
   }

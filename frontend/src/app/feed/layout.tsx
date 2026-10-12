@@ -12,10 +12,10 @@ export default function FeedLayout({ children }: { children: React.ReactNode }) 
         <LeftSidebar />
 
         {/* Center & Right Wrapper */}
-        <div className="flex-1 grid grid-cols-[minmax(0,1fr)] xl:grid-cols-[minmax(0,1fr)_376px] items-start min-w-0 px-0 sm:px-4 lg:px-8 gap-6">
+        <div className="flex-1 flex justify-center items-start min-w-0 px-0 sm:px-4 lg:px-8 gap-5 xl:gap-6">
           
           {/* Main Content Area (Feed List or Post Detail) */}
-          <main className="w-full max-w-[720px] min-w-0 justify-self-center bg-transparent relative">
+          <main className="w-full max-w-[720px] min-w-0 bg-transparent relative">
             {children}
           </main>
 

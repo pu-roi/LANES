@@ -1,6 +1,6 @@
 # News reliability goal — implementation evidence
 
-> **Last Updated:** October 13, 2026, 1:56 AM
+> **Last Updated:** October 13, 2026, 2:13 AM
 > **Developer:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **State:** Implementation complete with developer-approved skipped live acceptance; publication to `roi-branch` authorized, no cloud deployment.
 
@@ -143,3 +143,9 @@ The next dependent action is real v11 qualification and a fresh current-code Sep
 The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded.
 
 The full automatic acceptance table above remains historical evidence of what was and was not proved. The scope change removes its remaining live checks from this task; it does not convert them into passing evidence. Retained acceptance is 507 final-code backend/native checks, current-source asset validation, fresh five-checkpoint September 24 admission/idempotency replay, both current-code desktop/mobile previews and separate manual source review. Preserve 186 genuine geometry exclusions, unresolved Marcos Underloop and reconstructed RSS/early GMA markup limitations.
+
+## Authorized Git integration and publication checks
+
+The developer authorized pushing to `roi-branch` after skipping remaining OpenRouter-dependent acceptance. Existing primary feed/profile styling and earlier research/replay documentation were preserved as `ac13e1c`; reliability work is `012b3b9`. Five documentation conflicts preserve both histories/current skipped status. All ten primary UI files match their saved commit exactly, and backend source is unchanged by integration. Existing lint has 52 errors in both base and edited feed/profile files, with zero introduced findings; current news files pass scoped lint, and merged TypeScript passes. The initial 30-case browser invocation targeted stopped port 3000 and failed connection setup; those artifacts are retained. The merged browser checks use the active isolated port-3004 frontend with mocked API writes. Pre-push also caught and fixed Git line-ending conversion for the new immutable NCR assets; all nine staged objects match original verified bytes. No runtime dependency or migration-definition change and no secret-key pattern detected in staged new work. The document records publication readiness; Git remote state is the authority for completed publication.
+
+The merged responsive run retained **45 passed/one desktop polling failure**. Its initial mocked status remained loading; the exact cause is unestablished. A separate unchanged single-worker desktop follow-up passed **one** case in 35.8 seconds, completing all 46 distinct cases across the two runs. Original failed screenshots/trace and the prior stopped-port invocation are preserved. No test or product assertion was removed/relaxed. Merged TypeScript and scoped news lint pass. Existing 52 feed/profile lint errors are unchanged from the committed baseline, with zero introduced findings. All added relative documentation links resolve. Publishing Git does not migrate replay databases or deploy cloud services.

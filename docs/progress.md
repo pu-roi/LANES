@@ -1,8 +1,12 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 1:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Goal status: Implementation complete; remaining live verification skipped by developer.** The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Approved closure and roi-branch publication readiness
+
+The developer skipped remaining OpenRouter-dependent acceptance and authorized publication to `roi-branch`. Local implementation/manual review is complete, with 507 final backend/native checks, 46 responsive browser cases across the main run/single-case follow-up, merged TypeScript and scoped news lint. Primary feed/profile edits are preserved; earlier research/replay history survives five documentation conflicts. Existing feed lint findings are unchanged. Root/nested NCR assets now preserve raw Git bytes across Windows/Linux, verified for all nine files. No schema/dependency/cloud deployment changes; automatic Santo Domingo activation/depth-update acceptance stays skipped and unverified. [Publication checks](evaluations/news-reliability-goal-20261012.md#authorized-git-integration-and-publication-checks). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: Final-code verification and current preview
 
@@ -19,6 +23,14 @@ The default reviewed NCR registry qualifies 1,524 barangays across all seventeen
 ## October 12 evening: News reliability goal implementation checkpoint
 
 Implemented bounded request diagnostics, scoped connection reuse, credential/account quota identity, per-model recovery circuits and scheduled request/time budgets with zero-attempt deferrals. Compact eight-claim payloads shrink 39.66%/38.62%. Generalized NCR builder and parent-bound numbered-name handling qualify 692 immutable OSM polygons; a hashed multi-source registry preserves source provenance and old Pasig assets. Twelve real benchmark calls expose Apodex HTTP 400 and a Santo abbreviation evidence defect; after repair, two Dots/eight requests verify all sixteen target claims in about nineteen seconds each. Native/targeted verification and actual asset checks are recorded separately, without claiming all later changes were included in earlier counts. Geography gaps, preview/mobile verification and fresh zone/history replay acceptance remain open. [Evidence](evaluations/news-reliability-goal-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: News audit and placement repair research
+
+Completed implementation/community/official-source research and measured three saved batches without new inference/database mutations. Eight-claim user payloads are 19,860/25,069 UTF-8 bytes versus 1,999/2,710-byte articles; preparation takes milliseconds. Confirmed nonstreaming provider request, opaque shared timeout classification, random free-model attribution gap and twenty Pasig-only news polygons. Saved the [diagnostic/compact-batch/free-model/coverage repair proposal](research/news-audit-reliability-20261012.md), distinguishing demonstrated blockers from unproven delay causes. Product repairs, selected-model accuracy/reliability, new geographic assets and actual zone/history/depth-update acceptance remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12 evening: Historical news retry with restored provider quota
+
+Completed September 24–25's five checkpoints first, then September 9's 26 half-hour ticks in fresh guarded local databases. Existing migrations reach head; six target/output refusal checks and duplicate-checkpoint checks pass. September 24 saves five locations rejected by original admission; September 9 retains four versions/runs and 33 cards. Twenty actual batch requests produce four independently verified text alerts, but three missing barangay-boundary outcomes and one ungrounded underloop prevent zones/history. Both 19-inch/10-inch observations expire after actual audit failures; positive zone-update acceptance remains open. Final provider GET is 20/50/30, distinguishing this run from earlier exhaustion. Browser/preview findings are recorded without claiming complete visual acceptance. Original Zones 58/59/60, source hashes and port-3000 configuration remain preserved; application source/schema/dependencies and cloud release are unchanged. [Full retry record](evaluations/news-retry-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12: Batch audit documentation and publication checkpoint
 
