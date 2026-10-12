@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 13 Groq research:** Direct OpenAI-compatible Groq chat requests accept LANES canonical strict JSON schema. GPT-OSS transport works but status audits remain review; preview Qwen 3.8 passes captured cases with exact identity instructions. Real account limits include 1,000 OTPM. HTTPX/mock validation uses current dependencies; Groq is not an installed runtime provider and no new dependency/key setting/cloud secret was added. [Provider trial results](evaluations/gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 13 combined Gemini integration dependency audit:** News adapter/quota/circuit/readiness and Gemini weather service are combined on roi-branch. Both reuse existing httpx/Pydantic/SQLAlchemy and Python stdlib; no package, SQLAlchemy/Alembic definition or public endpoint added. Default normalized schema and explicit weather model are retained in configuration examples. Live acceptance is blocked; no cloud source/runtime mutation. [Merge checks](evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

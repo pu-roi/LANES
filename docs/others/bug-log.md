@@ -1,6 +1,13 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-162 follow-up: Current quota cause isolated; Groq alternative investigated.**
+
+- **Status:** Investigating / release blocked. **Severity:** High. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem/RCA:** Fresh Google QuotaFailure explicitly identifies Flash 20/day exhaustion; the new-format inline schema cannot be judged under 429. Groq accepts strict schema, but first Qwen batch changes raw identities and a later request exposes 1,000 OTPM, making large recurring batches unreliable.
+- **Strategy/results:** Clarify exact identity after independent evidence verification without changing acceptance; eight claims and afternoon single validate, negative remains review. Smaller output caps succeed for single claims; smaller recurring batches/ambiguous cases/weather still need qualification.
+- **Changes:** Research/evaluation and linked project records only; private no-DB harness/receipts are ignored. 12/12 requests counted, 215 offline tests pass. No production source/secret/dependency/database or runtime-provider change. [Measured trials](../evaluations/gemini-groq-live-trials-20261013.md).
 
 **BUG-162: Gemini structured flood requests fail; provider diagnostics use OpenRouter assumptions.**
 

@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 4:34 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Gemini quota isolation and Groq captured-evidence trials
+
+Official-doc research and bounded trials identify Gemini 20/day exhaustion. Groq strict canonical output passes eight original claims, the separate 10-inch afternoon single and conservative negation after explicit place-identity instructions. Account output/minute cap prevents treating eight-claim success as repeatable throughput. 12/12 total POSTs used; 215 offline tests pass. No active-provider/cloud/source changes. [Provider trial results](evaluations/gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: Resolve PR #133 conflicts against main
 

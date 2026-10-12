@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 4:34 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Latest Gemini/Groq research:** The exact Gemini blocker is daily Flash quota exhaustion (20/day). Groq accepts the full strict schema; clarified identity instructions pass eight captured claims, a separate single and conservative negation. Its 1,000 output-token/minute account cap requires smaller batches/pacing. 12/12 shared requests used; 215 offline tests pass. Runtime provider/cloud configuration unchanged. [Provider trial results](evaluations/gemini-groq-live-trials-20261013.md); [official-doc investigation](research/gemini-groq-free-auditing-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **PR #133 synchronization:** Current main history is integrated into roi-branch without source changes, preserving both Gemini repairs. The deleted temporary branch is no longer needed; its commits survive in roi history. [Resolution evidence](evaluations/gemini-repair-integration-20261013.md#pr-133-main-history-synchronization). No new inference or cloud release. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

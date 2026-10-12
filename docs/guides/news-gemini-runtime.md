@@ -1,6 +1,8 @@
 # Gemini news auditor runtime
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Latest bounded research:** Current Google failure is confirmed daily Flash quota exhaustion (20/day); do not keep retrying before reset. The shared ledger reached 12/12 including user-authorized Groq alternatives. Groq passed captured samples but remains research-only: no provider selection/secret/worker/cloud change, recurring batch and remaining acceptance pending. [Official docs and measured results](../research/gemini-groq-free-auditing-20261013.md).
 
 ## Current integrated source and retained runtime
 

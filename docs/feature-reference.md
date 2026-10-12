@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Latest provider research (October 13):** Gemini daily Flash exhaustion (20/day) is proved; the shared experimental ledger reached 12/12 including Groq alternatives. Groq accepts the canonical strict schema and the clarified identity experiment validates captured cases, but recurring throughput, remaining ambiguity and runtime integration/weather are unqualified. Existing modules and active provider configuration remain unchanged. Earlier 3/12 status notes below retain their historical scope. [Measured results](evaluations/gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current integration (October 13):** Existing news and weather modules now share the combined roi-branch source. News schema/metadata/circuit repair `df16a02` joins Gemini weather repair `680118b`; strict flood acceptance and public safe-weather failures remain intact. Live evidence remains unqualified (3/12 saved requests) and no production release is claimed. [Merge acceptance](evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
