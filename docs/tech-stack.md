@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:49 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 13 Gemini repair dependency audit:** Reuse existing httpx/Pydantic/SQLAlchemy and Python standard library. Explicit Gemini normalized/compact/inline JSON-schema projections are local wire adapters, not new libraries or canonical schema changes. Metadata/cooldown/readiness and persistent-budget verification are implemented; qualification stopped at HTTP 429 after 2/12 requests, so no model/profile or repaired cloud image is promoted. [Evidence](evaluations/news-gemini-qualification-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 13 news reliability publication audit:** Reliability diagnostics/cooldowns and conservative geometry construction use existing HTTPX, Pydantic, SQLAlchemy, Shapely and Python standard libraries. No requirement/package/lockfile/schema/migration change. `.gitattributes` preserves all nine hashed NCR JSON assets across Windows/Linux Git checkouts; reviewed source geometry and catalog identities remain unchanged. Existing frontend layout edits also add no dependency. [Evidence](evaluations/news-reliability-goal-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

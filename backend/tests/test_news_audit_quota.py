@@ -138,7 +138,8 @@ def test_status_does_not_claim_available_capacity_when_cooldown_expired(status_d
     from app.services.news_automation_service import read_news_automation
     factory = sessionmaker(bind=status_db.get_bind())
     now = datetime.now(timezone.utc)
-    service = NewsClaimAuditor()
+    service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key="synthetic-only"))
+    monkeypatch.setattr("app.services.news_claim_auditor.NewsClaimAuditor", lambda: service)
     save_quota(factory, AuditQuotaState(identity=quota_identity(service), remaining=0, checked_at=now.isoformat(),
         blocked_until=(now-timedelta(seconds=1)).isoformat(), error_code="auditor_daily_quota_exhausted"))
     monkeypatch.setattr("app.services.news_audit_quota_service.real_now", lambda: now)

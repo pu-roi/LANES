@@ -1,8 +1,16 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:49 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Goal status: Implementation complete; remaining live verification skipped by developer.** The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+## October 13: Gemini flood audit repair
+
+- [x] Implement explicit schema profiles, strict acceptance, provider metadata/account/circuit diagnostics and offline readiness; complete 239 targeted/234 native/two responsive checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Preserve original article/claim snapshots and run bounded qualification; stop after normalized 400 and compact 429 (2/12 POSTs). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Qualify evidence on single/eight/negative cases, then deploy matching API/news/expiry code and inspect actual serving/authenticated diagnostics. **Blocked; no repair deployment.** [Plan](plans/news-gemini-audit-repair.md), [results](evaluations/news-gemini-qualification-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The earlier completed/skipped OpenRouter task below is historical; this is the newly approved Gemini repair scope.
+
+**Earlier OpenRouter task: Implementation complete; remaining live verification skipped by developer.** The developer explicitly chose to skip the remaining OpenRouter-dependent qualification and fresh September 9 target replay because the account allowance is exhausted. Local implementation/manual review and independent verification are complete. Current v11 live qualification and Santo Domingo automatic zone/depth-update acceptance are **skipped and unverified**, not passed. No further provider retries or automatic follow-up are part of this task. The developer subsequently authorized Git publication to `roi-branch`; cloud deployment remains excluded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12 evening: End-to-end news reliability goal
 

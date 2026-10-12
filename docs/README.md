@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:49 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Gemini repair (October 13):** Implementation and offline verification complete; live qualification blocked by HTTP 429 after 2 of 12 authorized POSTs. No repair deployment. 239 targeted, 234 native and two desktop/mobile checks pass. Normalized still returns 400; compact returns 429; stop without inline/model fallback. [Qualification evidence](evaluations/news-gemini-qualification-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Gemini documents: [repair plan](plans/news-gemini-audit-repair.md), [qualification](evaluations/news-gemini-qualification-20261013.md), [runtime guide](guides/news-gemini-runtime.md), [schema investigation](research/gemini-news-audit-invalid-argument-20261013.md).
 
 **Final-code verification:** Current final-code verification passes **507 combined backend/native checks**. A fresh v20 September 24 normal-worker replay completes five checkpoints/five locations/eleven negative decisions without audits or zones, and unchanged input remains idempotent. Current-code 3004/8004 desktop/mobile preview checks display September 24 first, then preserved v19 September 9 data (33 locations/three ended events/zero active zones). Actual account GET at 01:34 PHT remains 50/50/0; cooldown through 02:04 PHT. The developer skipped V11 live qualification and a fresh eligible Santo Domingo target replay; these remain unverified. Git publication to `roi-branch` is authorized; merged TypeScript/news lint and 46 responsive cases across main/follow-up runs pass. Primary feed/profile edits are preserved. No cloud deployment. [Completion audit](evaluations/news-reliability-goal-20261012.md#final-code-completion-audit-and-latest-isolated-checks). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

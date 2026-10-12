@@ -344,7 +344,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                     for owned, article, claim in group:
                         save(owned, article, claim, reason=str(exc))
                     continue
-                if getattr(auditor, "config", None) and auditor.config.provider == "openrouter" and not auditor.config.error_code():
+                if getattr(auditor, "config", None) and auditor.config.provider in ("openrouter", "gemini") and not auditor.config.error_code():
                     quota = await check_quota(session_factory, auditor, client=client)
                     from app.services.news_audit_quota_service import free_router
                     if quota.remaining == 0 and free_router(auditor) and not deadline(quota.blocked_until):

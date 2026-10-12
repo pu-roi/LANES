@@ -60,6 +60,30 @@ async function setup(page: Page, readStatus: () => object, readResults: () => ob
   });
 }
 
+test("Gemini configuration cooldown shows unknown allowance on desktop/mobile", async ({ page }, info) => {
+  const state = status();
+  state.audit = { state: "model_cooldown", checked_at: "2026-10-13T03:00:00Z", next_check_at: null,
+    used: null, limit: null, remaining: null, request_count: 1, claims_dispatched: 8,
+    http_status: 400, error_code: "auditor_http_error", model_next_check_at: "2026-10-13T04:00:00Z",
+    actual_model: "gemini-3.8-flash" };
+  const methods: string[] = [];
+  page.on("request", request => { if (request.url().includes("/admin/news/")) methods.push(request.method()); });
+  await setup(page, () => state);
+  await page.goto("/admin/news");
+  await page.getByText("Run details and diagnostics", { exact: true }).click();
+  const diagnostics = page.getByTestId("news-audit-diagnostics");
+  await expect(diagnostics).toContainText("gemini-3.8-flash");
+  await expect(diagnostics).toContainText("auditor_http_error");
+  await expect(diagnostics).toContainText("400");
+  await expect(diagnostics).toContainText("Not recorded");
+  await expect(diagnostics).toContainText("Model recovery check");
+  const bounds = await diagnostics.boundingBox();
+  expect(bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  expect(methods.every(method => method === "GET")).toBeTruthy();
+  await page.screenshot({ path: `test-results/news-gemini-cooldown-${info.project.name}.png`, fullPage: true });
+});
+
 
 test("model recovery phase and reviewed coverage remain visible on desktop/mobile", async ({ page }, info) => {
   const state = status();

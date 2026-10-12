@@ -199,6 +199,33 @@ def test_429_stops_cycle_and_saves_safe_diagnostics_for_dispatched_claims(factor
     assert not asyncio.run(execute()).evaluations
 
 
+@pytest.mark.parametrize("http_status", [400, 429])
+def test_gemini_failure_stops_remaining_dispatches_without_router_quota(factory, monkeypatch, http_status):
+    run_id, _, _ = seed_many(factory, count=26)
+    service = NewsClaimAuditor(AuditorConfig(provider="gemini", model="gemini-3.8-flash", gemini_api_key=uuid4().hex))
+    policy = EvaluationPolicy(uuid4().hex*2, POLICY.pipeline_version, service.policy_identity())
+    bind(factory, run_id, policy.fingerprint)
+    monkeypatch.setattr("app.services.news_evaluation_service.current_pipeline_version", lambda: POLICY.pipeline_version)
+    requests = []
+    def transport(request):
+        requests.append(request.method)
+        assert request.method == "POST" and request.url.host == "generativelanguage.googleapis.com"
+        return httpx.Response(http_status, headers={"retry-after": "600"})
+    async def execute():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(transport)) as client:
+            return await evaluate_news_claims(factory, run_id=run_id, auditor=service, policy=policy,
+                sources=SOURCES, clock=lambda: datetime(2026, 10, 5, 7, 5, tzinfo=timezone.utc), client=client)
+    summary = asyncio.run(execute())
+    assert requests == ["POST"] and summary.request_count == 1 and summary.claims_dispatched == 8
+    with factory() as db:
+        evaluations = db.scalars(select(NewsClaimEvaluation).join(NewsClaimSource).where(NewsClaimSource.extraction_run_id == run_id)).all()
+        assert sorted(e.attempt_count for e in evaluations) == [0]*18+[1]*8
+        assert not db.scalar(select(func.count()).select_from(FloodReport))
+        assert not db.scalar(select(func.count()).select_from(FloodAvoidanceZone))
+    asyncio.run(execute())
+    assert requests == ["POST"]
+
+
 def test_dispatch_lock_stops_concurrent_worker_without_consuming_attempt(factory, monkeypatch):
     from app.services.news_audit_quota_service import audit_dispatch_lock
     run_id, _ = seed(factory)
