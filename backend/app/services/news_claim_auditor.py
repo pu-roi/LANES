@@ -531,9 +531,11 @@ class NewsClaimAuditor:
                 raise ValueError("Incomplete provider response")
             content = data["choices"][0]["message"]["content"]
         else:
-            if len(data["candidates"]) != 1 or data["candidates"][0].get("finishReason") != "STOP":
+            candidates = data.get("candidates")
+            if (not isinstance(candidates, list) or len(candidates) != 1
+                    or not isinstance(candidates[0], dict) or candidates[0].get("finishReason") != "STOP"):
                 raise ValueError("Incomplete provider response")
-            parts = data["candidates"][0]["content"]["parts"]
+            parts = candidates[0]["content"]["parts"]
             if not isinstance(parts, list) or any(not isinstance(part, dict) for part in parts):
                 raise ValueError("Unsupported provider response")
             if any("thought" in part and type(part["thought"]) is not bool for part in parts):

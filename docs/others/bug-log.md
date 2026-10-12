@@ -8,7 +8,7 @@
 - **Problem:** Generic structured-request 400 with otherwise functional replacement credentials; misleading OpenRouter metadata/quota identity/readiness assumptions.
 - **RCA:** Canonical Pydantic schema is sent directly to Gemini. Controlled comparisons implicate the schema path; the exact incompatible constraint is unproved. Normalized removal of pattern/exclusive bounds still returns 400; compact produces 429, which cannot establish compatibility.
 - **Strategy:** Gemini-only immutable schema profiles; preserve strict return/evidence gates; parse native metadata/thinking; separate account state to preserve OpenRouter cooldowns; include revision/profile in model circuit and stop permanent rejections for 60 minutes. Offline default readiness, explicit read-only probes, persistent twelve-POST qualification guard.
-- **Files/checks:** `news_gemini_schema.py`, auditor/quota/availability/evaluation/automation services, readiness/qualification scripts, `.env.example`, targeted/native/desktop/mobile regressions. 239 targeted, 234 native, two responsive checks pass. **2/12 live POSTs; no qualified result or deployment.** [Results](../evaluations/news-gemini-qualification-20261013.md).
+- **Files/checks:** `news_gemini_schema.py`, auditor/quota/availability/evaluation/automation services, readiness/qualification scripts, `.env.example`, targeted/native/desktop/mobile regressions. 243 targeted, 234 native, two responsive checks pass. **2/12 live POSTs; no qualified result or deployment.** [Results](../evaluations/news-gemini-qualification-20261013.md).
 
 **BUG-161: Windows Git normalization changes immutable NCR catalog bytes.**
 

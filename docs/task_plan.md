@@ -4,7 +4,7 @@
 
 ## October 13: Gemini flood audit repair
 
-- [x] Implement explicit schema profiles, strict acceptance, provider metadata/account/circuit diagnostics and offline readiness; complete 239 targeted/234 native/two responsive checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement explicit schema profiles, strict acceptance, provider metadata/account/circuit diagnostics and offline readiness; complete 243 targeted/234 native/two responsive checks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Preserve original article/claim snapshots and run bounded qualification; stop after normalized 400 and compact 429 (2/12 POSTs). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Qualify evidence on single/eight/negative cases, then deploy matching API/news/expiry code and inspect actual serving/authenticated diagnostics. **Blocked; no repair deployment.** [Plan](plans/news-gemini-audit-repair.md), [results](evaluations/news-gemini-qualification-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

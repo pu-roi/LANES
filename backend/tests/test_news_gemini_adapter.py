@@ -104,6 +104,16 @@ async def test_gemini_requires_final_text_json(parts):
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("candidates", [[None], [42], ["text"], [[]]])
+async def test_gemini_malformed_envelope_is_invalid_not_an_uncaught_exception(candidates):
+    claim, article = inputs()
+    async with httpx.AsyncClient(transport=httpx.MockTransport(lambda _: httpx.Response(200, json={"candidates": candidates}))) as client:
+        result = await auditor("gemini").audit(claim, article, client=client)
+    assert result.outcome == "invalid" and result.reason_code == "auditor_response_invalid"
+    assert result.evidence is None
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("profile", GEMINI_SCHEMA_PROFILES)
 @pytest.mark.parametrize("problem", ["index_bool", "index_large", "excess_evidence", "extra", "duplicate_id", "unknown_id", "excess_results"])
 async def test_wire_projection_cannot_weaken_returned_result_validation(profile, problem):

@@ -2,7 +2,7 @@
 
 > **Last Updated:** October 13, 2026, 3:49 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Gemini repair (October 13):** Implementation and offline verification complete; live qualification blocked by HTTP 429 after 2 of 12 authorized POSTs. No repair deployment. 239 targeted, 234 native and two desktop/mobile checks pass. Normalized still returns 400; compact returns 429; stop without inline/model fallback. [Qualification evidence](evaluations/news-gemini-qualification-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+**Gemini repair (October 13):** Implementation and offline verification complete; live qualification blocked by HTTP 429 after 2 of 12 authorized POSTs. No repair deployment. 243 targeted, 234 native and two desktop/mobile checks pass. Normalized still returns 400; compact returns 429; stop without inline/model fallback. [Qualification evidence](evaluations/news-gemini-qualification-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Gemini documents: [repair plan](plans/news-gemini-audit-repair.md), [qualification](evaluations/news-gemini-qualification-20261013.md), [runtime guide](guides/news-gemini-runtime.md), [schema investigation](research/gemini-news-audit-invalid-argument-20261013.md).
 

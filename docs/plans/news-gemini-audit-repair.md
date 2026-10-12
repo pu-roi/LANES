@@ -18,7 +18,7 @@ Canonical strict Pydantic models, identity/occurrence/parent evidence checks, in
 - [x] Metadata/thinking parsing, credential rotation, configuration cooldown recovery and provider diagnostics.
 - [x] Offline readiness; explicit synthetic historical live probe only, no DB/publication imports.
 - [x] Adversarial ID/type/evidence/array/index/truncation/size regressions.
-- [x] 239 targeted dotenvx tests, 234 fresh guarded local PostGIS checks including migration-to-head/ownership/idempotency, two desktop/mobile diagnostic cases.
+- [x] 243 targeted dotenvx tests, 234 fresh guarded local PostGIS checks including migration-to-head/ownership/idempotency, two desktop/mobile diagnostic cases.
 - [x] Frozen original Santo Domingo 19-inch 08:55 and 10-inch 16:30 claims plus repeated-name eight-claim batch; separate ambiguous and synthetic negative cases. Shared persistent 12-POST ledger, reserve before dispatch, 60-second deadlines, no automatic HTTP retries.
 - [x] Execute permitted live qualification and stop on account errors. Normalized returns 400; compact returns 429. Stop after two POSTs, with ten unused; inline and backup remain untested.
 - [ ] Qualify correct validated single claims, all eight batch claims and conservative negative/ambiguous results. Blocked by account rate limit; HTTP 200 alone would not pass.
