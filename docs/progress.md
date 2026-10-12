@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Combined news and weather repair integration
+
+Gemini news-auditor repair `df16a02` is integrated into roi-branch alongside weather repair `680118b`. Canonical evidence validation/publication gates remain strict. Both Gemini schema and weather settings are retained in `.env.example`; encrypted runtime configuration and existing feed edits are preserved. Live qualification remains blocked at shared 3/12 POSTs; no deployment or additional inference. Documentation conflicts preserve the prior primary records and incoming repair plan/qualification/bug evidence; earlier separate-branch descriptions below describe the pre-integration state. Combined verification passes 271 targeted and 234 fresh native checks plus offline readiness; ten primary files and thirteen incoming implementation/test files preserve exact committed bytes. Results are recorded in [merge acceptance](evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: roi-branch publication package
 

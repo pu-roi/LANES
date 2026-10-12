@@ -1,6 +1,8 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 13 combined news/weather integration:** Existing protected news-automation DTO fields consume Gemini-native metadata and configuration-scoped circuit state. Gemini uses existing settings JSON key `news_audit_gemini_quota_v1`, retaining OpenRouter `news_audit_quota_v1`; allowance counters stay unknown. News policy includes explicit schema profile/adapter revision. Permanent request rejection blocks that configuration for 60 minutes. Weather retains its independent public Gemini response/cache/cooldown service and safe responsive error handling. No new route/schema/publication gate. Latest live news receipt is 429 at 3/12; this source integration does not release production. [Merge acceptance](../evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Included existing feed presentation edits:** `FeedPage` retains its live sort/date summary as screen-reader-only text; `RightSidebar` uses increased desktop spacing/padding; `LocalUpdates` uses the same increased card padding on desktop and the mobile/tablet card. Existing filter behavior, accessibility text, backend reader and API contracts remain unchanged. These prior local edits are included in the developer-requested all-changes roi-branch push. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

@@ -24,6 +24,9 @@ from app.schemas.news_audit import IndependentAuditResult, ProviderClaimAudit, P
 from app.schemas.news_audit_batch import AuditCandidate, AuditBatchRequest, AuditRequestCandidate
 from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInput
 from app.services.philippine_location_service import COMMON_ALIASES, get_philippine_location_service
+from app.services.news_gemini_schema import (
+    GEMINI_SCHEMA_PROFILES, GEMINI_SCHEMA_REVISION, gemini_response_schema,
+)
 
 PROMPT_VERSION = "news-independent-audit-v11-compact-source-locators"
 RESPONSE_VERSION = "news-independent-evidence-v4-server-identity"
@@ -172,6 +175,7 @@ class _AuditorEnvironment(BaseSettings):
     model: str = Field(default="", validation_alias="LANES_NEWS_AUDITOR_MODEL")
     config_revision: str = Field(default="1", validation_alias="LANES_NEWS_AUDITOR_CONFIG_REVISION")
     batch_size: Literal[4, 8] = Field(default=8, validation_alias="LANES_NEWS_AUDITOR_BATCH_SIZE")
+    gemini_schema_profile: str = Field(default="normalized", validation_alias="LANES_NEWS_GEMINI_SCHEMA_PROFILE")
     reasoning_enabled: bool | None = Field(default=None, validation_alias="LANES_NEWS_AUDITOR_REASONING_ENABLED")
     openrouter_api_key: SecretStr = Field(default="", validation_alias="OPENROUTER_API_KEY")
     gemini_api_key: SecretStr = Field(default="", validation_alias="GEMINI_API_KEY")
@@ -193,6 +197,7 @@ class AuditorConfig:
     model: str | None = None
     config_revision: str = "1"
     batch_size: int = 8
+    gemini_schema_profile: str = "normalized"
     reasoning_enabled: bool | None = None
     openrouter_api_key: str = field(default="", repr=False)
     gemini_api_key: str = field(default="", repr=False)
@@ -203,7 +208,8 @@ class AuditorConfig:
         return cls(provider=environment.provider or None,
                    model=environment.model or None,
                    config_revision=environment.config_revision,
-                   batch_size=environment.batch_size, reasoning_enabled=environment.reasoning_enabled,
+                   batch_size=environment.batch_size, gemini_schema_profile=environment.gemini_schema_profile,
+                   reasoning_enabled=environment.reasoning_enabled,
                    openrouter_api_key=environment.openrouter_api_key.get_secret_value(),
                    gemini_api_key=environment.gemini_api_key.get_secret_value())
 
@@ -220,6 +226,8 @@ class AuditorConfig:
             return "auditor_model_not_configured"
         if self.provider == "gemini" and not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,159}", self.model):
             return "auditor_model_provider_mismatch"
+        if self.provider == "gemini" and self.gemini_schema_profile not in GEMINI_SCHEMA_PROFILES:
+            return "auditor_gemini_schema_profile_invalid"
         if not (self.openrouter_api_key if self.provider == "openrouter" else self.gemini_api_key):
             return "auditor_credential_missing"
         return None
@@ -242,7 +250,9 @@ class NewsClaimAuditor:
                 "max_article_bytes": MAX_ARTICLE_BYTES, "max_request_bytes": MAX_REQUEST_BYTES,
                 "max_response_bytes": MAX_RESPONSE_BYTES, "timeout_seconds": self.timeout_seconds,
                 "max_evidence_options": MAX_EVIDENCE_OPTIONS, "batch_size": self.config.batch_size,
-                "reasoning_enabled": self.config.reasoning_enabled}
+                "reasoning_enabled": self.config.reasoning_enabled,
+                **({"gemini_schema_profile": self.config.gemini_schema_profile,
+                    "gemini_schema_revision": GEMINI_SCHEMA_REVISION} if self.config.provider == "gemini" else {})}
 
     def _identity(self, claim: ExtractedClaim, article: NewsArticleExtractorInput) -> dict[str, Any]:
         return {"provider": self.config.provider, "model": self.config.model,
@@ -426,14 +436,16 @@ class NewsClaimAuditor:
                 envelope = json.loads(chunks)
                 if not isinstance(envelope, dict):
                     return fail("auditor_response_invalid")
-                observed["actual_model"] = safe_text(envelope.get("model"), 160)
-                choices = envelope.get("choices")
+                gemini = self.config.provider == "gemini"
+                observed["actual_model"] = safe_text(envelope.get("modelVersion" if gemini else "model"), 160)
+                choices = envelope.get("candidates" if gemini else "choices")
                 if isinstance(choices, list) and choices and isinstance(choices[0], dict):
-                    observed["finish_reason"] = safe_text(choices[0].get("finish_reason"), 40)
-                usage = envelope.get("usage")
+                    observed["finish_reason"] = safe_text(choices[0].get("finishReason" if gemini else "finish_reason"), 40)
+                usage = envelope.get("usageMetadata" if gemini else "usage")
                 if isinstance(usage, dict):
-                    for field in ("prompt_tokens", "completion_tokens"):
-                        value = usage.get(field)
+                    for field, provider_field in (("prompt_tokens", "promptTokenCount" if gemini else "prompt_tokens"),
+                                                  ("completion_tokens", "candidatesTokenCount" if gemini else "completion_tokens")):
+                        value = usage.get(provider_field)
                         if type(value) is int and 0 <= value <= 10_000_000:
                             observed[field] = value
                 content, body_id = self._content(envelope)
@@ -510,7 +522,8 @@ class NewsClaimAuditor:
                 {"systemInstruction": {"parts": [{"text": SYSTEM_INSTRUCTIONS}]},
                  "contents": [{"role": "user", "parts": [{"text": user_data}]}],
                  "generationConfig": {"temperature": 0, "maxOutputTokens": 8192,
-                                      "responseMimeType": "application/json", "responseJsonSchema": schema}})
+                                      "responseMimeType": "application/json",
+                                      "responseJsonSchema": gemini_response_schema(schema, self.config.gemini_schema_profile)}})
 
     def _content(self, data: dict[str, Any]) -> tuple[str, str | None]:
         if self.config.provider == "openrouter":
@@ -518,10 +531,17 @@ class NewsClaimAuditor:
                 raise ValueError("Incomplete provider response")
             content = data["choices"][0]["message"]["content"]
         else:
-            if len(data["candidates"]) != 1 or data["candidates"][0].get("finishReason") != "STOP":
+            candidates = data.get("candidates")
+            if (not isinstance(candidates, list) or len(candidates) != 1
+                    or not isinstance(candidates[0], dict) or candidates[0].get("finishReason") != "STOP"):
                 raise ValueError("Incomplete provider response")
-            parts = data["candidates"][0]["content"]["parts"]
-            if any("text" not in part for part in parts):
+            parts = candidates[0]["content"]["parts"]
+            if not isinstance(parts, list) or any(not isinstance(part, dict) for part in parts):
+                raise ValueError("Unsupported provider response")
+            if any("thought" in part and type(part["thought"]) is not bool for part in parts):
+                raise ValueError("Unsupported provider response")
+            parts = [part for part in parts if part.get("thought") is not True]
+            if not parts or any(not isinstance(part.get("text"), str) for part in parts):
                 raise ValueError("Unsupported provider response")
             content = "".join(part["text"] for part in parts)
         if not isinstance(content, str):

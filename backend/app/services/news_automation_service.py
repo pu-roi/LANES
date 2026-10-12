@@ -102,14 +102,20 @@ def read_news_automation(db: Session, *, now: datetime | None = None) -> NewsAut
     expected_boundaries = len({entry["psgc_code"] for entries in locations.barangays.values() for entry in entries
         if entry.get("region") == "National Capital Region (NCR)"})
     blocked = deadline(quota.blocked_until)
+    gemini = auditor.config.provider == "gemini"
+    checked_at = (availability.last_checked_at or quota.checked_at) if gemini else quota.checked_at
+    availability_state = ("unknown" if availability.last_error else "available") if gemini else (
+        "unknown" if quota.checked_at and quota.remaining is None else "available")
     audit = NewsAuditDiagnostics(state="cooldown" if blocked and blocked > real_now() else
         "model_cooldown" if model_until and model_until > real_now() else
         "awaiting_check" if blocked else
         "awaiting_model_check" if model_until else
-        "unknown" if quota.checked_at and quota.remaining is None else "available" if quota.checked_at else "not_recorded",
-        checked_at=deadline(quota.checked_at), next_check_at=blocked,
-        used=quota.used, limit=quota.limit, remaining=quota.remaining, request_count=quota.request_count,
-        claims_dispatched=quota.claims_dispatched, http_status=quota.http_status,
+        availability_state if checked_at else "not_recorded",
+        checked_at=deadline(checked_at), next_check_at=blocked,
+        used=None if gemini else quota.used, limit=None if gemini else quota.limit,
+        remaining=None if gemini else quota.remaining, request_count=quota.request_count,
+        claims_dispatched=quota.claims_dispatched,
+        http_status=availability.last_http_status if gemini else quota.http_status,
         error_code=quota.error_code or availability.last_error, model_next_check_at=model_until,
         failure_phase=transport.phase if transport and transport.phase != "complete" else None,
         timeout_kind=transport.timeout_kind if transport else None,

@@ -1,6 +1,8 @@
 # Gemini limits and public weather error follow-up — October 13, 2026
 
-> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Subsequent integration:** The developer explicitly authorized combining `codex/gemini-audit-repair` into roi-branch with the weather fix. Earlier branch isolation/two-call qualification/no-integration descriptions below retain their original context. The code is now integrated; latest live count remains 3/12 with HTTP 429, and deployment stays blocked. No new provider call. [Combined verification](../evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **State:** Weather repair implemented locally on roi-branch; news live qualification blocked. Developer-authorized publication to roi-branch; no new deployment.
 
 ## Branch scope

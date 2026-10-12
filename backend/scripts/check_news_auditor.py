@@ -1,7 +1,8 @@
-"""Check configuration; optionally probe free-only auditing with synthetic text.
+"""Check configuration; optionally probe the selected auditor with synthetic text.
 
 No database access, news discovery, publication, or map/routing writes.
-Default checks settings only. --probe makes one free-router/model request.
+Default checks settings only. --probe makes one request; Gemini quota/billing
+follows the configured project. Never run probes implicitly during startup.
 """
 from __future__ import annotations
 
@@ -21,7 +22,7 @@ async def check_auditor(config: AuditorConfig, *, probe: bool = False,
     error = config.error_code()
     if error:
         return dict(result, status="configuration_error", reason=error)
-    if config.provider != "openrouter" or config.model != "openrouter/free":
+    if probe and config.provider == "openrouter" and config.model != "openrouter/free":
         return dict(result, status="configuration_error", reason="free_openrouter_router_required",
                     provider_request_made=False)
     try:
@@ -30,6 +31,8 @@ async def check_auditor(config: AuditorConfig, *, probe: bool = False,
         return dict(result, status="configuration_error", reason="auditor_timeout_invalid",
                     provider_request_made=False)
     result["timeout_seconds"] = auditor.timeout_seconds
+    if config.provider == "gemini":
+        result["schema_profile"] = config.gemini_schema_profile
     if not probe:
         return dict(result, status="configuration_ok", provider_request_made=False)
     # An explicitly synthetic historical fixture: never a current source claim.

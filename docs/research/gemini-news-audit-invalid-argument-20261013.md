@@ -1,6 +1,10 @@
 # Gemini news audit HTTP 400 investigation
 
-> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current integration checkpoint
+
+The schema profiles/provider diagnostics are now integrated into roi-branch alongside the public weather repair. The initial campaign recorded normalized 400 then compact 429 (2/12); the subsequent explicit captured-news recheck still returned 429 (3/12). All three projections use documented schema keywords in offline inspection; compiler complexity/specific failing constraint remains unproved. Keep exact backend validation and stop on account limits. No new generation request or deployment in the merge task. [Initial qualification](../evaluations/news-gemini-qualification-20261013.md), [latest quota measurements](../evaluations/gemini-weather-followup-20261013.md), [combined merge verification](../evaluations/gemini-repair-integration-20261013.md).
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Status:** Repair implemented/tested in isolated feature branch; live qualification blocked, latest research confirms project limits. No repair deployment.
 
