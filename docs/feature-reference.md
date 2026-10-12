@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Final-code verification:** Current final-code verification passes **507 combined backend/native checks**. A fresh v20 September 24 normal-worker replay completes five checkpoints/five locations/eleven negative decisions without audits or zones, and unchanged input remains idempotent. Current-code 3004/8004 desktop/mobile preview checks display September 24 first, then preserved v19 September 9 data (33 locations/three ended events/zero active zones). Actual account GET at 01:34 PHT remains 50/50/0; cooldown through 02:04 PHT. The developer skipped V11 live qualification and a fresh eligible Santo Domingo target replay; these remain unverified. Git publication to `roi-branch` is authorized; merged TypeScript/news lint and 46 responsive cases across main/follow-up runs pass. Primary feed/profile edits are preserved. No cloud deployment. [Completion audit](evaluations/news-reliability-goal-20261012.md#final-code-completion-audit-and-latest-isolated-checks). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -141,12 +141,13 @@ This document serves as the central technical reference for all currently implem
     1. The frontend parses the 12-hour forecast array from Open-Meteo.
     2. The user clicks "Generate AI Insights" in the Weather Modal.
     3. The backend compiles the first 4 hours of data into a highly constrained system prompt, commanding the AI to act as a "teacher."
-    4. The server securely calls the **OpenRouter API** (`openrouter/free` model routing) to avoid costs while maintaining dynamic NLP generation.
-    5. The AI returns a strict JSON object containing short interpretations of both Storm Risk and Environmental Conditions, which is rendered dynamically in the UI.
+    4. The local backend weather service calls the configured **Gemini API** model using a server-only credential, caches matching explanations and respects bounded retry/quota cooldowns. Provider/project limits govern availability; no automatic model fallback.
+    5. The backend strictly validates the two explanation strings. The responsive public modal renders the result, or a short unavailable message with the chart legend; arbitrary provider errors are never displayed.
+*   **Release status (October 13):** Local roi-branch repair verified by 151 backend/six responsive checks and TypeScript/scoped lint; Git publication requested. Hosted weather still uses the earlier implementation until deployment. Real Gemini weather generation/news evidence remain unqualified while the project returns 429. [Verification](evaluations/gemini-weather-followup-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 *   **Access & Roles:** Public users.
 *   **Related Components:**
     *   **Frontend:** [WeatherInsightsModal.tsx](file:///d:/Documents/Github/LANES/frontend/src/features/landing/WeatherInsightsModal.tsx).
-    *   **Backend:** [weather.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/weather.py) (`POST /api/v1/weather/insights`).
+    *   **Backend:** [weather.py](file:///d:/Documents/Github/LANES/backend/app/api/v1/endpoints/weather.py) (`POST /api/v1/weather/insights`). Server generation: [weather_insights_service.py](../backend/app/services/weather_insights_service.py); bounded contracts: [weather_insights.py](../backend/app/schemas/weather_insights.py).
 
 ---
 

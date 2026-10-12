@@ -63,7 +63,7 @@ export function LocalUpdates({ collapsible = false }: { collapsible?: boolean })
       </div>
     </>}
   </div>;
-  return <section aria-label="Local Updates" className="rounded-xl border border-gray-200/80 bg-white p-3.5 sm:p-4 shadow-xs">
+  return <section aria-label="Local Updates" className="rounded-xl border border-gray-200/80 bg-white p-5 shadow-xs">
     {collapsible ? <details className="group">
       <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded font-bold text-sm text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 [&::-webkit-details-marker]:hidden">
         <Newspaper className="size-4.5 text-purple-500" aria-hidden="true" />

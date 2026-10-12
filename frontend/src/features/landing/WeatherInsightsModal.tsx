@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Sparkles, X, CloudRain, Droplets, Thermometer, Wind, Loader2 } from 'lucide-react';
+import { Button } from '@/shared/ui/forms/Button';
 
 interface ForecastSlot {
   dt: number;
@@ -27,18 +28,24 @@ interface AIInsights {
   environment?: string;
 }
 
+const unavailableMessage = 'AI weather insights are temporarily unavailable. You can still view the forecast and chart legend.';
+
 export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: WeatherInsightsModalProps) {
   const [insights, setInsights] = useState<AIInsights | null>(null);
   const [model, setModel] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  // Removed useEffect that auto-fetches
-
   const fetchInsights = async () => {
-    if (forecast.length === 0) return;
+    if (loading) return;
+    if (forecast.length === 0) {
+      setError('The forecast is not available yet. Please refresh the page before generating insights.');
+      return;
+    }
     setLoading(true);
     setError('');
+    setInsights(null);
+    setModel('');
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
       const response = await fetch(`${baseUrl}/weather/insights`, {
@@ -50,24 +57,26 @@ export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: We
           forecast,
           location
         }),
+        signal: AbortSignal.timeout(25_000),
       });
 
       if (!response.ok) {
-        // Try to get detail
-        let errorMsg = 'Failed to fetch insights';
-        try {
-          const errData = await response.json();
-          if (errData.detail) errorMsg = errData.detail;
-        } catch(e) {}
-        throw new Error(errorMsg);
+        // Upstream and older API error details are private diagnostics. Never
+        // render arbitrary response bodies on this public page.
+        setError(unavailableMessage);
+        return;
       }
 
       const data = await response.json();
+      if (!data.insights || typeof data.insights.storm_risk !== 'string' ||
+          typeof data.insights.environment !== 'string' || typeof data.model !== 'string') {
+        setError(unavailableMessage);
+        return;
+      }
       setInsights(data.insights);
       setModel(data.model);
-    } catch (err: any) {
-      console.error('Error fetching insights:', err);
-      setError(`Error: ${err.message}`);
+    } catch {
+      setError(unavailableMessage);
     } finally {
       setLoading(false);
     }
@@ -84,7 +93,7 @@ export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: We
       />
 
       {/* Modal / Popover Content */}
-      <div className="fixed sm:absolute z-[100] bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] sm:bottom-auto left-0 right-0 sm:left-auto sm:right-6 sm:top-17 sm:w-[450px] bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-transform flex flex-col max-h-[85vh]">
+      <div role="dialog" aria-label="AI Weather Insights" className="fixed z-[100] bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] sm:bottom-auto left-0 right-0 sm:left-auto sm:right-6 sm:top-24 sm:w-[450px] bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl border border-gray-100 overflow-hidden transition-transform flex flex-col max-h-[85dvh] sm:max-h-[calc(100dvh-7rem)]">
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gray-50/50 shrink-0">
@@ -102,6 +111,7 @@ export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: We
             )}
           </div>
           <button
+            aria-label="Close weather insights"
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors"
           >
@@ -122,14 +132,16 @@ export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: We
                 <p className="text-sm">Analyzing weather patterns...</p>
               </div>
             ) : error ? (
-              <div className="p-4 bg-red-50 text-red-600 rounded-xl text-sm mb-4">
+              <div role="alert" className="p-4 bg-amber-50 text-amber-900 rounded-xl text-sm mb-4">
                 {error}
-                <button 
+                <Button
                   onClick={fetchInsights}
-                  className="mt-3 px-4 py-2 bg-white text-red-600 rounded-lg text-sm font-semibold border border-red-200 hover:bg-red-50 transition-colors w-full"
+                  variant="outline"
+                  disabled={loading || forecast.length === 0}
+                  className="mt-3 w-full"
                 >
                   Try Again
-                </button>
+                </Button>
               </div>
             ) : insights ? (
               <div className="space-y-3">
@@ -163,12 +175,14 @@ export function WeatherInsightsModal({ isOpen, onClose, forecast, location }: We
               <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex flex-col items-center text-center">
                 <Sparkles className="w-6 h-6 text-blue-500 mb-2" />
                 <p className="text-sm text-gray-600 mb-4">Generate a personalized, intelligent summary of the current forecast conditions.</p>
-                <button 
+                <Button
                   onClick={fetchInsights}
-                  className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm w-full"
+                  disabled={forecast.length === 0 || loading}
+                  className="w-full"
                 >
                   Generate AI Insights
-                </button>
+                </Button>
+                {forecast.length === 0 && <p role="status" className="mt-3 text-xs text-gray-500">Insights need forecast data. Please refresh the page when the forecast is available.</p>}
               </div>
             )}
           </div>

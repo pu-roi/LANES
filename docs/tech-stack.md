@@ -1,6 +1,10 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 13 public weather dependency audit:** The local weather endpoint now uses existing HTTPX/Pydantic and Python stdlib for Gemini, safe errors, cache/single-flight ownership and bounded RetryInfo/QuotaFailure handling. No new SDK, package, model/migration or public endpoint. Server-only `GEMINI_API_KEY` and optional `LANES_WEATHER_GEMINI_MODEL`; no key in frontend. Direct project quotas are limits, not allowance counters. No live weather generation or release after fresh news 429. [Follow-up verification](evaluations/gemini-weather-followup-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 13 auditor provider selection:** Existing HTTPX Gemini transport selects `gemini-3.8-flash`; the replacement key is stored with dotenvx encryption/Secret Manager version 2. The old deployment version is destroyed. New-key basic generation succeeds; the current structured-audit request returns HTTP 400 INVALID_ARGUMENT. No SDK/package/schema/migration or source-image release. [Runtime record](guides/news-gemini-runtime.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 13 news reliability publication audit:** Reliability diagnostics/cooldowns and conservative geometry construction use existing HTTPX, Pydantic, SQLAlchemy, Shapely and Python standard libraries. No requirement/package/lockfile/schema/migration change. `.gitattributes` preserves all nine hashed NCR JSON assets across Windows/Linux Git checkouts; reviewed source geometry and catalog identities remain unchanged. Existing frontend layout edits also add no dependency. [Evidence](evaluations/news-reliability-goal-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

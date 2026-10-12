@@ -1,6 +1,28 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 2:13 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**BUG-163: Public AI weather panel displays raw OpenRouter account/quota errors.**
+
+- **Status:** Fixed locally on roi-branch; production release/live Gemini generation pending. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Landing panel shows upstream JSON including account identifier, billing remedy and repeated errors.
+- **RCA:** Weather insights separately hardcoded openrouter/free; HTTPException.detail forwarded response.text and frontend rendered it. News runtime selection did not affect this code.
+- **Solution:** Server Gemini service, bounded strict request/output, response cache/single-flight/cooldown, structured retry metadata and safe public failures. Modal never renders arbitrary backend details and retains a usable legend; fixed desktop viewport overflow found in responsive testing.
+- **Files/tests:** `weather.py`, new weather insight schema/service/tests, `.env.example`, `WeatherInsightsModal.tsx`, responsive Playwright tests. 151 backend checks, six responsive cases, TypeScript and scoped lint pass. Real news recheck is 429 (3/12); no weather generation probe or cloud release. [Evidence](../evaluations/gemini-weather-followup-20261013.md).
+
+## October 13: Runtime configuration versus serving revision
+
+**Status:** Resolved deployment binding and old-key billing blocker; current structured-audit HTTP 400 remains under investigation. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Problem:** Service-template configuration showed the installed Gemini secret/settings while the API continued serving an older OpenRouter revision.
+
+**Root cause:** Runtime updates did not move traffic pinned to the prior explicit build revision. Inspecting only the mutable service template missed the serving configuration.
+
+**Solution:** Create and inspect `lanes-api-gemini-20261012-183756`, verify its Gemini model and Secret Manager binding, and explicitly promote it to 100% traffic. API and preview health pass. The original key returned HTTP 402 for depleted prepaid credits. A replacement key now completes basic generation; its LANES structured audit returns generic HTTP 400 INVALID_ARGUMENT. Version 2 is enabled, version 1 destroyed, and the developer confirmed deleting the old issuing key.
+
+**October 13 investigation:** The same `gemini-3.8-flash` request returns 400 with the 4,295-byte LANES schema and 200/STOP with a 112-byte schema. Two 503 high-demand responses leave exact array/keyword causality unproved. Current cloud API/worker digest `2ea46a7a6fe6657c5d5ef0116e398f36af6136ca7fb60713dcab9076d5c9f2e6` resolves to source `2cf147b`; its v11 audit/schema/evaluation source matches local. A provider-specific schema projection and Gemini operational-check fixes are proposed, not implemented. [Research and acceptance plan](../research/gemini-news-audit-invalid-argument-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Changed:** Encrypted `backend/.env`, existing ignored replay handoffs/container and Cloud Run runtime configuration; no product source/schema/dependency changes. The preview restart retained the old container and corrected its Python entrypoint/new immutable clock receipt. [Runtime record](../guides/news-gemini-runtime.md).
 
 **BUG-161: Windows Git normalization changes immutable NCR catalog bytes.**
 
