@@ -4,12 +4,25 @@ import json
 import pytest
 from shapely.geometry import box, shape
 
-from app.services.barangay_boundary_service import BarangayBoundaryProvider, DEFAULT_DIRECTORY
+from app.services.barangay_boundary_service import BarangayBoundaryProvider, DEFAULT_DIRECTORY as CURRENT_DIRECTORY
 from app.services.news_road_placement_service import NewsRoadPlacementProvider, DEFAULT_CATALOG_DIR
-from scripts.build_news_barangay_catalog import pasig_reference, review_records, reviewed_polygon, DEFAULT_PSGC_REFERENCE
+from scripts.build_news_barangay_catalog import pasig_reference, metro_reference, review_records, reviewed_polygon, DEFAULT_PSGC_REFERENCE
 from scripts.provision_news_barangay_catalog import provision_catalog
 from test_news_spatial_assets import provisioning_inputs
 from test_news_road_placement import claim
+
+# Retain exact acceptance for the preserved v1 Pasig snapshot separately.
+DEFAULT_DIRECTORY = CURRENT_DIRECTORY.parent / "barangay"
+
+
+def test_default_registry_has_reviewed_ncr_gap_sources_and_preserves_per_record_provenance():
+    provider = BarangayBoundaryProvider(CURRENT_DIRECTORY)
+    assert provider.error is None and len(provider.records) == 1524
+    assert provider.catalog_for("Quezon City", "Santo Domingo").source_classification == "osm_community"
+    assert any(provider.catalog_for(record.city, record.barangay).source_classification == "reviewed_source"
+        for record, geometry in provider.records.values())
+    assert provider.catalog_for("City of Malabon", "San Agustin") is None
+    assert provider.catalog_for("City of Malabon", "Tañong") is None
 
 
 def fixture_records(reference="137403029", name="Ugong", parent=None):
@@ -22,12 +35,76 @@ def fixture_records(reference="137403029", name="Ugong", parent=None):
     return relations, coordinates, references, parent if parent is not None else box(120.9,14.5,121.2,14.8)
 
 
+def test_metro_reference_is_ncr_only_with_city_bound_manila_and_duplicate_names():
+    references = metro_reference(DEFAULT_PSGC_REFERENCE)
+    current = {row["psgc_code"]: row for row in references.values()}
+    assert len(current) == 1710
+    assert len({row["city_municipality"] for row in current.values()}) == 17
+    assert current["1380400018"]["city_municipality"] == "City of Malabon"
+    assert current["1380700011"]["city_municipality"] == "City of Marikina"
+    assert current["1381300065"]["name"] == "Santo Domingo"
+    assert all(row["city_municipality"] == "City of Manila" for code, row in current.items() if code.startswith("13806"))
+    assert all(row["region"] == "National Capital Region (NCR)" for row in current.values())
+
+
+def test_metro_geometry_review_requires_record_specific_parent_not_any_city():
+    relations, coordinates, references, parent = fixture_records()
+    accepted, excluded = review_records(relations, coordinates, references, {"pasig": parent})
+    assert accepted and not excluded
+    accepted, excluded = review_records(relations, coordinates, references, {"quezon city": parent})
+    assert not accepted and excluded[0]["reason"] == "barangay_boundary_parent_mismatch"
+
+
+def test_registry_retains_leaf_provenance_and_rejects_hash_or_path_changes(tmp_path):
+    import shutil
+    source = tmp_path / "registry" / "osm-primary"
+    source.mkdir(parents=True)
+    for filename in ("boundaries.json", "manifest.json"):
+        shutil.copyfile(DEFAULT_DIRECTORY / filename, source / filename)
+    digest = json.loads((source / "manifest.json").read_text())["catalog_sha256"]
+    registry = {"format_version": 2, "catalogs": [{"directory": "osm-primary", "catalog_sha256": digest}]}
+    manifest = source.parent / "manifest.json"
+    manifest.write_text(json.dumps(registry), encoding="utf-8")
+    provider = BarangayBoundaryProvider(source.parent)
+    assert provider.error is None and len(provider.records) == 20
+    assert provider.catalog_for("City of Pasig", "Ugong").source_classification == "osm_community"
+    assert provider.catalog_for("City of Malabon", "Ugong") is None
+    first_revision = provider.revision
+    registry["catalogs"][0]["catalog_sha256"] = "0"*64
+    manifest.write_text(json.dumps(registry), encoding="utf-8")
+    assert BarangayBoundaryProvider(source.parent).error == "invalid_barangay_boundary_catalog"
+    registry["catalogs"][0]["directory"] = "../osm-primary"
+    manifest.write_text(json.dumps(registry), encoding="utf-8")
+    assert BarangayBoundaryProvider(source.parent).error == "invalid_barangay_boundary_catalog"
+    assert not first_revision.startswith("bad-")
+
+
 @pytest.mark.parametrize("reference", ["137403029", "1381200029"])
 def test_exact_legacy_and_current_psgc_references_preserve_identity(reference):
     accepted, excluded = review_records(*fixture_records(reference))
     assert not excluded and accepted[0]["psgc_code"] == "1381200029"
     assert accepted[0]["osm_relation_id"] == 108731
     assert accepted[0]["source_url"] == "https://www.openstreetmap.org/relation/108731"
+
+
+@pytest.mark.parametrize("failure", ["missing_second_source", "nested", "non_object"])
+def test_invalid_registry_sources_never_expose_partial_qualified_coverage(tmp_path, failure):
+    import shutil
+    root = tmp_path / "registry"
+    leaf = root / "primary"
+    leaf.mkdir(parents=True)
+    for filename in ("boundaries.json", "manifest.json"):
+        shutil.copyfile(DEFAULT_DIRECTORY / filename, leaf / filename)
+    digest = json.loads((leaf / "manifest.json").read_text(encoding="utf8"))["catalog_sha256"]
+    registry = {"format_version":2, "catalogs":[{"directory":"primary","catalog_sha256":digest}]}
+    if failure == "missing_second_source":
+        registry["catalogs"].append({"directory":"missing","catalog_sha256":"0"*64})
+    else:
+        (leaf / "manifest.json").write_text(json.dumps(registry if failure == "nested" else []),encoding="utf8")
+    (root / "manifest.json").write_text(json.dumps(registry),encoding="utf8")
+    provider = BarangayBoundaryProvider(root)
+    assert provider.error and provider.records == {} and provider.catalog is None
+    assert provider.catalog_for("Pasig", "Ugong") is None
 
 
 @pytest.mark.parametrize("reference,name,reason", [

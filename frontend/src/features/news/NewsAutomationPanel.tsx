@@ -166,6 +166,11 @@ export function NewsAutomationPanel() {
                 <Metric label="Next quota check" value={newsDate(data.audit.next_check_at)} />
               </dl>
               <p className="text-xs text-gray-500">Quota checked · {newsDate(data.audit.checked_at)} · Provider HTTP status · {data.audit.http_status ?? "Not recorded"}</p>
+              {data.audit.model_next_check_at && <p className="text-xs text-gray-600">Model recovery check · {newsDate(data.audit.model_next_check_at)}</p>}
+              {data.audit.failure_phase && <p role="alert" className="break-words text-xs text-red-800">Audit stopped during {data.audit.failure_phase}{data.audit.timeout_kind ? ` · ${data.audit.timeout_kind} timeout` : ""}{data.audit.elapsed_ms != null ? ` · ${(data.audit.elapsed_ms / 1000).toFixed(1)} seconds` : ""}.</p>}
+              {data.audit.actual_model && <p className="break-words text-xs text-gray-500">Last response model · {data.audit.actual_model}</p>}
+              {data.audit.boundary_expected != null && <p className="text-xs text-gray-600">Qualified barangay boundaries · {data.audit.boundary_qualified ?? 0} of {data.audit.boundary_expected}. {data.audit.boundary_missing ?? 0} still need reviewed coverage.</p>}
+              {data.audit.boundary_error && <p role="alert" className="break-words text-xs text-red-800">Boundary coverage is unavailable · {data.audit.boundary_error}</p>}
               {data.audit.error_code && <p role="alert" className="break-words text-xs text-red-800">Audit diagnostic: {data.audit.error_code}</p>}
             </div>}
             {data.error_code && <p role="alert" className="break-words text-xs text-red-800">Worker diagnostic: {data.error_code}</p>}

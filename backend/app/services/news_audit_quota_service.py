@@ -34,14 +34,20 @@ def deadline(value: str | None) -> datetime | None:
 
 
 def quota_identity(auditor: NewsClaimAuditor) -> str:
-    payload = json.dumps(auditor.policy_identity(), sort_keys=True) + auditor.config.openrouter_api_key
-    return hashlib.sha256(payload.encode()).hexdigest()
+    # Allowance belongs to the credential/account, never to an audit policy/model.
+    payload = (auditor.config.provider or "") + "\0" + auditor.config.openrouter_api_key
+    return "account-v2:" + hashlib.sha256(payload.encode()).hexdigest()
 
 
 def read_quota(db, *, identity: str | None = None) -> AuditQuotaState:
     row = db.get(SystemSetting, QUOTA_KEY, populate_existing=True)
     state = AuditQuotaState.model_validate(row.value) if row else AuditQuotaState()
     if identity is not None and state.identity != identity:
+        # Preserve a legacy active cooldown during the first v2 transition. The
+        # old opaque identity cannot safely establish another model's allowance.
+        if (identity.startswith("account-v2:") and state.identity and not state.identity.startswith("account-v2:")
+                and deadline(state.blocked_until) and deadline(state.blocked_until) > real_now()):
+            return state.model_copy(update={"identity": identity})
         return AuditQuotaState(identity=identity)
     return state
 
@@ -84,7 +90,9 @@ async def check_quota(factory, auditor: NewsClaimAuditor, *, client: httpx.Async
     checked = deadline(state.checked_at)
     if until and until > now:
         return state
-    if checked and state.quota_check_succeeded and not until and timedelta(0) <= now - checked < timedelta(seconds=60):
+    if (checked and state.quota_check_succeeded and not until
+            and (not free_router(auditor) or state.remaining is not None)
+            and timedelta(0) <= now - checked < timedelta(seconds=60)):
         return state
     own = client is None
     client = client or httpx.AsyncClient(timeout=10, follow_redirects=False)
@@ -93,6 +101,7 @@ async def check_quota(factory, auditor: NewsClaimAuditor, *, client: httpx.Async
     state.checked_at = now.isoformat()
     state.quota_check_succeeded = False
     state.error_code = None
+    state.http_status = None
     try:
         async with asyncio.timeout(10), client.stream("GET", "https://openrouter.ai/api/v1/key", timeout=10,
             headers={"Authorization": "Bearer " + auditor.config.openrouter_api_key}, follow_redirects=False) as response:
@@ -124,6 +133,11 @@ async def check_quota(factory, auditor: NewsClaimAuditor, *, client: httpx.Async
     finally:
         if own:
             await client.aclose()
+    # Unknown free allowance cannot authorize a generation request. Keep the
+    # counters unknown and retry preflight on the real clock, without consuming
+    # an audit attempt or overriding a longer provider Retry-After deadline.
+    if free_router(auditor) and state.remaining is None and not deadline(state.blocked_until):
+        state.blocked_until = (now + timedelta(seconds=60)).isoformat()
     save_quota(factory, state)
     return state
 

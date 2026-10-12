@@ -42,6 +42,24 @@ def governor_road_alias(name: str) -> str | None:
     return None
 
 
+def initial_road_aliases(name: str) -> tuple[str, ...]:
+    """Deterministic initials of a mapped name; locality must resolve collisions."""
+    words = normalize_name(name).split()
+    if len(words) < 3 or words[-1] not in ROAD_SUFFIXES:
+        return ()
+    suffix, names = words[-1], words[:-1]
+    if names[-1] in {"sr", "jr"}:
+        names = names[:-1]
+    titles = {"general", "governor", "president", "senator", "doctor", "don", "dona", "santo", "santa",
+        "north", "south", "east", "west", "upper", "lower", "new", "old"}
+    if (not 2 <= len(names) <= 4 or names[0] in titles
+            or any(not re.fullmatch(r"[a-z]+", part) for part in names)):
+        return ()
+    initials = [part[0] for part in names[:-1]]
+    return tuple(dict.fromkeys((" ".join(["".join(initials), names[-1], suffix]),
+                               " ".join([*initials, names[-1], suffix]))))
+
+
 @dataclass(frozen=True)
 class OSMRoadWay:
     osm_id: int
@@ -51,6 +69,7 @@ class OSMRoadWay:
     bridge: str = ""
     tunnel: str = ""
     layer: str = ""
+    initial_aliases: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -143,7 +162,9 @@ def _span_cross_streets(span: str | None) -> tuple[str, str] | None:
 
 def _way_matches(way: OSMRoadWay, reported: str) -> bool:
     target = normalize_name(reported)
-    for name in (way.name, *way.aliases):
+    if not target:
+        return False
+    for name in (way.name, *way.aliases, *way.initial_aliases):
         candidate = normalize_name(name)
         if candidate == target:
             return True

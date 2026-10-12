@@ -361,7 +361,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
         initialMediaIndex={parseInt(searchParams.get('media') || '0')}
       />
 
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-4 sm:p-6 mt-3 sm:mt-4">
+      <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 overflow-hidden p-3.5 sm:p-5 mt-2.5 sm:mt-3">
         {/* Header + Sort Toggle */}
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -369,16 +369,16 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
             <span className="bg-gray-100 text-gray-600 text-xs py-0.5 px-2 rounded-full">{post.comment_count}</span>
           </h3>
           {!isolatedThreadId && (
-            <div className="flex items-center bg-gray-100 rounded-full p-0.5 gap-0.5">
+            <div className="flex items-center bg-gray-100 rounded-lg p-0.5 gap-0.5">
               <button
                 onClick={() => setCommentSort('top')}
-                className={`text-xs font-semibold px-3 py-1 rounded-full transition-colors ${commentSort === 'top' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`text-xs font-semibold px-2.5 py-1 rounded-md transition-colors ${commentSort === 'top' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 Top
               </button>
               <button
                 onClick={() => setCommentSort('recent')}
-                className={`text-xs font-semibold px-3 py-1 rounded-full transition-colors ${commentSort === 'recent' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`text-xs font-semibold px-2.5 py-1 rounded-md transition-colors ${commentSort === 'recent' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 Recent
               </button>
@@ -390,7 +390,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
         <div className="fixed sm:hidden bottom-[calc(var(--bottom-nav-height))] left-0 right-0 z-40 bg-white border-t border-gray-200 p-3 mb-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
           <div className="max-w-[720px] mx-auto">
             {replyingTo && (
-              <div className="flex items-center justify-between bg-blue-50 px-3 py-2 rounded-t-xl border border-blue-100 border-b-0 mb-0 text-xs font-medium text-blue-700">
+              <div className="flex items-center justify-between bg-blue-50 px-3 py-2 rounded-t-lg border border-blue-100 border-b-0 mb-0 text-xs font-medium text-blue-700">
                 <span>Replying to @{replyingTo.author}...</span>
                 <Button variant="ghost" size="sm" className="px-2" onClick={() => { setReplyingTo(null); setReplyText(''); }}>
                   <X className="w-3.5 h-3.5" />
@@ -407,7 +407,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
                     handleCommentSubmit(e);
                   }
                 }} 
-                className={`flex-1 relative bg-gray-50 border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all flex flex-row items-end p-1.5 gap-2 ${replyingTo ? 'rounded-b-xl rounded-t-none border-t-0' : 'rounded-2xl'}`}
+                className={`flex-1 relative bg-gray-50 border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all flex flex-row items-end p-1.5 gap-2 ${replyingTo ? 'rounded-b-lg rounded-t-none border-t-0' : 'rounded-lg'}`}
               >
                 <div className="flex-1 relative w-full">
                   <textarea
@@ -473,7 +473,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
             </div>
             <form 
               onSubmit={handleCommentSubmit} 
-              className="flex-1 relative bg-gray-50 border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent rounded-2xl transition-all flex flex-row items-end p-1.5 gap-2"
+              className="flex-1 relative bg-gray-50 border border-gray-200 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent rounded-lg transition-all flex flex-row items-end p-1.5 gap-2"
             >
               <div className="flex-1 relative w-full">
                 <textarea
@@ -558,7 +558,7 @@ export function PostDetailPage({ postId, onBack }: { postId: number; onBack?: ()
               {hasMoreRoots && (
                 <button
                   onClick={() => setVisibleRootCount(prev => prev + ROOT_PAGE_SIZE)}
-                  className="w-full mt-4 py-2.5 text-sm font-semibold text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-xl border border-blue-100 transition-colors"
+                  className="w-full mt-4 py-2.5 text-sm font-semibold text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg border border-blue-100 transition-colors"
                 >
                   Load {Math.min(ROOT_PAGE_SIZE, commentTree.length - visibleRootCount)} more comments
                 </button>

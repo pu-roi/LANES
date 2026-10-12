@@ -93,13 +93,19 @@ def pending_pipeline_work(db: Session, now: datetime, config: OperationalSetting
             due(NewsClaimEvaluation)).limit(1)
         from app.services.news_audit_quota_service import read_quota, deadline, real_now, quota_identity
         from app.services.news_claim_auditor import NewsClaimAuditor
-        quota = read_quota(db, identity=quota_identity(NewsClaimAuditor()))
+        auditor = NewsClaimAuditor()
+        quota = read_quota(db, identity=quota_identity(auditor))
         blocked_until = deadline(quota.blocked_until)
         if blocked_until and blocked_until > real_now():
             # New/unclassified claims still run local gates once. Deferred rows
             # only wake maintenance early when their evidence deadline is due.
             evaluations = evaluations.where(or_(NewsClaimEvaluation.error_code.is_(None),
-                NewsClaimEvaluation.error_code.not_in(("auditor_daily_quota_exhausted", "auditor_rate_limited", "auditor_quota_unavailable"))))
+                NewsClaimEvaluation.error_code.not_in(("auditor_daily_quota_exhausted", "auditor_rate_limited", "auditor_quota_unavailable", "auditor_quota_unknown"))))
+        from app.services.news_audit_availability_service import read_availability
+        model_until = deadline(read_availability(db, auditor).blocked_until)
+        if model_until and model_until > real_now():
+            evaluations = evaluations.where(or_(NewsClaimEvaluation.error_code.is_(None),
+                NewsClaimEvaluation.error_code != "auditor_model_cooldown"))
         if db.scalar(evaluations) is not None:
             return True
     if source_ids:

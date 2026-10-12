@@ -83,27 +83,27 @@ export function RightSidebar() {
     <aside
       aria-label="Community updates"
       tabIndex={0}
-      className="w-[376px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto overscroll-contain scrollbar-auto-hide hidden xl:flex px-4 py-6 space-y-6 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+      className="w-[376px] flex-shrink-0 flex flex-col h-[calc(100vh-86px)] sticky top-[86px] overflow-y-auto overscroll-contain scrollbar-auto-hide hidden xl:flex py-1 space-y-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
     >
       
       {/* Weather Widget */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <CloudRain className="w-5 h-5 text-blue-500" />
-          <h3 className="font-semibold text-gray-900">Current Weather</h3>
+      <div className="bg-white rounded-xl border border-gray-200/80 p-3.5 sm:p-4 shadow-xs">
+        <div className="flex items-center gap-2 mb-3">
+          <CloudRain className="w-4.5 h-4.5 text-blue-500" />
+          <h3 className="text-sm font-bold text-gray-900">Current Weather</h3>
         </div>
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {weatherLoading ? (
-            <div className="h-16 bg-gray-100 animate-pulse rounded-xl" />
+            <div className="h-16 bg-gray-100 animate-pulse rounded-lg" />
           ) : weather && weather.temp !== "--" ? (
-            <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-100 flex items-center justify-between">
+            <div className="p-2.5 sm:p-3 bg-blue-50/60 rounded-lg border border-blue-100 flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-blue-900 capitalize">{weather.condition}</p>
-                <p className="text-xs text-blue-700 mt-1">
+                <p className="text-xs text-blue-700 mt-0.5">
                   {weather.location} • {weather.temp}°C
                 </p>
                 {(weather.precip_mm !== undefined) && (
-                  <p className="text-[10px] font-semibold text-blue-800 mt-1.5 bg-blue-200/50 inline-block px-1.5 py-0.5 rounded border border-blue-300/50">
+                  <p className="text-[10px] font-semibold text-blue-800 mt-1 bg-blue-200/50 inline-block px-1.5 py-0.5 rounded border border-blue-300/50">
                     🌧️ {weather.precip_mm} mm/h
                   </p>
                 )}
@@ -111,7 +111,7 @@ export function RightSidebar() {
               <img 
                 src={`https://cdn.jsdelivr.net/npm/@meteocons/svg@0.1.0/fill/${weather.icon}.svg`}
                 alt={weather.condition}
-                className="w-16 h-16 drop-shadow-sm"
+                className="w-14 h-14 drop-shadow-xs"
               />
             </div>
           ) : (
@@ -123,10 +123,10 @@ export function RightSidebar() {
       <LocalUpdates />
 
       {/* Top Reporters Leaderboard */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <Trophy className="w-5 h-5 text-yellow-500" />
-          <h3 className="font-semibold text-gray-900">Top Reporters</h3>
+      <div className="bg-white rounded-xl border border-gray-200/80 p-3.5 sm:p-4 shadow-xs">
+        <div className="flex items-center gap-2 mb-3">
+          <Trophy className="w-4.5 h-4.5 text-yellow-500" />
+          <h3 className="text-sm font-bold text-gray-900">Top Reporters</h3>
         </div>
 
         {isLoading && <LeaderboardSkeleton />}
@@ -147,7 +147,7 @@ export function RightSidebar() {
         )}
 
         {!isLoading && !isError && data && data.reporters.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {data.reporters.map((reporter) => (
               <ReporterRow key={reporter.user_id} reporter={reporter} />
             ))}

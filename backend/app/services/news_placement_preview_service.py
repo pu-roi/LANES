@@ -46,7 +46,7 @@ class NewsPlacementPreviewService:
 
     @property
     def revision(self) -> str:
-        return f"corridors-v5:osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
+        return f"corridors-v7:osm-{self.roads.revision}:noah-{self.noah.revision}:history-{self.history_digest or 'none'}"
 
     def preview(self, claim: ExtractedClaim, placement: RoadPlacementEvidence | None = None) -> NewsPlacementPreview:
         placement = placement or self.roads.resolve(claim)

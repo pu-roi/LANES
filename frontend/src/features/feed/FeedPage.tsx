@@ -410,20 +410,20 @@ export function FeedPage() {
             <p className="text-xs text-gray-500 mb-3" aria-live="polite">{filters.sort === 'newest' ? 'Newest first' : 'Oldest first'} · {filters.dateRange === 'all' ? 'All time' : filters.dateRange === 'today' ? 'Today (UTC)' : filters.dateRange === '24h' ? 'Last 24 hours' : filters.dateRange === '3d' ? 'Last 3 days' : 'Last 7 days'}{activeFilterCount > 0 && !filtersOpen ? ' · Filters applied' : ''}</p>
             <div className="mb-3 xl:hidden"><LocalUpdates collapsible /></div>
             {/* Create Post Input Trigger */}
-            <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-3.5 sm:p-4 mb-3 sm:mb-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                <span className="font-bold text-blue-700 text-sm">Me</span>
+            <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-3 sm:p-3.5 mb-2.5 sm:mb-3 flex items-center gap-2.5 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200">
+                <span className="font-bold text-blue-700 text-xs sm:text-sm">Me</span>
               </div>
               <button 
                 onClick={() => setIsCreateModalOpen(true)}
-                className="flex-1 min-w-0 bg-gray-100 hover:bg-gray-200 transition-colors rounded-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3 text-gray-500 text-sm font-medium truncate"
+                className="flex-1 min-w-0 bg-gray-100/90 hover:bg-gray-200/80 border border-transparent hover:border-gray-200 transition-all rounded-lg text-left px-3 sm:px-4 py-2 sm:py-2.5 text-gray-500 text-sm font-medium truncate"
               >
                 <span className="sm:hidden">What's happening?</span>
                 <span className="hidden sm:inline">What's happening in your area?</span>
               </button>
               
               {/* Quick Media Actions */}
-              <div className="flex items-center gap-1 border-l border-gray-100 pl-2 shrink-0">
+              <div className="flex items-center gap-0.5 sm:gap-1 border-l border-gray-200/80 pl-2 shrink-0">
                 <input 
                   type="file" 
                   ref={photoInputRef}
@@ -442,26 +442,26 @@ export function FeedPage() {
                 />
                 <button 
                   onClick={() => photoInputRef.current?.click()}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors flex items-center justify-center"
+                  className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center"
                   title="Add Photo"
                 >
-                  <ImageIcon className="w-5 h-5" />
+                  <ImageIcon className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                 </button>
                 <button 
                   onClick={() => videoInputRef.current?.click()}
-                  className="p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors flex items-center justify-center"
+                  className="p-1.5 sm:p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors flex items-center justify-center"
                   title="Add Video"
                 >
-                  <Video className="w-5 h-5" />
+                  <Video className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>
 
             {/* Feed Content */}
-            <div className="space-y-3 sm:space-y-4 mb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]">
+            <div className="space-y-2.5 sm:space-y-3 mb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))]">
               {tab === 'nearby' && (userLocation || locationLabel) && (
                 <div className="space-y-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-medium text-blue-700 bg-blue-50/90 border border-blue-200/70 rounded-xl px-3.5 py-2.5 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-medium text-blue-700 bg-blue-50/90 border border-blue-200/70 rounded-lg px-3 py-2 shadow-xs">
                     <div className="flex items-center gap-2 min-w-0">
                       <MapPin className="w-4 h-4 shrink-0 text-blue-500" />
                       <span className="truncate">
@@ -494,7 +494,7 @@ export function FeedPage() {
                   </div>
 
                   {data?.expanded_radius && (
-                    <div className="flex items-center gap-2 text-xs font-medium text-amber-800 bg-amber-50 border border-amber-200/80 rounded-xl px-3.5 py-2.5 shadow-xs">
+                    <div className="flex items-center gap-2 text-xs font-medium text-amber-800 bg-amber-50 border border-amber-200/80 rounded-lg px-3 py-2 shadow-xs">
                       <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
                       <span>No reports found within 5 km. Showing community posts within an expanded 15 km radius.</span>
                     </div>
@@ -503,9 +503,9 @@ export function FeedPage() {
               )}
 
               {tab === 'nearby' && !userLocation && !isLoading && !data && (
-                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-8 sm:p-12 text-center text-gray-600">
-                  <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
-                    <MapPin className="w-6 h-6" />
+                <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-6 sm:p-8 text-center text-gray-600">
+                  <div className="w-11 h-11 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
+                    <MapPin className="w-5 h-5" />
                   </div>
                   <h3 className="font-bold text-gray-900 text-base mb-1">Location Required for Nearby Feed</h3>
                   <p className="text-sm text-gray-500 max-w-md mx-auto mb-4">
@@ -529,22 +529,22 @@ export function FeedPage() {
               )}
 
               {isLoading && (
-                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center py-20">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
+                <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 flex flex-col items-center justify-center py-14">
+                  <Loader2 className="w-7 h-7 animate-spin text-blue-500 mb-3" />
                   <p className="text-gray-500 text-sm font-medium">Fetching reports...</p>
                 </div>
               )}
 
               {isError && (
-                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-8 text-center text-red-500">
+                <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-6 sm:p-8 text-center text-red-500">
                   <p>Failed to load feed.</p>
                   <p className="text-xs mt-2 opacity-70">{(error as Error).message}</p>
                 </div>
               )}
 
               {data && data.posts.length === 0 && (
-                <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 p-16 text-center text-gray-500">
-                  <p className="font-medium text-lg text-gray-700">No reports found{tab === 'nearby' ? ' nearby' : ''}.</p>
+                <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-10 sm:p-12 text-center text-gray-500">
+                  <p className="font-medium text-base sm:text-lg text-gray-700">No reports found{tab === 'nearby' ? ' nearby' : ''}.</p>
                   <p className="text-sm mt-1">{activeFilterCount > 0 ? 'No posts match these filters. Try a wider date range or reset your filters.' : tab === 'nearby' ? 'No community posts or flood reports were found in your area.' : 'Check back later or submit a new report.'}</p>
                   {activeFilterCount > 0 && <Button variant="ghost" size="sm" className="mt-3" onClick={() => updateFeedQuery({ ...DEFAULT_FEED_FILTERS })}>Reset Filters</Button>}
                 </div>

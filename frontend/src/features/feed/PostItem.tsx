@@ -164,16 +164,16 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
   const displayLocation = post.location_tag || post.report?.human_readable_location || (post.report?.barangay ? `Brgy. ${post.report.barangay}` : null);
 
   return (
-    <article className={`py-4 sm:py-6 px-3.5 sm:px-6 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 transition-all hover:border-gray-200/90 ${className}`}>
+    <article className={`py-3.5 sm:py-4.5 px-3.5 sm:px-5 bg-white rounded-xl shadow-xs border border-gray-200/80 transition-colors hover:border-gray-300 ${className}`}>
       
       {/* Header Area */}
-      <div className="flex justify-between items-start gap-2 mb-3">
+      <div className="flex justify-between items-start gap-2 mb-2.5 sm:mb-3">
         <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-100 to-blue-200 flex items-center justify-center border border-blue-300 shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-blue-100 to-blue-200 flex items-center justify-center border border-blue-300 shrink-0">
             {post.author_avatar ? (
               <img src={post.author_avatar} alt="avatar" className="w-full h-full rounded-full object-cover" />
             ) : (
-              <span className="font-bold text-blue-700 text-sm">
+              <span className="font-bold text-blue-700 text-xs sm:text-sm">
                 {post.author_name ? post.author_name[0].toUpperCase() : 'E'}
               </span>
             )}
@@ -243,15 +243,15 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
           {post.report && (() => {
             const severityLabel = getSeverityLabel(post.report.severity);
             return (
-              <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border flex items-center gap-1 shrink-0 ${getSeverityColor(post.report.severity)}`}>
-                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+              <span className={`px-2 py-0.5 rounded-md text-xs font-medium border flex items-center gap-1 shrink-0 ${getSeverityColor(post.report.severity)}`}>
+                <AlertTriangle className="w-3 h-3 shrink-0" />
                 <span className="sm:hidden">{severityLabel.short}</span>
                 <span className="hidden sm:inline">{severityLabel.full}</span>
               </span>
             );
           })()}
           <div className="relative" ref={menuRef}>
-            <button type="button" aria-label="Post actions" onClick={() => setIsMenuOpen((value) => !value)} className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"><MoreHorizontal className="w-5 h-5" /></button>
+            <button type="button" aria-label="Post actions" onClick={() => setIsMenuOpen((value) => !value)} className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"><MoreHorizontal className="w-5 h-5" /></button>
             {isMenuOpen && <div className="absolute right-0 top-9 z-20 w-48 rounded-xl border border-gray-200 bg-white p-1 shadow-lg">
               {isAuthor && <button type="button" onClick={() => { setEditContent(post.content); setEditLocation(post.location_tag || ''); setIsEditing(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Pencil className="w-4 h-4" />Edit Post</button>}
               {!isAuthor && <button type="button" onClick={() => { setIsReporting(true); setIsMenuOpen(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Flag className="w-4 h-4" />Report Post</button>}
@@ -402,7 +402,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
           }
 
           return (
-            <div className="mt-3 rounded-2xl overflow-hidden border border-gray-100 bg-gray-100">
+            <div className="mt-2.5 rounded-lg overflow-hidden border border-gray-200/80 bg-gray-100">
               {gridContent}
             </div>
           );
@@ -410,15 +410,15 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
       </div>
 
       {/* Interaction Bar */}
-      <div className="flex items-center justify-between gap-1 sm:gap-2 pt-1.5">
-        <div className="flex items-center gap-1 sm:gap-2">
+      <div className="flex items-center justify-between gap-1 sm:gap-2 pt-1">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           {/* Reddit-Style Unified Vote Pill */}
           <div 
-            className={`flex items-center rounded-full border transition-all duration-150 select-none ${
+            className={`flex items-center rounded-lg border transition-all duration-150 select-none ${
               post.user_interaction === 'upvote' 
-                ? 'bg-blue-50/80 border-blue-200 text-blue-700 shadow-sm' 
+                ? 'bg-blue-50/80 border-blue-200 text-blue-700 shadow-xs'
                 : post.user_interaction === 'downvote'
-                ? 'bg-rose-50/80 border-rose-200 text-rose-700 shadow-sm'
+                ? 'bg-rose-50/80 border-rose-200 text-rose-700 shadow-xs'
                 : 'bg-slate-50/80 border-slate-200/80 text-slate-700 hover:border-slate-300'
             }`}
             title={`${post.upvotes || 0} upvotes, ${post.downvotes || 0} downvotes`}
@@ -426,7 +426,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
             <button 
               type="button"
               onClick={() => onVote(post.id, 'upvote')}
-              className={`p-1 sm:p-1.5 rounded-full transition-all duration-150 active:scale-90 ${
+              className={`p-1 sm:p-1.5 rounded-md transition-all duration-150 active:scale-90 ${
                 post.user_interaction === 'upvote' 
                   ? 'text-blue-600 hover:bg-blue-100/70' 
                   : 'text-slate-500 hover:text-blue-600 hover:bg-slate-200/60'
@@ -451,7 +451,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
             <button 
               type="button"
               onClick={() => onVote(post.id, 'downvote')}
-              className={`p-1 sm:p-1.5 rounded-full transition-all duration-150 active:scale-90 ${
+              className={`p-1 sm:p-1.5 rounded-md transition-all duration-150 active:scale-90 ${
                 post.user_interaction === 'downvote' 
                   ? 'text-rose-600 hover:bg-rose-100/70' 
                   : 'text-slate-500 hover:text-rose-600 hover:bg-slate-200/60'
@@ -478,7 +478,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                 }
               }
             }}
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50/70 rounded-full transition-all duration-150 active:scale-95 select-none"
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50/70 rounded-lg transition-all duration-150 active:scale-95 select-none"
           >
             <MessageSquare className="w-4 h-4" />
             <span>{post.comment_count}</span>
@@ -488,7 +488,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
           <button 
             type="button"
             onClick={handleShare} 
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50/70 rounded-full transition-all duration-150 active:scale-95 select-none"
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs sm:text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50/70 rounded-lg transition-all duration-150 active:scale-95 select-none"
           >
             <Share className="w-4 h-4" />
             <span className="hidden sm:inline">Share</span>
@@ -510,7 +510,7 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
                 console.error("Failed to calculate geometry center", e);
               }
             }}
-            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-full text-xs sm:text-sm border border-blue-200/70 shadow-xs transition-all duration-150 active:scale-95 shrink-0 select-none"
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold rounded-lg text-xs sm:text-sm border border-blue-200/70 shadow-xs transition-all duration-150 active:scale-95 shrink-0 select-none"
           >
             <MapIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
             <span className="sm:inline hidden">View on </span>
@@ -528,8 +528,8 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
       />
       {typeof document !== 'undefined' && createPortal(
         <>
-      {isEditing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"><div className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit Post</h2><button onClick={() => setIsEditing(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div><textarea value={editContent} onChange={(event) => setEditContent(event.target.value)} className="min-h-40 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><input value={editLocation} onChange={(event) => setEditLocation(event.target.value)} placeholder="Location label (optional)" className="mt-3 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><div className="mt-4 flex justify-end gap-2"><button onClick={() => setIsEditing(false)} className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button><button disabled={!editContent.trim() || editMutation.isPending} onClick={() => editMutation.mutate()} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{editMutation.isPending ? 'Saving…' : 'Save changes'}</button></div></div></div>}
-      {isHistoryOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4"><div className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit History</h2><button onClick={() => setIsHistoryOpen(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div>{historyQuery.isLoading && <div className="flex justify-center py-8 text-slate-500"><Loader2 className="h-5 w-5 animate-spin" /></div>}{historyQuery.isError && <p className="py-6 text-center text-sm text-red-600">Could not load edit history.</p>}{historyQuery.data?.length === 0 && <p className="py-6 text-center text-sm text-slate-500">This post has not been edited.</p>}{historyQuery.data?.map((entry) => <div key={entry.id} className="border-t border-slate-100 py-4"><p className="mb-2 text-xs font-medium text-slate-500">Edit {entry.version} · {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true })}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="mb-1 text-xs font-semibold text-slate-500">Previous</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.previous_content}</p></div><div><p className="mb-1 text-xs font-semibold text-slate-500">Updated</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.updated_content}</p></div></div></div>)}</div></div>}
+      {isEditing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"><div className="w-full max-w-lg rounded-xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit Post</h2><button onClick={() => setIsEditing(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div><textarea value={editContent} onChange={(event) => setEditContent(event.target.value)} className="min-h-40 w-full rounded-lg border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><input value={editLocation} onChange={(event) => setEditLocation(event.target.value)} placeholder="Location label (optional)" className="mt-3 w-full rounded-lg border border-slate-200 p-3 text-sm outline-none focus:border-blue-500" /><div className="mt-4 flex justify-end gap-2"><button onClick={() => setIsEditing(false)} className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100">Cancel</button><button disabled={!editContent.trim() || editMutation.isPending} onClick={() => editMutation.mutate()} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{editMutation.isPending ? 'Saving…' : 'Save changes'}</button></div></div></div>}
+      {isHistoryOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4"><div className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-5 shadow-xl"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold text-slate-900">Edit History</h2><button onClick={() => setIsHistoryOpen(false)} className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"><X className="w-5 h-5" /></button></div>{historyQuery.isLoading && <div className="flex justify-center py-8 text-slate-500"><Loader2 className="h-5 w-5 animate-spin" /></div>}{historyQuery.isError && <p className="py-6 text-center text-sm text-red-600">Could not load edit history.</p>}{historyQuery.data?.length === 0 && <p className="py-6 text-center text-sm text-slate-500">This post has not been edited.</p>}{historyQuery.data?.map((entry) => <div key={entry.id} className="border-t border-slate-100 py-4"><p className="mb-2 text-xs font-medium text-slate-500">Edit {entry.version} · {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true })}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="mb-1 text-xs font-semibold text-slate-500">Previous</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.previous_content}</p></div><div><p className="mb-1 text-xs font-semibold text-slate-500">Updated</p><p className="whitespace-pre-wrap text-sm text-slate-700">{entry.updated_content}</p></div></div></div>)}</div></div>}
       <Modal isOpen={isReporting} onClose={() => setIsReporting(false)} title="Report Post" blurBackdrop={false}>
             <p className="mb-4 text-sm text-slate-600">Reports are private and reviewed by moderators.</p>
 

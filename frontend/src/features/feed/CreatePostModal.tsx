@@ -537,7 +537,7 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] relative">
+      <div className="bg-white rounded-xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh] relative">
         {/* Auth Prompt Overlay */}
         {showAuthPrompt && (
           <div className="absolute inset-0 z-[70] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in">
@@ -593,7 +593,7 @@ export function CreatePostModal({ onClose, initialFiles, initialLocation }: Crea
         {/* Draft Confirmation Overlay */}
         {showDraftConfirm && (
           <div className="absolute inset-0 z-[80] bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center p-6 animate-in fade-in">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
               <div className="p-6 border-b border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Save as draft?</h3>
                 <p className="text-sm text-gray-600">You have unsaved changes. Would you like to save this post as a draft or discard it completely?</p>

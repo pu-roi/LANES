@@ -4,7 +4,6 @@ from __future__ import annotations
 import hashlib
 
 from shapely import normalize
-from shapely.affinity import scale
 from shapely.geometry import LineString, MultiLineString, Point
 from shapely.geometry.base import BaseGeometry
 from shapely.ops import substring
@@ -21,7 +20,7 @@ def source_aligned_line_union(source: BaseGeometry, fragments: list[BaseGeometry
     then rebuild the original bends. Only numerical gaps below ten micrometres
     are joined; actual dry gaps and scenario evidence remain separate.
     """
-    from app.services.noah_vector_catalog_service import metric_geometry, X_METRES, Y_METRES
+    from app.services.noah_vector_catalog_service import metric_geometry
 
     if source.geom_type != "LineString" or not source.is_simple or source.length <= 0:
         raise ValueError("invalid_source_centerline")
@@ -46,8 +45,28 @@ def source_aligned_line_union(source: BaseGeometry, fragments: list[BaseGeometry
             merged[-1][1] = max(end, merged[-1][1])
         else:
             merged.append([start, end])
-    parts = [scale(substring(metric, start, end), xfact=1 / X_METRES,
-                   yfact=1 / Y_METRES, origin=(0, 0)) for start, end in merged]
+    # Rebuild along original WGS84 segments. Inverse scaling introduces new
+    # coordinate roundoff at an exact administrative boundary, even when the
+    # complete original source is covered by that boundary.
+    coordinates = list(source.coords)
+    distances = [0.0]
+    metric_coordinates = list(metric.coords)
+    for first, second in zip(metric_coordinates, metric_coordinates[1:]):
+        distances.append(distances[-1] + LineString([first, second]).length)
+
+    def original_point(distance: float):
+        for index, vertex_distance in enumerate(distances):
+            if abs(vertex_distance - distance) <= LINE_PRECISION_METRES:
+                return coordinates[index]
+            if vertex_distance > distance:
+                first, second = coordinates[index - 1], coordinates[index]
+                fraction = (distance - distances[index - 1]) / (vertex_distance - distances[index - 1])
+                return tuple(a + fraction * (b - a) for a, b in zip(first, second))
+        return coordinates[-1]
+
+    parts = [LineString([original_point(start),
+        *(coordinate for coordinate, distance in zip(coordinates, distances) if start < distance < end),
+        original_point(end)]) for start, end in merged]
     return parts[0] if len(parts) == 1 else MultiLineString(parts) if parts else LineString()
 
 

@@ -1,6 +1,10 @@
 # Local News Intelligence replay
 
-> **Last Updated:** October 12, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 9:13 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12 evening: Ordered fresh replay retry
+
+September 24–25 was run first in `lanes_workflow_retry_20261012_2026_sep24`; September 9 was then completed in `lanes_workflow_retry_20261012_2026_sep9`. The separate port-3004/8004 preview now reads September 9; its original bootstrap login is restricted to this dedicated database. The original `lanes_plotting_20261011` snapshot and port-3000 override remain intact. Provider quota recovered; twenty actual requests yield four verified alerts but no eligible zones/history. Desktop news/map inspection passed; final History/mobile rendering checks failed with blank pages/browser syntax errors. [Results, private helper safeguards, preview status and remaining acceptance](../evaluations/news-retry-20261012.md). Older preview/database descriptions below are dated checkpoints, not instructions to replace the current retry data.
 
 ## October 12: Separate batch-audit replay preview
 

@@ -12,7 +12,7 @@ import pytest
 from app.schemas.news_extraction import ExtractedClaim, NewsArticleExtractorInput, RankedLocationCandidate
 from app.services.news_claim_auditor import (
     MAX_ARTICLE_BYTES, MAX_RESPONSE_BYTES, AuditorConfig, NewsClaimAuditor, canonical_claim_sha256,
-    canonical_input_sha256, AUDIT_CANDIDATE_EXCLUDED_FIELDS,
+    canonical_input_sha256, AUDIT_CANDIDATE_FIELDS,
     MAX_EVIDENCE_OPTIONS, MAX_EVIDENCE_QUOTE_CHARACTERS,
 )
 
@@ -155,7 +155,7 @@ async def test_custom_timeout_bounds_http_and_whole_response_without_changing_de
         return real_timeout(seconds)
 
     def handler(request):
-        assert set(request.extensions["timeout"].values()) == {60.0}
+        assert request.extensions["timeout"] == {"connect": 5, "read": 60.0, "write": 10, "pool": 5}
         return reply(response)
 
     monkeypatch.setattr(asyncio, "timeout", capture_deadline)
@@ -195,11 +195,21 @@ async def test_provider_uses_only_its_credential_and_complete_immutable_article(
             assert "systemInstruction" in data
             context = json.loads(data["contents"][0]["parts"][0]["text"])
             assert data["generationConfig"]["responseMimeType"] == "application/json"
-        assert context["article"] == {k: v for k, v in original_article.items() if k != "article_text"}
+        assert context["article"] == {k: v for k, v in original_article.items()
+            if k in {"canonical_url", "publisher", "title", "published_at"}}
         assert context["evidence_text"] == article.article_text
-        assert context["candidates"][0]["claim"] == {key: value for key, value in original_claim.items()
-                                    if key not in AUDIT_CANDIDATE_EXCLUDED_FIELDS}
-        assert context["candidates"][0]["claim_sha256"] == canonical_claim_sha256(claim)
+        wire_claim = context["candidates"][0]["claim"]
+        assert set(wire_claim) <= AUDIT_CANDIDATE_FIELDS
+        assert all(value == original_claim[key] for key, value in wire_claim.items())
+        for field in ("raw_place_name", "canonical_city", "depth_raw", "depth_canonical",
+                      "condition", "event_time_resolved"):
+            assert wire_claim[field] == original_claim[field]
+        for flag in ("is_forecast", "is_negated", "is_historical"):
+            assert wire_claim.get(flag, False) == original_claim[flag]
+        assert wire_claim.get("canonical_road", wire_claim["raw_place_name"]) == original_claim["canonical_road"]
+        assert context["candidates"][0]["source_occurrence"] == {
+            "start": claim.place_char_start, "end": claim.place_char_end}
+        assert "claim_sha256" not in context["candidates"][0]
         return reply(audit, provider)
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
@@ -231,11 +241,12 @@ async def test_provider_can_copy_exact_unicode_crlf_source_spans_without_countin
         context = json.loads(payload["messages"][1]["content"] if provider == "openrouter"
                              else payload["contents"][0]["parts"][0]["text"])
         options = context["evidence_options"]
-        assert all(context["evidence_text"][s["start"]:s["end"]] == s["quote"] for s in options)
+        assert all(s["quote"] in context["evidence_text"] and set(s) == {"quote", "option_index"}
+            and s["option_index"] == index for index, s in enumerate(options))
         assert any(s["quote"] == "Other Road has cleared." for s in options)
         response = evidence(claim, article)
         for fact in ("place", "status", "time", "depth"):
-            response[fact]["evidence"] = [options[0]]
+            response[fact]["evidence"] = [{"option_index": 0}]
         return reply(response, provider)
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
@@ -261,11 +272,11 @@ async def test_bounded_span_options_keep_late_duplicate_occurrence_and_complete_
         assert "article_text" not in context["article"]
         assert len(context["evidence_options"]) == MAX_EVIDENCE_OPTIONS
         selected = context["evidence_options"][0]
-        assert selected == {"start": begin, "end": begin + len(sentence), "quote": sentence}
-        assert any(s["start"] == 0 and s["quote"] == sentence for s in context["evidence_options"])
+        assert selected == {"quote": sentence, "option_index": 0}
+        assert sum(s["quote"] == sentence for s in context["evidence_options"]) >= 2
         response = evidence(claim, article)
         for fact in ("place", "status", "time", "depth"):
-            response[fact]["evidence"] = [selected]
+            response[fact]["evidence"] = [{"option_index": 0}]
         return reply(response)
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
@@ -281,8 +292,8 @@ async def test_oversized_source_paragraph_has_only_schema_sized_exact_options():
         context = json.loads(json.loads(request.content)["messages"][1]["content"])
         spans = context["evidence_options"]
         assert all(len(s["quote"]) <= MAX_EVIDENCE_QUOTE_CHARACTERS for s in spans)
-        assert all(article.article_text[s["start"]:s["end"]] == s["quote"] for s in spans)
-        assert spans[-1]["end"] == len(article.article_text)
+        assert all(s["quote"] in article.article_text for s in spans)
+        assert article.article_text.endswith(spans[-1]["quote"])
         return reply(evidence(claim, article))
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
         result = await auditor().audit(claim, article, client=client)
@@ -682,7 +693,7 @@ async def test_large_preview_is_hashed_but_cannot_bias_or_overflow_audit_prompt(
     def handler(request):
         document = json.loads(json.loads(request.content)["messages"][1]["content"])
         assert "ranked_location" not in document["candidates"][0]["claim"]
-        assert document["candidates"][0]["claim_sha256"] == canonical_claim_sha256(claim)
+        assert "claim_sha256" not in document["candidates"][0]
         assert len(request.content) < 20_000
         return reply(response)
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:

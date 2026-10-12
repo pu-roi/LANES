@@ -326,6 +326,15 @@ export interface NewsAutomationStatus {
     remaining: number | null;
     request_count: number;
     claims_dispatched: number;
+    model_next_check_at?: string | null;
+    failure_phase?: string | null;
+    timeout_kind?: string | null;
+    elapsed_ms?: number | null;
+    actual_model?: string | null;
+    boundary_qualified?: number | null;
+    boundary_expected?: number | null;
+    boundary_missing?: number | null;
+    boundary_error?: string | null;
     http_status: number | null;
     error_code: string | null;
   } | null;

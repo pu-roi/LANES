@@ -1,10 +1,12 @@
 # Batch auditing and quota verification
 
-> **Last Updated:** October 12, 2026, 4:06 AM
+> **Last Updated:** October 12, 2026, 9:09 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Developer:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 > **Scope:** Local verification on `roi-branch`, followed by the developer's explicit documentation-update/Git-push request. Cloud release is separate. Engineering checks pass; real successful plotting/depth-update acceptance is unverified.
 
 ## Delivered behavior
+
+**October 12 evening follow-up:** The developer requested a fresh September 24–25 replay followed by September 9. Provider allowance recovers to 50, and twenty real batch calls produce four independently verified text alerts. Original admission and footprint failures still result in zero zones/history; the 19-inch/10-inch pair expires after failed audits. The old 52/50/0 figures below describe the initial run. [Current retry, preview and limitations](../news-retry-20261012.md).
 
 Eight locally eligible claims from the same saved extraction run/policy share one full-body audit request. Valid results complete separately by identifier/hash. Existing single-claim callers use the batch method. Response and prompt identity are versioned; previous terminal evaluations remain immutable. Backend/provider size limits, exact evidence binding, independent place/status/time/depth/access assessments and existing downstream activation requirements remain enforced.
 
