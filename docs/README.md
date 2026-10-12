@@ -1,8 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 12, 2026, 4:06 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 9:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**October 12 batch auditing:** [Implementation plan](plans/news-batch-auditing.md) and [verification/preview](evaluations/news-batch-audit-20261012/README.md): eight eligible same-version claims share one bounded audit request while retaining separate results; quota-aware deferrals, safe diagnostics and existing Overview details are implemented. 492 offline, 226 native and 14 desktop/mobile checks pass. Real quota 52/50/0 prevents positive plotting acceptance. Separate port-3004 replay preview preserves the existing local snapshot. The developer subsequently authorized documentation updates and Git publication to `roi-branch`; cloud release remains separate. [Planner and publication audit](evaluations/news-batch-audit-20261012/README.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+**October 12 evening replay retry:** [September 24–25 followed by September 9](evaluations/news-retry-20261012.md). Fresh scheduled replays retain five/33 locations. OpenRouter recovers to 50 available requests; twenty actual batch calls produce four verified text alerts, but footprint gates prevent zones/history and the 19-inch → 10-inch pair expires unverified. Source facts and prior databases are preserved. Preview/browser limitations and remaining acceptance are recorded separately; no application/schema/dependency change or cloud release. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 12 batch auditing:** [Implementation plan](plans/news-batch-auditing.md) and [verification/preview](evaluations/news-batch-audit-20261012/README.md): eight eligible same-version claims share one bounded audit request while retaining separate results; quota-aware deferrals, safe diagnostics and existing Overview details are implemented. 492 offline, 226 native and 14 desktop/mobile checks pass. Initial real quota 52/50/0 prevented positive plotting acceptance; the evening retry above records quota recovery and remaining footprint/audit failures. Separate port-3004 replay preview preserves the existing local snapshot. The developer subsequently authorized documentation updates and Git publication to `roi-branch`; cloud release remains separate. [Planner and publication audit](evaluations/news-batch-audit-20261012/README.md#planner-and-publication-audit). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 12 historical news repairs (local):** Approved article-refresh and heading/locality fixes use existing capture timestamps, reviewed source provenance and scoped original evidence; processing advances to v17. 271 focused checks pass. Final continuous replay recaptures edited GMA content and retains all 26 QC sites plus the 19-inch/10-inch comparison, but real auditor rate limits/HTTP errors prevent any first operational zone. Successful zone-update behavior remains unverified. [Scope and evidence](evaluations/news-scheduled-historical-workflow-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -263,6 +265,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Vehicle passability](guides/vehicle-passability.md)
 
 ## Research and capstone
+
+- [News audit reliability and placement repair research](research/news-audit-reliability-20261012.md) — measured batch payload overhead, timeout/streaming and model-routing diagnosis, official/GitHub/Reddit/DEV/Stack Overflow findings, confirmed Pasig-only placement coverage and ordered repair/acceptance proposal. Research complete; implementation and new live benchmarks pending.
 
 - [Cross-location flood prediction research](research/cross-location-flood-prediction.md) — literature-backed regionalization, partial pooling, transfer learning and ensembles; current model/dataset audit, recommended depth-aware AFT investigation, uncertainty limits and staged integration/acceptance. Research and a separate local comparison are delivered; primary model selection remains pending.
 

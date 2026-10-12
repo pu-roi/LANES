@@ -34,7 +34,7 @@ function AgencyCard({ group, accentColor = 'red' }: { group: HotlineGroup; accen
   }[accentColor];
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+    <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
       {/* Agency header */}
       <div className="px-4 py-3 bg-gray-50/80 border-b border-gray-100 flex items-center gap-3">
         <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${colors.icon}`}>
@@ -191,7 +191,7 @@ export function EmergencyDirectoryModal({ isOpen, onClose }: Props) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 48, scale: 0.97 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 w-full sm:max-w-2xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            className="relative z-10 w-full sm:max-w-2xl bg-white rounded-t-xl sm:rounded-xl shadow-2xl flex flex-col overflow-hidden"
             style={{ maxHeight: 'min(88vh, 680px)' }}
           >
             {/* ── Header ── */}

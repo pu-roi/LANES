@@ -1,6 +1,14 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 12, 2026, 4:06 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 12, 2026, 9:38 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12: News audit and placement repair research
+
+Completed implementation/community/official-source research and measured three saved batches without new inference/database mutations. Eight-claim user payloads are 19,860/25,069 UTF-8 bytes versus 1,999/2,710-byte articles; preparation takes milliseconds. Confirmed nonstreaming provider request, opaque shared timeout classification, random free-model attribution gap and twenty Pasig-only news polygons. Saved the [diagnostic/compact-batch/free-model/coverage repair proposal](research/news-audit-reliability-20261012.md), distinguishing demonstrated blockers from unproven delay causes. Product repairs, selected-model accuracy/reliability, new geographic assets and actual zone/history/depth-update acceptance remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 12 evening: Historical news retry with restored provider quota
+
+Completed September 24–25's five checkpoints first, then September 9's 26 half-hour ticks in fresh guarded local databases. Existing migrations reach head; six target/output refusal checks and duplicate-checkpoint checks pass. September 24 saves five locations rejected by original admission; September 9 retains four versions/runs and 33 cards. Twenty actual batch requests produce four independently verified text alerts, but three missing barangay-boundary outcomes and one ungrounded underloop prevent zones/history. Both 19-inch/10-inch observations expire after actual audit failures; positive zone-update acceptance remains open. Final provider GET is 20/50/30, distinguishing this run from earlier exhaustion. Browser/preview findings are recorded without claiming complete visual acceptance. Original Zones 58/59/60, source hashes and port-3000 configuration remain preserved; application source/schema/dependencies and cloud release are unchanged. [Full retry record](evaluations/news-retry-20261012.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 12: Batch audit documentation and publication checkpoint
 

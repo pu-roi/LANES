@@ -34,7 +34,7 @@ export function CommunityFeedFilters({ filters, nearby, onChange }: {
 }) {
   const change = (key: keyof FeedFilters, value: string | number) => onChange({ ...filters, [key]: value });
   return (
-    <section id="community-feed-filters" aria-label="Community feed filters" className="bg-white rounded-xl px-3.5 py-3 sm:px-4 mb-3">
+    <section id="community-feed-filters" aria-label="Community feed filters" className="bg-white rounded-xl border border-gray-200/80 shadow-xs px-3.5 py-3 sm:px-4 mb-2.5">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 [&>*]:min-w-0">
         <Select label="Sort posts" options={sorts} value={filters.sort} onChange={e => change('sort', e.target.value)} />
         <Select label="Date posted" options={dates} value={filters.dateRange} onChange={e => change('dateRange', e.target.value)} />
