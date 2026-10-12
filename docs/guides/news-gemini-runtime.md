@@ -1,6 +1,16 @@
 # Gemini news auditor runtime
 
-> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current integrated source and retained runtime
+
+Gemini news-auditor repair `df16a02` is integrated into roi-branch alongside weather repair `680118b`. Canonical evidence validation/publication gates remain strict. Both Gemini schema and weather settings are retained in `.env.example`; encrypted runtime configuration and existing feed edits are preserved. Live qualification remains blocked at shared 3/12 POSTs; no deployment or additional inference. The original private worktree/request ledger is retained; merging the source does not reset its shared count or authorize a new probe.
+
+`LANES_NEWS_GEMINI_SCHEMA_PROFILE` defaults to `normalized`; `compact` and `inline` are explicit qualification profiles. Adapter revision is `gemini-json-schema-v1`. Profile/revision enter news policy and model circuit identity, while credential identity owns Gemini account cooldowns. Normal workers never switch models/profiles automatically. Strict backend validation, evidence indexes/occurrence/parent checks, response bounds and publication gates remain unchanged.
+
+Offline readiness from backend: `dotenvx run -f .env -- python -m scripts.check_news_auditor`. The default makes no HTTP or DB call; `--probe` is explicit historical synthetic inference. Read-only qualification uses `python -m scripts.qualify_news_gemini --fixtures <frozen-json> --ledger <persistent-json>` under dotenvx; a stopped ledger cannot be silently resumed/reset. Follow the retained [release gate](../plans/news-gemini-audit-repair.md) and [initial qualification](../evaluations/news-gemini-qualification-20261013.md), with latest 3/12 follow-up above the older two-request report. [Merge acceptance](../evaluations/gemini-repair-integration-20261013.md).
+
+All separate/unmerged branch descriptions below are earlier records; the current source is combined, and the cloud remains unchanged.
 
 ## Latest user-requested recheck and weather scope
 

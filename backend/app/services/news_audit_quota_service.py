@@ -15,6 +15,7 @@ from app.schemas.news_audit import AuditQuotaState, IndependentAuditResult
 from app.services.news_claim_auditor import NewsClaimAuditor, safe_retry_seconds
 
 QUOTA_KEY = "news_audit_quota_v1"
+GEMINI_QUOTA_KEY = "news_audit_gemini_quota_v1"
 AUDIT_LOCK = 614296504
 
 
@@ -35,17 +36,20 @@ def deadline(value: str | None) -> datetime | None:
 
 def quota_identity(auditor: NewsClaimAuditor) -> str:
     # Allowance belongs to the credential/account, never to an audit policy/model.
-    payload = (auditor.config.provider or "") + "\0" + auditor.config.openrouter_api_key
-    return "account-v2:" + hashlib.sha256(payload.encode()).hexdigest()
+    gemini = auditor.config.provider == "gemini"
+    credential = auditor.config.gemini_api_key if gemini else auditor.config.openrouter_api_key
+    payload = (auditor.config.provider or "") + "\0" + credential
+    return ("account-v3:" if gemini else "account-v2:") + hashlib.sha256(payload.encode()).hexdigest()
 
 
 def read_quota(db, *, identity: str | None = None) -> AuditQuotaState:
-    row = db.get(SystemSetting, QUOTA_KEY, populate_existing=True)
+    key = GEMINI_QUOTA_KEY if (identity or "").startswith("account-v3:") else QUOTA_KEY
+    row = db.get(SystemSetting, key, populate_existing=True)
     state = AuditQuotaState.model_validate(row.value) if row else AuditQuotaState()
     if identity is not None and state.identity != identity:
         # Preserve a legacy active cooldown during the first v2 transition. The
         # old opaque identity cannot safely establish another model's allowance.
-        if (identity.startswith("account-v2:") and state.identity and not state.identity.startswith("account-v2:")
+        if (identity.startswith("account-v2:") and state.identity and not state.identity.startswith(("account-v2:", "account-v3:"))
                 and deadline(state.blocked_until) and deadline(state.blocked_until) > real_now()):
             return state.model_copy(update={"identity": identity})
         return AuditQuotaState(identity=identity)
@@ -53,10 +57,11 @@ def read_quota(db, *, identity: str | None = None) -> AuditQuotaState:
 
 
 def save_quota(factory, state: AuditQuotaState) -> None:
+    key = GEMINI_QUOTA_KEY if state.identity.startswith("account-v3:") else QUOTA_KEY
     with factory() as db, db.begin():
-        row = db.get(SystemSetting, QUOTA_KEY)
+        row = db.get(SystemSetting, key)
         if row is None:
-            row = SystemSetting(key=QUOTA_KEY)
+            row = SystemSetting(key=key)
             db.add(row)
         row.value = state.model_dump(mode="json")
 
@@ -94,14 +99,19 @@ async def check_quota(factory, auditor: NewsClaimAuditor, *, client: httpx.Async
             and (not free_router(auditor) or state.remaining is not None)
             and timedelta(0) <= now - checked < timedelta(seconds=60)):
         return state
-    own = client is None
-    client = client or httpx.AsyncClient(timeout=10, follow_redirects=False)
     state.used = state.limit = state.remaining = None
     state.blocked_until = None
     state.checked_at = now.isoformat()
     state.quota_check_succeeded = False
     state.error_code = None
     state.http_status = None
+    if auditor.config.provider == "gemini":
+        # Gemini has no OpenRouter allowance endpoint. Unknown counters remain
+        # unknown; generation results govern the real-clock cooldown instead.
+        save_quota(factory, state)
+        return state
+    own = client is None
+    client = client or httpx.AsyncClient(timeout=10, follow_redirects=False)
     try:
         async with asyncio.timeout(10), client.stream("GET", "https://openrouter.ai/api/v1/key", timeout=10,
             headers={"Authorization": "Bearer " + auditor.config.openrouter_api_key}, follow_redirects=False) as response:

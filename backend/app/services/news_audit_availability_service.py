@@ -20,12 +20,16 @@ class ModelAvailability(BaseModel):
     blocked_until: str | None = None
     last_checked_at: str | None = None
     last_error: str | None = Field(default=None, max_length=100)
+    last_http_status: int | None = Field(default=None, ge=100, le=599)
     last_phase: str | None = Field(default=None, max_length=20)
     last_transport: AuditTransportDiagnostics | None = None
 
 
 def model_identity(auditor) -> str:
-    return hashlib.sha256((quota_identity(auditor) + "\0" + (auditor.config.model or "")).encode()).hexdigest()
+    identity = auditor.policy_identity()
+    configuration = "\0".join(str(identity.get(key) or "") for key in
+        ("config_revision", "gemini_schema_profile", "gemini_schema_revision"))
+    return hashlib.sha256((quota_identity(auditor) + "\0" + (auditor.config.model or "") + "\0" + configuration).encode()).hexdigest()
 
 
 def read_availability(db, auditor) -> ModelAvailability:
@@ -53,7 +57,7 @@ def availability_failure(result: IndependentAuditResult) -> bool:
     return (result.reason_code in {"auditor_timeout", "auditor_transport_error", "auditor_exception", "audit_batch_result_missing"}
         or result.provider_http_status == 408 or (result.provider_http_status or 0) >= 500
         or (result.reason_code == "auditor_response_invalid" and result.transport is not None
-            and result.transport.finish_reason not in (None, "stop")))
+            and result.transport.finish_reason not in (None, "stop", "STOP")))
 
 
 def record_availability(factory, auditor, result: IndependentAuditResult, *, now: datetime | None = None) -> ModelAvailability:
@@ -62,7 +66,12 @@ def record_availability(factory, auditor, result: IndependentAuditResult, *, now
         state = read_availability(db, auditor)
     until = deadline(state.blocked_until)
     recovering = until is not None and until <= now
-    if availability_failure(result):
+    if result.provider_http_status in {400, 401, 402, 403, 404, 422}:
+        # A fixed configuration must not burn a cycle repeating rejected requests.
+        # A repaired credential/configuration/profile has a distinct identity.
+        state.blocked_until = (now + timedelta(minutes=60)).isoformat()
+        state.last_error = result.reason_code
+    elif availability_failure(result):
         state.consecutive_failures = min(2, state.consecutive_failures + 1)
         if recovering:
             state.recovery_failures = min(3, state.recovery_failures + 1)
@@ -76,6 +85,7 @@ def record_availability(factory, auditor, result: IndependentAuditResult, *, now
         state.blocked_until = None
         state.last_error = None
     state.last_checked_at = now.isoformat()
+    state.last_http_status = result.provider_http_status
     state.last_phase = result.transport.phase if result.transport else None
     state.last_transport = result.transport
     save_availability(factory, auditor, state)

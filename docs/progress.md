@@ -1,6 +1,14 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:34 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Resolve PR #133 conflicts against main
+
+PR #133 reported documentation conflicts between roi-branch and main. Main `6340c2a` contains the weather publication through PR #132 and has the exact tree of `680118b`; roi-branch `8e00f8c` already preserves that content plus the news repair. The two shared merge bases (`680118b` and `2cf147b`) explain the crossed documentation history. Merge origin/main into roi-branch; local Git resolves it automatically with **zero file changes**, verified by identical complete tree hashes. Recording this merge makes the current main commit an ancestor of roi-branch and removes the PR conflict blocker. Both original repair heads and the 271 targeted/234 native passing implementation are retained; no re-test or live request is needed for unchanged source. Documentation records this branch synchronization only. The developer-requested codex/gemini-audit-repair ref is deleted locally and remotely; its df16a02 commit and ignored qualification receipts remain preserved. No main commit/PR merge or cloud deployment in this task; live Gemini qualification is still blocked at 3/12. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Combined news and weather repair integration
+
+Gemini news-auditor repair `df16a02` is integrated into roi-branch alongside weather repair `680118b`. Canonical evidence validation/publication gates remain strict. Both Gemini schema and weather settings are retained in `.env.example`; encrypted runtime configuration and existing feed edits are preserved. Live qualification remains blocked at shared 3/12 POSTs; no deployment or additional inference. Documentation conflicts preserve the prior primary records and incoming repair plan/qualification/bug evidence; earlier separate-branch descriptions below describe the pre-integration state. Combined verification passes 271 targeted and 234 fresh native checks plus offline readiness; ten primary files and thirteen incoming implementation/test files preserve exact committed bytes. Results are recorded in [merge acceptance](evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: roi-branch publication package
 

@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 13, 2026, 4:21 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 13 combined Gemini integration dependency audit:** News adapter/quota/circuit/readiness and Gemini weather service are combined on roi-branch. Both reuse existing httpx/Pydantic/SQLAlchemy and Python stdlib; no package, SQLAlchemy/Alembic definition or public endpoint added. Default normalized schema and explicit weather model are retained in configuration examples. Live acceptance is blocked; no cloud source/runtime mutation. [Merge checks](evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **October 13 public weather dependency audit:** The local weather endpoint now uses existing HTTPX/Pydantic and Python stdlib for Gemini, safe errors, cache/single-flight ownership and bounded RetryInfo/QuotaFailure handling. No new SDK, package, model/migration or public endpoint. Server-only `GEMINI_API_KEY` and optional `LANES_WEATHER_GEMINI_MODEL`; no key in frontend. Direct project quotas are limits, not allowance counters. No live weather generation or release after fresh news 429. [Follow-up verification](evaluations/gemini-weather-followup-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
