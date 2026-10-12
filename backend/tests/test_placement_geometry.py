@@ -6,6 +6,23 @@ from app.services.noah_vector_catalog_service import metric_geometry
 from app.services.placement_geometry_service import source_aligned_line_union
 
 
+def test_whole_source_preserves_exact_border_vertices_without_inverse_scaling():
+    from shapely.geometry import box
+    source = LineString([(121.0017254, 14.6327076), (121.0023183, 14.6329815)])
+    parent = box(121.0, 14.63, 121.01, 14.6329815)
+    assert parent.covers(source)
+    result = source_aligned_line_union(source, [source])
+    assert list(result.coords) == list(source.coords) and parent.covers(result)
+
+
+def test_partial_interval_retains_original_end_vertex_and_bends():
+    source = LineString([(121.0,14.6),(121.001,14.601),(121.0023183,14.6329815)])
+    fragment = LineString([(121.0005,14.6005),*list(source.coords)[1:]])
+    result = source_aligned_line_union(source,[fragment])
+    assert list(result.coords)[-2:] == list(source.coords)[-2:]
+    assert result.coords[0][0] == pytest.approx(121.0005)
+
+
 def test_coincident_diagonal_scenarios_do_not_duplicate_road_length():
     source = LineString([(121, 14.63), (121.001, 14.631), (121.002, 14.6305)])
     almost_same = LineString([(x + 1e-14, y - 1e-14) for x, y in source.coords])

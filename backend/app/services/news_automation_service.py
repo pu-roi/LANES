@@ -89,14 +89,34 @@ def read_news_automation(db: Session, *, now: datetime | None = None) -> NewsAut
         state, label = "not_recorded", "No worker cycle recorded"
     from app.services.news_audit_quota_service import read_quota, quota_identity, deadline, real_now
     from app.services.news_claim_auditor import NewsClaimAuditor
-    quota = read_quota(db, identity=quota_identity(NewsClaimAuditor()))
+    auditor = NewsClaimAuditor()
+    quota = read_quota(db, identity=quota_identity(auditor))
+    from app.services.news_audit_availability_service import read_availability
+    availability = read_availability(db, auditor)
+    model_until = deadline(availability.blocked_until)
+    transport = availability.last_transport
+    from app.services.barangay_boundary_service import get_barangay_boundary_provider
+    from app.services.philippine_location_service import get_philippine_location_service
+    boundaries = get_barangay_boundary_provider()
+    locations = get_philippine_location_service()
+    expected_boundaries = len({entry["psgc_code"] for entries in locations.barangays.values() for entry in entries
+        if entry.get("region") == "National Capital Region (NCR)"})
     blocked = deadline(quota.blocked_until)
     audit = NewsAuditDiagnostics(state="cooldown" if blocked and blocked > real_now() else
+        "model_cooldown" if model_until and model_until > real_now() else
         "awaiting_check" if blocked else
+        "awaiting_model_check" if model_until else
         "unknown" if quota.checked_at and quota.remaining is None else "available" if quota.checked_at else "not_recorded",
         checked_at=deadline(quota.checked_at), next_check_at=blocked,
         used=quota.used, limit=quota.limit, remaining=quota.remaining, request_count=quota.request_count,
-        claims_dispatched=quota.claims_dispatched, http_status=quota.http_status, error_code=quota.error_code)
+        claims_dispatched=quota.claims_dispatched, http_status=quota.http_status,
+        error_code=quota.error_code or availability.last_error, model_next_check_at=model_until,
+        failure_phase=transport.phase if transport and transport.phase != "complete" else None,
+        timeout_kind=transport.timeout_kind if transport else None,
+        elapsed_ms=transport.elapsed_ms if transport else None,
+        actual_model=transport.actual_model if transport else None,
+        boundary_qualified=len(boundaries.records), boundary_expected=expected_boundaries,
+        boundary_missing=max(0, expected_boundaries-len(boundaries.records)), boundary_error=boundaries.error)
     return NewsAutomationStatus(checked_at=now, state=state, status_label=label, running=running, audit=audit,
         current_stage=runtime.current_stage if running else None,
         stage_label=stage_label if running else None,

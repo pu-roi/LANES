@@ -1,0 +1,16 @@
+{
+  "catalog_sha256": "32533c54974216506cf1b85293486f62a4b306419138005e44eeadf97cb3c23b",
+  "source_sha256": "37c8b9c00c2e8fd22ae0c684445f8425f50bfc1e6c0387bf40b651b3263e8998",
+  "source_id": "cod-ncr-news:2025-02-13:37c8b9c00c2e8fd2",
+  "source_url": "https://data.humdata.org/dataset/caf116df-f984-4deb-85ca-41b349d3f313/resource/4e4067d6-3fc8-4d2c-91ea-330c3d4f8e8e/download/phl_admin_boundaries.shp.zip",
+  "license_url": "https://creativecommons.org/licenses/by/3.0/igo/",
+  "license_reviewed_by": "Codex automated source-provenance review; no legal-boundary validation",
+  "osm_catalog_sha256": "b43240e75fb0eeeeb3e9a9d15724c162f24197c4bc0a05e834ae11776062b801",
+  "osm_source_id": "osm-ncr:2026-09-27T00:56:56Z:0fa54508ad7fe5e9",
+  "source_archive_mode": "already_archived_separately",
+  "source_archive_filename": "news-qualified-original-records.zip",
+  "verified_record_count": 832,
+  "provisioned_at": "2026-10-12T15:09:59.087685+00:00",
+  "proves_current_flood": false,
+  "may_affect_routing": false
+}

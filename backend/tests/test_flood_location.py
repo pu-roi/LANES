@@ -30,7 +30,7 @@ def test_new_street_zone_is_located_in_each_of_thirty_source_barangays(name):
 def test_complete_location_assets_do_not_weaken_news_placement_catalog():
     provider = get_flood_location_provider()
     assert len(provider.records) == 30 and provider.city_boundary.is_valid
-    assert len(get_barangay_boundary_provider().records) == 20
+    assert len(get_barangay_boundary_provider().records) == 1524
     manifest = json.loads((DEFAULT_DIRECTORY/"manifest.json").read_text())
     assert not manifest["geometry_modified"] and not manifest["may_affect_routing"] and not manifest["proves_current_flood"]
 

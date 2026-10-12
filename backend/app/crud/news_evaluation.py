@@ -179,12 +179,15 @@ def finish_owned_evaluation(db: Session, claim: ClaimedEvaluation, now: datetime
     values: dict = {"lease_token": None, "lease_expires_at": None, "updated_at": now}
     if error_code:
         if diagnostic is not None:
-            allowed = {"provider_http_status", "provider_request_id", "retry_after_seconds", "reason_code"}
+            allowed = {"provider_http_status", "provider_request_id", "retry_after_seconds", "reason_code", "transport"}
             if set(diagnostic) - allowed or len(json.dumps(diagnostic).encode()) > 2048:
                 raise ValueError("Invalid safe evaluation diagnostic")
             if (diagnostic.get("provider_request_id") is not None and
                     not re.fullmatch(r"[A-Za-z0-9_./:-]{1,200}", diagnostic["provider_request_id"])):
                 raise ValueError("Invalid provider request identifier")
+            if diagnostic.get("transport") is not None:
+                from app.schemas.news_audit import AuditTransportDiagnostics
+                AuditTransportDiagnostics.model_validate(diagnostic["transport"])
         retry = retryable and claim.attempt_count < MAX_ATTEMPTS
         values.update(status="retry_wait" if retry else "failed", error_code=error_code,
                       result={"diagnostic": diagnostic} if diagnostic else None,

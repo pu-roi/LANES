@@ -1,11 +1,12 @@
 """Read-only operational status, separate from source evidence and flood claims."""
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from app.schemas.configuration import NewsCycleSummary, NewsStageHealth
 from app.schemas.news_weather import NewsWeatherStatus
 
 
 class NewsAuditDiagnostics(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
     state: str = "not_recorded"
     checked_at: datetime | None = None
     next_check_at: datetime | None = None
@@ -16,6 +17,15 @@ class NewsAuditDiagnostics(BaseModel):
     claims_dispatched: int = 0
     http_status: int | None = None
     error_code: str | None = None
+    model_next_check_at: datetime | None = None
+    failure_phase: str | None = None
+    timeout_kind: str | None = None
+    elapsed_ms: int | None = None
+    actual_model: str | None = None
+    boundary_qualified: int | None = None
+    boundary_expected: int | None = None
+    boundary_missing: int | None = None
+    boundary_error: str | None = None
 
 
 class NewsAutomationStatus(BaseModel):

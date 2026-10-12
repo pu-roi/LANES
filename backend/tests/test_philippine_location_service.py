@@ -24,6 +24,21 @@ def test_location_service_loads_pasig_barangays(location_service: PhilippineLoca
     assert "Santa Cruz" in pasig_bgys
 
 
+def test_manila_numbered_barangay_uses_city_parent_from_psgc_hierarchy(location_service):
+    matches = [entry for entries in location_service.barangays.values() for entry in entries
+               if entry["region"] == "National Capital Region (NCR)" and entry["psgc_code"].startswith("13806")]
+    assert len(matches) == 897
+    assert all(entry["city_municipality"] == "City of Manila" for entry in matches)
+    for entry in matches[:3]:
+        assert location_service.normalize_barangay_name(entry["name"], "City of Manila") == entry["name"]
+
+
+@pytest.mark.parametrize("name", ["Barangay 134", "Brgy. 134", "134"])
+def test_numbered_barangay_designator_is_parent_bound(location_service, name):
+    assert location_service.normalize_barangay_name(name, "City of Caloocan") == "Barangay 134"
+    assert location_service.normalize_barangay_name(name, "City of Pasig") is None
+
+
 def test_barangay_normalization_with_aliases(location_service: PhilippineLocationService):
     assert location_service.normalize_barangay_name("Maybunga") == "Maybunga"
     assert location_service.normalize_barangay_name("Barangay Maybunga") == "Maybunga"

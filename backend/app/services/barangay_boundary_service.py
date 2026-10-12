@@ -21,7 +21,7 @@ from shapely.geometry.base import BaseGeometry
 from app.services.article_road_match_service import normalize_name
 from app.services.philippine_location_service import get_philippine_location_service
 
-DEFAULT_DIRECTORY = Path(__file__).resolve().parents[2] / "runtime_data" / "barangay"
+DEFAULT_DIRECTORY = Path(__file__).resolve().parents[2] / "runtime_data" / "barangay-ncr"
 
 
 class BoundaryRecord(BaseModel):
@@ -49,6 +49,18 @@ class BoundaryCatalog(BaseModel):
     records: list[BoundaryRecord] = Field(min_length=1, max_length=2000)
 
 
+class BoundaryCatalogReference(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    directory: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]{0,99}$")
+    catalog_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
+class BoundaryCatalogRegistry(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    format_version: Literal[2]
+    catalogs: list[BoundaryCatalogReference] = Field(min_length=1, max_length=8)
+
+
 def _city_key(name: str) -> str:
     value = normalize_name(name)
     if value.startswith("city of "):
@@ -62,11 +74,51 @@ class BarangayBoundaryProvider:
         self.catalog: BoundaryCatalog | None = None
         self.error: str | None = None
         self.records: dict[tuple[str, str], tuple[BoundaryRecord, BaseGeometry]] = {}
+        self._record_catalogs: dict[tuple[str, str], BoundaryCatalog] = {}
         try:
             manifest_path, path = directory / "manifest.json", directory / "boundaries.json"
-            if manifest_path.stat().st_size > 4096 or path.stat().st_size > 32_000_000:
+            if manifest_path.stat().st_size > 4096:
                 raise ValueError("asset size limit")
-            expected = json.loads(manifest_path.read_text(encoding="utf-8"))["catalog_sha256"]
+            manifest_blob = manifest_path.read_bytes()
+            manifest = json.loads(manifest_blob)
+            if not isinstance(manifest, dict):
+                raise ValueError("invalid boundary manifest")
+            if manifest.get("format_version") == 2:
+                registry = BoundaryCatalogRegistry.model_validate(manifest)
+                if len({item.directory for item in registry.catalogs}) != len(registry.catalogs):
+                    raise ValueError("duplicate boundary source")
+                for item in registry.catalogs:
+                    child_path = (directory / item.directory).resolve()
+                    if child_path.parent != directory.resolve():
+                        raise ValueError("boundary source escaped registry")
+                    child_manifest = child_path / "manifest.json"
+                    if child_manifest.stat().st_size > 4096:
+                        raise ValueError("boundary source manifest size")
+                    child_metadata = json.loads(child_manifest.read_bytes())
+                    if not isinstance(child_metadata, dict):
+                        raise ValueError("invalid boundary source manifest")
+                    if child_metadata.get("format_version") == 2:
+                        raise ValueError("nested boundary registry")
+                    child = BarangayBoundaryProvider(child_path)
+                    if child.error or child.catalog is None or child.digest != item.catalog_sha256:
+                        raise ValueError("invalid boundary registry source")
+                    # Only leaf source catalogs can be composed. First qualified
+                    # source has explicit precedence; later sources fill gaps.
+                    if child._record_catalogs:
+                        raise ValueError("nested boundary registry")
+                    if self.catalog is None:
+                        self.catalog = child.catalog
+                    for key, record in child.records.items():
+                        if key not in self.records:
+                            self.records[key] = record
+                            self._record_catalogs[key] = child.catalog
+                if len(self.records) > 2000:
+                    raise ValueError("boundary registry size")
+                self.digest = hashlib.sha256(manifest_blob).hexdigest()
+                return
+            if path.stat().st_size > 32_000_000:
+                raise ValueError("asset size limit")
+            expected = manifest["catalog_sha256"]
             raw = path.read_bytes()
             self.digest = hashlib.sha256(raw).hexdigest()
             if expected != self.digest:
@@ -97,10 +149,19 @@ class BarangayBoundaryProvider:
                 self.records[key] = (record, polygon)
             self.catalog = catalog
         except FileNotFoundError:
+            self.catalog = None
+            self.records = {}
+            self._record_catalogs = {}
             self.error = "missing_valid_barangay_boundary"
         except (OSError, ValueError, TypeError, KeyError, ShapelyError):
+            self.catalog = None
             self.records = {}
+            self._record_catalogs = {}
             self.error = "invalid_barangay_boundary_catalog"
+
+    def catalog_for(self, city: str, barangay: str) -> BoundaryCatalog | None:
+        key = (_city_key(city), normalize_name(barangay))
+        return self._record_catalogs.get(key, self.catalog) if key in self.records else None
 
     @property
     def revision(self) -> str:

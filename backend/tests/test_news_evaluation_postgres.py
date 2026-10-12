@@ -115,7 +115,7 @@ def seed_many(factory, count=26, ineligible=0):
         return run.id, article, {canonical_claim_sha256(c.claim): c.claim for c in candidates}
 
 
-@pytest.mark.parametrize("remaining", [50, 0])
+@pytest.mark.parametrize("remaining", [50, 0, None])
 @pytest.mark.parametrize("ineligible", [0, 7])
 def test_batch_requests_and_zero_quota_preserve_individual_rows(factory, monkeypatch, remaining, ineligible):
     import json
@@ -132,9 +132,12 @@ def test_batch_requests_and_zero_quota_preserve_individual_rows(factory, monkeyp
         if request.method == "GET":
             gets.append(request)
             return httpx.Response(200, json={"data": {"free_model_daily_requests": {
-                "used": 50-remaining, "limit": 50, "remaining": remaining}}})
+                "used": 50-remaining, "limit": 50, "remaining": remaining}}} if remaining is not None else {"data": {}})
+        assert remaining is not None, "Unconfirmed allowance must not dispatch a POST"
         document = json.loads(json.loads(request.content)["messages"][1]["content"])
-        candidates = tuple(AuditCandidate(candidate_id=c["candidate_id"], claim=claims[c["claim_sha256"]]) for c in document["candidates"])
+        candidates = tuple(AuditCandidate(candidate_id=c["candidate_id"],
+            claim=next(value for value in claims.values() if value.raw_place_name == c["claim"]["raw_place_name"]))
+            for c in document["candidates"])
         post_sizes.append(len(candidates))
         return reply({"results": rows(candidates, article)[::-1]})
     async def execute():
@@ -156,6 +159,9 @@ def test_batch_requests_and_zero_quota_preserve_individual_rows(factory, monkeyp
         else:
             assert not post_sizes and summary.quota_deferred == 26
             assert all(e.status == "retry_wait" and e.attempt_count == 0 for e in dispatched_rows)
+            assert summary.request_count == summary.claims_dispatched == 0
+            if remaining is None:
+                assert all(e.error_code == "auditor_quota_unknown" for e in dispatched_rows)
     repeated = asyncio.run(execute())
     assert not repeated.evaluations and len(post_sizes) == (4 if remaining else 0)
 
@@ -207,6 +213,50 @@ def test_dispatch_lock_stops_concurrent_worker_without_consuming_attempt(factory
         assert row.status == "pending" and row.attempt_count == 0
 
 
+@pytest.mark.parametrize("elapsed_budget", [False, True])
+def test_owned_cycle_reuses_client_and_defers_undispatched_claims_without_attempts(factory, monkeypatch, elapsed_budget):
+    import json
+    from types import SimpleNamespace
+    from tests.test_news_batch_audit import rows
+    from app.schemas.news_audit_batch import AuditCandidate
+    run_id, article, claims = seed_many(factory, count=64)
+    service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key=uuid4().hex))
+    policy = EvaluationPolicy(uuid4().hex*2, POLICY.pipeline_version, service.policy_identity())
+    bind(factory, run_id, policy.fingerprint)
+    monkeypatch.setattr("app.services.news_evaluation_service.current_pipeline_version", lambda: POLICY.pipeline_version)
+    if elapsed_budget:
+        ticks = iter([0]+[400]*20)
+        monkeypatch.setattr("app.services.news_evaluation_service.time", SimpleNamespace(monotonic=lambda: next(ticks)))
+    requests, clients, progress = [], [], []
+    def transport(request):
+        requests.append(request.method)
+        if request.method == "GET":
+            return httpx.Response(200, json={"data": {"free_model_daily_requests": {"used": 0, "limit": 50, "remaining": 50}}})
+        document = json.loads(json.loads(request.content)["messages"][1]["content"])
+        candidates = tuple(AuditCandidate(candidate_id=c["candidate_id"],
+            claim=next(value for value in claims.values() if value.raw_place_name == c["claim"]["raw_place_name"]))
+            for c in document["candidates"])
+        return reply({"results": rows(candidates, article)})
+    original_client = httpx.AsyncClient
+    def make_client(**kwargs):
+        client = original_client(transport=httpx.MockTransport(transport), **kwargs)
+        clients.append(client)
+        return client
+    monkeypatch.setattr("app.services.news_evaluation_service.httpx.AsyncClient", make_client)
+    summary = asyncio.run(evaluate_news_claims(factory, limit=100, run_id=run_id, auditor=service, policy=policy,
+        sources=SOURCES, clock=lambda: datetime(2026, 10, 5, 7, 5, tzinfo=timezone.utc), on_progress=progress.append))
+    dispatched_count = 0 if elapsed_budget else 48
+    assert len(clients) == 1 and clients[0].is_closed
+    assert requests.count("GET") == 1 and requests.count("POST") == dispatched_count//8
+    assert summary.completed == dispatched_count and summary.budget_deferred == 64-dispatched_count
+    assert len(progress) == dispatched_count//8
+    with factory() as db:
+        values = db.scalars(select(NewsClaimEvaluation).join(NewsClaimSource).where(NewsClaimSource.extraction_run_id == run_id)).all()
+        assert sum(row.attempt_count for row in values) == dispatched_count
+        assert all(row.status == "retry_wait" and row.attempt_count == 0
+            for row in values if row.error_code == "auditor_cycle_deferred")
+
+
 @pytest.mark.parametrize("http_status", [200, 500])
 def test_oversized_groups_split_before_dispatch_and_failures_never_fan_out(factory, monkeypatch, http_status):
     import json
@@ -228,7 +278,9 @@ def test_oversized_groups_split_before_dispatch_and_failures_never_fan_out(facto
         if request.method == "GET":
             return httpx.Response(200, json={"data": {"free_model_daily_requests": {"used": 0, "limit": 50, "remaining": 50}}})
         document = json.loads(json.loads(request.content)["messages"][1]["content"])
-        candidates = tuple(AuditCandidate(candidate_id=c["candidate_id"], claim=claims[c["claim_sha256"]]) for c in document["candidates"])
+        candidates = tuple(AuditCandidate(candidate_id=c["candidate_id"],
+            claim=next(value for value in claims.values() if value.raw_place_name == c["claim"]["raw_place_name"]))
+            for c in document["candidates"])
         sizes.append(len(candidates))
         return reply({"results": rows(candidates, article)}) if http_status == 200 else httpx.Response(500)
     async def execute():
@@ -236,16 +288,19 @@ def test_oversized_groups_split_before_dispatch_and_failures_never_fan_out(facto
             return await evaluate_news_claims(factory, run_id=run_id, auditor=service, policy=policy, sources=SOURCES,
                 clock=lambda: datetime(2026, 10, 5, 7, 5, tzinfo=timezone.utc), client=client)
     summary = asyncio.run(execute())
-    assert sizes == [2, 2, 2, 2] and summary.request_count == 4 and summary.claims_dispatched == 8
+    expected = [2, 2, 2, 2] if http_status == 200 else [2, 2]
+    assert sizes == expected and summary.request_count == len(expected) and summary.claims_dispatched == sum(expected)
     assert summary.completed == (8 if http_status == 200 else 0)
     assert summary.retry_wait == (0 if http_status == 200 else 8)
     with factory() as db:
         attempts = db.scalars(select(NewsClaimEvaluation.attempt_count).join(NewsClaimSource)
             .where(NewsClaimSource.extraction_run_id == run_id)).all()
-        assert attempts == [1]*8
+        assert sorted(attempts) == ([1]*8 if http_status == 200 else [0]*4+[1]*4)
+    assert summary.availability_deferred == (0 if http_status == 200 else 4)
 
 
-def test_quota_cooldown_alone_does_not_wake_controller_but_evidence_maintenance_does(factory, monkeypatch):
+@pytest.mark.parametrize("error_code", ["auditor_daily_quota_exhausted", "auditor_quota_unknown", "auditor_quota_unavailable"])
+def test_quota_cooldown_alone_does_not_wake_controller_but_evidence_maintenance_does(factory, monkeypatch, error_code):
     from app.crud.news_weather import pending_pipeline_work
     from app.schemas.configuration import OperationalSettings
     from app.schemas.news_audit import AuditQuotaState
@@ -261,7 +316,7 @@ def test_quota_cooldown_alone_does_not_wake_controller_but_evidence_maintenance_
         blocked_until=(real_now()+timedelta(minutes=30)).isoformat()))
     with factory() as db, db.begin():
         owned = claim_due_evaluation(db, NOW, policy_fingerprint=fingerprint, run_id=run_id, count_attempt=False)
-        assert finish_owned_evaluation(db, owned, NOW, error_code="auditor_daily_quota_exhausted",
+        assert finish_owned_evaluation(db, owned, NOW, error_code=error_code,
             retryable=True, retry_at=NOW)
     config = OperationalSettings(news_publication_enabled=False)
     with factory() as db:

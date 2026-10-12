@@ -26,7 +26,7 @@ from app.services.article_road_context_service import _contains_name, match_arti
 from app.services.news_locality_anchor_service import CatalogLocality, match_locality_anchor
 from app.services.article_road_match_service import (
     OSMRoadWay, OSMRoadSection, ROAD_SUFFIXES, _span_cross_streets, _way_matches, match_article_road_span,
-    normalize_name, split_named_road_at_intersections, governor_road_alias,
+    normalize_name, split_named_road_at_intersections, governor_road_alias, initial_road_aliases,
 )
 
 MAX_CATALOG_BYTES = 96 * 1024 * 1024
@@ -57,6 +57,10 @@ def road_aliases(item: CatalogWay | IncompleteWay) -> tuple[str, ...]:
     references = [name for route in item.route_references for name in (route.reference, f"{route.reference} Road")]
     shortened = [alias for name in (item.name, *item.aliases) if (alias := governor_road_alias(name))]
     return tuple(dict.fromkeys([*item.aliases, *references, *shortened]))
+
+
+def road_initial_aliases(item: CatalogWay | IncompleteWay) -> tuple[str, ...]:
+    return tuple(dict.fromkeys(alias for name in (item.name, *item.aliases) for alias in initial_road_aliases(name)))
 
 
 class CatalogWay(BaseModel):
@@ -110,6 +114,7 @@ class NewsRoadPlacementProvider:
         self.boundaries: dict = {}
         self.cities: dict[str, CatalogCity] = {}
         self._name_index: dict[str, dict[int, OSMRoadWay]] = {}
+        self._source_way_names: dict[int, tuple[str, ...]] = {}
         self.localities: dict[str, list[CatalogLocality]] = {}
         self._loaded = False
         try:
@@ -200,6 +205,8 @@ class NewsRoadPlacementProvider:
                 if item.osm_id in ids:
                     raise ValueError("duplicate OSM way")
                 ids.add(item.osm_id)
+                self._source_way_names[item.osm_id] = (item.name, *item.aliases,
+                    *(route.reference for route in item.route_references))
                 for node, lon, lat in item.nodes:
                     if node <= 0 or not (120 <= lon <= 123 and 13 <= lat <= 16):
                         raise ValueError("invalid OSM node")
@@ -207,7 +214,7 @@ class NewsRoadPlacementProvider:
                         raise ValueError("conflicting OSM node coordinates")
                     node_positions[node] = (lon, lat)
                 ways.append(OSMRoadWay(item.osm_id, item.name, tuple(item.nodes), road_aliases(item),
-                                       item.bridge, item.tunnel, item.layer))
+                                       item.bridge, item.tunnel, item.layer, initial_aliases=road_initial_aliases(item)))
             self.catalog, self.ways, self.cities, self.boundaries = catalog, tuple(ways), cities, boundaries
             locality_ids: set[int] = set()
             for locality in catalog.localities:
@@ -222,7 +229,7 @@ class NewsRoadPlacementProvider:
                     raise ValueError("duplicate incomplete OSM way")
                 ids.add(item.osm_id)
             for way in self.ways:
-                for name in (way.name,*way.aliases):
+                for name in (way.name,*way.aliases,*way.initial_aliases):
                     normalized = normalize_name(name)
                     keys = [normalized]
                     words = normalized.split()
@@ -232,6 +239,22 @@ class NewsRoadPlacementProvider:
                         self._name_index.setdefault(name_key,{})[way.osm_id] = way
         except (OSError, ValueError, KeyError, TypeError, EOFError, ShapelyError):
             self.error = "invalid_or_incomplete_osm_catalog"
+
+    def _local_name_matches(self, name: str, boundary: BaseGeometry) -> tuple[dict[int, OSMRoadWay], str | None]:
+        from shapely.geometry import LineString
+        selected = {key: way for key, way in self._name_index.get(normalize_name(name), {}).items()
+            if boundary.intersects(LineString([(lon, lat) for _, lon, lat in way.nodes]))}
+        native = {key: way for key, way in selected.items() if _way_matches(
+            OSMRoadWay(way.osm_id, way.name, (), self._source_way_names[way.osm_id][1:]), name)}
+        if native:
+            return native, None
+        families = set()
+        for way in selected.values():
+            words = normalize_name(way.name).split()
+            families.add(" ".join(words[:-1] if words[-1] in ROAD_SUFFIXES else words))
+        if len(families) > 1:
+            return {}, "ambiguous_reported_road_alias" if normalize_name(name).startswith("governor ") else "ambiguous_reported_road_initials"
+        return selected, None
 
     def resolve(self, claim: ExtractedClaim) -> RoadPlacementEvidence:
         self._load()
@@ -248,7 +271,7 @@ class NewsRoadPlacementProvider:
             return RoadPlacementEvidence(status="unresolved", reason="no_reported_road", **metadata)
         names = [claim.canonical_road, *(_span_cross_streets(claim.road_segment_raw) or ())]
         local_clue = " ".join(filter(None, (claim.road_segment_raw, claim.local_area_raw)))
-        if any(_way_matches(OSMRoadWay(w.osm_id,w.name,(),road_aliases(w)), name)
+        if any(_way_matches(OSMRoadWay(w.osm_id,w.name,(),road_aliases(w), initial_aliases=road_initial_aliases(w)), name)
                for w in self.catalog.incomplete_ways for name in names) or any(
                    _contains_name(local_clue, name) for w in self.catalog.incomplete_ways
                    for name in (w.name, *road_aliases(w)) if local_clue):
@@ -261,12 +284,16 @@ class NewsRoadPlacementProvider:
                 return RoadPlacementEvidence(status="unresolved",
                     reason=self.barangays.resolution_reason(claim.canonical_city or "", claim.canonical_barangay,
                         self.boundaries[key]) or "missing_valid_barangay_boundary", **metadata)
-            catalog = self.barangays.catalog
+            catalog = self.barangays.catalog_for(claim.canonical_city or "", claim.canonical_barangay)
             record = self.barangays.records[(key, normalize_name(claim.canonical_barangay))][0]
             metadata.update(barangay_boundary_status="available", barangay_source_id=catalog.source_id,
                             barangay_psgc_code=record.psgc_code, barangay_osm_relation_id=record.osm_relation_id,
                             barangay_source_url=record.source_url, barangay_source_classification=catalog.source_classification)
         boundary = self.boundaries[key]
+        main, name_error = self._local_name_matches(claim.canonical_road,
+            barangay_boundary if barangay_boundary is not None else boundary)
+        if name_error:
+            return RoadPlacementEvidence(status="unresolved", reason=name_error, **metadata)
         explicit_span = _span_cross_streets(claim.road_segment_raw)
         if claim.road_segment_raw and explicit_span is None and re.search(
                 r"\b(?:between|from)\b", claim.road_segment_raw, re.I):
@@ -274,7 +301,10 @@ class NewsRoadPlacementProvider:
         if explicit_span is not None:
             selected: dict[int, OSMRoadWay] = {}
             for name in names:
-                selected.update(self._name_index.get(normalize_name(name),{}))
+                matched, error = self._local_name_matches(name, boundary)
+                if error:
+                    return RoadPlacementEvidence(status="unresolved", reason=error, **metadata)
+                selected.update(main if name == claim.canonical_road else matched)
             match = match_article_road_span(claim, selected.values(), boundary, self.catalog.source_id,
                 barangay_boundary=barangay_boundary, allow_partial_barangay=True)
             if match.status != "bounded_candidate":
@@ -292,7 +322,6 @@ class NewsRoadPlacementProvider:
         if re.search(r"\b(?:northbound|southbound|eastbound|westbound)\b",
                      " ".join(filter(None, (claim.road_segment_raw, claim.local_area_raw))), re.I):
             return RoadPlacementEvidence(status="unresolved", reason="reported_carriageway_requires_review", **metadata)
-        main = self._name_index.get(normalize_name(claim.canonical_road),{})
         if normalize_name(claim.canonical_road).startswith("governor "):
             local_main = {id: way for id, way in main.items()
                           if any(boundary.covers(shape({"type": "Point", "coordinates": [lon, lat]}))

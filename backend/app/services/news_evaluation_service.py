@@ -5,6 +5,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 import json
+import time
 from math import ceil
 
 import httpx
@@ -25,6 +26,7 @@ from app.schemas.news_audit import IndependentAuditResult
 from app.schemas.news_audit_batch import AuditCandidate
 from app.services.news_audit_quota_service import (audit_dispatch_lock, check_quota, dispatched, record_error,
     deadline, real_now, save_quota)
+from app.services.news_audit_availability_service import read_availability, record_availability, ModelAvailability
 from app.services.news_discovery_service import extraction_input_snapshot
 from app.services.news_evidence_policy import has_flood_observation, metro_manila_claim
 from app.services.news_feed_service import canonical_article_url
@@ -135,6 +137,8 @@ class EvaluationSummary:
     request_count: int = 0
     claims_dispatched: int = 0
     quota_deferred: int = 0
+    availability_deferred: int = 0
+    budget_deferred: int = 0
     error_code: str | None = None
     skipped: list[dict] = field(default_factory=list)
     evaluations: list[dict] = field(default_factory=list)
@@ -231,16 +235,24 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                                policy: EvaluationPolicy | None = None,
                                client: httpx.AsyncClient | None = None, obey_configuration: bool = False,
                                sources: tuple[NewsSource, ...] | None = None,
-                               clock: Callable[[], datetime] = utc_now) -> EvaluationSummary:
+                               clock: Callable[[], datetime] = utc_now,
+                               on_progress: Callable[[dict], None] | None = None) -> EvaluationSummary:
     if not 1 <= limit <= 200:
         raise ValueError("Evaluation limit must be between 1 and 200")
     auditor = auditor if auditor is not None else NewsClaimAuditor()
+    if client is None:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(60, connect=5, write=10, pool=5),
+                                     follow_redirects=False) as scoped_client:
+            return await evaluate_news_claims(session_factory, limit=limit, run_id=run_id, auditor=auditor,
+                policy=policy, client=scoped_client, obey_configuration=obey_configuration,
+                sources=sources, clock=clock, on_progress=on_progress)
     policy = policy if policy is not None else evaluation_policy(auditor)
     sources = sources if sources is not None else load_news_sources()
     summary = EvaluationSummary()
     visited: list[int] = []
     quota = None
     stop_dispatch = False
+    cycle_started = time.monotonic()
 
     def eligible_for_dispatch(owned):
         if owned.exhausted:
@@ -263,7 +275,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
             error, retryable = "evaluation_policy_changed", False
         if error and audit:
             diagnostic = {key: value for key, value in audit.model_dump(mode="json").items()
-                if key in {"provider_http_status", "provider_request_id", "retry_after_seconds", "reason_code"} and value is not None}
+                if key in {"provider_http_status", "provider_request_id", "retry_after_seconds", "reason_code", "transport"} and value is not None}
         if error is None:
             result = _completed_result(owned, policy, audit.reason_code if audit else reason, audit, claim, article, now)
             if len(json.dumps(result, ensure_ascii=False, allow_nan=False).encode()) > 65536:
@@ -290,7 +302,8 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                     if not sources:
                         break
                 owned_batch = claim_due_batch(db, require_utc(clock()), policy_fingerprint=policy.fingerprint,
-                    limit=MAX_BATCH_CLAIMS, max_rows=limit-len(visited), eligibility_test=eligible_for_dispatch,
+                    limit=getattr(getattr(auditor, "config", None), "batch_size", MAX_BATCH_CLAIMS),
+                    max_rows=limit-len(visited), eligibility_test=eligible_for_dispatch,
                     run_id=run_id, exclude_evaluation_ids=tuple(visited),
                     source_ids=tuple(s.id for s in sources) if obey_configuration else None)
             if not owned_batch:
@@ -339,18 +352,32 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                         quota.error_code = "auditor_daily_quota_exhausted"
                         save_quota(session_factory, quota)
                 blocked = deadline(quota.blocked_until) if quota else None
-                if stop_dispatch or (blocked and blocked > real_now()):
-                    delay = max(1, ceil((blocked-real_now()).total_seconds())) if blocked else 900
+                with session_factory() as db:
+                    availability = read_availability(db, auditor) if getattr(auditor, "config", None) else ModelAvailability()
+                model_blocked = deadline(availability.blocked_until)
+                budget_spent = (summary.request_count >= 6 or
+                    time.monotonic() - cycle_started + getattr(auditor, "timeout_seconds", 60) + 5 > 360)
+                quota_blocked = stop_dispatch or bool(blocked and blocked > real_now())
+                unavailable = bool(model_blocked and model_blocked > real_now())
+                if quota_blocked or unavailable or budget_spent:
+                    until = blocked if quota_blocked else model_blocked if unavailable else None
+                    delay = max(1, ceil((until-real_now()).total_seconds())) if until else 60 if budget_spent else 900
                     for owned, article, claim in group:
                         observation_deadline = claim.event_time_resolved + (timedelta(minutes=(policy.expiry_minutes or {}).get(claim.depth_canonical or "unknown", 120))
                             if claim.condition != "subsided" else ADMISSION_AGE)
                         quota_retry_at = require_utc(clock())+timedelta(seconds=delay)
                         retry_at = min(quota_retry_at, observation_deadline)
-                        error = ("auditor_quota_evidence_due" if observation_deadline < quota_retry_at else
-                                 quota.error_code if quota and quota.error_code else "auditor_rate_limited")
+                        error = ("auditor_quota_evidence_due" if observation_deadline <= quota_retry_at else
+                            (quota.error_code if quota and quota.error_code else "auditor_rate_limited") if quota_blocked else
+                            "auditor_model_cooldown" if unavailable else "auditor_cycle_deferred")
                         save(owned, article, claim, error=error,
                              retryable=True, retry_at=retry_at)
-                        summary.quota_deferred += 1
+                        if quota_blocked:
+                            summary.quota_deferred += 1
+                        elif unavailable:
+                            summary.availability_deferred += 1
+                        else:
+                            summary.budget_deferred += 1
                     continue
                 ready = []
                 # Recheck current toggles/source policy and freshness after quota IO.
@@ -387,6 +414,10 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                     representative = next((r for r in results.values() if r.provider_http_status == 429),
                         next((r for r in results.values() if r.outcome in ("invalid", "unavailable")), next(iter(results.values()))))
                     record_error(session_factory, quota, representative)
+                representative = next((r for r in results.values() if r.outcome in ("unavailable", "invalid")),
+                    next(iter(results.values())))
+                if getattr(auditor, "config", None):
+                    record_availability(session_factory, auditor, representative)
                 for owned, article, claim in ready:
                     audit = results[str(owned.evaluation_id)]
                     if audit.provider_http_status == 429:
@@ -403,4 +434,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                             error = "auditor_quota_evidence_due"
                     save(owned, article, claim, audit=audit, retry_at=retry_at, error=error,
                          retryable=audit.retryable)
+                if on_progress:
+                    from dataclasses import asdict
+                    on_progress(asdict(summary))
     return summary

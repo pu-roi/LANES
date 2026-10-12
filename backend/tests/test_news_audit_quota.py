@@ -42,9 +42,52 @@ async def test_exhausted_quota_caches_cooldown_then_recovers(status_db):
 async def test_absent_or_invalid_counter_is_unknown_not_exhausted(status_db, payload):
     factory = sessionmaker(bind=status_db.get_bind())
     service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key="synthetic-only"))
-    async with httpx.AsyncClient(transport=httpx.MockTransport(lambda r: httpx.Response(200, json={"data": {"free_model_daily_requests": payload}}))) as client:
+    now = datetime.now(timezone.utc)
+    calls = []
+    def handler(request):
+        calls.append(request)
+        quota = payload if len(calls) == 1 else {"used": 0, "limit": 50, "remaining": 50}
+        return httpx.Response(200, json={"data": {"free_model_daily_requests": quota}})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        state = await check_quota(factory, service, client=client, now=now)
+        assert state.remaining is None and state.error_code == "auditor_quota_unknown"
+        assert deadline(state.blocked_until) == now + timedelta(seconds=60)
+        paused = await check_quota(factory, service, client=client, now=now+timedelta(seconds=59))
+        assert len(calls) == 1 and paused.remaining is None
+        recovered = await check_quota(factory, service, client=client, now=now+timedelta(seconds=60))
+        assert len(calls) == 2 and recovered.remaining == 50 and recovered.blocked_until is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("failure", ["read_timeout", "malformed_json", "http_503", "http_429"])
+async def test_free_preflight_failure_defers_with_unknown_counters(status_db, failure):
+    factory = sessionmaker(bind=status_db.get_bind())
+    service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="openrouter/free", openrouter_api_key="synthetic-only"))
+    now = datetime.now(timezone.utc)
+    calls = []
+    def handler(request):
+        calls.append(request)
+        if failure == "read_timeout":
+            raise httpx.ReadTimeout("fixture", request=request)
+        if failure == "malformed_json":
+            return httpx.Response(200, content=b"not json")
+        return httpx.Response(429 if failure == "http_429" else 503, headers={"retry-after": "120"})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        state = await check_quota(factory, service, client=client, now=now)
+        assert state.remaining is state.used is state.limit is None
+        assert state.error_code != "auditor_daily_quota_exhausted"
+        assert deadline(state.blocked_until) == now+timedelta(seconds=120 if failure == "http_429" else 60)
+        await check_quota(factory, service, client=client, now=now+timedelta(seconds=59))
+        assert len(calls) == 1 and state.request_count == state.claims_dispatched == 0
+
+
+@pytest.mark.asyncio
+async def test_paid_model_missing_free_counter_does_not_impose_free_cooldown(status_db):
+    factory = sessionmaker(bind=status_db.get_bind())
+    service = NewsClaimAuditor(AuditorConfig(provider="openrouter", model="fixture/paid", openrouter_api_key="synthetic-only"))
+    async with httpx.AsyncClient(transport=httpx.MockTransport(lambda r: httpx.Response(200, json={"data": {}}))) as client:
         state = await check_quota(factory, service, client=client)
-    assert state.remaining is None and state.error_code == "auditor_quota_unknown" and state.blocked_until is None
+    assert state.remaining is None and state.blocked_until is None and state.error_code == "auditor_quota_unknown"
 
 
 def test_rate_limit_error_persists_only_safe_status_and_deadline(status_db):

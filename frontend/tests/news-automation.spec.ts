@@ -60,6 +60,30 @@ async function setup(page: Page, readStatus: () => object, readResults: () => ob
   });
 }
 
+
+test("model recovery phase and reviewed coverage remain visible on desktop/mobile", async ({ page }, info) => {
+  const state = status();
+  state.audit = { state: "model_cooldown", checked_at: "2026-10-11T13:00:00Z", next_check_at: null,
+    used: 20, limit: 50, remaining: 30, request_count: 2, claims_dispatched: 16, http_status: 200,
+    error_code: "auditor_timeout", model_next_check_at: "2026-10-11T13:15:00Z", failure_phase: "body",
+    timeout_kind: "overall", elapsed_ms: 60000, actual_model: "fixture/model:free",
+    boundary_expected: 1710, boundary_qualified: 1524, boundary_missing: 186 };
+  const methods: string[] = [];
+  page.on("request", request => { if (request.url().includes("/admin/news/")) methods.push(request.method()); });
+  await setup(page, () => state);
+  await page.goto("/admin/news");
+  await page.getByText("Run details and diagnostics", { exact: true }).click();
+  const diagnostics = page.getByTestId("news-audit-diagnostics");
+  await expect(diagnostics).toContainText("body · overall timeout · 60.0 seconds");
+  await expect(diagnostics).toContainText("Model recovery check");
+  await expect(diagnostics).toContainText("1524 of 1710");
+  await expect(diagnostics).toContainText("186 still need reviewed coverage");
+  await expect(diagnostics).toContainText("fixture/model:free");
+  expect(methods.every(method => method === "GET")).toBeTruthy();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  await page.screenshot({ path: info.outputPath("model-recovery-and-coverage.png"), fullPage: true });
+});
+
 test("polling reflects real stages and refreshes flood cards when the cycle finishes", async ({ page }, info) => {
   let state = status();
   let reads = 0;

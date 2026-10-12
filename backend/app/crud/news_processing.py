@@ -16,7 +16,7 @@ from app.models.news import NewsArticle, NewsArticleVersion, NewsExtractionRun
 from app.schemas.news_extraction import NewsArticleExtractorInput
 from app.services.news_discovery_service import MAX_ARTICLE_CHARS, extraction_input_snapshot
 
-PIPELINE_VERSION = "rules-spatial-preview-v17"
+PIPELINE_VERSION = "rules-spatial-preview-v20"
 MAX_ATTEMPTS = 5
 LEASE_SECONDS = 300
 
@@ -29,7 +29,10 @@ def current_pipeline_version() -> str:
     from app.services.news_road_placement_service import get_news_road_placement_provider
     from app.services.news_placement_preview_service import get_news_placement_preview_service
     sources = f"{get_news_road_placement_provider().revision}:{get_news_placement_preview_service().revision}"
-    return f"{PIPELINE_VERSION}:{hashlib.sha256(sources.encode()).hexdigest()}"
+    version = f"{PIPELINE_VERSION}:{hashlib.sha256(sources.encode()).hexdigest()}"
+    if len(version) > NewsExtractionRun.__table__.c.pipeline_version.type.length:
+        raise ValueError("pipeline_identity_oversized")
+    return version
 
 
 def enqueue_article(db: Session, article: NewsArticle, *, pipeline_version: str | None = None) -> int | None:

@@ -1,0 +1,6178 @@
+{
+  "catalog_sha256": "32533c54974216506cf1b85293486f62a4b306419138005e44eeadf97cb3c23b",
+  "source_sha256": "37c8b9c00c2e8fd22ae0c684445f8425f50bfc1e6c0387bf40b651b3263e8998",
+  "source_archive": "../data/news-reliability/ncr-cod-capture-20261012/news-qualified-original-records.zip",
+  "osm_catalog_sha256": "b43240e75fb0eeeeb3e9a9d15724c162f24197c4bc0a05e834ae11776062b801",
+  "osm_boundary_sha256": "75334f61dab77ee95f66bfa9abdcf4f41245c0663660e52cdb8cc9b50aeafbd0",
+  "licence_id": "cc-by-igo",
+  "licence_url": "http://creativecommons.org/licenses/by/3.0/igo/legalcode",
+  "source_classification": "reviewed_source",
+  "accepted_records": 832,
+  "excluded_records": [
+    {
+      "source_pcode": "PH1303901126",
+      "name": "Barangay 126",
+      "city": "City of Manila",
+      "psgc_code": "1380601126",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901127",
+      "name": "Barangay 127",
+      "city": "City of Manila",
+      "psgc_code": "1380601127",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901128",
+      "name": "Barangay 128",
+      "city": "City of Manila",
+      "psgc_code": "1380601128",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901177",
+      "name": "Barangay 177",
+      "city": "City of Manila",
+      "psgc_code": "1380601177",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901188",
+      "name": "Barangay 188",
+      "city": "City of Manila",
+      "psgc_code": "1380601188",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901189",
+      "name": "Barangay 189",
+      "city": "City of Manila",
+      "psgc_code": "1380601189",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901191",
+      "name": "Barangay 191",
+      "city": "City of Manila",
+      "psgc_code": "1380601191",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901192",
+      "name": "Barangay 192",
+      "city": "City of Manila",
+      "psgc_code": "1380601192",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901203",
+      "name": "Barangay 203",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901204",
+      "name": "Barangay 204",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901205",
+      "name": "Barangay 205",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901206",
+      "name": "Barangay 206",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901207",
+      "name": "Barangay 207",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901208",
+      "name": "Barangay 208",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901209",
+      "name": "Barangay 209",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901210",
+      "name": "Barangay 210",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901211",
+      "name": "Barangay 211",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901212",
+      "name": "Barangay 212",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901213",
+      "name": "Barangay 213",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901214",
+      "name": "Barangay 214",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901215",
+      "name": "Barangay 215",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901216",
+      "name": "Barangay 216",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901217",
+      "name": "Barangay 217",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901218",
+      "name": "Barangay 218",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901219",
+      "name": "Barangay 219",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901220",
+      "name": "Barangay 220",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901221",
+      "name": "Barangay 221",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901222",
+      "name": "Barangay 222",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901223",
+      "name": "Barangay 223",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901224",
+      "name": "Barangay 224",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901225",
+      "name": "Barangay 225",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901226",
+      "name": "Barangay 226",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901227",
+      "name": "Barangay 227",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901228",
+      "name": "Barangay 228",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901229",
+      "name": "Barangay 229",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901230",
+      "name": "Barangay 230",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901231",
+      "name": "Barangay 231",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901232",
+      "name": "Barangay 232",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901233",
+      "name": "Barangay 233",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901234",
+      "name": "Barangay 234",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901235",
+      "name": "Barangay 235",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901236",
+      "name": "Barangay 236",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901237",
+      "name": "Barangay 237",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901238",
+      "name": "Barangay 238",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901239",
+      "name": "Barangay 239",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901240",
+      "name": "Barangay 240",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901241",
+      "name": "Barangay 241",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901242",
+      "name": "Barangay 242",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901243",
+      "name": "Barangay 243",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901244",
+      "name": "Barangay 244",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901245",
+      "name": "Barangay 245",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901246",
+      "name": "Barangay 246",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901247",
+      "name": "Barangay 247",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901248",
+      "name": "Barangay 248",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901249",
+      "name": "Barangay 249",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901250",
+      "name": "Barangay 250",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901251",
+      "name": "Barangay 251",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901252",
+      "name": "Barangay 252",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901253",
+      "name": "Barangay 253",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901254",
+      "name": "Barangay 254",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901255",
+      "name": "Barangay 255",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901256",
+      "name": "Barangay 256",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901257",
+      "name": "Barangay 257",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901258",
+      "name": "Barangay 258",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901259",
+      "name": "Barangay 259",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901260",
+      "name": "Barangay 260",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901261",
+      "name": "Barangay 261",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901262",
+      "name": "Barangay 262",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901263",
+      "name": "Barangay 263",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901264",
+      "name": "Barangay 264",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901265",
+      "name": "Barangay 265",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901266",
+      "name": "Barangay 266",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901267",
+      "name": "Barangay 267",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901906",
+      "name": "Manila North Cemetery",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_identity_not_in_current_reference"
+    },
+    {
+      "source_pcode": "PH1303901907",
+      "name": "Tutuban Mall (Claimed by Five Barangays of Tondo, Manila)",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_identity_not_in_current_reference"
+    },
+    {
+      "source_pcode": "PH1303901268",
+      "name": "Barangay 268",
+      "city": "City of Manila",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1303901372",
+      "name": "Barangay 372",
+      "city": "City of Manila",
+      "psgc_code": "1380605075",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901493",
+      "name": "Barangay 493",
+      "city": "City of Manila",
+      "psgc_code": "1380606099",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901512",
+      "name": "Barangay 512",
+      "city": "City of Manila",
+      "psgc_code": "1380606118",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901515",
+      "name": "Barangay 515",
+      "city": "City of Manila",
+      "psgc_code": "1380606121",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901530",
+      "name": "Barangay 530",
+      "city": "City of Manila",
+      "psgc_code": "1380606136",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901531",
+      "name": "Barangay 531",
+      "city": "City of Manila",
+      "psgc_code": "1380606137",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901595",
+      "name": "Barangay 595",
+      "city": "City of Manila",
+      "psgc_code": "1380606202",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901597",
+      "name": "Barangay 597",
+      "city": "City of Manila",
+      "psgc_code": "1380606204",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901598",
+      "name": "Barangay 598",
+      "city": "City of Manila",
+      "psgc_code": "1380606205",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901601",
+      "name": "Barangay 601",
+      "city": "City of Manila",
+      "psgc_code": "1380606208",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901602",
+      "name": "Barangay 602",
+      "city": "City of Manila",
+      "psgc_code": "1380606209",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901607",
+      "name": "Barangay 607",
+      "city": "City of Manila",
+      "psgc_code": "1380606214",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901618",
+      "name": "Barangay 618",
+      "city": "City of Manila",
+      "psgc_code": "1380606225",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901667",
+      "name": "Barangay 667",
+      "city": "City of Manila",
+      "psgc_code": "1380608009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901668",
+      "name": "Barangay 668",
+      "city": "City of Manila",
+      "psgc_code": "1380608010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901669",
+      "name": "Barangay 669",
+      "city": "City of Manila",
+      "psgc_code": "1380608011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901670",
+      "name": "Barangay 670",
+      "city": "City of Manila",
+      "psgc_code": "1380608012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901654",
+      "name": "Barangay 654",
+      "city": "City of Manila",
+      "psgc_code": "1380609001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901655",
+      "name": "Barangay 655",
+      "city": "City of Manila",
+      "psgc_code": "1380609002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901656",
+      "name": "Barangay 656",
+      "city": "City of Manila",
+      "psgc_code": "1380609003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901657",
+      "name": "Barangay 657",
+      "city": "City of Manila",
+      "psgc_code": "1380609004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901658",
+      "name": "Barangay 658",
+      "city": "City of Manila",
+      "psgc_code": "1380609005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901719",
+      "name": "Barangay 719",
+      "city": "City of Manila",
+      "psgc_code": "1380610034",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901729",
+      "name": "Barangay 729",
+      "city": "City of Manila",
+      "psgc_code": "1380610044",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901730",
+      "name": "Barangay 730",
+      "city": "City of Manila",
+      "psgc_code": "1380610045",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901676",
+      "name": "Barangay 676",
+      "city": "City of Manila",
+      "psgc_code": "1380611010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1303901755",
+      "name": "Barangay 755",
+      "city": "City of Manila",
+      "psgc_code": "1380614011",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901756",
+      "name": "Barangay 756",
+      "city": "City of Manila",
+      "psgc_code": "1380614012",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901757",
+      "name": "Barangay 757",
+      "city": "City of Manila",
+      "psgc_code": "1380614013",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901758",
+      "name": "Barangay 758",
+      "city": "City of Manila",
+      "psgc_code": "1380614014",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901763",
+      "name": "Barangay 763",
+      "city": "City of Manila",
+      "psgc_code": "1380614019",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901764",
+      "name": "Barangay 764",
+      "city": "City of Manila",
+      "psgc_code": "1380614020",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901765",
+      "name": "Barangay 765",
+      "city": "City of Manila",
+      "psgc_code": "1380614021",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901766",
+      "name": "Barangay 766",
+      "city": "City of Manila",
+      "psgc_code": "1380614022",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901770",
+      "name": "Barangay 770",
+      "city": "City of Manila",
+      "psgc_code": "1380614026",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901775",
+      "name": "Barangay 775",
+      "city": "City of Manila",
+      "psgc_code": "1380614031",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901778",
+      "name": "Barangay 778",
+      "city": "City of Manila",
+      "psgc_code": "1380614034",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901783",
+      "name": "Barangay 783",
+      "city": "City of Manila",
+      "psgc_code": "1380614039",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901874",
+      "name": "Barangay 874",
+      "city": "City of Manila",
+      "psgc_code": "1380614067",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901881",
+      "name": "Barangay 881",
+      "city": "City of Manila",
+      "psgc_code": "1380614074",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901882",
+      "name": "Barangay 882",
+      "city": "City of Manila",
+      "psgc_code": "1380614075",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901883",
+      "name": "Barangay 883",
+      "city": "City of Manila",
+      "psgc_code": "1380614076",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901884",
+      "name": "Barangay 884",
+      "city": "City of Manila",
+      "psgc_code": "1380614077",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901887",
+      "name": "Barangay 887",
+      "city": "City of Manila",
+      "psgc_code": "1380614080",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901892",
+      "name": "Barangay 892",
+      "city": "City of Manila",
+      "psgc_code": "1380614085",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1303901893",
+      "name": "Barangay 893",
+      "city": "City of Manila",
+      "psgc_code": "1380614086",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307401001",
+      "name": "Addition Hills",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401002",
+      "name": "Bagong Silang",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401003",
+      "name": "Barangka Drive",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401004",
+      "name": "Barangka Ibaba",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401005",
+      "name": "Barangka Ilaya",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401006",
+      "name": "Barangka Itaas",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401007",
+      "name": "Burol",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401008",
+      "name": "Buayang Bato",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401009",
+      "name": "Daang Bakal",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401010",
+      "name": "Hagdang Bato Itaas",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401011",
+      "name": "Hagdang Bato Libis",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401012",
+      "name": "Harapin Ang Bukas",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401013",
+      "name": "Highway Hills",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401014",
+      "name": "Hulo",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401015",
+      "name": "Mabini-J. Rizal",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401016",
+      "name": "Malamig",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401017",
+      "name": "Mauway",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401018",
+      "name": "Namayan",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401019",
+      "name": "New Za\u00f1iga",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500019",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401020",
+      "name": "Old Za\u00f1iga",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401021",
+      "name": "Pag-asa",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500021",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401022",
+      "name": "Plainview",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500022",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401023",
+      "name": "Pleasant Hills",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500023",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401024",
+      "name": "Poblacion",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500024",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401025",
+      "name": "San Jose",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401026",
+      "name": "Vergara",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500026",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307401027",
+      "name": "Wack-wack Greenhills",
+      "city": "City of Mandaluyong",
+      "psgc_code": "1380500027",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402001",
+      "name": "Barangka",
+      "city": "City of Marikina",
+      "psgc_code": "1380700001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402002",
+      "name": "Calumpang",
+      "city": "City of Marikina",
+      "psgc_code": "1380700002",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307402003",
+      "name": "Concepcion Uno",
+      "city": "City of Marikina",
+      "psgc_code": "1380700003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402005",
+      "name": "Malanday",
+      "city": "City of Marikina",
+      "psgc_code": "1380700005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402006",
+      "name": "Nangka",
+      "city": "City of Marikina",
+      "psgc_code": "1380700006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402007",
+      "name": "Parang",
+      "city": "City of Marikina",
+      "psgc_code": "1380700007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402008",
+      "name": "San Roque",
+      "city": "City of Marikina",
+      "psgc_code": "1380700008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402009",
+      "name": "Santa Elena (Pob.)",
+      "city": "City of Marikina",
+      "psgc_code": "1380700009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402010",
+      "name": "Santo Ni\u00f1o",
+      "city": "City of Marikina",
+      "psgc_code": "1380700010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402011",
+      "name": "Ta\u00f1ong",
+      "city": "City of Marikina",
+      "psgc_code": "1380700011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402012",
+      "name": "Concepcion Dos",
+      "city": "City of Marikina",
+      "psgc_code": "1380700012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402013",
+      "name": "Marikina Heights (Concepcion)",
+      "city": "City of Marikina",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307402014",
+      "name": "Industrial Valley",
+      "city": "City of Marikina",
+      "psgc_code": "1380700014",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307402015",
+      "name": "Fortune",
+      "city": "City of Marikina",
+      "psgc_code": "1380700015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307402016",
+      "name": "Tumana",
+      "city": "City of Marikina",
+      "psgc_code": "1380700016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403001",
+      "name": "Bagong Ilog",
+      "city": "City of Pasig",
+      "psgc_code": "1381200001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403002",
+      "name": "Bagong Katipunan",
+      "city": "City of Pasig",
+      "psgc_code": "1381200002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403004",
+      "name": "Buting",
+      "city": "City of Pasig",
+      "psgc_code": "1381200004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403005",
+      "name": "Caniogan",
+      "city": "City of Pasig",
+      "psgc_code": "1381200005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403006",
+      "name": "Dela Paz",
+      "city": "City of Pasig",
+      "psgc_code": "1381200006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403007",
+      "name": "Kalawaan",
+      "city": "City of Pasig",
+      "psgc_code": "1381200007",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307403008",
+      "name": "Kapasigan",
+      "city": "City of Pasig",
+      "psgc_code": "1381200008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403009",
+      "name": "Kapitolyo",
+      "city": "City of Pasig",
+      "psgc_code": "1381200009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403011",
+      "name": "Manggahan",
+      "city": "City of Pasig",
+      "psgc_code": "1381200011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403012",
+      "name": "Maybunga",
+      "city": "City of Pasig",
+      "psgc_code": "1381200012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403013",
+      "name": "Oranbo",
+      "city": "City of Pasig",
+      "psgc_code": "1381200013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403015",
+      "name": "Pinagbuhatan",
+      "city": "City of Pasig",
+      "psgc_code": "1381200015",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307403016",
+      "name": "Pineda",
+      "city": "City of Pasig",
+      "psgc_code": "1381200016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403017",
+      "name": "Rosario",
+      "city": "City of Pasig",
+      "psgc_code": "1381200017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403018",
+      "name": "Sagad",
+      "city": "City of Pasig",
+      "psgc_code": "1381200018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403019",
+      "name": "San Antonio",
+      "city": "City of Pasig",
+      "psgc_code": "1381200019",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403020",
+      "name": "San Joaquin",
+      "city": "City of Pasig",
+      "psgc_code": "1381200020",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307403021",
+      "name": "San Jose",
+      "city": "City of Pasig",
+      "psgc_code": "1381200021",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403022",
+      "name": "San Miguel",
+      "city": "City of Pasig",
+      "psgc_code": "1381200022",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307403025",
+      "name": "Santa Rosa",
+      "city": "City of Pasig",
+      "psgc_code": "1381200025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403027",
+      "name": "Santolan",
+      "city": "City of Pasig",
+      "psgc_code": "1381200027",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403028",
+      "name": "Sumilang",
+      "city": "City of Pasig",
+      "psgc_code": "1381200028",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403029",
+      "name": "Ugong",
+      "city": "City of Pasig",
+      "psgc_code": "1381200029",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307403030",
+      "name": "Santa Lucia",
+      "city": "City of Pasig",
+      "psgc_code": "1381200030",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404001",
+      "name": "Alicia",
+      "city": "Quezon City",
+      "psgc_code": "1381300001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404002",
+      "name": "Amihan",
+      "city": "Quezon City",
+      "psgc_code": "1381300002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404003",
+      "name": "Apolonio Samson",
+      "city": "Quezon City",
+      "psgc_code": "1381300003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404005",
+      "name": "Baesa",
+      "city": "Quezon City",
+      "psgc_code": "1381300005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404006",
+      "name": "Bagbag",
+      "city": "Quezon City",
+      "psgc_code": "1381300006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404007",
+      "name": "Bagumbuhay",
+      "city": "Quezon City",
+      "psgc_code": "1381300007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404008",
+      "name": "Bagong Lipunan Ng Crame",
+      "city": "Quezon City",
+      "psgc_code": "1381300008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404009",
+      "name": "Bagong Pag-asa",
+      "city": "Quezon City",
+      "psgc_code": "1381300009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404010",
+      "name": "Bagong Silangan",
+      "city": "Quezon City",
+      "psgc_code": "1381300010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404011",
+      "name": "Bagumbayan",
+      "city": "Quezon City",
+      "psgc_code": "1381300011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404012",
+      "name": "Bahay Toro",
+      "city": "Quezon City",
+      "psgc_code": "1381300012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404013",
+      "name": "Balingasa",
+      "city": "Quezon City",
+      "psgc_code": "1381300013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404014",
+      "name": "Bayanihan",
+      "city": "Quezon City",
+      "psgc_code": "1381300014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404015",
+      "name": "Blue Ridge A",
+      "city": "Quezon City",
+      "psgc_code": "1381300015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404016",
+      "name": "Blue Ridge B",
+      "city": "Quezon City",
+      "psgc_code": "1381300016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404017",
+      "name": "Botocan",
+      "city": "Quezon City",
+      "psgc_code": "1381300017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404018",
+      "name": "Bungad",
+      "city": "Quezon City",
+      "psgc_code": "1381300018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404019",
+      "name": "Camp Aguinaldo",
+      "city": "Quezon City",
+      "psgc_code": "1381300019",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404020",
+      "name": "Central",
+      "city": "Quezon City",
+      "psgc_code": "1381300020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404021",
+      "name": "Claro",
+      "city": "Quezon City",
+      "psgc_code": "1381300021",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404022",
+      "name": "Commonwealth",
+      "city": "Quezon City",
+      "psgc_code": "1381300022",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404023",
+      "name": "New Era (Constitution Hills)",
+      "city": "Quezon City",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307404024",
+      "name": "Kristong Hari",
+      "city": "Quezon City",
+      "psgc_code": "1381300024",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404025",
+      "name": "Culiat",
+      "city": "Quezon City",
+      "psgc_code": "1381300025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404026",
+      "name": "Damar",
+      "city": "Quezon City",
+      "psgc_code": "1381300026",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404027",
+      "name": "Damayan",
+      "city": "Quezon City",
+      "psgc_code": "1381300027",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404028",
+      "name": "Damayang Lagi",
+      "city": "Quezon City",
+      "psgc_code": "1381300028",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404029",
+      "name": "Del Monte",
+      "city": "Quezon City",
+      "psgc_code": "1381300029",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404030",
+      "name": "Dioquino Zobel",
+      "city": "Quezon City",
+      "psgc_code": "1381300030",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404031",
+      "name": "Do\u00f1a Imelda",
+      "city": "Quezon City",
+      "psgc_code": "1381300031",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404032",
+      "name": "Do\u00f1a Josefa",
+      "city": "Quezon City",
+      "psgc_code": "1381300032",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404033",
+      "name": "Don Manuel",
+      "city": "Quezon City",
+      "psgc_code": "1381300033",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404034",
+      "name": "Duyan-duyan",
+      "city": "Quezon City",
+      "psgc_code": "1381300034",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404036",
+      "name": "East Kamias",
+      "city": "Quezon City",
+      "psgc_code": "1381300036",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404037",
+      "name": "Escopa I",
+      "city": "Quezon City",
+      "psgc_code": "1381300037",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404038",
+      "name": "Escopa II",
+      "city": "Quezon City",
+      "psgc_code": "1381300038",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404039",
+      "name": "Escopa III",
+      "city": "Quezon City",
+      "psgc_code": "1381300039",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404040",
+      "name": "Escopa IV",
+      "city": "Quezon City",
+      "psgc_code": "1381300040",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404041",
+      "name": "Fairview",
+      "city": "Quezon City",
+      "psgc_code": "1381300041",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404042",
+      "name": "N.S. Amoranto (Gintong Silahis)",
+      "city": "Quezon City",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307404043",
+      "name": "Gulod",
+      "city": "Quezon City",
+      "psgc_code": "1381300043",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404044",
+      "name": "Horseshoe",
+      "city": "Quezon City",
+      "psgc_code": "1381300044",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404045",
+      "name": "Immaculate Concepcion",
+      "city": "Quezon City",
+      "psgc_code": "1381300045",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404046",
+      "name": "Kaligayahan",
+      "city": "Quezon City",
+      "psgc_code": "1381300046",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404047",
+      "name": "Kalusugan",
+      "city": "Quezon City",
+      "psgc_code": "1381300047",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404048",
+      "name": "Kamuning",
+      "city": "Quezon City",
+      "psgc_code": "1381300048",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404049",
+      "name": "Katipunan",
+      "city": "Quezon City",
+      "psgc_code": "1381300049",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404050",
+      "name": "Kaunlaran",
+      "city": "Quezon City",
+      "psgc_code": "1381300050",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404051",
+      "name": "Krus Na Ligas",
+      "city": "Quezon City",
+      "psgc_code": "1381300051",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404052",
+      "name": "Laging Handa",
+      "city": "Quezon City",
+      "psgc_code": "1381300052",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404053",
+      "name": "Libis",
+      "city": "Quezon City",
+      "psgc_code": "1381300053",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404054",
+      "name": "Lourdes",
+      "city": "Quezon City",
+      "psgc_code": "1381300054",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404055",
+      "name": "Loyola Heights",
+      "city": "Quezon City",
+      "psgc_code": "1381300055",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404057",
+      "name": "Malaya",
+      "city": "Quezon City",
+      "psgc_code": "1381300057",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404058",
+      "name": "Manresa",
+      "city": "Quezon City",
+      "psgc_code": "1381300058",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404059",
+      "name": "Mangga",
+      "city": "Quezon City",
+      "psgc_code": "1381300059",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404060",
+      "name": "Mariana",
+      "city": "Quezon City",
+      "psgc_code": "1381300060",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404061",
+      "name": "Mariblo",
+      "city": "Quezon City",
+      "psgc_code": "1381300061",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404062",
+      "name": "Marilag",
+      "city": "Quezon City",
+      "psgc_code": "1381300062",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404063",
+      "name": "Masagana",
+      "city": "Quezon City",
+      "psgc_code": "1381300063",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404064",
+      "name": "Masambong",
+      "city": "Quezon City",
+      "psgc_code": "1381300064",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404065",
+      "name": "Santo Domingo (Matalahib)",
+      "city": "Quezon City",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307404066",
+      "name": "Matandang Balara",
+      "city": "Quezon City",
+      "psgc_code": "1381300066",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404068",
+      "name": "Nagkaisang Nayon",
+      "city": "Quezon City",
+      "psgc_code": "1381300068",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404069",
+      "name": "Nayong Kanluran",
+      "city": "Quezon City",
+      "psgc_code": "1381300069",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404071",
+      "name": "Obrero",
+      "city": "Quezon City",
+      "psgc_code": "1381300071",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404072",
+      "name": "Old Capitol Site",
+      "city": "Quezon City",
+      "psgc_code": "1381300072",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404073",
+      "name": "Paang Bundok",
+      "city": "Quezon City",
+      "psgc_code": "1381300073",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404074",
+      "name": "Pag-ibig Sa Nayon",
+      "city": "Quezon City",
+      "psgc_code": "1381300074",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404075",
+      "name": "Paligsahan",
+      "city": "Quezon City",
+      "psgc_code": "1381300075",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404076",
+      "name": "Paltok",
+      "city": "Quezon City",
+      "psgc_code": "1381300076",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404077",
+      "name": "Pansol",
+      "city": "Quezon City",
+      "psgc_code": "1381300077",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404078",
+      "name": "Paraiso",
+      "city": "Quezon City",
+      "psgc_code": "1381300078",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404079",
+      "name": "Pasong Putik Proper (Pasong Putik)",
+      "city": "Quezon City",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307404080",
+      "name": "Pasong Tamo",
+      "city": "Quezon City",
+      "psgc_code": "1381300080",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404081",
+      "name": "Phil-Am",
+      "city": "Quezon City",
+      "psgc_code": "1381300081",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404082",
+      "name": "Pinyahan",
+      "city": "Quezon City",
+      "psgc_code": "1381300082",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404083",
+      "name": "Pinagkaisahan",
+      "city": "Quezon City",
+      "psgc_code": "1381300083",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404084",
+      "name": "Project 6",
+      "city": "Quezon City",
+      "psgc_code": "1381300084",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404085",
+      "name": "Quirino 2-A",
+      "city": "Quezon City",
+      "psgc_code": "1381300085",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404086",
+      "name": "Quirino 2-B",
+      "city": "Quezon City",
+      "psgc_code": "1381300086",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404087",
+      "name": "Quirino 2-C",
+      "city": "Quezon City",
+      "psgc_code": "1381300087",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404088",
+      "name": "Quirino 3-A",
+      "city": "Quezon City",
+      "psgc_code": "1381300088",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404089",
+      "name": "Ramon Magsaysay",
+      "city": "Quezon City",
+      "psgc_code": "1381300089",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404090",
+      "name": "Roxas",
+      "city": "Quezon City",
+      "psgc_code": "1381300090",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404091",
+      "name": "Sacred Heart",
+      "city": "Quezon City",
+      "psgc_code": "1381300091",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404092",
+      "name": "Saint Ignatius",
+      "city": "Quezon City",
+      "psgc_code": "1381300092",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404094",
+      "name": "Salvacion",
+      "city": "Quezon City",
+      "psgc_code": "1381300094",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404095",
+      "name": "San Agustin",
+      "city": "Quezon City",
+      "psgc_code": "1381300095",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404096",
+      "name": "San Antonio",
+      "city": "Quezon City",
+      "psgc_code": "1381300096",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404097",
+      "name": "San Bartolome",
+      "city": "Quezon City",
+      "psgc_code": "1381300097",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404098",
+      "name": "San Isidro",
+      "city": "Quezon City",
+      "psgc_code": "1381300098",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404099",
+      "name": "San Isidro Labrador",
+      "city": "Quezon City",
+      "psgc_code": "1381300099",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404100",
+      "name": "San Jose",
+      "city": "Quezon City",
+      "psgc_code": "1381300100",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404101",
+      "name": "San Martin de Porres",
+      "city": "Quezon City",
+      "psgc_code": "1381300101",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404102",
+      "name": "San Roque",
+      "city": "Quezon City",
+      "psgc_code": "1381300102",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404103",
+      "name": "San Vicente",
+      "city": "Quezon City",
+      "psgc_code": "1381300103",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404104",
+      "name": "Santa Cruz",
+      "city": "Quezon City",
+      "psgc_code": "1381300104",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404105",
+      "name": "Santa Lucia",
+      "city": "Quezon City",
+      "psgc_code": "1381300105",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404106",
+      "name": "Santa Monica",
+      "city": "Quezon City",
+      "psgc_code": "1381300106",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404107",
+      "name": "Santa Teresita",
+      "city": "Quezon City",
+      "psgc_code": "1381300107",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404108",
+      "name": "Santo Cristo",
+      "city": "Quezon City",
+      "psgc_code": "1381300108",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404109",
+      "name": "Santo Ni\u00f1o",
+      "city": "Quezon City",
+      "psgc_code": "1381300109",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404110",
+      "name": "Santol",
+      "city": "Quezon City",
+      "psgc_code": "1381300110",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404111",
+      "name": "Sauyo",
+      "city": "Quezon City",
+      "psgc_code": "1381300111",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404112",
+      "name": "Sienna",
+      "city": "Quezon City",
+      "psgc_code": "1381300112",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404113",
+      "name": "Sikatuna Village",
+      "city": "Quezon City",
+      "psgc_code": "1381300113",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404114",
+      "name": "Silangan",
+      "city": "Quezon City",
+      "psgc_code": "1381300114",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404115",
+      "name": "Socorro",
+      "city": "Quezon City",
+      "psgc_code": "1381300115",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404116",
+      "name": "South Triangle",
+      "city": "Quezon City",
+      "psgc_code": "1381300116",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404118",
+      "name": "Talayan",
+      "city": "Quezon City",
+      "psgc_code": "1381300118",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404119",
+      "name": "Talipapa",
+      "city": "Quezon City",
+      "psgc_code": "1381300119",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404120",
+      "name": "Tandang Sora",
+      "city": "Quezon City",
+      "psgc_code": "1381300120",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404121",
+      "name": "Tatalon",
+      "city": "Quezon City",
+      "psgc_code": "1381300121",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404122",
+      "name": "Teachers Village East",
+      "city": "Quezon City",
+      "psgc_code": "1381300122",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404123",
+      "name": "Teachers Village West",
+      "city": "Quezon City",
+      "psgc_code": "1381300123",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404126",
+      "name": "Ugong Norte",
+      "city": "Quezon City",
+      "psgc_code": "1381300126",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404127",
+      "name": "Unang Sigaw",
+      "city": "Quezon City",
+      "psgc_code": "1381300127",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404128",
+      "name": "Valencia",
+      "city": "Quezon City",
+      "psgc_code": "1381300128",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404129",
+      "name": "Vasra",
+      "city": "Quezon City",
+      "psgc_code": "1381300129",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404130",
+      "name": "Veterans Village",
+      "city": "Quezon City",
+      "psgc_code": "1381300130",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404131",
+      "name": "Villa Maria Clara",
+      "city": "Quezon City",
+      "psgc_code": "1381300131",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404132",
+      "name": "West Kamias",
+      "city": "Quezon City",
+      "psgc_code": "1381300132",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404133",
+      "name": "West Triangle",
+      "city": "Quezon City",
+      "psgc_code": "1381300133",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404134",
+      "name": "White Plains",
+      "city": "Quezon City",
+      "psgc_code": "1381300134",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404135",
+      "name": "Balong Bato",
+      "city": "Quezon City",
+      "psgc_code": "1381300135",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404136",
+      "name": "Capri",
+      "city": "Quezon City",
+      "psgc_code": "1381300136",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404137",
+      "name": "Sangandaan",
+      "city": "Quezon City",
+      "psgc_code": "1381300137",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404138",
+      "name": "Payatas",
+      "city": "Quezon City",
+      "psgc_code": "1381300138",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404139",
+      "name": "Batasan Hills",
+      "city": "Quezon City",
+      "psgc_code": "1381300139",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404140",
+      "name": "Holy Spirit",
+      "city": "Quezon City",
+      "psgc_code": "1381300140",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404141",
+      "name": "Greater Lagro",
+      "city": "Quezon City",
+      "psgc_code": "1381300141",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307404142",
+      "name": "North Fairview",
+      "city": "Quezon City",
+      "psgc_code": "1381300142",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405001",
+      "name": "Addition Hills",
+      "city": "City of San Juan",
+      "psgc_code": "1381400001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405002",
+      "name": "Balong-Bato",
+      "city": "City of San Juan",
+      "psgc_code": "1381400002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405003",
+      "name": "Batis",
+      "city": "City of San Juan",
+      "psgc_code": "1381400003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405004",
+      "name": "Corazon de Jesus",
+      "city": "City of San Juan",
+      "psgc_code": "1381400004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405005",
+      "name": "Ermita\u00f1o",
+      "city": "City of San Juan",
+      "psgc_code": "1381400005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405006",
+      "name": "Halo-halo (St. Joseph)",
+      "city": "City of San Juan",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307405007",
+      "name": "Isabelita",
+      "city": "City of San Juan",
+      "psgc_code": "1381400007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405008",
+      "name": "Kabayanan",
+      "city": "City of San Juan",
+      "psgc_code": "1381400008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405009",
+      "name": "Little Baguio",
+      "city": "City of San Juan",
+      "psgc_code": "1381400009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405010",
+      "name": "Maytunas",
+      "city": "City of San Juan",
+      "psgc_code": "1381400010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405011",
+      "name": "Onse",
+      "city": "City of San Juan",
+      "psgc_code": "1381400011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405012",
+      "name": "Pasade\u00f1a",
+      "city": "City of San Juan",
+      "psgc_code": "1381400012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405013",
+      "name": "Pedro Cruz",
+      "city": "City of San Juan",
+      "psgc_code": "1381400013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405014",
+      "name": "Progreso",
+      "city": "City of San Juan",
+      "psgc_code": "1381400014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405015",
+      "name": "Rivera",
+      "city": "City of San Juan",
+      "psgc_code": "1381400015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405016",
+      "name": "Salapan",
+      "city": "City of San Juan",
+      "psgc_code": "1381400016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405017",
+      "name": "San Perfecto",
+      "city": "City of San Juan",
+      "psgc_code": "1381400017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405018",
+      "name": "Santa Lucia",
+      "city": "City of San Juan",
+      "psgc_code": "1381400018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405019",
+      "name": "Tibagan",
+      "city": "City of San Juan",
+      "psgc_code": "1381400019",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405020",
+      "name": "West Crame",
+      "city": "City of San Juan",
+      "psgc_code": "1381400020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307405021",
+      "name": "Greenhills",
+      "city": "City of San Juan",
+      "psgc_code": "1381400021",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501001",
+      "name": "Barangay 1",
+      "city": "Caloocan City",
+      "psgc_code": "1380100001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501002",
+      "name": "Barangay 2",
+      "city": "Caloocan City",
+      "psgc_code": "1380100002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501003",
+      "name": "Barangay 3",
+      "city": "Caloocan City",
+      "psgc_code": "1380100003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501004",
+      "name": "Barangay 4",
+      "city": "Caloocan City",
+      "psgc_code": "1380100004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501005",
+      "name": "Barangay 5",
+      "city": "Caloocan City",
+      "psgc_code": "1380100005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501006",
+      "name": "Barangay 6",
+      "city": "Caloocan City",
+      "psgc_code": "1380100006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501007",
+      "name": "Barangay 7",
+      "city": "Caloocan City",
+      "psgc_code": "1380100007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501008",
+      "name": "Barangay 8",
+      "city": "Caloocan City",
+      "psgc_code": "1380100008",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501009",
+      "name": "Barangay 9",
+      "city": "Caloocan City",
+      "psgc_code": "1380100009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501010",
+      "name": "Barangay 10",
+      "city": "Caloocan City",
+      "psgc_code": "1380100010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501011",
+      "name": "Barangay 11",
+      "city": "Caloocan City",
+      "psgc_code": "1380100011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501012",
+      "name": "Barangay 12",
+      "city": "Caloocan City",
+      "psgc_code": "1380100012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501013",
+      "name": "Barangay 13",
+      "city": "Caloocan City",
+      "psgc_code": "1380100013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501014",
+      "name": "Barangay 14",
+      "city": "Caloocan City",
+      "psgc_code": "1380100014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501015",
+      "name": "Barangay 15",
+      "city": "Caloocan City",
+      "psgc_code": "1380100015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501016",
+      "name": "Barangay 16",
+      "city": "Caloocan City",
+      "psgc_code": "1380100016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501017",
+      "name": "Barangay 17",
+      "city": "Caloocan City",
+      "psgc_code": "1380100017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501018",
+      "name": "Barangay 18",
+      "city": "Caloocan City",
+      "psgc_code": "1380100018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501019",
+      "name": "Barangay 19",
+      "city": "Caloocan City",
+      "psgc_code": "1380100019",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501020",
+      "name": "Barangay 20",
+      "city": "Caloocan City",
+      "psgc_code": "1380100020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501021",
+      "name": "Barangay 21",
+      "city": "Caloocan City",
+      "psgc_code": "1380100021",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501022",
+      "name": "Barangay 22",
+      "city": "Caloocan City",
+      "psgc_code": "1380100022",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501023",
+      "name": "Barangay 23",
+      "city": "Caloocan City",
+      "psgc_code": "1380100023",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501024",
+      "name": "Barangay 24",
+      "city": "Caloocan City",
+      "psgc_code": "1380100024",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501025",
+      "name": "Barangay 25",
+      "city": "Caloocan City",
+      "psgc_code": "1380100025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501026",
+      "name": "Barangay 26",
+      "city": "Caloocan City",
+      "psgc_code": "1380100026",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501027",
+      "name": "Barangay 27",
+      "city": "Caloocan City",
+      "psgc_code": "1380100027",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501028",
+      "name": "Barangay 28",
+      "city": "Caloocan City",
+      "psgc_code": "1380100028",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501029",
+      "name": "Barangay 29",
+      "city": "Caloocan City",
+      "psgc_code": "1380100029",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501030",
+      "name": "Barangay 30",
+      "city": "Caloocan City",
+      "psgc_code": "1380100030",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501031",
+      "name": "Barangay 31",
+      "city": "Caloocan City",
+      "psgc_code": "1380100031",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501032",
+      "name": "Barangay 32",
+      "city": "Caloocan City",
+      "psgc_code": "1380100032",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501033",
+      "name": "Barangay 33",
+      "city": "Caloocan City",
+      "psgc_code": "1380100033",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501034",
+      "name": "Barangay 34",
+      "city": "Caloocan City",
+      "psgc_code": "1380100034",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501035",
+      "name": "Barangay 35",
+      "city": "Caloocan City",
+      "psgc_code": "1380100035",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501036",
+      "name": "Barangay 36",
+      "city": "Caloocan City",
+      "psgc_code": "1380100036",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501037",
+      "name": "Barangay 37",
+      "city": "Caloocan City",
+      "psgc_code": "1380100037",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501038",
+      "name": "Barangay 38",
+      "city": "Caloocan City",
+      "psgc_code": "1380100038",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501039",
+      "name": "Barangay 39",
+      "city": "Caloocan City",
+      "psgc_code": "1380100039",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501040",
+      "name": "Barangay 40",
+      "city": "Caloocan City",
+      "psgc_code": "1380100040",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501041",
+      "name": "Barangay 41",
+      "city": "Caloocan City",
+      "psgc_code": "1380100041",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501042",
+      "name": "Barangay 42",
+      "city": "Caloocan City",
+      "psgc_code": "1380100042",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501043",
+      "name": "Barangay 43",
+      "city": "Caloocan City",
+      "psgc_code": "1380100043",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501044",
+      "name": "Barangay 44",
+      "city": "Caloocan City",
+      "psgc_code": "1380100044",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501046",
+      "name": "Barangay 46",
+      "city": "Caloocan City",
+      "psgc_code": "1380100046",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501047",
+      "name": "Barangay 47",
+      "city": "Caloocan City",
+      "psgc_code": "1380100047",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501049",
+      "name": "Barangay 49",
+      "city": "Caloocan City",
+      "psgc_code": "1380100049",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501050",
+      "name": "Barangay 50",
+      "city": "Caloocan City",
+      "psgc_code": "1380100050",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501051",
+      "name": "Barangay 51",
+      "city": "Caloocan City",
+      "psgc_code": "1380100051",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501052",
+      "name": "Barangay 52",
+      "city": "Caloocan City",
+      "psgc_code": "1380100052",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501053",
+      "name": "Barangay 53",
+      "city": "Caloocan City",
+      "psgc_code": "1380100053",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501054",
+      "name": "Barangay 54",
+      "city": "Caloocan City",
+      "psgc_code": "1380100054",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501055",
+      "name": "Barangay 55",
+      "city": "Caloocan City",
+      "psgc_code": "1380100055",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501056",
+      "name": "Barangay 56",
+      "city": "Caloocan City",
+      "psgc_code": "1380100056",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501057",
+      "name": "Barangay 57",
+      "city": "Caloocan City",
+      "psgc_code": "1380100057",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501058",
+      "name": "Barangay 58",
+      "city": "Caloocan City",
+      "psgc_code": "1380100058",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501059",
+      "name": "Barangay 59",
+      "city": "Caloocan City",
+      "psgc_code": "1380100059",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501060",
+      "name": "Barangay 60",
+      "city": "Caloocan City",
+      "psgc_code": "1380100060",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501061",
+      "name": "Barangay 61",
+      "city": "Caloocan City",
+      "psgc_code": "1380100061",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501062",
+      "name": "Barangay 62",
+      "city": "Caloocan City",
+      "psgc_code": "1380100062",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501063",
+      "name": "Barangay 63",
+      "city": "Caloocan City",
+      "psgc_code": "1380100063",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501064",
+      "name": "Barangay 64",
+      "city": "Caloocan City",
+      "psgc_code": "1380100064",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501065",
+      "name": "Barangay 65",
+      "city": "Caloocan City",
+      "psgc_code": "1380100065",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501067",
+      "name": "Barangay 67",
+      "city": "Caloocan City",
+      "psgc_code": "1380100067",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501068",
+      "name": "Barangay 68",
+      "city": "Caloocan City",
+      "psgc_code": "1380100068",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501069",
+      "name": "Barangay 69",
+      "city": "Caloocan City",
+      "psgc_code": "1380100069",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501071",
+      "name": "Barangay 71",
+      "city": "Caloocan City",
+      "psgc_code": "1380100071",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501072",
+      "name": "Barangay 72",
+      "city": "Caloocan City",
+      "psgc_code": "1380100072",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501073",
+      "name": "Barangay 73",
+      "city": "Caloocan City",
+      "psgc_code": "1380100073",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501074",
+      "name": "Barangay 74",
+      "city": "Caloocan City",
+      "psgc_code": "1380100074",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501075",
+      "name": "Barangay 75",
+      "city": "Caloocan City",
+      "psgc_code": "1380100075",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501076",
+      "name": "Barangay 76",
+      "city": "Caloocan City",
+      "psgc_code": "1380100076",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501077",
+      "name": "Barangay 77",
+      "city": "Caloocan City",
+      "psgc_code": "1380100077",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501078",
+      "name": "Barangay 78",
+      "city": "Caloocan City",
+      "psgc_code": "1380100078",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501079",
+      "name": "Barangay 79",
+      "city": "Caloocan City",
+      "psgc_code": "1380100079",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501080",
+      "name": "Barangay 80",
+      "city": "Caloocan City",
+      "psgc_code": "1380100080",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501081",
+      "name": "Barangay 81",
+      "city": "Caloocan City",
+      "psgc_code": "1380100081",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501082",
+      "name": "Barangay 82",
+      "city": "Caloocan City",
+      "psgc_code": "1380100082",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501083",
+      "name": "Barangay 83",
+      "city": "Caloocan City",
+      "psgc_code": "1380100083",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501084",
+      "name": "Barangay 84",
+      "city": "Caloocan City",
+      "psgc_code": "1380100084",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501085",
+      "name": "Barangay 85",
+      "city": "Caloocan City",
+      "psgc_code": "1380100085",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501086",
+      "name": "Barangay 86",
+      "city": "Caloocan City",
+      "psgc_code": "1380100086",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501087",
+      "name": "Barangay 87",
+      "city": "Caloocan City",
+      "psgc_code": "1380100087",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501088",
+      "name": "Barangay 88",
+      "city": "Caloocan City",
+      "psgc_code": "1380100088",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501089",
+      "name": "Barangay 89",
+      "city": "Caloocan City",
+      "psgc_code": "1380100089",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501090",
+      "name": "Barangay 90",
+      "city": "Caloocan City",
+      "psgc_code": "1380100090",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501091",
+      "name": "Barangay 91",
+      "city": "Caloocan City",
+      "psgc_code": "1380100091",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501092",
+      "name": "Barangay 92",
+      "city": "Caloocan City",
+      "psgc_code": "1380100092",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501093",
+      "name": "Barangay 93",
+      "city": "Caloocan City",
+      "psgc_code": "1380100093",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501094",
+      "name": "Barangay 94",
+      "city": "Caloocan City",
+      "psgc_code": "1380100094",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501095",
+      "name": "Barangay 95",
+      "city": "Caloocan City",
+      "psgc_code": "1380100095",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501096",
+      "name": "Barangay 96",
+      "city": "Caloocan City",
+      "psgc_code": "1380100096",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501099",
+      "name": "Barangay 99",
+      "city": "Caloocan City",
+      "psgc_code": "1380100099",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501100",
+      "name": "Barangay 100",
+      "city": "Caloocan City",
+      "psgc_code": "1380100100",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501101",
+      "name": "Barangay 101",
+      "city": "Caloocan City",
+      "psgc_code": "1380100101",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501102",
+      "name": "Barangay 102",
+      "city": "Caloocan City",
+      "psgc_code": "1380100102",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501103",
+      "name": "Barangay 103",
+      "city": "Caloocan City",
+      "psgc_code": "1380100103",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501104",
+      "name": "Barangay 104",
+      "city": "Caloocan City",
+      "psgc_code": "1380100104",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501105",
+      "name": "Barangay 105",
+      "city": "Caloocan City",
+      "psgc_code": "1380100105",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501106",
+      "name": "Barangay 106",
+      "city": "Caloocan City",
+      "psgc_code": "1380100106",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501107",
+      "name": "Barangay 107",
+      "city": "Caloocan City",
+      "psgc_code": "1380100107",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501108",
+      "name": "Barangay 108",
+      "city": "Caloocan City",
+      "psgc_code": "1380100108",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501109",
+      "name": "Barangay 109",
+      "city": "Caloocan City",
+      "psgc_code": "1380100109",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501110",
+      "name": "Barangay 110",
+      "city": "Caloocan City",
+      "psgc_code": "1380100110",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501111",
+      "name": "Barangay 111",
+      "city": "Caloocan City",
+      "psgc_code": "1380100111",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501112",
+      "name": "Barangay 112",
+      "city": "Caloocan City",
+      "psgc_code": "1380100112",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501113",
+      "name": "Barangay 113",
+      "city": "Caloocan City",
+      "psgc_code": "1380100113",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501114",
+      "name": "Barangay 114",
+      "city": "Caloocan City",
+      "psgc_code": "1380100114",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501115",
+      "name": "Barangay 115",
+      "city": "Caloocan City",
+      "psgc_code": "1380100115",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501116",
+      "name": "Barangay 116",
+      "city": "Caloocan City",
+      "psgc_code": "1380100116",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501117",
+      "name": "Barangay 117",
+      "city": "Caloocan City",
+      "psgc_code": "1380100117",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501118",
+      "name": "Barangay 118",
+      "city": "Caloocan City",
+      "psgc_code": "1380100118",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501120",
+      "name": "Barangay 120",
+      "city": "Caloocan City",
+      "psgc_code": "1380100120",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501121",
+      "name": "Barangay 121",
+      "city": "Caloocan City",
+      "psgc_code": "1380100121",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501122",
+      "name": "Barangay 122",
+      "city": "Caloocan City",
+      "psgc_code": "1380100122",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501123",
+      "name": "Barangay 123",
+      "city": "Caloocan City",
+      "psgc_code": "1380100123",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501124",
+      "name": "Barangay 124",
+      "city": "Caloocan City",
+      "psgc_code": "1380100124",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501125",
+      "name": "Barangay 125",
+      "city": "Caloocan City",
+      "psgc_code": "1380100125",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501126",
+      "name": "Barangay 126",
+      "city": "Caloocan City",
+      "psgc_code": "1380100126",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501127",
+      "name": "Barangay 127",
+      "city": "Caloocan City",
+      "psgc_code": "1380100127",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501128",
+      "name": "Barangay 128",
+      "city": "Caloocan City",
+      "psgc_code": "1380100128",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501129",
+      "name": "Barangay 129",
+      "city": "Caloocan City",
+      "psgc_code": "1380100129",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501130",
+      "name": "Barangay 130",
+      "city": "Caloocan City",
+      "psgc_code": "1380100130",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501131",
+      "name": "Barangay 131",
+      "city": "Caloocan City",
+      "psgc_code": "1380100131",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501132",
+      "name": "Barangay 132",
+      "city": "Caloocan City",
+      "psgc_code": "1380100132",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501133",
+      "name": "Barangay 133",
+      "city": "Caloocan City",
+      "psgc_code": "1380100133",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501134",
+      "name": "Barangay 134",
+      "city": "Caloocan City",
+      "psgc_code": "1380100134",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501135",
+      "name": "Barangay 135",
+      "city": "Caloocan City",
+      "psgc_code": "1380100135",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501136",
+      "name": "Barangay 136",
+      "city": "Caloocan City",
+      "psgc_code": "1380100136",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501137",
+      "name": "Barangay 137",
+      "city": "Caloocan City",
+      "psgc_code": "1380100137",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501138",
+      "name": "Barangay 138",
+      "city": "Caloocan City",
+      "psgc_code": "1380100138",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501139",
+      "name": "Barangay 139",
+      "city": "Caloocan City",
+      "psgc_code": "1380100139",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501140",
+      "name": "Barangay 140",
+      "city": "Caloocan City",
+      "psgc_code": "1380100140",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501141",
+      "name": "Barangay 141",
+      "city": "Caloocan City",
+      "psgc_code": "1380100141",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501142",
+      "name": "Barangay 142",
+      "city": "Caloocan City",
+      "psgc_code": "1380100142",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501143",
+      "name": "Barangay 143",
+      "city": "Caloocan City",
+      "psgc_code": "1380100143",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501144",
+      "name": "Barangay 144",
+      "city": "Caloocan City",
+      "psgc_code": "1380100144",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501145",
+      "name": "Barangay 145",
+      "city": "Caloocan City",
+      "psgc_code": "1380100145",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501146",
+      "name": "Barangay 146",
+      "city": "Caloocan City",
+      "psgc_code": "1380100146",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501147",
+      "name": "Barangay 147",
+      "city": "Caloocan City",
+      "psgc_code": "1380100147",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501148",
+      "name": "Barangay 148",
+      "city": "Caloocan City",
+      "psgc_code": "1380100148",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501149",
+      "name": "Barangay 149",
+      "city": "Caloocan City",
+      "psgc_code": "1380100149",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501150",
+      "name": "Barangay 150",
+      "city": "Caloocan City",
+      "psgc_code": "1380100150",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501151",
+      "name": "Barangay 151",
+      "city": "Caloocan City",
+      "psgc_code": "1380100151",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501152",
+      "name": "Barangay 152",
+      "city": "Caloocan City",
+      "psgc_code": "1380100152",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501153",
+      "name": "Barangay 153",
+      "city": "Caloocan City",
+      "psgc_code": "1380100153",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501154",
+      "name": "Barangay 154",
+      "city": "Caloocan City",
+      "psgc_code": "1380100154",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501155",
+      "name": "Barangay 155",
+      "city": "Caloocan City",
+      "psgc_code": "1380100155",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501156",
+      "name": "Barangay 156",
+      "city": "Caloocan City",
+      "psgc_code": "1380100156",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501157",
+      "name": "Barangay 157",
+      "city": "Caloocan City",
+      "psgc_code": "1380100157",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501158",
+      "name": "Barangay 158",
+      "city": "Caloocan City",
+      "psgc_code": "1380100158",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501159",
+      "name": "Barangay 159",
+      "city": "Caloocan City",
+      "psgc_code": "1380100159",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501160",
+      "name": "Barangay 160",
+      "city": "Caloocan City",
+      "psgc_code": "1380100160",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501161",
+      "name": "Barangay 161",
+      "city": "Caloocan City",
+      "psgc_code": "1380100161",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501162",
+      "name": "Barangay 162",
+      "city": "Caloocan City",
+      "psgc_code": "1380100162",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501163",
+      "name": "Barangay 163",
+      "city": "Caloocan City",
+      "psgc_code": "1380100163",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501164",
+      "name": "Barangay 164",
+      "city": "Caloocan City",
+      "psgc_code": "1380100164",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501165",
+      "name": "Barangay 165",
+      "city": "Caloocan City",
+      "psgc_code": "1380100165",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501166",
+      "name": "Barangay 166",
+      "city": "Caloocan City",
+      "psgc_code": "1380100166",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501167",
+      "name": "Barangay 167",
+      "city": "Caloocan City",
+      "psgc_code": "1380100167",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501170",
+      "name": "Barangay 170",
+      "city": "Caloocan City",
+      "psgc_code": "1380100170",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501171",
+      "name": "Barangay 171",
+      "city": "Caloocan City",
+      "psgc_code": "1380100171",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501172",
+      "name": "Barangay 172",
+      "city": "Caloocan City",
+      "psgc_code": "1380100172",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501173",
+      "name": "Barangay 173",
+      "city": "Caloocan City",
+      "psgc_code": "1380100173",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501174",
+      "name": "Barangay 174",
+      "city": "Caloocan City",
+      "psgc_code": "1380100174",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501175",
+      "name": "Barangay 175",
+      "city": "Caloocan City",
+      "psgc_code": "1380100175",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501176",
+      "name": "Barangay 176",
+      "city": "Caloocan City",
+      "psgc_code": "1380100176",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501177",
+      "name": "Barangay 177",
+      "city": "Caloocan City",
+      "psgc_code": "1380100177",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501178",
+      "name": "Barangay 178",
+      "city": "Caloocan City",
+      "psgc_code": "1380100178",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307501179",
+      "name": "Barangay 179",
+      "city": "Caloocan City",
+      "psgc_code": "1380100179",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501181",
+      "name": "Barangay 181",
+      "city": "Caloocan City",
+      "psgc_code": "1380100181",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501182",
+      "name": "Barangay 182",
+      "city": "Caloocan City",
+      "psgc_code": "1380100182",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501183",
+      "name": "Barangay 183",
+      "city": "Caloocan City",
+      "psgc_code": "1380100183",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501184",
+      "name": "Barangay 184",
+      "city": "Caloocan City",
+      "psgc_code": "1380100184",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501185",
+      "name": "Barangay 185",
+      "city": "Caloocan City",
+      "psgc_code": "1380100185",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501186",
+      "name": "Barangay 186",
+      "city": "Caloocan City",
+      "psgc_code": "1380100186",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307501188",
+      "name": "Barangay 188",
+      "city": "Caloocan City",
+      "psgc_code": "1380100188",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502002",
+      "name": "Baritan",
+      "city": "City of Malabon",
+      "psgc_code": "1380400002",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502005",
+      "name": "Concepcion",
+      "city": "City of Malabon",
+      "psgc_code": "1380400005",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502006",
+      "name": "Dampalit",
+      "city": "City of Malabon",
+      "psgc_code": "1380400006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307502007",
+      "name": "Flores",
+      "city": "City of Malabon",
+      "psgc_code": "1380400007",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502008",
+      "name": "Hulong Duhat",
+      "city": "City of Malabon",
+      "psgc_code": "1380400008",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502009",
+      "name": "Ibaba",
+      "city": "City of Malabon",
+      "psgc_code": "1380400009",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502010",
+      "name": "Longos",
+      "city": "City of Malabon",
+      "psgc_code": "1380400010",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502011",
+      "name": "Maysilo",
+      "city": "City of Malabon",
+      "psgc_code": "1380400011",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502014",
+      "name": "Panghulo",
+      "city": "City of Malabon",
+      "psgc_code": "1380400014",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502015",
+      "name": "Potrero",
+      "city": "City of Malabon",
+      "psgc_code": "1380400015",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502016",
+      "name": "San Agustin",
+      "city": "City of Malabon",
+      "psgc_code": "1380400016",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502017",
+      "name": "Santolan",
+      "city": "City of Malabon",
+      "psgc_code": "1380400017",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502018",
+      "name": "Ta\u00f1ong (Pob.)",
+      "city": "City of Malabon",
+      "psgc_code": "1380400018",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502019",
+      "name": "Tinajeros",
+      "city": "City of Malabon",
+      "psgc_code": "1380400019",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502020",
+      "name": "Tonsuya",
+      "city": "City of Malabon",
+      "psgc_code": "1380400020",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307502021",
+      "name": "Tugatog",
+      "city": "City of Malabon",
+      "psgc_code": "1380400021",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503001",
+      "name": "Sipac-Almacen",
+      "city": "City of Navotas",
+      "psgc_code": "1380900001",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503003",
+      "name": "Bagumbayan South",
+      "city": "City of Navotas",
+      "psgc_code": "1380900003",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503005",
+      "name": "Daanghari",
+      "city": "City of Navotas",
+      "psgc_code": "1380900005",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503009",
+      "name": "NBBS Kaunlaran",
+      "city": "City of Navotas",
+      "psgc_code": "1380900009",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503010",
+      "name": "San Jose (Pob.)",
+      "city": "City of Navotas",
+      "psgc_code": "1380900010",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503011",
+      "name": "San Rafael Village",
+      "city": "City of Navotas",
+      "psgc_code": "1380900011",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503012",
+      "name": "San Roque",
+      "city": "City of Navotas",
+      "psgc_code": "1380900012",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503014",
+      "name": "Tanza 1",
+      "city": "City of Navotas",
+      "psgc_code": "1380900014",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503015",
+      "name": "NBBS Dagat-dagatan",
+      "city": "City of Navotas",
+      "psgc_code": "1380900015",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307503016",
+      "name": "NBBS Proper",
+      "city": "City of Navotas",
+      "psgc_code": "1380900016",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504001",
+      "name": "Arkong Bato",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504002",
+      "name": "Bagbaguin",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600002",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504003",
+      "name": "Balangkas",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504005",
+      "name": "Bignay",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504006",
+      "name": "Bisig",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504007",
+      "name": "Canumay West (Canumay)",
+      "city": "City of Valenzuela",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307504009",
+      "name": "Coloong",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504010",
+      "name": "Dalandanan",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504011",
+      "name": "Gen. T. de Leon",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600011",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504012",
+      "name": "Isla",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504013",
+      "name": "Lawang Bato",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600013",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504014",
+      "name": "Lingunan",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504015",
+      "name": "Mabolo",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504016",
+      "name": "Malanday",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504017",
+      "name": "Malinta",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504019",
+      "name": "Marulas",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600019",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504020",
+      "name": "Maysan",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504021",
+      "name": "Palasan",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600021",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504022",
+      "name": "Pariancillo Villa",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600022",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504024",
+      "name": "Pasolo",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600024",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504025",
+      "name": "Poblacion",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504026",
+      "name": "Pulo",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600026",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504027",
+      "name": "Punturin",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600027",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504028",
+      "name": "Rincon",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600028",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504029",
+      "name": "Tagalag",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600029",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504030",
+      "name": "Ugong",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600030",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504031",
+      "name": "Viente Reales",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600031",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307504032",
+      "name": "Wawang Pulo",
+      "city": "City of Valenzuela",
+      "psgc_code": "1381600032",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307504033",
+      "name": "Canumay East (Canumay)",
+      "city": "City of Valenzuela",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307601001",
+      "name": "Almanza Uno",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601002",
+      "name": "Daniel Fajardo",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601003",
+      "name": "Elias Aldana",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601004",
+      "name": "Ilaya",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601005",
+      "name": "Manuyo Uno",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601006",
+      "name": "Pamplona Uno",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601007",
+      "name": "Pulang Lupa Uno",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200007",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307601008",
+      "name": "Talon Uno",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601009",
+      "name": "Zapote",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601010",
+      "name": "Almanza Dos",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601011",
+      "name": "B. F. International Village",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200011",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307601012",
+      "name": "Manuyo Dos",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200012",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307601013",
+      "name": "Pamplona Dos",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601014",
+      "name": "Pamplona Tres",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601015",
+      "name": "Pilar",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601017",
+      "name": "Talon Dos",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601018",
+      "name": "Talon Tres",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601019",
+      "name": "Talon Kuatro",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200019",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307601020",
+      "name": "Talon Singko",
+      "city": "City of Las Pi\u00f1as",
+      "psgc_code": "1380200020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602001",
+      "name": "Bangkal",
+      "city": "City of Makati",
+      "psgc_code": "1380300001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602002",
+      "name": "Bel-Air",
+      "city": "City of Makati",
+      "psgc_code": "1380300002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602003",
+      "name": "Cembo",
+      "city": "City of Makati",
+      "psgc_code": "1380300003",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602004",
+      "name": "Comembo",
+      "city": "City of Makati",
+      "psgc_code": "1380300004",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602005",
+      "name": "Carmona",
+      "city": "City of Makati",
+      "psgc_code": "1380300005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602006",
+      "name": "Dasmari\u00f1as",
+      "city": "City of Makati",
+      "psgc_code": "1380300006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602007",
+      "name": "East Rembo",
+      "city": "City of Makati",
+      "psgc_code": "1380300007",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602008",
+      "name": "Forbes Park",
+      "city": "City of Makati",
+      "psgc_code": "1380300008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602009",
+      "name": "Guadalupe Nuevo",
+      "city": "City of Makati",
+      "psgc_code": "1380300009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602010",
+      "name": "Guadalupe Viejo",
+      "city": "City of Makati",
+      "psgc_code": "1380300010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602011",
+      "name": "Kasilawan",
+      "city": "City of Makati",
+      "psgc_code": "1380300011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602012",
+      "name": "La Paz",
+      "city": "City of Makati",
+      "psgc_code": "1380300012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602013",
+      "name": "Magallanes",
+      "city": "City of Makati",
+      "psgc_code": "1380300013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602014",
+      "name": "Olympia",
+      "city": "City of Makati",
+      "psgc_code": "1380300014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602015",
+      "name": "Palanan",
+      "city": "City of Makati",
+      "psgc_code": "1380300015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602016",
+      "name": "Pembo",
+      "city": "City of Makati",
+      "psgc_code": "1380300016",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602017",
+      "name": "Pinagkaisahan",
+      "city": "City of Makati",
+      "psgc_code": "1380300017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602018",
+      "name": "Pio del Pilar",
+      "city": "City of Makati",
+      "psgc_code": "1380300018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602019",
+      "name": "Pitogo",
+      "city": "City of Makati",
+      "psgc_code": "1380300019",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602020",
+      "name": "Poblacion",
+      "city": "City of Makati",
+      "psgc_code": "1380300020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602021",
+      "name": "Post Proper Northside",
+      "city": "City of Makati",
+      "psgc_code": "1380300021",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602022",
+      "name": "Post Proper Southside",
+      "city": "City of Makati",
+      "psgc_code": "1380300022",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602023",
+      "name": "San Antonio",
+      "city": "City of Makati",
+      "psgc_code": "1380300023",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602024",
+      "name": "San Isidro",
+      "city": "City of Makati",
+      "psgc_code": "1380300024",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602025",
+      "name": "San Lorenzo",
+      "city": "City of Makati",
+      "psgc_code": "1380300025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602026",
+      "name": "Santa Cruz",
+      "city": "City of Makati",
+      "psgc_code": "1380300026",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602027",
+      "name": "Singkamas",
+      "city": "City of Makati",
+      "psgc_code": "1380300027",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602028",
+      "name": "South Cembo",
+      "city": "City of Makati",
+      "psgc_code": "1380300028",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602029",
+      "name": "Tejeros",
+      "city": "City of Makati",
+      "psgc_code": "1380300029",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602030",
+      "name": "Urdaneta",
+      "city": "City of Makati",
+      "psgc_code": "1380300030",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602031",
+      "name": "Valenzuela",
+      "city": "City of Makati",
+      "psgc_code": "1380300031",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307602032",
+      "name": "West Rembo",
+      "city": "City of Makati",
+      "psgc_code": "1380300032",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307602033",
+      "name": "Rizal",
+      "city": "City of Makati",
+      "psgc_code": "1380300033",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307603001",
+      "name": "Alabang",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603002",
+      "name": "Bayanan",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603003",
+      "name": "Buli",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603004",
+      "name": "Cupang",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603005",
+      "name": "Poblacion",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603006",
+      "name": "Putatan",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603007",
+      "name": "Sucat",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603008",
+      "name": "Tunasan",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307603009",
+      "name": "New Alabang Village",
+      "city": "City of Muntinlupa",
+      "psgc_code": "1380800009",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307604001",
+      "name": "Baclaran",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604002",
+      "name": "Don Galo",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604003",
+      "name": "La Huerta",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604004",
+      "name": "San Dionisio",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604005",
+      "name": "Santo Ni\u00f1o",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604006",
+      "name": "Tambo",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604007",
+      "name": "B. F. Homes",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000007",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307604008",
+      "name": "Don Bosco",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604009",
+      "name": "Marcelo Green Village",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604010",
+      "name": "Merville",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604011",
+      "name": "Moonwalk",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604012",
+      "name": "San Antonio",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604013",
+      "name": "San Isidro",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604014",
+      "name": "San Martin de Porres",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604015",
+      "name": "Sun Valley",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307604016",
+      "name": "Vitalez",
+      "city": "City of Para\u00f1aque",
+      "psgc_code": "1381000016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605001",
+      "name": "Barangay 1",
+      "city": "Pasay City",
+      "psgc_code": "1381100001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605002",
+      "name": "Barangay 2",
+      "city": "Pasay City",
+      "psgc_code": "1381100002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605003",
+      "name": "Barangay 3",
+      "city": "Pasay City",
+      "psgc_code": "1381100003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605004",
+      "name": "Barangay 4",
+      "city": "Pasay City",
+      "psgc_code": "1381100004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605005",
+      "name": "Barangay 5",
+      "city": "Pasay City",
+      "psgc_code": "1381100005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605006",
+      "name": "Barangay 6",
+      "city": "Pasay City",
+      "psgc_code": "1381100006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605007",
+      "name": "Barangay 7",
+      "city": "Pasay City",
+      "psgc_code": "1381100007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605008",
+      "name": "Barangay 8",
+      "city": "Pasay City",
+      "psgc_code": "1381100008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605009",
+      "name": "Barangay 9",
+      "city": "Pasay City",
+      "psgc_code": "1381100009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605010",
+      "name": "Barangay 10",
+      "city": "Pasay City",
+      "psgc_code": "1381100010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605011",
+      "name": "Barangay 11",
+      "city": "Pasay City",
+      "psgc_code": "1381100011",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605012",
+      "name": "Barangay 12",
+      "city": "Pasay City",
+      "psgc_code": "1381100012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605013",
+      "name": "Barangay 13",
+      "city": "Pasay City",
+      "psgc_code": "1381100013",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605014",
+      "name": "Barangay 14",
+      "city": "Pasay City",
+      "psgc_code": "1381100014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605015",
+      "name": "Barangay 15",
+      "city": "Pasay City",
+      "psgc_code": "1381100015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605016",
+      "name": "Barangay 16",
+      "city": "Pasay City",
+      "psgc_code": "1381100016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605017",
+      "name": "Barangay 17",
+      "city": "Pasay City",
+      "psgc_code": "1381100017",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605018",
+      "name": "Barangay 18",
+      "city": "Pasay City",
+      "psgc_code": "1381100018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605019",
+      "name": "Barangay 19",
+      "city": "Pasay City",
+      "psgc_code": "1381100019",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605020",
+      "name": "Barangay 20",
+      "city": "Pasay City",
+      "psgc_code": "1381100020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605021",
+      "name": "Barangay 21",
+      "city": "Pasay City",
+      "psgc_code": "1381100021",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605022",
+      "name": "Barangay 22",
+      "city": "Pasay City",
+      "psgc_code": "1381100022",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605023",
+      "name": "Barangay 23",
+      "city": "Pasay City",
+      "psgc_code": "1381100023",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605024",
+      "name": "Barangay 24",
+      "city": "Pasay City",
+      "psgc_code": "1381100024",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605025",
+      "name": "Barangay 25",
+      "city": "Pasay City",
+      "psgc_code": "1381100025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605026",
+      "name": "Barangay 26",
+      "city": "Pasay City",
+      "psgc_code": "1381100026",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605027",
+      "name": "Barangay 27",
+      "city": "Pasay City",
+      "psgc_code": "1381100027",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605028",
+      "name": "Barangay 28",
+      "city": "Pasay City",
+      "psgc_code": "1381100028",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605029",
+      "name": "Barangay 29",
+      "city": "Pasay City",
+      "psgc_code": "1381100029",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605030",
+      "name": "Barangay 30",
+      "city": "Pasay City",
+      "psgc_code": "1381100030",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605031",
+      "name": "Barangay 31",
+      "city": "Pasay City",
+      "psgc_code": "1381100031",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605032",
+      "name": "Barangay 32",
+      "city": "Pasay City",
+      "psgc_code": "1381100032",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605033",
+      "name": "Barangay 33",
+      "city": "Pasay City",
+      "psgc_code": "1381100033",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605034",
+      "name": "Barangay 34",
+      "city": "Pasay City",
+      "psgc_code": "1381100034",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605035",
+      "name": "Barangay 35",
+      "city": "Pasay City",
+      "psgc_code": "1381100035",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605036",
+      "name": "Barangay 36",
+      "city": "Pasay City",
+      "psgc_code": "1381100036",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605037",
+      "name": "Barangay 37",
+      "city": "Pasay City",
+      "psgc_code": "1381100037",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605038",
+      "name": "Barangay 38",
+      "city": "Pasay City",
+      "psgc_code": "1381100038",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605039",
+      "name": "Barangay 39",
+      "city": "Pasay City",
+      "psgc_code": "1381100039",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605041",
+      "name": "Barangay 41",
+      "city": "Pasay City",
+      "psgc_code": "1381100041",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605042",
+      "name": "Barangay 42",
+      "city": "Pasay City",
+      "psgc_code": "1381100042",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605043",
+      "name": "Barangay 43",
+      "city": "Pasay City",
+      "psgc_code": "1381100043",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605044",
+      "name": "Barangay 44",
+      "city": "Pasay City",
+      "psgc_code": "1381100044",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605045",
+      "name": "Barangay 45",
+      "city": "Pasay City",
+      "psgc_code": "1381100045",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605046",
+      "name": "Barangay 46",
+      "city": "Pasay City",
+      "psgc_code": "1381100046",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605047",
+      "name": "Barangay 47",
+      "city": "Pasay City",
+      "psgc_code": "1381100047",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605048",
+      "name": "Barangay 48",
+      "city": "Pasay City",
+      "psgc_code": "1381100048",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605049",
+      "name": "Barangay 49",
+      "city": "Pasay City",
+      "psgc_code": "1381100049",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605050",
+      "name": "Barangay 50",
+      "city": "Pasay City",
+      "psgc_code": "1381100050",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605051",
+      "name": "Barangay 51",
+      "city": "Pasay City",
+      "psgc_code": "1381100051",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605052",
+      "name": "Barangay 52",
+      "city": "Pasay City",
+      "psgc_code": "1381100052",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605053",
+      "name": "Barangay 53",
+      "city": "Pasay City",
+      "psgc_code": "1381100053",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605054",
+      "name": "Barangay 54",
+      "city": "Pasay City",
+      "psgc_code": "1381100054",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605055",
+      "name": "Barangay 55",
+      "city": "Pasay City",
+      "psgc_code": "1381100055",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605056",
+      "name": "Barangay 56",
+      "city": "Pasay City",
+      "psgc_code": "1381100056",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605057",
+      "name": "Barangay 57",
+      "city": "Pasay City",
+      "psgc_code": "1381100057",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605058",
+      "name": "Barangay 58",
+      "city": "Pasay City",
+      "psgc_code": "1381100058",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605059",
+      "name": "Barangay 59",
+      "city": "Pasay City",
+      "psgc_code": "1381100059",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605060",
+      "name": "Barangay 60",
+      "city": "Pasay City",
+      "psgc_code": "1381100060",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605061",
+      "name": "Barangay 61",
+      "city": "Pasay City",
+      "psgc_code": "1381100061",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605062",
+      "name": "Barangay 62",
+      "city": "Pasay City",
+      "psgc_code": "1381100062",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605063",
+      "name": "Barangay 63",
+      "city": "Pasay City",
+      "psgc_code": "1381100063",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605064",
+      "name": "Barangay 64",
+      "city": "Pasay City",
+      "psgc_code": "1381100064",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605065",
+      "name": "Barangay 65",
+      "city": "Pasay City",
+      "psgc_code": "1381100065",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605066",
+      "name": "Barangay 66",
+      "city": "Pasay City",
+      "psgc_code": "1381100066",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605067",
+      "name": "Barangay 67",
+      "city": "Pasay City",
+      "psgc_code": "1381100067",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605068",
+      "name": "Barangay 68",
+      "city": "Pasay City",
+      "psgc_code": "1381100068",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605069",
+      "name": "Barangay 69",
+      "city": "Pasay City",
+      "psgc_code": "1381100069",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605070",
+      "name": "Barangay 70",
+      "city": "Pasay City",
+      "psgc_code": "1381100070",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605071",
+      "name": "Barangay 71",
+      "city": "Pasay City",
+      "psgc_code": "1381100071",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605072",
+      "name": "Barangay 72",
+      "city": "Pasay City",
+      "psgc_code": "1381100072",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605073",
+      "name": "Barangay 73",
+      "city": "Pasay City",
+      "psgc_code": "1381100073",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605074",
+      "name": "Barangay 74",
+      "city": "Pasay City",
+      "psgc_code": "1381100074",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605075",
+      "name": "Barangay 75",
+      "city": "Pasay City",
+      "psgc_code": "1381100075",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605076",
+      "name": "Barangay 76",
+      "city": "Pasay City",
+      "psgc_code": "1381100076",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605077",
+      "name": "Barangay 77",
+      "city": "Pasay City",
+      "psgc_code": "1381100077",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605078",
+      "name": "Barangay 78",
+      "city": "Pasay City",
+      "psgc_code": "1381100078",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605079",
+      "name": "Barangay 79",
+      "city": "Pasay City",
+      "psgc_code": "1381100079",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605080",
+      "name": "Barangay 80",
+      "city": "Pasay City",
+      "psgc_code": "1381100080",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605081",
+      "name": "Barangay 81",
+      "city": "Pasay City",
+      "psgc_code": "1381100081",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605082",
+      "name": "Barangay 82",
+      "city": "Pasay City",
+      "psgc_code": "1381100082",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605083",
+      "name": "Barangay 83",
+      "city": "Pasay City",
+      "psgc_code": "1381100083",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605084",
+      "name": "Barangay 84",
+      "city": "Pasay City",
+      "psgc_code": "1381100084",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605085",
+      "name": "Barangay 85",
+      "city": "Pasay City",
+      "psgc_code": "1381100085",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605086",
+      "name": "Barangay 86",
+      "city": "Pasay City",
+      "psgc_code": "1381100086",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605087",
+      "name": "Barangay 87",
+      "city": "Pasay City",
+      "psgc_code": "1381100087",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605088",
+      "name": "Barangay 88",
+      "city": "Pasay City",
+      "psgc_code": "1381100088",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605089",
+      "name": "Barangay 89",
+      "city": "Pasay City",
+      "psgc_code": "1381100089",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605090",
+      "name": "Barangay 90",
+      "city": "Pasay City",
+      "psgc_code": "1381100090",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605091",
+      "name": "Barangay 91",
+      "city": "Pasay City",
+      "psgc_code": "1381100091",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605093",
+      "name": "Barangay 93",
+      "city": "Pasay City",
+      "psgc_code": "1381100093",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605094",
+      "name": "Barangay 94",
+      "city": "Pasay City",
+      "psgc_code": "1381100094",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605095",
+      "name": "Barangay 95",
+      "city": "Pasay City",
+      "psgc_code": "1381100095",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605096",
+      "name": "Barangay 96",
+      "city": "Pasay City",
+      "psgc_code": "1381100096",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605097",
+      "name": "Barangay 97",
+      "city": "Pasay City",
+      "psgc_code": "1381100097",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605098",
+      "name": "Barangay 98",
+      "city": "Pasay City",
+      "psgc_code": "1381100098",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605099",
+      "name": "Barangay 99",
+      "city": "Pasay City",
+      "psgc_code": "1381100099",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605100",
+      "name": "Barangay 100",
+      "city": "Pasay City",
+      "psgc_code": "1381100100",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605101",
+      "name": "Barangay 101",
+      "city": "Pasay City",
+      "psgc_code": "1381100101",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605102",
+      "name": "Barangay 102",
+      "city": "Pasay City",
+      "psgc_code": "1381100102",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605103",
+      "name": "Barangay 103",
+      "city": "Pasay City",
+      "psgc_code": "1381100103",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605104",
+      "name": "Barangay 104",
+      "city": "Pasay City",
+      "psgc_code": "1381100104",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605105",
+      "name": "Barangay 105",
+      "city": "Pasay City",
+      "psgc_code": "1381100105",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605106",
+      "name": "Barangay 106",
+      "city": "Pasay City",
+      "psgc_code": "1381100106",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605107",
+      "name": "Barangay 107",
+      "city": "Pasay City",
+      "psgc_code": "1381100107",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605108",
+      "name": "Barangay 108",
+      "city": "Pasay City",
+      "psgc_code": "1381100108",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605109",
+      "name": "Barangay 109",
+      "city": "Pasay City",
+      "psgc_code": "1381100109",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605110",
+      "name": "Barangay 110",
+      "city": "Pasay City",
+      "psgc_code": "1381100110",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605111",
+      "name": "Barangay 111",
+      "city": "Pasay City",
+      "psgc_code": "1381100111",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605112",
+      "name": "Barangay 112",
+      "city": "Pasay City",
+      "psgc_code": "1381100112",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605113",
+      "name": "Barangay 113",
+      "city": "Pasay City",
+      "psgc_code": "1381100113",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605114",
+      "name": "Barangay 114",
+      "city": "Pasay City",
+      "psgc_code": "1381100114",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605115",
+      "name": "Barangay 115",
+      "city": "Pasay City",
+      "psgc_code": "1381100115",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605116",
+      "name": "Barangay 116",
+      "city": "Pasay City",
+      "psgc_code": "1381100116",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605117",
+      "name": "Barangay 117",
+      "city": "Pasay City",
+      "psgc_code": "1381100117",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605118",
+      "name": "Barangay 118",
+      "city": "Pasay City",
+      "psgc_code": "1381100118",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605119",
+      "name": "Barangay 119",
+      "city": "Pasay City",
+      "psgc_code": "1381100119",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605120",
+      "name": "Barangay 120",
+      "city": "Pasay City",
+      "psgc_code": "1381100120",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605121",
+      "name": "Barangay 121",
+      "city": "Pasay City",
+      "psgc_code": "1381100121",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605122",
+      "name": "Barangay 122",
+      "city": "Pasay City",
+      "psgc_code": "1381100122",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605123",
+      "name": "Barangay 123",
+      "city": "Pasay City",
+      "psgc_code": "1381100123",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605124",
+      "name": "Barangay 124",
+      "city": "Pasay City",
+      "psgc_code": "1381100124",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605125",
+      "name": "Barangay 125",
+      "city": "Pasay City",
+      "psgc_code": "1381100125",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605126",
+      "name": "Barangay 126",
+      "city": "Pasay City",
+      "psgc_code": "1381100126",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605127",
+      "name": "Barangay 127",
+      "city": "Pasay City",
+      "psgc_code": "1381100127",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605128",
+      "name": "Barangay 128",
+      "city": "Pasay City",
+      "psgc_code": "1381100128",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605129",
+      "name": "Barangay 129",
+      "city": "Pasay City",
+      "psgc_code": "1381100129",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605130",
+      "name": "Barangay 130",
+      "city": "Pasay City",
+      "psgc_code": "1381100130",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605131",
+      "name": "Barangay 131",
+      "city": "Pasay City",
+      "psgc_code": "1381100131",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605132",
+      "name": "Barangay 132",
+      "city": "Pasay City",
+      "psgc_code": "1381100132",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605133",
+      "name": "Barangay 133",
+      "city": "Pasay City",
+      "psgc_code": "1381100133",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605134",
+      "name": "Barangay 134",
+      "city": "Pasay City",
+      "psgc_code": "1381100134",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605135",
+      "name": "Barangay 135",
+      "city": "Pasay City",
+      "psgc_code": "1381100135",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605136",
+      "name": "Barangay 136",
+      "city": "Pasay City",
+      "psgc_code": "1381100136",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605137",
+      "name": "Barangay 137",
+      "city": "Pasay City",
+      "psgc_code": "1381100137",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605138",
+      "name": "Barangay 138",
+      "city": "Pasay City",
+      "psgc_code": "1381100138",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605139",
+      "name": "Barangay 139",
+      "city": "Pasay City",
+      "psgc_code": "1381100139",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605140",
+      "name": "Barangay 140",
+      "city": "Pasay City",
+      "psgc_code": "1381100140",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605141",
+      "name": "Barangay 141",
+      "city": "Pasay City",
+      "psgc_code": "1381100141",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605142",
+      "name": "Barangay 142",
+      "city": "Pasay City",
+      "psgc_code": "1381100142",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605143",
+      "name": "Barangay 143",
+      "city": "Pasay City",
+      "psgc_code": "1381100143",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605144",
+      "name": "Barangay 144",
+      "city": "Pasay City",
+      "psgc_code": "1381100144",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605145",
+      "name": "Barangay 145",
+      "city": "Pasay City",
+      "psgc_code": "1381100145",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605146",
+      "name": "Barangay 146",
+      "city": "Pasay City",
+      "psgc_code": "1381100146",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605147",
+      "name": "Barangay 147",
+      "city": "Pasay City",
+      "psgc_code": "1381100147",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605148",
+      "name": "Barangay 148",
+      "city": "Pasay City",
+      "psgc_code": "1381100148",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605149",
+      "name": "Barangay 149",
+      "city": "Pasay City",
+      "psgc_code": "1381100149",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605150",
+      "name": "Barangay 150",
+      "city": "Pasay City",
+      "psgc_code": "1381100150",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605151",
+      "name": "Barangay 151",
+      "city": "Pasay City",
+      "psgc_code": "1381100151",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605152",
+      "name": "Barangay 152",
+      "city": "Pasay City",
+      "psgc_code": "1381100152",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605153",
+      "name": "Barangay 153",
+      "city": "Pasay City",
+      "psgc_code": "1381100153",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605154",
+      "name": "Barangay 154",
+      "city": "Pasay City",
+      "psgc_code": "1381100154",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605155",
+      "name": "Barangay 155",
+      "city": "Pasay City",
+      "psgc_code": "1381100155",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605156",
+      "name": "Barangay 156",
+      "city": "Pasay City",
+      "psgc_code": "1381100156",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605157",
+      "name": "Barangay 157",
+      "city": "Pasay City",
+      "psgc_code": "1381100157",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605158",
+      "name": "Barangay 158",
+      "city": "Pasay City",
+      "psgc_code": "1381100158",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605159",
+      "name": "Barangay 159",
+      "city": "Pasay City",
+      "psgc_code": "1381100159",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605160",
+      "name": "Barangay 160",
+      "city": "Pasay City",
+      "psgc_code": "1381100160",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605161",
+      "name": "Barangay 161",
+      "city": "Pasay City",
+      "psgc_code": "1381100161",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605162",
+      "name": "Barangay 162",
+      "city": "Pasay City",
+      "psgc_code": "1381100162",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605163",
+      "name": "Barangay 163",
+      "city": "Pasay City",
+      "psgc_code": "1381100163",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605164",
+      "name": "Barangay 164",
+      "city": "Pasay City",
+      "psgc_code": "1381100164",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605165",
+      "name": "Barangay 165",
+      "city": "Pasay City",
+      "psgc_code": "1381100165",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605166",
+      "name": "Barangay 166",
+      "city": "Pasay City",
+      "psgc_code": "1381100166",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605167",
+      "name": "Barangay 167",
+      "city": "Pasay City",
+      "psgc_code": "1381100167",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605168",
+      "name": "Barangay 168",
+      "city": "Pasay City",
+      "psgc_code": "1381100168",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605169",
+      "name": "Barangay 169",
+      "city": "Pasay City",
+      "psgc_code": "1381100169",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605170",
+      "name": "Barangay 170",
+      "city": "Pasay City",
+      "psgc_code": "1381100170",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605171",
+      "name": "Barangay 171",
+      "city": "Pasay City",
+      "psgc_code": "1381100171",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605172",
+      "name": "Barangay 172",
+      "city": "Pasay City",
+      "psgc_code": "1381100172",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605173",
+      "name": "Barangay 173",
+      "city": "Pasay City",
+      "psgc_code": "1381100173",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605174",
+      "name": "Barangay 174",
+      "city": "Pasay City",
+      "psgc_code": "1381100174",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605175",
+      "name": "Barangay 175",
+      "city": "Pasay City",
+      "psgc_code": "1381100175",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605176",
+      "name": "Barangay 176",
+      "city": "Pasay City",
+      "psgc_code": "1381100176",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605177",
+      "name": "Barangay 177",
+      "city": "Pasay City",
+      "psgc_code": "1381100177",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605178",
+      "name": "Barangay 178",
+      "city": "Pasay City",
+      "psgc_code": "1381100178",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605179",
+      "name": "Barangay 179",
+      "city": "Pasay City",
+      "psgc_code": "1381100179",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605180",
+      "name": "Barangay 180",
+      "city": "Pasay City",
+      "psgc_code": "1381100180",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605181",
+      "name": "Barangay 181",
+      "city": "Pasay City",
+      "psgc_code": "1381100181",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605182",
+      "name": "Barangay 182",
+      "city": "Pasay City",
+      "psgc_code": "1381100182",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605183",
+      "name": "Barangay 183",
+      "city": "Pasay City",
+      "psgc_code": "1381100183",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605184",
+      "name": "Barangay 184",
+      "city": "Pasay City",
+      "psgc_code": "1381100184",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605185",
+      "name": "Barangay 185",
+      "city": "Pasay City",
+      "psgc_code": "1381100185",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605186",
+      "name": "Barangay 186",
+      "city": "Pasay City",
+      "psgc_code": "1381100186",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605187",
+      "name": "Barangay 187",
+      "city": "Pasay City",
+      "psgc_code": "1381100187",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605188",
+      "name": "Barangay 188",
+      "city": "Pasay City",
+      "psgc_code": "1381100188",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605189",
+      "name": "Barangay 189",
+      "city": "Pasay City",
+      "psgc_code": "1381100189",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605190",
+      "name": "Barangay 190",
+      "city": "Pasay City",
+      "psgc_code": "1381100190",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605191",
+      "name": "Barangay 191",
+      "city": "Pasay City",
+      "psgc_code": "1381100191",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605192",
+      "name": "Barangay 192",
+      "city": "Pasay City",
+      "psgc_code": "1381100192",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605193",
+      "name": "Barangay 193",
+      "city": "Pasay City",
+      "psgc_code": "1381100193",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605194",
+      "name": "Barangay 194",
+      "city": "Pasay City",
+      "psgc_code": "1381100194",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605195",
+      "name": "Barangay 195",
+      "city": "Pasay City",
+      "psgc_code": "1381100195",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605196",
+      "name": "Barangay 196",
+      "city": "Pasay City",
+      "psgc_code": "1381100196",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605197",
+      "name": "Barangay 197",
+      "city": "Pasay City",
+      "psgc_code": "1381100197",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605198",
+      "name": "Barangay 198",
+      "city": "Pasay City",
+      "psgc_code": "1381100198",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605199",
+      "name": "Barangay 199",
+      "city": "Pasay City",
+      "psgc_code": "1381100199",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605200",
+      "name": "Barangay 200",
+      "city": "Pasay City",
+      "psgc_code": "1381100200",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307605201",
+      "name": "Barangay 201",
+      "city": "Pasay City",
+      "psgc_code": "1381100201",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606001",
+      "name": "Aguho",
+      "city": "Pateros",
+      "psgc_code": "1381701001",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606002",
+      "name": "Magtanggol",
+      "city": "Pateros",
+      "psgc_code": "1381701002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606003",
+      "name": "Martires del 96",
+      "city": "Pateros",
+      "psgc_code": "1381701003",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606004",
+      "name": "Poblacion",
+      "city": "Pateros",
+      "psgc_code": "1381701004",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606005",
+      "name": "San Pedro",
+      "city": "Pateros",
+      "psgc_code": "1381701005",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606006",
+      "name": "San Roque",
+      "city": "Pateros",
+      "psgc_code": "1381701006",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606007",
+      "name": "Santa Ana",
+      "city": "Pateros",
+      "psgc_code": "1381701007",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606008",
+      "name": "Santo Rosario-Kanluran",
+      "city": "Pateros",
+      "psgc_code": "1381701008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606009",
+      "name": "Santo Rosario-Silangan",
+      "city": "Pateros",
+      "psgc_code": "1381701009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307606010",
+      "name": "Tabacalera",
+      "city": "Pateros",
+      "psgc_code": "1381701010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607001",
+      "name": "Tanyag (Bagong Tanyag)",
+      "city": "Taguig City",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307607002",
+      "name": "Bagumbayan",
+      "city": "Taguig City",
+      "psgc_code": "1381500002",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607006",
+      "name": "Ibayo-Tipas",
+      "city": "Taguig City",
+      "psgc_code": "1381500006",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307607007",
+      "name": "Ligid-Tipas",
+      "city": "Taguig City",
+      "psgc_code": "1381500007",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307607008",
+      "name": "Lower Bicutan",
+      "city": "Taguig City",
+      "psgc_code": "1381500008",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607009",
+      "name": "Maharlika Village",
+      "city": "Taguig City",
+      "psgc_code": "1381500009",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607010",
+      "name": "Napindan",
+      "city": "Taguig City",
+      "psgc_code": "1381500010",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607011",
+      "name": "Palingon",
+      "city": "Taguig City",
+      "psgc_code": "1381500011",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307607012",
+      "name": "Santa Ana",
+      "city": "Taguig City",
+      "psgc_code": "1381500012",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607013",
+      "name": "Central Signal Village (Signal Village)",
+      "city": "Taguig City",
+      "psgc_code": null,
+      "reason": "source_name_identity_disagreement"
+    },
+    {
+      "source_pcode": "PH1307607014",
+      "name": "Tuktukan",
+      "city": "Taguig City",
+      "psgc_code": "1381500014",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607015",
+      "name": "Upper Bicutan",
+      "city": "Taguig City",
+      "psgc_code": "1381500015",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607016",
+      "name": "Ususan",
+      "city": "Taguig City",
+      "psgc_code": "1381500016",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607018",
+      "name": "Western Bicutan",
+      "city": "Taguig City",
+      "psgc_code": "1381500018",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607019",
+      "name": "Central Bicutan",
+      "city": "Taguig City",
+      "psgc_code": "1381500019",
+      "reason": "checked_osm_city_containment_mismatch"
+    },
+    {
+      "source_pcode": "PH1307607020",
+      "name": "Fort Bonifacio",
+      "city": "Taguig City",
+      "psgc_code": "1381500020",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607022",
+      "name": "New Lower Bicutan",
+      "city": "Taguig City",
+      "psgc_code": "1381500022",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607023",
+      "name": "North Daang Hari",
+      "city": "Taguig City",
+      "psgc_code": "1381500023",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607025",
+      "name": "Pinagsama",
+      "city": "Taguig City",
+      "psgc_code": "1381500025",
+      "reason": "qualified_osm_precedence"
+    },
+    {
+      "source_pcode": "PH1307607027",
+      "name": "South Daang Hari",
+      "city": "Taguig City",
+      "psgc_code": "1381500027",
+      "reason": "qualified_osm_precedence"
+    }
+  ],
+  "source_geometry_modified": false,
+  "psgc_reference_sha256": "d8804c4b576ed4f98db758f482eedc931eed92252fe95af819f41921b8ea6aa1",
+  "proves_current_flood": false,
+  "builder_sha256": "44a0041d2fef6fddadad482790c8308909ce3b9801d513b8c2ad9d7f4c870bd5",
+  "may_affect_routing": false
+}

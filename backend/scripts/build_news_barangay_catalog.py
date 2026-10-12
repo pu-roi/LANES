@@ -1,4 +1,4 @@
-"""Review source-backed Pasig OSM COMMUNITY polygons from the same local PBF.
+"""Review source-backed Metro Manila OSM COMMUNITY polygons from the same PBF.
 
 Retain only explicit PSGC-ref/name/parent matches and complete valid rings.
 This is automated topology/identity review, not official legal verification.
@@ -25,7 +25,7 @@ from app.services.news_road_placement_service import DEFAULT_CATALOG_DIR, NewsRo
 DEFAULT_PSGC_REFERENCE = Path(__file__).resolve().parents[1] / "runtime_data" / "philippines_psgc_reference.csv"
 OSM_LICENSE_URL = "https://www.openstreetmap.org/copyright"
 REVIEW_METHOD = ("Automated review by Codex geometry agent: exact PSGC current/correspondence reference, "
-    "barangay name and Pasig parent cross-check; complete source rings without cuts/dangles; "
+    "barangay name and canonical NCR parent cross-check; complete source rings without cuts/dangles; "
     "valid unsimplified WGS84 polygon and strict containment in checked same-snapshot OSM city. "
     "Community map geometry; no human, cadastral, field or legal-boundary verification.")
 
@@ -37,6 +37,35 @@ def pasig_reference(path: Path) -> dict[str, dict]:
     if len(records) != 30 or len({row["psgc_code"] for row in records}) != 30:
         raise ValueError("Expected complete distinct 30-barangay Pasig PSGC reference")
     return {code: row for row in records for code in (row["psgc_code"], row["correspondence_code"]) if code}
+
+
+def metro_reference(path: Path) -> dict[str, dict]:
+    """Current NCR hierarchy, including Manila's district parent representation."""
+    with path.open(encoding="utf-8-sig", newline="") as stream:
+        rows = [row for row in csv.DictReader(stream) if row["region"] == "National Capital Region (NCR)"]
+    parents = {row["psgc_code"][:5]: row for row in rows if row["level"] in {"City", "Mun"}}
+    if len(parents) != 17 or len({city_key(row["name"]) for row in parents.values()}) != 17:
+        raise ValueError("Expected seventeen distinct canonical NCR parents")
+    records = []
+    for row in rows:
+        if row["level"] != "Bgy":
+            continue
+        parent = parents.get(row["psgc_code"][:5])
+        if parent is None:
+            raise ValueError("Missing canonical NCR barangay parent")
+        if city_key(parent["name"]) != "manila" and city_key(row["city_municipality"]) != city_key(parent["name"]):
+            raise ValueError("NCR reference name/code parent disagreement")
+        records.append({**row, "city_municipality": parent["name"]})
+    if not records or len({row["psgc_code"] for row in records}) != len(records):
+        raise ValueError("Invalid NCR barangay identity coverage")
+    references = {}
+    for row in records:
+        for code in (row["psgc_code"], row["correspondence_code"]):
+            if code:
+                if code in references and references[code]["psgc_code"] != row["psgc_code"]:
+                    raise ValueError("Ambiguous NCR reference crosswalk")
+                references[code] = row
+    return references
 
 
 class BarangayRelations(osmium.SimpleHandler):
@@ -53,7 +82,7 @@ class BarangayRelations(osmium.SimpleHandler):
             return
         self.relations.append(dict(relation_id=relation.id, tags=tags,
             members=[(member.type, member.ref, member.role) for member in relation.members]))
-        if len(self.relations) > 500:
+        if len(self.relations) > 4096:
             raise ValueError("Unexpected bounded administrative relation count")
 
 
@@ -95,7 +124,8 @@ def reviewed_polygon(members: list[tuple[str, int, str]], coordinates: dict) -> 
     return polygon, None
 
 
-def review_records(relations: list[dict], coordinates: dict, references: dict[str, dict], city_boundary: object) -> tuple[list[dict], list[dict]]:
+def review_records(relations: list[dict], coordinates: dict, references: dict[str, dict], city_boundary: object,
+                   *, unknown_reference_reason: str = "no_explicit_pasig_psgc_reference") -> tuple[list[dict], list[dict]]:
     accepted, excluded, identities = [], [], set()
     counts = Counter(references[item["tags"]["ref"]]["psgc_code"] for item in relations
         if item["tags"].get("ref") in references)
@@ -104,7 +134,7 @@ def review_records(relations: list[dict], coordinates: dict, references: dict[st
         row = references.get(tags.get("ref", ""))
         reason = None
         if row is None:
-            reason = "no_explicit_pasig_psgc_reference"
+            reason = unknown_reference_reason
         elif normalize_name(tags.get("name", "")) != normalize_name(row["name"]):
             reason = "psgc_boundary_name_mismatch"
         elif counts[row["psgc_code"]] > 1:
@@ -112,7 +142,8 @@ def review_records(relations: list[dict], coordinates: dict, references: dict[st
         polygon, geometry_reason = reviewed_polygon(item["members"], coordinates)
         if reason is None:
             reason = geometry_reason
-        if reason is None and not city_boundary.covers(polygon):
+        parent = city_boundary.get(city_key(row["city_municipality"])) if isinstance(city_boundary, dict) and row else city_boundary
+        if reason is None and (parent is None or not parent.covers(polygon)):
             reason = "barangay_boundary_parent_mismatch"
         if reason is None and row["psgc_code"] in identities:
             reason = "duplicate_barangay_identity"
@@ -137,7 +168,7 @@ def build_catalog(pbf: Path, output: Path, *, osm_directory: Path = DEFAULT_CATA
     roads._load()
     if roads.error or roads.catalog is None or roads.catalog.osm_sha256 != source_sha:
         raise ValueError("PBF must match checked OSM road/city snapshot")
-    references = pasig_reference(psgc_reference)
+    references = metro_reference(psgc_reference)
     relations = BarangayRelations(references)
     relations.apply_file(str(pbf), locations=False)
     required = {ref for item in relations.relations for kind, ref, _ in item["members"] if kind == "w"}
@@ -145,11 +176,12 @@ def build_catalog(pbf: Path, output: Path, *, osm_directory: Path = DEFAULT_CATA
         raise ValueError("Unexpected bounded administrative way count")
     ways = BoundaryWays(required)
     ways.apply_file(str(pbf), locations=True)
-    records, excluded = review_records(relations.relations, ways.coordinates, references, roads.boundaries["pasig"])
+    records, excluded = review_records(relations.relations, ways.coordinates, references, roads.boundaries,
+                                      unknown_reference_reason="no_explicit_ncr_psgc_reference")
     if not records:
         raise ValueError("No valid explicit-identity community boundaries")
     snapshot = roads.catalog.snapshot_at.isoformat()
-    payload = dict(format_version=1, source_id=f"osm-pasig-barangays:{snapshot}:{source_sha[:16]}",
+    payload = dict(format_version=1, source_id=f"osm-ncr-barangays:{snapshot}:{source_sha[:16]}",
         source_url="https://download.openstreetmap.fr/extracts/asia/philippines/", source_sha256=source_sha,
         snapshot_at=snapshot, verified_at=datetime.now(timezone.utc).isoformat(),
         verified_by="Codex geometry agent (automated asset validation)", review_method=REVIEW_METHOD,
@@ -158,12 +190,20 @@ def build_catalog(pbf: Path, output: Path, *, osm_directory: Path = DEFAULT_CATA
             "PSGC identity crosswalk: Philippine Statistics Authority. Community boundaries are not official legal delineations.",
         records=records)
     blob = json.dumps(payload,ensure_ascii=False,separators=(",", ":"),allow_nan=False).encode()
+    accepted_ids = {row["psgc_code"] for row in records}
+    expected = {row["psgc_code"]: row for row in references.values()}
+    reasons = {references[item["ref"]]["psgc_code"]: item["reason"] for item in excluded if item.get("ref") in references}
+    coverage = [dict(psgc_code=code, city=row["city_municipality"], barangay=row["name"],
+        status="qualified" if code in accepted_ids else "missing_or_rejected",
+        reason=None if code in accepted_ids else reasons.get(code, "no_explicit_ncr_psgc_reference"))
+        for code, row in sorted(expected.items())]
     receipt = dict(catalog_sha256=hashlib.sha256(blob).hexdigest(), source_sha256=source_sha,
         osm_catalog_sha256=roads.digest, source_classification="osm_community",
         review_method=REVIEW_METHOD, license_url=OSM_LICENSE_URL,
         psgc_reference_sha256=hashlib.sha256(psgc_reference.read_bytes()).hexdigest(),
         accepted_records=len(records), excluded_relations=excluded,
-        missing_or_excluded_barangays=sorted({row["name"] for row in references.values()} - {row["barangay"] for row in records}),
+        expected_records=len(expected), coverage=coverage,
+        missing_or_excluded_barangays=[row for row in coverage if row["status"] != "qualified"],
         proves_current_flood=False, may_affect_routing=False)
     output.mkdir(parents=True,exist_ok=False)
     (output / "boundaries.json").write_bytes(blob)
@@ -180,7 +220,8 @@ def main() -> None:
     parser.add_argument("output",type=Path)
     parser.add_argument("--osm-directory",type=Path,default=DEFAULT_CATALOG_DIR)
     args = parser.parse_args()
-    print(json.dumps(build_catalog(args.osm_pbf,args.output,osm_directory=args.osm_directory),indent=2))
+    receipt = build_catalog(args.osm_pbf,args.output,osm_directory=args.osm_directory)
+    print(json.dumps({key: receipt[key] for key in ("catalog_sha256", "source_sha256", "accepted_records", "expected_records")}, indent=2))
 
 
 if __name__ == "__main__":

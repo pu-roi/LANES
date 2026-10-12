@@ -70,7 +70,11 @@ class PhilippineLocationService:
 
                 if "level" in fieldnames:
                     # Nationwide PSGC schema
-                    for row in reader:
+                    reference_rows = list(reader)
+                    ncr_parents = {row.get("psgc_code", "")[:5]: row.get("name", "").strip()
+                        for row in reference_rows if row.get("region") == "National Capital Region (NCR)"
+                        and row.get("level") in {"City", "Mun"}}
+                    for row in reference_rows:
                         lvl = row.get("level", "").strip()
                         name = row.get("name", "").strip()
                         code = row.get("psgc_code", "").strip()
@@ -78,6 +82,10 @@ class PhilippineLocationService:
                         region = row.get("region", "").strip()
                         province = row.get("province", "").strip()
                         city_mun = row.get("city_municipality", "").strip()
+                        if lvl == "Bgy" and region == "National Capital Region (NCR)":
+                            # Manila uses district labels in the raw CSV; code
+                            # hierarchy supplies the city without rewriting it.
+                            city_mun = ncr_parents.get(code[:5], city_mun)
 
                         if not name:
                             continue
@@ -178,7 +186,11 @@ class PhilippineLocationService:
 
         # Aliases span administrative levels. Validate their targets as actual
         # barangays instead of returning city aliases (e.g. "Pasig City").
-        candidates = (lowered, norm_sta, norm_sto, norm_dona)
+        # Numbered official names include the word Barangay. Stripping the
+        # designator must not make their canonical reference unreachable.
+        candidates = (raw_name.strip().lower(), lowered, norm_sta, norm_sto, norm_dona)
+        if re.fullmatch(r"[0-9]+", cleaned):
+            candidates += ("barangay " + cleaned,)
         candidates += tuple(COMMON_ALIASES[c].lower() for c in candidates if c in COMMON_ALIASES)
 
         def city_identity(name: str) -> str:

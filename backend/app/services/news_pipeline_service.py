@@ -56,7 +56,8 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
                                         sources=sources, unbound_only=unbound_only, obey_configuration=True)
         report("seed", asdict(seeded))
         report("evaluation")
-        evaluated = await evaluate_news_claims(session_factory, limit=limit, auditor=auditor, policy=policy, clock=clock, sources=sources, obey_configuration=True)
+        evaluated = await evaluate_news_claims(session_factory, limit=limit, auditor=auditor, policy=policy, clock=clock,
+            sources=sources, obey_configuration=True, on_progress=lambda summary: report("evaluation", summary))
         report("evaluation", asdict(evaluated))
     report("publication")
     published = process_news_publications(session_factory, policy=policy, limit=limit, clock=clock, sources=maintenance_sources, maintenance_only=not config.news_publication_enabled)

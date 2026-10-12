@@ -21,6 +21,7 @@ from app.services.news_placement_preview_service import NewsPlacementPreviewServ
 from app.services.noah_vector_catalog_service import X_METRES, Y_METRES, metric_geometry
 from app.services.operational_footprint_service import validate_operational_shape
 from app.services.placement_geometry_service import LINE_PRECISION_METRES, line_parts
+from app.services.generated_corridor_geometry_service import generated_corridor_intersection
 
 
 @dataclass(frozen=True)
@@ -86,8 +87,12 @@ def build_estimated_road_zone(claim: ExtractedClaim, *,
     for part in parts:
         # Generate inside the qualified parent; never clip an external supplied
         # footprint. Do not dissolve separate buffered fragments across gaps.
-        buffered = scale(metric_geometry(part).buffer(25.0), xfact=1 / X_METRES,
-                         yfact=1 / Y_METRES, origin=(0, 0)).intersection(parent)
+        policy_buffer = scale(metric_geometry(part).buffer(25.0), xfact=1 / X_METRES,
+                              yfact=1 / Y_METRES, origin=(0, 0))
+        try:
+            buffered = generated_corridor_intersection(policy_buffer, parent, part)
+        except ValueError:
+            raise NewsPublicationError("estimated_road_precision_unresolved") from None
         if buffered.geom_type != "Polygon" or not buffered.is_valid or not buffered.covers(part):
             raise NewsPublicationError("estimated_road_corridor_incomplete")
         supported_by = [index for index, source in enumerate(original_parts)

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class AuditEvidenceSpan(BaseModel):
@@ -100,6 +100,33 @@ class ProviderClaimAuditSelection(ProviderClaimAudit):
     access: SelectedAccess
 
 
+class AuditTransportDiagnostics(BaseModel):
+    """Bounded observations only; never provider bodies, URLs or credentials."""
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+    phase: Literal["prepare", "headers", "body", "parse", "validate", "complete"]
+    timeout_kind: Literal["connect", "read", "write", "pool", "overall"] | None = None
+    elapsed_ms: int = Field(ge=0, le=3_600_000)
+    timings_ms: dict[str, int] = Field(default_factory=dict, max_length=8)
+    response_bytes: int = Field(default=0, ge=0, le=100_000)
+    request_bytes: int = Field(default=0, ge=0, le=1_000_000)
+    candidate_count: int = Field(ge=1, le=8)
+    actual_model: str | None = Field(default=None, max_length=160, pattern=r"^[A-Za-z0-9_./:-]+$")
+    gateway_request_id: str | None = Field(default=None, max_length=200, pattern=r"^[A-Za-z0-9_./:-]+$")
+    generation_id: str | None = Field(default=None, max_length=200, pattern=r"^[A-Za-z0-9_./:-]+$")
+    finish_reason: str | None = Field(default=None, max_length=40, pattern=r"^[A-Za-z0-9_-]+$")
+    prompt_tokens: int | None = Field(default=None, ge=0, le=10_000_000)
+    completion_tokens: int | None = Field(default=None, ge=0, le=10_000_000)
+    error_category: Literal["schema_rejected", "reasoning_rejected", "parameter_rejected", "model_unavailable", "unspecified"] | None = None
+
+    @field_validator("timings_ms")
+    @classmethod
+    def bounded_timings(cls, value: dict[str, int]) -> dict[str, int]:
+        if (set(value) - {"prepared", "headers", "first_body", "body_complete", "parsed", "validated"}
+                or any(type(v) is not int or not 0 <= v <= 3_600_000 for v in value.values())):
+            raise ValueError("Invalid safe audit timings")
+        return value
+
+
 class IndependentAuditResult(BaseModel):
     """Safe internal result saved independently from immutable extraction."""
     model_config = ConfigDict(extra="forbid", frozen=True)
@@ -117,6 +144,7 @@ class IndependentAuditResult(BaseModel):
     provider_http_status: int | None = Field(default=None, ge=100, le=599)
     retry_after_seconds: int | None = Field(default=None, ge=1, le=86400)
     evidence: ProviderClaimAudit | None = None
+    transport: AuditTransportDiagnostics | None = None
 
 
 class BatchClaimSelection(ProviderClaimAuditSelection):
@@ -126,6 +154,22 @@ class BatchClaimSelection(ProviderClaimAuditSelection):
 class ProviderBatchSelection(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
     results: tuple[BatchClaimSelection, ...] = Field(max_length=8)
+
+
+class CompactClaimSelection(BaseModel):
+    """Provider chooses facts; the backend owns immutable hash association."""
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+    candidate_id: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
+    place: SelectedPlace
+    status: SelectedStatus
+    time: SelectedTime
+    depth: SelectedDepth
+    access: SelectedAccess
+
+
+class CompactBatchSelection(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
+    results: tuple[CompactClaimSelection, ...] = Field(max_length=8)
 
 
 class AuditQuotaState(BaseModel):

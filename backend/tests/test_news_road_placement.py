@@ -57,6 +57,34 @@ def test_broad_road_never_selects_even_a_single_mapped_section(tmp_path):
     assert result.candidates[0].kind=="road_section"
 
 
+@pytest.mark.parametrize("mapped,reported", [("N. S. Amoranto Sr. Avenue", "NS Amoranto"),
+    ("N. S. Amoranto Sr. Avenue", "N.S. Amoranto"), ("Gregorio Araneta Avenue", "G Araneta")])
+def test_mapped_initials_match_only_local_bounded_source_road(tmp_path, mapped, reported):
+    mapped_ways = ways()
+    mapped_ways[0]["name"] = mapped
+    result = write_catalog(tmp_path, mapped_ways).resolve(claim(
+        raw_place_name=reported, canonical_road=reported, span="between Atok and Calamba Streets"))
+    assert result.status == "bounded_candidate" and result.candidates[0].osm_way_ids == [10]
+    assert not result.proves_current_flood and not result.may_affect_routing
+
+
+def test_initial_collision_and_generation_suffix_remain_ambiguous(tmp_path):
+    mapped_ways = ways()
+    mapped_ways[0]["name"] = "N. S. Amoranto Sr. Avenue"
+    mapped_ways.append(dict(osm_id=11, name="N. S. Amoranto Jr. Avenue",
+        nodes=[(11,121.01,14.63),(12,121.01,14.631)]))
+    result = write_catalog(tmp_path, mapped_ways).resolve(claim(canonical_road="NS Amoranto"))
+    assert result.reason == "ambiguous_reported_road_initials" and not result.candidates
+
+
+def test_other_city_initial_match_cannot_create_local_road_candidate(tmp_path):
+    mapped_ways = ways()
+    mapped_ways.append(dict(osm_id=11, name="Gregorio Araneta Avenue",
+        nodes=[(11,121.1,14.63),(12,121.1,14.631)]))
+    result = write_catalog(tmp_path, mapped_ways).resolve(claim(canonical_road="G Araneta"))
+    assert result.reason == "main_road_not_found" and not result.candidates
+
+
 def test_short_governor_name_finds_city_road_but_keeps_unmapped_sitio_unresolved(tmp_path):
     roads = ways()
     roads[0]["name"] = "Governor Wenceslao Pascual Avenue"

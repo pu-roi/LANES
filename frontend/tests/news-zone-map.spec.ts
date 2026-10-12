@@ -62,6 +62,13 @@ test("news zone reuses the solid core and transparent aura with source details",
   await page.route("**/api.maptiler.com/maps/**/style.json?**", (route) => route.fulfill({ json: {
     version: 8, sources: {}, layers: [{ id: "background", type: "background", paint: { "background-color": "#f1f5f9" } }],
   } }));
+  // A cold software renderer may legitimately enter the existing OSM fallback.
+  // Keep that basemap uniform too: real raster colors otherwise contaminate
+  // flood-layer pixel counts. This fixture does not test tile-provider latency.
+  await page.route("https://*.tile.openstreetmap.org/**", route => route.fulfill({
+    contentType: "image/png",
+    body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
+  }));
   await page.route("**/api/v1/**", (route) => {
     const path = new URL(route.request().url()).pathname;
     if (path.endsWith("/reports/active-zones")) return route.fulfill({ json: [zone] });
