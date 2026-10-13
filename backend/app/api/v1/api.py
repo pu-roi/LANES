@@ -1,11 +1,13 @@
 from fastapi import APIRouter
 from app.api.v1.endpoints import zone_update
 from app.api.v1.endpoints import news_scheduler
+from app.api.v1.endpoints import mcp_review
 from app.api.v1.endpoints import flood_review_suggestion
 from app.api.v1.endpoints import admin_review, admin_news_publication, news_alerts, local_news, flood_duration, flood_followup
 from app.api.v1.endpoints import users, reports, routes, auth, admin, admin_news, roles, data, settings, sse, feed, comments, weather, public, posts, notifications, analytics, sync, hotlines
 
 api_router = APIRouter()
+api_router.include_router(mcp_review.router, prefix="/internal/mcp-review", tags=["MCP review"])
 api_router.include_router(news_scheduler.router, prefix="/internal/news-scheduler", tags=["news scheduler"])
 api_router.include_router(zone_update.router, tags=["zone observations"])
 

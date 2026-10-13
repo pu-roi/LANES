@@ -1,8 +1,60 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 
 **Autonomous news release:** Focused source-mode backend is already deployed; current feature branch records the runtime plus regression/replay tools and responsive diagnostics without MCP dependency changes. Complete timeline/API acceptance and reproducible main deployment are the current release gates. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+**Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+**October 13 follow-up:** Deployed measurement-first source policy v2, restored saved evidence without decorative source bullets/composed ellipses, and exercised the production scheduled-worker entry point on captured historical news. It produces 27 alerts/seven zones including Santo Domingo at 19 inches, with no inference, repeat duplication or expiry failure. Linux release checks: 275 passed; actual map checks: desktop/mobile passed. Production API/news/expiry share the v2 image; worker execution succeeds. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
+
+## October 13: Credit-free NLP news and focused backend release
+
+Implemented source_rules validation with immutable occurrence/fact/span checks and no inference/quota calls. Normal local collector-to-zone replay creates 26 alerts and six estimated road zones from 31 evaluations, without duplicates; expiry passes. 270 Linux checks, one native PostGIS scenario and four desktop/mobile checks pass; TypeScript/scoped lint pass. Fixed nullable-evidence publication and misleading list excerpts. API/news/expiry run the tested focused image; authenticated controller dispatch/worker completion and zero model requests are observed. Production JWT now requires a private Secret Manager binding; development bootstrap stays local and old exposed tags are retired. Encrypted local provider selection is updated, original provider keys/history preserved. Main Git and optional frontend diagnostics rollout remain separate. [Acceptance](evaluations/news-source-validation-20261013/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Enable production adaptive news scheduling
+
+The next autonomous 1:30 PM delivery also returned HTTP 200, incremented controller checks to 2 and retained one worker start without duplication. Longer operation/reconciliation and representative quiet/uncertain periods remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Corrected the still-active three-hour direct-job schedule to a quarter-hour OIDC controller check. Configured the existing API and narrow job/operation permissions; configuration revision lanes-api-00081-n4x uses the same main image. 61 policy/auth/dispatch tests pass; one authentic Scheduler delivery returns HTTP 200, saves a 15-minute risk decision and starts the existing news worker, which completes successfully. No MCP/ChatGPT rollout, schema change or extra container. [Evidence](evaluations/news-adaptive-scheduler-release-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Senior-planner publication audit
+
+Prepared the developer-authorized roi-branch bundle: disabled five-tool MCP review, shared dependency candidate, Windows protected ChatGPT sign-in, strict bounded inference runner and test/docs records. Real plan authorization is proved; live auditing fails evidence acceptance at 3/5. Original providers/history are preserved. The separate [MCP runbook](guides/lanes-mcp-pilot-runtime.md) includes prerequisites, enabled-only local startup and baseline rollback. No cloud deployment or additional provider request. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Real ChatGPT plan connection and captured-news inference
+
+User completed authorization; verified current plan scopes and account-specific model catalog (HTTP 200). Added bounded Responses streaming qualification and passed 23 offline transport/budget/evidence checks. Three actual gpt-6.1-sol requests reached HTTP 200/completion; first two failed local parsing. Fixed thin completion handling via finalized item events. The eight-claim result parses and strictly validates, but seven claims lack confirmed time and the original Santo Domingo half-knee/knee conflict is rejected. Stop at 3/5; no qualified positive case, publication, worker replacement or deployment. [Evidence](evaluations/chatgpt-news-live-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Repair local ChatGPT token-pair verification
+
+Found missing access-token input to python-jose ID-token validation; valid at_hash-bearing signed fixture fails before repair and passes afterward. Preserve all identity/permission checks and reject mismatched token pairs. 42 focused tests pass. Launched updated helper on 1457; exact real discarded-token claim and actual account connection remain unverified. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Diagnose real ChatGPT callback rejection
+
+Added fixed validation-stage codes to the local page and last_error_code status, preserving strict checks and no unvalidated credential saving. 35 focused offline tests pass. Started the updated helper on port 1456 because automatic review blocked stopping/restarting the old process. Exact actual identity/permission failure remains unproved until one fresh user attempt. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Repair local ChatGPT button request
+
+Reproduced the developer-reported HTTP 403: the page referrer policy made Chrome send Origin: null. Corrected only the landing-page policy, retaining strict local/CSRF checks and private callbacks. Added actual button-origin checks in desktop/mobile Chrome plus backend form/callback regression; restarted the helper for another real user sign-in attempt. No inference, provider or production change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Local ChatGPT plan sign-in prepared
+
+Implemented a loopback Windows sign-in helper with PKCE, verified identity/permissions, one-use callback and DPAPI storage outside Git. 88 combined offline authentication/MCP tests and two desktop/mobile Chromium page checks pass. Actual ChatGPT account authorization and inference remain pending; no automatic worker integration, provider change, publication or deployment. Shared dependency/MCP implementation is a candidate with remaining Linux/PostGIS gates. [Results](evaluations/chatgpt-plan-signin-20261013.md), [startup](guides/chatgpt-plan-local-signin.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: FastMCP selection research and measured compatibility
+
+Follow-up official-doc/release research recommends FastMCP 4.1.0 on existing Python 3.12 in a separate gateway using qualified MCP SDK 2.3.0. Real pip dry runs prove Pydantic 2.7.4 and FastAPI 0.111.0/Starlette <0.38 cannot share its current dependencies, while isolated resolution succeeds (68 Windows distributions). All eighteen inspected source hashes and installed LANES versions remain unchanged; no installation, server test, model request, database operation or deployment. Auth/account binding, explicit tool allowlist and target Linux runtime remain implementation gates. [MCP library comparison](research/lanes-mcp-library-selection-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: MCP repository review and additive pilot design
+
+Completed official-doc and code research for ChatGPT-assisted captured-news review. Existing read APIs/source snapshots can support a gateway; external audit submission is absent, Python MCP SDK Pydantic requirements conflict with the backend pin, remote MCP OAuth is missing, and worker lease/policy gates prevent casual chat-result insertion. A phased separate-gateway/read-only/strict-preview plan preserves provider code/configuration and all publication/history gates. Research/documentation only: zero provider POSTs, database queries/writes, installs or deployments. [Findings](research/lanes-mcp-chatgpt-feasibility-20261013.md), [plan](plans/lanes-mcp-chatgpt-review.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Gemini quota isolation and Groq captured-evidence trials
+
+Official-doc research and bounded trials identify Gemini 20/day exhaustion. Groq strict canonical output passes eight original claims, the separate 10-inch afternoon single and conservative negation after explicit place-identity instructions. Account output/minute cap prevents treating eight-claim success as repeatable throughput. 12/12 total POSTs used; 215 offline tests pass. No active-provider/cloud/source changes. [Provider trial results](evaluations/gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: Resolve PR #133 conflicts against main
 

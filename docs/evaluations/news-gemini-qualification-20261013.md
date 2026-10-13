@@ -2,7 +2,9 @@
 
 > **State:** Implementation tested; live qualification BLOCKED. No cloud repair rollout.
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Later user-authorized trials:** The shared ledger now contains 12/12 attempts, including one more Gemini daily-quota rejection and eight Groq experiments. Google remains unqualified; Groq captured samples pass but runtime/throughput qualification is incomplete. The earlier 2/12 and 3/12 statements below retain their historical scope. [New trial table](gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Subsequent integration:** The developer explicitly authorized combining `codex/gemini-audit-repair` into roi-branch with the weather fix. Earlier branch isolation/two-call qualification/no-integration descriptions below retain their original context. The code is now integrated; latest live count remains 3/12 with HTTP 429, and deployment stays blocked. No new provider call. [Combined verification](../evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

@@ -1,7 +1,7 @@
 # Credit-free news processing for the October 19 defense
 
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Local end-to-end acceptance and focused production backend release completed October 13. Git integration and frontend diagnostics publication remain separate.
+> **Status:** Local end-to-end acceptance and focused production backend release completed October 13. Main integration and coordinated backend/frontend release are verified.
 
 The developer selected local NLP and deterministic source checks instead of mandatory external LLM validation. The defense is Monday, October 19, 2026. Keep the existing collectors, immutable article/extraction history, evaluation leases, publication, geometry and expiry services. Preserve LLM/MCP experiments as optional future work without consuming their credits.
 
@@ -18,9 +18,10 @@ October 13 follow-up applies the developer's explicit measurement-first rule and
 - [x] Ship only tested runtime changes on the existing production image; exclude unfinished MCP and shared framework upgrades.
 - [x] Require a private production JWT key, restrict automatic admin bootstrap to development and retire exposed legacy API tags.
 - [x] Enable the mode in the encrypted local configuration and existing API/news/expiry cloud resources; preserve provider credentials and all historical records.
-- [ ] Integrate the focused source changes into Git main through a reviewed feature-branch PR before another main-triggered release. Do not merge the whole unqualified MCP/dependency experiment simply to obtain this feature.
-- [ ] Publish the optional frontend diagnostics explanation when its matching Git rollout is ready; existing production map/source interfaces already consume the backend geometry.
-- [ ] Rehearse the preserved historical dataset and inspect representative later live collection cycles before the defense.
+- [x] Integrate focused changes through PR #134 into main 420b38f; verify coordinated build without MCP/dependency upgrades.
+- [x] Publish matching frontend build-2026-10-13-001 and verify live desktop/mobile API/map/news reads.
+- [x] Verify complete September 24/9 worker/API timelines and live Scheduler/news/expiry operation.
+- [ ] Rehearse the presentation and check source availability on defense day.
 
 ## Acceptance and limits
 

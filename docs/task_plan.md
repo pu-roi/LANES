@@ -1,8 +1,89 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 
 **Active release:** Complete September 24/9 scheduled-worker/public-API timelines, verify duplicate/expiry and later target depth, review and merge this focused release, then verify Cloud Build, live Scheduler/job and matching frontend rollout. No schema or live historical activation. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+**Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+**Follow-up delivered:** Explicit measurements override verbal gauges; saved descriptions restored without composed fragments. Scheduled-worker historical acceptance gives 27 alerts/seven zones including Santo Domingo at 19 inches; production v2 and its worker are verified. Main Git integration remains pending. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
+
+## October 19 defense: NLP/source-based automatic news
+
+- [x] Implement explicit credit-free source validation and preserve publication/geometry/expiry/identity gates. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prove 31 evaluations → 26 alerts → six real estimated zones with zero LLM requests, repeat safety and expiry on local PostGIS; verify real map and diagnostics on desktop/mobile. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Release the tested focused backend on the existing production stack, activate source mode, secure JWT signing and verify real scheduler/worker operation. [Acceptance](evaluations/news-source-validation-20261013/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Update encrypted local provider selection and document restart/demo/rollback. [Guide](guides/news-source-validation-defense.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Integrate focused source/security changes into main through PR #134 and verify the coordinated release, preserving MCP/framework experiments separately. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Publish matching frontend diagnostics and verify actual desktop/mobile map/news API reads; complete both historical worker/API timelines. Source coverage/physical accuracy remain bounded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Production scheduling correction
+
+- [x] Replace the live three-hour direct-job wake-up with a 15-minute authenticated controller check; configure exact machine identity and narrow job/operation permissions. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify 61 existing tests, serving configuration revision, Scheduler HTTP 200 and successful worker completion. [Evidence](evaluations/news-adaptive-scheduler-release-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Confirm the next autonomous 1:30 PM Scheduler delivery returns HTTP 200, increments controller checks and does not duplicate the worker. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Observe longer autonomous operation/reconciliation and representative quiet/uncertain periods; do not equate scheduling acceptance with qualified flood auditing. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Publish the local MCP and ChatGPT experiment
+
+- [x] Audit documentation against code and actual results; retain failed/skipped checks, original providers and private credentials. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Document disabled MCP startup/rollback and the shared candidate dependencies. [Runbook](guides/lanes-mcp-pilot-runtime.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prepare the requested roi-branch publication: 129 backend passes, one guarded PostGIS skip, four browser passes, pip check and staged credential scan pass; commit/push is the final execution step. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Resolve evidence qualification and complete Linux/PostGIS/shared-upgrade acceptance before any deployment. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: ChatGPT real inference qualification
+
+- [x] Verify real personal-account sign-in/plan scopes, current catalog and public Responses transport with no API-key billing path. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement streamed-item/final-completion parsing and strict original-evidence checks; 23 offline regressions pass. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Resolve source-grounded observation-time context and the inherited all-verified fixture expectation for the saved/source Santo Domingo gauge conflict. Live ledger is blocked at 3/5; two requests unused. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Qualify single/ambiguous/negative cases, refresh/recovery and identified worker integration; prove supported hosting before release. [Actual results](evaluations/chatgpt-news-live-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Local ChatGPT at_hash compatibility repair
+
+- [x] Reproduce rejection of valid signed token binding; pass access_token into JWT decode and qualify signed matching/mismatched/optional-hash cases (42 focused checks). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Complete real sign-in through the latest helper on 1457; do not treat fixture success as real account/model qualification. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: ChatGPT callback diagnostic follow-up
+
+- [x] Research official granted-scope/recovery docs, implement token-safe error codes and pass 35 focused tests; launch separate updated helper on port 1456. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Obtain one actual callback diagnostic code, then repair the evidenced cause without bypassing identity/permission validation. No account settings change is proved necessary. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Local ChatGPT sign-in button regression
+
+- [x] Reproduce actual Chrome POST Origin: null / HTTP 403, repair the landing-page referrer policy and retain CSRF/host/origin guards. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Add real desktop/mobile button-click checks and backend callback privacy regression; restart local helper. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Retry actual personal-account authorization; connection and inference remain unverified. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Correct automatic-auditing scope and prepare local sign-in
+
+- [x] Preserve Google OAuth/ngrok and disabled MCP read/preview work; distinguish it from automatic provider inference. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Implement and test local ChatGPT OAuth sign-in: 88 combined offline checks and two desktop/mobile Chromium checks pass. [Evidence](evaluations/chatgpt-plan-signin-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Complete actual personal ChatGPT authorization and account-specific model discovery, then five bounded original-news tests without writes/publication. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Qualify refresh/recovery, correctly identified worker integration and hosting; complete Linux/PostGIS shared-upgrade gates before release. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier isolated-dependency research is superseded by the developer-selected shared candidate upgrade, recorded in the evaluation; it is not a production release.
+
+## October 13: MCP library comparison
+
+- [x] Compare stable FastMCP 4.1.0, official Python SDK 2.3.0 and official TypeScript SDK v2; inspect actual installed versions/source and release-tagged metadata/docs. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Measure two incompatible shared-environment resolutions and successful isolated resolution; recommend FastMCP on Python 3.12 with curated tools and separate deployment. [MCP library comparison](research/lanes-mcp-library-selection-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Create and lock the isolated gateway after implementation is requested; test the Linux runtime, MCP transport, account binding and strict previews. Preserve existing provider/environment pins. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Additive MCP evidence-review planning
+
+- [x] Inspect AGENTS/DESIGN, applicable skills, docs and actual source; research official MCP/ChatGPT auth, tools, transport, SDK and plan-usage guidance. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Record [findings](research/lanes-mcp-chatgpt-feasibility-20261013.md) and an [additive plan](plans/lanes-mcp-chatgpt-review.md), preserving existing providers and identifying OAuth, dependency, policy and 120-second lease constraints. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Implement isolated transport and authenticated saved-evidence reads, then qualify strict backend audit previews. No replacement provider, auto-publication or unattended Plus inference assumed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Free-provider feasibility research
+
+- [x] Finalize the developer-authorized roi-branch documentation bundle: synchronize current/earlier research state, link both new records, preserve remaining acceptance gates, and verify no plaintext keys or dependency/migration changes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Read official Google/Groq docs, prove the current Gemini daily-quota error, and evaluate Groq against frozen evidence without writes. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Preserve all 12 shared attempts, strict validation and source identities; record three successful Groq case sets and 215 offline checks. [Provider trial results](evaluations/gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Implement an explicit Groq provider only if selected, qualify smaller paced batches, remaining ambiguous/standalone cases and weather, then coordinate API/worker release. Gemini schema qualification remains blocked; no fallback or rollout performed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: PR #133 conflict resolution
 

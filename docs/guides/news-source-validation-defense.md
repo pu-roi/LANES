@@ -47,11 +47,11 @@ LANES_NEWS_AUDITOR_CONFIG_REVISION=source-rules-defense-20261013
 
 Normal local development retains its pre-existing database binding; verify it before running a worker. The replay launcher explicitly selects local data. Existing provider keys are preserved but are not needed for news in source mode. Optional AI weather insights are a separate feature; do not treat this change as replacing every LLM use in LANES.
 
-Production API/news/expiry use the same tested image and source mode. JWT signing is now bound to `lanes-jwt-signing-key` version 1 in Secret Manager; production users must sign in again. Do not copy credentials into the browser, docs or source. Existing production map code already supports these estimated zone responses; the new admin diagnostics wording is currently verified locally.
+Production API/news/expiry use the same tested image and source mode. JWT signing is now bound to `lanes-jwt-signing-key` version 1 in Secret Manager; production users must sign in again. Do not copy credentials into the browser, docs or source. Existing production map code already supports these estimated zone responses; the new admin diagnostics wording is included in the accepted matching production frontend.
 
 ## Release safety and rollback
 
-The focused image is based on main `cfd5aae`, without the unqualified MCP/framework upgrade. The working changes remain on roi-branch. Before any new main-triggered Cloud Build, integrate these focused source/security changes into main through review; otherwise an older main build could overwrite the source-mode runtime. [Release evidence](../evaluations/news-source-validation-20261013/README.md).
+The focused image is based on main `cfd5aae`, without the unqualified MCP/framework upgrade. PR #134 integrates focused source/security changes into main 420b38f. The coordinated tested build and matching frontend rollout are verified. ROI retains the MCP experiment separately; its framework upgrades remain outside this release. [Release evidence](../evaluations/news-source-validation-20261013/README.md).
 
 For a source-code rollback, pause only the news Scheduler and deploy a **new** revision using the prior baseline image while retaining the private `SECRET_KEY` binding. Do not restore traffic to old revisions with the public fallback key or recreate their retired public tags. Restore the previous explicit Gemini provider/model/revision only if deliberately returning to that limited/unqualified path; preserve its credential and quota history. Keep API/news/expiry images coordinated, then resume the captured adaptive Scheduler configuration. No database downgrade or deletion is needed.
 

@@ -1,8 +1,30 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 
 **News mode decision:** For the defense and current production, local NLP plus deterministic original-source checks replaces mandatory LLM inference. Keep source/freshness/location/depth/geometry/expiry gates; use explicit measurements before verbal gauges. MCP remains optional future work outside the deployment dependencies. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+## 29. Credit-free source consistency for the defense release
+
+**Date:** October 13, 2026. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe). **Status:** Focused backend deployed; Git integration/optional frontend wording pending.
+
+The developer prioritizes automatic news gathering and plotting without exhausted free-tier LLM credits before the October 19 defense. Select local NLP plus explicit source_rules consistency checks; preserve optional LLM/MCP providers and historical evidence. This replaces mandatory external inference for the chosen mode, not source/freshness/conflict/geometry/expiry checks. Legacy audit DTOs carry an explicitly identified rule-based result; they do not imply independent AI or field verification.
+
+Qualified modeled road corridors retain their existing vehicle policy and public estimate label. Unsupported geometry remains text-only/review. A historical captured replay supplies reproducible positive acceptance without manufacturing current floods. Release the focused changes on the established production dependency image, excluding the unqualified shared MCP upgrade. Require a private production signing key and retire old exposed fallback-key revisions' tags. [Plan](plans/news-source-validation-defense.md), [acceptance](evaluations/news-source-validation-20261013/README.md).
+
+## 28. Shared backend candidate upgrade and separate MCP/inference experiments
+
+**Date:** October 13, 2026 (Asia/Manila). **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Status:** Developer-selected local implementation; production qualification pending.
+
+The developer chose a shared Python 3.12 backend manifest upgrade instead of isolated gateway dependencies. Preserve the original qualified venv while installing the new candidate separately. Run FastMCP as a separate process with five curated read/preview tools, narrow signed backend delegation and disabled-by-default controls; never import app.main into the gateway.
+
+The developer subsequently clarified automatic news auditing as the goal. MCP tool access and ChatGPT plan inference authorization are separate. Keep the Google/ngrok pilot disabled; use documented local SIWC authorization and public Responses streaming to qualify original evidence before a separately identified worker provider. Real authorization is verified, but 3/5 live attempts have not qualified auditing. Do not label a ChatGPT result Gemini/OpenRouter or bypass terminal evaluation/publication gates.
+
+No production upgrade, model/migration change or automatic fallback is adopted by this Git publication. Linux/PostGIS/shared runtime, durable token renewal, hosting eligibility and actual MCP acceptance remain gates. [Runtime and rollback](guides/lanes-mcp-pilot-runtime.md), [measured results](evaluations/chatgpt-news-live-20261013.md).
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 
