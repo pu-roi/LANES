@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Production news validation:** source_rules/source-rules-v1 uses existing local Taglish NLP, Python/Pydantic source-span checks, PostGIS and bundled OSM/NOAH assets. No new runtime dependency or model-credit requirement. Production image overlays tested source/security changes on main cfd5aae's existing framework dependencies; the shared MCP manifest below remains a separate candidate. JWT binds a private Secret Manager key. [Release](evaluations/news-source-validation-20261013/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Local ChatGPT plan transport measured:** Direct HTTPX Responses SSE with verified SIWC OAuth; no OpenAI SDK or new dependency. Finalized streamed items and response.completed are both required. gpt-6.1-sol is available to the signed-in account and returned an eight-claim strict JSON selection; full news qualification failed evidence gates at 3/5 live attempts. Hosting/refresh/worker integration remain pending. [Results](evaluations/chatgpt-news-live-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

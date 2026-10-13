@@ -1,6 +1,8 @@
 # LANES Database Normalization & Security Architecture Plan
 
-> **Last Updated:** October 12, 2026, 3:57 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Source-rule storage audit:** No schema/model/migration change. Existing NewsClaimEvaluation JSON records provider source_rules, source/claim identity, rule version, outcome and exact evidence. Existing decisions, links, FloodEvent/FloodAvoidanceZone creation and finite expiry remain owned by the normal pipeline. Rule mode does not write provider quota/circuit state or reset old evaluations. Existing migrations reach d7e4b9a21c60 on fresh local PostGIS; cloud schema is unchanged. JWT material lives in Secret Manager, outside database/source artifacts. [Acceptance](../evaluations/news-source-validation-20261013/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Batch-audit storage audit (October 12):** No SQLAlchemy definition, table/column/index/trigger or migration change. Existing `SystemSetting.value` JSON key `news_audit_quota_v1` stores policy/credential identity hash, cache marker, counters and cooldown; secrets/raw provider responses are excluded. Failed/retry `NewsClaimEvaluation.result` JSON retains bounded safe diagnostic fields, while completed evaluations remain immutable. Grouped token-owned leases and a database-scoped autocommit advisory lock serialize dispatch without provider IO inside transactions. Existing migrations applied cleanly to fresh guarded PostGIS databases through `d7e4b9a21c60`. [Evidence](../evaluations/news-batch-audit-20261012/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

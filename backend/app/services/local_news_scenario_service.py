@@ -9,13 +9,15 @@ from contextvars import ContextVar
 from datetime import datetime
 from hashlib import sha256
 import json
+import os
 from pathlib import Path
 from typing import Any, Iterator
 
 from sqlalchemy import case, literal
 from sqlalchemy.sql.elements import ColumnElement
 
-SCENARIO_PATH = Path(__file__).resolve().parents[3] / "data/news-replay/connected-scenario.local.json"
+SCENARIO_PATH = Path(os.environ.get("LANES_NEWS_SCENARIO_FILE", str(
+    Path(__file__).resolve().parents[3] / "data/news-replay/connected-scenario.local.json")))
 _admission: ContextVar[tuple[str, str, datetime] | None] = ContextVar("connected_news_admission", default=None)
 
 

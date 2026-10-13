@@ -1,5 +1,6 @@
 """Read-only operational status, separate from source evidence and flood claims."""
 from datetime import datetime
+from typing import Literal
 from pydantic import BaseModel, Field, ConfigDict
 from app.schemas.configuration import NewsCycleSummary, NewsStageHealth
 from app.schemas.news_weather import NewsWeatherStatus
@@ -8,6 +9,7 @@ from app.schemas.news_weather import NewsWeatherStatus
 class NewsAuditDiagnostics(BaseModel):
     model_config = ConfigDict(protected_namespaces=())
     state: str = "not_recorded"
+    validation_mode: Literal["llm", "source_rules"] = "llm"
     checked_at: datetime | None = None
     next_check_at: datetime | None = None
     used: int | None = None

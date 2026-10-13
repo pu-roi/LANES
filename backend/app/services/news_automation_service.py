@@ -123,6 +123,11 @@ def read_news_automation(db: Session, *, now: datetime | None = None) -> NewsAut
         actual_model=transport.actual_model if transport else None,
         boundary_qualified=len(boundaries.records), boundary_expected=expected_boundaries,
         boundary_missing=max(0, expected_boundaries-len(boundaries.records)), boundary_error=boundaries.error)
+    if auditor.config.provider == "source_rules":
+        audit = NewsAuditDiagnostics(state="available" if not auditor.config.error_code() else "requires_attention",
+            validation_mode="source_rules", error_code=auditor.config.error_code(),
+            boundary_qualified=len(boundaries.records), boundary_expected=expected_boundaries,
+            boundary_missing=max(0, expected_boundaries-len(boundaries.records)), boundary_error=boundaries.error)
     return NewsAutomationStatus(checked_at=now, state=state, status_label=label, running=running, audit=audit,
         current_stage=runtime.current_stage if running else None,
         stage_label=stage_label if running else None,

@@ -1,6 +1,12 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current source-mode clarification:** News automation uses explicit measurements before verbal gauges. The existing worker handles discovery through publication/OSM-NOAH estimated zones without an agent or LLM. Public descriptions retain saved extraction evidence, with decorative publisher bullets removed for display; original evidence/hashes stay immutable. [Verified follow-up](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
+
+**News Intelligence credit-free release:** The selected source_rules mode validates local NLP/source consistency without external AI calls. Approved current claims publish alerts; qualified article-grounded OSM/NOAH sections activate labeled estimated road zones under the existing vehicle policy. Unknown/conflicting facts or geometry remain unresolved. Local replay produces six zones; production API/news/expiry use the focused matching image and source mode. Optional LLM/MCP work is preserved separately. [Acceptance](evaluations/news-source-validation-20261013/README.md), [defense guide](guides/news-source-validation-defense.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**News Intelligence production scheduling (October 13):** The existing weather controller now receives OIDC Scheduler checks every 15 minutes. It selects 60-minute quiet collection, 15-minute risk/current-flood/recent-risk collection, or 30-minute uncertain coverage. Pending pipeline work is checked separately. Same main image; one real delivery and successful worker completion verified. [Evidence](evaluations/news-adaptive-scheduler-release-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **News Intelligence local experiment (October 13):** Existing news intelligence now has disabled MCP original-evidence reads/strict previews and a separate ChatGPT plan-use qualification runner. Actual ChatGPT authorization and eight-result inference pass transport, but seven time reviews and one source/saved gauge disagreement prevent automatic use. No worker/publication replacement or deployment. [Results](evaluations/chatgpt-news-live-20261013.md), [pilot operation](guides/lanes-mcp-pilot-runtime.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

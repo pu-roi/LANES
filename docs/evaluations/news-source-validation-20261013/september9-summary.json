@@ -1,0 +1,73 @@
+{
+  "scenario": "september9",
+  "accepted": true,
+  "ticks": 26,
+  "zero_llm_requests": true,
+  "zone_counts": [
+    7,
+    7,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    7,
+    7,
+    7,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "duplicates": true,
+  "attempts_unchanged": true,
+  "target_depths": [
+    [
+      "19 inches",
+      "2026-09-09T08:55:00+08:00"
+    ],
+    [
+      "8 inches",
+      "2026-09-09T08:55:00+08:00"
+    ],
+    [
+      "10 inches",
+      "2026-09-09T16:30:00+08:00"
+    ],
+    [
+      "8 inches",
+      "2026-09-09T16:30:00+08:00"
+    ]
+  ],
+  "html_sha256": {
+    "https://www.philstar.com/nation/2026/09/09/2555106/list-flooded-metro-manila-areas-september-9/amp/": "97ef926752f21436937481bd7a741450c99dae6efc15a57f956f301c8d3b0282",
+    "https://www.gmanetwork.com/news/topstories/metro/1001693/list-flooded-roads-in-metro-manila-wednesday-sept-9-2026/story/": "6e346f4be0974ed3d97fcfc5142c56c54fa78b2f031008d6867a63b2271ca759",
+    "https://www.gmanetwork.com/news/weather/content/1001808/several-metro-manila-areas-flood-due-to-habagat/story/": "a19c6d42baef45334d67789da0cd4d2fbc9a2a36374308ed34ccde96fe0fdd39"
+  },
+  "receipt_sha256": "39bd13fe052519a94e0e0f73e1ffb3bddda2b042937a30469fde586d280661cd",
+  "final_counts": {
+    "news_articles": 3,
+    "news_article_versions": 4,
+    "news_extraction_runs": 4,
+    "news_claim_evaluations": 77,
+    "news_claim_decisions": 191,
+    "flood_avoidance_zones": 14
+  },
+  "limitations": [
+    "Reconstructed RSS membership; archived feeds unavailable",
+    "Early September 9 text preserved from publisher index; HTML wrapper reconstructed",
+    "Current source registry and historical read clock; no production writes"
+  ]
+}

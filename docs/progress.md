@@ -1,6 +1,20 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+**October 13 follow-up:** Deployed measurement-first source policy v2, restored saved evidence without decorative source bullets/composed ellipses, and exercised the production scheduled-worker entry point on captured historical news. It produces 27 alerts/seven zones including Santo Domingo at 19 inches, with no inference, repeat duplication or expiry failure. Linux release checks: 275 passed; actual map checks: desktop/mobile passed. Production API/news/expiry share the v2 image; worker execution succeeds. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
+
+## October 13: Credit-free NLP news and focused backend release
+
+Implemented source_rules validation with immutable occurrence/fact/span checks and no inference/quota calls. Normal local collector-to-zone replay creates 26 alerts and six estimated road zones from 31 evaluations, without duplicates; expiry passes. 270 Linux checks, one native PostGIS scenario and four desktop/mobile checks pass; TypeScript/scoped lint pass. Fixed nullable-evidence publication and misleading list excerpts. API/news/expiry run the tested focused image; authenticated controller dispatch/worker completion and zero model requests are observed. Production JWT now requires a private Secret Manager binding; development bootstrap stays local and old exposed tags are retired. Encrypted local provider selection is updated, original provider keys/history preserved. Main Git and optional frontend diagnostics rollout remain separate. [Acceptance](evaluations/news-source-validation-20261013/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Enable production adaptive news scheduling
+
+The next autonomous 1:30 PM delivery also returned HTTP 200, incremented controller checks to 2 and retained one worker start without duplication. Longer operation/reconciliation and representative quiet/uncertain periods remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Corrected the still-active three-hour direct-job schedule to a quarter-hour OIDC controller check. Configured the existing API and narrow job/operation permissions; configuration revision lanes-api-00081-n4x uses the same main image. 61 policy/auth/dispatch tests pass; one authentic Scheduler delivery returns HTTP 200, saves a 15-minute risk decision and starts the existing news worker, which completes successfully. No MCP/ChatGPT rollout, schema change or extra container. [Evidence](evaluations/news-adaptive-scheduler-release-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: Senior-planner publication audit
 

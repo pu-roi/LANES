@@ -1,6 +1,14 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## 29. Credit-free source consistency for the defense release
+
+**Date:** October 13, 2026. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe). **Status:** Focused backend deployed; Git integration/optional frontend wording pending.
+
+The developer prioritizes automatic news gathering and plotting without exhausted free-tier LLM credits before the October 19 defense. Select local NLP plus explicit source_rules consistency checks; preserve optional LLM/MCP providers and historical evidence. This replaces mandatory external inference for the chosen mode, not source/freshness/conflict/geometry/expiry checks. Legacy audit DTOs carry an explicitly identified rule-based result; they do not imply independent AI or field verification.
+
+Qualified modeled road corridors retain their existing vehicle policy and public estimate label. Unsupported geometry remains text-only/review. A historical captured replay supplies reproducible positive acceptance without manufacturing current floods. Release the focused changes on the established production dependency image, excluding the unqualified shared MCP upgrade. Require a private production signing key and retire old exposed fallback-key revisions' tags. [Plan](plans/news-source-validation-defense.md), [acceptance](evaluations/news-source-validation-20261013/README.md).
 
 ## 28. Shared backend candidate upgrade and separate MCP/inference experiments
 

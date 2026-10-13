@@ -1,6 +1,26 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+**Follow-up delivered:** Explicit measurements override verbal gauges; saved descriptions restored without composed fragments. Scheduled-worker historical acceptance gives 27 alerts/seven zones including Santo Domingo at 19 inches; production v2 and its worker are verified. Main Git integration remains pending. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
+
+## October 19 defense: NLP/source-based automatic news
+
+- [x] Implement explicit credit-free source validation and preserve publication/geometry/expiry/identity gates. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Prove 31 evaluations → 26 alerts → six real estimated zones with zero LLM requests, repeat safety and expiry on local PostGIS; verify real map and diagnostics on desktop/mobile. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Release the tested focused backend on the existing production stack, activate source mode, secure JWT signing and verify real scheduler/worker operation. [Acceptance](evaluations/news-source-validation-20261013/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Update encrypted local provider selection and document restart/demo/rollback. [Guide](guides/news-source-validation-defense.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Integrate focused source/security changes into main through review before a new main-triggered build; keep unqualified MCP/framework experiments separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Publish optional frontend diagnostics wording and rehearse the historical replay; live source coverage/physical accuracy remain bounded by available evidence. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Production scheduling correction
+
+- [x] Replace the live three-hour direct-job wake-up with a 15-minute authenticated controller check; configure exact machine identity and narrow job/operation permissions. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify 61 existing tests, serving configuration revision, Scheduler HTTP 200 and successful worker completion. [Evidence](evaluations/news-adaptive-scheduler-release-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Confirm the next autonomous 1:30 PM Scheduler delivery returns HTTP 200, increments controller checks and does not duplicate the worker. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Observe longer autonomous operation/reconciliation and representative quiet/uncertain periods; do not equate scheduling acceptance with qualified flood auditing. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: Publish the local MCP and ChatGPT experiment
 

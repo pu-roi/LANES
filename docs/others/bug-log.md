@@ -1,6 +1,30 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**October 13 correction:** The first source-mode release added an unnecessary verbal/numeric disagreement rejection and shortened scoped evidence into composed fragments. Removed both following the developer's measurement-first clarification; decorative play bullets originated in publisher copy and are removed for display only. Seven real estimated zones now include Santo Domingo at 19 inches through the scheduled worker, with original source/hashes intact. Production v2 and desktop/mobile acceptance pass. [Evidence](../evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
+
+**Mandatory LLM/quota bottleneck, null-evidence publication and list excerpts — Resolved for selected source mode.**
+
+- **Severity:** High for automatic news processing. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** External provider limits prevented eligible news publication. Rule-based exceptions also exposed a publication crash on evidence=null; long list excerpts began with other roads' depths.
+- **RCA:** Worker required external inference; clearance lookups assumed evidence objects, and display truncated the whole scoped-list prefix rather than selecting the source row.
+- **Solution:** Explicit source_rules provider matches original occurrence/facts and uses existing gates without external calls; handle nullable evidence and show exact row/depth/parent fragments. Preserve original source/claim hashes and reject depth conflicts.
+- **Changed:** Source validator, auditor/evaluation/automation DTO/readers, publication/presentation services, local replay and diagnostics UI/tests/docs. No database definitions or new dependency. Native six-zone/repeat/expiry acceptance, Linux checks and actual responsive map verification pass. [Evidence](../evaluations/news-source-validation-20261013/README.md).
+
+**Public fallback JWT signing key — Resolved for serving production revision.**
+
+- **Severity:** Critical for authentication. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **RCA:** A known source-code fallback was used without a production SECRET_KEY binding; old tagged revisions could remain reachable with it.
+- **Solution/changed:** Config now generates development runtime material and requires explicit private production binding; restrict default admin bootstrap to development, bind Secret Manager version 1 and remove old exposed API tags. Existing users must sign in again. Prior data/roles are preserved; no raw signing material is committed or built. Four key checks and release readiness pass. [Evidence](../evaluations/news-source-validation-20261013/README.md).
+
+**Adaptive news cadence did not reach production — Resolved configuration; operational observation pending.**
+
+- **Severity:** High for timely news discovery. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Intended 60/15/30-minute collection was still awakened by a three-hour direct-job Scheduler.
+- **RCA:** Controller code was deployed, but cloud machine variables/IAM and the Scheduler target/cadence remained at their old values.
+- **Solution:** Configured narrow dispatch/reconciliation roles and exact OIDC identity; promoted same-image configuration revision lanes-api-00081-n4x and retargeted existing Scheduler to the controller every 15 minutes.
+- **Changed:** Cloud Scheduler, API environment/traffic and API runtime IAM; runbook and release record. No source/model/migration changes. 61 tests, real HTTP 200 and successful worker completion pass. [Evidence](../evaluations/news-adaptive-scheduler-release-20261013.md).
 
 **ChatGPT streamed response and evidence qualification follow-up.**
 

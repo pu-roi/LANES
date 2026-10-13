@@ -95,15 +95,15 @@ erDiagram
 
 ## 3. Spatial Data Pipeline
 
-The news pipeline targets automatic discovery, extraction, placement and gated zone activation. Bounded OSM/NOAH/Pasig DRRMO modeled placement previews, independent evidence auditing and automatic text-only source alerts are implemented locally, including qualified observation refresh, matched clearance, two-hour evidence expiry and staff/public interfaces. Operational flood-zone activation and routing remain gated by verified current affected geometry and release acceptance; modeled susceptibility and administrative boundaries do not establish that footprint. The flow below includes this remaining operational-zone target. Citizen-report moderation keeps its existing staff approval workflow. See the [current lifecycle verification](docs/evaluations/phase-36-news-publication-lifecycle.md).
+The news pipeline performs automatic discovery, local NLP extraction, source checks, placement and gated publication. The selected credit-free source_rules mode checks exact source occurrences and fact consistency without LLM requests; it is not independent AI or field verification. Optional LLM/MCP experiments remain separate. Credible current claims can become source alerts; uniquely grounded OSM/NOAH road sections can become explicitly labeled estimated road zones under the existing vehicle policy. Field-verified footprints remain a separate provenance path. Source, freshness, identity, conflict, depth/access, asset and expiry checks govern both paths. Citizen-report moderation keeps its staff approval workflow. See [source-mode acceptance](docs/evaluations/news-source-validation-20261013/README.md).
 
 ```mermaid
 flowchart TD
     In[Approved RSS / Public News] --> NLP["Server-side NLP / NER"]
     NLP --> Placement["OSM bounded sections + UP NOAH vectors + Pasig DRRMO context"]
-    Placement --> Gates["Current evidence, geometry, identity and expiry gates"]
+    Placement --> Gates["Source consistency, current evidence, geometry, identity and expiry gates"]
     Gates -- "Credible claim; segment unresolved" --> Alert["Automatic source-labeled news alert"]
-    Gates -- "All zone gates pass" --> Zone["Automatic expiring PostGIS zone"]
+    Gates -- "Qualified bounded estimate / verified footprint" --> Zone["Automatic labeled expiring PostGIS zone"]
     Gates -- "Conflicting / incomplete evidence" --> Exceptions["Staff exception review / correction"]
     Exceptions --> Gates
     Zone --> Router["Valhalla vehicle-specific routing"]
@@ -111,9 +111,10 @@ flowchart TD
 
 ### Constraints:
 - Routine eligible news claims do not wait for staff approval. Staff handles conflicting or incomplete claims and corrections.
+- Explicit source measurements take precedence over verbal depth labels; verbal extraction is used when measurements are absent. Preserve qualifiers and original source evidence. Public descriptions use the saved extraction evidence, without agent-composed summaries.
 - Use current article evidence for current flood status; UP NOAH modeled susceptibility and Pasig DRRMO historical records support placement, not live flood confirmation. Apply Pasig history only to matching Pasig locations.
-- OSM supplies bounded road geometry. Ranking scores, generic points and arbitrary 50 m buffers cannot establish verified affected geometry; unresolved alerts do not change routing.
-- Backend-owned checks and idempotent lifecycle writes govern publication, linked zones, correction and expiry. Valhalla uses active verified zone geometry under the existing vehicle-specific policy.
+- OSM supplies bounded road geometry. Ranking scores, generic points and arbitrary buffers cannot establish verified affected geometry. Estimated corridors require unique article-grounded sections and checked OSM/NOAH assets; the existing 25 m margin is display/routing policy, not measured wet width. Estimates are labeled publicly; unresolved alerts do not change routing.
+- Backend-owned checks and idempotent lifecycle writes govern publication, linked zones, correction and expiry. Valhalla uses eligible active zone geometry under the existing vehicle-specific policy, retaining estimated/verified provenance.
 
 ---
 

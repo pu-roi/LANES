@@ -17,6 +17,23 @@ function status(): NewsAutomationStatus {
     stages: {}, queue_counts: { pending: 0, processing: 0, retry_wait: 0, failed: 0 }, error_code: null };
 }
 
+test("source validation explains credit-free operation on desktop and mobile", async ({ page }, info) => {
+  const state = status();
+  state.audit = { state: "available", validation_mode: "source_rules", checked_at: null,
+    next_check_at: null, used: null, limit: null, remaining: null, request_count: 0,
+    claims_dispatched: 0, http_status: null, error_code: null };
+  await setup(page, () => state);
+  await page.goto("/admin/news");
+  await page.getByText("Run details and diagnostics", { exact: true }).click();
+  const panel = page.getByTestId("news-audit-diagnostics");
+  await expect(panel).toContainText("NLP + source checks");
+  await expect(panel).toContainText("without AI requests");
+  await expect(panel).toContainText("Flood zones are estimated");
+  await expect(panel).not.toContainText("Daily request limit");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+  await page.screenshot({ path: info.outputPath("source-validation.png"), fullPage: true });
+});
+
 test("audit cooldown diagnostics preserve unknown quota and fit desktop/mobile", async ({ page }, info) => {
   const state = status();
   state.running = false;

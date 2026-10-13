@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Credit-free news mode live:** Local NLP/source consistency replaces mandatory external inference for the selected mode. Captured replay proves 31 evaluations, 26 source alerts, six estimated zones and zero LLM requests, with repeat/expiry and desktop/mobile acceptance. Focused production API/news/expiry release is active on the existing dependency baseline; MCP remains separate. [Plan](plans/news-source-validation-defense.md), [acceptance](evaluations/news-source-validation-20261013/README.md), [defense/restart guide](guides/news-source-validation-defense.md). Main Git integration and optional frontend diagnostics publication remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Adaptive scheduling live (October 13):** The existing Scheduler now checks the protected controller every 15 minutes; collection follows the implemented 60/15/30-minute quiet/risk/uncertain policy. Same main application image, configured machine identity and minimal dispatch roles. Real Scheduler delivery returned HTTP 200 and the dispatched worker completed successfully. [Release evidence](evaluations/news-adaptive-scheduler-release-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Publication checkpoint:** The developer requests this whole local implementation on roi-branch. Real ChatGPT plan sign-in/model discovery are verified; strict live auditing remains blocked at 3/5. MCP remains disabled/unconnected, and Linux/PostGIS shared-upgrade qualification is pending. [MCP startup/rollback](guides/lanes-mcp-pilot-runtime.md), [live results](evaluations/chatgpt-news-live-20261013.md), [offline implementation checks](evaluations/chatgpt-plan-signin-20261013.md). Earlier notices below are historical. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
