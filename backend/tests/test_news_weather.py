@@ -121,6 +121,26 @@ def test_dated_clear_messages_support_quiet_and_tabs_scripts_are_ignored():
     assert parse_pagasa(html,now=NOW).status=="quiet"
 
 
+def test_indented_multiple_advisories_keep_each_date_and_location_separate():
+    no_rain = "No Rainfall Advisory Issued.<br>Issued at: 8:00 PM, 11 October 2026"
+    current = "Thunderstorm Advisory No. 21<br>Issued at: 9:00 PM, 11 October 2026<br>Rains over Cavite."
+    old = "    Thunderstorm Advisory No. 20<br>Issued at: 4:00 PM, 11 October 2026<br>Rains over Metro Manila."
+    result = parse_pagasa(pagasa(no_rain, "<div>"+current+"</div><div>"+old+"</div>"), now=NOW)
+    assert result.status == "quiet" and result.error_code is None
+    assert not result.risk_locations
+    assert len(result.bulletins) == 2  # Dated clear rainfall and current thunderstorm.
+    assert all(not bulletin.relevant for bulletin in result.bulletins)
+
+
+def test_undated_notice_and_malformed_sibling_remain_uncertain():
+    current = "Thunderstorm Advisory No. 21<br>Issued at: 9:00 PM, 11 October 2026<br>Rains over Cavite."
+    malformed = "    Thunderstorm Advisory No. 20<br>Issued at: unknown<br>Rains over Metro Manila."
+    result = parse_pagasa(pagasa("As of today, there is no Heavy Rainfall Warning Issued.",
+        "<div>"+current+"</div><div>"+malformed+"</div>"), now=NOW)
+    assert result.status == "uncertain" and result.error_code == "advisory_timestamp_missing"
+    assert not result.risk_locations
+
+
 def test_bounded_fetch_does_not_reuse_widget_cache():
     requests=[]
     def serve(request):
