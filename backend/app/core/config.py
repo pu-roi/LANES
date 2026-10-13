@@ -1,3 +1,5 @@
+import secrets
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -39,7 +41,7 @@ class Settings(BaseSettings):
     VALHALLA_DATA_DIR: str = "./valhalla_data"
 
     # Security
-    SECRET_KEY: str = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+    SECRET_KEY: str = Field(default_factory=lambda: secrets.token_urlsafe(48))
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
 
@@ -65,3 +67,5 @@ def validate_production_routing_configuration() -> None:
         raise RuntimeError("VALHALLA_URL must reference the private Valhalla service in production.")
     if not settings.VALHALLA_AUDIENCE:
         raise RuntimeError("VALHALLA_AUDIENCE is required for authenticated Valhalla requests in production.")
+    if "SECRET_KEY" not in settings.model_fields_set or len(settings.SECRET_KEY) < 32:
+        raise RuntimeError("A configured private SECRET_KEY of at least 32 characters is required in production.")

@@ -1,6 +1,8 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**News mode decision:** For the defense and current production, local NLP plus deterministic original-source checks replaces mandatory LLM inference. Keep source/freshness/location/depth/geometry/expiry gates; use explicit measurements before verbal gauges. MCP remains optional future work outside the deployment dependencies. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 

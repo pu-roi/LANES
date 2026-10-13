@@ -1,6 +1,8 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current news runtime:** source_rules integrates into existing audit/evaluation/publication interfaces; measurement-first policy uses original immutable facts. Public excerpts retain saved evidence under the existing 700-character bound without decorative play bullets or composed summaries. Normal production ignores local historical scenario clocks. Deployment runs source-mode regression tests and a real news job before exact API revision promotion. [Evidence](../evaluations/news-source-validation-20261013/README.md).
 
 **October 13 combined news/weather integration:** Existing protected news-automation DTO fields consume Gemini-native metadata and configuration-scoped circuit state. Gemini uses existing settings JSON key `news_audit_gemini_quota_v1`, retaining OpenRouter `news_audit_quota_v1`; allowance counters stay unknown. News policy includes explicit schema profile/adapter revision. Permanent request rejection blocks that configuration for 60 minutes. Weather retains its independent public Gemini response/cache/cooldown service and safe responsive error handling. No new route/schema/publication gate. Latest live news receipt is 429 at 3/12; this source integration does not release production. [Merge acceptance](../evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

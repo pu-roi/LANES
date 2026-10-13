@@ -1,6 +1,8 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 4:34 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Active release:** Complete September 24/9 scheduled-worker/public-API timelines, verify duplicate/expiry and later target depth, review and merge this focused release, then verify Cloud Build, live Scheduler/job and matching frontend rollout. No schema or live historical activation. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 ## October 13: PR #133 conflict resolution
 

@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**News Intelligence release:** source_rules needs no AI key or credits. Existing collector, NLP, evaluation, OSM/NOAH estimated corridors, durable publication and expiry run through the scheduled worker. Frontend diagnostics identify NLP + source checks and omit irrelevant model quotas. Source consistency does not establish field verification. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 **Current integration (October 13):** Existing news and weather modules now share the combined roi-branch source. News schema/metadata/circuit repair `df16a02` joins Gemini weather repair `680118b`; strict flood acceptance and public safe-weather failures remain intact. Live evidence remains unqualified (3/12 saved requests) and no production release is claimed. [Merge acceptance](evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

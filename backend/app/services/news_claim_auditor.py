@@ -220,6 +220,9 @@ class AuditorConfig:
             return "auditor_batch_size_invalid"
         if self.reasoning_enabled is not None and type(self.reasoning_enabled) is not bool:
             return "auditor_reasoning_config_invalid"
+        if self.provider == "source_rules":
+            from app.services.news_source_validation_service import SOURCE_RULES_VERSION
+            return None if self.model == SOURCE_RULES_VERSION else "source_rules_version_not_configured"
         if self.provider not in ("openrouter", "gemini"):
             return "auditor_provider_not_configured"
         if not self.model or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_./:-]{0,159}", self.model):
@@ -243,6 +246,13 @@ class NewsClaimAuditor:
         self.timeout_seconds = float(timeout_seconds)
 
     def policy_identity(self) -> dict[str, Any]:
+        if self.config.provider == "source_rules":
+            from app.services.news_source_validation_service import SOURCE_POLICY_VERSION, SOURCE_RESPONSE_VERSION
+            return {"provider": "source_rules", "model": self.config.model,
+                    "config_revision": self.config.config_revision,
+                    "prompt_version": SOURCE_POLICY_VERSION, "response_version": SOURCE_RESPONSE_VERSION,
+                    "configured": self.config.error_code() is None, "validation_mode": "source_rules",
+                    "batch_size": self.config.batch_size, "timeout_seconds": self.timeout_seconds}
         return {"provider": self.config.provider, "model": self.config.model,
                 "config_revision": self.config.config_revision,
                 "prompt_version": PROMPT_VERSION, "response_version": RESPONSE_VERSION,
@@ -345,6 +355,9 @@ class NewsClaimAuditor:
 
     async def audit_batch(self, candidates: tuple[AuditCandidate, ...], article: NewsArticleExtractorInput, *,
                           client: httpx.AsyncClient | None = None) -> dict[str, IndependentAuditResult]:
+        if self.config.provider == "source_rules" and self.config.error_code() is None:
+            from app.services.news_source_validation_service import validate_source_batch
+            return validate_source_batch(candidates, article, config_revision=self.config.config_revision)
         candidates = tuple(c.model_copy(deep=True) for c in candidates)
         source = article.model_copy(deep=True)
         http_status = None

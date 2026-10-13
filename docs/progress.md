@@ -1,6 +1,8 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 4:34 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Autonomous news release:** Focused source-mode backend is already deployed; current feature branch records the runtime plus regression/replay tools and responsive diagnostics without MCP dependency changes. Complete timeline/API acceptance and reproducible main deployment are the current release gates. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 ## October 13: Resolve PR #133 conflicts against main
 
