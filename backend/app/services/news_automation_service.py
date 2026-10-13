@@ -10,6 +10,7 @@ from app.services.news_monitoring_service import read_news_monitoring
 from app.crud.news_weather import read_controller
 from app.schemas.news_weather import NewsWeatherStatus
 from app.services.news_weather_service import choose_interval, effective_providers, POINTS, CATALOG_VERSION
+from app.services.news_collection_cadence_service import next_collection_due
 
 STAGE_LABELS = {"maintenance": "Updating flood statuses", "collection": "Gathering news",
                 "pipeline": "Preparing news workflow",
@@ -51,7 +52,7 @@ def read_news_automation(db: Session, *, now: datetime | None = None) -> NewsAut
     interrupted = runtime.error_code == "worker_interrupted" or bool(
         runtime.running and progress and now - progress > timedelta(minutes=12))
     running = runtime.running and not interrupted
-    due = latest_at + timedelta(minutes=decision.interval_minutes) if latest_at and config.news_collection_enabled and active else None
+    due = next_collection_due(latest_at, decision.interval_minutes) if latest_at and config.news_collection_enabled and active else None
     overdue = bool(due and not running and now > due + timedelta(minutes=runtime.scheduler_tick_minutes))
     last_cycle = runtime.last_cycle
     stage_label = STAGE_LABELS.get(runtime.current_stage)

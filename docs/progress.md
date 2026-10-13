@@ -1,6 +1,18 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 11:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Quarter-hour cadence repair prepared
+
+Implemented shared controller/worker/status due slots and prompt known-operation reconciliation with duplicate protections retained. PAGASA indented/current/stale bulletins are isolated without inventing missing dates. All 285 native release checks pass; cloud rollout remains pending. Expiry stays off for the developer's video presentation. [Evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13 late evening: Autonomous operation audit
+
+Observed a fresh automatic 10:15 PM Scheduler delivery and completed source_rules worker, compared real local/live public and authenticated APIs, and passed 99 focused existing checks. No manual worker/code/settings action. Main 5febb73 / PR #135 serves the same news pipeline. Identified quarter-hour jitter/collector-start cadence defect (actual risk cycles approximately 30 minutes), PAGASA parse uncertainty, incomplete collection/boundary coverage, and intentionally disabled shared-demo expiry. The supplied administrator credential also needs operator replacement. These issues are recorded as open, not resolved. [Audit](evaluations/news-autonomy-audit-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13 evening: Same-system historical presentation
+
+Extended the approved connected reconstruction command for both preserved dates, exact database confirmation, credit-free/runtime/expiry preconditions and retention of both results. Seven focused guard/provenance tests pass. Real collector/NLP/source-rules/publication/footprint services generate five estimated news zones (59–63); the existing citizen zone remains active. Same Cloud SQL records appear in local 3000/8000, actual authenticated Spatial Operations and navlanes.live APIs. Original source/observation/deadline dates are intact; no additional runtime instance or schema change. The operator disabled expiry; shared live users see this historical presentation data. [Evidence and remaining withheld claims](evaluations/news-connected-demo-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 

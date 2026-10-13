@@ -1,6 +1,17 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 11:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current autonomous-readiness follow-up
+
+- [x] Verify automatic Scheduler/worker and actual local/live API integration without manually dispatching a job; 99 focused checks pass. [Audit](evaluations/news-autonomy-audit-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Developer authorized applying the shared adaptive due-slot/reconciliation repair; duplicate protections and all 285 native release checks pass. [Implementation](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Verify main cloud rollout and a natural post-release scheduled collection. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Repair PAGASA advisory timestamp parsing; verify current body-failure diagnostics and approved accessible source fallbacks. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Qualify missing boundary coverage and unresolved placement evidence rather than forcing polygons. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Keep expiry disabled for the video presentation as explicitly instructed; operator may restore it later and replace the weak shared administrator credential. Leave settings/account changes under operator control. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Perform the developer-authorized September 24/9 presentation reconstruction in the existing cloud-connected 3000/8000 application, preserve historical facts, and verify five generated news zones in the same database, map and actual Active Zones. Seven guard/provenance tests pass; both runs use zero LLM requests. [Evidence and bounded coverage](evaluations/news-connected-demo-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 

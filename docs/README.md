@@ -1,6 +1,12 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 11:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Cadence repair ready:** Shared quarter-hour due slots and prompt known-operation reconciliation repair the skipped risk tick; PAGASA bulletins are independently parsed. 285 release tests pass. Cloud rollout is pending. Expiry remains disabled at the developer's explicit request for video recording. [Implementation and deployment record](evaluations/news-autonomy-fixes-20261013.md).
+
+**Autonomy audit:** A fresh automatic 10:15 PM delivery/worker succeeds with zero LLM requests; local/cloud API readers agree and 99 focused checks pass. Current main is 5febb73 / PR #135. Readiness remains partial: actual risk collection is often 30 minutes despite its 15-minute target, PAGASA parsing is uncertain, one body failure and 186 missing qualified boundaries remain, and expiry is still disabled for the shared historical demo. No application code/settings changed during this audit. [Measured readiness and remaining work](evaluations/news-autonomy-audit-20261013.md).
+
+**Connected presentation verified:** Explicitly authorized historical reconstruction on the same 3000/8000/cloud-database application generates five estimated news zones, with source dates intact and zero LLM requests. Actual Active Zones shows six including the existing citizen zone; localhost and navlanes.live return matching IDs. Operator-disabled expiry keeps the historical zones visible. This later demonstration is separate from the release's earlier current-news baseline. [Evidence and limitations](evaluations/news-connected-demo-20261013.md).
 
 **Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 

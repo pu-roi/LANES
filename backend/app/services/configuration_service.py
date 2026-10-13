@@ -92,7 +92,8 @@ def configuration_response(db: Session, *, can_edit: bool) -> ConfigurationRespo
             collection_started_at = collection_started_at.replace(tzinfo=timezone.utc)
         from app.services.news_weather_controller_service import adaptive_decision
         interval = adaptive_decision(db, datetime.now(timezone.utc)).interval_minutes
-        runtime.next_collection_at = collection_started_at + timedelta(minutes=interval)
+        from app.services.news_collection_cadence_service import next_collection_due
+        runtime.next_collection_at = next_collection_due(collection_started_at, interval)
     elif not config.news_collection_enabled or not selected_news_sources(db):
         runtime.next_collection_at = None
     return ConfigurationResponse(settings=config, revision=row.value["revision"] if row else 0,

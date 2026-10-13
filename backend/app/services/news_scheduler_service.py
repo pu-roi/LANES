@@ -1,5 +1,5 @@
 """The news job rechecks adaptive collection due time and pipeline policy."""
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import httpx
 from sqlalchemy import select, text
 from app.models.setting import SystemSetting
@@ -8,6 +8,7 @@ from app.schemas.configuration import ConfigurationRuntime, NewsStageHealth, New
 from app.services.configuration_service import RUNTIME_KEY, read_configuration, selected_news_sources, write_runtime
 from app.services.news_discovery_service import discover_news
 from app.services.news_pipeline_service import run_news_pipeline, pipeline_has_failures
+from app.services.news_collection_cadence_service import collection_is_due, next_collection_due
 
 WORKER_LOCK = 614296502
 
@@ -61,14 +62,14 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
                     from app.services.flood_event_service import expire_due_zones
                     expire_due_zones(db, now=clock())
                     interval = adaptive_decision(db, clock()).interval_minutes
-                due = previous is None or clock() >= previous + timedelta(minutes=interval)
+                due = collection_is_due(previous, clock(), interval)
                 if config.news_collection_enabled and active and due:
                     with session_factory() as db, httpx.Client(timeout=httpx.Timeout(12, connect=5)) as client:
                         # Recheck immediately before network work; publisher URLs remain registry-owned.
                         current = read_configuration(db)
                         selected = selected_news_sources(db, active)
                         interval = adaptive_decision(db, clock()).interval_minutes
-                        due = previous is None or clock() >= previous + timedelta(minutes=interval)
+                        due = collection_is_due(previous, clock(), interval)
                         if current.news_collection_enabled and selected and due:
                             try:
                                 report_stage("collection")
@@ -135,7 +136,7 @@ async def run_scheduled_news_tick(session_factory, *, limit: int = 50, sources=N
                 with session_factory() as db:
                     current = read_configuration(db)
                     interval = adaptive_decision(db, clock()).interval_minutes
-                    runtime.next_collection_at = previous + timedelta(minutes=interval) if previous and current.news_collection_enabled and selected_news_sources(db, sources) else None
+                    runtime.next_collection_at = next_collection_due(previous, interval) if previous and current.news_collection_enabled and selected_news_sources(db, sources) else None
                     write_runtime(db, runtime)
         finally:
             connection.execute(text("SELECT pg_advisory_unlock(:key)"), {"key": WORKER_LOCK})

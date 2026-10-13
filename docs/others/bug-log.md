@@ -1,6 +1,13 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 11:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Implemented; rollout pending: Adaptive cadence skipped a quarter-hour despite a 15-minute risk target
+
+- **Problem / severity:** Automatic news jobs are successful but observed risk collection runs approximately every 30 minutes. Short-lived flood evidence can be missed before expiry. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Root cause:** Pending dispatch is not reconciled until fifteen elapsed minutes; actual collector starts later than its initiating Scheduler tick. The next tick can arrive slightly before either elapsed-time threshold. Recorded next tick is 899.420 seconds after reservation and 882.602 seconds after collector start, so both conditions defer it.
+- **Required solution:** Align due scheduling with intended tick slots, reconcile known operations without an unnecessary full-interval hold, preserve duplicate/overlap protection, and verify jitter/delayed-start cases.
+- **Status / files:** Approved repair uses shared due slots in `news_collection_cadence_service.py` across controller, worker and readers; known operations reconcile immediately while unconfirmed/running starts remain protected. PAGASA date/location isolation also repaired. All 285 native release checks pass; cloud rollout is pending. [Implementation](../evaluations/news-autonomy-fixes-20261013.md), [original runtime evidence](../evaluations/news-autonomy-audit-20261013.md).
 
 **Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](../evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 
