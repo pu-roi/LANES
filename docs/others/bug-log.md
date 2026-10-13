@@ -1,6 +1,8 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](../evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 
 **News source-mode corrections:** External inference quota no longer blocks this selected mode. Fixed nullable clearance evidence access. Explicit numerical depths override verbal gauge differences; retained original evidence/hashes, and removed a short composed display summary. Dedicated regressions and the actual scheduled worker/public APIs exercise the path. [Evidence](../evaluations/news-source-validation-20261013/README.md).
 

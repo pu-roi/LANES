@@ -1,6 +1,8 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
 
 **Active release:** Complete September 24/9 scheduled-worker/public-API timelines, verify duplicate/expiry and later target depth, review and merge this focused release, then verify Cloud Build, live Scheduler/job and matching frontend rollout. No schema or live historical activation. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
@@ -14,8 +16,8 @@
 - [x] Prove 31 evaluations → 26 alerts → six real estimated zones with zero LLM requests, repeat safety and expiry on local PostGIS; verify real map and diagnostics on desktop/mobile. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Release the tested focused backend on the existing production stack, activate source mode, secure JWT signing and verify real scheduler/worker operation. [Acceptance](evaluations/news-source-validation-20261013/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Update encrypted local provider selection and document restart/demo/rollback. [Guide](guides/news-source-validation-defense.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Integrate focused source/security changes into main through review before a new main-triggered build; keep unqualified MCP/framework experiments separate. [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Publish optional frontend diagnostics wording and rehearse the historical replay; live source coverage/physical accuracy remain bounded by available evidence. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Integrate focused source/security changes into main through PR #134 and verify the coordinated release, preserving MCP/framework experiments separately. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Publish matching frontend diagnostics and verify actual desktop/mobile map/news API reads; complete both historical worker/API timelines. Source coverage/physical accuracy remain bounded. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: Production scheduling correction
 
