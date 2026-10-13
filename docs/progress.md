@@ -1,10 +1,18 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 11:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-## October 13: Quarter-hour cadence repair prepared
+## October 14: PR #137 conflicts resolved against main
 
-Implemented shared controller/worker/status due slots and prompt known-operation reconciliation with duplicate protections retained. PAGASA indented/current/stale bulletins are isolated without inventing missing dates. All 285 native release checks pass; cloud rollout remains pending. Expiry stays off for the developer's video presentation. [Evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+Integrated main 5c6da28 into roi-branch. All five conflicts were documentation overlaps with PR #136's earlier pre-deployment snapshot; retained the later verified rollout, automatic Scheduler evidence, completed task statuses and known Feed issues. Existing cadence source matches main; connected replay and Feed edits are preserved. This synchronization changes no application code, schema, dependencies, records or expiry setting. [PR #137](https://github.com/pu-roi/LANES/pull/137). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: roi-branch documentation and publication preparation
+
+Synchronized the nine core/index records with deployed main 5c6da28 / PR #136, corrected the connected-reconstruction storage exception and retained operator-disabled expiry for video recording. Branch save includes deployed cadence repairs, the authorized two-date reconstruction extension and existing Community Feed edits. Pre-push verification passes 292 backend checks (285 release + seven reconstruction guards) and TypeScript. Feed lint remains blocked by three pre-existing state-in-effect errors and three warnings; no clean frontend-release claim. No new dependencies, models or migrations. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Quarter-hour cadence repair deployed
+
+Main 5c6da28 / PR #136 passes 285 Linux release checks, migrations and a real worker before API promotion. API/news/expiry share the new main image; automatic frontend rollout 004 serves 100%. Natural 11:30 PM delivery collects successfully after the prior 11:15 PM cycle, records zero inference and sets the next risk due slot to 11:45 PM. Shared readers retain six active zones. Known-operation/overlap protections and uncertain-date handling remain; expiry stays off for video presentation. [Evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13 late evening: Autonomous operation audit
 
@@ -14,11 +22,11 @@ Observed a fresh automatic 10:15 PM Scheduler delivery and completed source_rule
 
 Extended the approved connected reconstruction command for both preserved dates, exact database confirmation, credit-free/runtime/expiry preconditions and retention of both results. Seven focused guard/provenance tests pass. Real collector/NLP/source-rules/publication/footprint services generate five estimated news zones (59–63); the existing citizen zone remains active. Same Cloud SQL records appear in local 3000/8000, actual authenticated Spatial Operations and navlanes.live APIs. Original source/observation/deadline dates are intact; no additional runtime instance or schema change. The operator disabled expiry; shared live users see this historical presentation data. [Evidence and remaining withheld claims](evaluations/news-connected-demo-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
+**Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Autonomous news release:** Focused source-mode backend is already deployed; current feature branch records the runtime plus regression/replay tools and responsive diagnostics without MCP dependency changes. Complete timeline/API acceptance and reproducible main deployment are the current release gates. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
-**Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
+**Earlier PR #134 rollout checkpoint:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 **October 13 follow-up:** Deployed measurement-first source policy v2, restored saved evidence without decorative source bullets/composed ellipses, and exercised the production scheduled-worker entry point on captured historical news. It produces 27 alerts/seven zones including Santo Domingo at 19 inches, with no inference, repeat duplication or expiry failure. Linux release checks: 275 passed; actual map checks: desktop/mobile passed. Production API/news/expiry share the v2 image; worker execution succeeds. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
 

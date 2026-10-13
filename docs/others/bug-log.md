@@ -1,15 +1,23 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 11:18 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-## Implemented; rollout pending: Adaptive cadence skipped a quarter-hour despite a 15-minute risk target
+## Investigating: Community Feed mobile pagination errors lack feedback
+
+- **Status / severity / owner:** Investigating; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The pending mobile infinite-scroll implementation catches failed feed requests and logs them without telling the user why loading stopped.
+- **Root cause:** `loadMoreMobile` catches errors with `console.error` only.
+- **Required solution:** Show a user-facing failure with the existing toast/error UI, retaining appended records and allowing retry. No source fix is included in this documentation/save task.
+- **Files / verification:** `frontend/src/features/feed/FeedPage.tsx` contains the pending edits. TypeScript passes; scoped lint reports three existing state-in-effect errors and three warnings. The committed baseline has those same three effect errors plus other errors removed by the working copy. These findings are separate from deployed PR #136 news automation.
+
+## Resolved and deployed: Adaptive cadence skipped a quarter-hour despite a 15-minute risk target
 
 - **Problem / severity:** Automatic news jobs are successful but observed risk collection runs approximately every 30 minutes. Short-lived flood evidence can be missed before expiry. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 - **Root cause:** Pending dispatch is not reconciled until fifteen elapsed minutes; actual collector starts later than its initiating Scheduler tick. The next tick can arrive slightly before either elapsed-time threshold. Recorded next tick is 899.420 seconds after reservation and 882.602 seconds after collector start, so both conditions defer it.
 - **Required solution:** Align due scheduling with intended tick slots, reconcile known operations without an unnecessary full-interval hold, preserve duplicate/overlap protection, and verify jitter/delayed-start cases.
-- **Status / files:** Approved repair uses shared due slots in `news_collection_cadence_service.py` across controller, worker and readers; known operations reconcile immediately while unconfirmed/running starts remain protected. PAGASA date/location isolation also repaired. All 285 native release checks pass; cloud rollout is pending. [Implementation](../evaluations/news-autonomy-fixes-20261013.md), [original runtime evidence](../evaluations/news-autonomy-audit-20261013.md).
+- **Status / files:** Main 5c6da28 / PR #136 uses shared due slots in `news_collection_cadence_service.py` across controller, worker and readers; known operations reconcile immediately while unconfirmed/running starts remain protected. PAGASA date/location isolation also repaired. All 285 Linux release checks pass; natural 11:30 PM production collection succeeds after the prior 11:15 PM cycle and next due is 11:45 PM. [Deployment](../evaluations/news-autonomy-fixes-20261013.md), [original runtime evidence](../evaluations/news-autonomy-audit-20261013.md).
 
-**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](../evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
+**Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](../evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **News source-mode corrections:** External inference quota no longer blocks this selected mode. Fixed nullable clearance evidence access. Explicit numerical depths override verbal gauge differences; retained original evidence/hashes, and removed a short composed display summary. Dedicated regressions and the actual scheduled worker/public APIs exercise the path. [Evidence](../evaluations/news-source-validation-20261013/README.md).
 

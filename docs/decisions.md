@@ -1,14 +1,14 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 11:54 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
+**Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **News mode decision:** For the defense and current production, local NLP plus deterministic original-source checks replaces mandatory LLM inference. Keep source/freshness/location/depth/geometry/expiry gates; use explicit measurements before verbal gauges. MCP remains optional future work outside the deployment dependencies. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 ## 29. Credit-free source consistency for the defense release
 
-**Date:** October 13, 2026. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe). **Status:** Focused backend deployed; Git integration/optional frontend wording pending.
+**Date:** October 13, 2026. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe). **Status:** Source mode merged and deployed; cadence follow-up PR #136 verified. Optional MCP is not required by scheduled collection.
 
 The developer prioritizes automatic news gathering and plotting without exhausted free-tier LLM credits before the October 19 defense. Select local NLP plus explicit source_rules consistency checks; preserve optional LLM/MCP providers and historical evidence. This replaces mandatory external inference for the chosen mode, not source/freshness/conflict/geometry/expiry checks. Legacy audit DTOs carry an explicitly identified rule-based result; they do not imply independent AI or field verification.
 

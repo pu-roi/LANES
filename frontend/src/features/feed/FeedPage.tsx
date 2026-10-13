@@ -7,11 +7,12 @@ import { getFeed, votePost, FeedPost, FeedResponse, VoteResponse, DEFAULT_FEED_F
 import { CommunityFeedFilters, FILTER_QUERY_KEYS, readFeedFilters } from './components/CommunityFeedFilters';
 import { PostItem } from './PostItem';
 import { CreatePostModal } from './CreatePostModal';
-import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, Heart, Plus, ChevronDown, Pin, MapPin, AlertTriangle } from 'lucide-react';
-import { useToast, Button } from '@/shared/ui';
+import { Loader2, Filter, Image as ImageIcon, Video, Menu, X, Map, Rss, MessageSquarePlus, Heart, Plus, ChevronDown, Pin, MapPin, AlertTriangle, Newspaper } from 'lucide-react';
+import { useToast, Button, Modal } from '@/shared/ui';
 import { savedPlacesApi } from '@/features/places/savedPlacesApi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
+import { useResponsive } from '@/hooks/useResponsive';
 import { TrendingHotspots } from './components/TrendingHotspots';
 import { EmergencyHotlinesCard } from './components/EmergencyHotlinesCard';
 import { resolveProfileCoordinates } from '@/constants/locations';
@@ -48,6 +49,25 @@ export function FeedPage() {
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [locationLabel, setLocationLabel] = useState<string | null>(null);
   const [locationSource, setLocationSource] = useState<'gps' | 'profile' | 'saved' | null>(null);
+  const { isMobile } = useResponsive();
+  const [isLocalUpdatesModalOpen, setIsLocalUpdatesModalOpen] = useState(false);
+  const [extraMobilePosts, setExtraMobilePosts] = useState<FeedPost[]>([]);
+  const [mobilePage, setMobilePage] = useState<number>(0);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [mobileHasMore, setMobileHasMore] = useState<boolean>(true);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const drawerTouchStartX = useRef<number>(0);
+
+  // Reset appended mobile posts when query params or location changes
+  const [feedKey, setFeedKey] = useState(`${tab}_${JSON.stringify(filters)}_${userLocation?.lat}_${userLocation?.lng}`);
+  const currentFeedKey = `${tab}_${JSON.stringify(filters)}_${userLocation?.lat}_${userLocation?.lng}`;
+  if (feedKey !== currentFeedKey) {
+    setFeedKey(currentFeedKey);
+    setExtraMobilePosts([]);
+    setMobilePage(0);
+    setMobileHasMore(true);
+  }
+
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [preselectedFiles, setPreselectedFiles] = useState<File[]>([]);
@@ -220,6 +240,111 @@ export function FeedPage() {
     }
   }, [data?.resolved_location_name, locationLabel, locationSource]);
 
+  const canLoadMoreMobile = mobilePage === 0 ? Boolean(data?.has_more) : mobileHasMore;
+
+  const loadMoreMobile = async () => {
+    if (isLoadingMore || isLoading) return;
+    const canLoad = mobilePage === 0 ? Boolean(data?.has_more) : mobileHasMore;
+    if (!canLoad) return;
+
+    setIsLoadingMore(true);
+    try {
+      const nextSkip = (mobilePage + 1) * pageSize;
+      const res = await getFeed(
+        userLocation?.lat,
+        userLocation?.lng,
+        tab,
+        nextSkip,
+        pageSize,
+        undefined,
+        filters
+      );
+      if (res?.posts) {
+        setExtraMobilePosts((prev) => {
+          const existingIds = new Set([...(data?.posts ?? []).map((p) => p.id), ...prev.map((p) => p.id)]);
+          const newPosts = res.posts.filter((p) => !existingIds.has(p.id));
+          return [...prev, ...newPosts];
+        });
+        setMobilePage((prev) => prev + 1);
+        setMobileHasMore(res.has_more);
+      }
+    } catch (err) {
+      console.error("Failed to load more feed posts:", err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
+  const loadMoreRef = useRef(loadMoreMobile);
+  useEffect(() => {
+    loadMoreRef.current = loadMoreMobile;
+  });
+
+  // Auto-fetch next batch on mobile when scrolling near bottom
+  useEffect(() => {
+    if (!isMobile || !canLoadMoreMobile || isLoadingMore || isLoading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          void loadMoreRef.current();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+
+    const currentSentinel = sentinelRef.current;
+    if (currentSentinel) {
+      observer.observe(currentSentinel);
+    }
+
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+      observer.disconnect();
+    };
+  }, [isMobile, canLoadMoreMobile, isLoadingMore, isLoading]);
+
+  // Swipe gesture: swipe right from left edge of screen (<= 40px) to open navigation menu
+  useEffect(() => {
+    let startX = 0;
+    let startY = 0;
+    let isLeftEdgeTouch = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      const touch = e.touches[0];
+      if (touch.clientX <= 40) {
+        startX = touch.clientX;
+        startY = touch.clientY;
+        isLeftEdgeTouch = true;
+      } else {
+        isLeftEdgeTouch = false;
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (!isLeftEdgeTouch) return;
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - startX;
+      const deltaY = touch.clientY - startY;
+
+      // Swiped right by at least 45px and predominantly horizontal
+      if (deltaX > 45 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+        setIsMobileMenuOpen(true);
+      }
+      isLeftEdgeTouch = false;
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
 
   const voteMutation = useMutation({
     mutationFn: ({ postId, type }: { postId: number; type: 'upvote' | 'downvote' }) => votePost(postId, type),
@@ -293,10 +418,21 @@ export function FeedPage() {
           }),
         };
       });
+      setExtraMobilePosts((prev) =>
+        prev.map((p) => {
+          if (p.id !== postId) return p;
+          return {
+            ...p,
+            upvotes: voteRes.upvotes,
+            downvotes: voteRes.downvotes,
+            user_interaction: (voteRes.user_interaction as 'upvote' | 'downvote') || undefined,
+          };
+        })
+      );
       // Synchronize single post query if opened
       queryClient.invalidateQueries({ queryKey: ['post', postId] });
     },
-    onError: (err: any, _vars, context) => {
+    onError: (err: { status?: number; message?: string }, _vars, context) => {
       // Rollback to snapshot on failure
       if (context?.previousFeed) {
         queryClient.setQueryData(context.queryKey, context.previousFeed);
@@ -310,6 +446,42 @@ export function FeedPage() {
   });
 
   const handleVote = (postId: number, type: 'upvote' | 'downvote') => {
+    setExtraMobilePosts((prev) =>
+      prev.map((p) => {
+        if (p.id !== postId) return p;
+
+        let newUpvotes = p.upvotes || 0;
+        let newDownvotes = p.downvotes || 0;
+        let newInteraction: 'upvote' | 'downvote' | undefined = undefined;
+
+        if (p.user_interaction === type) {
+          if (type === 'upvote') newUpvotes = Math.max(0, newUpvotes - 1);
+          if (type === 'downvote') newDownvotes = Math.max(0, newDownvotes - 1);
+          newInteraction = undefined;
+        } else if (p.user_interaction) {
+          if (type === 'upvote') {
+            newUpvotes += 1;
+            newDownvotes = Math.max(0, newDownvotes - 1);
+            newInteraction = 'upvote';
+          } else {
+            newDownvotes += 1;
+            newUpvotes = Math.max(0, newUpvotes - 1);
+            newInteraction = 'downvote';
+          }
+        } else {
+          if (type === 'upvote') newUpvotes += 1;
+          if (type === 'downvote') newDownvotes += 1;
+          newInteraction = type;
+        }
+
+        return {
+          ...p,
+          upvotes: newUpvotes,
+          downvotes: newDownvotes,
+          user_interaction: newInteraction,
+        };
+      })
+    );
     voteMutation.mutate({ postId, type });
   };
 
@@ -363,19 +535,19 @@ export function FeedPage() {
             <div className="flex items-center gap-2.5 sm:gap-3 mb-2 px-1 sm:px-2">
               <button 
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="md:hidden p-1.5 -ml-1 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors active:scale-95"
+                className="md:hidden p-2 -ml-1.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors active:scale-95 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Open navigation menu"
               >
-                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+                <Menu className="w-6 h-6 text-gray-800" />
               </button>
-              <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-gray-900">Community Feed</h1>
+              <h1 className="text-xl sm:text-xl font-extrabold tracking-tight text-gray-900">Community Feed</h1>
             </div>
             
             <div className="flex justify-between items-end px-1 sm:px-2">
               <div className="flex gap-4 sm:gap-6">
                 <button 
                   onClick={() => setTab('recent')}
-                  className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-bold transition-colors relative ${
+                  className={`pb-2.5 sm:pb-3 text-sm font-bold transition-colors relative ${
                     tab === 'recent' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -387,7 +559,7 @@ export function FeedPage() {
                 
                 <button 
                   onClick={() => setTab('nearby')}
-                  className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-bold transition-colors relative ${
+                  className={`pb-2.5 sm:pb-3 text-sm font-bold transition-colors relative ${
                     tab === 'nearby' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -398,17 +570,29 @@ export function FeedPage() {
                 </button>
               </div>
 
-              <Button variant="ghost" size="sm" aria-expanded={filtersOpen} aria-controls="community-feed-filters" onClick={() => setFiltersOpen(open => !open)} className="text-gray-500 hover:text-blue-600 text-xs sm:text-sm px-2 sm:px-3">
-                <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
-                Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
-              </Button>
+              <div className="flex items-center gap-1 sm:gap-2 pb-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsLocalUpdatesModalOpen(true)}
+                  className="xl:hidden text-gray-500 hover:text-purple-600 text-xs sm:text-sm px-2 sm:px-2.5 font-medium"
+                  title="Local Updates"
+                >
+                  <Newspaper className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 text-purple-600 shrink-0" />
+                  <span>Updates</span>
+                </Button>
+
+                <Button variant="ghost" size="sm" aria-expanded={filtersOpen} aria-controls="community-feed-filters" onClick={() => setFiltersOpen(open => !open)} className="text-gray-500 hover:text-blue-600 text-xs sm:text-sm px-2 sm:px-3 font-medium">
+                  <Filter className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 shrink-0" />
+                  Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
+                </Button>
+              </div>
             </div>
           </div>
 
           <div className="px-3 sm:px-0 pt-3 sm:pt-4">
             {filtersOpen && <CommunityFeedFilters filters={filters} nearby={tab === 'nearby'} onChange={next => updateFeedQuery(next)} />}
             <p className="sr-only" aria-live="polite">{filters.sort === 'newest' ? 'Newest first' : 'Oldest first'} · {filters.dateRange === 'all' ? 'All time' : filters.dateRange === 'today' ? 'Today (UTC)' : filters.dateRange === '24h' ? 'Last 24 hours' : filters.dateRange === '3d' ? 'Last 3 days' : 'Last 7 days'}{activeFilterCount > 0 && !filtersOpen ? ' · Filters applied' : ''}</p>
-            <div className="mb-3 xl:hidden"><LocalUpdates collapsible /></div>
             {/* Create Post Input Trigger */}
             <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-3 sm:p-3.5 mb-2.5 sm:mb-3 flex items-center gap-2.5 sm:gap-3">
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 border border-blue-200">
@@ -418,8 +602,8 @@ export function FeedPage() {
                 onClick={() => setIsCreateModalOpen(true)}
                 className="flex-1 min-w-0 bg-gray-100/90 hover:bg-gray-200/80 border border-transparent hover:border-gray-200 transition-all rounded-lg text-left px-3 sm:px-4 py-2 sm:py-2.5 text-gray-500 text-sm font-medium truncate"
               >
-                <span className="sm:hidden">What's happening?</span>
-                <span className="hidden sm:inline">What's happening in your area?</span>
+                <span className="sm:hidden">What&apos;s happening?</span>
+                <span className="hidden sm:inline">What&apos;s happening in your area?</span>
               </button>
               
               {/* Quick Media Actions */}
@@ -542,7 +726,7 @@ export function FeedPage() {
                 </div>
               )}
 
-              {data && data.posts.length === 0 && (
+              {data && data.posts.length === 0 && !isLoading && (
                 <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-10 sm:p-12 text-center text-gray-500">
                   <p className="font-medium text-base sm:text-lg text-gray-700">No reports found{tab === 'nearby' ? ' nearby' : ''}.</p>
                   <p className="text-sm mt-1">{activeFilterCount > 0 ? 'No posts match these filters. Try a wider date range or reset your filters.' : tab === 'nearby' ? 'No community posts or flood reports were found in your area.' : 'Check back later or submit a new report.'}</p>
@@ -550,30 +734,70 @@ export function FeedPage() {
                 </div>
               )}
 
-              {data && data.posts.map((post: FeedPost) => (
-                <PostItem 
-                  key={post.id} 
-                  post={post} 
-                  onVote={handleVote}
-                  onViewMap={(lat, lng) => {
-                    // The URL also carries the target if the deferred map has
-                    // not mounted yet. The event handles an already-open map.
-                    router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`);
-                    setTimeout(() => {
-                      window.dispatchEvent(new CustomEvent('fly-to-location', {
-                        detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
-                      }));
-                    }, 150);
-                  }}
-                />
-              ))}
+              {(() => {
+                const basePosts = data?.posts ?? [];
+                const postsToDisplay = (isMobile && extraMobilePosts.length > 0)
+                  ? [...basePosts, ...extraMobilePosts]
+                  : basePosts;
+                return postsToDisplay.map((post: FeedPost) => (
+                  <PostItem 
+                    key={post.id} 
+                    post={post} 
+                    onVote={handleVote}
+                    onViewMap={(lat, lng) => {
+                      // The URL also carries the target if the deferred map has
+                      // not mounted yet. The event handles an already-open map.
+                      router.push(`/map?lat=${lat}&lng=${lng}&zoom=16`);
+                      setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('fly-to-location', {
+                          detail: { latitude: lat, longitude: lng, zoom: 16, duration: 1500 }
+                        }));
+                      }, 150);
+                    }}
+                  />
+                ));
+              })()}
+
+              {/* Desktop Pagination (Kept intact for big screen / desktop) */}
               {data && (data.total > pageSize || page > 0) && (
-                <nav aria-label="Feed pagination" className="flex flex-wrap items-center justify-between gap-2 py-3">
+                <nav aria-label="Feed pagination" className="hidden md:flex flex-wrap items-center justify-between gap-2 py-3">
                   <Button variant="outline" size="sm" disabled={page === 0 || isLoading} onClick={() => updateFeedQuery(filters, tab, page - 1)}>Previous</Button>
                   <span className="text-xs text-gray-500">Page {page + 1} · {data.total} posts</span>
                   <Button variant="outline" size="sm" disabled={!data.has_more || isLoading} onClick={() => updateFeedQuery(filters, tab, page + 1)}>Next</Button>
                 </nav>
               )}
+
+              {/* Mobile Infinite Scroll Stream & Load More */}
+              {(() => {
+                const totalMobilePosts = (data?.posts?.length ?? 0) + extraMobilePosts.length;
+                return (
+                  <div className="md:hidden py-3 flex flex-col items-center justify-center">
+                    {isLoadingMore && (
+                      <div className="flex items-center gap-2 text-xs text-gray-500 font-medium py-3">
+                        <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                        <span>Loading more updates...</span>
+                      </div>
+                    )}
+                    {!isLoadingMore && canLoadMoreMobile && (totalMobilePosts >= pageSize) && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={loadMoreMobile}
+                        className="w-full text-xs font-semibold py-2.5 text-blue-600 border-blue-200 hover:bg-blue-50 active:bg-blue-100 transition-colors"
+                      >
+                        Load more posts
+                      </Button>
+                    )}
+                    {!canLoadMoreMobile && (totalMobilePosts > 0) && (
+                      <div className="text-center py-4 text-xs text-gray-400 font-medium border-t border-gray-100 mt-2 w-full">
+                        You&apos;re all caught up! ✨
+                      </div>
+                    )}
+                    {/* Sentinel element to trigger auto-load as user scrolls */}
+                    <div ref={sentinelRef} className="h-4 w-full pointer-events-none" />
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
@@ -592,7 +816,7 @@ export function FeedPage() {
                   parsed.isModalOpen = false;
                   localStorage.setItem('lanes_draft_post', JSON.stringify(parsed));
                   sessionStorage.setItem('lanes_draft_post', JSON.stringify(parsed));
-                } catch (e) {}
+                } catch { }
               }
             }
           }} 
@@ -621,7 +845,16 @@ export function FeedPage() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
-              className="relative flex w-72 flex-col bg-white shadow-xl h-full"
+              className="relative flex w-72 sm:w-80 flex-col bg-white shadow-xl h-full"
+              onTouchStart={(e) => {
+                drawerTouchStartX.current = e.touches[0].clientX;
+              }}
+              onTouchEnd={(e) => {
+                const deltaX = e.changedTouches[0].clientX - drawerTouchStartX.current;
+                if (deltaX < -50) {
+                  closeMenu();
+                }
+              }}
             >
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <span className="text-lg font-bold text-gray-900">LANES</span>
@@ -754,6 +987,17 @@ export function FeedPage() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Local Updates Modal (Mobile / Tablet quick access) */}
+      <Modal
+        isOpen={isLocalUpdatesModalOpen}
+        onClose={() => setIsLocalUpdatesModalOpen(false)}
+        title="Local Updates"
+      >
+        <div className="max-h-[70vh] overflow-y-auto pr-1">
+          <LocalUpdates />
+        </div>
+      </Modal>
     </>
   );
 }
