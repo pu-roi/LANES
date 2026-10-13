@@ -168,11 +168,11 @@ async def process_new_report(
         survey_data=survey_data
     )
     
-    created_report = create_flood_report(db=db, report=report_create)
-
-    # Immediately post to Community Feed if is_public is True (without affecting /map routing barriers)
-    if is_public and user_id:
-        try:
+    # Save the report and requested share together. A failed share must not
+    # produce a successful submission or a partial report on retry.
+    try:
+        created_report = create_flood_report(db=db, report=report_create, commit=False)
+        if is_public and user_id:
             from app.schemas.post import CommunityPostCreate
             from app.crud.post import create_community_post
             post_in = CommunityPostCreate(
@@ -181,10 +181,13 @@ async def process_new_report(
                 media_urls=media_urls if media_urls else None,
                 location_tag=barangay or human_readable_location or None
             )
-            create_community_post(db=db, post_in=post_in, user_id=user_id)
+            create_community_post(db=db, post_in=post_in, user_id=user_id, commit=False)
             logger.info(f"[process_new_report] Created CommunityPost immediately for public report #{created_report.id}")
-        except Exception as e:
-            logger.error(f"[process_new_report] Failed to auto-create CommunityPost for report #{created_report.id}: {e}")
+        db.commit()
+        db.refresh(created_report)
+    except Exception:
+        db.rollback()
+        raise
 
     from app.services.citizen_approval_service import record_observation, approve_citizen_report
     try:

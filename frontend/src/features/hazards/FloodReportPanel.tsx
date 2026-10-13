@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   CheckCircle,
   Loader2,
@@ -57,6 +58,7 @@ const VISUAL_OPTIONS = FLOOD_DEPTH_OPTIONS;
 export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdminSubmit, zoneUpdate, onReturnToReport }: FloodReportPanelProps) {
   const isMobile = useMediaQuery("(max-width: 640px), (pointer: coarse)");
   const { user, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
   const userId = typeof user?.id === "string" || typeof user?.id === "number" ? String(user.id) : null;
   const canPersistDraft = !isAdminMode && isAuthenticated && userId !== null;
 
@@ -572,6 +574,11 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         const results = await Promise.all(formsToSubmit.map((fd) => apiClient.post<{ id: number; status: string; automatic_review_reason?: string }>("/reports", fd)));
         automaticallyApproved = results.some((result) => result.status === "approved");
         automationUnavailable = results.some((result) => result.automatic_review_reason === "automatic_approval_unavailable");
+        void queryClient.invalidateQueries({ queryKey: ["my-reports"] });
+        if (isPublic) {
+          void queryClient.invalidateQueries({ queryKey: ["feed"] });
+          void queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+        }
       }
 
       // Reset everything
@@ -587,7 +594,8 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
         }
       }
       
-      success(isAdminMode ? "Zones Created" : "Reports Submitted", isAdminMode ? "Official zones are now active." : automaticallyApproved ? "Eligible reports were automatically approved. Check My Reports for each report status." : "Thank you! Your reports are now in review.");
+      const reviewMessage = automaticallyApproved ? "Eligible reports were automatically approved. Check My Reports for each report status." : "Thank you! Your reports are now in review.";
+      success(isAdminMode ? "Zones Created" : "Reports Submitted", isAdminMode ? "Official zones are now active." : `${isPublic ? "Shared in the Community Feed. " : ""}${reviewMessage}`);
       if (automationUnavailable) error("Automatic Approval Unavailable", "Your report was saved and remains available for staff review.");
       if (onClose) onClose();
     } catch (err: unknown) {
@@ -889,7 +897,7 @@ export function FloodReportPanel({ isOpen, onClose, isAdminMode = false, onAdmin
             {isPublic && (
               <div className="bg-blue-50/70 border border-blue-100/50 rounded-lg p-3 text-[11px] leading-relaxed text-blue-900 space-y-1">
                 <p>
-                  This report will be shared publicly in the Community Feed immediately after submission. It will not appear as an official flood zone on the map unless an administrator approves it. Please ensure that the information provided is accurate and does not contain sensitive or personal information.
+                  This report will be shared publicly in the Community Feed immediately after submission, labeled as awaiting review until approved. Official map zones follow a separate approval process. Please ensure that the information provided is accurate and does not contain sensitive or personal information.
                 </p>
               </div>
             )}

@@ -1,6 +1,15 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 14, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 1:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved locally: Flood report community sharing waited for map approval
+
+- **Status / severity / resolver:** Resolved locally; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe). Publication/deployment is not claimed.
+- **Problem:** On `/map`, submit a report with Share in Community Feed selected. The post only appeared publicly once the report was approved, contradicting the immediate-sharing notice.
+- **Root cause:** `public_report_clause()` required APPROVED even though `process_new_report()` already created an opted-in CommunityPost immediately. An unrelated approval gate therefore hid shared pending reports. Post creation also swallowed failures after committing the report.
+- **Solution:** Allow PENDING/APPROVED explicitly public, non-archived linked reports through the shared feed/detail predicate; continue excluding rejected/private and hidden/deleted posts. Pending cards show Awaiting review without a verified badge. Official map/routing eligibility stays unchanged. Save report, notification and post in one transaction; failures propagate to the existing submission error UI. Invalidate Feed/My Posts after a successful shared submission.
+- **Files:** `backend/app/crud/{feed,report,post}.py`, `backend/app/services/report_service.py`, `frontend/src/features/hazards/FloodReportPanel.tsx`, `frontend/src/features/feed/PostItem.tsx`, `backend/tests/test_community_feed_filters.py`, `backend/tests/test_feed_publication_visibility.py`, `frontend/tests/flood-report-sharing.spec.ts`. No models, migrations or packages changed.
+- **Verification:** Five backend checks pass (`test_feed_publication_visibility.py`, `test_report_media_upload.py`): real SQL visibility over pending/approved/rejected/private/archived/orphan/standalone records in disposable SQLite, service commit/rollback and failed media handling. Six Playwright checks pass (`flood-report-sharing.spec.ts`, `flood-report-media.spec.ts`) on desktop/mobile with mocked APIs; pending-card screenshots were inspected. TypeScript passes. Focused lint retains three existing FloodReportPanel errors (two state-in-effect, one explicit-any) and 12 warnings; the error-producing code matches HEAD. The PostGIS suite could not run: the local database/Docker engine is unavailable (the initial run hit connection errors and was interrupted). New integration cases cover actual submission/media/opt-out, Recent/Nearby/detail publication, unchanged map linkage and rollback when that runtime returns. The running backend has no reload flag and requires restart to load this local fix. No production/deployment acceptance is claimed.
 
 ## Investigating: Community Feed mobile pagination errors lack feedback
 

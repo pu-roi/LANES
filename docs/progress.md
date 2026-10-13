@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 14, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 1:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 14: Restore immediate community sharing for flood reports
+
+Explicitly shared pending reports now appear in Community Feed and public post detail immediately, with a responsive Awaiting review label. Official map-zone approval stays separate. Report, owner notification and requested post save together; share failures roll back instead of silently succeeding. Submission invalidates Feed/My Posts caches. Private, rejected, archived, hidden and deleted content remains excluded. No schema, migration or dependency changes. Verification is recorded in the [bug log](others/bug-log.md#resolved-locally-flood-report-community-sharing-waited-for-map-approval). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 14: PR #137 conflicts resolved against main
 
