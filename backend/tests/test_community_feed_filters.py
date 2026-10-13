@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.api.deps import get_current_user_optional, get_current_user
-from app.api.v1.endpoints import feed, posts
+from app.api.v1.endpoints import feed, posts, reports
 from app.core.database import engine, get_db
 from app.crud.feed import get_feed_posts, get_feed_post
 from app.crud import feed as crud_feed
@@ -51,6 +51,7 @@ def community(monkeypatch):
     app = FastAPI()
     app.include_router(feed.router, prefix="/feed")
     app.include_router(posts.router, prefix="/posts")
+    app.include_router(reports.router, prefix="/reports")
     app.dependency_overrides[get_db] = lambda: db
     app.dependency_overrides[get_current_user_optional] = lambda: state.user
     app.dependency_overrides[get_current_user] = lambda: state.user
@@ -171,9 +172,10 @@ def test_active_resolved_severity_and_date_combinations_use_persisted_lifecycle(
 
 
 @pytest.mark.parametrize("viewer", [None, 0, 1])
-def test_public_feed_never_exposes_pending_rejected_private_archived_or_hidden_reports(community, viewer):
+def test_public_feed_shares_pending_but_excludes_rejected_private_archived_or_hidden_reports(community, viewer):
     good = post(community, report=report(community))
-    blocked = [post(community, report=report(community, status=status)) for status in ("pending", "rejected")]
+    pending = post(community, report=report(community, status="pending"))
+    blocked = [post(community, report=report(community, status="rejected"))]
     blocked.append(post(community, report=report(community, public=False)))
     archived = report(community)
     archived.deleted_at = datetime.now(timezone.utc)
@@ -186,13 +188,66 @@ def test_public_feed_never_exposes_pending_rejected_private_archived_or_hidden_r
         assert response.status_code == 200, response.text
         result = {p["id"] for p in response.json()["posts"]}
         assert good.id in result and not result.intersection(p.id for p in blocked)
+        assert (pending.id in result) == (query != "?flood_status=active")
     other_id = community.users[1].id
-    assert get_feed_post(community.db, blocked[2].id, user_id=other_id) is None
+    assert get_feed_post(community.db, blocked[1].id, user_id=other_id) is None
     assert get_feed_post(community.db, blocked[0].id, user_id=community.users[0].id) is not None
+    assert get_feed_post(community.db, pending.id, user_id=other_id)["report"].status == models.ReportStatus.PENDING
     # My Posts retains the owner's existing unpublished/hidden access only.
     community.state.user = community.users[0]
     own = community.client.get('/posts/me').json()
-    assert {good.id, *(p.id for p in blocked)} <= {p["id"] for p in own["posts"]}
+    assert {good.id, pending.id, *(p.id for p in blocked)} <= {p["id"] for p in own["posts"]}
+
+
+@pytest.mark.parametrize("public", [False, True])
+def test_report_submission_immediately_shares_only_when_selected(community, monkeypatch, public):
+    from app.services import citizen_approval_service, report_locality_service
+    monkeypatch.setattr(citizen_approval_service, "record_observation", lambda *args, **kwargs: None)
+    monkeypatch.setattr(citizen_approval_service, "approve_citizen_report", lambda *args: "staff_review_required")
+    monkeypatch.setattr(report_locality_service, "pasig_geometry_locality", lambda geometry: None)
+    monkeypatch.setattr(reports, "upload_image", lambda file: "https://example.test/flood.jpg")
+    isolate_api_author(community, monkeypatch)
+    community.state.user = community.users[0]
+    response = community.client.post("/reports", data={
+        "raw_text": "Immediate community share regression", "source": "direct_user",
+        "severity": "high", "depth": "waist", "is_public": str(public).lower(),
+        "human_readable_location": "Test street", "barangay": "Test barangay", "city": "Test city",
+        "geometry": '{"type":"Point","coordinates":[121.08,14.57]}',
+    }, files={"media": ("flood.jpg", b"photo", "image/jpeg")})
+    assert response.status_code == 201, response.text
+    report_id = response.json()["id"]
+    assert response.json()["status"] == "pending"
+    saved = community.db.get(models.FloodReport, report_id)
+    assert saved.zone_id is None and saved.event_id is None
+    shared = community.db.query(models.CommunityPost).filter_by(flood_report_id=report_id).all()
+    assert len(shared) == int(public)
+    if public:
+        community.state.user = None
+        for query in ("", "?tab=nearby&lat=14.57&lng=121.08&radius=1000"):
+            feed_response = community.client.get("/feed" + query)
+            assert feed_response.status_code == 200, feed_response.text
+            published = next(p for p in feed_response.json()["posts"] if p["id"] == shared[0].id)
+            assert published["report"]["status"] == "pending"
+            assert published["media_urls"] == ["https://example.test/flood.jpg"]
+        assert community.client.get(f"/posts/{shared[0].id}").status_code == 200
+
+
+def test_failed_community_share_rolls_back_report_and_notification(community, monkeypatch):
+    from app.crud import post as crud_post
+    from app.services import report_service
+    import asyncio
+
+    def fail_share(**kwargs):
+        raise RuntimeError("Community share unavailable")
+
+    monkeypatch.setattr(crud_post, "create_community_post", fail_share)
+    text_content = "Rollback share regression"
+    with pytest.raises(RuntimeError, match="Community share unavailable"):
+        asyncio.run(report_service.process_new_report(db=community.db,
+            user_id=community.users[0].id, raw_text=text_content,
+            source="direct_user", severity="high", is_public=True))
+    assert community.db.query(models.FloodReport).filter_by(raw_text=text_content).count() == 0
+    assert community.db.query(models.Notification).filter_by(user_id=community.users[0].id).count() == 0
 
 
 def test_explicit_nearby_radius_is_strict_and_auto_expansion_preserves_filters(community, monkeypatch):

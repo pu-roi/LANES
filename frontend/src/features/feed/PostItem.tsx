@@ -190,6 +190,11 @@ export function PostItem({ post, onVote, onViewMap, isExpanded = false, initialM
               )}
             </div>
             <div className="flex items-center gap-x-1.5 gap-y-0.5 text-xs text-gray-500 mt-0.5 flex-wrap">
+              {post.report?.status === 'pending' && (
+                <span className="font-medium text-amber-700" title="Community report awaiting review; this does not establish an official map zone.">
+                  Awaiting review
+                </span>
+              )}
               <span className="shrink-0">{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
               {post.updated_at && new Date(post.updated_at).getTime() > new Date(post.created_at).getTime() && (
                 <span className="text-gray-400 shrink-0">• Edited</span>

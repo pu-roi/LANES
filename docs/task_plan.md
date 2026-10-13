@@ -1,6 +1,10 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 14, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 1:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 14: Immediate flood report community sharing
+
+- [x] Restore immediate publication of opted-in pending community posts, label awaiting review on desktop/mobile, refresh submission caches, and roll back failed shares with their report/notification. Preserve map approval and private/moderated visibility boundaries. [Verification](others/bug-log.md#resolved-locally-flood-report-community-sharing-waited-for-map-approval). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 14: PR #137 branch synchronization
 

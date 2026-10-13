@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.models.post import CommunityPost, CommunityPostEditHistory
 from app.schemas.post import CommunityPostCreate, CommunityPostUpdate
 
-def create_community_post(db: Session, post_in: CommunityPostCreate, user_id: int):
+def create_community_post(db: Session, post_in: CommunityPostCreate, user_id: int, *, commit: bool = True) -> CommunityPost:
     db_post = CommunityPost(
         user_id=user_id,
         flood_report_id=post_in.flood_report_id,
@@ -16,8 +16,11 @@ def create_community_post(db: Session, post_in: CommunityPostCreate, user_id: in
         location_lng=post_in.location_lng
     )
     db.add(db_post)
-    db.commit()
-    db.refresh(db_post)
+    if commit:
+        db.commit()
+        db.refresh(db_post)
+    else:
+        db.flush()
     return db_post
 
 def get_post(db: Session, post_id: int):

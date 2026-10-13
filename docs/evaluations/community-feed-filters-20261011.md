@@ -4,6 +4,8 @@ Author: Jace H. Bellen (repository author list; Git author `Jace`, branch `jace-
 
 ## Behavior and API contract
 
+**October 14 correction:** The approval-only visibility rule recorded below was a regression against immediate community sharing. Explicitly shared pending reports now appear publicly with Awaiting review; official map zones retain their approval workflow. Rejected/private/archived and hidden/deleted content remains excluded. See the [repair and current verification](../others/bug-log.md#resolved-locally-flood-report-community-sharing-waited-for-map-approval). The October 11 checks below remain historical results.
+
 The existing `GET /api/v1/feed` filters the complete eligible dataset before ordering, counting and pagination. Standalone public posts remain available. Linked reports must be approved, explicitly public and not archived; hidden/deleted posts are excluded from the Community feed. My Posts and owned detail access retain the author's authorized unpublished access. No report creation, approval, rejection or event lifecycle writes were changed.
 
 | Query | Values and default |

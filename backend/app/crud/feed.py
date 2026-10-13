@@ -16,10 +16,11 @@ from app.services.community_feed_service import publication_bounds
 
 
 def public_report_clause() -> ColumnElement[bool]:
-    """A standalone post or a live, explicitly public, approved linked report."""
+    """Sharing is independent of map approval; rejected reports stay unpublished."""
     return or_(CommunityPost.flood_report_id.is_(None), and_(
         FloodReport.id.is_not(None), FloodReport.deleted_at.is_(None),
-        FloodReport.is_public.is_(True), FloodReport.status == ReportStatus.APPROVED))
+        FloodReport.is_public.is_(True),
+        FloodReport.status.in_((ReportStatus.PENDING, ReportStatus.APPROVED))))
 
 
 def owned_post_clause(user_id: int) -> ColumnElement[bool]:

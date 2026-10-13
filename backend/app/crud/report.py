@@ -114,7 +114,7 @@ def hard_delete_flood_report(db: Session, report_id: int) -> bool:
     return True
 
 
-def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> models.FloodReport:
+def create_flood_report(db: Session, report: schemas.FloodReportCreate, *, commit: bool = True) -> models.FloodReport:
     geometry_clause = None
     if report.geometry:
         # Convert Pydantic PointGeometry to GeoJSON string for direct PostGIS parsing
@@ -146,8 +146,9 @@ def create_flood_report(db: Session, report: schemas.FloodReportCreate) -> model
             ))
         from app.services.report_notification_service import stage_report_status_notification
         stage_report_status_notification(db, db_report)
-        db.commit()
-        db.refresh(db_report)
+        if commit:
+            db.commit()
+            db.refresh(db_report)
     except Exception:
         db.rollback()
         raise
