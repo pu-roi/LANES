@@ -2,6 +2,8 @@
 
 > **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**News source-mode corrections:** External inference quota no longer blocks this selected mode. Fixed nullable clearance evidence access. Explicit numerical depths override verbal gauge differences; retained original evidence/hashes, and removed a short composed display summary. Dedicated regressions and the actual scheduled worker/public APIs exercise the path. [Evidence](../evaluations/news-source-validation-20261013/README.md).
+
 **October 13 correction:** The first source-mode release added an unnecessary verbal/numeric disagreement rejection and shortened scoped evidence into composed fragments. Removed both following the developer's measurement-first clarification; decorative play bullets originated in publisher copy and are removed for display only. Seven real estimated zones now include Santo Domingo at 19 inches through the scheduled worker, with original source/hashes intact. Production v2 and desktop/mobile acceptance pass. [Evidence](../evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
 
 **Mandatory LLM/quota bottleneck, null-evidence publication and list excerpts — Resolved for selected source mode.**

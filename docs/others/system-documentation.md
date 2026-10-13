@@ -2,6 +2,8 @@
 
 > **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**Current news runtime:** source_rules integrates into existing audit/evaluation/publication interfaces; measurement-first policy uses original immutable facts. Public excerpts retain saved evidence under the existing 700-character bound without decorative play bullets or composed summaries. Normal production ignores local historical scenario clocks. Deployment runs source-mode regression tests and a real news job before exact API revision promotion. [Evidence](../evaluations/news-source-validation-20261013/README.md).
+
 **Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](../evaluations/news-source-validation-20261013/README.md).
 
 **Source-mode v2 follow-up:** Public report details use saved extraction evidence under the existing 700-character bound, with decorative publisher play markers removed and no composed ellipsis summary. Existing See more works on mobile/desktop. Numeric depth precedence is enforced by the shared extractor; source validation no longer rejects paired verbal differences. The replay enters through the actual scheduled worker with only publisher responses/clock substituted. Production API/news/expiry v2 need no ChatGPT agent or LLM. [Evidence](../evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).

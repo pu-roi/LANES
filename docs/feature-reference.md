@@ -2,6 +2,8 @@
 
 > **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**News Intelligence release:** source_rules needs no AI key or credits. Existing collector, NLP, evaluation, OSM/NOAH estimated corridors, durable publication and expiry run through the scheduled worker. Frontend diagnostics identify NLP + source checks and omit irrelevant model quotas. Source consistency does not establish field verification. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
 **Current source-mode clarification:** News automation uses explicit measurements before verbal gauges. The existing worker handles discovery through publication/OSM-NOAH estimated zones without an agent or LLM. Public descriptions retain saved extraction evidence, with decorative publisher bullets removed for display; original evidence/hashes stay immutable. [Verified follow-up](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
 
 **News Intelligence credit-free release:** The selected source_rules mode validates local NLP/source consistency without external AI calls. Approved current claims publish alerts; qualified article-grounded OSM/NOAH sections activate labeled estimated road zones under the existing vehicle policy. Unknown/conflicting facts or geometry remain unresolved. Local replay produces six zones; production API/news/expiry use the focused matching image and source mode. Optional LLM/MCP work is preserved separately. [Acceptance](evaluations/news-source-validation-20261013/README.md), [defense guide](guides/news-source-validation-defense.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)

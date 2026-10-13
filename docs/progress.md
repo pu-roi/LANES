@@ -2,6 +2,8 @@
 
 > **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**Autonomous news release:** Focused source-mode backend is already deployed; current feature branch records the runtime plus regression/replay tools and responsive diagnostics without MCP dependency changes. Complete timeline/API acceptance and reproducible main deployment are the current release gates. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
 **Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 **October 13 follow-up:** Deployed measurement-first source policy v2, restored saved evidence without decorative source bullets/composed ellipses, and exercised the production scheduled-worker entry point on captured historical news. It produces 27 alerts/seven zones including Santo Domingo at 19 inches, with no inference, repeat duplication or expiry failure. Linux release checks: 275 passed; actual map checks: desktop/mobile passed. Production API/news/expiry share the v2 image; worker execution succeeds. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).

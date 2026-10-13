@@ -2,6 +2,8 @@
 
 > **Last Updated:** October 13, 2026, 3:48 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**Active release:** Complete September 24/9 scheduled-worker/public-API timelines, verify duplicate/expiry and later target depth, review and merge this focused release, then verify Cloud Build, live Scheduler/job and matching frontend rollout. No schema or live historical activation. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
 **Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 **Follow-up delivered:** Explicit measurements override verbal gauges; saved descriptions restored without composed fragments. Scheduled-worker historical acceptance gives 27 alerts/seven zones including Santo Domingo at 19 inches; production v2 and its worker are verified. Main Git integration remains pending. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).

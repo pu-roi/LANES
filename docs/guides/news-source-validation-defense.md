@@ -54,3 +54,16 @@ Production API/news/expiry use the same tested image and source mode. JWT signin
 The focused image is based on main `cfd5aae`, without the unqualified MCP/framework upgrade. The working changes remain on roi-branch. Before any new main-triggered Cloud Build, integrate these focused source/security changes into main through review; otherwise an older main build could overwrite the source-mode runtime. [Release evidence](../evaluations/news-source-validation-20261013/README.md).
 
 For a source-code rollback, pause only the news Scheduler and deploy a **new** revision using the prior baseline image while retaining the private `SECRET_KEY` binding. Do not restore traffic to old revisions with the public fallback key or recreate their retired public tags. Restore the previous explicit Gemini provider/model/revision only if deliberately returning to that limited/unqualified path; preserve its credential and quota history. Keep API/news/expiry images coordinated, then resume the captured adaptive Scheduler configuration. No database downgrade or deletion is needed.
+
+## Full timeline acceptance
+
+From backend, select a **fresh private loopback** PostgreSQL database named `lanes_nlp_acceptance_...` and source_rules/source-rules-v1, then run:
+
+```powershell
+python -m scripts.replay_news_source_timelines --scenario september24 --output '<private output directory>/september24.json'
+python -m scripts.replay_news_source_timelines --scenario september9 --output '<private output directory>/september9.json'
+```
+
+Use a different fresh database for each command. Existing migrations are applied only when empty. The source HTML captures and early publisher-index text must be available in the preserved ignored `data/news-replay/september24-system` and `data/news-replay/september9` directories; captures are not downloaded or invented by the runner. Normal deployed code does not depend on these files. Receipts assert public HTTP 200, initial 19-inch and later 10-inch target publication, final expiry, no duplicate writes and zero inference. September 24 stale observations remain withheld.
+
+The main-based source release includes Cloud Build regression checks, explicit source-mode configuration and a successful actual news-job execution before traffic promotion. Existing Scheduler and API machine identity remain configured separately. Keep the private signing-key Secret Manager binding. Frontend rollout must target the same accepted Git revision.

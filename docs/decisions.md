@@ -2,6 +2,8 @@
 
 > **Last Updated:** October 13, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+**News mode decision:** For the defense and current production, local NLP plus deterministic original-source checks replaces mandatory LLM inference. Keep source/freshness/location/depth/geometry/expiry gates; use explicit measurements before verbal gauges. MCP remains optional future work outside the deployment dependencies. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
 ## 29. Credit-free source consistency for the defense release
 
 **Date:** October 13, 2026. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe). **Status:** Focused backend deployed; Git integration/optional frontend wording pending.
