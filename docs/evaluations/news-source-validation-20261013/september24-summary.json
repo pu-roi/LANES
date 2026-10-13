@@ -1,0 +1,35 @@
+{
+  "scenario": "september24",
+  "accepted": true,
+  "ticks": 5,
+  "zero_llm_requests": true,
+  "zone_counts": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "duplicates": true,
+  "attempts_unchanged": true,
+  "target_depths": [],
+  "html_sha256": {
+    "https://www.gmanetwork.com/news/weather/content/1003547/thunderstorm-advisory-heavy-to-intense-rains-over-parts-of-metro-manila-6-areas-thursday-2-24-p-m/story/": "7be849c16c794f985127a9e2693501836a0be8b4fc5103c736be5a8b72f56797",
+    "https://www.gmanetwork.com/news/weather/content/1003561/thunderstorm-advisory-metro-manila-laguna-tarlac-9-areas-thursday-4-12-p-m/story/": "bcfed2e7979968b2caf3c1da8b3407a5fc66bac8f2229948535c2c818fb9221a",
+    "https://tribune.net.ph/2026/09/24/minor-flooding-hits-some-metro-areas": "a8f2948343b438218236d1ae06245c9d7cb3d291c2b42bbe211496bca0b9fadb"
+  },
+  "receipt_sha256": "90f4744de06f10b0e8e94f6ee990e1fb5d08afcc261ea84e6085785082ff1c77",
+  "final_counts": {
+    "news_articles": 3,
+    "news_article_versions": 1,
+    "news_extraction_runs": 1,
+    "news_claim_evaluations": 11,
+    "news_claim_decisions": 11,
+    "flood_avoidance_zones": 0
+  },
+  "limitations": [
+    "Reconstructed RSS membership; archived feeds unavailable",
+    "Early September 9 text preserved from publisher index; HTML wrapper reconstructed",
+    "Current source registry and historical read clock; no production writes"
+  ]
+}

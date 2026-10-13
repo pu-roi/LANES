@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
                 print("Default roles seeded.")
 
             admin_user = get_user_by_username(db, username="admin")
-            if not admin_user:
+            if not admin_user and settings.ENVIRONMENT.lower() == "development":
                 admin_in = UserCreate(
                     username="admin",
                     email="admin@lanes.local",

@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 4:34 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Autonomous news release:** Local NLP/source consistency, measurement-first depth, scheduled-worker and real map acceptance, adaptive cloud collection and secure production signing. Optional MCP/framework experiments are excluded from this main-based release. [Verification](evaluations/news-source-validation-20261013/README.md).
 
 **PR #133 synchronization:** Current main history is integrated into roi-branch without source changes, preserving both Gemini repairs. The deleted temporary branch is no longer needed; its commits survive in roi history. [Resolution evidence](evaluations/gemini-repair-integration-20261013.md#pr-133-main-history-synchronization). No new inference or cloud release. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

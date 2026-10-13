@@ -1,6 +1,8 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 13, 2026, 4:29 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 4:15 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Release stack:** Source validation and replay reuse existing Python/FastAPI/PostGIS and bundled PSGC/OSM/NOAH assets. No production runtime library upgrade or MCP dependency is required. Cloud Build installs pinned pytest tooling only inside its disposable verification container. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 **October 13 combined Gemini integration dependency audit:** News adapter/quota/circuit/readiness and Gemini weather service are combined on roi-branch. Both reuse existing httpx/Pydantic/SQLAlchemy and Python stdlib; no package, SQLAlchemy/Alembic definition or public endpoint added. Default normalized schema and explicit weather model are retained in configuration examples. Live acceptance is blocked; no cloud source/runtime mutation. [Merge checks](evaluations/gemini-repair-integration-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

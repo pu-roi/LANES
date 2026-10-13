@@ -7,6 +7,16 @@ from app.schemas.news_presentation import NewsFloodSummary
 from app.services.news_evidence_policy import has_flood_observation, metro_manila_claim, non_observation_only
 
 
+def news_evidence_excerpt(claim: ExtractedClaim) -> str:
+    """Use the extractor's saved evidence, without a rewritten short summary.
+
+    Remove only the publisher's decorative play-marker bullets for display.
+    Original source text, offsets, hashes and audit evidence stay unchanged.
+    Public projection retains its existing 700-character safety bound.
+    """
+    return re.sub(r"(?m)^([ \t]*)\u25b6\ufe0f?[ \t]*", r"\1", claim.evidence_sentence)
+
+
 def claim_reading_reason(claim: ExtractedClaim) -> str | None:
     """Explain questionable evidence without changing the stored extraction."""
     place = claim.raw_place_name.strip(" ")

@@ -252,6 +252,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
     visited: list[int] = []
     quota = None
     stop_dispatch = False
+    source_rules = getattr(getattr(auditor, "config", None), "provider", None) == "source_rules"
     cycle_started = time.monotonic()
 
     def eligible_for_dispatch(owned):
@@ -353,9 +354,9 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                         save_quota(session_factory, quota)
                 blocked = deadline(quota.blocked_until) if quota else None
                 with session_factory() as db:
-                    availability = read_availability(db, auditor) if getattr(auditor, "config", None) else ModelAvailability()
+                    availability = read_availability(db, auditor) if getattr(auditor, "config", None) and not source_rules else ModelAvailability()
                 model_blocked = deadline(availability.blocked_until)
-                budget_spent = (summary.request_count >= 6 or
+                budget_spent = ((not source_rules and summary.request_count >= 6) or
                     time.monotonic() - cycle_started + getattr(auditor, "timeout_seconds", 60) + 5 > 360)
                 quota_blocked = stop_dispatch or bool(blocked and blocked > real_now())
                 unavailable = bool(model_blocked and model_blocked > real_now())
@@ -400,7 +401,8 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                 if not ready:
                     continue
                 candidates = tuple(AuditCandidate(candidate_id=str(o.evaluation_id), claim=c) for o, a, c in ready)
-                summary.request_count += 1
+                if not source_rules:
+                    summary.request_count += 1
                 summary.claims_dispatched += len(ready)
                 if quota:
                     dispatched(session_factory, quota, len(ready))
@@ -416,7 +418,7 @@ async def evaluate_news_claims(session_factory: Callable[[], Session], *, limit:
                     record_error(session_factory, quota, representative)
                 representative = next((r for r in results.values() if r.outcome in ("unavailable", "invalid")),
                     next(iter(results.values())))
-                if getattr(auditor, "config", None):
+                if getattr(auditor, "config", None) and not source_rules:
                     record_availability(session_factory, auditor, representative)
                 for owned, article, claim in ready:
                     audit = results[str(owned.evaluation_id)]

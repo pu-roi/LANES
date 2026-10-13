@@ -13,6 +13,26 @@ steps:
       - '.'
     dir: 'backend'
 
+  # Test the built runtime before publishing or changing any cloud resource.
+  # Test tooling is installed only in this disposable verification container.
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'run'
+      - '--rm'
+      - '-e'
+      - 'ENVIRONMENT=development'
+      - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
+      - 'sh'
+      - '-c'
+      - >-
+        pip install --no-cache-dir pytest==8.2.2 pytest-asyncio==0.23.7 &&
+        python -m pytest tests/test_news_source_validation.py
+        tests/test_production_signing_key.py tests/test_news_claim_auditor.py
+        tests/test_news_batch_audit.py tests/test_news_evaluation.py
+        tests/test_news_automation.py tests/test_news_publication_lifecycle.py
+        tests/test_news_estimated_road.py tests/test_news_pipeline.py
+        tests/test_news_weather.py --confcutdir=tests -q -p no:cacheprovider
+
   # 2. Push the image to Container / Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
@@ -53,6 +73,7 @@ steps:
       - '--no-traffic'
       - '--revision-suffix=build-$BUILD_ID'
       - '--min=1'
+      - '--update-env-vars=LANES_NEWS_AUDITOR_PROVIDER=source_rules,LANES_NEWS_AUDITOR_MODEL=source-rules-v1,LANES_NEWS_AUDITOR_CONFIG_REVISION=source-rules-production-v2'
       - '--image'
       - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
       - '--region'
@@ -69,6 +90,7 @@ steps:
       - '--memory=1Gi'
       - '--command=python'
       - '--args=-m,scripts.run_news_discovery,--discover,--pipeline,--scheduled,--limit,50'
+      - '--update-env-vars=LANES_NEWS_AUDITOR_PROVIDER=source_rules,LANES_NEWS_AUDITOR_MODEL=source-rules-v1,LANES_NEWS_AUDITOR_CONFIG_REVISION=source-rules-production-v2'
       - '--image'
       - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
       - '--region'
@@ -86,12 +108,26 @@ steps:
       - '--memory=1Gi'
       - '--command=python'
       - '--args=-m,scripts.run_zone_expiry'
+      - '--update-env-vars=LANES_NEWS_AUDITOR_PROVIDER=source_rules,LANES_NEWS_AUDITOR_MODEL=source-rules-v1,LANES_NEWS_AUDITOR_CONFIG_REVISION=source-rules-production-v2'
       - '--image'
       - 'gcr.io/$PROJECT_ID/github.com/pu-roi/lanes:$COMMIT_SHA'
       - '--region'
       - 'asia-east1'
 
-  # Promote the exact revision only after migration and both worker deploys pass.
+  # Require a real successful source-mode worker execution before API promotion.
+  # The existing advisory lock handles concurrent scheduled worker attempts.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'jobs'
+      - 'execute'
+      - 'lanes-news-discovery'
+      - '--wait'
+      - '--region'
+      - 'asia-east1'
+
+  # Promote the exact revision only after tests, migrations and worker success.
   # Explicit promotion also clears traffic pinned by an earlier manual rollback.
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'

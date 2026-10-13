@@ -1,10 +1,16 @@
 # Adaptive news scheduling rollout and rollback
 
-> **Last Updated:** October 11, 2026, 10:52 PM
+> **Last Updated:** October 13, 2026, 1:25 PM
 > **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
-> **Status:** Prepared only. No deployment, IAM change or Scheduler mutation performed in this implementation.
+> **Status:** Adaptive scheduling enabled in production on October 13. The earlier preparation and rollback baseline below remain historical.
 
-## Recorded existing configuration
+## Current production configuration
+
+The existing `lanes-news-discovery-every-3-hours` Scheduler resource now posts to the authenticated API controller every 15 minutes (`*/15 * * * *`, Asia/Manila). Its historical name does not describe its current cadence. The controller selects 60-minute collection in quiet conditions, 15 minutes for risk/current flood evidence and the recent-risk monitoring period, or 30 minutes when coverage is uncertain. Pending processing can dispatch independently of collection due time.
+
+API configuration revision `lanes-api-00081-n4x` serves 100% normal traffic using the same application image as the previous revision. Required scheduler audience/account/job variables and minimal dispatch/reconciliation IAM are configured. One real Scheduler delivery returned HTTP 200, saved a risk decision at 15 minutes and started the existing news worker. This does not qualify ChatGPT/Gemini auditing or map activation. [Release evidence and rollback](../evaluations/news-adaptive-scheduler-release-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Recorded October 11 baseline
 
 Read-only cloud inspection on October 11 confirmed:
 

@@ -156,7 +156,8 @@ export function NewsAutomationPanel() {
             </div>
             <p className="text-xs text-gray-600">Extraction queue: {count(data.queue_counts.pending)} waiting · {count(data.queue_counts.processing)} processing · {count(data.queue_counts.retry_wait)} awaiting retry · {count(data.queue_counts.failed)} failed.</p>
             {data.audit && <div className="space-y-2" data-testid="news-audit-diagnostics">
-              <p className="text-xs font-medium text-gray-500">Audit diagnostics · {data.audit.state}</p>
+              <p className="text-xs font-medium text-gray-500">{data.audit.validation_mode === "source_rules" ? "NLP + source checks" : "Audit diagnostics"} · {data.audit.state}</p>
+              {data.audit.validation_mode === "source_rules" ? <p className="text-xs text-gray-600">Checks the original article without AI requests. Flood zones are estimated from mapped roads; uncertain claims need review.</p> : <>
               <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3 xl:grid-cols-6">
                 <Metric label="Audit requests" value={count(data.audit.request_count)} />
                 <Metric label="Claims sent for audit" value={count(data.audit.claims_dispatched)} />
@@ -169,6 +170,7 @@ export function NewsAutomationPanel() {
               {data.audit.model_next_check_at && <p className="text-xs text-gray-600">Model recovery check · {newsDate(data.audit.model_next_check_at)}</p>}
               {data.audit.failure_phase && <p role="alert" className="break-words text-xs text-red-800">Audit stopped during {data.audit.failure_phase}{data.audit.timeout_kind ? ` · ${data.audit.timeout_kind} timeout` : ""}{data.audit.elapsed_ms != null ? ` · ${(data.audit.elapsed_ms / 1000).toFixed(1)} seconds` : ""}.</p>}
               {data.audit.actual_model && <p className="break-words text-xs text-gray-500">Last response model · {data.audit.actual_model}</p>}
+              </>}
               {data.audit.boundary_expected != null && <p className="text-xs text-gray-600">Qualified barangay boundaries · {data.audit.boundary_qualified ?? 0} of {data.audit.boundary_expected}. {data.audit.boundary_missing ?? 0} still need reviewed coverage.</p>}
               {data.audit.boundary_error && <p role="alert" className="break-words text-xs text-red-800">Boundary coverage is unavailable · {data.audit.boundary_error}</p>}
               {data.audit.error_code && <p role="alert" className="break-words text-xs text-red-800">Audit diagnostic: {data.audit.error_code}</p>}

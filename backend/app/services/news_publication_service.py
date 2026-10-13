@@ -215,6 +215,7 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
             display_geojson: dict | None = None,
             affects_routing: bool = False,
             geometry_basis: str | None = None) -> PublicNewsAlert:
+    from app.services.news_presentation_service import news_evidence_excerpt
     publisher = next(source.publisher for source in sources if source.id == article.publisher)
     # Raw source depth and qualifiers only; no borrowing modeled severity.
     depth = _safe(claim.depth_raw, 500) if audit.evidence.depth.confirmed else None
@@ -231,7 +232,7 @@ def _public(case: NewsClaimCase, decision_id: int, article: NewsArticleExtractor
         expires_at=claim.event_time_resolved + timedelta(minutes=(policy.expiry_minutes.get(claim.depth_canonical or "unknown", 120) if policy and policy.expiry_minutes else 120)), updated_at=now,
         source_title=_safe(article.title, 500), source_publisher=_safe(publisher, 160),
         source_url=article.canonical_url, source_published_at=article.published_at,
-        evidence_excerpt=_safe(claim.evidence_sentence, 700),
+        evidence_excerpt=_safe(news_evidence_excerpt(claim), 700),
         geometry_precision=geometry_precision,
         display_geojson=display_geojson,
         affects_routing=affects_routing, geometry_basis=geometry_basis)
@@ -1220,7 +1221,8 @@ def process_news_publications(session_factory: Callable[[], Session], *, policy:
                 active_policy = policy
                 evaluation = db.get(NewsClaimEvaluation, evaluation_id)
                 verified_clearance = (evaluation.result or {}).get("audit", {}) or {}
-                if verified_clearance.get("evidence", {}).get("status", {}).get("classification") == "subsided":
+                is_clearance = ((verified_clearance.get("evidence") or {}).get("status") or {}).get("classification") == "subsided"
+                if is_clearance:
                     # Preserve qualified clearance across expiry-only policy edits.
                     # _load still verifies immutable inputs and the current auditor identity.
                     active_policy = EvaluationPolicy(evaluation.policy_fingerprint, policy.pipeline_version,
@@ -1230,7 +1232,7 @@ def process_news_publications(session_factory: Callable[[], Session], *, policy:
                     if claim.condition != "subsided" or reason:
                         continue
                 decision = publish_completed_evaluation(db, evaluation_id, policy=active_policy, now=clock(),
-                    sources=load_news_sources() if verified_clearance.get("evidence", {}).get("status", {}).get("classification") == "subsided" and sources is None else sources)
+                    sources=load_news_sources() if is_clearance and sources is None else sources)
                 state = decision.public_state
                 operation = decision.operation
             outcome = "cleared" if operation == "clear" else "published" if state in ("active_alert", "active_zone") else "needs_review"

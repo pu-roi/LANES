@@ -319,6 +319,7 @@ export function getNewsFeedCheckpoints(signal?: AbortSignal) {
 export interface NewsAutomationStatus {
   audit?: {
     state: string;
+    validation_mode?: "llm" | "source_rules";
     checked_at: string | null;
     next_check_at: string | null;
     used: number | null;
