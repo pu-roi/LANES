@@ -1,6 +1,6 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 11:54 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 12:01 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Cadence repair deployed:** PR #136 / main 5c6da28 passed 285 Linux release tests, migrations and worker checks. API/jobs and automatic frontend rollout are verified; the natural 11:30 PM Scheduler collection succeeded with zero inference and next risk due 11:45 PM. Shared 3000/8000/live readers retain all six active zones. Expiry remains disabled at the developer's explicit request for video recording. [Deployment and operating limits](evaluations/news-autonomy-fixes-20261013.md).
 
