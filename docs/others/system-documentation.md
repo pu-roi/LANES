@@ -1,6 +1,14 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**ChatGPT qualification implementation:** app/services/chatgpt_plan_qualification.py uses the fixed public /v1/responses transport and existing strict source validation, without DB access. scripts/qualify_chatgpt_news.py reads frozen captured fixtures and writes only a bounded private experiment ledger/stream artifacts. Real authorization/model discovery pass; an actual eight-claim response yields review/invalid, so no worker/provider integration is enabled. No new public API route. [Evidence](../evaluations/chatgpt-news-live-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Local implementation update:** Protected /api/v1/internal/mcp-review read/bundle/preview interfaces and the separate five-tool /mcp gateway exist locally, disabled pending real account binding. A separate loopback-only scripts.chatgpt_plan_signin process provides local GET /, GET /status, POST /connect and GET /auth/callback. These routes are not exposed by the production API or ngrok. It verifies OpenAI account/plan permission and saves encrypted local credentials; no LANES registration, DB writes or inference. [Runbook](../guides/chatgpt-plan-local-signin.md), [measured state](../evaluations/chatgpt-plan-signin-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier gateway research:** Recommendation remains a separate HTTP gateway calling a fixed set of protected LANES reads, later shared validation preview. Do not import app.main (seeding/retention lifecycle) or auto-export all admin routes. Auth helpers still need LANES capability/actor mapping; OAuth proxy deployments require durable encrypted token storage and stable keys. Actual source and endpoints remain unchanged. [Comparison](../research/lanes-mcp-library-selection-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier MCP planning status:** There is no MCP endpoint, external audit upload route or ChatGPT connection in the current system. Existing saved article/result detail reads are reusable, while protected OAuth/account binding and shared strict preview validation need additive interfaces. Generic admin checks reject Commuter; the existing news capability reader/writer checks are the stronger boundary for new tools. No UI/publication/provider behavior changed. [Proposed flow](../plans/lanes-mcp-chatgpt-review.md), [code findings](../research/lanes-mcp-chatgpt-feasibility-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Latest provider research:** Active application configuration remains Gemini; Groq only ran isolated captured-evidence experiments. No public UI, API endpoint or worker behavior changed. Gemini daily quota is proved; Groq requires explicit runtime integration and smaller paced batches. [Results](../evaluations/gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

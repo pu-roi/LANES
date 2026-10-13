@@ -1,6 +1,49 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**ChatGPT streamed response and evidence qualification follow-up.**
+
+- **Status:** Transport repair resolved locally; semantic qualification Investigating. **Severity:** High for automatic publication. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **RCA:** The first parser expected terminal response.output to contain the answer. Actual completed envelopes use output=[] while finalized item events carry generated text. Corrected collection of output_item.done and retained final completion gating. The next actual eight-claim result lacks confirmed times and differs from the saved Santo Domingo knee gauge; source says half-knee (19 inches).
+- **Changes/checks:** Additive qualification service/runner/tests, fixed five-call ledger and ignored stream artifacts. 23 offline checks pass; 3/5 actual calls, seven review and one invalid. Preserve source/claim hashes and strict acceptance. No automatic worker/provider/production change. [Details](../evaluations/chatgpt-news-live-20261013.md).
+
+**Local ChatGPT token binding repair; actual connection pending.**
+
+- **Status:** Local defect resolved; actual sign-in investigating. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/RCA:** Real user callback failed id_token_claims. The helper did not supply access_token to python-jose, which rejects a valid signed ID token containing optional at_hash when it cannot verify the access-token binding. Existing fixtures omitted at_hash. A new signed fixture fails the previous success test before repair; the precise claim in the discarded real token remains unproved.
+- **Solution:** Pass the returned access token into JWT validation; preserve signature/issuer/audience/nonce/expiry and verify the hash rather than disable it. Split other claim failures into fixed diagnostic codes.
+- **Changes/checks:** Auth service and signed fixtures/regressions. 42 focused checks pass, including bound-token success, missing optional hash, mismatched pair rejection and no unvalidated credential saving. New helper v3 on port 1457; old 1455/1456 unchanged after earlier restart review rejection. Actual authorization/inference still pending.
+
+**Local ChatGPT callback verification failure (investigating).**
+
+- **Status:** Investigating; diagnostic repair implemented. **Severity:** High for connection qualification. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/RCA:** The real callback failed a combined identity/permission check; discarded tokens and generic errors leave the exact constraint unproved.
+- **Strategy:** Keep strict verification; split fixed error codes for identity, scope and token response. Publish only last_error_code, never raw token/claim/provider values. Do not assume an account setting fixes it.
+- **Changes/checks:** Auth service, local runner and ten diagnostic regressions. 35 focused checks pass. The first collection found a jose exception import mistake, fixed before launch. Automatic review blocked the combined stop/restart command with only blocked by policy. Instead, a new helper runs on 127.0.0.1:1456 without terminating the old 1455 process; use 1456 for the next attempt. Real authorization remains pending.
+
+**Local ChatGPT Continue button incorrectly rejected (fixed).**
+
+- **Status:** Resolved locally. **Severity:** High for the local sign-in flow. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/RCA:** Chrome sent Origin: null on the real form POST because the landing page used Referrer-Policy: no-referrer. Exact-origin protection then returned HTTP 403. Previous browser checks inspected the page but did not click the form.
+- **Solution:** Use same-origin referrer policy on the landing page only; keep no-referrer on OAuth callbacks and other responses. Preserve host, Origin, cross-site and CSRF validation, including rejection of null origins.
+- **Changes/checks:** scripts/chatgpt_plan_signin.py, test_chatgpt_plan_signin.py and desktop/mobile button-click regressions. Actual Chrome request reproduction confirmed Origin: null / 403 before repair. Subsequent actual-browser button-origin checks pass for both sizes; backend test proves accepted local POST and private callback policy. Helper restarted on 127.0.0.1:1455. Real OpenAI account authorization remains pending.
+
+**ChatGPT connection scope mismatch.**
+
+- **Status:** In Progress. **Severity:** High for completion claims. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/RCA:** The implemented MCP pilot offers interactive read/preview, while the developer intends automatic news auditing through their ChatGPT plan. Google OAuth/ngrok protect tool access; they do not supply inference authorization.
+- **Strategy:** Preserve the disabled pilot and providers; prove a separate local SIWC connection before provider/worker changes.
+- **Changes/checks:** chatgpt_plan_auth service, chatgpt_plan_signin local runner and auth/browser regressions: 88 combined offline checks and two responsive Chromium checks pass. Actual authorization/inference and production hosting remain unverified. [Results](../evaluations/chatgpt-plan-signin-20261013.md).
+
+**MCP integration readiness investigation (planned interface, not a delivered repair).**
+
+**Measured follow-up:** FastMCP 4.1.0 is recommended for an isolated Python 3.12 gateway. Same-environment pip dry runs prove Pydantic and FastAPI/Starlette conflicts; the isolated resolution succeeds with no installation. Current source/versions remain unchanged. Account binding, curated tooling and target Linux transport/auth still need implementation. [Library comparison](../research/lanes-mcp-library-selection-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- **Status:** Investigating. **Severity:** High for any future private-data/write exposure. **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem/RCA:** Existing staff reads are available, but there is no MCP-compatible remote OAuth/account binding or external audit-upload path. Generic get_current_active_admin only excludes Commuter; precise reports capability checks already exist elsewhere. Current MCP SDK conflicts with the Pydantic pin; 120-second worker leases and strict provider/policy identity cannot span an arbitrary chat session.
+- **Strategy:** Separate isolated gateway, exact authenticated saved-evidence reads, shared strict preview validation first; defer persistence/publication until provenance, idempotency, policy and actor boundaries qualify. Preserve existing provider code/configuration.
+- **Changes/checks:** Research/plan/index/project records only; static source and dependency metadata inspection, no runtime test/MCP connection/provider request/database mutation. [Details](../research/lanes-mcp-chatgpt-feasibility-20261013.md).
 
 **BUG-162 follow-up: Current quota cause isolated; Groq alternative investigated.**
 

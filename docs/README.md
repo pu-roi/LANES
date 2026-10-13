@@ -1,6 +1,16 @@
 # LANES documentation
 
-> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Publication checkpoint:** The developer requests this whole local implementation on roi-branch. Real ChatGPT plan sign-in/model discovery are verified; strict live auditing remains blocked at 3/5. MCP remains disabled/unconnected, and Linux/PostGIS shared-upgrade qualification is pending. [MCP startup/rollback](guides/lanes-mcp-pilot-runtime.md), [live results](evaluations/chatgpt-news-live-20261013.md), [offline implementation checks](evaluations/chatgpt-plan-signin-20261013.md). Earlier notices below are historical. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Real ChatGPT plan connection:** Personal-account authorization and model discovery pass. Three of five permitted news POSTs were sent; the final eight-claim response parses but yields seven time reviews and one saved/source depth disagreement. Automatic-news qualification is blocked, with two requests unused; providers/production unchanged. [Measured live results](evaluations/chatgpt-news-live-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier sign-in preparation:** A Windows ChatGPT plan sign-in helper is implemented; actual account authorization/inference is pending. Existing MCP read/preview code is implemented but disabled, and the requested shared dependency upgrade remains a candidate pending Linux/PostGIS qualification. Earlier research paragraphs below describe their historical stage. [Sign-in steps](guides/chatgpt-plan-local-signin.md), [measured checks](evaluations/chatgpt-plan-signin-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier MCP library research:** FastMCP 4.1.0 with qualified MCP SDK 2.3.0 is recommended for a separate Python 3.12 gateway. Local Python already qualifies; dry-run resolution proves current Pydantic and FastAPI/Starlette conflicts and succeeds in isolation. No package installation, source/config change or MCP connection. [MCP library comparison](research/lanes-mcp-library-selection-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier additive MCP research:** Existing OpenRouter/Gemini code/configuration is retained by developer request. The proposed separate gateway offers authenticated saved-evidence reads and later strict audit previews; remote OAuth, SDK dependency isolation and durable review policy/ownership still need implementation. No MCP connection, LLM POST, database write or deployment. [Research](research/lanes-mcp-chatgpt-feasibility-20261013.md), [phased plan](plans/lanes-mcp-chatgpt-review.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Latest Gemini/Groq research:** The exact Gemini blocker is daily Flash quota exhaustion (20/day). Groq accepts the full strict schema; clarified identity instructions pass eight captured claims, a separate single and conservative negation. Its 1,000 output-token/minute account cap requires smaller batches/pacing. 12/12 shared requests used; 215 offline tests pass. Runtime provider/cloud configuration unchanged. [Provider trial results](evaluations/gemini-groq-live-trials-20261013.md); [official-doc investigation](research/gemini-groq-free-auditing-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -171,6 +181,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Plans
 
+- [Additive LANES MCP review pilot](plans/lanes-mcp-chatgpt-review.md) — preservation contract, isolated gateway, authenticated reads, strict previews and later gated handoff.
+
 - [Cross-location flood prediction implementation](plans/cross-location-flood-prediction.md) — qualified fixed-prior depth/location AFT experiments and source-bound automatic comparison; primary model promotion remains gated.
 
 - [Flood Zone community updates](plans/flood-zone-community-updates.md) — shared Report Flood panel, editable road extent, New report discard confirmation, Still flooded / No floodwater actions and optional camera evidence and private review exclusively under Spatial Operations → Active Zones; implemented locally.
@@ -287,6 +299,10 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Vehicle passability](guides/vehicle-passability.md)
 
 ## Research and capstone
+
+- [MCP library comparison](research/lanes-mcp-library-selection-20261013.md) — stable framework choice, real resolver conflicts and successful isolated dependency resolution.
+
+- [LANES MCP/ChatGPT feasibility](research/lanes-mcp-chatgpt-feasibility-20261013.md) — official-doc review and actual dependency/auth/read/ownership integration gaps.
 
 - [News audit reliability and placement repair research](research/news-audit-reliability-20261012.md) — measured batch payload overhead, timeout/streaming and model-routing diagnosis, official/GitHub/Reddit/DEV/Stack Overflow findings, confirmed Pasig-only placement coverage and ordered repair/acceptance proposal. Research complete; implementation and new live benchmarks pending.
 

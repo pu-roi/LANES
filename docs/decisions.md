@@ -1,6 +1,18 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 11, 2026, 11:03 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## 28. Shared backend candidate upgrade and separate MCP/inference experiments
+
+**Date:** October 13, 2026 (Asia/Manila). **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Status:** Developer-selected local implementation; production qualification pending.
+
+The developer chose a shared Python 3.12 backend manifest upgrade instead of isolated gateway dependencies. Preserve the original qualified venv while installing the new candidate separately. Run FastMCP as a separate process with five curated read/preview tools, narrow signed backend delegation and disabled-by-default controls; never import app.main into the gateway.
+
+The developer subsequently clarified automatic news auditing as the goal. MCP tool access and ChatGPT plan inference authorization are separate. Keep the Google/ngrok pilot disabled; use documented local SIWC authorization and public Responses streaming to qualify original evidence before a separately identified worker provider. Real authorization is verified, but 3/5 live attempts have not qualified auditing. Do not label a ChatGPT result Gemini/OpenRouter or bypass terminal evaluation/publication gates.
+
+No production upgrade, model/migration change or automatic fallback is adopted by this Git publication. Linux/PostGIS/shared runtime, durable token renewal, hosting eligibility and actual MCP acceptance remain gates. [Runtime and rollback](guides/lanes-mcp-pilot-runtime.md), [measured results](evaluations/chatgpt-news-live-20261013.md).
 
 This document tracks major technical decisions, architecture shifts, and the reasoning behind them to ensure future maintainability and a clear record of "why" certain technologies were chosen.
 

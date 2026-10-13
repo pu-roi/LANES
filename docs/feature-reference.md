@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**News Intelligence local experiment (October 13):** Existing news intelligence now has disabled MCP original-evidence reads/strict previews and a separate ChatGPT plan-use qualification runner. Actual ChatGPT authorization and eight-result inference pass transport, but seven time reviews and one source/saved gauge disagreement prevent automatic use. No worker/publication replacement or deployment. [Results](evaluations/chatgpt-news-live-20261013.md), [pilot operation](guides/lanes-mcp-pilot-runtime.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Latest provider research (October 13):** Gemini daily Flash exhaustion (20/day) is proved; the shared experimental ledger reached 12/12 including Groq alternatives. Groq accepts the canonical strict schema and the clarified identity experiment validates captured cases, but recurring throughput, remaining ambiguity and runtime integration/weather are unqualified. Existing modules and active provider configuration remain unchanged. Earlier 3/12 status notes below retain their historical scope. [Measured results](evaluations/gemini-groq-live-trials-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

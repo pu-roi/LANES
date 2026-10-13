@@ -1,6 +1,38 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 13, 2026, 4:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 01:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Senior-planner publication audit
+
+Prepared the developer-authorized roi-branch bundle: disabled five-tool MCP review, shared dependency candidate, Windows protected ChatGPT sign-in, strict bounded inference runner and test/docs records. Real plan authorization is proved; live auditing fails evidence acceptance at 3/5. Original providers/history are preserved. The separate [MCP runbook](guides/lanes-mcp-pilot-runtime.md) includes prerequisites, enabled-only local startup and baseline rollback. No cloud deployment or additional provider request. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Real ChatGPT plan connection and captured-news inference
+
+User completed authorization; verified current plan scopes and account-specific model catalog (HTTP 200). Added bounded Responses streaming qualification and passed 23 offline transport/budget/evidence checks. Three actual gpt-6.1-sol requests reached HTTP 200/completion; first two failed local parsing. Fixed thin completion handling via finalized item events. The eight-claim result parses and strictly validates, but seven claims lack confirmed time and the original Santo Domingo half-knee/knee conflict is rejected. Stop at 3/5; no qualified positive case, publication, worker replacement or deployment. [Evidence](evaluations/chatgpt-news-live-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Repair local ChatGPT token-pair verification
+
+Found missing access-token input to python-jose ID-token validation; valid at_hash-bearing signed fixture fails before repair and passes afterward. Preserve all identity/permission checks and reject mismatched token pairs. 42 focused tests pass. Launched updated helper on 1457; exact real discarded-token claim and actual account connection remain unverified. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Diagnose real ChatGPT callback rejection
+
+Added fixed validation-stage codes to the local page and last_error_code status, preserving strict checks and no unvalidated credential saving. 35 focused offline tests pass. Started the updated helper on port 1456 because automatic review blocked stopping/restarting the old process. Exact actual identity/permission failure remains unproved until one fresh user attempt. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Repair local ChatGPT button request
+
+Reproduced the developer-reported HTTP 403: the page referrer policy made Chrome send Origin: null. Corrected only the landing-page policy, retaining strict local/CSRF checks and private callbacks. Added actual button-origin checks in desktop/mobile Chrome plus backend form/callback regression; restarted the helper for another real user sign-in attempt. No inference, provider or production change. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: Local ChatGPT plan sign-in prepared
+
+Implemented a loopback Windows sign-in helper with PKCE, verified identity/permissions, one-use callback and DPAPI storage outside Git. 88 combined offline authentication/MCP tests and two desktop/mobile Chromium page checks pass. Actual ChatGPT account authorization and inference remain pending; no automatic worker integration, provider change, publication or deployment. Shared dependency/MCP implementation is a candidate with remaining Linux/PostGIS gates. [Results](evaluations/chatgpt-plan-signin-20261013.md), [startup](guides/chatgpt-plan-local-signin.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: FastMCP selection research and measured compatibility
+
+Follow-up official-doc/release research recommends FastMCP 4.1.0 on existing Python 3.12 in a separate gateway using qualified MCP SDK 2.3.0. Real pip dry runs prove Pydantic 2.7.4 and FastAPI 0.111.0/Starlette <0.38 cannot share its current dependencies, while isolated resolution succeeds (68 Windows distributions). All eighteen inspected source hashes and installed LANES versions remain unchanged; no installation, server test, model request, database operation or deployment. Auth/account binding, explicit tool allowlist and target Linux runtime remain implementation gates. [MCP library comparison](research/lanes-mcp-library-selection-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 13: MCP repository review and additive pilot design
+
+Completed official-doc and code research for ChatGPT-assisted captured-news review. Existing read APIs/source snapshots can support a gateway; external audit submission is absent, Python MCP SDK Pydantic requirements conflict with the backend pin, remote MCP OAuth is missing, and worker lease/policy gates prevent casual chat-result insertion. A phased separate-gateway/read-only/strict-preview plan preserves provider code/configuration and all publication/history gates. Research/documentation only: zero provider POSTs, database queries/writes, installs or deployments. [Findings](research/lanes-mcp-chatgpt-feasibility-20261013.md), [plan](plans/lanes-mcp-chatgpt-review.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 13: Gemini quota isolation and Groq captured-evidence trials
 
