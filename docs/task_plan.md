@@ -1,12 +1,31 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 11:56 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
+## roi-branch publication preparation
 
-**Active release:** Complete September 24/9 scheduled-worker/public-API timelines, verify duplicate/expiry and later target depth, review and merge this focused release, then verify Cloud Build, live Scheduler/job and matching frontend rollout. No schema or live historical activation. [Evidence](evaluations/news-source-validation-20261013/README.md).
+- [x] Audit the eight authoritative documents and master index against PR #136 deployment and connected presentation evidence. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify 292 backend checks and TypeScript; confirm dependency/model/migration definitions are unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Resolve the existing Feed lint errors and mobile load-more error notification before claiming complete frontend readiness. Preserve existing Feed edits in the requested branch save. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Current release:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
+## Current autonomous-readiness follow-up
+
+- [x] Verify automatic Scheduler/worker and actual local/live API integration without manually dispatching a job; 99 focused checks pass. [Audit](evaluations/news-autonomy-audit-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Developer authorized applying the shared adaptive due-slot/reconciliation repair; duplicate protections and all 285 native release checks pass. [Implementation](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Verify main 5c6da28 cloud rollout (285 Linux checks/migrations/worker), matching frontend and the natural 11:30 PM post-release collection; next risk slot is 11:45 PM and inference is zero. [Evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Repair indented/stale PAGASA advisory isolation; retain uncertainty for the official page's undated notice. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Expand verified accessible source fallbacks and body-failure diagnostics; current source limitations are still reported. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Qualify missing boundary coverage and unresolved placement evidence rather than forcing polygons. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Keep automatic expiry disabled for the video presentation as explicitly instructed; no automatic restoration is scheduled. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Operator should replace the weak shared administrator credential; account changes remain under operator control. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Perform the developer-authorized September 24/9 presentation reconstruction in the existing cloud-connected 3000/8000 application, preserve historical facts, and verify five generated news zones in the same database, map and actual Active Zones. Seven guard/provenance tests pass; both runs use zero LLM requests. [Evidence and bounded coverage](evaluations/news-connected-demo-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier PR #134 release gates (completed):** Complete September 24/9 scheduled-worker/public-API timelines, verify duplicate/expiry and later target depth, review and merge this focused release, then verify Cloud Build, live Scheduler/job and matching frontend rollout. No schema or live historical activation. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+**Earlier PR #134 rollout checkpoint:** PR #134 merged the focused source-mode implementation into main at 420b38f, excluding MCP/framework upgrades. Complete September 24/9 scheduled-worker/public-API timelines pass with zero inference, initial 19-inch and later 10-inch Santo Domingo publication, duplicate safety and final expiry. Fresh coordinated Cloud Build and frontend rollout are currently running. [Evidence](evaluations/news-source-validation-20261013/README.md).
 
 **Follow-up delivered:** Explicit measurements override verbal gauges; saved descriptions restored without composed fragments. Scheduled-worker historical acceptance gives 27 alerts/seven zones including Santo Domingo at 19 inches; production v2 and its worker are verified. Main Git integration remains pending. [Evidence](evaluations/news-source-validation-20261013/README.md#measurement-precedence-and-scheduled-worker-follow-up).
 

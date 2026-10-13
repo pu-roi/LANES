@@ -44,14 +44,14 @@ def save_runtime(db, now, **changes):
 
 
 def test_collection_due_is_not_claimed_as_actual_next_scheduler_run(status_db):
-    now = datetime.now(timezone.utc)
+    now = datetime(2026, 10, 13, 15, 4, 27, tzinfo=timezone.utc)
     save_runtime(status_db, now)
     status_db.add(NewsDiscoveryRun(trigger="collector", status="completed", started_at=now-timedelta(hours=2),
                                     finished_at=now-timedelta(hours=2)+timedelta(seconds=15)))
     status_db.commit()
     result = read_news_automation(status_db, now=now)
     assert result.state == "overdue" and result.collection_overdue
-    assert result.next_collection_due_at == now-timedelta(minutes=90)
+    assert result.next_collection_due_at == datetime(2026, 10, 13, 13, 30, tzinfo=timezone.utc)
     assert result.scheduler_tick_target_minutes == 15
     assert not result.running and result.last_cycle.outcome == "completed"
 

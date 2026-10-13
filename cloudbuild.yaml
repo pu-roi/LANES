@@ -31,7 +31,7 @@ steps:
         tests/test_news_batch_audit.py tests/test_news_evaluation.py
         tests/test_news_automation.py tests/test_news_publication_lifecycle.py
         tests/test_news_estimated_road.py tests/test_news_pipeline.py
-        tests/test_news_weather.py --confcutdir=tests -q -p no:cacheprovider
+        tests/test_news_weather.py tests/test_news_collection_cadence.py --confcutdir=tests -q -p no:cacheprovider
 
   # 2. Push the image to Container / Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'

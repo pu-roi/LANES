@@ -189,15 +189,20 @@ def parse_pagasa(html: str, *, now: datetime) -> WeatherProvider:
     for section, fragments in parser.sections.items():
         body = "".join(fragments).strip()
         # Separate consecutive bulletins, keeping dated no-advisory notices intact.
-        blocks = re.split(r"(?=^(?:Heavy Rainfall Warning|Rainfall Advisory|Thunderstorm Advisory))", body, flags=re.M)
+        blocks = re.split(r"(?=^[ \t]*(?:Heavy Rainfall Warning|Rainfall Advisory|Thunderstorm Advisory))", body, flags=re.M)
         blocks = [b.strip() for b in blocks if b.strip()]
         if not blocks:
             errors.append("advisory_section_missing")
+        section_bulletins, section_errors = [], []
         for block in blocks:
             try:
-                bulletins.append(_bulletin(block, section, now))
+                section_bulletins.append(_bulletin(block, section, now))
             except ValueError as exc:
-                errors.append(str(exc))
+                section_errors.append(str(exc))
+        bulletins.extend(section_bulletins)
+        # Archived bulletins coexist with current ones on the official page.
+        # Their expiry is not a coverage error when this section has live data.
+        errors.extend(error for error in section_errors if error != "advisory_stale" or not section_bulletins)
     locations = sorted({loc for bulletin in bulletins if bulletin.relevant for loc in bulletin.locations})
     return WeatherProvider(name="PAGASA", source_url=PAGASA_URL, checked_at=now,
         status="risk" if locations else "uncertain" if errors else "quiet", risk_locations=locations,

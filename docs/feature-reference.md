@@ -1,8 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 13, 2026, 4:41 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 11:54 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Final release verified:** Main 420b38f / PR #134 serves the matching API/frontend and source-mode news/expiry jobs. Tests (275), migrations, deployed worker and real desktop/mobile API/map/news-panel checks pass. Full historical timelines prove initial 19-inch and later 10-inch publication, expiry and no duplicate writes. No agent or LLM news inference is required. [Evidence](evaluations/news-source-validation-20261013/README.md#final-production-release-from-main).
+**Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **News Intelligence release:** source_rules needs no AI key or credits. Existing collector, NLP, evaluation, OSM/NOAH estimated corridors, durable publication and expiry run through the scheduled worker. Frontend diagnostics identify NLP + source checks and omit irrelevant model quotas. Source consistency does not establish field verification. [Evidence](evaluations/news-source-validation-20261013/README.md).
 

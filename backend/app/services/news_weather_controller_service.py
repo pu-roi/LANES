@@ -11,6 +11,7 @@ from app.services.configuration_service import read_configuration, selected_news
 from app.services.news_job_dispatch_service import NewsJobGateway
 from app.services.news_weather_service import choose_interval, fetch_weather
 from app.schemas.news_weather import AdaptiveDecision
+from app.services.news_collection_cadence_service import collection_is_due, scheduler_slot
 
 CONTROLLER_LOCK = 614296503
 
@@ -35,7 +36,7 @@ def run_weather_tick(session_factory: sessionmaker, *, now: datetime | None = No
             with session_factory() as db:
                 state = read_controller(db)
                 # Retries of a completed quarter-hour tick never repeat provider calls or dispatch.
-                slot = now.replace(minute=(now.minute//15)*15, second=0, microsecond=0)
+                slot = scheduler_slot(now)
                 if state.last_tick_at and state.last_tick_at >= slot:
                     return {"outcome": "duplicate_tick", "dispatch_state": state.dispatch_state}
                 state.providers = fetch_weather(client, now=now)
@@ -50,7 +51,9 @@ def run_weather_tick(session_factory: sessionmaker, *, now: datetime | None = No
                 try:
                     if state.dispatch_state in ("reserved", "submitted", "unknown"):
                         gateway = gateway or NewsJobGateway(settings.NEWS_CLOUD_RUN_JOB, client)
-                        if state.dispatch_reserved_at and now-state.dispatch_reserved_at < timedelta(minutes=15):
+                        # A returned operation can be checked immediately. Only
+                        # unconfirmed starts need an eventual-listing grace period.
+                        if not state.dispatch_operation and state.dispatch_reserved_at and now-state.dispatch_reserved_at < timedelta(minutes=15):
                             return {"outcome": "dispatch_pending"}
                         result = gateway.reconcile(state.dispatch_token, state.dispatch_operation, state.dispatch_reserved_at)
                         if state.dispatch_state in ("reserved", "unknown") and result in ("running", "finished", "failed"):
@@ -65,7 +68,7 @@ def run_weather_tick(session_factory: sessionmaker, *, now: datetime | None = No
                     config = read_configuration(db)
                     sources = selected_news_sources(db)
                     previous = latest_collection_at(db)
-                    collection_due = config.news_collection_enabled and sources and (previous is None or now >= previous+timedelta(minutes=decision.interval_minutes))
+                    collection_due = config.news_collection_enabled and sources and collection_is_due(previous, now, decision.interval_minutes)
                     from app.services.news_evaluation_service import evaluation_policy, ADMISSION_AGE
                     from app.services.news_claim_auditor import NewsClaimAuditor
                     policy = evaluation_policy(NewsClaimAuditor(), config)

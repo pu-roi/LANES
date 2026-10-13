@@ -1,6 +1,12 @@
 # Local News Intelligence replay
 
-> **Last Updated:** October 12, 2026, 9:13 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 13, 2026, 9:50 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Current presentation: explicitly authorized connected reconstruction
+
+The current 3000 frontend and 8000 backend read the shared Cloud SQL `lanes` database. The developer approved the existing connected command's extension for the preserved September 24 Tribune and September 9 morning GMA reports, then disabled automatic expiry in System Settings. The command generated five estimated news zones (59–63); existing citizen zone 58 remains active. Actual admin Active Zones shows six records, and the same IDs are served by localhost and navlanes.live. Original article/observation/expiry dates remain intact; no new service/container/port or manual polygon was used. [Results, bounded coverage, guards and command explanation](../evaluations/news-connected-demo-20261013.md).
+
+This explicit connected presentation scope supersedes the older local-preview descriptions below for this session. The ordinary replay commands retain their dedicated-database guards; do not repoint those commands at cloud storage. `scripts.reconstruct_connected_news` requires an explicitly confirmed existing target, development mode, source_rules and the operator-owned expiry setting. Shared live users also see these historical demo zones while active. It does not alter production's normal freshness/admission rules.
 
 ## October 12 evening: Ordered fresh replay retry
 
