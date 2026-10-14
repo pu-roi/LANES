@@ -1,0 +1,59 @@
+{
+  "all_ten_pilots_in_training": true,
+  "automated_regression_result": {
+    "elapsed_seconds": 27.46,
+    "failed": 0,
+    "not_model_accuracy": true,
+    "passed": 425,
+    "warnings": 1
+  },
+  "cli_replay_byte_identical": true,
+  "context_content_equivalent": true,
+  "context_jsonl_records": 400,
+  "corrected_context_path": "backend/training/flood_ner/artifacts/cohort400-20261014/context-v2/context_evidence.jsonl",
+  "corrected_context_sha256": "c127acf69fde22581b5dc578c7ba38438a78efbd1378b439436fb55e7063cc01",
+  "documentation_check": {
+    "local_links_checked": 1314,
+    "missing_links": 0,
+    "python_syntax": "pass",
+    "report_json": "pass"
+  },
+  "export_refused_without_output": true,
+  "first_test_attempt": {
+    "cause": "Inherited encrypted local auditor batch-size value; explicit test environment resolves all failures.",
+    "failed": 19,
+    "passed": 405
+  },
+  "frozen_cohort_hashes": "pass",
+  "independent_gold": 0,
+  "isolated_before_fix": {
+    "elapsed_seconds": 42.5,
+    "failed": 0,
+    "passed": 424
+  },
+  "legacy_context_preserved": true,
+  "legacy_context_sha256": "2b224dc964e67ace10873a9c4e3acf427389d20cee122a7d16a97f95639cc799",
+  "original_100_register_unchanged": true,
+  "remaining_gaps": [
+    "Independent language and entity-label verification",
+    "Publisher/language confounding",
+    "Exact incident membership beyond conservative reporting groups",
+    "Missing real-source address forms and wider numeric variants",
+    "Complete contextual/severity reference annotation",
+    "Training-use assessment and model-tokenizer qualification"
+  ],
+  "review_scope": "All source/corpus integrity checks and source-context spot checks; no independent human label verification.",
+  "reviewed_at": "2026-10-14T18:47:07.087064+08:00",
+  "reviewed_group_cross_split_leakage": false,
+  "samples": 400,
+  "schema_version": "lanes-flood-ner-followup-review-v1",
+  "source_articles": 132,
+  "source_metadata_preserved_except_reviewed_group_overlay": true,
+  "source_window": "2022-01-01 through 2026-10-14",
+  "sources_verified": 142,
+  "spans": 1374,
+  "ten_calendar_year_window": "proposed only; not implemented",
+  "tokenizer_restore_full_corpus_alignment": "pass",
+  "trained_models": 0,
+  "training_admitted": 0
+}

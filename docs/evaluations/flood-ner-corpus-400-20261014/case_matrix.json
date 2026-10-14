@@ -1,0 +1,439 @@
+[
+  {
+    "case": "sitio",
+    "examples": [
+      {
+        "entity_end": 60,
+        "entity_start": 45,
+        "label": "LOCAL_AREA",
+        "passage_start": 171,
+        "record_id": "cohort-77490725c44bc0a43403",
+        "source_id": "news-2a63ee3f20e53039",
+        "source_sha256": "0acdfa36743671e2a3a357d79c5e746fd0f91f69ddaa535e0fb5ff7a122f13db",
+        "source_version": "d65bfe288add718847ecd3d2922c41c15cf8550535ae2115f69f61fe208ff77d",
+        "text": "Sitio Riverside",
+        "url": "https://rmn.ph/isang-barangay-sa-sta-barbara-pangasinan-sawa-na-sa-nararanasang-pagbabaha-taon-taon/"
+      },
+      {
+        "entity_end": 60,
+        "entity_start": 46,
+        "label": "LOCAL_AREA",
+        "passage_start": 972,
+        "record_id": "cohort-95447df302b841ba5d80",
+        "source_id": "news-b7e2bd59f8c47743",
+        "source_sha256": "161370b4b6d5168365a3122d7d3f6af9094237891dc09c521d25530a23ae8017",
+        "source_version": "228be03843c1bf305bc569438d68b7a7da2af530b4df37fc2d84193746731784",
+        "text": "Sitio Tagaytay",
+        "url": "https://rmn.ph/higit-150-pamilya-sa-mandaue-city-inilikas-dahil-sa-baha/"
+      },
+      {
+        "entity_end": 220,
+        "entity_start": 209,
+        "label": "LOCAL_AREA",
+        "passage_start": 180,
+        "record_id": "cohort-b2a21b5af8fb63f1513a",
+        "source_id": "news-b7e2bd59f8c47743",
+        "source_sha256": "161370b4b6d5168365a3122d7d3f6af9094237891dc09c521d25530a23ae8017",
+        "source_version": "228be03843c1bf305bc569438d68b7a7da2af530b4df37fc2d84193746731784",
+        "text": "Sitio Laray",
+        "url": "https://rmn.ph/higit-150-pamilya-sa-mandaue-city-inilikas-dahil-sa-baha/"
+      },
+      {
+        "entity_end": 140,
+        "entity_start": 126,
+        "label": "LOCAL_AREA",
+        "passage_start": 912,
+        "record_id": "cohort-d30f0c2bdb771f0b71ef",
+        "source_id": "GMA-997943",
+        "source_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+        "source_version": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+        "text": "Sitio Veterans",
+        "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+      },
+      {
+        "entity_end": 139,
+        "entity_start": 126,
+        "label": "LOCAL_AREA",
+        "passage_start": 146,
+        "record_id": "cohort-d3a17b8196f4d6db9904",
+        "source_id": "news-e64b45e263cc3f55",
+        "source_sha256": "7c906079ba75989b011a24c39cd62a84d10981dd4e496a7c325dedb08719567b",
+        "source_version": "231a0d2a1d65e52d4a06a58d1447eeaabd285d390945c73f294523f836bef95a",
+        "text": "Sitio Guibang",
+        "url": "https://rmn.ph/pagbaha-sa-bahagi-ng-sitio-guibang-barangay-pantal-aaksyunan/"
+      }
+    ],
+    "selected_entity_occurrences": 6,
+    "status": "supported_selected"
+  },
+  {
+    "case": "purok",
+    "examples": [
+      {
+        "entity_end": 68,
+        "entity_start": 60,
+        "label": "LOCAL_AREA",
+        "passage_start": 126,
+        "record_id": "cohort-5be54d4bb7b830f22e95",
+        "source_id": "news-dce3c6472e2b014d",
+        "source_sha256": "0b8483dd5dc306dd9618a770d41eb20e4ecfc9a5d0019290946ea346ecc4ab39",
+        "source_version": "89a69459f74d89636b266eecd0e86575f9437b0b619946e0b5251be5c339c3bd",
+        "text": "Purok 12",
+        "url": "https://rmn.ph/baha-sa-purok-12-brgy-villa-luna-humupa-na/"
+      },
+      {
+        "entity_end": 190,
+        "entity_start": 182,
+        "label": "LOCAL_AREA",
+        "passage_start": 126,
+        "record_id": "cohort-5be54d4bb7b830f22e95",
+        "source_id": "news-dce3c6472e2b014d",
+        "source_sha256": "0b8483dd5dc306dd9618a770d41eb20e4ecfc9a5d0019290946ea346ecc4ab39",
+        "source_version": "89a69459f74d89636b266eecd0e86575f9437b0b619946e0b5251be5c339c3bd",
+        "text": "Purok 12",
+        "url": "https://rmn.ph/baha-sa-purok-12-brgy-villa-luna-humupa-na/"
+      },
+      {
+        "entity_end": 108,
+        "entity_start": 101,
+        "label": "LOCAL_AREA",
+        "passage_start": 169,
+        "record_id": "cohort-832eaafaaede950792d0",
+        "source_id": "news-c35173f17c5c5f7c",
+        "source_sha256": "3fe2f7811f96b05aba8fa8dc81eda53c4abd52d5d53f0613449dfc1dc285eff4",
+        "source_version": "3b630352489e573491832e9fd0e9068782ceff3ad87b8041e06960347a57b187",
+        "text": "Purok 1",
+        "url": "https://rmn.ph/itinayong-dike-sa-talibaew-calasiao-dahilan-umano-ng-naipong-baha-sa-mga-kabahayan/"
+      },
+      {
+        "entity_end": 91,
+        "entity_start": 84,
+        "label": "LOCAL_AREA",
+        "passage_start": 972,
+        "record_id": "cohort-95447df302b841ba5d80",
+        "source_id": "news-b7e2bd59f8c47743",
+        "source_sha256": "161370b4b6d5168365a3122d7d3f6af9094237891dc09c521d25530a23ae8017",
+        "source_version": "228be03843c1bf305bc569438d68b7a7da2af530b4df37fc2d84193746731784",
+        "text": "Purok 5",
+        "url": "https://rmn.ph/higit-150-pamilya-sa-mandaue-city-inilikas-dahil-sa-baha/"
+      },
+      {
+        "entity_end": 112,
+        "entity_start": 100,
+        "label": "LOCAL_AREA",
+        "passage_start": 4740,
+        "record_id": "cohort-d8109a8c4fefbf910c21",
+        "source_id": "GMA-20260817-998778",
+        "source_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5",
+        "source_version": "f746dffb4918",
+        "text": "Purok 1 to 2",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+      }
+    ],
+    "selected_entity_occurrences": 8,
+    "status": "supported_selected"
+  },
+  {
+    "case": "zone",
+    "examples": [
+      {
+        "entity_end": 230,
+        "entity_start": 224,
+        "label": "LOCAL_AREA",
+        "passage_start": 441,
+        "record_id": "cohort-aa123f8a069579311eb0",
+        "source_id": "news-b8bc96e49a668f64",
+        "source_sha256": "26b2d7e2dda5d99523895bf46599de5ae206c666ad0cfd5a9f7f222a350c01e8",
+        "source_version": "39180b49968f83a8f67a66bfab76b36ea95f7ed44d499e150dba46f541206626",
+        "text": "Zone 5",
+        "url": "https://rmn.ph/installation-ng-bagong-perimeter-fence-sa-san-nicolas-matagumpay-na-naisagawa-riprapped-na-kalsada-magagamit-na/"
+      }
+    ],
+    "selected_entity_occurrences": 1,
+    "status": "supported_selected"
+  },
+  {
+    "case": "hundred_numbered_barangays",
+    "examples": [
+      {
+        "entity_end": 97,
+        "entity_start": 85,
+        "label": "BARANGAY",
+        "passage_start": 1121,
+        "record_id": "cohort-03eee0b656fe5eaa8c1a",
+        "source_id": "GMA-20240902-918977",
+        "source_sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d",
+        "source_version": "15153a2a97a3",
+        "text": "Barangay 172",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/"
+      },
+      {
+        "entity_end": 152,
+        "entity_start": 140,
+        "label": "BARANGAY",
+        "passage_start": 1121,
+        "record_id": "cohort-03eee0b656fe5eaa8c1a",
+        "source_id": "GMA-20240902-918977",
+        "source_sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d",
+        "source_version": "15153a2a97a3",
+        "text": "Barangay 185",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/"
+      },
+      {
+        "entity_end": 180,
+        "entity_start": 168,
+        "label": "BARANGAY",
+        "passage_start": 1121,
+        "record_id": "cohort-03eee0b656fe5eaa8c1a",
+        "source_id": "GMA-20240902-918977",
+        "source_sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d",
+        "source_version": "15153a2a97a3",
+        "text": "Barangay 177",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/"
+      },
+      {
+        "entity_end": 228,
+        "entity_start": 216,
+        "label": "BARANGAY",
+        "passage_start": 1121,
+        "record_id": "cohort-03eee0b656fe5eaa8c1a",
+        "source_id": "GMA-20240902-918977",
+        "source_sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d",
+        "source_version": "15153a2a97a3",
+        "text": "Barangay 179",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/"
+      }
+    ],
+    "selected_entity_occurrences": 4,
+    "status": "supported_selected"
+  },
+  {
+    "case": "letter_suffix",
+    "examples": [
+      {
+        "entity_end": 16,
+        "entity_start": 3,
+        "label": "BARANGAY",
+        "passage_start": 491,
+        "record_id": "cohort-ccc631706ddaf0c416c0",
+        "source_id": "news-b11e4314df572cad",
+        "source_sha256": "2a8f728d5f2aa2472f2d1ff691bccd171ed8444ff722c9e17dab8f001ef357a2",
+        "source_version": "2b8e17691b1306a20a76ffdf1bb2cc074487b468c713a0c63101607e7754f184",
+        "text": "Barangay 19-B",
+        "url": "https://www.gmanetwork.com/news/topstories/regions/896202/more-than-8k-residents-affected-by-flooding-in-davao-city/story/"
+      }
+    ],
+    "selected_entity_occurrences": 1,
+    "status": "supported_selected"
+  },
+  {
+    "case": "ordinals",
+    "examples": [
+      {
+        "entity_end": 113,
+        "entity_start": 105,
+        "label": "ROAD",
+        "passage_start": 975,
+        "record_id": "cohort-27ae3ffaf38e6598aa9a",
+        "source_id": "news-61bde888c0935e15",
+        "source_sha256": "3a2b2eaac8ca598f7d6d5dcf70387dcdc0d413d4d3280df04810cdcaa5e58a8f",
+        "source_version": "4018bbadaa72255b549dafc60158515faca0431b9b7c425b033c8ea554c24936",
+        "text": "25th St.",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/919102/enteng-continues-to-flood-parts-of-metro-manila/story/"
+      },
+      {
+        "entity_end": 113,
+        "entity_start": 105,
+        "label": "ROAD",
+        "passage_start": 1833,
+        "record_id": "cohort-8dcb6bc25367b4f67025",
+        "source_id": "news-61bde888c0935e15",
+        "source_sha256": "3a2b2eaac8ca598f7d6d5dcf70387dcdc0d413d4d3280df04810cdcaa5e58a8f",
+        "source_version": "4018bbadaa72255b549dafc60158515faca0431b9b7c425b033c8ea554c24936",
+        "text": "25th St.",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/919102/enteng-continues-to-flood-parts-of-metro-manila/story/"
+      },
+      {
+        "entity_end": 197,
+        "entity_start": 188,
+        "label": "ROAD",
+        "passage_start": 6862,
+        "record_id": "cohort-95ccb3d1aed038314b00",
+        "source_id": "GMA-20260817-998778",
+        "source_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5",
+        "source_version": "f746dffb4918",
+        "text": "20th Ave.",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+      },
+      {
+        "entity_end": 259,
+        "entity_start": 244,
+        "label": "LANDMARK",
+        "passage_start": 6862,
+        "record_id": "cohort-95ccb3d1aed038314b00",
+        "source_id": "GMA-20260817-998778",
+        "source_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5",
+        "source_version": "f746dffb4918",
+        "text": "19th St. Bridge",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+      },
+      {
+        "entity_end": 120,
+        "entity_start": 103,
+        "label": "ROAD",
+        "passage_start": 6250,
+        "record_id": "cohort-c8c5063144be170081a8",
+        "source_id": "GMA-20260817-998778",
+        "source_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5",
+        "source_version": "f746dffb4918",
+        "text": "Rafael 3rd Street",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+      }
+    ],
+    "selected_entity_occurrences": 6,
+    "status": "supported_selected"
+  },
+  {
+    "case": "roman_locality",
+    "examples": [
+      {
+        "entity_end": 88,
+        "entity_start": 74,
+        "label": "LOCAL_AREA",
+        "passage_start": 2059,
+        "record_id": "cohort-e65c3bc17c3aca0b67b6",
+        "source_id": "GMA-20260710-994434",
+        "source_sha256": "752d1b9d760195fd7f10fa4f1e2f12a7b2fe4e593d8853c8c3897adb5a9faf3f",
+        "source_version": "bfd9d195d38c",
+        "text": "Valle Verde VI",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/994434/list-flooded-areas-in-metro-manila-on-july-10-2026/story/"
+      }
+    ],
+    "selected_entity_occurrences": 1,
+    "status": "supported_selected"
+  },
+  {
+    "case": "borrowed_number_in_name",
+    "examples": [
+      {
+        "entity_end": 63,
+        "entity_start": 51,
+        "label": "BARANGAY",
+        "passage_start": 3792,
+        "record_id": "cohort-0bccabf648270d293986",
+        "source_id": "GMA-20250722-953419",
+        "source_sha256": "1e856d0fe899d2c3b9212e202d3b7698c9f217f4d38d4f921fe426de92e21010",
+        "source_version": "9edc0aec2b84",
+        "text": "Talon Singko",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/953419/mmda-list-of-flooded-areas-as-of-tuesday-4-40-p-m/story/"
+      },
+      {
+        "entity_end": 217,
+        "entity_start": 205,
+        "label": "BARANGAY",
+        "passage_start": 3317,
+        "record_id": "cohort-91dededc3b097875aefb",
+        "source_id": "GMA-20250722-953360",
+        "source_sha256": "58d43828029cf218458c9ac5ac85491e76414723b1786d4910e63d2049ce4edd",
+        "source_version": "8d34d8e0dbfc",
+        "text": "Talon Singko",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/953360/heavy-rains-from-habagat-trigger-floods-in-parts-of-metro-manila/story/"
+      },
+      {
+        "entity_end": 227,
+        "entity_start": 208,
+        "label": "BARANGAY",
+        "passage_start": 2529,
+        "record_id": "cohort-b70d4e56380d4bd6b22c",
+        "source_id": "GMA-997943",
+        "source_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+        "source_version": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+        "text": "Barangay Talon Tres",
+        "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+      },
+      {
+        "entity_end": 18,
+        "entity_start": 0,
+        "label": "BARANGAY",
+        "passage_start": 2846,
+        "record_id": "cohort-ede693a8fb75f587bb0c",
+        "source_id": "GMA-997943",
+        "source_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+        "source_version": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+        "text": "Barangay Talon Uno",
+        "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+      }
+    ],
+    "selected_entity_occurrences": 4,
+    "status": "supported_selected"
+  },
+  {
+    "case": "number_range_locality",
+    "examples": [
+      {
+        "entity_end": 112,
+        "entity_start": 100,
+        "label": "LOCAL_AREA",
+        "passage_start": 4740,
+        "record_id": "cohort-d8109a8c4fefbf910c21",
+        "source_id": "GMA-20260817-998778",
+        "source_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5",
+        "source_version": "f746dffb4918",
+        "text": "Purok 1 to 2",
+        "url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/"
+      }
+    ],
+    "selected_entity_occurrences": 1,
+    "status": "supported_selected"
+  },
+  {
+    "case": "Prk abbreviation",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "Block/Blk",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "Phase/Ph with letter compound",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "Lot",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "Area",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "Unit",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "leading zero identifiers",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "hundreds/larger identifiers outside barangay numbers",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "spelled teens/compound tens in locality identifiers",
+    "note": "Keep earlier source-linked research/constructed regressions separate. Do not invent examples or mark real training coverage complete.",
+    "status": "not_qualified_in_selected_cohort"
+  },
+  {
+    "case": "negative measurements/clocks/counts versus address identifiers",
+    "note": "Location spans omit numerical depths, clocks, fatality/household counts and monetary amounts. Separate context cues remain unreviewed fact candidates.",
+    "status": "source_reading_contrast_preserved"
+  }
+]

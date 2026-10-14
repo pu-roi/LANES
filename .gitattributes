@@ -61,3 +61,9 @@
 /docs/evaluations/cross-location-duration-20261008/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/scripts/evaluate_cross_location_duration.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/app/services/cross_location_duration_model.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Offline NER provenance JSON retains exact bytes across Windows/Linux checkouts.
+/docs/evaluations/flood-ner-*/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/docs/evaluations/flood-news-corpus-*/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/annotation/schema.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/configs/tokenizer.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

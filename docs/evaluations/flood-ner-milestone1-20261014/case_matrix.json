@@ -1,0 +1,230 @@
+{
+  "cases": [
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "named-sitio-parent",
+      "interpretation": "Named sitio with explicit barangay context; recognition and parent resolution are separate.",
+      "passage_end": 1170,
+      "passage_start": 1035,
+      "source_id": "GMA-997943",
+      "status": "captured_evidence",
+      "text_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+      "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "clearance-clock",
+      "interpretation": "Local recession/clearance wording has its own observation role; publication is not onset.",
+      "passage_end": 1605,
+      "passage_start": 1512,
+      "source_id": "GMA-997943",
+      "status": "captured_evidence",
+      "text_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+      "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "discourse-boundary",
+      "interpretation": "A city/source transition separates the preceding observation scope.",
+      "passage_end": 1798,
+      "passage_start": 1615,
+      "source_id": "GMA-997943",
+      "status": "captured_evidence",
+      "text_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+      "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "river-gauge",
+      "interpretation": "River gauge readings must not become road-water depths.",
+      "passage_end": 1798,
+      "passage_start": 1615,
+      "source_id": "GMA-997943",
+      "status": "captured_evidence",
+      "text_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+      "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "borrowed-number-name",
+      "interpretation": "A numeral embedded in a proper name remains part of that name.",
+      "passage_end": 2845,
+      "passage_start": 2697,
+      "source_id": "GMA-997943",
+      "status": "captured_evidence",
+      "text_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+      "url": "https://www.gmanetwork.com/news/topstories/nation/997943/thousands-evacuate-as-habagat-rains-cause-flooding-in-ncr-other-regions/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "shared-measurement",
+      "interpretation": "Two terminals share a supported depth and chronology, without independent invented measurements.",
+      "passage_end": 1629,
+      "passage_start": 1193,
+      "source_id": "TRIBUNE-20260830",
+      "status": "captured_evidence",
+      "text_sha256": "b3b1df9ad1d4b058c5f84f710a3ba2980521368a037a29b7ca562df40b14ab74",
+      "url": "https://tribune.net.ph/2026/08/30/extreme-rain-warning-renews-fears-across-pampanga-floods-rise-again"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "recession-rising",
+      "interpretation": "Recession followed by renewed rising is not lasting clearance.",
+      "passage_end": 1629,
+      "passage_start": 1193,
+      "source_id": "TRIBUNE-20260830",
+      "status": "captured_evidence",
+      "text_sha256": "b3b1df9ad1d4b058c5f84f710a3ba2980521368a037a29b7ca562df40b14ab74",
+      "url": "https://tribune.net.ph/2026/08/30/extreme-rain-warning-renews-fears-across-pampanga-floods-rise-again"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "collective-range",
+      "interpretation": "A collective depth range does not provide an exact reading for every road.",
+      "passage_end": 936,
+      "passage_start": 734,
+      "source_id": "TRIBUNE-20260830",
+      "status": "captured_evidence",
+      "text_sha256": "b3b1df9ad1d4b058c5f84f710a3ba2980521368a037a29b7ca562df40b14ab74",
+      "url": "https://tribune.net.ph/2026/08/30/extreme-rain-warning-renews-fears-across-pampanga-floods-rise-again"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "taglish-quote",
+      "interpretation": "Mixed-language quotation requires attribution; a surrounding English article does not erase its language.",
+      "passage_end": 1869,
+      "passage_start": 1630,
+      "source_id": "TRIBUNE-20260830",
+      "status": "captured_evidence",
+      "text_sha256": "b3b1df9ad1d4b058c5f84f710a3ba2980521368a037a29b7ca562df40b14ab74",
+      "url": "https://tribune.net.ph/2026/08/30/extreme-rain-warning-renews-fears-across-pampanga-floods-rise-again"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "tagalog-depth",
+      "interpretation": "Verbal road depth without a supported clock retains unknown observation time.",
+      "passage_end": 3412,
+      "passage_start": 3308,
+      "source_id": "GMA-997853",
+      "status": "captured_evidence",
+      "text_sha256": "4788e92ef7fc71eaaf898fc592f2667177a2c85e9cc9a4b780513c022ec3c38e",
+      "url": "https://www.gmanetwork.com/news/balitambayan/balita/997853/iba-t-ibang-bahagi-ng-bansa-binaha-dahil-sa-ulan-na-dulot-ng-habagat/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "habitual-current",
+      "interpretation": "Habitual flood context must be distinguished from nearby current observations.",
+      "passage_end": 2555,
+      "passage_start": 2416,
+      "source_id": "GMA-997853",
+      "status": "captured_evidence",
+      "text_sha256": "4788e92ef7fc71eaaf898fc592f2667177a2c85e9cc9a4b780513c022ec3c38e",
+      "url": "https://www.gmanetwork.com/news/balitambayan/balita/997853/iba-t-ibang-bahagi-ng-bansa-binaha-dahil-sa-ulan-na-dulot-ng-habagat/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "warning-time",
+      "interpretation": "A warning issuance clock does not establish road-flood onset.",
+      "passage_end": 3679,
+      "passage_start": 3540,
+      "source_id": "GMA-997853",
+      "status": "captured_evidence",
+      "text_sha256": "4788e92ef7fc71eaaf898fc592f2667177a2c85e9cc9a4b780513c022ec3c38e",
+      "url": "https://www.gmanetwork.com/news/balitambayan/balita/997853/iba-t-ibang-bahagi-ng-bansa-binaha-dahil-sa-ulan-na-dulot-ng-habagat/story/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "compound-address",
+      "interpretation": "Preserve lot, block, road, area, sitio, barangay and city roles separately.",
+      "passage_end": 44214,
+      "passage_start": 44122,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "named-purok",
+      "interpretation": "Purok/sitio hierarchy can combine numbers with names and boundary context.",
+      "passage_end": 44684,
+      "passage_start": 44630,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "larger-purok",
+      "interpretation": "Numbers beyond the illustrative 4/6 need corpus support.",
+      "passage_end": 46892,
+      "passage_start": 46884,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "roman-unit",
+      "interpretation": "Roman-number unit syntax needs explicit handling and source context.",
+      "passage_end": 47123,
+      "passage_start": 47066,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "block-abbreviation",
+      "interpretation": "Abbreviated block and phase components must not be collapsed.",
+      "passage_end": 58382,
+      "passage_start": 58328,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "letter-suffix",
+      "interpretation": "Alphanumeric lot identities retain their full suffix.",
+      "passage_end": 58950,
+      "passage_start": 58899,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "compact-address",
+      "interpretation": "Compact block/lot notation is a research gap, not an automatic alias.",
+      "passage_end": 45865,
+      "passage_start": 45806,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    },
+    {
+      "annotation_status": "research_case_not_pilot_label",
+      "case_id": "numbered-street",
+      "interpretation": "Ordinal street names differ from units or purok designators.",
+      "passage_end": 62700,
+      "passage_start": 62647,
+      "source_id": "QC-ADDRESS-DIRECTORY",
+      "status": "captured_evidence",
+      "text_sha256": "3fa4a60a7b24b5416fc02b072c7aa3ef39ebbf625fe9f280eee2aef732f128d3",
+      "url": "https://quezoncity.gov.ph/departments/social-services-development-department/"
+    }
+  ],
+  "limitations": [
+    "Interpretations are research proposals; source-exact pointers do not establish independent gold labels.",
+    "Official address-directory examples establish syntax, not current flooding."
+  ],
+  "missing_cases": [],
+  "schema_version": "lanes-flood-ner-research-v1"
+}

@@ -1,0 +1,713 @@
+{
+  "$defs": {
+    "Entity": {
+      "additionalProperties": false,
+      "properties": {
+        "comparison_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Comparison Key"
+        },
+        "end": {
+          "exclusiveMinimum": 0,
+          "title": "End",
+          "type": "integer"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GeographicIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "label": {
+          "enum": [
+            "ROAD",
+            "LANDMARK",
+            "LOCAL_AREA",
+            "BARANGAY",
+            "CITY",
+            "PROVINCE",
+            "DEPTH",
+            "TIME"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "start": {
+          "minimum": 0,
+          "title": "Start",
+          "type": "integer"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "text",
+        "id",
+        "label"
+      ],
+      "title": "Entity",
+      "type": "object"
+    },
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "depth_scope": {
+          "anyOf": [
+            {
+              "enum": [
+                "point",
+                "range",
+                "collective",
+                "maximum",
+                "unspecified"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Depth Scope"
+        },
+        "entity_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Entity Ids",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Span"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "depth",
+            "time",
+            "status",
+            "access"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "qualifiers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualifiers",
+          "type": "array"
+        },
+        "temporal_role": {
+          "anyOf": [
+            {
+              "enum": [
+                "onset",
+                "observation",
+                "report",
+                "publication",
+                "recession",
+                "clearance",
+                "unspecified"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Temporal Role"
+        },
+        "uncertainty": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "evidence"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "GeographicIdentity": {
+      "additionalProperties": false,
+      "description": "Optional reviewed identity; NER labels never manufacture coordinates.",
+      "properties": {
+        "osm_id": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Osm Id"
+        },
+        "osm_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "node",
+                "way",
+                "relation"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Osm Type"
+        },
+        "parent_entity_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Parent Entity Ids",
+          "type": "array"
+        },
+        "psgc_code": {
+          "anyOf": [
+            {
+              "pattern": "^\\d{10}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Psgc Code"
+        },
+        "reference_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Url"
+        },
+        "state": {
+          "default": "unresolved",
+          "enum": [
+            "unresolved",
+            "ambiguous",
+            "resolved"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "title": "GeographicIdentity",
+      "type": "object"
+    },
+    "Relation": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Span"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "fact_id": {
+          "title": "Fact Id",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "overrides_relation_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Overrides Relation Id"
+        },
+        "scope": {
+          "enum": [
+            "local",
+            "shared",
+            "collective",
+            "unresolved"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "target_entity_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Target Entity Ids",
+          "type": "array"
+        },
+        "uncertainty": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "fact_id",
+        "target_entity_ids",
+        "scope",
+        "evidence"
+      ],
+      "title": "Relation",
+      "type": "object"
+    },
+    "SourceCapture": {
+      "additionalProperties": false,
+      "properties": {
+        "admission_status": {
+          "default": "research_only",
+          "enum": [
+            "research_only",
+            "training_admitted"
+          ],
+          "title": "Admission Status",
+          "type": "string"
+        },
+        "article_group": {
+          "minLength": 1,
+          "title": "Article Group",
+          "type": "string"
+        },
+        "capture_version": {
+          "minLength": 1,
+          "title": "Capture Version",
+          "type": "string"
+        },
+        "captured_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Captured At"
+        },
+        "event_group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Group"
+        },
+        "extraction_method": {
+          "minLength": 1,
+          "title": "Extraction Method",
+          "type": "string"
+        },
+        "language": {
+          "default": "unknown",
+          "enum": [
+            "english",
+            "tagalog",
+            "taglish",
+            "unknown"
+          ],
+          "title": "Language",
+          "type": "string"
+        },
+        "origin": {
+          "default": "captured_original",
+          "enum": [
+            "captured_original",
+            "constructed_fixture"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "publication_basis": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Publication Basis"
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published At"
+        },
+        "publisher": {
+          "minLength": 1,
+          "title": "Publisher",
+          "type": "string"
+        },
+        "raw_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Sha256"
+        },
+        "reuse_status": {
+          "default": "unknown",
+          "enum": [
+            "unknown",
+            "allowed",
+            "restricted"
+          ],
+          "title": "Reuse Status",
+          "type": "string"
+        },
+        "reuse_terms": {
+          "minLength": 1,
+          "title": "Reuse Terms",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "lanes-flood-ner-v1",
+          "default": "lanes-flood-ner-v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "syndication_group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Syndication Group"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "text_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Text Sha256",
+          "type": "string"
+        },
+        "title": {
+          "default": "",
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "url",
+        "publisher",
+        "text",
+        "text_sha256",
+        "capture_version",
+        "article_group",
+        "reuse_terms",
+        "extraction_method"
+      ],
+      "title": "SourceCapture",
+      "type": "object"
+    },
+    "Span": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "exclusiveMinimum": 0,
+          "title": "End",
+          "type": "integer"
+        },
+        "start": {
+          "minimum": 0,
+          "title": "Start",
+          "type": "integer"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "text"
+      ],
+      "title": "Span",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "annotation_profile": {
+      "default": "context-rich-v1",
+      "enum": [
+        "context-rich-v1",
+        "location-only-v1"
+      ],
+      "title": "Annotation Profile",
+      "type": "string"
+    },
+    "annotation_revision": {
+      "minLength": 1,
+      "title": "Annotation Revision",
+      "type": "string"
+    },
+    "complete": {
+      "default": false,
+      "title": "Complete",
+      "type": "boolean"
+    },
+    "entities": {
+      "items": {
+        "$ref": "#/$defs/Entity"
+      },
+      "title": "Entities",
+      "type": "array"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/Fact"
+      },
+      "title": "Facts",
+      "type": "array"
+    },
+    "notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Notes",
+      "type": "array"
+    },
+    "passage_end": {
+      "exclusiveMinimum": 0,
+      "title": "Passage End",
+      "type": "integer"
+    },
+    "passage_language": {
+      "default": "unknown",
+      "enum": [
+        "english",
+        "tagalog",
+        "taglish",
+        "unknown"
+      ],
+      "title": "Passage Language",
+      "type": "string"
+    },
+    "passage_start": {
+      "minimum": 0,
+      "title": "Passage Start",
+      "type": "integer"
+    },
+    "quality": {
+      "default": "silver",
+      "enum": [
+        "silver",
+        "gold",
+        "constructed"
+      ],
+      "title": "Quality",
+      "type": "string"
+    },
+    "record_id": {
+      "minLength": 1,
+      "title": "Record Id",
+      "type": "string"
+    },
+    "relations": {
+      "items": {
+        "$ref": "#/$defs/Relation"
+      },
+      "title": "Relations",
+      "type": "array"
+    },
+    "review_status": {
+      "default": "draft",
+      "enum": [
+        "draft",
+        "accepted",
+        "rejected",
+        "unresolved"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    },
+    "reviewer": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reviewer"
+    },
+    "schema_version": {
+      "const": "lanes-flood-ner-v1",
+      "default": "lanes-flood-ner-v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/SourceCapture"
+    },
+    "split": {
+      "anyOf": [
+        {
+          "enum": [
+            "train",
+            "dev",
+            "test"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Split"
+    },
+    "teacher": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Teacher"
+    },
+    "text": {
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "text_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Text Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "record_id",
+    "source",
+    "passage_start",
+    "passage_end",
+    "text",
+    "text_sha256",
+    "annotation_revision"
+  ],
+  "title": "AnnotationRecord",
+  "type": "object"
+}

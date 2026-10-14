@@ -1,0 +1,45 @@
+{
+  "corpus_manifest_sha256": "d74db4a3571f8200485ed45f729bf92e314f7a8b9d4c8c5f1f325d04ee1a5e30",
+  "location_labels": [
+    "ROAD",
+    "LANDMARK",
+    "LOCAL_AREA",
+    "BARANGAY",
+    "CITY",
+    "PROVINCE"
+  ],
+  "model_results": null,
+  "pending_before_training": [
+    "source_use_assessment",
+    "independent_language_label_review",
+    "publisher_language_confounding",
+    "exact_incident_membership_review",
+    "missing_real_source_address_coverage",
+    "complete_context_severity_references",
+    "actual_model_tokenizer_and_resource_qualification",
+    "frozen_evaluation_contract"
+  ],
+  "primary_metric": "exact passage-relative start/end/type entity precision, recall and F1",
+  "references": "AI-created silver references; scores would measure teacher-label agreement, not human-verified accuracy",
+  "sample_partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "schema_version": "lanes-flood-ner-evaluation-contract-draft-v1",
+  "scope_limits": [
+    "DEPTH/TIME/status/access/severity remain separately reviewed tasks",
+    "Empty location labels do not establish cleared or absent flooding",
+    "Do not equate reporting components to independent physical storms",
+    "Constructed tokenizer regressions are excluded from the 400"
+  ],
+  "secondary_metric": "span-only place recognition; collapse the six reference types for coarse LOC candidate comparison and report label-mapping policy",
+  "slices": "language, entity type, publisher and reviewed address/context categories; publish support counts",
+  "split_use": {
+    "dev": "select model and hyperparameters",
+    "test": "final locked evaluation; never tuning",
+    "train": "fit weights"
+  },
+  "status": "draft; qualification gate remains open",
+  "target_thresholds": "existing roadmap 90% precision / 85% recall proposal; not achieved or scientifically qualified here"
+}

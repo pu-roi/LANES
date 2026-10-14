@@ -1,0 +1,184 @@
+[
+  {
+    "declared_dependency_checks": [
+      {
+        "installed_version": null,
+        "requirement": "spacy-transformers==1.3.5",
+        "satisfied": false
+      },
+      {
+        "installed_version": "3.7.5",
+        "requirement": "spacy>=3.8.3",
+        "satisfied": false
+      }
+    ],
+    "declared_spacy_compatibility": false,
+    "fine_grained_lanes_labels_available": false,
+    "inference_accuracy_measured": false,
+    "installed_spacy": "3.7.5",
+    "metadata_evidence": {
+      "README.md": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_md-README.md",
+        "sha256": "07e7e513a8002afbc17b18e2407ce5f8da281f05055d75503346815ef1ff8764",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/4960655b2d63fd9f306d60d554a95d7bfa5dd25d/README.md"
+      },
+      "config.cfg": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_md-config.cfg",
+        "sha256": "5f28ea34c7ec19191690231a52efa5d373beade1f8408e8d5a2020d67c6654d5",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/4960655b2d63fd9f306d60d554a95d7bfa5dd25d/config.cfg"
+      },
+      "meta.json": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_md-meta.json",
+        "sha256": "7fab1c60c4d8a89a49d40a88f2b4e3d458e6443e2165930f4cf0aa8a3b4cfdb9",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/4960655b2d63fd9f306d60d554a95d7bfa5dd25d/meta.json"
+      }
+    },
+    "model": "tl_calamancy_md",
+    "model_license": "MIT",
+    "ner_labels": [
+      "LOC",
+      "ORG",
+      "PER"
+    ],
+    "revision": "4960655b2d63fd9f306d60d554a95d7bfa5dd25d",
+    "runtime_tokenizer_qualified": false,
+    "spacy_requirement": ">=3.8.3",
+    "state": "metadata_spacy_version_conflict",
+    "version": "0.2.0",
+    "weights_loaded": false
+  },
+  {
+    "declared_dependency_checks": [
+      {
+        "installed_version": null,
+        "requirement": "spacy-transformers==1.3.5",
+        "satisfied": false
+      },
+      {
+        "installed_version": "3.7.5",
+        "requirement": "spacy>=3.8.3",
+        "satisfied": false
+      }
+    ],
+    "declared_spacy_compatibility": false,
+    "fine_grained_lanes_labels_available": false,
+    "inference_accuracy_measured": false,
+    "installed_spacy": "3.7.5",
+    "metadata_evidence": {
+      "README.md": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_trf-README.md",
+        "sha256": "4f4540f761a7cffcf32348322065fc4ebe7e055d2c9d0cc032220d851f4576ec",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_trf/resolve/5e24dd2acde15ecff6c2de819fa043a909477894/README.md"
+      },
+      "config.cfg": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_trf-config.cfg",
+        "sha256": "15dab0d7a3c5f7ce4597e71145c9b394242fff8f19b0c38bbae863bae0102b66",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_trf/resolve/5e24dd2acde15ecff6c2de819fa043a909477894/config.cfg"
+      },
+      "meta.json": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_trf-meta.json",
+        "sha256": "210131465053089a8013409184a25630453432a0587abb372aeb0ade07f0eafc",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_trf/resolve/5e24dd2acde15ecff6c2de819fa043a909477894/meta.json"
+      }
+    },
+    "model": "tl_calamancy_trf",
+    "model_license": "MIT",
+    "ner_labels": [
+      "LOC",
+      "ORG",
+      "PER"
+    ],
+    "revision": "5e24dd2acde15ecff6c2de819fa043a909477894",
+    "runtime_tokenizer_qualified": false,
+    "spacy_requirement": ">=3.8.3",
+    "state": "metadata_spacy_version_conflict",
+    "version": "0.2.0",
+    "weights_loaded": false
+  },
+  {
+    "declared_dependency_checks": [
+      {
+        "installed_version": null,
+        "requirement": "spacy-transformers>=1.2.5,<1.3.0",
+        "satisfied": false
+      }
+    ],
+    "declared_spacy_compatibility": true,
+    "fine_grained_lanes_labels_available": false,
+    "inference_accuracy_measured": false,
+    "installed_spacy": "3.7.5",
+    "metadata_evidence": {
+      "README.md": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_md-0.1.0-README.md",
+        "sha256": "624959769997ae04286a21666ea9c274044064821e2ce66450af7fc0549683b5",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/README.md"
+      },
+      "config.cfg": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_md-0.1.0-config.cfg",
+        "sha256": "e77d26602a84eb8e170e404a9f207f93be8fefd233760426a3d90ec6638e2f67",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/config.cfg"
+      },
+      "meta.json": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_md-0.1.0-meta.json",
+        "sha256": "283a173d2dbf698a81c1832a1134b9ec5c6c872c74733df62937a6b89e20d1cd",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/meta.json"
+      }
+    },
+    "model": "tl_calamancy_md",
+    "model_license": "MIT",
+    "ner_labels": [
+      "LOC",
+      "ORG",
+      "PER"
+    ],
+    "revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+    "runtime_tokenizer_qualified": false,
+    "spacy_requirement": ">=3.5.0,<4.0.0",
+    "state": "metadata_compatible_only",
+    "version": "0.1.0",
+    "weights_loaded": false
+  },
+  {
+    "declared_dependency_checks": [
+      {
+        "installed_version": null,
+        "requirement": "spacy-transformers>=1.2.5,<1.3.0",
+        "satisfied": false
+      }
+    ],
+    "declared_spacy_compatibility": true,
+    "fine_grained_lanes_labels_available": false,
+    "inference_accuracy_measured": false,
+    "installed_spacy": "3.7.5",
+    "metadata_evidence": {
+      "README.md": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_trf-0.1.0-README.md",
+        "sha256": "4b3d8af8366bbf5264f03461ed49bf5ae403da9fddb4b00bda99b2f97fed23d9",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_trf/resolve/39f330b7400f7069bf0e632c6dcdeb2f003bb145/README.md"
+      },
+      "config.cfg": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_trf-0.1.0-config.cfg",
+        "sha256": "13f68b52d31ef93391d408b4904ce39ed9060787d82cf1a8c49c6ba2a0e1538e",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_trf/resolve/39f330b7400f7069bf0e632c6dcdeb2f003bb145/config.cfg"
+      },
+      "meta.json": {
+        "raw_path": "backend/training/flood_ner/artifacts/qualification-20261014/model-evidence/tl_calamancy_trf-0.1.0-meta.json",
+        "sha256": "5e92ef557ce66cad0b7386ac5cdfd87383e5a7953046e7a1f3290d6c7281dd49",
+        "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_trf/resolve/39f330b7400f7069bf0e632c6dcdeb2f003bb145/meta.json"
+      }
+    },
+    "model": "tl_calamancy_trf",
+    "model_license": "MIT",
+    "ner_labels": [
+      "LOC",
+      "ORG",
+      "PER"
+    ],
+    "revision": "39f330b7400f7069bf0e632c6dcdeb2f003bb145",
+    "runtime_tokenizer_qualified": false,
+    "spacy_requirement": ">=3.5.0,<4.0.0",
+    "state": "metadata_compatible_only",
+    "version": "0.1.0",
+    "weights_loaded": false
+  }
+]

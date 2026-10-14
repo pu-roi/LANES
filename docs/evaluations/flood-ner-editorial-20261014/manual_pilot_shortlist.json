@@ -1,0 +1,242 @@
+[
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-765fa0179de6f5aefcea",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 1465,
+    "passage_language": "english",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2024:carina-gaemi",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "English city/road list, depth/time and passability",
+    "source_id": "news-d4ad93228fbfb786",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/914492/list-flooded-areas-in-metro-manila-on-wednesday-july-24-2024/story/",
+    "source_version": "a41fcf54646096cb477cfc627b2ffeda707d50d0d12cbd2e51c59feb7cc367d2",
+    "text_sha256": "b0589a21c870dd214ae0d14b51766d9ba0b147f958c0e5aa0b3db57eed6ecdc2"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-50effa0b3bf3deac3512",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 3275,
+    "passage_language": "english",
+    "passage_start": 94,
+    "proposed_event_group": "provisional:2024:enteng-yagi",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Shared city headings, differing clocks, subsided status and local exceptions",
+    "source_id": "GMA-20240902-918977",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/918977/up-to-chest-deep-floods-hit-some-metro-manila-areas-due-to-enteng/story/",
+    "source_version": "15153a2a97a3",
+    "text_sha256": "32108fc92e7a85c9657bd9f3206b985f53bf44a7462aaa5e1d78492847d2b846"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-c866154c4c7d5803e0f2",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 3654,
+    "passage_language": "english",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2024:enteng-yagi",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Repeated observations and subsidence overrides; river gauge versus road depths",
+    "source_id": "news-61bde888c0935e15",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/919102/enteng-continues-to-flood-parts-of-metro-manila/story/",
+    "source_version": "4018bbadaa72255b549dafc60158515faca0431b9b7c425b033c8ea554c24936",
+    "text_sha256": "3a2b2eaac8ca598f7d6d5dcf70387dcdc0d413d4d3280df04810cdcaa5e58a8f"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-a4ad9ec84d391385fddb",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 1826,
+    "passage_language": "english",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2025:rain-flood-2025-09",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "English earlier/later update, local exception and forecast negatives",
+    "source_id": "news-7e3cff6275b06366",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/958113/list-flooded-roads-in-metro-manila-amid-habagat-rains/story/",
+    "source_version": "f2772685a13d229a90a1912c7b876dbfd6331c0cae07419f427fde7cd13dd977",
+    "text_sha256": "215d316b06db162d38fb1e07d57545b650b54edd719dcc8d4b3790f509dc4480"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-2f885c58e18473593437",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 10000,
+    "passage_language": "english",
+    "passage_start": 121,
+    "proposed_event_group": "provisional:2026:rain-flood-2026-08",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Numbered/named localities, Purok ranges, Roman/digit forms, parent headings and captions",
+    "source_id": "GMA-20260817-998778",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/998778/list-flooded-roads-in-metro-manila-on-monday-morning/story/",
+    "source_version": "f746dffb4918",
+    "text_sha256": "09d1794e9b99577d3fbaad0852a140a77e8d3550bfc578289989a48b886aee09"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-8299ff4696caceb3f30f",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 1377,
+    "passage_language": "english",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2024:rain-flood-2024-01",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Purok 9 and Puroks 5–8 under different supported barangay contexts",
+    "source_id": "news-cbbe7131c73d0250",
+    "source_url": "https://www.gmanetwork.com/news/topstories/regions/894345/rescue-ops-launched-as-davao-floods-reach-rooftop-level-in-some-communities/story/",
+    "source_version": "8b5a24ff75b4ddef6ef3a8e18743649cb1aef3eaacdf298d5eaccf8c40b846d9",
+    "text_sha256": "9b53076db840aebcb64d1c3fb7d11b1aad7c97548b788701194ba4a8907f3d1b"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-a2d6c27c50203447387a",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 3059,
+    "passage_language": "taglish",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2026:rain-flood-2026-08",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Taglish embedded reporting with different clocks and recession",
+    "source_id": "news-0b427220c91c3b1e",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/1000340/heavy-rains-from-habagat-cause-floods-in-metro-manila/story/",
+    "source_version": "da70308dbf6421d48bf133518e2378e06ccb83b6501798d0e6b37665831ed43f",
+    "text_sha256": "603563fb109e8305b7b92f9bc953db5324499a70f314fb7ea30ddcc369274ea1"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-d4dba2bef5ddcfeeeed5",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 2140,
+    "passage_language": "taglish",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2023:rain-flood-2023-07",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Taglish local depth versus regional passability and shared facts",
+    "source_id": "news-cc7893469af71cb1",
+    "source_url": "https://www.gmanetwork.com/news/topstories/regions/875989/rains-flooding-reported-in-several-luzon-areas/story/",
+    "source_version": "5acd7e69b877051250d6c17b80e24d7e76898ac28190463d6c181a5122da0fb3",
+    "text_sha256": "6b8809ba8b609c75d3e0c02c98e9f3c63bb7d7c01bb82ad0e94a9eaa3bdc552d"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-1b2540af01619219faab",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 2121,
+    "passage_language": "taglish",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2024:carina-gaemi",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Taglish quoted reports, road/landmark mentions and river-only evidence",
+    "source_id": "news-5100fc1563858052",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/914519/metro-manila-residents-cope-with-floods-due-to-habagat-enhanced-by-carina/story/",
+    "source_version": "561839fb492bee794c8e895361ff998159661a28f567eb115f73bc4001de855f",
+    "text_sha256": "0f8842f598ee853a45eb9d79313e7326b35a46792a71111dc3bbf0a3c3123306"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-011f6ae929540bd30b5f",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 3677,
+    "passage_language": "taglish",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2024:kristine-trami",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Taglish ongoing flood access, relief claims and historical comparisons",
+    "source_id": "news-6b591d0fbc9779c5",
+    "source_url": "https://www.gmanetwork.com/news/topstories/nation/925009/marcos-relief-efforts-struggle-in-bicol-region-due-to-floods-even-after-kristine/story/",
+    "source_version": "4dfec6d72aabb9cb329736a4431c3000c0c7277bf36594ca6503e2dddeeb6ddf",
+    "text_sha256": "cf10050d20ce5d3b6bb9879b5acbd8a48bb9da663bfd23b3b591a2c52dc6fe5a"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-f1da7542ffac65477b88",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 2023,
+    "passage_language": "taglish",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2025:rain-flood-2025-07",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Taglish vehicle-access differences and unknown observation times",
+    "source_id": "news-6caf0c129b6d7069",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/954052/camanava-still-flooded-due-to-damaged-gate-inadequate-pumps/story/",
+    "source_version": "c0147cfdd238c7e5654ce0faf3c5e88eee6c834f486bb66a7eefcdc7d4167be4",
+    "text_sha256": "9e872c92d374ceaa5c461ba002b4cb74ea6b6908a2de2f5bbdd146aa7d6655eb"
+  },
+  {
+    "admission_status": "research_only",
+    "block_id": "candidate-0266ff4d21b686612a9d",
+    "hold_reasons": [
+      "reuse_assessment_pending",
+      "event_syndication_review_pending",
+      "annotation_not_started",
+      "research_team_manual_review_pending"
+    ],
+    "passage_end": 4690,
+    "passage_language": "taglish",
+    "passage_start": 0,
+    "proposed_event_group": "provisional:2025:rain-flood-2025-08",
+    "review_status": "manual_annotation_pending",
+    "selection_reason": "Taglish rapid onset/recession, rainfall millimeters versus water depth",
+    "source_id": "news-026d02c37bac6f5c",
+    "source_url": "https://www.gmanetwork.com/news/topstories/metro/957494/parts-of-metro-manila-flooded-after-heavy-to-intense-rains/story/",
+    "source_version": "653c89592e53d6ef022d51757acc64c8a707e45ef5d3bde72d3d24ea24c1c097",
+    "text_sha256": "32c4ef0b633889125126416cab3fdf6760eb875a455b6159df6781cf1b88cc32"
+  }
+]

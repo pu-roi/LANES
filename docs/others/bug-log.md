@@ -1,6 +1,80 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 14, 2026, 1:16 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 7:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved in an opt-in candidate: Numeric Unicode dashes and JSONL separators
+
+- **Status / severity / resolver:** Numeric dash repair verified in opt-in v3; frozen/default v2 remains unchanged. JSONL separator handling resolved. Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Purok 1 to 2—baha did not align at the locality boundary. Literal U+0085/U+2028/U+2029 inside JSON strings could make splitlines treat one JSONL record as several lines.
+- **Root cause:** Universal infix defaults did not split a numeric-to-word typographic dash; the reader used all Unicode line boundaries rather than physical LF and the writer left alternate separators literal.
+- **Solution:** Opt-in v3 splits numeric en/em-dash delimiters while preserving ASCII codes and original characters. Escape alternate separators in the JSON representation and read LF-delimited records; decoded text remains exact.
+- **Verification:** Fourteen constructed boundary and three Unicode-separator cases pass. V3 aligns all 400 records; frozen v2 bytes/corpus/backup are unchanged. Final suite 455 passed, one warning. No production tokenizer promotion.
+- **Files:** backend/training/flood_ner/export.py, sources.py, qualification.py, cli.py, tests/test_flood_ner_qualification.py and qualification records. [Evidence](../evaluations/flood-ner-qualification-20261014/README.md).
+
+## Resolved locally: Auxiliary context records were not valid JSONL
+
+- **Status / severity / resolver:** Resolved for offline corpus preparation; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** A standard line-by-line JSON reader failed on context-v1/context_evidence.jsonl although 400 contextual objects had been preserved.
+- **Root cause:** The one-off publication script concatenated indented JSON objects, placing each object on several physical lines. Earlier checks compared bytes and hashes but did not parse individual lines.
+- **Solution:** Use the reusable write_context_jsonl helper and the existing compact JSONL serializer; preserve the earlier file and write a separate context-v2 artifact. The helper refuses an existing destination. All 400 corrected objects equal their historical objects, with no new contextual facts or accepted labels.
+- **Verification:** Exactly 400 lines parse individually; text/source/cue hashes match; fresh cohort replay is byte-identical. The new regression covers multiline CRLF/LF, Unicode, quotes, unreviewed cue boundaries, repeat serialization and overwrite refusal. Final isolated suite: 425 passed, one warning.
+- **Files:** backend/training/flood_ner/context.py, backend/tests/test_flood_ner_tooling.py, ignored publication/context artifacts and associated corpus/task/progress records. [Review](../evaluations/flood-ner-corpus-400-20261014/followup_review.json). No runtime or database change.
+
+## Resolved locally: Offline address delimiters blocked valid NER spans
+
+- **Status / severity / resolver:** Resolved for offline corpus preparation; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Valid source mentions in CAUAYAN CITY-, V. Mapa- and -Bonifacio Drive could not align to the old blank tokenizer; corpus validation rejected exact names.
+- **Cause:** Attached dateline/list hyphens stayed inside tokens, while annotations correctly excluded delimiter punctuation.
+- **Fix:** Version lanes.xx.address-v2, detach leading/list and trailing dateline delimiters, retain internal 25-A codes and preserve all original characters. Freeze tokenizer/schema bytes and hashes; earlier exports remain intact.
+- **Verification:** Four delimiter/internal-code checks, all 400 real annotations and byte-identical cohort replay pass. Existing locality/number/location regressions remain in the final corpus verification.
+- **Files:** backend/training/flood_ner/export.py, annotation/schema.py, cohort.py, cli.py and offline tests. Cohort CLI also rejects missing/corrupt capture/publication evidence and blank review identities/rationale. [Corpus evidence](../evaluations/flood-ner-corpus-400-20261014/README.md). No runtime/parser/database change.
+
+
+
+## Resolved for offline editorial preparation: Source widgets and article language tags distorted passage coverage
+
+- **Status / severity / resolver:** Editorial corrections delivered locally; Medium. Manual annotations/admission remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Draft windows omitted late numbered-locality context, included publisher interface material and used unknown passage languages. Full saved GMA lists contained later-event Other Stories widgets; keyword cues from widgets/metadata/captions looked like reporting coverage. Five RMN article tags said English although the actual bodies were Tagalog.
+- **Root cause:** Character-window proposals and article-level collection metadata were preliminary research aids, not complete editorial/language review. Some saved extraction recipes preserved inline publisher widgets. Broad keyword cues did not distinguish narrative from metadata or other linked stories.
+- **Solution:** Review complete frozen sources, record explicit source-bound selections/exclusions, retain disjoint blocks with sibling-context holds, distinguish AI-assisted versus human review, classify actual passage language and preserve unsupported-language/measurement/chronology uncertainty. Keep the original register/captures intact; new metadata supersedes their language tags for sample selection only. Excluded cues retain auditable dispositions.
+- **Files:** backend/training/flood_ner/editorial.py, cli.py, README.md, backend/tests/test_flood_ner_editorial.py and [editorial evaluation](../evaluations/flood-ner-editorial-20261014/README.md).
+- **Verification:** 100 full sources validate against original identities; 113 exact blocks account for all non-whitespace source text, restoring four numbered-context pointers. Ten related-story ranges and other interface/metadata/caption exclusions are explicit. Scope-compatible English/Taglish blocks number 78, not 400 completed samples. No runtime parser or operational records changed; human review, source reuse and final grouping remain separate gates.
+
+## Resolved locally: Draft NER candidate identity and review holds could be altered
+
+- **Status / severity / resolver:** Technical contract resolved locally; Medium. Readiness remains open. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The candidate contract accepted a forged article key, an arbitrary correctly shaped candidate ID or a reduced hold list. Generic editorial holds did not expose which windows contained interface text/captions, omitted known locality cues or ended before the complete source. Existing source ambiguity notes were omitted from the passage queue.
+- **Root cause:** Validation checked text/hash/offsets but did not bind metadata identity to source/version/bounds or require the unresolved review conditions. The producer did not attach specific context diagnostics or source-review notes.
+- **Solution:** Bind candidate/article identity to its source and bounds, require unresolved language/group/editorial/annotation/reuse/provenance holds, reject empty cue roles, retain source-review notes/known measurement ambiguity and attach explicit per-window diagnostics. Preserve previous queues and all source/text identities.
+- **Files:** backend/training/flood_ner/preparation.py, backend/tests/test_flood_ner_preparation.py and readiness-review evaluation/planning records.
+- **Verification:** All three original tampering probes now reject; 378 focused checks pass. All 100 text/boundary/source identities and eight policy hashes remain valid. Nine interface-text flags, one caption, 43 truncated-source flags, two omitted locality cues and one crop-height ambiguity remain semantic review work. [Review decision](../evaluations/flood-ner-readiness-review-20261014/README.md). No annotation/training advancement or production changes.
+
+## Resolved locally: Offline NER source review and export guards were incomplete
+
+- **Status / severity / resolver:** Resolved for offline tooling; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe). Pilot labeling and production changes are outside this review.
+- **Problem:** Adversarial review of the delivered preparation tools accepted a forged canonical story on the same publisher and altered retrieval metadata, crashed on malformed evidence/version containers, normalized CRLF during file reads, allowed URL aliases across splits and accepted explicitly provisional groups. Repeated Wikipedia revisions could overwrite metadata or collide across languages.
+- **Root cause:** Dictionary shape and provenance checks were incomplete; canonical keys were checked against supplied URLs rather than captured identity; frozen text used universal-newline reads; corpus partition checks compared literal URLs and nonempty group names; revision files used only the local revision ID.
+- **Solution:** Bind identities/timestamps/reuse and publication evidence to captured sources; report malformed input errors; preserve bytes/newlines and browser metadata; normalize equivalent percent escapes and URL/article aliases; refuse unresolved group placeholders; preserve immutable Wikipedia metadata/content with language-scoped new filenames and legacy compatibility. Correct the erroneous documentation claim that metadata was committed.
+- **Files:** backend/training/flood_ner/collection.py, annotation/validation.py, export.py, backend/tests/test_flood_ner_collection.py and test_flood_ner_tooling.py; review/evaluation and planning records.
+- **Verification:** All 362 focused checks pass, including new adversarial cases. The original 100-register bytes pass stricter verification; 98 bodies reproduce, 20 cases and 36 supporting references match, and 22 live publisher publication days are corroborated. The Philstar AMP structured-date conflict is recorded separately, with its visible article header supporting the accepted publication day. [Detailed audit](../evaluations/flood-ner-review-20261014/README.md).
+
+## Resolved locally: Offline publisher capture selected navigation or a static site shell
+
+- **Status / severity / resolver:** Resolved for offline research tooling; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe). Runtime ingestion is unchanged.
+- **Problem:** During historical-news collection, generic article/main extraction included surrounding GMA navigation and ABS-CBN footer/newsletter content. Such text could appear substantial without containing an article body.
+- **Root cause:** A broad visible container was selected before an explicit NewsArticle articleBody; publisher-rendered bodies can be absent from static HTTP HTML. GMA articleBody can itself contain HTML.
+- **Solution:** Prefer explicit JSON-LD bodies, decode embedded HTML, preserve meta date/headline evidence and use ABS-CBN's body container. Refuse empty body shells; preserve old shell captures as excluded outcomes. Import explicitly saved normal public rendered bodies/publication headers with immutable hashed DOM provenance when available. Count only reviewed, verified bodies and preserve every failure.
+- **Files:** backend/training/flood_ner/sources.py, collection.py, cli.py and backend/tests/test_flood_ner_collection.py. No operational parser, settings, database or deployment changes.
+- **Verification:** JSON-LD HTML/entity extraction, static-shell rejection, publication metadata precedence, rendered-header provenance/immutability, capture failures and source/evidence hashes pass within 338 focused checks. Forty-one old static shells are excluded; five rendered ABS-CBN bodies qualify across the five years. [Acceptance](../evaluations/flood-news-corpus-100-20261014/README.md).
+
+## Resolved locally: Shared narrative clock leaked into independent road paragraphs
+
+- **Status / severity / resolver:** Resolved locally; High (unsupported temporal evidence can affect downstream freshness). [@roicambe](https://github.com/roicambe) (Roi Cambe). No deployment or operational-data correction is claimed.
+- **Problem:** Two existing test_news_temporal_scope cases inherited an earlier 2:47 PM observation for a later independently worded road paragraph that supplied no clock. Found during the authorized NER groundwork; the developer subsequently authorized continuing with gap fixes.
+- **Root cause:** apply_shared_update_times checked chronology/source markers and gap length but allowed ordinary paragraph boundaries. The supported city-led September 24 continuation must remain distinguishable from independent road paragraphs.
+- **Solution:** Require directly adjacent, resolved city-led continuation for paragraph inheritance; retain its bounded paragraph scope, reject unrelated intervening paragraphs, and preserve explicit/list clocks, same-paragraph shared facts, original offsets and source/chronology guards. Shared clocks retain their uncertainty marker and all downstream validation/publication gates. Advance extractor to taglish-rules-v1.8 and durable pipeline to rules-spatial-preview-v21; existing run history is not rewritten.
+- **Files:** backend/app/services/taglish_extraction_service.py, backend/app/crud/news_processing.py, backend/tests/test_news_temporal_scope.py, and associated NER research/evaluation/task records.
+- **Verification:** The original two failures and added paragraph-continuation/unrelated-paragraph cases pass. 301 combined tooling, location, heading, temporal, September 24 replay, source-validation and in-memory durable-processing checks pass. Test configuration explicitly disables provider credentials and cannot connect to shared PostgreSQL. [Detailed evaluation](../evaluations/flood-ner-milestone1-20261014/README.md).
 
 ## Resolved locally: Flood report community sharing waited for map approval
 

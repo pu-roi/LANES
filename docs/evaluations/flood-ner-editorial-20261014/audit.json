@@ -1,0 +1,65 @@
+{
+  "ai_assisted_editorial_reviews": 100,
+  "all_original_source_records_preserved": true,
+  "assigned_splits": 0,
+  "capture_file_evidence_errors": [],
+  "context_blocks_are_contiguous_and_source_exact": true,
+  "cross_block_context_warning": "22 blocks over 9 articles require source/sibling context before standalone sample admission.",
+  "event_findings_status": "Proposal only; storms/updates/syndication not frozen.",
+  "human_annotations": 0,
+  "known_ad_widget_lines_absent": true,
+  "manual_pilot_shortlist": 12,
+  "non_whitespace_source_accounting": "100/100 pass",
+  "original_43_truncated_windows": "Replaced by complete reporting sections with explicit exclusions, not implicit character limits.",
+  "restored_context_pointers": [
+    {
+      "block_id": "candidate-2f885c58e18473593437",
+      "case": "restored numbered-locality/address context",
+      "end": 8073,
+      "sha256": "d130668719c5291375f314db07f19c3c4a4f5af913e2460cd43ab4ddcecefd2e",
+      "source_id": "GMA-20260817-998778",
+      "source_version": "f746dffb4918",
+      "start": 8058
+    },
+    {
+      "block_id": "candidate-2f885c58e18473593437",
+      "case": "restored numbered-locality/address context",
+      "end": 4852,
+      "sha256": "ecc6234fc35bb5e54623f5a02de2e17cb9dba7e2f1256793c8d28de9bb8821ef",
+      "source_id": "GMA-20260817-998778",
+      "source_version": "f746dffb4918",
+      "start": 4828
+    },
+    {
+      "block_id": "candidate-2f885c58e18473593437",
+      "case": "restored numbered-locality/address context",
+      "end": 4963,
+      "sha256": "0007ed53b359b084c4f2eac9f5fb28132738975920a01a3f0108849b6cc40e0e",
+      "source_id": "GMA-20260817-998778",
+      "source_version": "f746dffb4918",
+      "start": 4946
+    },
+    {
+      "block_id": "candidate-259a8cd920d6ca97560b",
+      "case": "restored numbered-locality/address context",
+      "end": 212,
+      "sha256": "8aa3a6ef86f9de7b5f69431cb49f52f5f47f4071f8d4edc7895b2b7a56efd4f9",
+      "source_id": "news-dce3c6472e2b014d",
+      "source_version": "89a69459f74d89636b266eecd0e86575f9437b0b619946e0b5251be5c339c3bd",
+      "start": 186
+    }
+  ],
+  "reviewed_articles": 100,
+  "schema_version": "lanes-flood-ner-editorial-audit-v1",
+  "source_inventory_issues": [],
+  "source_register_sha256": "4f56b2ed20866056a0de2ac9c8b1c666336b0ced41f4cfb4f8fa9cf89a325514",
+  "source_register_valid": true,
+  "training_admitted": 0,
+  "validated_context_blocks": 113,
+  "verification": {
+    "cli_replay_files_identical": true,
+    "editorial_checks": 18,
+    "elapsed_seconds": 27.45,
+    "focused_checks_passed": 396
+  }
+}

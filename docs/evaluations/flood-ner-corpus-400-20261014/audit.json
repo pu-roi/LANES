@@ -1,0 +1,61 @@
+{
+  "accepted_location_records": 400,
+  "all_ten_retained_pilots_in_train": true,
+  "automated_regression_result": {
+    "additional_checks": 24,
+    "baseline_retained": 400,
+    "elapsed_seconds": 30.58,
+    "failed": 0,
+    "not_model_accuracy": true,
+    "passed": 424,
+    "warnings": 1
+  },
+  "context_evidence_path": "backend/training/flood_ner/artifacts/cohort400-20261014/context-v2/context_evidence.jsonl",
+  "context_evidence_sha256": "c127acf69fde22581b5dc578c7ba38438a78efbd1378b439436fb55e7063cc01",
+  "deterministic_cli_replay_byte_equal": true,
+  "documentation_check": {
+    "local_links_checked": 1307,
+    "missing_links": 0,
+    "python_syntax": "pass",
+    "report_json": "pass"
+  },
+  "followup_review": "followup_review.json",
+  "frozen_cohort_files": {
+    "annotation_schema.json": "c52794ddb5b361b33c12d9a2a19bf5ee35c8d1d64fa472ecd00145dca344f52f",
+    "coverage.json": "19d94b06d3ea7fec6ec9fa26f123fc4a42707d6c5d84681d2edb5b860959c08e",
+    "exclusion_register.json": "c1c2c5a4deaa0176418a92cd81ea5482418a88412f81bd03c73cc9ffe0d16f50",
+    "group_reviews.json": "c1b9a3ff27e8714b185de092e46988c43988d1492d97ce410c02d1bb390678fa",
+    "grouped_annotations.jsonl": "4a3d4249379634eafb81e231737bc6db723b4af9ecd4818515e4d0b80daeec9d",
+    "selection_register.json": "6120bc1fc3f09f7b45661f265ac8b5e35e713e5f4362174a64a7b5b392b154f9",
+    "tokenizer.bin": "0855c702cf80e1c8f3be6145997c10e1fdfa4209b5274b4418a14e3b6e0b1948"
+  },
+  "human_verified_gold": 0,
+  "legacy_context_preserved_sha256": "2b224dc964e67ace10873a9c4e3acf427389d20cee122a7d16a97f95639cc799",
+  "no_psgc_osm_ids_invented": true,
+  "original_100_register_sha256_unchanged": "4f56b2ed20866056a0de2ac9c8b1c666336b0ced41f4cfb4f8fa9cf89a325514",
+  "raw_source_captures_unchanged": true,
+  "research_export_rejected_without_output": true,
+  "reviewed_sources_hash_and_publication_verified": 142,
+  "schema_version": "lanes-flood-ner-corpus400-audit-v1",
+  "selected_sources": 132,
+  "source_exact_validation_errors": [],
+  "trained_models": 0,
+  "unresolved_original_pilots_excluded": [
+    {
+      "outcome": "excluded_unresolved_original_pilot",
+      "passage_sha256": "4465e67e5f44508b190c329dbad846b430113ea6c60919398e0bf4cd1286727f",
+      "reason": "Compressed location names do not support all proposed label types; keep original annotations unchanged.",
+      "record_id": "location-c49f571e60422a508b74",
+      "source_id": "GMA-20240902-918977",
+      "source_version": "15153a2a97a3"
+    },
+    {
+      "outcome": "excluded_unresolved_original_pilot",
+      "passage_sha256": "47be563b1e89b3c9a687310501c70791ba2e10ce1409b69d8590609eaa8bc011",
+      "reason": "Compressed location names do not support all proposed label types; keep original annotations unchanged.",
+      "record_id": "location-a8126620163c0ef51a91",
+      "source_id": "news-61bde888c0935e15",
+      "source_version": "4018bbadaa72255b549dafc60158515faca0431b9b7c425b033c8ea554c24936"
+    }
+  ]
+}

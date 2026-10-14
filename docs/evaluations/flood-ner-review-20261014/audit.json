@@ -1,0 +1,1354 @@
+{
+  "accepted_count": 100,
+  "adversarial_probes": [
+    {
+      "errors": [
+        "news-c68951febed92712: canonical article identity mismatch"
+      ],
+      "probe": "unrelated_same_publisher_canonical",
+      "rejected": true
+    },
+    {
+      "errors": [
+        "news-c68951febed92712: invalid body evidence pointer"
+      ],
+      "probe": "malformed_evidence_container",
+      "rejected": true
+    },
+    {
+      "errors": [
+        "news-c68951febed92712: missing/mismatched captured source"
+      ],
+      "probe": "unhashable_capture_version",
+      "rejected": true
+    },
+    {
+      "errors": [
+        "news-c68951febed92712: captured_at does not match captured provenance"
+      ],
+      "probe": "invented_retrieval_time",
+      "rejected": true
+    }
+  ],
+  "body_reproduction_counts": {
+    "True": 98,
+    "captured-original fixture only; original HTML/retrieval timestamp unavailable": 2
+  },
+  "distinct_keys": 100,
+  "existing_location_probe": {
+    "city": "Malabon",
+    "comparison_key": "sitio 6",
+    "name": "Sitio Seis",
+    "note": "OSM locality candidate and supported parent context only; no flood geometry.",
+    "osm_name": "Sitio Sais",
+    "osm_node": 11155381066,
+    "psgc_locality_identity": null,
+    "quarter": "Catmon"
+  },
+  "frozen_source_checks": [
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-03-12",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-c68951febed92712",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-07-09",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-805aa72706a37710",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-07-14",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-0210e58edd3cd487",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-07-17",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-45e8f7fe6f33283a",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-07-17",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-85f488359c8b6890",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2022-07-30",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20220730-839934",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-09-01",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-b4a16919f4acbe0b",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2022-09-03",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20220903-843663",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2022-09-20",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20220920-845479",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "browser-rendered-article-dom-v1",
+      "publication_date": "2022-09-26",
+      "publication_evidence_verified": true,
+      "publisher": "ABS-CBN News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "ABS-BROWSER-abs-2022",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-13",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-ade161b2a72351ad",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-16",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-ab39c678c2ff04d8",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-28",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-79addb1dcc55db8b",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-28",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-651c21937c60bd33",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-29",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-b5808569b38396a9",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-29",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-583616a8cc4436c0",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-30",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-7df6a07eb3e66052",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-10-31",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-f14b12f3aedf03c4",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-11-24",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-3f3479483ef94932",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-12-11",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-3866cea020f8af0e",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-12-26",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-fe608afcbfa986eb",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2022-12-26",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-6b97cb5f21a1dcbc",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-01-11",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-f526421386d23fe2",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-01-12",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-84f4445c1789cd71",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-02-08",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-b31355caa2974498",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-03-15",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-49fd61d57511612a",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-04-14",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-8ab200d37e36c0fa",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-06-11",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-b15c6a3442c00913",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-07-16",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-cc7893469af71cb1",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-07-19",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-d5ccd06a97313085",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-07-26",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-c5781490f1ec51ec",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "browser-rendered-article-dom-v1",
+      "publication_date": "2023-07-31",
+      "publication_evidence_verified": true,
+      "publisher": "ABS-CBN News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "ABS-BROWSER-abs-2023",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-08-02",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-3516bb6856fbed4d",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-08-02",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-3f1c5f679a4240c2",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-08-04",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-a31168609155fa8d",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-08-05",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-73fb660d8cf943c3",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-08-11",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-875167a8b587064a",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-08-18",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-ae65e8edd0ef502f",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-08-30",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-b6380ec2083bd7fa",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2023-08-31",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20230831-880633",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-09-04",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-8e266121254eaa21",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2023-09-22",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-1f612c11316d755a",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2023-09-23",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20230923-883038",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-01-16",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-cbbe7131c73d0250",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-01-25",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-4153ac2f4cdf1465",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-01-25",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-cd0aa748f2207982",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-01-31",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-a75484806c378f88",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-02-01",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-d22e029c225caf85",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-02-02",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-b11e4314df572cad",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-05-27",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-6a27663514765a05",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-07-23",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-4ea4bd3a548e1cb6",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-07-24",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-d4ad93228fbfb786",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-07-24",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-5100fc1563858052",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-07-24",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-887280dbb03ded1c",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2024-09-02",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20240902-918977",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-09-02",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-f0305004fb9ec073",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-09-03",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-61bde888c0935e15",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-09-03",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-03d87549f9d07348",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "browser-rendered-article-dom-v1",
+      "publication_date": "2024-09-03",
+      "publication_evidence_verified": true,
+      "publisher": "ABS-CBN News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "ABS-BROWSER-abs-2024",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-09-16",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-e5f7187312d2544f",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2024-10-25",
+      "publication_evidence_verified": true,
+      "publisher": "RMN Networks",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-344bf3f37308486f",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2024-10-25",
+      "publication_evidence_verified": true,
+      "publisher": "RMN Networks",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-c1ed9be4942a57a1",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2024-10-26",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-6b591d0fbc9779c5",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2024-10-29",
+      "publication_evidence_verified": true,
+      "publisher": "RMN Networks",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-97f012a69d8a6416",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2024-11-14",
+      "publication_evidence_verified": true,
+      "publisher": "RMN Networks",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-dce3c6472e2b014d",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2024-11-18",
+      "publication_evidence_verified": true,
+      "publisher": "RMN Networks",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-c8ab20cd76ce8e6f",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "browser-rendered-article-dom-v1",
+      "publication_date": "2025-06-21",
+      "publication_evidence_verified": true,
+      "publisher": "ABS-CBN News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "ABS-BROWSER-abs-2025",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-07-05",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-07f788d7312f9773",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-07-10",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-795b097f04147922",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-07-18",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-017e86f44194f17e",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-07-18",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-c94260700ed3c6b1",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-07-19",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-1192a746ef19fc09",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-07-19",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-1fa92429f958f691",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2025-07-22",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20250722-953360",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2025-07-22",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20250722-953419",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-07-28",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-6caf0c129b6d7069",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2025-08-06",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20250806-954964",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-08-24",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-72e6b068187f871e",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-08-30",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-026d02c37bac6f5c",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-09-05",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-7e3cff6275b06366",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-11-01",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-d6fb04aa24b7d1e1",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-11-04",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-d674f4ccf930a14c",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-11-06",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-3ea44adde3431738",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2025-11-11",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-ac53784236790e14",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2026-07-10",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20260710-994434",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2026-08-08",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20260808-997803",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2026-08-08",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "GMA-997853",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2026-08-10",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "GMA-997943",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2026-08-11",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-63bce4e354aec337",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2026-08-14",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-1885abddb1dc6962",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "preserved-manifest-text",
+      "publication_date": "2026-08-17",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "reproduction_recipe": "backend/scripts/collect_flood_report_archive.py PublisherBody + title/publication header",
+      "source_article_key_matches": true,
+      "source_id": "GMA-20260817-998778",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2026-08-20",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-9449e3528861ff03",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2026-08-28",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-14969870bff445fe",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2026-08-29",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-0b427220c91c3b1e",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2026-08-29",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-153ca4082326ea1b",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "browser-rendered-article-dom-v1",
+      "publication_date": "2026-08-29",
+      "publication_evidence_verified": true,
+      "publisher": "ABS-CBN News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "ABS-BROWSER-abs-2026",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "jsonld-articleBody-html-v2",
+      "publication_date": "2026-08-30",
+      "publication_evidence_verified": true,
+      "publisher": "GMA News",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "news-5b6d22c0e26ec49e",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduced": true,
+      "extraction_method": "html-visible-article-main-v1",
+      "publication_date": "2026-08-30",
+      "publication_evidence_verified": true,
+      "publisher": "Daily Tribune",
+      "raw_available": true,
+      "raw_hash_verified": true,
+      "source_article_key_matches": true,
+      "source_id": "TRIBUNE-20260830",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduction_status": "captured-original fixture only; original HTML/retrieval timestamp unavailable",
+      "extraction_method": "preserved-captured-original-fixture",
+      "publication_date": "2026-09-09",
+      "publisher": "GMA News",
+      "raw_available": false,
+      "source_article_key_matches": true,
+      "source_id": "saved-article-1",
+      "text_hash_verified": true
+    },
+    {
+      "body_reproduction_status": "captured-original fixture only; original HTML/retrieval timestamp unavailable",
+      "extraction_method": "preserved-captured-original-fixture",
+      "publication_date": "2026-09-09",
+      "publisher": "Philstar",
+      "raw_available": false,
+      "source_article_key_matches": true,
+      "source_id": "saved-article-2",
+      "text_hash_verified": true
+    }
+  ],
+  "inventory_issues": [],
+  "live_sample": {
+    "checked": 22,
+    "http_200": 22,
+    "metadata_conflicts": [
+      "Philstar AMP JSON-LD datePublished/dateModified epoch; visible article time supplies 2026-09-09T17:03:00+08:00."
+    ],
+    "publication_days_corroborated": 22,
+    "structured_date_matches": 21
+  },
+  "real_manifest_errors": [],
+  "research_cases": [
+    {
+      "case_id": "named-sitio-parent",
+      "verified": true
+    },
+    {
+      "case_id": "clearance-clock",
+      "verified": true
+    },
+    {
+      "case_id": "discourse-boundary",
+      "verified": true
+    },
+    {
+      "case_id": "river-gauge",
+      "verified": true
+    },
+    {
+      "case_id": "borrowed-number-name",
+      "verified": true
+    },
+    {
+      "case_id": "shared-measurement",
+      "verified": true
+    },
+    {
+      "case_id": "recession-rising",
+      "verified": true
+    },
+    {
+      "case_id": "collective-range",
+      "verified": true
+    },
+    {
+      "case_id": "taglish-quote",
+      "verified": true
+    },
+    {
+      "case_id": "tagalog-depth",
+      "verified": true
+    },
+    {
+      "case_id": "habitual-current",
+      "verified": true
+    },
+    {
+      "case_id": "warning-time",
+      "verified": true
+    },
+    {
+      "case_id": "compound-address",
+      "verified": true
+    },
+    {
+      "case_id": "named-purok",
+      "verified": true
+    },
+    {
+      "case_id": "larger-purok",
+      "verified": true
+    },
+    {
+      "case_id": "roman-unit",
+      "verified": true
+    },
+    {
+      "case_id": "block-abbreviation",
+      "verified": true
+    },
+    {
+      "case_id": "letter-suffix",
+      "verified": true
+    },
+    {
+      "case_id": "compact-address",
+      "verified": true
+    },
+    {
+      "case_id": "numbered-street",
+      "verified": true
+    }
+  ],
+  "schema_file_matches_model": true,
+  "support_count": 36,
+  "support_hash_errors": []
+}

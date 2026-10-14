@@ -1,0 +1,47 @@
+{
+  "annotated_passages": 0,
+  "article_languages": {
+    "english": 64,
+    "tagalog": 33,
+    "taglish": 3
+  },
+  "assigned_splits": 0,
+  "candidate_passages": 100,
+  "case_cues": {
+    "access_status_cue": 31,
+    "clock_cue": 40,
+    "depth_expression_cue": 52,
+    "impact_count_cue": 55,
+    "named_locality_cue": 70,
+    "numbered_locality_cue": 6,
+    "recession_clearance_cue": 30,
+    "road_location_cue": 61
+  },
+  "hold_reasons": {
+    "annotation_not_started": 100,
+    "editorial_bounds_and_caption_review_pending": 100,
+    "event_syndication_review_pending": 100,
+    "legacy_original_html_retrieval_gap": 2,
+    "passage_language_review_pending": 100,
+    "reuse_assessment_pending": 100
+  },
+  "note": "One draft context window per reviewed article; not a balanced or labeled pilot corpus. Cues are review aids.",
+  "passage_languages": {
+    "unknown": 100
+  },
+  "policy_snapshot_hashes_verified": 8,
+  "proposed_event_buckets": 37,
+  "publishers": {
+    "ABS-CBN News": 5,
+    "Daily Tribune": 1,
+    "GMA News": 88,
+    "Philstar": 1,
+    "RMN Networks": 5
+  },
+  "reuse_policies_reviewed": 8,
+  "reviewed_split_groups": 0,
+  "schema_version": "lanes-flood-ner-readiness-v1",
+  "source_articles": 100,
+  "sources_with_recorded_training_basis": 0,
+  "training_admitted": 0
+}

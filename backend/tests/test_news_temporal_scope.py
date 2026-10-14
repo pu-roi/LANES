@@ -37,6 +37,18 @@ from app.services.taglish_extraction_service import extract_taglish_flood_facts
         "Marcos Highway in Marikina City was flooded at knee level.",
         {"Ortigas Avenue": "14:47", "Marcos Highway": None},
     ),
+    (
+        "As of 2:47 p.m., flooding on Ortigas Avenue in Pasig City reached gutter level.\n"
+        "Officials discussed tomorrow's classes.\n"
+        "In Marikina City, Marcos Highway was flooded at knee level.",
+        {"Ortigas Avenue": "14:47", "Marcos Highway": None},
+    ),
+    (
+        "As of 2:47 p.m., flooding on Ortigas Avenue in Pasig City reached gutter level.\n"
+        "In Marikina City, Marcos Highway was flooded at knee level.\n"
+        "Shaw Boulevard in Mandaluyong City was flooded at waist level.",
+        {"Ortigas Avenue": "14:47", "Marcos Highway": "14:47", "Shaw Boulevard": None},
+    ),
 ])
 def test_shared_and_local_observation_clock_scope(body: str, expected: dict[str, str | None]) -> None:
     result = extract_taglish_flood_facts(NewsArticleExtractorInput(

@@ -82,6 +82,8 @@ ehthumbs.db
 Thumbs.db
 [Dd]esktop.ini
 
+# Offline NER captures, dataset text, model evidence and convenience backups.
+/backend/training/flood_ner/artifacts/
 # Reproducible duration-pilot chart exports (retain CSV/JSON and sources/ captures).
 # These dated bundles hold collection figures, not final model evaluation figures.
 /docs/evaluations/flood-duration-pilot-20261004/*.png

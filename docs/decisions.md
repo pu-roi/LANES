@@ -1,10 +1,26 @@
 # LANES: Architecture & Design Decisions
 
-> **Last Updated:** October 13, 2026, 11:54 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 6:17 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **News mode decision:** For the defense and current production, local NLP plus deterministic original-source checks replaces mandatory LLM inference. Keep source/freshness/location/depth/geometry/expiry gates; use explicit measurements before verbal gauges. MCP remains optional future work outside the deployment dependencies. [Evidence](evaluations/news-source-validation-20261013/README.md).
+
+## 30. Source-backed NER corpus and delegated AI annotation
+
+**Date:** October 14, 2026 (Asia/Manila). **Owner:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Status:** Dataset/annotation decisions adopted; offline tooling, pilot and 400-record silver cohort implemented. Training admission, model training and production qualification remain pending.
+
+**Dataset unit and target:** The supplied research document specifies **400 total English/Taglish samples: 280 training, 60 validation and 60 testing**. A sample is a distinct contiguous source passage with complete annotations under the selected profile, not an article or an entity mention. The existing 100 reviewed articles are source inventory, not 100 finished training samples. Multiple useful passages can come from an article; overlapping copies, arbitrary fragments and paired contextual records cannot inflate the count. Related articles, revisions, syndication and event groups stay within one split. Preserve the test partition from iterative model selection.
+
+**Annotation method:** The developer delegates source reading and labeling to Codex. Record these annotations as AI-created silver references with actual teacher/review provenance and unresolved cases. Same-AI review is not independent human verification. Creating research annotations can proceed under this authorization; source reuse assessment, training admission, reviewed groups and independent evaluation remain separate requirements. Reconcile the paper's manual-annotation wording with the performed method. Report AI-only evaluation as agreement with the reference labels, and claim human verification only for work actually performed.
+
+**Model/data separation:** Primary NER learns the six location classes through the explicit location-only-v1 profile. Separate context-rich-v1 records preserve depth, time and fact relationships for contextual rules and separate severity evaluation. Profile/schema/tokenizer/source/split identities belong in export manifests; wrong or mixed profiles are rejected. Preserve raw names and supported parent mentions. PSGC/OSM resolution and number normalization supply distinct identity/placement steps; an unresolved identity remains unresolved. Keep spaCy 3.7.5 for current offline tooling; no production model is selected by this decision.
+
+**Earlier pilot evidence:** Twelve pilot passages contain 116 location spans; ten have same-AI acceptance and two remain unresolved. Their twelve paired contextual drafts are the same samples. All remain research-only, with zero training admission or assigned partitions. The pilot is entirely from GMA and does not establish publisher balance or corpus sufficiency. No model training or operational release is established. [Roadmap](plans/lanes-ner-training-plan.md), [task plan](task_plan.md), [pilot evidence](evaluations/flood-ner-ai-pilot-20261014/README.md), [paper inspection](evaluations/flood-ner-editorial-20261014/paper_reference.json).
+
+**400-sample continuation:** The developer selected 200 English/200 Taglish, with 140/140 training and 30/30 validation/testing. [Measured assembly](evaluations/flood-ner-corpus-400-20261014/README.md) delivers exactly 400 accepted silver records from 132 articles; publishers GMA 193/RMN 194/ABS-CBN 13 satisfy the cap of 200. Reporting components remain conservative dependency groups, not physical-event assertions. All reuse stays unknown and admission/export stays zero. Passage-language decisions are separate from source metadata; lexical mixing is the declared operational Taglish definition, with independent adjudication absent and publisher/language confounding explicit. Tokenizer v2 is frozen for offline delimiter alignment; model training remains subsequent. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## 29. Credit-free source consistency for the defense release
 

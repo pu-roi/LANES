@@ -1,0 +1,3561 @@
+[
+  {
+    "candidate_id": "candidate-95f9f40347df4ca1c4a9",
+    "capture_version": "bf7c648e87dd647d1a7891d37dc4dcb3cdc78eeefe98994b250c4c559bf6a3fd",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1008,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "751b1396837ab65783c019d3425a83dd56ae7161d1879cb5595e882a57984a6a",
+        "start": 0
+      }
+    ],
+    "source_id": "news-14969870bff445fe",
+    "source_text_sha256": "751b1396837ab65783c019d3425a83dd56ae7161d1879cb5595e882a57984a6a"
+  },
+  {
+    "candidate_id": "candidate-9cafdffa1b8e1fc97781",
+    "capture_version": "da70308dbf6421d48bf133518e2378e06ccb83b6501798d0e6b37665831ed43f",
+    "context_notes": [
+      {
+        "end": 723,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "bcd93d6b2448ba5d7098571dc123b2232045a648fcb5900065a4957204f8084a",
+        "start": 697
+      },
+      {
+        "end": 814,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "73ab549bcb2c9107991195dbe01bbba8ae930800c82fe536281687d950ea86c8",
+        "start": 724
+      },
+      {
+        "end": 1243,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "eb53f04153ae2c9e903cbbead320fb169845b4cc0d58e796b3d7d90817d0ca58",
+        "start": 1162
+      },
+      {
+        "end": 1826,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "fa8ea0ef761e5af5724925ec703735daece66170ed7752f8b78a8edf1b3ad1b6",
+        "start": 1654
+      },
+      {
+        "end": 2225,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "22cc2e768eb8bf7d2e09124447f011c2240c3563dbbf7443151454927d8f1691",
+        "start": 2182
+      },
+      {
+        "end": 2330,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "e7daaa8afe8932d397f970466fc966678268abe71374157ae58197d5cff6baae",
+        "start": 2226
+      },
+      {
+        "end": 2817,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "ca73d0dcc427f7cc656a43a2c83dbac2c193cf1fa43dc1298968d4e2a7915ec2",
+        "start": 2803
+      },
+      {
+        "end": 2866,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "9184f2ae13c9bd279705e6e4378864a18f8ec7f10cfe8af116c53a6f3db05d77",
+        "start": 2818
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3059,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "603563fb109e8305b7b92f9bc953db5324499a70f314fb7ea30ddcc369274ea1",
+        "start": 0
+      }
+    ],
+    "source_id": "news-0b427220c91c3b1e",
+    "source_text_sha256": "603563fb109e8305b7b92f9bc953db5324499a70f314fb7ea30ddcc369274ea1"
+  },
+  {
+    "candidate_id": "candidate-dcf06370df1cfd8099df",
+    "capture_version": "a3e2f4aaf91bc9dadc5f1e78601ed5486a52736f28b4d3782b107350f9767c5a",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1172,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "2f5e5b3e5c5768d54b219be8b743d1e9ad8ad2dcddfd6566de7221ee67729c70",
+        "start": 0
+      }
+    ],
+    "source_id": "news-153ca4082326ea1b",
+    "source_text_sha256": "2f5e5b3e5c5768d54b219be8b743d1e9ad8ad2dcddfd6566de7221ee67729c70"
+  },
+  {
+    "candidate_id": "candidate-7fc395f1ee31c971427c",
+    "capture_version": "781d1412df1dfa10602c60064e360417541ae2e6c40225ba019f2f4ad16734bb",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 1091,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "215c48fb158181654c986e86b327255a4ce4ecc6b11b66898fc8472a381cc1be",
+        "start": 1048
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1047,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "fa6eb79d39ae1c24569c72906433e4f3c09baa34e8842c917183ac1fbf640002",
+        "start": 0
+      }
+    ],
+    "source_id": "news-5b6d22c0e26ec49e",
+    "source_text_sha256": "e14058e5db775d98bf60f479507320e43d6ae4bae6e538ac6146d67de9c9e2a3"
+  },
+  {
+    "candidate_id": "candidate-e1f83dbc18a9b9d1f35a",
+    "capture_version": "a7b92b1ec22db882779dcc2d3f0d3dc153d834f325a00432a551d04357b57708",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 258,
+        "kind": "publisher_metadata",
+        "reason": "Title, byline, publication clocks and Google source buttons are source metadata.",
+        "sha256": "025ed76066721b17f5f21dd9d1e36e8e107f2249d7685b38d9b6de0864845251",
+        "start": 0
+      },
+      {
+        "end": 442,
+        "kind": "caption",
+        "reason": "Separate image caption from the following reported road list; caption is not its shared heading.",
+        "sha256": "55cd079e9ac3cd2c4bb276b11abc7688fc720d678a5c21a58c137150c7dfb89b",
+        "start": 258
+      },
+      {
+        "end": 1944,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "e3d4a47103045a240930fbc1ce76588e5dd33f99ac79fec454337c2d25a18381",
+        "start": 1900
+      },
+      {
+        "end": 1970,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "b3af92a46ce6972891ef68c84342fcd8aafe6f7741f42db15a68a7b29da4a6b6",
+        "start": 1945
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1899,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f2439e504b4d5ae16cfb0c639adfcbc3044be2d0fa4ec275704249b34179d7ce",
+        "start": 442
+      }
+    ],
+    "source_id": "saved-article-1",
+    "source_text_sha256": "a7b92b1ec22db882779dcc2d3f0d3dc153d834f325a00432a551d04357b57708"
+  },
+  {
+    "candidate_id": "candidate-650f8b813f2d3908e461",
+    "capture_version": "3d2b70b361fac94db0a3bbf3c750587ce805493dfafe65b5910d8a9506848742",
+    "context_notes": [
+      {
+        "end": 423,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "a30691e78cb10f8c93b93c5451c18fe154011966c378397cd41da1fe21f639f0",
+        "start": 310
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 465,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "c327837abb571982f96efa61787cb52aeee78927bfec0006eadcb21d4be52d6e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-c68951febed92712",
+    "source_text_sha256": "c327837abb571982f96efa61787cb52aeee78927bfec0006eadcb21d4be52d6e"
+  },
+  {
+    "candidate_id": "candidate-b50f5f55d87397cd760c",
+    "capture_version": "6a3f3a25d5d6136ecb65beaf92f5c53babf09c1030c949621b046fe025c5072d",
+    "context_notes": [
+      {
+        "end": 796,
+        "kind": "caption",
+        "reason": "Inline graduation photo caption; context only, not independent road-depth evidence.",
+        "sha256": "cf8defa786e5aba1d0aa49d99f4c769d10029258407b80cbe47ebb073f4e977b",
+        "start": 637
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1236,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "32dfa82fa289d02361c27ca507185c28c1e7ab9c8274de27c55d37f8ca0c3f1f",
+        "start": 0
+      }
+    ],
+    "source_id": "news-805aa72706a37710",
+    "source_text_sha256": "32dfa82fa289d02361c27ca507185c28c1e7ab9c8274de27c55d37f8ca0c3f1f"
+  },
+  {
+    "candidate_id": "candidate-910a8f4afe14e686fe1c",
+    "capture_version": "8c66bc35ff63b825b2e5e81fdc22303f192ac994dce3b01d934c31d044504d45",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 645,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "6b46bb3b3d25de621944791829fc71b8257183c43b8f1d778febde0667696321",
+        "start": 0
+      }
+    ],
+    "source_id": "news-0210e58edd3cd487",
+    "source_text_sha256": "6b46bb3b3d25de621944791829fc71b8257183c43b8f1d778febde0667696321"
+  },
+  {
+    "candidate_id": "candidate-cb22103d547c0fd9ed19",
+    "capture_version": "f12e69b8bd0bac9f9684e2120c93d12cdc73463f430906b4d20d1be507a3367d",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 759,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "bab9980fbf0b6c75384bd5786f5854ca3fd22dfb87d9896faba91d11dfb262f5",
+        "start": 0
+      }
+    ],
+    "source_id": "news-45e8f7fe6f33283a",
+    "source_text_sha256": "bab9980fbf0b6c75384bd5786f5854ca3fd22dfb87d9896faba91d11dfb262f5"
+  },
+  {
+    "candidate_id": "candidate-f6bbb79cfe5fa78e3dc9",
+    "capture_version": "ff00aadc86f33ba78c7bbeb882e08ff38f232635f58f6592e68abc51f6da2d12",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3581,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "a7b187ab7d815773b57f7bf4f3f76193ccf2fa025f68d5b06a74eedff5388a9e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-85f488359c8b6890",
+    "source_text_sha256": "a7b187ab7d815773b57f7bf4f3f76193ccf2fa025f68d5b06a74eedff5388a9e"
+  },
+  {
+    "candidate_id": "candidate-62df8c23c42987fdc883",
+    "capture_version": "298401874cd4",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 113,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "282d2d98573de3d6753d1deb9347654dfa55c6c51318c362b51d93dc9a0577c0",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1964,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ea63acc344b69cc3e33e88c2954079a649f008509e9d66d8e0c33118d948536d",
+        "start": 113
+      }
+    ],
+    "source_id": "GMA-20220730-839934",
+    "source_text_sha256": "a94020ba0de3d7c25e197fb8d3752d2ffc4eb452fa5bcafb52e14fe10f3375e3"
+  },
+  {
+    "candidate_id": "candidate-ba903dfb7517c8536087",
+    "capture_version": "30662e40de41e1f49d8363c066945314d03c9e8a80a1d78cc9f697ddf2db1052",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 691,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "00aef4d18387642a5f6f3284b80ed8a69a82fdb82b4d1ecb2cdbe28c063b8d4e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-b4a16919f4acbe0b",
+    "source_text_sha256": "00aef4d18387642a5f6f3284b80ed8a69a82fdb82b4d1ecb2cdbe28c063b8d4e"
+  },
+  {
+    "candidate_id": "candidate-1cba0e0163bb2e33ad0a",
+    "capture_version": "8c6d8a2a57bd",
+    "context_notes": [
+      {
+        "end": 722,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "c767be1f090d656c167086b4f8df800f42b97170eac354deb75397e7a2fbdf2d",
+        "start": 586
+      },
+      {
+        "end": 1121,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "ace702ce400bc282eecf807ab1a7562511f95d405cddafd0d8c9d062870c94f0",
+        "start": 981
+      },
+      {
+        "end": 1541,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "f256c2cfe1f354d1811ccf7c9a81b0eaf3c60fbb2252b65800e837eb55dae630",
+        "start": 1358
+      }
+    ],
+    "exclusions": [
+      {
+        "end": 110,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "2497761dfa7109fc83e0d25d2aa0517359afd1607691cd1a78be861d775f0e1d",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1729,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "26dd890efe0fdde116228c831d545c3d0fc8c8a1b26ada57709dc091d13363d1",
+        "start": 110
+      }
+    ],
+    "source_id": "GMA-20220903-843663",
+    "source_text_sha256": "f24105160fb6705e0b0e2a1adf92ae7d961aa6da994114dcd0b20ed81f9c4692"
+  },
+  {
+    "candidate_id": "candidate-31cbb6ac76f2df9de002",
+    "capture_version": "81d773ae4948",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 103,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "7de3e997fa81cffac5459f67c7155c006dad684264619f94cd4f601c5133ca81",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1666,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "8f6c7a735a9b32dd547c08caf77c0c3c5a29ff9dcb8cf7c175e1f3813147a85a",
+        "start": 103
+      }
+    ],
+    "source_id": "GMA-20220920-845479",
+    "source_text_sha256": "582e3120da854271598007cb7d6b48b9298e6a3e7e0e73a02c33a70d43a8e0a1"
+  },
+  {
+    "candidate_id": "candidate-e79251d304bb4e896dd4",
+    "capture_version": "c9862fe5dc116d04b2c4c6ec4aea9733b3e7338c442140599d6b32bbd30694c0",
+    "context_notes": [
+      {
+        "end": 344,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "0bb6296b28055bc10dff8eb2f22c7750af710386223cdc2e888da2577e657028",
+        "start": 213
+      },
+      {
+        "end": 699,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "c55ba993ed6edd4f07736786a9719f7f08dafaafc0179e42330a41abe5502f59",
+        "start": 534
+      },
+      {
+        "end": 977,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "8b6cc0d811123a8d855b92ae1ad7b7a7470a46e2531af7800a1459a93690e93a",
+        "start": 823
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1750,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "22d45e75c607ef2406c5b61675488f04d1cc7cd109948e03e6f379f16a5c1d41",
+        "start": 0
+      }
+    ],
+    "source_id": "news-ade161b2a72351ad",
+    "source_text_sha256": "22d45e75c607ef2406c5b61675488f04d1cc7cd109948e03e6f379f16a5c1d41"
+  },
+  {
+    "candidate_id": "candidate-6be90654718b00e1d067",
+    "capture_version": "0eb834c16d05a5700064a4482ac2dc52a49af36f40d7a376dbb13feec76ef5b2",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 4794,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "a091fd0ca958d85c4c3e56506fa09160219b40c9dcc8348758e8c7ee9c7b602d",
+        "start": 0
+      }
+    ],
+    "source_id": "news-ab39c678c2ff04d8",
+    "source_text_sha256": "a091fd0ca958d85c4c3e56506fa09160219b40c9dcc8348758e8c7ee9c7b602d"
+  },
+  {
+    "candidate_id": "candidate-32da305cb2b000266c6e",
+    "capture_version": "cc14175bc1e1b714a8995e53128dd69b1089c5ac563c840d5cec9f4f2b222990",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2092,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ce8d52e179ee1ce5d99f2fd8ac0b91cc725f33ecfec0015c0d176bbb9f4a0bd5",
+        "start": 0
+      }
+    ],
+    "source_id": "news-79addb1dcc55db8b",
+    "source_text_sha256": "ce8d52e179ee1ce5d99f2fd8ac0b91cc725f33ecfec0015c0d176bbb9f4a0bd5"
+  },
+  {
+    "candidate_id": "candidate-cdbc10be8e62f28fff7b",
+    "capture_version": "099f6a9068accbda9cbd05718e8c7f831849523f9ce6b4b1878da31e43076b9e",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3718,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "92ec272beb8bbf8cd53c53cd1846b7d3f4c42b14a038cb4ebe414fafad3a4c9a",
+        "start": 0
+      }
+    ],
+    "source_id": "news-651c21937c60bd33",
+    "source_text_sha256": "92ec272beb8bbf8cd53c53cd1846b7d3f4c42b14a038cb4ebe414fafad3a4c9a"
+  },
+  {
+    "candidate_id": "candidate-96029f027faf7a762827",
+    "capture_version": "1b51df24dee65ef647c6532cef485a870a421634e712d3ad482b4a84dfa27b4d",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 4065,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "c01865d37980bb232825687d72b4338d087b2a909ebbeeadf8c7c80e00ac196c",
+        "start": 0
+      }
+    ],
+    "source_id": "news-b5808569b38396a9",
+    "source_text_sha256": "c01865d37980bb232825687d72b4338d087b2a909ebbeeadf8c7c80e00ac196c"
+  },
+  {
+    "candidate_id": "candidate-abf564d049ea129ffa78",
+    "capture_version": "b091b232711dcd75d38b1afaac46211c5794bed742c898b728c42ef6f4aac3b9",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 5843,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "73563899c022bacfc75a6a460c4af55b8e9af483f6877f56bd6019fc9ce15d8e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-583616a8cc4436c0",
+    "source_text_sha256": "73563899c022bacfc75a6a460c4af55b8e9af483f6877f56bd6019fc9ce15d8e"
+  },
+  {
+    "candidate_id": "candidate-92c914632dc170427067",
+    "capture_version": "3f0c09bb66db4c721a60e3609c8bf454c0b555095fc7dbe886ab840b94cf8ea8",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 516,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "dc42cedda492ee7eb3fd18f110cd36483666a35ef159a09b2ff866cb5d5cf793",
+        "start": 0
+      }
+    ],
+    "source_id": "news-7df6a07eb3e66052",
+    "source_text_sha256": "dc42cedda492ee7eb3fd18f110cd36483666a35ef159a09b2ff866cb5d5cf793"
+  },
+  {
+    "candidate_id": "candidate-8a89d743f85268cbc5d0",
+    "capture_version": "6d75557c2259807b28fa9bf700c4f0b6aaed6e7fcdbf2ee3205c12c4508c5285",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 524,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ce3d1b003bf0016508f6397b247f5ef6bd65d985e2d6d11c4aef2e6b044a7f52",
+        "start": 0
+      }
+    ],
+    "source_id": "news-f14b12f3aedf03c4",
+    "source_text_sha256": "ce3d1b003bf0016508f6397b247f5ef6bd65d985e2d6d11c4aef2e6b044a7f52"
+  },
+  {
+    "candidate_id": "candidate-be39ace70a6ffd004863",
+    "capture_version": "b378013a987e96015599488dc62cba7010950ef8850a286203ebc747dd72df40",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1124,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "5f3bf6d09aa404a9523ed5d4d5a150d71b8024f0d6b5f5b71c2161b2eb3f9338",
+        "start": 0
+      }
+    ],
+    "source_id": "news-3f3479483ef94932",
+    "source_text_sha256": "5f3bf6d09aa404a9523ed5d4d5a150d71b8024f0d6b5f5b71c2161b2eb3f9338"
+  },
+  {
+    "candidate_id": "candidate-2995c9d605cbaf03f783",
+    "capture_version": "054f7bc60dc29a2c778aec4a601d8b53123d7d19f188ac44d787093e976282ad",
+    "context_notes": [
+      {
+        "end": 559,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "9f7c1b58b614d4035ab07e7550cbbc24b73d05e30462d400c0f32db946d9cfcf",
+        "start": 512
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 604,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "b1bde356cd4725669b5c4ec4fd48cb296fd175e7683a66ce87a024dedb1251a8",
+        "start": 0
+      }
+    ],
+    "source_id": "news-3866cea020f8af0e",
+    "source_text_sha256": "b1bde356cd4725669b5c4ec4fd48cb296fd175e7683a66ce87a024dedb1251a8"
+  },
+  {
+    "candidate_id": "candidate-98597ecf0c84953d2441",
+    "capture_version": "df1ca5ca3e4016aecda0ccca829737a37ab9905d2d28e785a789c7c19076c657",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1014,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f6164693c5f1ecfc2a2b3b54c644d56eae627ed68a2af5bd0400472d926ff24b",
+        "start": 0
+      }
+    ],
+    "source_id": "news-fe608afcbfa986eb",
+    "source_text_sha256": "f6164693c5f1ecfc2a2b3b54c644d56eae627ed68a2af5bd0400472d926ff24b"
+  },
+  {
+    "candidate_id": "candidate-d8caea70f3eba1692b8d",
+    "capture_version": "947c309c9c4abebe6d511aad902cb5b31e63a9b68038fd46fdf0e21ca679e68b",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2182,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f9069a2cc52c067cdf3e7bad9bba0f00f78a44ac74543aafd29b3e0aaa37885e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-6b97cb5f21a1dcbc",
+    "source_text_sha256": "f9069a2cc52c067cdf3e7bad9bba0f00f78a44ac74543aafd29b3e0aaa37885e"
+  },
+  {
+    "candidate_id": "candidate-1205fb6c910f8c856041",
+    "capture_version": "c29c5e691024ad5e2c4ced9d8a80155abea0d5d8cdfa84823fdecae9739b8ac0",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2817,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "0345cc7c19debae59a64f989aba4b16d501574b01d3c9fdae9087382851d3213",
+        "start": 0
+      }
+    ],
+    "source_id": "news-f526421386d23fe2",
+    "source_text_sha256": "0345cc7c19debae59a64f989aba4b16d501574b01d3c9fdae9087382851d3213"
+  },
+  {
+    "candidate_id": "candidate-4edba29452e8f91e1e30",
+    "capture_version": "0e5037bedcdf1a27c479a3b5212469a38b9f94528d4343234beb9a51b08ac375",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2373,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "fa6c6fb34936687ffd87870d5ac4b08f33c8f5c627408c6be2f488dab0eb1211",
+        "start": 0
+      }
+    ],
+    "source_id": "news-84f4445c1789cd71",
+    "source_text_sha256": "fa6c6fb34936687ffd87870d5ac4b08f33c8f5c627408c6be2f488dab0eb1211"
+  },
+  {
+    "candidate_id": "candidate-f6b4fddc4e4d5b8b28f7",
+    "capture_version": "5c6ac99cb26ac1177221877958ee41fd89e4850e6ebfec711becf0c71d221324",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 855,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "133414a2e2a93c9ff62ae1e46c4ad110d2b0d500b34145f750226b7f092d2e88",
+        "start": 0
+      }
+    ],
+    "source_id": "news-b31355caa2974498",
+    "source_text_sha256": "133414a2e2a93c9ff62ae1e46c4ad110d2b0d500b34145f750226b7f092d2e88"
+  },
+  {
+    "candidate_id": "candidate-7d8be7919ff914ceaa16",
+    "capture_version": "a8c51c6305e0b337390ed9eee13b0103942fa1212410666e79d05651491a83db",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 875,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "3ecffb16df6f84887b2daf7dbb8fa07fe481a55f1276c4202216b86908aaa3ed",
+        "start": 0
+      }
+    ],
+    "source_id": "news-49fd61d57511612a",
+    "source_text_sha256": "3ecffb16df6f84887b2daf7dbb8fa07fe481a55f1276c4202216b86908aaa3ed"
+  },
+  {
+    "candidate_id": "candidate-bc2280e59b17363fb7f1",
+    "capture_version": "36eaa8384ea89f6c6d4cec08867f00938348344c47a99de7240a68fe0c438c46",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1033,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "d059df202ad106684dcd36b684a617783732ba950e079e9dd9c8d33948543f95",
+        "start": 0
+      }
+    ],
+    "source_id": "news-8ab200d37e36c0fa",
+    "source_text_sha256": "d059df202ad106684dcd36b684a617783732ba950e079e9dd9c8d33948543f95"
+  },
+  {
+    "candidate_id": "candidate-ef146820ea0801c9ad1c",
+    "capture_version": "d56f022e272245b2ba956c9ff851ea7a737156301ee4724be9ec100ddae1446a",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1614,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "5fa488b2b9477dbb2feefdbd2f2a198bde56237f9201723774128133ed0d2e48",
+        "start": 0
+      }
+    ],
+    "source_id": "news-b15c6a3442c00913",
+    "source_text_sha256": "5fa488b2b9477dbb2feefdbd2f2a198bde56237f9201723774128133ed0d2e48"
+  },
+  {
+    "candidate_id": "candidate-3fe6188232b74452947a",
+    "capture_version": "5acd7e69b877051250d6c17b80e24d7e76898ac28190463d6c181a5122da0fb3",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2140,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "6b8809ba8b609c75d3e0c02c98e9f3c63bb7d7c01bb82ad0e94a9eaa3bdc552d",
+        "start": 0
+      }
+    ],
+    "source_id": "news-cc7893469af71cb1",
+    "source_text_sha256": "6b8809ba8b609c75d3e0c02c98e9f3c63bb7d7c01bb82ad0e94a9eaa3bdc552d"
+  },
+  {
+    "candidate_id": "candidate-e6a55c5b9d80519cd4f6",
+    "capture_version": "d9b65669202ae16ee33bf0a7f16758b9b9484c755e435f401a334b5d68300060",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 847,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "be6831663cab90653c9c61a9bfe78272ac1bb0d4db34b1cefeaf9ae13dac70b9",
+        "start": 0
+      }
+    ],
+    "source_id": "news-d5ccd06a97313085",
+    "source_text_sha256": "be6831663cab90653c9c61a9bfe78272ac1bb0d4db34b1cefeaf9ae13dac70b9"
+  },
+  {
+    "candidate_id": "candidate-93db2bd44302f51d43e0",
+    "capture_version": "d0c080135460ce1bd518f005a9a2e453bc6b1f901c9d6a9d6a31f93e0191ff4c",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1361,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "7cf295bdaaf3407f1c5e5a51d9951794d64adf1a9ee21e252caf68094278664c",
+        "start": 0
+      }
+    ],
+    "source_id": "news-c5781490f1ec51ec",
+    "source_text_sha256": "7cf295bdaaf3407f1c5e5a51d9951794d64adf1a9ee21e252caf68094278664c"
+  },
+  {
+    "candidate_id": "candidate-73e70a81a64da9431a77",
+    "capture_version": "bf86ec58908caf80e21d7299ebc37a4da071cd1fcbff7d236a4415176941d6da",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1709,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "07a32064f02a20790dbd82e2d4d3b644f40d073eb9097a0e225d67f03e1cde43",
+        "start": 0
+      }
+    ],
+    "source_id": "news-3516bb6856fbed4d",
+    "source_text_sha256": "07a32064f02a20790dbd82e2d4d3b644f40d073eb9097a0e225d67f03e1cde43"
+  },
+  {
+    "candidate_id": "candidate-d1ec5816f353cabe183d",
+    "capture_version": "ce22eca374d24a618033ed66e4e56c57ed8789edac8ca9df4ddd57bb10130bf2",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2764,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f475f6575383e174f0e6a13e9e994a8b25bf0e78371ffa5de68b3b965e3eeb0e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-3f1c5f679a4240c2",
+    "source_text_sha256": "f475f6575383e174f0e6a13e9e994a8b25bf0e78371ffa5de68b3b965e3eeb0e"
+  },
+  {
+    "candidate_id": "candidate-cc25962250a116de8d8d",
+    "capture_version": "870c5a5a1386681b5b3293bce023b2555ae32d136731af3677b19b93ccbfad70",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1287,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "d666d07751c76e24b1ac12550dda3f2055767446e7a9e204189d353229100869",
+        "start": 0
+      }
+    ],
+    "source_id": "news-a31168609155fa8d",
+    "source_text_sha256": "d666d07751c76e24b1ac12550dda3f2055767446e7a9e204189d353229100869"
+  },
+  {
+    "candidate_id": "candidate-1eb7d280f0183b3ad347",
+    "capture_version": "9b853932ee81835e3485bfff57ab71b14f14e9991a15e390ebf5f908bd501faa",
+    "context_notes": [
+      {
+        "end": 551,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "4894bf7255b60c8fe838fdf05731cce76fe0a5df47a05ab9442a94a2347faa5b",
+        "start": 282
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2090,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "8b4c8ea722660b0309da6eeaf3f57b994078b23a34f48ddf3f52ddc52503d6f6",
+        "start": 0
+      }
+    ],
+    "source_id": "news-73fb660d8cf943c3",
+    "source_text_sha256": "8b4c8ea722660b0309da6eeaf3f57b994078b23a34f48ddf3f52ddc52503d6f6"
+  },
+  {
+    "candidate_id": "candidate-60f86777eb4c27a43ee1",
+    "capture_version": "44142ac96ddc9685e6c7111f6f7eecc3ee283cd4cc2b253158c88f0353c15fc2",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2392,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "7142c0881e320187c84d5c1bd1266711433829dcc2dbfa129a70dd2a7cb99a5e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-875167a8b587064a",
+    "source_text_sha256": "7142c0881e320187c84d5c1bd1266711433829dcc2dbfa129a70dd2a7cb99a5e"
+  },
+  {
+    "candidate_id": "candidate-b8f6d35bfcc861e9bb16",
+    "capture_version": "3dc9501ab3441a86cfb5dc08d8ea46e8d9e94b694281bd3a3e7da87b862642c6",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2539,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "4e2fdacf5ebb9a9c1a3fc1a20c66d96a919aa5a79d33a1eb8807fd9f72bee1da",
+        "start": 0
+      }
+    ],
+    "source_id": "news-ae65e8edd0ef502f",
+    "source_text_sha256": "4e2fdacf5ebb9a9c1a3fc1a20c66d96a919aa5a79d33a1eb8807fd9f72bee1da"
+  },
+  {
+    "candidate_id": "candidate-9b29e4a61e0b5a377c74",
+    "capture_version": "9f7952406f58f85f310ba8e9defb4602771ae75471528acbe4668caafaa2d30f",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 789,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "efdae749d072c7b98d6c48f4517f349e3cf5883fe3b06d5932f68ff88f684446",
+        "start": 0
+      }
+    ],
+    "source_id": "news-b6380ec2083bd7fa",
+    "source_text_sha256": "efdae749d072c7b98d6c48f4517f349e3cf5883fe3b06d5932f68ff88f684446"
+  },
+  {
+    "candidate_id": "candidate-5ba79eb0a232270393a3",
+    "capture_version": "da9d033a6579",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 105,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "24a2adcf1f0ced9571eef8ccb2217da89bb68dfd8e9d0db9a66b5b7eb756fcb8",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2858,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "4fd393bbb001c6ac3eb7e0ae03267e4c909f9a1944ea1eb212d7e42f8a1b4ad0",
+        "start": 105
+      }
+    ],
+    "source_id": "GMA-20230831-880633",
+    "source_text_sha256": "4f4da19824ae5430454e09767499bf0624530261ff82bc40e2952edcbd4d96b2"
+  },
+  {
+    "candidate_id": "candidate-74d8d192854a5102707d",
+    "capture_version": "309e8e55f35c00d71ddabb3664b098b9ffb5f8937fc92cfb809b491754455fd3",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1659,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "665173ec22063e15f10e008eb897f9b16a79e22aecd0399430add6d21799e3a2",
+        "start": 0
+      }
+    ],
+    "source_id": "news-8e266121254eaa21",
+    "source_text_sha256": "665173ec22063e15f10e008eb897f9b16a79e22aecd0399430add6d21799e3a2"
+  },
+  {
+    "candidate_id": "candidate-426605fb48c499c0766a",
+    "capture_version": "627e59b4a3c4a4442ebf64902aeaa2d982587511fa34efa62b304beff0b18be1",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 919,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "828214fa07e65910a3385a5287443e243dd69d98b7c6cd081dabf2ce46ae2efc",
+        "start": 0
+      }
+    ],
+    "source_id": "news-1f612c11316d755a",
+    "source_text_sha256": "828214fa07e65910a3385a5287443e243dd69d98b7c6cd081dabf2ce46ae2efc"
+  },
+  {
+    "candidate_id": "candidate-ba78400416c48f856766",
+    "capture_version": "0404d4160aa0",
+    "context_notes": [
+      {
+        "end": 1034,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "d3f7273becc0844429f6bb00b5e2d9dbefe6c819f0df0cc81613eecd3a74ba65",
+        "start": 873
+      },
+      {
+        "end": 1284,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "31f199ede5e6baed24d343f9871a67d43bac772afb65f5419a33c69f59b653fc",
+        "start": 1121
+      },
+      {
+        "end": 1514,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "080f4a2b39b4aa654e4b65bf083c452e8a7aebccecabc3ece2ac903f389aceb1",
+        "start": 1370
+      },
+      {
+        "end": 1761,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "7c32bd7f1483230475e53a08419deecfcbb534d39d0c7787ba470b5a7453af48",
+        "start": 1599
+      },
+      {
+        "end": 2027,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "e81ac006a6e4aba98565e432a32784b8a1395339636dc1d3cc702ffe05f61a23",
+        "start": 1843
+      }
+    ],
+    "exclusions": [
+      {
+        "end": 97,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "00786fbcf87e7a56e180c4c7fee42255b6d7554960c2e5e7d4fad4ea521fc864",
+        "start": 0
+      },
+      {
+        "end": 2997,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "2287121aeb8f9b484899d368bb9fb46a511be50c73142f895c59d0cb68115d0a",
+        "start": 2920
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2919,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ae5650e76912dbb2c87f1235b97da66dbad5ab3f7e70e403b92c327ea8df9368",
+        "start": 97
+      }
+    ],
+    "source_id": "GMA-20230923-883038",
+    "source_text_sha256": "81b21ee95a0e9491214c40f00feffac0fde8b80d72734c5282319ea604f6243a"
+  },
+  {
+    "candidate_id": "candidate-8299ff4696caceb3f30f",
+    "capture_version": "8b5a24ff75b4ddef6ef3a8e18743649cb1aef3eaacdf298d5eaccf8c40b846d9",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1377,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "9b53076db840aebcb64d1c3fb7d11b1aad7c97548b788701194ba4a8907f3d1b",
+        "start": 0
+      }
+    ],
+    "source_id": "news-cbbe7131c73d0250",
+    "source_text_sha256": "9b53076db840aebcb64d1c3fb7d11b1aad7c97548b788701194ba4a8907f3d1b"
+  },
+  {
+    "candidate_id": "candidate-84866ae92d9bbdfff544",
+    "capture_version": "8b5185a0dea169e147839dbf4bb69e4882a0bc633b5774c5d30d26be95c55196",
+    "context_notes": [
+      {
+        "end": 1631,
+        "kind": "language_exception",
+        "reason": "English reporting includes Cebuano/Bisaya and Filipino quotation; v1 lacks a regional-language label. Keep unknown, not Taglish by assumption.",
+        "sha256": "c413a52747f07d49bb816f04fa5c6f20570065a63b68b5520eac32bd21e84552",
+        "start": 521
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1631,
+        "language": "unknown",
+        "language_reason": "Regional-language quotation cannot be represented faithfully by the v1 English/Tagalog/Taglish set.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "c0526ba3d08ba187e9f287584533631332d8c7c764b7124cb3e8bb60d9d5aa73",
+        "start": 0
+      }
+    ],
+    "source_id": "news-4153ac2f4cdf1465",
+    "source_text_sha256": "c0526ba3d08ba187e9f287584533631332d8c7c764b7124cb3e8bb60d9d5aa73"
+  },
+  {
+    "candidate_id": "candidate-e2c1a72f92de9e4daccf",
+    "capture_version": "068f7cb89aac6bd7fb820e9677b2cee0bf8f6412a454b2eac1549eead05e3fe0",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 759,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "8151807639b9824cc69745b8af0e0d6ee9b9a2fde996260662b3a58b02585767",
+        "start": 0
+      }
+    ],
+    "source_id": "news-cd0aa748f2207982",
+    "source_text_sha256": "8151807639b9824cc69745b8af0e0d6ee9b9a2fde996260662b3a58b02585767"
+  },
+  {
+    "candidate_id": "candidate-828f8caac27a2a7861e7",
+    "capture_version": "9fd8f8a8c5cd235e6e7ff84055d8502d0ada0fcae49ad8685af44e4d8fcefaa5",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1793,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "774ae14a818105a2ff2b7c07e7dea1d0ecc4977b94f4e3ae8338fc1cfc659e4e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-a75484806c378f88",
+    "source_text_sha256": "774ae14a818105a2ff2b7c07e7dea1d0ecc4977b94f4e3ae8338fc1cfc659e4e"
+  },
+  {
+    "candidate_id": "candidate-e8981f0727365b448704",
+    "capture_version": "db8196a0669cc86419a64aeec1f9ff229583c144fbe9bdca8a042663b5f8307b",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1870,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "231ae33e4539ea7a3c45675ad274472cd27e7b4575ddcc935e3c7b97c53b030f",
+        "start": 0
+      }
+    ],
+    "source_id": "news-d22e029c225caf85",
+    "source_text_sha256": "231ae33e4539ea7a3c45675ad274472cd27e7b4575ddcc935e3c7b97c53b030f"
+  },
+  {
+    "candidate_id": "candidate-352e39973c926b2efd92",
+    "capture_version": "2b8e17691b1306a20a76ffdf1bb2cc074487b468c713a0c63101607e7754f184",
+    "context_notes": [
+      {
+        "end": 1050,
+        "kind": "scope_warning",
+        "reason": "Source says nine barangays but lists ten names; preserve both without correcting the report.",
+        "sha256": "d4d193bcf5875760d1b5baf9aa01d3a7d261046108b0c78ac9c4fe622d2a1dc2",
+        "start": 750
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1248,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "2a8f728d5f2aa2472f2d1ff691bccd171ed8444ff722c9e17dab8f001ef357a2",
+        "start": 0
+      }
+    ],
+    "source_id": "news-b11e4314df572cad",
+    "source_text_sha256": "2a8f728d5f2aa2472f2d1ff691bccd171ed8444ff722c9e17dab8f001ef357a2"
+  },
+  {
+    "candidate_id": "candidate-18edaa119ad3b5e30a64",
+    "capture_version": "26adef6a92fc9d62bce476f6608dc2a18f312db12a56b8e8c920f866ca1d4b2f",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1361,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ea26428dcb5ec90d1a2b127d1e113519df10dad761adf5a83ac676a6bad4c175",
+        "start": 0
+      }
+    ],
+    "source_id": "news-6a27663514765a05",
+    "source_text_sha256": "ea26428dcb5ec90d1a2b127d1e113519df10dad761adf5a83ac676a6bad4c175"
+  },
+  {
+    "candidate_id": "candidate-048c308c41fa40dc8cec",
+    "capture_version": "6decea2306c071bd816d3a7790d9dd9c24606558e5669ec11720ffd58f79c9b8",
+    "context_notes": [
+      {
+        "end": 654,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "227bc7b96b70098dca9732cbc35a7ca018d831d2217b60fbe1745fcc62f88d38",
+        "start": 403
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2097,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f1b76654e154103550f4b947870d759789812d902481ddf0a2f93d36466cc78b",
+        "start": 0
+      }
+    ],
+    "source_id": "news-4ea4bd3a548e1cb6",
+    "source_text_sha256": "f1b76654e154103550f4b947870d759789812d902481ddf0a2f93d36466cc78b"
+  },
+  {
+    "candidate_id": "candidate-312163c875de27cc3455",
+    "capture_version": "a41fcf54646096cb477cfc627b2ffeda707d50d0d12cbd2e51c59feb7cc367d2",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 1560,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "e6b55af4efb3f97b17c9cce7d690f6aa12658bbb04704a29f814393eb59f6c46",
+        "start": 1466
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1465,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "b0589a21c870dd214ae0d14b51766d9ba0b147f958c0e5aa0b3db57eed6ecdc2",
+        "start": 0
+      }
+    ],
+    "source_id": "news-d4ad93228fbfb786",
+    "source_text_sha256": "ef73893a17b63a7274bb05a7cbc4839cfcc7b99372e41e68422cf08e592d5e9c"
+  },
+  {
+    "candidate_id": "candidate-9ba03ee48cd330c2568e",
+    "capture_version": "561839fb492bee794c8e895361ff998159661a28f567eb115f73bc4001de855f",
+    "context_notes": [
+      {
+        "end": 505,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "ad972700fd39f5704fab4f20c2fa54b1afb4082feb9c2fbec055cb9212ab3978",
+        "start": 344
+      },
+      {
+        "end": 890,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "4309649432ff878448af081023f41bcb4f2a44f57ab2e70d254e98890f02ca8e",
+        "start": 772
+      },
+      {
+        "end": 1351,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "91bd642c90efa93a97ba7ba0f33b20da7cf933417df32c386ca0084baab10bf1",
+        "start": 1135
+      },
+      {
+        "end": 1768,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "7584b34db85915d5729cf824b294fa3fef165c152b372c4029b5932215b2d85d",
+        "start": 1720
+      },
+      {
+        "end": 2072,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "a9342eef916e9128eca42cdf050e5e16a7b586a0650f21147dddb7e0e29525f8",
+        "start": 1990
+      }
+    ],
+    "exclusions": [
+      {
+        "end": 2177,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "01c32632c18b2db32b606e5f45b384b7c2a3041f534c9e1a338cee137b0b1eb5",
+        "start": 2122
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2121,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "0f8842f598ee853a45eb9d79313e7326b35a46792a71111dc3bbf0a3c3123306",
+        "start": 0
+      }
+    ],
+    "source_id": "news-5100fc1563858052",
+    "source_text_sha256": "4529a8e8c2246eb334a3383c0a317222a7fd607f5e635cb8c57257596d4bce3a"
+  },
+  {
+    "candidate_id": "candidate-29b9b371d70ea9fb146b",
+    "capture_version": "60b9c6087aecefb8bc49981721de147663663ccf59ea6ca9dca7b05c2e73aea1",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 6085,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "a7a7c4715ab4f3d253fd4ff37cd6406fbf72aa6ef2289fbfa63618c9979fe679",
+        "start": 0
+      }
+    ],
+    "source_id": "news-887280dbb03ded1c",
+    "source_text_sha256": "a7a7c4715ab4f3d253fd4ff37cd6406fbf72aa6ef2289fbfa63618c9979fe679"
+  },
+  {
+    "candidate_id": "candidate-fc7418a1c126b9ab55f4",
+    "capture_version": "15153a2a97a3",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 94,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "5283a815b90130ec2ad79a688175869e1d16319dc68c24301b001cfadbdc500f",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3275,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "32108fc92e7a85c9657bd9f3206b985f53bf44a7462aaa5e1d78492847d2b846",
+        "start": 94
+      }
+    ],
+    "source_id": "GMA-20240902-918977",
+    "source_text_sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d"
+  },
+  {
+    "candidate_id": "candidate-dba6d01a5fb51a5321ca",
+    "capture_version": "7b8f26531b6ad2cea83cd9ac7ef268bb5562c696983daed5c0d060661a390537",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 485,
+        "kind": "related_story",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "1ae544c62d4a838dd0adb586ecbeb05af8217044e242c808fa0460e18967a516",
+        "start": 421
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 420,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "7d8b772d16d025e71caceca0fc23701053811bea6fb4ee7bca84dc69e3485f78",
+        "start": 0
+      },
+      {
+        "end": 3130,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "9e0d05053cf15a7cf7611831bdcfe703704c4d7076e98748ef257c6c6005f50d",
+        "start": 486
+      }
+    ],
+    "source_id": "news-f0305004fb9ec073",
+    "source_text_sha256": "2171b316437fb8734b26472ef22ce5ab86d1f9d3bdcdf14800a5f4fed5ffca81"
+  },
+  {
+    "candidate_id": "candidate-b895ea79740928920a77",
+    "capture_version": "4018bbadaa72255b549dafc60158515faca0431b9b7c425b033c8ea554c24936",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3654,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "3a2b2eaac8ca598f7d6d5dcf70387dcdc0d413d4d3280df04810cdcaa5e58a8f",
+        "start": 0
+      }
+    ],
+    "source_id": "news-61bde888c0935e15",
+    "source_text_sha256": "3a2b2eaac8ca598f7d6d5dcf70387dcdc0d413d4d3280df04810cdcaa5e58a8f"
+  },
+  {
+    "candidate_id": "candidate-14f5c9a7c3efa9cea117",
+    "capture_version": "b6b50142f54c06aafecb5a7f30a9eaf47029b5a89a73d6a2371dbcb8355c6919",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1027,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "4c7464a19162cbf6b1f8f3cae3f4b59e134b35f64acd757902cce7789a678c8d",
+        "start": 0
+      }
+    ],
+    "source_id": "news-03d87549f9d07348",
+    "source_text_sha256": "4c7464a19162cbf6b1f8f3cae3f4b59e134b35f64acd757902cce7789a678c8d"
+  },
+  {
+    "candidate_id": "candidate-a4a8e22a3cc6ee29b27f",
+    "capture_version": "a950f30bb5d18bda038bd8f55e8f0ea4c109652040e8f28bde56ac2cb670d462",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1132,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "358ff7c6ece1115a3f27c9e506c24ef65b5bb0f4bd9409d42a6a8b6252588bcb",
+        "start": 0
+      }
+    ],
+    "source_id": "news-e5f7187312d2544f",
+    "source_text_sha256": "358ff7c6ece1115a3f27c9e506c24ef65b5bb0f4bd9409d42a6a8b6252588bcb"
+  },
+  {
+    "candidate_id": "candidate-25b96a6db85f05ad4167",
+    "capture_version": "4dfec6d72aabb9cb329736a4431c3000c0c7277bf36594ca6503e2dddeeb6ddf",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3677,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "cf10050d20ce5d3b6bb9879b5acbd8a48bb9da663bfd23b3b591a2c52dc6fe5a",
+        "start": 0
+      }
+    ],
+    "source_id": "news-6b591d0fbc9779c5",
+    "source_text_sha256": "cf10050d20ce5d3b6bb9879b5acbd8a48bb9da663bfd23b3b591a2c52dc6fe5a"
+  },
+  {
+    "candidate_id": "candidate-c1f782f6e7beded5c380",
+    "capture_version": "5762b2cf2d772cd2026c3ff8204640c3835cced5cae907f9c7f888c0c3fbb2d5",
+    "context_notes": [
+      {
+        "end": 787,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "e90882370fbff5050cadd320f93c396831cca42d2bc4adbb8277ef86c73d8e41",
+        "start": 630
+      },
+      {
+        "end": 973,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "ca6f18ed0cf11cc0813adca90fcc48a75d36952a59f0f700b54d902f900c2c10",
+        "start": 828
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1859,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f8e07aedc25ddec422aec4337873b5762c007fb2629d61af347ab07f67f07083",
+        "start": 0
+      }
+    ],
+    "source_id": "news-07f788d7312f9773",
+    "source_text_sha256": "f8e07aedc25ddec422aec4337873b5762c007fb2629d61af347ab07f67f07083"
+  },
+  {
+    "candidate_id": "candidate-09359b442528a2117597",
+    "capture_version": "df5febc755d2b27bea5387cc0de26cac2cce791877d9cbe6d86c3976e7cd53dc",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1849,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "3e5335614b985264251f37bcf30b02ed05b94b20acfb4b3119820ab19dd9d208",
+        "start": 0
+      }
+    ],
+    "source_id": "news-795b097f04147922",
+    "source_text_sha256": "3e5335614b985264251f37bcf30b02ed05b94b20acfb4b3119820ab19dd9d208"
+  },
+  {
+    "candidate_id": "candidate-8938b5c47c82185f1366",
+    "capture_version": "344fd084843835f972a600301e739c30b48166a994d3f9e3ab736bb589c39f57",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2668,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f22581208f1ae4559f0258088c3b58d445d2fa82d6d1f08c322e7ec112e8eb4e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-017e86f44194f17e",
+    "source_text_sha256": "f22581208f1ae4559f0258088c3b58d445d2fa82d6d1f08c322e7ec112e8eb4e"
+  },
+  {
+    "candidate_id": "candidate-7bc699bd071605c131e6",
+    "capture_version": "93c2864822a63a51bb27bb2ec57af55fb8970209c11646fba6d3c966ae7dfe30",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 925,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ef1dc9da35d3a0cec0c4455c754adeff597c24a7e83ed3ef1d66dbcdf53bd3d0",
+        "start": 0
+      }
+    ],
+    "source_id": "news-c94260700ed3c6b1",
+    "source_text_sha256": "ef1dc9da35d3a0cec0c4455c754adeff597c24a7e83ed3ef1d66dbcdf53bd3d0"
+  },
+  {
+    "candidate_id": "candidate-ba5c2124c6590d2c54d5",
+    "capture_version": "4da3495b4aabeaeb767f3edf13607a763df740234840aadf00d3e7baa3c7a312",
+    "context_notes": [
+      {
+        "end": 537,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "c7f43c66171112b0e04fcc0e3f084aba8f094343461733280f18809a54949888",
+        "start": 378
+      },
+      {
+        "end": 1538,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "528f7ebdbcad5682d81a9a4df137d2a36ef8114a6e1420036a583e4b1da79994",
+        "start": 1360
+      },
+      {
+        "end": 2389,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "329629f378973fe435a1749bc51632fb475f27309a7b8a711ec4e224c3c3776b",
+        "start": 2191
+      },
+      {
+        "end": 2788,
+        "kind": "embedded_reporting",
+        "reason": "Embedded credited reporting: distinguish quoted/post evidence from article narrative; repeated claims are not independent observations.",
+        "sha256": "f24c3d27617e2e0cdeecd6f7bb3e631c1f46b114d9ad4b5e2aac49cca42a41bc",
+        "start": 2652
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2989,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "9cfd9bc2a070a47150c38d781305a07bbe7506dd0e70695b2acf646f923f46fc",
+        "start": 0
+      }
+    ],
+    "source_id": "news-1192a746ef19fc09",
+    "source_text_sha256": "9cfd9bc2a070a47150c38d781305a07bbe7506dd0e70695b2acf646f923f46fc"
+  },
+  {
+    "candidate_id": "candidate-ff15d262aa8a7c2693c2",
+    "capture_version": "8d6899addca666c925869161192b8fb38b5a9d09e865ab5732d045222ca3ed07",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1990,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f56b9d1e73e317bedd3fb0d333bb160b32117c7fd4c895a30d646633e2c3587d",
+        "start": 0
+      }
+    ],
+    "source_id": "news-1fa92429f958f691",
+    "source_text_sha256": "f56b9d1e73e317bedd3fb0d333bb160b32117c7fd4c895a30d646633e2c3587d"
+  },
+  {
+    "candidate_id": "candidate-dfbe8c135e54701438fc",
+    "capture_version": "8d34d8e0dbfc",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 116,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "ea19a6af45a5ba9197668c42846a9c8f173fcfcb5a65671803fb25f1f9bb067b",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 6559,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "e65276a0af5dfdc9bd108c4c8106737106c4bb24fb80d0a99603057d6db22ff3",
+        "start": 116
+      }
+    ],
+    "source_id": "GMA-20250722-953360",
+    "source_text_sha256": "58d43828029cf218458c9ac5ac85491e76414723b1786d4910e63d2049ce4edd"
+  },
+  {
+    "candidate_id": "candidate-725d5ecc1c2f098552fa",
+    "capture_version": "9edc0aec2b84",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 103,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "03040121f4f6af3e97872569b9af0aa881d44b8a75cced4522afc64e2981725e",
+        "start": 0
+      },
+      {
+        "end": 6175,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "2ef66feaee823537e13efed1a75df2fd4c8d7689473156d545006fdde44c5e96",
+        "start": 6105
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 6104,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "0c5a2468e7bd7576cd9cddfe92e582bc74443339316874269233a35e4f09435c",
+        "start": 103
+      }
+    ],
+    "source_id": "GMA-20250722-953419",
+    "source_text_sha256": "1e856d0fe899d2c3b9212e202d3b7698c9f217f4d38d4f921fe426de92e21010"
+  },
+  {
+    "candidate_id": "candidate-f18682925b8ea613d8f0",
+    "capture_version": "c0147cfdd238c7e5654ce0faf3c5e88eee6c834f486bb66a7eefcdc7d4167be4",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2023,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "9e872c92d374ceaa5c461ba002b4cb74ea6b6908a2de2f5bbdd146aa7d6655eb",
+        "start": 0
+      }
+    ],
+    "source_id": "news-6caf0c129b6d7069",
+    "source_text_sha256": "9e872c92d374ceaa5c461ba002b4cb74ea6b6908a2de2f5bbdd146aa7d6655eb"
+  },
+  {
+    "candidate_id": "candidate-158bf8beb6ef7d40d4ba",
+    "capture_version": "063ffbab74f5",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 107,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "9325b71fba6f53d89ee3add52c527900cd3c5d92ecf5332ccffb2703ed321290",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1596,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "0e376e5dfbb58bea50185d9d7d17204828905dc4c783dc55026d34ca217f2a43",
+        "start": 107
+      }
+    ],
+    "source_id": "GMA-20250806-954964",
+    "source_text_sha256": "989a7926d85b1e86ece9978931b6c9848f6bb4b861b0dd80adb5a2f45cad5fef"
+  },
+  {
+    "candidate_id": "candidate-94585f1be28cbeb7a93d",
+    "capture_version": "1468ab16ab8e5d5afd13395cdf35fa56cfba02e5bfe2e75675939c7a4b4066a9",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2806,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ff774c966aba91dc22bde93711f3ba0b812137b9dcbc443842d75ca57e1947f8",
+        "start": 0
+      }
+    ],
+    "source_id": "news-72e6b068187f871e",
+    "source_text_sha256": "ff774c966aba91dc22bde93711f3ba0b812137b9dcbc443842d75ca57e1947f8"
+  },
+  {
+    "candidate_id": "candidate-4c70bfc9ddcacf25237c",
+    "capture_version": "653c89592e53d6ef022d51757acc64c8a707e45ef5d3bde72d3d24ea24c1c097",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 4690,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "32c4ef0b633889125126416cab3fdf6760eb875a455b6159df6781cf1b88cc32",
+        "start": 0
+      }
+    ],
+    "source_id": "news-026d02c37bac6f5c",
+    "source_text_sha256": "32c4ef0b633889125126416cab3fdf6760eb875a455b6159df6781cf1b88cc32"
+  },
+  {
+    "candidate_id": "candidate-a4ad9ec84d391385fddb",
+    "capture_version": "f2772685a13d229a90a1912c7b876dbfd6331c0cae07419f427fde7cd13dd977",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1826,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "215d316b06db162d38fb1e07d57545b650b54edd719dcc8d4b3790f509dc4480",
+        "start": 0
+      }
+    ],
+    "source_id": "news-7e3cff6275b06366",
+    "source_text_sha256": "215d316b06db162d38fb1e07d57545b650b54edd719dcc8d4b3790f509dc4480"
+  },
+  {
+    "candidate_id": "candidate-31397823169065339cf2",
+    "capture_version": "7ef6c4708d3afff624a35350bd64d6451efacdd82629fc8c2b30086f7f717aff",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 7035,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "3f9d1bb1606b51f0478f66e199a5276c57af1e7846e9a3a8cd6a4dbba20c4418",
+        "start": 0
+      }
+    ],
+    "source_id": "news-d6fb04aa24b7d1e1",
+    "source_text_sha256": "3f9d1bb1606b51f0478f66e199a5276c57af1e7846e9a3a8cd6a4dbba20c4418"
+  },
+  {
+    "candidate_id": "candidate-ca38b2e044872c73f970",
+    "capture_version": "5e6f92f0b352f40a742f0ca47ad581f33264fdd874f2b605b5549446249e0139",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1694,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "11669ecac40d4962f7aca9c85eea721d0ba7d23737f5ba8417197b2056f2f3e6",
+        "start": 0
+      }
+    ],
+    "source_id": "news-d674f4ccf930a14c",
+    "source_text_sha256": "11669ecac40d4962f7aca9c85eea721d0ba7d23737f5ba8417197b2056f2f3e6"
+  },
+  {
+    "candidate_id": "candidate-c0c11e1b0027b46e59b8",
+    "capture_version": "74c1042c60f628eccc1ccb67485ced6330406cfab54e8ed56f0a63835bd81003",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2085,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "5bf128dbcb40ded98f87bd5112667dda8be7b93b8048029f296d7435862862dd",
+        "start": 0
+      }
+    ],
+    "source_id": "news-3ea44adde3431738",
+    "source_text_sha256": "5bf128dbcb40ded98f87bd5112667dda8be7b93b8048029f296d7435862862dd"
+  },
+  {
+    "candidate_id": "candidate-0dd48aac5564faaa5753",
+    "capture_version": "eaf210bd40a026e1a281406d8172f9bc7bbf4cf79744442779fb4c70b4c9eb65",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1921,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "594909bf11abcef695e6b4b71f8351f6f0f7441705b0649574bfd098f3c6cd91",
+        "start": 0
+      }
+    ],
+    "source_id": "news-ac53784236790e14",
+    "source_text_sha256": "594909bf11abcef695e6b4b71f8351f6f0f7441705b0649574bfd098f3c6cd91"
+  },
+  {
+    "candidate_id": "candidate-f194e1ae8b4426c556a8",
+    "capture_version": "bfd9d195d38c",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 104,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "ae1b7fd93cac5e5606bfba00a920113f3fe2e52150e12b4edde58896a697249e",
+        "start": 0
+      },
+      {
+        "end": 684,
+        "kind": "related_story",
+        "reason": "Unrelated August 29/30 headlines inserted into the July 10/August 8 list; retain original city/list context in sibling blocks.",
+        "sha256": "d8888873b0103da4db05f2d10083fb93d1b083bcb50de447424c235a411f4da8",
+        "start": 466
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 465,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "27ca225b268e34976c0cc484ee341886d996f1c793c05106c4989d31a7363489",
+        "start": 104
+      },
+      {
+        "end": 2908,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "f299cbed0c0824d57377657492126df729618fd8a5a4cf9b0e6a354449d28760",
+        "start": 684
+      }
+    ],
+    "source_id": "GMA-20260710-994434",
+    "source_text_sha256": "752d1b9d760195fd7f10fa4f1e2f12a7b2fe4e593d8853c8c3897adb5a9faf3f"
+  },
+  {
+    "candidate_id": "candidate-24d069819b718ad6522c",
+    "capture_version": "62027caf5825",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 128,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "b5706bec51097913f7e6937a0cadcd52ae46bd8025b79910e85c21a761fc1486",
+        "start": 0
+      },
+      {
+        "end": 699,
+        "kind": "related_story",
+        "reason": "Unrelated August 29/30 headlines inserted into the July 10/August 8 list; retain original city/list context in sibling blocks.",
+        "sha256": "305e8998905f4f3683cfa00a5bc10b78a1fd833919213cf897ae6d106a4e3812",
+        "start": 470
+      },
+      {
+        "end": 2045,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "47efdc9a43b9facf753bec965ee1fa1c83e2d88f065198bd79ed1c91e629649f",
+        "start": 1977
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 469,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "82a17118930f8b338406eb9ecb23d71279ca493b502712c0899b38f01ffaeb04",
+        "start": 128
+      },
+      {
+        "end": 1976,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "b6c1413dd0a43b815b1671b553440aed647fb3062febae07a1c73e87b420496e",
+        "start": 699
+      }
+    ],
+    "source_id": "GMA-20260808-997803",
+    "source_text_sha256": "86ad6ce63c874f9caa598a4fda21bca3b06250573de1b26d1b8fe037f07b001d"
+  },
+  {
+    "candidate_id": "candidate-327c8db0ffa5f81bc9f3",
+    "capture_version": "22f58a297c5ea606831dd5564fae5824fdc415df8c41ab9934eeeea07f6884ec",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 124,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "e53ef2b1f60d805ad6d978a9c9885641e657b9095b70dcd7f2fc00fe6c6f66e8",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3679,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "245f13e1e7175e2a0e2a39f39554ddca2f6d5c4fab1f35175a4c2e9f36ffffa7",
+        "start": 124
+      }
+    ],
+    "source_id": "GMA-997853",
+    "source_text_sha256": "4788e92ef7fc71eaaf898fc592f2667177a2c85e9cc9a4b780513c022ec3c38e"
+  },
+  {
+    "candidate_id": "candidate-a40fcf78ed302d195769",
+    "capture_version": "ceba704c7ed188d98671e0c31628b28e8a665f4381e492500e3357eb2edc7e10",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 298,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "69d01d806b1ccc84be3e8c1f204f2c20428ef6c82b068bb2f4601fbd1e7b60a1",
+        "start": 0
+      },
+      {
+        "end": 8829,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "32951f3a16345ae5b9cc2312ec19a797fd4efadfbab900abfb1ebe85e61742e8",
+        "start": 8759
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 8758,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "fc895737df50a2705faf732e694a788bf04e9fc2241c9de0970334757cd658eb",
+        "start": 298
+      }
+    ],
+    "source_id": "GMA-997943",
+    "source_text_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63"
+  },
+  {
+    "candidate_id": "candidate-dafb2e17023f824efb0a",
+    "capture_version": "59aa88db75a525739c47b66eabe28c1829b8cc3062e2621697ef24445bff3d1d",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2985,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "a5ea6f9a2ee8ae1d6dd71fc925d8de28168748fcc3a7de998e4ce27f348e3f1e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-63bce4e354aec337",
+    "source_text_sha256": "a5ea6f9a2ee8ae1d6dd71fc925d8de28168748fcc3a7de998e4ce27f348e3f1e"
+  },
+  {
+    "candidate_id": "candidate-14f344e240514f806a7d",
+    "capture_version": "5c9cfcb73dac85ecbe2f8d06e4e50ca6bbc3ddd7ebde168b4ccaa4b55674c859",
+    "context_notes": [],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1028,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "4745bcd779f26d5d2d4f6ba13125d60d86d4d4fe281cf9df05f44fec491a9355",
+        "start": 0
+      }
+    ],
+    "source_id": "news-1885abddb1dc6962",
+    "source_text_sha256": "4745bcd779f26d5d2d4f6ba13125d60d86d4d4fe281cf9df05f44fec491a9355"
+  },
+  {
+    "candidate_id": "candidate-75794d1c911eb0de31cb",
+    "capture_version": "f746dffb4918",
+    "context_notes": [
+      {
+        "end": 6861,
+        "kind": "caption",
+        "reason": "Inline Manila photo caption inside a multi-city list; do not inherit another city heading or spread its depth.",
+        "sha256": "a3ed3d26fe1f56acb528a7545be95b5a53bef625d2773885770509afb1f6af0a",
+        "start": 6677
+      },
+      {
+        "end": 7998,
+        "kind": "caption",
+        "reason": "Inline Manila photo caption inside a multi-city list; do not inherit another city heading or spread its depth.",
+        "sha256": "9e12e777db4285305336137d41463224cf692b4dce7088d91d5d33456cb9c50e",
+        "start": 7815
+      }
+    ],
+    "exclusions": [
+      {
+        "end": 121,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "17e5b0e848f676e8b0fd484c00f8f731958438fa02721e1f0200f72a6c37a2f9",
+        "start": 0
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 10000,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "09d1794e9b99577d3fbaad0852a140a77e8d3550bfc578289989a48b886aee09",
+        "start": 121
+      }
+    ],
+    "source_id": "GMA-20260817-998778",
+    "source_text_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5"
+  },
+  {
+    "candidate_id": "candidate-aa34e5658a7d4ed679ac",
+    "capture_version": "527761ecfec2e5e800ee42860908eb8c8d5781b9a8f14519e760f185d42d7c7b",
+    "context_notes": [
+      {
+        "end": 334,
+        "kind": "scope_warning",
+        "reason": "Source combines Wednesday report attribution with Thursday evening; do not fabricate the observation date.",
+        "sha256": "877958445e4aa31adbe678e5c3025fe41fb2c832f32403cf9faa097f8886ea17",
+        "start": 172
+      }
+    ],
+    "exclusions": [],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 3274,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "5d5b2a67f7a752a74932037852cc486ea1638f92fd3827312b9fedf59e6fa89e",
+        "start": 0
+      }
+    ],
+    "source_id": "news-9449e3528861ff03",
+    "source_text_sha256": "5d5b2a67f7a752a74932037852cc486ea1638f92fd3827312b9fedf59e6fa89e"
+  },
+  {
+    "candidate_id": "candidate-941de1e8dbdd06130dd2",
+    "capture_version": "c9df37096f225b02d3fdf039ebd0891121ee52346a4bbbb24bbdd78a8e344cd2",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 326,
+        "kind": "caption",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "ebb42b7739504ade447c471b3ae1501125e1c263ec4e1e0152bfb0d31e81b25d",
+        "start": 0
+      },
+      {
+        "end": 898,
+        "kind": "related_story",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "c47852ed4d6e05d0e1771e5ee42cf2ff72c5286196b6d13489a38129719b0489",
+        "start": 836
+      },
+      {
+        "end": 1217,
+        "kind": "publisher_interface",
+        "reason": "Advertising marker splits context blocks; never join source slices.",
+        "sha256": "98001977d07ea79e0134b66ea6030f918d5ece5e4cc0201e0bd96df2379eb249",
+        "start": 1203
+      },
+      {
+        "end": 1730,
+        "kind": "publisher_interface",
+        "reason": "Advertising marker splits context blocks; never join source slices.",
+        "sha256": "98001977d07ea79e0134b66ea6030f918d5ece5e4cc0201e0bd96df2379eb249",
+        "start": 1716
+      },
+      {
+        "end": 2371,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "60dbbe7916d6ba00b7ff4fc2876da30380ca007068ad6058afcd21eee74f380b",
+        "start": 2344
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 835,
+        "language": "english",
+        "language_reason": "English lead, attributed list and town names before the first related-story widget.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "8f92dc021a16b6bffa857cacf199592ae5aed05964d06681b1902467230d94bf",
+        "start": 326
+      },
+      {
+        "end": 1201,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "3eb0adc173497687366f532ef54702752ffe76018f3483bb59eee55ddc804405",
+        "start": 899
+      },
+      {
+        "end": 1714,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "a743ad965bb4fdb846149e02dd378ede067359076cbf4ae36e3f6c61b76f7f69",
+        "start": 1218
+      },
+      {
+        "end": 2343,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "d96038a4976a00b8fb3a2d285bc19d28bf6a186e4b32e2475b4467c407631f81",
+        "start": 1731
+      }
+    ],
+    "source_id": "ABS-BROWSER-abs-2023",
+    "source_text_sha256": "9b8559c95682f741bbf60c3b4f425f2fea792552f9d8efd380b3f3cae7952283"
+  },
+  {
+    "candidate_id": "candidate-63dba1a26725f7bdb3e4",
+    "capture_version": "c56210f6cf40e8c160164e9f1819c93fecab06dddce3eb3915b70e3efd2d04dd",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 505,
+        "kind": "publisher_interface",
+        "reason": "Advertising marker splits context blocks; never join source slices.",
+        "sha256": "98001977d07ea79e0134b66ea6030f918d5ece5e4cc0201e0bd96df2379eb249",
+        "start": 491
+      },
+      {
+        "end": 721,
+        "kind": "related_story",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "9a5055cc9a7a50427edf4d3d9eb4524bed2e4123f93c89b177376af821a38e5f",
+        "start": 688
+      },
+      {
+        "end": 1252,
+        "kind": "related_story",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "2b0ec0e6a59421b8c7692120634d4fd22e8ce750035ac9733b8548e11bb2e59f",
+        "start": 1201
+      },
+      {
+        "end": 1280,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "60dbbe7916d6ba00b7ff4fc2876da30380ca007068ad6058afcd21eee74f380b",
+        "start": 1253
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 489,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "61313cc616c10d752f8b120bc3a371321d6ff8dce143dc6b9dcd168209e94667",
+        "start": 0
+      },
+      {
+        "end": 686,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "bcb45caf94b0d919b30cc2f60153c7f41b338b86726b23e73620cbf351b64dc7",
+        "start": 506
+      },
+      {
+        "end": 1199,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "8e4cad2a7903466ae0f7ef01e739b20a28e8ae178b2a5f9c7f1d318f8bdba87f",
+        "start": 722
+      }
+    ],
+    "source_id": "ABS-BROWSER-abs-2022",
+    "source_text_sha256": "8b43ab00c5dd03be9ab30055bc0cb1a3a08a8bbed90f7156ac3ab0663043b968"
+  },
+  {
+    "candidate_id": "candidate-cb9b3060c1799395ee05",
+    "capture_version": "86c841f5ec5c4ecad44a0e0aca6e8a19d68decb4d4fd92e830058cc033b53369",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 1332,
+        "kind": "related_story",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "54e11092a545efe769a3918f95c94d17348ac25c11d211ac93d15ef15d9efce1",
+        "start": 1281
+      },
+      {
+        "end": 1543,
+        "kind": "related_story",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "d18b75b90d3a5715ab0742a86cffcaa40fe462d2f48347cf1ae5a46770f2fe8d",
+        "start": 1457
+      },
+      {
+        "end": 1816,
+        "kind": "related_story",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "a535d730903ed7eb3785f474ab9ad0a07508369604e10c9d4a352f0876d1a4dc",
+        "start": 1769
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1277,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "387f1179207ab94c4628673b7f5f0706800db134d13874d481772dcbdc3e9c38",
+        "start": 0
+      },
+      {
+        "end": 1453,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "98240ef447c199a0f55bac731ed8ceda465875145eed0cbc7061b48e145f2a51",
+        "start": 1333
+      },
+      {
+        "end": 1765,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "25323579bf62ab55ceb093bdc2e47e3150161050f8cddd867039fe818b362d67",
+        "start": 1544
+      }
+    ],
+    "source_id": "ABS-BROWSER-abs-2024",
+    "source_text_sha256": "caf2e506992958441cda34a5a23839895ad0ba6083e3aa7319c018c5235f23b6"
+  },
+  {
+    "candidate_id": "candidate-8ca3246b4ee064b12688",
+    "capture_version": "3c528dcaca7972a0db197842a20eadb72b5b11e146a6872a75fc84dcc27dba18",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 676,
+        "kind": "publisher_interface",
+        "reason": "Advertising marker splits context blocks; never join source slices.",
+        "sha256": "98001977d07ea79e0134b66ea6030f918d5ece5e4cc0201e0bd96df2379eb249",
+        "start": 662
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 660,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "96f4fdbc0a14cd2b39116fc98b8f19bf5eb8c1182238072a69bea6228a638f6d",
+        "start": 0
+      },
+      {
+        "end": 1106,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "93ba7224646df3ceac8cedb2c13262d15037f9ef9f40995c31bb68eb5c8f8f81",
+        "start": 677
+      }
+    ],
+    "source_id": "ABS-BROWSER-abs-2026",
+    "source_text_sha256": "efc1178281342935d877f543cc2f1dd268ca10c5c2d37e20c97509edc0b34030"
+  },
+  {
+    "candidate_id": "candidate-b80377727cc30b8c9466",
+    "capture_version": "4a53b66659f07b215b0935ef570232fbc0ce5e2d8ccf9ff08499cea7b86a0f96",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 588,
+        "kind": "publisher_interface",
+        "reason": "Advertising marker splits context blocks; never join source slices.",
+        "sha256": "98001977d07ea79e0134b66ea6030f918d5ece5e4cc0201e0bd96df2379eb249",
+        "start": 574
+      },
+      {
+        "end": 601,
+        "kind": "publisher_interface",
+        "reason": "Advertising marker splits context blocks; never join source slices.",
+        "sha256": "bcb483a5bf5b033c1bccbc9c743d11bccbfe4b4626d47796a2de3e56d3e38c48",
+        "start": 589
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 572,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ae8eeb7fc63b4e577abb1bb81969f7a12815a0a5923ca3e4e5301a6bf49a2cb6",
+        "start": 0
+      },
+      {
+        "end": 1014,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "0371010ccddbc2616299fec9b17a62bb93470e8731b3bb2ba212ff8779d58d04",
+        "start": 602
+      }
+    ],
+    "source_id": "ABS-BROWSER-abs-2025",
+    "source_text_sha256": "b120f9c5d24df618ee3d250b65fdeb46efe246ee3d3456c50ac2e858feeb1787"
+  },
+  {
+    "candidate_id": "candidate-9778da8e27fb721a7f14",
+    "capture_version": "d23a9c30b6dc8ceac9aa9d479958130c8569ecff92e891bf8fce48c73d7d08e9",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 127,
+        "kind": "publisher_metadata",
+        "reason": "Source title, byline/date and sharing controls.",
+        "sha256": "8a6f8bae34dea180f8b26e5a6edee8e2778cb7ef4bb570a13f2391d939201350",
+        "start": 0
+      },
+      {
+        "end": 291,
+        "kind": "caption",
+        "reason": "Lead photo caption remains separate from the reporting list and its 4:30 p.m. update.",
+        "sha256": "74e0fd70a22bad65f79532489979b74576ec5243927d45b54a30260f7474f4e0",
+        "start": 127
+      },
+      {
+        "end": 838,
+        "kind": "related_story",
+        "reason": "Two related-story headlines inserted between lead and list; not this article evidence.",
+        "sha256": "d0bbe3f31a2c515fb7d7a2e9bb08410b3c16ce39717175f7913b371e8a9e296f",
+        "start": 705
+      },
+      {
+        "end": 2708,
+        "kind": "publisher_interface",
+        "reason": "Update prompt, promotional footer or tag metadata, not flood observation.",
+        "sha256": "8fb5adf94e813ce92327f388f175810eb85cf5ee768269b4e6d9b00da2846a2d",
+        "start": 2678
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 704,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "dbdf34e243a21ac7f57b8d727e27c44b6b40d4a68729abad23fa098bbb31ad92",
+        "start": 291
+      },
+      {
+        "end": 2677,
+        "language": "english",
+        "language_reason": "English reporting and clauses; Philippine place names and designators retain their source spelling.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "695a77fdb4959c41dda42f214ae0471aa093a57acd70c4d5ccdb4feb2bf928fa",
+        "start": 838
+      }
+    ],
+    "source_id": "saved-article-2",
+    "source_text_sha256": "d23a9c30b6dc8ceac9aa9d479958130c8569ecff92e891bf8fce48c73d7d08e9"
+  },
+  {
+    "candidate_id": "candidate-f4ae3f83f4fdb772169d",
+    "capture_version": "607cd72015d475c69e3dd2704e108823797332ab68085f84cda8ec851cea2ef4",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 140,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "267021e6cb7fa8d456b98affbfff0d32d5ecd9bdb5a06d3eb4c62e4fa7df5c00",
+        "start": 0
+      },
+      {
+        "end": 684,
+        "kind": "publisher_interface",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "33d788ae43468d62c4fdfaeb255126b375753dff38d8abf4ff1f84c6d68ec63e",
+        "start": 667
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 666,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "932296c35c089d3620c335383973af241b48bc6b5d301899e2ad83154d5d8d77",
+        "start": 140
+      }
+    ],
+    "source_id": "news-344bf3f37308486f",
+    "source_text_sha256": "6b82db2a7ae5a41a6e0a315a56d3e66a584680f9c38d6d3784e1a346bdd4933b"
+  },
+  {
+    "candidate_id": "candidate-b363acc40158058c80c6",
+    "capture_version": "01292975d5184cbe12c51ceef7d090f1d23608ca5c9c6d657ad4b0de56ffffc0",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 191,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "a7e89d4235c866e37b743b47d009217359546e00b2201d2f1533306983fdbcc2",
+        "start": 0
+      },
+      {
+        "end": 1178,
+        "kind": "publisher_interface",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "33d788ae43468d62c4fdfaeb255126b375753dff38d8abf4ff1f84c6d68ec63e",
+        "start": 1161
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1160,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "8362dc60b1a8bf82f8ef7f999ab716ab757a650123d09e93866e7aab164438cc",
+        "start": 191
+      }
+    ],
+    "source_id": "news-c8ab20cd76ce8e6f",
+    "source_text_sha256": "c60cf9bde231de0020928e4f4d93e8572c8a0d78c6f6470ff8be984669f89002"
+  },
+  {
+    "candidate_id": "candidate-fd9ee06edf28ff099b35",
+    "capture_version": "72fc0873323114d21c08f45a9a679460636c2e8e862a983eef88b4b9cbb3de83",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 137,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "67908ee540372b9067bc65879a39e0444ff1b27031dc9661de0a80a47c5c7647",
+        "start": 0
+      },
+      {
+        "end": 899,
+        "kind": "publisher_interface",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "33d788ae43468d62c4fdfaeb255126b375753dff38d8abf4ff1f84c6d68ec63e",
+        "start": 882
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 881,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "ec2b30e42773e871d7e1eb2039554eda3bcdba3e025453c32985197b1a996f82",
+        "start": 137
+      }
+    ],
+    "source_id": "news-97f012a69d8a6416",
+    "source_text_sha256": "6771c67585095bfcd00998715b5b3f3c7b0dee8ec25ef3e57c783b6466d800ed"
+  },
+  {
+    "candidate_id": "candidate-fad20157f38c3b674643",
+    "capture_version": "09dc12ff12bbb2cf02d4fe686d5477f747d101751f7943fe3f6f7a2439924f33",
+    "context_notes": [
+      {
+        "end": 466,
+        "kind": "measurement_role",
+        "reason": "Hanggang tuhod describes the height of corn plants, not floodwater; do not annotate it as a flood DEPTH.",
+        "sha256": "8ebb4fa72dee4fbedd1f7caecd6196cdd661696b6ae03f170baf26827fdab470",
+        "start": 351
+      }
+    ],
+    "exclusions": [
+      {
+        "end": 147,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "a42cecc34b9116e294c634965317ce5dceeb49ee59b9d43c8ca1a227a9e3b1f5",
+        "start": 0
+      },
+      {
+        "end": 915,
+        "kind": "publisher_interface",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "33d788ae43468d62c4fdfaeb255126b375753dff38d8abf4ff1f84c6d68ec63e",
+        "start": 898
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 897,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "a760614394dc0bf507a6a5629d9bbfa703f8d38915521b5bf81ddd1e1a0346ce",
+        "start": 147
+      }
+    ],
+    "source_id": "news-c1ed9be4942a57a1",
+    "source_text_sha256": "fa01364777a1aa73e5227081e814d5949cc1d29f65fb31000678ddfeec82e6df"
+  },
+  {
+    "candidate_id": "candidate-2956c98ebb1738320098",
+    "capture_version": "89a69459f74d89636b266eecd0e86575f9437b0b619946e0b5251be5c339c3bd",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 126,
+        "kind": "publisher_metadata",
+        "reason": "Exclude source wrapper before the reviewed narrative; frozen text remains unchanged.",
+        "sha256": "687a01bedf52e7142c70f3fa6788e7198a95c9650cfe491786eb3ca63d40d7da",
+        "start": 0
+      },
+      {
+        "end": 1309,
+        "kind": "publisher_interface",
+        "reason": "Publisher widget or interface line, not reporting in this article.",
+        "sha256": "33d788ae43468d62c4fdfaeb255126b375753dff38d8abf4ff1f84c6d68ec63e",
+        "start": 1292
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 1291,
+        "language": "tagalog",
+        "language_reason": "Filipino reporting and syntax; English names, agencies and borrowed technical terms alone do not make it Taglish.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "23b6e4194b7e92c22a531c5d1b8ab0fe649a62e5322a2500e4ca0e69578d9019",
+        "start": 126
+      }
+    ],
+    "source_id": "news-dce3c6472e2b014d",
+    "source_text_sha256": "0b8483dd5dc306dd9618a770d41eb20e4ecfc9a5d0019290946ea346ecc4ab39"
+  },
+  {
+    "candidate_id": "candidate-97177c7eb315d194a3f2",
+    "capture_version": "7f911d1f1d3b36ec66495f95dcf27fada3ae3862b20553ad2016a40b8466ad76",
+    "context_notes": [],
+    "exclusions": [
+      {
+        "end": 169,
+        "kind": "publisher_metadata",
+        "reason": "Section/title/byline/reading-time wrapper.",
+        "sha256": "e6ad7770e00dd242ecce6b862430be47747e1f29877b65e885b305bbe6aecc36",
+        "start": 0
+      },
+      {
+        "end": 455,
+        "kind": "caption",
+        "reason": "Caption claims are corroborated by the later narrative; exclude the duplicate photo caption.",
+        "sha256": "f8629c81776c56859b1ed09571ed6593cf9ef21b583de1b62c275b1d2247ccae",
+        "start": 169
+      },
+      {
+        "end": 505,
+        "kind": "publisher_interface",
+        "reason": "Photo credit, font controls and save button.",
+        "sha256": "9bd7fdda6fd97d4dd54678e52155b4bcc9048a989baa549258b2071601df4ac3",
+        "start": 455
+      }
+    ],
+    "notes": [
+      "Full frozen source body inspected; original captures and candidate queue retained.",
+      "No entity annotations, independent human review, permission, training admission or split membership supplied."
+    ],
+    "review_kind": "ai_assisted",
+    "review_revision": "source-by-source-editorial-review-v1",
+    "reviewed_at": "2026-10-14T06:28:50.846333Z",
+    "reviewer": "Codex (AI-assisted editorial review; not research-team manual annotation)",
+    "schema_version": "lanes-flood-ner-editorial-v1",
+    "selections": [
+      {
+        "end": 2962,
+        "language": "taglish",
+        "language_reason": "Reviewed reporting includes substantive English and Filipino clauses or quoted passages, beyond names and borrowed terms.",
+        "reason": "Retain complete contiguous reporting context bounded only by reviewed source metadata/widgets; consult sibling blocks for interrupted context.",
+        "sha256": "df4f98edcee499849a431043c4c4fbd26823a1e6e6c4a372fd27d1ded5cadb65",
+        "start": 505
+      }
+    ],
+    "source_id": "TRIBUNE-20260830",
+    "source_text_sha256": "b3b1df9ad1d4b058c5f84f710a3ba2980521368a037a29b7ca562df40b14ab74"
+  }
+]

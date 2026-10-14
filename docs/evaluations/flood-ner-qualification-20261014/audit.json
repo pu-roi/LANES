@@ -1,0 +1,46 @@
+{
+  "backup_bundle_418_files_unchanged": true,
+  "candidate_alignment_passes": 400,
+  "candidate_tokenizer_promoted": false,
+  "default_v2_tokenizer_unchanged": true,
+  "documentation_check": {
+    "local_links_checked": 1191,
+    "missing_links": 0,
+    "python_syntax": "pass",
+    "report_json": "pass"
+  },
+  "export_ready_records": 0,
+  "frozen_corpus_alignment_passes": 400,
+  "full_text_published": false,
+  "inference_runs": 0,
+  "model_installs": 0,
+  "model_metadata_snapshots": 4,
+  "model_weights_downloaded": 0,
+  "original_100_register_unchanged": true,
+  "prepush_documentation_review": {
+    "SQL_models_or_migrations_changed": false,
+    "authoritative_records_reviewed": 8,
+    "branch": "roi-branch",
+    "checked_at": "2026-10-14T19:31:42.476446+08:00",
+    "dependencies_changed": false,
+    "latest_software_tests_passed": 455,
+    "local_links_checked": 1363,
+    "missing_links": 0,
+    "provenance_json_git_text_conversion_disabled": true,
+    "raw_artifacts_excluded": true
+  },
+  "publisher_policy_snapshots_verified": 5,
+  "regressions": {
+    "added": 30,
+    "baseline_retained": 425,
+    "elapsed_seconds": 49.97,
+    "failed": 0,
+    "passed": 455,
+    "warnings": 1
+  },
+  "report_replay_byte_identical": true,
+  "schema_version": "lanes-flood-ner-qualification-audit-v1",
+  "training_admitted": 0,
+  "training_runs": 0,
+  "verified_selected_sources": 132
+}

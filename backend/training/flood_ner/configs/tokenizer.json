@@ -1,0 +1,10 @@
+{
+  "schema_version": "lanes-flood-ner-v1",
+  "spacy_version": "3.7.5",
+  "tokenizer": "lanes.xx.address-v1",
+  "base": "spacy.blank.xx",
+  "additional_suffix_pattern": "(?<=[A-Za-z0-9])\\.",
+  "alignment_mode": "strict",
+  "normalizes_source_text": false,
+  "note": "Corpus preparation only. A later model tokenizer requires revalidation and a new export identity."
+}

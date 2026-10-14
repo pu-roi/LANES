@@ -1,6 +1,8 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 13, 2026, 11:54 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 14, 2026, 7:31 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Offline NER checkpoint:** The [400-sample silver corpus](evaluations/flood-ner-corpus-400-20261014/README.md) and [first qualification pass](evaluations/flood-ner-qualification-20261014/README.md) are delivered locally with 455 passing software checks. Frozen/default tokenizer v2 is preserved; v3 remains an opt-in candidate. No trained NER model or production integration is established. Source-use, sparse label/language coverage, independent reference review and actual model/resource qualification remain open. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Latest verified production release:** Main 5c6da28 / PR #136 passed 285 Linux release checks, existing migrations and the release worker. Matching API/news/expiry and frontend rollouts are live. The natural 11:30 PM Scheduler delivery completed collection with zero LLM requests; shared 15/30/60-minute due slots fix the skipped risk tick. Automatic expiry remains disabled at the operator's request for the historical video demonstration. [Deployment evidence](evaluations/news-autonomy-fixes-20261013.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -68,6 +70,8 @@ This document serves as the central technical reference for all currently implem
 ## 🛠️ Feature Reference (Current and Planned)
 
 ### 1. Bilingual Taglish NLP Ingestion, Multi-Tier Hybrid Ensemble & Smart Auto-Activation
+
+**NER groundwork (October 14, local):** [Milestone 1](evaluations/flood-ner-milestone1-20261014/README.md) adds offline source inventory, research, annotation validation and corpus export using existing number/PSGC/OSM services. No trained NER is active. A subsequent local temporal repair bounds paragraph inheritance and versions new runs as extractor v1.8/pipeline v21; 301 focused checks pass. The later [100-news research expansion](evaluations/flood-news-corpus-100-20261014/README.md) preserves reviewed articles, separate supporting references and measured coverage gaps; 338 focused checks pass. The [completed-work audit](evaluations/flood-ner-review-20261014/README.md) then revalidates sources and corrects offline provenance/validation/export/reference guards; 362 checks pass. Sources remain research-only. The later [400-sample AI cohort](evaluations/flood-ner-corpus-400-20261014/README.md) delivers 200 English/200 Taglish location records and frozen 280/60/60 research partitions; source reuse, independent qualification, full context/severity references, training and release remain pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Automatic collection scheduling (October 11, local):** Sampled Open-Meteo estimates, dated official PAGASA advisories and eligible current flood evidence select 60/15/30-minute collection, with positive-risk precedence and cooldown. Existing extraction, independent audit and publication/plotting gates still decide flood output. System Settings retains switches while News Intelligence desktop/mobile shows provider freshness, sampled coverage, scheduling cause and dispatch failures. Machine-only controller/worker coordination is accepted locally; the cloud trigger remains three-hour until coordinated rollout. [Implementation and acceptance](evaluations/news-weather-scheduling-20261011/README.md).
 

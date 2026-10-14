@@ -1,0 +1,98 @@
+{
+  "accepted_news_articles": 100,
+  "case_types": {
+    "access_status_cue": 38,
+    "clock_cue": 52,
+    "depth_expression_cue": 56,
+    "impact_count_cue": 61,
+    "measurement_role_ambiguity": 1,
+    "named_locality_cue": 76,
+    "numbered_locality_cue": 8,
+    "observed_flood_or_aftermath": 100,
+    "recession_clearance_cue": 38,
+    "road_location_cue": 72
+  },
+  "languages": {
+    "english": 64,
+    "tagalog": 33,
+    "taglish": 3
+  },
+  "languages_by_year": {
+    "2022": {
+      "english": 10,
+      "tagalog": 12
+    },
+    "2023": {
+      "english": 10,
+      "tagalog": 10,
+      "taglish": 1
+    },
+    "2024": {
+      "english": 20,
+      "tagalog": 3
+    },
+    "2025": {
+      "english": 11,
+      "tagalog": 6,
+      "taglish": 1
+    },
+    "2026": {
+      "english": 13,
+      "tagalog": 2,
+      "taglish": 1
+    }
+  },
+  "note": "Reviewed research articles only; no training admission, entity labels or operational publication.",
+  "publication_window": [
+    "2022-01-01",
+    "2026-10-14"
+  ],
+  "publishers": {
+    "ABS-CBN News": 5,
+    "Daily Tribune": 1,
+    "GMA News": 88,
+    "Philstar": 1,
+    "RMN Networks": 5
+  },
+  "publishers_by_year": {
+    "2022": {
+      "ABS-CBN News": 1,
+      "GMA News": 21
+    },
+    "2023": {
+      "ABS-CBN News": 1,
+      "GMA News": 20
+    },
+    "2024": {
+      "ABS-CBN News": 1,
+      "GMA News": 17,
+      "RMN Networks": 5
+    },
+    "2025": {
+      "ABS-CBN News": 1,
+      "GMA News": 17
+    },
+    "2026": {
+      "ABS-CBN News": 1,
+      "Daily Tribune": 1,
+      "GMA News": 13,
+      "Philstar": 1
+    }
+  },
+  "schema_version": "lanes-flood-news-collection-v1",
+  "status_counts": {
+    "accepted": 100,
+    "capture_failed": 14,
+    "excluded": 111,
+    "reserve_unreviewed": 24
+  },
+  "target": 100,
+  "window_timezone": "Asia/Manila",
+  "years": {
+    "2022": 22,
+    "2023": 21,
+    "2024": 23,
+    "2025": 18,
+    "2026": 16
+  }
+}
