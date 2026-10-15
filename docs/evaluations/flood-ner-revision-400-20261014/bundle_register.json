@@ -1,0 +1,15 @@
+{
+  "article_links": "article-links.csv",
+  "completed_revision_samples": 0,
+  "directory": "backend/training/flood_ner/artifacts/stronger-400-revision-20261014",
+  "external_backup_created": false,
+  "file_count": 665,
+  "hash_manifest": "hash_manifest-v3.json",
+  "hash_manifest_sha256": "c38f8f1c3712882844c5f7b80f171ddb559b9658c8722db1661f014d581d0434",
+  "ignored_by_git": true,
+  "latest_dataset": "dataset-v3",
+  "latest_reports": "reports-v3",
+  "pool_samples": 629,
+  "sample_links": "sample-links-v3.csv",
+  "source_articles": 192
+}

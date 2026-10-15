@@ -1,0 +1,144 @@
+{
+  "coverage": {
+    "pool": {
+      "english": {
+        "BARANGAY": {
+          "articles": 23,
+          "passages": 66,
+          "spans": 133
+        },
+        "CITY": {
+          "articles": 38,
+          "passages": 130,
+          "spans": 304
+        },
+        "LANDMARK": {
+          "articles": 20,
+          "passages": 48,
+          "spans": 67
+        },
+        "LOCAL_AREA": {
+          "articles": 14,
+          "passages": 28,
+          "spans": 38
+        },
+        "PROVINCE": {
+          "articles": 23,
+          "passages": 67,
+          "spans": 128
+        },
+        "ROAD": {
+          "articles": 21,
+          "passages": 113,
+          "spans": 482
+        }
+      },
+      "taglish": {
+        "BARANGAY": {
+          "articles": 58,
+          "passages": 69,
+          "spans": 145
+        },
+        "CITY": {
+          "articles": 110,
+          "passages": 153,
+          "spans": 273
+        },
+        "LANDMARK": {
+          "articles": 39,
+          "passages": 46,
+          "spans": 70
+        },
+        "LOCAL_AREA": {
+          "articles": 32,
+          "passages": 33,
+          "spans": 53
+        },
+        "PROVINCE": {
+          "articles": 60,
+          "passages": 73,
+          "spans": 117
+        },
+        "ROAD": {
+          "articles": 32,
+          "passages": 36,
+          "spans": 160
+        }
+      }
+    }
+  },
+  "failures": [
+    {
+      "available": 2,
+      "quota": "publishers_with_both_languages",
+      "required": 3
+    },
+    {
+      "available": 38,
+      "label": "LOCAL_AREA",
+      "language": "english",
+      "metric": "spans",
+      "partition": "pool",
+      "quota": "label_support",
+      "required": 40
+    },
+    {
+      "available": 36,
+      "label": "ROAD",
+      "language": "taglish",
+      "metric": "passages",
+      "partition": "pool",
+      "quota": "label_support",
+      "required": 50
+    }
+  ],
+  "mode": "necessary_pool_checks",
+  "model_accuracy_measured": false,
+  "passed": false,
+  "policy": {
+    "article_max": 8,
+    "group_max": 80,
+    "groups_min_per_partition": 5,
+    "holdout": {
+      "articles": 3,
+      "passages": 5,
+      "spans": 10
+    },
+    "minimum_publishers": 3,
+    "publisher_max_per_language": 100,
+    "publisher_max_total": 160,
+    "publisher_min_per_language": 25,
+    "road_holdout": {
+      "articles": 5,
+      "passages": 10,
+      "spans": 20
+    },
+    "road_train": {
+      "articles": 10,
+      "passages": 30,
+      "spans": 60
+    },
+    "schema_version": "lanes-flood-ner-coverage-v1",
+    "train": {
+      "articles": 5,
+      "passages": 10,
+      "spans": 20
+    }
+  },
+  "publisher_languages": {
+    "ABS-CBN News": {
+      "english": 25,
+      "taglish": 29
+    },
+    "GMA News": {
+      "english": 244,
+      "taglish": 28
+    },
+    "Philstar": {
+      "taglish": 1
+    },
+    "RMN Networks": {
+      "taglish": 302
+    }
+  }
+}

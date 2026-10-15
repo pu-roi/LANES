@@ -1,0 +1,34 @@
+{
+  "original": {
+    "articles": 132,
+    "counts": {
+      "dev": {
+        "english": 30,
+        "taglish": 30
+      },
+      "test": {
+        "english": 30,
+        "taglish": 30
+      },
+      "train": {
+        "english": 140,
+        "taglish": 140
+      }
+    },
+    "manifest_sha256": "d74db4a3571f8200485ed45f729bf92e314f7a8b9d4c8c5f1f325d04ee1a5e30",
+    "samples": 400,
+    "status": "preserved frozen research dataset",
+    "tokenizer": "lanes.xx.address-v2"
+  },
+  "revision_attempt": {
+    "publication_date_only_articles": 1,
+    "reviewed_pool": 629,
+    "selected_samples": 0,
+    "status": "incomplete; hard quotas retained",
+    "tokenizer": "lanes.xx.address-v3",
+    "window": [
+      "2017-01-01",
+      "2026-10-14"
+    ]
+  }
+}

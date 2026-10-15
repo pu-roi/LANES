@@ -31,17 +31,20 @@ def corpus_tokenizer(version: str = TOKENIZER_NAME) -> Any:
         # Opt-in qualification candidate: a typographic dash after a number
         # can delimit a report (2—baha). Keep ordinary address codes like 25-A.
         nlp.tokenizer.infix_finditer = compile_infix_regex(
-            [*nlp.Defaults.infixes, r'(?<=[0-9])[–—](?=\w)']).finditer
+            [*nlp.Defaults.infixes, r'(?<=[A-Za-z0-9.!?])[–—](?=\w)',
+             r'(?<=\w)\.[–—](?=\w)', r'(?<=\w)/(?=\w)',
+             r'(?<=[A-Za-z])-(?=[0-9]+(?:st|nd|rd|th)\b)']).finditer
         nlp.tokenizer.suffix_search = compile_suffix_regex(
-            [*nlp.Defaults.suffixes, r'(?<=[A-Za-z0-9])[.\-,:;–—]']).search
+            [*nlp.Defaults.suffixes, r'(?<=[A-Za-z0-9])[.\-,:;/–—]']).search
     return nlp
 
 
 def export_corpus(records: list[AnnotationRecord], output: Path, *, allow_constructed: bool = False,
-                  annotation_profile: AnnotationProfile = 'context-rich-v1') -> dict[str, Any]:
+                  annotation_profile: AnnotationProfile = 'context-rich-v1',
+                  tokenizer: str = TOKENIZER_NAME) -> dict[str, Any]:
     if annotation_profile not in {'context-rich-v1', 'location-only-v1'}:
         raise ValueError('unsupported annotation profile')
-    nlp = corpus_tokenizer()
+    nlp = corpus_tokenizer(tokenizer)
     errors = validate_corpus(records, nlp)
     if not records:
         errors.append("no annotations supplied")
@@ -66,7 +69,8 @@ def export_corpus(records: list[AnnotationRecord], output: Path, *, allow_constr
     if output.exists() and any(output.iterdir()):
         raise ValueError("export destination must be empty; refuse overwriting a frozen dataset")
     records = sorted(records, key=lambda r: r.record_id)
-    tokenizer_bytes = nlp.tokenizer.to_bytes()
+    tokenizer_bytes = (corpus_tokenizer(tokenizer).tokenizer.to_bytes()
+                       if tokenizer == CANDIDATE_TOKENIZER_NAME else nlp.tokenizer.to_bytes())
     files: dict[str, bytes] = {"tokenizer.bin": tokenizer_bytes}
     counts = {}
     for split in ("train", "dev", "test"):
@@ -82,7 +86,7 @@ def export_corpus(records: list[AnnotationRecord], output: Path, *, allow_constr
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "schema_sha256": hashlib.sha256(json_bytes(AnnotationRecord.model_json_schema())).hexdigest(),
-        "spacy_version": spacy.__version__, "tokenizer": TOKENIZER_NAME,
+        "spacy_version": spacy.__version__, "tokenizer": tokenizer,
         "tokenizer_sha256": hashlib.sha256(tokenizer_bytes).hexdigest(),
         "annotation_profile": annotation_profile,
         "labels": [label for label in LABELS if annotation_profile != 'location-only-v1' or label in PLACE_LABELS],

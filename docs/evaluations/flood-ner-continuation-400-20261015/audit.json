@@ -1,0 +1,37 @@
+{
+  "added_regression_cases": 17,
+  "all_retained_pilots_in_training": true,
+  "authoritative_document_audit": {
+    "bug-log": "recorded capture-version, rendered-date and optimizer-status fixes",
+    "database-design-plan": "reviewed; no schema/migration change",
+    "decisions": "reviewed; existing delegated-silver architecture unchanged, no pivot",
+    "feature-reference": "updated existing offline NER checkpoint only",
+    "progress": "October 15 entry above October 14 history",
+    "system-documentation": "reviewed; no application screen, route or endpoint change",
+    "task_plan": "completed annotation milestones; admission/model gates remain open",
+    "tech-stack": "updated existing dependency/tooling record; no new libraries"
+  },
+  "baseline_tests": 508,
+  "bundle_hashes_reverified": 1051,
+  "checkpoint_errors": [],
+  "export_refused": true,
+  "final_replay_byte_identical": true,
+  "git_diff_check_passed": true,
+  "git_publication": false,
+  "legacy_400_replay_byte_identical": true,
+  "location_annotations_verified": 400,
+  "model_installation_training": false,
+  "new_documentation_links_missing": [],
+  "operational_database_access": false,
+  "original_checkpoint_files_unchanged": 1313,
+  "paired_context_verified": 40,
+  "policy_checks_passed": true,
+  "saved_tokenizer_sha256": "e489899630ba84b61f5823dd44b0e7dc373c5f15465dc06e911d44245c591384",
+  "software_tests_passed": 525,
+  "source_offsets_hash_tokenizer_unicode_checks_passed": true,
+  "source_register_verified": 342,
+  "test_seconds": 35.26,
+  "warnings": [
+    "Existing spaCy/Click deprecation warning"
+  ]
+}

@@ -16,6 +16,7 @@ import httpx
 
 from .annotation.schema import SourceCapture, text_hash
 from .sources import CaptureParser, capture_source, inventory_sources, json_bytes, known_datetime, public_url
+from .window import LEGACY_WINDOW, PublicationWindow
 
 START_DATE = date(2022, 1, 1)
 END_DATE = date(2026, 10, 14)
@@ -78,7 +79,8 @@ def same_story(first: str, second: str) -> bool:
 
 
 def source_entry(source: SourceCapture, *, publication_value: str | None = None,
-                 canonical_url: str | None = None, capture_path: str | None = None) -> dict[str, Any]:
+                 canonical_url: str | None = None, capture_path: str | None = None,
+                 window: PublicationWindow = LEGACY_WINDOW) -> dict[str, Any]:
     value = publication_value or (source.published_at.isoformat() if source.published_at else None)
     day = publication_date(value)
     publisher = publisher_for(source.url)
@@ -87,7 +89,7 @@ def source_entry(source: SourceCapture, *, publication_value: str | None = None,
         reason = "not_publisher_news"
     elif not day:
         reason = "publication_date_unconfirmed"
-    elif not START_DATE <= day <= END_DATE:
+    elif not window.contains(day):
         reason = "publication_date_out_of_range"
     elif len(re.findall(r"\w+", source.text)) < 40:
         reason = "article_body_incomplete"
@@ -109,6 +111,38 @@ def source_entry(source: SourceCapture, *, publication_value: str | None = None,
     }
 
 
+def rendered_publication(headers: list[str], publisher: str) -> tuple[str, str]:
+    """Return verified header/value; unqualified wall clocks remain date-only evidence."""
+    if not isinstance(headers, list) or any(not isinstance(h, str) for h in headers):
+        raise ValueError('rendered publication headers must be strings')
+    values = []
+    for header in headers:
+        if header.startswith('Published ') and header.endswith(' PHT'):
+            for pattern in ('Published %B %d, %Y %I:%M %p PHT','Published %b %d, %Y %I:%M %p PHT'):
+                try:
+                    instant=datetime.strptime(header,pattern).replace(tzinfo=timezone(timedelta(hours=8)))
+                    values.append((header,instant.isoformat()));break
+                except ValueError:
+                    continue
+        elif publisher == 'Philstar' and re.fullmatch(r'[A-Za-z]+ \d{1,2}, \d{4} (?:-|\|) \d{1,2}:\d{2}(?:am|pm)', header, re.I):
+            try:
+                day=datetime.strptime(re.split(r' (?:-|\|) ', header)[0],'%B %d, %Y').date()
+                values.append((header,day.isoformat()))
+            except ValueError:
+                continue
+        elif publisher == 'Inquirer' and re.fullmatch(r'(?:INQUIRER\.net|Philippine Daily Inquirer) / \d{1,2}:\d{2} (?:AM|PM) [A-Za-z]+ \d{1,2}, \d{4}', header):
+            try:
+                # The displayed clock has no timezone. Preserve only its day.
+                day = datetime.strptime(header.split(' / ', 1)[1], '%I:%M %p %B %d, %Y').date()
+                values.append((header, day.isoformat()))
+            except ValueError:
+                continue
+    instants = {known_datetime(v) for _,v in values if known_datetime(v) is not None}
+    if not values or len({publication_date(v) for _,v in values}) != 1 or len(instants) > 1:
+        raise ValueError('rendered publication header not verified: unknown or conflicting')
+    return values[0]
+
+
 def import_browser_capture(snapshot_path: Path, output: Path, source_id: str, language: str = "unknown") -> SourceCapture:
     """Preserve a rendered public body with explicit DOM-snapshot provenance."""
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
@@ -119,17 +153,8 @@ def import_browser_capture(snapshot_path: Path, output: Path, source_id: str, la
     text = snapshot.get("body_text") or ""
     if len(re.findall(r"\w+", text)) < 40:
         raise ValueError("rendered article body incomplete")
-    header = next((s for s in snapshot.get("headers", []) if s.startswith("Published ")), None)
-    instant = None
-    if header and header.endswith(" PHT"):
-        for pattern in ("Published %B %d, %Y %I:%M %p PHT", "Published %b %d, %Y %I:%M %p PHT"):
-            try:
-                instant = datetime.strptime(header, pattern).replace(tzinfo=timezone(timedelta(hours=8)))
-                break
-            except ValueError:
-                continue
-    if instant is None:
-        raise ValueError("rendered publication header not verified")
+    header, value = rendered_publication(snapshot.get('headers', []), publisher)
+    instant = known_datetime(value)
     raw = snapshot_path.read_bytes()
     digest = hashlib.sha256(raw).hexdigest()
     source = SourceCapture(source_id=source_id, url=url, publisher=publisher, title=snapshot["title"], language=language,
@@ -220,20 +245,21 @@ def wikipedia_reference(title: str, language: str, client: httpx.Client, output:
     return result
 
 
-def collect_candidates(urls: list[str], root: Path, output: Path) -> list[dict[str, Any]]:
+def collect_candidates(urls: list[str], root: Path, output: Path, *,
+                       window: PublicationWindow = LEGACY_WINDOW, repair_embedded_markup: bool = False) -> list[dict[str, Any]]:
     """Capture eligible publisher links; every fetch failure remains visible."""
     if not isinstance(urls, list) or any(not isinstance(url, str) for url in urls):
         raise ValueError("discovered URLs must be a JSON array of strings")
     output.mkdir(parents=True, exist_ok=True)
     existing, issues = inventory_sources(root)
-    entries = [source_entry(s) for s in existing]
+    entries = [source_entry(s, window=window) for s in existing]
     captures = root / "backend/training/flood_ner/artifacts/captures"
-    source_files: dict[tuple[str, str], Path] = {}
+    source_files: dict[str, Path] = {}
     for path in captures.glob("*.json"):
         source = SourceCapture.model_validate_json(path.read_bytes())
-        source_files[(source.url, source.text_sha256)] = path
+        source_files[source.capture_version] = path
     for entry in entries:
-        found = source_files.get((entry["url"], entry["text_sha256"]))
+        found = source_files.get(entry["capture_version"])
         if found:
             entry["capture_path"] = found.relative_to(root).as_posix()
     known_keys = {e["article_key"] for e in entries}
@@ -251,7 +277,8 @@ def collect_candidates(urls: list[str], root: Path, output: Path) -> list[dict[s
         source_id = "news-" + hashlib.sha256(key.encode()).hexdigest()[:16]
         try:
             with httpx.Client(timeout=25, trust_env=False, headers={"User-Agent": "LANES-offline-NER-research/1.0"}) as client:
-                source = capture_source(url, source_id, publisher, language, "review-needed:" + key, client, captures)
+                source = capture_source(url, source_id, publisher, language, "review-needed:" + key, client, captures,
+                                        repair_embedded_markup=repair_embedded_markup)
             raw_path = captures / f"{source.capture_version}.html"
             parser = CaptureParser()
             parser.feed(raw_path.read_bytes().decode("utf-8", errors="replace"))
@@ -260,7 +287,7 @@ def collect_candidates(urls: list[str], root: Path, output: Path) -> list[dict[s
             if canonical:
                 canonical = canonical if publisher_for(canonical) == publisher else None
             return source_entry(source, publication_value=publication, canonical_url=canonical,
-                                capture_path=(captures / f"{source.capture_version}.json").relative_to(root).as_posix())
+                                capture_path=(captures / f"{source.capture_version}.json").relative_to(root).as_posix(), window=window)
         except (OSError, ValueError, httpx.HTTPError) as exc:
             return {"url": url, "article_key": key, "publisher": publisher, "source_category": "news_article",
                     "source_id": source_id, "status": "capture_failed", "exclusion_reason": str(exc),
@@ -272,7 +299,8 @@ def collect_candidates(urls: list[str], root: Path, output: Path) -> list[dict[s
     return entries
 
 
-def validate_reviewed(entries: list[dict[str, Any]], sources: dict[str, SourceCapture]) -> list[str]:
+def validate_reviewed(entries: list[dict[str, Any]], sources: dict[str, SourceCapture], *,
+                      window: PublicationWindow = LEGACY_WINDOW) -> list[str]:
     errors = []
     if not isinstance(entries, list):
         return ["collection manifest must be a JSON array of records"]
@@ -295,7 +323,7 @@ def validate_reviewed(entries: list[dict[str, Any]], sources: dict[str, SourceCa
             errors.append(f"{sid}: missing/mismatched captured source")
             continue
         day = publication_date(entry.get("publication_date"))
-        if (not day or not START_DATE <= day <= END_DATE or entry.get("source_category") != "news_article"
+        if (not window.contains(day) or entry.get("source_category") != "news_article"
                 or not publisher_for(entry.get("url", ""))):
             errors.append(f"{sid}: accepted record is not dated publisher news in range")
         if (day != publication_date(entry.get("publication_value")) or not entry.get("publication_basis")
@@ -385,12 +413,20 @@ def verify_capture_files(entries: list[dict[str, Any]], root: Path) -> list[str]
                 value, _ = parser.publication_value()
                 if value != entry["publication_value"]:
                     raise ValueError("publication metadata mismatch")
+                values = [parser.article_metadata().get('datePublished'),
+                          *(parser.meta.get(k) for k in ('article:published_time', 'datepublished', 'pubdate', 'publication_date'))]
+                days = {publication_date(v) for v in values if v}
+                if None in days or len(days) > 1:
+                    raise ValueError('unknown or conflicting publication metadata dates')
             elif evidence["kind"] == "rendered_header":
                 if local_file(evidence["path"]) != local_file(entry["raw_path"]):
                     raise ValueError("publication evidence is not bound to this raw capture")
                 snapshot = json.loads(local_file(evidence["path"]).read_text(encoding="utf-8"))
                 if entry["publication_basis"] not in snapshot["headers"]:
                     raise ValueError("publication header mismatch")
+                header, value = rendered_publication(snapshot['headers'], entry['publisher'])
+                if header != entry['publication_basis'] or value != entry['publication_value']:
+                    raise ValueError('rendered publication value does not match header evidence')
                 if snapshot.get("body_text") != text or canonical_news_url(snapshot["url"]) != canonical_news_url(entry["url"]):
                     raise ValueError("rendered body/URL does not match frozen capture")
             elif evidence["kind"] == "preserved_body_header":
@@ -415,12 +451,13 @@ def verify_capture_files(entries: list[dict[str, Any]], root: Path) -> list[str]
     return errors
 
 
-def collection_report(entries: list[dict[str, Any]], expected_count: int = 100) -> dict[str, Any]:
+def collection_report(entries: list[dict[str, Any]], expected_count: int = 100, *,
+                      window: PublicationWindow = LEGACY_WINDOW) -> dict[str, Any]:
     if type(expected_count) is not int or expected_count < 1:
         raise ValueError('expected count must be a positive integer')
     accepted = [e for e in entries if e.get("status") == "accepted"]
     return {"schema_version": "lanes-flood-news-collection-v1", "target": expected_count, "accepted_news_articles": len(accepted),
-            "publication_window": [START_DATE.isoformat(), END_DATE.isoformat()], "window_timezone": "Asia/Manila",
+            "publication_window": window.as_list(), "window_timezone": "Asia/Manila",
             "status_counts": dict(Counter(e["status"] for e in entries)),
             "years": dict(sorted(Counter(e["publication_date"][:4] for e in accepted).items())),
             "publishers": dict(Counter(e["publisher"] for e in accepted)),
@@ -434,10 +471,10 @@ def collection_report(entries: list[dict[str, Any]], expected_count: int = 100) 
 
 
 def write_reviewed_collection(entries: list[dict[str, Any]], sources: list[SourceCapture], output: Path,
-                              expected_count: int = 100) -> dict[str, Any]:
+                              expected_count: int = 100, *, window: PublicationWindow = LEGACY_WINDOW) -> dict[str, Any]:
     if type(expected_count) is not int or expected_count < 1:
         raise ValueError('expected count must be a positive integer')
-    errors = validate_reviewed(entries, {s.capture_version: s for s in sources})
+    errors = validate_reviewed(entries, {s.capture_version: s for s in sources}, window=window)
     accepted = [e for e in entries if isinstance(e, dict) and e.get("status") == "accepted"] if isinstance(entries, list) else []
     if len(accepted) != expected_count:
         errors.append(f"expected exactly {expected_count} reviewed news articles; found {len(accepted)}")
@@ -446,7 +483,7 @@ def write_reviewed_collection(entries: list[dict[str, Any]], sources: list[Sourc
     if output.exists() and any(output.iterdir()):
         raise ValueError('collection destination must be empty; preserve earlier registers')
     output.mkdir(parents=True, exist_ok=True)
-    report = collection_report(entries, expected_count)
+    report = collection_report(entries, expected_count, window=window)
     (output / "news_register.json").write_bytes(json_bytes(sorted(accepted, key=lambda e: (e["publication_date"], e["article_key"]))))
     (output / "collection_outcomes.json").write_bytes(json_bytes(entries))
     (output / "coverage.json").write_bytes(json_bytes(report))

@@ -10,7 +10,8 @@ import httpx
 
 from .annotation.schema import AnnotationRecord
 from .annotation.validation import validate_corpus
-from .export import corpus_tokenizer, export_corpus
+from .export import TOKENIZER_NAME, CANDIDATE_TOKENIZER_NAME, corpus_tokenizer, export_corpus
+from .window import LEGACY_WINDOW, PublicationWindow
 from .evaluation.coverage import coverage_report
 from .evaluation.research import research_matrix
 from .sources import capture_source, inventory_sources, json_bytes, read_jsonl, write_jsonl
@@ -25,6 +26,11 @@ def main(argv: list[str] | None = None) -> int:
             stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    preflight = commands.add_parser('preflight-model', help='Run a pinned model on constructed cases in an isolated research interpreter')
+    preflight.add_argument('--python', type=Path, required=True)
+    preflight.add_argument('--model-manifest', type=Path, required=True)
+    preflight.add_argument('--cases', type=Path, required=True)
+    preflight.add_argument('--output', type=Path, required=True)
     inventory = commands.add_parser("inventory", help="Inventory preserved repository captures")
     inventory.add_argument("--root", type=Path, default=REPO_ROOT)
     inventory.add_argument("--output", type=Path, default=ARTIFACTS / "inventory")
@@ -47,6 +53,10 @@ def main(argv: list[str] | None = None) -> int:
     collect = commands.add_parser("collect-news", help="Capture discovered publisher URLs for historical review")
     collect.add_argument("urls", type=Path, help="JSON array of explicitly discovered URLs")
     collect.add_argument("--output", type=Path, default=ARTIFACTS / "collection100")
+    collect.add_argument('--repair-embedded-markup', action='store_true', help='Opt-in HTML script-tag repair; new capture version')
+    reextract = commands.add_parser('reextract-source', help='Recover visible body from malformed scripts in frozen HTML')
+    reextract.add_argument('capture', type=Path)
+    reextract.add_argument('--output', type=Path, default=ARTIFACTS/'captures')
     browser = commands.add_parser("import-browser-news", help="Import an explicitly saved rendered DOM snapshot")
     browser.add_argument("snapshot", type=Path)
     browser.add_argument("--source-id", required=True)
@@ -69,6 +79,15 @@ def main(argv: list[str] | None = None) -> int:
     cohort.add_argument('--news-register', type=Path, required=True, help='Reviewed source register with capture/publication evidence')
     cohort.add_argument('--pilot-records', type=Path, required=True, help='JSON array of retained pilot record IDs')
     cohort.add_argument('--output', type=Path, required=True)
+    cohort.add_argument('--coverage-policy', type=Path, help='Versioned JSON hard-quota policy')
+    cohort.add_argument('--report-infeasible', action='store_true', help='Save reviewed pool and failures, without freezing partitions')
+    cohort.add_argument('--selection-time-limit', type=int, default=60,
+                        help='Bounded cohort solver seconds, 1–3600; default 60')
+    context = commands.add_parser('review-context-pilot', help='Validate and freeze 40 contextual records paired to training passages')
+    context.add_argument('folder', type=Path)
+    context.add_argument('--annotations', type=Path, required=True)
+    context.add_argument('--reviews', type=Path, required=True)
+    context.add_argument('--output', type=Path, required=True)
     qualify = commands.add_parser('qualify-cohort', help='Diagnose a frozen research dataset without training or admission')
     qualify.add_argument('folder', type=Path)
     qualify.add_argument('--news-register', type=Path, required=True)
@@ -79,12 +98,67 @@ def main(argv: list[str] | None = None) -> int:
     wiki.add_argument("--title", required=True)
     wiki.add_argument("--language", default="en")
     wiki.add_argument("--output", type=Path, default=ARTIFACTS / "collection100" / "wikipedia")
+    for command in (collect, report, cohort, qualify, validate):
+        command.add_argument('--publication-start', help='Inclusive ISO calendar date; legacy default 2022-01-01')
+        command.add_argument('--publication-end', help='Inclusive ISO calendar date; legacy default 2026-10-14')
+    validate.add_argument('--news-register', type=Path, help='Required for verifying date-only publication evidence')
+    for command in (validate, cohort, export):
+        command.add_argument('--tokenizer', choices=[TOKENIZER_NAME, CANDIDATE_TOKENIZER_NAME], default=TOKENIZER_NAME)
+    for command in (collect, cohort):
+        command.add_argument('--candidate-ledger', type=Path, help='Cumulative URLs for this revision; maximum 300')
+        command.add_argument('--baseline-inventory', type=Path, help='Immutable pre-revision array of source objects with URLs')
     args = parser.parse_args(argv)
     try:
+        if args.command == 'preflight-model':
+            from .preflight import run_preflight
+            result = run_preflight(args.python, args.model_manifest, args.cases, args.output, REPO_ROOT)
+            print(json.dumps(result, ensure_ascii=False))
+            return 0 if result['state'] == 'passed' else 2
+        explicit_window = bool(getattr(args, 'publication_start', None) or getattr(args, 'publication_end', None))
+        window = PublicationWindow.parse([getattr(args, 'publication_start', None) or LEGACY_WINDOW.start.isoformat(),
+                                          getattr(args, 'publication_end', None) or LEGACY_WINDOW.end.isoformat()])
+        ledger_path = getattr(args,'candidate_ledger',None)
+        baseline_path = getattr(args,'baseline_inventory',None)
+        if bool(ledger_path) != bool(baseline_path):
+            raise ValueError('candidate ledger and baseline inventory must be supplied together')
+        budget = None
+        if ledger_path:
+            from .budget import collection_budget
+            candidate_urls=json.loads(ledger_path.read_text(encoding='utf-8'))
+            baseline=json.loads(baseline_path.read_text(encoding='utf-8'))
+            if not isinstance(baseline,list) or any(not isinstance(s,dict) or not isinstance(s.get('url'),str) for s in baseline):
+                raise ValueError('baseline inventory must be source objects with URLs')
+            admitted_urls=[]
+            if args.command=='build-cohort':
+                rows=json.loads(args.news_register.read_text(encoding='utf-8'))
+                if not isinstance(rows,list) or any(not isinstance(e,dict) for e in rows):
+                    raise ValueError('news register must be an array of source objects')
+                admitted_urls=[e.get('url') for e in rows if e.get('status')=='accepted']
+            else:
+                requested=json.loads(args.urls.read_text(encoding='utf-8'))
+                if not isinstance(requested,list):raise ValueError('candidate URLs must be a JSON array')
+                candidate_urls=candidate_urls+requested if isinstance(candidate_urls,list) else candidate_urls
+            budget=collection_budget(candidate_urls,[s['url'] for s in baseline],admitted_urls)
+        if args.command == 'review-context-pilot':
+            from .contextual_pilot import ContextReview, write_contextual_pilot
+            reviews = json.loads(args.reviews.read_text(encoding='utf-8'))
+            if not isinstance(reviews, list):
+                raise ValueError('context reviews must be a JSON array')
+            result = write_contextual_pilot(args.folder, read_jsonl(args.annotations, AnnotationRecord),
+                                           [ContextReview.model_validate_json(json.dumps(r)) for r in reviews],
+                                           REPO_ROOT, args.output)
+            print(json.dumps(result, ensure_ascii=False))
+            return 0
+        if args.command == 'reextract-source':
+            from .sources import reextract_capture
+            result = reextract_capture(args.capture, args.output)
+            print(json.dumps({'source_id':result.source_id,'capture_version':result.capture_version,'characters':len(result.text)}))
+            return 0
         if args.command == 'qualify-cohort':
             from .qualification import write_qualification
             result = write_qualification(args.folder, args.news_register, REPO_ROOT, args.output,
-                                         model_register=args.model_register, reuse_register=args.reuse_register)
+                                         model_register=args.model_register, reuse_register=args.reuse_register,
+                                         window=window if explicit_window else None)
             print(json.dumps({k: result[k] for k in ('samples', 'source_articles', 'export_ready_records',
                                                      'candidate_tokenizer', 'qualification_open_items')}, ensure_ascii=False))
             return 0
@@ -95,7 +169,7 @@ def main(argv: list[str] | None = None) -> int:
             if issues:
                 raise ValueError('source inventory has unresolved integrity issues')
             news_entries = json.loads(args.news_register.read_text(encoding='utf-8'))
-            errors = validate_reviewed(news_entries, {s.capture_version:s for s in sources}) + verify_capture_files(news_entries, REPO_ROOT)
+            errors = validate_reviewed(news_entries, {s.capture_version:s for s in sources}, window=window) + verify_capture_files(news_entries, REPO_ROOT)
             if errors:
                 raise ValueError('\n'.join(errors))
             approved_versions = {e['capture_version'] for e in news_entries if e.get('status') == 'accepted'}
@@ -107,10 +181,14 @@ def main(argv: list[str] | None = None) -> int:
             records = read_jsonl(args.annotations, AnnotationRecord)
             if any(r.source.capture_version not in approved_versions for r in records):
                 raise ValueError('every annotation requires reviewed capture/publication evidence in the news register')
-            result = build_cohort(records, reviews, sources,
-                                  REPO_ROOT, args.output, pilot_ids=set(pilot_ids))
+            from .policy import CoveragePolicy
+            policy = CoveragePolicy.model_validate_json(args.coverage_policy.read_bytes()) if args.coverage_policy else None
+            result = build_cohort(records, reviews, sources, REPO_ROOT, args.output, pilot_ids=set(pilot_ids),
+                                  window=window, tokenizer=args.tokenizer, policy=policy,
+                                  news_entries=news_entries, report_infeasible=args.report_infeasible,
+                                  collection_budget_metadata=budget, selection_time_limit=args.selection_time_limit)
             print(json.dumps(result, ensure_ascii=False))
-            return 0
+            return 2 if result.get('revision_complete') is False else 0
         if args.command == "review-passages":
             from .editorial import EditorialReview, build_editorial_queue
             from .preparation import CandidatePassage
@@ -135,8 +213,14 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "collect-news":
             from .collection import collect_candidates, collection_report
-            entries = collect_candidates(json.loads(args.urls.read_text(encoding="utf-8")), REPO_ROOT, args.output)
-            print(json.dumps(collection_report(entries), ensure_ascii=False))
+            entries = collect_candidates(json.loads(args.urls.read_text(encoding="utf-8")), REPO_ROOT, args.output,
+                                          window=window, repair_embedded_markup=args.repair_embedded_markup)
+            if budget:
+                (args.output/'collection_budget.json').write_bytes(json_bytes(budget))
+                from .collection import article_key
+                unique={article_key(url):url for url in candidate_urls}
+                ledger_path.write_bytes(json_bytes([unique[key] for key in sorted(unique)]))
+            print(json.dumps(collection_report(entries, window=window), ensure_ascii=False))
             return 0
         if args.command == "verify-news":
             from .collection import verify_capture_files, write_reviewed_collection
@@ -147,7 +231,7 @@ def main(argv: list[str] | None = None) -> int:
             errors = verify_capture_files(entries, REPO_ROOT)
             if errors:
                 raise ValueError("\n".join(errors))
-            report = write_reviewed_collection(entries, sources, args.output, args.expected_count)
+            report = write_reviewed_collection(entries, sources, args.output, args.expected_count, window=window)
             print(json.dumps(report, ensure_ascii=False))
             return 0
         if args.command == "import-browser-news":
@@ -182,13 +266,25 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         records = read_jsonl(args.input, AnnotationRecord)
         if args.command == "validate":
-            errors = validate_corpus(records, corpus_tokenizer())
+            errors = validate_corpus(records, corpus_tokenizer(args.tokenizer))
+            if explicit_window:
+                from .collection import publication_date, validate_reviewed, verify_capture_files
+                dates = {}
+                if args.news_register:
+                    sources, issues = inventory_sources(REPO_ROOT)
+                    entries = json.loads(args.news_register.read_text(encoding='utf-8'))
+                    errors += issues + validate_reviewed(entries, {s.capture_version:s for s in sources}, window=window) + verify_capture_files(entries, REPO_ROOT)
+                    dates = {e['capture_version']: publication_date(e['publication_date']) for e in entries if e.get('status') == 'accepted'}
+                for record in records:
+                    day = (publication_date(record.source.published_at.isoformat()) if record.source.published_at else dates.get(record.source.capture_version))
+                    if not window.contains(day):
+                        errors.append(f'{record.record_id}: unknown or out-of-window publication date')
             if not records:
                 errors.append("no annotations supplied")
             print(json.dumps({"records": len(records), "valid": not errors, "errors": errors}, ensure_ascii=False))
             return 1 if errors else 0
         manifest = export_corpus(records, args.output, allow_constructed=args.allow_constructed,
-                                 annotation_profile=args.profile)
+                                 annotation_profile=args.profile, tokenizer=args.tokenizer)
         print(json.dumps({"counts": manifest["counts"], "output": str(args.output)}))
         return 0
     except (OSError, ValueError, httpx.HTTPError) as exc:

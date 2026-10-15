@@ -1,6 +1,8 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 14, 2026, 7:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 8:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current offline research preparation:** The stronger cohort has 400 accepted AI silver location samples and 40 corrected contextual v2 pairs. The preflight-model CLI loads pinned calamanCy only in a separate Python 3.11 CPU research environment and runs 24 constructed cases; it has not processed the news corpus. Source-use decisions and two native tokenizer gaps remain open. No production endpoint, screen or database behavior changes. [Current report](../evaluations/flood-ner-preflight-use-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Offline qualification diagnostics:** backend/training/flood_ner/qualification.py and qualify-cohort inspect frozen annotations/captures, model/policy evidence hashes, slice support and source-use holds. They write only ignored research diagnostics; no model loading, admission, endpoint, application screen or operational record is added. [Report](../evaluations/flood-ner-qualification-20261014/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

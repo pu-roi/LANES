@@ -1,0 +1,33 @@
+{
+  "earlier_tagalog_correction": {
+    "basis": "Complete source paragraph contains no English common/technical lexical material; original v6 remains preserved.",
+    "corrected": "tagalog",
+    "passage_sha256": "1afaa0cdda5a9f3eb9f4b3372d7ecbd7f619b7482fc69afa906c18bb6f9eeace",
+    "previous": "taglish",
+    "record_id": "revision-33b2a92758b0e1d2ca8f",
+    "reviewer": "Codex same-agent source and span review; no independent human verification",
+    "source_sha256": "7a7ae755c1a8ec5202dd8e437718627c5ac3b34c20bd0f7f34202a8e8eec1abd"
+  },
+  "original_source_text_changed": false,
+  "prior_annotation_revisions_preserved": true,
+  "quotation_corrections": [
+    {
+      "basis": "Substantive Filipino quotation in the complete passage.",
+      "from": "english",
+      "passage_sha256": "5db92742b9b2ae5af6d6482fdaa9fc8552bb2379b59b6cf8d2bc2ab884e2bee7",
+      "record_id": "revision-3ff16d2591b212a8f2a5",
+      "reviewer": "Codex same-agent source and span review; no independent human verification",
+      "source_id": "news-645827b407f23d1d",
+      "to": "taglish"
+    },
+    {
+      "basis": "Substantive Filipino quotation in the complete passage.",
+      "from": "english",
+      "passage_sha256": "6bda74283dde2e52ba13f2fd739009991886f8e82e68652c55ba8da511908078",
+      "record_id": "revision-62aa3d80b50e75daac49",
+      "reviewer": "Codex same-agent source and span review; no independent human verification",
+      "source_id": "news-2a1a4e2381f63ab0",
+      "to": "taglish"
+    }
+  ]
+}

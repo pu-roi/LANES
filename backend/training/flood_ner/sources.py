@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -163,7 +164,7 @@ def public_url(url: str) -> str:
 
 
 def capture_source(url: str, source_id: str, publisher: str, language: str, event_group: str,
-                   client: httpx.Client, output: Path) -> SourceCapture:
+                   client: httpx.Client, output: Path, *, repair_embedded_markup: bool = False) -> SourceCapture:
     requested = public_url(url)
     current = requested
     raw = b""
@@ -203,11 +204,13 @@ def capture_source(url: str, source_id: str, publisher: str, language: str, even
     if isinstance(metadata.get("articleBody"), str) and metadata["articleBody"].strip():
         body = metadata["articleBody"]
         if "<" in body and ">" in body:
+            if repair_embedded_markup:
+                body = repair_script_markup(body)
             article = CaptureParser()
             article.feed("<article>" + body + "</article>")
             article.close()
             text = article.text()
-            method = "jsonld-articleBody-html-v2"
+            method = "jsonld-articleBody-html-v3" if repair_embedded_markup else "jsonld-articleBody-html-v2"
         else:
             text = body
             method = "jsonld-articleBody-text-v2"
@@ -238,6 +241,48 @@ def capture_source(url: str, source_id: str, publisher: str, language: str, even
         path = base.with_suffix(suffix)
         if not path.exists():
             path.write_bytes(content)
+    return source
+
+
+def repair_script_markup(markup: str) -> str:
+    """Repair a publisher's malformed closing tag, never visible text or saved HTML."""
+    return re.sub(r'<\\script\s*>', '</script>', markup, flags=re.I)
+
+
+def reextract_capture(path: Path, output: Path) -> SourceCapture:
+    """Create a new extraction version from immutable raw HTML; no network or rewrite."""
+    original = SourceCapture.model_validate_json(path.read_bytes())
+    if text_hash(path.with_suffix('.txt').read_bytes().decode('utf-8')) != original.text_sha256:
+        raise ValueError('re-extraction needs hash-bound original text')
+    raw = path.with_suffix('.html').read_bytes()
+    if hashlib.sha256(raw).hexdigest() != original.raw_sha256:
+        raise ValueError('re-extraction needs hash-bound original HTML')
+    parser = CaptureParser(); parser.feed(raw.decode('utf-8')); parser.close()
+    body = parser.article_metadata().get('articleBody')
+    if not isinstance(body, str) or '<' not in body:
+        raise ValueError('re-extraction requires structured HTML articleBody')
+    repaired = repair_script_markup(body)
+    if repaired == body:
+        raise ValueError('no supported malformed-script repair needed')
+    article = CaptureParser(); article.feed('<article>' + repaired + '</article>'); article.close()
+    text = article.text()
+    if not text or text == original.text:
+        raise ValueError('repair did not recover additional visible article text')
+    method = 'jsonld-articleBody-html-v3-from-frozen-raw'
+    version = text_hash(json.dumps([original.capture_version, original.raw_sha256, text_hash(text), method], separators=(',', ':')))
+    source = SourceCapture.model_validate(original.model_dump() | {'capture_version': version, 'text': text,
+                            'text_sha256': text_hash(text), 'extraction_method': method,
+                            'admission_status': 'research_only'})
+    output.mkdir(parents=True, exist_ok=True)
+    base = output / version
+    contents = {'.html': raw, '.txt': text.encode('utf-8'), '.json': json_bytes(source.model_dump(mode='json'))}
+    for suffix, content in contents.items():
+        target = base.with_suffix(suffix)
+        if target.exists() and target.read_bytes() != content:
+            raise ValueError('immutable repaired capture conflict')
+    for suffix, content in contents.items():
+        target = base.with_suffix(suffix)
+        if not target.exists(): target.write_bytes(content)
     return source
 
 
@@ -276,7 +321,7 @@ def inventory_sources(root: Path) -> tuple[list[SourceCapture], list[dict[str, s
                         reuse_terms=row.get("reuse_terms") or "not verified", extraction_method="preserved-manifest-text",
                         raw_sha256=row.get("html_sha256"),
                     )
-                    records[(source.url, digest)] = source
+                    records[(source.url, source.capture_version)] = source
                 except (OSError, ValueError, KeyError) as exc:
                     issues.append({"manifest": manifest.relative_to(root).as_posix(), "source_id": str(row.get("source_id", "")), "error": str(exc)})
         except (OSError, ValueError) as exc:
@@ -296,12 +341,15 @@ def inventory_sources(root: Path) -> tuple[list[SourceCapture], list[dict[str, s
                 captured_at=known_datetime(article.get("fetched_at")), article_group=article["canonical_url"],
                 reuse_terms="not verified", extraction_method="preserved-captured-original-fixture",
             )
-            records.setdefault((source.url, digest), source)
+            records.setdefault((source.url, source.capture_version), source)
     capture_dir = root / "backend" / "training" / "flood_ner" / "artifacts" / "captures"
     for path in sorted(capture_dir.glob("*.json")):
         try:
             source = SourceCapture.model_validate_json(path.read_bytes())
-            records[(source.url, source.text_sha256)] = source
+            # Identical visible text can have distinct immutable raw evidence,
+            # retrieval timestamps and publication metadata. Article-level
+            # deduplication belongs to collection/assembly, not this inventory.
+            records[(source.url, source.capture_version)] = source
         except (OSError, ValueError) as exc:
             issues.append({"manifest": path.relative_to(root).as_posix(), "error": str(exc)})
-    return sorted(records.values(), key=lambda r: (r.url, r.text_sha256)), issues
+    return sorted(records.values(), key=lambda r: (r.url, r.text_sha256, r.capture_version)), issues

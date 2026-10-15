@@ -1,6 +1,51 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 14, 2026, 7:22 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 8:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved before publication: NER report hashes and Git line endings
+
+- **Status / severity / resolver:** Resolved; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Frozen report manifests bind raw bytes, including Markdown, CSV and dependency locks. Windows Git automatic line-ending conversion could change those bytes on commit or checkout.
+- **Root cause:** NER JSON evidence already used -text attributes; the other manifest-bound formats did not.
+- **Solution:** Extend .gitattributes to preserve these frozen report formats and constructed-case JSONL bytes. Preserve historical files and hashes.
+- **Verification:** Recheck all three new metadata hash manifests and compare each manifest-bound file with its staged Git blob before publication.
+- **Files:** .gitattributes. No runtime, dependency or database change.
+
+## Resolved offline: Model-preflight paths, missing Click and Windows Unicode output
+
+- **Status / severity / resolver:** Resolved in versioned research runs; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Relative request paths were resolved against the child working directory twice; the resolved dependency stack omitted Click despite a direct spaCy CLI import; accented Filipino output used the Windows locale encoding and could be lost in a UTF-8 reader thread.
+- **Root cause:** Child requests were not absolute. Current Typer dependency metadata did not declare spaCy's direct Click requirement. Isolated Python ignores environment encoding settings and stdout was not explicitly configured.
+- **Solution:** Use absolute request paths, pin Click 8.5.0 in a separate research lock v2, and force UTF-8 in both interpreter flags/worker streams. Capture bytes before strict JSON decoding, preserve failed outputs, and validate returned identities/spans/resources before declaring success. Initial Application Control failure cleared on the same resolver retry without security changes. uv's task-owned launcher entry was backed up and removed; future setup uses --no-bin --no-registry.
+- **Verification:** 40 preflight regressions and retained 546 tests pass: 586 total. Real preflight v4 loads the pinned model and records 24 repeated-identical constructed predictions plus CPU resources. Native CITY—-Purok reference boundaries still have two gaps and are not changed by this fix. All 3,668 checked prior artifact files and main packages are unchanged; news export remains refused.
+- **Files:** backend/training/flood_ner/preflight.py, preflight_worker.py, cli.py, requirements-qualification.in, configs/preflight_constructed_cases.jsonl; backend/requirements.txt optional-recipe comments and backend/tests/test_flood_ner_preflight.py. [Report](../evaluations/flood-ner-preflight-use-20261015/README.md). Runtime parser and database are unchanged.
+
+## Resolved offline: Contextual access negation, vehicle scope and qualification hash reporting
+
+- **Status / severity / resolver:** Resolved in new research versions; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Nine capitalized Not passable to light vehicles rows were annotated as passable; a rainfall onset retained a flood-onset role despite its qualifier; three closure reports were generalized to all vehicles. Qualification reported a candidate-tokenizer hash that differed from saved bytes.
+- **Root cause:** A one-off annotation helper used case-sensitive negative checks and overly broad vehicle defaults. Structural validation alone did not evaluate those semantic choices. Tokenizer hashing occurred after validation grew its vocabulary, while serialization used fresh bytes.
+- **Solution:** Preserve v1 and all location/source/partition checkpoints; create reviewed contextual v2 with 13 fact corrections. Add explicit case/whitespace-aware access phrase review, retain unknown vehicle scope, reject contradictory isolated phrases and non-flood qualifiers. Bind tokenizer hash before validation and publish a new corrected qualification snapshot. Guards are bounded checks, not automatic proof of semantic completeness.
+- **Verification:** 546 tests pass, retaining 525 and adding 21 cases. All 40 corrected pairs and unchanged 400 location records validate; saved/frozen tokenizer hashes match. 1,779 prior artifact files and prior public metadata hashes remain unchanged; 1,059 new bundle files verify. Export stays refused for research-only sources.
+- **Files:** backend/training/flood_ner/annotation/context_review.py, contextual_pilot.py, qualification.py; backend/tests/test_flood_ner_context_review.py, test_flood_ner_contextual_pilot.py, test_flood_ner_qualification.py. [Evidence](../evaluations/flood-ner-review-qualification-20261015/audit.json). Runtime and database are unchanged.
+
+## Resolved offline: Capture versions shadowed provenance and selection timeout obscured feasibility
+
+- **Status / severity / resolver:** Resolved in offline tooling; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Recovered pages could have identical visible text but different immutable capture metadata. Inventory discarded a referenced version, or collection attached the path of another version. Separately, a 60-second optimizer stop was described as infeasibility despite satisfiable quotas; observed rendered publication headers were unsupported.
+- **Root cause:** Deduplication used URL/body hash rather than URL/capture version; path lookup used the same body identity. Optimizer statuses were conflated. Publisher header patterns omitted Philstar pipe separators and Inquirer strict bylines.
+- **Solution:** Retain every capture version and bind paths by its exact identity; identical stories still count once. Recognize verified publisher headers and reject conflicting dates without inventing timezones. Cache existing duplicate signatures, distinguish resource termination from proven infeasibility, and add an explicit validated selection time limit while keeping the 60-second default. Original files/default behavior remain intact.
+- **Verification:** 17 new regression cases and the retained 508 baseline pass: 525 total. Final corrected 400 and original 400 replay byte-for-byte; 1,313 original/prior files unchanged. Source/tokenizer/Unicode/context and export-refusal checks pass.
+- **Files:** backend/training/flood_ner/sources.py, collection.py, cohort.py, cli.py and backend/tests/test_flood_ner_rendered_recovery.py. [Evidence](../evaluations/flood-ner-continuation-400-20261015/audit.json). No operational database, model or deployment change.
+
+## Resolved offline: Truncated embedded scripts and additional address boundaries
+
+- **Status / severity / resolver:** Resolved in opt-in offline tooling; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Two older GMA JSON-LD bodies stopped at malformed script closing tags. New source spans failed at slash separators, Mag-11th ordinal joins and Cebu.—FRJ bylines.
+- **Root cause:** HTMLParser treated the remaining malformed embed as script content. Universal tokenizer rules left these adjacent source characters inside one token.
+- **Solution:** Re-extract specifically repaired markup into a new version while retaining original HTML/text/metadata. Fresh extraction remains research-only. Extend explicit v3 rules for observed boundaries, preserving ASCII address codes and unchanged source text. Save tokenizer bytes/hash; keep v2 and all prior candidate artifacts intact.
+- **Verification:** Source recovery, immutability, date-only/conflict evidence, span boundaries, grouped quota infeasibility and contextual semantics pass. Full suite: 508 checks. Original 400 replay is byte-identical; 496 original checkpoint/backup files unchanged.
+- **Files:** backend/training/flood_ner/sources.py, export.py, collection.py, cli.py, cohort.py, policy.py, contextual_pilot.py and revision tests. [Report](../evaluations/flood-ner-revision-400-20261014/README.md).
 
 ## Resolved in an opt-in candidate: Numeric Unicode dashes and JSONL separators
 

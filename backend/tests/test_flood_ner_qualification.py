@@ -54,6 +54,14 @@ def test_empty_place_labels_and_unresolved_identity_do_not_become_clearance():
     assert not report['independent_review_verified_by_this_tool']
 
 
+def test_candidate_hash_binds_saved_bytes_before_corpus_vocabulary_growth():
+    expected=hashlib.sha256(corpus_tokenizer(CANDIDATE_TOKENIZER_NAME).tokenizer.to_bytes()).hexdigest()
+    for rows in ([sample(123456)], [sample(987654),sample(234567,'taglish')]):
+        result=qualification_report(rows,corpus_tokenizer())
+        assert not result['candidate_tokenizer']['corpus_alignment_errors']
+        assert result['candidate_tokenizer']['sha256']==expected
+
+
 @pytest.mark.parametrize('change', ['profile', 'split', 'source'])
 def test_qualification_refuses_unbound_or_wrong_profile_records(change):
     row = sample(0)

@@ -1,0 +1,34 @@
+{
+  "case_count": 24,
+  "cases_sha256": "62f317b78101dd8abacf5c60155c05948b990cef79be803e71ecb4e1fc5ea1b9",
+  "constructed_only": true,
+  "constructed_predictions_recorded": 24,
+  "files": {
+    "predictions.json": "3ea4fba3d68013d7d2b05012eb781a12467ecd2f8a19e9d1818eda872fd06c36",
+    "request.json": "9444a8b92b8e522d55ccb79e4826f34b94c600285bb25a0d14d30b398ae50a86",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout.log": "05b5b49993adb7f36afb0172eb0b135addba0ad57bd378977ee5c2d69150c948"
+  },
+  "model_manifest_sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc",
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "model_training_performed": false,
+  "model_weights_loaded": true,
+  "news_samples_processed": 0,
+  "production_runtime_qualified": false,
+  "reference_alignment_errors": 2,
+  "research_interpreter": "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Scripts\\python.exe",
+  "resources": {
+    "batch_size": 1,
+    "load_ms": 681.9498999975622,
+    "measured_calls": 240,
+    "measured_passes": 10,
+    "p50_ms": 13.659300006111152,
+    "p95_ms": 15.581100000417791,
+    "peak_working_set_bytes": 424759296,
+    "threads": 2,
+    "warmup_passes": 1
+  },
+  "schema_version": "lanes-model-preflight-v1",
+  "six_class_accuracy_measured": false,
+  "state": "passed"
+}

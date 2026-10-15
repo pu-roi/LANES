@@ -15,8 +15,10 @@ from spacy.util import is_compatible_version
 from .annotation.schema import AnnotationRecord, PLACE_LABELS
 from .annotation.validation import validate_corpus
 from .collection import article_key, publisher_for, validate_reviewed, verify_capture_files
-from .export import CANDIDATE_TOKENIZER_NAME, corpus_tokenizer
+from .export import CANDIDATE_TOKENIZER_NAME, TOKENIZER_NAME, corpus_tokenizer
 from .sources import inventory_sources, json_bytes, read_jsonl
+from .window import LEGACY_WINDOW, PublicationWindow
+from .policy import CoveragePolicy, policy_report
 
 
 def _read_objects(path: Path, description: str) -> list[dict[str, Any]]:
@@ -49,13 +51,18 @@ def load_frozen_cohort(folder: Path) -> tuple[list[AnnotationRecord], Any, dict[
     if manifest.get('tokenizer_sha256') != files['tokenizer.bin'] or manifest.get('annotation_schema_sha256') != files['annotation_schema.json']:
         raise ValueError('frozen schema/tokenizer identities mismatch')
     records = read_jsonl(folder / 'grouped_annotations.jsonl', AnnotationRecord)
-    nlp = corpus_tokenizer()
+    nlp = corpus_tokenizer(manifest.get('tokenizer', TOKENIZER_NAME))
     nlp.tokenizer.from_bytes((folder / 'tokenizer.bin').read_bytes())
     errors = validate_corpus(records, nlp)
     counts = {split: dict(Counter(r.passage_language for r in records if r.split == split))
               for split in ('train', 'dev', 'test')}
     if errors or manifest.get('total') != len(records) or manifest.get('counts') != counts:
         raise ValueError('frozen annotations, totals or split identities fail validation: ' + '; '.join(errors))
+    if 'coverage_policy' in manifest:
+        from .cohort import _groups
+        policy = CoveragePolicy.model_validate_json(json.dumps(manifest['coverage_policy']))
+        if not policy_report(records, _groups(records), policy)['passed']:
+            raise ValueError('frozen cohort fails its declared coverage policy')
     return records, nlp, manifest
 
 
@@ -139,6 +146,7 @@ def qualification_report(records: list[AnnotationRecord], nlp: Any) -> dict[str,
              and all(value and not value.casefold().startswith(('provisional:', 'review-needed:', 'unresolved:'))
                      for value in (r.source.article_group, r.source.event_group, r.source.syndication_group))]
     candidate = corpus_tokenizer(CANDIDATE_TOKENIZER_NAME)
+    candidate_tokenizer_sha256 = hashlib.sha256(candidate.tokenizer.to_bytes()).hexdigest()
     candidate_errors = validate_corpus(records, candidate)
     return {
         'schema_version': 'lanes-flood-ner-qualification-v1',
@@ -160,7 +168,7 @@ def qualification_report(records: list[AnnotationRecord], nlp: Any) -> dict[str,
         'independent_review_verified_by_this_tool': False,
         'actual_model_inference_performed': False, 'training_performed': False,
         'candidate_tokenizer': {'name': CANDIDATE_TOKENIZER_NAME,
-                               'sha256': hashlib.sha256(candidate.tokenizer.to_bytes()).hexdigest(),
+                               'sha256': candidate_tokenizer_sha256,
                                'corpus_alignment_errors': candidate_errors, 'promoted': False},
         'qualification_open_items': ['source_use_assessment', 'independent_language_label_review',
                                      'publisher_language_confounding', 'exact_incident_membership_review',
@@ -173,15 +181,19 @@ def qualification_report(records: list[AnnotationRecord], nlp: Any) -> dict[str,
 
 
 def write_qualification(folder: Path, news_register: Path, root: Path, output: Path, *,
-                        model_register: Path | None = None, reuse_register: Path | None = None) -> dict[str, Any]:
+                        model_register: Path | None = None, reuse_register: Path | None = None,
+                        window: PublicationWindow | None = None) -> dict[str, Any]:
     artifacts = (root / 'backend/training/flood_ner/artifacts').resolve()
     if not output.resolve().is_relative_to(artifacts) or output.exists():
         raise ValueError('qualification output must be new and under ignored training artifacts')
     records, nlp, manifest = load_frozen_cohort(folder)
+    declared_window = PublicationWindow.parse(manifest.get('publication_window', LEGACY_WINDOW.as_list()))
+    if window is not None and window != declared_window:
+        raise ValueError('qualification publication window must match frozen manifest')
     sources, issues = inventory_sources(root)
     entries = _read_objects(news_register, 'news register')
     by_version = {s.capture_version: s for s in sources}
-    errors = validate_reviewed(entries, by_version) + verify_capture_files(entries, root)
+    errors = validate_reviewed(entries, by_version, window=declared_window) + verify_capture_files(entries, root)
     accepted = {e['capture_version'] for e in entries if e.get('status') == 'accepted'}
     for record in records:
         original = by_version.get(record.source.capture_version)

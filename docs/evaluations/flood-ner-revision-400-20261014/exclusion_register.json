@@ -1,0 +1,42 @@
+[
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-c20f65f5fda75e24afa1"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-0b7c67e0d956b95e8b21"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-9a3127b648b2952efce5"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-c20ba630f859347329ab"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-2f387e871cbf093c3165"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-82c0616c19e8c88ff7e7"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-38ebb28a8342065e36ab"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-e696a110d68c881c9918"
+  },
+  {
+    "reason": "overlapping_article_passage",
+    "record_id": "cohort-d4d7d7783c1787a5a9e1"
+  },
+  {
+    "reason": "outside_language_scope",
+    "record_id": "revision-33b2a92758b0e1d2ca8f"
+  }
+]
