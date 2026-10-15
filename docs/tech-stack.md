@@ -1,8 +1,12 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 15, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 3:49 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Offline desktop inventory:** `backend/training/flood_ner/desktop_inventory.py` uses only Python standard-library modules and a read-only NVIDIA `nvidia-smi` driver query. No external dependency or production requirements change; GPU PyTorch/CuPy versions remain unselected until the actual desktop OS/driver report. Keep research Python 3.11/spaCy 3.7.5 and the existing CPU environment unchanged. [Guide](guides/ner-desktop-preflight.md).
+**RTX desktop GPU preparation complete:** Actual RTX 3060 Ti 8 GB / driver 610.47 verified. Isolated Python 3.11.17, spaCy 3.7.5, CuPy 13.6.0 and Torch 2.11.0+cu128 pass native inference, six-class constructed updates at batch sizes 1/4/8 and saved-model CPU replay. 122 focused tests pass; 73 installed packages are compatible. All 23 original model files verify unchanged. No news-model processing, admission, production or schema change. [Results](evaluations/flood-ner-desktop-gpu-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Isolated GPU dependencies:** The optional research recipe adds cupy-cuda12x==13.6.0, official torch==2.11.0+cu128, nvidia-cuda-runtime-cu12==12.8.90 and nvidia-cuda-nvrtc-cu12==12.8.93; retained shared validators need httpx==0.27.0. Binary wheels and transitive hashes are locked in the linked evaluation. Production requirements only reference the optional recipe through comments.
+
+**Earlier inventory-only checkpoint:** `backend/training/flood_ner/desktop_inventory.py` uses only Python standard-library modules and a read-only NVIDIA `nvidia-smi` driver query. No external dependency or production requirements change; GPU PyTorch/CuPy versions remain unselected until the actual desktop OS/driver report. Keep research Python 3.11/spaCy 3.7.5 and the existing CPU environment unchanged. [Guide](guides/ner-desktop-preflight.md).
 
 **Academic-use proposal validation:** The new read-only academic_proposal.py validator verifies frozen cohort/context payloads, policy/fact references, 139 article and three publisher proposals, owner-only access evidence and separation from actual decisions/admission. It reuses the existing standard-library/Pydantic/spaCy stack and adds no dependencies or production installation. [Report](evaluations/flood-ner-academic-proposals-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

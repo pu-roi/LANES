@@ -1,0 +1,282 @@
+{
+  "download_complete": true,
+  "files": [
+    {
+      "bytes": 1789,
+      "lfs_sha256": null,
+      "path": ".gitattributes",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "ea54e370d27537dddc0042cf55cb67125259b079e027d1295c193e21b1631b6c",
+      "tree_oid": "be1cfc4485a3a2796a104567118b750fe9a6857d",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/.gitattributes"
+    },
+    {
+      "bytes": 5788,
+      "lfs_sha256": null,
+      "path": "README.md",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "624959769997ae04286a21666ea9c274044064821e2ce66450af7fc0549683b5",
+      "tree_oid": "afd3639762de0816ccf64bb33cc5a103d8984603",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/README.md"
+    },
+    {
+      "bytes": 4283,
+      "lfs_sha256": null,
+      "path": "config.cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "e77d26602a84eb8e170e404a9f207f93be8fefd233760426a3d90ec6638e2f67",
+      "tree_oid": "bf9aecd10194b3be846fbd31a25b05f17c396fd5",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/config.cfg"
+    },
+    {
+      "bytes": 5519,
+      "lfs_sha256": null,
+      "path": "meta.json",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "283a173d2dbf698a81c1832a1134b9ec5c6c872c74733df62937a6b89e20d1cd",
+      "tree_oid": "62aacaa1e093cf9690a1ccfd727000675b824594",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/meta.json"
+    },
+    {
+      "bytes": 9159,
+      "lfs_sha256": null,
+      "path": "morphologizer/cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "df5de19ee978277b15efea2575f8d0e7fd897f283b15fe7da172f135de179a13",
+      "tree_oid": "b98b77512c9100bf1f4cbd69701feec2476fcd5b",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/morphologizer/cfg"
+    },
+    {
+      "bytes": 33410,
+      "lfs_sha256": null,
+      "path": "morphologizer/model",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "fc15afd7d24503077af62eb8a7217cbff5ba51a38aa23e171fba5950b8d2c505",
+      "tree_oid": "d36f531b85f127178c34f17797e544d175dd877e",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/morphologizer/model"
+    },
+    {
+      "bytes": 221,
+      "lfs_sha256": null,
+      "path": "ner/cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "a7172edadafba9f472e9ac0f2660eec04b6405e471be9e20267b79c67288d22d",
+      "tree_oid": "6cd11cf7e67d8f2515a43feed2b679ec362c66e8",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/ner/cfg"
+    },
+    {
+      "bytes": 36038066,
+      "lfs_sha256": "40adb3bc24e073f225aac2da0d7d7ece078bd807d2a21d79090b9b3395fb0b22",
+      "path": "ner/model",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "40adb3bc24e073f225aac2da0d7d7ece078bd807d2a21d79090b9b3395fb0b22",
+      "tree_oid": "d8c540bd1592f3f7ae6353afb3a2787e29301a43",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/ner/model"
+    },
+    {
+      "bytes": 207,
+      "lfs_sha256": null,
+      "path": "ner/moves",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "e827da89f782b1be80317282ebdfd7d4ea6aca5bfe205f886205da32c13818b0",
+      "tree_oid": "fcfb54f4017c11efff06b49a6757c4a898ee1186",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/ner/moves"
+    },
+    {
+      "bytes": 222,
+      "lfs_sha256": null,
+      "path": "parser/cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "e2a240ef01f95e58f5dd4c9d6e90d61f597b8d998966570d3009dd81e8879780",
+      "tree_oid": "ff48dcc6ba854b472b0f2554ec6d59bbff952a3d",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/parser/cfg"
+    },
+    {
+      "bytes": 1643320,
+      "lfs_sha256": "8b1c4638578c6262f8fbd7d3ee0c34a672384a67028cde99975e1ab509f25e43",
+      "path": "parser/model",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "8b1c4638578c6262f8fbd7d3ee0c34a672384a67028cde99975e1ab509f25e43",
+      "tree_oid": "d1d88017199e2c148955290c8b0a47be793fdb78",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/parser/model"
+    },
+    {
+      "bytes": 170,
+      "lfs_sha256": null,
+      "path": "parser/moves",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "53782d427c0bb41dc1a4b52f8e26d212de9b088cd98a37a7116ade38f6e089d6",
+      "tree_oid": "ee91e3ee85cb2525e650df67b0ac5809ea2b0954",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/parser/moves"
+    },
+    {
+      "bytes": 368,
+      "lfs_sha256": null,
+      "path": "tagger/cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "2a23d0360c7e3acd13f9a9ceb8aa2aa21d976264a89b60f97393cc17e9d9d013",
+      "tree_oid": "e6381f7ea8ee5e5a3935c5dad194863c54a9dea5",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/tagger/cfg"
+    },
+    {
+      "bytes": 9353,
+      "lfs_sha256": null,
+      "path": "tagger/model",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "3d13c451e8ee8eb24d1bce0c50e74bfdee574cbea72c52cafa4f8b2845b203ee",
+      "tree_oid": "9cc6a23bb432bd4c7edb04e2a2f692086747c1b3",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/tagger/model"
+    },
+    {
+      "bytes": 77228750,
+      "lfs_sha256": "01177de062867e8b4eeaef34254658085a101aa78fa3b0a0b72d7b86ebf767aa",
+      "path": "tl_calamancy_md-0.1.0-py3-none-any.whl",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "01177de062867e8b4eeaef34254658085a101aa78fa3b0a0b72d7b86ebf767aa",
+      "tree_oid": "28432f73696fda535044dcd34bb59f9d236f62ce",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/tl_calamancy_md-0.1.0-py3-none-any.whl"
+    },
+    {
+      "bytes": 4,
+      "lfs_sha256": null,
+      "path": "tok2vec/cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "f8a5a26e3056eb6fb06deeb3dbccfd88ae74900200c98c70b5966bbb7ec9d4de",
+      "tree_oid": "0e0dcd235c4973becf25f38eb4e5bb26e154c86a",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/tok2vec/cfg"
+    },
+    {
+      "bytes": 6585092,
+      "lfs_sha256": "8963680588aadc644ce680435c6fc37734af6d802782c7d2993b1f7ff9647692",
+      "path": "tok2vec/model",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "8963680588aadc644ce680435c6fc37734af6d802782c7d2993b1f7ff9647692",
+      "tree_oid": "a67e585447744485560f26aaad2d58ba96e7fd72",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/tok2vec/model"
+    },
+    {
+      "bytes": 38247,
+      "lfs_sha256": null,
+      "path": "tokenizer",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "fb915498d76e32e6283c2a77ecd05f48cfd983b33a91bda4cc7dde241c7a9403",
+      "tree_oid": "230913dfb978514a258c6027285ed073c341ec40",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/tokenizer"
+    },
+    {
+      "bytes": 1,
+      "lfs_sha256": null,
+      "path": "vocab/key2row",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+      "tree_oid": "5416677bc7dab0c8bec3f5bf44d7d28b4ff73b13",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/key2row"
+    },
+    {
+      "bytes": 1,
+      "lfs_sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+      "path": "vocab/lookups.bin",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+      "tree_oid": "c66317f8d354f32911b0beb802a18ab12b6507c9",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/lookups.bin"
+    },
+    {
+      "bytes": 366005,
+      "lfs_sha256": null,
+      "path": "vocab/strings.json",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "b37d7440e36f9acc61498b05afb3aa7c754c04e5cbe547aed787112cf15d8a09",
+      "tree_oid": "174102464488a73dd25c80f302e1103f4ef4caf3",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/strings.json"
+    },
+    {
+      "bytes": 40000128,
+      "lfs_sha256": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+      "path": "vocab/vectors",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+      "tree_oid": "ffbe62fdfbbdf9c6b67c09c834c50aa7ef33f5a5",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/vectors"
+    },
+    {
+      "bytes": 115,
+      "lfs_sha256": null,
+      "path": "vocab/vectors.cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "5d315a7b19992526ae9c5f7641de68ec43ab9fced11843e8ed7f1d3e9a757a34",
+      "tree_oid": "eb0033ec4e3bc107933540917240901c511f4463",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/vectors.cfg"
+    }
+  ],
+  "license": "MIT",
+  "model": "tl_calamancy_md",
+  "model_dir": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\gpu-qualification-20261015\\model",
+  "repository_api_discrepancy": "Initial repository API returned another sha; pinned tree, individual response commits and Git/LFS hashes verified independently.",
+  "revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "schema_version": "lanes-model-artifact-v1",
+  "version": "0.1.0"
+}

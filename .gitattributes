@@ -81,3 +81,8 @@
 /backend/tests/test_flood_ner_academic_proposal.py -text
 /backend/tests/test_flood_ner_desktop_inventory.py -text
 /docs/guides/ner-desktop-preflight.md -text
+
+# GPU qualification manifests bind these helper/recipe bytes across checkouts.
+/backend/training/flood_ner/gpu_preflight.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/gpu_worker.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/requirements-gpu-qualification.in -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

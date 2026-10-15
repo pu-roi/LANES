@@ -1,5 +1,7 @@
 # Offline flood NER preparation
 
+Current GPU checkpoint: the actual RTX 3060 Ti desktop passes isolated Python 3.11.17/spaCy 3.7.5/CuPy 13.6.0/Torch 2.11.0+cu128 execution, six-class constructed trial updates and exact saved-model CPU entity replay. 122 focused tests pass. See the [GPU evaluation](../../../docs/evaluations/flood-ner-desktop-gpu-20261015/README.md) and [rerun/setup guide](../../../docs/guides/ner-desktop-preflight.md#qualified-rtx-desktop-environment-october-15-2026). Source admission and full-cohort qualification remain separate.
+
 Current desktop preparation: the standard-library-only `desktop_inventory.py` runs directly before installing research dependencies. It records local hardware/driver facts in a fresh ignored destination and never claims CUDA or training qualification. See the [desktop guide](../../../docs/guides/ner-desktop-preflight.md). Source-use decisions remain independent; publisher correspondence is optional clarification rather than a universal prerequisite when a supported exception applies.
 
 Current clarification preparation: four unsent drafts and a 69-article/243-passage register are available in the [local start-here guide](artifacts/held-article-clarification-20261015-v1/START-HERE.md). Recipient identities and response fields remain blank; no hold, recommendation or admission was changed. See the [metadata report](../../../docs/evaluations/flood-ner-held-clarification-20261015/README.md).

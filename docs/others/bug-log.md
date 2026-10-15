@@ -1,6 +1,22 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 15, 2026, 1:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 4:09 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved: GPU preflight timeout discarded worker diagnostics
+
+- **Status / severity / resolver:** Resolved; P2. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** On either worker's subprocess timeout, captured diagnostic bytes disappeared and the expected stdout/stderr logs were absent.
+- **Root cause:** TimeoutExpired bypassed the normal log-writing block, and the outer handler saved only the exception message.
+- **Solution:** Catch the timeout inside the per-worker execution block, save its captured streams (or empty bytes), then re-raise so the existing outer handler records failure and hashes the logs.
+- **Files / verification:** backend/training/flood_ner/gpu_preflight.py and tests/test_flood_ner_gpu_preflight.py. Four regression cases failed before repair; the focused selection passes 126 tests afterward. Original GPU evidence and its helper snapshot remain preserved. [Verification](../evaluations/flood-ner-gpu-timeout-fix-20261015/README.md).
+
+## Resolved offline: GPU preflight parent dependency and local execution setup
+
+- **Status / severity / resolver:** Resolved; Low. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The initial standalone parent import failed with missing HTTPX; the new managed interpreter then hit a sandbox output-folder permission error. The CPU checkpoint's Torch version had no matching CUDA wheel in the official selected index.
+- **Root cause:** Reusing preflight validation imports sources.py and its HTTPX dependency. Managed-interpreter execution and cache writes needed the permitted execution route. CPU and GPU wheel inventories differ.
+- **Solution:** Explicitly register existing httpx==0.27.0 in the optional GPU recipe, regenerate the hash lock, use the documented exact official Torch 2.11.0+cu128 wheel, and run the same constructed worker through permitted execution. No Windows security policy or system installation was changed. The existing CPU recipe is preserved.
+- **Files / verification:** backend/training/flood_ner/requirements-gpu-qualification.in, gpu_preflight.py, gpu_worker.py and tests/test_flood_ner_gpu_preflight.py. Two real runs pass, both worker stderr logs are empty, 122 focused tests pass and dependency check passes. [Full evidence](../evaluations/flood-ner-desktop-gpu-20261015/README.md).
 
 ## Resolved in new forms: Ambiguous researcher-facts references
 

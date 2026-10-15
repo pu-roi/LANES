@@ -1,0 +1,19 @@
+{
+  "test_command": "python -X utf8 -m pytest --noconftest tests/test_flood_ner_gpu_preflight.py tests/test_flood_ner_preflight.py tests/test_flood_ner_desktop_inventory.py tests/test_flood_ner_tokenizer_qualification.py -q",
+  "test_interpreter": "artifacts/gpu-qualification-20261015/research-env/Scripts/python.exe",
+  "tests_passed": 122,
+  "test_duration_seconds": 9.14,
+  "warnings": [
+    "test parent process: CuPy CUDA path not detected; isolated GPU worker supplies process-local CUDA_PATH and verified kernels",
+    "spaCy 3.7.5 imports deprecated Click parser.split_arg_string"
+  ],
+  "dependency_check": "73 packages checked; all compatible",
+  "actual_constructed_runs": [
+    "run-01: passed",
+    "run-02: passed"
+  ],
+  "native_predictions_match_across_runs": true,
+  "trained_predictions_match_across_runs": true,
+  "training_weights_bit_identical_across_runs": false,
+  "notes": "Tiny CUDA floating-point/loss differences between training trials; exact CPU/GPU entity predictions match within each run. No bit-identical training claim."
+}

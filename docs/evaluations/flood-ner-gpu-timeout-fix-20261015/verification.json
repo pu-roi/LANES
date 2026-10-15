@@ -1,0 +1,28 @@
+{
+  "schema_version": "lanes-gpu-timeout-fix-v1",
+  "resolved_finding": "P2: timeout discarded partial worker stdout/stderr",
+  "prior_helper_sha256": "67530744a34c65e785dc53b895ad3b456c5c98dcbee1e368af5673e94c9542a8",
+  "current_helper_sha256": "d2fa9cdeaa630bdf7d2eb1aaec24285ad81fbf65da4f3ac6d7965859c92c2582",
+  "regression_test_sha256": "df945256bb502e54761ad79427fd62bfd1c466ae45cc034c20862d17ac3081e1",
+  "before_fix": "four timeout tests failed because log files were absent",
+  "after_fix": {
+    "passed": 126,
+    "duration_seconds": 8.1,
+    "warnings": 2
+  },
+  "coverage": [
+    "GPU timeout with partial output",
+    "CPU timeout with partial output",
+    "GPU timeout with no output",
+    "CPU timeout with no output",
+    "byte-identical log content and SHA-256 bindings",
+    "failed qualification and saved report"
+  ],
+  "verification_kind": "deterministic subprocess fault injection; no GPU work or real 600-second wait",
+  "command": "python -B -X utf8 -m pytest --noconftest -p no:cacheprovider backend/tests/test_flood_ner_gpu_preflight.py backend/tests/test_flood_ner_preflight.py backend/tests/test_flood_ner_desktop_inventory.py backend/tests/test_flood_ner_tokenizer_qualification.py -q",
+  "prior_evaluation_unchanged": true,
+  "dependency_changes": false,
+  "news_processing": false,
+  "training": false,
+  "schema_changes": false
+}

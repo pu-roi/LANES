@@ -1,8 +1,14 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 15, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 4:09 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-**Offline NER desktop preparation:** Standalone `desktop_inventory.py --output <new ignored directory>` collects local OS/RAM/driver/GPU metadata without SQL, FastAPI, source admission, model loading or news inference. The current run identifies the MX330 laptop; desktop CUDA qualification and deployed NER integration remain pending. Publisher correspondence is an optional source-use clarification route, not a new endpoint or universal prerequisite. [Guide](../guides/ner-desktop-preflight.md).
+**GPU preflight review fix complete:** Timeout handling now preserves partial stdout/stderr for either worker and includes the logs in the failed report hashes. Four regression scenarios reproduced the defect before repair; all 126 focused tests now pass. Previous GPU qualification evidence is preserved; no dependencies, model weights, news admission or schema changed. [Fix verification](../evaluations/flood-ner-gpu-timeout-fix-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**RTX desktop GPU preparation complete:** Actual RTX 3060 Ti 8 GB / driver 610.47 verified. Isolated Python 3.11.17, spaCy 3.7.5, CuPy 13.6.0 and Torch 2.11.0+cu128 pass native inference, six-class constructed updates at batch sizes 1/4/8 and saved-model CPU replay. 122 focused tests pass; 73 installed packages are compatible. All 23 original model files verify unchanged. No news-model processing, admission, production or schema change. [Results](../evaluations/flood-ner-desktop-gpu-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Offline module `training.flood_ner.gpu_preflight` verifies the pinned artifact and fixed constructed probes, then runs separate isolated GPU/CPU workers. `gpu_worker.py` configures task-local CUDA DLLs, records training/memory, saves a temporary six-class model and checks CPU replay. This adds no endpoint, screen, database access or deployment integration.
+
+**Earlier inventory-only desktop preparation:** Standalone `desktop_inventory.py --output <new ignored directory>` collects local OS/RAM/driver/GPU metadata without SQL, FastAPI, source admission, model loading or news inference. The current run identifies the MX330 laptop; desktop CUDA qualification and deployed NER integration remain pending. Publisher correspondence is an optional source-use clarification route, not a new endpoint or universal prerequisite. [Guide](../guides/ner-desktop-preflight.md).
 
 **Academic-use proposal validation:** Offline academic_proposal.py validates a new proposal format without modifying the earlier academic-review format. It adds no CLI, API, screen or operational write. Actual project decisions and source admission remain separate; all 400/40 original records are unchanged. [Report](../evaluations/flood-ner-academic-proposals-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

@@ -1,0 +1,16 @@
+{
+  "schema_version": "lanes-metadata-hashes-v1",
+  "files": {
+    "cpu-result.json": "00ba513c359ef90e79c42298e1cb6ab942b40b7f2d768917e57cc828cedf1115",
+    "environment_manifest.json": "d4baac2f0ca651f590612b287e334cc8f93b7b8667b41217c71764e53ee45a55",
+    "gpu-result.json": "929b91d940a5b782902934892003bae787f0b903bc212ebd3e5d038e9cfbbdb7",
+    "inventory.json": "d58581b73bac23d07a3d9c8862999613d2f2068675a6ec2eea85eb04e41b343a",
+    "model_manifest.json": "eb2288fd75c86b4028a71c09d921109060675d5961477f4dd164fcaf3c1cd142",
+    "qualification.json": "3542be7fe44ed5a6733e28b1454159e3adb8d97c35589cdda5124b58e31f4380",
+    "README.md": "4f03d7ad983ce169deff0a28b70c033b662287ccc811e8145c40d7769f471b23",
+    "requirements-gpu.lock": "11ec0fca2b0f54baa83a693d4657ce83afce9c0fe9caae87fc20f63d97a5a4c2",
+    "requirements-test.lock": "a103afd7c7dd19ddbd92e20ac85146ca65b420a5e431d16b2c03e1ad90a2332b",
+    "setup_notes.json": "018039580c88e6e1973fdb85f7d3e9856d129b18964a0c08c2307d42c3386840",
+    "verification.json": "95d3965975f74eda3315da75eb91853754157b27191fab9dfbeb71d408f4fa91"
+  }
+}

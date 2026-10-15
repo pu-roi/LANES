@@ -1,0 +1,82 @@
+{
+  "schema_version": "lanes-desktop-gpu-qualification-v1",
+  "state": "passed",
+  "constructed_only": true,
+  "news_samples_processed": 0,
+  "source_admission_changed": false,
+  "production_runtime_qualified": false,
+  "six_class_accuracy_measured": false,
+  "cases_sha256": "62f317b78101dd8abacf5c60155c05948b990cef79be803e71ecb4e1fc5ea1b9",
+  "model_manifest_sha256": "eb2288fd75c86b4028a71c09d921109060675d5961477f4dd164fcaf3c1cd142",
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "research_interpreter": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\gpu-qualification-20261015\\research-env\\Scripts\\python.exe",
+  "baseline_cpu_gpu_identical": true,
+  "trained_cpu_gpu_identical": true,
+  "gpu_environment_qualified": true,
+  "constructed_training_performed": true,
+  "pinned_model_files_unchanged": true,
+  "training_steps": [
+    {
+      "batch_size": 1,
+      "cupy_pool_reserved_bytes": 288654336,
+      "cupy_pool_used_bytes": 262725120,
+      "elapsed_ms": 2064.691799999764,
+      "loss": 8.961537301540375
+    },
+    {
+      "batch_size": 4,
+      "cupy_pool_reserved_bytes": 297706496,
+      "cupy_pool_used_bytes": 262725120,
+      "elapsed_ms": 65.80410000015036,
+      "loss": 54.2841973900795
+    },
+    {
+      "batch_size": 8,
+      "cupy_pool_reserved_bytes": 297706496,
+      "cupy_pool_used_bytes": 262725120,
+      "elapsed_ms": 70.65790000024208,
+      "loss": 109.4832336306572
+    }
+  ],
+  "resources": {
+    "load_ms": 777.785600000243,
+    "native_inference": {
+      "batch_size": 1,
+      "measured_calls": 24,
+      "p50_ms": 17.008400000122492,
+      "p95_ms": 17.934500000137632,
+      "warmup_calls": 24
+    },
+    "peak_working_set_bytes": 1227366400,
+    "trial_inference": {
+      "batch_size": 1,
+      "measured_calls": 24,
+      "p50_ms": 17.134699999814984,
+      "p95_ms": 21.241400000235444,
+      "warmup_calls": 24
+    }
+  },
+  "files": {
+    "cpu-result.json": "00ba513c359ef90e79c42298e1cb6ab942b40b7f2d768917e57cc828cedf1115",
+    "cpu-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cpu-stdout.log": "36aba1574a4b320b0fb6ec09eca810bca36e024f30e1aaf84383ec3d0e434f91",
+    "gpu-result.json": "929b91d940a5b782902934892003bae787f0b903bc212ebd3e5d038e9cfbbdb7",
+    "gpu-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "gpu-stdout.log": "755ec6eac0ba8995ffc5eac34b80e6791acd455873c2e572a4842211ad5cba1c",
+    "hf-cache/hub/version.txt": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "request.json": "218f244d80e43712497ce1847f7c687e2ebdc8905a1e453d40bf804c805dbc46",
+    "trial-model/config.cfg": "2516dcae042d14df0027b3586dcbde8589116e4a919337f73f646e024d4ccaa6",
+    "trial-model/meta.json": "1934ba603e63540cdbb7df97fb4fc51db55cdc7b639f2781308ad3fe97979ff1",
+    "trial-model/ner/cfg": "113c55d357dd1387357a8db30f3c4587e640e0d4084a9dab9ff933f9d9fa6e5d",
+    "trial-model/ner/model": "65c19dc8bf7b1fcf6ce7a3ef97f7a5f8bd09c2018c50b9ee8e1ab95aeb91e3d2",
+    "trial-model/ner/moves": "ab5995b6043a382388495cae33176155a37884b9a0c17e4ec9d73253752ff08e",
+    "trial-model/tok2vec/cfg": "c6f8281620c2b87cf6a94f523311eae977e420ef9a6cda8667f61be906ceca90",
+    "trial-model/tok2vec/model": "5b7f5633c20597beb6342af1ebfeff762797537f2ef598b2544b1b9d5b736d0f",
+    "trial-model/tokenizer": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "trial-model/vocab/key2row": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+    "trial-model/vocab/lookups.bin": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+    "trial-model/vocab/strings.json": "3d3e66b9d9a74c3e9ffcfa551f72ef61696a8e45839ce6090fdf55dfb6912990",
+    "trial-model/vocab/vectors": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+    "trial-model/vocab/vectors.cfg": "339f6a5e6ca096047aabaa3738a71e3e493723163207d1021440671123c74a51"
+  }
+}
