@@ -1,0 +1,14 @@
+{
+  "cohort_manifest": {
+    "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/cohort-v2/partition_manifest.json",
+    "sha256": "5adac4656c0010824bafbe2182894394edb52225f7bbd4c05061fbe18722ab1a"
+  },
+  "context_manifest": {
+    "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/contextual-v3/manifest.json",
+    "sha256": "e1f002dd69019713b8e8309743201084e5f731b99aaa4d0fbb69c5819b1f8578"
+  },
+  "review_packet": {
+    "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/review-packet-v3.json",
+    "sha256": "8a0ca1c0b3b175d3435b57bcde690ed03dba28f64eee98c7cbbf5cd5033626bd"
+  }
+}

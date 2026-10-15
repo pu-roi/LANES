@@ -1,0 +1,45 @@
+{
+  "additional_location_samples": 0,
+  "annotation_revision_of": "e8d022086d434efda6c5a2859565615f75b2a27226c3ee115da771415b06e8f0",
+  "category_support": {
+    "collective_ranges": {
+      "english": 11,
+      "taglish": 5
+    },
+    "local_exceptions": {
+      "english": 1,
+      "taglish": 4
+    },
+    "negative_unknown_time": {
+      "english": 15,
+      "taglish": 15
+    },
+    "shared_observations": {
+      "english": 12,
+      "taglish": 7
+    },
+    "temporal_transitions": {
+      "english": 3,
+      "taglish": 8
+    }
+  },
+  "complete": true,
+  "context_revision": "contextual-v3",
+  "errors": [],
+  "files": {
+    "category_reviews.json": "3824660a0045982f005aa50b20c0bbd6caf925fef3f08b6c1fe28eaac48b7915",
+    "context_annotations.jsonl": "db80a00db0186c5bff86b782a53fbe7a838b58fee2c66a9644d05532987e255d"
+  },
+  "languages": {
+    "english": 20,
+    "taglish": 20
+  },
+  "location_manifest_sha256": "5adac4656c0010824bafbe2182894394edb52225f7bbd4c05061fbe18722ab1a",
+  "records": 40,
+  "schema_version": "lanes-context-pilot-v1",
+  "scope_is_project_choice_not_optimal_sample_size": true,
+  "source_articles_by_language": {
+    "english": 14,
+    "taglish": 19
+  }
+}

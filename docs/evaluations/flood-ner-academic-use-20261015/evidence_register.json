@@ -1,0 +1,263 @@
+[
+  {
+    "checked_at": "2026-10-15T04:00:31.516692+00:00",
+    "error": "HTTP 403",
+    "evidence_id": "abs-terms",
+    "final_url": "https://www.abs-cbn.com/terms",
+    "http_status": 403,
+    "kind": "publisher_terms",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "failed",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/abs-terms.html",
+      "sha256": "117994c9597c6576224cf11d70562c9f5c786e4943d140574d7f00bee52b984b"
+    },
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.517216+00:00",
+    "error": "HTTP 403",
+    "evidence_id": "abs-ai",
+    "final_url": "https://www.abs-cbn.com/ai-policy",
+    "http_status": 403,
+    "kind": "newsroom_ai_policy",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "failed",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/abs-ai.html",
+      "sha256": "ba5d644d33420d083795ac4882a979afee5c111035ae5373fa9091daa79cb144"
+    },
+    "url": "https://www.abs-cbn.com/ai-policy"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.517721+00:00",
+    "evidence_id": "gma-policy",
+    "final_url": "https://www.gmanetwork.com/news/user-policy/",
+    "http_status": 200,
+    "kind": "publisher_terms",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-policy.html",
+      "sha256": "84a0795c5e43956adcba1846d0ff9a4b9a1eab606f63cf4324d63908ad14c561"
+    },
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-policy.txt",
+      "sha256": "24989380fdbddecacdadaa3bae429ceb57816b04b9c272f1cbe3bd4566d9fefa"
+    },
+    "url": "https://www.gmanetwork.com/news/user-policy/"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.517721+00:00",
+    "evidence_id": "gma-ai",
+    "final_url": "https://www.gmanetwork.com/news/artificial-intelligence-policy/",
+    "http_status": 200,
+    "kind": "newsroom_ai_policy",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-ai.html",
+      "sha256": "dea9d3cfa754368cb5a84f1dda06ba718c75c60de70ea477ac63c27b61dc8638"
+    },
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/gma-ai.txt",
+      "sha256": "f7b6dca94e3005c7635d4c5fef9a756f863793fa0ec7e469518899b2083f88b6"
+    },
+    "url": "https://www.gmanetwork.com/news/artificial-intelligence-policy/"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.629958+00:00",
+    "evidence_id": "philstar-copyright",
+    "final_url": "https://www.philstar.com/copyright-notice",
+    "http_status": 200,
+    "kind": "publisher_terms",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/philstar-copyright.html",
+      "sha256": "a434f81e7b821a8fb56a96f0d6d409e3f205e914335ce94859db65a141c9b95c"
+    },
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/philstar-copyright.txt",
+      "sha256": "15e3a1f13e7526f3212634fe46d6d18071903b3a103abe748536f6cb84deb7de"
+    },
+    "url": "https://www.philstar.com/copyright-notice"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.630467+00:00",
+    "evidence_id": "philstar-agreement",
+    "final_url": "https://www.philstar.com/member-agreement",
+    "http_status": 200,
+    "kind": "publisher_terms",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/philstar-agreement.html",
+      "sha256": "355d24809b5217e73c035119a215cb19e39dd18c72189ad610f501dc8a83c805"
+    },
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/philstar-agreement.txt",
+      "sha256": "80507b0451cd6990ce9586b4f0c624752ea316013de62c0973f9a3739ae88c50"
+    },
+    "url": "https://www.philstar.com/member-agreement"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.840135+00:00",
+    "error": "no visible policy evidence",
+    "evidence_id": "ipophl-fair-use",
+    "final_url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6",
+    "http_status": 200,
+    "kind": "official_guidance",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "failed",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/ipophl-fair-use.html",
+      "sha256": "d02032286070b4dd9d8fbd985a7bdca8af8edf52b89ff177db3bfcb2c8a9c43d"
+    },
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/ipophl-fair-use.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.878852+00:00",
+    "evidence_id": "wipo-consolidated",
+    "final_url": "https://www.wipo.int/wipolex/en/legislation/details/18399",
+    "http_status": 200,
+    "kind": "consolidated_statute",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/wipo-consolidated.html",
+      "sha256": "d7205ade30e9817a7998dda68772211b7b03304b1502f7e3e5f2552d774cdc89"
+    },
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/wipo-consolidated.txt",
+      "sha256": "733d6ff1c3716b14b6d27b24c74577f3fd56259712350977a6e53a97d16b2b43"
+    },
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "checked_at": "2026-10-15T04:00:31.969142+00:00",
+    "evidence_id": "ncda-amendment",
+    "final_url": "https://ncda.gov.ph/disability-laws/republic-acts/republic-act-no-10372-an-act-amending-certain-provisions-of-republic-act-no-8293-otherwise-known-as-the-intellectual-property-code-of-the-philippines-and-for-other-purposes/",
+    "http_status": 200,
+    "kind": "statutory_amendment",
+    "method": "bounded ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/ncda-amendment.html",
+      "sha256": "767bc6b636e9efb60a37551dacc0116e5ff0543a9ff9521fc567f812b0e92047"
+    },
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/ncda-amendment.txt",
+      "sha256": "a8c700498bc455c03e6d6227e0e41a2c36547687102d35bf0f5e80bbd4d04822"
+    },
+    "url": "https://ncda.gov.ph/disability-laws/republic-acts/republic-act-no-10372-an-act-amending-certain-provisions-of-republic-act-no-8293-otherwise-known-as-the-intellectual-property-code-of-the-philippines-and-for-other-purposes/"
+  },
+  {
+    "applicable_clauses": "2024 guidance: purpose, nature, amount/substantiality and market effects require an assessment; academic purpose alone is not the complete test.",
+    "checked_at": "2026-10-15T01:50:23.983299+00:00",
+    "evidence_id": "preserved-ipophl-fair-use",
+    "final_url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6",
+    "http_status": 200,
+    "kind": "guidance",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "original_outcome_preserved": "captured",
+    "outcome": "captured",
+    "publisher": null,
+    "qualification_note": "Earlier HTTP-success bytes also contain no readable guidance; not used as a statutory/guidance text.",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/ipophl-fair-use.html",
+      "sha256": "d02032286070b4dd9d8fbd985a7bdca8af8edf52b89ff177db3bfcb2c8a9c43d"
+    },
+    "reuse_note": "Earlier snapshot, not a newly successful HTTP retrieval.",
+    "url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6",
+    "used_for_substantive_analysis": false
+  },
+  {
+    "checked_at": "2026-10-14T05:22:45.698519+00:00",
+    "evidence_id": "preserved-prior-abs-cbn-0",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "preserved earlier policy snapshot; not current-page confirmation",
+    "original_outcome_preserved": "captured",
+    "outcome": "captured",
+    "publisher": "ABS-CBN News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/d0c139559e39e4aa03f2e51000938229a9598d0f4b26f47a981201cfcf305f70.html",
+      "sha256": "d0c139559e39e4aa03f2e51000938229a9598d0f4b26f47a981201cfcf305f70"
+    },
+    "reuse_note": "Earlier snapshot, not a newly successful HTTP retrieval.",
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/preserved-prior-abs-cbn-0.txt",
+      "sha256": "a9f6281a08db24912899b8643a168a8aa225b19d7b4ebb678beb6619b05f26d7"
+    },
+    "url": "https://www.abs-cbn.com/terms",
+    "used_for_substantive_analysis": true
+  },
+  {
+    "checked_at": "2026-10-14T05:22:45.699517+00:00",
+    "evidence_id": "preserved-prior-abs-cbn-1",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "preserved earlier policy snapshot; not current-page confirmation",
+    "original_outcome_preserved": "captured",
+    "outcome": "captured",
+    "publisher": "ABS-CBN News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/4ce633f328b6c4391696e1e0e4e7065b45f3f0be62485d1c213b62bf6e2205a0.html",
+      "sha256": "4ce633f328b6c4391696e1e0e4e7065b45f3f0be62485d1c213b62bf6e2205a0"
+    },
+    "reuse_note": "Earlier snapshot, not a newly successful HTTP retrieval.",
+    "text_reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/preserved-prior-abs-cbn-1.txt",
+      "sha256": "e0a83e4b3d302ca88c19e76638ff4f020878e930494e19d640cde2ed964885a3"
+    },
+    "url": "https://www.abs-cbn.com/ai-policy",
+    "used_for_substantive_analysis": true
+  },
+  {
+    "checked_at": "2026-10-15T04:07:08.366708+00:00",
+    "evidence_id": "web-abs-terms",
+    "kind": "publisher_terms",
+    "method": "web tool readable-page observation; saved paraphrase, not raw HTTP HTML",
+    "observation": "Current readable web text retains restrictions on reuse and distinguishes independent content-provider rights. It does not establish academic NER permission.",
+    "outcome": "observed",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-abs-terms.json",
+      "sha256": "ef10c37b54fd5f0153cd9abf11bc66598cc1453e1c10975351709a3a796022ce"
+    },
+    "source_locations": "No Unlawful or Prohibited Use; current web lines 44–49",
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "checked_at": "2026-10-15T04:07:08.366708+00:00",
+    "evidence_id": "web-abs-ai",
+    "kind": "newsroom_ai_policy",
+    "method": "web tool readable-page observation; saved paraphrase, not raw HTTP HTML",
+    "observation": "The current page addresses ABS-CBN newsroom personnel and editorial oversight. It is not an external news-corpus training license.",
+    "outcome": "observed",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-abs-ai.json",
+      "sha256": "cc47aa0f136970d0de7b0e9c21de3009f370d1eb977a0d81544bc7db18a6dded"
+    },
+    "source_locations": "Purpose; Guidelines in the Use of Artificial Intelligence",
+    "url": "https://www.abs-cbn.com/ai-policy"
+  },
+  {
+    "checked_at": "2026-10-15T04:07:08.366708+00:00",
+    "evidence_id": "web-ipophl",
+    "kind": "official_guidance",
+    "method": "web tool readable-page observation; saved paraphrase, not raw HTTP HTML",
+    "observation": "The March 4, 2024 official guidance says that research exceptions require examination of the applicable elements. It identifies purpose, nature, amount and market effects and recommends seeking permission if the position remains doubtful. It is guidance, not an adjudication of this NER use.",
+    "outcome": "observed",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-ipophl.json",
+      "sha256": "a102ac899848d2934bb26539562200868b22e83bd41f6ec3eaf542f68a3bd8a7"
+    },
+    "source_locations": "Official article body; readable web lines 528–546",
+    "url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6"
+  }
+]

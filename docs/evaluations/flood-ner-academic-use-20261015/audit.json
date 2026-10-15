@@ -1,0 +1,63 @@
+{
+  "academic_decisions_unresolved": 3,
+  "academic_publisher_reviews": 3,
+  "all_twelve_nonacademic_outcomes_unchanged": true,
+  "article_reviews": 139,
+  "authoritative_document_audit": {
+    "README": "current report and local decision folder",
+    "bug-log": "no runtime defect repair; review-draft correction documented in the new report",
+    "database-design-plan": "no model/migration change",
+    "decisions": "reviewed; no architectural pivot",
+    "feature-reference": "no new platform feature",
+    "progress": "latest first",
+    "roadmap": "same order, no GPU yet",
+    "system-documentation": "offline evidence helper only",
+    "task_plan": "review completed; decision application open",
+    "tech-stack": "existing dependencies only"
+  },
+  "bound_evidence_files_checked": 24,
+  "changes_to_original_sources_admission_partitions": 0,
+  "contextual_pairs": 40,
+  "corrected_study_bundle_files_verified": 606,
+  "distribution_ready": false,
+  "docbin_files_written": 0,
+  "documentation_links_verified": true,
+  "earlier_preservation_sets_verified": {
+    "annotation-correction-20261015-v1": 9145,
+    "study-use-preparation-20261015": 26679
+  },
+  "earlier_regression_run": {
+    "new_tests_in_this_run": 24,
+    "passed": 662,
+    "retained_prior_focused_baseline": 638,
+    "seconds": 55.98,
+    "selection": "All test_flood_ner*.py plus PSGC/number/locality-anchor/heading and three article-road suites"
+  },
+  "full_regression_run": {
+    "new_academic_review_tests": 26,
+    "passed": 664,
+    "retained_prior_focused_baseline": 638,
+    "seconds": 42.17,
+    "selection": "All test_flood_ner*.py plus PSGC/number/locality-anchor/heading and three article-road suites"
+  },
+  "git_diff_check": "pass",
+  "main_environment_unchanged": true,
+  "model_files_verified": 23,
+  "new_dependencies_or_schema_changes": false,
+  "news_model_inference_training_gpu_messages_deployment_publication": "none",
+  "nonacademic_deferred": 6,
+  "policy_clause_pointers": 16,
+  "post_addition_targeted_run": {
+    "additional_tests_since_full_run": 2,
+    "passed": 26,
+    "seconds": 4.38
+  },
+  "prior_checkpoint_files_verified": 1774,
+  "public_report_article_text_absent": true,
+  "research_only_export_refused_records": 400,
+  "samples": 400,
+  "study_bundle_replay_unchanged": true,
+  "training_admitted": 0,
+  "verified": true,
+  "warning": "Existing spaCy/Click deprecation"
+}

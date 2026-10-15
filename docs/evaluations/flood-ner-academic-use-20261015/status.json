@@ -1,0 +1,29 @@
+{
+  "academic_ai_reviews_complete": 3,
+  "admission_decisions_unresolved": 3,
+  "article_followup_rows": 78,
+  "article_reviews": 139,
+  "context_pairs": 40,
+  "distribution_ready": false,
+  "docbin_exported": 0,
+  "followup_flags": {
+    "byline_not_captured": 68,
+    "complete_article_selected": 9,
+    "explicit_wire_credit": 1,
+    "non_agency_acronym": 1,
+    "opinion_expression": 8,
+    "possible_wire_origin": 1,
+    "publisher_qa_host": 1,
+    "third_party_photo_caption": 1
+  },
+  "gpu_setup_performed": false,
+  "model_training_performed": false,
+  "news_samples_processed_by_model": 0,
+  "other_use_outcomes_unchanged": 12,
+  "publisher_messages_sent": 0,
+  "samples": 400,
+  "schema_version": "lanes-academic-use-status-v1",
+  "scope": "private research team and adviser academic training/evaluation only",
+  "source_use_outcomes_unresolved_total": 15,
+  "training_admitted": 0
+}

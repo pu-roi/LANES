@@ -31,6 +31,16 @@ def main(argv: list[str] | None = None) -> int:
     preflight.add_argument('--model-manifest', type=Path, required=True)
     preflight.add_argument('--cases', type=Path, required=True)
     preflight.add_argument('--output', type=Path, required=True)
+    tokenizer_check = commands.add_parser('qualify-model-tokenizer', help='Compare native and candidate tokenizers on 48 constructed cases only')
+    tokenizer_check.add_argument('--python', type=Path, required=True)
+    tokenizer_check.add_argument('--model-manifest', type=Path, required=True)
+    tokenizer_check.add_argument('--cases', type=Path, required=True)
+    tokenizer_check.add_argument('--output', type=Path, required=True)
+    use_bundle = commands.add_parser('prepare-use-bundle', help='Prepare private study, appendix and held download candidates offline')
+    use_bundle.add_argument('--cohort', type=Path, required=True)
+    use_bundle.add_argument('--context', type=Path, required=True)
+    use_bundle.add_argument('--review-packet', type=Path, required=True)
+    use_bundle.add_argument('--output', type=Path, required=True)
     inventory = commands.add_parser("inventory", help="Inventory preserved repository captures")
     inventory.add_argument("--root", type=Path, default=REPO_ROOT)
     inventory.add_argument("--output", type=Path, default=ARTIFACTS / "inventory")
@@ -109,6 +119,16 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument('--baseline-inventory', type=Path, help='Immutable pre-revision array of source objects with URLs')
     args = parser.parse_args(argv)
     try:
+        if args.command == 'prepare-use-bundle':
+            from .use_bundle import prepare_use_bundle
+            result = prepare_use_bundle(args.cohort,args.context,args.review_packet,args.output,REPO_ROOT)
+            print(json.dumps({k:v for k,v in result.items() if k != 'files'},ensure_ascii=False))
+            return 0
+        if args.command == 'qualify-model-tokenizer':
+            from .tokenizer_qualification import qualify_tokenizer
+            result = qualify_tokenizer(args.python, args.model_manifest, args.cases, args.output, REPO_ROOT)
+            print(json.dumps(result, ensure_ascii=False))
+            return 0 if result['state'] == 'passed' else 2
         if args.command == 'preflight-model':
             from .preflight import run_preflight
             result = run_preflight(args.python, args.model_manifest, args.cases, args.output, REPO_ROOT)

@@ -1,0 +1,234 @@
+[
+  {
+    "checked_at": "2026-10-15T01:50:23.761653+00:00",
+    "error": "HTTP 403",
+    "evidence_id": "abs-terms",
+    "final_url": "https://www.abs-cbn.com/terms",
+    "http_status": 403,
+    "kind": "publisher_policy",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "failed",
+    "publisher": "ABS-CBN News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/abs-terms.html",
+      "sha256": "67164ee0fc91844e8644f2b0ec9216a1b08d0fc3a1a02e333333a7c4e4f3b34c"
+    },
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "applicable_clauses": "Visible policy paragraphs distinguish educational/noncommercial viewing and downloading from other commercial or publishing uses; no explicit third-party NER dataset-distribution grant identified.",
+    "checked_at": "2026-10-15T01:50:23.761653+00:00",
+    "evidence_id": "gma-policy",
+    "final_url": "https://www.gmanetwork.com/news/user-policy/",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "publisher": "GMA News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/gma-policy.html",
+      "sha256": "72b2c987c88da3330acea582408e268a63730c8eded720d9da5e6f975bcd9839"
+    },
+    "url": "https://www.gmanetwork.com/news/user-policy/"
+  },
+  {
+    "applicable_clauses": "Copyright Notice: personal noncommercial single-copy downloading is distinguished from reproduction and distribution; third-party ownership notices apply.",
+    "checked_at": "2026-10-15T01:50:23.761653+00:00",
+    "evidence_id": "philstar-copyright",
+    "final_url": "https://www.philstar.com/copyright-notice",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "publisher": "Philstar",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/philstar-copyright.html",
+      "sha256": "08278a9164727d66cf88d93ea0472c59cb7161e507d444ea8dac3f6d4d88cdbd"
+    },
+    "url": "https://www.philstar.com/copyright-notice"
+  },
+  {
+    "applicable_clauses": "Member Agreement sections 2.1–2.4: personal use, copying limits and Associated Press/Reuters contributions.",
+    "checked_at": "2026-10-15T01:50:23.770768+00:00",
+    "evidence_id": "philstar-agreement",
+    "final_url": "https://www.philstar.com/member-agreement",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "publisher": "Philstar",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/philstar-agreement.html",
+      "sha256": "c83f8ad548d760e94819b4e8de6e257dfe95d1a37bb01d648a7782cd2c0951d3"
+    },
+    "url": "https://www.philstar.com/member-agreement"
+  },
+  {
+    "applicable_clauses": "2024 guidance: purpose, nature, amount/substantiality and market effects require an assessment; academic purpose alone is not the complete test.",
+    "checked_at": "2026-10-15T01:50:23.983299+00:00",
+    "evidence_id": "ipophl-fair-use",
+    "final_url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6",
+    "http_status": 200,
+    "kind": "guidance",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "publisher": null,
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/ipophl-fair-use.html",
+      "sha256": "d02032286070b4dd9d8fbd985a7bdca8af8edf52b89ff177db3bfcb2c8a9c43d"
+    },
+    "url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6"
+  },
+  {
+    "checked_at": "2026-10-15T01:50:24.113247+00:00",
+    "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)",
+    "evidence_id": "supreme-court-ra8293",
+    "kind": "statute",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "failed",
+    "publisher": null,
+    "url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/2/4371"
+  },
+  {
+    "checked_at": "2026-10-15T01:50:24.128544+00:00",
+    "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)",
+    "evidence_id": "supreme-court-ra10372",
+    "kind": "statute",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "failed",
+    "publisher": null,
+    "url": "https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/2/53393"
+  },
+  {
+    "applicable_clauses": "RA 10372 section 12 amends section 185.1; teaching-copy wording and purpose examples must be read with the four factors, not the unamended 1997 wording alone.",
+    "checked_at": "2026-10-15T01:50:24.261671+00:00",
+    "evidence_id": "ncda-ra10372",
+    "final_url": "https://ncda.gov.ph/disability-laws/republic-acts/republic-act-no-10372-an-act-amending-certain-provisions-of-republic-act-no-8293-otherwise-known-as-the-intellectual-property-code-of-the-philippines-and-for-other-purposes/",
+    "http_status": 200,
+    "kind": "statute",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "publisher": null,
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/ncda-ra10372.html",
+      "sha256": "767bc6b636e9efb60a37551dacc0116e5ff0543a9ff9521fc567f812b0e92047"
+    },
+    "url": "https://ncda.gov.ph/disability-laws/republic-acts/republic-act-no-10372-an-act-amending-certain-provisions-of-republic-act-no-8293-otherwise-known-as-the-intellectual-property-code-of-the-philippines-and-for-other-purposes/"
+  },
+  {
+    "applicable_clauses": "Consolidated RA 8293 text, with 2013 amendments: sections 175, 184.1(b),(e), 184.2, 185 and 187; research/private-copy exceptions have conditions and do not automatically cover dataset distribution.",
+    "checked_at": "2026-10-15T01:51:36.601773+00:00",
+    "evidence_id": "wipo-consolidated",
+    "final_url": "https://www.wipo.int/wipolex/en/legislation/details/18399",
+    "http_status": 200,
+    "kind": "statute",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "publisher": null,
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/wipo-consolidated.html",
+      "sha256": "3d509c57746344dae8612eb198e6942737dd5633ddaec8f055ffe9dffc7803d5"
+    },
+    "url": "https://www.wipo.int/wipolex/en/legislation/details/18399"
+  },
+  {
+    "checked_at": "2026-10-15T01:51:36.604027+00:00",
+    "evidence_id": "lawphil-ra8293",
+    "final_url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html",
+    "http_status": 200,
+    "kind": "statute",
+    "method": "ordinary public HTTP GET; no challenge bypass",
+    "outcome": "captured",
+    "publisher": null,
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/lawphil-ra8293.html",
+      "sha256": "9da8e412db30cb6cb76ec0713236d131589bd095262a90e471a9bc5b0323e52b"
+    },
+    "url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html"
+  },
+  {
+    "applicable_clauses": "Terms clause at web-text line 49: reproduction and derivative/distribution uses are subject to express permission; independent content-provider rights also appear in the terms.",
+    "checked_at": "2026-10-15T01:51:39.295260+00:00",
+    "evidence_id": "abs-terms-web-excerpt",
+    "http_status": null,
+    "kind": "publisher_policy",
+    "method": "web-tool text observation; 22-word excerpt, clause line 49",
+    "outcome": "captured",
+    "publisher": "ABS-CBN News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/study-use-preparation-20261015/policy-evidence/abs-terms-web-excerpt.txt",
+      "sha256": "df8060a53e0df71d33dc0331970553b64af8025b0d9ea172b93d18fa39c1d9df"
+    },
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "checked_at": "2026-10-14T05:22:45.698519+00:00",
+    "evidence_id": "prior-abs-cbn-0",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "preserved earlier policy snapshot; not current-page confirmation",
+    "outcome": "captured",
+    "publisher": "ABS-CBN News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/d0c139559e39e4aa03f2e51000938229a9598d0f4b26f47a981201cfcf305f70.html",
+      "sha256": "d0c139559e39e4aa03f2e51000938229a9598d0f4b26f47a981201cfcf305f70"
+    },
+    "url": "https://www.abs-cbn.com/terms"
+  },
+  {
+    "checked_at": "2026-10-14T05:22:45.699517+00:00",
+    "evidence_id": "prior-abs-cbn-1",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "preserved earlier policy snapshot; not current-page confirmation",
+    "outcome": "captured",
+    "publisher": "ABS-CBN News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/4ce633f328b6c4391696e1e0e4e7065b45f3f0be62485d1c213b62bf6e2205a0.html",
+      "sha256": "4ce633f328b6c4391696e1e0e4e7065b45f3f0be62485d1c213b62bf6e2205a0"
+    },
+    "url": "https://www.abs-cbn.com/ai-policy"
+  },
+  {
+    "checked_at": "2026-10-14T05:22:45.696995+00:00",
+    "evidence_id": "prior-gma-0",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "preserved earlier policy snapshot; not current-page confirmation",
+    "outcome": "captured",
+    "publisher": "GMA News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/bd49e170d968238fb2d985301a9e153c78a4c02462b1859b4c138250bd92f3ba.html",
+      "sha256": "bd49e170d968238fb2d985301a9e153c78a4c02462b1859b4c138250bd92f3ba"
+    },
+    "url": "https://www.gmanetwork.com/news/user-policy/"
+  },
+  {
+    "checked_at": "2026-10-14T05:22:45.697506+00:00",
+    "evidence_id": "prior-gma-1",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "preserved earlier policy snapshot; not current-page confirmation",
+    "outcome": "captured",
+    "publisher": "GMA News",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/980540c117c5a386bf7ddf6df2c87747cbfaa03dbbd69d2216bccf40602e5ee8.html",
+      "sha256": "980540c117c5a386bf7ddf6df2c87747cbfaa03dbbd69d2216bccf40602e5ee8"
+    },
+    "url": "https://www.gmanetwork.com/news/artificial-intelligence-policy/"
+  },
+  {
+    "checked_at": "2026-10-14T05:22:45.999389+00:00",
+    "evidence_id": "prior-philstar-0",
+    "http_status": 200,
+    "kind": "publisher_policy",
+    "method": "preserved earlier policy snapshot; not current-page confirmation",
+    "outcome": "captured",
+    "publisher": "Philstar",
+    "reference": {
+      "path": "backend/training/flood_ner/artifacts/readiness-20261014/policy_snapshots/21bab3d2d8938438964e95bcdd885ad4d21d4ab1402f799f708e22e2a970dcac.html",
+      "sha256": "21bab3d2d8938438964e95bcdd885ad4d21d4ab1402f799f708e22e2a970dcac"
+    },
+    "url": "https://www.philstar.com/copyright-notice"
+  }
+]

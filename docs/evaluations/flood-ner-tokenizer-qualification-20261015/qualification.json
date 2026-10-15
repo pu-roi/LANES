@@ -1,0 +1,85 @@
+{
+  "candidate": "lanes.tl.calamancy-address-v1",
+  "candidate_control_failures": 0,
+  "case_count": 48,
+  "cases_sha256": "dd15291b6a1fae46b6ec24485e56110ab333a03beda66776842f6199401f8868",
+  "constructed_only": true,
+  "files": {
+    "candidate.predictions.json": "c3d9c7ac86d14d8d9f78138bc6671c90fcb1f3e9a0987945832cc1cba99dc25c",
+    "candidate.request.json": "2884fc85e0803b1f664bfe4d158d286f13dbeedc338f948c283b05575cadfcd9",
+    "candidate.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate.stdout.log": "c993dd93417f26ff945e48773c88f2e51dd5bac92f6c4ba6604fb4793a06cbd5",
+    "candidate.tokenizer.bin": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "comparison.json": "db4e43711ebbd3d44899180f9166244371bdec04e8563b95f28e6b40b428be56",
+    "corpus-v3.tokens.json": "db8c2e06e38576a486dac3af1c42e8340794d6c122b46e315475115ac7b62350",
+    "native.predictions.json": "dad5f978ebb9c64bbee9520c4b83a5db9876732f3a5cde59b21f7648cf53efce",
+    "native.request.json": "17e3ed3c952666a9dffb3f15a1b428175b0fad257dcc38505d37cc04321ba1b7",
+    "native.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native.stdout.log": "e1eaaff3ea041bd82cb3b009a7074f69c6ed2789193c3e943b29abea78790bee",
+    "native.tokenizer.bin": "fb915498d76e32e6283c2a77ecd05f48cfd983b33a91bda4cc7dde241c7a9403",
+    "tokenizer_manifest.json": "4257f8f8d6bc56157624cd8332263e834ecc3333caeed3617ce329abcc95689c"
+  },
+  "implementation_files": {
+    "model_tokenizer.py": "a9819acde0847c017a61cd8b25be8a01200dbde699dab8dcc4f334582a193393",
+    "preflight.py": "13afdc6b24d3c8f89e63f73884b80e6e294a314c928b52e5d4ec9e1ec9c46351",
+    "tokenizer_qualification.py": "5ee143fce08946bb61877720feefd1d2ecc7d82fc1d351a340bb5e95e3bf6b5d",
+    "tokenizer_worker.py": "36e60eba2808dde058d260976286143c832d95523ac24493ca71133f37dfde58"
+  },
+  "languages": {
+    "english": 24,
+    "taglish": 24
+  },
+  "model_manifest_sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc",
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "news_samples_processed": 0,
+  "prediction_changes": 12,
+  "private_run_folder": "backend/training/flood_ner/artifacts/tokenizer-qualification-20261015/final-v5",
+  "production_qualified": false,
+  "reference_alignment_errors": {
+    "candidate": 0,
+    "lanes.xx.address-v3": 14,
+    "native": 22
+  },
+  "research_interpreter": "D:\\Documents\\Github\\LANES\\backend\\training\\flood_ner\\artifacts\\preflight-use-20261015\\research-env\\Scripts\\python.exe",
+  "research_interpreter_sha256": "28c820c0ed4cd4b245b9a6e52fbbaecb52e92de98309e72d89de0cf6fe6a206c",
+  "runs": {
+    "candidate": {
+      "repeated_predictions_identical": true,
+      "resources": {
+        "batch_size": 1,
+        "load_ms": 674.1438000026392,
+        "measured_calls": 480,
+        "measured_passes": 10,
+        "p50_ms": 14.183749997755513,
+        "p95_ms": 17.680299992207438,
+        "peak_working_set_bytes": 424103936,
+        "threads": 2,
+        "warmup_passes": 1
+      },
+      "roundtrip_identical": true,
+      "tokenizer_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588"
+    },
+    "native": {
+      "repeated_predictions_identical": true,
+      "resources": {
+        "batch_size": 1,
+        "load_ms": 754.9874999967869,
+        "measured_calls": 480,
+        "measured_passes": 10,
+        "p50_ms": 14.497750009468291,
+        "p95_ms": 19.11439999821596,
+        "peak_working_set_bytes": 424345600,
+        "threads": 2,
+        "warmup_passes": 1
+      },
+      "roundtrip_identical": true,
+      "tokenizer_sha256": "fb915498d76e32e6283c2a77ecd05f48cfd983b33a91bda4cc7dde241c7a9403"
+    }
+  },
+  "schema_version": "lanes-tokenizer-qualification-v1",
+  "six_class_accuracy_measured": false,
+  "state": "passed",
+  "tokenization_changes": 13,
+  "training_admitted": 0,
+  "training_performed": false
+}

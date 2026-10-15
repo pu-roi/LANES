@@ -73,3 +73,4 @@
 /docs/evaluations/flood-ner-*/**/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /docs/evaluations/flood-ner-*/**/*.lock -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/training/flood_ner/configs/preflight_constructed_cases.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/backend/training/flood_ner/configs/tokenizer_qualification_cases.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

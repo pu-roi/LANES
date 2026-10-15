@@ -1,0 +1,2629 @@
+{
+  "prediction_differences": [
+    {
+      "candidate_entities": [
+        {
+          "end": 33,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 39
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "case_id": "constructed-preflight-01",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 33,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 39
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-preflight-02",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-preflight-03",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-preflight-04",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-preflight-05",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 51,
+          "label": "LOC",
+          "start": 40
+        }
+      ],
+      "case_id": "constructed-preflight-06",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 51,
+          "label": "LOC",
+          "start": 40
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 17
+        },
+        {
+          "end": 53,
+          "label": "LOC",
+          "start": 36
+        }
+      ],
+      "case_id": "constructed-preflight-07",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 17
+        },
+        {
+          "end": 53,
+          "label": "LOC",
+          "start": 36
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 12,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "case_id": "constructed-preflight-08",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 12,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 16,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 37,
+          "label": "LOC",
+          "start": 21
+        },
+        {
+          "end": 68,
+          "label": "LOC",
+          "start": 57
+        }
+      ],
+      "case_id": "constructed-preflight-09",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 16,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 37,
+          "label": "LOC",
+          "start": 21
+        },
+        {
+          "end": 68,
+          "label": "LOC",
+          "start": 57
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 22,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 67,
+          "label": "LOC",
+          "start": 48
+        },
+        {
+          "end": 84,
+          "label": "LOC",
+          "start": 71
+        },
+        {
+          "end": 91,
+          "label": "LOC",
+          "start": 86
+        }
+      ],
+      "case_id": "constructed-preflight-10",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 22,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 67,
+          "label": "LOC",
+          "start": 48
+        },
+        {
+          "end": 84,
+          "label": "LOC",
+          "start": 71
+        },
+        {
+          "end": 91,
+          "label": "LOC",
+          "start": 86
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 40,
+          "label": "LOC",
+          "start": 27
+        }
+      ],
+      "case_id": "constructed-preflight-11",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 40,
+          "label": "LOC",
+          "start": 27
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-preflight-12",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 25
+        },
+        {
+          "end": 56,
+          "label": "LOC",
+          "start": 41
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "case_id": "constructed-preflight-13",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 25
+        },
+        {
+          "end": 56,
+          "label": "LOC",
+          "start": 41
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 46,
+          "label": "LOC",
+          "start": 33
+        }
+      ],
+      "case_id": "constructed-preflight-14",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 46,
+          "label": "LOC",
+          "start": 33
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 8,
+          "label": "LOC",
+          "start": 4
+        }
+      ],
+      "case_id": "constructed-preflight-15",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 8,
+          "label": "LOC",
+          "start": 4
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-preflight-16",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "case_id": "constructed-preflight-17",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 28,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 29
+        },
+        {
+          "end": 59,
+          "label": "LOC",
+          "start": 43
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 63
+        }
+      ],
+      "case_id": "constructed-preflight-18",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 28,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 29
+        },
+        {
+          "end": 59,
+          "label": "LOC",
+          "start": 43
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 63
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 36,
+          "label": "LOC",
+          "start": 22
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 38
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 56
+        }
+      ],
+      "case_id": "constructed-preflight-19",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 36,
+          "label": "LOC",
+          "start": 22
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 38
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 56
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "case_id": "constructed-preflight-20",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 24,
+          "label": "ORG",
+          "start": 12
+        },
+        {
+          "end": 42,
+          "label": "LOC",
+          "start": 28
+        },
+        {
+          "end": 66,
+          "label": "LOC",
+          "start": 54
+        }
+      ],
+      "case_id": "constructed-preflight-21",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 24,
+          "label": "ORG",
+          "start": 12
+        },
+        {
+          "end": 42,
+          "label": "LOC",
+          "start": 28
+        },
+        {
+          "end": 66,
+          "label": "LOC",
+          "start": 54
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 30,
+          "label": "LOC",
+          "start": 11
+        },
+        {
+          "end": 44,
+          "label": "LOC",
+          "start": 34
+        },
+        {
+          "end": 61,
+          "label": "LOC",
+          "start": 48
+        }
+      ],
+      "case_id": "constructed-preflight-22",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 30,
+          "label": "LOC",
+          "start": 11
+        },
+        {
+          "end": 44,
+          "label": "LOC",
+          "start": 34
+        },
+        {
+          "end": 61,
+          "label": "LOC",
+          "start": 48
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 47,
+          "label": "LOC",
+          "start": 34
+        }
+      ],
+      "case_id": "constructed-preflight-23",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 47,
+          "label": "LOC",
+          "start": 34
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-preflight-24",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "case_id": "constructed-boundary-25",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "case_id": "constructed-boundary-26",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 17,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 9,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "case_id": "constructed-boundary-27",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 30,
+          "label": "PER",
+          "start": 16
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 36
+        }
+      ],
+      "case_id": "constructed-boundary-28",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 30,
+          "label": "LOC",
+          "start": 15
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 35
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 2
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "case_id": "constructed-boundary-29",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 18,
+          "label": "LOC",
+          "start": 7
+        }
+      ],
+      "case_id": "constructed-boundary-30",
+      "entities_changed": true,
+      "native_entities": [],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "case_id": "constructed-boundary-31",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "case_id": "constructed-boundary-32",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-boundary-33",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-boundary-34",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-boundary-35",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "case_id": "constructed-boundary-36",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "case_id": "constructed-boundary-37",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "case_id": "constructed-boundary-38",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 17,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 9,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "case_id": "constructed-boundary-39",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 38
+        }
+      ],
+      "case_id": "constructed-boundary-40",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 33,
+          "label": "ORG",
+          "start": 18
+        },
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 37
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 2
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "case_id": "constructed-boundary-41",
+      "entities_changed": true,
+      "native_entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 18,
+          "label": "LOC",
+          "start": 7
+        }
+      ],
+      "case_id": "constructed-boundary-42",
+      "entities_changed": true,
+      "native_entities": [],
+      "tokens_changed": true
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "case_id": "constructed-boundary-43",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "case_id": "constructed-boundary-44",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-boundary-45",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-boundary-46",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [],
+      "case_id": "constructed-boundary-47",
+      "entities_changed": false,
+      "native_entities": [],
+      "tokens_changed": false
+    },
+    {
+      "candidate_entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "case_id": "constructed-boundary-48",
+      "entities_changed": false,
+      "native_entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "tokens_changed": false
+    }
+  ],
+  "tokenizers": {
+    "candidate": {
+      "control_failures": [],
+      "control_results": [
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 26,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 25,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 41,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 36
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 29,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 18,
+          "kind": "token",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-31",
+          "end": 27,
+          "kind": "token",
+          "passed": true,
+          "start": 23
+        },
+        {
+          "case_id": "constructed-boundary-31",
+          "end": 13,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 1
+        },
+        {
+          "case_id": "constructed-boundary-32",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-32",
+          "end": 8,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 12,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 23,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 41,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 34
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 7,
+          "kind": "token",
+          "passed": true,
+          "start": 3
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 17,
+          "kind": "token",
+          "passed": true,
+          "start": 14
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 49,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 39
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 56,
+          "kind": "token",
+          "passed": true,
+          "start": 54
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 10,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 22,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 36,
+          "kind": "token",
+          "passed": true,
+          "start": 32
+        },
+        {
+          "case_id": "constructed-boundary-36",
+          "end": 3,
+          "kind": "token",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-36",
+          "end": 33,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 22
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 26,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 28,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 43,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 38
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 29,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 18,
+          "kind": "token",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-43",
+          "end": 27,
+          "kind": "token",
+          "passed": true,
+          "start": 23
+        },
+        {
+          "case_id": "constructed-boundary-43",
+          "end": 13,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 1
+        },
+        {
+          "case_id": "constructed-boundary-44",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-44",
+          "end": 8,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 14,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 4
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 28,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 18
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 52,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 45
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 9,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 23,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 53,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 43
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 64,
+          "kind": "token",
+          "passed": true,
+          "start": 62
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 10,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 22,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 36,
+          "kind": "token",
+          "passed": true,
+          "start": 32
+        },
+        {
+          "case_id": "constructed-boundary-48",
+          "end": 3,
+          "kind": "token",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-48",
+          "end": 33,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 22
+        }
+      ],
+      "reference_alignment_errors": []
+    },
+    "lanes.xx.address-v3": {
+      "control_failures": [
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        }
+      ],
+      "control_results": [
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 26,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 25,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 41,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 36
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 29,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 18,
+          "kind": "token",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-31",
+          "end": 27,
+          "kind": "token",
+          "passed": true,
+          "start": 23
+        },
+        {
+          "case_id": "constructed-boundary-31",
+          "end": 13,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 1
+        },
+        {
+          "case_id": "constructed-boundary-32",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-32",
+          "end": 8,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 12,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 23,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 41,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 34
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 7,
+          "kind": "token",
+          "passed": true,
+          "start": 3
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 17,
+          "kind": "token",
+          "passed": true,
+          "start": 14
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 49,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 39
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 56,
+          "kind": "token",
+          "passed": true,
+          "start": 54
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 10,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 22,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 36,
+          "kind": "token",
+          "passed": true,
+          "start": 32
+        },
+        {
+          "case_id": "constructed-boundary-36",
+          "end": 3,
+          "kind": "token",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-36",
+          "end": 33,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 22
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 26,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 28,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 43,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 38
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 29,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 18,
+          "kind": "token",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-43",
+          "end": 27,
+          "kind": "token",
+          "passed": true,
+          "start": 23
+        },
+        {
+          "case_id": "constructed-boundary-43",
+          "end": 13,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 1
+        },
+        {
+          "case_id": "constructed-boundary-44",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-44",
+          "end": 8,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 14,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 4
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 28,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 18
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 52,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 45
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 9,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 23,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 53,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 43
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 64,
+          "kind": "token",
+          "passed": true,
+          "start": 62
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 10,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 22,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 36,
+          "kind": "token",
+          "passed": true,
+          "start": 32
+        },
+        {
+          "case_id": "constructed-boundary-48",
+          "end": 3,
+          "kind": "token",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-48",
+          "end": 33,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 22
+        }
+      ],
+      "reference_alignment_errors": [
+        {
+          "case_id": "constructed-preflight-20",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-preflight-20",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        },
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        }
+      ]
+    },
+    "native": {
+      "control_failures": [
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 25,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 41,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 36
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 28,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 43,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 38
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        }
+      ],
+      "control_results": [
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 26,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 25,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 41,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 36
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 29,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 18,
+          "kind": "token",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-31",
+          "end": 27,
+          "kind": "token",
+          "passed": true,
+          "start": 23
+        },
+        {
+          "case_id": "constructed-boundary-31",
+          "end": 13,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 1
+        },
+        {
+          "case_id": "constructed-boundary-32",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-32",
+          "end": 8,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 12,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 23,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-33",
+          "end": 41,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 34
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 7,
+          "kind": "token",
+          "passed": true,
+          "start": 3
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 17,
+          "kind": "token",
+          "passed": true,
+          "start": 14
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 49,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 39
+        },
+        {
+          "case_id": "constructed-boundary-34",
+          "end": 56,
+          "kind": "token",
+          "passed": true,
+          "start": 54
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 10,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 22,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-35",
+          "end": 36,
+          "kind": "token",
+          "passed": true,
+          "start": 32
+        },
+        {
+          "case_id": "constructed-boundary-36",
+          "end": 3,
+          "kind": "token",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-36",
+          "end": 33,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 22
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 11,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 9,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 26,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 28,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 43,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 38
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 7,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 29,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 5,
+          "kind": "boundaries",
+          "passed": false,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 18,
+          "kind": "token",
+          "passed": true,
+          "start": 13
+        },
+        {
+          "case_id": "constructed-boundary-43",
+          "end": 27,
+          "kind": "token",
+          "passed": true,
+          "start": 23
+        },
+        {
+          "case_id": "constructed-boundary-43",
+          "end": 13,
+          "kind": "boundaries",
+          "passed": true,
+          "start": 1
+        },
+        {
+          "case_id": "constructed-boundary-44",
+          "end": 21,
+          "kind": "token",
+          "passed": true,
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-44",
+          "end": 8,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 14,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 4
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 28,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 18
+        },
+        {
+          "case_id": "constructed-boundary-45",
+          "end": 52,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 45
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 9,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 23,
+          "kind": "token",
+          "passed": true,
+          "start": 20
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 53,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 43
+        },
+        {
+          "case_id": "constructed-boundary-46",
+          "end": 64,
+          "kind": "token",
+          "passed": true,
+          "start": 62
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 10,
+          "kind": "token",
+          "passed": true,
+          "start": 5
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 22,
+          "kind": "token",
+          "passed": true,
+          "start": 17
+        },
+        {
+          "case_id": "constructed-boundary-47",
+          "end": 36,
+          "kind": "token",
+          "passed": true,
+          "start": 32
+        },
+        {
+          "case_id": "constructed-boundary-48",
+          "end": 3,
+          "kind": "token",
+          "passed": true,
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-48",
+          "end": 33,
+          "kind": "native_equivalent",
+          "passed": true,
+          "start": 22
+        }
+      ],
+      "reference_alignment_errors": [
+        {
+          "case_id": "constructed-preflight-20",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-preflight-20",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        },
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-25",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-26",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        },
+        {
+          "case_id": "constructed-boundary-27",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 30,
+          "label": "ROAD",
+          "start": 16
+        },
+        {
+          "case_id": "constructed-boundary-28",
+          "end": 48,
+          "label": "ROAD",
+          "start": 36
+        },
+        {
+          "case_id": "constructed-boundary-29",
+          "end": 14,
+          "label": "ROAD",
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-30",
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-37",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-38",
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        },
+        {
+          "case_id": "constructed-boundary-39",
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 33,
+          "label": "ROAD",
+          "start": 19
+        },
+        {
+          "case_id": "constructed-boundary-40",
+          "end": 50,
+          "label": "ROAD",
+          "start": 38
+        },
+        {
+          "case_id": "constructed-boundary-41",
+          "end": 14,
+          "label": "ROAD",
+          "start": 2
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "case_id": "constructed-boundary-42",
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        }
+      ]
+    }
+  }
+}

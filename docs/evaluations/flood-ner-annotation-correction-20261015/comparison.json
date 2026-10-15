@@ -1,0 +1,44 @@
+{
+  "articles": 139,
+  "bundle_files": 606,
+  "byte_identical_bundle_replay": true,
+  "byte_identical_cohort_replay": true,
+  "context_manifest": {
+    "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/contextual-v3/manifest.json",
+    "sha256": "e1f002dd69019713b8e8309743201084e5f731b99aaa4d0fbb69c5819b1f8578"
+  },
+  "context_records_changed": 1,
+  "contextual_pairs": 40,
+  "dataset_manifest": {
+    "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/cohort-v2/partition_manifest.json",
+    "sha256": "5adac4656c0010824bafbe2182894394edb52225f7bbd4c05061fbe18722ab1a"
+  },
+  "exported": 0,
+  "labels_after": {
+    "BARANGAY": 180,
+    "CITY": 494,
+    "LANDMARK": 108,
+    "LOCAL_AREA": 88,
+    "PROVINCE": 278,
+    "ROAD": 349
+  },
+  "labels_before": {
+    "BARANGAY": 180,
+    "CITY": 494,
+    "LANDMARK": 108,
+    "LOCAL_AREA": 86,
+    "PROVINCE": 277,
+    "ROAD": 349
+  },
+  "location_records": 400,
+  "location_records_changed": 3,
+  "model_training_performed": false,
+  "review_packet": {
+    "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/review-packet-v3.json",
+    "sha256": "8a0ca1c0b3b175d3435b57bcde690ed03dba28f64eee98c7cbbf5cd5033626bd"
+  },
+  "sample_selection_rerun": false,
+  "schema_version": "lanes-annotation-correction-result-v1",
+  "training_admitted": 0,
+  "unchanged_partitions": true
+}

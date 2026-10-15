@@ -1,0 +1,33 @@
+{
+  "alignment_errors": {
+    "candidate": 0,
+    "lanes.xx.address-v3": 14,
+    "native": 22
+  },
+  "cases": 48,
+  "controls": 56,
+  "corpus_model_tokenizer_qualified": false,
+  "english": 24,
+  "entity_counts": {
+    "candidate": {
+      "LOC": 68,
+      "ORG": 1,
+      "PER": 1
+    },
+    "native": {
+      "LOC": 61,
+      "ORG": 2,
+      "PER": 0
+    }
+  },
+  "news_samples_processed": 0,
+  "prediction_changes": 12,
+  "production_qualified": false,
+  "schema_version": "lanes-tokenizer-qualification-status-v1",
+  "six_class_accuracy_measured": false,
+  "source_use_decisions_unresolved": 12,
+  "state": "passed",
+  "taglish": 24,
+  "tokenization_changes": 13,
+  "training_admitted": 0
+}

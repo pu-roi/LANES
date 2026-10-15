@@ -1,0 +1,68 @@
+{
+  "additional_samples_from_context": 0,
+  "agency_marker_articles": 4,
+  "appendix_coverage": {
+    "all_six_classes_covered": true,
+    "classes": [
+      "BARANGAY",
+      "CITY",
+      "LANDMARK",
+      "LOCAL_AREA",
+      "PROVINCE",
+      "ROAD"
+    ],
+    "languages": {
+      "english": 5,
+      "taglish": 5
+    },
+    "publishers": [
+      "ABS-CBN News",
+      "GMA News",
+      "Philstar"
+    ],
+    "selection": "greedy new class coverage, then new publisher coverage, then record ID; five per language",
+    "training_only": true
+  },
+  "appendix_samples": 10,
+  "article_body_characters": 317476,
+  "article_credit_cues_present": 71,
+  "article_credit_cues_unknown": 68,
+  "articles": 139,
+  "assessment_is_legal_clearance": false,
+  "assessments_deferred": 6,
+  "assessments_reviewed": 9,
+  "clean_full_article_representations_in_new_private_bundle": 718,
+  "context_manifest_sha256": "e8d022086d434efda6c5a2859565615f75b2a27226c3ee115da771415b06e8f0",
+  "contextual_pairs": 40,
+  "dataset_license": null,
+  "dataset_manifest_sha256": "386b13f7e1f7d125f38ad77903ab96bc7ef3440e1ce1dcee8037d16ee7388d92",
+  "distribution_ready": false,
+  "download_context_text_records": 38,
+  "download_metadata_only_records": 9,
+  "download_text_records": 391,
+  "exported_docbin_records": 0,
+  "external_backup_performed": false,
+  "external_publication_performed": false,
+  "model_training_performed": false,
+  "new_scoped_outcomes": 15,
+  "original_twelve_forms_preserved": true,
+  "retention_period": null,
+  "review_packet_sha256": "c69dea5443b9309f112902bd87724cf204089344c92ea80a5d1fe855d5a957ec",
+  "samples": 400,
+  "schema_version": "lanes-study-use-bundle-v1",
+  "scoped_outcomes_unresolved": 15,
+  "selected_unique_passage_characters": 142136,
+  "state": "prepared_research_only",
+  "training_admitted": 0,
+  "withheld_record_ids": [
+    "revision-0c5383a6e83533b71498",
+    "revision-13ea25d57a03515d2cc7",
+    "revision-3ec7af5d4a0c51976069",
+    "revision-3ff16d2591b212a8f2a5",
+    "revision-44135653b79a061daad8",
+    "revision-7cda6f7a9e2b1f2793d4",
+    "revision-ba6cb482e1e723eaf398",
+    "revision-c73ea02b627d2d41eb12",
+    "revision-c9fc28e08a0aa54e9a50"
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "cases_sha256": "dd15291b6a1fae46b6ec24485e56110ab333a03beda66776842f6199401f8868",
+  "model_manifest_sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc",
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "name": "lanes.tl.calamancy-address-v1",
+  "original_cases_sha256": "62f317b78101dd8abacf5c60155c05948b990cef79be803e71ecb4e1fc5ea1b9",
+  "qualification_state": "passed",
+  "research_candidate_only": true,
+  "rules": {
+    "infix": "(?<=\\w)[–—]-+(?=\\w)",
+    "prefix": "^-",
+    "suffix": "(?<=[A-Za-z0-9])-$"
+  },
+  "schema_version": "lanes-calamancy-tokenizer-v1",
+  "serialization_excludes": [
+    "vocab"
+  ],
+  "sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+  "tokenizer_file": "candidate.tokenizer.bin",
+  "vocabulary_files": [
+    {
+      "bytes": 1,
+      "lfs_sha256": null,
+      "path": "vocab/key2row",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+      "tree_oid": "5416677bc7dab0c8bec3f5bf44d7d28b4ff73b13",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/key2row"
+    },
+    {
+      "bytes": 1,
+      "lfs_sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+      "path": "vocab/lookups.bin",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71",
+      "tree_oid": "c66317f8d354f32911b0beb802a18ab12b6507c9",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/lookups.bin"
+    },
+    {
+      "bytes": 366005,
+      "lfs_sha256": null,
+      "path": "vocab/strings.json",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "b37d7440e36f9acc61498b05afb3aa7c754c04e5cbe547aed787112cf15d8a09",
+      "tree_oid": "174102464488a73dd25c80f302e1103f4ef4caf3",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/strings.json"
+    },
+    {
+      "bytes": 40000128,
+      "lfs_sha256": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+      "path": "vocab/vectors",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "27c37411e92a547b7d63d1528bb41eb57a3df4f2ddea823657ed99b69cdb6e5d",
+      "tree_oid": "ffbe62fdfbbdf9c6b67c09c834c50aa7ef33f5a5",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/vectors"
+    },
+    {
+      "bytes": 115,
+      "lfs_sha256": null,
+      "path": "vocab/vectors.cfg",
+      "response_commits": [
+        "51a40433059d8a2c25b98a48eca854f8789a491a",
+        "51a40433059d8a2c25b98a48eca854f8789a491a"
+      ],
+      "sha256": "5d315a7b19992526ae9c5f7641de68ec43ab9fced11843e8ed7f1d3e9a757a34",
+      "tree_oid": "eb0033ec4e3bc107933540917240901c511f4463",
+      "url": "https://huggingface.co/ljvmiranda921/tl_calamancy_md/resolve/51a40433059d8a2c25b98a48eca854f8789a491a/vocab/vectors.cfg"
+    }
+  ]
+}

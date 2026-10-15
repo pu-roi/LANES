@@ -1,0 +1,24 @@
+{
+  "candidate": {
+    "batch_size": 1,
+    "load_ms": 674.1438000026392,
+    "measured_calls": 480,
+    "measured_passes": 10,
+    "p50_ms": 14.183749997755513,
+    "p95_ms": 17.680299992207438,
+    "peak_working_set_bytes": 424103936,
+    "threads": 2,
+    "warmup_passes": 1
+  },
+  "native": {
+    "batch_size": 1,
+    "load_ms": 754.9874999967869,
+    "measured_calls": 480,
+    "measured_passes": 10,
+    "p50_ms": 14.497750009468291,
+    "p95_ms": 19.11439999821596,
+    "peak_working_set_bytes": 424345600,
+    "threads": 2,
+    "warmup_passes": 1
+  }
+}

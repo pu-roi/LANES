@@ -88,7 +88,7 @@ def verify_model(manifest_path: Path, artifacts: Path) -> tuple[dict, Path]:
     return manifest, directory
 
 
-def validate_result(result: dict, cases: list[ConstructedCase]) -> None:
+def validate_result(result: dict, cases: list[ConstructedCase], *, case_count: int = 24) -> None:
     if not isinstance(result,dict) or result.get('schema_version') != 'lanes-model-preflight-result-v1':
         raise ValueError('malformed worker output')
     if (not str(result.get('python_version','')).startswith('3.11.') or result.get('spacy_version') != '3.7.5'
@@ -96,7 +96,7 @@ def validate_result(result: dict, cases: list[ConstructedCase]) -> None:
             or result.get('cpu_only') is not True or result.get('repeated_predictions_identical') is not True):
         raise ValueError('worker runtime/model/CPU identity mismatch')
     rows = result.get('cases')
-    if not isinstance(rows,list) or any(not isinstance(r,dict) for r in rows) or len(rows) != 24 or len({r.get('case_id') for r in rows}) != 24:
+    if not isinstance(rows,list) or any(not isinstance(r,dict) for r in rows) or len(rows) != case_count or len({r.get('case_id') for r in rows}) != case_count:
         raise ValueError('worker case identity/count mismatch')
     by_id = {c.case_id:c for c in cases}
     for row in rows:

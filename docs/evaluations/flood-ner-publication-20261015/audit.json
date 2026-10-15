@@ -1,0 +1,97 @@
+{
+  "software_regressions": {
+    "passed": 664,
+    "seconds": 94.6,
+    "warnings": 1,
+    "warning": "existing spaCy/Click deprecation",
+    "selection": "all test_flood_ner*.py plus PSGC, number, locality-anchor, heading and three article-road suites"
+  },
+  "records": 400,
+  "articles": 139,
+  "contextual_v3_pairs": 40,
+  "model_artifact_files_verified": 23,
+  "environment_unchanged": true,
+  "source_admission_changed": false,
+  "research_only_export_refused": 400,
+  "export_files_written": 0,
+  "public_frozen_manifests": [
+    {
+      "path": "docs/evaluations/flood-ner-academic-use-20261015/metadata_hash_manifest.json",
+      "files": 12
+    },
+    {
+      "path": "docs/evaluations/flood-ner-adviser-guidance-20261015/metadata_hash_manifest.json",
+      "files": 1
+    },
+    {
+      "path": "docs/evaluations/flood-ner-annotation-correction-20261015/metadata_hash_manifest.json",
+      "files": 10
+    },
+    {
+      "path": "docs/evaluations/flood-ner-continuation-400-20261015/metadata_hash_manifest.json",
+      "files": 23
+    },
+    {
+      "path": "docs/evaluations/flood-ner-preflight-use-20261015/metadata_hash_manifest.json",
+      "files": 20
+    },
+    {
+      "path": "docs/evaluations/flood-ner-private-access-20261015/metadata_hash_manifest.json",
+      "files": 1
+    },
+    {
+      "path": "docs/evaluations/flood-ner-review-qualification-20261015/metadata_hash_manifest.json",
+      "files": 11
+    },
+    {
+      "path": "docs/evaluations/flood-ner-study-arrangements-20261015/metadata_hash_manifest.json",
+      "files": 2
+    },
+    {
+      "path": "docs/evaluations/flood-ner-study-use-20261015/metadata_hash_manifest.json",
+      "files": 9
+    },
+    {
+      "path": "docs/evaluations/flood-ner-tokenizer-qualification-20261015/metadata_hash_manifest-v2.json",
+      "files": 11
+    },
+    {
+      "path": "docs/evaluations/flood-ner-tokenizer-qualification-20261015/metadata_hash_manifest.json",
+      "files": 10
+    }
+  ],
+  "no_new_dependencies": true,
+  "no_model_schema_or_migration_changes": true,
+  "database_migration_run": "not applicable; no SQLAlchemy model or migration change",
+  "documentation_audit": {
+    "updated": [
+      "task_plan",
+      "progress",
+      "README",
+      "tech-stack",
+      "feature-reference existing module",
+      "system-documentation",
+      "NER roadmap",
+      "offline package guide"
+    ],
+    "audited_without_new_entries": [
+      "decisions (no architecture change)",
+      "database-design-plan (no schema change)",
+      "bug-log (existing entries accurate)"
+    ]
+  },
+  "privacy": {
+    "owner_only_drive_items_verified_at_previous_checkpoint": 22,
+    "reported_adviser_scope": "private research/training",
+    "publisher_permission_inferred": false,
+    "retention": "not decided; not itself a training prohibition",
+    "academic_decisions_unresolved": 3
+  },
+  "additional_staged_terrain_files": {
+    "count": 6,
+    "directory": "26-53 Pasig/",
+    "appeared_during_session": true,
+    "included_as_supplied": true,
+    "terrain_validation_performed": false
+  }
+}

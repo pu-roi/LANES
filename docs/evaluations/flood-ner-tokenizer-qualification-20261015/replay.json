@@ -1,0 +1,13 @@
+{
+  "main_environment_unchanged": true,
+  "original_24_native_predictions_unchanged": true,
+  "predictions_and_tokens_replay_identical": true,
+  "resource_values_expected_to_vary": true,
+  "stable_replay_files": [
+    "candidate.tokenizer.bin",
+    "native.tokenizer.bin",
+    "tokenizer_manifest.json",
+    "comparison.json",
+    "corpus-v3.tokens.json"
+  ]
+}

@@ -1,0 +1,8823 @@
+{
+  "candidate": [
+    {
+      "case_id": "constructed-preflight-01",
+      "entities": [
+        {
+          "end": 33,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 39
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 33,
+          "label": "ROAD",
+          "start": 19
+        },
+        {
+          "aligned": true,
+          "end": 54,
+          "label": "BARANGAY",
+          "start": 39
+        },
+        {
+          "aligned": true,
+          "end": 70,
+          "label": "CITY",
+          "start": 58
+        }
+      ],
+      "text_sha256": "ce1b1b9ae7166a1248090dd101ac57342abeb5f60cd679c881e4c6bfb2215417",
+      "tokens": [
+        {
+          "end": 10,
+          "start": 0
+        },
+        {
+          "end": 18,
+          "start": 11
+        },
+        {
+          "end": 28,
+          "start": 19
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 38,
+          "start": 34
+        },
+        {
+          "end": 47,
+          "start": 39
+        },
+        {
+          "end": 54,
+          "start": 48
+        },
+        {
+          "end": 57,
+          "start": 55
+        },
+        {
+          "end": 65,
+          "start": 58
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 73,
+          "start": 71
+        },
+        {
+          "end": 78,
+          "start": 74
+        },
+        {
+          "end": 82,
+          "start": 79
+        },
+        {
+          "end": 83,
+          "start": 82
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-02",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 7,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LOCAL_AREA",
+          "start": 12
+        }
+      ],
+      "text_sha256": "7067c47c0a0913c1ee0ef93776ebe0fee2f9a2f1a7b9885a37d17decb0ae3913",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 6
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 17,
+          "start": 12
+        },
+        {
+          "end": 24,
+          "start": 18
+        },
+        {
+          "end": 33,
+          "start": 25
+        },
+        {
+          "end": 43,
+          "start": 34
+        },
+        {
+          "end": 49,
+          "start": 44
+        },
+        {
+          "end": 56,
+          "start": 50
+        },
+        {
+          "end": 57,
+          "start": 56
+        },
+        {
+          "end": 60,
+          "start": 58
+        },
+        {
+          "end": 66,
+          "start": 61
+        },
+        {
+          "end": 70,
+          "start": 67
+        },
+        {
+          "end": 79,
+          "start": 71
+        },
+        {
+          "end": 80,
+          "start": 79
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-03",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LOCAL_AREA",
+          "start": 17
+        },
+        {
+          "aligned": true,
+          "end": 45,
+          "label": "LOCAL_AREA",
+          "start": 29
+        }
+      ],
+      "text_sha256": "1d4e4fe88620fa1a87d621bcbb0715b95d0cc0bf83eeece00ee911f9b17c0291",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 16,
+          "start": 11
+        },
+        {
+          "end": 20,
+          "start": 17
+        },
+        {
+          "end": 21,
+          "start": 20
+        },
+        {
+          "end": 24,
+          "start": 22
+        },
+        {
+          "end": 28,
+          "start": 25
+        },
+        {
+          "end": 34,
+          "start": 29
+        },
+        {
+          "end": 41,
+          "start": 35
+        },
+        {
+          "end": 42,
+          "start": 41
+        },
+        {
+          "end": 45,
+          "start": 42
+        },
+        {
+          "end": 46,
+          "start": 45
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 54,
+          "start": 52
+        },
+        {
+          "end": 64,
+          "start": 55
+        },
+        {
+          "end": 73,
+          "start": 65
+        },
+        {
+          "end": 74,
+          "start": 73
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-04",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 26,
+          "label": "LOCAL_AREA",
+          "start": 18
+        },
+        {
+          "aligned": true,
+          "end": 41,
+          "label": "LOCAL_AREA",
+          "start": 31
+        }
+      ],
+      "text_sha256": "e0f0937045567371307c29dd2ab2bd73c76a812d99ed644a683f2be1e82afdbe",
+      "tokens": [
+        {
+          "end": 9,
+          "start": 0
+        },
+        {
+          "end": 17,
+          "start": 10
+        },
+        {
+          "end": 22,
+          "start": 18
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 30,
+          "start": 27
+        },
+        {
+          "end": 35,
+          "start": 31
+        },
+        {
+          "end": 41,
+          "start": 36
+        },
+        {
+          "end": 48,
+          "start": 42
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 58,
+          "start": 53
+        },
+        {
+          "end": 59,
+          "start": 58
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-05",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LOCAL_AREA",
+          "start": 16
+        },
+        {
+          "aligned": true,
+          "end": 32,
+          "label": "LOCAL_AREA",
+          "start": 26
+        },
+        {
+          "aligned": true,
+          "end": 42,
+          "label": "LOCAL_AREA",
+          "start": 34
+        }
+      ],
+      "text_sha256": "a6ff03f74043bad8a6b7278951ad53bf582fb5957951d813583a9eee9276897b",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 12
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 24,
+          "start": 22
+        },
+        {
+          "end": 25,
+          "start": 24
+        },
+        {
+          "end": 29,
+          "start": 26
+        },
+        {
+          "end": 32,
+          "start": 30
+        },
+        {
+          "end": 33,
+          "start": 32
+        },
+        {
+          "end": 39,
+          "start": 34
+        },
+        {
+          "end": 42,
+          "start": 40
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 47,
+          "start": 44
+        },
+        {
+          "end": 55,
+          "start": 48
+        },
+        {
+          "end": 59,
+          "start": 56
+        },
+        {
+          "end": 62,
+          "start": 60
+        },
+        {
+          "end": 69,
+          "start": 63
+        },
+        {
+          "end": 70,
+          "start": 69
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-06",
+      "entities": [
+        {
+          "end": 51,
+          "label": "LOC",
+          "start": 40
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "BARANGAY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 51,
+          "label": "CITY",
+          "start": 40
+        }
+      ],
+      "text_sha256": "3deb9403cad6778841ec1908e388475b5ef341a23b514e16506aa86c29b112fc",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 12,
+          "start": 11
+        },
+        {
+          "end": 13,
+          "start": 12
+        },
+        {
+          "end": 23,
+          "start": 14
+        },
+        {
+          "end": 34,
+          "start": 24
+        },
+        {
+          "end": 39,
+          "start": 35
+        },
+        {
+          "end": 46,
+          "start": 40
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 52,
+          "start": 51
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-07",
+      "entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 17
+        },
+        {
+          "end": 53,
+          "label": "LOC",
+          "start": 36
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 34,
+          "label": "BARANGAY",
+          "start": 17
+        },
+        {
+          "aligned": true,
+          "end": 45,
+          "label": "CITY",
+          "start": 36
+        },
+        {
+          "aligned": true,
+          "end": 53,
+          "label": "PROVINCE",
+          "start": 47
+        }
+      ],
+      "text_sha256": "f35d37b9d505a9c5b22fab073f1caa5703debdaf14843ab0a3976159967738fc",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 6
+        },
+        {
+          "end": 10,
+          "start": 9
+        },
+        {
+          "end": 13,
+          "start": 10
+        },
+        {
+          "end": 16,
+          "start": 14
+        },
+        {
+          "end": 25,
+          "start": 17
+        },
+        {
+          "end": 29,
+          "start": 26
+        },
+        {
+          "end": 34,
+          "start": 30
+        },
+        {
+          "end": 35,
+          "start": 34
+        },
+        {
+          "end": 39,
+          "start": 36
+        },
+        {
+          "end": 45,
+          "start": 40
+        },
+        {
+          "end": 46,
+          "start": 45
+        },
+        {
+          "end": 53,
+          "start": 47
+        },
+        {
+          "end": 57,
+          "start": 54
+        },
+        {
+          "end": 63,
+          "start": 58
+        },
+        {
+          "end": 66,
+          "start": 64
+        },
+        {
+          "end": 70,
+          "start": 67
+        },
+        {
+          "end": 78,
+          "start": 71
+        },
+        {
+          "end": 79,
+          "start": 78
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-08",
+      "entities": [
+        {
+          "end": 12,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 12,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 23,
+          "label": "LOCAL_AREA",
+          "start": 13
+        }
+      ],
+      "text_sha256": "705eced7c547b8bb377f3495d37a6c53ccd41a47e89a64bf009aa8b34c6c032b",
+      "tokens": [
+        {
+          "end": 7,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 8
+        },
+        {
+          "end": 13,
+          "start": 12
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 23,
+          "start": 19
+        },
+        {
+          "end": 24,
+          "start": 23
+        },
+        {
+          "end": 28,
+          "start": 25
+        },
+        {
+          "end": 34,
+          "start": 29
+        },
+        {
+          "end": 42,
+          "start": 35
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 47,
+          "start": 44
+        },
+        {
+          "end": 54,
+          "start": 48
+        },
+        {
+          "end": 61,
+          "start": 55
+        },
+        {
+          "end": 62,
+          "start": 61
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-09",
+      "entities": [
+        {
+          "end": 16,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 37,
+          "label": "LOC",
+          "start": 21
+        },
+        {
+          "end": 68,
+          "label": "LOC",
+          "start": 57
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 16,
+          "label": "LANDMARK",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 37,
+          "label": "LANDMARK",
+          "start": 21
+        },
+        {
+          "aligned": true,
+          "end": 68,
+          "label": "ROAD",
+          "start": 57
+        }
+      ],
+      "text_sha256": "a9a77ea68fa0d92c2b3e1c8715bec163b34084d16c5574cc356d3cfdbd66b18f",
+      "tokens": [
+        {
+          "end": 7,
+          "start": 0
+        },
+        {
+          "end": 16,
+          "start": 8
+        },
+        {
+          "end": 20,
+          "start": 17
+        },
+        {
+          "end": 30,
+          "start": 21
+        },
+        {
+          "end": 37,
+          "start": 31
+        },
+        {
+          "end": 46,
+          "start": 38
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 56,
+          "start": 52
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 68,
+          "start": 62
+        },
+        {
+          "end": 69,
+          "start": 68
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-10",
+      "entities": [
+        {
+          "end": 22,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 67,
+          "label": "LOC",
+          "start": 48
+        },
+        {
+          "end": 84,
+          "label": "LOC",
+          "start": 71
+        },
+        {
+          "end": 91,
+          "label": "LOC",
+          "start": 86
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 19,
+          "label": "BARANGAY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 34,
+          "label": "CITY",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 67,
+          "label": "BARANGAY",
+          "start": 48
+        },
+        {
+          "aligned": true,
+          "end": 84,
+          "label": "CITY",
+          "start": 71
+        },
+        {
+          "aligned": true,
+          "end": 91,
+          "label": "PROVINCE",
+          "start": 86
+        }
+      ],
+      "text_sha256": "371f69700f4a79e1ee6efb8f68ea9159576ab118b439b46973e24b82a1701e8f",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 9
+        },
+        {
+          "end": 19,
+          "start": 13
+        },
+        {
+          "end": 22,
+          "start": 20
+        },
+        {
+          "end": 29,
+          "start": 23
+        },
+        {
+          "end": 34,
+          "start": 30
+        },
+        {
+          "end": 42,
+          "start": 35
+        },
+        {
+          "end": 47,
+          "start": 43
+        },
+        {
+          "end": 56,
+          "start": 48
+        },
+        {
+          "end": 60,
+          "start": 57
+        },
+        {
+          "end": 67,
+          "start": 61
+        },
+        {
+          "end": 70,
+          "start": 68
+        },
+        {
+          "end": 79,
+          "start": 71
+        },
+        {
+          "end": 84,
+          "start": 80
+        },
+        {
+          "end": 85,
+          "start": 84
+        },
+        {
+          "end": 91,
+          "start": 86
+        },
+        {
+          "end": 92,
+          "start": 91
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-11",
+      "entities": [
+        {
+          "end": 40,
+          "label": "LOC",
+          "start": 27
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 40,
+          "label": "ROAD",
+          "start": 27
+        }
+      ],
+      "text_sha256": "e3fe7141a4fc720ad20e6cafe70d155e7c0682d98c2b2f3035cbb59594d24514",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 20,
+          "start": 12
+        },
+        {
+          "end": 26,
+          "start": 21
+        },
+        {
+          "end": 33,
+          "start": 27
+        },
+        {
+          "end": 40,
+          "start": 34
+        },
+        {
+          "end": 41,
+          "start": 40
+        },
+        {
+          "end": 45,
+          "start": 42
+        },
+        {
+          "end": 48,
+          "start": 46
+        },
+        {
+          "end": 51,
+          "start": 49
+        },
+        {
+          "end": 60,
+          "start": 52
+        },
+        {
+          "end": 61,
+          "start": 60
+        },
+        {
+          "end": 67,
+          "start": 62
+        },
+        {
+          "end": 69,
+          "start": 68
+        },
+        {
+          "end": 73,
+          "start": 70
+        },
+        {
+          "end": 74,
+          "start": 73
+        },
+        {
+          "end": 77,
+          "start": 75
+        },
+        {
+          "end": 79,
+          "start": 78
+        },
+        {
+          "end": 88,
+          "start": 80
+        },
+        {
+          "end": 93,
+          "start": 89
+        },
+        {
+          "end": 94,
+          "start": 93
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-12",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "3941550232c83af8a8de3509833a9c76076c554a04c26ed56a9bc4ac043cb4e8",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 12
+        },
+        {
+          "end": 18,
+          "start": 16
+        },
+        {
+          "end": 25,
+          "start": 19
+        },
+        {
+          "end": 26,
+          "start": 25
+        },
+        {
+          "end": 32,
+          "start": 27
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 44,
+          "start": 37
+        },
+        {
+          "end": 50,
+          "start": 45
+        },
+        {
+          "end": 54,
+          "start": 51
+        },
+        {
+          "end": 62,
+          "start": 55
+        },
+        {
+          "end": 65,
+          "start": 63
+        },
+        {
+          "end": 72,
+          "start": 66
+        },
+        {
+          "end": 73,
+          "start": 72
+        },
+        {
+          "end": 76,
+          "start": 74
+        },
+        {
+          "end": 85,
+          "start": 77
+        },
+        {
+          "end": 88,
+          "start": 86
+        },
+        {
+          "end": 94,
+          "start": 89
+        },
+        {
+          "end": 95,
+          "start": 94
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-13",
+      "entities": [
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 25
+        },
+        {
+          "end": 56,
+          "label": "LOC",
+          "start": 41
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 39,
+          "label": "ROAD",
+          "start": 25
+        },
+        {
+          "aligned": true,
+          "end": 56,
+          "label": "BARANGAY",
+          "start": 41
+        },
+        {
+          "aligned": true,
+          "end": 70,
+          "label": "CITY",
+          "start": 58
+        }
+      ],
+      "text_sha256": "d71c35154ed3a9633be6b816f8bcbdd09cf97b2f56cf90035035de107617c456",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 4
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 14
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 24,
+          "start": 22
+        },
+        {
+          "end": 34,
+          "start": 25
+        },
+        {
+          "end": 39,
+          "start": 35
+        },
+        {
+          "end": 40,
+          "start": 39
+        },
+        {
+          "end": 49,
+          "start": 41
+        },
+        {
+          "end": 56,
+          "start": 50
+        },
+        {
+          "end": 57,
+          "start": 56
+        },
+        {
+          "end": 65,
+          "start": 58
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 71,
+          "start": 70
+        },
+        {
+          "end": 80,
+          "start": 72
+        },
+        {
+          "end": 83,
+          "start": 81
+        },
+        {
+          "end": 90,
+          "start": 84
+        },
+        {
+          "end": 91,
+          "start": 90
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-14",
+      "entities": [
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 46,
+          "label": "LOC",
+          "start": 33
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 29,
+          "label": "LOCAL_AREA",
+          "start": 19
+        },
+        {
+          "aligned": true,
+          "end": 46,
+          "label": "LOCAL_AREA",
+          "start": 33
+        }
+      ],
+      "text_sha256": "9924039457cd491239cc70203124b2b7afe86de1e442406d148ee8d8f19bc326",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 11
+        },
+        {
+          "end": 18,
+          "start": 16
+        },
+        {
+          "end": 24,
+          "start": 19
+        },
+        {
+          "end": 29,
+          "start": 25
+        },
+        {
+          "end": 32,
+          "start": 30
+        },
+        {
+          "end": 38,
+          "start": 33
+        },
+        {
+          "end": 46,
+          "start": 39
+        },
+        {
+          "end": 47,
+          "start": 46
+        },
+        {
+          "end": 52,
+          "start": 48
+        },
+        {
+          "end": 60,
+          "start": 53
+        },
+        {
+          "end": 63,
+          "start": 61
+        },
+        {
+          "end": 67,
+          "start": 64
+        },
+        {
+          "end": 79,
+          "start": 68
+        },
+        {
+          "end": 84,
+          "start": 80
+        },
+        {
+          "end": 85,
+          "start": 84
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-15",
+      "entities": [
+        {
+          "end": 8,
+          "label": "LOC",
+          "start": 4
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "LOCAL_AREA",
+          "start": 4
+        },
+        {
+          "aligned": true,
+          "end": 32,
+          "label": "LOCAL_AREA",
+          "start": 17
+        }
+      ],
+      "text_sha256": "d56189f40f206a036fb0b13cd3b125622004e74c0a0d4a4cdbf69c84ecbed4d1",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 4
+        },
+        {
+          "end": 8,
+          "start": 7
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 14
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 28,
+          "start": 23
+        },
+        {
+          "end": 29,
+          "start": 28
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 35,
+          "start": 33
+        },
+        {
+          "end": 40,
+          "start": 36
+        },
+        {
+          "end": 51,
+          "start": 41
+        },
+        {
+          "end": 61,
+          "start": 52
+        },
+        {
+          "end": 62,
+          "start": 61
+        },
+        {
+          "end": 68,
+          "start": 63
+        },
+        {
+          "end": 75,
+          "start": 69
+        },
+        {
+          "end": 81,
+          "start": 76
+        },
+        {
+          "end": 88,
+          "start": 82
+        },
+        {
+          "end": 89,
+          "start": 88
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-16",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 11,
+          "label": "LOCAL_AREA",
+          "start": 3
+        },
+        {
+          "aligned": true,
+          "end": 25,
+          "label": "LOCAL_AREA",
+          "start": 15
+        }
+      ],
+      "text_sha256": "f2177fa7d13cc7789674f290b273a1fedffcb7111064b1b96a0c390dd870c2cb",
+      "tokens": [
+        {
+          "end": 2,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 3
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 14,
+          "start": 12
+        },
+        {
+          "end": 19,
+          "start": 15
+        },
+        {
+          "end": 25,
+          "start": 20
+        },
+        {
+          "end": 26,
+          "start": 25
+        },
+        {
+          "end": 34,
+          "start": 27
+        },
+        {
+          "end": 38,
+          "start": 35
+        },
+        {
+          "end": 47,
+          "start": 39
+        },
+        {
+          "end": 58,
+          "start": 48
+        },
+        {
+          "end": 59,
+          "start": 58
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-17",
+      "entities": [
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 31,
+          "label": "LOCAL_AREA",
+          "start": 24
+        },
+        {
+          "aligned": true,
+          "end": 39,
+          "label": "LOCAL_AREA",
+          "start": 33
+        },
+        {
+          "aligned": true,
+          "end": 50,
+          "label": "LOCAL_AREA",
+          "start": 41
+        }
+      ],
+      "text_sha256": "9f3465ebe40ad9610bbecd66aeba73e5ec285633cdfdc3aee6497d2a6c53e04c",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 4
+        },
+        {
+          "end": 20,
+          "start": 13
+        },
+        {
+          "end": 23,
+          "start": 21
+        },
+        {
+          "end": 27,
+          "start": 24
+        },
+        {
+          "end": 28,
+          "start": 27
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 32,
+          "start": 31
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 40,
+          "start": 39
+        },
+        {
+          "end": 46,
+          "start": 41
+        },
+        {
+          "end": 50,
+          "start": 47
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 57,
+          "start": 52
+        },
+        {
+          "end": 63,
+          "start": 58
+        },
+        {
+          "end": 69,
+          "start": 64
+        },
+        {
+          "end": 73,
+          "start": 70
+        },
+        {
+          "end": 76,
+          "start": 74
+        },
+        {
+          "end": 77,
+          "start": 76
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-18",
+      "entities": [
+        {
+          "end": 28,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 29
+        },
+        {
+          "end": 59,
+          "label": "LOC",
+          "start": 43
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 63
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 39,
+          "label": "BARANGAY",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 59,
+          "label": "BARANGAY",
+          "start": 43
+        },
+        {
+          "aligned": true,
+          "end": 74,
+          "label": "CITY",
+          "start": 63
+        }
+      ],
+      "text_sha256": "012a02d7ed042f61da197f1751ec44d86dd3c69eca99c5799a7d40dcc5c11af4",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 18,
+          "start": 12
+        },
+        {
+          "end": 22,
+          "start": 19
+        },
+        {
+          "end": 27,
+          "start": 23
+        },
+        {
+          "end": 28,
+          "start": 27
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 39,
+          "start": 33
+        },
+        {
+          "end": 42,
+          "start": 40
+        },
+        {
+          "end": 46,
+          "start": 43
+        },
+        {
+          "end": 47,
+          "start": 46
+        },
+        {
+          "end": 53,
+          "start": 48
+        },
+        {
+          "end": 59,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 60
+        },
+        {
+          "end": 69,
+          "start": 63
+        },
+        {
+          "end": 74,
+          "start": 70
+        },
+        {
+          "end": 75,
+          "start": 74
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-19",
+      "entities": [
+        {
+          "end": 36,
+          "label": "LOC",
+          "start": 22
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 38
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 56
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 36,
+          "label": "LOCAL_AREA",
+          "start": 22
+        },
+        {
+          "aligned": true,
+          "end": 54,
+          "label": "BARANGAY",
+          "start": 38
+        },
+        {
+          "aligned": true,
+          "end": 66,
+          "label": "CITY",
+          "start": 56
+        },
+        {
+          "aligned": true,
+          "end": 74,
+          "label": "PROVINCE",
+          "start": 68
+        }
+      ],
+      "text_sha256": "60a76f63c251479c46b2563475391d61cdf3f6de2ca3b319589c540c1ebfef0d",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 13,
+          "start": 6
+        },
+        {
+          "end": 18,
+          "start": 14
+        },
+        {
+          "end": 21,
+          "start": 19
+        },
+        {
+          "end": 27,
+          "start": 22
+        },
+        {
+          "end": 36,
+          "start": 28
+        },
+        {
+          "end": 37,
+          "start": 36
+        },
+        {
+          "end": 46,
+          "start": 38
+        },
+        {
+          "end": 54,
+          "start": 47
+        },
+        {
+          "end": 55,
+          "start": 54
+        },
+        {
+          "end": 61,
+          "start": 56
+        },
+        {
+          "end": 66,
+          "start": 62
+        },
+        {
+          "end": 67,
+          "start": 66
+        },
+        {
+          "end": 74,
+          "start": 68
+        },
+        {
+          "end": 75,
+          "start": 74
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-20",
+      "entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        }
+      ],
+      "text_sha256": "c360a402264589336a94eca64cbfae258e2f5235f1a608d45fc98c6479bdd9f6",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 11
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 36,
+          "start": 26
+        },
+        {
+          "end": 37,
+          "start": 36
+        },
+        {
+          "end": 43,
+          "start": 38
+        },
+        {
+          "end": 49,
+          "start": 44
+        },
+        {
+          "end": 53,
+          "start": 50
+        },
+        {
+          "end": 59,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 60
+        },
+        {
+          "end": 68,
+          "start": 63
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-21",
+      "entities": [
+        {
+          "end": 24,
+          "label": "ORG",
+          "start": 12
+        },
+        {
+          "end": 42,
+          "label": "LOC",
+          "start": 28
+        },
+        {
+          "end": 66,
+          "label": "LOC",
+          "start": 54
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LANDMARK",
+          "start": 12
+        },
+        {
+          "aligned": true,
+          "end": 42,
+          "label": "LANDMARK",
+          "start": 28
+        },
+        {
+          "aligned": true,
+          "end": 66,
+          "label": "ROAD",
+          "start": 54
+        }
+      ],
+      "text_sha256": "961cf7a4210949facd1acf6dd37b5a3e0cdfffcc9fd1a01599cec7e0af733918",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 17,
+          "start": 12
+        },
+        {
+          "end": 24,
+          "start": 18
+        },
+        {
+          "end": 27,
+          "start": 25
+        },
+        {
+          "end": 35,
+          "start": 28
+        },
+        {
+          "end": 42,
+          "start": 36
+        },
+        {
+          "end": 50,
+          "start": 43
+        },
+        {
+          "end": 53,
+          "start": 51
+        },
+        {
+          "end": 59,
+          "start": 54
+        },
+        {
+          "end": 66,
+          "start": 60
+        },
+        {
+          "end": 67,
+          "start": 66
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-22",
+      "entities": [
+        {
+          "end": 30,
+          "label": "LOC",
+          "start": 11
+        },
+        {
+          "end": 44,
+          "label": "LOC",
+          "start": 34
+        },
+        {
+          "end": 61,
+          "label": "LOC",
+          "start": 48
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 30,
+          "label": "BARANGAY",
+          "start": 11
+        },
+        {
+          "aligned": true,
+          "end": 44,
+          "label": "CITY",
+          "start": 34
+        },
+        {
+          "aligned": true,
+          "end": 61,
+          "label": "CITY",
+          "start": 48
+        }
+      ],
+      "text_sha256": "e92d17562a2f5287943b3d745aa0c285dc486796888bfd58c1c46ec35cc4ba2e",
+      "tokens": [
+        {
+          "end": 10,
+          "start": 0
+        },
+        {
+          "end": 19,
+          "start": 11
+        },
+        {
+          "end": 23,
+          "start": 20
+        },
+        {
+          "end": 30,
+          "start": 24
+        },
+        {
+          "end": 33,
+          "start": 31
+        },
+        {
+          "end": 39,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 40
+        },
+        {
+          "end": 47,
+          "start": 45
+        },
+        {
+          "end": 56,
+          "start": 48
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 65,
+          "start": 62
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 79,
+          "start": 71
+        },
+        {
+          "end": 83,
+          "start": 80
+        },
+        {
+          "end": 84,
+          "start": 83
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-23",
+      "entities": [
+        {
+          "end": 47,
+          "label": "LOC",
+          "start": 34
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 47,
+          "label": "ROAD",
+          "start": 34
+        }
+      ],
+      "text_sha256": "e6019f60ad10e20ea5aa9c7aae1fd73b597615e5d88538cecf742e7662d1c71f",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 13
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 30,
+          "start": 22
+        },
+        {
+          "end": 33,
+          "start": 31
+        },
+        {
+          "end": 40,
+          "start": 34
+        },
+        {
+          "end": 47,
+          "start": 41
+        },
+        {
+          "end": 48,
+          "start": 47
+        },
+        {
+          "end": 55,
+          "start": 49
+        },
+        {
+          "end": 59,
+          "start": 56
+        },
+        {
+          "end": 64,
+          "start": 60
+        },
+        {
+          "end": 65,
+          "start": 64
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 76,
+          "start": 71
+        },
+        {
+          "end": 86,
+          "start": 77
+        },
+        {
+          "end": 90,
+          "start": 87
+        },
+        {
+          "end": 91,
+          "start": 90
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-24",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "d7d25144b10fddb0005dbda62ae916fe5428605dd18f71c50021059bb80c2364",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 4
+        },
+        {
+          "end": 20,
+          "start": 12
+        },
+        {
+          "end": 29,
+          "start": 21
+        },
+        {
+          "end": 32,
+          "start": 30
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 40,
+          "start": 39
+        },
+        {
+          "end": 43,
+          "start": 41
+        },
+        {
+          "end": 49,
+          "start": 44
+        },
+        {
+          "end": 52,
+          "start": 50
+        },
+        {
+          "end": 54,
+          "start": 53
+        },
+        {
+          "end": 60,
+          "start": 55
+        },
+        {
+          "end": 63,
+          "start": 61
+        },
+        {
+          "end": 73,
+          "start": 64
+        },
+        {
+          "end": 74,
+          "start": 73
+        },
+        {
+          "end": 81,
+          "start": 75
+        },
+        {
+          "end": 87,
+          "start": 82
+        },
+        {
+          "end": 93,
+          "start": 88
+        },
+        {
+          "end": 94,
+          "start": 93
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-25",
+      "entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        }
+      ],
+      "text_sha256": "1d8d8d4b5d5a8915532d72842c34109129cf2b2666e5e8cb23b9ce0db3c3457f",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 11
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 45,
+          "start": 40
+        },
+        {
+          "end": 49,
+          "start": 46
+        },
+        {
+          "end": 59,
+          "start": 50
+        },
+        {
+          "end": 60,
+          "start": 59
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-26",
+      "entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        }
+      ],
+      "text_sha256": "2489b39d482733d0d4329a75d5eb529effe434e0718b0d17989af84c0311ab34",
+      "tokens": [
+        {
+          "end": 6,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 7
+        },
+        {
+          "end": 14,
+          "start": 11
+        },
+        {
+          "end": 17,
+          "start": 14
+        },
+        {
+          "end": 18,
+          "start": 17
+        },
+        {
+          "end": 21,
+          "start": 19
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 45,
+          "start": 40
+        },
+        {
+          "end": 49,
+          "start": 46
+        },
+        {
+          "end": 59,
+          "start": 50
+        },
+        {
+          "end": 60,
+          "start": 59
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-27",
+      "entities": [
+        {
+          "end": 9,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 26,
+          "label": "BARANGAY",
+          "start": 11
+        }
+      ],
+      "text_sha256": "8147bf11eb89bf56356462d612c4c2c26adf3720a7e3334155c8d8092a75fbe2",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 5
+        },
+        {
+          "end": 10,
+          "start": 9
+        },
+        {
+          "end": 19,
+          "start": 11
+        },
+        {
+          "end": 26,
+          "start": 20
+        },
+        {
+          "end": 30,
+          "start": 27
+        },
+        {
+          "end": 40,
+          "start": 31
+        },
+        {
+          "end": 41,
+          "start": 40
+        },
+        {
+          "end": 44,
+          "start": 42
+        },
+        {
+          "end": 50,
+          "start": 45
+        },
+        {
+          "end": 54,
+          "start": 51
+        },
+        {
+          "end": 64,
+          "start": 55
+        },
+        {
+          "end": 65,
+          "start": 64
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-28",
+      "entities": [
+        {
+          "end": 30,
+          "label": "PER",
+          "start": 16
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 36
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 30,
+          "label": "ROAD",
+          "start": 16
+        },
+        {
+          "aligned": true,
+          "end": 48,
+          "label": "ROAD",
+          "start": 36
+        }
+      ],
+      "text_sha256": "c43bda1b5a405335f1e5c2548bd4e6380d16f64dc323661760556eb7e46d7f1e",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 4
+        },
+        {
+          "end": 14,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 15
+        },
+        {
+          "end": 25,
+          "start": 16
+        },
+        {
+          "end": 30,
+          "start": 26
+        },
+        {
+          "end": 34,
+          "start": 31
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 41,
+          "start": 36
+        },
+        {
+          "end": 48,
+          "start": 42
+        },
+        {
+          "end": 49,
+          "start": 48
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-29",
+      "entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 2
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 14,
+          "label": "ROAD",
+          "start": 2
+        },
+        {
+          "aligned": true,
+          "end": 29,
+          "label": "LANDMARK",
+          "start": 20
+        }
+      ],
+      "text_sha256": "7a66ef7e0d07d03c96deffb5e48df46bf443b819ad2cac9d0bb2b7621d5395e7",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 2,
+          "start": 1
+        },
+        {
+          "end": 7,
+          "start": 2
+        },
+        {
+          "end": 14,
+          "start": 8
+        },
+        {
+          "end": 19,
+          "start": 15
+        },
+        {
+          "end": 24,
+          "start": 20
+        },
+        {
+          "end": 29,
+          "start": 25
+        },
+        {
+          "end": 33,
+          "start": 30
+        },
+        {
+          "end": 43,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 43
+        },
+        {
+          "end": 47,
+          "start": 45
+        },
+        {
+          "end": 53,
+          "start": 48
+        },
+        {
+          "end": 57,
+          "start": 54
+        },
+        {
+          "end": 67,
+          "start": 58
+        },
+        {
+          "end": 68,
+          "start": 67
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-30",
+      "entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 18,
+          "label": "LOC",
+          "start": 7
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        }
+      ],
+      "text_sha256": "a31dae963c20b27b2b8b7d725ddbfc3e37feef922cf3d09d850cbcaa31be67b6",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 5
+        },
+        {
+          "end": 12,
+          "start": 7
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 22,
+          "start": 19
+        },
+        {
+          "end": 32,
+          "start": 23
+        },
+        {
+          "end": 33,
+          "start": 32
+        },
+        {
+          "end": 36,
+          "start": 34
+        },
+        {
+          "end": 42,
+          "start": 37
+        },
+        {
+          "end": 46,
+          "start": 43
+        },
+        {
+          "end": 56,
+          "start": 47
+        },
+        {
+          "end": 57,
+          "start": 56
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-31",
+      "entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "CITY",
+          "start": 1
+        },
+        {
+          "aligned": true,
+          "end": 27,
+          "label": "LOCAL_AREA",
+          "start": 17
+        }
+      ],
+      "text_sha256": "ac0fee85495328926bc52b53f6aa46e526d00f3529c434d820b0a1a9237aa59c",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 1
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 14,
+          "start": 13
+        },
+        {
+          "end": 15,
+          "start": 14
+        },
+        {
+          "end": 16,
+          "start": 15
+        },
+        {
+          "end": 17,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 27,
+          "start": 23
+        },
+        {
+          "end": 29,
+          "start": 27
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 42,
+          "start": 33
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 46,
+          "start": 44
+        },
+        {
+          "end": 52,
+          "start": 47
+        },
+        {
+          "end": 56,
+          "start": 53
+        },
+        {
+          "end": 66,
+          "start": 57
+        },
+        {
+          "end": 67,
+          "start": 66
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-32",
+      "entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 8,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 10
+        },
+        {
+          "aligned": true,
+          "end": 31,
+          "label": "LOCAL_AREA",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 38,
+          "label": "LOCAL_AREA",
+          "start": 33
+        }
+      ],
+      "text_sha256": "add95f187fd8d24d37fb4e9afab52fbfc89b22b5f487b111ea92ae8a77bd0743",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 4,
+          "start": 3
+        },
+        {
+          "end": 8,
+          "start": 5
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 15,
+          "start": 10
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 21
+        },
+        {
+          "end": 28,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 32,
+          "start": 31
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 38,
+          "start": 37
+        },
+        {
+          "end": 42,
+          "start": 39
+        },
+        {
+          "end": 52,
+          "start": 43
+        },
+        {
+          "end": 53,
+          "start": 52
+        },
+        {
+          "end": 56,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 57
+        },
+        {
+          "end": 66,
+          "start": 63
+        },
+        {
+          "end": 76,
+          "start": 67
+        },
+        {
+          "end": 77,
+          "start": 76
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-33",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 41,
+          "label": "LOCAL_AREA",
+          "start": 34
+        }
+      ],
+      "text_sha256": "b02ddc7684b43b9d37e4eccce5d7c7c9b991ab0212290e8c00bb838c9c1d8412",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 6,
+          "start": 2
+        },
+        {
+          "end": 7,
+          "start": 6
+        },
+        {
+          "end": 12,
+          "start": 7
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 19,
+          "start": 18
+        },
+        {
+          "end": 23,
+          "start": 19
+        },
+        {
+          "end": 28,
+          "start": 24
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 37,
+          "start": 34
+        },
+        {
+          "end": 38,
+          "start": 37
+        },
+        {
+          "end": 41,
+          "start": 38
+        },
+        {
+          "end": 45,
+          "start": 42
+        },
+        {
+          "end": 55,
+          "start": 46
+        },
+        {
+          "end": 56,
+          "start": 55
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-34",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "d79e43257aeba58a62d02242ddebf0dc5ed05fa0bf6f2d0f4b4ba0d64b95f755",
+      "tokens": [
+        {
+          "end": 2,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 3
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 12,
+          "start": 11
+        },
+        {
+          "end": 13,
+          "start": 12
+        },
+        {
+          "end": 17,
+          "start": 14
+        },
+        {
+          "end": 22,
+          "start": 18
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 35,
+          "start": 27
+        },
+        {
+          "end": 38,
+          "start": 36
+        },
+        {
+          "end": 43,
+          "start": 39
+        },
+        {
+          "end": 44,
+          "start": 43
+        },
+        {
+          "end": 46,
+          "start": 44
+        },
+        {
+          "end": 47,
+          "start": 46
+        },
+        {
+          "end": 49,
+          "start": 47
+        },
+        {
+          "end": 53,
+          "start": 50
+        },
+        {
+          "end": 56,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 57
+        },
+        {
+          "end": 63,
+          "start": 62
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-35",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 22,
+          "label": "LOCAL_AREA",
+          "start": 12
+        },
+        {
+          "aligned": true,
+          "end": 36,
+          "label": "LOCAL_AREA",
+          "start": 27
+        }
+      ],
+      "text_sha256": "f37028226e21ea1c8c394b5b53afe3edcc83db808e7706f2f7a1a530e0b8f0a0",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 10
+        },
+        {
+          "end": 16,
+          "start": 12
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 27
+        },
+        {
+          "end": 36,
+          "start": 32
+        },
+        {
+          "end": 40,
+          "start": 37
+        },
+        {
+          "end": 50,
+          "start": 41
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 54,
+          "start": 52
+        },
+        {
+          "end": 60,
+          "start": 55
+        },
+        {
+          "end": 64,
+          "start": 61
+        },
+        {
+          "end": 74,
+          "start": 65
+        },
+        {
+          "end": 75,
+          "start": 74
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-36",
+      "entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "ROAD",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 37,
+          "label": "LOCAL_AREA",
+          "start": 16
+        },
+        {
+          "aligned": true,
+          "end": 48,
+          "label": "PROVINCE",
+          "start": 41
+        }
+      ],
+      "text_sha256": "dda41861708b99b86c57fc75e2d03b151b724e060ca37c84e9bb1ad8abfb99fb",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 11
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 33,
+          "start": 22
+        },
+        {
+          "end": 37,
+          "start": 34
+        },
+        {
+          "end": 40,
+          "start": 38
+        },
+        {
+          "end": 48,
+          "start": 41
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 62,
+          "start": 53
+        },
+        {
+          "end": 63,
+          "start": 62
+        },
+        {
+          "end": 66,
+          "start": 64
+        },
+        {
+          "end": 72,
+          "start": 67
+        },
+        {
+          "end": 76,
+          "start": 73
+        },
+        {
+          "end": 86,
+          "start": 77
+        },
+        {
+          "end": 87,
+          "start": 86
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-37",
+      "entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        }
+      ],
+      "text_sha256": "2ee2aa2f4abdab600323a4ce132fe6d87880aad91bddb3cc76b1056a1e0d9e97",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 11
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 41,
+          "start": 37
+        },
+        {
+          "end": 46,
+          "start": 42
+        },
+        {
+          "end": 59,
+          "start": 47
+        },
+        {
+          "end": 64,
+          "start": 60
+        },
+        {
+          "end": 65,
+          "start": 64
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-38",
+      "entities": [
+        {
+          "end": 11,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        }
+      ],
+      "text_sha256": "d7a56cde93e9227d7add65866ce45135f83f182c0c75c7f08a42d2977e1fe404",
+      "tokens": [
+        {
+          "end": 6,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 7
+        },
+        {
+          "end": 14,
+          "start": 11
+        },
+        {
+          "end": 17,
+          "start": 14
+        },
+        {
+          "end": 18,
+          "start": 17
+        },
+        {
+          "end": 21,
+          "start": 19
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 41,
+          "start": 37
+        },
+        {
+          "end": 46,
+          "start": 42
+        },
+        {
+          "end": 59,
+          "start": 47
+        },
+        {
+          "end": 64,
+          "start": 60
+        },
+        {
+          "end": 65,
+          "start": 64
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-39",
+      "entities": [
+        {
+          "end": 9,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 11
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 26,
+          "label": "BARANGAY",
+          "start": 11
+        }
+      ],
+      "text_sha256": "0cf53805ffc809deed1c7e31aa8938beca409ede8cae0e9ca4eb65fdbd52f67d",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 5
+        },
+        {
+          "end": 10,
+          "start": 9
+        },
+        {
+          "end": 19,
+          "start": 11
+        },
+        {
+          "end": 26,
+          "start": 20
+        },
+        {
+          "end": 30,
+          "start": 27
+        },
+        {
+          "end": 40,
+          "start": 31
+        },
+        {
+          "end": 41,
+          "start": 40
+        },
+        {
+          "end": 46,
+          "start": 42
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 64,
+          "start": 52
+        },
+        {
+          "end": 69,
+          "start": 65
+        },
+        {
+          "end": 70,
+          "start": 69
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-40",
+      "entities": [
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 38
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 33,
+          "label": "ROAD",
+          "start": 19
+        },
+        {
+          "aligned": true,
+          "end": 50,
+          "label": "ROAD",
+          "start": 38
+        }
+      ],
+      "text_sha256": "5d9a5f4c1a15c3762a9774eb0df4303370e82fc8a5c8fd1ef8abb30b0f05d7ba",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 13,
+          "start": 5
+        },
+        {
+          "end": 17,
+          "start": 14
+        },
+        {
+          "end": 19,
+          "start": 18
+        },
+        {
+          "end": 28,
+          "start": 19
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 36,
+          "start": 34
+        },
+        {
+          "end": 38,
+          "start": 37
+        },
+        {
+          "end": 43,
+          "start": 38
+        },
+        {
+          "end": 50,
+          "start": 44
+        },
+        {
+          "end": 51,
+          "start": 50
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-41",
+      "entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 2
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 14,
+          "label": "ROAD",
+          "start": 2
+        },
+        {
+          "aligned": true,
+          "end": 29,
+          "label": "LANDMARK",
+          "start": 20
+        }
+      ],
+      "text_sha256": "d5eee4ed0a1ef3b28f66ea6547ceea904fe3aa14c8b38b1091f4e07def4c61c1",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 2,
+          "start": 1
+        },
+        {
+          "end": 7,
+          "start": 2
+        },
+        {
+          "end": 14,
+          "start": 8
+        },
+        {
+          "end": 19,
+          "start": 15
+        },
+        {
+          "end": 24,
+          "start": 20
+        },
+        {
+          "end": 29,
+          "start": 25
+        },
+        {
+          "end": 33,
+          "start": 30
+        },
+        {
+          "end": 43,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 43
+        },
+        {
+          "end": 49,
+          "start": 45
+        },
+        {
+          "end": 54,
+          "start": 50
+        },
+        {
+          "end": 67,
+          "start": 55
+        },
+        {
+          "end": 72,
+          "start": 68
+        },
+        {
+          "end": 73,
+          "start": 72
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-42",
+      "entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 18,
+          "label": "LOC",
+          "start": 7
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        }
+      ],
+      "text_sha256": "76d5445f825e7859798d99f4cad431111ddd0e6004289a60c29fdc36bb9261dc",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 5
+        },
+        {
+          "end": 12,
+          "start": 7
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 22,
+          "start": 19
+        },
+        {
+          "end": 32,
+          "start": 23
+        },
+        {
+          "end": 33,
+          "start": 32
+        },
+        {
+          "end": 38,
+          "start": 34
+        },
+        {
+          "end": 43,
+          "start": 39
+        },
+        {
+          "end": 56,
+          "start": 44
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 62,
+          "start": 61
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-43",
+      "entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "CITY",
+          "start": 1
+        },
+        {
+          "aligned": true,
+          "end": 27,
+          "label": "LOCAL_AREA",
+          "start": 17
+        }
+      ],
+      "text_sha256": "ff4e9f7ce3f5793c70c7676393fb2b245cb40ea2aaf8ddecb75aaf0d266c9023",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 1
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 14,
+          "start": 13
+        },
+        {
+          "end": 15,
+          "start": 14
+        },
+        {
+          "end": 16,
+          "start": 15
+        },
+        {
+          "end": 17,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 27,
+          "start": 23
+        },
+        {
+          "end": 29,
+          "start": 27
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 42,
+          "start": 33
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 48,
+          "start": 44
+        },
+        {
+          "end": 53,
+          "start": 49
+        },
+        {
+          "end": 66,
+          "start": 54
+        },
+        {
+          "end": 71,
+          "start": 67
+        },
+        {
+          "end": 72,
+          "start": 71
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-44",
+      "entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 8,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 10
+        },
+        {
+          "aligned": true,
+          "end": 31,
+          "label": "LOCAL_AREA",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 38,
+          "label": "LOCAL_AREA",
+          "start": 33
+        }
+      ],
+      "text_sha256": "ffa37096b1af2d12483b1c7789d5d793e40bf8bbc65f8366161b5ae5afc8c20c",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 4,
+          "start": 3
+        },
+        {
+          "end": 8,
+          "start": 5
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 15,
+          "start": 10
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 21
+        },
+        {
+          "end": 28,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 32,
+          "start": 31
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 38,
+          "start": 37
+        },
+        {
+          "end": 42,
+          "start": 39
+        },
+        {
+          "end": 52,
+          "start": 43
+        },
+        {
+          "end": 53,
+          "start": 52
+        },
+        {
+          "end": 58,
+          "start": 54
+        },
+        {
+          "end": 63,
+          "start": 59
+        },
+        {
+          "end": 76,
+          "start": 64
+        },
+        {
+          "end": 81,
+          "start": 77
+        },
+        {
+          "end": 82,
+          "start": 81
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-45",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 52,
+          "label": "LOCAL_AREA",
+          "start": 45
+        }
+      ],
+      "text_sha256": "1faf024e23b6fa92885fdeae1d180fb0312dea5da7f94d5cdbbe8d083de640e3",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 4
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 14,
+          "start": 9
+        },
+        {
+          "end": 17,
+          "start": 15
+        },
+        {
+          "end": 23,
+          "start": 18
+        },
+        {
+          "end": 24,
+          "start": 23
+        },
+        {
+          "end": 28,
+          "start": 24
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 41,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 42
+        },
+        {
+          "end": 48,
+          "start": 45
+        },
+        {
+          "end": 49,
+          "start": 48
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 55,
+          "start": 53
+        },
+        {
+          "end": 62,
+          "start": 56
+        },
+        {
+          "end": 63,
+          "start": 62
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-46",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "0803c1cc24e63fe1849b0156cef3c7be13541118188411626fb62ca0e00bceca",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 5
+        },
+        {
+          "end": 13,
+          "start": 10
+        },
+        {
+          "end": 14,
+          "start": 13
+        },
+        {
+          "end": 15,
+          "start": 14
+        },
+        {
+          "end": 19,
+          "start": 16
+        },
+        {
+          "end": 23,
+          "start": 20
+        },
+        {
+          "end": 28,
+          "start": 24
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 36,
+          "start": 32
+        },
+        {
+          "end": 42,
+          "start": 37
+        },
+        {
+          "end": 47,
+          "start": 43
+        },
+        {
+          "end": 48,
+          "start": 47
+        },
+        {
+          "end": 50,
+          "start": 48
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 53,
+          "start": 51
+        },
+        {
+          "end": 58,
+          "start": 54
+        },
+        {
+          "end": 61,
+          "start": 59
+        },
+        {
+          "end": 64,
+          "start": 62
+        },
+        {
+          "end": 70,
+          "start": 65
+        },
+        {
+          "end": 71,
+          "start": 70
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-47",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 22,
+          "label": "LOCAL_AREA",
+          "start": 12
+        },
+        {
+          "aligned": true,
+          "end": 36,
+          "label": "LOCAL_AREA",
+          "start": 27
+        }
+      ],
+      "text_sha256": "66f80beb2586d783db8d0573fb27129bc39ac6d9e0da06d7daf2daeeb3c08911",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 10
+        },
+        {
+          "end": 16,
+          "start": 12
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 27
+        },
+        {
+          "end": 36,
+          "start": 32
+        },
+        {
+          "end": 40,
+          "start": 37
+        },
+        {
+          "end": 50,
+          "start": 41
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 56,
+          "start": 52
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 74,
+          "start": 62
+        },
+        {
+          "end": 79,
+          "start": 75
+        },
+        {
+          "end": 80,
+          "start": 79
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-48",
+      "entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "ROAD",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 37,
+          "label": "LOCAL_AREA",
+          "start": 16
+        },
+        {
+          "aligned": true,
+          "end": 48,
+          "label": "PROVINCE",
+          "start": 41
+        }
+      ],
+      "text_sha256": "ab8d82014ecd3c027aef6b37f8a31d1ea1ca85a0bbd4c40c0f892ab763924c79",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 11
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 33,
+          "start": 22
+        },
+        {
+          "end": 37,
+          "start": 34
+        },
+        {
+          "end": 40,
+          "start": 38
+        },
+        {
+          "end": 48,
+          "start": 41
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 62,
+          "start": 53
+        },
+        {
+          "end": 63,
+          "start": 62
+        },
+        {
+          "end": 68,
+          "start": 64
+        },
+        {
+          "end": 73,
+          "start": 69
+        },
+        {
+          "end": 86,
+          "start": 74
+        },
+        {
+          "end": 91,
+          "start": 87
+        },
+        {
+          "end": 92,
+          "start": 91
+        }
+      ]
+    }
+  ],
+  "native": [
+    {
+      "case_id": "constructed-preflight-01",
+      "entities": [
+        {
+          "end": 33,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 39
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 33,
+          "label": "ROAD",
+          "start": 19
+        },
+        {
+          "aligned": true,
+          "end": 54,
+          "label": "BARANGAY",
+          "start": 39
+        },
+        {
+          "aligned": true,
+          "end": 70,
+          "label": "CITY",
+          "start": 58
+        }
+      ],
+      "text_sha256": "ce1b1b9ae7166a1248090dd101ac57342abeb5f60cd679c881e4c6bfb2215417",
+      "tokens": [
+        {
+          "end": 10,
+          "start": 0
+        },
+        {
+          "end": 18,
+          "start": 11
+        },
+        {
+          "end": 28,
+          "start": 19
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 38,
+          "start": 34
+        },
+        {
+          "end": 47,
+          "start": 39
+        },
+        {
+          "end": 54,
+          "start": 48
+        },
+        {
+          "end": 57,
+          "start": 55
+        },
+        {
+          "end": 65,
+          "start": 58
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 73,
+          "start": 71
+        },
+        {
+          "end": 78,
+          "start": 74
+        },
+        {
+          "end": 82,
+          "start": 79
+        },
+        {
+          "end": 83,
+          "start": 82
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-02",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 7,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LOCAL_AREA",
+          "start": 12
+        }
+      ],
+      "text_sha256": "7067c47c0a0913c1ee0ef93776ebe0fee2f9a2f1a7b9885a37d17decb0ae3913",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 6
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 17,
+          "start": 12
+        },
+        {
+          "end": 24,
+          "start": 18
+        },
+        {
+          "end": 33,
+          "start": 25
+        },
+        {
+          "end": 43,
+          "start": 34
+        },
+        {
+          "end": 49,
+          "start": 44
+        },
+        {
+          "end": 56,
+          "start": 50
+        },
+        {
+          "end": 57,
+          "start": 56
+        },
+        {
+          "end": 60,
+          "start": 58
+        },
+        {
+          "end": 66,
+          "start": 61
+        },
+        {
+          "end": 70,
+          "start": 67
+        },
+        {
+          "end": 79,
+          "start": 71
+        },
+        {
+          "end": 80,
+          "start": 79
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-03",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LOCAL_AREA",
+          "start": 17
+        },
+        {
+          "aligned": true,
+          "end": 45,
+          "label": "LOCAL_AREA",
+          "start": 29
+        }
+      ],
+      "text_sha256": "1d4e4fe88620fa1a87d621bcbb0715b95d0cc0bf83eeece00ee911f9b17c0291",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 16,
+          "start": 11
+        },
+        {
+          "end": 20,
+          "start": 17
+        },
+        {
+          "end": 21,
+          "start": 20
+        },
+        {
+          "end": 24,
+          "start": 22
+        },
+        {
+          "end": 28,
+          "start": 25
+        },
+        {
+          "end": 34,
+          "start": 29
+        },
+        {
+          "end": 41,
+          "start": 35
+        },
+        {
+          "end": 42,
+          "start": 41
+        },
+        {
+          "end": 45,
+          "start": 42
+        },
+        {
+          "end": 46,
+          "start": 45
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 54,
+          "start": 52
+        },
+        {
+          "end": 64,
+          "start": 55
+        },
+        {
+          "end": 73,
+          "start": 65
+        },
+        {
+          "end": 74,
+          "start": 73
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-04",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 26,
+          "label": "LOCAL_AREA",
+          "start": 18
+        },
+        {
+          "aligned": true,
+          "end": 41,
+          "label": "LOCAL_AREA",
+          "start": 31
+        }
+      ],
+      "text_sha256": "e0f0937045567371307c29dd2ab2bd73c76a812d99ed644a683f2be1e82afdbe",
+      "tokens": [
+        {
+          "end": 9,
+          "start": 0
+        },
+        {
+          "end": 17,
+          "start": 10
+        },
+        {
+          "end": 22,
+          "start": 18
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 30,
+          "start": 27
+        },
+        {
+          "end": 35,
+          "start": 31
+        },
+        {
+          "end": 41,
+          "start": 36
+        },
+        {
+          "end": 48,
+          "start": 42
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 58,
+          "start": 53
+        },
+        {
+          "end": 59,
+          "start": 58
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-05",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LOCAL_AREA",
+          "start": 16
+        },
+        {
+          "aligned": true,
+          "end": 32,
+          "label": "LOCAL_AREA",
+          "start": 26
+        },
+        {
+          "aligned": true,
+          "end": 42,
+          "label": "LOCAL_AREA",
+          "start": 34
+        }
+      ],
+      "text_sha256": "a6ff03f74043bad8a6b7278951ad53bf582fb5957951d813583a9eee9276897b",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 12
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 24,
+          "start": 22
+        },
+        {
+          "end": 25,
+          "start": 24
+        },
+        {
+          "end": 29,
+          "start": 26
+        },
+        {
+          "end": 32,
+          "start": 30
+        },
+        {
+          "end": 33,
+          "start": 32
+        },
+        {
+          "end": 39,
+          "start": 34
+        },
+        {
+          "end": 42,
+          "start": 40
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 47,
+          "start": 44
+        },
+        {
+          "end": 55,
+          "start": 48
+        },
+        {
+          "end": 59,
+          "start": 56
+        },
+        {
+          "end": 62,
+          "start": 60
+        },
+        {
+          "end": 69,
+          "start": 63
+        },
+        {
+          "end": 70,
+          "start": 69
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-06",
+      "entities": [
+        {
+          "end": 51,
+          "label": "LOC",
+          "start": 40
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "BARANGAY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 51,
+          "label": "CITY",
+          "start": 40
+        }
+      ],
+      "text_sha256": "3deb9403cad6778841ec1908e388475b5ef341a23b514e16506aa86c29b112fc",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 12,
+          "start": 11
+        },
+        {
+          "end": 13,
+          "start": 12
+        },
+        {
+          "end": 23,
+          "start": 14
+        },
+        {
+          "end": 34,
+          "start": 24
+        },
+        {
+          "end": 39,
+          "start": 35
+        },
+        {
+          "end": 46,
+          "start": 40
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 52,
+          "start": 51
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-07",
+      "entities": [
+        {
+          "end": 5,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 17
+        },
+        {
+          "end": 53,
+          "label": "LOC",
+          "start": 36
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 34,
+          "label": "BARANGAY",
+          "start": 17
+        },
+        {
+          "aligned": true,
+          "end": 45,
+          "label": "CITY",
+          "start": 36
+        },
+        {
+          "aligned": true,
+          "end": 53,
+          "label": "PROVINCE",
+          "start": 47
+        }
+      ],
+      "text_sha256": "f35d37b9d505a9c5b22fab073f1caa5703debdaf14843ab0a3976159967738fc",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 6
+        },
+        {
+          "end": 10,
+          "start": 9
+        },
+        {
+          "end": 13,
+          "start": 10
+        },
+        {
+          "end": 16,
+          "start": 14
+        },
+        {
+          "end": 25,
+          "start": 17
+        },
+        {
+          "end": 29,
+          "start": 26
+        },
+        {
+          "end": 34,
+          "start": 30
+        },
+        {
+          "end": 35,
+          "start": 34
+        },
+        {
+          "end": 39,
+          "start": 36
+        },
+        {
+          "end": 45,
+          "start": 40
+        },
+        {
+          "end": 46,
+          "start": 45
+        },
+        {
+          "end": 53,
+          "start": 47
+        },
+        {
+          "end": 57,
+          "start": 54
+        },
+        {
+          "end": 63,
+          "start": 58
+        },
+        {
+          "end": 66,
+          "start": 64
+        },
+        {
+          "end": 70,
+          "start": 67
+        },
+        {
+          "end": 78,
+          "start": 71
+        },
+        {
+          "end": 79,
+          "start": 78
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-08",
+      "entities": [
+        {
+          "end": 12,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 12,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 23,
+          "label": "LOCAL_AREA",
+          "start": 13
+        }
+      ],
+      "text_sha256": "705eced7c547b8bb377f3495d37a6c53ccd41a47e89a64bf009aa8b34c6c032b",
+      "tokens": [
+        {
+          "end": 7,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 8
+        },
+        {
+          "end": 13,
+          "start": 12
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 23,
+          "start": 19
+        },
+        {
+          "end": 24,
+          "start": 23
+        },
+        {
+          "end": 28,
+          "start": 25
+        },
+        {
+          "end": 34,
+          "start": 29
+        },
+        {
+          "end": 42,
+          "start": 35
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 47,
+          "start": 44
+        },
+        {
+          "end": 54,
+          "start": 48
+        },
+        {
+          "end": 61,
+          "start": 55
+        },
+        {
+          "end": 62,
+          "start": 61
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-09",
+      "entities": [
+        {
+          "end": 16,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 37,
+          "label": "LOC",
+          "start": 21
+        },
+        {
+          "end": 68,
+          "label": "LOC",
+          "start": 57
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 16,
+          "label": "LANDMARK",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 37,
+          "label": "LANDMARK",
+          "start": 21
+        },
+        {
+          "aligned": true,
+          "end": 68,
+          "label": "ROAD",
+          "start": 57
+        }
+      ],
+      "text_sha256": "a9a77ea68fa0d92c2b3e1c8715bec163b34084d16c5574cc356d3cfdbd66b18f",
+      "tokens": [
+        {
+          "end": 7,
+          "start": 0
+        },
+        {
+          "end": 16,
+          "start": 8
+        },
+        {
+          "end": 20,
+          "start": 17
+        },
+        {
+          "end": 30,
+          "start": 21
+        },
+        {
+          "end": 37,
+          "start": 31
+        },
+        {
+          "end": 46,
+          "start": 38
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 56,
+          "start": 52
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 68,
+          "start": 62
+        },
+        {
+          "end": 69,
+          "start": 68
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-10",
+      "entities": [
+        {
+          "end": 22,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 34,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 67,
+          "label": "LOC",
+          "start": 48
+        },
+        {
+          "end": 84,
+          "label": "LOC",
+          "start": 71
+        },
+        {
+          "end": 91,
+          "label": "LOC",
+          "start": 86
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 19,
+          "label": "BARANGAY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 34,
+          "label": "CITY",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 67,
+          "label": "BARANGAY",
+          "start": 48
+        },
+        {
+          "aligned": true,
+          "end": 84,
+          "label": "CITY",
+          "start": 71
+        },
+        {
+          "aligned": true,
+          "end": 91,
+          "label": "PROVINCE",
+          "start": 86
+        }
+      ],
+      "text_sha256": "371f69700f4a79e1ee6efb8f68ea9159576ab118b439b46973e24b82a1701e8f",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 9
+        },
+        {
+          "end": 19,
+          "start": 13
+        },
+        {
+          "end": 22,
+          "start": 20
+        },
+        {
+          "end": 29,
+          "start": 23
+        },
+        {
+          "end": 34,
+          "start": 30
+        },
+        {
+          "end": 42,
+          "start": 35
+        },
+        {
+          "end": 47,
+          "start": 43
+        },
+        {
+          "end": 56,
+          "start": 48
+        },
+        {
+          "end": 60,
+          "start": 57
+        },
+        {
+          "end": 67,
+          "start": 61
+        },
+        {
+          "end": 70,
+          "start": 68
+        },
+        {
+          "end": 79,
+          "start": 71
+        },
+        {
+          "end": 84,
+          "start": 80
+        },
+        {
+          "end": 85,
+          "start": 84
+        },
+        {
+          "end": 91,
+          "start": 86
+        },
+        {
+          "end": 92,
+          "start": 91
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-11",
+      "entities": [
+        {
+          "end": 40,
+          "label": "LOC",
+          "start": 27
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 40,
+          "label": "ROAD",
+          "start": 27
+        }
+      ],
+      "text_sha256": "e3fe7141a4fc720ad20e6cafe70d155e7c0682d98c2b2f3035cbb59594d24514",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 20,
+          "start": 12
+        },
+        {
+          "end": 26,
+          "start": 21
+        },
+        {
+          "end": 33,
+          "start": 27
+        },
+        {
+          "end": 40,
+          "start": 34
+        },
+        {
+          "end": 41,
+          "start": 40
+        },
+        {
+          "end": 45,
+          "start": 42
+        },
+        {
+          "end": 48,
+          "start": 46
+        },
+        {
+          "end": 51,
+          "start": 49
+        },
+        {
+          "end": 60,
+          "start": 52
+        },
+        {
+          "end": 61,
+          "start": 60
+        },
+        {
+          "end": 67,
+          "start": 62
+        },
+        {
+          "end": 69,
+          "start": 68
+        },
+        {
+          "end": 73,
+          "start": 70
+        },
+        {
+          "end": 74,
+          "start": 73
+        },
+        {
+          "end": 77,
+          "start": 75
+        },
+        {
+          "end": 79,
+          "start": 78
+        },
+        {
+          "end": 88,
+          "start": 80
+        },
+        {
+          "end": 93,
+          "start": 89
+        },
+        {
+          "end": 94,
+          "start": 93
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-12",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "3941550232c83af8a8de3509833a9c76076c554a04c26ed56a9bc4ac043cb4e8",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 12
+        },
+        {
+          "end": 18,
+          "start": 16
+        },
+        {
+          "end": 25,
+          "start": 19
+        },
+        {
+          "end": 26,
+          "start": 25
+        },
+        {
+          "end": 32,
+          "start": 27
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 44,
+          "start": 37
+        },
+        {
+          "end": 50,
+          "start": 45
+        },
+        {
+          "end": 54,
+          "start": 51
+        },
+        {
+          "end": 62,
+          "start": 55
+        },
+        {
+          "end": 65,
+          "start": 63
+        },
+        {
+          "end": 72,
+          "start": 66
+        },
+        {
+          "end": 73,
+          "start": 72
+        },
+        {
+          "end": 76,
+          "start": 74
+        },
+        {
+          "end": 85,
+          "start": 77
+        },
+        {
+          "end": 88,
+          "start": 86
+        },
+        {
+          "end": 94,
+          "start": 89
+        },
+        {
+          "end": 95,
+          "start": 94
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-13",
+      "entities": [
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 25
+        },
+        {
+          "end": 56,
+          "label": "LOC",
+          "start": 41
+        },
+        {
+          "end": 70,
+          "label": "LOC",
+          "start": 58
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 39,
+          "label": "ROAD",
+          "start": 25
+        },
+        {
+          "aligned": true,
+          "end": 56,
+          "label": "BARANGAY",
+          "start": 41
+        },
+        {
+          "aligned": true,
+          "end": 70,
+          "label": "CITY",
+          "start": 58
+        }
+      ],
+      "text_sha256": "d71c35154ed3a9633be6b816f8bcbdd09cf97b2f56cf90035035de107617c456",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 4
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 14
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 24,
+          "start": 22
+        },
+        {
+          "end": 34,
+          "start": 25
+        },
+        {
+          "end": 39,
+          "start": 35
+        },
+        {
+          "end": 40,
+          "start": 39
+        },
+        {
+          "end": 49,
+          "start": 41
+        },
+        {
+          "end": 56,
+          "start": 50
+        },
+        {
+          "end": 57,
+          "start": 56
+        },
+        {
+          "end": 65,
+          "start": 58
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 71,
+          "start": 70
+        },
+        {
+          "end": 80,
+          "start": 72
+        },
+        {
+          "end": 83,
+          "start": 81
+        },
+        {
+          "end": 90,
+          "start": 84
+        },
+        {
+          "end": 91,
+          "start": 90
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-14",
+      "entities": [
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 19
+        },
+        {
+          "end": 46,
+          "label": "LOC",
+          "start": 33
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 29,
+          "label": "LOCAL_AREA",
+          "start": 19
+        },
+        {
+          "aligned": true,
+          "end": 46,
+          "label": "LOCAL_AREA",
+          "start": 33
+        }
+      ],
+      "text_sha256": "9924039457cd491239cc70203124b2b7afe86de1e442406d148ee8d8f19bc326",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 11
+        },
+        {
+          "end": 18,
+          "start": 16
+        },
+        {
+          "end": 24,
+          "start": 19
+        },
+        {
+          "end": 29,
+          "start": 25
+        },
+        {
+          "end": 32,
+          "start": 30
+        },
+        {
+          "end": 38,
+          "start": 33
+        },
+        {
+          "end": 46,
+          "start": 39
+        },
+        {
+          "end": 47,
+          "start": 46
+        },
+        {
+          "end": 52,
+          "start": 48
+        },
+        {
+          "end": 60,
+          "start": 53
+        },
+        {
+          "end": 63,
+          "start": 61
+        },
+        {
+          "end": 67,
+          "start": 64
+        },
+        {
+          "end": 79,
+          "start": 68
+        },
+        {
+          "end": 84,
+          "start": 80
+        },
+        {
+          "end": 85,
+          "start": 84
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-15",
+      "entities": [
+        {
+          "end": 8,
+          "label": "LOC",
+          "start": 4
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "LOCAL_AREA",
+          "start": 4
+        },
+        {
+          "aligned": true,
+          "end": 32,
+          "label": "LOCAL_AREA",
+          "start": 17
+        }
+      ],
+      "text_sha256": "d56189f40f206a036fb0b13cd3b125622004e74c0a0d4a4cdbf69c84ecbed4d1",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 4
+        },
+        {
+          "end": 8,
+          "start": 7
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 16,
+          "start": 14
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 28,
+          "start": 23
+        },
+        {
+          "end": 29,
+          "start": 28
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 35,
+          "start": 33
+        },
+        {
+          "end": 40,
+          "start": 36
+        },
+        {
+          "end": 51,
+          "start": 41
+        },
+        {
+          "end": 61,
+          "start": 52
+        },
+        {
+          "end": 62,
+          "start": 61
+        },
+        {
+          "end": 68,
+          "start": 63
+        },
+        {
+          "end": 75,
+          "start": 69
+        },
+        {
+          "end": 81,
+          "start": 76
+        },
+        {
+          "end": 88,
+          "start": 82
+        },
+        {
+          "end": 89,
+          "start": 88
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-16",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 11,
+          "label": "LOCAL_AREA",
+          "start": 3
+        },
+        {
+          "aligned": true,
+          "end": 25,
+          "label": "LOCAL_AREA",
+          "start": 15
+        }
+      ],
+      "text_sha256": "f2177fa7d13cc7789674f290b273a1fedffcb7111064b1b96a0c390dd870c2cb",
+      "tokens": [
+        {
+          "end": 2,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 3
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 14,
+          "start": 12
+        },
+        {
+          "end": 19,
+          "start": 15
+        },
+        {
+          "end": 25,
+          "start": 20
+        },
+        {
+          "end": 26,
+          "start": 25
+        },
+        {
+          "end": 34,
+          "start": 27
+        },
+        {
+          "end": 38,
+          "start": 35
+        },
+        {
+          "end": 47,
+          "start": 39
+        },
+        {
+          "end": 58,
+          "start": 48
+        },
+        {
+          "end": 59,
+          "start": 58
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-17",
+      "entities": [
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 31,
+          "label": "LOCAL_AREA",
+          "start": 24
+        },
+        {
+          "aligned": true,
+          "end": 39,
+          "label": "LOCAL_AREA",
+          "start": 33
+        },
+        {
+          "aligned": true,
+          "end": 50,
+          "label": "LOCAL_AREA",
+          "start": 41
+        }
+      ],
+      "text_sha256": "9f3465ebe40ad9610bbecd66aeba73e5ec285633cdfdc3aee6497d2a6c53e04c",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 4
+        },
+        {
+          "end": 20,
+          "start": 13
+        },
+        {
+          "end": 23,
+          "start": 21
+        },
+        {
+          "end": 27,
+          "start": 24
+        },
+        {
+          "end": 28,
+          "start": 27
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 32,
+          "start": 31
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 40,
+          "start": 39
+        },
+        {
+          "end": 46,
+          "start": 41
+        },
+        {
+          "end": 50,
+          "start": 47
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 57,
+          "start": 52
+        },
+        {
+          "end": 63,
+          "start": 58
+        },
+        {
+          "end": 69,
+          "start": 64
+        },
+        {
+          "end": 73,
+          "start": 70
+        },
+        {
+          "end": 76,
+          "start": 74
+        },
+        {
+          "end": 77,
+          "start": 76
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-18",
+      "entities": [
+        {
+          "end": 28,
+          "label": "LOC",
+          "start": 23
+        },
+        {
+          "end": 39,
+          "label": "LOC",
+          "start": 29
+        },
+        {
+          "end": 59,
+          "label": "LOC",
+          "start": 43
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 63
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 39,
+          "label": "BARANGAY",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 59,
+          "label": "BARANGAY",
+          "start": 43
+        },
+        {
+          "aligned": true,
+          "end": 74,
+          "label": "CITY",
+          "start": 63
+        }
+      ],
+      "text_sha256": "012a02d7ed042f61da197f1751ec44d86dd3c69eca99c5799a7d40dcc5c11af4",
+      "tokens": [
+        {
+          "end": 8,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 9
+        },
+        {
+          "end": 18,
+          "start": 12
+        },
+        {
+          "end": 22,
+          "start": 19
+        },
+        {
+          "end": 27,
+          "start": 23
+        },
+        {
+          "end": 28,
+          "start": 27
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 39,
+          "start": 33
+        },
+        {
+          "end": 42,
+          "start": 40
+        },
+        {
+          "end": 46,
+          "start": 43
+        },
+        {
+          "end": 47,
+          "start": 46
+        },
+        {
+          "end": 53,
+          "start": 48
+        },
+        {
+          "end": 59,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 60
+        },
+        {
+          "end": 69,
+          "start": 63
+        },
+        {
+          "end": 74,
+          "start": 70
+        },
+        {
+          "end": 75,
+          "start": 74
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-19",
+      "entities": [
+        {
+          "end": 36,
+          "label": "LOC",
+          "start": 22
+        },
+        {
+          "end": 54,
+          "label": "LOC",
+          "start": 38
+        },
+        {
+          "end": 74,
+          "label": "LOC",
+          "start": 56
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 36,
+          "label": "LOCAL_AREA",
+          "start": 22
+        },
+        {
+          "aligned": true,
+          "end": 54,
+          "label": "BARANGAY",
+          "start": 38
+        },
+        {
+          "aligned": true,
+          "end": 66,
+          "label": "CITY",
+          "start": 56
+        },
+        {
+          "aligned": true,
+          "end": 74,
+          "label": "PROVINCE",
+          "start": 68
+        }
+      ],
+      "text_sha256": "60a76f63c251479c46b2563475391d61cdf3f6de2ca3b319589c540c1ebfef0d",
+      "tokens": [
+        {
+          "end": 5,
+          "start": 0
+        },
+        {
+          "end": 13,
+          "start": 6
+        },
+        {
+          "end": 18,
+          "start": 14
+        },
+        {
+          "end": 21,
+          "start": 19
+        },
+        {
+          "end": 27,
+          "start": 22
+        },
+        {
+          "end": 36,
+          "start": 28
+        },
+        {
+          "end": 37,
+          "start": 36
+        },
+        {
+          "end": 46,
+          "start": 38
+        },
+        {
+          "end": 54,
+          "start": 47
+        },
+        {
+          "end": 55,
+          "start": 54
+        },
+        {
+          "end": 61,
+          "start": 56
+        },
+        {
+          "end": 66,
+          "start": 62
+        },
+        {
+          "end": 67,
+          "start": 66
+        },
+        {
+          "end": 74,
+          "start": 68
+        },
+        {
+          "end": 75,
+          "start": 74
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-20",
+      "entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": false,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        }
+      ],
+      "text_sha256": "c360a402264589336a94eca64cbfae258e2f5235f1a608d45fc98c6479bdd9f6",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 16,
+          "start": 5
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 36,
+          "start": 26
+        },
+        {
+          "end": 37,
+          "start": 36
+        },
+        {
+          "end": 43,
+          "start": 38
+        },
+        {
+          "end": 49,
+          "start": 44
+        },
+        {
+          "end": 53,
+          "start": 50
+        },
+        {
+          "end": 59,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 60
+        },
+        {
+          "end": 68,
+          "start": 63
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-21",
+      "entities": [
+        {
+          "end": 24,
+          "label": "ORG",
+          "start": 12
+        },
+        {
+          "end": 42,
+          "label": "LOC",
+          "start": 28
+        },
+        {
+          "end": 66,
+          "label": "LOC",
+          "start": 54
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 24,
+          "label": "LANDMARK",
+          "start": 12
+        },
+        {
+          "aligned": true,
+          "end": 42,
+          "label": "LANDMARK",
+          "start": 28
+        },
+        {
+          "aligned": true,
+          "end": 66,
+          "label": "ROAD",
+          "start": 54
+        }
+      ],
+      "text_sha256": "961cf7a4210949facd1acf6dd37b5a3e0cdfffcc9fd1a01599cec7e0af733918",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 17,
+          "start": 12
+        },
+        {
+          "end": 24,
+          "start": 18
+        },
+        {
+          "end": 27,
+          "start": 25
+        },
+        {
+          "end": 35,
+          "start": 28
+        },
+        {
+          "end": 42,
+          "start": 36
+        },
+        {
+          "end": 50,
+          "start": 43
+        },
+        {
+          "end": 53,
+          "start": 51
+        },
+        {
+          "end": 59,
+          "start": 54
+        },
+        {
+          "end": 66,
+          "start": 60
+        },
+        {
+          "end": 67,
+          "start": 66
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-22",
+      "entities": [
+        {
+          "end": 30,
+          "label": "LOC",
+          "start": 11
+        },
+        {
+          "end": 44,
+          "label": "LOC",
+          "start": 34
+        },
+        {
+          "end": 61,
+          "label": "LOC",
+          "start": 48
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 30,
+          "label": "BARANGAY",
+          "start": 11
+        },
+        {
+          "aligned": true,
+          "end": 44,
+          "label": "CITY",
+          "start": 34
+        },
+        {
+          "aligned": true,
+          "end": 61,
+          "label": "CITY",
+          "start": 48
+        }
+      ],
+      "text_sha256": "e92d17562a2f5287943b3d745aa0c285dc486796888bfd58c1c46ec35cc4ba2e",
+      "tokens": [
+        {
+          "end": 10,
+          "start": 0
+        },
+        {
+          "end": 19,
+          "start": 11
+        },
+        {
+          "end": 23,
+          "start": 20
+        },
+        {
+          "end": 30,
+          "start": 24
+        },
+        {
+          "end": 33,
+          "start": 31
+        },
+        {
+          "end": 39,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 40
+        },
+        {
+          "end": 47,
+          "start": 45
+        },
+        {
+          "end": 56,
+          "start": 48
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 65,
+          "start": 62
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 79,
+          "start": 71
+        },
+        {
+          "end": 83,
+          "start": 80
+        },
+        {
+          "end": 84,
+          "start": 83
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-23",
+      "entities": [
+        {
+          "end": 47,
+          "label": "LOC",
+          "start": 34
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 47,
+          "label": "ROAD",
+          "start": 34
+        }
+      ],
+      "text_sha256": "e6019f60ad10e20ea5aa9c7aae1fd73b597615e5d88538cecf742e7662d1c71f",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 12,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 13
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 30,
+          "start": 22
+        },
+        {
+          "end": 33,
+          "start": 31
+        },
+        {
+          "end": 40,
+          "start": 34
+        },
+        {
+          "end": 47,
+          "start": 41
+        },
+        {
+          "end": 48,
+          "start": 47
+        },
+        {
+          "end": 55,
+          "start": 49
+        },
+        {
+          "end": 59,
+          "start": 56
+        },
+        {
+          "end": 64,
+          "start": 60
+        },
+        {
+          "end": 65,
+          "start": 64
+        },
+        {
+          "end": 70,
+          "start": 66
+        },
+        {
+          "end": 76,
+          "start": 71
+        },
+        {
+          "end": 86,
+          "start": 77
+        },
+        {
+          "end": 90,
+          "start": 87
+        },
+        {
+          "end": 91,
+          "start": 90
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-preflight-24",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "d7d25144b10fddb0005dbda62ae916fe5428605dd18f71c50021059bb80c2364",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 11,
+          "start": 4
+        },
+        {
+          "end": 20,
+          "start": 12
+        },
+        {
+          "end": 29,
+          "start": 21
+        },
+        {
+          "end": 32,
+          "start": 30
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 40,
+          "start": 39
+        },
+        {
+          "end": 43,
+          "start": 41
+        },
+        {
+          "end": 49,
+          "start": 44
+        },
+        {
+          "end": 52,
+          "start": 50
+        },
+        {
+          "end": 54,
+          "start": 53
+        },
+        {
+          "end": 60,
+          "start": 55
+        },
+        {
+          "end": 63,
+          "start": 61
+        },
+        {
+          "end": 73,
+          "start": 64
+        },
+        {
+          "end": 74,
+          "start": 73
+        },
+        {
+          "end": 81,
+          "start": 75
+        },
+        {
+          "end": 87,
+          "start": 82
+        },
+        {
+          "end": 93,
+          "start": 88
+        },
+        {
+          "end": 94,
+          "start": 93
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-25",
+      "entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": false,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        }
+      ],
+      "text_sha256": "1d8d8d4b5d5a8915532d72842c34109129cf2b2666e5e8cb23b9ce0db3c3457f",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 16,
+          "start": 5
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 45,
+          "start": 40
+        },
+        {
+          "end": 49,
+          "start": 46
+        },
+        {
+          "end": 59,
+          "start": 50
+        },
+        {
+          "end": 60,
+          "start": 59
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-26",
+      "entities": [
+        {
+          "end": 17,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": false,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        }
+      ],
+      "text_sha256": "2489b39d482733d0d4329a75d5eb529effe434e0718b0d17989af84c0311ab34",
+      "tokens": [
+        {
+          "end": 6,
+          "start": 0
+        },
+        {
+          "end": 17,
+          "start": 7
+        },
+        {
+          "end": 18,
+          "start": 17
+        },
+        {
+          "end": 21,
+          "start": 19
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 39,
+          "start": 37
+        },
+        {
+          "end": 45,
+          "start": 40
+        },
+        {
+          "end": 49,
+          "start": 46
+        },
+        {
+          "end": 59,
+          "start": 50
+        },
+        {
+          "end": 60,
+          "start": 59
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-27",
+      "entities": [
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 26,
+          "label": "BARANGAY",
+          "start": 11
+        }
+      ],
+      "text_sha256": "8147bf11eb89bf56356462d612c4c2c26adf3720a7e3334155c8d8092a75fbe2",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 5
+        },
+        {
+          "end": 19,
+          "start": 11
+        },
+        {
+          "end": 26,
+          "start": 20
+        },
+        {
+          "end": 30,
+          "start": 27
+        },
+        {
+          "end": 40,
+          "start": 31
+        },
+        {
+          "end": 41,
+          "start": 40
+        },
+        {
+          "end": 44,
+          "start": 42
+        },
+        {
+          "end": 50,
+          "start": 45
+        },
+        {
+          "end": 54,
+          "start": 51
+        },
+        {
+          "end": 64,
+          "start": 55
+        },
+        {
+          "end": 65,
+          "start": 64
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-28",
+      "entities": [
+        {
+          "end": 30,
+          "label": "LOC",
+          "start": 15
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 35
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 30,
+          "label": "ROAD",
+          "start": 16
+        },
+        {
+          "aligned": false,
+          "end": 48,
+          "label": "ROAD",
+          "start": 36
+        }
+      ],
+      "text_sha256": "c43bda1b5a405335f1e5c2548bd4e6380d16f64dc323661760556eb7e46d7f1e",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 4
+        },
+        {
+          "end": 14,
+          "start": 9
+        },
+        {
+          "end": 25,
+          "start": 15
+        },
+        {
+          "end": 30,
+          "start": 26
+        },
+        {
+          "end": 34,
+          "start": 31
+        },
+        {
+          "end": 41,
+          "start": 35
+        },
+        {
+          "end": 48,
+          "start": 42
+        },
+        {
+          "end": 49,
+          "start": 48
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-29",
+      "entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 14,
+          "label": "ROAD",
+          "start": 2
+        },
+        {
+          "aligned": true,
+          "end": 29,
+          "label": "LANDMARK",
+          "start": 20
+        }
+      ],
+      "text_sha256": "7a66ef7e0d07d03c96deffb5e48df46bf443b819ad2cac9d0bb2b7621d5395e7",
+      "tokens": [
+        {
+          "end": 7,
+          "start": 0
+        },
+        {
+          "end": 14,
+          "start": 8
+        },
+        {
+          "end": 19,
+          "start": 15
+        },
+        {
+          "end": 24,
+          "start": 20
+        },
+        {
+          "end": 29,
+          "start": 25
+        },
+        {
+          "end": 33,
+          "start": 30
+        },
+        {
+          "end": 43,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 43
+        },
+        {
+          "end": 47,
+          "start": 45
+        },
+        {
+          "end": 53,
+          "start": 48
+        },
+        {
+          "end": 57,
+          "start": 54
+        },
+        {
+          "end": 67,
+          "start": 58
+        },
+        {
+          "end": 68,
+          "start": 67
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-30",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": false,
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        }
+      ],
+      "text_sha256": "a31dae963c20b27b2b8b7d725ddbfc3e37feef922cf3d09d850cbcaa31be67b6",
+      "tokens": [
+        {
+          "end": 12,
+          "start": 0
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 22,
+          "start": 19
+        },
+        {
+          "end": 32,
+          "start": 23
+        },
+        {
+          "end": 33,
+          "start": 32
+        },
+        {
+          "end": 36,
+          "start": 34
+        },
+        {
+          "end": 42,
+          "start": 37
+        },
+        {
+          "end": 46,
+          "start": 43
+        },
+        {
+          "end": 56,
+          "start": 47
+        },
+        {
+          "end": 57,
+          "start": 56
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-31",
+      "entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "CITY",
+          "start": 1
+        },
+        {
+          "aligned": true,
+          "end": 27,
+          "label": "LOCAL_AREA",
+          "start": 17
+        }
+      ],
+      "text_sha256": "ac0fee85495328926bc52b53f6aa46e526d00f3529c434d820b0a1a9237aa59c",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 1
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 14,
+          "start": 13
+        },
+        {
+          "end": 15,
+          "start": 14
+        },
+        {
+          "end": 16,
+          "start": 15
+        },
+        {
+          "end": 17,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 27,
+          "start": 23
+        },
+        {
+          "end": 29,
+          "start": 27
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 42,
+          "start": 33
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 46,
+          "start": 44
+        },
+        {
+          "end": 52,
+          "start": 47
+        },
+        {
+          "end": 56,
+          "start": 53
+        },
+        {
+          "end": 66,
+          "start": 57
+        },
+        {
+          "end": 67,
+          "start": 66
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-32",
+      "entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 8,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 10
+        },
+        {
+          "aligned": true,
+          "end": 31,
+          "label": "LOCAL_AREA",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 38,
+          "label": "LOCAL_AREA",
+          "start": 33
+        }
+      ],
+      "text_sha256": "add95f187fd8d24d37fb4e9afab52fbfc89b22b5f487b111ea92ae8a77bd0743",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 4,
+          "start": 3
+        },
+        {
+          "end": 8,
+          "start": 5
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 15,
+          "start": 10
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 21
+        },
+        {
+          "end": 28,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 32,
+          "start": 31
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 38,
+          "start": 37
+        },
+        {
+          "end": 42,
+          "start": 39
+        },
+        {
+          "end": 52,
+          "start": 43
+        },
+        {
+          "end": 53,
+          "start": 52
+        },
+        {
+          "end": 56,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 57
+        },
+        {
+          "end": 66,
+          "start": 63
+        },
+        {
+          "end": 76,
+          "start": 67
+        },
+        {
+          "end": 77,
+          "start": 76
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-33",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 41,
+          "label": "LOCAL_AREA",
+          "start": 34
+        }
+      ],
+      "text_sha256": "b02ddc7684b43b9d37e4eccce5d7c7c9b991ab0212290e8c00bb838c9c1d8412",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 6,
+          "start": 2
+        },
+        {
+          "end": 7,
+          "start": 6
+        },
+        {
+          "end": 12,
+          "start": 7
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 19,
+          "start": 18
+        },
+        {
+          "end": 23,
+          "start": 19
+        },
+        {
+          "end": 28,
+          "start": 24
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 37,
+          "start": 34
+        },
+        {
+          "end": 38,
+          "start": 37
+        },
+        {
+          "end": 41,
+          "start": 38
+        },
+        {
+          "end": 45,
+          "start": 42
+        },
+        {
+          "end": 55,
+          "start": 46
+        },
+        {
+          "end": 56,
+          "start": 55
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-34",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "d79e43257aeba58a62d02242ddebf0dc5ed05fa0bf6f2d0f4b4ba0d64b95f755",
+      "tokens": [
+        {
+          "end": 2,
+          "start": 0
+        },
+        {
+          "end": 7,
+          "start": 3
+        },
+        {
+          "end": 11,
+          "start": 8
+        },
+        {
+          "end": 12,
+          "start": 11
+        },
+        {
+          "end": 13,
+          "start": 12
+        },
+        {
+          "end": 17,
+          "start": 14
+        },
+        {
+          "end": 22,
+          "start": 18
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 35,
+          "start": 27
+        },
+        {
+          "end": 38,
+          "start": 36
+        },
+        {
+          "end": 43,
+          "start": 39
+        },
+        {
+          "end": 44,
+          "start": 43
+        },
+        {
+          "end": 46,
+          "start": 44
+        },
+        {
+          "end": 47,
+          "start": 46
+        },
+        {
+          "end": 49,
+          "start": 47
+        },
+        {
+          "end": 53,
+          "start": 50
+        },
+        {
+          "end": 56,
+          "start": 54
+        },
+        {
+          "end": 62,
+          "start": 57
+        },
+        {
+          "end": 63,
+          "start": 62
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-35",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 22,
+          "label": "LOCAL_AREA",
+          "start": 12
+        },
+        {
+          "aligned": true,
+          "end": 36,
+          "label": "LOCAL_AREA",
+          "start": 27
+        }
+      ],
+      "text_sha256": "f37028226e21ea1c8c394b5b53afe3edcc83db808e7706f2f7a1a530e0b8f0a0",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 10
+        },
+        {
+          "end": 16,
+          "start": 12
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 27
+        },
+        {
+          "end": 36,
+          "start": 32
+        },
+        {
+          "end": 40,
+          "start": 37
+        },
+        {
+          "end": 50,
+          "start": 41
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 54,
+          "start": 52
+        },
+        {
+          "end": 60,
+          "start": 55
+        },
+        {
+          "end": 64,
+          "start": 61
+        },
+        {
+          "end": 74,
+          "start": 65
+        },
+        {
+          "end": 75,
+          "start": 74
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-36",
+      "entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "ROAD",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 37,
+          "label": "LOCAL_AREA",
+          "start": 16
+        },
+        {
+          "aligned": true,
+          "end": 48,
+          "label": "PROVINCE",
+          "start": 41
+        }
+      ],
+      "text_sha256": "dda41861708b99b86c57fc75e2d03b151b724e060ca37c84e9bb1ad8abfb99fb",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 11
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 33,
+          "start": 22
+        },
+        {
+          "end": 37,
+          "start": 34
+        },
+        {
+          "end": 40,
+          "start": 38
+        },
+        {
+          "end": 48,
+          "start": 41
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 62,
+          "start": 53
+        },
+        {
+          "end": 63,
+          "start": 62
+        },
+        {
+          "end": 66,
+          "start": 64
+        },
+        {
+          "end": 72,
+          "start": 67
+        },
+        {
+          "end": 76,
+          "start": 73
+        },
+        {
+          "end": 86,
+          "start": 77
+        },
+        {
+          "end": 87,
+          "start": 86
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-37",
+      "entities": [
+        {
+          "end": 21,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": false,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 11
+        }
+      ],
+      "text_sha256": "2ee2aa2f4abdab600323a4ce132fe6d87880aad91bddb3cc76b1056a1e0d9e97",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 16,
+          "start": 5
+        },
+        {
+          "end": 21,
+          "start": 17
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 41,
+          "start": 37
+        },
+        {
+          "end": 46,
+          "start": 42
+        },
+        {
+          "end": 59,
+          "start": 47
+        },
+        {
+          "end": 64,
+          "start": 60
+        },
+        {
+          "end": 65,
+          "start": 64
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-38",
+      "entities": [
+        {
+          "end": 17,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 11,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": false,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 14
+        }
+      ],
+      "text_sha256": "d7a56cde93e9227d7add65866ce45135f83f182c0c75c7f08a42d2977e1fe404",
+      "tokens": [
+        {
+          "end": 6,
+          "start": 0
+        },
+        {
+          "end": 17,
+          "start": 7
+        },
+        {
+          "end": 18,
+          "start": 17
+        },
+        {
+          "end": 21,
+          "start": 19
+        },
+        {
+          "end": 25,
+          "start": 22
+        },
+        {
+          "end": 35,
+          "start": 26
+        },
+        {
+          "end": 36,
+          "start": 35
+        },
+        {
+          "end": 41,
+          "start": 37
+        },
+        {
+          "end": 46,
+          "start": 42
+        },
+        {
+          "end": 59,
+          "start": 47
+        },
+        {
+          "end": 64,
+          "start": 60
+        },
+        {
+          "end": 65,
+          "start": 64
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-39",
+      "entities": [
+        {
+          "end": 26,
+          "label": "LOC",
+          "start": 0
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 9,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 26,
+          "label": "BARANGAY",
+          "start": 11
+        }
+      ],
+      "text_sha256": "0cf53805ffc809deed1c7e31aa8938beca409ede8cae0e9ca4eb65fdbd52f67d",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 5
+        },
+        {
+          "end": 19,
+          "start": 11
+        },
+        {
+          "end": 26,
+          "start": 20
+        },
+        {
+          "end": 30,
+          "start": 27
+        },
+        {
+          "end": 40,
+          "start": 31
+        },
+        {
+          "end": 41,
+          "start": 40
+        },
+        {
+          "end": 46,
+          "start": 42
+        },
+        {
+          "end": 51,
+          "start": 47
+        },
+        {
+          "end": 64,
+          "start": 52
+        },
+        {
+          "end": 69,
+          "start": 65
+        },
+        {
+          "end": 70,
+          "start": 69
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-40",
+      "entities": [
+        {
+          "end": 33,
+          "label": "ORG",
+          "start": 18
+        },
+        {
+          "end": 50,
+          "label": "LOC",
+          "start": 37
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 33,
+          "label": "ROAD",
+          "start": 19
+        },
+        {
+          "aligned": false,
+          "end": 50,
+          "label": "ROAD",
+          "start": 38
+        }
+      ],
+      "text_sha256": "5d9a5f4c1a15c3762a9774eb0df4303370e82fc8a5c8fd1ef8abb30b0f05d7ba",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 13,
+          "start": 5
+        },
+        {
+          "end": 17,
+          "start": 14
+        },
+        {
+          "end": 28,
+          "start": 18
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 36,
+          "start": 34
+        },
+        {
+          "end": 43,
+          "start": 37
+        },
+        {
+          "end": 50,
+          "start": 44
+        },
+        {
+          "end": 51,
+          "start": 50
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-41",
+      "entities": [
+        {
+          "end": 14,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 29,
+          "label": "LOC",
+          "start": 20
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 14,
+          "label": "ROAD",
+          "start": 2
+        },
+        {
+          "aligned": true,
+          "end": 29,
+          "label": "LANDMARK",
+          "start": 20
+        }
+      ],
+      "text_sha256": "d5eee4ed0a1ef3b28f66ea6547ceea904fe3aa14c8b38b1091f4e07def4c61c1",
+      "tokens": [
+        {
+          "end": 7,
+          "start": 0
+        },
+        {
+          "end": 14,
+          "start": 8
+        },
+        {
+          "end": 19,
+          "start": 15
+        },
+        {
+          "end": 24,
+          "start": 20
+        },
+        {
+          "end": 29,
+          "start": 25
+        },
+        {
+          "end": 33,
+          "start": 30
+        },
+        {
+          "end": 43,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 43
+        },
+        {
+          "end": 49,
+          "start": 45
+        },
+        {
+          "end": 54,
+          "start": 50
+        },
+        {
+          "end": 67,
+          "start": 55
+        },
+        {
+          "end": 72,
+          "start": 68
+        },
+        {
+          "end": 73,
+          "start": 72
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-42",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": false,
+          "end": 5,
+          "label": "CITY",
+          "start": 0
+        },
+        {
+          "aligned": false,
+          "end": 18,
+          "label": "LOCAL_AREA",
+          "start": 7
+        }
+      ],
+      "text_sha256": "76d5445f825e7859798d99f4cad431111ddd0e6004289a60c29fdc36bb9261dc",
+      "tokens": [
+        {
+          "end": 12,
+          "start": 0
+        },
+        {
+          "end": 18,
+          "start": 13
+        },
+        {
+          "end": 22,
+          "start": 19
+        },
+        {
+          "end": 32,
+          "start": 23
+        },
+        {
+          "end": 33,
+          "start": 32
+        },
+        {
+          "end": 38,
+          "start": 34
+        },
+        {
+          "end": 43,
+          "start": 39
+        },
+        {
+          "end": 56,
+          "start": 44
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 62,
+          "start": 61
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-43",
+      "entities": [
+        {
+          "end": 13,
+          "label": "LOC",
+          "start": 1
+        },
+        {
+          "end": 27,
+          "label": "LOC",
+          "start": 17
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 13,
+          "label": "CITY",
+          "start": 1
+        },
+        {
+          "aligned": true,
+          "end": 27,
+          "label": "LOCAL_AREA",
+          "start": 17
+        }
+      ],
+      "text_sha256": "ff4e9f7ce3f5793c70c7676393fb2b245cb40ea2aaf8ddecb75aaf0d266c9023",
+      "tokens": [
+        {
+          "end": 1,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 1
+        },
+        {
+          "end": 13,
+          "start": 9
+        },
+        {
+          "end": 14,
+          "start": 13
+        },
+        {
+          "end": 15,
+          "start": 14
+        },
+        {
+          "end": 16,
+          "start": 15
+        },
+        {
+          "end": 17,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 27,
+          "start": 23
+        },
+        {
+          "end": 29,
+          "start": 27
+        },
+        {
+          "end": 32,
+          "start": 29
+        },
+        {
+          "end": 42,
+          "start": 33
+        },
+        {
+          "end": 43,
+          "start": 42
+        },
+        {
+          "end": 48,
+          "start": 44
+        },
+        {
+          "end": 53,
+          "start": 49
+        },
+        {
+          "end": 66,
+          "start": 54
+        },
+        {
+          "end": 71,
+          "start": 67
+        },
+        {
+          "end": 72,
+          "start": 71
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-44",
+      "entities": [
+        {
+          "end": 31,
+          "label": "LOC",
+          "start": 23
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 8,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 21,
+          "label": "LOCAL_AREA",
+          "start": 10
+        },
+        {
+          "aligned": true,
+          "end": 31,
+          "label": "LOCAL_AREA",
+          "start": 23
+        },
+        {
+          "aligned": true,
+          "end": 38,
+          "label": "LOCAL_AREA",
+          "start": 33
+        }
+      ],
+      "text_sha256": "ffa37096b1af2d12483b1c7789d5d793e40bf8bbc65f8366161b5ae5afc8c20c",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 4,
+          "start": 3
+        },
+        {
+          "end": 8,
+          "start": 5
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 15,
+          "start": 10
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 22,
+          "start": 21
+        },
+        {
+          "end": 28,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 32,
+          "start": 31
+        },
+        {
+          "end": 36,
+          "start": 33
+        },
+        {
+          "end": 38,
+          "start": 37
+        },
+        {
+          "end": 42,
+          "start": 39
+        },
+        {
+          "end": 52,
+          "start": 43
+        },
+        {
+          "end": 53,
+          "start": 52
+        },
+        {
+          "end": 58,
+          "start": 54
+        },
+        {
+          "end": 63,
+          "start": 59
+        },
+        {
+          "end": 76,
+          "start": 64
+        },
+        {
+          "end": 81,
+          "start": 77
+        },
+        {
+          "end": 82,
+          "start": 81
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-45",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 52,
+          "label": "LOCAL_AREA",
+          "start": 45
+        }
+      ],
+      "text_sha256": "1faf024e23b6fa92885fdeae1d180fb0312dea5da7f94d5cdbbe8d083de640e3",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 8,
+          "start": 4
+        },
+        {
+          "end": 9,
+          "start": 8
+        },
+        {
+          "end": 14,
+          "start": 9
+        },
+        {
+          "end": 17,
+          "start": 15
+        },
+        {
+          "end": 23,
+          "start": 18
+        },
+        {
+          "end": 24,
+          "start": 23
+        },
+        {
+          "end": 28,
+          "start": 24
+        },
+        {
+          "end": 33,
+          "start": 29
+        },
+        {
+          "end": 41,
+          "start": 34
+        },
+        {
+          "end": 44,
+          "start": 42
+        },
+        {
+          "end": 48,
+          "start": 45
+        },
+        {
+          "end": 49,
+          "start": 48
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 55,
+          "start": 53
+        },
+        {
+          "end": 62,
+          "start": 56
+        },
+        {
+          "end": 63,
+          "start": 62
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-46",
+      "entities": [],
+      "reference_alignment": [],
+      "text_sha256": "0803c1cc24e63fe1849b0156cef3c7be13541118188411626fb62ca0e00bceca",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 9,
+          "start": 5
+        },
+        {
+          "end": 13,
+          "start": 10
+        },
+        {
+          "end": 14,
+          "start": 13
+        },
+        {
+          "end": 15,
+          "start": 14
+        },
+        {
+          "end": 19,
+          "start": 16
+        },
+        {
+          "end": 23,
+          "start": 20
+        },
+        {
+          "end": 28,
+          "start": 24
+        },
+        {
+          "end": 31,
+          "start": 29
+        },
+        {
+          "end": 36,
+          "start": 32
+        },
+        {
+          "end": 42,
+          "start": 37
+        },
+        {
+          "end": 47,
+          "start": 43
+        },
+        {
+          "end": 48,
+          "start": 47
+        },
+        {
+          "end": 50,
+          "start": 48
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 53,
+          "start": 51
+        },
+        {
+          "end": 58,
+          "start": 54
+        },
+        {
+          "end": 61,
+          "start": 59
+        },
+        {
+          "end": 64,
+          "start": 62
+        },
+        {
+          "end": 70,
+          "start": 65
+        },
+        {
+          "end": 71,
+          "start": 70
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-47",
+      "entities": [],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "LOCAL_AREA",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 22,
+          "label": "LOCAL_AREA",
+          "start": 12
+        },
+        {
+          "aligned": true,
+          "end": 36,
+          "label": "LOCAL_AREA",
+          "start": 27
+        }
+      ],
+      "text_sha256": "66f80beb2586d783db8d0573fb27129bc39ac6d9e0da06d7daf2daeeb3c08911",
+      "tokens": [
+        {
+          "end": 4,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 5
+        },
+        {
+          "end": 11,
+          "start": 10
+        },
+        {
+          "end": 16,
+          "start": 12
+        },
+        {
+          "end": 22,
+          "start": 17
+        },
+        {
+          "end": 26,
+          "start": 23
+        },
+        {
+          "end": 31,
+          "start": 27
+        },
+        {
+          "end": 36,
+          "start": 32
+        },
+        {
+          "end": 40,
+          "start": 37
+        },
+        {
+          "end": 50,
+          "start": 41
+        },
+        {
+          "end": 51,
+          "start": 50
+        },
+        {
+          "end": 56,
+          "start": 52
+        },
+        {
+          "end": 61,
+          "start": 57
+        },
+        {
+          "end": 74,
+          "start": 62
+        },
+        {
+          "end": 79,
+          "start": 75
+        },
+        {
+          "end": 80,
+          "start": 79
+        }
+      ]
+    },
+    {
+      "case_id": "constructed-boundary-48",
+      "entities": [
+        {
+          "end": 10,
+          "label": "LOC",
+          "start": 0
+        },
+        {
+          "end": 48,
+          "label": "LOC",
+          "start": 41
+        }
+      ],
+      "reference_alignment": [
+        {
+          "aligned": true,
+          "end": 10,
+          "label": "ROAD",
+          "start": 0
+        },
+        {
+          "aligned": true,
+          "end": 37,
+          "label": "LOCAL_AREA",
+          "start": 16
+        },
+        {
+          "aligned": true,
+          "end": 48,
+          "label": "PROVINCE",
+          "start": 41
+        }
+      ],
+      "text_sha256": "ab8d82014ecd3c027aef6b37f8a31d1ea1ca85a0bbd4c40c0f892ab763924c79",
+      "tokens": [
+        {
+          "end": 3,
+          "start": 0
+        },
+        {
+          "end": 10,
+          "start": 4
+        },
+        {
+          "end": 15,
+          "start": 11
+        },
+        {
+          "end": 21,
+          "start": 16
+        },
+        {
+          "end": 33,
+          "start": 22
+        },
+        {
+          "end": 37,
+          "start": 34
+        },
+        {
+          "end": 40,
+          "start": 38
+        },
+        {
+          "end": 48,
+          "start": 41
+        },
+        {
+          "end": 52,
+          "start": 49
+        },
+        {
+          "end": 62,
+          "start": 53
+        },
+        {
+          "end": 63,
+          "start": 62
+        },
+        {
+          "end": 68,
+          "start": 64
+        },
+        {
+          "end": 73,
+          "start": 69
+        },
+        {
+          "end": 86,
+          "start": 74
+        },
+        {
+          "end": 91,
+          "start": 87
+        },
+        {
+          "end": 92,
+          "start": 91
+        }
+      ]
+    }
+  ]
+}

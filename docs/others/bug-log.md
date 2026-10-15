@@ -1,6 +1,32 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 15, 2026, 8:47 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 11:38 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved offline: Missing province span and inconsistent road/local-area boundaries
+
+- **Status / severity / resolver:** Resolved in a new AI silver annotation revision; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** A separate Ilocos Sur mention at 218–228 was omitted. EDSA-Balintawak was a combined ROAD in two records but split ROAD/LOCAL_AREA in an accepted pilot, including inconsistent validation references.
+- **Root cause:** Structural/tokenizer validation verifies supplied spans but cannot establish annotation completeness or semantic consistency across passages. The contextual pair and packet hashes also depend on these labels.
+- **Solution:** Apply explicit full-record/passage-hash-bound corrections to three records without reselection; keep the existing road ID, add locality spans, and preserve contextual targets/overrides with segment qualifiers in contextual v3. Rebind versioned packets and regenerate the held study package; preserve older files. Do not introduce global hyphen splitting.
+- **Files / verification:** `backend/training/flood_ner/revision.py`, version-aware `use_bundle.py`, constructed correction/versioning regressions, new ignored dataset/context/package artifacts and [metadata report](../evaluations/flood-ner-annotation-correction-20261015/README.md). 638 focused tests pass, all quotas remain satisfied and research-only export is refused. Runtime/parser/model/schema behavior is unchanged.
+
+## Resolved offline: Complete-article passages in download candidates and report wording
+
+- **Status / severity / resolver:** Resolved in held research packaging; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Removing a complete-source field still leaves a full article when a selected passage equals its source text. Nine location records and two paired context records meet that condition. A prior report also said 400-source rather than 400-sample.
+- **Root cause:** Passage-only field selection does not guarantee a passage is shorter than its source; the source/sample count wording was inaccurate.
+- **Solution:** Preserve the full records privately; use metadata-only candidate entries for whole articles, and check nested attribution/identity payloads for full bodies and private paths. Keep failures and overwrite refusal explicit. Publish README-v2.md and a versioned hash manifest without modifying the original report.
+- **Verification:** The candidate has 391 passage texts/9 placeholders and 38 contextual texts/2 placeholders; ten appendix examples exclude full-article passages. A 603-file replay matches. 666 regression tests pass; 41 bundle tests were rechecked after adding saved-file indexes. Admission/export/distribution stay held.
+- **Files:** backend/training/flood_ner/use_bundle.py, cli.py, tests/test_flood_ner_use_bundle.py; versioned tokenizer report correction. [Results](../evaluations/flood-ner-study-use-20261015/README.md).
+
+## Resolved in a research candidate: Composite dash and list/dateline boundaries
+
+- **Status / severity / resolver:** Constructed qualification passed; Medium. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Native calamanCy joins CITY—-Purok and leading/trailing list/dateline hyphens, preventing strict place-reference alignment. Expanded probes expose 22 native alignment gaps.
+- **Root cause:** Serialized trained-tokenizer regexes do not split these delimiter combinations; changing language Defaults alone does not alter the loaded tokenizer.
+- **Solution:** A separate candidate extends actual regex callbacks while preserving flags, exceptions, token matching and internal identifiers. Source text and model weights are unchanged. Parent validation recomputes alignment and controls; tokenizer bytes exclude vocabulary and bind its model hashes. A final artifact-write failure explicitly revokes success and is regression-tested.
+- **Verification:** Zero candidate gaps across 48 constructed cases, 56 controls pass, byte/prediction replay matches; 625 regressions pass. Predictions change in 12 cases, so successful alignment is not an accuracy claim. Frozen corpus v3 has 14 gaps on these new constructed probes and remains preserved. News-cohort qualification is pending.
+- **Files:** backend/training/flood_ner/model_tokenizer.py, tokenizer_qualification.py, tokenizer_worker.py, cli.py, preflight.py; constructed configs and tests/test_flood_ner_tokenizer_qualification.py. [Results](../evaluations/flood-ner-tokenizer-qualification-20261015/README-v2.md).
 
 ## Resolved before publication: NER report hashes and Git line endings
 

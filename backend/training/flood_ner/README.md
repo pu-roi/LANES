@@ -1,5 +1,7 @@
 # Offline flood NER preparation
 
+Current research checkpoint: 400 corrected AI silver location records from 139 articles, 40 contextual v3 pairs and frozen 280/60/60 partitions. The verified Drive backup is owner-only. Researcher-reported adviser guidance limits use to private research/training; no specific international ethics framework is established. Source-use project decisions remain unresolved, and this guidance does not change admission flags. Next complete the supported academic-use basis and article-exception dispositions before the separate admission/model-tokenizer/GPU gates. Retention uncertainty alone is not a training prohibition. See [current publication audit](../../../docs/evaluations/flood-ner-publication-20261015/README.md) and [private-access record](../../../docs/evaluations/flood-ner-private-access-20261015/README.md).
+
 Run commands from `backend/` using its existing environment (Python 3.12, spaCy 3.7.5). This package prepares research sources and annotated corpora. It does not train a model, access operational SQL, invoke news processing/publication, or change production configuration.
 
 ```powershell
@@ -111,14 +113,14 @@ The v3 rules additionally cover slash-delimited names, ordinal boundaries and pu
 
 `build-cohort --selection-time-limit 300` uses an explicit optimizer bound while retaining the 60-second default. Allowed values are integer seconds 1–3600; nondefault limits are recorded in manifests. A resource-limited solve is unresolved, not evidence of infeasibility. Source inventory retains `(canonical URL, capture version)` identities, including versions with matching body hashes. Collection paths bind to the actual version. Verified Philstar pipe/hyphen publication headers and Inquirer bylines can establish date-only evidence; conflicting dates remain held.
 
-The final corrected input is `artifacts/continuation400-20261015/reviewed-final-location_annotations.jsonl`; source/group registers are in `reviewed-v5/`, final frozen selection in `assembly-corrected-300s-v1/`, and historical superseded context in `contextual-reviewed-v1/`; current accepted context is `artifacts/review-qualification400-20261015/contextual-reviewed-v2/`. A byte-identical replay is saved in `assembly-corrected-replay/`. The original legacy replay is byte-identical too.
+Preserved continuation checkpoint: the corrected input was `artifacts/continuation400-20261015/reviewed-final-location_annotations.jsonl`; source/group registers are in `reviewed-v5/`, final frozen selection in `assembly-corrected-300s-v1/`, and historical superseded context in `contextual-reviewed-v1/`; that checkpoint used `artifacts/review-qualification400-20261015/contextual-reviewed-v2/`. A byte-identical replay is saved in `assembly-corrected-replay/`. The original legacy replay is byte-identical too.
 
 The dedicated ignored `artifacts/stronger-400-continuation-20261015/` folder contains 342 article links/captures, 400 sample links, frozen location/context records and a verified hash manifest. It needs an external backup independently of Git. [Report](../../../docs/evaluations/flood-ner-continuation-400-20261015/README.md).
 
 
 ## Follow-up review and current qualification
 
-The unchanged 400-record location cohort remains `artifacts/continuation400-20261015/assembly-corrected-300s-v1/`. Current accepted rich pairs are `artifacts/review-qualification400-20261015/contextual-reviewed-v2/`; earlier contextual v1 is superseded and preserved. The new `annotation/context_review.py` provides source-exact access-phrase review and explicit self-contradiction guards, with independent place association still required. No runtime parser is changed.
+Current location records are in `artifacts/annotation-correction-20261015-v1/cohort-v2/`; accepted paired contexts are in its sibling `contextual-v3/`. Earlier cohorts and contextual v1/v2 remain preserved. The existing context-review guards still apply; no runtime parser changes.
 
 `qualification_report` binds candidate-tokenizer bytes before validation grows vocabulary, so reported SHA matches the candidate_tokenizer.bin written by qualify-cohort. The corrected saved diagnostics are in `artifacts/review-qualification400-20261015/qualification-v2/`. The dedicated `artifacts/stronger-400-reviewed-20261015/` bundle contains current contextual-pilot-v2, frozen location data, source/sample CSVs, qualification diagnostics and a verified hash manifest. A frozen silver-evaluation protocol is preparation only: no model is installed, evaluated or trained and source-use holds remain enforced. [Report](../../../docs/evaluations/flood-ner-review-qualification-20261015/README.md).
 
@@ -136,3 +138,43 @@ From backend/:
 ```
 
 The command is offline and refuses the main interpreter, nonconstructed provenance, malformed spans/hashes and existing destinations. Inputs are exactly 24 probes with 12 English/12 Taglish and all six expected place classes. Model predictions remain LOC/ORG/PER. Output uses a revalidated UTF-8 byte protocol, records one warm-up plus ten measured CPU passes and peak working set, and retains failures without fabricated resources. Exit0 means research loading/inference passed; exit2 denotes a documented execution/output failure; invalid input exits1. Alignment gaps are diagnostics, not an automatic tokenizer change. No news data is inferred, exported or trained. [Results](../../../docs/evaluations/flood-ner-preflight-use-20261015/README.md).
+
+## Constructed model-tokenizer qualification
+
+qualify-model-tokenizer compares the native pinned calamanCy tokenizer with a separate lanes.tl.calamancy-address-v1 candidate and the existing corpus v3 tokenizer. It requires exactly 48 hash-bound constructed cases (24 per language), preserving the original 24, with explicit reference spans and separate token-boundary controls. No news corpus is processed. Run from backend/; choose a new ignored output directory.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -m training.flood_ner qualify-model-tokenizer --python training/flood_ner/artifacts/preflight-use-20261015/research-env/Scripts/python.exe --model-manifest training/flood_ner/artifacts/preflight-use-20261015/model_manifest.json --cases training/flood_ner/configs/tokenizer_qualification_cases.jsonl --output training/flood_ner/artifacts/tokenizer-qualification-local-repeat-v1
+```
+
+Exit 0 means constructed qualification passed; 2 means execution or qualification failed with a saved report; invalid inputs exit 1. Native and candidate run in separate isolated CPU processes. Saved tokenizer bytes exclude vocabulary and are bound to verified model vocabulary hashes. Output includes tokenizers, manifests, constructed predictions, parent-recomputed controls/alignment, prediction differences, resource measurements and explicit failure evidence. The existing preflight-model command remains native with its original 24-case input contract.
+
+The completed run has zero candidate alignment errors and 56 passing controls across 48 cases. Twelve prediction changes are reported without claiming accuracy. Corpus v3 is compared unchanged; its expanded constructed gaps do not rewrite the validated frozen dataset. Before training, admit source use and qualify the chosen model tokenizer against the actual corpus; train and infer with consistent tokenization. [Measured qualification](../../../docs/evaluations/flood-ner-tokenizer-qualification-20261015/README-v2.md).
+
+## Private study/use-review bundle
+
+prepare-use-bundle validates the frozen 400-record cohort, forty paired contexts, original source-use packet/forms, 139-source register, captured evidence and fifteen scoped assessments. It performs no network requests, grants no admission, and preserves source records. Use a new ignored destination.
+
+```powershell
+.venv/Scripts/python.exe -X utf8 -m training.flood_ner prepare-use-bundle --cohort training/flood_ner/artifacts/annotation-correction-20261015-v1/cohort-v2 --context training/flood_ner/artifacts/annotation-correction-20261015-v1/contextual-v3 --review-packet training/flood_ner/artifacts/annotation-correction-20261015-v1/review-packet-v3.json --output training/flood_ner/artifacts/400-sample-study-package-local-repeat-v1
+```
+
+The START-HERE.md file explains four numbered folders: private study, paper appendix draft, download candidate and use review. It includes source/sample CSV links, a balanced training-only appendix, passage-only JSONL and a local ZIP, evidence, editable unresolved forms and a hash manifest. Appendix selection greedily maximizes newly covered classes, then publishers, then record ID, with five examples per language. Its achieved coverage is reported rather than assumed.
+
+The separate lanes-passage-share-candidate-v1 format contains raw passage text, Unicode offsets, labels, provenance and public source metadata. It excludes full-source fields/HTML, private paths and model weights. Whole-article passages become metadata-only entries with text=null; all original records remain intact privately. It is not an AnnotationRecord training export. Context pairs remain separate and do not increase the sample count. No dataset license is assigned.
+
+Exit 0 means the private package was prepared with holds, not cleared for training or distribution. Invalid inputs/refused destinations exit 1 before copying. Copy/serialization failures save failure.json where possible, return nonzero and leave the partial folder for inspection; choose a new destination after fixing the issue. The new package is a local copy, not an external backup. [Assessment, measured limits and current folder](../../../docs/evaluations/flood-ner-study-use-20261015/README.md).
+
+
+## Explicit annotation corrections
+
+`revision.py` applies reviewed `EntityCorrection` objects to hash-bound original records. Corrections contain the complete original-record hash, passage hash, expected/replacement entities and actual review provenance. `write_cohort_revision` preserves membership, splits, immutable source metadata and saved tokenizer bytes, refreshes selection/coverage hashes and refuses existing destinations. It never invokes the selection solver. `revise_contexts` retains fact/target/override IDs and applies explicit road-segment qualifiers without assigning facts to new local-area entities.
+
+The current corrected corpus has 1,497 location spans across the same 400 samples and 139 articles. One of forty contexts changes in v3. Bundle preparation uses the explicit safe context/packet revision names, preserving v2 defaults for older manifests and copying hash-linked predecessor packets when supplied. [Correction evidence](../../../docs/evaluations/flood-ner-annotation-correction-20261015/README.md). The current organized folder is `artifacts/400-sample-study-package-corrected-20261015-v1/START-HERE.md`; old folders remain unchanged.
+
+
+## Academic-use review without admission
+
+`academic_use.py` validates source-exact UTF-8 clause pointers, the corrected cohort/context/review-packet bindings, 139 distinct article reviews, three dated AI publisher conclusions and the unchanged twelve nonacademic-use outcomes. Publisher display aliases are normalized through the existing URL-based publisher identity without rewriting captures. It does not expose an admission setter or new CLI command. Completed assessments cannot change source flags or bypass export holds.
+
+Current review: `artifacts/academic-use-review-20261015-v1/START-HERE.md`, with `DECISION-SHEET.md`, three readable assessments, `academic_review-v2.json`, article exceptions, editable academic decisions and a hash manifest. Review-v2 corrects a private draft's caption-overlap description after checking source intervals; the dataset is unchanged. Raw snapshots and complete review evidence remain ignored. [Metadata report and decisions still needed](../../../docs/evaluations/flood-ner-academic-use-20261015/README.md).
