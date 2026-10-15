@@ -52,6 +52,10 @@ export function SavePlacePanel() {
     setActivePoint,
     savedPlaces,
     setSavedPlaces,
+    showSavedPlaces,
+    setShowSavedPlaces,
+    selectedSavedPlaceId,
+    setSelectedSavedPlaceId,
     draftSavePlaceCoords,
     setDraftSavePlaceCoords,
     savePlaceIcon: icon,
@@ -263,6 +267,7 @@ export function SavePlacePanel() {
     try {
       await savedPlacesApi.deleteSavedPlace(placeId);
       setSavedPlaces(savedPlaces.filter((p: SavedPlace) => p.id !== placeId));
+      if (selectedSavedPlaceId === placeId) setSelectedSavedPlaceId(null);
       setPlaceToDelete(null);
       success("Deleted", "Saved place removed");
     } catch (err: any) {
@@ -272,7 +277,21 @@ export function SavePlacePanel() {
     }
   };
 
+  const closeSavePlacePanel = () => {
+    setIsSavePlacePanelOpen(false);
+    setActivePanel(null);
+    setDraftSavePlaceCoords(null);
+    if (isPickingOnMap && activePoint === "save_place_location") {
+      setIsPickingOnMap(false);
+      setActivePoint(null);
+    }
+    if (searchParams.get("panel") === "saveplace") {
+      router.replace("/map", { scroll: false });
+    }
+  };
+
   const handleSelectPlace = (place: SavedPlace) => {
+    setSelectedSavedPlaceId(place.id);
     // Center map on location with zoom 16 and smooth flight/panning (consistent with severity zones)
     window.dispatchEvent(
       new CustomEvent("fly-to-location", {
@@ -281,9 +300,11 @@ export function SavePlacePanel() {
           longitude: place.longitude,
           zoom: 16,
           duration: 1500,
+          showPulse: false,
         },
       })
     );
+    if (isMobile) setIsPanelCollapsed(true);
   };
 
   const renderTopOptions = () => (
@@ -337,18 +358,7 @@ export function SavePlacePanel() {
       icon={<MapPin className="h-4 w-4 text-emerald-600" />}
       iconBgClassName="bg-emerald-100"
       isOpen={isSavePlacePanelOpen}
-      onClose={() => {
-        setIsSavePlacePanelOpen(false);
-        setActivePanel(null);
-        setDraftSavePlaceCoords(null);
-        if (isPickingOnMap && activePoint === "save_place_location") {
-          setIsPickingOnMap(false);
-          setActivePoint(null);
-        }
-        if (searchParams.get("panel") === "saveplace") {
-          router.replace("/map", { scroll: false });
-        }
-      }}
+      onClose={closeSavePlacePanel}
       isCollapsed={isPanelCollapsed}
       onCollapseToggle={() => setIsPanelCollapsed(!isPanelCollapsed)}
       isMobile={isMobile}
@@ -505,6 +515,22 @@ export function SavePlacePanel() {
           ) : (
             /* My Places List View */
             <div className="flex flex-col gap-2 p-1 flex-1 overflow-y-auto select-none">
+              {savedPlaces.length > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={showSavedPlaces}
+                  onClick={() => {
+                    setShowSavedPlaces(!showSavedPlaces);
+                    if (showSavedPlaces) setSelectedSavedPlaceId(null);
+                  }}
+                  className="self-start gap-2 text-slate-600"
+                >
+                  <MapPin className="h-4 w-4" />
+                  {showSavedPlaces ? "Hide saved place pins" : "Show saved place pins"}
+                </Button>
+              )}
               {savedPlaces.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400 select-none">
                   <MapPin className="w-10 h-10 stroke-1 mb-2 text-slate-300" />

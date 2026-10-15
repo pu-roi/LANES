@@ -222,6 +222,7 @@ export default function LiveMapPage() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
   const [selectedContributorId, setSelectedContributorId] = useState<number | null>(null);
+  const [zoneToShowOnMap, setZoneToShowOnMap] = useState<AvoidanceZone | null>(null);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [infoModalReport, setInfoModalReport] = useState<FloodReport | null>(null);
   const [rejectionReport, setRejectionReport] = useState<FloodReport | null>(null);
@@ -863,6 +864,38 @@ export default function LiveMapPage() {
     }
   };
 
+  const showZoneOnMap = (zone: AvoidanceZone) => {
+    if (!zone.geometry) {
+      showMapError(`Zone #${zone.id} has no mapped boundary to show.`);
+      return;
+    }
+    setSelectedZoneId(zone.id);
+    setSelectedContributorId(null);
+    setZoneToShowOnMap(zone);
+    if (isMobile) setIsMobileMapVisible(true);
+  };
+
+  useEffect(() => {
+    if (!zoneToShowOnMap || !mapInstance || !isLoaded || (isMobile && !isMobileMapVisible)) return;
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        mapInstance.resize();
+        if (!flyToFeature(mapInstance, zoneToShowOnMap.geometry, zoneToShowOnMap.report_geometry, {
+          zoom: 16,
+          pitch: mapInstance.getPitch(),
+          duration: 1500,
+        })) {
+          showMapError(`Zone #${zoneToShowOnMap.id} has no valid map location.`);
+        }
+      } catch (err) {
+        console.error("Failed to show flood zone on map:", err);
+        showMapError(`Could not show Zone #${zoneToShowOnMap.id} on the map.`);
+      }
+      setZoneToShowOnMap(null);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [zoneToShowOnMap, mapInstance, isLoaded, isMobile, isMobileMapVisible, showMapError]);
+
   const isZoneWorkspaceOpen = isCreateZoneDrawerOpen || isEditZoneDrawerOpen;
 
   return (
@@ -980,6 +1013,7 @@ export default function LiveMapPage() {
               isPlaceholderData={isPlaceholderData}
               totalPages={totalPages}
               flyToZone={flyToZone}
+              onViewZoneOnMap={showZoneOnMap}
               setConfirmId={setConfirmId}
               onCreateOfficialZone={() => {
                 openCreateZoneWorkspace();

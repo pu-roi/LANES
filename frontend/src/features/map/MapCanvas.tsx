@@ -300,6 +300,7 @@ export default function MapCanvas() {
     setPointFromMap, activePoint, setActivePoint, isPickingOnMap,
     floodPreviewGeometry, activePanel, setActivePanel, hasBottomOffset,
     isAnalyticsOpen, setIsAnalyticsOpen, isAnalyticsCollapsed, savedPlaces,
+    showSavedPlaces, selectedSavedPlaceId,
     savePlaceIcon, draftSavePlaceCoords, setIsSavePlacePanelOpen,
     floodIsBidirectional, floodOppositeGeometry, floodShowMarkers,
     draftReports,
@@ -562,7 +563,7 @@ export default function MapCanvas() {
     });
     savedPlacesMarkersRef.current = [];
 
-    savedPlaces.forEach((place) => {
+    savedPlaces.filter((place) => showSavedPlaces || place.id === selectedSavedPlaceId).forEach((place) => {
       const el = document.createElement("div");
       el.className = "cursor-pointer";
       
@@ -598,7 +599,7 @@ export default function MapCanvas() {
 
       savedPlacesMarkersRef.current.push({ marker, root });
     });
-  }, [savedPlaces, isLoaded]);
+  }, [savedPlaces, showSavedPlaces, selectedSavedPlaceId, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
@@ -1018,13 +1019,15 @@ export default function MapCanvas() {
     const onClear = () => clearHighlight();
 
     const onFlyToLocation = (e: Event) => {
-      const { latitude, longitude, zoom, duration, pitch } = (e as CustomEvent).detail || {};
+      const { latitude, longitude, zoom, duration, pitch, showPulse = true } = (e as CustomEvent).detail || {};
       if (!map || latitude == null || longitude == null) return;
       flyToCoordinates(map, [longitude, latitude], {
         zoom: zoom ?? 16,
         pitch: pitch ?? map.getPitch(),
         duration: duration ?? 1500,
       });
+
+      if (!showPulse) return;
 
       // Temporary pulsing red circle indicator
       const el = document.createElement("div");
