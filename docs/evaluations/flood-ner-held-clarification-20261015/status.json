@@ -1,0 +1,30 @@
+{
+  "actual_project_decisions": 0,
+  "annotation_accepted": 400,
+  "articles_held": 69,
+  "contextual_pairs": 40,
+  "docbin_exported": 0,
+  "existing_gma_recommendation_articles": 70,
+  "existing_gma_recommendation_passages": 157,
+  "holds_resolved": 0,
+  "messages_sent": 0,
+  "new_policy_fetches": 0,
+  "passages_in_held_articles": 243,
+  "publisher_article_counts": {
+    "ABS-CBN News": 50,
+    "GMA News": 1,
+    "Philstar": 18
+  },
+  "publisher_passage_counts": {
+    "ABS-CBN News": 158,
+    "GMA News": 3,
+    "Philstar": 82
+  },
+  "response_forms": 4,
+  "responses_received": 0,
+  "schema_version": "lanes-held-clarification-status-v1",
+  "training_admitted": 0,
+  "unsent_drafts": 4,
+  "uploads": 0,
+  "verified_recipients": 0
+}

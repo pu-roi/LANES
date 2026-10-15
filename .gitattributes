@@ -74,3 +74,10 @@
 /docs/evaluations/flood-ner-*/**/*.lock -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/training/flood_ner/configs/preflight_constructed_cases.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/training/flood_ner/configs/tokenizer_qualification_cases.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# New research helper identities and desktop handoff hashes retain exact bytes.
+/backend/training/flood_ner/academic_proposal.py -text
+/backend/training/flood_ner/desktop_inventory.py -text
+/backend/tests/test_flood_ner_academic_proposal.py -text
+/backend/tests/test_flood_ner_desktop_inventory.py -text
+/docs/guides/ner-desktop-preflight.md -text

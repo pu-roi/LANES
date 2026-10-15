@@ -1,0 +1,31 @@
+{
+  "focused_tests": {
+    "historical_full_baseline": 702,
+    "historical_full_baseline_rerun": false,
+    "passed": 83,
+    "seconds": 18.1,
+    "skip_reason": "Windows symlink creation unavailable",
+    "skipped": 1,
+    "warning_count": 1
+  },
+  "handoff_zip_bytes_verified": true,
+  "hardware_result_not_claimed_as_training_qualification": true,
+  "inventory_uses_standard_library_only": true,
+  "main_and_cpu_research_environment_installation_unchanged": true,
+  "no_annotation_or_partition_change": true,
+  "no_model_loading_or_news_processing": true,
+  "pinned_model_files_hash_verified": 23,
+  "prior_files_unchanged": 1366,
+  "source_validation": {
+    "actual_project_decisions": 0,
+    "articles": 139,
+    "contextual_pairs": 40,
+    "docbin_exported": 0,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "samples": 400,
+    "training_admitted": 0
+  }
+}

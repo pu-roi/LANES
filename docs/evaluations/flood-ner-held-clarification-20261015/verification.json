@@ -1,0 +1,39 @@
+{
+  "binding_references_checked": 10,
+  "evidence_records_checked": 9,
+  "export_destination_created": false,
+  "focused_regressions": {
+    "historical_broader_baseline": 702,
+    "historical_broader_baseline_rerun": false,
+    "passed": 64,
+    "seconds": 11.18,
+    "selection": [
+      "test_flood_ner_academic_proposal.py",
+      "test_flood_ner_academic_use.py"
+    ],
+    "warning_count": 1
+  },
+  "four_drafts_unset_recipients_and_unsent": true,
+  "held_article_and_sample_identity_exact": true,
+  "metadata_only_no_article_or_passage_text": true,
+  "metadata_register_unicode_round_trip": true,
+  "new_software_dependencies_commands_or_regressions": false,
+  "nonacademic_outcomes_unchanged": true,
+  "original_proposal_validator_result": {
+    "actual_project_decisions": 0,
+    "articles": 139,
+    "contextual_pairs": 40,
+    "docbin_exported": 0,
+    "recommendations": {
+      "hold_for_clarification": 69,
+      "recommend_private_academic_use": 70
+    },
+    "samples": 400,
+    "training_admitted": 0
+  },
+  "prior_files_preserved": 1341,
+  "proposal_validation_replay_identical": true,
+  "research_only_export_refusal_records": 400,
+  "source_hashes_and_capture_versions_match_proposal": true,
+  "verified_at": "2026-10-15T14:00:32.742951+08:00"
+}

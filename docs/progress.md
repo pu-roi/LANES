@@ -1,6 +1,22 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 15, 2026, 1:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 3:19 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 15: Desktop publication verification
+
+**Desktop publication checks complete:** User authorized `roi-branch` publication for desktop continuation. Fresh full NER/location verification: 721 passed, one Windows symlink test skipped (67.31 seconds). New tooling uses existing dependencies or the standard library; no schema/migration change. Git attributes preserve hash-bound helper/guide bytes. The collector and metadata reports transfer through Git; full dataset text, weights and environments require the private backup and local environment recreation. All 400 samples/40 contextual-v3 pairs and admission holds remain unchanged. [Publication checkpoint](evaluations/flood-ner-desktop-publication-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 15: NER route alignment and desktop inventory
+
+**Existing NER plan continued — desktop inventory prepared:** Preserve the corrected 400 samples/139 articles, 40 contextual-v3 pairs, frozen partitions, calamanCy and tokenizer checkpoints. The researcher confirmed an October 25 defense target requiring deployed LANES integration and RTX desktop availability this week. Publisher correspondence is optional clarification: a supported applicable statutory exception remains an existing use-basis route. No recommendation or admission was changed. Delivered a standard-library-only hardware inventory; this machine is the MX330 laptop, so RTX desktop/CUDA/training qualification remains pending. 83 focused tests pass, one Windows symlink test skipped; 1,366 prior files and 23 model files verify unchanged. [Readiness and route alignment](evaluations/flood-ner-desktop-readiness-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 15: Held-article clarification drafts prepared
+
+**Held-article clarification packet prepared:** Four unsent drafts and four blank response forms cover 69 held articles / 243 passages (50 ABS-CBN, 18 Philstar, one AFP-credit GMA story). Verified exact identities, 10 bindings, nine substantive evidence records, Unicode CSV round trips and 1,341 prior files; 64 focused tests pass. No recipients verified, messages sent, uploads, resolved holds, project decisions, admissions or successful exports. All 400 samples/40 contextual-v3 pairs and partitions remain unchanged; the 70 GMA/157-passage recommendation is preserved. [Packet report](evaluations/flood-ner-held-clarification-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 15: Private academic-use decision proposals
+
+**Private academic-use proposals completed (702 regressions pass; owner-only Drive delivery verified):** Prepared 139 article recommendations and three publisher summaries, rechecking all 78 flagged sources under private owner-only research/training. Recommend 70 GMA articles covering 157 passages; hold 69 articles covering 243 passages (50 ABS-CBN, 18 Philstar, one AFP-credit GMA story). Missing bylines alone are not exclusions. All 400 annotations and 40 contextual v3 pairs remain frozen; actual project decisions, training admission and exports remain zero. The recommended subset alone fails the original 400-sample/publisher requirements. Retention is undecided and is not itself a training prohibition; adviser guidance is researcher-reported and the ethics framework unspecified. Four refreshed publisher-policy pages are readable; the IPOPHL ordinary fetch failed its content check and is retained explicitly. New forms replace ambiguous bare-filename references with bound root-relative paths, while older forms remain unchanged. All twelve other-use outcomes retain their states. [Proposals and method notes](evaluations/flood-ner-academic-proposals-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 15: NER documentation and publication audit
 

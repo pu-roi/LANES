@@ -1,0 +1,49 @@
+{
+  "actual_project_decisions": 0,
+  "all_twelve_nonacademic_outcomes_unchanged": true,
+  "articles": 139,
+  "authoritative_docs_audited": [
+    "task_plan",
+    "progress",
+    "README",
+    "roadmap",
+    "tech-stack",
+    "system-documentation",
+    "feature-reference",
+    "decisions",
+    "database-design-plan",
+    "bug-log"
+  ],
+  "contextual_pairs": 40,
+  "docbin_files_written": 0,
+  "flagged_articles_disposed": 78,
+  "main_environment_unchanged": true,
+  "model_artifact_files_verified": 23,
+  "news_model_inference_training_gpu_publisher_messages_deployment_git_publication": "none",
+  "no_new_dependency_or_schema_change": true,
+  "prior_files_preserved": 1301,
+  "proposal_replay_identical": true,
+  "public_article_and_passage_text_absent": true,
+  "records_and_source_admission_unchanged": true,
+  "regressions": {
+    "new_proposal_cases": 38,
+    "passed": 702,
+    "previous_baseline": 664,
+    "seconds": 58.42,
+    "warning": "Existing spaCy/Click deprecation",
+    "warnings": 1
+  },
+  "research_only_export_refusal_records": 400,
+  "source_records_hash_bound": 400,
+  "training_admitted": 0,
+  "verified_at": "2026-10-15T13:29:44.175852+08:00",
+  "drive_delivery": {
+    "new_versioned_folder_created": true,
+    "owner_only_files_verified": 7,
+    "proposal_archive_sha256": "ef57e597a885b5441f2531c54ab7e2fea6e89b32e7a46e2b67ae1cc52ec0fc38",
+    "support_archive_sha256": "cab3b693eac8949a376bc08b1c713139d4c0ffe057d0f2da0ea9b27c88df7f25",
+    "both_download_hashes_match_local": true,
+    "support_metadata_policy_dependencies": 39,
+    "contains_news_bodies_or_passage_texts": false
+  }
+}

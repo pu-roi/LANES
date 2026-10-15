@@ -1,0 +1,34 @@
+{
+  "actual_project_decisions": 0,
+  "annotation_accepted": 400,
+  "articles": 139,
+  "articles_rechecked_for_flags": 78,
+  "contextual_pairs": 40,
+  "copy_inventory": {
+    "containers": 5,
+    "occurrences": 2750
+  },
+  "docbin_exported": 0,
+  "ethics_framework": "unspecified",
+  "full_400_cohort_training_ready": false,
+  "publisher_article_counts": {
+    "ABS-CBN News": 50,
+    "GMA News": 71,
+    "Philstar": 18
+  },
+  "recommendations": {
+    "hold_for_clarification": 69,
+    "recommend_private_academic_use": 70
+  },
+  "recommended_subset_satisfies_original_cohort_quotas": false,
+  "remaining_use_basis_holds": {
+    "ABS-CBN News": 50,
+    "GMA News": 1,
+    "Philstar": 18
+  },
+  "retention": "not_decided; not itself a training prohibition",
+  "samples": 400,
+  "samples_in_held_articles": 243,
+  "samples_in_recommended_articles": 157,
+  "training_admitted": 0
+}

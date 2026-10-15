@@ -1,6 +1,10 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 15, 2026, 1:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Offline NER desktop preparation:** Standalone `desktop_inventory.py --output <new ignored directory>` collects local OS/RAM/driver/GPU metadata without SQL, FastAPI, source admission, model loading or news inference. The current run identifies the MX330 laptop; desktop CUDA qualification and deployed NER integration remain pending. Publisher correspondence is an optional source-use clarification route, not a new endpoint or universal prerequisite. [Guide](../guides/ner-desktop-preflight.md).
+
+**Academic-use proposal validation:** Offline academic_proposal.py validates a new proposal format without modifying the earlier academic-review format. It adds no CLI, API, screen or operational write. Actual project decisions and source admission remain separate; all 400/40 original records are unchanged. [Report](../evaluations/flood-ner-academic-proposals-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **NER publication checkpoint:** The corrected 400-sample/139-article AI silver cohort and 40 contextual v3 pairs remain frozen. Constructed tokenizer qualification, versioned correction/packaging tools and three academic-use AI reviews are complete. Adviser guidance is researcher-reported: private research/training only; the ethics framework is unspecified. Drive backup is verified and owner-only across 22 checked items. Three academic-use decisions remain unresolved; retention is undecided and is not itself a training prohibition. The next task is the supported academic-use basis and article-exception decisions, followed by separate admission, news-cohort tokenizer qualification and desktop GPU preparation. Fresh focused verification passes 664 tests (94.60 seconds); no new dependency, database migration, training or production change. [Publication checks](../evaluations/flood-ner-publication-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

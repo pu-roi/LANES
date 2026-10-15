@@ -1,0 +1,63 @@
+{
+  "broader_metric": "Exact canonical complete-body string values in UTF-8 JSON/JSONL/plain-text entries; includes passage/evidence strings equal to a complete short article. It counts repeated representations, not unique articles or physical file count.",
+  "containers": [
+    {
+      "complete_body_string_occurrences": 409,
+      "container_id": "current_location_cohort",
+      "kind": "directory",
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/cohort-v2/partition_manifest.json",
+        "sha256": "5adac4656c0010824bafbe2182894394edb52225f7bbd4c05061fbe18722ab1a"
+      }
+    },
+    {
+      "complete_body_string_occurrences": 70,
+      "container_id": "current_contextual_v3",
+      "kind": "directory",
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/annotation-correction-20261015-v1/contextual-v3/manifest.json",
+        "sha256": "e1f002dd69019713b8e8309743201084e5f731b99aaa4d0fbb69c5819b1f8578"
+      }
+    },
+    {
+      "complete_body_string_occurrences": 757,
+      "container_id": "organized_private_study",
+      "kind": "directory",
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/400-sample-study-package-corrected-20261015-v1/manifest.json",
+        "sha256": "4d831c5aebb6a64f962acd41024fec015648732683d9f037d83de76c34c87579"
+      }
+    },
+    {
+      "complete_body_string_occurrences": 757,
+      "container_id": "local_study_backup_zip",
+      "kind": "local_archive",
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/study-storage-record-20261015-v1/LANES-400-sample-private-study-corrected-20261015-v1.zip",
+        "sha256": "39d71d1f660a12887c4007246530253be0895ced32649b0f2e5c75bcbdc7a910"
+      }
+    },
+    {
+      "archive_sha256": "39d71d1f660a12887c4007246530253be0895ced32649b0f2e5c75bcbdc7a910",
+      "complete_body_string_occurrences": 757,
+      "container_id": "restricted_drive_backup_zip",
+      "kind": "remote_archive",
+      "reference": {
+        "path": "backend/training/flood_ner/artifacts/academic-decision-proposal-20261015-v1/archive-roundtrip.json",
+        "sha256": "f72eb5ac8dddc4c9aebe9f932588f3477b3a8e2165fb9b0cb901cc05416e8255"
+      }
+    }
+  ],
+  "distinct_selected_articles": 139,
+  "previous_evidence_copy_metric": {
+    "count": 718,
+    "definition": "139 retained source JSON bodies + 139 text bodies + 400 embedded location source fields + 40 contextual source fields in the organized package"
+  },
+  "schema_version": "lanes-bounded-copy-inventory-v1",
+  "scope_limitations": [
+    "Only the five named current containers are counted; older checkpoints, other devices and previous downloads are not a global audited total.",
+    "Raw HTML and nested ZIP contents are not searched by this metric. The prior 718 metric is preserved, not silently overwritten.",
+    "Drive archive count is inferred from freshly downloaded byte identity with the measured local ZIP; the downloaded bytes were not saved as another full-text archive."
+  ],
+  "sum_complete_body_string_occurrences": 2750
+}

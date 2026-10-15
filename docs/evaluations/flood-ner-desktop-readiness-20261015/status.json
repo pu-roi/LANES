@@ -1,0 +1,32 @@
+{
+  "annotation_accepted": 400,
+  "contextual_pairs": 40,
+  "current_machine_gpu": [
+    {
+      "driver_version": "572.16",
+      "matches_reported_target": false,
+      "memory_free_mib": 1969,
+      "memory_total_mib": 2048,
+      "name": "NVIDIA GeForce MX330"
+    }
+  ],
+  "current_machine_state": "awaiting_target_desktop",
+  "defense_date": "2026-10-25",
+  "delivery_target": "deployed LANES integration",
+  "desktop_report_pending": true,
+  "existing_recommendations_unchanged": 70,
+  "git_publication": false,
+  "gpu_environment_installed": false,
+  "gpu_training_qualified": false,
+  "inventory_tool_delivered": true,
+  "models_trained": 0,
+  "news_model_inference": 0,
+  "public_inference_and_demo_use_assessment": "pending; separate from private scope",
+  "publisher_messages": 0,
+  "schema_version": "lanes-desktop-readiness-status-v1",
+  "source_use_holds_unchanged": 69,
+  "source_use_route": "permission or supported applicable exception; publisher response not universally required",
+  "successful_exports": 0,
+  "training_admitted": 0,
+  "uploads": 0
+}

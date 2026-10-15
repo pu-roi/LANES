@@ -1,0 +1,11 @@
+{
+  "files": {
+    "article_recommendations.json": "fcaeb12a7532f3de2a64502a3daf38ad1632477e89545e04d9241de367628a65",
+    "copy_inventory.json": "93b48ab1b1039d94877a5212adab9a7a1ae9fe7d5bc06c6572592ab670ed4401",
+    "methods-notes.md": "e698c191dd0a2f748d0c6d8e82e4145cfc39de8677c226aa2f3c62b17036fd19",
+    "publisher_recommendations.json": "3d13eefbf2bf054e1215c5dda640c8b56026cb5ed7f7973dd55d348184af8430",
+    "README.md": "f655a7da614c8a4358b2dcf07ab5b5981a118a8024f7a74e7d68494843bd0a1f",
+    "status.json": "f340a1d70750000495ca5a3c7f778e0d175d3c1d3fc4950e91a625a7d0c362bf",
+    "verification.json": "9b4750727a689f66167a05dd3b95f3d37f015c4232f724566819727cc497b26f"
+  }
+}

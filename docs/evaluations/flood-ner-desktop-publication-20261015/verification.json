@@ -1,0 +1,24 @@
+{
+  "base_commit": "867587d54dbd426c2dcecac5cff09810c2ee2c74",
+  "branch": "roi-branch",
+  "contextual_pairs": 40,
+  "cross_platform_byte_preservation": "Scoped .gitattributes rules retain new helper/test and guide identities; report attributes already retain JSON/Markdown/CSV bytes.",
+  "database_schema_and_migrations_unchanged": true,
+  "dataset_samples": 400,
+  "dependency_manifests_unchanged": true,
+  "migration_execution": "not applicable; no schema/migration changes",
+  "new_module_external_dependencies": [],
+  "new_report_hash_bound_files_verified": 15,
+  "private_corpus_and_model_artifacts_excluded": true,
+  "publication_authorized_by": "researcher request to push roi-branch for desktop use",
+  "regressions": {
+    "passed": 721,
+    "seconds": 67.31,
+    "skip_reason": "Windows symlink creation unavailable",
+    "skipped": 1,
+    "warning_count": 1
+  },
+  "schema_version": "lanes-desktop-publication-verification-v1",
+  "source_admission_changed": false,
+  "training_or_deployment_performed": false
+}

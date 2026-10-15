@@ -1,6 +1,10 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 15, 2026, 1:00 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 3:01 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Offline desktop inventory:** `backend/training/flood_ner/desktop_inventory.py` uses only Python standard-library modules and a read-only NVIDIA `nvidia-smi` driver query. No external dependency or production requirements change; GPU PyTorch/CuPy versions remain unselected until the actual desktop OS/driver report. Keep research Python 3.11/spaCy 3.7.5 and the existing CPU environment unchanged. [Guide](guides/ner-desktop-preflight.md).
+
+**Academic-use proposal validation:** The new read-only academic_proposal.py validator verifies frozen cohort/context payloads, policy/fact references, 139 article and three publisher proposals, owner-only access evidence and separation from actual decisions/admission. It reuses the existing standard-library/Pydantic/spaCy stack and adds no dependencies or production installation. [Report](evaluations/flood-ner-academic-proposals-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **NER publication checkpoint:** The corrected 400-sample/139-article AI silver cohort and 40 contextual v3 pairs remain frozen. Constructed tokenizer qualification, versioned correction/packaging tools and three academic-use AI reviews are complete. Adviser guidance is researcher-reported: private research/training only; the ethics framework is unspecified. Drive backup is verified and owner-only across 22 checked items. Three academic-use decisions remain unresolved; retention is undecided and is not itself a training prohibition. The next task is the supported academic-use basis and article-exception decisions, followed by separate admission, news-cohort tokenizer qualification and desktop GPU preparation. Fresh focused verification passes 664 tests (94.60 seconds); no new dependency, database migration, training or production change. [Publication checks](evaluations/flood-ner-publication-20261015/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

@@ -1,6 +1,14 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 15, 2026, 11:38 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 15, 2026, 1:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved in new forms: Ambiguous researcher-facts references
+
+- **Status / severity / resolver:** Resolved for new proposal records; Low. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Earlier versioned decision forms retained a bare user-facts.json reference although that file was in a predecessor folder, making the intended evidence base ambiguous.
+- **Root cause:** Copying editable forms between version folders preserved basename references without an explicit repository-root resolver or hash binding.
+- **Solution:** Preserve older forms and introduce path/hash objects for facts, adviser/access guidance and the reviewed packet in a new proposal format. A read-only validator rejects missing/changed references and prevents recommendations from being presented as applied admission.
+- **Files / verification:** backend/training/flood_ner/academic_proposal.py, tests/test_flood_ner_academic_proposal.py, new ignored forms and [proposal report](../evaluations/flood-ner-academic-proposals-20261015/README.md). Real evidence bindings validate; no source text, partition or admission flag changed.
 
 ## Resolved offline: Missing province span and inconsistent road/local-area boundaries
 

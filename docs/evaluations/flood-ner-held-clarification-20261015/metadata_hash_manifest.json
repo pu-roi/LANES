@@ -1,0 +1,10 @@
+{
+  "files": {
+    "README.md": "1ba67cad6ade47a35264055035c3ce8cacf999c1e8d4c9902c3abb099305d749",
+    "article-questions.csv": "802265d41ac5520b8aebff9920a92598f9c8f7391e9bc8b7902be2f86f786c7a",
+    "methods-notes.md": "74250e3ddf2c25aeb01e5b1aed91e91adbe8d5a203047ddd30cf0739a0577de2",
+    "status.json": "b90814f2722ad778be6022aa47b1c85ea11ec99e6b5d5d6a1a1d6b182f12a7db",
+    "verification.json": "0d0135f10baae91f98d971c4fc668cc501c90a85974bb6becd5217f8d881280b"
+  },
+  "schema_version": "lanes-metadata-hash-manifest-v1"
+}
