@@ -1,8 +1,8 @@
 # Continue the NER work on the existing desktop checkout
 
-Updated: October 16, 2026, 12:28 PM (Asia/Manila). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+Updated: October 16, 2026, 12:39 PM (Asia/Manila). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-The laptop package is ready locally. **Drive delivery is pending:** this chat's connector still reports the school account, despite the reported personal reconnection. The owner-only folder cannot be read through that connection. No new Drive folder, upload or sharing change has occurred. Wait for verified delivery, or manually upload the ZIP and its checksum to your own restricted folder from the laptop; Git alone does not carry the private evidence.
+**Private Drive delivery verified:** The unchanged v2 ZIP is available in the [desktop handoff folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) under your LANES_NER folder. Personal account roicambe02@gmail.com and owner-only permissions were verified. The uploaded ZIP was read back and matches the local SHA-256 and all 28,476,420 bytes. No sharing permissions were changed. Git alone does not carry private evidence.
 
 ## 1. Get the two parts
 
@@ -10,7 +10,7 @@ Code and metadata come from `roi-branch`; implementation commit `ac1ae53df246fde
 
 On the desktop, open the **existing LANES checkout**, inspect `git status --short` and preserve any local work before pulling. Do not discard or overwrite local edits. With a clean checkout on `roi-branch`, run `git pull --ff-only origin roi-branch`. If it refuses, retain the error and reconcile the branches before continuing.
 
-Download the ZIP to an actual folder you can locate. No `incoming` folder is required. In PowerShell opened inside the existing checkout:
+Download [the verified ZIP](https://drive.google.com/file/d/1bir775mAWUtHPBDbsTsLavsX8mChYtsp/view?usp=drivesdk) to an actual folder you can locate. No `incoming` folder is required. In PowerShell opened inside the existing checkout:
 
 ```powershell
 $lanesRoot = (git rev-parse --show-toplevel).Trim()

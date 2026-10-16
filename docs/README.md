@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 16, 2026, 12:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 12:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Private desktop handoff delivered:** The [new Drive folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) contains seven owner-only files, including the unchanged v2 ZIP and desktop instructions. All seven uploaded files pass byte/hash readback; the ZIP matches 28,476,420 bytes and its frozen SHA-256. The 400 samples/40 contexts, original capture evidence, partitions and scoped admission are unchanged; all 5,234 prior preservation entries verify. No sharing changes, desktop restoration, corpus qualification, export or training occurred. [Verified delivery](evaluations/flood-ner-desktop-drive-delivery-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical laptop preparation before personal-account access:
 
 **Git handoff implementation pushed:** `ac1ae53` is verified on `origin/roi-branch`; private data/ZIPs remain ignored. Drive delivery remains pending, with no desktop restoration or qualification claimed. [Receipt](evaluations/flood-ner-desktop-handoff-20261016/publication-receipt.json). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

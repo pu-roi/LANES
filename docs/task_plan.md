@@ -1,6 +1,10 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 16, 2026, 12:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 12:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Private desktop handoff delivered:** The [new Drive folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) contains seven owner-only files, including the unchanged v2 ZIP and desktop instructions. All seven uploaded files pass byte/hash readback; the ZIP matches 28,476,420 bytes and its frozen SHA-256. The 400 samples/40 contexts, original capture evidence, partitions and scoped admission are unchanged; all 5,234 prior preservation entries verify. No sharing changes, desktop restoration, corpus qualification, export or training occurred. [Verified delivery](evaluations/flood-ner-desktop-drive-delivery-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical laptop preparation before personal-account access:
 
 - [x] **Git handoff implementation pushed:** `ac1ae53` is verified on `origin/roi-branch`; private data/ZIPs remain ignored. Drive delivery remains pending, with no desktop restoration or qualification claimed. [Receipt](evaluations/flood-ner-desktop-handoff-20261016/publication-receipt.json). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -129,8 +133,8 @@ Earlier reports retain historical counts. The October 16 default-adoption correc
 - [x] Apply separate private academic-use admission to all 400 samples and 40 contextual pairs while preserving the research-only originals. [Results](evaluations/flood-ner-academic-admission-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Deliver tokenizer-only corpus qualification tooling and a frozen evaluation protocol; preserve the single blocked run and 840/one software verification. [Report](evaluations/flood-ner-corpus-tokenizer-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Prepare the laptop private handoff, safe desktop helper and verified temporary restoration; retain the 880/one software result. [Report](evaluations/flood-ner-desktop-handoff-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Complete private Drive delivery through the verified personal account; the current connector still reports the school account. Do not broaden sharing or substitute an account. [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] **Blocked next gate:** After code/private-package delivery, verify and restore on the existing desktop, prepare relocation manifests and run tokenizer-only corpus qualification. Do not repeat GPU setup or the blocked laptop attempt. Export follows only a successful qualification. [Steps](guides/ner-desktop-handoff-20261016.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Complete private Drive delivery through the verified personal account; new handoff folder and all seven files are owner-only and hash-verified. [Receipt](evaluations/flood-ner-desktop-drive-delivery-20261016/verification.json). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] **Next desktop gate:** Code/private-package delivery is verified. Restore on the existing desktop, prepare relocation manifests and run tokenizer-only corpus qualification. Do not repeat GPU setup or the blocked laptop attempt. Export follows only a successful qualification. [Steps](guides/ner-desktop-handoff-20261016.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Separately resolve the six paper-excerpt/dataset-distribution outcomes before those uses; these are not prerequisites to deciding academic training/evaluation use. Keep drafts private while unresolved. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [ ] Retain the six production/model-distribution outcomes as deferred until those uses are pursued; academic-use admission does not decide them. The historical forms retain their original unresolved outcomes; current delegated academic-use dispositions are recorded separately. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Complete constructed-only native/candidate/v3 tokenizer comparison, serialization/replay and regression verification. This is a separate research candidate; original model, corpus and native default are preserved. [Evidence](evaluations/flood-ner-tokenizer-qualification-20261015/README-v2.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)

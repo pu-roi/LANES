@@ -1,6 +1,6 @@
 # LANES laptop continuation — October 15, 2026
 
-Current handoff: the v2 private ZIP and standard-library desktop helper pass temporary restoration for 400/40 records and all 407 selected capture-evidence files. **880 software tests passed; one skipped**. Drive upload remains pending through this chat's school-account connector. Use the [current desktop instructions](ner-desktop-handoff-20261016.md); actual desktop restoration/qualification have not run. Preserve the existing GPU environment. Earlier checkpoint details follow.
+Current handoff: private Drive delivery is verified in the [new owner-only folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT), with seven files passing readback hashes. Continue on the existing desktop using the [current instructions](ner-desktop-handoff-20261016.md). No desktop restoration/qualification or training has run. Earlier checkpoint details follow.
 
 Updated: October 16, 2026, 12:00 PM (Asia/Manila). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

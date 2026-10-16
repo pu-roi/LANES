@@ -1,6 +1,10 @@
 # LANES spaCy NER research and training proposal
 
-> **Last Updated:** October 16, 2026, 12:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 12:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Private desktop handoff delivered:** The [new Drive folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) contains seven owner-only files, including the unchanged v2 ZIP and desktop instructions. All seven uploaded files pass byte/hash readback; the ZIP matches 28,476,420 bytes and its frozen SHA-256. The 400 samples/40 contexts, original capture evidence, partitions and scoped admission are unchanged; all 5,234 prior preservation entries verify. No sharing changes, desktop restoration, corpus qualification, export or training occurred. [Verified delivery](../evaluations/flood-ner-desktop-drive-delivery-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical laptop preparation before personal-account access:
 
 **Git handoff implementation pushed:** `ac1ae53` is verified on `origin/roi-branch`; private data/ZIPs remain ignored. Drive delivery remains pending, with no desktop restoration or qualification claimed. [Receipt](../evaluations/flood-ner-desktop-handoff-20261016/publication-receipt.json). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -72,7 +76,7 @@ Earlier checkpoint summaries below retain their historical datasets and measurem
 
 ## Next preparation gates after the isolated preflight
 
-1. **Blocked next gate:** Verify the existing qualified desktop environment and actual private artifact paths, then run the new corpus-tokenizer qualification in a new ignored output there. Do not repeat GPU setup, alter Windows security policy, rerun the blocked laptop interpreter in this milestone or repeat source-use review. Git carries tooling and metadata, not ignored private data/model files; no handoff/upload is performed here. Export follows only a successful zero-error corpus alignment and completed tokenizer binding. [Current attempt](../evaluations/flood-ner-corpus-tokenizer-20261016/README.md).
+1. **Next desktop gate:** Private delivery is verified. Open the existing desktop checkout, preserve local edits, pull roi-branch, verify/restore the downloaded package and prepare relocation manifests. Then run tokenizer-only corpus qualification in a new ignored output. Preserve the existing GPU environment; export follows only a passing qualification. [Verified handoff](../guides/ner-desktop-handoff-20261016.md).
 2. Constructed tokenizer qualification is complete for the separate lanes.tl.calamancy-address-v1 candidate. Source-use admission is complete for the separate derivative; validate the selected model tokenizer against the frozen cohort before export/training. Preserve original model weights, source text, native baseline and dataset checkpoints.
 3. **Desktop GPU qualification completed:** The pulled [desktop report](../evaluations/flood-ner-desktop-gpu-20261015/README.md) verifies RTX 3060 Ti 8 GB, isolated Python 3.11.17/spaCy 3.7.5, CuPy/Torch CUDA execution and constructed trial/CPU replay. Preserve that environment on the desktop; do not repeat setup or copy its virtual environment to this laptop. No actual news training, useful six-class accuracy or production runtime compatibility follows from the constructed checks.
 4. After admission and model/tokenizer/environment qualification, export the 280/60/60 partitions and run the planned baseline and training experiments. Keep validation/testing frozen and report silver-reference agreement separately from independently verified accuracy.
@@ -318,7 +322,7 @@ Keep evidence reports under docs/evaluations/ and final operator instructions un
 
 ## Next deliverable
 
-Finish private handoff delivery, then verify and restore it on the existing desktop checkout and run the separate corpus-tokenizer qualification. The ZIP and desktop helper are locally verified; Drive remains pending through the current school-account connector. Preserve the existing GPU environment and reuse the verified model. The laptop import remains blocked by error 4551. Export follows a successful qualification; no training or deployment has run. [Handoff steps](../guides/ner-desktop-handoff-20261016.md).
+Restore the verified private handoff on the existing desktop checkout and run the separate corpus-tokenizer qualification. Personal Drive delivery and Git tooling publication are verified. Preserve the existing GPU environment, reuse the model with matching hashes and create separate relocation manifests. The laptop import remains blocked by error 4551. Export follows a successful qualification; no training or deployment has run. [Desktop steps](../guides/ner-desktop-handoff-20261016.md).
 
 ## Historical next deliverable — earlier academic-use review checkpoint
 
