@@ -31,7 +31,7 @@ Current offline qualification bindings validate after restoration. This does not
 
 ## Delivery and next gate
 
-Git publication is authorized and recorded by a separate publication receipt after push. The existing personal research folder was not modified because the current connector cannot verify owner-only access. The user's reported reconnection is preserved as context, not treated as authenticated access. No substitute-account upload or sharing change occurred.
+Git implementation publication is verified at `ac1ae53df246fdee376909d20b9ffd52f7b5f264` on `origin/roi-branch`. See [publication receipt](publication-receipt.json). The receipt/documentation update follows as a separate commit. The existing personal research folder was not modified because the current connector cannot verify owner-only access. The user's reported reconnection is preserved as context, not treated as authenticated access. No substitute-account upload or sharing change occurred.
 
 Once private delivery is verified, continue on the existing desktop checkout using the guide. Discover its actual environment/model locations, verify the ZIP without writing, restore missing evidence, create new relocation manifests and then run the separate tokenizer-only qualification. Training-format export stays behind that qualification gate.
 

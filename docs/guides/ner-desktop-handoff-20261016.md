@@ -6,7 +6,7 @@ The laptop package is ready locally. **Drive delivery is pending:** this chat's 
 
 ## 1. Get the two parts
 
-Code and metadata come from `roi-branch`. Private data come from `LANES-NER-desktop-handoff-20261016-v2.zip`, accompanied by its `.sha256`, `file-manifest.json` and `START-HERE.md` in the same local handoff folder. Preserve the previous ZIPs.
+Code and metadata come from `roi-branch`; implementation commit `ac1ae53df246fdee376909d20b9ffd52f7b5f264` is pushed and verified. Pull the latest branch to include the publication receipt too. Private data come from `LANES-NER-desktop-handoff-20261016-v2.zip`, accompanied by its `.sha256`, `file-manifest.json` and `START-HERE.md` in the same local handoff folder. Preserve the previous ZIPs.
 
 On the desktop, open the **existing LANES checkout**, inspect `git status --short` and preserve any local work before pulling. Do not discard or overwrite local edits. With a clean checkout on `roi-branch`, run `git pull --ff-only origin roi-branch`. If it refuses, retain the error and reconcile the branches before continuing.
 

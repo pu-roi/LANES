@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 16, 2026, 12:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 12:30 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Git handoff implementation pushed:** `ac1ae53` is verified on `origin/roi-branch`; private data/ZIPs remain ignored. Drive delivery remains pending, with no desktop restoration or qualification claimed. [Receipt](evaluations/flood-ner-desktop-handoff-20261016/publication-receipt.json). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Laptop handoff prepared and restoration verified:** The private v2 ZIP contains **400 admitted locations / 40 contexts**, 138 selected articles and all **407 original capture-evidence files**. Its **1,757 payload files** restore with identical hashes; a second restore skips every identical file. All 400/40 qualification inputs and selected publication evidence revalidate offline. **880 software tests passed; one skipped** (40 new handoff tests). The 23 recorded desktop/laptop model identities match; weights and environments are excluded. Three historical evidence gaps remain unreconciled; eleven invalid-test references and ten copied-manifest path aliases are separately classified. Drive delivery remains pending because this chat still sees the school account and cannot access the owner-only personal folder. Desktop restoration and tokenizer qualification have not run. [Handoff report](evaluations/flood-ner-desktop-handoff-20261016/README.md); [desktop instructions](guides/ner-desktop-handoff-20261016.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

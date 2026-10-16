@@ -1,0 +1,14 @@
+{
+  "branch": "roi-branch",
+  "implementation_commit": "ac1ae53df246fdee376909d20b9ffd52f7b5f264",
+  "remote_implementation_verified": true,
+  "private_archive_in_git": false,
+  "drive_delivery": "pending_account_access",
+  "desktop_restoration": "not_run",
+  "tokenizer_qualification": "not_run",
+  "software_tests": {
+    "passed": 880,
+    "skipped": 1
+  },
+  "receipt_status": "Records verified implementation push; publication-metadata commit follows."
+}

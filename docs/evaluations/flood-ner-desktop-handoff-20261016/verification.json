@@ -8,9 +8,10 @@
   "drive_owner_only_permissions_verified_this_run": false,
   "drive_upload": "pending_account_access",
   "exports": 0,
-  "git_publication": "authorized; receipt recorded after verified push",
+  "git_publication": "implementation pushed and remote verified",
   "gpu_environment_changes": false,
   "historical_reference_gaps": 3,
+  "implementation_commit": "ac1ae53df246fdee376909d20b9ffd52f7b5f264",
   "language_totals": {
     "english": 200,
     "taglish": 200
