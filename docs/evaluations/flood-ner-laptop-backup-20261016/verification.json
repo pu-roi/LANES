@@ -1,0 +1,228 @@
+{
+  "status": "cloud_delivery_verified",
+  "verified_at": "2026-10-16T15:19:31.258773+00:00",
+  "folder_url": "https://drive.google.com/drive/folders/1JrrMzZ3FyP0LGU00xWKF54enyyC87ffX",
+  "cloud_file_count": 19,
+  "all_cloud_files_sha256_readback_verified": true,
+  "owner_only_verified": true,
+  "archive": {
+    "all_zip_objects_hash_verified": true,
+    "archive": "LANES-NER-desktop-to-laptop-20261016-v3.zip",
+    "bytes": 700047334,
+    "environment_and_dotenv_excluded": true,
+    "excluded_entries": 27,
+    "logical_bytes": 2220662026,
+    "payload_files": 3863,
+    "required_git_commit": "477c6d4c2343d0ddc7c00e31e33f83b131774e38",
+    "sha256": "9e217a78613b1f86ce9fa2c051262fe8a53d4d74b5ec35f906758f2823cb0336",
+    "source_files_unchanged": true,
+    "status": {
+      "context_pairs": 40,
+      "dataset_readiness_complete": false,
+      "development_candidates": 179,
+      "development_drafts": 244,
+      "development_held": 65,
+      "new_test_admitted": 0,
+      "new_test_prospective": 56,
+      "new_test_sealed": false,
+      "original_articles": 138,
+      "original_corpus_samples": 400
+    },
+    "unique_objects": 2357,
+    "unique_uncompressed_bytes": 964254364
+  },
+  "files": [
+    {
+      "bytes": 2160,
+      "id": "1qGYb-amaAIrfbHSC8gEOQNGiRcHHYCHB",
+      "name": "JOIN.py",
+      "readback_verified": true,
+      "sha256": "0998ae3cb32734a9fb4ef23b9a5f940fdbb5aa2fdab806202dfd7db685f67c93",
+      "url": "https://drive.google.com/file/d/1qGYb-amaAIrfbHSC8gEOQNGiRcHHYCHB/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:33.279358+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1oireo12sZCR8YSTP50j_7q0-udG2zt6b",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part001",
+      "readback_verified": true,
+      "sha256": "fe87c0878abc3642eb153d378d3ecaffb354dcde45c2152f7883755e0aa83bfa",
+      "url": "https://drive.google.com/file/d/1oireo12sZCR8YSTP50j_7q0-udG2zt6b/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:14:10.278019+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1efOIu8XlVJ8UzTa2ygKOxsHLo_HhyrFg",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part002",
+      "readback_verified": true,
+      "sha256": "0dde04b4f80cadfc96ba18fd96abdf4cdf9446ee79a24e256c839ae82ad460a7",
+      "url": "https://drive.google.com/file/d/1efOIu8XlVJ8UzTa2ygKOxsHLo_HhyrFg/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:14:23.835169+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1L6UGlFoJOmg3WOL0uc3Y1pyAZ4_3lVTg",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part003",
+      "readback_verified": true,
+      "sha256": "7c986fdfb068e596bfd8b368197fdb3372677b0ecae2c13a96c2d683925797a3",
+      "url": "https://drive.google.com/file/d/1L6UGlFoJOmg3WOL0uc3Y1pyAZ4_3lVTg/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:14:38.064621+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1IHf-qHGwi68LTbY9IerbTQfoEgTDv7pa",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part004",
+      "readback_verified": true,
+      "sha256": "d797f455df14d69a92a417b0740ca0c6dc8e5e1a019a9086877779c06b98f33a",
+      "url": "https://drive.google.com/file/d/1IHf-qHGwi68LTbY9IerbTQfoEgTDv7pa/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:14:52.630535+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "11-EJymF06mp7iWAL1gM5wbCLyCkeaAXE",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part005",
+      "readback_verified": true,
+      "sha256": "f5682a3a151756be8300c5e02afa08bf1d3336665609d800cb0433c4717f9d49",
+      "url": "https://drive.google.com/file/d/11-EJymF06mp7iWAL1gM5wbCLyCkeaAXE/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:15:07.884272+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1T1fTqcBTGU6glQON42v8C3wxSbl1ozuO",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part006",
+      "readback_verified": true,
+      "sha256": "64ee5f327bfc9b17cc0e7ed2ca84bd6fc1f4eca1284d71df6be3b6f0aa355908",
+      "url": "https://drive.google.com/file/d/1T1fTqcBTGU6glQON42v8C3wxSbl1ozuO/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:15:21.815151+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1O4P5YqlY5w8bz7MMRa4K_rGCPkHddEji",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part007",
+      "readback_verified": true,
+      "sha256": "6d30e95a53e3b6a1ce880e85072a778f3ae3ce6d3d0277dc53b54648670381a5",
+      "url": "https://drive.google.com/file/d/1O4P5YqlY5w8bz7MMRa4K_rGCPkHddEji/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:15:35.834754+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "105QcVnuibPm98f__TLfxN6tTuSFCECju",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part008",
+      "readback_verified": true,
+      "sha256": "710309edff925931f6727cc5ea53987419d34ad8c9c50a81f0b0b9b29d3f9c53",
+      "url": "https://drive.google.com/file/d/105QcVnuibPm98f__TLfxN6tTuSFCECju/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:15:49.718174+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1oGLlMAdN93IsC38mnpODFWnFzkPzeOx0",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part009",
+      "readback_verified": true,
+      "sha256": "a3236934066d8d1fa7525bed92cbc115f69c72b1a8d226ce69802afb4878afa5",
+      "url": "https://drive.google.com/file/d/1oGLlMAdN93IsC38mnpODFWnFzkPzeOx0/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:16:03.259853+00:00"
+    },
+    {
+      "bytes": 67108864,
+      "id": "1pOrHf75u5idqrkytOSLZY8d0zhVkQZoM",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part010",
+      "readback_verified": true,
+      "sha256": "9cff7108cd5fd3541001e41b400914d333710ab45e87ef8d3300cd4c7bf60a10",
+      "url": "https://drive.google.com/file/d/1pOrHf75u5idqrkytOSLZY8d0zhVkQZoM/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:18:18.844998+00:00"
+    },
+    {
+      "bytes": 28958694,
+      "id": "1V0ZZYjMuvN-Y4CUdEIDxwtA7AYTi2Luo",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.part011",
+      "readback_verified": true,
+      "sha256": "cbeecb98a9bfe869cf5d4d66348d93894c6a46c049807761ba24acb58d136dc6",
+      "url": "https://drive.google.com/file/d/1V0ZZYjMuvN-Y4CUdEIDxwtA7AYTi2Luo/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:53.354637+00:00"
+    },
+    {
+      "bytes": 111,
+      "id": "1_C_G6MdjP_tZ0yg3r1RDOsi6m9dk6tnG",
+      "name": "LANES-NER-desktop-to-laptop-20261016-v3.zip.sha256",
+      "readback_verified": true,
+      "sha256": "c5e3f5b4aaa37a20d680b2ff01f363925538dfd3fe27603ade3ae144586857d6",
+      "url": "https://drive.google.com/file/d/1_C_G6MdjP_tZ0yg3r1RDOsi6m9dk6tnG/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:23.654081+00:00"
+    },
+    {
+      "bytes": 1014452,
+      "id": "1Gk8Do-kMj4nm2zBnaXB-o_ySiEohgTS4",
+      "name": "MANIFEST.json",
+      "readback_verified": true,
+      "sha256": "f10ad5bf6a7d4f317adb96d82b63c05f2cf209b6c5cbb63f765d2e4a3f21dee8",
+      "url": "https://drive.google.com/file/d/1Gk8Do-kMj4nm2zBnaXB-o_ySiEohgTS4/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:45.425328+00:00"
+    },
+    {
+      "bytes": 4346,
+      "id": "194LCYpoFhERYLZ5G8aHHsUeM34iXhI6z",
+      "name": "RESTORE.py",
+      "readback_verified": true,
+      "sha256": "fc2c08ac632a9eed70f91c0e99b410889ddeb62889ee2d472c789f2971d5bb1c",
+      "url": "https://drive.google.com/file/d/194LCYpoFhERYLZ5G8aHHsUeM34iXhI6z/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:39.075061+00:00"
+    },
+    {
+      "bytes": 1915,
+      "id": "1s-xOUc7_HPab43TnfDvu5ZV7AGsERu9L",
+      "name": "SHA256SUMS.txt",
+      "readback_verified": true,
+      "sha256": "921be65bedb76f6ea828656b23a657b414a7fd5e481c8942d2a8cae7c99c1e7a",
+      "url": "https://drive.google.com/file/d/1s-xOUc7_HPab43TnfDvu5ZV7AGsERu9L/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:29.735934+00:00"
+    },
+    {
+      "bytes": 5895,
+      "id": "1Ihw2nzPjT84pM5ZlGEJ3w-b4A1ilPuiL",
+      "name": "START-HERE.md",
+      "readback_verified": true,
+      "sha256": "5d5f271ce25bb2451ecf309d6fa11ec1dd1a1e8752edb9fe182dce18a9e99ecc",
+      "url": "https://drive.google.com/file/d/1Ihw2nzPjT84pM5ZlGEJ3w-b4A1ilPuiL/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:42.179694+00:00"
+    },
+    {
+      "bytes": 2348,
+      "id": "1U976EpLzeFo8oOYrCWZdxT46rU1GQxlt",
+      "name": "archive-parts.json",
+      "readback_verified": true,
+      "sha256": "7ae19dcf1638e16ec66aead26147a785218b217ad4f049e23db2afd710e2fcd5",
+      "url": "https://drive.google.com/file/d/1U976EpLzeFo8oOYrCWZdxT46rU1GQxlt/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:36.071429+00:00"
+    },
+    {
+      "bytes": 862,
+      "id": "1CllRKiCGPWABbvM1Jz3wY4triKS72wA9",
+      "name": "backup-summary.json",
+      "readback_verified": true,
+      "sha256": "65e8ab8f99def5c52ee4b80384c03300588a1db08957b8f581dc453b166eb061",
+      "url": "https://drive.google.com/file/d/1CllRKiCGPWABbvM1Jz3wY4triKS72wA9/view?usp=drivesdk",
+      "verified_at": "2026-10-16T15:13:26.818014+00:00"
+    }
+  ],
+  "constructed_join_checks": [
+    "join_and_identical_skip",
+    "changed_part",
+    "existing_conflict"
+  ],
+  "restore_unittests_passed": 8,
+  "desktop_verify_only_result": {
+    "archive_sha256": "9e217a78613b1f86ce9fa2c051262fe8a53d4d74b5ec35f906758f2823cb0336",
+    "payload_files": 3863,
+    "unique_objects": 2357,
+    "identical_existing": 3863,
+    "missing": 0,
+    "conflicts": [],
+    "restored": 0,
+    "verified": true,
+    "restore_requested": false,
+    "source_environment_restored": false,
+    "training_or_inference": false
+  },
+  "new_training_inference_or_dependency_changes": false,
+  "laptop_restoration_executed": false
+}

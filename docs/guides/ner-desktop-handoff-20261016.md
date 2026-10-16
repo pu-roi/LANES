@@ -1,6 +1,6 @@
-# Continue the NER work on the existing desktop checkout
+# Continue the NER work across desktop and laptop
 
-> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 11:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current Gate 3 status:** Improvement preparation is complete; additional-dataset readiness/admission remains open. Development has 244 drafts (179 candidates / 65 holds); isolated test curation has 56 prospective entries, zero admitted independent test records and no seal. Resolve coverage, reference/language, source-use, historical-overlap and the single development tokenizer-alignment failure before corpus admission/export or further training. Original 400-sample results and model roles remain frozen. [Readiness report](../evaluations/flood-ner-additional-dataset-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -36,9 +36,13 @@ The original handoff procedure below is retained for audit and future verified r
 
 **Private Drive delivery verified:** The unchanged v2 ZIP is available in the [desktop handoff folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) under your LANES_NER folder. Personal account roicambe02@gmail.com and owner-only permissions were verified. The uploaded ZIP was read back and matches the local SHA-256 and all 28,476,420 bytes. No sharing permissions were changed. Git alone does not carry private evidence.
 
-## Current cross-computer continuation
+## Current cross-computer continuation: verified v3 backup
 
-Git carries code, tests and metadata only. The existing v2 Drive ZIP predates the desktop exports, trained checkpoints, final evaluation, improvement preparation and additional-dataset packages; it cannot restore those newer private artifacts. Preserve and transfer the required ignored checkpoints with verified manifests before continuing on another computer. Keep isolated test texts/labels outside model-development inspection. No fresh backup upload is claimed by this documentation/push task. Missing private evidence is a prerequisite to resolve, not a reason to recreate or rerun the frozen test.
+The newer private artifacts are now in the owner-only [desktop-to-laptop-20261016-v3 folder](https://drive.google.com/drive/folders/1JrrMzZ3FyP0LGU00xWKF54enyyC87ffX). **Download all 19 files into one folder** and follow its [START-HERE.md](https://drive.google.com/file/d/1Ihw2nzPjT84pM5ZlGEJ3w-b4A1ilPuiL/view?usp=drivesdk). The 11 parts assemble into a 700,047,334-byte ZIP with SHA-256 `9e217a78613b1f86ce9fa2c051262fe8a53d4d74b5ec35f906758f2823cb0336`. Use `JOIN.py`, then `RESTORE.py` verification-only, then explicit restoration. The helper restores missing original paths and skips identical files; conflicting bytes stop before writes. [Verified backup receipt](../evaluations/flood-ner-laptop-backup-20261016/README.md).
+
+Git carries code and metadata; v3 carries 3,863 private research files, including newer models/results and both additional-dataset packages. Preserve laptop `.env` and installed environments, which are excluded. Keep the isolated held-out private texts and labels outside development inspection. Leave original frozen manifests unchanged and record laptop path relocation separately when needed. Continue the same incomplete Gate 3 dataset-readiness task after restoration; do not rerun the original test or start training automatically. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The following numbered procedure is the **historical laptop-to-desktop v2 handoff**, retained for audit. It predates the newer desktop work and is not the current laptop restoration procedure.
 
 ## 1. Get the two parts
 

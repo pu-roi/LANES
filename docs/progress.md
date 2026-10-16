@@ -1,6 +1,10 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 11:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 16: New desktop research artifacts backed up for laptop continuation
+
+**Laptop backup verified:** The owner-only [v3 Drive backup](https://drive.google.com/drive/folders/1JrrMzZ3FyP0LGU00xWKF54enyyC87ffX) contains the newer research artifacts: 3,863 files, including trained checkpoints and additional-dataset packages. All 19 uploaded files pass full SHA-256 readback. Download all files and follow `START-HERE.md` / the [backup receipt](evaluations/flood-ner-laptop-backup-20261016/README.md). Dataset readiness remains open; resume the existing Gate 3 task after verified laptop restoration. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 16: Publication documentation synchronized
 

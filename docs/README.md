@@ -1,6 +1,8 @@
 # LANES documentation
 
-> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 11:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Laptop backup verified:** The owner-only [v3 Drive backup](https://drive.google.com/drive/folders/1JrrMzZ3FyP0LGU00xWKF54enyyC87ffX) contains the newer research artifacts: 3,863 files, including trained checkpoints and additional-dataset packages. All 19 uploaded files pass full SHA-256 readback. Download all files and follow `START-HERE.md` / the [backup receipt](evaluations/flood-ner-laptop-backup-20261016/README.md). Dataset readiness remains open; resume the existing Gate 3 task after verified laptop restoration. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Gate 3 additional-dataset readiness remains open:** Flood-focused acquisition records 365 development candidate URLs (363 article keys) / 182 capture attempts / 159 captures. The draft has **244 passages / 49 articles**; **179 source-reading candidates and 65 held records** cannot meet the 240-passage theme/language quotas (candidate capacity 156). One frozen-tokenizer alignment failure is preserved. Admission, grouped partition freeze, export and training remain zero. The isolated curator result is recorded separately; no fresh-test readiness is assumed. **Next: resolve the recorded dataset-readiness gaps under the same Gate 3 task.** [Readiness report](evaluations/flood-ner-additional-dataset-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -375,6 +377,7 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Evaluations and simulations
 
+- [Verified desktop-to-laptop private backup](evaluations/flood-ner-laptop-backup-20261016/README.md) - owner-only v3 delivery, all 19 cloud hashes, restore checks and laptop continuation instructions.
 - [October 16 NER publication audit](evaluations/flood-ner-publication-20261016/README.md) - synchronized documentation, constructed tooling regressions, dependency/schema scope and private-file exclusion before roi-branch publication.
 - [Additional NER dataset acquisition/readiness](evaluations/flood-ner-additional-dataset-20261016/README.md) - flood-topic draft pool, per-record/source-use holds, tokenizer failure, bounded isolated curation and unmet quotas; no admission/export/training.
 - [Gate 3 NER improvement preparation](evaluations/flood-ner-improvement-preparation-20261016/README.md) - 14-question addendum, 48 constructed cases, train/dev coverage, acquisition requirements and [future evaluation protocol](evaluations/flood-ner-improvement-preparation-20261016/future-evaluation-protocol.md); no retraining.
