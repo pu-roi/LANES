@@ -1,0 +1,13 @@
+{
+  "archive_sha256": "9e217a78613b1f86ce9fa2c051262fe8a53d4d74b5ec35f906758f2823cb0336",
+  "conflicts": [],
+  "identical_existing": 1642,
+  "missing": 2221,
+  "payload_files": 3863,
+  "restore_requested": true,
+  "restored": 2221,
+  "source_environment_restored": false,
+  "training_or_inference": false,
+  "unique_objects": 2357,
+  "verified": true
+}

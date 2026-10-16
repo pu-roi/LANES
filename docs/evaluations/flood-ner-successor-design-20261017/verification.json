@@ -1,0 +1,20 @@
+{
+  "design_complete": true,
+  "training_ready": false,
+  "membership_records_checked": 565,
+  "shared_schema_records_checked": 565,
+  "unexpected_schema_unicode_overlap_or_alignment_failures": 0,
+  "alignment_evidence": "Rechecked immutable prior real tokenizer boundaries, request/worker hashes, unchanged source records, tokenizer and vocabulary; no fresh tokenizer execution claimed.",
+  "known_alignment_failure_preserved": 1,
+  "proposed_member_spans_aligned": 918,
+  "historical_train_anchors_including_excluded_held": 280,
+  "historical_nontraining_members_reused": 0,
+  "historical_training_component_leakage": 0,
+  "proposed_cross_partition_groups": 0,
+  "protected_files_unchanged": 1461,
+  "prior_protected_files_unchanged": 1207,
+  "safe_curator_metadata_files_unchanged": 2,
+  "fresh_text_labels_opened": false,
+  "actual_admission_freeze_export_inference_training_push": false,
+  "public_api_dependencies_database_unchanged": true
+}

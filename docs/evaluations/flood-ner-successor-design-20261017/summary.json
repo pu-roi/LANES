@@ -1,0 +1,440 @@
+{
+  "design_complete": true,
+  "training_ready": false,
+  "considered_records": 565,
+  "dispositions": {
+    "propose_include": 402,
+    "hold": 99,
+    "exclude": 64
+  },
+  "proposed_allocation": {
+    "train": 345,
+    "dev": 57
+  },
+  "coverage": {
+    "train": {
+      "records": 345,
+      "languages": {
+        "english": 170,
+        "taglish": 175
+      },
+      "positive_passages": 242,
+      "empty_location_passages": 103,
+      "label_spans": {
+        "ROAD": 201,
+        "LANDMARK": 58,
+        "LOCAL_AREA": 19,
+        "BARANGAY": 85,
+        "CITY": 308,
+        "PROVINCE": 169
+      },
+      "pools": {
+        "original_train": 214,
+        "reviewed_additional": 121,
+        "saved_source_window": 10
+      },
+      "flood_report_roles": {
+        "observed_flooding": 161,
+        "prevention_project": 55,
+        "recovery": 81,
+        "warning_forecast": 48
+      },
+      "themes": {
+        "compound-crossing-roads": 13,
+        "facilities-institutions": 22,
+        "geographic-type-ambiguity": 26,
+        "historical-not-theme-coded": 214,
+        "locality-designators": 11,
+        "misleading-names-time-common-words": 27,
+        "project-asset-names": 18,
+        "shared-identifiers": 5,
+        "short-codes": 9
+      },
+      "conservative_group_components": 38,
+      "source_articles": 126,
+      "certified_independent_groups": null,
+      "group_count_is_not_proof_of_independence": true,
+      "by_language": {
+        "english": {
+          "records": 170,
+          "positive_passages": 132,
+          "empty_location_passages": 38,
+          "label_spans": {
+            "ROAD": 155,
+            "LANDMARK": 38,
+            "LOCAL_AREA": 6,
+            "BARANGAY": 34,
+            "CITY": 186,
+            "PROVINCE": 106
+          },
+          "positive_passages_by_label": {
+            "ROAD": 48,
+            "LANDMARK": 31,
+            "LOCAL_AREA": 6,
+            "BARANGAY": 24,
+            "CITY": 76,
+            "PROVINCE": 53
+          },
+          "group_support_by_label": {
+            "ROAD": 6,
+            "LANDMARK": 9,
+            "LOCAL_AREA": 3,
+            "BARANGAY": 10,
+            "CITY": 21,
+            "PROVINCE": 19
+          },
+          "flood_report_roles": {
+            "observed_flooding": 94,
+            "prevention_project": 12,
+            "recovery": 37,
+            "warning_forecast": 27
+          },
+          "themes": {
+            "compound-crossing-roads": 11,
+            "facilities-institutions": 10,
+            "geographic-type-ambiguity": 13,
+            "historical-not-theme-coded": 108,
+            "locality-designators": 3,
+            "misleading-names-time-common-words": 10,
+            "project-asset-names": 8,
+            "shared-identifiers": 2,
+            "short-codes": 5
+          },
+          "conservative_group_components": 24
+        },
+        "taglish": {
+          "records": 175,
+          "positive_passages": 110,
+          "empty_location_passages": 65,
+          "label_spans": {
+            "ROAD": 46,
+            "LANDMARK": 20,
+            "LOCAL_AREA": 13,
+            "BARANGAY": 51,
+            "CITY": 122,
+            "PROVINCE": 63
+          },
+          "positive_passages_by_label": {
+            "ROAD": 26,
+            "LANDMARK": 13,
+            "LOCAL_AREA": 10,
+            "BARANGAY": 27,
+            "CITY": 61,
+            "PROVINCE": 39
+          },
+          "group_support_by_label": {
+            "ROAD": 9,
+            "LANDMARK": 7,
+            "LOCAL_AREA": 6,
+            "BARANGAY": 11,
+            "CITY": 19,
+            "PROVINCE": 17
+          },
+          "flood_report_roles": {
+            "observed_flooding": 67,
+            "prevention_project": 43,
+            "recovery": 44,
+            "warning_forecast": 21
+          },
+          "themes": {
+            "compound-crossing-roads": 2,
+            "facilities-institutions": 12,
+            "geographic-type-ambiguity": 13,
+            "historical-not-theme-coded": 106,
+            "locality-designators": 8,
+            "misleading-names-time-common-words": 17,
+            "project-asset-names": 10,
+            "shared-identifiers": 3,
+            "short-codes": 4
+          },
+          "conservative_group_components": 28
+        }
+      }
+    },
+    "dev": {
+      "records": 57,
+      "languages": {
+        "english": 37,
+        "taglish": 20
+      },
+      "positive_passages": 30,
+      "empty_location_passages": 27,
+      "label_spans": {
+        "ROAD": 14,
+        "LANDMARK": 5,
+        "LOCAL_AREA": 12,
+        "BARANGAY": 17,
+        "CITY": 20,
+        "PROVINCE": 10
+      },
+      "pools": {
+        "reviewed_additional": 47,
+        "saved_source_window": 10
+      },
+      "flood_report_roles": {
+        "observed_flooding": 27,
+        "prevention_project": 10,
+        "recovery": 16,
+        "warning_forecast": 4
+      },
+      "themes": {
+        "compound-crossing-roads": 9,
+        "facilities-institutions": 10,
+        "geographic-type-ambiguity": 10,
+        "locality-designators": 8,
+        "misleading-names-time-common-words": 11,
+        "project-asset-names": 6,
+        "shared-identifiers": 3
+      },
+      "conservative_group_components": 20,
+      "source_articles": 23,
+      "certified_independent_groups": null,
+      "group_count_is_not_proof_of_independence": true,
+      "by_language": {
+        "english": {
+          "records": 37,
+          "positive_passages": 20,
+          "empty_location_passages": 17,
+          "label_spans": {
+            "ROAD": 14,
+            "LANDMARK": 5,
+            "LOCAL_AREA": 9,
+            "BARANGAY": 10,
+            "CITY": 8,
+            "PROVINCE": 2
+          },
+          "positive_passages_by_label": {
+            "ROAD": 6,
+            "LANDMARK": 5,
+            "LOCAL_AREA": 4,
+            "BARANGAY": 8,
+            "CITY": 7,
+            "PROVINCE": 2
+          },
+          "group_support_by_label": {
+            "ROAD": 6,
+            "LANDMARK": 4,
+            "LOCAL_AREA": 4,
+            "BARANGAY": 7,
+            "CITY": 6,
+            "PROVINCE": 2
+          },
+          "flood_report_roles": {
+            "observed_flooding": 21,
+            "prevention_project": 2,
+            "recovery": 12,
+            "warning_forecast": 2
+          },
+          "themes": {
+            "compound-crossing-roads": 7,
+            "facilities-institutions": 7,
+            "geographic-type-ambiguity": 7,
+            "locality-designators": 5,
+            "misleading-names-time-common-words": 7,
+            "project-asset-names": 2,
+            "shared-identifiers": 2
+          },
+          "conservative_group_components": 14
+        },
+        "taglish": {
+          "records": 20,
+          "positive_passages": 10,
+          "empty_location_passages": 10,
+          "label_spans": {
+            "ROAD": 0,
+            "LANDMARK": 0,
+            "LOCAL_AREA": 3,
+            "BARANGAY": 7,
+            "CITY": 12,
+            "PROVINCE": 8
+          },
+          "positive_passages_by_label": {
+            "ROAD": 0,
+            "LANDMARK": 0,
+            "LOCAL_AREA": 2,
+            "BARANGAY": 3,
+            "CITY": 5,
+            "PROVINCE": 5
+          },
+          "group_support_by_label": {
+            "ROAD": 0,
+            "LANDMARK": 0,
+            "LOCAL_AREA": 2,
+            "BARANGAY": 3,
+            "CITY": 4,
+            "PROVINCE": 3
+          },
+          "flood_report_roles": {
+            "observed_flooding": 6,
+            "prevention_project": 8,
+            "recovery": 4,
+            "warning_forecast": 2
+          },
+          "themes": {
+            "compound-crossing-roads": 2,
+            "facilities-institutions": 3,
+            "geographic-type-ambiguity": 3,
+            "locality-designators": 3,
+            "misleading-names-time-common-words": 4,
+            "project-asset-names": 4,
+            "shared-identifiers": 1
+          },
+          "conservative_group_components": 10
+        }
+      }
+    },
+    "combined": {
+      "records": 402,
+      "languages": {
+        "english": 207,
+        "taglish": 195
+      },
+      "positive_passages": 272,
+      "empty_location_passages": 130,
+      "label_spans": {
+        "ROAD": 215,
+        "LANDMARK": 63,
+        "LOCAL_AREA": 31,
+        "BARANGAY": 102,
+        "CITY": 328,
+        "PROVINCE": 179
+      },
+      "pools": {
+        "original_train": 214,
+        "reviewed_additional": 168,
+        "saved_source_window": 20
+      },
+      "flood_report_roles": {
+        "observed_flooding": 188,
+        "prevention_project": 65,
+        "recovery": 97,
+        "warning_forecast": 52
+      },
+      "themes": {
+        "compound-crossing-roads": 22,
+        "facilities-institutions": 32,
+        "geographic-type-ambiguity": 36,
+        "historical-not-theme-coded": 214,
+        "locality-designators": 19,
+        "misleading-names-time-common-words": 38,
+        "project-asset-names": 24,
+        "shared-identifiers": 8,
+        "short-codes": 9
+      },
+      "conservative_group_components": 58,
+      "source_articles": 149,
+      "certified_independent_groups": null,
+      "group_count_is_not_proof_of_independence": true,
+      "by_language": {
+        "english": {
+          "records": 207,
+          "positive_passages": 152,
+          "empty_location_passages": 55,
+          "label_spans": {
+            "ROAD": 169,
+            "LANDMARK": 43,
+            "LOCAL_AREA": 15,
+            "BARANGAY": 44,
+            "CITY": 194,
+            "PROVINCE": 108
+          },
+          "positive_passages_by_label": {
+            "ROAD": 54,
+            "LANDMARK": 36,
+            "LOCAL_AREA": 10,
+            "BARANGAY": 32,
+            "CITY": 83,
+            "PROVINCE": 55
+          },
+          "group_support_by_label": {
+            "ROAD": 12,
+            "LANDMARK": 13,
+            "LOCAL_AREA": 7,
+            "BARANGAY": 17,
+            "CITY": 27,
+            "PROVINCE": 21
+          },
+          "flood_report_roles": {
+            "observed_flooding": 115,
+            "prevention_project": 14,
+            "recovery": 49,
+            "warning_forecast": 29
+          },
+          "themes": {
+            "compound-crossing-roads": 18,
+            "facilities-institutions": 17,
+            "geographic-type-ambiguity": 20,
+            "historical-not-theme-coded": 108,
+            "locality-designators": 8,
+            "misleading-names-time-common-words": 17,
+            "project-asset-names": 10,
+            "shared-identifiers": 4,
+            "short-codes": 5
+          },
+          "conservative_group_components": 38
+        },
+        "taglish": {
+          "records": 195,
+          "positive_passages": 120,
+          "empty_location_passages": 75,
+          "label_spans": {
+            "ROAD": 46,
+            "LANDMARK": 20,
+            "LOCAL_AREA": 16,
+            "BARANGAY": 58,
+            "CITY": 134,
+            "PROVINCE": 71
+          },
+          "positive_passages_by_label": {
+            "ROAD": 26,
+            "LANDMARK": 13,
+            "LOCAL_AREA": 12,
+            "BARANGAY": 30,
+            "CITY": 66,
+            "PROVINCE": 44
+          },
+          "group_support_by_label": {
+            "ROAD": 9,
+            "LANDMARK": 7,
+            "LOCAL_AREA": 8,
+            "BARANGAY": 14,
+            "CITY": 23,
+            "PROVINCE": 20
+          },
+          "flood_report_roles": {
+            "observed_flooding": 73,
+            "prevention_project": 51,
+            "recovery": 48,
+            "warning_forecast": 23
+          },
+          "themes": {
+            "compound-crossing-roads": 4,
+            "facilities-institutions": 15,
+            "geographic-type-ambiguity": 16,
+            "historical-not-theme-coded": 106,
+            "locality-designators": 11,
+            "misleading-names-time-common-words": 21,
+            "project-asset-names": 14,
+            "shared-identifiers": 4,
+            "short-codes": 4
+          },
+          "conservative_group_components": 38
+        }
+      }
+    }
+  },
+  "historical_training_records_anchored": 280,
+  "historical_attempts_bound": 8,
+  "completed_historical_runs_bound": 7,
+  "group_components_with_members": 58,
+  "validation_components": 20,
+  "relationship_admission_holds": 259,
+  "historical_nontraining_overlap_holds": 0,
+  "actual_admitted_or_frozen_records": 0,
+  "known_tokenizer_failure_remains_held": true,
+  "fresh_test_admitted_records": 0,
+  "fresh_test_sealed": false,
+  "old_240_requirement_prospectively_superseded": true,
+  "silver_not_human_gold": true,
+  "new_collection_inference_training_export_or_push": false
+}

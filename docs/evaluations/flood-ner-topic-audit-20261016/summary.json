@@ -1,0 +1,104 @@
+{
+  "admission_package_hash_errors": [],
+  "admission_package_hashes_checked": 52,
+  "article_years": {
+    "2017": 17,
+    "2018": 16,
+    "2019": 9,
+    "2020": 19,
+    "2021": 6,
+    "2022": 10,
+    "2023": 7,
+    "2024": 16,
+    "2025": 16,
+    "2026": 22
+  },
+  "counts": {
+    "articles": 138,
+    "contexts": 40,
+    "negatives": 48,
+    "records": 400,
+    "spans": 1465
+  },
+  "date_range": [
+    "2017-01-10",
+    "2026-09-04"
+  ],
+  "focused_review": {
+    "articles": 5,
+    "passages": 19,
+    "splits": {
+      "dev": 9,
+      "test": 4,
+      "train": 6
+    },
+    "weak_windows": 6,
+    "weak_windows_by_split": {
+      "dev": 4,
+      "test": 2
+    }
+  },
+  "group_key_leaks": 0,
+  "input_bindings_match_recorded_export": {
+    "admission_ledger": true,
+    "admission_package": true,
+    "cohort": true,
+    "context": true
+  },
+  "labels": {
+    "BARANGAY": 177,
+    "CITY": 478,
+    "LANDMARK": 102,
+    "LOCAL_AREA": 88,
+    "PROVINCE": 274,
+    "ROAD": 346
+  },
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "lexical_diagnostics_only": {
+    "articles_with_any_flood_lexeme": 138,
+    "passages_without_flood_lexeme": 170,
+    "semantic_relevance_inferred_from_regex": false
+  },
+  "negative_split_language": {
+    "dev:taglish": 6,
+    "test:english": 2,
+    "test:taglish": 1,
+    "train:english": 6,
+    "train:taglish": 33
+  },
+  "newer_private_checkpoint_present": {
+    "additional-dataset-20261016-v1": false,
+    "additional-heldout-curation-20261016-v1": false,
+    "experiment-preparation-20261016-v2": false,
+    "model-qualification-review-20261016-v1": false
+  },
+  "old_articles_2017_2021": 67,
+  "old_samples_2017_2021": 188,
+  "records_replaced": 0,
+  "reviewer": "Codex AI review; not independent reference adjudication",
+  "sample_years": {
+    "2017": 55,
+    "2018": 36,
+    "2019": 32,
+    "2020": 46,
+    "2021": 19,
+    "2022": 30,
+    "2023": 16,
+    "2024": 42,
+    "2025": 49,
+    "2026": 75
+  },
+  "schema_version": "lanes-flood-ner-topic-audit-v1",
+  "scope": "Original admitted corpus inventory and focused relevance review; no new-pool body review or model execution.",
+  "semantic_completeness_or_tokenizer_alignment_certified": false,
+  "splits": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "structural_failures": [],
+  "training_or_inference_performed": false
+}

@@ -1,0 +1,40 @@
+{
+  "safe_metadata_inputs": {
+    "backend/training/flood_ner/artifacts/additional-heldout-curation-20261016-v1/aggregate-status.json": "5fa97fa6faceeb50424a205995c3ee73fec10dd6fe3c397539ebbd5c1ea0267f",
+    "backend/training/flood_ner/artifacts/additional-heldout-curation-20261016-v1/verification-manifest.json": "9fc32cfae62fbb80fbd06f03d5e3232f100893497b0aff06c0a4dcf7b8a1663c"
+  },
+  "curator_package": "additional-heldout-curation-20261016-v1",
+  "status": "incomplete-unsealed",
+  "ready": false,
+  "sealed": false,
+  "admitted_records": 0,
+  "records": 0,
+  "candidate_records": 56,
+  "candidate_languages": {
+    "english": 31,
+    "tagalog": 2,
+    "taglish": 22,
+    "unknown": 1
+  },
+  "complete_silver_candidate_references": 41,
+  "unresolved_references": 15,
+  "captured_history_hold_sources": 14,
+  "third_party_extent_hold_sources": 2,
+  "blockers": [
+    "Exact 60 definitive passages / 30 English + 30 Taglish / 3 genuine negatives per language quotas not met. Only 56 prospective candidates; 22 operational Taglish; 41 complete silver references across all languages before history/source-use admission.",
+    "15 full references unresolved; no type guessed for bare ambiguous administrative names, uncertain proposal/project assets or weak language mixing.",
+    "14 captured article histories held for actual undated or potentially continuing source/event/project relationships; complete unavailable external/laptop exposure reconciliation not available.",
+    "2 sources retain specific independently credited photo/user-content extent/basis holds in full working context.",
+    "No independently admitted held-out membership or final test seal. All candidates remain private holds; none count as definitive negatives or training data."
+  ],
+  "new_development_exclusions_required": true,
+  "curator_appointed_or_contacted": false,
+  "fresh_text_labels_opened": false,
+  "required_final_design": {
+    "records": 60,
+    "english": 30,
+    "taglish": 30,
+    "negatives_each_language": 3
+  },
+  "no_reuse_as_development": "All curator material remains isolated; no references, URLs or candidate texts were read."
+}

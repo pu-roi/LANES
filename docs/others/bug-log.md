@@ -1,6 +1,78 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 16, 2026, 8:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 17, 2026, 3:25 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Investigated: targeted test discovery exceeded its URL exposure ceiling
+
+- **Status / severity / investigator:** Contained; P2 acquisition protocol failure and readiness blocker. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The cumulative independent-test search exposure reached 202 URLs against the fixed 200 ceiling, adding 17 new URLs against an allowance of at most 15. No capture-attempt ceiling breach occurred.
+- **Root cause:** A final search fan-out returned 11 unseen URLs when nine slots remained. The result count was not bounded tightly enough before exposure; truncating the recorded ledger afterward would conceal the breach.
+- **Containment:** Stop all searches/fetches immediately; retain every exposure and hold the entire final batch. Review only the five successful captures obtained beforehand. Mark acquisition-budget compliance false, keep the test unsealed and admit/score zero records. No retroactive budget expansion or selective deletion. Future discovery needs a mechanism that bounds exposure before it happens, with explicit scope resolution before further collection.
+- **Files / verification:** Separate private targeted curator and desktop-history handoff packages; budget/alias/post-breach selection rejection checks and safe aggregate reports. Portable standard-library history helper, desktop instructions and laptop verification address the separate unknown-history gap. [Evidence](../evaluations/flood-ner-targeted-test-history-handoff-20261017/README.md).
+
+## Investigated: recorded backup completeness differs from unknown external history
+
+- **Status / severity / investigator:** Recorded backups verified; P2 independent-test readiness remains open. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** A partial Drive listing and the earlier dated inventory do not establish missing handoff parts or complete external article history.
+- **Root cause:** Connector search coverage, byte-integrity of known backups, source-body variants and unrecorded cross-computer collections are separate evidence categories.
+- **Solution:** Read all 19 recorded Drive IDs, hash-verify local parts/objects/3,863 payloads and seven historical ZIP entries, construct source-only history evidence and preserve the user's unknown-history status. Isolated selection checks positive quotas, mutually exclusive windows, overlaps and source caps. No restored overwrite or seal.
+- **Files / verification:** Separate archive-history and isolated heldout-selection packages, aggregate report and synchronized workflow docs; 12 archive/privacy tests pass, 4,077 protected files and 1,691 overlapping source-evidence bindings unchanged. [Evidence](../evaluations/flood-ner-archive-history-test-selection-20261017/README.md).
+
+## Investigated: source qualification does not establish independent-test freshness
+
+- **Status / severity / investigator:** Development qualification completed; P2 independent-test history gap remains. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Proposed member eligibility and conservative dependency containment do not certify unseen test articles when older cross-computer collections may be missing.
+- **Root cause:** Project-use adoption, actual corpus admission, semantic event identity and freshness are separate facts; the user explicitly remains unsure about complete history.
+- **Solution:** Record 149 exact source-case qualifications and 259 conservative relationship dispositions, preserve every fitted anchor and keep an isolated curator/test package unsealed. Unsupported old cases remain held.
+- **Files / verification:** Separate successor-qualification and isolated heldout-reassessment private packages, public aggregates and synchronized workflow records. 18 development boundary tests pass; 565 IDs and 918 usable spans reconcile; 1,489 protected prior files unchanged. [Evidence](../evaluations/flood-ner-successor-qualification-20261017/README.md).
+
+## Investigated: successor allocation must retain excluded historical training anchors
+
+- **Status / severity / investigator:** Design safeguards verified; P2 qualification/evaluation gaps remain. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Anchoring only reusable historical training examples suggests 58 validation candidates; previously fitted examples now excluded/held still establish training exposure.
+- **Root cause:** Review eligibility is different from historical fitted membership; using the eligible subset as the exposure inventory omits one additional source dependency.
+- **Solution:** Bind all eight actual attempts to the immutable 280-record export, retain every fitted group as training-only and propose 345/57 without changing real partitions. Record source/use/group/fresh-test holds separately.
+- **Files / verification:** Separate private successor-design-20261017-v1 helpers/ledgers, aggregate report and synchronized workflow documents. Fourteen boundary tests pass; all 565 IDs reconcile and 1,461 protected files are unchanged. [Design and evidence](../evaluations/flood-ner-successor-design-20261017/README.md).
+
+## Investigated: saved-only successor pool remains below required coverage
+
+- **Status / severity / investigator:** Investigated; P2 readiness gaps remain. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Full reading of the remaining 91 captures yields 20 provisional positive windows, but the additional pool has only 188 candidates and capacity 169 under existing 240 theme/language requirements.
+- **Root cause:** Rare Taglish/code/ellipsis cells remain sparse; six raw-caption discoveries add explicit source-use holds. Regional-language reports, numeric barangays, unrelated fragments and partial references cannot fill missing LOCAL_AREA examples.
+- **Strategy:** Version a source-bound proposal and preserve historical results; retain 99 holds and 64 exclusions. Keep source-use adoptions/admission, group allocation and fresh test sealing separate. No quota relaxation or new collection.
+- **Files / verification:** Ignored successor-proposal-20261017-v1 package, aggregate report and synchronized docs. Shared checks cover 565 records; zero unexpected failures, one known tokenizer failure held, all 111 new-window spans aligned. 1,207 prior files, two safe curator metadata files and 66 selected-model files verify unchanged. [Proposal](../evaluations/flood-ner-successor-proposal-20261017/README.md).
+
+## Investigated: additional-draft relevance, references and unresolved holds
+
+- **Status / severity / investigator:** Investigated; P2 successor membership/coverage pending. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Flood-related source articles still yield 29 adjacent/unrelated selected windows. Review leaves 47 additional drafts held, zero usable candidate LOCAL_AREA spans, and 31 original holds unresolved.
+- **Root cause:** Article relevance does not establish selected-window relevance or occurrence-specific geographic type. Prior candidate status does not settle language, source-use or strict tokenizer boundaries.
+- **Strategy:** Keep immutable inputs/results; record five separate future proposal records. Reconcile every prior hold and 75 cross-pool event links without inventing types, changing text/tokenization, admitting records or assigning splits.
+- **Files / verification:** Ignored additional-review-20261017-v1 package and public aggregates. Shared checks cover 282 records with zero unexpected failures; the one known tokenizer failure remains held. All 29 proposal spans align; 1,174 protected files and 66 selected-model files verify unchanged. [Review](../evaluations/flood-ner-additional-review-20261017/README.md).
+
+## Investigated: original training relevance and location-reference inconsistencies
+
+- **Status / severity / investigator:** Investigated; P2 successor dataset correction pending. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Full source/passage reading finds 27 training windows to exclude from a future flood-focused core, 17 correction recommendations and 33 unresolved holds. Some labels treat regional substrings as cities, organizations as landmarks, or source language as passage language.
+- **Root cause:** Topic keywords, structural validity and source-level language cannot establish selected-window relevance or occurrence-specific place type. The original scope excludes regional aggregates and agency-only geographic substrings.
+- **Strategy:** Keep all original references/results unchanged; record source-bound future proposals and holds. Ten language changes and fourteen entity-edit operations are proposed across 21 proposal records, including four partial held proposals. None is new corpus admission.
+- **Files / verification:** Ignored training-review-20261017-v1 ledgers/helpers and aggregate evaluation report; task/progress/index/roadmap synchronized. Shared validator passes 301 records; 966 original/73 proposed spans align with unchanged tokenizer; 1,073 snapshotted files and six frozen checkpoints verify. [Review](../evaluations/flood-ner-original-training-review-20261017/README.md).
+
+## Resolved locally: Windows checkout invalidates frozen NER source hashes
+
+- **Status / severity / resolver:** Resolved locally; P1 cross-machine experiment reproducibility. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Frozen source checks fail on the laptop despite unchanged source logic. New tools require recorded LF bytes; four older files require their historically recorded CRLF bytes.
+- **Root cause:** core.autocrlf=true applies to newly added hash-bound Python tools not covered by the older per-file .gitattributes entries. SHA-256 correctly rejects those different bytes; this does not indicate altered training logic or corpus corruption.
+- **Solution:** Add recursive research-Python byte protection with explicit CRLF overrides for the four historically CRLF files; restore byte-equivalent source forms. Preserve all manifests, validators and experiment artifacts. No normalized-hash bypass or semantic source modification.
+- **Files / verification:** .gitattributes and backend/tests/test_flood_ner_repository_bytes.py, plus synchronized review/guide records. Actual temporary Git checkouts with autocrlf=true/false preserve mixed root/nested source byte styles; all sixteen recorded source bindings now match. 60 focused tooling methods plus 20 dataset-gate methods pass. Original 400/40 records, six selected models, tokenizer, dependencies and schemas remain unchanged. [Report](../evaluations/flood-ner-consistency-review-20261016/README.md).
+
+## Investigating: incidental-topic passages weaken flood-news dataset relevance
+
+- **Status / severity / investigator:** Investigating; P2 research data relevance. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** Some original selected passages concern general attacks/peace talks, loans or adjacent hazards. Five reviewed sources contribute 19 passages; six selected windows have particularly weak flood context. No causal F1 impact or annotation-error count is established.
+- **Root cause:** Broad flood keyword presence and geographic-label coverage do not establish article focus or selected-passage relevance. All 138 source bodies contain a flood lexeme, including incidental-topic examples. Existing structural/hash/grouping validation cannot decide semantic sampling quality.
+- **Strategy:** Preserve the completed 400-sample benchmark and exposed test. Record source-specific future recommendations; review topic/passage role explicitly in the separately versioned successor dataset. The verified v3 restore resolves missing checkpoint access. Its 179 candidates contain 101 negatives and zero LOCAL_AREA spans; review the new six-source queue to improve positive coverage before admission.
+- **Files / verification:** Metadata report [dataset relevance audit](../evaluations/flood-ner-topic-audit-20261016/README.md), task/progress/index/roadmap and ignored topic-audit-20261016-v1 ledger/script. All 52 original admission hashes, four export input bindings and 460 protected input files verify unchanged. No production code, label, dependency, model inference or corpus replacement occurs.
 
 ## Resolved before held-out inference: constructed controls treated as corpus memberships
 

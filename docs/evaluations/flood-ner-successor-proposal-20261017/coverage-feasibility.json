@@ -1,0 +1,200 @@
+{
+  "additional_target": 240,
+  "theme_language_target": 15,
+  "theme_language_cells": [
+    {
+      "theme": "compound-crossing-roads",
+      "language": "english",
+      "candidates": 18,
+      "positive_passages": 14,
+      "negative_passages": 4,
+      "target": 15,
+      "count_shortfall": 0,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "compound-crossing-roads",
+      "language": "taglish",
+      "candidates": 4,
+      "positive_passages": 2,
+      "negative_passages": 2,
+      "target": 15,
+      "count_shortfall": 11,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "short-codes",
+      "language": "english",
+      "candidates": 5,
+      "positive_passages": 3,
+      "negative_passages": 2,
+      "target": 15,
+      "count_shortfall": 10,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "short-codes",
+      "language": "taglish",
+      "candidates": 4,
+      "positive_passages": 2,
+      "negative_passages": 2,
+      "target": 15,
+      "count_shortfall": 11,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "locality-designators",
+      "language": "english",
+      "candidates": 8,
+      "positive_passages": 8,
+      "negative_passages": 0,
+      "target": 15,
+      "count_shortfall": 7,
+      "minimum_negative_shortfall": 1,
+      "LOCAL_AREA_spans": 7
+    },
+    {
+      "theme": "locality-designators",
+      "language": "taglish",
+      "candidates": 11,
+      "positive_passages": 11,
+      "negative_passages": 0,
+      "target": 15,
+      "count_shortfall": 4,
+      "minimum_negative_shortfall": 1,
+      "LOCAL_AREA_spans": 4
+    },
+    {
+      "theme": "shared-identifiers",
+      "language": "english",
+      "candidates": 4,
+      "positive_passages": 2,
+      "negative_passages": 2,
+      "target": 15,
+      "count_shortfall": 11,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 3
+    },
+    {
+      "theme": "shared-identifiers",
+      "language": "taglish",
+      "candidates": 4,
+      "positive_passages": 3,
+      "negative_passages": 1,
+      "target": 15,
+      "count_shortfall": 11,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "facilities-institutions",
+      "language": "english",
+      "candidates": 17,
+      "positive_passages": 10,
+      "negative_passages": 7,
+      "target": 15,
+      "count_shortfall": 0,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "facilities-institutions",
+      "language": "taglish",
+      "candidates": 15,
+      "positive_passages": 6,
+      "negative_passages": 9,
+      "target": 15,
+      "count_shortfall": 0,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "project-asset-names",
+      "language": "english",
+      "candidates": 10,
+      "positive_passages": 5,
+      "negative_passages": 5,
+      "target": 15,
+      "count_shortfall": 5,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "project-asset-names",
+      "language": "taglish",
+      "candidates": 14,
+      "positive_passages": 6,
+      "negative_passages": 8,
+      "target": 15,
+      "count_shortfall": 1,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "geographic-type-ambiguity",
+      "language": "english",
+      "candidates": 20,
+      "positive_passages": 9,
+      "negative_passages": 11,
+      "target": 15,
+      "count_shortfall": 0,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "geographic-type-ambiguity",
+      "language": "taglish",
+      "candidates": 16,
+      "positive_passages": 9,
+      "negative_passages": 7,
+      "target": 15,
+      "count_shortfall": 0,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "misleading-names-time-common-words",
+      "language": "english",
+      "candidates": 17,
+      "positive_passages": 0,
+      "negative_passages": 17,
+      "target": 15,
+      "count_shortfall": 0,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    },
+    {
+      "theme": "misleading-names-time-common-words",
+      "language": "taglish",
+      "candidates": 21,
+      "positive_passages": 0,
+      "negative_passages": 21,
+      "target": 15,
+      "count_shortfall": 0,
+      "minimum_negative_shortfall": 0,
+      "LOCAL_AREA_spans": 0
+    }
+  ],
+  "capped_capacity_upper_bound": 169,
+  "raw_additional_candidate_count": 188,
+  "minimum_missing_slots": 71,
+  "minimum_negative_deficient_cells": 2,
+  "quota_cardinality_feasible": false,
+  "grouped_192_48_feasible": false,
+  "allocation_attempted": false,
+  "reason": "Already fails necessary theme/language cardinality/negative conditions before group constraints. No 192/48 witness or partition freeze is claimed.",
+  "required_partition_language_counts": {
+    "train_english": 96,
+    "train_taglish": 96,
+    "dev_english": 24,
+    "dev_taglish": 24
+  },
+  "candidate_components": 58,
+  "candidate_components_touching_historical_nontrain_metadata": 0,
+  "old_examples_not_counted_toward_additional_240": true,
+  "existing_themes_not_relabelled": true
+}

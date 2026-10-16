@@ -1,0 +1,28 @@
+{
+  "version": "successor-design-20261017-v1",
+  "status": "proposal_only_not_admitted_or_frozen",
+  "uses_all_provisionally_qualifying_records": true,
+  "language_exact_balance_required": false,
+  "validation_fraction_target": 0.2,
+  "actual_proposed_validation_fraction": 0.1417910447761194,
+  "count_target_rounded": 80,
+  "validation_record_ceiling": 57,
+  "validation_ceiling_scope": "Current candidate set and preserved grouping/exposure constraints, not all possible source segmentation.",
+  "allocation_rule": "Historical fitted components -> proposed train; every remaining provisionally eligible component -> proposed dev because their total is below the target; known nontraining overlaps -> hold.",
+  "old_additional_240_quota_status": "Prospectively superseded only for this separately versioned successor design by explicit user choice.",
+  "historical_240_design_and_validator_changed": false,
+  "old_192_48_and_exact_language_targets_applied_to_successor": false,
+  "theme_language_matrix_role": "Coverage diagnostic; no theme relabeling or easy-negative substitution.",
+  "provisional_membership_not_source_use_adoption": true,
+  "actual_training_annotations_splits_and_models_changed": false,
+  "fresh_test_required_design": {
+    "records": 60,
+    "english": 30,
+    "taglish": 30,
+    "negatives_each_language": 3
+  },
+  "fresh_test_requirement_relaxed": false,
+  "training_ready": false,
+  "human_gold_verification_claimed": false,
+  "performance_or_improvement_claimed": false
+}

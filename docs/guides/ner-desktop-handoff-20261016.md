@@ -1,6 +1,10 @@
 # Continue the NER work across desktop and laptop
 
-> **Last Updated:** October 16, 2026, 11:20 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 17, 2026, 3:55 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current desktop action: pull `roi-branch` safely and follow the [history inventory guide](ner-desktop-history-inventory.md). Inventory existing files before restoring any backup.** The helper and a copyable desktop Codex prompt are now in Git. Current proposals are 345 training / 57 validation plus 37 conditional test passages; targets are 345 / 60 / 60, requiring three additional validation and 23 positive test passages if current eligibility holds. The v3 Drive folder below is the October 16 backup, not the newer laptop review packages. Do not start the old launchers, restore archives, collect articles or open private fresh-test content for this task. Return only the inventory/manifest and scope explanation for laptop reconciliation. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical handoff, restoration and training checkpoints follow; their commands are not the next desktop action.
 
 **Current Gate 3 status:** Improvement preparation is complete; additional-dataset readiness/admission remains open. Development has 244 drafts (179 candidates / 65 holds); isolated test curation has 56 prospective entries, zero admitted independent test records and no seal. Resolve coverage, reference/language, source-use, historical-overlap and the single development tokenizer-alignment failure before corpus admission/export or further training. Original 400-sample results and model roles remain frozen. [Readiness report](../evaluations/flood-ner-additional-dataset-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -36,7 +40,7 @@ The original handoff procedure below is retained for audit and future verified r
 
 **Private Drive delivery verified:** The unchanged v2 ZIP is available in the [desktop handoff folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) under your LANES_NER folder. Personal account roicambe02@gmail.com and owner-only permissions were verified. The uploaded ZIP was read back and matches the local SHA-256 and all 28,476,420 bytes. No sharing permissions were changed. Git alone does not carry private evidence.
 
-## Current cross-computer continuation: verified v3 backup
+## Historical October 16 cross-computer continuation: verified v3 backup
 
 The newer private artifacts are now in the owner-only [desktop-to-laptop-20261016-v3 folder](https://drive.google.com/drive/folders/1JrrMzZ3FyP0LGU00xWKF54enyyC87ffX). **Download all 19 files into one folder** and follow its [START-HERE.md](https://drive.google.com/file/d/1Ihw2nzPjT84pM5ZlGEJ3w-b4A1ilPuiL/view?usp=drivesdk). The 11 parts assemble into a 700,047,334-byte ZIP with SHA-256 `9e217a78613b1f86ce9fa2c051262fe8a53d4d74b5ec35f906758f2823cb0336`. Use `JOIN.py`, then `RESTORE.py` verification-only, then explicit restoration. The helper restores missing original paths and skips identical files; conflicting bytes stop before writes. [Verified backup receipt](../evaluations/flood-ner-laptop-backup-20261016/README.md).
 

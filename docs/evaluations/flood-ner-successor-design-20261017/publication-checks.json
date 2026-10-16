@@ -1,0 +1,17 @@
+{
+  "design_complete": true,
+  "training_ready": false,
+  "public_aggregates_match_private_outputs": true,
+  "private_source_text_references_identifiers_published": false,
+  "documentation_records_synchronized": 7,
+  "membership_records_accounted": 565,
+  "proposed_train_dev": {
+    "train": 345,
+    "dev": 57
+  },
+  "protected_files_unchanged": 1461,
+  "fresh_heldout_content_opened": false,
+  "boundary_tests_passed": 14,
+  "actual_admission_freeze_export_inference_training_push": false,
+  "local_report_links_verified": 9
+}

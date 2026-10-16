@@ -1,0 +1,32 @@
+{
+  "curator_package": "heldout-reassessment-20261017-v1",
+  "isolated_agent": "/root/isolated_test_reassessment",
+  "context_inheritance": "fork_turns=none",
+  "safe_inputs": [
+    {
+      "path": "backend/training/flood_ner/artifacts/heldout-reassessment-20261017-v1/aggregate-status.json",
+      "sha256": "3d7b81d21279f1368b8ff30ecea2fcd578485ae41567ca396eb9572fad1e7d17"
+    },
+    {
+      "path": "backend/training/flood_ner/artifacts/heldout-reassessment-20261017-v1/verification-manifest.json",
+      "sha256": "a50c0a311157017dd1e9fd49abb85503fb85d0b8cb8e4d40fc7442d26eb86e35"
+    }
+  ],
+  "coordinator_read_other_curator_files": false,
+  "fresh_text_labels_titles_urls_individual_cases_opened": false,
+  "cross_computer_history_completeness": "unknown_user_not_sure",
+  "history_gap_resolved": false,
+  "independent_test_sealed": false,
+  "training_ready": false,
+  "unchanged_final_test_requirement": {
+    "records": 60,
+    "english": 30,
+    "taglish": 30,
+    "negatives_each_language": 3
+  },
+  "exclusion_supplement_binding": {
+    "path": "backend/training/flood_ner/artifacts/successor-proposal-20261017-v1/development-exclusion-supplement.json",
+    "sha256": "6464491aea3655e4231372b933f36fe437719dac3b7f2401ff6ce30d76212542"
+  },
+  "no_model_outputs_development_annotations_or_conversation_given_to_curator": true
+}

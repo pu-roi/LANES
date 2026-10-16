@@ -1,0 +1,19 @@
+{
+  "qualification_task_complete": true,
+  "training_ready": false,
+  "public_aggregates_equal_private_products": true,
+  "private_source_text_references_identifiers_published": false,
+  "documentation_records_synchronized": 7,
+  "development_records_accounted": 565,
+  "qualified_proposal_members": 402,
+  "source_cases": 149,
+  "relationships_accounted": 259,
+  "development_boundary_tests_passed": 18,
+  "protected_prior_files_unchanged": 1489,
+  "coordinator_read_only_two_safe_new_curator_files": true,
+  "isolated_curator_context_inheritance": "none",
+  "fresh_test_sealed": false,
+  "user_history_uncertainty_preserved": true,
+  "actual_admission_partition_freeze_export_inference_training_push": false,
+  "local_report_links_verified": 11
+}

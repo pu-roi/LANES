@@ -1,0 +1,46 @@
+{
+  "task_outcome": "accounted_partial_collection_stopped_and_desktop_helper_prepared",
+  "training_ready": false,
+  "independent_test_sealed": false,
+  "actual_eligible_admitted_scored_test_records": 0,
+  "development_qualified_candidates_unchanged": 402,
+  "development_proposed_allocation_unchanged": {"training": 345, "validation": 57},
+  "development_collection_reopened": false,
+  "cumulative_exposed_urls": 202,
+  "cumulative_url_limit": 200,
+  "new_exposed_urls": 17,
+  "authorized_max_new_urls": 15,
+  "acquisition_budget_pass": false,
+  "cumulative_capture_attempts": 37,
+  "capture_attempt_limit": 100,
+  "entire_final_search_batch_held": 11,
+  "new_captures_before_breach": 5,
+  "search_fetch_retry_after_breach": 0,
+  "conditional_joint_selection_after_known_history_and_use": {
+    "english_positive": 17,
+    "taglish_positive": 14,
+    "english_genuine_negative": 3,
+    "taglish_genuine_negative": 3,
+    "total": 37
+  },
+  "conditional_counts_ignore_global_budget_failure_and_unknown_history": true,
+  "unchanged_test_requirement": {
+    "passages": 60, "english": 30, "taglish": 30,
+    "positives_each_language": 27, "genuine_negatives_each_language": 3,
+    "maximum_simultaneously_selected_passages_per_article": 3
+  },
+  "history_status": "unknown_not_sure",
+  "desktop_inventory_run": false,
+  "remaining_requirements": [
+    "Run the portable inventory on the original desktop, naming any known additional historical collection folders; return the metadata/hash report and manifest through the private handoff when requested.",
+    "Compare returned evidence against the recorded backup and source exposure supplement; resolve actual omissions and uncertainty without assuming unspecified folders were covered.",
+    "Reconcile the acquisition protocol failure explicitly before any further collection; no automatic budget reset, allowance expansion or search/fetch retry.",
+    "Resolve the supported positive-coverage, source/event/history, extent and reference gaps under the unchanged independent-test design.",
+    "Only after all independent-test gates pass: actual corpus admission, grouped partition freeze, qualified training export and desktop GPU handoff."
+  ],
+  "remaining_validation_coverage_limits": ["No Taglish ROAD validation support", "No Taglish LANDMARK validation support", "No short-code-theme validation support"],
+  "known_development_tokenizer_failure_held_unchanged": true,
+  "references": "AI-assisted silver; no human-gold or measured-improvement claim",
+  "corpus_admission_freeze_training_export_inference_training_upload_push": false,
+  "public_api_dependencies_database_unchanged": true
+}

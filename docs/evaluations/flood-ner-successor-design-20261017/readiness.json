@@ -1,0 +1,39 @@
+{
+  "design_complete": true,
+  "training_ready": false,
+  "blockers": [
+    {
+      "gate": "membership_admission",
+      "status": "pending",
+      "requirement": "Apply supported, case-specific source-use/reference and corpus qualification to proposed members; proposed bases do not become adoptions in this task."
+    },
+    {
+      "gate": "group_qualification",
+      "status": "hold",
+      "requirement": "Reconcile relationship holds using saved evidence or explicitly qualify supported conservative closure. Never certify independence from missing links alone."
+    },
+    {
+      "gate": "coverage_limits",
+      "status": "open",
+      "requirement": "Validation has no Taglish ROAD or LANDMARK support. Do not claim those slices evaluated; any broader coverage claim needs supported independent material."
+    },
+    {
+      "gate": "fresh_final_test",
+      "status": "unsealed",
+      "requirement": "Authorized isolated curator must reconcile exposure/history/use/reference issues and complete the unchanged 60-passage test. Current safe status has zero admitted records."
+    },
+    {
+      "gate": "freeze_export_handoff",
+      "status": "not_started",
+      "requirement": "After evidence-backed gate dispositions: independent final-test boundary, actual admission, grouped freeze, qualified export and desktop GPU recipe/handoff verification."
+    }
+  ],
+  "not_required_for_completing_this_design": [
+    "Resolving every old excluded/held record",
+    "Meeting superseded 240 additional quotas",
+    "New collection",
+    "Model training"
+  ],
+  "next_task": "Resolve proposed-member admission/group qualifications and complete the independent test boundary through authorized isolated curation; report saved-only infeasibility rather than silently relaxing the test.",
+  "reference_quality": "AI-assisted source-reading silver; not human gold"
+}

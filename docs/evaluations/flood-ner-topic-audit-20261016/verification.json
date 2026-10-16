@@ -1,0 +1,14 @@
+{
+  "branch": "roi-branch",
+  "corpus_replacements": 0,
+  "drive_files_modified": false,
+  "new_audit_links_checked": 6,
+  "original_admission_manifest_hashes_verified": 52,
+  "original_input_files_preserved": 460,
+  "published_export_bindings_verified": 4,
+  "pulled_commit": "477c6d4c2343d0ddc7c00e31e33f83b131774e38",
+  "saved_group_key_leaks": 0,
+  "software_tests_rerun": false,
+  "structural_failures": 0,
+  "training_or_predictions_performed": false
+}

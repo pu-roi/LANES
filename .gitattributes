@@ -89,3 +89,17 @@
 
 # Private handoff manifests bind the standard-library restorer's exact bytes.
 /backend/training/flood_ner/desktop_handoff.py -text
+
+# Frozen NER qualification/export/training manifests hash Python source bytes.
+# Retain Git blob bytes on Windows too; autocrlf must not invalidate a handoff.
+/backend/training/flood_ner/**/*.py -text
+# These pre-existing desktop files were CRLF when their frozen hashes were recorded.
+/backend/training/flood_ner/cli.py text eol=crlf
+/backend/training/flood_ner/corpus_tokenizer_qualification.py text eol=crlf
+/backend/training/flood_ner/corpus_tokenizer_worker.py text eol=crlf
+/backend/training/flood_ner/evaluation/contract.py text eol=crlf
+/backend/tests/test_flood_ner_repository_bytes.py -text
+
+# Portable history-handoff evidence retains the bytes tested on the laptop.
+/backend/tests/test_flood_ner_history_inventory.py -text
+/docs/guides/ner-desktop-history-inventory.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

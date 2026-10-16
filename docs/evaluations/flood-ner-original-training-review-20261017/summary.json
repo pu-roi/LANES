@@ -1,0 +1,156 @@
+{
+  "schema_version": "lanes-original-training-review-v1",
+  "reviewed_on": "2026-10-17",
+  "reviewer": "Codex AI source-reading review; not independent human verification",
+  "training_passages_reviewed": 280,
+  "full_saved_articles_read": 94,
+  "source_characters_read": 214966,
+  "training_passage_characters_read": 84520,
+  "original_location_spans_checked": 966,
+  "original_empty_location_passages": 39,
+  "recommendations": {
+    "keep": 203,
+    "hold": 33,
+    "exclude_from_successor_core": 27,
+    "correct": 17
+  },
+  "article_topics": {
+    "observed_flooding": 70,
+    "prevention_project": 10,
+    "adjacent_hazard": 1,
+    "recovery": 8,
+    "warning_forecast": 5
+  },
+  "passage_topics": {
+    "observed_flooding": 140,
+    "recovery": 36,
+    "warning_forecast": 38,
+    "adjacent_hazard": 21,
+    "prevention_project": 39,
+    "unrelated": 6
+  },
+  "original_languages": {
+    "english": 140,
+    "taglish": 140
+  },
+  "reviewed_languages": {
+    "english": 142,
+    "taglish": 130,
+    "tagalog": 8
+  },
+  "original_label_spans": {
+    "CITY": 345,
+    "ROAD": 230,
+    "PROVINCE": 165,
+    "BARANGAY": 121,
+    "LANDMARK": 60,
+    "LOCAL_AREA": 45
+  },
+  "proposal_records": 21,
+  "entity_edit_records": 11,
+  "entity_edit_operations": 14,
+  "language_change_records": 10,
+  "proposal_label_spans": {
+    "CITY": 33,
+    "PROVINCE": 14,
+    "BARANGAY": 15,
+    "LOCAL_AREA": 6,
+    "ROAD": 3,
+    "LANDMARK": 2
+  },
+  "eligible_review_candidates_before_group_use_admission": 212,
+  "recommendation_language": {
+    "keep:english": 101,
+    "hold:english": 22,
+    "exclude_from_successor_core:english": 13,
+    "keep:taglish": 102,
+    "exclude_from_successor_core:taglish": 14,
+    "hold:taglish": 11,
+    "correct:english": 6,
+    "correct:taglish": 3,
+    "correct:tagalog": 8
+  },
+  "keep_candidate_labels": {
+    "CITY": 246,
+    "ROAD": 179,
+    "PROVINCE": 128,
+    "BARANGAY": 67,
+    "LANDMARK": 42,
+    "LOCAL_AREA": 16
+  },
+  "eligible_candidate_languages": {
+    "english": 107,
+    "taglish": 105
+  },
+  "eligible_candidate_label_spans": {
+    "CITY": 265,
+    "ROAD": 180,
+    "PROVINCE": 133,
+    "BARANGAY": 68,
+    "LANDMARK": 44,
+    "LOCAL_AREA": 16
+  },
+  "eligible_candidate_empty_location_passages": 31,
+  "held_original_label_spans": {
+    "LANDMARK": 15,
+    "LOCAL_AREA": 24,
+    "ROAD": 45,
+    "CITY": 49,
+    "BARANGAY": 41,
+    "PROVINCE": 13
+  },
+  "original_publishers": {
+    "ABS-CBN News": 33,
+    "GMA Integrated News; MMDA/LGU observations where attributed": 6,
+    "GMA": 1,
+    "GMA News": 43,
+    "Philstar": 11
+  },
+  "topic_by_recommendation": {
+    "observed_flooding:keep": 105,
+    "recovery:keep": 30,
+    "observed_flooding:hold": 24,
+    "warning_forecast:keep": 32,
+    "adjacent_hazard:exclude_from_successor_core": 21,
+    "prevention_project:keep": 36,
+    "observed_flooding:correct": 11,
+    "warning_forecast:correct": 4,
+    "prevention_project:hold": 3,
+    "recovery:correct": 2,
+    "unrelated:exclude_from_successor_core": 6,
+    "recovery:hold": 4,
+    "warning_forecast:hold": 2
+  },
+  "duplicate_and_overlap_counts": {
+    "exact_training_passages": 0,
+    "normalized_training_passages": 0,
+    "exact_training_sources": 0,
+    "training_article_aliases": 0,
+    "cross_pool_exact_passages": 0,
+    "cross_pool_normalized_passages": 0,
+    "cross_pool_article_aliases": 0,
+    "cross_pool_exact_source_bodies": 0,
+    "training_passage_similarity_candidates": 2,
+    "cross_pool_passage_similarity_candidates": 0,
+    "cross_pool_source_similarity_candidates": 0,
+    "reviewed_training_repetition_pairs": 2,
+    "potential_event_component_links": 75,
+    "existing_original_group_key_leaks": 0
+  },
+  "potential_additional_event_components": 16,
+  "historical_training_components": 47,
+  "all_280_have_one_completed_review": true,
+  "original_dataset_or_models_changed": false,
+  "new_drafts_changed": false,
+  "admission_export_training_or_prediction_performed": false,
+  "fresh_heldout_text_or_labels_accessed": false,
+  "ready_for_training": false,
+  "next_task": "Review the unchanged 244 development drafts under the same conventions; reconcile holds/groups before successor membership or export.",
+  "shared_validator_records_passed": 301,
+  "original_strict_tokenizer_spans_passed": 966,
+  "proposed_strict_tokenizer_spans_passed": 73,
+  "alignment_errors": 0,
+  "schema_and_span_validation_failures": 0,
+  "review_and_checks_complete": true,
+  "semantically_independent_or_human_gold": false
+}
