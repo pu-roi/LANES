@@ -1,0 +1,204 @@
+{
+  "counts": {
+    "copied_manifest_relative_path_alias": 10,
+    "negative_test_fixture": 11,
+    "unreconciled_historical_evidence": 3
+  },
+  "current_offline_qualification_inputs_validated_after_restore": true,
+  "entries": [
+    {
+      "classification": "unreconciled_historical_evidence",
+      "expected_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "path": "backend/training/flood_ner/artifacts/academic-decision-checklist-20261015-v1/manifest.json",
+      "reason": "typed hash-bound reference",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "unreconciled_historical_evidence",
+      "expected_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "path": "backend/training/flood_ner/artifacts/academic-project-decisions-20261015-v1/delegation-record.json",
+      "reason": "typed hash-bound reference",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/outside.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "8602e4b475e9efc88faa3b53c83ec5653d89e0fb1b03c0121ca919de5ba2ba56",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/annotation_schema.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "791d89157c5fc230a0cd042ac989286a99320a43283be344af738afe20d8effc",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/collection_budget.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "b68ca6629e64b3c67acaeba67bf34458cb71f67db722463d73c3f74e558d31dc",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/coverage.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "cb85fd0cfb2f2ffae428ca5792e49050ccb47ee4c1a9925d41b916798c012c1c",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/exclusion_register.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "8c92ce9a11932f56d409f214cd303123f396e7fd9a8a62e260bfcdc0e685b17e",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/group_reviews.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "02016c20152911286000ccf6a88812101c10f831e6d4854ffc7842c985857dc5",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/grouped_annotations.jsonl",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "6f0b4c8fcfd5f28f4f72e40b49275031cd01c9671634fcbe5ac83fba5d83c7e9",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/membership_hashes.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "5bf8b42cce1e4c01a487125784b9c1a169c67a07905aa0f8e03fb358f24799e0",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/selection_register.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "aed656026053f1332ac7b9fcc68d1f668bf000d3a45102554f36ec8a4c34381e",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/source_manifest.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "negative_test_fixture",
+      "expected_sha256": "e489899630ba84b61f5823dd44b0e7dc373c5f15465dc06e911d44245c591384",
+      "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/invalid-manifest-fixture/tokenizer.bin",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "e3248f2322caf3ee01ff01b60a5d64b44e62e2a99e58fb36d5457b522e9d162d",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/category_reviews.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "86a0e873cd2787a3100ec60adbd6e8be798b6a0d9ca191c300836908a9dd5703",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/context_annotations.jsonl",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "8602e4b475e9efc88faa3b53c83ec5653d89e0fb1b03c0121ca919de5ba2ba56",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/annotation_schema.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "df4f6947a48d5709f79fde2ecffa5d57f888f51e888be69c7881adf33b209dcb",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/coverage.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/exclusion_register.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "7c798b056c9f3725788dfe085d5ea51b2bec38d32ee16d4ea66944b8fe1238a1",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/group_reviews.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "b0db7f98839eed7efb557210cd00629139149e75e75bce998f0be983bb42eccd",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/grouped_annotations.jsonl",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "605e935fd1802de55cd830837a89998b13b05101b6230e076773cf033bc19743",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/partition_manifest.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "684c9494f977b27216af32ef0e8b85ea0161d87898c3c8403fa7a8e500ab2135",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/selection_register.json",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "copied_manifest_relative_path_alias",
+      "expected_sha256": "0855c702cf80e1c8f3be6145997c10e1fdfa4209b5274b4418a14e3b6e0b1948",
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/tokenizer.bin",
+      "reason": "bound manifest member",
+      "required_by_current_qualification": false,
+      "state": "missing"
+    },
+    {
+      "classification": "unreconciled_historical_evidence",
+      "expected_sha256": "2f87e31c25ea9af7bd20c522e1a7a80b055192311dcce56b1b0fc141741bd56a",
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-ipophl.json",
+      "reason": "typed hash-bound reference",
+      "required_by_current_qualification": false,
+      "state": "historical hash differs"
+    }
+  ],
+  "older_records_not_reconstructed": true,
+  "original_archive_diagnostics_preserved": true
+}

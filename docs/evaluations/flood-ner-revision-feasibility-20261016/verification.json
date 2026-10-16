@@ -1,0 +1,23 @@
+{
+  "bounded_solver_replay_scenarios": 4,
+  "exports": 0,
+  "external_messages_uploads_or_git_publication": false,
+  "fixed_records": 332,
+  "fixed_test_records": 60,
+  "frozen_contextual_pairs": 40,
+  "frozen_dataset_records": 400,
+  "manifest_verified": true,
+  "model_files_hash_verified_without_loading": 23,
+  "necessary_support_deficits_verified": 6,
+  "new_dependency_runtime_schema_or_api_changes": false,
+  "new_qualifying_cohort_created": false,
+  "news_model_inference_or_training": false,
+  "original_pilots_preserved_in_training": 10,
+  "prior_files_unchanged": 2621,
+  "prospective_label_and_language_review_completed": false,
+  "replay_statuses_match": true,
+  "saved_pool_structural_validation_passed": 1340,
+  "software_checks_reference": "software-checks.json",
+  "source_and_publication_validation_passed": true,
+  "source_use_admission_applied": 0
+}

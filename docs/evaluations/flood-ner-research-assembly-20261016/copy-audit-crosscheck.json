@@ -1,0 +1,15 @@
+{
+  "complete_audit_sha256": "64e087b430b894ec6d74e43ae834df683ef082defd9ef220c84020d8e9543c7b",
+  "counts": {
+    "category_evidence": 14,
+    "entity_evidence": 0,
+    "fact_evidence": 26,
+    "relation_evidence": 16,
+    "source_fields": 880,
+    "whole_passages": 24
+  },
+  "matches_complete_audit": true,
+  "method": "Independent typed AnnotationRecord/category traversal reconciled against generic JSON/JSONL string-field audit",
+  "new_articles_collected": 0,
+  "total": 960
+}

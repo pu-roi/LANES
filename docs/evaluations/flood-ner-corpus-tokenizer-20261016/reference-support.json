@@ -1,0 +1,86 @@
+{
+  "by_split_language_label": [
+    {
+      "language": "english",
+      "passages": 140,
+      "spans": {
+        "BARANGAY": 52,
+        "CITY": 200,
+        "LANDMARK": 40,
+        "LOCAL_AREA": 25,
+        "PROVINCE": 112,
+        "ROAD": 170
+      },
+      "split": "train"
+    },
+    {
+      "language": "taglish",
+      "passages": 140,
+      "spans": {
+        "BARANGAY": 69,
+        "CITY": 145,
+        "LANDMARK": 20,
+        "LOCAL_AREA": 20,
+        "PROVINCE": 53,
+        "ROAD": 60
+      },
+      "split": "train"
+    },
+    {
+      "language": "english",
+      "passages": 30,
+      "spans": {
+        "BARANGAY": 12,
+        "CITY": 21,
+        "LANDMARK": 11,
+        "LOCAL_AREA": 10,
+        "PROVINCE": 16,
+        "ROAD": 22
+      },
+      "split": "dev"
+    },
+    {
+      "language": "taglish",
+      "passages": 30,
+      "spans": {
+        "BARANGAY": 13,
+        "CITY": 39,
+        "LANDMARK": 11,
+        "LOCAL_AREA": 11,
+        "PROVINCE": 18,
+        "ROAD": 25
+      },
+      "split": "dev"
+    },
+    {
+      "language": "english",
+      "passages": 30,
+      "spans": {
+        "BARANGAY": 10,
+        "CITY": 34,
+        "LANDMARK": 10,
+        "LOCAL_AREA": 12,
+        "PROVINCE": 63,
+        "ROAD": 49
+      },
+      "split": "test"
+    },
+    {
+      "language": "taglish",
+      "passages": 30,
+      "spans": {
+        "BARANGAY": 21,
+        "CITY": 39,
+        "LANDMARK": 10,
+        "LOCAL_AREA": 10,
+        "PROVINCE": 12,
+        "ROAD": 20
+      },
+      "split": "test"
+    }
+  ],
+  "model_metrics_measured": false,
+  "negative_passages": 48,
+  "records": 400,
+  "spans": 1465
+}

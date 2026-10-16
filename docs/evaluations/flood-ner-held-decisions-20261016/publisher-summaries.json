@@ -1,0 +1,32 @@
+{
+  "ABS-CBN News": {
+    "derived_project_basis_articles": 48,
+    "derived_project_basis_samples": 160,
+    "exports": 0,
+    "held_articles": 0,
+    "held_samples": 0,
+    "represented_articles": 48,
+    "represented_samples": 160,
+    "training_admitted": 0
+  },
+  "GMA News": {
+    "derived_project_basis_articles": 72,
+    "derived_project_basis_samples": 160,
+    "exports": 0,
+    "held_articles": 0,
+    "held_samples": 0,
+    "represented_articles": 72,
+    "represented_samples": 160,
+    "training_admitted": 0
+  },
+  "Philstar": {
+    "derived_project_basis_articles": 14,
+    "derived_project_basis_samples": 63,
+    "exports": 0,
+    "held_articles": 4,
+    "held_samples": 17,
+    "represented_articles": 18,
+    "represented_samples": 80,
+    "training_admitted": 0
+  }
+}

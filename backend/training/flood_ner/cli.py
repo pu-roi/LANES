@@ -36,6 +36,9 @@ def main(argv: list[str] | None = None) -> int:
     tokenizer_check.add_argument('--model-manifest', type=Path, required=True)
     tokenizer_check.add_argument('--cases', type=Path, required=True)
     tokenizer_check.add_argument('--output', type=Path, required=True)
+    corpus_check = commands.add_parser('qualify-corpus-tokenizer', help='Qualify admitted corpus boundaries and freeze evaluation protocol; no predictions')
+    for name in ('python', 'model-manifest', 'tokenizer-manifest', 'cohort', 'context', 'admission-manifest', 'output'):
+        corpus_check.add_argument('--' + name, type=Path, required=True)
     use_bundle = commands.add_parser('prepare-use-bundle', help='Prepare private study, appendix and held download candidates offline')
     use_bundle.add_argument('--cohort', type=Path, required=True)
     use_bundle.add_argument('--context', type=Path, required=True)
@@ -119,6 +122,14 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument('--baseline-inventory', type=Path, help='Immutable pre-revision array of source objects with URLs')
     args = parser.parse_args(argv)
     try:
+        if args.command == 'qualify-corpus-tokenizer':
+            from .corpus_tokenizer_qualification import qualify_corpus_tokenizer
+            result = qualify_corpus_tokenizer(args.python, args.model_manifest, args.tokenizer_manifest,
+                args.cohort, args.context, args.admission_manifest, args.output, REPO_ROOT)
+            print(json.dumps({k: v for k, v in result.items() if k != 'error'}, ensure_ascii=False))
+            if result.get('error'):
+                print(result['error'], file=sys.stderr)
+            return 0 if result['state'] == 'passed' else 2
         if args.command == 'prepare-use-bundle':
             from .use_bundle import prepare_use_bundle
             result = prepare_use_bundle(args.cohort,args.context,args.review_packet,args.output,REPO_ROOT)

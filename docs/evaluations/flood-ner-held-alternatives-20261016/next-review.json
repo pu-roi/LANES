@@ -1,0 +1,35 @@
+{
+  "acquisition": "Unknown / Codex collected",
+  "adviser_acknowledgment_not_requested_again": true,
+  "annotation_reviews": 12,
+  "context_replacements": 2,
+  "current_holds_unchanged": true,
+  "existing_windows_to_confirm_in_changed_scope": 5,
+  "new_admission": 0,
+  "new_exports": 0,
+  "new_scoped_use_assessments": 4,
+  "no_global_minimum_claim": true,
+  "publisher_replies_not_a_universal_requirement": true,
+  "recommendation": "Review twelve draft windows, four changed complete article selections and two replacement contextual pairs before any separate revision assembly/admission task.",
+  "retention_undecided": true,
+  "source_use_questions": [
+    {
+      "issue": "Five retained windows still include reported causality, project-cost criticism and mangrove recommendation. Explain their individual and aggregate analytical necessity and qualitative importance; 961 selected characters does not remove full-body/archive retention or publisher/contract uncertainties.",
+      "source_id": "news-1856c6263451d088"
+    },
+    {
+      "issue": "Five sentence proposals mix qualified causal claims, named historical examples and generic logging negatives. Explain why the complete selected scope is needed rather than using only named examples; preserve historical timing and uncertainty.",
+      "source_id": "news-641a924608dd03ab"
+    },
+    {
+      "issue": "Six sentence proposals are negative commentary, including custody publicity and generic policy slogans. Check actual language, redundant coverage and analytical necessity. A smaller amount does not erase use of central rhetoric.",
+      "source_id": "news-7a824863d687424a"
+    },
+    {
+      "issue": "The remaining sentence is a qualified central allegation without a named place. Establish its specific negative-example role and qualitative importance or retain the hold; do not adopt solely because it is shorter.",
+      "source_id": "news-c7216b3994ab5614"
+    }
+  ],
+  "unchanged_context_pairs": 38,
+  "unchanged_records": 383
+}

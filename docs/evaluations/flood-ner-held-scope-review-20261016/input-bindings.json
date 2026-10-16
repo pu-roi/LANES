@@ -1,0 +1,58 @@
+{
+  "annotation_guide": {
+    "path": "docs/guides/flood-ner-annotation-v1.md",
+    "sha256": "f713ecea17574a146ca5d4446bb1b3f83c5fa8fc1101ce496a6233b9a19c2f3d"
+  },
+  "cohort_manifest": {
+    "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/cohort-v4/partition_manifest.json",
+    "sha256": "f93f36cf9dbac02905d162112ad7c510f523767d12259509fdf33a7917794855"
+  },
+  "context_manifest": {
+    "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/contextual-v4/manifest.json",
+    "sha256": "21f1d9d00e44194a85fd53df38416556769d3695358ef17c0652fcd29d549780"
+  },
+  "contract_notes": {
+    "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/contract-and-third-party-notes.json",
+    "sha256": "52561c2e5d5c8bddecfda99ccd6187eb78fea722db2361d8bbe525dcb948f027"
+  },
+  "copy_inventory": {
+    "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/copy-inventory.json",
+    "sha256": "4bb87b44bebd76eb08a5981926352fc3eefb7a11bb25f4772f8ceb5f960c623a"
+  },
+  "court_context": {
+    "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/focused-court-evidence.json",
+    "sha256": "3377590cc8c0e2da01635ec075e6523e19b86016d35d03898d2239270e049575"
+  },
+  "legal_evidence": {
+    "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/evidence-register.json",
+    "sha256": "42855f531a7627c53b88e0ab6ceebff3b7657d9767a129392a97f304fe872eb9"
+  },
+  "prior_coverage": {
+    "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/current-coverage-index.json",
+    "sha256": "724ec131d1556a41676e78d54bb727e39051e2a3e728d1503a23953f04e72782"
+  },
+  "prior_decision_manifest": {
+    "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/hash-manifest.json",
+    "sha256": "72a37ee18843a6c0fdb39f1432c42cd7e4478fc4d1cc73f7780c6cae401329ae"
+  },
+  "prior_decisions": {
+    "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/decisions.json",
+    "sha256": "454bb94b88a7ea966f50369716f4a6f442e43bd962da5ac98dc1f5d8f4154037"
+  },
+  "proposal_draft_records": {
+    "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/shorter-proposal/draft-records.json",
+    "sha256": "24fd327a4c970d76400e10f238409a60f55c1f9cde31f0934df86b207d170161"
+  },
+  "proposal_manifest": {
+    "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/hash-manifest-v2.json",
+    "sha256": "b94b7bd3c640a2508eaa712444afd2bf6bad72f78e5de178b08c8574a944830a"
+  },
+  "proposal_selection": {
+    "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/shorter-proposal/conditional-selection-register.json",
+    "sha256": "d824aeac3cba0ba79a8fc5151e0a77bf9ed037ac1119bbf608fa9a40e5179cec"
+  },
+  "source_register": {
+    "path": "backend/training/flood_ner/artifacts/stronger-400-continuation-20261015/reviewed-pool/news_register.json",
+    "sha256": "db7bfa3c6b8dbecb9f5ad57f1dc268deab5ba7d3b90b5bdc2db4c099d324ce41"
+  }
+}

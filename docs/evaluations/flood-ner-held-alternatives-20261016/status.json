@@ -1,0 +1,104 @@
+{
+  "analysis": {
+    "affected_contextual_pairs": 2,
+    "affected_language": "taglish",
+    "affected_partition": "train",
+    "affected_slots": 17,
+    "content_complete_reserves": 19,
+    "current_dataset_unchanged": true,
+    "desktop_predecessor_unreconciled": true,
+    "exports": 0,
+    "fixed_records": 383,
+    "fresh_pytest_run": false,
+    "historical_software_baseline": {
+      "passed": 772,
+      "skipped": 1
+    },
+    "new_annotation_acceptances": 0,
+    "retained_contextual_pairs": 38,
+    "reviewed_pool_union": 1450,
+    "reviewed_scenario_status": "verified_annotation_quota_witness",
+    "schema_version": "lanes-held-alternatives-feasibility-v1",
+    "structurally_valid_reserves": 20,
+    "training_admitted": 0,
+    "unused_pool_records": 1050,
+    "unused_reviewed_philstar_taglish": 20
+  },
+  "bindings": {
+    "additional_reviewed_windows": {
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/accepted-windows-batch-06.jsonl",
+      "sha256": "694bce45759a3ffc5f88a3683878a075c08a90550e07baad0b5d9b323b715fb7"
+    },
+    "cohort": {
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/cohort-v4/partition_manifest.json",
+      "sha256": "f93f36cf9dbac02905d162112ad7c510f523767d12259509fdf33a7917794855"
+    },
+    "context": {
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/contextual-v4/manifest.json",
+      "sha256": "21f1d9d00e44194a85fd53df38416556769d3695358ef17c0652fcd29d549780"
+    },
+    "coverage_index": {
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/assembled/current-coverage-index.json",
+      "sha256": "724ec131d1556a41676e78d54bb727e39051e2a3e728d1503a23953f04e72782"
+    },
+    "decision_manifest": {
+      "path": "backend/training/flood_ner/artifacts/academic-held-decisions-20261016-v1/hash-manifest.json",
+      "sha256": "72a37ee18843a6c0fdb39f1432c42cd7e4478fc4d1cc73f7780c6cae401329ae"
+    },
+    "group_reviews": {
+      "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/cohort-v4/group_reviews.json",
+      "sha256": "c22947bf5c2b4574f1c07cad2490514746018db1d48ace5ddfab1eec7e4af467"
+    },
+    "old_pool": {
+      "path": "backend/training/flood_ner/artifacts/stronger-400-continuation-20261015/reviewed-pool/corrected_location_annotations.jsonl",
+      "sha256": "9a46ba32ed3a042cf2230e6c64c61348fac7f1118c7202260a538a5d199e6e96"
+    },
+    "source_register": {
+      "path": "backend/training/flood_ner/artifacts/stronger-400-continuation-20261015/reviewed-pool/news_register.json",
+      "sha256": "db7bfa3c6b8dbecb9f5ad57f1dc268deab5ba7d3b90b5bdc2db4c099d324ce41"
+    }
+  },
+  "conditional_proposal": {
+    "article_scopes_requiring_review": 4,
+    "conditional_feasible": true,
+    "current_selected_held_characters": 3087,
+    "exports": 0,
+    "fixed_records": 383,
+    "global_minimum_claimed": false,
+    "independent_language_verification": false,
+    "new_annotation_acceptances": 0,
+    "new_reviewed_cohort": false,
+    "proposal_limit": 40,
+    "proposed_new_windows": 12,
+    "proposed_selected_held_characters": 2057,
+    "replaced_current_windows": 12,
+    "retained_existing_held_windows": 5,
+    "source_use_resolved": false,
+    "training_admitted": 0
+  },
+  "current_corpus": {
+    "articles": 138,
+    "changed": false,
+    "context_pairs": 40,
+    "english": 200,
+    "held_articles": 4,
+    "held_passages": 17,
+    "location_records": 400,
+    "partitions": {
+      "dev": 60,
+      "test": 60,
+      "train": 280
+    },
+    "project_basis_articles": 134,
+    "project_basis_passages": 383,
+    "taglish": 200
+  },
+  "current_source_use_decisions_changed": false,
+  "desktop_predecessor_unreconciled": true,
+  "exports": 0,
+  "feasibility_complete": true,
+  "new_annotation_acceptances": 0,
+  "reviewed_witness_characters": 4619,
+  "schema_version": "lanes-held-alternatives-metadata-v1",
+  "training_admitted": 0
+}

@@ -1,0 +1,50 @@
+{
+  "archive": "LANES-NER-desktop-handoff-20261016-v2.zip",
+  "bytes": 28476420,
+  "contexts": 40,
+  "copied_manifest_aliases": 10,
+  "dependency_changes": false,
+  "desktop_restoration": "not_run",
+  "drive_owner_only_permissions_verified_this_run": false,
+  "drive_upload": "pending_account_access",
+  "exports": 0,
+  "git_publication": "authorized; receipt recorded after verified push",
+  "gpu_environment_changes": false,
+  "historical_reference_gaps": 3,
+  "language_totals": {
+    "english": 200,
+    "taglish": 200
+  },
+  "locations": 400,
+  "missing_detailed_desktop_predecessor": "unreconciled",
+  "model_files_to_reuse": 23,
+  "model_weights_included": false,
+  "negative_fixture_references": 11,
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "payload_files": 1757,
+  "personal_folder_metadata_check": "404 through current school-account connector; does not imply folder deletion",
+  "qualification": "not_run",
+  "raw_reference_diagnostics": 24,
+  "schema_changes": false,
+  "schema_version": "lanes-ner-handoff-report-v1",
+  "selected_articles_validated": 138,
+  "selected_capture_evidence_files": 407,
+  "sha256": "afe11aa15398d9b88e7ef268c75f7d51c79107206a60f29ac4313264f4dba65f",
+  "software_tests": {
+    "new_handoff_tests": 40,
+    "passed": 880,
+    "seconds": 94.16,
+    "skipped": 1,
+    "warnings": 5
+  },
+  "temporary_restore_verified": true,
+  "training": "not_run",
+  "training_admitted": 400,
+  "training_runs": 0,
+  "uncompressed_bytes": 145167696,
+  "zip_contents_verified": true
+}

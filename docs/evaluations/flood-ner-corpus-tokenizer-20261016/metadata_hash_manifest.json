@@ -1,0 +1,14 @@
+{
+  "exports": 0,
+  "files": {
+    "README.md": "f40d2d95797caf447ecf726bc74add47d93aa87584be1f9ef8cd2b177c099724",
+    "copy-inventory.json": "b7f7d1fcaed95184259938161b54c1bf7c34a45e47cc1aff02dd46a1fc4e8d0e",
+    "evaluation-contract.json": "1995fd589a2578fd276ef806c155af95dd4080e00c2bbde1fe3ea4f5dd9d169c",
+    "paper-method-notes.md": "a6d027f2eb33413286c688d7f50f39c87428dd5531dd149d362732eb6a79768c",
+    "qualification-status.json": "49b968ca7c753b14a0d85bf0267a3a8cdfd24f047178155ea1e94960871d58fe",
+    "reference-support.json": "6a295dc0b13cda6f4dd22adfad61d8cbe3b19a30c358c94c8cb68bcf9cb88b96",
+    "verification.json": "08759cbbcfcfc8b0136f24f24c3388dbcb133cb0fb8a09f3c7b96e98552dc61f"
+  },
+  "qualification_state": "blocked",
+  "schema_version": "lanes-corpus-tokenizer-public-v1"
+}

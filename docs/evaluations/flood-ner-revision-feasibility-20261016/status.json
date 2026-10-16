@@ -1,0 +1,39 @@
+{
+  "affected_contextual_pairs": 5,
+  "all_shortening_proposals": 106,
+  "all_tested_scenarios_proven_infeasible": true,
+  "contextual_pairs_unchanged": 40,
+  "current_adopted_project_bases": {
+    "articles": 125,
+    "passages": 332
+  },
+  "current_source_use_holds": {
+    "articles": 14,
+    "passages": 68
+  },
+  "dataset_unchanged": 400,
+  "exports": 0,
+  "feasibility_assessment_complete": true,
+  "fixed_original_pilots": 10,
+  "fixed_records": 332,
+  "fixed_test_records": 60,
+  "full_cohort_source_use_finalized": false,
+  "missing_desktop_predecessor_unreconciled": true,
+  "model_files_verified_without_loading": 23,
+  "negative_shortening_proposals": 63,
+  "new_revision_annotations_accepted": 0,
+  "positive_shortening_proposals": 43,
+  "prior_files_unchanged": 2621,
+  "proposed_400_slot_selection": 0,
+  "qualifying_selection_found": false,
+  "recommendation": "Target additional reviewed source-backed windows for the exact support gaps before attempting another selection. If insufficient, a separate authorization for limited train/validation rebalancing is needed; do not weaken quotas or manufacture admission.",
+  "recorded_at": "2026-10-16T01:46:34.189099+08:00",
+  "replay_statuses_match": true,
+  "saved_articles": 342,
+  "saved_pool": 1340,
+  "schema_version": "lanes-saved-pool-revision-feasibility-v1",
+  "source_use_admission_applied": 0,
+  "tested_scenarios": 4,
+  "unused_candidates_after_conflict_filter": 893,
+  "unused_candidates_before_conflict_filter": 902
+}

@@ -1,0 +1,50 @@
+{
+  "accepted_location_candidates": 12,
+  "additional_proposals_used": 0,
+  "all_hard_quotas_pass": true,
+  "context_requirements_pass": true,
+  "cumulative_proposal_slots_used": 12,
+  "current_dataset_changed": false,
+  "current_held_articles": 4,
+  "current_held_passages": 17,
+  "current_project_basis_articles": 134,
+  "current_project_basis_passages": 383,
+  "derived_proposed_adopted_articles": 138,
+  "derived_proposed_adopted_passages": 400,
+  "desktop_predecessor_unreconciled": true,
+  "drafts_reviewed": 12,
+  "exports": 0,
+  "fixed_records_preserved": 383,
+  "fresh_pytest_run": false,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "new_complete_body_copies": 0,
+  "new_contextual_pairs_reviewed": 2,
+  "new_frozen_cohort_created": false,
+  "original_held_records_retained": 5,
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "proposal_limit": 40,
+  "proposed_articles": 138,
+  "proposed_contextual_pairs": 40,
+  "proposed_location_negative_records": 48,
+  "proposed_location_spans": 1465,
+  "rejected_candidates": 0,
+  "retained_windows_confirmed": 5,
+  "reviewed_proposed_location_records": 400,
+  "schema_version": "lanes-proposed-scope-review-summary-v1",
+  "scoped_adoptions": 4,
+  "scoped_holds": 0,
+  "selected_characters_in_changed_articles": 2057,
+  "training_admitted": 0,
+  "unchanged_contextual_pairs": 38
+}

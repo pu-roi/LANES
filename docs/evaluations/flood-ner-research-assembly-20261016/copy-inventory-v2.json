@@ -1,0 +1,1047 @@
+{
+  "body_hash_counts": [
+    {
+      "body_sha256": "029306fcd804936fe8975e07dba4aaee48198bb25888218a7556c62d6d621150",
+      "representations": 10,
+      "source_ids": [
+        "news-4a13b0eb4b607e5f"
+      ]
+    },
+    {
+      "body_sha256": "0345cc7c19debae59a64f989aba4b16d501574b01d3c9fdae9087382851d3213",
+      "representations": 8,
+      "source_ids": [
+        "news-f526421386d23fe2"
+      ]
+    },
+    {
+      "body_sha256": "0995af606edfe419122b7e191b070a31d82beb260aa1eb49927cec2bece0636a",
+      "representations": 2,
+      "source_ids": [
+        "news-a38a1551c552a86b"
+      ]
+    },
+    {
+      "body_sha256": "0a9662548bd99698aada7a462914e66c71ede0c85afc88d7fc74ef88395f0822",
+      "representations": 4,
+      "source_ids": [
+        "news-5ec4d4b9bb6c8593"
+      ]
+    },
+    {
+      "body_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+      "representations": 14,
+      "source_ids": [
+        "news-7a824863d687424a"
+      ]
+    },
+    {
+      "body_sha256": "0e749dc074116fe51c79c3e8415d8bc1dbddea8e992850fcb9c9cec8e62be5f1",
+      "representations": 2,
+      "source_ids": [
+        "news-35871c2798fc135f"
+      ]
+    },
+    {
+      "body_sha256": "133d6af277daeb4590b2ca5004b0d2acaab7b1638b13f2abd3b4a2d8f93a674c",
+      "representations": 10,
+      "source_ids": [
+        "news-2a8473b3d610bb96"
+      ]
+    },
+    {
+      "body_sha256": "195844576623bdb12447f28565864604b6323a6ac132f74bcc3bd12125e211b5",
+      "representations": 10,
+      "source_ids": [
+        "news-f828b8452eed31ae"
+      ]
+    },
+    {
+      "body_sha256": "1e856d0fe899d2c3b9212e202d3b7698c9f217f4d38d4f921fe426de92e21010",
+      "representations": 22,
+      "source_ids": [
+        "GMA-20250722-953419"
+      ]
+    },
+    {
+      "body_sha256": "215d316b06db162d38fb1e07d57545b650b54edd719dcc8d4b3790f509dc4480",
+      "representations": 4,
+      "source_ids": [
+        "news-7e3cff6275b06366"
+      ]
+    },
+    {
+      "body_sha256": "225aa475f75287bf1e130b60f5b49841a679b5db9c1f1563ccc44de86ccc462c",
+      "representations": 6,
+      "source_ids": [
+        "news-3bc1ec8437f23801"
+      ]
+    },
+    {
+      "body_sha256": "2275a039ffc93c5bbbcb426d4bd4dd163844d67faed6f679f126ae68671b9b39",
+      "representations": 2,
+      "source_ids": [
+        "news-864b3cd12a4d0cf5"
+      ]
+    },
+    {
+      "body_sha256": "249c5fc25280dd0a8628e2b3e9cbff5e76d68314d8a2a3b3f66d0ca9d9116141",
+      "representations": 16,
+      "source_ids": [
+        "news-ea3429aa801a60cb"
+      ]
+    },
+    {
+      "body_sha256": "27e76b05ce52fea2896c27ac6cfda88cbed241882ee7fd3792161bff85aad0f0",
+      "representations": 10,
+      "source_ids": [
+        "news-c6b8dee4d10093fa"
+      ]
+    },
+    {
+      "body_sha256": "2a1b4e8bffd4394f4129ad8689b22bcf1621916bba139d051e10670974131f4d",
+      "representations": 4,
+      "source_ids": [
+        "GMA-20240902-918977"
+      ]
+    },
+    {
+      "body_sha256": "2a7becd93ade02200de4e6c00ef6cbd284a9a5b5de9cf76c0a0dda77b5cde731",
+      "representations": 14,
+      "source_ids": [
+        "news-dc0d8bcd7617f20f"
+      ]
+    },
+    {
+      "body_sha256": "2a8f728d5f2aa2472f2d1ff691bccd171ed8444ff722c9e17dab8f001ef357a2",
+      "representations": 2,
+      "source_ids": [
+        "news-b11e4314df572cad"
+      ]
+    },
+    {
+      "body_sha256": "2b0b88e012c6866efc8dab4e2106e2ba27336346b8a22b3bb6400f7677a1caa0",
+      "representations": 6,
+      "source_ids": [
+        "news-e4b8c16d6fa18b8d"
+      ]
+    },
+    {
+      "body_sha256": "2e606a1a8edcb25d4785c6b238a129caf3ff0d825ae5889ee792e95dfc577a99",
+      "representations": 6,
+      "source_ids": [
+        "news-8cec5ab4050f478f"
+      ]
+    },
+    {
+      "body_sha256": "2e62e76c5c16feb7a9a2cfd37d395b64bb1d1fc3520b3cf3d5f401bc495df2da",
+      "representations": 2,
+      "source_ids": [
+        "news-5ede135165754c54"
+      ]
+    },
+    {
+      "body_sha256": "30a9ec1dcc01c398ccd18c168b2c3ac0d331c8b93bce487986c9f2de17f2f545",
+      "representations": 4,
+      "source_ids": [
+        "news-77b4d775acdbd915"
+      ]
+    },
+    {
+      "body_sha256": "32262ee07cccb9d8a96feb3a556ccce49c8c2a07c3b231e997a98bbbce4b3bac",
+      "representations": 6,
+      "source_ids": [
+        "news-6061d9bc1dc4efa4"
+      ]
+    },
+    {
+      "body_sha256": "32c4ef0b633889125126416cab3fdf6760eb875a455b6159df6781cf1b88cc32",
+      "representations": 4,
+      "source_ids": [
+        "news-026d02c37bac6f5c"
+      ]
+    },
+    {
+      "body_sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c",
+      "representations": 4,
+      "source_ids": [
+        "news-c7216b3994ab5614"
+      ]
+    },
+    {
+      "body_sha256": "37e83af051c4fc791b0db027183b4a4a508d06814d0e3b1d74cf4fb27530b079",
+      "representations": 8,
+      "source_ids": [
+        "news-9d3da490cc412ad3"
+      ]
+    },
+    {
+      "body_sha256": "3836829bd2f1ab0742aeafb54f8e8840aa99c3013f0d34170522293e92a1cedc",
+      "representations": 10,
+      "source_ids": [
+        "news-cc126ad08a03808b"
+      ]
+    },
+    {
+      "body_sha256": "3a2b2eaac8ca598f7d6d5dcf70387dcdc0d413d4d3280df04810cdcaa5e58a8f",
+      "representations": 12,
+      "source_ids": [
+        "news-61bde888c0935e15"
+      ]
+    },
+    {
+      "body_sha256": "3c3675457838a6447978ba7ba649eea2ac300614d3bc59b38bf0ea8d531fb168",
+      "representations": 2,
+      "source_ids": [
+        "news-c29be324c3b71fb6"
+      ]
+    },
+    {
+      "body_sha256": "4529a8e8c2246eb334a3383c0a317222a7fd607f5e635cb8c57257596d4bce3a",
+      "representations": 4,
+      "source_ids": [
+        "news-5100fc1563858052"
+      ]
+    },
+    {
+      "body_sha256": "45d9507ac75c5ab8e4cbd7b6769b7d90f0f62a7cdb0c101f0e781483bd671036",
+      "representations": 4,
+      "source_ids": [
+        "news-1de5b547ff102993"
+      ]
+    },
+    {
+      "body_sha256": "4745bcd779f26d5d2d4f6ba13125d60d86d4d4fe281cf9df05f44fec491a9355",
+      "representations": 2,
+      "source_ids": [
+        "news-1885abddb1dc6962"
+      ]
+    },
+    {
+      "body_sha256": "478ea28a8ee44bdb66b230bc127e5ea0e41a74626f2ba867de3e6867f778549d",
+      "representations": 6,
+      "source_ids": [
+        "news-91ded5b32f42f85c"
+      ]
+    },
+    {
+      "body_sha256": "4843c298716a5988ce1f97b07782d762eed049d2f7eb13c825f20d2c59af0cad",
+      "representations": 4,
+      "source_ids": [
+        "news-945f46c723917dec"
+      ]
+    },
+    {
+      "body_sha256": "4c05e5d20e1a82a595f221770aaa0c9fdd39aa96abf59bac19b2fe61599f22ed",
+      "representations": 6,
+      "source_ids": [
+        "news-f716f246440bddfd"
+      ]
+    },
+    {
+      "body_sha256": "4ce793165ad9d51a3b0d72aa96b61646e2ae029db1cdbe2ae643fc71ba1a234f",
+      "representations": 2,
+      "source_ids": [
+        "news-463c035c37dcd824"
+      ]
+    },
+    {
+      "body_sha256": "4e306bbfed2e3042de41d710c2a0e524557a7bd540acafcf8e3ff9dbe0ea2ccb",
+      "representations": 2,
+      "source_ids": [
+        "news-ef286f8fdb9df6bd"
+      ]
+    },
+    {
+      "body_sha256": "4f4da19824ae5430454e09767499bf0624530261ff82bc40e2952edcbd4d96b2",
+      "representations": 10,
+      "source_ids": [
+        "GMA-20230831-880633"
+      ]
+    },
+    {
+      "body_sha256": "525413f491e1facedd60a97c7fc9e74fc24aa8058cfeb974d959114c131622c7",
+      "representations": 16,
+      "source_ids": [
+        "news-d0a136d3df01f457"
+      ]
+    },
+    {
+      "body_sha256": "5678f306ea10760c193701bffe7488aa1857133714489c0ab42b0cc5e9a2f7d9",
+      "representations": 4,
+      "source_ids": [
+        "news-eb21b538ee224afc"
+      ]
+    },
+    {
+      "body_sha256": "56f3d03d4b6d7f797a8a59b30e59a4a7ed344a503bcae0b607ad3ea00eac0fad",
+      "representations": 14,
+      "source_ids": [
+        "news-e984b661dcaf2637"
+      ]
+    },
+    {
+      "body_sha256": "58d43828029cf218458c9ac5ac85491e76414723b1786d4910e63d2049ce4edd",
+      "representations": 16,
+      "source_ids": [
+        "GMA-20250722-953360"
+      ]
+    },
+    {
+      "body_sha256": "598f61bc127d283bc50b3992592828d5bc9a1734fcc30a8a2155b72504136801",
+      "representations": 2,
+      "source_ids": [
+        "news-20f70679bcbbf1b1"
+      ]
+    },
+    {
+      "body_sha256": "5d5b2a67f7a752a74932037852cc486ea1638f92fd3827312b9fedf59e6fa89e",
+      "representations": 8,
+      "source_ids": [
+        "news-9449e3528861ff03"
+      ]
+    },
+    {
+      "body_sha256": "5db92742b9b2ae5af6d6482fdaa9fc8552bb2379b59b6cf8d2bc2ab884e2bee7",
+      "representations": 4,
+      "source_ids": [
+        "news-645827b407f23d1d"
+      ]
+    },
+    {
+      "body_sha256": "603563fb109e8305b7b92f9bc953db5324499a70f314fb7ea30ddcc369274ea1",
+      "representations": 4,
+      "source_ids": [
+        "news-0b427220c91c3b1e"
+      ]
+    },
+    {
+      "body_sha256": "6105dc468334267c6993a5a194de9adc5c9d5cc9e9fd33b4fc57e9ee5aaf9d29",
+      "representations": 2,
+      "source_ids": [
+        "news-33a273b337d533e8"
+      ]
+    },
+    {
+      "body_sha256": "62b20e245bb0591454ab54e6cb5c6330909d70475d040fc48738b40dc1080afd",
+      "representations": 6,
+      "source_ids": [
+        "news-9c7551478f37e243"
+      ]
+    },
+    {
+      "body_sha256": "654c1ae189f0d992ec6517073f58feb9fb924fb925b6a270a7bae7823ec3949d",
+      "representations": 8,
+      "source_ids": [
+        "news-492bc6234d82aecb"
+      ]
+    },
+    {
+      "body_sha256": "65da2817d12af1ecd353784bf9d3e087bb8767a052748f0b556a14cf69db1447",
+      "representations": 2,
+      "source_ids": [
+        "news-2a0c1e1321fa4a42"
+      ]
+    },
+    {
+      "body_sha256": "65dbd239a3d816d74e4886bf0170ad9b56dd562b33cfd0557d7f40e8704f1ecd",
+      "representations": 12,
+      "source_ids": [
+        "news-0ce6fa8811d40df2"
+      ]
+    },
+    {
+      "body_sha256": "665173ec22063e15f10e008eb897f9b16a79e22aecd0399430add6d21799e3a2",
+      "representations": 4,
+      "source_ids": [
+        "news-8e266121254eaa21"
+      ]
+    },
+    {
+      "body_sha256": "695ac65477ab28143dafd16cbbb751ba0c6302a318e83666950627587a3ea8bc",
+      "representations": 4,
+      "source_ids": [
+        "news-631bd1e58d8b1964"
+      ]
+    },
+    {
+      "body_sha256": "6b8809ba8b609c75d3e0c02c98e9f3c63bb7d7c01bb82ad0e94a9eaa3bdc552d",
+      "representations": 4,
+      "source_ids": [
+        "news-cc7893469af71cb1"
+      ]
+    },
+    {
+      "body_sha256": "6baf7a54cd55752753023fe7123bff13f8bb71e80eb142b43e7160a1cbd17bd3",
+      "representations": 4,
+      "source_ids": [
+        "news-a07b77e950bca4fa"
+      ]
+    },
+    {
+      "body_sha256": "6c9d1e9a5b377d1dffee8de0115883101edae366dc5002a933de43a0a5350c8d",
+      "representations": 8,
+      "source_ids": [
+        "news-0628cdb524fef7d1"
+      ]
+    },
+    {
+      "body_sha256": "6fae5adc1e46a04f10e38a100364b2617a885e0ad6b0c65dd659393b92e510f8",
+      "representations": 12,
+      "source_ids": [
+        "news-a78225d936fe4756"
+      ]
+    },
+    {
+      "body_sha256": "700e9d3ff658b5e3835d89ff17e6eb16203f589a37d4a410c3443037c4ea15d1",
+      "representations": 8,
+      "source_ids": [
+        "news-d706fe79a0ec5353"
+      ]
+    },
+    {
+      "body_sha256": "718b78af035163602672201948d5568b0cffa9ab0bbbb84fcd4f591c9a2d9970",
+      "representations": 4,
+      "source_ids": [
+        "news-faef8fb27a4a3a0f"
+      ]
+    },
+    {
+      "body_sha256": "71af3597c3d6532fe6d166cdada7a3720e515d7e2cb91113d0f4b9bfcb363ed1",
+      "representations": 4,
+      "source_ids": [
+        "news-1367e412bf0b8a9f"
+      ]
+    },
+    {
+      "body_sha256": "72821f98ee0f410f4d49c88a346fb4fbcb30c2c13f604f3f90cd4e4ec0fce99c",
+      "representations": 4,
+      "source_ids": [
+        "news-91ec78444194763f"
+      ]
+    },
+    {
+      "body_sha256": "74a763c039ad9959f3bef84746dece0cef44a8924038be4d8566e78e91a82794",
+      "representations": 4,
+      "source_ids": [
+        "news-404b64185f60c55c"
+      ]
+    },
+    {
+      "body_sha256": "751b1396837ab65783c019d3425a83dd56ae7161d1879cb5595e882a57984a6a",
+      "representations": 4,
+      "source_ids": [
+        "news-14969870bff445fe"
+      ]
+    },
+    {
+      "body_sha256": "752d1b9d760195fd7f10fa4f1e2f12a7b2fe4e593d8853c8c3897adb5a9faf3f",
+      "representations": 10,
+      "source_ids": [
+        "GMA-20260710-994434"
+      ]
+    },
+    {
+      "body_sha256": "774ae14a818105a2ff2b7c07e7dea1d0ecc4977b94f4e3ae8338fc1cfc659e4e",
+      "representations": 10,
+      "source_ids": [
+        "news-a75484806c378f88"
+      ]
+    },
+    {
+      "body_sha256": "79d0c3cc0502718c705573454e539d848ebe46a408f0cde86db0273c5099cd41",
+      "representations": 16,
+      "source_ids": [
+        "news-e0cf751ea8d71e21"
+      ]
+    },
+    {
+      "body_sha256": "7a7ae755c1a8ec5202dd8e437718627c5ac3b34c20bd0f7f34202a8e8eec1abd",
+      "representations": 10,
+      "source_ids": [
+        "news-92a232adacae5fdd"
+      ]
+    },
+    {
+      "body_sha256": "7ae5aeecaef72a20b336212be14431d51253bb2494fe8a821a30184ba6efc2b3",
+      "representations": 8,
+      "source_ids": [
+        "news-4fe54a5e3ccb09ca"
+      ]
+    },
+    {
+      "body_sha256": "7b95d0f0404d084ad5015c5df8aeee03947e9df193f151d69d55f99cfb403587",
+      "representations": 6,
+      "source_ids": [
+        "news-3fe9a00d085db8d9"
+      ]
+    },
+    {
+      "body_sha256": "7c3d5688b7cf20e27e1b150cc7e19e37768a902db0d628b72539fc8a30bae94a",
+      "representations": 6,
+      "source_ids": [
+        "news-72ae1d755bd1d810"
+      ]
+    },
+    {
+      "body_sha256": "8151807639b9824cc69745b8af0e0d6ee9b9a2fde996260662b3a58b02585767",
+      "representations": 2,
+      "source_ids": [
+        "news-cd0aa748f2207982"
+      ]
+    },
+    {
+      "body_sha256": "86ad6ce63c874f9caa598a4fda21bca3b06250573de1b26d1b8fe037f07b001d",
+      "representations": 4,
+      "source_ids": [
+        "GMA-20260808-997803"
+      ]
+    },
+    {
+      "body_sha256": "8764e5ceccb8b8c8767f9ea15894882b0edc41e9c100e8586a4123658b74dd95",
+      "representations": 4,
+      "source_ids": [
+        "news-e45b849dae35a056"
+      ]
+    },
+    {
+      "body_sha256": "88146352d2245fb01ad7f0519a51200678b153461d82e167c4259049774f8101",
+      "representations": 2,
+      "source_ids": [
+        "news-69f0476aa248cef6"
+      ]
+    },
+    {
+      "body_sha256": "8b43ab00c5dd03be9ab30055bc0cb1a3a08a8bbed90f7156ac3ab0663043b968",
+      "representations": 10,
+      "source_ids": [
+        "ABS-BROWSER-abs-2022"
+      ]
+    },
+    {
+      "body_sha256": "8b7bbbacf7c6c11b6d96077c416482fc6025e4ab8da9a4aacd167dc1831d8f00",
+      "representations": 18,
+      "source_ids": [
+        "news-c296dd5349f4e7ee"
+      ]
+    },
+    {
+      "body_sha256": "8fac6a239d9a0af732094f865dbcf7a14af942c81e2a707141a6fb7ff272c9dd",
+      "representations": 4,
+      "source_ids": [
+        "news-4649d2f1a4604953"
+      ]
+    },
+    {
+      "body_sha256": "90101269c20de73c4600ce22091b76e1fc7f27a7dc76d23df12b1b0be9b860a5",
+      "representations": 14,
+      "source_ids": [
+        "news-20746ac22823c8db"
+      ]
+    },
+    {
+      "body_sha256": "91ccd801c2a10d9f141e0aad0eb7ee8472f7fb8235dcae753088386907953e33",
+      "representations": 6,
+      "source_ids": [
+        "news-aa6269dd60812ee5"
+      ]
+    },
+    {
+      "body_sha256": "92ec272beb8bbf8cd53c53cd1846b7d3f4c42b14a038cb4ebe414fafad3a4c9a",
+      "representations": 6,
+      "source_ids": [
+        "news-651c21937c60bd33"
+      ]
+    },
+    {
+      "body_sha256": "96cccfbb126fed0c8d1ae58b484a837c3b78b7c12519343c232ede982a1dbc74",
+      "representations": 12,
+      "source_ids": [
+        "news-7abee919f934ec27"
+      ]
+    },
+    {
+      "body_sha256": "9961855259afc2893958edf98d6903ddad3f5bb44e0a5bd234a35c99767943da",
+      "representations": 4,
+      "source_ids": [
+        "news-5a83707ac0c552fe"
+      ]
+    },
+    {
+      "body_sha256": "9b53076db840aebcb64d1c3fb7d11b1aad7c97548b788701194ba4a8907f3d1b",
+      "representations": 4,
+      "source_ids": [
+        "news-cbbe7131c73d0250"
+      ]
+    },
+    {
+      "body_sha256": "9b8559c95682f741bbf60c3b4f425f2fea792552f9d8efd380b3f3cae7952283",
+      "representations": 2,
+      "source_ids": [
+        "ABS-BROWSER-abs-2023"
+      ]
+    },
+    {
+      "body_sha256": "9e872c92d374ceaa5c461ba002b4cb74ea6b6908a2de2f5bbdd146aa7d6655eb",
+      "representations": 4,
+      "source_ids": [
+        "news-6caf0c129b6d7069"
+      ]
+    },
+    {
+      "body_sha256": "9f5bd356566d1e643ba44cd136d43b009a668e63326644690bbc7ee213bf446c",
+      "representations": 2,
+      "source_ids": [
+        "news-c15427a62b79ba2c"
+      ]
+    },
+    {
+      "body_sha256": "a5ea6f9a2ee8ae1d6dd71fc925d8de28168748fcc3a7de998e4ce27f348e3f1e",
+      "representations": 12,
+      "source_ids": [
+        "news-63bce4e354aec337"
+      ]
+    },
+    {
+      "body_sha256": "a67c4feebb0cf73af532ce59796c330deea3eef97b933c76dee353108bbae4a8",
+      "representations": 4,
+      "source_ids": [
+        "news-959dc7f3e42305a4"
+      ]
+    },
+    {
+      "body_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+      "representations": 10,
+      "source_ids": [
+        "news-1856c6263451d088"
+      ]
+    },
+    {
+      "body_sha256": "a7429a326b6cb3f30eee9d7d70f945b408e0caad56b6ba112af4f2168c574a14",
+      "representations": 6,
+      "source_ids": [
+        "news-905a1e1ec31455e0"
+      ]
+    },
+    {
+      "body_sha256": "a8ed5fbb1c06460111f0491094a5bc9cd3556005705ea4fd038879129facbf1b",
+      "representations": 4,
+      "source_ids": [
+        "news-87aca03905e85f15"
+      ]
+    },
+    {
+      "body_sha256": "a94020ba0de3d7c25e197fb8d3752d2ffc4eb452fa5bcafb52e14fe10f3375e3",
+      "representations": 6,
+      "source_ids": [
+        "GMA-20220730-839934"
+      ]
+    },
+    {
+      "body_sha256": "abfa8cac412a8e251847cf2227a11b1bbf47eeefbc6f3f6a3deb0d20bff73ddb",
+      "representations": 10,
+      "source_ids": [
+        "news-36e7cdb0e61c5b61"
+      ]
+    },
+    {
+      "body_sha256": "ad3a42ed970cad40a0396c0ca12caccd04afa14e9fe8e7a0bca82df3aab912a9",
+      "representations": 2,
+      "source_ids": [
+        "news-31e4dd5f1f7ca430"
+      ]
+    },
+    {
+      "body_sha256": "b120f9c5d24df618ee3d250b65fdeb46efe246ee3d3456c50ac2e858feeb1787",
+      "representations": 8,
+      "source_ids": [
+        "ABS-BROWSER-abs-2025"
+      ]
+    },
+    {
+      "body_sha256": "b14eed9bc1eb49e92dbf6f18e128a972f89b7db05eed1bcf28c52a8bb703b97d",
+      "representations": 4,
+      "source_ids": [
+        "news-a3945a9d77fef99a"
+      ]
+    },
+    {
+      "body_sha256": "b3193bfb5935cef9d2e4cc7c65a9808afd5d21c8ea8132dbd30b0e140d3bcfa9",
+      "representations": 2,
+      "source_ids": [
+        "news-0685a665af348e59"
+      ]
+    },
+    {
+      "body_sha256": "b4cb9215aa2ec9d10306779f4ec7d5a9922aaa004c3acd0d0af49908b5df1abb",
+      "representations": 6,
+      "source_ids": [
+        "news-5c8cbed15a462665"
+      ]
+    },
+    {
+      "body_sha256": "b72f50b681aa10dad987660b8272936fea5ee497f7717f022ea18038dc4808f4",
+      "representations": 2,
+      "source_ids": [
+        "news-9f85f3f1fa38fa8c"
+      ]
+    },
+    {
+      "body_sha256": "b9775aa5762bfdca53dd044ce75cb2af76bc1997b7f86863078a0d295df699a6",
+      "representations": 40,
+      "source_ids": [
+        "news-496862ad9cd359b9"
+      ]
+    },
+    {
+      "body_sha256": "bbd86d95f8444af0bfcbee3cede6083c5ec7dd331577b1aa7a73f27238bf685c",
+      "representations": 2,
+      "source_ids": [
+        "news-9b619fe2bf31c2b3"
+      ]
+    },
+    {
+      "body_sha256": "bd6b3df72f882f897abf57c584b99dba58a3945410aeb95793280aeca803cbd6",
+      "representations": 2,
+      "source_ids": [
+        "news-ade9c52e455ef8a3"
+      ]
+    },
+    {
+      "body_sha256": "c431deed8f87ffb4489e52a64f5a7a1a9a9826512ac9ceac3c439ef07590d2d9",
+      "representations": 2,
+      "source_ids": [
+        "news-8e93fc9efc698e68"
+      ]
+    },
+    {
+      "body_sha256": "c602ed6e6f9abe15f2ddf68cbe83c27c1058893e953560307f64182ecd3c0666",
+      "representations": 16,
+      "source_ids": [
+        "news-b60f94bc963eaeec"
+      ]
+    },
+    {
+      "body_sha256": "c61b47f521910d6166e8321a8aab4d6e4b2dc18ecdfe4d59f66be7818618e2db",
+      "representations": 10,
+      "source_ids": [
+        "news-95b46b8ad154130c"
+      ]
+    },
+    {
+      "body_sha256": "c9a083c65704a56e10232c49d145466d8fc77bd6b13b9070bfbc3a544b4c61c1",
+      "representations": 2,
+      "source_ids": [
+        "news-96c272681ad9b4a8"
+      ]
+    },
+    {
+      "body_sha256": "caf2e506992958441cda34a5a23839895ad0ba6083e3aa7319c018c5235f23b6",
+      "representations": 12,
+      "source_ids": [
+        "ABS-BROWSER-abs-2024"
+      ]
+    },
+    {
+      "body_sha256": "cbe2b97d58600638ba34677069e613169e40a65b9c6ac49a6f3a728c98e41b63",
+      "representations": 18,
+      "source_ids": [
+        "GMA-997943"
+      ]
+    },
+    {
+      "body_sha256": "ccc1c72bf83fe013bac23ff07b93d4685770e99e4bad4081f7342c568dd743fb",
+      "representations": 2,
+      "source_ids": [
+        "news-b334a6595b2116f3"
+      ]
+    },
+    {
+      "body_sha256": "ce8d52e179ee1ce5d99f2fd8ac0b91cc725f33ecfec0015c0d176bbb9f4a0bd5",
+      "representations": 8,
+      "source_ids": [
+        "news-79addb1dcc55db8b"
+      ]
+    },
+    {
+      "body_sha256": "cf10050d20ce5d3b6bb9879b5acbd8a48bb9da663bfd23b3b591a2c52dc6fe5a",
+      "representations": 4,
+      "source_ids": [
+        "news-6b591d0fbc9779c5"
+      ]
+    },
+    {
+      "body_sha256": "d11977fec62f7a16ce9ca2cfd79100f393ce9b70e5040ad21a012dc439995237",
+      "representations": 4,
+      "source_ids": [
+        "news-d40ef2f36bb454d6"
+      ]
+    },
+    {
+      "body_sha256": "d24c8873c3a748c6a6a98b63266fc7c56b400fe2c6919f76d939c745164f4ca5",
+      "representations": 26,
+      "source_ids": [
+        "GMA-20260817-998778"
+      ]
+    },
+    {
+      "body_sha256": "d38f3f6b34a699f9e877697c93b1965a1df88e6facab01a6156ec4e80ab56331",
+      "representations": 2,
+      "source_ids": [
+        "news-6ced90b6ba8eac5a"
+      ]
+    },
+    {
+      "body_sha256": "da86178e352f6d3e34635d5d6bb9a54ce33ce8a0450195ab324e385d196b339e",
+      "representations": 10,
+      "source_ids": [
+        "news-8d7467f1c4782199"
+      ]
+    },
+    {
+      "body_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+      "representations": 10,
+      "source_ids": [
+        "news-641a924608dd03ab"
+      ]
+    },
+    {
+      "body_sha256": "db592e7c30015b898339692fa3f94b34cc9e424338b54549073b855c679578e7",
+      "representations": 2,
+      "source_ids": [
+        "news-70c9bfdac67f0c7d"
+      ]
+    },
+    {
+      "body_sha256": "dba2b0c797961cd77633f978f690b766f8ca2571701d55dd5b84441c6dd12cb5",
+      "representations": 2,
+      "source_ids": [
+        "news-5e1e9bda96c4109d"
+      ]
+    },
+    {
+      "body_sha256": "dcbaef88cb1ebc7160371d8478130368768f4d3aea8d23d485ddec30b9dffe6a",
+      "representations": 12,
+      "source_ids": [
+        "news-bd360a67694282cd"
+      ]
+    },
+    {
+      "body_sha256": "e3bd08169c8be215014387203ef30f1b14486bbe8f1a4c2c9701e0f67af8645b",
+      "representations": 4,
+      "source_ids": [
+        "news-c04d4f7154f4f54f"
+      ]
+    },
+    {
+      "body_sha256": "e52b5720de992eb72a3327dd7546e7814b9b8c302d9b18e07f0685b292048b8b",
+      "representations": 4,
+      "source_ids": [
+        "news-c814e44a54372ad1"
+      ]
+    },
+    {
+      "body_sha256": "e55bce005d8d153602e06b41045592bb11c9b008cff2a7841ce82fb760967a3b",
+      "representations": 6,
+      "source_ids": [
+        "news-f27dfa33a87f1e62"
+      ]
+    },
+    {
+      "body_sha256": "e6f2345fe9d3f6a6eacd4ac99efe1d022b6913f1766024c1525a354d2b02f860",
+      "representations": 4,
+      "source_ids": [
+        "news-f788f7c467927dac"
+      ]
+    },
+    {
+      "body_sha256": "ef73893a17b63a7274bb05a7cbc4839cfcc7b99372e41e68422cf08e592d5e9c",
+      "representations": 6,
+      "source_ids": [
+        "news-d4ad93228fbfb786"
+      ]
+    },
+    {
+      "body_sha256": "f22581208f1ae4559f0258088c3b58d445d2fa82d6d1f08c322e7ec112e8eb4e",
+      "representations": 4,
+      "source_ids": [
+        "news-017e86f44194f17e"
+      ]
+    },
+    {
+      "body_sha256": "f248cdc1677da794d6d18597066f13de157c42a6377dcddaecef1a5ccc9b1bd7",
+      "representations": 4,
+      "source_ids": [
+        "news-3a5b4ac4795658f8"
+      ]
+    },
+    {
+      "body_sha256": "f2af7f2643968165560c3e9db7991c4896d4a1edfca3ae61dc8bfd91ab8daece",
+      "representations": 2,
+      "source_ids": [
+        "news-24c601183ae1726d"
+      ]
+    },
+    {
+      "body_sha256": "f467815a2ae7f765f370e80b47d6a716be02bdbfa9cab7bf3ff1b2b57249d8ce",
+      "representations": 2,
+      "source_ids": [
+        "news-e9b53c4f27a5348a"
+      ]
+    },
+    {
+      "body_sha256": "f50c583f890b0701eb5149b72bf4df020c4e7f2e24864a9f6442324cf20ac9cf",
+      "representations": 2,
+      "source_ids": [
+        "news-eb2c5a8e951bbbb2"
+      ]
+    },
+    {
+      "body_sha256": "f569e0c669739111d724b0ea0e6a09e313c514e2545197de94bcb4353b8d94a8",
+      "representations": 6,
+      "source_ids": [
+        "news-fcff07b9d070ca91"
+      ]
+    },
+    {
+      "body_sha256": "f56dbd6b85a2565f530b452ca1891b9cb8fb2c06f9e8fe61fbbfbca9481e8957",
+      "representations": 4,
+      "source_ids": [
+        "news-a4d477ae7b54b451"
+      ]
+    },
+    {
+      "body_sha256": "f57251d892d83a8a03768a3bb22222bdacb16de409d4fa7d9e787092402e6349",
+      "representations": 10,
+      "source_ids": [
+        "news-d51c97021d07d991"
+      ]
+    },
+    {
+      "body_sha256": "f592d6f1ac598a363cdc8f8062bfe2ee3c61bc8ef2eb5d666b0c0b26dd28b5c8",
+      "representations": 8,
+      "source_ids": [
+        "news-2a1a4e2381f63ab0"
+      ]
+    },
+    {
+      "body_sha256": "f7f8b709ac77fcff4fccec1442961594160b1e8921ab68d0b7f021ead28dc7ad",
+      "representations": 2,
+      "source_ids": [
+        "news-7885d5aaecfdc9ff"
+      ]
+    },
+    {
+      "body_sha256": "f920ca76d26c74110779672ff465018e2ae5a6b14ac6a7a74f0c812bdbe42785",
+      "representations": 12,
+      "source_ids": [
+        "news-0a7057762450f139"
+      ]
+    },
+    {
+      "body_sha256": "fb88fbe6aaa01272951d1d75b4a140276e8ad856470765d64319ed1b189d27e6",
+      "representations": 4,
+      "source_ids": [
+        "news-1626080d04706384"
+      ]
+    },
+    {
+      "body_sha256": "fc7446bfce96a51e0270882a06561678634e07adbaadf7204ce381b7085976be",
+      "representations": 8,
+      "source_ids": [
+        "news-ca7319840b01cb70"
+      ]
+    },
+    {
+      "body_sha256": "fd418c63fdba6ddffa6e2a46b236eba32ec95429ef192744234015a29dbacfa3",
+      "representations": 32,
+      "source_ids": [
+        "news-3f17e39b80d92846"
+      ]
+    },
+    {
+      "body_sha256": "ffc167314325aa516eab91504c3e17068c4b68e49f7a7019d63beee5803f5cdc",
+      "representations": 4,
+      "source_ids": [
+        "news-333a405b517ced17"
+      ]
+    }
+  ],
+  "counts_by_kind": {
+    "embedded_source_body": 880,
+    "other_evidence": 56,
+    "whole_body_passage": 24
+  },
+  "distinct_articles": 138,
+  "distinct_complete_body_hashes": 138,
+  "files": {
+    "cohort-v5/grouped_annotations.jsonl": {
+      "counts": {
+        "embedded_source_body": 400,
+        "whole_body_passage": 10
+      },
+      "sha256": "02016c20152911286000ccf6a88812101c10f831e6d4854ffc7842c985857dc5",
+      "total": 410
+    },
+    "contextual-v5/category_reviews.json": {
+      "counts": {
+        "other_evidence": 7
+      },
+      "sha256": "2c537e5c2e22ab3fcb9ed0f6ddd60eef0aaa613bef8dc1616f6901efcb3de95b",
+      "total": 7
+    },
+    "contextual-v5/context_annotations.jsonl": {
+      "counts": {
+        "embedded_source_body": 40,
+        "other_evidence": 21,
+        "whole_body_passage": 2
+      },
+      "sha256": "1a0ad99b2c7da4135f1350964f9f70b4a49577c13e2d78cc44e16d9e58b00cf9",
+      "total": 63
+    },
+    "replay/cohort-v5/grouped_annotations.jsonl": {
+      "counts": {
+        "embedded_source_body": 400,
+        "whole_body_passage": 10
+      },
+      "sha256": "02016c20152911286000ccf6a88812101c10f831e6d4854ffc7842c985857dc5",
+      "total": 410
+    },
+    "replay/contextual-v5/category_reviews.json": {
+      "counts": {
+        "other_evidence": 7
+      },
+      "sha256": "2c537e5c2e22ab3fcb9ed0f6ddd60eef0aaa613bef8dc1616f6901efcb3de95b",
+      "total": 7
+    },
+    "replay/contextual-v5/context_annotations.jsonl": {
+      "counts": {
+        "embedded_source_body": 40,
+        "other_evidence": 21,
+        "whole_body_passage": 2
+      },
+      "sha256": "1a0ad99b2c7da4135f1350964f9f70b4a49577c13e2d78cc44e16d9e58b00cf9",
+      "total": 63
+    }
+  },
+  "interpretation": "Canonical full-source serialization and one replay duplicate body fields; contextual evidence can contain the same complete body too. Count fields separately from independent passages/articles. No necessity or source permission follows from a counted copy.",
+  "new_articles_collected": 0,
+  "new_standalone_capture_body_files": 0,
+  "original_capture_archive_files_changed": false,
+  "previous_review_copy_inventory": {
+    "path": "backend/training/flood_ner/artifacts/held-scope-review-20261016-v1/copy-inventory.json",
+    "sha256": "702d3659332e61c767192613689523d32b20c133426b30f9c1dde8af5576f892"
+  },
+  "previous_targeted_inventory": {
+    "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/copy-inventory.json",
+    "sha256": "b011979f4981d44d2f6d41e5b34a9133226a680d8d6f7643ea33cca45fe3d707"
+  },
+  "schema_version": "lanes-frozen-assembly-copy-inventory-v2",
+  "scope": "Every JSON/JSONL string field in both bound assembly file sets, matched exactly to complete captured bodies; not a global/off-device census or legal reproduction count.",
+  "source_use_index": {
+    "path": "backend/training/flood_ner/artifacts/research-assembly-20261016-v1/source-use-index-v5.json",
+    "sha256": "f266a06f201e98cd5547ade7a2804f58393b310ac6dd80b45cdb3ee467b1a5a4"
+  },
+  "supersedes": "The earlier total covered embedded source and whole-passage fields only. This total also includes full-body strings in fact/category evidence.",
+  "total_exact_complete_body_field_representations": 960
+}

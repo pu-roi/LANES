@@ -1,0 +1,18 @@
+{
+  "contains_full_articles_or_passages": false,
+  "exports": 0,
+  "files": {
+    "README.md": "6d2e77b2760ae60bcff5b5218546fc2566dce68d676a84c9d0b0dc752abb006b",
+    "before-after.csv": "59a26ca9343393e8ffe8a58a5ac6bb0a85956d98708fecc5d8726571c170816f",
+    "case-assessments.json": "34dad6a5931b7055212895611fac1953e74249a9c08eaa9bb3632e024223b1c1",
+    "context-impact.json": "a14fc807ed60c65c69c1e2dd0158ce75279a9839c434b8834e131ee110ab3c8d",
+    "contract-and-third-party-notes.json": "52561c2e5d5c8bddecfda99ccd6187eb78fea722db2361d8bbe525dcb948f027",
+    "coverage-index.csv": "8f98ef87853c4e0abdd6140fd112c7226ce437cbb9684d1c34e25fc26a8c5cba",
+    "coverage-index.json": "724ec131d1556a41676e78d54bb727e39051e2a3e728d1503a23953f04e72782",
+    "paper-method-notes.md": "a6259e0769de51d309297e6d12ef18bf5c5f277b33e6398baf3797a7f6292a8f",
+    "publisher-summaries.json": "6dfd8048f335d55acf1944fcafa871ba76b29b2b43576bae5e993c082d284228",
+    "status.json": "7216c26277db24a21f78e0ad57caac6ea53a08f2c24d555bb1922f006c6bd9ae",
+    "verification.json": "769f3f184cb30d6bba6900b860c60c97529ccf56be1e998dc54c0e5aba81d3a8"
+  },
+  "training_admitted": 0
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "changes": [],
+    "finding": "Three separately named drainage outlets are LANDMARKs. Remedios here is an outfall, contrasting with its ROAD sense in the adjacent selected window. Manila Bay remains a water body outside the profile, and MMDA/Don Artes are not place labels. Attribution and 2021 project history do not establish a present flood time.",
+    "outcome": "confirmed_unchanged",
+    "record_id": "revision3-0c1b2b0cfc686a8277f2"
+  },
+  {
+    "changes": [],
+    "finding": "Roxas Boulevard is ROAD; Manila Bay is a water body outside this profile. The complete recommendation and following predicted protection sentence show a road name inside counterfactual prevention, rather than a current inundation. Mangroves is common English lexical material; no flood status is implied by that language decision.",
+    "outcome": "confirmed_unchanged",
+    "record_id": "revision3-2e6d6e87683e02351c89"
+  },
+  {
+    "changes": [],
+    "finding": "Taft Avenue and UN Avenue are both ROAD. The complete two-sentence unit preserves reported vehicle difficulty and stranded passengers; last week is relative report wording, not a fabricated absolute clock. The untranslated stranded stem contributes to the operational Taglish convention.",
+    "outcome": "confirmed_unchanged",
+    "record_id": "revision3-45fa2d7e6daee2528fa6"
+  },
+  {
+    "changes": [],
+    "finding": "Taft Avenue is the only ROAD occurrence. The source also names Manila Bay, an excluded water body. Habitual flooding and a project-cost criticism remain in the sentence; the P389 million amount is not a depth or address. This differs from the preceding recent-passability unit and must not become an observed current flood assertion.",
+    "outcome": "confirmed_unchanged",
+    "record_id": "revision3-4b06ccbc5cc68816f84c"
+  },
+  {
+    "changes": [],
+    "finding": "Dolomite Beach is LANDMARK; Remedios and Taft Avenue are ROAD. Source wording separates the outfall closure from the qualified rainy-season causal account. The exact contextual shift in Remedios is the reason to retain both this and the outlet-list window; no inferred OSM identity is assigned.",
+    "outcome": "confirmed_unchanged",
+    "record_id": "revision3-93e4a4482562c5e56f57"
+  }
+]

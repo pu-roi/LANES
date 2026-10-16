@@ -1,0 +1,59 @@
+{
+  "application_control_4551": true,
+  "attempts": 1,
+  "candidate": "lanes.tl.calamancy-address-v1",
+  "candidate_sha256": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+  "constructed_cases": 48,
+  "constructed_controls": 56,
+  "contextual_pairs": 40,
+  "error_summary": "Windows Application Control error 4551 while importing spaCy through thinc/torch: torch_python.dll or a dependency blocked; no passage tokenization occurred.",
+  "exports": 0,
+  "failure_stage": "worker_subprocess",
+  "implementation_sha256": {
+    "corpus_tokenizer_qualification.py": "3175d9591562b7cd3abd5948c832389aed000941928901d08a985055a088553e",
+    "corpus_tokenizer_worker.py": "422f276e54cd43fc29c27c399ec36f9806410a09bc31320273bdcb7eec27c22c"
+  },
+  "input_bindings": {
+    "admission_ledger": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/admission-ledger.json",
+      "sha256": "5563206da2830f1e107e4c883c780b4b186d2d5b86c36acdeeb69ff3c47115ad"
+    },
+    "admission_package": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/hash-manifest.json",
+      "sha256": "0b3bea737fa6004c600cb6c55141718bca54b4283c7a88583222d95b02de4f14"
+    },
+    "cohort": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/cohort-admitted-v1/partition_manifest.json",
+      "sha256": "d209abbdb9353510e5d62833221c2f71784e323dbf67f49ea5a20e3ec743e2f8"
+    },
+    "context": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/contextual-admitted-v1/manifest.json",
+      "sha256": "4a0fbd7760730ecb4055fd6c837da1d3cf37884a8f0fb8a09ef54a80d7ad2c78"
+    },
+    "model_manifest": {
+      "path": "backend/training/flood_ner/artifacts/preflight-use-20261015/model_manifest.json",
+      "sha256": "90e45dc6664cb96602fb7154493a97a3f47d22b8e0792f4a8e5f5fb2a3534cfc"
+    },
+    "tokenizer_manifest": {
+      "path": "backend/training/flood_ner/artifacts/tokenizer-qualification-20261015/final-v5/tokenizer_manifest.json",
+      "sha256": "4257f8f8d6bc56157624cd8332263e834ecc3333caeed3617ce329abcc95689c"
+    }
+  },
+  "location_spans": 1465,
+  "model_predictions_performed": false,
+  "model_revision": "51a40433059d8a2c25b98a48eca854f8789a491a",
+  "negative_passages": 48,
+  "private_error_evidence": {
+    "path": "backend/training/flood_ner/artifacts/corpus-tokenizer-qualification-20261016-v1/actual-v1/worker.stderr.log",
+    "sha256": "096b8e8c67c0d1f131e32d68f1700b09ba1e11562ca507cb20ea386b6494b2b8"
+  },
+  "records": 400,
+  "research_interpreter_sha256": "28c820c0ed4cd4b245b9a6e52fbbaecb52e92de98309e72d89de0cf6fe6a206c",
+  "research_python_required": "3.11",
+  "retry_policy": "One unchanged-environment attempt after the recorded planning error; no automatic retries",
+  "returncode": 1,
+  "schema_version": "lanes-corpus-tokenizer-qualification-v1",
+  "spacy_version_required": "3.7.5",
+  "state": "blocked",
+  "training_performed": false
+}

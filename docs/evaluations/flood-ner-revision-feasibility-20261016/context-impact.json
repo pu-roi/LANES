@@ -1,0 +1,89 @@
+{
+  "affected_pairs": [
+    {
+      "action": "Keep original pair unchanged. Any later replacement needs a newly reviewed training-only contextual pair, source-supported relationships and rechecks of all category/language/article minima.",
+      "categories": [
+        "negative_unknown_time"
+      ],
+      "language": "english",
+      "record_id": "continuation-1e0c29755fdbfb554d89",
+      "source_id": "news-1f5f90c1e3b7f312"
+    },
+    {
+      "action": "Keep original pair unchanged. Any later replacement needs a newly reviewed training-only contextual pair, source-supported relationships and rechecks of all category/language/article minima.",
+      "categories": [
+        "negative_unknown_time"
+      ],
+      "language": "english",
+      "record_id": "continuation-441ff1a75dc482a1a9c5",
+      "source_id": "news-0ce6fa8811d40df2"
+    },
+    {
+      "action": "Keep original pair unchanged. Any later replacement needs a newly reviewed training-only contextual pair, source-supported relationships and rechecks of all category/language/article minima.",
+      "categories": [
+        "negative_unknown_time",
+        "temporal_transitions"
+      ],
+      "language": "taglish",
+      "record_id": "continuation-2313ddef67ba9d5251b5",
+      "source_id": "news-641a924608dd03ab"
+    },
+    {
+      "action": "Keep original pair unchanged. Any later replacement needs a newly reviewed training-only contextual pair, source-supported relationships and rechecks of all category/language/article minima.",
+      "categories": [
+        "negative_unknown_time"
+      ],
+      "language": "taglish",
+      "record_id": "continuation-3fa1686a1a29a783b349",
+      "source_id": "news-0ce6fa8811d40df2"
+    },
+    {
+      "action": "Keep original pair unchanged. Any later replacement needs a newly reviewed training-only contextual pair, source-supported relationships and rechecks of all category/language/article minima.",
+      "categories": [
+        "negative_unknown_time"
+      ],
+      "language": "taglish",
+      "record_id": "continuation-0015463c16667c6768ae",
+      "source_id": "news-7a824863d687424a"
+    }
+  ],
+  "support_if_replaced": {
+    "articles_by_language": {
+      "english": 12,
+      "taglish": 16
+    },
+    "category_support": {
+      "collective_ranges": {
+        "english": 11,
+        "taglish": 5
+      },
+      "local_exceptions": {
+        "english": 1,
+        "taglish": 4
+      },
+      "negative_unknown_time": {
+        "english": 13,
+        "taglish": 12
+      },
+      "shared_observations": {
+        "english": 12,
+        "taglish": 7
+      },
+      "temporal_transitions": {
+        "english": 3,
+        "taglish": 7
+      }
+    },
+    "current_pairs_modified": 0,
+    "fresh_review_required_for_replacements": true,
+    "remaining_languages": {
+      "english": 18,
+      "taglish": 17
+    },
+    "remaining_pairs": 35,
+    "replacement_training_pairs_needed": {
+      "english": 2,
+      "taglish": 3
+    }
+  }
+}

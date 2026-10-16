@@ -1,6 +1,56 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 15, 2026, 4:09 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 12:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved: private handoff omitted original capture pointers
+
+- **Status / severity / resolver:** Resolved before delivery; P2. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The first local ZIP revalidated qualification records but omitted 201 of the 407 selected original capture-evidence files.
+- **Root cause:** Closure traversal followed typed path/SHA objects but not source-register capture/raw/text fields and their distinct hash keys.
+- **Solution:** Preserve v1; build v2 with explicit selected capture evidence and verify original/restored publication and content hashes. Do not reconstruct historical missing references.
+- **Files / verification:** Ignored desktop-handoff-20261016-v2 builder and file manifest; unchanged desktop_handoff.py passes 40 new tests, complete NER/location suite 880 passed/one skipped. Temporary restoration revalidates all 138 selected articles/407 capture paths without errors. [Report](../evaluations/flood-ner-desktop-handoff-20261016/README.md).
+
+
+## Blocked: research interpreter import denied by Windows Application Control
+
+- **Status / severity / investigator:** Blocked external execution; P1 for this laptop's corpus-qualification gate. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The planning probe and one unchanged-environment retry fail with WinError 4551 while importing spaCy through thinc/torch; torch_python.dll or a dependency is blocked. No passage tokenization or NER prediction occurs.
+- **Root cause:** The observed operating-system DLL execution denial precedes tokenizer construction. The policy's underlying reason is not established; no source-data, annotation or tokenizer defect is inferred.
+- **Handling:** Preserve stderr, return code, exact executed-code snapshots and pending evaluation protocol. Stop retries in this milestone. No security-policy/dependency/GPU changes or fallback claims. Verify the existing prepared desktop and its actual private inputs before a separately recorded run.
+- **Files / checks:** New corpus_tokenizer_qualification.py, corpus_tokenizer_worker.py, evaluation/contract.py and CLI/tests; immutable ignored actual-v1 failure package. 840 software checks pass/one skipped; corpus qualification remains blocked. [Evidence](../evaluations/flood-ner-corpus-tokenizer-20261016/README.md).
+
+
+## Resolved in versioned audit: complete-body count omitted contextual evidence fields
+
+- **Status / severity / resolver:** Resolved in complete copy audit v2; P2 research-copy accounting issue. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The first bounded assembly audit counted 880 embedded source bodies and 24 whole-body passages (904), omitting 56 additional exact whole-body strings in contextual fact/relation/category evidence.
+- **Root cause:** The targeted counter inspected source.text and record.text rather than every evidence string field. Source/record preservation and deterministic assembly checks were unaffected.
+- **Correction:** Preserve the original focused audit and verification. A complete JSON/JSONL string-field audit records 960 representations; an independent typed traversal reconciles 880 source fields, 24 passage fields, 26 fact-evidence fields, sixteen relation-evidence fields and fourteen category-evidence fields. Copies are not treated as distinct samples or articles.
+- **Files / verification:** New ignored research-assembly-20261016-v1/complete_copy_audit.py, copy-inventory-v2.json, verification-v2.json and copy-audit-crosscheck.json; [complete metadata audit](../evaluations/flood-ner-research-assembly-20261016/copy-inventory-v2.json). No reusable production code changed; both audit methods agree and all frozen files remain byte-identical to replay.
+
+## Contained: incomplete annotation in an unused Philstar reserve
+
+- **Status / severity / resolver:** Resolved by exclusion from this feasibility pool; P2 research-annotation completeness issue. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The unused Dolomite opening paragraph continuation-7083e3d12285e30c158a was source-exact and structurally valid but omitted the Estero San Antonio Abad landmark at local offsets 364-387. The current selected cohort does not use this older record.
+- **Root cause:** Offset/schema validation verifies existing labels; it cannot establish that every location occurrence was annotated. The source-reading screen found the missing occurrence.
+- **Containment:** Preserve the historical annotations, explicitly exclude this record from verified witnesses and retain its source/hash-bound finding. An already reviewed overlapping alternative includes the occurrence; the recommended conditional selection uses correctly labeled existing windows instead. No current dataset annotation was changed.
+- **Files / verification:** New ignored held-alternatives-20261016-v1/reserve-findings.json and analysis/exclusion-register.json; [metadata findings](../evaluations/flood-ner-held-alternatives-20261016/exclusion-register.json). Twenty reserves screened, nineteen eligible for reviewed scenarios. Source/offset/tokenizer and replay checks pass; substantive completeness is reported separately from structural checks.
+
+## Resolved in corrected checkpoint: default adoption stood in for content review
+
+- **Status / severity / resolver:** Resolved in the new correction; P2 research-decision correctness defect. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The earlier 68-case report described 58 articles / 205 passages as reviewed/adopted without individual qualitative content/extent findings.
+- **Root cause:** The historical one-off builder's non-special-case branch assigned adoption and generated title/entity-count prose. Its structural validator could not distinguish that fallback from an authored content assessment; byte/shape checks were overstated as review completion.
+- **Solution:** Preserve the old builder/output. Read each affected complete body and every selected passage; author explicit content, qualitative extent, retention, market and outcome entries. The new ignored builder requires every frozen source-bound entry and has no fallback adoption. Structural validation is explicitly distinct from substantive adequacy.
+- **Files / verification:** `academic-remaining-cases-20261016-v2` ignored inputs/builder/assembled/replay and [Current correction](../evaluations/flood-ner-default-adoption-correction-20261016/README.md). 58 explicit reviews, 116 content pointers, 26 invalid-artifact refusals and byte-identical replay; 109 focused existing software tests pass. Nine previous adoptions become holds / 48 passages. All ten special cases, 71 prior dispositions, 400/40 corpus, partitions, admission flags and 1,524 prior files remain unchanged. Current holds total 14 articles / 68 passages; source-use finalization remains open.
+
+## Resolved in new evidence: Philstar policy pointer selected the contents heading
+
+- **Status / severity / resolver:** Resolved for new case decisions; P2 research-evidence defect. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The prior `philstar-personal-processing` pointer verified a hash and range but contained only the 47-character contents heading, excluding the provisions used in the policy assessment.
+- **Root cause:** Selecting the first repeated section heading and next forum heading matched the table of contents. Structural pointer validation establishes byte identity, not substantive relevance.
+- **Solution:** Preserve the historical packet and capture. New case decisions bind substantive clauses 2.1–2.4 and acceptance language 1.1–1.3; a content-marker check rejects the old contents-only range. No production helper or earlier validation behavior changed.
+- **Files / verification:** New ignored academic-remaining-cases-20261016-v1 evidence-correction/register and artifact verifier; [metadata report](../evaluations/flood-ner-remaining-decisions-20261016/README.md). Corrected pointers pass; old-heading and changed-clause-hash checks reject. Original packets, 400/40 records and all admission flags remain unchanged.
 
 ## Resolved: GPU preflight timeout discarded worker diagnostics
 

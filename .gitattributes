@@ -86,3 +86,6 @@
 /backend/training/flood_ner/gpu_preflight.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/training/flood_ner/gpu_worker.py -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /backend/training/flood_ner/requirements-gpu-qualification.in -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Private handoff manifests bind the standard-library restorer's exact bytes.
+/backend/training/flood_ner/desktop_handoff.py -text

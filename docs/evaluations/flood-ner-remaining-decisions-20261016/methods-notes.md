@@ -1,0 +1,13 @@
+# Paper-method notes: remaining source-use project decisions
+
+The frozen corpus remains 400 AI-created, same-agent-reviewed silver location samples from 139 articles, balanced 200 English/200 Taglish and partitioned 280/60/60. Forty contextual-v3 records pair with existing samples. This review creates no new labels, samples, human verification or model accuracy measurement.
+
+Under explicit researcher delegation, Codex recorded 68 source-bound project decisions: 63 adoptions of a limited private academic-use rationale covering 220 passages, and five retained holds covering 20 passages. Acquisition history was explicitly selected as Unknown / Codex collected, not inferred as public-only, authenticated, accepted or unaccepted terms. Each case includes four-factor assessment, full retained/selected amounts, copy scope, evidence, exceptions and an actionable next step. Adopted rationales accept documented uncertainty; they are not publisher permission, a legal ruling or a determination of contractual enforceability.
+
+Sixty-three new adoptions plus 71 preserved prior dispositions produce derived coverage of 134 articles/380 passages. The unavailable detailed desktop predecessor remains represented only by its verified summary, not a reconstructed record or canonical v2. Five held sources and all their passages remain in the same 400-sample corpus. No subset export or training admission occurred.
+
+The review reused completed source assessments and newly checked qualitative wording in eight editorials, the Reuters report and AFP-caption case. Two nearly complete editorials, two expressive location-negative commentaries and the long single-location Reuters selection retain specific amount/necessity holds. Four other editorials and descriptive caption text have bounded analytical rationales. These outcomes are not automatic thresholds based on percentage, editorial category or absence of entities.
+
+A new evidence pointer corrects the prior Philstar table-of-contents-only range without altering the original capture or historical packet. Full-body string occurrences were recomputed in four named local containers, including ZIP members; the metric is neither a global device/cloud inventory nor a legal count of reproductions. Full-copy retention, cumulative archives, market uncertainty and the distinction between majority and separate court opinions remain explicit.
+
+All dataset/model/tokenizer checkpoints, twelve nonacademic outcomes and research-only source flags are preserved. Admission/export counts remain zero, with export refusal verified. Private project-use decisions do not cover public demonstrations, deployed inference, paper excerpts or dataset/model distribution.

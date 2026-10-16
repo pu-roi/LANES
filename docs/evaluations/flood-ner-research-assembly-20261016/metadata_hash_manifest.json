@@ -1,0 +1,24 @@
+{
+  "contains_article_or_passage_text": false,
+  "exports": 0,
+  "files": {
+    "README.md": "34f3d527b0c98710eee965e80a960d18eecbe1ef425c4258de4f7b8a8527adae",
+    "article-links.csv": "2722bce8aaaec4ef766ffa053bfb1dbf4b9682ffeb214035b8d7d33e5180cd34",
+    "change-register.json": "8080044af9c00f52a8da55086795a159ec533297b7d7b6c4031162cacad3b98d",
+    "cohort-manifest.json": "c592a22c27b7fefccca21fd5e108a5ead4992000138fb5e259038ad04792a49c",
+    "comparison.json": "3b9eda23635dd57b104a48dd34592b90174527c294a3e0c6a7ae08e88b3aecd1",
+    "context-coverage.json": "0864722ff11cca519128e80a5c4a36beb9f1c1bcb19f168fe492724020be71f3",
+    "copy-audit-crosscheck.json": "a6e4594c78556525d6f9c8d16e32c9b141aeccd49a3bd7374656b528ec17158c",
+    "copy-inventory-v2.json": "64e087b430b894ec6d74e43ae834df683ef082defd9ef220c84020d8e9543c7b",
+    "location-coverage.json": "b68ca6629e64b3c67acaeba67bf34458cb71f67db722463d73c3f74e558d31dc",
+    "paper-method-notes.md": "4468306153c2962e759a453441a7d5c71f5b032f9f008871fd5297f12d9daccd",
+    "sample-links.csv": "61784a1f30165edfb229ef29deab4a50c4ecabd106bf5eae55aec640593cd7c6",
+    "source-register.json": "fd04bc6257cb5c686eb6d25c6f3b6402a173e5d78cfee50787f16391cbd4e9e3",
+    "source-use-index-v5.json": "f266a06f201e98cd5547ade7a2804f58393b310ac6dd80b45cdb3ee467b1a5a4",
+    "status.json": "415fe90112f0ec1ca845578cbc3d1e5be72f46dd20b9d39b9abeaae82ce02c1c",
+    "verification-v2.json": "5a33ecde9c4e771f018a04dca844d6d6bbe3d271bca7bb2e612ae89a15e2d569"
+  },
+  "model_trained": false,
+  "schema_version": "lanes-metadata-files-v1",
+  "training_admitted": 0
+}

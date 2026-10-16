@@ -1,0 +1,79 @@
+{
+  "existing_publishers_without_shortening_non_gma_upper_bound": 49,
+  "fixed_philstar_taglish": 16,
+  "future_options_not_executed": [
+    "Target fresh review/annotation of additional source-backed windows in the existing captures to fill these exact deficits, followed by source-use assessment.",
+    "If that cannot supply a qualifying pool, separately authorize limited train/validation rebalancing beyond the 68 held slots, preserving test/pilots and all hard quotas. The minimum additional changes have not been established."
+  ],
+  "gma_fixed_samples": 160,
+  "gma_publisher_cap": 160,
+  "label_support_deficits": [
+    {
+      "label": "ROAD",
+      "language": "taglish",
+      "metric": "spans",
+      "minimum_additional_support": 6,
+      "partition": "train",
+      "relaxed_upper_bound": 54,
+      "required": 60
+    },
+    {
+      "label": "ROAD",
+      "language": "taglish",
+      "metric": "passages",
+      "minimum_additional_support": 4,
+      "partition": "train",
+      "relaxed_upper_bound": 26,
+      "required": 30
+    },
+    {
+      "label": "LANDMARK",
+      "language": "english",
+      "metric": "spans",
+      "minimum_additional_support": 4,
+      "partition": "dev",
+      "relaxed_upper_bound": 6,
+      "required": 10
+    },
+    {
+      "label": "LOCAL_AREA",
+      "language": "english",
+      "metric": "spans",
+      "minimum_additional_support": 3,
+      "partition": "dev",
+      "relaxed_upper_bound": 7,
+      "required": 10
+    },
+    {
+      "label": "ROAD",
+      "language": "english",
+      "metric": "passages",
+      "minimum_additional_support": 1,
+      "partition": "dev",
+      "relaxed_upper_bound": 9,
+      "required": 10
+    },
+    {
+      "label": "ROAD",
+      "language": "english",
+      "metric": "articles",
+      "minimum_additional_support": 1,
+      "partition": "dev",
+      "relaxed_upper_bound": 4,
+      "required": 5
+    }
+  ],
+  "method": "Necessary upper bounds over all tested positive/negative whole-paragraph proposals, with other constraints relaxed. These prove deficits for this tested candidate universe, not all possible future sentence windows or new annotations.",
+  "original_publishers_unused_candidates": {
+    "ABS-CBN News": 25,
+    "GMA News": 430,
+    "Philstar": 24
+  },
+  "positive_shortening_philstar_taglish_upper_bound": 20,
+  "publisher_minimum_per_language": 25,
+  "replacement_slots_required": 68,
+  "rmn_required_english": 25,
+  "rmn_saved_candidate_languages": {
+    "taglish": 414
+  }
+}

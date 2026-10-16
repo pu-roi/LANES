@@ -1,0 +1,17 @@
+{
+  "contextual_pairs_do_not_add_samples": true,
+  "distinct_proposed_passages": 12,
+  "existing_body_archive_files_changed": false,
+  "inherited_additional_complete_body_representations": 20,
+  "inherited_distinct_complete_body_articles": 10,
+  "inherited_feasibility_inventory": {
+    "path": "backend/training/flood_ner/artifacts/held-alternatives-20261016-v1/copy-inventory.json",
+    "sha256": "4bb87b44bebd76eb08a5981926352fc3eefb7a11bb25f4772f8ceb5f960c623a"
+  },
+  "new_articles_collected": 0,
+  "new_complete_body_representations": 0,
+  "new_partial_record_representations": 28,
+  "off_device_and_older_archive_multiplicity": "not exhaustively measured; inherited bounded observations remain version-qualified",
+  "schema_version": "lanes-review-copy-inventory-v1",
+  "storage": "12 reviewed location records and 2 contextual replacements, each repeated in a byte-identical replay; complete source text stays in hash-bound original body files"
+}

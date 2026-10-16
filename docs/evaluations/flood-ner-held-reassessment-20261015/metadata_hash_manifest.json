@@ -1,0 +1,11 @@
+{
+  "files": {
+    "README.md": "6cebbd765e1eba3e3be09459c4dd27ff20423c0084fced2abaed2f8dfacb43f9",
+    "article-outcomes.json": "388be9863b4dded20a7be35dcd42b1636ff6f16dd95b1b6d282fc740ec11ead4",
+    "evidence-index.json": "319ad04051f0b6a12d43cbc47de2b78c78f00d816fc6d2300c40e0ce6d8ff79d",
+    "methods-notes.md": "cb0a2d77b07d86f7a52a80b26765d1a2129f9a8e727af06dcf011219dcbd223d",
+    "status.json": "d3bfcb70575ae9ac381989b3cfb11f7b9a09063ed66ff298282626ca7ef7aff0",
+    "verification.json": "c5abcb22c40b5ea3536265fe244f9bc092d7071063d4b9c06b8eaf1924d9cbbf"
+  },
+  "schema_version": "lanes-metadata-hash-manifest-v1"
+}

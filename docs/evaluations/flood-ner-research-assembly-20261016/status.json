@@ -1,0 +1,39 @@
+{
+  "all_context_requirements_pass": true,
+  "all_hard_quotas_pass": true,
+  "articles": 138,
+  "cohort_revision": "cohort-v5",
+  "context_revision": "contextual-v5",
+  "contextual_pairs": 40,
+  "derived_recorded_basis_articles": 138,
+  "derived_recorded_basis_passages": 400,
+  "desktop_predecessor_unreconciled": true,
+  "exports": 0,
+  "fresh_pytest_run": false,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "location_records": 400,
+  "location_spans": 1465,
+  "model_trained": false,
+  "negative_records": 48,
+  "new_scopes": 4,
+  "partitions": {
+    "dev": 60,
+    "test": 60,
+    "train": 280
+  },
+  "preserved_contexts": 38,
+  "preserved_dispositions": 134,
+  "replaced_contexts": 2,
+  "replaced_locations": 12,
+  "retained_locations": 388,
+  "schema_version": "lanes-research-assembly-summary-v1",
+  "source_use_bindings_complete": true,
+  "training_admitted": 0
+}

@@ -1,0 +1,219 @@
+{
+  "accepted_location_candidates": 12,
+  "all_context_requirements_pass": true,
+  "all_hard_quotas_pass": true,
+  "confirmed_retained_windows": 5,
+  "contextual_replacements": 2,
+  "copy_scan_files": [
+    "authored-draft-reviews.json",
+    "authored-retained-confirmations.json",
+    "authored-scoped-decisions.json",
+    "authorship-bindings.json",
+    "existing-code-before.json",
+    "input-bindings.json",
+    "preservation-before.json",
+    "review-provenance.json",
+    "verify.py",
+    "web-evidence-observation.json",
+    "workflow.py",
+    "replay/context-category-reviews.json",
+    "replay/context-linkage.json",
+    "replay/context-preservation-register.json",
+    "replay/contextual-replacements.jsonl",
+    "replay/draft-reviews.json",
+    "replay/negative-comparison.json",
+    "replay/proposed-article-coverage-index.json",
+    "replay/proposed-context-coverage.json",
+    "replay/proposed-coverage.json",
+    "replay/proposed-selection-register.csv",
+    "replay/retained-confirmations.json",
+    "replay/reviewed-location-records.jsonl",
+    "replay/scoped-decisions.json",
+    "replay/summary.json",
+    "reviewed/context-category-reviews.json",
+    "reviewed/context-linkage.json",
+    "reviewed/context-preservation-register.json",
+    "reviewed/contextual-replacements.jsonl",
+    "reviewed/draft-reviews.json",
+    "reviewed/negative-comparison.json",
+    "reviewed/proposed-article-coverage-index.json",
+    "reviewed/proposed-context-coverage.json",
+    "reviewed/proposed-coverage.json",
+    "reviewed/proposed-selection-register.csv",
+    "reviewed/retained-confirmations.json",
+    "reviewed/reviewed-location-records.jsonl",
+    "reviewed/scoped-decisions.json",
+    "reviewed/summary.json"
+  ],
+  "current_source_use_decisions_unchanged": 138,
+  "deterministic_replay": true,
+  "exact_fixed_records_preserved": 383,
+  "existing_tooling_files_preserved": 35,
+  "exports": 0,
+  "fresh_pytest_run": false,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "model_files_hashed_without_loading": 23,
+  "negative_artifact_check_count": 33,
+  "negative_artifact_checks": {
+    "admission_count": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "annotation_admission_bypass": {
+      "reason": "reviewed record/source/span/facts/admission differs from explicit review",
+      "result": "rejected"
+    },
+    "automatic_dataset_replacement": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "broken_source_pointer": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "changed_nonacademic_outcome": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "changed_preserved_disposition": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "complete_body_embedded_in_reference_record": {
+      "reason": "complete body must remain a reference",
+      "result": "rejected"
+    },
+    "current_decision_replacement": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "duplicate_annotation_record": {
+      "reason": "duplicate reviewed record",
+      "result": "rejected"
+    },
+    "duplicate_case": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "duplicate_membership": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "export_count": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "fabricated_observation_time": {
+      "reason": "reviewed record/source/span/facts/admission differs from explicit review",
+      "result": "rejected"
+    },
+    "false_single_copy": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "frozen_assembly_claim": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "invalid_unicode_offset": {
+      "reason": "reviewed record/source/span/facts/admission differs from explicit review",
+      "result": "rejected"
+    },
+    "invented_acquisition": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "invented_human_review": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "invented_legal_approval": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "invented_publisher_permission": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "missing_annotation_record": {
+      "reason": "wrong reviewed record count",
+      "result": "rejected"
+    },
+    "missing_case": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "missing_explicit_draft_review": {
+      "reason": "'heldproposal-dddf63b496712d4182b4'",
+      "result": "rejected"
+    },
+    "missing_market_factor": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "missing_membership": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "missing_predecessor_reconciliation": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "placeholder_only_finding": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "prevention_claim_promoted_to_active_flood": {
+      "reason": "reviewed record/source/span/facts/admission differs from explicit review",
+      "result": "rejected"
+    },
+    "refuse_overwrite": {
+      "reason": "new review destination required",
+      "result": "rejected"
+    },
+    "source_reference_hash": {
+      "reason": "review evidence hash mismatch",
+      "result": "rejected"
+    },
+    "unauthored_outcome_change": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    },
+    "unreviewed_language_change": {
+      "reason": "reviewed record/source/span/facts/admission differs from explicit review",
+      "result": "rejected"
+    },
+    "unsupported_outcome": {
+      "reason": "report must match explicit authored findings, scopes and verified evidence",
+      "result": "rejected"
+    }
+  },
+  "new_complete_body_representations": 0,
+  "new_frozen_cohort_created": false,
+  "nonacademic_outcomes_preserved": 12,
+  "pilots_preserved": 10,
+  "preserved_context_pairs": 38,
+  "prior_article_dispositions_preserved_by_reference": 134,
+  "prior_checkpoint_files_preserved": 2903,
+  "proposed_location_spans": 1465,
+  "proposed_negative_records": 48,
+  "replayed_files": 14,
+  "research_only_export_refusals": {
+    "current": 400,
+    "proposed": 400
+  },
+  "reviewed_candidates": 12,
+  "reviewed_proposed_context_pairs": 40,
+  "reviewed_proposed_records_in_memory": 400,
+  "source_articles_with_refreshed_capture_date_checks": 4,
+  "source_reference_storage_verified": true,
+  "structural_validation_is_not_substantive_or_legal_approval": true,
+  "test_samples_preserved": 60,
+  "training_admitted": 0,
+  "unicode_round_trip": true,
+  "verified_saved_majority_pointers": 3,
+  "verified_saved_policy_statute_pointers": 22
+}

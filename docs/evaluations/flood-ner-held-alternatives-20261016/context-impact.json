@@ -1,0 +1,63 @@
+{
+  "affected_pairs": [
+    {
+      "record_id": "revision3-13d600f079388082fadb",
+      "retained_in_reviewed_proposal": false,
+      "sha256": "89824c5fbbbf9c978f141a0879ab130559458526413a402129c70ecb34028587",
+      "source_id": "news-7a824863d687424a"
+    },
+    {
+      "record_id": "revision3-d44c297c267072d6ac6b",
+      "retained_in_reviewed_proposal": false,
+      "sha256": "6a17443304b01b777098935298ada0e36a4c867c2ea25369a7ef341a9a145de3",
+      "source_id": "news-c7216b3994ab5614"
+    }
+  ],
+  "instruction": "Preserve the 38 unaffected pairs. Retained affected pairs may be carried by exact binding; otherwise freshly review replacements from proposed training samples. Do not fabricate missing clocks or targets.",
+  "remaining_38_report": {
+    "additional_location_samples": 0,
+    "category_support": {
+      "collective_ranges": {
+        "english": 11,
+        "taglish": 5
+      },
+      "local_exceptions": {
+        "english": 1,
+        "taglish": 4
+      },
+      "negative_unknown_time": {
+        "english": 15,
+        "taglish": 13
+      },
+      "shared_observations": {
+        "english": 12,
+        "taglish": 7
+      },
+      "temporal_transitions": {
+        "english": 3,
+        "taglish": 7
+      }
+    },
+    "complete": false,
+    "errors": [
+      "contextual pilot requires exactly 20 English and 20 Taglish training passages"
+    ],
+    "languages": {
+      "english": 20,
+      "taglish": 18
+    },
+    "records": 38,
+    "schema_version": "lanes-context-pilot-v1",
+    "scope_is_project_choice_not_optimal_sample_size": true,
+    "source_articles_by_language": {
+      "english": 14,
+      "taglish": 17
+    }
+  },
+  "required_final_languages": {
+    "english": 20,
+    "taglish": 20
+  },
+  "required_final_pairs": 40,
+  "unchanged_pairs": 38
+}

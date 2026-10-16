@@ -1,0 +1,24 @@
+{
+  "method": "web reader; observation metadata only, not newly captured raw-page evidence",
+  "new_news_collection": false,
+  "observed_at": "2026-10-16T03:54:18.906413+08:00",
+  "pages": [
+    {
+      "finding": "Four-factor review remains case-specific; academic purpose alone does not decide it.",
+      "state": "readable",
+      "url": "https://www.ipophil.gov.ph/news/ipophl-releases-statutory-fair-use-guidelines-to-clarify-rules-on-copyright-exceptions/?news_page=6"
+    },
+    {
+      "finding": "Section 185 four-factor text checked; the preserved consolidated/amendment evidence supplies the version-qualified legal packet.",
+      "state": "readable",
+      "url": "https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html"
+    },
+    {
+      "finding": "Majority purpose, extent and market discussion read. Ringtone facts do not establish Philippine NER permission or contractual override.",
+      "state": "readable",
+      "url": "https://lawphil.net/judjuris/juri2025/feb2025/gr_184661_2025.html"
+    }
+  ],
+  "policy_changes_claimed": false,
+  "raw_snapshots_saved": false
+}

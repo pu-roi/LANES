@@ -1,0 +1,964 @@
+[
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 66,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The inspection narrative moves from officials accompanying ICI to duplicate retaining walls, uninstalled pumps, Tatalon drainage and questionable project segmentation. The proposed windows select jurisdiction mentions, the inspection lead, the Tatalon reference, government follow-up and one mixed-language response; they omit most allegations, cost chronology and resident reactions.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "924 Unicode characters in 6 nonoverlapping selected windows, against a 3089-character complete body retained unchanged. The selected statements carry the geographic attribution needed to distinguish city/province and provide a count-negative passage. They are not the complete investigative arc; the named officials and quoted response remain authored wording, not mere unprotected names.",
+      "market_effect": "The full body is retained to audit the difference between an actual jurisdiction, an office name, excluded creek/island references and related headlines. Reader substitution is reduced by those omissions but private archives and automated-use licensing effects are unknown.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The inspection narrative moves from officials accompanying ICI to duplicate retaining walls, uninstalled pumps, Tatalon drainage and questionable project segmentation. The proposed windows select jurisdiction mentions, the inspection lead, the Tatalon reference, government follow-up and one mixed-language response; they omit most allegations, cost chronology and resident reactions.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The selected statements carry the geographic attribution needed to distinguish city/province and provide a count-negative passage. They are not the complete investigative arc; the named officials and quoted response remain authored wording, not mere unprotected names."
+    },
+    "full_body_characters": 3089,
+    "next_action": "Carry the narrow analytical rationale with the contract/acquisition uncertainty; reconsider if access or permitted activities change.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The selected statements carry the geographic attribution needed to distinguish city/province and provide a count-negative passage. They are not the complete investigative arc; the named officials and quoted response remain authored wording, not mere unprotected names.",
+    "selected_characters": 924,
+    "selected_scope": true,
+    "source_id": "news-0ce6fa8811d40df2",
+    "source_sha256": "65dbd239a3d816d74e4886bf0170ad9b56dd562b33cfd0557d7f40e8704f1ecd",
+    "url": "https://www.abs-cbn.com/news/nation/2025/9/18/ici-inspects-flood-control-projects-in-quezon-city-2254"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 64,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "This editorial begins with MMDA drainage-outfall assertions, then criticizes the costly beach and ends with a mangrove alternative. Eight windows retain the named drainage structures, street impacts and several evaluative paragraphs including the mangrove recommendation.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "1468 Unicode characters in 8 nonoverlapping selected windows, against a 2356-character complete body retained unchanged. Although naturally separated, these windows collectively preserve much of the causal argument and its chosen counterproposal. Location quotas do not justify treating opinion or its qualitative heart as expendable factual boilerplate.",
+      "market_effect": "Keeping the complete editorial plus eight expressive windows retains substantial reconstructable value. Private use lowers direct readership substitution but does not answer the retained expression or licensed-processing issue.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. This editorial begins with MMDA drainage-outfall assertions, then criticizes the costly beach and ends with a mangrove alternative. Eight windows retain the named drainage structures, street impacts and several evaluative paragraphs including the mangrove recommendation.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. Although naturally separated, these windows collectively preserve much of the causal argument and its chosen counterproposal. Location quotas do not justify treating opinion or its qualitative heart as expendable factual boilerplate."
+    },
+    "full_body_characters": 2356,
+    "next_action": "Reconsider a different complete factual scope only after its aggregate qualitative role is reviewed, or obtain specific guidance on this expressive scope; no automatic admission.",
+    "publisher": "Philstar",
+    "qualitative_extent": "Although naturally separated, these windows collectively preserve much of the causal argument and its chosen counterproposal. Location quotas do not justify treating opinion or its qualitative heart as expendable factual boilerplate.",
+    "selected_characters": 1468,
+    "selected_scope": true,
+    "source_id": "news-1856c6263451d088",
+    "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 5,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The holiday traffic article explains excavation moratoria, mall hours and MMDA enforcement schedules. None of its three former samples remains in the proposed revision.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "0 Unicode characters in 0 nonoverlapping selected windows, against a 2100-character complete body retained unchanged. There is no selected analytical use in this new cohort; removing the passages does not delete the complete body or earlier package/archive copies.",
+      "market_effect": "No new selected-reader substitution is claimed for this cohort, but retained historical copies remain subject to their original unresolved assessment.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The holiday traffic article explains excavation moratoria, mall hours and MMDA enforcement schedules. None of its three former samples remains in the proposed revision.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. There is no selected analytical use in this new cohort; removing the passages does not delete the complete body or earlier package/archive copies."
+    },
+    "full_body_characters": 2100,
+    "next_action": "Preserve the historical hold and archive record; do not describe removal from the cohort as deletion or clearance.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "There is no selected analytical use in this new cohort; removing the passages does not delete the complete body or earlier package/archive copies.",
+    "selected_characters": 0,
+    "selected_scope": false,
+    "source_id": "news-1f5f90c1e3b7f312",
+    "source_sha256": "1c8c7c4248c5a1dd6f81f3a408bebaa118f8b5b1a614abac52192628883d0d04",
+    "url": "https://www.abs-cbn.com/news/10/20/23/mmda-announces-traffic-schemes-for-undas-christmas-season"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 32,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Busay report quotes geologists on riprap integrity and recounts the Garahe and Apas landslides, then gives evacuation, mapping and disaster-brigade advice. The six selected windows now span the opening, incidents, geologist response and much of that advice.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "1757 Unicode characters in 6 nonoverlapping selected windows, against a 2429-character complete body retained unchanged. The added location-negative safety guidance is coherent, but the aggregate still reproduces most of the article reporting and useful public advisory rather than only a small named-place illustration.",
+      "market_effect": "The full article and overlapping archive representations survive; the extensive advisory/reporting selection could substitute for much of the report if access broadened. No evidence quantifies licensing or model retention effects.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Busay report quotes geologists on riprap integrity and recounts the Garahe and Apas landslides, then gives evacuation, mapping and disaster-brigade advice. The six selected windows now span the opening, incidents, geologist response and much of that advice.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The added location-negative safety guidance is coherent, but the aggregate still reproduces most of the article reporting and useful public advisory rather than only a small named-place illustration."
+    },
+    "full_body_characters": 2429,
+    "next_action": "Review the necessity of this enlarged aggregate or obtain scope-specific guidance before a separate admission decision; keep this revision held.",
+    "publisher": "Philstar",
+    "qualitative_extent": "The added location-negative safety guidance is coherent, but the aggregate still reproduces most of the article reporting and useful public advisory rather than only a small named-place illustration.",
+    "selected_characters": 1757,
+    "selected_scope": true,
+    "source_id": "news-20746ac22823c8db",
+    "source_sha256": "90101269c20de73c4600ce22091b76e1fc7f27a7dc76d23df12b1b0be9b860a5",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/10/09/1747379/mgb-recommends-vacate-site-landslide-barangay-busay"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 53,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The report attributes CDO flooding to old clogged drainage, quotes the mayor on rebuilding costs and recalls earlier floods. Four windows retain the mayor attribution, mixed-language overhaul quotation, PAGASA attribution and historical CDO sentence.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "555 Unicode characters in 4 nonoverlapping selected windows, against a 1440-character complete body retained unchanged. The selected roles separate current attributed explanation from historical recurrence while omitting the opening photograph caption, relocation detail and final weather-surprise sentence. The mayor quotation is expressive and remains credited.",
+      "market_effect": "The aggregate preserves key factual conclusions but not the full article and caption arrangement. Private analysis reduces direct news consumption substitution; license demand, memorization and archive effects remain unknown.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The report attributes CDO flooding to old clogged drainage, quotes the mayor on rebuilding costs and recalls earlier floods. Four windows retain the mayor attribution, mixed-language overhaul quotation, PAGASA attribution and historical CDO sentence.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The selected roles separate current attributed explanation from historical recurrence while omitting the opening photograph caption, relocation detail and final weather-surprise sentence. The mayor quotation is expressive and remains credited."
+    },
+    "full_body_characters": 1440,
+    "next_action": "Adopt only the recorded private analytical basis with attribution and existing contractual uncertainty; reassess expanded use or contradictory evidence.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The selected roles separate current attributed explanation from historical recurrence while omitting the opening photograph caption, relocation detail and final weather-surprise sentence. The mayor quotation is expressive and remains credited.",
+    "selected_characters": 555,
+    "selected_scope": true,
+    "source_id": "news-2a1a4e2381f63ab0",
+    "source_sha256": "f592d6f1ac598a363cdc8f8062bfe2ee3c61bc8ef2eb5d666b0c0b26dd28b5c8",
+    "url": "https://www.abs-cbn.com/news/01/18/17/cdo-mayor-blames-clogged-drainage-system-for-massive-flood"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 22,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The international study report contrasts predicted migration with Philippine islanders staying after subsidence. The replacement selects the Tubigon relocation-option paragraph, while the complete body still includes study quotations and the explicit Reuters interview attribution.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "213 Unicode characters in 1 nonoverlapping selected windows, against a 2290-character complete body retained unchanged. The 213-character factual paragraph is narrower than the full narrative, yet the possible Reuters origin and scholarly quotation layers are not resolved by shortening.",
+      "market_effect": "Direct substitution is limited by one short selection, but neither publisher authority over Reuters-origin text nor agency licensing effects is established. Full-body archives remain relevant.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The international study report contrasts predicted migration with Philippine islanders staying after subsidence. The replacement selects the Tubigon relocation-option paragraph, while the complete body still includes study quotations and the explicit Reuters interview attribution.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The 213-character factual paragraph is narrower than the full narrative, yet the possible Reuters origin and scholarly quotation layers are not resolved by shortening."
+    },
+    "full_body_characters": 2290,
+    "next_action": "Retain the third-party-origin hold until the project basis specifically addresses the credited origin or reliable rights evidence is available; no universal publisher-reply prerequisite is imposed.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The 213-character factual paragraph is narrower than the full narrative, yet the possible Reuters origin and scholarly quotation layers are not resolved by shortening.",
+    "selected_characters": 213,
+    "selected_scope": true,
+    "source_id": "news-33a273b337d533e8",
+    "source_sha256": "6105dc468334267c6993a5a194de9adc5c9d5cc9e9fd33b4fc57e9ee5aaf9d29",
+    "url": "https://www.abs-cbn.com/news/07/24/17/home-sweet-home-filipinos-stay-put-even-when-the-sea-invades"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 25,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Cebu masterplan story opens with an AFP-credited Talisay photo caption, then reports the shelved JICA plan, mixed-language policy criticism, water-resource benefits and no-build-zone recommendations. Five selected windows retain the caption/lead plus four policy passages.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "1728 Unicode characters in 5 nonoverlapping selected windows, against a 2837-character complete body retained unchanged. The complete proposed aggregate includes the same third-party caption and substantially more quoted reasoning than the earlier special-case scope. That prior decision is preserved but does not automatically cover this enlarged selection.",
+      "market_effect": "The AFP image itself is absent, but its caption wording remains copied alongside the full body and repeated archives. Agency and quoted-expression licensing effects are unmeasured.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Cebu masterplan story opens with an AFP-credited Talisay photo caption, then reports the shelved JICA plan, mixed-language policy criticism, water-resource benefits and no-build-zone recommendations. Five selected windows retain the caption/lead plus four policy passages.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The complete proposed aggregate includes the same third-party caption and substantially more quoted reasoning than the earlier special-case scope. That prior decision is preserved but does not automatically cover this enlarged selection."
+    },
+    "full_body_characters": 2837,
+    "next_action": "Address the enlarged caption-and-quotation scope explicitly in a separate use decision; keep the new scope held without rewriting the historical special-case decision.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The complete proposed aggregate includes the same third-party caption and substantially more quoted reasoning than the earlier special-case scope. That prior decision is preserved but does not automatically cover this enlarged selection.",
+    "selected_characters": 1728,
+    "selected_scope": true,
+    "source_id": "news-36e7cdb0e61c5b61",
+    "source_sha256": "abfa8cac412a8e251847cf2227a11b1bbf47eeefbc6f3f6a3deb0d20bff73ddb",
+    "url": "https://www.abs-cbn.com/news/regions/2025/11/11/dpwh-to-implement-shelved-2017-flood-control-masterplan-in-storm-ravaged-cebu-1823"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 5,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "This complete Baao dispatch reports knee-high flooding, affected market traffic, Barlin Park and St. Bartholomew Parish, longstanding flooding, lake silt and absent municipal comment. The sole selected record is the whole captured article including its stringer credit.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "801 Unicode characters in 1 nonoverlapping selected windows, against a 801-character complete body retained unchanged. Removing the incorrect municipality label inside Lake Baao fixes annotation only. The selected amount and the qualitative news content remain the entire report, with no independent source-use decision for this newly represented article.",
+      "market_effect": "Private access limits public substitution, but whole-article reproduction plus full-body serialization and archives retains the entire reading value. No market or memorization evidence supports treating that as negligible.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. This complete Baao dispatch reports knee-high flooding, affected market traffic, Barlin Park and St. Bartholomew Parish, longstanding flooding, lake silt and absent municipal comment. The sole selected record is the whole captured article including its stringer credit.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. Removing the incorrect municipality label inside Lake Baao fixes annotation only. The selected amount and the qualitative news content remain the entire report, with no independent source-use decision for this newly represented article."
+    },
+    "full_body_characters": 801,
+    "next_action": "Complete a specific whole-article private-use decision with retention/market evidence or reconsider a supported new scope; do not inherit another GMA article decision.",
+    "publisher": "GMA News",
+    "qualitative_extent": "Removing the incorrect municipality label inside Lake Baao fixes annotation only. The selected amount and the qualitative news content remain the entire report, with no independent source-use decision for this newly represented article.",
+    "selected_characters": 801,
+    "selected_scope": true,
+    "source_id": "news-3a5b4ac4795658f8",
+    "source_sha256": "f248cdc1677da794d6d18597066f13de157c42a6377dcddaecef1a5ccc9b1bd7",
+    "url": "https://www.gmanetwork.com/news/balitambayan/balita/627775/bayan-ng-baao-sa-camarines-sur-lubog-sa-baha/story/"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 10,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Davao report moves from roof-level residential flooding and an embedded social post to a road reference and rescue response, then a resident video with a five-foot report and unavailable official counts. The proposed two windows select the road/rescue and resident-report sections.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "527 Unicode characters in 2 nonoverlapping selected windows, against a 1333-character complete body retained unchanged. The resident count/depth passage provides source attribution without a named place, complementing the named road window; the roof-level lead and embedded image/post are outside the selected aggregate. A video credit is not permission for its unselected audiovisual content.",
+      "market_effect": "The factual selection is partial, while source wording and the resident testimony still carry rights. Reader substitution is constrained by missing opening context and private access, but full-body archive and processing-market uncertainty remain.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Davao report moves from roof-level residential flooding and an embedded social post to a road reference and rescue response, then a resident video with a five-foot report and unavailable official counts. The proposed two windows select the road/rescue and resident-report sections.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The resident count/depth passage provides source attribution without a named place, complementing the named road window; the roof-level lead and embedded image/post are outside the selected aggregate. A video credit is not permission for its unselected audiovisual content."
+    },
+    "full_body_characters": 1333,
+    "next_action": "Carry a limited private analytical rationale for text only; no image, video, public demonstration or redistribution scope is adopted.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The resident count/depth passage provides source attribution without a named place, complementing the named road window; the roof-level lead and embedded image/post are outside the selected aggregate. A video credit is not permission for its unselected audiovisual content.",
+    "selected_characters": 527,
+    "selected_scope": true,
+    "source_id": "news-4649d2f1a4604953",
+    "source_sha256": "8fac6a239d9a0af732094f865dbcf7a14af942c81e2a707141a6fb7ff272c9dd",
+    "url": "https://www.abs-cbn.com/news/10/26/21/parte-ng-davao-city-binaha-dahil-sa-malakas-na-ulan"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 25,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Ramon report combines office/class suspensions, dam monitoring, a provincial alert, mixed-language valley explanation and the storm position/signal forecast. Adding both quoted/narrative negative windows leaves almost the entire coherent news report selected.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "1427 Unicode characters in 5 nonoverlapping selected windows, against a 1543-character complete body retained unchanged. The mixed clauses help language controls, but they also restore the body previously omitted between location-heavy passages. Token and language quotas do not establish necessity for that near-complete narrative.",
+      "market_effect": "The retained full body and extensive selected text preserve virtually all reporting and forecasting value. Private access is mitigating rather than evidence that news and processing markets are unaffected.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Ramon report combines office/class suspensions, dam monitoring, a provincial alert, mixed-language valley explanation and the storm position/signal forecast. Adding both quoted/narrative negative windows leaves almost the entire coherent news report selected.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The mixed clauses help language controls, but they also restore the body previously omitted between location-heavy passages. Token and language quotas do not establish necessity for that near-complete narrative."
+    },
+    "full_body_characters": 1543,
+    "next_action": "Retain a hold on the enlarged aggregate pending a supported necessity/extent decision or another reviewed scope.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The mixed clauses help language controls, but they also restore the body previously omitted between location-heavy passages. Token and language quotas do not establish necessity for that near-complete narrative.",
+    "selected_characters": 1427,
+    "selected_scope": true,
+    "source_id": "news-4a13b0eb4b607e5f",
+    "source_sha256": "029306fcd804936fe8975e07dba4aaee48198bb25888218a7556c62d6d621150",
+    "url": "https://www.abs-cbn.com/news/11/15/19/isabela-cagayan-on-landslide-flood-watch-as-ramon-nears"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 33,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The editorial argues that illegal logging caused flooding and landslides, drawing on Kristine, Maguindanao and Guinsaugon before calling for reforestation. The three new windows retain a general illegal-logging claim, the Maguindanao historical paragraph and the final policy call.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "629 Unicode characters in 3 nonoverlapping selected windows, against a 2420-character complete body retained unchanged. The proposed scope is much shorter but still contains the central causal thesis and normative conclusion; the historical account is embedded in that argument. Factual vocabulary alone does not make the editorial selection nonexpressive.",
+      "market_effect": "Omitting most examples reduces reconstruction, but the complete-body copies remain and the chosen thesis/conclusion carry qualitative importance. There is no measured processing-license or memorization evidence.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The editorial argues that illegal logging caused flooding and landslides, drawing on Kristine, Maguindanao and Guinsaugon before calling for reforestation. The three new windows retain a general illegal-logging claim, the Maguindanao historical paragraph and the final policy call.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The proposed scope is much shorter but still contains the central causal thesis and normative conclusion; the historical account is embedded in that argument. Factual vocabulary alone does not make the editorial selection nonexpressive."
+    },
+    "full_body_characters": 2420,
+    "next_action": "Keep the editorial hold explicit; reconsider only with a scope-specific rationale that addresses the thesis/conclusion rather than relying on a smaller percentage.",
+    "publisher": "Philstar",
+    "qualitative_extent": "The proposed scope is much shorter but still contains the central causal thesis and normative conclusion; the historical account is embedded in that argument. Factual vocabulary alone does not make the editorial selection nonexpressive.",
+    "selected_characters": 629,
+    "selected_scope": true,
+    "source_id": "news-641a924608dd03ab",
+    "source_sha256": "db365f5f18597830d6712884f33c43582ba0b09c85b7a30808243aaafdd81ab1",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2024/11/02/2397071/editoryal-illegal-logging-ang-dahilan-ng-baha-pagguho-ng-lupa"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 57,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The column contrasts corruption victims with jail-treatment assurances. Five complete paragraphs retain rhetorical camera/transparency questions, VIP-treatment criticism and moral judgment about deaths and collateral damage.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "694 Unicode characters in 5 nonoverlapping selected windows, against a 2258-character complete body retained unchanged. These are expressive opinion passages selected as place-negative language controls, not factual road observations. Splitting paragraphs removes some framing but retains central rhetoric and concluding accountability language.",
+      "market_effect": "The whole column survives in evidence/archive copies, while the selected rhetorical lines may carry more qualitative value than their length suggests. Privacy does not establish no licensing-market impact.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The column contrasts corruption victims with jail-treatment assurances. Five complete paragraphs retain rhetorical camera/transparency questions, VIP-treatment criticism and moral judgment about deaths and collateral damage.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. These are expressive opinion passages selected as place-negative language controls, not factual road observations. Splitting paragraphs removes some framing but retains central rhetoric and concluding accountability language."
+    },
+    "full_body_characters": 2258,
+    "next_action": "Retain the hold; another source-backed negative scope or specific guidance on analytical use of this expressive selection is needed before admission.",
+    "publisher": "Philstar",
+    "qualitative_extent": "These are expressive opinion passages selected as place-negative language controls, not factual road observations. Splitting paragraphs removes some framing but retains central rhetoric and concluding accountability language.",
+    "selected_characters": 694,
+    "selected_scope": true,
+    "source_id": "news-7a824863d687424a",
+    "source_sha256": "0cf25612ef017fc8dc40abbdef3c4ed7c1552c88f57cd45795013e91daa23cda",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/01/28/2503944/pera-sa-bulsa-bangkay-sa-baha"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 17,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The multi-city flood report describes Quezon City access changes, Valenzuela streets and Malabon flooding with resident remarks and later weather updates. Removing two nonpilot road windows leaves the opening Quezon City lead, a Valenzuela segment and the Malabon segment.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "1056 Unicode characters in 3 nonoverlapping selected windows, against a 3274-character complete body retained unchanged. The retained windows are unchanged factual reporting and location/passability contrasts. They omit several detailed Quezon City road observations, personal reactions and weather conclusion, reducing but not erasing aggregate importance.",
+      "market_effect": "The partial selection is less reconstructive than the old five-window scope. Full-body archives still exist; no inference is made that noncommercial access eliminates automated-use licensing or model-retention risks.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The multi-city flood report describes Quezon City access changes, Valenzuela streets and Malabon flooding with resident remarks and later weather updates. Removing two nonpilot road windows leaves the opening Quezon City lead, a Valenzuela segment and the Malabon segment.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The retained windows are unchanged factual reporting and location/passability contrasts. They omit several detailed Quezon City road observations, personal reactions and weather conclusion, reducing but not erasing aggregate importance."
+    },
+    "full_body_characters": 3274,
+    "next_action": "Adopt the separately reviewed reduced private scope, preserving the original decision and all contract/market limitations.",
+    "publisher": "GMA News",
+    "qualitative_extent": "The retained windows are unchanged factual reporting and location/passability contrasts. They omit several detailed Quezon City road observations, personal reactions and weather conclusion, reducing but not erasing aggregate importance.",
+    "selected_characters": 1056,
+    "selected_scope": true,
+    "source_id": "news-9449e3528861ff03",
+    "source_sha256": "5d5b2a67f7a752a74932037852cc486ea1638f92fd3827312b9fedf59e6fa89e",
+    "url": "https://www.gmanetwork.com/news/topstories/nation/999189/parts-of-metro-manila-flooded-as-enhanced-habagat-brought-relentless-rains/story/"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 48,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The drainage report explains missing mayoral approval, the right of way, Sitio Paradise 3/Anak Urban/Muslim compound, school-to-road routing, public funding and residents suffering stagnant water. Five selected windows retain the lead, local-area/project date, deed, request-route plus unsigned reply, and resident locality paragraph.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "1270 Unicode characters in 5 nonoverlapping selected windows, against a 2542-character complete body retained unchanged. The scope supports distinctions among a proposed school, road, barangay and residential compounds. It omits the Cebuano direct quotation, disease deaths, extended humanitarian plea and assembly conclusion; nevertheless it preserves much of the administrative factual core.",
+      "market_effect": "The aggregate is sizeable and still includes reporter wording and resident reporting. Missing extended quotations reduce direct replacement of the full report, but full-body retention, cumulative archives and licensing effects remain unresolved.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The drainage report explains missing mayoral approval, the right of way, Sitio Paradise 3/Anak Urban/Muslim compound, school-to-road routing, public funding and residents suffering stagnant water. Five selected windows retain the lead, local-area/project date, deed, request-route plus unsigned reply, and resident locality paragraph.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The scope supports distinctions among a proposed school, road, barangay and residential compounds. It omits the Cebuano direct quotation, disease deaths, extended humanitarian plea and assembly conclusion; nevertheless it preserves much of the administrative factual core."
+    },
+    "full_body_characters": 2542,
+    "next_action": "Adopt the specific private analytical rationale with its substantiality limitation, attribution and unknown assent; no generic permission is inferred for other Philstar content.",
+    "publisher": "Philstar",
+    "qualitative_extent": "The scope supports distinctions among a proposed school, road, barangay and residential compounds. It omits the Cebuano direct quotation, disease deaths, extended humanitarian plea and assembly conclusion; nevertheless it preserves much of the administrative factual core.",
+    "selected_characters": 1270,
+    "selected_scope": true,
+    "source_id": "news-95b46b8ad154130c",
+    "source_sha256": "c61b47f521910d6166e8321a8aab4d6e4b2dc18ecdfe4d59f66be7818618e2db",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2020/12/18/2064684/drainage-project-lacks-mayors-signature"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 27,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The rescue dispatch distinguishes Libawat in Kasiglahan Village, Villamin in Libis and Lim in Maly, followed by Red Cross/PAGASA warnings. New negative windows describe water rising below the first household and a stranded neighbour without importing external place antecedents.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "1145 Unicode characters in 5 nonoverlapping selected windows, against a 2904-character complete body retained unchanged. The five selected windows retain the lead, two locally bounded negative observations and later Maly/warning context. They omit most Libis narrative and embedded video/interface blocks; they are not a wholesale reconstruction of every household report.",
+      "market_effect": "Reported personal speech and narrative remain copied despite fact extraction. Private access and omitted sections reduce reader replacement; retained bodies/archives and automated-use markets are unknown.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The rescue dispatch distinguishes Libawat in Kasiglahan Village, Villamin in Libis and Lim in Maly, followed by Red Cross/PAGASA warnings. New negative windows describe water rising below the first household and a stranded neighbour without importing external place antecedents.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The five selected windows retain the lead, two locally bounded negative observations and later Maly/warning context. They omit most Libis narrative and embedded video/interface blocks; they are not a wholesale reconstruction of every household report."
+    },
+    "full_body_characters": 2904,
+    "next_action": "Adopt only the private text-analysis basis; preserve unknown targets in contextual links and reassess any public output or rights evidence.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The five selected windows retain the lead, two locally bounded negative observations and later Maly/warning context. They omit most Libis narrative and embedded video/interface blocks; they are not a wholesale reconstruction of every household report.",
+    "selected_characters": 1145,
+    "selected_scope": true,
+    "source_id": "news-a78225d936fe4756",
+    "source_sha256": "6fae5adc1e46a04f10e38a100364b2617a885e0ad6b0c65dd659393b92e510f8",
+    "url": "https://www.abs-cbn.com/news/11/12/20/ilang-mga-residente-ng-rodriguez-at-san-mateo-sa-rizal-na-stranded-sa-baha-nagpapasaklolo"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 32,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The report sets the Marikina mayor accusation against the NPC response that Angat water does not flow to Marikina River, followed by a hydrology explanation and urban-planning advice. The three new windows retain the numerical-level claim and both named counter-explanations.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "612 Unicode characters in 3 nonoverlapping selected windows, against a 2451-character complete body retained unchanged. The paired disagreement is essential context: do not turn the mayor allegation into established causation. The selection omits most accusatory framing, negligence discussion and planning conclusion, while retaining the needed factual contradiction.",
+      "market_effect": "Partial attributed claims lower full-story substitution but do not resolve copyright in quotations, retained complete bodies or license markets. Private use supports only the proposed limited rationale.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The report sets the Marikina mayor accusation against the NPC response that Angat water does not flow to Marikina River, followed by a hydrology explanation and urban-planning advice. The three new windows retain the numerical-level claim and both named counter-explanations.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The paired disagreement is essential context: do not turn the mayor allegation into established causation. The selection omits most accusatory framing, negligence discussion and planning conclusion, while retaining the needed factual contradiction."
+    },
+    "full_body_characters": 2451,
+    "next_action": "Adopt the specific contrasted-source private scope with attribution and contract uncertainty; no hydrological or legal correctness is implied by the annotation.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The paired disagreement is essential context: do not turn the mayor allegation into established causation. The selection omits most accusatory framing, negligence discussion and planning conclusion, while retaining the needed factual contradiction.",
+    "selected_characters": 612,
+    "selected_scope": true,
+    "source_id": "news-aa6269dd60812ee5",
+    "source_sha256": "91ccd801c2a10d9f141e0aad0eb7ee8472f7fb8235dcae753088386907953e33",
+    "url": "https://www.abs-cbn.com/news/11/13/20/walang-pasabi-marikina-mayor-sinisi-ang-angat-dam-sa-lagpas-ondoy-na-baha"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 22,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The long Senate report surveys road repairs, preventive maintenance, axle loads, utility poles and duplicate budget lines. All eight previous selections are absent from the new revision.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "0 Unicode characters in 0 nonoverlapping selected windows, against a 6685-character complete body retained unchanged. No new cohort passage uses this article; the previous substantial quotation and archive issue remains historical rather than erased.",
+      "market_effect": "New selection-based substitution is absent, but the preserved complete body and packages still exist. No deletion or reuse permission is inferred.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The long Senate report surveys road repairs, preventive maintenance, axle loads, utility poles and duplicate budget lines. All eight previous selections are absent from the new revision.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. No new cohort passage uses this article; the previous substantial quotation and archive issue remains historical rather than erased."
+    },
+    "full_body_characters": 6685,
+    "next_action": "Carry the historical hold for retained evidence copies; exclude it from current selected-article totals.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "No new cohort passage uses this article; the previous substantial quotation and archive issue remains historical rather than erased.",
+    "selected_characters": 0,
+    "selected_scope": false,
+    "source_id": "news-b38de27def66b200",
+    "source_sha256": "b8aef151d3f063c5a05af23b94133bfa9a6fafc17c4db341f8f070e3024e5da0",
+    "url": "https://www.abs-cbn.com/news/10/10/23/senators-ask-dpwh-why-fix-roads-that-still-look-good"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 27,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Tisoy report opens with Oriental Mindoro calamity funding, then attributed crop losses, power disruption, road clearance and evacuation-return totals across both Mindoro provinces. Adding the vivid crop-loss quote leaves nearly all substantive reporting selected.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "1436 Unicode characters in 5 nonoverlapping selected windows, against a 1652-character complete body retained unchanged. The new negative passage contains expressive first-person damage description and completes much of the narrative between existing spans. A larger language-control pool does not establish that aggregate necessity.",
+      "market_effect": "Complete article retention and near-whole selected coverage preserve most reading value; owner-only access reduces public substitution but does not answer cumulative copying or processing-license effects.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Tisoy report opens with Oriental Mindoro calamity funding, then attributed crop losses, power disruption, road clearance and evacuation-return totals across both Mindoro provinces. Adding the vivid crop-loss quote leaves nearly all substantive reporting selected.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The new negative passage contains expressive first-person damage description and completes much of the narrative between existing spans. A larger language-control pool does not establish that aggregate necessity."
+    },
+    "full_body_characters": 1652,
+    "next_action": "Retain a hold on this enlarged scope pending specific necessity/extent reconsideration; preserve the earlier narrower decision separately.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The new negative passage contains expressive first-person damage description and completes much of the narrative between existing spans. A larger language-control pool does not establish that aggregate necessity.",
+    "selected_characters": 1436,
+    "selected_scope": true,
+    "source_id": "news-bd360a67694282cd",
+    "source_sha256": "dcbaef88cb1ebc7160371d8478130368768f4d3aea8d23d485ddec30b9dffe6a",
+    "url": "https://www.abs-cbn.com/news/12/04/19/oriental-mindoro-to-be-placed-under-state-of-calamity-disaster-official"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 10,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The short Kalilangan report lists six barangays, waist-deep observations, upstream origin and a final households/families/persons count. The added count-negative window means virtually the whole dispatch is selected.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "640 Unicode characters in 2 nonoverlapping selected windows, against a 657-character complete body retained unchanged. Counts are useful non-address controls, but this scope reproduces the complete factual news item apart from advertising. Neither spelling correction nor character percentages supply an independent necessity finding.",
+      "market_effect": "The full body and near-whole passage aggregate retain essentially the same reading value. Private use is mitigating, while licensing and archive effects remain unmeasured.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The short Kalilangan report lists six barangays, waist-deep observations, upstream origin and a final households/families/persons count. The added count-negative window means virtually the whole dispatch is selected.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. Counts are useful non-address controls, but this scope reproduces the complete factual news item apart from advertising. Neither spelling correction nor character percentages supply an independent necessity finding."
+    },
+    "full_body_characters": 657,
+    "next_action": "Keep this enlarged near-whole scope held until a source-specific amount/retention decision is supported; do not automatically carry the prior smaller adoption.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "Counts are useful non-address controls, but this scope reproduces the complete factual news item apart from advertising. Neither spelling correction nor character percentages supply an independent necessity finding.",
+    "selected_characters": 640,
+    "selected_scope": true,
+    "source_id": "news-c04d4f7154f4f54f",
+    "source_sha256": "e3bd08169c8be215014387203ef30f1b14486bbe8f1a4c2c9701e0f67af8645b",
+    "url": "https://www.abs-cbn.com/news/09/03/17/6-barangay-ng-bayan-sa-bukidnon-binaha"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 92,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The long multi-section Auring report includes the Toledo drowning, southern Cebu evacuations, an Ilihan landslide, boat incidents, lifted sailing restriction, delayed parade contingents and weakening weather. Eight short windows select recovery locality, southern Cebu evacuation, a denied Sitio Mangal incident, later Lapu-Lapu reference, a delayed parade and Bohol/Cebu weather references.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "1294 Unicode characters in 8 nonoverlapping selected windows, against a 6507-character complete body retained unchanged. The new scope omits the main drowning lead and rescue struggle, most boat/landslide descriptions and quoted Cebuano speech. The passages preserve named locality and negative/denied contexts across distinct sections rather than most of one narrative.",
+      "market_effect": "Reporter language remains protected, but the selected aggregate no longer reconstructs the long human-interest/incident account. Complete-body and archive copies persist for scope checking, with unknown processing-market and memorization effects.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The long multi-section Auring report includes the Toledo drowning, southern Cebu evacuations, an Ilihan landslide, boat incidents, lifted sailing restriction, delayed parade contingents and weakening weather. Eight short windows select recovery locality, southern Cebu evacuation, a denied Sitio Mangal incident, later Lapu-Lapu reference, a delayed parade and Bohol/Cebu weather references.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The new scope omits the main drowning lead and rescue struggle, most boat/landslide descriptions and quoted Cebuano speech. The passages preserve named locality and negative/denied contexts across distinct sections rather than most of one narrative."
+    },
+    "full_body_characters": 6507,
+    "next_action": "Adopt the reviewed narrow analytical scope with the factual-denial and date qualifiers; no general inference that factual news or all archive copies are freely reusable.",
+    "publisher": "Philstar",
+    "qualitative_extent": "The new scope omits the main drowning lead and rescue struggle, most boat/landslide descriptions and quoted Cebuano speech. The passages preserve named locality and negative/denied contexts across distinct sections rather than most of one narrative.",
+    "selected_characters": 1294,
+    "selected_scope": true,
+    "source_id": "news-c296dd5349f4e7ee",
+    "source_sha256": "8b7bbbacf7c6c11b6d96077c416482fc6025e4ab8da9a4aacd167dc1831d8f00",
+    "url": "https://www.philstar.com/the-freeman/cebu-news/2017/01/10/1660949/due-rains-auring-girl-drowns-toledo-river"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 25,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Cagayan calamity report lists affected municipalities, evacuation totals, prolonged floods, rescue, climate concerns and a final road/bridge list. The additional paragraph repeats Cagayan in English narration and mixed-language governor speech about unprecedented flooding.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "1363 Unicode characters in 5 nonoverlapping selected windows, against a 4516-character complete body retained unchanged. The five-window scope retains municipalities/evacuation context and transport lists plus the language contrast, while omitting most rescue/assessment quotations. It does not extend the scope to the credited aerial photograph image.",
+      "market_effect": "The factual aggregate is partial but includes attributed expression; privacy and omitted narrative reduce reader substitution without proving absent licensing or archive effects.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Cagayan calamity report lists affected municipalities, evacuation totals, prolonged floods, rescue, climate concerns and a final road/bridge list. The additional paragraph repeats Cagayan in English narration and mixed-language governor speech about unprecedented flooding.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The five-window scope retains municipalities/evacuation context and transport lists plus the language contrast, while omitting most rescue/assessment quotations. It does not extend the scope to the credited aerial photograph image."
+    },
+    "full_body_characters": 4516,
+    "next_action": "Adopt the specific private text-analysis basis, retaining image-origin attribution and independent source-use limitations.",
+    "publisher": "GMA News",
+    "qualitative_extent": "The five-window scope retains municipalities/evacuation context and transport lists plus the language contrast, while omitting most rescue/assessment quotations. It does not extend the scope to the credited aerial photograph image.",
+    "selected_characters": 1363,
+    "selected_scope": true,
+    "source_id": "news-c6b8dee4d10093fa",
+    "source_sha256": "27e76b05ce52fea2896c27ac6cfda88cbed241882ee7fd3792161bff85aad0f0",
+    "url": "https://www.gmanetwork.com/news/topstories/regions/714821/cagayan-under-state-of-calamity-as-11-towns-remain-flooded-4-dead-1-missing/story/"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 13,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The opinion column develops a corruption metaphor from public money to failed flood control, poverty and accountability. The single replacement paragraph condemns corruption and contrasts public works with officials pockets.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "296 Unicode characters in 1 nonoverlapping selected windows, against a 1874-character complete body retained unchanged. The paragraph is shorter but still expresses the column central moral argument. It is not a neutral flood observation; location-negative usefulness does not remove its expressive importance.",
+      "market_effect": "The retained complete column and central selected rhetoric create qualitative-copying concerns beyond simple length. No market evidence establishes analytical licensing effects as negligible.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The opinion column develops a corruption metaphor from public money to failed flood control, poverty and accountability. The single replacement paragraph condemns corruption and contrasts public works with officials pockets.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The paragraph is shorter but still expresses the column central moral argument. It is not a neutral flood observation; location-negative usefulness does not remove its expressive importance."
+    },
+    "full_body_characters": 1874,
+    "next_action": "Keep the opinion scope held; seek a specifically supported use basis or a separately reviewed alternative before admission.",
+    "publisher": "Philstar",
+    "qualitative_extent": "The paragraph is shorter but still expresses the column central moral argument. It is not a neutral flood observation; location-negative usefulness does not remove its expressive importance.",
+    "selected_characters": 296,
+    "selected_scope": true,
+    "source_id": "news-c7216b3994ab5614",
+    "source_sha256": "36c238befc7c705e6893f206fe9d23b4f4dddb8b1f2832066b98cfba2a90609c",
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2026/06/08/2533564/hindi-baha-ang-pumapatay-sa-bayan-kundi-kurapsyon"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 20,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Marikina preparation report moves from river-current measurement and threatened barangays to five school shelters, protected groups, family-per-room protocols and fever handling. Two added windows supply the unnamed shelter arrangements and health-office attribution without labels inside the institution name.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "1303 Unicode characters in 4 nonoverlapping selected windows, against a 2216-character complete body retained unchanged. The four windows capture geographic risk and differentiated evacuation procedures, while omitting the embedded tweet, several alerts and southern-Luzon conclusion. Procedural reporting rather than an opinion centerpiece explains the selected role, though much useful advisory information remains.",
+      "market_effect": "The aggregate is substantial; private analysis and omitted sections reduce but do not eliminate substitution or licensing risks. Full-body copies are retained for embedded-post/source-boundary checks and no new image rights are claimed.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Marikina preparation report moves from river-current measurement and threatened barangays to five school shelters, protected groups, family-per-room protocols and fever handling. Two added windows supply the unnamed shelter arrangements and health-office attribution without labels inside the institution name.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The four windows capture geographic risk and differentiated evacuation procedures, while omitting the embedded tweet, several alerts and southern-Luzon conclusion. Procedural reporting rather than an opinion centerpiece explains the selected role, though much useful advisory information remains."
+    },
+    "full_body_characters": 2216,
+    "next_action": "Adopt the explicit private analytical scope with substantiality/contract uncertainty; preserve the institution-only geography exclusion and review any access expansion.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The four windows capture geographic risk and differentiated evacuation procedures, while omitting the embedded tweet, several alerts and southern-Luzon conclusion. Procedural reporting rather than an opinion centerpiece explains the selected role, though much useful advisory information remains.",
+    "selected_characters": 1303,
+    "selected_scope": true,
+    "source_id": "news-ca7319840b01cb70",
+    "source_sha256": "fc7446bfce96a51e0270882a06561678634e07adbaadf7204ce381b7085976be",
+    "url": "https://www.abs-cbn.com/news/10/26/20/marikina-govt-handa-sa-posibilidad-ng-pagbaha-dahil-sa-bagyong-quinta"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 49,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The Kaliwa story contrasts Palace consultation assurances with contract criticism, displacement and Infanta concerns. Four windows retain the attributed original photograph caption/lead, assurance, Quezon displacement and Infanta objection.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "1056 Unicode characters in 4 nonoverlapping selected windows, against a 3254-character complete body retained unchanged. The caption was credited to Kara Santos/ABS-CBN rather than establishing the article publication or flood time. The selected scope omits most contract/political quotations and final construction-capacity statements, but retains both assurance and opposition rather than an unbalanced factual fragment.",
+      "market_effect": "This is partial text with expressive quotations and a caption, not a licensed image. Private access lowers reading substitution while caption ownership, full-body archival multiplication and potential processing licensing remain uncertain.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The Kaliwa story contrasts Palace consultation assurances with contract criticism, displacement and Infanta concerns. Four windows retain the attributed original photograph caption/lead, assurance, Quezon displacement and Infanta objection.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The caption was credited to Kara Santos/ABS-CBN rather than establishing the article publication or flood time. The selected scope omits most contract/political quotations and final construction-capacity statements, but retains both assurance and opposition rather than an unbalanced factual fragment."
+    },
+    "full_body_characters": 3254,
+    "next_action": "Adopt the limited text-analysis rationale with the caption/date distinction and attribution; no image, public model or distribution permission is asserted.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The caption was credited to Kara Santos/ABS-CBN rather than establishing the article publication or flood time. The selected scope omits most contract/political quotations and final construction-capacity statements, but retains both assurance and opposition rather than an unbalanced factual fragment.",
+    "selected_characters": 1056,
+    "selected_scope": true,
+    "source_id": "news-d706fe79a0ec5353",
+    "source_sha256": "700e9d3ff658b5e3835d89ff17e6eb16203f589a37d4a410c3443037c4ea15d1",
+    "url": "https://www.abs-cbn.com/news/04/06/22/palace-says-ips-consulted-in-kaliwa-dam-project"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 35,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The foundation report describes elderly evacuees, lost Provident Village premises, poor shelter conditions, requests for beds/medicine, infection concerns and clearing operations. Adding two negative-context windows selects nearly all substantive narrative and vulnerable-person quotations.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "retain_hold",
+    "four_factors": {
+      "amount": "1778 Unicode characters in 7 nonoverlapping selected windows, against a 2124-character complete body retained unchanged. Those windows are coherent but restore much of the expressive appeal and health narrative, beyond the original geographic references. Annotation completeness and private purpose alone do not justify near-whole selection.",
+      "market_effect": "Retained complete bodies and the extensive selected appeal preserve most reporting value. Owner-only access limits readership effects but no market or memorization evidence answers the enlarged processing scope.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The foundation report describes elderly evacuees, lost Provident Village premises, poor shelter conditions, requests for beds/medicine, infection concerns and clearing operations. Adding two negative-context windows selects nearly all substantive narrative and vulnerable-person quotations.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. Those windows are coherent but restore much of the expressive appeal and health narrative, beyond the original geographic references. Annotation completeness and private purpose alone do not justify near-whole selection."
+    },
+    "full_body_characters": 2124,
+    "next_action": "Keep the enlarged scope held pending a specific aggregate-necessity/retention decision; earlier narrower adoptions remain historical.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "Those windows are coherent but restore much of the expressive appeal and health narrative, beyond the original geographic references. Annotation completeness and private purpose alone do not justify near-whole selection.",
+    "selected_characters": 1778,
+    "selected_scope": true,
+    "source_id": "news-dc0d8bcd7617f20f",
+    "source_sha256": "2a7becd93ade02200de4e6c00ef6cbd284a9a5b5de9cf76c0a0dda77b5cde731",
+    "url": "https://www.abs-cbn.com/news/11/23/20/foundation-na-nag-aalaga-ng-matatanda-nanawagan-ng-tulong-matapos-bahain"
+  },
+  {
+    "acquisition_status": "Unknown / Codex collected",
+    "assessor": {
+      "kind": "ai",
+      "method": "Complete captured body and entire proposed selection read; explicit individual content, qualitative extent and market finding. Structural validation alone does not establish substantive adequacy.",
+      "name": "Codex",
+      "reviewed_date": "2026-10-16"
+    },
+    "complete_body_and_archives": {
+      "copy_scope": "Counts include research drafts, cohort replay and contexts in this checkpoint only; not distinct articles or a legal reproduction count. Earlier archives and desktop/Drive copies are separate; no deletion or single-copy claim.",
+      "full_capture_retained": true,
+      "new_checkpoint_jsonl_complete_body_representations": 86,
+      "older_scope_copy_inventory": {
+        "path": "backend/training/flood_ner/artifacts/academic-remaining-cases-20261016-v1/bounded-copy-inventory.json",
+        "sha256": "eb5164529cb01f0c2355765e933181211101b08c48a5988f71336fb4f77708ad"
+      },
+      "retention": "Not decided; no automatic deletion introduced."
+    },
+    "content_findings": "The monsoon report interleaves Mamburao livelihood/relief shortages with Sikat-Tala bank collapse and Wawa bridge loss. Six new factual windows identify the dateline, two municipal jurisdictions, coastline warning, mayor attribution, the local-area/barangay threat and cut-off families.",
+    "contract_scope": "Unknown / Codex collected remains unchanged. Current publisher restrictions and historical assent/applicability remain uncertain. No conclusion that a statutory exception overrides a binding contract; newsroom AI policy is not permission for external reuse.",
+    "decision": "adopt_private_academic_basis",
+    "four_factors": {
+      "amount": "855 Unicode characters in 6 nonoverlapping selected windows, against a 4357-character complete body retained unchanged. The new scope excludes nearly all personal quotations, much livelihood narration, collapse dimensions and the final permanent-bridge appeal. It preserves distinct geographic levels and risk contexts without reconstituting most of the original human-interest account.",
+      "market_effect": "The selected factual narrative is substantially narrower but remains authored text. Complete-body retention is needed for threat versus observed collapse and place-parent boundaries; archive multiplication and licensing/memorization effects remain unmeasured.",
+      "nature": "Published text retains authored selection, quotations and structure; factual topics alone do not remove expression. The monsoon report interleaves Mamburao livelihood/relief shortages with Sikat-Tala bank collapse and Wawa bridge loss. Six new factual windows identify the dateline, two municipal jurisdictions, coastline warning, mayor attribution, the local-area/barangay threat and cut-off families.",
+      "purpose": "Owner-only private academic location-span analysis and evaluation is proposed, with adviser guidance researcher-reported. Model training has not occurred. The new scope excludes nearly all personal quotations, much livelihood narration, collapse dimensions and the final permanent-bridge appeal. It preserves distinct geographic levels and risk contexts without reconstituting most of the original human-interest account."
+    },
+    "full_body_characters": 4357,
+    "next_action": "Adopt the limited reviewed analytical scope with unknown assent/retention limits; do not convert an approaching threat into a current location-wide flood claim.",
+    "publisher": "ABS-CBN News",
+    "qualitative_extent": "The new scope excludes nearly all personal quotations, much livelihood narration, collapse dimensions and the final permanent-bridge appeal. It preserves distinct geographic levels and risk contexts without reconstituting most of the original human-interest account.",
+    "selected_characters": 855,
+    "selected_scope": true,
+    "source_id": "news-e984b661dcaf2637",
+    "source_sha256": "56f3d03d4b6d7f797a8a59b30e59a4a7ed344a503bcae0b607ad3ea00eac0fad",
+    "url": "https://www.abs-cbn.com/news/regions/2026/8/28/occidental-mindoro-braces-for-another-onslaught-of-habagat-0028"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "interpretation": "Finite lexical comparison only; not semantic coverage, independence, legal necessity or measured model weakness.",
+  "literal_case_insensitive_matches": {
+    "VIP": [],
+    "Zero tolerance": [],
+    "body cam": [],
+    "flood control": [
+      "continuation-ff907d99c213b53431c4"
+    ],
+    "illegal logging": [],
+    "jail guard": [],
+    "kickback": [],
+    "overpricing": [],
+    "transparency": []
+  },
+  "unaffected_negative_records": 39
+}

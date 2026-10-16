@@ -1,0 +1,9 @@
+{
+  "command": "venv/Scripts/python.exe -B -m pytest --noconftest training/flood_ner/artifacts/revision-feasibility-20261016-v1/test_analysis.py training/flood_ner/artifacts/revision-feasibility-20261016-v1/test_extension.py tests/test_flood_ner_cohort.py tests/test_flood_ner_revision.py tests/test_flood_ner_qualification.py -q -p no:cacheprovider",
+  "new_analysis_guardrails": 13,
+  "passed": 99,
+  "scope": "Constructed analysis guardrails plus existing cohort, revision and qualification tests; no full-suite baseline or model accuracy claim.",
+  "seconds": 6.5,
+  "skipped": 0,
+  "warnings": 1
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "analyst": "Codex AI source-reading feasibility analyst; no independent human verification",
+    "capture_version": "52e90054e706a8ccc65767e0d91297b4060a5c95c9935e688dd6f382f6b99db7",
+    "end": 388,
+    "finding": {
+      "boundary_review": "complete sentence/paragraph window; no source text edited",
+      "eligible_for_reviewed_scenario": false,
+      "expected_passage_sha256": "a4138f20affa52542205fbcd26b27f0c479526d25e2d54bdee124481efae6cda",
+      "finding": "Full first paragraph is source-exact, but the existing annotations omit Estero San Antonio Abad at passage offsets 364-387. Preserve this historical annotation and exclude it from verified witnesses. A new window or correction would require fresh annotation acceptance. Drainage outfall gives lexical mixing.",
+      "language_review": "historical Taglish category checked against actual passage; operational lexical-mixing convention, not independent linguistic adjudication",
+      "record_id": "continuation-7083e3d12285e30c158a",
+      "reviewed_date": "2026-10-16",
+      "reviewer": "Codex AI same-agent source reader"
+    },
+    "labels": {
+      "CITY": 1,
+      "LANDMARK": 3,
+      "ROAD": 1
+    },
+    "language": "taglish",
+    "passage_sha256": "a4138f20affa52542205fbcd26b27f0c479526d25e2d54bdee124481efae6cda",
+    "record_id": "continuation-7083e3d12285e30c158a",
+    "source_id": "news-1856c6263451d088",
+    "source_sha256": "a6ec66ae5951bdc4aa337c1dd86fd4e77c4973897d6385ce4fb0eb3f5751694d",
+    "source_use": "new aggregate selection remains unassessed",
+    "start": 0,
+    "url": "https://www.philstar.com/pilipino-star-ngayon/opinyon/2025/07/16/2458316/editoryal-baha-dulot-ng-dolomite-beach"
+  }
+]

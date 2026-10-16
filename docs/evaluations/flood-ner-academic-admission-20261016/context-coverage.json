@@ -1,0 +1,43 @@
+{
+  "additional_location_samples": 0,
+  "category_support": {
+    "collective_ranges": {
+      "english": 11,
+      "taglish": 5
+    },
+    "local_exceptions": {
+      "english": 1,
+      "taglish": 4
+    },
+    "negative_unknown_time": {
+      "english": 15,
+      "taglish": 15
+    },
+    "shared_observations": {
+      "english": 12,
+      "taglish": 7
+    },
+    "temporal_transitions": {
+      "english": 3,
+      "taglish": 7
+    }
+  },
+  "complete": true,
+  "errors": [],
+  "files": {
+    "category_reviews.json": "2c537e5c2e22ab3fcb9ed0f6ddd60eef0aaa613bef8dc1616f6901efcb3de95b",
+    "context_annotations.jsonl": "0c331bfd56ec1f61d38f9f5bacc8ca75fb503d74c41f23f31b3c64e594b82266"
+  },
+  "languages": {
+    "english": 20,
+    "taglish": 20
+  },
+  "location_manifest_sha256": "d209abbdb9353510e5d62833221c2f71784e323dbf67f49ea5a20e3ec743e2f8",
+  "records": 40,
+  "schema_version": "lanes-context-pilot-v1",
+  "scope_is_project_choice_not_optimal_sample_size": true,
+  "source_articles_by_language": {
+    "english": 14,
+    "taglish": 19
+  }
+}

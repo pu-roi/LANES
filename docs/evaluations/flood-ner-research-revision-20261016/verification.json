@@ -1,0 +1,51 @@
+{
+  "all_hard_quotas_passed": true,
+  "articles": 138,
+  "contextual_pairs": 40,
+  "desktop_predecessor_unreconciled": true,
+  "deterministic_cohort_replay": true,
+  "deterministic_context_replay": true,
+  "export_destination_created": false,
+  "export_research_only_refusals": 400,
+  "exports": 0,
+  "independent_pair_conflict_check": 0,
+  "languages": {
+    "english": 200,
+    "taglish": 200
+  },
+  "location_records": 400,
+  "minimum_two_changes_proven_for_final_reviewed_pool": true,
+  "model_files_covered_by_preservation": 23,
+  "nonacademic_outcomes_unchanged": 12,
+  "partitions": {
+    "dev": {
+      "english": 30,
+      "taglish": 30
+    },
+    "test": {
+      "english": 30,
+      "taglish": 30
+    },
+    "train": {
+      "english": 140,
+      "taglish": 140
+    }
+  },
+  "prior_checkpoint_files_preserved": 2661,
+  "publishers": {
+    "ABS-CBN News": 160,
+    "GMA News": 160,
+    "Philstar": 80
+  },
+  "smaller_budget_one_countercheck": {
+    "optimality_proven": false,
+    "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+    "solver_status": 2
+  },
+  "source_publication_inventory_verified": 342,
+  "source_review_active_articles": 138,
+  "spacy_version": "3.7.5",
+  "tokenizer_unchanged": true,
+  "training_admitted": 0,
+  "unicode_round_trips": 440
+}

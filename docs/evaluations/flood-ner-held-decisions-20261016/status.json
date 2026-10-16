@@ -1,0 +1,41 @@
+{
+  "articles": 138,
+  "contextual_pairs": 40,
+  "derived_adopted_articles": 134,
+  "derived_adopted_passages": 383,
+  "desktop_predecessor_unreconciled": true,
+  "exports": 0,
+  "focused_decisions": 12,
+  "focused_passage_memberships": 49,
+  "fresh_pytest_run": false,
+  "held_passages": 17,
+  "historical_software_baseline": {
+    "passed": 772,
+    "skipped": 1
+  },
+  "language_counts": {
+    "english": 200,
+    "taglish": 200
+  },
+  "location_samples": 400,
+  "new_adopted_passages": 32,
+  "new_adoptions": 8,
+  "partitions": {
+    "dev": {
+      "english": 30,
+      "taglish": 30
+    },
+    "test": {
+      "english": 30,
+      "taglish": 30
+    },
+    "train": {
+      "english": 140,
+      "taglish": 140
+    }
+  },
+  "preserved_other_dispositions": 126,
+  "retained_holds": 4,
+  "source_use_finalized": false,
+  "training_admitted": 0
+}

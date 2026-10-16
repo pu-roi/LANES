@@ -1,0 +1,20 @@
+{
+  "exports": 0,
+  "files": {
+    "README.md": "aff989ef3242d71206e8b6b33e19ed4d1cc091264235e999135155b9c447e0a1",
+    "admission-ledger.json": "5563206da2830f1e107e4c883c780b4b186d2d5b86c36acdeeb69ff3c47115ad",
+    "article-links.csv": "0bf9cc1d79295310553cc02c2d5472443aafe5b05669fe9b79dcba714c69811f",
+    "article-register.json": "f8aea8551b42606b1e6880620910e99a9b718b562ff8f689086c2e85b6194823",
+    "cohort-manifest.json": "d209abbdb9353510e5d62833221c2f71784e323dbf67f49ea5a20e3ec743e2f8",
+    "context-coverage.json": "4a0fbd7760730ecb4055fd6c837da1d3cf37884a8f0fb8a09ef54a80d7ad2c78",
+    "copy-inventory.json": "6f0de53d8880212cbac67097043919d44ec16ceb7bf4cc598da953d3d7c833c8",
+    "location-coverage.json": "c844603445d27f94e33561e97567ab1ffc1398dd5d2ef99c3b78217d41ade0fa",
+    "paper-method-notes.md": "6a48b6d64612df90164c8f1f8ae07631665acbf15cacba9569f677237eb75a55",
+    "sample-links.csv": "61784a1f30165edfb229ef29deab4a50c4ecabd106bf5eae55aec640593cd7c6",
+    "status.json": "75abe4a94c319b2f562037772ca359c36423898b02cf5a5ee0e73385ba060e59",
+    "verification.json": "c5b04fb6a24e589935ceb47c4174ca7b6fea85d76abd6bb50cbd6cb927a70ed8"
+  },
+  "model_trained": false,
+  "schema_version": "lanes-private-academic-admission-public-v1",
+  "training_admitted": 400
+}

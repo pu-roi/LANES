@@ -1,0 +1,32 @@
+{
+  "acquisition_facts": "not_recorded_no_factual_answer_in_continue_instruction",
+  "articles": 139,
+  "canonical_v2_created": false,
+  "contextual_pairs": 40,
+  "decision_actor": {
+    "capacity": "acting_under_existing_researcher_delegation",
+    "kind": "ai",
+    "name": "Codex"
+  },
+  "derived_adopted_articles": 71,
+  "derived_adopted_passages": 160,
+  "detailed_desktop_v1_byte_reconciled": false,
+  "exports": 0,
+  "full_400_source_use_finalized": false,
+  "git_publication": false,
+  "messages_sent": 0,
+  "new_case_decisions": 1,
+  "new_case_passages": 3,
+  "news_model_inference_or_training": false,
+  "private_manifest_sha256": "08cdaf74a5ed0843ea0b3ece60e4cf2986bc7d59eb51af86dbced45ae765bfeb",
+  "remaining_held_articles": 68,
+  "remaining_held_passages": 240,
+  "reported_prior_adopted_articles": 70,
+  "reported_prior_adopted_passages": 157,
+  "samples": 400,
+  "schema_version": "lanes-standalone-afp-case-decision-report-v1",
+  "scope": "private_owner_only_academic_ner_training_evaluation",
+  "source_admission_changed": false,
+  "training_admitted": 0,
+  "uploads": 0
+}

@@ -1,0 +1,34 @@
+{
+  "articles_after": 138,
+  "articles_before": 138,
+  "contexts_after": 40,
+  "contexts_before": 40,
+  "derived_recorded_project_basis_articles": 138,
+  "derived_recorded_project_basis_passages": 400,
+  "desktop_predecessor_unreconciled": true,
+  "exports": 0,
+  "fixed_unaffected_locations": 383,
+  "location_spans_after": 1465,
+  "location_spans_before": 1468,
+  "locations_after": 400,
+  "locations_before": 400,
+  "negative_records_after": 48,
+  "negative_records_before": 47,
+  "previous_cohort": {
+    "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/cohort-v4/partition_manifest.json",
+    "sha256": "f93f36cf9dbac02905d162112ad7c510f523767d12259509fdf33a7917794855"
+  },
+  "previous_context": {
+    "path": "backend/training/flood_ner/artifacts/research-revision-20261016-v1/contextual-v4/manifest.json",
+    "sha256": "21f1d9d00e44194a85fd53df38416556769d3695358ef17c0652fcd29d549780"
+  },
+  "replaced_contexts": 2,
+  "replaced_locations": 12,
+  "reselection_run": false,
+  "retained_contexts": 38,
+  "retained_locations": 388,
+  "test_samples_preserved": 60,
+  "training_admitted": 0,
+  "training_pilots_preserved": 10,
+  "validation_samples_preserved": 60
+}

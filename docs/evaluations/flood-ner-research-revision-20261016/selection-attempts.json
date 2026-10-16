@@ -1,0 +1,438 @@
+{
+  "attempt-batch-01.json": [
+    {
+      "accepted_new_windows": 15,
+      "budget": 0,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 5,
+      "reviewed_windows": 20,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    },
+    {
+      "accepted_new_windows": 15,
+      "budget": 20,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 5,
+      "reviewed_windows": 20,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    }
+  ],
+  "attempt-batch-02.json": [
+    {
+      "accepted_new_windows": 32,
+      "budget": 0,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 8,
+      "reviewed_windows": 40,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    },
+    {
+      "accepted_new_windows": 32,
+      "budget": 20,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 8,
+      "reviewed_windows": 40,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    }
+  ],
+  "attempt-batch-03.json": [
+    {
+      "accepted_new_windows": 50,
+      "budget": 0,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 10,
+      "reviewed_windows": 60,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    },
+    {
+      "accepted_new_windows": 50,
+      "budget": 20,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 10,
+      "reviewed_windows": 60,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    }
+  ],
+  "attempt-batch-04.json": [
+    {
+      "accepted_new_windows": 70,
+      "budget": 0,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 10,
+      "reviewed_windows": 80,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    },
+    {
+      "accepted_new_windows": 70,
+      "budget": 20,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 10,
+      "reviewed_windows": 80,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    }
+  ],
+  "attempt-batch-05.json": [
+    {
+      "accepted_new_windows": 90,
+      "budget": 0,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 10,
+      "reviewed_windows": 100,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    },
+    {
+      "accepted_new_windows": 90,
+      "budget": 20,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 10,
+      "reviewed_windows": 100,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    }
+  ],
+  "attempt-batch-06.json": [
+    {
+      "accepted_new_windows": 110,
+      "budget": 0,
+      "diagnostics": {
+        "optimality_proven": false,
+        "solver_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+        "solver_status": 2
+      },
+      "error": "exact grouped cohort is infeasible under the reviewed inputs and hard constraints; solver status 2: The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is At lower/fixed bound)",
+      "rejected_windows": 10,
+      "reviewed_windows": 120,
+      "seconds_limit_used": 60,
+      "valid_witness": false
+    },
+    {
+      "accepted_new_windows": 110,
+      "budget": 20,
+      "changed_reference_ids": [
+        "cohort-958ddaeee287978235ee",
+        "cohort-95fea3f819908a5f942d"
+      ],
+      "coverage": {
+        "coverage": {
+          "dev": {
+            "english": {
+              "BARANGAY": {
+                "articles": 4,
+                "passages": 8,
+                "spans": 12
+              },
+              "CITY": {
+                "articles": 6,
+                "passages": 15,
+                "spans": 21
+              },
+              "LANDMARK": {
+                "articles": 6,
+                "passages": 8,
+                "spans": 11
+              },
+              "LOCAL_AREA": {
+                "articles": 4,
+                "passages": 6,
+                "spans": 10
+              },
+              "PROVINCE": {
+                "articles": 5,
+                "passages": 10,
+                "spans": 16
+              },
+              "ROAD": {
+                "articles": 5,
+                "passages": 10,
+                "spans": 22
+              }
+            },
+            "taglish": {
+              "BARANGAY": {
+                "articles": 5,
+                "passages": 7,
+                "spans": 13
+              },
+              "CITY": {
+                "articles": 12,
+                "passages": 17,
+                "spans": 40
+              },
+              "LANDMARK": {
+                "articles": 7,
+                "passages": 8,
+                "spans": 11
+              },
+              "LOCAL_AREA": {
+                "articles": 8,
+                "passages": 9,
+                "spans": 11
+              },
+              "PROVINCE": {
+                "articles": 6,
+                "passages": 9,
+                "spans": 18
+              },
+              "ROAD": {
+                "articles": 9,
+                "passages": 10,
+                "spans": 25
+              }
+            }
+          },
+          "test": {
+            "english": {
+              "BARANGAY": {
+                "articles": 4,
+                "passages": 5,
+                "spans": 10
+              },
+              "CITY": {
+                "articles": 8,
+                "passages": 16,
+                "spans": 34
+              },
+              "LANDMARK": {
+                "articles": 6,
+                "passages": 7,
+                "spans": 10
+              },
+              "LOCAL_AREA": {
+                "articles": 4,
+                "passages": 5,
+                "spans": 12
+              },
+              "PROVINCE": {
+                "articles": 6,
+                "passages": 16,
+                "spans": 63
+              },
+              "ROAD": {
+                "articles": 5,
+                "passages": 10,
+                "spans": 49
+              }
+            },
+            "taglish": {
+              "BARANGAY": {
+                "articles": 7,
+                "passages": 12,
+                "spans": 21
+              },
+              "CITY": {
+                "articles": 11,
+                "passages": 20,
+                "spans": 39
+              },
+              "LANDMARK": {
+                "articles": 6,
+                "passages": 6,
+                "spans": 10
+              },
+              "LOCAL_AREA": {
+                "articles": 5,
+                "passages": 5,
+                "spans": 10
+              },
+              "PROVINCE": {
+                "articles": 4,
+                "passages": 5,
+                "spans": 12
+              },
+              "ROAD": {
+                "articles": 6,
+                "passages": 10,
+                "spans": 20
+              }
+            }
+          },
+          "train": {
+            "english": {
+              "BARANGAY": {
+                "articles": 17,
+                "passages": 33,
+                "spans": 52
+              },
+              "CITY": {
+                "articles": 36,
+                "passages": 83,
+                "spans": 200
+              },
+              "LANDMARK": {
+                "articles": 15,
+                "passages": 27,
+                "spans": 40
+              },
+              "LOCAL_AREA": {
+                "articles": 10,
+                "passages": 19,
+                "spans": 25
+              },
+              "PROVINCE": {
+                "articles": 27,
+                "passages": 55,
+                "spans": 112
+              },
+              "ROAD": {
+                "articles": 13,
+                "passages": 43,
+                "spans": 170
+              }
+            },
+            "taglish": {
+              "BARANGAY": {
+                "articles": 24,
+                "passages": 29,
+                "spans": 69
+              },
+              "CITY": {
+                "articles": 43,
+                "passages": 68,
+                "spans": 145
+              },
+              "LANDMARK": {
+                "articles": 10,
+                "passages": 16,
+                "spans": 23
+              },
+              "LOCAL_AREA": {
+                "articles": 13,
+                "passages": 16,
+                "spans": 20
+              },
+              "PROVINCE": {
+                "articles": 26,
+                "passages": 40,
+                "spans": 53
+              },
+              "ROAD": {
+                "articles": 17,
+                "passages": 30,
+                "spans": 60
+              }
+            }
+          }
+        },
+        "failures": [],
+        "mode": "selected_cohort",
+        "model_accuracy_measured": false,
+        "passed": true,
+        "policy": {
+          "article_max": 8,
+          "group_max": 80,
+          "groups_min_per_partition": 5,
+          "holdout": {
+            "articles": 3,
+            "passages": 5,
+            "spans": 10
+          },
+          "minimum_publishers": 3,
+          "publisher_max_per_language": 100,
+          "publisher_max_total": 160,
+          "publisher_min_per_language": 25,
+          "road_holdout": {
+            "articles": 5,
+            "passages": 10,
+            "spans": 20
+          },
+          "road_train": {
+            "articles": 10,
+            "passages": 30,
+            "spans": 60
+          },
+          "schema_version": "lanes-flood-ner-coverage-v1",
+          "train": {
+            "articles": 5,
+            "passages": 10,
+            "spans": 20
+          }
+        },
+        "publisher_languages": {
+          "ABS-CBN News": {
+            "english": 60,
+            "taglish": 100
+          },
+          "GMA News": {
+            "english": 93,
+            "taglish": 67
+          },
+          "Philstar": {
+            "english": 47,
+            "taglish": 33
+          }
+        }
+      },
+      "diagnostics": {
+        "optimality_proven": true,
+        "solver_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "solver_status": 0
+      },
+      "error": null,
+      "reference_changes": 2,
+      "rejected_windows": 10,
+      "reviewed_windows": 120,
+      "seconds_limit_used": 60,
+      "selected_new_windows": 53,
+      "valid_witness": true
+    }
+  ]
+}
