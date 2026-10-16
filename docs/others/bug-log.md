@@ -1,6 +1,41 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 16, 2026, 12:28 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 8:10 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Resolved before held-out inference: constructed controls treated as corpus memberships
+
+- **Status / severity / resolver:** Resolved; P2 freeze-preparation correctness. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The first test-freeze preparation raises KeyError for record_id, before creating a freeze directory or starting predictions.
+- **Root cause:** The qualification case package includes constructed controls identified by case_id; they do not have corpus record_id fields. The new exclusion check incorrectly treated every non-test case as a corpus membership.
+- **Resolution:** Compare test identities only against location/context memberships and retain duplicate, moved and overlap rejection. Constructed controls stay outside test evaluation. Preserve the original failure diagnostics; no model/annotation/configuration change or actual test-inference retry occurs.
+- **Files / verification:** heldout_test.py and test_flood_ner_heldout_test.py. The constructed-control regression and all 59 focused tests pass before the successful freeze; the one subsequent held-out evaluation passes. [Report](../evaluations/flood-ner-heldout-test-20261016/README.md).
+
+## Resolved: redirected Unicode output terminates training launcher
+
+- **Status / severity / resolver:** Resolved; P1 unattended training blocker. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The initial seed 2 parent launcher raises UnicodeEncodeError while forwarding spaCy console symbols, terminates the worker and saves no selected model.
+- **Root cause:** Redirected Windows parent stdout uses cp1252 while the worker emits UTF-8. Direct study calls also need the same output configuration as CLI entry.
+- **Resolution:** Configure stdout/stderr as UTF-8 in both main and launch. Preserve the original failed folder. After explicit retry authorization and a renewed session, the single fresh seed 2 recovery completes; all four bounded trial runs also complete. No dependency or frozen model-setting change is needed. Optimizer updates in the first failed worker remain unestablished.
+- **Files / verification:** manual_training.py and test_flood_ner_manual_training.py. Constructed cp1252 regression and real redirected standard-library subprocess/stub-checkpoint transport tests pass. All 43 focused tests pass; successful GPU recovery and selected-model reloading are recorded in the [completed study](../evaluations/flood-ner-validation-study-20261016-v2/README.md).
+
+
+## Resolved: experiment readiness assertion and contract checkpoint ties
+
+- **Status / severity / resolver:** Resolved in preparation tooling; P2 research correctness. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The first initializer refused the pinned GPU NER configuration because two parameter arrays remained on CPU. Separately, the default spaCy best-model saves overwrite equal development scores, conflicting with the frozen earlier-step rule.
+- **Root cause:** The pinned spaCy 3.7.5 TransitionBasedParser.v2 intentionally constructs its upper classifier under CPU ops (spacy/ml/models/parser.py). In training/loop.py, is_best_checkpoint accepts score equality, so built-in model-best does not retain the earlier model. Neither behavior is a broken spaCy installation.
+- **Resolution:** Verify GPU encoder/lower and CPU upper devices separately without changing architecture/dependencies. Preserve failed preparation v1; separate v2 initializes all three seeds successfully. Add a development-only strict-improvement selector with explicit earlier-step tie handling; its selected-checkpoint/model is authoritative.
+- **Files / verification:** experiment_worker.py, experiment_registry.py, experiment_preparation.py, rules_baseline.py, cli.py and test_flood_ner_experiment_preparation.py. Nine preparation tests plus twelve export regressions pass. The selector is tested with constructed scores/fake writes; actual training/checkpoint selection has not executed. [Preparation evidence](../evaluations/flood-ner-experiment-preparation-20261016/README.md).
+
+## Resolved: desktop CLI NumPy/Thinc binary incompatibility
+
+- **Status / severity / resolver:** Resolved; P1 blocker for the desktop corpus-tokenizer gate. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The single generated QUALIFY.ps1 invocation exits 1 while importing spaCy in backend/venv, before corpus validation or the isolated Python 3.11 worker starts. No passage is tokenized.
+- **Root cause evidence:** thinc.backends.numpy_ops raises numpy.dtype size changed, expecting 96 bytes from the C header and receiving 88 from PyObject. Metadata reports NumPy 2.5.1, Thinc 8.2.4, spaCy 3.7.5 and SciPy 1.18.0. This was an observed ABI mismatch. The original installation history remains unestablished; the separately authorized repair restores existing repository pins and verifies imports/runtime behavior. The helper verifies package metadata, not extension import compatibility. The laptop error 4551 is a separate historical failure.
+- **Resolution:** Preserve the first failed attempt unchanged. Under separate authorization, replace only backend/venv NumPy 2.5.1 with 1.26.4 and SciPy 1.18.0 with 1.14.1, using PyPI-verified hashed binary wheels installed offline. All other 107 package versions, repository requirements, GPU environment and Windows policy remain unchanged. pip check, imports, Unicode serialization, constructed SciPy smoke and CLI startup pass. One new corpus-tokenizer attempt passes with zero candidate alignment errors and all 56 controls; export is next. [Repair and passing result](../evaluations/flood-ner-desktop-tokenizer-qualification-20261016/README.md).
+- **Files / verification:** No source code changed. The ignored desktop-execution-20261016-run-01 checkpoint retains invocation logs and before/after verification; desktop-relocation-20261016-160823 retains generated manifests and script. All 1,757 restored payload hashes and 9,744 pre-existing artifact hashes verify; research environment metadata and .env are unchanged. [Result](../evaluations/flood-ner-desktop-restoration-20261016/README.md).
+
+
 
 ## Resolved: private handoff omitted original capture pointers
 
@@ -284,7 +319,7 @@
 - **Status:** Local defect resolved; actual sign-in investigating. **Severity:** High. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - **Problem/RCA:** Real user callback failed id_token_claims. The helper did not supply access_token to python-jose, which rejects a valid signed ID token containing optional at_hash when it cannot verify the access-token binding. Existing fixtures omitted at_hash. A new signed fixture fails the previous success test before repair; the precise claim in the discarded real token remains unproved.
 - **Solution:** Pass the returned access token into JWT validation; preserve signature/issuer/audience/nonce/expiry and verify the hash rather than disable it. Split other claim failures into fixed diagnostic codes.
-- **Changes/checks:** Auth service and signed fixtures/regressions. 42 focused checks pass, including bound-token success, missing optional hash, mismatched pair rejection and no unvalidated credential saving. New helper v3 on port 1457; old 1455/1456 unchanged after earlier restart review rejection. Actual authorization/inference still pending.
+- **Changes/checks:** Auth service and signed fixtures/regressions. 43 focused checks pass, including bound-token success, missing optional hash, mismatched pair rejection and no unvalidated credential saving. New helper v3 on port 1457; old 1455/1456 unchanged after earlier restart review rejection. Actual authorization/inference still pending.
 
 **Local ChatGPT callback verification failure (investigating).**
 

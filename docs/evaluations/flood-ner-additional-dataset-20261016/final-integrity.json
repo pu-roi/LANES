@@ -1,0 +1,14 @@
+{
+  "curator_safe_bindings_checked": 2,
+  "dataset_readiness_complete": false,
+  "documentation_bindings_checked": 4,
+  "env_requirements_branch_head_unchanged": true,
+  "heldout_text_or_labels_inspected_by_parent": false,
+  "new_artifacts_ignored": true,
+  "passed": true,
+  "private_file_bindings_checked": 565,
+  "public_file_bindings_checked": 2,
+  "recorded_at": "2026-10-16T14:29:10.488180+00:00",
+  "research_environment_stats_rechecked": 22759,
+  "training_exports_created": 0
+}

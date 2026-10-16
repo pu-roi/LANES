@@ -1,0 +1,14 @@
+{
+  "files": {
+    "README.md": "7850392b0485e00e903e157845e508e0bac6cc1d5b077616b08709163d432be2",
+    "future-evaluation-protocol.md": "40b58879c1bec4601599426c616ee1e7ba33c7bc5d5e4a4d457db835be51900a",
+    "preparation-summary.json": "be81560acb54ee21f15608371ae15bb738e1090c6bd4566573f03c1f1462c465",
+    "preservation.json": "5699c6ed4d68e1c6b1877cc862216d5003a86499807c4fb21197850640d6afed",
+    "private-output-hashes.json": "24a6fa872ecb4edab75bfd3c28df28baf0bdf17fdcdeb600c6844f2042bb42d8",
+    "verification.json": "ef4c5cd75bfe56c158c284dee806c04f79aa14a71588dff6a647f391b2ac8ef0"
+  },
+  "reference_scope_addendum": {
+    "path": "docs/guides/flood-ner-reference-scope-addendum-v1.md",
+    "sha256": "cf18e95508130c92ad98be3302fd1a21e1a869d6e3ad3bceaf870adc1980c10c"
+  }
+}

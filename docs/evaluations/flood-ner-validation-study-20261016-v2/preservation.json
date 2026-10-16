@@ -1,0 +1,16 @@
+{
+  "added_research_environment": [],
+  "changed_or_missing_artifacts": [],
+  "changed_research_environment": [],
+  "cli_package_count": 109,
+  "cli_package_versions_unchanged": true,
+  "env_unchanged": true,
+  "frozen_input_bindings_revalidated": true,
+  "model_files_hash_verified": 23,
+  "prior_artifact_files_hash_verified": 10945,
+  "recorded_at": "2026-10-16T19:49:04.376946+08:00",
+  "requirements_unchanged": true,
+  "research_environment_files_size_mtime_verified": 22759,
+  "research_environment_scope": "Size/mtime audit, not full environment content hashing; bytecode consistently excluded.",
+  "state": "passed"
+}

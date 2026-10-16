@@ -1,0 +1,197 @@
+{
+  "candidate": {
+    "constructed_alignment_error_count": 0,
+    "constructed_control_failures": [],
+    "constructed_controls_checked": 56,
+    "contextual_entity_boundary_diagnostics": [],
+    "contextual_location_alignment_error_count": 0,
+    "location_alignment_error_count": 0,
+    "location_alignment_errors": []
+  },
+  "corpus-v3": {
+    "constructed_alignment_error_count": 14,
+    "constructed_control_failures": [
+      {
+        "case_id": "constructed-boundary-25",
+        "end": 9,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-26",
+        "end": 11,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-30",
+        "end": 5,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-37",
+        "end": 9,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-38",
+        "end": 11,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-42",
+        "end": 5,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      }
+    ],
+    "constructed_controls_checked": 56,
+    "contextual_entity_boundary_diagnostics": [],
+    "contextual_location_alignment_error_count": 0,
+    "location_alignment_error_count": 0,
+    "location_alignment_errors": []
+  },
+  "native": {
+    "constructed_alignment_error_count": 22,
+    "constructed_control_failures": [
+      {
+        "case_id": "constructed-boundary-25",
+        "end": 9,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-26",
+        "end": 11,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-27",
+        "end": 9,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-28",
+        "end": 25,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 16
+      },
+      {
+        "case_id": "constructed-boundary-28",
+        "end": 41,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 36
+      },
+      {
+        "case_id": "constructed-boundary-29",
+        "end": 7,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 2
+      },
+      {
+        "case_id": "constructed-boundary-30",
+        "end": 5,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-37",
+        "end": 9,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-38",
+        "end": 11,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-39",
+        "end": 9,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      },
+      {
+        "case_id": "constructed-boundary-40",
+        "end": 28,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 19
+      },
+      {
+        "case_id": "constructed-boundary-40",
+        "end": 43,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 38
+      },
+      {
+        "case_id": "constructed-boundary-41",
+        "end": 7,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 2
+      },
+      {
+        "case_id": "constructed-boundary-42",
+        "end": 5,
+        "kind": "boundaries",
+        "passed": false,
+        "start": 0
+      }
+    ],
+    "constructed_controls_checked": 56,
+    "contextual_entity_boundary_diagnostics": [
+      {
+        "case_id": "context:cohort-1501a07f96ca50253fb2",
+        "end": 22,
+        "label": "TIME",
+        "start": 15
+      },
+      {
+        "case_id": "context:cohort-1501a07f96ca50253fb2",
+        "end": 208,
+        "label": "TIME",
+        "start": 201
+      },
+      {
+        "case_id": "context:cohort-6fd40e44ac94d7dfdc20",
+        "end": 104,
+        "label": "TIME",
+        "start": 96
+      }
+    ],
+    "contextual_location_alignment_error_count": 0,
+    "location_alignment_error_count": 1,
+    "location_alignment_errors": [
+      {
+        "case_id": "location:cohort-8dcb6bc25367b4f67025",
+        "end": 104,
+        "label": "ROAD",
+        "start": 89
+      }
+    ]
+  }
+}

@@ -1,8 +1,44 @@
 # Continue the NER work on the existing desktop checkout
 
-Updated: October 16, 2026, 12:39 PM (Asia/Manila). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current Gate 3 status:** Improvement preparation is complete; additional-dataset readiness/admission remains open. Development has 244 drafts (179 candidates / 65 holds); isolated test curation has 56 prospective entries, zero admitted independent test records and no seal. Resolve coverage, reference/language, source-use, historical-overlap and the single development tokenizer-alignment failure before corpus admission/export or further training. Original 400-sample results and model roles remain frozen. [Readiness report](../evaluations/flood-ner-additional-dataset-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical qualification-review checkpoint:
+
+**Gate 3 qualification review complete; operational qualification remains open:** Codex reads all **60 held-out passages / 22 articles**, records **120 original/A seed 0 assessments** and accounts for all **391 FP/FN events**. Fourteen passages retain AI reference/convention questions; no label, offset, score or model choice changes. Original seed 0 remains primary (**63.12 test F1**) and A seed 0 exploratory (**67.72**). All 42 event-count slices and preservation checks pass. Next prepare the remaining Gate 3 qualification specification (reference-scope addendum, constructed regression matrix and bounded CPU/Linux/failure/performance plan) before Gate 4 integration. No inference, training or test rerun occurs in this review. [Review](../evaluations/flood-ner-model-qualification-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical held-out benchmark execution:
+
+**Held-out NER evaluation complete:** The six frozen original/A checkpoints and two baselines complete one evaluation on **60 test passages / 290 spans**, 30 English/30 Taglish. Original seed 0 remains primary at **63.12 six-class F1**; exploratory A seed 0 scores **67.72**. Three-seed means are **68.46 original / 70.24 A**, with sample SD **4.85 / 2.20 percentage points**. Rules score **58.97 six-class F1**; native LOC scores **67.02 on the separate coarse task**. All 59 focused tests, 240 metric reconciliation checks and preservation checks pass. Test results are now exposed; no further tuning or seed selection uses them. Next complete the existing Gate 3 model-qualification/error review before Gate 4 isolated integration. [Held-out report](../evaluations/flood-ner-heldout-test-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical development-only checkpoint:
+
+**Frozen experiment and bounded validation trials complete:** Original seeds 0/1/2 reproduce development F1 **67.15 / 70.59 / 72.29**; seed 2 succeeds in its separate authorized recovery folder. Recipe A wins the seed 0 comparison (**71.81**, versus B **70.70**) and completes robustness seeds 1/2. A family mean is **72.61**, sample SD **0.92 percentage points**; original mean is **70.01**, sample SD **2.62**. Original seed 0 remains primary. All five permitted new runs complete before the renewed cutoff; 43 focused tests pass. Prior artifacts, GPU environment, dependencies and .env verify unchanged. Next freeze the final experiment/checkpoint decision, then perform separate held-out testing under the frozen protocol; test predictions remain untouched. [Completed report](../evaluations/flood-ner-validation-study-20261016-v2/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical primary-training checkpoint:
+
+**Primary seed 0 training complete:** The researcher manually ran the frozen GPU recipe. The selected development checkpoint is step 455, F1 67.15 / precision 68.32 / recall 66.03; early stopping ends at step 630 after 175 steps without improvement. All 103 run files remain unchanged; test predictions remain untouched. Manual check-only launchers for robustness seeds 1/2 pass; 29 focused tests pass. Next run seeds 1/2 and the frozen baseline comparisons, keeping seed 0 primary. [Training result](../evaluations/flood-ner-primary-training-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical preparation checkpoint:
+
+**Baseline/training preparation complete:** Frozen rules type/original-offset mapping and seed 0/1/2 configurations pass initialization on the RTX 3060 Ti using the verified qualified export. Each initializes six location labels, 46 GPU parameter arrays and the two CPU upper-classifier arrays required by the pinned architecture, with the exact candidate tokenizer and copied pretrained NER encoder. No optimizer updates, corpus prediction evaluation or held-out test reading occurred. Twenty-one focused unittest methods pass. All 10,531 prior artifact hashes, 23 model files, 22,759 audited research-environment file stats, CLI package versions and .env are unchanged. The next task is the first primary-seed training run under the frozen development-selection protocol. [Preparation verification](../evaluations/flood-ner-experiment-preparation-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical export result:
+
+**Latest desktop result - export verified:** The separate qualified-export-20261016-v1 checkpoint contains the verified 280/60/60 location DocBins and unchanged qualified tokenizer bytes. A separate replay is byte-identical for DocBins/tokenizer/provenance; independent disk reload checks all records. Preserve the qualification and prior checkpoints. Baseline/training preparation is next; no NER prediction evaluation or training has run. [Export result](../evaluations/flood-ner-qualified-export-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Historical qualification checkpoint:** Only NumPy/SciPy in the existing backend CLI were restored to repository pins. The separate desktop-relocation-20261016-162313/qualification package passes on the admitted 400 samples/40 contexts: zero candidate alignment errors, all 56 constructed controls and tokenizer reload pass. Export is the next separate task; no export/training has run. The GPU environment, corpus, model files and .env remain unchanged. Preserve the earlier failure and preparation records; the qualification package supplies the pass binding. [Passing result](../evaluations/flood-ner-desktop-tokenizer-qualification-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Historical first desktop attempt:** The v2 package is restored and relocation is prepared. The single generated qualification invocation failed during the existing backend CLI spaCy/Thinc import with a NumPy dtype-size mismatch, before the isolated research worker. Do not repeat the restoration or qualification as a repair. Resolve CLI compatibility in a separate task and record a subsequent qualification attempt; export remains gated. No dependencies, Windows policy or GPU setup changed. [Actual desktop result](../evaluations/flood-ner-desktop-restoration-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The original handoff procedure below is retained for audit and future verified restoration.
 
 **Private Drive delivery verified:** The unchanged v2 ZIP is available in the [desktop handoff folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) under your LANES_NER folder. Personal account roicambe02@gmail.com and owner-only permissions were verified. The uploaded ZIP was read back and matches the local SHA-256 and all 28,476,420 bytes. No sharing permissions were changed. Git alone does not carry private evidence.
+
+## Current cross-computer continuation
+
+Git carries code, tests and metadata only. The existing v2 Drive ZIP predates the desktop exports, trained checkpoints, final evaluation, improvement preparation and additional-dataset packages; it cannot restore those newer private artifacts. Preserve and transfer the required ignored checkpoints with verified manifests before continuing on another computer. Keep isolated test texts/labels outside model-development inspection. No fresh backup upload is claimed by this documentation/push task. Missing private evidence is a prerequisite to resolve, not a reason to recreate or rerun the frozen test.
 
 ## 1. Get the two parts
 
@@ -74,6 +110,6 @@ afe11aa15398d9b88e7ef268c75f7d51c79107206a60f29ac4313264f4dba65f
 
 The laptop's temporary restore revalidated all 400 admitted samples, 40 contextual pairs and all 407 selected source-evidence files for 138 articles. Language counts are 200/200 and partitions 280/60/60. Forty contexts remain paired records within the 400, not extra samples. All 23 recorded desktop/laptop model-file identities match; model weights, Python environments and credentials are excluded.
 
-Three historical evidence references remain missing or hash-divergent and the detailed desktop decision predecessor remains unreconciled. Eleven negative-fixture references and ten copied-manifest aliases are separately explained in the report. Current qualification inputs validate offline; this is not a claim that every historical evidence file has been reconstructed.
+Three historical evidence references remain formally unreconciled: two now match their restored bytes, while the IPOPHL reference remains hash-divergent. The detailed desktop decision predecessor remains unreconciled. Eleven negative-fixture references and ten copied-manifest aliases are separately explained in the report. Current qualification inputs validate offline; this is not a claim that every historical evidence file has been reconstructed.
 
 Software verification: **880 passed, one skipped**; the earlier 840/one result is historical. [Metadata report](../evaluations/flood-ner-desktop-handoff-20261016/README.md).

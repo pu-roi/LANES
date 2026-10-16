@@ -1,0 +1,67 @@
+{
+  "all_case_question_guide_coverage_and_inventory_bindings_verified": true,
+  "all_cases_development_only_no_export": true,
+  "case_count": 48,
+  "checked_at": "2026-10-16T21:00:58.237437+08:00",
+  "constructed_entity_counts": {
+    "BARANGAY": 3,
+    "CITY": 5,
+    "LANDMARK": 8,
+    "LOCAL_AREA": 15,
+    "PROVINCE": 2,
+    "ROAD": 14
+  },
+  "expected_entity_count": 47,
+  "future_test_only_specified_not_acquired": {
+    "english": 30,
+    "negatives_per_language": 3,
+    "taglish": 30,
+    "total": 60
+  },
+  "historical_benchmark_modified": false,
+  "historical_inventory_complete": false,
+  "language_counts": {
+    "english": 24,
+    "taglish": 24
+  },
+  "model_inference_run": false,
+  "negative_cases": 16,
+  "no_exact_original_passage_copies": true,
+  "no_exposed_test_eight_word_sequences": true,
+  "original_corpus": {
+    "articles": 138,
+    "contextual_pairs": 40,
+    "languages": {
+      "english": 200,
+      "taglish": 200
+    },
+    "negative_passages": 48,
+    "partitions": {
+      "dev": 60,
+      "test": 60,
+      "train": 280
+    },
+    "samples": 400,
+    "spans": 1465
+  },
+  "original_questions_bound_once": 14,
+  "original_test_attempt_unchanged": true,
+  "positive_cases": 30,
+  "preservation_state": "passed",
+  "question_dispositions": {
+    "future_convention_documented": 1,
+    "unresolved_boundary": 1,
+    "unresolved_identity": 7,
+    "unresolved_scope": 2,
+    "unresolved_sense": 2,
+    "unresolved_taxonomy": 1
+  },
+  "standard_library_tests_passed": 12,
+  "state": "passed",
+  "tests_log_sha256": "d0cdfa114807cad423f13a50f3b4d14af5b4d124360add879f3ef392f5149f85",
+  "theme_count": 8,
+  "training_started": false,
+  "training_validation_inventory_records": 340,
+  "unresolved_cases_unscored": 2,
+  "validation_scope": "stdlib structure/hash checks; not tokenizer alignment, independent semantic truth or model performance"
+}

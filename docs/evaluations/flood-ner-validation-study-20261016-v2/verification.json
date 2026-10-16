@@ -1,0 +1,423 @@
+{
+  "all_new_training_started_before_cutoff": true,
+  "completion_audit": {
+    "path": "backend/training/flood_ner/artifacts/validation-study-execution-20261016-v2/completion-audit.json",
+    "sha256": "45ef81ad4df96c778b259a0006aa6104178028d081583faccd1dc88ce0734c71"
+  },
+  "contextual_pairs_are_training_references_not_heldout_benchmark": true,
+  "copy_accounting": {
+    "new_articles_collected": 0,
+    "new_passage_text_fields": 240,
+    "new_private_comparison_requests": 4,
+    "new_samples": 0,
+    "new_whole_body_selected_passage_representations": 20,
+    "predictions_use_offsets_labels_not_full_bodies": true,
+    "public_report_passage_or_article_bodies": 0
+  },
+  "counts": {
+    "articles": 138,
+    "contextual_pairs_added_as_samples": 0,
+    "contextual_pairs_referenced": 40,
+    "languages": {
+      "english": 200,
+      "taglish": 200
+    },
+    "location_spans": 1465,
+    "negative_passages": 48,
+    "partitions": {
+      "dev": 60,
+      "test": 60,
+      "train": 280
+    },
+    "samples": 400
+  },
+  "dependency_api_schema_changes": false,
+  "export_deployment_correspondence_commit_push_shutdown": false,
+  "family_statistics": {
+    "A": {
+      "max": 0.7360774818401937,
+      "mean": 0.726095900677101,
+      "min": 0.7180722891566265,
+      "primary": 0.7180722891566265,
+      "primary_seed": 0,
+      "sample_stddev": 0.009160893773762302
+    },
+    "original": {
+      "max": 0.7228915662650602,
+      "mean": 0.7001022553071884,
+      "min": 0.6715328467153284,
+      "primary": 0.6715328467153284,
+      "primary_seed": 0,
+      "sample_stddev": 0.02616269605642407
+    }
+  },
+  "finished_at": "2026-10-16T19:51:50.058493+08:00",
+  "formal_desktop_predecessor_reconciliation": false,
+  "historical_limitations": [
+    {
+      "actual_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "8ad53d72915fa79e6871fd198c46d6767544763a1047c110cbac9e743804bd2f",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-decision-checklist-20261015-v1/manifest.json"
+    },
+    {
+      "actual_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "current_bytes_match_reference": true,
+      "expected_sha256": "34ae60500376a3972f1bb5d382382262b2c19fcc2f2687c2988b0783e5474bb5",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-project-decisions-20261015-v1/delegation-record.json"
+    },
+    {
+      "actual_sha256": "a102ac899848d2934bb26539562200868b22e83bd41f6ec3eaf542f68a3bd8a7",
+      "current_bytes_match_reference": false,
+      "expected_sha256": "2f87e31c25ea9af7bd20c522e1a7a80b055192311dcce56b1b0fc141741bd56a",
+      "formal_reconciliation_performed": false,
+      "path": "backend/training/flood_ner/artifacts/academic-use-review-20261015-v1/evidence/web-ipophl.json"
+    }
+  ],
+  "historical_seed_2_failed_attempt_preserved": true,
+  "implementation_sha256": {
+    "cli.py": "143c663d46bdb66be6278139c91ac4010d85718d338f254898e707d0f6982180",
+    "manual_training.py": "ee9044f239a27423db0dfeca98afcfe9c925a4c46d02c69833582a2e74f8ece1",
+    "study_recipes.py": "589dc85587395f4ed92b2b4db9c959ebe25b39276d574dd85138b261e1385c9e",
+    "validation_comparison.py": "36eefdc0705fabc7530c22ee8a88b6e1b5b5297c435e30f39de1ef755430d28b",
+    "validation_worker.py": "4ee827ec478dfe3c1fa680f42173115fb80c98d1651e1da3785d52e48560b77b"
+  },
+  "new_successful_training_runs": 5,
+  "next_task": "Freeze the final experiment/checkpoint decision from validation, then perform separate held-out test evaluation under the frozen protocol. Keep original seed 0 primary, disclose exploratory recipe A and silver-reference limitations. No more tuning on the test set.",
+  "preservation": {
+    "added_research_environment": [],
+    "changed_or_missing_artifacts": [],
+    "changed_research_environment": [],
+    "cli_package_count": 109,
+    "cli_package_versions_unchanged": true,
+    "env_unchanged": true,
+    "frozen_input_bindings_revalidated": true,
+    "model_files_hash_verified": 23,
+    "prior_artifact_files_hash_verified": 10945,
+    "recorded_at": "2026-10-16T19:49:04.376946+08:00",
+    "requirements_unchanged": true,
+    "research_environment_files_size_mtime_verified": 22759,
+    "research_environment_scope": "Size/mtime audit, not full environment content hashing; bytecode consistently excluded.",
+    "state": "passed"
+  },
+  "prior_expired_session_preserved": true,
+  "recorded_at": "2026-10-16T19:49:28.930026+08:00",
+  "retry_authorization": "User explicitly authorized one fresh retry and continuation on success, with a renewed hour.",
+  "runs": [
+    {
+      "config": {
+        "path": "backend/training/flood_ner/artifacts/experiment-preparation-20261016-v2/train-seed-0.cfg",
+        "sha256": "11f63c56d6977ce694f51c906464473d40983a2ca1ebe01fc3c7cf4526c8ba77"
+      },
+      "family": "original",
+      "final_step": 630,
+      "folder": "backend/training/flood_ner/artifacts/academic-training-20261016-v1/seed-0",
+      "recipe": "original",
+      "seed": 0,
+      "selection_binding": {
+        "path": "backend/training/flood_ner/artifacts/academic-training-20261016-v1/seed-0/selected-checkpoint/selection.json",
+        "sha256": "fefb3156cebd8d2be2a0a4cb49d93d49847e8494e56f62389b9fcc1d601c19fe"
+      },
+      "status": {
+        "ended_at": "2026-10-16T17:33:45.515467+08:00",
+        "exit_code": 0,
+        "seed": 0,
+        "selection": {
+          "metric": "strict six-class entity micro F1",
+          "model": "model",
+          "partition": "dev",
+          "score": 0.6715328467153284,
+          "step": 455,
+          "tie_break": "earlier checkpoint step"
+        },
+        "started_at": "2026-10-16T17:31:17.380667+08:00",
+        "state": "completed",
+        "test_predictions_performed": false,
+        "training_completed": true
+      },
+      "status_binding": {
+        "path": "backend/training/flood_ner/artifacts/academic-training-20261016-v1/seed-0/run-status.json",
+        "sha256": "f9cc9dc6cac889daced95ad6ab266d672a98bc71cb5ae15868c6f73ae68dcd34"
+      }
+    },
+    {
+      "config": {
+        "path": "backend/training/flood_ner/artifacts/experiment-preparation-20261016-v2/train-seed-1.cfg",
+        "sha256": "609782de2e9ba5ed0d1d650c41efb8e7dedd072327e31c5510f9f6482939595d"
+      },
+      "family": "original",
+      "final_step": 875,
+      "folder": "backend/training/flood_ner/artifacts/academic-training-20261016-v1/seed-1",
+      "recipe": "original",
+      "seed": 1,
+      "selection_binding": {
+        "path": "backend/training/flood_ner/artifacts/academic-training-20261016-v1/seed-1/selected-checkpoint/selection.json",
+        "sha256": "1f4e4cae048059e8a05b0e857c7ba7fb0103ef08fa9d0ccbb06899a8f1c0a306"
+      },
+      "status": {
+        "ended_at": "2026-10-16T17:55:37.611295+08:00",
+        "exit_code": 0,
+        "seed": 1,
+        "selection": {
+          "metric": "strict six-class entity micro F1",
+          "model": "model",
+          "partition": "dev",
+          "score": 0.7058823529411765,
+          "step": 700,
+          "tie_break": "earlier checkpoint step"
+        },
+        "started_at": "2026-10-16T17:52:18.482243+08:00",
+        "state": "completed",
+        "test_predictions_performed": false,
+        "training_completed": true
+      },
+      "status_binding": {
+        "path": "backend/training/flood_ner/artifacts/academic-training-20261016-v1/seed-1/run-status.json",
+        "sha256": "0af1a6c79e7c109d514bdf9c4669a6ce6540d6e34050924ce822f4bd70545a23"
+      }
+    },
+    {
+      "config": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/configs/recovery-seed-2.cfg",
+        "sha256": "69544ac2a354a553bf3769b49f6aee29bf70bbadff1165a501d51b5231b83e32"
+      },
+      "family": "original",
+      "final_step": 1000,
+      "folder": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/recovery/seed-2",
+      "recipe": "recovery",
+      "seed": 2,
+      "selection_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/recovery/seed-2/selected-checkpoint/selection.json",
+        "sha256": "1a4cdc04805c370b61623773f8325811a2d48bbd285dfdc12ea2481f7a390d6d"
+      },
+      "status": {
+        "ended_at": "2026-10-16T19:24:40.620988+08:00",
+        "exit_code": 0,
+        "seed": 2,
+        "selection": {
+          "metric": "strict six-class entity micro F1",
+          "model": "model",
+          "partition": "dev",
+          "score": 0.7228915662650601,
+          "step": 840,
+          "tie_break": "earlier checkpoint step"
+        },
+        "started_at": "2026-10-16T19:20:54.977753+08:00",
+        "state": "completed",
+        "test_predictions_performed": false,
+        "training_completed": true
+      },
+      "status_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/recovery/seed-2/run-status.json",
+        "sha256": "ab1b680b450b91df9d7ccb7b0e27cf8225c16ead5978d91b2c4f1216e1e6d7e4"
+      }
+    },
+    {
+      "config": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/configs/A-seed-0.cfg",
+        "sha256": "0bc5523467bc6cbb3f7bef4e3f2f02b270eb80e1bcb9095713b58a01d3ea0ad2"
+      },
+      "family": "A",
+      "final_step": 1000,
+      "folder": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-0",
+      "recipe": "A",
+      "seed": 0,
+      "selection_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-0/selected-checkpoint/selection.json",
+        "sha256": "fe77fdb6bffaaf16f9d7d616107cee8ab515efb9bb6da8d8fdacf694ca41c9aa"
+      },
+      "status": {
+        "ended_at": "2026-10-16T19:30:12.280802+08:00",
+        "exit_code": 0,
+        "seed": 0,
+        "selection": {
+          "metric": "strict six-class entity micro F1",
+          "model": "model",
+          "partition": "dev",
+          "score": 0.7180722891566266,
+          "step": 875,
+          "tie_break": "earlier checkpoint step"
+        },
+        "started_at": "2026-10-16T19:26:19.246587+08:00",
+        "state": "completed",
+        "test_predictions_performed": false,
+        "training_completed": true
+      },
+      "status_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-0/run-status.json",
+        "sha256": "3d67119c5733104378b00777f415a2c1ae76e8af37fabd4541df5c5a1da12586"
+      }
+    },
+    {
+      "config": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/configs/A-seed-1.cfg",
+        "sha256": "8a3a19e04c41ef5600c2b130aed3206c34ec812084f6b7120dedbe337d647cc8"
+      },
+      "family": "A",
+      "final_step": 1000,
+      "folder": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-1",
+      "recipe": "A",
+      "seed": 1,
+      "selection_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-1/selected-checkpoint/selection.json",
+        "sha256": "62e50d322f06a52258bc496bbe16937115184cc39862ebc1257e9588bf1d4fd2"
+      },
+      "status": {
+        "ended_at": "2026-10-16T19:44:36.934838+08:00",
+        "exit_code": 0,
+        "seed": 1,
+        "selection": {
+          "metric": "strict six-class entity micro F1",
+          "model": "model",
+          "partition": "dev",
+          "score": 0.7360774818401936,
+          "step": 945,
+          "tie_break": "earlier checkpoint step"
+        },
+        "started_at": "2026-10-16T19:40:52.444153+08:00",
+        "state": "completed",
+        "test_predictions_performed": false,
+        "training_completed": true
+      },
+      "status_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-1/run-status.json",
+        "sha256": "4fa9c1eb614eb0411486ed97e4097ebd180a188863eba2a3f2f7529f93196b74"
+      }
+    },
+    {
+      "config": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/configs/A-seed-2.cfg",
+        "sha256": "f44ada3ec1150c0c219909acea8b7f56b062a7f95c4392925e0150166823afcd"
+      },
+      "family": "A",
+      "final_step": 980,
+      "folder": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-2",
+      "recipe": "A",
+      "seed": 2,
+      "selection_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-2/selected-checkpoint/selection.json",
+        "sha256": "9af47f8f2f3517e4c1da89e76f5c7276461c71bcf27fe16922a7348bf87e7e07"
+      },
+      "status": {
+        "ended_at": "2026-10-16T19:48:27.958198+08:00",
+        "exit_code": 0,
+        "seed": 2,
+        "selection": {
+          "metric": "strict six-class entity micro F1",
+          "model": "model",
+          "partition": "dev",
+          "score": 0.7241379310344828,
+          "step": 630,
+          "tie_break": "earlier checkpoint step"
+        },
+        "started_at": "2026-10-16T19:44:48.140460+08:00",
+        "state": "completed",
+        "test_predictions_performed": false,
+        "training_completed": true
+      },
+      "status_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/A/seed-2/run-status.json",
+        "sha256": "8100ee2c746d3ee5f0733cf33476522df320f4c76a83653f1a43a8d2b2bfd2b3"
+      }
+    },
+    {
+      "config": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/configs/B-seed-0.cfg",
+        "sha256": "a771c76cdb372e750660024103e01ee082e547e581e7201a62e6e8ae4fb4c4f5"
+      },
+      "family": "B",
+      "final_step": 1000,
+      "folder": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/B/seed-0",
+      "recipe": "B",
+      "seed": 0,
+      "selection_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/B/seed-0/selected-checkpoint/selection.json",
+        "sha256": "83cb29e266989fd785ddfa68f1d853053d776c45135959029c1f1a69b2f73d9c"
+      },
+      "status": {
+        "ended_at": "2026-10-16T19:35:05.321073+08:00",
+        "exit_code": 0,
+        "seed": 0,
+        "selection": {
+          "metric": "strict six-class entity micro F1",
+          "model": "model",
+          "partition": "dev",
+          "score": 0.7070217917675544,
+          "step": 910,
+          "tie_break": "earlier checkpoint step"
+        },
+        "started_at": "2026-10-16T19:31:15.745385+08:00",
+        "state": "completed",
+        "test_predictions_performed": false,
+        "training_completed": true
+      },
+      "status_binding": {
+        "path": "backend/training/flood_ner/artifacts/validation-study-20261016-v2/runs/B/seed-0/run-status.json",
+        "sha256": "fa13ec7221839f7418989f4950dedb9b5d611db0d7b934d364672e071fd89e22"
+      }
+    }
+  ],
+  "same_seed_gpu_byte_determinism_established": false,
+  "schema_version": "lanes-completed-validation-study-report-v2",
+  "scope_completed": true,
+  "selection": {
+    "bindings": {
+      "A": {
+        "path": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\validation-study-20261016-v2\\runs\\A\\seed-0\\selected-checkpoint\\selection.json",
+        "sha256": "fe77fdb6bffaaf16f9d7d616107cee8ab515efb9bb6da8d8fdacf694ca41c9aa"
+      },
+      "B": {
+        "path": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\validation-study-20261016-v2\\runs\\B\\seed-0\\selected-checkpoint\\selection.json",
+        "sha256": "83cb29e266989fd785ddfa68f1d853053d776c45135959029c1f1a69b2f73d9c"
+      },
+      "original": {
+        "path": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\academic-training-20261016-v1\\seed-0\\selected-checkpoint\\selection.json",
+        "sha256": "fefb3156cebd8d2be2a0a4cb49d93d49847e8494e56f62389b9fcc1d601c19fe"
+      }
+    },
+    "robustness_seeds_authorized": [
+      1,
+      2
+    ],
+    "scores": {
+      "A": 0.7180722891566266,
+      "B": 0.7070217917675544,
+      "original": 0.6715328467153284
+    },
+    "selection": "seed 0 strict development F1; original wins exact ties, then A, then B",
+    "test_used": false,
+    "winner": "A"
+  },
+  "session": {
+    "authorization": "User explicitly authorized one fresh seed 2 retry, then continuation on success; prior session expired awaiting reply.",
+    "no_new_training_after": "2026-10-16T20:09:22.479472+08:00",
+    "previous_session": "E:\\Files\\Documents\\GitHub\\LANES\\backend\\training\\flood_ner\\artifacts\\validation-study-execution-20261016-v1\\session.json",
+    "started_at": "2026-10-16T19:19:22.479472+08:00",
+    "target_finish": "2026-10-16T20:19:22.479472+08:00"
+  },
+  "state": "passed",
+  "test_predictions_performed": false,
+  "tests": {
+    "comparison": 8,
+    "complete_historical_suite_not_rerun": true,
+    "export_regression": 12,
+    "framework": "stdlib unittest",
+    "launcher": 10,
+    "log_sha256": "f9b6fcb5328d98cc7c8d63c7a91eb826976c294850dc28c234f874ec48ad16ee",
+    "passed": 43,
+    "preparation": 9,
+    "recipe": 4
+  },
+  "validation": {
+    "all_loaded_selected_checkpoint_scores_reproduced": true,
+    "english": 30,
+    "raw_passage_strings_supplied_to_inference": true,
+    "reference_entities_not_supplied_to_inference": true,
+    "same_rows_and_baselines_across_comparisons": true,
+    "samples": 60,
+    "spans": 209,
+    "taglish": 30
+  }
+}

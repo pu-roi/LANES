@@ -39,6 +39,23 @@ def main(argv: list[str] | None = None) -> int:
     corpus_check = commands.add_parser('qualify-corpus-tokenizer', help='Qualify admitted corpus boundaries and freeze evaluation protocol; no predictions')
     for name in ('python', 'model-manifest', 'tokenizer-manifest', 'cohort', 'context', 'admission-manifest', 'output'):
         corpus_check.add_argument('--' + name, type=Path, required=True)
+    qualified_export = commands.add_parser('export-qualified-corpus', help='Export admitted locations with a passing model-tokenizer qualification; no training')
+    for name in ('python', 'qualification', 'output'):
+        qualified_export.add_argument('--' + name, type=Path, required=True)
+    experiment = commands.add_parser('prepare-experiment', help='Freeze baseline/configuration identities and verify GPU initialization; no training')
+    for name in ('python', 'export', 'output'):
+        experiment.add_argument('--' + name, type=Path, required=True)
+    comparison = commands.add_parser('compare-validation', help='Compare selected models and frozen baselines on validation data only')
+    for name in ('python', 'preparation', 'training-root', 'output'):
+        comparison.add_argument('--' + name, type=Path, required=True)
+    comparison.add_argument('--seeds', type=int, nargs='+', choices=(0, 1, 2), default=[0, 1, 2])
+    comparison.add_argument('--allow-incomplete', action='store_true', help='Report partial results explicitly when a run is missing/failed')
+    test_freeze = commands.add_parser('freeze-test-experiment', help='Freeze the original/A six-model test roster without predictions')
+    for name in ('preparation', 'study-report', 'output'):
+        test_freeze.add_argument('--' + name, type=Path, required=True)
+    test_evaluation = commands.add_parser('evaluate-test', help='Evaluate a frozen test roster once; no training or selection')
+    for name in ('freeze', 'python', 'output'):
+        test_evaluation.add_argument('--' + name, type=Path, required=True)
     use_bundle = commands.add_parser('prepare-use-bundle', help='Prepare private study, appendix and held download candidates offline')
     use_bundle.add_argument('--cohort', type=Path, required=True)
     use_bundle.add_argument('--context', type=Path, required=True)
@@ -122,6 +139,34 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument('--baseline-inventory', type=Path, help='Immutable pre-revision array of source objects with URLs')
     args = parser.parse_args(argv)
     try:
+        if args.command == 'freeze-test-experiment':
+            from .heldout_test import freeze_test_experiment
+            result = freeze_test_experiment(args.preparation, args.study_report, args.output, REPO_ROOT)
+            print(json.dumps({'state': result['state'], 'models': len(result['runs']), 'test_predictions_performed': False}))
+            return 0
+        if args.command == 'evaluate-test':
+            from .heldout_test import evaluate_test
+            result = evaluate_test(args.freeze, args.python, args.output, REPO_ROOT)
+            print(json.dumps({'state': result['state'], 'samples': result['samples'], 'primary': result['primary']}))
+            return 0
+        if args.command == 'compare-validation':
+            from .validation_comparison import compare_validation
+            result = compare_validation(args.python, args.preparation, args.training_root, args.output,
+                                        REPO_ROOT, args.seeds, args.allow_incomplete)
+            print(json.dumps({'state': result['state'], 'samples': result['samples'], 'missing_runs': result['missing_runs']}))
+            return 0
+        if args.command == 'prepare-experiment':
+            from .experiment_preparation import prepare_experiment
+            result = prepare_experiment(args.python, args.export, args.output, REPO_ROOT)
+            print(json.dumps({k: result[k] for k in ('state', 'primary_seed', 'robustness_seeds', 'training_performed')},
+                             ensure_ascii=False))
+            return 0
+        if args.command == 'export-qualified-corpus':
+            from .qualified_export import export_qualified_corpus
+            result = export_qualified_corpus(args.python, args.qualification, args.output, REPO_ROOT)
+            print(json.dumps({k: result[k] for k in ('state', 'records', 'counts', 'tokenizer', 'training_performed')},
+                             ensure_ascii=False))
+            return 0
         if args.command == 'qualify-corpus-tokenizer':
             from .corpus_tokenizer_qualification import qualify_corpus_tokenizer
             result = qualify_corpus_tokenizer(args.python, args.model_manifest, args.tokenizer_manifest,

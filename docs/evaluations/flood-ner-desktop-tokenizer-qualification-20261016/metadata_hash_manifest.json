@@ -1,0 +1,11 @@
+{
+  "files": {
+    "README.md": "2b5fca90803b90dce3cde4206f8a89118669bb9f9ef23b0682024b8c1b2c3a00",
+    "comparison.json": "227905cdaa324caf18d465b13d41856bff2311d822f0b1cf1ed2011a4c42344a",
+    "evaluation-contract.json": "10c1b4e0dae0a12320d8ff41d1d586f843752ffc34af0cf752fc759721e143da",
+    "qualification.json": "d03c73a9a5c90e4091ab4c23a1f7fa5d7a3a3ceac829c409d900d9a7a5cfdcaa",
+    "verification.json": "eb0c8366175db8499464b70fed155603b4ea8a6e2a599aa4ecfb506c74084c1c",
+    "wheel-manifest.json": "437834874e830429999d567b28496930db8223ca33a0df6819ae0368d09f9eaf"
+  },
+  "schema_version": "lanes-metadata-report-hashes-v1"
+}

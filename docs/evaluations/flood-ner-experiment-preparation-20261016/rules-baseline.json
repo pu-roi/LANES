@@ -1,0 +1,47 @@
+{
+  "component": "existing sentence splitter and find_place_mentions; not the full flood-claim pipeline",
+  "duplicates": "Deduplicate identical start/end/label only; retain overlaps and conflicting labels.",
+  "entry_point": "training.flood_ner.rules_baseline.predict_mentions",
+  "files": {
+    "backend/app/core/config.py": "4b18437405a29e6404430f0f471b23a70befce2cc45b569556d20aa2ed31e9eb",
+    "backend/app/core/database.py": "39c0234e627fc424c46e40f6110a3ea58aa29e5d8545aaa12b721bf707ea3436",
+    "backend/app/models/news.py": "2e7ea75e0ebaa387bd72803813354253e0bad8416c5105ae09bc8aea150eddb0",
+    "backend/app/models/news_publication.py": "87699b5fcb3c5bdd25432bc52e0f6f2f955086d10f52e53e044ab75254642cb4",
+    "backend/app/models/report.py": "a357e71f2565166ef3e5a1646628aad86e4879601510d3663907bac964850332",
+    "backend/app/models/user.py": "5fffbc51b2d970e85b2acda30bc6559e31a72b95919ab97caef6a74c588298aa",
+    "backend/app/schemas/news_audit.py": "3fd4f5bd7501a04308dca4d006c005d51ae17421240be0126a5a9422dd226c5f",
+    "backend/app/schemas/news_extraction.py": "43ba6b4c04773ef51d4c29b023cfb6a72e3a301a1a4caca0b17f9ec1430c127c",
+    "backend/app/schemas/news_locality.py": "1a600df51e867214fc753d37326889e9133d5ed0ed8f0ca8f4deff8565dcc8db",
+    "backend/app/schemas/news_placement.py": "e7fa9a846ae44ae5e5f45c719d12490b9062ce594b98c4d42af3367e83dcc106",
+    "backend/app/services/flood_depth.py": "4fc9ebc6565b983c93312c1c3c14e54d0519e37fd0a299f837c4030dc701d0ca",
+    "backend/app/services/locality_number_service.py": "cc074cb50d8b4c202f3b216c1ebb41f58616b2a497c2d55cd6f6a47c2df6153d",
+    "backend/app/services/news_evidence_policy.py": "160923140aa0911e04ff156a89894220812b745a38a1c0fb3021d7414af2408c",
+    "backend/app/services/pasig_historical_service.py": "fc71cc8d2b0162c2fd4c95581743a01ed22f93a6f1ca14c3e5e71cb805934a78",
+    "backend/app/services/philippine_location_service.py": "1ef661f785e1118757125d6fe8571cd51e832fdd34b707ff9f20a6d3c0a65cfd",
+    "backend/app/services/taglish_extraction_service.py": "53d2bd7262a77ba1005d39edef6e688f201643e04f3dd00216baf9add825fe74",
+    "backend/training/flood_ner/rules_baseline.py": "04945963bb78843e0c2c59484a7d5a70284b045cdd30d0b4f05821bd4741278a",
+    "data/flooded_areas_pasig_clean.csv": "50189378fce92cd26f4c56d70b103e9f32f7fa76e24ff8a1dfd3a80f9d3fcfe2",
+    "data/pasig_barangay_reference.csv": "8bde746cf5901501162cc871ba9861fb16585ac9de74fed94df0483f45df4c6a",
+    "data/philippines_psgc_reference.csv": "d8804c4b576ed4f98db758f482eedc931eed92252fe95af819f41921b8ea6aa1"
+  },
+  "invalid_offsets": "Retain diagnostic; never search reference text to repair offsets.",
+  "label_source": "Emitted type only; no annotations, inference from reference labels or gazetteer tuning.",
+  "locality_policy": "Legacy landmark emissions remain LANDMARK, including numbered localities; no reference-driven relabeling.",
+  "offset_convention": "Zero-based, end-exclusive original Python Unicode character indices, never byte or normalized offsets.",
+  "schema_version": "lanes-rule-mention-baseline-v1",
+  "scope": "All returned place mentions, including non-flood mentions; no reference-based filtering.",
+  "state": "mapping_frozen",
+  "type_to_label": {
+    "barangay": "BARANGAY",
+    "city": "CITY",
+    "landmark": "LANDMARK",
+    "province": "PROVINCE",
+    "street": "ROAD"
+  },
+  "unavailable_output_labels": [
+    "LOCAL_AREA"
+  ],
+  "unsupported_types": [
+    "unknown"
+  ]
+}

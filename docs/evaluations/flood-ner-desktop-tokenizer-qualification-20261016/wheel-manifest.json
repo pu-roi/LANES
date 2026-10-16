@@ -1,0 +1,27 @@
+{
+  "wheels": [
+    {
+      "bytes": 15517754,
+      "file": "numpy-1.26.4-cp312-cp312-win_amd64.whl",
+      "numpy_requirements": [],
+      "package": "numpy",
+      "pypi_hash_matches": true,
+      "pypi_url": "https://files.pythonhosted.org/packages/16/2e/86f24451c2d530c88daf997cb8d6ac622c1d40d19f5a031ed68a4b73a374/numpy-1.26.4-cp312-cp312-win_amd64.whl",
+      "sha256": "08beddf13648eb95f8d867350f6a018a4be2e5ad54c8d8caed89ebca558b2818",
+      "version": "1.26.4"
+    },
+    {
+      "bytes": 44521212,
+      "file": "scipy-1.14.1-cp312-cp312-win_amd64.whl",
+      "numpy_requirements": [
+        "numpy<2.3,>=1.23.5",
+        "numpydoc; extra == \"doc\""
+      ],
+      "package": "scipy",
+      "pypi_hash_matches": true,
+      "pypi_url": "https://files.pythonhosted.org/packages/aa/7d/43ab67228ef98c6b5dd42ab386eae2d7877036970a0d7e3dd3eb47a0d530/scipy-1.14.1-cp312-cp312-win_amd64.whl",
+      "sha256": "2ff38e22128e6c03ff73b6bb0f85f897d2362f8c052e3b8ad00532198fbdae3f",
+      "version": "1.14.1"
+    }
+  ]
+}

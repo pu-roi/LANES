@@ -1,0 +1,57 @@
+{
+  "documents_reloaded": 800,
+  "exports": {
+    "qualified-export-20261016-replay-v1": {
+      "counts": {
+        "dev": 60,
+        "test": 60,
+        "train": 280
+      },
+      "labels": {
+        "BARANGAY": 177,
+        "CITY": 478,
+        "LANDMARK": 102,
+        "LOCAL_AREA": 88,
+        "PROVINCE": 274,
+        "ROAD": 346
+      },
+      "languages": {
+        "english": 200,
+        "taglish": 200
+      },
+      "metadata_contains_full_source_bodies": false,
+      "negative_passages": 48,
+      "records": 400,
+      "spans": 1465,
+      "text_offsets_tokens_entities_and_ids_match": true
+    },
+    "qualified-export-20261016-v1": {
+      "counts": {
+        "dev": 60,
+        "test": 60,
+        "train": 280
+      },
+      "labels": {
+        "BARANGAY": 177,
+        "CITY": 478,
+        "LANDMARK": 102,
+        "LOCAL_AREA": 88,
+        "PROVINCE": 274,
+        "ROAD": 346
+      },
+      "languages": {
+        "english": 200,
+        "taglish": 200
+      },
+      "metadata_contains_full_source_bodies": false,
+      "negative_passages": 48,
+      "records": 400,
+      "spans": 1465,
+      "text_offsets_tokens_entities_and_ids_match": true
+    }
+  },
+  "model_predictions_performed": false,
+  "state": "passed",
+  "training_performed": false,
+  "verified_docbins": 6
+}

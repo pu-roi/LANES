@@ -1,0 +1,8 @@
+{
+  "metric": "strict six-class entity micro F1",
+  "model": "model",
+  "partition": "dev",
+  "score": 0.6715328467153284,
+  "step": 455,
+  "tie_break": "earlier checkpoint step"
+}

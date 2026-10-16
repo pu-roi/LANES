@@ -1,0 +1,13 @@
+{
+  "counts": {
+    "annotation_convention_needs_documentation": 1,
+    "possible_reference_boundary_ambiguity": 1,
+    "possible_reference_completeness_gap": 1,
+    "possible_reference_scope_ambiguity": 3,
+    "possible_reference_type_ambiguity": 7,
+    "unresolved_geographic_identity": 1
+  },
+  "error_events_with_unresolved_reference_interpretation": 57,
+  "passages": 14,
+  "warning": "These are AI review questions, not adopted corrections or independently verified bad labels. All 391 official error events remain counted."
+}

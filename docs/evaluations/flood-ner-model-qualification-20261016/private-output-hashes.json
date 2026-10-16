@@ -1,0 +1,20 @@
+{
+  "files": {
+    "before.json": "2ee25dc551a0f9173498f82ba709748bfd10dd75d01e578204727dde567ce531",
+    "cli-before.py": "7efa44b9bf42f30479ea6ddaf63d3c5cf99080e7e6d8b938ebac9804c098844b",
+    "completion-audit.json": "95cee56e4fdda85e7d498daa174332f63172f32f92142715f225c08504e9d2fa",
+    "event-register.jsonl": "83eb30a652e108b4975e4f0dd2e28fa595018766d63c0ecc0f4c853838474857",
+    "passage-review.jsonl": "4c731f07dc8971b8409774376bae3d9058e9c2f9f870ef30cc6a9ca1be2c434d",
+    "preservation.json": "da1af2adf3d4db30c2eb0a2424772226cb28dda346f98adaa1a8460e1bcd4258",
+    "qualification-matrix.json": "1360781b2fbbb091c2eb878cac2541daacb9be3a9e11cb7284d2d9cf9e0d4e61",
+    "reference-questions.json": "dfa00869d066203a8f33b6be5091ed9c70eec7912983374c2a9baad7f6f6712a",
+    "review-input.json": "e80c9f3025dcae2ac0dbe87ebbaa2ebfa92eabcba8ccde77ef4569d1ad52df81",
+    "session.json": "04da07f62ec42f28774735d18f7bb8de4adf1d828ce4eeef3c0907b98dcbee64",
+    "summary.json": "6af4e328155d9cd0ca4ca99ddb466262b6c1b0d6627772ef4a701cce6ca020be",
+    "verification.json": "165e98b3ac83e7e3282f3eea82a8f2b0ed35b9061d3cc91526ae1ab1302b75f9"
+  },
+  "private_manifest": {
+    "path": "backend/training/flood_ner/artifacts/model-qualification-review-20261016-v1/manifest.json",
+    "sha256": "b63cc79cfca239fa1d4cb937aa98a4acfa065926e605f1fc61f0a0c2ddc0c308"
+  }
+}

@@ -1,6 +1,48 @@
 # LANES documentation
 
-> **Last Updated:** October 16, 2026, 12:42 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Gate 3 additional-dataset readiness remains open:** Flood-focused acquisition records 365 development candidate URLs (363 article keys) / 182 capture attempts / 159 captures. The draft has **244 passages / 49 articles**; **179 source-reading candidates and 65 held records** cannot meet the 240-passage theme/language quotas (candidate capacity 156). One frozen-tokenizer alignment failure is preserved. Admission, grouped partition freeze, export and training remain zero. The isolated curator result is recorded separately; no fresh-test readiness is assumed. **Next: resolve the recorded dataset-readiness gaps under the same Gate 3 task.** [Readiness report](evaluations/flood-ner-additional-dataset-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical improvement-preparation checkpoint:
+
+**Gate 3 improvement preparation complete; no retraining started:** The versioned reference-scope addendum accounts for all 14 review questions. The constructed matrix has **48 cases / 24 English / 24 Taglish**, including **30 positives, 16 negatives and 2 explicitly unscored unresolved cases**; 12 preparation-integrity tests pass. Training/validation coverage and acquisition requirements are recorded, together with a fresh **60-passage / 30+30-language test protocol, three negatives per language**. Original annotations, scores and model roles stay frozen. **Next: prepare and admit the additional dataset**, reconciling historical exclusions, source-use eligibility, grouping and isolated held-out access before deciding size/recipes. CPU/Linux/failure/performance qualification and Gate 4 integration remain pending. [Report](evaluations/flood-ner-improvement-preparation-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current NER order:** Resolve the [additional-dataset readiness gaps](evaluations/flood-ner-additional-dataset-20261016/README.md) in the existing Gate 3 item; admission/export/training remain blocked by actual coverage, references, grouping and isolated test readiness. Preserve the completed original experiment. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical Gate 3 review checkpoint:
+
+**Gate 3 qualification review complete; operational qualification remains open:** Codex reads all **60 held-out passages / 22 articles**, records **120 original/A seed 0 assessments** and accounts for all **391 FP/FN events**. Fourteen passages retain AI reference/convention questions; no label, offset, score or model choice changes. Original seed 0 remains primary (**63.12 test F1**) and A seed 0 exploratory (**67.72**). All 42 event-count slices and preservation checks pass. Next prepare the remaining Gate 3 qualification specification (reference-scope addendum, constructed regression matrix and bounded CPU/Linux/failure/performance plan) before Gate 4 integration. No inference, training or test rerun occurs in this review. [Review](evaluations/flood-ner-model-qualification-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical held-out benchmark execution:
+
+**Held-out NER evaluation complete:** The six frozen original/A checkpoints and two baselines complete one evaluation on **60 test passages / 290 spans**, 30 English/30 Taglish. Original seed 0 remains primary at **63.12 six-class F1**; exploratory A seed 0 scores **67.72**. Three-seed means are **68.46 original / 70.24 A**, with sample SD **4.85 / 2.20 percentage points**. Rules score **58.97 six-class F1**; native LOC scores **67.02 on the separate coarse task**. All 59 focused tests, 240 metric reconciliation checks and preservation checks pass. Test results are now exposed; no further tuning or seed selection uses them. Next complete the existing Gate 3 model-qualification/error review before Gate 4 isolated integration. [Held-out report](evaluations/flood-ner-heldout-test-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical development-only checkpoint:
+
+**Frozen experiment and bounded validation trials complete:** Original seeds 0/1/2 reproduce development F1 **67.15 / 70.59 / 72.29**; seed 2 succeeds in its separate authorized recovery folder. Recipe A wins the seed 0 comparison (**71.81**, versus B **70.70**) and completes robustness seeds 1/2. A family mean is **72.61**, sample SD **0.92 percentage points**; original mean is **70.01**, sample SD **2.62**. Original seed 0 remains primary. All five permitted new runs complete before the renewed cutoff; 43 focused tests pass. Prior artifacts, GPU environment, dependencies and .env verify unchanged. Next freeze the final experiment/checkpoint decision, then perform separate held-out testing under the frozen protocol; test predictions remain untouched. [Completed report](evaluations/flood-ner-validation-study-20261016-v2/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical primary-training checkpoint:
+
+**Primary seed 0 training complete:** The researcher manually ran the frozen GPU recipe. The selected development checkpoint is step 455, F1 67.15 / precision 68.32 / recall 66.03; early stopping ends at step 630 after 175 steps without improvement. All 103 run files remain unchanged; test predictions remain untouched. Manual check-only launchers for robustness seeds 1/2 pass; 29 focused tests pass. Next run seeds 1/2 and the frozen baseline comparisons, keeping seed 0 primary. [Training result](evaluations/flood-ner-primary-training-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical preparation checkpoint:
+
+**Baseline/training preparation complete:** Frozen rules type/original-offset mapping and seed 0/1/2 configurations pass initialization on the RTX 3060 Ti using the verified qualified export. Each initializes six location labels, 46 GPU parameter arrays and the two CPU upper-classifier arrays required by the pinned architecture, with the exact candidate tokenizer and copied pretrained NER encoder. No optimizer updates, corpus prediction evaluation or held-out test reading occurred. Twenty-one focused unittest methods pass. All 10,531 prior artifact hashes, 23 model files, 22,759 audited research-environment file stats, CLI package versions and .env are unchanged. The next task is the first primary-seed training run under the frozen development-selection protocol. [Preparation verification](evaluations/flood-ner-experiment-preparation-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical qualified export checkpoint:
+
+**Qualified training-format export complete:** The new offline export-qualified-corpus command binds the admitted 400 samples/138 articles to the passing calamanCy tokenizer and frozen evaluation contract. Verified 280/60/60 DocBins, 200/200 languages, 1,465 spans, 48 negatives and 40 contextual references without adding contextual samples. All six primary/replay DocBins reload correctly; their three partition files, tokenizer and metadata provenance match byte-for-byte. Twelve focused unittest methods pass. All 10,500 prior artifact hashes, 23 model files, research-environment file metadata and .env remain unchanged. Baseline/training preparation is next; no model predictions, training or deployment occurred. [Export verification](evaluations/flood-ner-qualified-export-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical tokenizer qualification checkpoint:
+
+**Desktop CLI repaired; corpus tokenizer qualified:** Restored only the existing NumPy 1.26.4 / SciPy 1.14.1 pins in backend/venv; spaCy, Thinc and the GPU research environment remain unchanged. The separately recorded qualification passes on 400 samples / 138 articles / 40 contextual pairs / 1,465 spans, with zero candidate alignment errors, all 56 constructed controls passing and reproducible serialization/reload. The frozen evaluation contract now binds the qualified candidate. All 10,458 pre-existing artifact hashes, 23 model files, research-environment file metadata and .env verify unchanged. Training-format export is next; no export, NER predictions, training or deployment occurred. [Qualification and repair](evaluations/flood-ner-desktop-tokenizer-qualification-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical first desktop attempt:
+
+**Desktop restoration complete; tokenizer qualification blocked:** Fast-forwarded the existing roi-branch checkout to 4736cea, verified the private ZIP and restored 697 missing files while skipping 1,060 identical files without conflicts. All 1,757 payload hashes verify. The admitted corpus reconciles to 400 samples / 138 articles / 40 contextual pairs / 1,465 spans, with 200/200 languages and 280/60/60 partitions. All 9,744 existing artifact hashes, 23 model files, research-environment file metadata and local .env are unchanged. The single generated qualification attempt exits during the backend CLI spaCy/Thinc import with a NumPy ABI size mismatch, before the isolated worker starts. No alignment/reload pass, dependency repair, export or training is claimed. Resolve CLI compatibility before a separately recorded qualification attempt. [Desktop result](evaluations/flood-ner-desktop-restoration-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Historical laptop delivery checkpoint:
 
 **Private desktop handoff delivered:** The [new Drive folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) contains seven owner-only files, including the unchanged v2 ZIP and desktop instructions. All seven uploaded files pass byte/hash readback; the ZIP matches 28,476,420 bytes and its frozen SHA-256. The 400 samples/40 contexts, original capture evidence, partitions and scoped admission are unchanged; all 5,234 prior preservation entries verify. No sharing changes, desktop restoration, corpus qualification, export or training occurred. [Verified delivery](evaluations/flood-ner-desktop-drive-delivery-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -333,6 +375,23 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 
 ## Evaluations and simulations
 
+- [October 16 NER publication audit](evaluations/flood-ner-publication-20261016/README.md) - synchronized documentation, constructed tooling regressions, dependency/schema scope and private-file exclusion before roi-branch publication.
+- [Additional NER dataset acquisition/readiness](evaluations/flood-ner-additional-dataset-20261016/README.md) - flood-topic draft pool, per-record/source-use holds, tokenizer failure, bounded isolated curation and unmet quotas; no admission/export/training.
+- [Gate 3 NER improvement preparation](evaluations/flood-ner-improvement-preparation-20261016/README.md) - 14-question addendum, 48 constructed cases, train/dev coverage, acquisition requirements and [future evaluation protocol](evaluations/flood-ner-improvement-preparation-20261016/future-evaluation-protocol.md); no retraining.
+
+- [First manual NER training run](guides/ner-first-manual-training-20261016.md) - seed 0 PowerShell command, terminal output, logs, stopping and handback to Codex.
+- [Gate 3 model-qualification review](evaluations/flood-ner-model-qualification-20261016/README.md) - all 60 passages, 120 model assessments, 391 reconciled events, AI reference questions, supported/pending uses and required qualification work.
+- [Held-out NER test evaluation](evaluations/flood-ner-heldout-test-20261016/README.md) - sealed six-model roster, one fixed test attempt, exact/coarse baselines, per-class/language/negative errors, reconciled metrics and preservation.
+- [Completed original experiment and bounded validation study](evaluations/flood-ner-validation-study-20261016-v2/README.md) - five successful new runs, reproduced selected models, A/B choice, three-seed variability, preservation and next held-out-test gate.
+- [Validation study: partial results and seed 2 repair](evaluations/flood-ner-validation-study-20261016/README.md) - available-model/baseline metrics, verified encoding fix, preregistered unrun recipes and preservation audit.
+- [Primary seed 0 training result](evaluations/flood-ner-primary-training-20261016/README.md) - successful manual run, selected development checkpoint, early stopping and checked manual robustness launchers.
+- [Baseline/training preparation](evaluations/flood-ner-experiment-preparation-20261016/README.md) - frozen rule mapping, three seed configurations, GPU initialization, development checkpoint tie selection and unchanged-input verification; no training.
+- [Qualified training-format export](evaluations/flood-ner-qualified-export-20261016/README.md) - isolated candidate-tokenizer DocBin export, 12 focused tests, complete disk reload, byte-identical replay and preservation of all frozen inputs.
+
+- [Desktop CLI repair and passing corpus tokenizer qualification](evaluations/flood-ner-desktop-tokenizer-qualification-20261016/README.md) - two pinned package replacements, zero candidate alignment errors, 56 passing controls, frozen evaluation contract and preserved corpus/GPU checkpoints.
+
+- [Desktop corpus restoration and blocked tokenizer qualification](evaluations/flood-ner-desktop-restoration-20261016/README.md) - verified 697-file restoration, frozen 400/138/40 counts, preservation checks and the outer CLI NumPy/Thinc blocker.
+
 - [NER saved-pool revision feasibility](evaluations/flood-ner-revision-feasibility-20261016/README.md) — four infeasible scenarios with 332 records fixed, 106 draft paragraph proposals, exact support deficits and unchanged 400/40 corpus; 99 focused tests pass.
 - [NER default-adoption correction](evaluations/flood-ner-default-adoption-correction-20261016/README.md) — 58 explicit reassessments, corrected 68-case outcomes, 125/332 derived adopted coverage, 14/68 holds and unchanged 400/40 corpus.
 - [NER remaining 68 case decisions](evaluations/flood-ner-remaining-decisions-20261016/README.md) — historical report; completion and 134/380 totals superseded by the explicit correction above. Original evidence is preserved.
@@ -421,6 +480,8 @@ Start with the [project README](../README.md), [agent instructions](../AGENTS.md
 - [Phase 36: Metro Manila OSM and NOAH coverage audit](evaluations/phase-36-metro-spatial-coverage-audit.md)
 
 ## Guides
+
+- [Flood NER reference-scope addendum v1](guides/flood-ner-reference-scope-addendum-v1.md) - prospective conventions and all 14 historical questions; original annotations/scores remain frozen.
 
 - [NER desktop preflight](guides/ner-desktop-preflight.md) — run the read-only inventory on the RTX desktop before selecting isolated GPU dependencies; no news or environment installation is performed.
 

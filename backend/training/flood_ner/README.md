@@ -1,8 +1,20 @@
 # Offline flood NER preparation
 
-Current handoff: private Drive delivery is verified through roicambe02@gmail.com; the [owner-only folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) holds the unchanged v2 ZIP and companions. All seven files pass readback hashes. Use the [desktop instructions](../../../docs/guides/ner-desktop-handoff-20261016.md); actual desktop restoration/qualification have not run. The latest software result is 880 passed/one skipped; no software changed in this delivery. Earlier checkpoint details follow.
+> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-Current corpus-tokenizer gate: the new `qualify-corpus-tokenizer` command and evaluation protocol are delivered, but the single isolated run is blocked at import by Windows Application Control error 4551. No passages were tokenized and no predictions/export/training ran. 840 software tests pass/one skipped. Admission remains 400, original datasets are preserved, and the next step is verifying the existing desktop environment/private input paths before a separate qualification run. [Report](../../../docs/evaluations/flood-ner-corpus-tokenizer-20261016/README.md); [local failure/protocol guide](artifacts/corpus-tokenizer-qualification-20261016-v1/START-HERE.md).
+**Current Gate 3 status:** Improvement preparation is complete; additional-dataset readiness/admission remains open. Development has 244 drafts (179 candidates / 65 holds); isolated test curation has 56 prospective entries, zero admitted independent test records and no seal. Resolve coverage, reference/language, source-use, historical-overlap and the single development tokenizer-alignment failure before corpus admission/export or further training. Original 400-sample results and model roles remain frozen. [Readiness report](../../../docs/evaluations/flood-ner-additional-dataset-20261016/README.md). No research package or trained model is carried by Git; current private checkpoints must be transferred and hash-verified separately.
+
+Historical qualification review: all 60 passages and 391 original/A seed 0 error events are reviewed in a separate ignored checkpoint. Fourteen passages retain unresolved AI reference/convention questions; frozen labels, scores and model roles are unchanged. The review is complete; operational qualification remains open. Next prepare the remaining Gate 3 qualification specification before runtime integration. [Review](../../../docs/evaluations/flood-ner-model-qualification-20261016/README.md).
+
+Historical held-out evaluation: original/A seeds 0/1/2 and rules/native baselines complete one frozen test attempt on 60 passages. Original seed 0 remains primary at 63.12 strict test F1; exploratory A seed 0 scores 67.72. The test set is now exposed. Next review Gate 3 model qualification before isolated integration; no test-driven tuning or automatic promotion. [Held-out report](../../../docs/evaluations/flood-ner-heldout-test-20261016/README.md). Earlier checkpoints follow.
+
+Historical primary-training result: primary seed 0 manually completed, selecting development F1 67.15 at step 455. Run frozen seeds 1/2 manually, one at a time, using RUN-TRAINING.ps1 -Seed 1 (or 2) -StartTraining from the repository root; omit -StartTraining for check-only. Existing outputs are refused. Seed 0 remains primary. [Result](../../../docs/evaluations/flood-ner-primary-training-20261016/README.md); [commands](../../../docs/guides/ner-first-manual-training-20261016.md). Earlier checkpoint summaries follow.
+
+Historical desktop preparation: export and baseline/configuration preparation pass. The ignored experiment-preparation-20261016-v2 checkpoint freezes rules mapping and three GPU-initialized seed configurations; seed 0 training is next. No corpus prediction evaluation/training has run. See [preparation verification](../../../docs/evaluations/flood-ner-experiment-preparation-20261016/README.md). Earlier checkpoint summaries below preserve their historical states.
+
+Historical laptop handoff: private Drive delivery is verified through roicambe02@gmail.com; the [owner-only folder](https://drive.google.com/drive/folders/1gnGV2wP0gNHx2LNa64fwc-U4AIQxRdkT) holds the unchanged v2 ZIP and companions. All seven files pass readback hashes. Use the [desktop instructions](../../../docs/guides/ner-desktop-handoff-20261016.md); actual desktop restoration/qualification have not run. The latest software result is 880 passed/one skipped; no software changed in this delivery. Earlier checkpoint details follow.
+
+Historical laptop corpus-tokenizer gate: the new `qualify-corpus-tokenizer` command and evaluation protocol are delivered, but the single isolated run is blocked at import by Windows Application Control error 4551. No passages were tokenized and no predictions/export/training ran. 840 software tests pass/one skipped. Admission remains 400, original datasets are preserved, and the next step is verifying the existing desktop environment/private input paths before a separate qualification run. [Report](../../../docs/evaluations/flood-ner-corpus-tokenizer-20261016/README.md); [local failure/protocol guide](artifacts/corpus-tokenizer-qualification-20261016-v1/START-HERE.md).
 
 Earlier completed private academic-use checkpoint: a separate admitted v5 derivative contains 400 AI silver location samples from 138 articles and 40 paired contextual records, with frozen 200/200 languages and 280/60/60 partitions. Only the three source-policy fields change; original research-only files and all twelve nonacademic outcomes remain unchanged. The ledger retains 69 explicit, 68 desktop-reported and one prior local adoption, without reconstructing the missing detailed desktop predecessor. This is scoped project admission, not publisher permission or a dataset license. Corpus qualification against the pinned calamanCy tokenizer and a frozen evaluation contract is next; no export or training has run. See the [admission report](../../../docs/evaluations/flood-ner-academic-admission-20261016/README.md) and [actual local working folder](artifacts/academic-admission-20261016-v1/START-HERE.md).
 
@@ -208,3 +220,76 @@ Source-use assessments and a hash-bound derived index retain 12 held articles/49
 `python -m training.flood_ner qualify-corpus-tokenizer --python RESEARCH_PYTHON --model-manifest MODEL_MANIFEST --tokenizer-manifest TOKENIZER_MANIFEST --cohort ADMITTED_COHORT --context ADMITTED_CONTEXT --admission-manifest ADMISSION_PACKAGE_MANIFEST --output NEW_IGNORED_OUTPUT`
 
 Use verified existing paths; placeholders are not directories to create blindly. The command validates the frozen private admission package, pinned model/vocabulary and candidate bytes before one isolated tokenizer-only worker. It preserves failures and returns nonzero unless qualification passes. It runs no NER components or model predictions and leaves legacy constructed-only commands unchanged. Never overwrite a frozen output. The evaluation protocol can be prepared while qualification is blocked; that does not qualify the tokenizer or permit the next export gate.
+
+## Qualified location training-format export
+
+Run the following from backend/, using the existing CLI interpreter:
+
+    python -B -m training.flood_ner export-qualified-corpus --python RESEARCH_PYTHON --qualification PASSING_QUALIFICATION_DIRECTORY --output NEW_IGNORED_DIRECTORY
+
+The command requires the passing qualify-corpus-tokenizer output directory, including its frozen evaluation contract and all bound inputs. It revalidates the admission ledger/evidence, 400 location records/40 contextual pairs, pinned model/vocabulary, candidate bytes and saved comparison. It refuses research-only inputs, changed or incomplete qualification, mismatched partitions/profiles and existing or unignored output destinations. It adds no constructed-data override and never falls back to a legacy corpus tokenizer.
+
+An isolated existing Python 3.11/spaCy 3.7.5 worker uses vocabulary/tokenizer only. It writes train.spacy/dev.spacy/test.spacy with 280/60/60 location documents, preserving original text, strict six-class labels, negatives and record_id user data. The 40 contextual pairs are bound references, not extra NER samples. All documents reload with exact tokens/offsets/labels before a successful manifest is written; failures retain logs without a success manifest.
+
+tokenizer.bin preserves the qualified candidate bytes with vocab excluded. Its manifest binds the required pinned vocabulary; do not reconstruct defaults or treat the tokenizer as independent of that vocabulary. provenance.json contains IDs, groups, hashes, language/split and silver teacher/reviewer metadata without full article bodies. Request text, DocBins and worker diagnostics stay private under ignored artifacts.
+
+The verified desktop export/replay and metadata-only report are recorded in [qualified export verification](../../../docs/evaluations/flood-ner-qualified-export-20261016/README.md). The legacy export command and its two corpus-tokenizer choices are unchanged. This command performs no training or NER prediction evaluation.
+
+Focused tests need no extra packages or private corpus: from backend/, run the existing CLI Python with python -B -m unittest discover -s tests -p test_flood_ner_qualified_export.py -v. No application database/conftest is loaded by this unittest invocation.
+
+## Baseline/configuration preparation
+
+From backend/, use the existing CLI interpreter:
+
+    venv/Scripts/python.exe -B -m training.flood_ner prepare-experiment --python RESEARCH_PYTHON --export VERIFIED_QUALIFIED_EXPORT_DIRECTORY --output NEW_IGNORED_DIRECTORY
+
+This separate offline command revalidates the passing export, qualification, admission/contract, model files and exact tokenizer before using the same isolated Python 3.11 research interpreter. It freezes direct rules type/Unicode-offset mappings and source/assets hashes. It initializes seed 0/1/2 fresh six-class NER heads, copies the pinned NER encoder and preserves static vocabulary. It performs no optimizer updates, corpus inference, test reading, export or saved-model creation. The existing rules mention adapter receives four constructed-only passages with database connections blocked.
+
+The pinned architecture uses a GPU encoder/lower network and CPU upper classifier by design. The passing desktop run verifies 46 GPU arrays and two CPU upper arrays per seed. The failed v1 all-GPU assertion is preserved; v2 passes without dependency or model changes.
+
+The frozen recipe is batch size 8, dropout 0.1, Adam learning rate 0.001, max_epochs 30, max_steps 1000, eval_frequency 35 and patience 175. It is one initial recipe, not an optimized result. Seeds 1/2 are robustness runs; seed 0 is primary. Configs exclude test.spacy. The actual held-out corpus remains hash-bound for preservation, not supplied to the initializer.
+
+The generated configs require experiment_registry.py to be loaded with the spaCy --code option by the later trainer, using the same qualified Windows DLL/runtime setup. No training command runs as part of this preparation. The custom development selector saves strict improvements to future seed-directory/selected-checkpoint/model and retains earlier steps on equal F1. Use that path for evaluation: the default spaCy 3.7.5 model-best overwrites equal scores. Planned training output must be new; do not overwrite or resume it implicitly.
+
+The rules baseline maps street/landmark/barangay/city/province directly to ROAD/LANDMARK/BARANGAY/CITY/PROVINCE. LOCAL_AREA is unavailable; legacy numbered-locality landmark emissions stay LANDMARK. Use original character offsets, retain diagnostics for invalid/unsupported emissions, deduplicate identical spans only and retain conflicting/overlapping outputs for transparent scoring. Do not use references to repair offsets or infer types. This is mention recognition, not the full flood-claim pipeline. The unmodified pretrained baseline remains a separate coarse native LOC task.
+
+From backend/, run the new standard-library tests without package installation:
+
+    venv/Scripts/python.exe -B -m unittest discover -s tests -p test_flood_ner_experiment_preparation.py -v
+
+[Actual preparation results and next training task](../../../docs/evaluations/flood-ner-experiment-preparation-20261016/README.md).
+
+## First manual training run
+
+The researcher runs seed 0, then Codex reviews its output and handles later runs. From the repository root, run .\backend\training\flood_ner\RUN-SEED-0.ps1 -StartTraining in PowerShell. Without -StartTraining the script only verifies inputs. It leaves all frozen configs unchanged and streams the qualified GPU training output into a new private seed-0/training.log, recording completed/failed/interrupted status. Existing output is refused, not resumed. Seeds 1/2 never launch automatically.
+
+[Exact commands and output guide](../../../docs/guides/ner-first-manual-training-20261016.md). Only check-only execution and launcher tests have run; actual training has not started.
+
+## Validation-only model comparison and preregistered recipes
+
+From backend/, run the repaired CLI interpreter with:
+
+    venv/Scripts/python.exe -B -X utf8 -m training.flood_ner compare-validation --python RESEARCH_PYTHON --preparation PASSING_PREPARATION --training-root PRIVATE_RUN_ROOT --output NEW_IGNORED_OUTPUT
+
+Default expected seeds are 0/1/2. --seeds selects an explicit subset; --allow-incomplete retains failed/missing runs as an explicitly partial report. It never silently claims a completed three-seed experiment. The command revalidates frozen bindings and selected model identities, uses raw development passage strings only, reproduces recorded selected F1, and scores the unchanged rules/native baselines. Native LOC remains a separate coarse task. No test prediction or training occurs.
+
+The study_recipes helper preregisters only approved A/B changes and output-only recovery relocation. All configurations are bound before training; validation rejects any other changed setting even if someone rehashes the configuration. Default helper mode checks inputs only. An explicit --start-training opt-in and an unexpired 50-minute cutoff are required for execution. There is no authorization to bypass the experiment failure rule: preserve the failed attempt and obtain the explicit retry decision first.
+
+Source and prediction text remains private; public reports contain metadata. Forty-three standard-library tests cover launcher, comparison, recipe and existing preparation/export behavior. Existing requirements, public APIs, schemas and legacy export behavior remain unchanged.
+
+
+### Completed bounded study and safe inspection
+
+The immutable validation-study-20261016-v2 manifest preregisters seven variant configurations; actual run-status.json records identify the five completed new runs. Its training_started:false describes preregistration time. Study recipes change only patience/rate and output identity; each initializes independently from the pinned encoder. The winner uses unrounded seed 0 strict F1 (original, then A, then B on ties). B seeds 1/2 remain unrun configurations.
+
+The study_recipes module defaults to read-only input/output validation; --start-training is an explicit training opt-in and refuses existing outputs or the expired start deadline. Do not repeat these completed runs. Selected checkpoints use selected-checkpoint/model with the earlier-step tie rule. Private comparison requests/logs/predictions and weights remain in ignored artifacts; the completed report contains metadata only. The subsequently completed held-out evaluation is documented below.
+
+
+### Frozen held-out test evaluation
+
+Two separate offline commands preserve the validation-only command and its defaults:
+
+- freeze-test-experiment --preparation DIR --study-report DIR --output NEW_IGNORED_DIR checks the completed development study and freezes original/A seeds 0/1/2, resolving original seed 2 to its recovery output. It binds selected-checkpoint/model files, development selections, configurations, model/tokenizer/input/contract/rules identities, evaluator code and exact test memberships. It performs no test predictions.
+- evaluate-test --freeze DIR --python QUALIFIED_RESEARCH_PYTHON --output NEW_IGNORED_DIR checks the sealed freeze, then evaluates exactly 60 test passages once using the existing isolated GPU environment. Its exclusive attempt.json marker is created before rules/neural inference and survives failure. Changed inputs, existing output and another attempt on the same freeze are refused. Failed results/logs remain private; do not retry automatically.
+
+Completed checkpoints are final-test-freeze-20261016-v1 and heldout-test-evaluation-20261016-v1; logs/audits are in heldout-test-execution-20261016-v1. Preserve them; do not recreate/re-evaluate this experiment to choose models from test scores. Tests and implementation changes must precede a freeze because evaluator hashes are bound. Original seed 0 stays primary, Recipe A exploratory, and Recipe B is excluded. The native LOC task remains separate from strict six-class scoring; rules cannot emit LOCAL_AREA. Inference receives raw strings only. Public reports contain metadata; predictions and offset errors stay ignored. Any future tuning needs a fresh untouched holdout, not another selection round against these exposed cases.

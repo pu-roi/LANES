@@ -1,0 +1,31 @@
+{
+  "actual_powershell_check_only": "passed",
+  "check_log_sha256": "a0984efd6598c01408363da3a1c8b57f84c0e6ccb23f6f3694cee5fc962287a1",
+  "default_mode": "read-only input verification",
+  "explicit_start_switch": "-StartTraining",
+  "implementation_sha256": {
+    "backend/tests/test_flood_ner_manual_training.py": "c5b62593ac8311e110df51a69f97a3cc546db234f981aaa2218ae8ea67faac69",
+    "backend/training/flood_ner/RUN-SEED-0.ps1": "72eed90d4be3a59790cf9d1a89f4bc3bb16fee8426b6c5cd28e379927d78ee20",
+    "backend/training/flood_ner/manual_training.py": "74dd0876eca5d3f7064f8c3a55bb6ed03778913c7949c078bb801032faa0c42b"
+  },
+  "later_seeds_automatic": false,
+  "powershell_parser": "passed",
+  "preserved": {
+    "env_unchanged": true,
+    "export_qualification_admission_and_model_bindings_revalidated": true,
+    "frozen_preparation_revalidated": true,
+    "training_output_absent": true
+  },
+  "recorded_at": "2026-10-16T17:27:59.369214+08:00",
+  "schema_version": "lanes-manual-launcher-verification-v1",
+  "seed": 0,
+  "state": "check_only_passed",
+  "test_log_sha256": "5527310a024aa2e6ae42545a1396f1861ef2f6f2a551e4a921b6d71a00779975",
+  "tests": {
+    "launcher_tests": 5,
+    "passed": 26,
+    "preparation_and_export_regressions": 21,
+    "real_training_not_executed": true
+  },
+  "training_started": false
+}

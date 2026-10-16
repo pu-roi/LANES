@@ -1,0 +1,127 @@
+{
+  "addendum_binding": {
+    "path": "docs/guides/flood-ner-reference-scope-addendum-v1.md",
+    "sha256": "cf18e95508130c92ad98be3302fd1a21e1a869d6e3ad3bceaf870adc1980c10c"
+  },
+  "completed_at": "2026-10-16T21:00:58.237437+08:00",
+  "constructed_cases": 48,
+  "coverage_proxy_counts": {
+    "compound-crossing-roads": {
+      "dev": 10,
+      "train": 49
+    },
+    "facilities-institutions": {
+      "dev": 5,
+      "train": 18
+    },
+    "geographic-type-ambiguity": {
+      "dev": 40,
+      "train": 201
+    },
+    "locality-designators": {
+      "dev": 18,
+      "train": 57
+    },
+    "misleading-names-time-common-words": {
+      "dev": 6,
+      "train": 39
+    },
+    "project-asset-names": {
+      "dev": 11,
+      "train": 26
+    },
+    "shared-identifiers": {
+      "train": 1
+    },
+    "short-codes": {
+      "dev": 3,
+      "train": 7
+    }
+  },
+  "definitive_constructed_cases": 46,
+  "future_conventions_documented": 1,
+  "historical_inventory_complete": false,
+  "inference_run": false,
+  "input_bindings": {
+    "admitted_records": {
+      "path": "backend/training/flood_ner/artifacts/academic-admission-20261016-v1/admitted/cohort-admitted-v1/grouped_annotations.jsonl",
+      "sha256": "f8f4ec4466326fa2c403851377293acf03d81b012ea47ee4bd3be09dc74e6354"
+    },
+    "annotation_guide": {
+      "path": "docs/guides/flood-ner-annotation-v1.md",
+      "sha256": "9d2604881722b8657ea5109993d089cad613b418fd7f65f788e393b2a1f2b38c"
+    },
+    "errors": {
+      "path": "backend/training/flood_ner/artifacts/heldout-test-evaluation-20261016-v1/errors.json",
+      "sha256": "fc912b1c1205bd688655562093e89e9f540e2e879ad9c0d42980053d07d545bb"
+    },
+    "evaluation_contract": {
+      "path": "backend/training/flood_ner/artifacts/desktop-relocation-20261016-162313/qualification/evaluation-contract.json",
+      "sha256": "10c1b4e0dae0a12320d8ff41d1d586f843752ffc34af0cf752fc759721e143da"
+    },
+    "evaluation_report": {
+      "path": "docs/evaluations/flood-ner-heldout-test-20261016/metadata-hashes.json",
+      "sha256": "26350463a129f946ed8038773d64ccc14fc338f7814962417977863d27b54978"
+    },
+    "freeze": {
+      "path": "backend/training/flood_ner/artifacts/final-test-freeze-20261016-v1/manifest.json",
+      "sha256": "498b0db49690c8bd7ca0dacde5902759e30e9052b8438b4fc9f1b99af4db6243"
+    },
+    "predictions": {
+      "path": "backend/training/flood_ner/artifacts/heldout-test-evaluation-20261016-v1/predictions.json",
+      "sha256": "d2a6e93d47d3511d46c33a99a00cf799eaf32ee066e9880cfcdce7ac73ae7127"
+    },
+    "request": {
+      "path": "backend/training/flood_ner/artifacts/heldout-test-evaluation-20261016-v1/request.json",
+      "sha256": "95b654755aedaf0320e66144b513168a925d06273b5956a47ff0ae67f508f5b1"
+    },
+    "seal": {
+      "path": "backend/training/flood_ner/artifacts/final-test-freeze-20261016-v1/seal.json",
+      "sha256": "043a9e900240889b67696dc348871202fccd8b7ca02c3e407328188cb0c734d8"
+    },
+    "test_result": {
+      "path": "backend/training/flood_ner/artifacts/heldout-test-evaluation-20261016-v1/manifest.json",
+      "sha256": "2ba96b256ded2c196b184b4399c88c09dcf7624759e5860789a83794129f03b1"
+    }
+  },
+  "languages": {
+    "english": 24,
+    "taglish": 24
+  },
+  "negative_cases": 16,
+  "next_task": "Prepare and admit additional dataset; reconcile exclusions, source use, references/grouping and heldout isolation before deciding corpus size/recipes.",
+  "positive_cases": 30,
+  "prepared_at": "2026-10-16T20:57:13.650229+08:00",
+  "preservation_counts": {
+    "cli_package_versions_unchanged": 109,
+    "contextual_pairs": 40,
+    "env_unchanged": true,
+    "head_branch_unchanged": true,
+    "pinned_model_files_unchanged": 23,
+    "prior_artifact_hashes_unchanged": 11689,
+    "repository_file_hashes_unchanged": 2880,
+    "requirements_unchanged": true,
+    "research_environment_file_stats_unchanged": 22759,
+    "sealed_test_revalidated_read_only": true,
+    "source_use_flags_annotations_partitions_prior_checkpoints_unchanged": true
+  },
+  "provenance": "Codex AI under researcher delegation; not independent gold",
+  "qualification_complete": false,
+  "questions": 14,
+  "review_binding": {
+    "path": "backend/training/flood_ner/artifacts/model-qualification-review-20261016-v1/manifest.json",
+    "sha256": "b63cc79cfca239fa1d4cb937aa98a4acfa065926e605f1fc61f0a0c2ddc0c308"
+  },
+  "standard_library_tests_passed": 12,
+  "status": "preparation_complete",
+  "test_protocol": {
+    "english": 30,
+    "negative_per_language": 3,
+    "taglish": 30,
+    "total": 60
+  },
+  "themes": 8,
+  "training_started": false,
+  "unresolved_cases": 2,
+  "unresolved_historical_question_dispositions": 13
+}

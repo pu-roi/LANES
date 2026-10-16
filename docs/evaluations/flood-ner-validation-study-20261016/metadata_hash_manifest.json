@@ -1,0 +1,11 @@
+{
+  "files": {
+    "README.md": "cb3bd8f8739ccca2393acf8781a9c14adc53cd7a9ee81604d139dc93bf6df81c",
+    "comparison-manifest.json": "f1905ab4285a5705f717a3a0ed00b024e3abdfb69ff799223ecb936754627aac",
+    "failed-seed-2-status.json": "b6cb611338ea9e8b611dda2e201d875194325c465b90f39d6fffad3e21f88703",
+    "preservation.json": "09203867a3c75dc51f1c9c428e5ab09dd55d0fd2af2cec13cf88e28d29874e46",
+    "study-manifest.json": "12ad6a4b5dc1c5a7101ed24a70d092855ca9eb39b9474d7e5dc4a89263df5808",
+    "verification.json": "d23a3a261d6ded3972c2542d7df2ff3250d2b200f8f9be871fd6b517e603b855"
+  },
+  "schema_version": "lanes-metadata-hashes-v1"
+}
