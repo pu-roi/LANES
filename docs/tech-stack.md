@@ -1,8 +1,15 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
+> **Last Updated:** October 18, 2026, 4:39 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier preparation, delivery, correction and failed-attempt checkpoints below are historical unless explicitly carried forward.
+
+**October 18 desktop execution:** Existing Python 3.11.17/spaCy 3.7.5/Torch 2.11.0+cu128/CuPy 13.6.0 pass RTX verification after interpreter-local Windows DLL setup in both launcher subprocess paths. No dependency, API or schema change. Seed 0 stopped on supplied optimizer-key casing before updates; later seeds and retry did not run. Earlier preparation statuses below are historical. [Evidence](evaluations/flood-ner-successor-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
 **October18 successor preparation:** Successor offline preparation now uses three separate entry points for scoped admission, isolated DocBin export and read-only/default GPU launch verification. Existing Python3.11/spaCy3.7.5, pinned model vocabulary and frozen tokenizer are reused; no dependency installation, production API or database change. Training has not started. [Evidence](evaluations/flood-ner-successor-preparation-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-> **Last Updated:** October 18, 2026, 11:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Earlier checkpoint status below is historical; current successor preparation and pending delivery are recorded in the linked report above.
 

@@ -1,6 +1,34 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 18, 2026, 11:18 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 4:51 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Publication checkpoint:** Matching combined launcher and three-seed reports are included in this `roi-branch` publication. The new [private v17 Drive backup](https://drive.google.com/drive/folders/1ZFFNL9Vu-dg5xLyWsSR2wd99_qsGTE_J) preserves the combined trainer and all three selected checkpoints/logs; all eleven uploaded files pass full SHA-256 readback and all twelve folder/file permission checks are owner-only. Older folders remain unchanged. The local `.env` change stays outside the commit. [Publication evidence](evaluations/flood-ner-successor-publication-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Successor private backup verified
+
+Combined trainer and three selected checkpoints/logs backed up without overwriting prior handoffs; 11 authenticated full-byte readbacks and 12 owner-only permission checks pass. [Evidence](evaluations/flood-ner-successor-publication-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Successor v16 desktop training execution
+
+All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. Each selected checkpoint reloads with six labels and matching finite development metrics; seed 0 remains primary. [Evidence](evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier preparation, delivery, correction and failed-attempt checkpoints below are historical unless explicitly carried forward.
+
+## October 18: Successor seed-0 attempt stopped on supplied configuration defect
+
+Seed 0 reached the GPU initialization command but spaCy rejected lowercase `l2`/`l2_is_weight_decay`; the pinned optimizer requires `L2`/`L2_is_weight_decay`. No optimizer updates, checkpoint or validation score. Failed output/logs remain intact; seeds 1/2 were not launched and no retry or recipe edit occurred. A separate versioned config repair and later authorized retry are needed. [Evidence](evaluations/flood-ner-successor-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Desktop successor receipt and GPU startup repair
+
+Received the exact twelve-file package, preserved the original and created a separately bound launcher derivative without changing eleven payload files. All 23 model files, 64 focused tests and actual RTX read-only GPU verification pass. The pre-launch inventory records 12,343 persistent predecessor files; the subsequent failed attempt is recorded above. Holdout references remain on the laptop. [Evidence](evaluations/flood-ner-successor-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier delivery/preparation checkpoints below retain their historical status.
+
+**Current desktop handoff: private trainer delivery to Drive is verified; successor code and public reports accompany this handoff on `roi-branch`.** Dataset membership stays **345 training / 60 validation / 60 research-holdout**. The twelve-file trainer ZIP, checksum and instructions match authenticated readback and remain owner-only. Research-holdout content stays on the laptop. No training ran. [Delivery report](evaluations/flood-ner-successor-delivery-20261018/README.md) · [Private Drive folder](https://drive.google.com/drive/folders/1WuhvnWfKybY8lbKKO55aToTUQ_PY6RqJ). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next: receive the package on the desktop and run read-only GPU verification.** Preserve local changes, pull `roi-branch` with `--ff-only`, verify the ZIP checksum, extract only to an absent destination, then use the successor launcher with `--verify-gpu`. A Git pull alone cannot transfer ignored data. Desktop receipt/GPU verification are unconfirmed; seeds0/1/2 training is a later explicit action. [Exact instructions](guides/ner-successor-desktop-training.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current successor status: configuration correction v16.** The desktop reported seed 0 failed before optimizer updates because the v15 package builder lowercased case-sensitive spaCy arguments; seeds 1/2 were not started. The generator now preserves `L2`, `L2_is_weight_decay` and `nO`, and all three configs pass real spaCy 3.7.5 schema resolution. Dataset **345 training / 60 validation / 60 research-holdout** and all eight non-config trainer files remain unchanged. No training/retry or inference ran during this correction. [Correction report](evaluations/flood-ner-successor-config-correction-20261018/README.md) · [Corrected private Drive package](https://drive.google.com/drive/folders/15sxU7utCM9Nf429BXWUQlXgtEoC1nTQH). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

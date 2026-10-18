@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import configparser
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -85,6 +86,8 @@ def validate_config_schemas(preparation):
     uninitialized model graphs and an unused optimizer; it never initializes a
     Language pipeline, invokes training callbacks, reads examples or calls train.
     """
+    dll_handles = prepare_gpu_runtime()
+    import torch  # Initialize interpreter-local CUDA lookup before spaCy/Thinc.
     import importlib.util
     import platform
     import spacy
@@ -117,11 +120,19 @@ def validate_config_schemas(preparation):
 
 
 def validate_runtime_configs(interpreter, preparation):
-    result = subprocess.run([str(Path(interpreter).resolve()), '-I', '-B', str(Path(__file__).resolve()),
-                            '--internal-config-validation', str(Path(preparation).resolve())],
-                            check=False, capture_output=True, text=True, timeout=120)
-    require(result.returncode == 0, 'spaCy configuration schema validation failed before training:\n'
-            + result.stderr[-6000:])
+    try:
+        result = subprocess.run([str(Path(interpreter).resolve()), '-I', '-B', str(Path(__file__).resolve()),
+                                '--internal-config-validation', str(Path(preparation).resolve())],
+                                check=False, capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired as exc:
+        diagnostic = exc.stderr or exc.stdout or ''
+        if isinstance(diagnostic, bytes):
+            diagnostic = diagnostic.decode('utf-8', errors='replace')
+        raise ValueError('spaCy configuration schema validation timed out before training; '
+                         'no CPU fallback\n' + diagnostic[-6000:]) from exc
+    if result.returncode != 0:
+        raise ValueError('spaCy configuration schema validation failed before training:\n'
+                         + (result.stderr or result.stdout or '')[-6000:])
     report = json.loads(result.stdout)
     require(report.get('state') == 'configuration_schema_verified' and report.get('seeds') == [0, 1, 2]
             and report.get('spacy_version') == '3.7.5' and report.get('optimizer_updates') == 0
@@ -174,20 +185,57 @@ def verify_package(checkout, preparation, model_dir):
     return manifest
 
 
+def prepare_gpu_runtime() -> list[object]:
+    """Keep Windows CUDA DLL lookup inside this interpreter and process."""
+    if sys.platform != 'win32':
+        return []
+    site = Path(sys.prefix) / 'Lib/site-packages'
+    directories = (site / 'torch/lib', site / 'nvidia/cuda_runtime/bin',
+                   site / 'nvidia/cuda_nvrtc/bin')
+    for directory in directories:
+        require(directory.is_dir(), f'missing qualified CUDA library directory: {directory}')
+    handles = []
+    try:
+        for directory in directories:
+            handles.append(os.add_dll_directory(str(directory)))
+    except OSError as exc:
+        for handle in handles:
+            handle.close()
+        raise ValueError(f'cannot initialize qualified CUDA DLL directories: {exc}') from exc
+    os.environ['CUDA_PATH'] = str(site / 'nvidia/cuda_runtime')
+    return handles
+
+
 def probe(interpreter, *, gpu=False):
     """No pipelines, documents, optimizer or inference; read-only runtime/device check."""
-    code = ('import json,platform,spacy; '
-            'r={"python_version":platform.python_version(),"spacy_version":spacy.__version__}; ')
+    code = 'import json,platform; '
     if gpu:
-        code += ('import torch,cupy; assert torch.cuda.is_available(), "qualified CUDA GPU required"; '
+        # Load this same hash-bound helper before any third-party GPU imports.
+        code += ('import importlib.util; '
+                 f'spec=importlib.util.spec_from_file_location("lanes_successor_probe",{str(Path(__file__).resolve())!r}); '
+                 'module=importlib.util.module_from_spec(spec); spec.loader.exec_module(module); '
+                 'dll_handles=module.prepare_gpu_runtime(); import torch; ')
+    code += ('import spacy; '
+             'r={"python_version":platform.python_version(),"spacy_version":spacy.__version__}; ')
+    if gpu:
+        code += ('import cupy; assert torch.cuda.is_available(), "qualified CUDA GPU required"; '
                  'spacy.require_gpu(0); '
                  'r.update(gpu_name=torch.cuda.get_device_name(0), '
                  'gpu_compute_capability=list(torch.cuda.get_device_capability(0)), '
                  'torch_version=torch.__version__,cupy_version=cupy.__version__); ')
     code += 'print(json.dumps(r,sort_keys=True))'
-    result = subprocess.run([str(Path(interpreter).resolve()), '-I', '-B', '-c', code],
-                            check=False, capture_output=True, text=True, timeout=60)
-    require(result.returncode == 0, 'explicit interpreter/GPU verification failed; no CPU fallback')
+    try:
+        result = subprocess.run([str(Path(interpreter).resolve()), '-I', '-B', '-c', code],
+                                check=False, capture_output=True, text=True, timeout=60)
+    except subprocess.TimeoutExpired as exc:
+        diagnostic = exc.stderr or exc.stdout or ''
+        if isinstance(diagnostic, bytes):
+            diagnostic = diagnostic.decode('utf-8', errors='replace')
+        raise ValueError('explicit interpreter/GPU verification timed out after 60 seconds; '
+                         'no CPU fallback\n' + diagnostic[-4000:]) from exc
+    if result.returncode != 0:
+        raise ValueError('explicit interpreter/GPU verification failed; no CPU fallback\n'
+                         + (result.stderr or result.stdout or '')[-4000:])
     runtime = json.loads(result.stdout)
     require(runtime['python_version'].startswith('3.11.') and runtime['spacy_version'] == '3.7.5',
             'qualified Python 3.11 / spaCy 3.7.5 required')
@@ -272,6 +320,8 @@ def internal_training(path):
             and digest(output / 'train.cfg') == request['config_sha256'], 'stale training request')
     verify_package(root, request['preparation'], request['model_dir'])
     verify_gpu(request['preparation'], probe(sys.executable, gpu=True))
+    dll_handles = prepare_gpu_runtime()
+    import torch  # Load this environment's CUDA libraries before spaCy/Thinc.
     import importlib.util
     registry_path = root / 'backend/training/flood_ner/experiment_registry.py'
     spec = importlib.util.spec_from_file_location('lanes_successor_registry', registry_path)

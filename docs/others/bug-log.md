@@ -1,5 +1,32 @@
 # LANES Bug Fix Log & Issue Tracker
 
+> **Last Updated:** October 18, 2026, 4:39 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](../evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Combined v16 Windows runtime paths
+
+**Status:** Resolved. **Severity:** High (GPU execution blocker). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem/root cause:** remote v16 corrected config casing but omitted interpreter-local Windows CUDA DLL startup, including its new schema subprocess. **Solution:** shared setup and retained handles before Torch/spaCy in probe, schema and training; bounded failure/timeout diagnostics. **Files/verification:** successor launcher and constructed Windows tests; 75 tests, actual GPU/schema verification and 3 completed selected-checkpoint checks. Original payloads are unchanged. [Evidence](../evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md).
+
+Earlier preparation, delivery, correction and failed-attempt checkpoints below are historical unless explicitly carried forward.
+
+## October 18: Supplied successor optimizer keys lose required casing
+
+- **Status:** Investigated; repair pending. **Severity:** High (blocks training). **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The first successor seed-0 launch exits 1 during config validation, before pipeline initialization/optimizer updates; no checkpoint is produced.
+- **Root cause:** Received portable templates contain `l2` and `l2_is_weight_decay`; the pinned spaCy `Adam.v1` signature requires `L2` and `L2_is_weight_decay`. Structural template validation never resolves the optimizer registry schema. The successful historical template preserves uppercase keys. Upstream serialization provenance is not established by the available source.
+- **Strategy:** Preserve original and failed artifacts; use a separate versioned, case-preserving config repair with full registry-resolution checks. A new training attempt requires separate authorization under the approved no-automatic-retry rule; seeds 1/2 remain unstarted.
+- **Files/change:** No config, recipe or producer code changed in this investigation. The failed rendered config, stdout/stderr and exit receipt are private under `successor-training-seed-0-v1`; the [public execution report](../evaluations/flood-ner-successor-desktop-training-20261018/README.md) records aggregate evidence.
+
+## October 18: Successor Windows GPU startup
+
+- **Status:** Resolved. **Severity:** High (blocks GPU training). **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The successor probe fails with `Cannot use GPU, CuPy is not installed` although CuPy and the qualified RTX runtime are installed.
+- **Root cause:** The probe imports spaCy before registering interpreter-local CUDA DLL directories, caching an unavailable CuPy state in Thinc. The separate training process also omitted DLL initialization.
+- **Solution:** Shared Windows DLL setup precedes Torch and spaCy imports in both subprocess paths, retaining handles and reporting bounded failure/timeout diagnostics. The original payload remains intact; a separate derivative binds the repaired launcher.
+- **Files/verification:** `successor_training.py`, constructed Windows runtime tests and the desktop guide. All 64 focused tests and actual desktop GPU verification pass; all 23 model hashes and eleven derivative payload hashes match. No dependencies/schema/recipe changes. [Evidence](../evaluations/flood-ner-successor-desktop-training-20261018/README.md).
 ## October 18: Successor config argument casing blocks seed 0
 
 **Status:** Fixed in v16; corrected desktop verification and training retry pending. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
@@ -18,7 +45,6 @@ The delivery suite failed after the real calendar passed a constructed receipt's
 
 **October18 successor preparation:** Successor preparation regression fixes: accept digits in portable SHA256 placeholder names; verify actual test source hashes as well as implementation evidence; reject extra trainer payload files and incomplete implementation bindings. Initial stale metadata/partial assembly remains preserved; final manifests identify accepted qualified exports. Fresh215 research tests/165subtests pass. No production changes or training. [Evidence](../evaluations/flood-ner-successor-preparation-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
-> **Last Updated:** October 18, 2026, 11:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Earlier checkpoint status below is historical; current successor preparation and pending delivery are recorded in the linked report above.
 
@@ -234,7 +260,6 @@ Earlier checkpoints below retain their historical counts; v7 readiness claims ar
 - **Files / verification:** No source code changed. The ignored desktop-execution-20261016-run-01 checkpoint retains invocation logs and before/after verification; desktop-relocation-20261016-160823 retains generated manifests and script. All 1,757 restored payload hashes and 9,744 pre-existing artifact hashes verify; research environment metadata and .env are unchanged. [Result](../evaluations/flood-ner-desktop-restoration-20261016/README.md).
 
 
-
 ## Resolved: private handoff omitted original capture pointers
 
 - **Status / severity / resolver:** Resolved before delivery; P2. [@roicambe](https://github.com/roicambe) (Roi Cambe).
@@ -406,7 +431,6 @@ Earlier checkpoints below retain their historical counts; v7 readiness claims ar
 - **Fix:** Version lanes.xx.address-v2, detach leading/list and trailing dateline delimiters, retain internal 25-A codes and preserve all original characters. Freeze tokenizer/schema bytes and hashes; earlier exports remain intact.
 - **Verification:** Four delimiter/internal-code checks, all 400 real annotations and byte-identical cohort replay pass. Existing locality/number/location regressions remain in the final corpus verification.
 - **Files:** backend/training/flood_ner/export.py, annotation/schema.py, cohort.py, cli.py and offline tests. Cohort CLI also rejects missing/corrupt capture/publication evidence and blank review identities/rationale. [Corpus evidence](../evaluations/flood-ner-corpus-400-20261014/README.md). No runtime/parser/database change.
-
 
 
 ## Resolved for offline editorial preparation: Source widgets and article language tags distorted passage coverage

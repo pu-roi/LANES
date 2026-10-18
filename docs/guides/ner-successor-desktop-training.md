@@ -1,12 +1,22 @@
 # Successor NER desktop handoff
 
-> **Last Updated:** October 18, 2026 by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 4:51 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Publication checkpoint:** Matching combined launcher and three-seed reports are included in this `roi-branch` publication. The new [private v17 Drive backup](https://drive.google.com/drive/folders/1ZFFNL9Vu-dg5xLyWsSR2wd99_qsGTE_J) preserves the combined trainer and all three selected checkpoints/logs; all eleven uploaded files pass full SHA-256 readback and all twelve folder/file permission checks are owner-only. Older folders remain unchanged. The local `.env` change stays outside the commit. [Publication evidence](../evaluations/flood-ner-successor-publication-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](../evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Completed-run examples:** the v16 retry output names shown below are now occupied. Do not rerun them or reuse those destinations. Further training requires a new explicitly authorized run; the next scientific step is separate held-out comparison.
+
+Earlier preparation, delivery, correction and failed-attempt checkpoints below are historical unless explicitly carried forward.
 
 **Configuration correction v16:** the desktop reported that seed 0 stopped before optimizer updates; seeds 1 and 2 were not started. The v15 package builder lowercased spaCy's case-sensitive `L2`, `L2_is_weight_decay` and `nO` arguments. Its earlier syntax-only validation missed the defect. The replacement v16 package restores those names, and the launcher now resolves all three configs against actual spaCy 3.7.5 registry schemas before a run can start. [Correction evidence](../evaluations/flood-ner-successor-config-correction-20261018/README.md).
 
-**Preserve the failed seed-0 directory, logs and v15 package. Do not edit its configs in place, rerun an old command or reuse its output directory.** Receive the new matching code and v16 private package, then stop at read-only GPU verification. A later seed-0 retry requires an explicit training action and a new output directory. Seeds 1 and 2 remain stopped.
+**Preserve the failed seed-0 directory, logs and v15 package. Do not edit its configs in place, rerun an old command or reuse its output directory.** Receive the new matching code and v16 private package, then stop at read-only GPU verification. This desktop user has now authorized a new seed-0 retry followed by seeds 1/2 only if each preceding run succeeds; use the separately bound Windows derivative after successful read-only verification.
 
 The dataset stays **345 training / 60 validation / 60 research-holdout passages**. All eight non-config trainer files are byte-identical to v15; labels, membership, tokenizer and hyperparameter values are unchanged. The research holdout remains separate on the laptop. No training or inference was performed for this correction. A Git pull alone does not transfer private datasets.
+
+**Windows derivative:** use `successor-desktop-handoff-20261018-v16-configfix-windows-runtime-v1` for the combined launcher. It retains all eleven v16 payload files and changes only the launcher binding; manifest SHA-256 is `18aacb9ad1c285392adfaa4b995edca4d05baec81fdb3ae9ba1bbbf0d753b986`. Preserve the received original package.
 
 The corrected private ZIP is delivered to the owner-only [v16 Drive folder](https://drive.google.com/drive/folders/15sxU7utCM9Nf429BXWUQlXgtEoC1nTQH). Its complete downloaded bytes match the local archive. Desktop receipt and GPU re-verification of this correction remain pending.
 
@@ -86,8 +96,8 @@ Set explicit paths. The examples below refer to the recorded desktop GPU environ
 ```powershell
 $NerCheckout = (Get-Location).Path
 $NerPython = (Resolve-Path .\backend\training\flood_ner\artifacts\gpu-qualification-20261015\research-env\Scripts\python.exe).Path
-$NerModel = (Resolve-Path .\backend\training\flood_ner\artifacts\preflight-use-20261015\model).Path
-$NerPackage = (Resolve-Path .\backend\training\flood_ner\artifacts\successor-desktop-handoff-20261018-v16-configfix).Path
+$NerModel = (Resolve-Path .\backend\training\flood_ner\artifacts\gpu-qualification-20261015\model).Path
+$NerPackage = (Resolve-Path .\backend\training\flood_ner\artifacts\successor-desktop-handoff-20261018-v16-configfix-windows-runtime-v1).Path
 Get-FileHash (Join-Path $NerPackage handoff-manifest.json) -Algorithm SHA256
 
 & $NerPython -I -B .\backend\training\flood_ner\successor_training.py --checkout $NerCheckout --preparation $NerPackage --python $NerPython --model-dir $NerModel --verify-gpu

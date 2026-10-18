@@ -1,6 +1,24 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 18, 2026, 11:18 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 4:51 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Publication checkpoint:** Matching combined launcher and three-seed reports are included in this `roi-branch` publication. The new [private v17 Drive backup](https://drive.google.com/drive/folders/1ZFFNL9Vu-dg5xLyWsSR2wd99_qsGTE_J) preserves the combined trainer and all three selected checkpoints/logs; all eleven uploaded files pass full SHA-256 readback and all twelve folder/file permission checks are owner-only. Older folders remain unchanged. The local `.env` change stays outside the commit. [Publication evidence](evaluations/flood-ner-successor-publication-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+- [x] Integrate v16 with Windows startup across all three subprocess paths and qualify the separately bound package. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Complete the authorized seed-0 retry and conditional seeds 1/2, validating each selected checkpoint before proceeding. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Perform separately authorized isolated comparative holdout evaluation; preserve seed 0 as primary. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier preparation, delivery, correction and failed-attempt checkpoints below are historical unless explicitly carried forward.
+
+**Current desktop execution:** Exact receipt, 23 pinned model hashes, Windows DLL repair, 64 focused tests and actual read-only GPU verification pass. Seed 0 then failed spaCy config validation before initialization/optimizer updates: the supplied templates lowercase the case-sensitive `L2` optimizer keys. No checkpoint or validation score exists; seeds 1/2 were not started and no retry occurred. The original package and eleven derivative payload files stay unchanged. **Next: prepare a separate config-case repair with full registry validation, then separately authorize a new seed-0 attempt.** Holdout evaluation remains separate. [Execution evidence](evaluations/flood-ner-successor-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The delivery checkpoint below is historical; desktop receipt and GPU verification are now complete.
+
+**Current desktop handoff: private trainer delivery to Drive is verified; successor code and public reports accompany this handoff on `roi-branch`.** Dataset membership stays **345 training / 60 validation / 60 research-holdout**. The twelve-file trainer ZIP, checksum and instructions match authenticated readback and remain owner-only. Research-holdout content stays on the laptop. No training ran. [Delivery report](evaluations/flood-ner-successor-delivery-20261018/README.md) · [Private Drive folder](https://drive.google.com/drive/folders/1WuhvnWfKybY8lbKKO55aToTUQ_PY6RqJ). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next: receive the package on the desktop and run read-only GPU verification.** Preserve local changes, pull `roi-branch` with `--ff-only`, verify the ZIP checksum, extract only to an absent destination, then use the successor launcher with `--verify-gpu`. A Git pull alone cannot transfer ignored data. Desktop receipt/GPU verification are unconfirmed; seeds0/1/2 training is a later explicit action. [Exact instructions](guides/ner-successor-desktop-training.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current successor status: configuration correction v16.** The desktop reported seed 0 failed before optimizer updates because the v15 package builder lowercased case-sensitive spaCy arguments; seeds 1/2 were not started. The generator now preserves `L2`, `L2_is_weight_decay` and `nO`, and all three configs pass real spaCy 3.7.5 schema resolution. Dataset **345 training / 60 validation / 60 research-holdout** and all eight non-config trainer files remain unchanged. No training/retry or inference ran during this correction. [Correction report](evaluations/flood-ner-successor-config-correction-20261018/README.md) · [Corrected private Drive package](https://drive.google.com/drive/folders/15sxU7utCM9Nf429BXWUQlXgtEoC1nTQH). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -25,8 +43,10 @@ Earlier checkpoint counts and pending tasks below are historical unless explicit
 - [x] Implement scoped successor admission, grouped locking, separate qualified exports, evaluation contract and local portable GPU handoff; preserve all historical inputs. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 - [x] Deliver the twelve-file trainer payload through verified owner-only Drive and publish the accompanying code/reports.
-- [ ] Confirm actual desktop receipt and run read-only GPU verification before any training.
-- [ ] After delivery/verification, explicitly train seeds 0, 1 and 2; isolated comparative evaluation follows separately.
+- [x] Confirm actual desktop receipt and run read-only GPU verification before any training. [Evidence](evaluations/flood-ner-successor-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Complete successor seeds 0, 1 and 2: first seed-0 attempt failed before updates; resolve supplied config casing and authorize a new attempt before later seeds. Isolated comparative evaluation follows separately. [@roicambe](https://github.com/roicambe) (Roi Cambe) (Superseded by completed v16 execution above.)
+- [x] Confirm actual desktop receipt and run read-only GPU verification before any training. (Superseded by completed v16 execution above.)
+- [x] After delivery/verification, explicitly train seeds 0, 1 and 2; isolated comparative evaluation follows separately. (Superseded by completed v16 execution above.)
 
 Earlier checkpoint counts below remain historical.
 
