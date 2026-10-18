@@ -1,6 +1,26 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 18, 2026, 11:46 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 19, 2026, 01:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 19: Preserve desktop execution test hashes across checkout
+
+**Status:** Resolved. **Severity:** Medium (research publication portability). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem / RCA:** Newly published execution/language test sources lacked literal-byte attributes, allowing Windows autocrlf to invalidate frozen test hashes. The existing checkout regression also retained its older CRLF-conversion expectation for the evaluation contract, which the preceding publication had switched to literal-byte preservation.
+
+**Solution:** Add -text rules for the two new test paths. Update the constructed regression's contract expectation and include the new execution/scoring/test paths. All twenty comparisons pass under autocrlf true/false in temporary repositories; global Git settings are unchanged. Original attribute/test bytes remain privately backed up.
+
+**Files / evidence:** .gitattributes and backend/tests/test_flood_ner_repository_bytes.py only. Frozen implementation/package/model hashes remain unchanged; six saved-language tests also pass. [Publication report](../evaluations/flood-ner-regularization-publication-20261019/README.md). No training, inference or holdout evaluation during publication.
+
+## October 19: Desktop collection source-byte mismatch
+
+**Status:** Resolved. **Severity:** Medium (offline transfer verification). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem / RCA:** Existing `collection.py` retained CRLF while its authenticated HEAD/transfer binding requires LF. Prior read-only review correctly identified this mismatch; Python content was unchanged.
+
+**Solution:** Preserve original bytes/hashes privately, verify the HEAD blob hash against the authenticated transfer manifest, prove CRLF/LF-only differences, and write exact Git bytes using Python subprocess/Path byte APIs. No logic, expected hash, manifest or Git setting change.
+
+**Files / evidence:** Only `backend/training/flood_ner/collection.py` receives this byte repair. Incoming `4875cef` provides the already-qualified v21 implementation and attributes. Actual exclusive extraction and GPU/schema verification pass; 248 focused tests pass. [Desktop receipt](../evaluations/flood-ner-regularization-desktop-verification-20261019/README.md). Local history, `.env`, packages, runs and all 23 pinned model files are preserved; no training, inference or holdout access.
 
 ## October 18: Preserve the qualified evaluation contract across Git transport
 
@@ -31,6 +51,16 @@
 **Solution:** Separate development diagnosis, scoped model inputs and raw-only backend rules subprocess; bind transitive imports/assets and exclusive global attempt. Qualify exact newline differences with source AST/CSV row evidence and runtime-neutral empty metadata handling. Recheck all twelve proofs in both real runtimes; preserve failed receipt/source/trace. The sole claimed comparison then completed successfully. Two development setup failures (existing pure-Python dependency lookup and strict JSON datetime parsing) were preserved and corrected before the completed development diagnosis; no corpus change or training.
 
 **Files/evidence:** New v19 diagnosis/qualification, reviewed received execution/CPU helper, replacement evaluator/rules worker and constructed tests. Fresh 269 tests/four subtests; 61 neural-runtime tests. [Report](../evaluations/flood-ner-v19-diagnosis-evaluation-20261018/README.md). Application APIs, dependencies, schemas and frozen trainers are unchanged.
+
+## October 18: Corrected v19 source bytes and checkpoint metadata rounding
+
+**Status:** Resolved; original bytes/error evidence preserved. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem / RCA:** Two Windows annotation working copies retained CRLF while authenticated Git/transfer bindings require LF. A new run checker also initially required exact equality between full-precision selection F1 and spaCy meta.json, which serializes floats to ten decimal places. Control seed 0 itself exited successfully.
+
+**Solution:** Back up and restore only schema.py/validation.py from verified HEAD blobs after proving line-ending-only differences. Keep selection.json authoritative; allow only ten-decimal serialization rounding in the metadata check, then reproduce development F1 independently and check loadability. Preserve the controller error; carry forward the validated first run without a training retry or recipe/destination change.
+
+**Files / evidence:** New corrected experiment execution/worker modules and rounding regression tests; frozen trainer/registry/manifests unchanged. [Execution record](../evaluations/flood-ner-corrected-v19-execution-20261018/README.md).
 
 ## October 18: Corrected-data revision and CPU qualification guard
 

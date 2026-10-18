@@ -1,12 +1,22 @@
 # Corrected NER experiment: desktop receipt and GPU verification
 
-> **Last Updated:** October 18, 2026, 11:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 19, 2026, 12:06 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current desktop result: regularization v21 receipt and actual GPU/schema verification are complete.** Exactly 20 experiment files / 12 trainer files and all 23 pinned model files verify. Actual result: `verified_read_only`, schema/GPU true, training false. All 248 focused tests pass. No training or inference occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Stopped before training, as required.** A separate explicit task may run the fixed seed-0 screen and conditional seeds 1/2. The completed research holdout remains excluded from tuning and repeat evaluation.
+
+[Desktop verification receipt](../evaluations/flood-ner-regularization-desktop-verification-20261019/README.md).
+
+**Earlier publication checkpoints below are historical; pending desktop statements are superseded by this receipt.**
 
 **Current NER handoff: the regularization experiment is verified on private Drive; matching code and instructions accompany this roi-branch publication.** The 345 training / 60 validation exports are unchanged. One L2 = 0.05 candidate has seed 0/1/2 configs and a fixed maximum-three-run protocol. All four uploaded files match authenticated readback; parent, destination and files are owner-only. Desktop receipt and GPU verification remain pending. No training, inference or holdout access occurred during delivery. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Next on the desktop:** preserve local changes, pull roi-branch with --ff-only, authenticate and extract the delivered archive into an absent destination, then run read-only GPU/schema verification and STOP. Actual training is a separate explicit task after verification; the completed research holdout stays outside tuning.
 
 [Delivery report](../evaluations/flood-ner-regularization-delivery-20261018/README.md) · [Desktop instructions](ner-regularization-experiment.md) · [Private Drive handoff](https://drive.google.com/drive/folders/1vKssoZurLa6WjuJPftXRbJ7GcoefimKq)
+
+**Desktop v19 history:** All five authorized runs completed; corrected control seed 0 remains primary. The original desktop execution and private transfer are documented in the [desktop execution record](../evaluations/flood-ner-corrected-v19-execution-20261018/README.md). Its earlier holdout-pending status is superseded by the completed laptop diagnosis/evaluation linked below.
 
 **Earlier dated checkpoints below are historical.**
 

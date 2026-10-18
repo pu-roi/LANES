@@ -171,3 +171,7 @@
 /docs/evaluations/flood-ner-regularization-delivery-20261018/** -text
 # Store the already-bound contract bytes literally instead of translating on checkout.
 /backend/training/flood_ner/evaluation/contract.py -text whitespace=cr-at-eol
+
+# Desktop execution evidence binds these test bytes across Windows/Linux checkouts.
+/backend/tests/test_flood_ner_regularization_execution.py -text
+/backend/tests/test_flood_ner_corrected_development_languages.py -text

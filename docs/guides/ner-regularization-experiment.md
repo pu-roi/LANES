@@ -1,6 +1,20 @@
 # Regularization experiment: verified desktop delivery
 
-> **Last Updated:** October 18, 2026, 11:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 19, 2026, 01:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Private archival backup:** [Nine owner-only, fully byte-verified files](https://drive.google.com/drive/folders/14A4kgWRH0LNay8My9vCutIQp_ro-ezTl) preserve the completed run and frozen decision. Original packages and retained control are unchanged. [Publication checks](../evaluations/flood-ner-regularization-publication-20261019/README.md). No retraining or additional holdout evaluation is authorized by this backup.
+
+**October 19 execution completed: retain corrected v19 control seed 0.** The L2 = 0.05 seed-0 run succeeds and verifies, selecting step 945, but overall validation F1 69.7143% falls below control 71.6049%. ROAD/LOCAL_AREA improve; the overall screen still fails, so seeds 1/2 were not dispatched. 291 tests, fresh GPU/schema checks and all 8,047 preservation checks pass. [Execution results](../evaluations/flood-ner-regularization-v21-execution-20261019/README.md) · [Execution plan](../plans/ner-regularization-v21-execution-20261019.md). No retries, holdout evaluation, data/annotation change, deployment, commit or push. The permanent attempt claim must remain. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier receipt/delivery checkpoints below are historical.**
+
+**Current desktop result: regularization v21 receipt and actual GPU/schema verification are complete.** Exactly 20 experiment files / 12 trainer files and all 23 pinned model files verify. Actual result: `verified_read_only`, schema/GPU true, training false. All 248 focused tests pass. No training or inference occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Stopped before training, as required.** A separate explicit task may run the fixed seed-0 screen and conditional seeds 1/2. The completed research holdout remains excluded from tuning and repeat evaluation.
+
+[Desktop verification receipt](../evaluations/flood-ner-regularization-desktop-verification-20261019/README.md).
+
+**Earlier publication checkpoints below are historical; pending desktop statements are superseded by this receipt.**
 
 **Current NER handoff: the regularization experiment is verified on private Drive; matching code and instructions accompany this roi-branch publication.** The 345 training / 60 validation exports are unchanged. One L2 = 0.05 candidate has seed 0/1/2 configs and a fixed maximum-three-run protocol. All four uploaded files match authenticated readback; parent, destination and files are owner-only. Desktop receipt and GPU verification remain pending. No training, inference or holdout access occurred during delivery. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

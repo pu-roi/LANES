@@ -31,8 +31,14 @@ class ResearchCheckoutBytesTests(unittest.TestCase):
                      'backend/training/flood_ner/cli.py',
                      'backend/training/flood_ner/corpus_tokenizer_qualification.py',
                      'backend/training/flood_ner/corpus_tokenizer_worker.py',
-                     'backend/training/flood_ner/evaluation/contract.py']
-            crlf_paths = set(paths[2:])
+                     'backend/training/flood_ner/evaluation/contract.py',
+                     'backend/training/flood_ner/regularization_experiment_execution.py',
+                     'backend/training/flood_ner/regularization_development_worker.py',
+                     'backend/tests/test_flood_ner_regularization_execution.py',
+                     'backend/tests/test_flood_ner_corrected_development_languages.py']
+            # The evaluation contract now uses literal byte preservation. Only
+            # these three historical source paths still request CRLF conversion.
+            crlf_paths = set(paths[2:5])
             for name in paths:
                 path = repo / name
                 path.parent.mkdir(parents=True, exist_ok=True)

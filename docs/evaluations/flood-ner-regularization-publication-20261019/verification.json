@@ -1,0 +1,125 @@
+{
+  "schema": "lanes-regularization-publication-v1",
+  "publication_branch": "roi-branch",
+  "prepared_from_commit": "4875cef4f03ecc4fdc2b3b0ff9d7e7bc43f36bad",
+  "drive_folder_url": "https://drive.google.com/drive/folders/14A4kgWRH0LNay8My9vCutIQp_ro-ezTl",
+  "drive_files_verified": 9,
+  "owner_only_permission_checks": 11,
+  "complete_sha256_readback_verified": true,
+  "archive": {
+    "name": "LANES-NER-regularization-v21-screening-20261019-v1.zip",
+    "bytes": 70309880,
+    "sha256": "82f90757e3902fd2e3bf53ae68d96784d2cb55192a70dd48ca23d8910ed23a42"
+  },
+  "archive_members": 146,
+  "parts": 5,
+  "backup_manifest_sha256": "9f11c0dbfede6e520d53c99949d7182b60088125bbb6ad9182ee9098cd6ac7f6",
+  "drive_files": [
+    {
+      "id": "1rVX8_p5stJfQx0PIwiITsaIjtnl7IRD6",
+      "name": "LANES-NER-regularization-v21-screening-20261019-v1.zip.part01",
+      "bytes": 16777216,
+      "sha256": "0b1fa7fc949b13de6237e700458688d21d92cdcd25108491f1638b5aa0593b8c",
+      "url": "https://drive.google.com/file/d/1rVX8_p5stJfQx0PIwiITsaIjtnl7IRD6/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "1F_TpvijnzWKILsZb29GxaYJHDwD23X2x",
+      "name": "LANES-NER-regularization-v21-screening-20261019-v1.zip.part02",
+      "bytes": 16777216,
+      "sha256": "ead054b0baeb8bf0aacb7010f58163a6bc4329404d07670e377de13d412302d6",
+      "url": "https://drive.google.com/file/d/1F_TpvijnzWKILsZb29GxaYJHDwD23X2x/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "1r2OTEDOAjcmGGgSLrsy0NHgFCPhwH9mr",
+      "name": "LANES-NER-regularization-v21-screening-20261019-v1.zip.part03",
+      "bytes": 16777216,
+      "sha256": "bcdf3146c7af439b78ad1e4ad823cf4db4cf594787d75c3bfbe1ca2d9bd08b80",
+      "url": "https://drive.google.com/file/d/1r2OTEDOAjcmGGgSLrsy0NHgFCPhwH9mr/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "11BDRF8ErNn_Vw4SXfaPQlnLB0VHOCZJV",
+      "name": "LANES-NER-regularization-v21-screening-20261019-v1.zip.part04",
+      "bytes": 16777216,
+      "sha256": "4710ba870f1dc053d4b64825d1861308871c97e2bac5fec092d460c1c0622f85",
+      "url": "https://drive.google.com/file/d/11BDRF8ErNn_Vw4SXfaPQlnLB0VHOCZJV/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "1HgB4zKNMVnGn4JCYx71DVYH9OFGLag6X",
+      "name": "LANES-NER-regularization-v21-screening-20261019-v1.zip.part05",
+      "bytes": 3201016,
+      "sha256": "addc247fa35bd1104ad2b21e7f2dd30ffde14c300aea2dd19b176dbcd128b08e",
+      "url": "https://drive.google.com/file/d/1HgB4zKNMVnGn4JCYx71DVYH9OFGLag6X/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "10ur5IlyBru4yKdF0gh3j5PUov8eZR3MQ",
+      "name": "backup-manifest.json",
+      "bytes": 27206,
+      "sha256": "9f11c0dbfede6e520d53c99949d7182b60088125bbb6ad9182ee9098cd6ac7f6",
+      "url": "https://drive.google.com/file/d/10ur5IlyBru4yKdF0gh3j5PUov8eZR3MQ/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "17VKbJFBVHvKVWE8pTB6Cr-215D4zk9Px",
+      "name": "transport-manifest.json",
+      "bytes": 1535,
+      "sha256": "75b461258eaa46ac46059f7ef75c0fb81e1f53b2912d37611c291da8a307b3fe",
+      "url": "https://drive.google.com/file/d/17VKbJFBVHvKVWE8pTB6Cr-215D4zk9Px/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "1A7dWCRLHNUlQ3hYRez4BhpuW8BHmmlNe",
+      "name": "START-HERE.md",
+      "bytes": 2243,
+      "sha256": "0e070a34ee5931ca58eb1e3d952288c84a7fc6469aa12ce76d9df7bd2c15d0fd",
+      "url": "https://drive.google.com/file/d/1A7dWCRLHNUlQ3hYRez4BhpuW8BHmmlNe/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    },
+    {
+      "id": "1ycQpC-0ybjkG4_8vISMMiyQ9x5ZaMoCX",
+      "name": "SHA256SUMS.txt",
+      "bytes": 1027,
+      "sha256": "092dd2dd9f51a29b3df36ced8a87bd91fee4dab257eb8f8bccecde23a5142938",
+      "url": "https://drive.google.com/file/d/1ycQpC-0ybjkG4_8vISMMiyQ9x5ZaMoCX/view?usp=drivesdk",
+      "owner_only": true,
+      "full_readback_verified": true
+    }
+  ],
+  "original_handoff_preserved": true,
+  "training_runs_during_publication": 0,
+  "research_holdout_accessed": false,
+  "retained": "v19_corrected_control",
+  "primary_seed": 0,
+  "candidate_seed0_validation_f1": 0.6971428571428572,
+  "control_seed0_validation_f1": 0.7160493827160493,
+  "training_execution_tests_passed": 291,
+  "publication_language_tests_passed": 6,
+  "checkout_tests_passed": 1,
+  "checkout_byte_comparisons": 20,
+  "checkout_autocrlf_modes": [
+    "true",
+    "false"
+  ],
+  "new_runtime_dependency": false,
+  "api_or_database_schema_change": false,
+  "env_excluded_from_git_and_backup": true,
+  "private_artifacts_excluded_from_git": true,
+  "superseded_untracked_test_preserved_unpublished": "backend/tests/test_flood_ner_corrected_holdout.py",
+  "source_byte_preservation_rules_added": [
+    "backend/tests/test_flood_ner_regularization_execution.py",
+    "backend/tests/test_flood_ner_corrected_development_languages.py"
+  ],
+  "git_execution_receipt": "retained privately after commit/push; use Git history for this publication commit"
+}

@@ -1,6 +1,24 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 18, 2026, 11:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 19, 2026, 01:39 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 19: Regularization results and private backup publication
+
+**Publication checkpoint:** Matching public v21 execution/scoring code and metadata accompany this roi-branch update. The [new private result backup](https://drive.google.com/drive/folders/14A4kgWRH0LNay8My9vCutIQp_ro-ezTl) has nine fully byte-verified, owner-only files; older handoffs are unchanged. Corrected v19 control seed 0 remains primary, and no further runs or holdout evaluation occurred. [Publication report](evaluations/flood-ner-regularization-publication-20261019/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 19: Regularization v21 screening completed; control retained
+
+The new controller/scorer pass 291 tests and fresh actual GPU/schema verification. One successful L2 = 0.05 run selects step 945 and reaches the 1,000-step budget; CPU loading and strict development scoring pass. Candidate validation F1 69.7143% trails control 71.6049%, while ROAD/LOCAL_AREA rise to 53.3333%/73.6842%. Screening fails overall, so seeds 1/2 are omitted and corrected control seed 0 remains primary. All 8,047 protected files are unchanged. No holdout evaluation, data/annotation change, deployment, commit or push. [Execution evidence](evaluations/flood-ner-regularization-v21-execution-20261019/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 19: Regularization v21 desktop verified
+
+**Current desktop result: regularization v21 receipt and actual GPU/schema verification are complete.** Exactly 20 experiment files / 12 trainer files and all 23 pinned model files verify. Actual result: `verified_read_only`, schema/GPU true, training false. All 248 focused tests pass. No training or inference occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Stopped before training, as required.** A separate explicit task may run the fixed seed-0 screen and conditional seeds 1/2. The completed research holdout remains excluded from tuning and repeat evaluation.
+
+[Desktop verification receipt](evaluations/flood-ner-regularization-desktop-verification-20261019/README.md).
+
+**Earlier publication checkpoints below are historical; pending desktop statements are superseded by this receipt.**
 
 **Current NER handoff: the regularization experiment is verified on private Drive; matching code and instructions accompany this roi-branch publication.** The 345 training / 60 validation exports are unchanged. One L2 = 0.05 candidate has seed 0/1/2 configs and a fixed maximum-three-run protocol. All four uploaded files match authenticated readback; parent, destination and files are owner-only. Desktop receipt and GPU verification remain pending. No training, inference or holdout access occurred during delivery. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -29,6 +47,10 @@
 [Diagnosis/evaluation report](evaluations/flood-ner-v19-diagnosis-evaluation-20261018/README.md) · [Laptop evaluation guide](guides/ner-corrected-holdout-laptop.md)
 
 **Historical checkpoints follow.** Their “current/next” wording describes earlier dated tasks and is superseded by the status above.
+
+## October 18: Corrected v19 desktop experiment completed
+
+All five sequential desktop runs succeeded. Control seeds 0/1/2 validation F1: 71.6049%, 71.5152%, 66.2722%; mean 69.7974%, sample SD 3.0533 percentage points. Control seed 0 remains primary. The original desktop handoff and checkpoint-rounding resolution remain in the [execution record](evaluations/flood-ner-corrected-v19-execution-20261018/README.md); the subsequent laptop evaluation above supersedes its original pending status. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 18: Corrected experiment delivered privately
 
