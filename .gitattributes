@@ -139,3 +139,5 @@
 /backend/tests/test_flood_ner_successor_preparation.py -text
 # Frozen historical Markdown contains intentional hard breaks; preserve its digest.
 /docs/evaluations/flood-ner-taglish-test-completion-20261017/README.md whitespace=-blank-at-eol,cr-at-eol
+
+/docs/evaluations/flood-ner-successor-config-correction-20261018/** -text

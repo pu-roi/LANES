@@ -1,0 +1,46 @@
+{
+  "actual_schema_validation": {
+    "optimizer_updates": 0,
+    "pipeline_created": false,
+    "pretrained_weights_loaded": false,
+    "python": "3.11.17",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "spacy": "3.7.5"
+  },
+  "archive_bytes": 153999,
+  "archive_members": 12,
+  "archive_readback_verified": true,
+  "archive_sha256": "b581ed97a7e54e3d6db7f9b3504ff94d8a48bb341437f7e84ed31bf39b2b41c7",
+  "archive_url": "https://drive.google.com/file/d/1TWFzEQVE6EFlxeOVrYf7YR0d1SaPhcjK/view?usp=drivesdk",
+  "changed_argument_names": [
+    "L2",
+    "L2_is_weight_decay",
+    "nO"
+  ],
+  "counts": {
+    "dev": 60,
+    "research_holdout": 60,
+    "train": 345
+  },
+  "desktop_correction_receipt_verified": false,
+  "desktop_failure_log_received": false,
+  "desktop_gpu_reverification_performed": false,
+  "fresh_subtests_passed": 190,
+  "fresh_tests_passed": 352,
+  "fresh_tests_skipped": 1,
+  "holdout_content_accessed": false,
+  "hyperparameter_values_changed": false,
+  "inference_performed": false,
+  "nonconfig_files_byte_identical": 8,
+  "owner_only_verified": true,
+  "payload_manifest_sha256": "40fda6b9df92ea1d51d99d167b1830fa38da64308203168d5ca5457a05a2738f",
+  "private_drive_folder": "https://drive.google.com/drive/folders/15sxU7utCM9Nf429BXWUQlXgtEoC1nTQH",
+  "production_api_dependency_database_changes": false,
+  "read_only_launcher_verified": true,
+  "schema": "lanes-successor-config-correction-v1",
+  "training_retry_performed": false
+}

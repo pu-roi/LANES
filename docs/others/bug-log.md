@@ -1,5 +1,13 @@
 # LANES Bug Fix Log & Issue Tracker
 
+## October 18: Successor config argument casing blocks seed 0
+
+**Status:** Fixed in v16; corrected desktop verification and training retry pending. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The v15 private generator used RawConfigParser's default lowercasing, changing spaCy/Thinc argument names `L2`, `L2_is_weight_decay` and `nO`. Its recipe comparison also normalized both sides, so the earlier verification missed this defect. The desktop reports seed0 stopped before updates; no desktop failure logs were received here. Seeds1/2 were not started.
+
+The public successor generator and verifier now preserve/reject argument casing explicitly. Before output creation or training, the launcher resolves all three configs through actual pinned spaCy schemas in an isolated Python subprocess. The v16 replacement changes argument names and implementation bindings only; all eight non-config trainer files and hyperparameter values are identical. Fresh research suites:352 pass,190 subtests,one Windows symlink skip. Actual pinned schemas and read-only launcher pass with zero optimizer updates. Preserve failed output/logs and receive the new exact package; do not mutate the v15 manifest. [Evidence](../evaluations/flood-ner-successor-config-correction-20261018/README.md).
+
 **Checkout preservation:** Newly published hash-bound reports and test sources now retain exact bytes through scoped .gitattributes entries. A frozen historical Markdown report keeps its original hard-break whitespace and digest through a file-specific whitespace setting. Actual Windows-style index checkout verifies134 report/test/helper files and all four trainer implementation bindings; the additional repository-byte test passes with12subtests. No private payload bytes changed.
 
 ## October18: Deterministic retry-deadline publication test

@@ -169,6 +169,7 @@ def test_launcher_readonly_no_process_training_or_output(tmp_path,monkeypatch):
     called=[]
     monkeypatch.setattr(trainer,'verify_package',lambda *a:{'counts':{'train':345,'dev':60}})
     monkeypatch.setattr(trainer,'probe',lambda *a,**k:called.append(k) or {'python_version':'3.11.17','spacy_version':'3.7.5'})
+    monkeypatch.setattr(trainer,'validate_runtime_configs',lambda *a:{'state':'configuration_schema_verified'})
     before=list(tmp_path.rglob('*'))
     status=trainer.launch(tmp_path,tmp_path,tmp_path/'python.exe',tmp_path)
     assert status['training_started'] is False and called==[{'gpu':False}]
@@ -363,6 +364,7 @@ def test_trainer_package_rejects_changed_inputs(trainer_payload,failure):
 def test_concurrent_training_rejected_before_new_output(trainer_payload,monkeypatch):
     root,payload,model=trainer_payload
     monkeypatch.setattr(trainer,'probe',lambda *a,**k:{})
+    monkeypatch.setattr(trainer,'validate_runtime_configs',lambda *a:{'state':'configuration_schema_verified'})
     monkeypatch.setattr(trainer,'verify_gpu',lambda *a:None)
     artifacts=root/'backend/training/flood_ner/artifacts';artifacts.mkdir(parents=True)
     (artifacts/'successor-training-active.lock').write_text('other active writer',encoding='utf-8')
@@ -400,8 +402,8 @@ def test_coverage_is_actual_and_disallows_content(tmp_path,normalized):
     with pytest.raises(ValueError,match='category'):prep.safe_coverage(result)
 
 
-def test_full_portable_template_including_sha256_token():
-    template='''[paths]
+def constructed_template():
+    return '''[paths]
 train = "@@TRAIN@@"
 dev = "@@DEV@@"
 vectors = null
@@ -412,6 +414,8 @@ seed = 0
 model_manifest = "@@MODEL_MANIFEST@@"
 manifest_sha256 = "@@MODEL_MANIFEST_SHA256@@"
 tokenizer_file = "@@TOKENIZER@@"
+[components.ner.model]
+nO = null
 [corpora.train]
 path = ${paths.train}
 [corpora.dev]
@@ -422,11 +426,62 @@ max_epochs = 30
 eval_frequency = 35
 [training.batcher]
 size = 8
+[training.optimizer]
+@optimizers = "Adam.v1"
+L2 = 0.01
+L2_is_weight_decay = true
 [training.before_to_disk]
 output = "@@CHECKPOINT@@"
+[initialize.after_init]
+model_manifest = "@@MODEL_MANIFEST@@"
+manifest_sha256 = "@@MODEL_MANIFEST_SHA256@@"
 '''
+
+
+def test_full_portable_template_including_sha256_token():
+    template=constructed_template()
     trainer.verify_template(template,0)
     for bad in [template.replace('@@MODEL_MANIFEST_SHA256@@','@@UNEXPECTED@@'),
                 template.replace('@@DEV@@','research-holdout.spacy'),
                 template.replace('seed = 0','seed = 1')]:
         with pytest.raises(ValueError):trainer.verify_template(bad,0)
+
+
+@pytest.mark.parametrize('key,bad',[('L2','l2'),('L2_is_weight_decay','l2_is_weight_decay'),('nO','no')])
+def test_lowercased_spacy_arguments_rejected(key,bad):
+    template=constructed_template().replace(key+' =',bad+' =')
+    with pytest.raises(ValueError,match='case-sensitive'):trainer.verify_template(template,0)
+
+
+@pytest.mark.parametrize('seed',[0,1,2])
+def test_portable_generator_preserves_case_and_recipe(seed):
+    recipe=constructed_template()
+    rendered=trainer.portable_template(recipe,seed)
+    parsed=trainer.case_sensitive_parser(rendered)
+    assert parsed['training.optimizer']['L2']=='0.01'
+    assert parsed['training.optimizer']['L2_is_weight_decay']=='true'
+    assert parsed['components.ner.model']['nO']=='null'
+    assert parsed['system']['seed']==str(seed)
+    assert 'l2' not in parsed['training.optimizer'] and 'no' not in parsed['components.ner.model']
+
+
+def test_runtime_schema_failure_blocks_training_before_output(tmp_path,monkeypatch):
+    monkeypatch.setattr(trainer,'verify_package',lambda *a:{'counts':{'train':345,'dev':60}})
+    monkeypatch.setattr(trainer,'probe',lambda *a,**k:{'spacy_version':'3.7.5'})
+    monkeypatch.setattr(trainer,'validate_runtime_configs',lambda *a:(_ for _ in ()).throw(ValueError('schema invalid')))
+    monkeypatch.setattr(trainer.subprocess,'run',lambda *a,**k:pytest.fail('must not invoke training'))
+    destination=tmp_path/'backend/training/flood_ner/artifacts/new-run'
+    with pytest.raises(ValueError,match='schema invalid'):
+        trainer.launch(tmp_path,tmp_path,tmp_path/'python',tmp_path,start=True,seed=0,output=destination)
+    assert not destination.exists()
+
+
+def test_runtime_config_validator_uses_pinned_process_and_surfaces_errors(tmp_path,monkeypatch):
+    calls=[]
+    def failed(args,**kwargs):
+        calls.append(args)
+        return SimpleNamespace(returncode=1,stdout='',stderr='training.optimizer.l2: extra field')
+    monkeypatch.setattr(trainer.subprocess,'run',failed)
+    with pytest.raises(ValueError,match='extra field'):trainer.validate_runtime_configs(tmp_path/'python',tmp_path)
+    assert calls[0][1:3]==['-I','-B'] and '--internal-config-validation' in calls[0]
+    assert '--internal-training' not in calls[0]

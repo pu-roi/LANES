@@ -12,6 +12,8 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import io
+import uuid
 
 if __package__:
     from .successor_preparation import digest, inside, read, require, write_new
@@ -26,11 +28,38 @@ PAYLOAD_FILES = frozenset({'train.spacy', 'dev.spacy', 'tokenizer.bin', 'model-c
 TOKENS = {'TRAIN', 'DEV', 'TOKENIZER', 'MODEL_MANIFEST', 'MODEL_MANIFEST_SHA256', 'CHECKPOINT'}
 
 
+def case_sensitive_parser(text):
+    parser = configparser.RawConfigParser()
+    parser.optionxform = str
+    parser.read_string(text)
+    return parser
+
+
+def portable_template(recipe, seed):
+    """Change only portable bindings/seed; preserve spaCy's case-sensitive keys."""
+    require(type(seed) is int and seed in (0, 1, 2), 'supported seed required')
+    parser = case_sensitive_parser(recipe)
+    changes = {('paths', 'train'): '"@@TRAIN@@"', ('paths', 'dev'): '"@@DEV@@"',
+        ('system', 'seed'): str(seed), ('nlp.tokenizer', 'model_manifest'): '"@@MODEL_MANIFEST@@"',
+        ('nlp.tokenizer', 'manifest_sha256'): '"@@MODEL_MANIFEST_SHA256@@"',
+        ('nlp.tokenizer', 'tokenizer_file'): '"@@TOKENIZER@@"',
+        ('initialize.after_init', 'model_manifest'): '"@@MODEL_MANIFEST@@"',
+        ('initialize.after_init', 'manifest_sha256'): '"@@MODEL_MANIFEST_SHA256@@"',
+        ('training.before_to_disk', 'output'): '"@@CHECKPOINT@@"'}
+    for (section, key), value in changes.items():
+        require(parser.has_option(section, key), 'declared recipe field missing')
+        parser[section][key] = value
+    stream = io.StringIO()
+    parser.write(stream)
+    text = stream.getvalue()
+    verify_template(text, seed)
+    return text
+
+
 def verify_template(text, seed):
     require(set(re.findall(r'@@([A-Z0-9_]+)@@', text)) == TOKENS, 'config relocation fields differ')
     require(not re.search(r'(?i)(holdout|test\.spacy|\[corpora\.test\])', text), 'holdout supplied to trainer')
-    parser = configparser.RawConfigParser()
-    parser.read_string(text)
+    parser = case_sensitive_parser(text)
     require(set(parser['paths']) == {'train', 'dev', 'vectors', 'init_tok2vec'} and
             parser['system']['seed'] == str(seed), 'wrong training corpus or seed')
     require(parser['corpora.train']['path'] == '${paths.train}' and
@@ -40,6 +69,65 @@ def verify_template(text, seed):
     require(parser['training']['max_steps'] == '1000' and parser['training']['max_epochs'] == '30'
             and parser['training']['eval_frequency'] == '35' and parser['training.batcher']['size'] == '8',
             'declared recipe changed')
+    require(parser.has_section('training.optimizer') and
+            {'L2', 'L2_is_weight_decay'} <= set(parser['training.optimizer']) and
+            not {'l2', 'l2_is_weight_decay'} & set(parser['training.optimizer']),
+            'case-sensitive optimizer keys L2 and L2_is_weight_decay required')
+    require(parser.has_option('components.ner.model', 'nO') and
+            not parser.has_option('components.ner.model', 'no'),
+            'case-sensitive architecture key nO required')
+
+
+def validate_config_schemas(preparation):
+    """Resolve actual spaCy schemas/factories without creating a pipeline or updates.
+
+    Config parsing alone misses invalid registry arguments. Resolution constructs
+    uninitialized model graphs and an unused optimizer; it never initializes a
+    Language pipeline, invokes training callbacks, reads examples or calls train.
+    """
+    import importlib.util
+    import platform
+    import spacy
+    from confection import Config
+    from spacy.schemas import ConfigSchema
+    from spacy.util import registry
+
+    require(sys.version_info[:2] == (3, 11) and spacy.__version__ == '3.7.5',
+            'qualified Python 3.11 / spaCy 3.7.5 required for schema validation')
+    registry_path = Path(__file__).resolve().with_name('experiment_registry.py')
+    spec = importlib.util.spec_from_file_location('lanes_successor_validation_registry', registry_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    package = Path(preparation).resolve()
+    for seed in (0, 1, 2):
+        template = (package / f'train-seed-{seed}.cfg').read_text(encoding='utf-8')
+        verify_template(template, seed)
+        checkpoint = Path(__file__).resolve().parent / 'artifacts' / ('schema-only-' + uuid.uuid4().hex)
+        text = render_config(template, {'TRAIN': package / 'train.spacy', 'DEV': package / 'dev.spacy',
+            'TOKENIZER': package / 'tokenizer.bin', 'MODEL_MANIFEST': package / 'model-contract.json',
+            'MODEL_MANIFEST_SHA256': digest(package / 'model-contract.json'), 'CHECKPOINT': checkpoint})
+        config = Config().from_str(text, interpolate=True)
+        resolved = registry.resolve(config, schema=ConfigSchema, validate=True)
+        require(not resolved['training']['optimizer'].nr_update, 'schema check must not update an optimizer')
+        require(not checkpoint.exists(), 'schema check wrote a checkpoint')
+    return {'state': 'configuration_schema_verified', 'seeds': [0, 1, 2],
+            'python_version': platform.python_version(), 'spacy_version': spacy.__version__,
+            'optimizer_updates': 0, 'pipeline_created': False, 'pretrained_weights_loaded': False,
+            'training_started': False}
+
+
+def validate_runtime_configs(interpreter, preparation):
+    result = subprocess.run([str(Path(interpreter).resolve()), '-I', '-B', str(Path(__file__).resolve()),
+                            '--internal-config-validation', str(Path(preparation).resolve())],
+                            check=False, capture_output=True, text=True, timeout=120)
+    require(result.returncode == 0, 'spaCy configuration schema validation failed before training:\n'
+            + result.stderr[-6000:])
+    report = json.loads(result.stdout)
+    require(report.get('state') == 'configuration_schema_verified' and report.get('seeds') == [0, 1, 2]
+            and report.get('spacy_version') == '3.7.5' and report.get('optimizer_updates') == 0
+            and report.get('pipeline_created') is False and report.get('pretrained_weights_loaded') is False
+            and report.get('training_started') is False, 'invalid schema qualification response')
+    return report
 
 
 def verify_package(checkout, preparation, model_dir):
@@ -131,12 +219,13 @@ def launch(checkout, preparation, interpreter, model_dir, *, start=False, seed=N
     checkout, preparation, model_dir = map(lambda p: Path(p).resolve(), (checkout, preparation, model_dir))
     manifest = verify_package(checkout, preparation, model_dir)
     runtime = probe(interpreter, gpu=start or verify_device)
+    validate_runtime_configs(interpreter, preparation)
     if start or verify_device:
         verify_gpu(preparation, runtime)
     if not start:
         require(output is None and seed is None, 'seed/output require explicit --start-training')
         return {'state': 'verified_read_only', 'counts': manifest['counts'], 'runtime': runtime,
-                'gpu_verified': verify_device, 'training_started': False}
+                'gpu_verified': verify_device, 'configuration_schema_verified': True, 'training_started': False}
     require(type(seed) is int and seed in (0, 1, 2) and output is not None, 'explicit seed and new output required')
     output = Path(output).resolve()
     artifacts = checkout / 'backend/training/flood_ner/artifacts'
@@ -193,6 +282,9 @@ def internal_training(path):
 
 
 def main():
+    if len(sys.argv) == 3 and sys.argv[1] == '--internal-config-validation':
+        print(json.dumps(validate_config_schemas(Path(sys.argv[2])), sort_keys=True))
+        return
     if len(sys.argv) == 3 and sys.argv[1] == '--internal-training':
         internal_training(Path(sys.argv[2]))
         return
