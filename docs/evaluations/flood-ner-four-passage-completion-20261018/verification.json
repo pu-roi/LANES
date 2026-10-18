@@ -1,0 +1,119 @@
+{
+  "schema": "lanes-four-passage-completion-public-verification-v1",
+  "authorization_sha256": "d7af765749ea0807b294220b9ad7e851eb4b31e6b364e729587757b48fb11680",
+  "proposal": {
+    "training": 345,
+    "validation": 60,
+    "conditional_test": 60,
+    "english_positive": 27,
+    "english_negative": 3,
+    "taglish_positive": 27,
+    "taglish_negative": 3,
+    "baseline": 56,
+    "baseline_removed": 0,
+    "saved_positive_taglish_gains": 4
+  },
+  "readiness": {
+    "candidate_coverage_complete": true,
+    "history_verified": false,
+    "accounting_verified": false,
+    "ready_for_admission": false,
+    "ready_for_training": false,
+    "test_sealed": false
+  },
+  "curator": {
+    "status_sha256": "7cffe6c926510b240dcd878ee657dda6c29bab03be0530ef2db418f124f3ded2",
+    "verification_sha256": "72fa9aa3bbb5da23e869cfcbbbd75d27fb6b63947a95d3b80c051d7ee5161da1",
+    "receipt_aggregate_sha256": "ad645bde0aecf4ca9810106d77afd0799f6ec141d3bd39235d84e4ef6058f121",
+    "private_output_manifest_sha256": "953b5e77174ba3fcaa4b7e6f13b993e18c8e77d0bc4d91efc72f7c17b29dc144",
+    "complete_references": 72,
+    "entity_spans": 115,
+    "guards_passed": 39,
+    "guards_failed": 0,
+    "predecessor_files_unchanged": 501,
+    "predecessor_hash_failures": 0,
+    "unresolved_references_held_unscored": 62
+  },
+  "frontier": {
+    "source_index": 83,
+    "newly_reviewed_sources": 27,
+    "full_source_reads": 27,
+    "source_gain_dispositions": 3,
+    "source_no_additional_positive_dispositions": 14,
+    "source_specific_hold_dispositions": 10,
+    "prior_review_disposition_sources": 14,
+    "article_cap_preserved_sources": 7,
+    "remaining_unreviewed_frontier": 35,
+    "prior_finite_review_sources": 15,
+    "prior_review_sources_now_at_article_cap": 1,
+    "all_saved_exhausted": false
+  },
+  "history_and_accounting": {
+    "scoped_session_files_checked": 44,
+    "local_zip_inventories_checked": 19,
+    "original_v5_calls_required": 11,
+    "original_v5_calls_verified": 0,
+    "claimed_identity_count": 765,
+    "inherited_uncertain_slots_preserved": 4,
+    "claimed_publisher_attempts": 89,
+    "headroom_certified": false,
+    "unresolved_history_payloads": 12
+  },
+  "fresh_tests": {
+    "unique_passed": 324,
+    "skipped": 1,
+    "failed_final": 0,
+    "passing_subtests": 145,
+    "runs": [
+      {
+        "scope": "transport_review_privacy_inventory_checkout_and_receipt12",
+        "passed": 221,
+        "skipped": 1,
+        "passing_subtests": 122
+      },
+      {
+        "scope": "additional_schema_reference_export_regressions",
+        "passed": 102,
+        "passing_subtests": 23,
+        "junit_sha256": "89e38b82fe90a664ef00f4faf2a137b8d9221b707ba6c375f1443bf2732616a1"
+      },
+      {
+        "scope": "final_receipt_recovery13_including_competing_writers",
+        "passed": 13,
+        "passing_subtests": 13,
+        "junit_sha256": "147a0afcdc77d1026429543e4efc7a4a187188e75a31be204fe1e502766487fc"
+      }
+    ],
+    "duplicate_test_passes_excluded": 12,
+    "duplicate_subtest_passes_excluded": 13,
+    "initial_three_suite_harness_import_error_retained": true,
+    "harness_correction": "run the three legacy suites from backend so training imports resolve"
+  },
+  "protected_inputs": {
+    "protected_files": 7193,
+    "unchanged_files": 7193,
+    "missing_files": 0,
+    "changed_files": 0
+  },
+  "protected_input_manifest_sha256": "7ba63742ad72791e0d144262ae1559f88bef02fdbed7ef7c56d7a8c955fd74f0",
+  "implementation_sha256": "17de3c6f8128744f69b1e0c45bf3f212eb66d4ee84ad622aab38529ed4160d99",
+  "test_source_sha256": "b2c5e8a80dab0e7a0850a7461c5c7383074883efc3b4a8b089a5616686f76f90",
+  "new_search_requests": 0,
+  "new_publisher_requests": 0,
+  "budget_increase": false,
+  "readonly_drive_metadata_checked": true,
+  "production_api_changes": false,
+  "dependency_changes": false,
+  "database_changes": false,
+  "admission": false,
+  "partition_freeze": false,
+  "test_sealing": false,
+  "training_export": false,
+  "inference": false,
+  "training": false,
+  "upload": false,
+  "commit": false,
+  "push": false,
+  "references": "AI-assisted silver",
+  "human_gold": false
+}

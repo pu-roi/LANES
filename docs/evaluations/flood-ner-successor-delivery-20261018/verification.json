@@ -1,0 +1,39 @@
+{
+  "actual_staged_checkout_byte_checks": 134,
+  "added_byte_preservation_report_directories": 23,
+  "added_byte_preservation_test_files": 9,
+  "additional_checkout_test": {
+    "passed": 1,
+    "subtests_passed": 12
+  },
+  "archive_and_companions_readback_verified": true,
+  "archive_bytes": 153734,
+  "archive_sha256": "7fb4f16f4726f9dc104c5236a5151543a7831cf64987e356dfe165b060ce334a",
+  "archive_url": "https://drive.google.com/file/d/1xaa9a6WV2L8t78O9XoR0NRmZqDJemYYm/view?usp=drivesdk",
+  "counts": {
+    "dev": 60,
+    "research_holdout": 60,
+    "train": 345
+  },
+  "desktop_gpu_verified": false,
+  "desktop_receipt_verified": false,
+  "drive_delivery_complete": true,
+  "fresh_subtests_passed": 190,
+  "fresh_tests_passed": 344,
+  "fresh_tests_skipped": 1,
+  "implementation_bindings_matched": 4,
+  "models_environments_or_credentials_uploaded": false,
+  "owner_only_verified": true,
+  "payload_manifest_sha256": "ec3abd74e2201f116a90a90a3dc203877c3f511284b11374d7beb381c1faa11a",
+  "payload_member_count": 12,
+  "preparation_test_counts_historical": {
+    "passed": 215,
+    "subtests": 165
+  },
+  "private_delivery_receipt_sha256": "0069c6a85b66ef31de91cf995a69b0cf6b91d22042c38e8fc715874c4de55552",
+  "private_drive_folder": "https://drive.google.com/drive/folders/1WuhvnWfKybY8lbKKO55aToTUQ_PY6RqJ",
+  "production_api_dependency_database_changes": false,
+  "research_holdout_uploaded": false,
+  "schema": "lanes-public-successor-delivery-v1",
+  "training_started": false
+}

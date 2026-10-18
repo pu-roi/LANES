@@ -1,0 +1,60 @@
+{
+  "task": "held_leads_source_evidence_gate_review",
+  "review_completed": true,
+  "zero_network_operations_used": true,
+  "required_usable_taglish_positive_windows": 7,
+  "total_new_raw_identities_reviewed": 105,
+  "total_reconsidered_holds": 86,
+  "supported_resolutions": 0,
+  "shortage_changed": false,
+  "current_shortage": 7,
+  "unsupported_source_or_alias_identity_holds": {
+    "count": 67,
+    "disposition": "RETAINED_HOLD",
+    "evaluation_finding": "None of the 67 identities are saved publisher articles in the repository. They represent uncaptured third-party URLs, social media links, video pages, or search hit tokens. No demonstrable source-use reuse basis exists in saved workspace material without prospective capture.",
+    "required_for_resolution": "Requires an exact original publisher article capture and source-specific reuse/extent evidence under a separately authorized bounded scope. Social/video/homepage/media tokens are not articles; rewriting an alias into an unexposed identity without reservation is strictly forbidden."
+  },
+  "history_or_component_identity_holds": {
+    "count": 10,
+    "breakdown": {
+      "HISTORY_CONTINUING_EPISODE_HOLD": 3,
+      "HISTORY_NAMED_EPISODE_HOLD": 4,
+      "HISTORY_PROGRAMME_OR_INQUIRY_COMPONENT_HOLD": 2,
+      "HISTORY_UNRESOLVED_ASSET_COMPONENT_HOLD": 1
+    },
+    "disposition": "RETAINED_HOLD",
+    "evaluation_finding": "Evaluated against source-only historical bundles and existing datasets. All 10 identities share named weather episodes (Quinta, Tisoy, Maymay/Habagat), continuing rainfall sequences (Ofel/Pepito, Pangasinan continuous rain), or government flood-control programmes/inquiries (Bayanihan sa Estero, Bulacan ghost project inspection, Oplan Kontra Baha, Mindoro asset) already present in historical training/validation data. Different publication dates, reporting districts, phrasing, or article URLs do not establish event or reporting independence.",
+    "required_for_resolution": "Provide saved source-only evidence separating an actual named weather episode, physical asset, or reporting chain from already exposed components. Different dates, districts, wording, or article identifiers alone do not clear a relationship. Otherwise retain the hold."
+  },
+  "unqualified_metadata_identity_holds": {
+    "count": 6,
+    "disposition": "RETAINED_HOLD",
+    "evaluation_finding": "Fragmentary snippet tokens only; no complete publisher article body or publication evidence exists in saved material.",
+    "required_for_resolution": "An exact complete supported original article identity and verified publication evidence within January 1, 2017 - October 14, 2026 before capture; snippet fragments or ambiguous tokens alone do not qualify."
+  },
+  "reference_type_or_positive_capacity_identity_holds": {
+    "count": 2,
+    "breakdown": {
+      "REFERENCE_TYPE_AND_ORIGIN_HOLD": 1,
+      "NO_SUPPORTED_POSITIVE_LOCATION_CAPACITY_HOLD": 1
+    },
+    "disposition": "RETAINED_HOLD",
+    "evaluation_finding": "Source-contained mentions lack supported explicit six-class positive location entity or coherent positive mixed passage; generic references (agencies, regional water bodies, bare untyped province names) do not qualify as positive place entities.",
+    "required_for_resolution": "Source-contained explicit type and sense for the place, a coherent location-bearing original mixed passage, and supported original extent. Unknown references stay unscored."
+  },
+  "target_language_capacity_identity_holds": {
+    "count": 1,
+    "disposition": "RETAINED_HOLD",
+    "evaluation_finding": "English-only report (burst pipe) without Taglish lexical mixing clauses in body. Existing English quota is already full (30/30).",
+    "required_for_resolution": "An unchanged original passage with Filipino clauses and untranslated English common or technical material, plus a complete six-class positive location; English-only reports and names alone do not fill the remaining Taglish quota."
+  },
+  "permanent_exclusions_retained": {
+    "count": 19,
+    "breakdown": {
+      "HISTORICAL_EXACT_SOURCE_EXCLUDED": 3,
+      "PUBLICATION_WINDOW_EXCLUDED": 7,
+      "FLOOD_ROLE_IRRELEVANCE_EXCLUDED": 9
+    },
+    "disposition": "RETAINED_EXCLUSION"
+  }
+}

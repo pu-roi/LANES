@@ -1,0 +1,50 @@
+{
+  "task_complete": true,
+  "ready_for_admission": false,
+  "test_sealed": false,
+  "proposed_training": 345,
+  "proposed_validation": 60,
+  "conditional_test": 42,
+  "test_target": 60,
+  "missing_positive_english": 6,
+  "missing_positive_taglish": 12,
+  "joint_witness": {
+    "english_positive": 21,
+    "english_negative": 3,
+    "taglish_positive": 15,
+    "taglish_negative": 3
+  },
+  "training_english_taglish": [
+    170,
+    175
+  ],
+  "validation_english_taglish": [
+    38,
+    22
+  ],
+  "validation_taglish_road": 0,
+  "validation_taglish_landmark": 1,
+  "validation_short_code_theme": 0,
+  "development_membership_unchanged": true,
+  "known_tokenizer_failure_still_held": true,
+  "provider_outcome": "One MAXRECORDS=1 request returned HTTP 429; stopped with no retry, fallback or article capture. The required provider response bound was not demonstrated.",
+  "actual_exposed_urls": 204,
+  "pending_reserved_url_slots": 1,
+  "conservative_possible_exposure": 205,
+  "remaining_unreserved_url_slots": 95,
+  "capture_attempts": 66,
+  "remaining_capture_attempts": 34,
+  "url_limit": 300,
+  "capture_attempt_limit": 100,
+  "historical_202_of_200_breach_preserved": true,
+  "new_article_captures": 0,
+  "new_proposals": 0,
+  "next_requirements": [
+    "Review the failed provider receipt and pending reservation before any separately scoped future attempt. Do not retry this halted session, reset its baseline or switch to unbounded search.",
+    "Resolve material history/source-use/reference questions using exact named metadata evidence; do not require a new desktop inventory by default.",
+    "Obtain one jointly compatible 60-passage test meeting unchanged language/positive quotas and all source/group/offset/tokenizer guards.",
+    "Only after the independent-test boundary passes, prepare admission, grouped freeze, exports and the desktop GPU handoff as a separate task."
+  ],
+  "references": "AI-assisted silver; neither human gold verification nor measured model improvement.",
+  "desktop_action": "None; can remain off."
+}

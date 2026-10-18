@@ -1,6 +1,120 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 17, 2026, 3:25 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+**Checkout preservation:** Newly published hash-bound reports and test sources now retain exact bytes through scoped .gitattributes entries. A frozen historical Markdown report keeps its original hard-break whitespace and digest through a file-specific whitespace setting. Actual Windows-style index checkout verifies134 report/test/helper files and all four trainer implementation bindings; the additional repository-byte test passes with12subtests. No private payload bytes changed.
+
+## October18: Deterministic retry-deadline publication test
+
+**Status:** Resolved · **Severity:** Low (test only) · **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The delivery suite failed after the real calendar passed a constructed receipt's one-day deadline. The fixture used a fixed October17 receipt clock but compared it with the real current clock. The deadline assertion now patches continuation's clock to the same fixture time, preserving the rejection check; no production or acquisition helper changes. The original test bytes/digest are retained privately. Changed `backend/tests/test_flood_ner_bounded_discovery.py`; final344 tests/190subtests pass with one symlink skip. [Delivery evidence](../evaluations/flood-ner-successor-delivery-20261018/README.md).
+
+**October18 successor preparation:** Successor preparation regression fixes: accept digits in portable SHA256 placeholder names; verify actual test source hashes as well as implementation evidence; reject extra trainer payload files and incomplete implementation bindings. Initial stale metadata/partial assembly remains preserved; final manifests identify accepted qualified exports. Fresh215 research tests/165subtests pass. No production changes or training. [Evidence](../evaluations/flood-ner-successor-preparation-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+> **Last Updated:** October 18, 2026, 11:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoint status below is historical; current successor preparation and pending delivery are recorded in the linked report above.
+
+**Current proposal: 345 training / 60 validation / 60 conditional test passages.** Saved evidence supplies all four missing Taglish positives across three sources; all previous 56 remain. The joint test proposal has 30 English / 30 Taglish, each with 27 positives and three genuine negatives. **Candidate coverage is complete; history/independence clearance and acquisition accounting remain blocked.** Eleven original v5 request/full-result pairs, inherited publisher/alias evidence and material historical scope remain unresolved. No new search or article request ran. Admission, freezing, sealing, exports and training are still pending; the desktop can remain off. [Current evidence](../evaluations/flood-ner-four-passage-completion-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Saved search query fields differ; Gemini original evidence pending
+
+- **Status:** Investigating original evidence; intake safeguards implemented. **Severity:** Medium for acquisition accounting. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** Five of eleven v5 saved summary query fields differ from reservation query fields; inherited source counters cannot certify original result exposure.
+- **Root cause:** The discrepancy's origin is not established by authentic tool receipts. Neither saved field is assumed authoritative, and no candidate is removed on this metadata finding alone.
+- **Change/files:** receipt_evidence.py and constructed tests check exact original-fragment byte/hash bindings, stale or duplicated evidence, partial results, regenerated summaries, raw aliases and no automatic readiness. Both query variants stay in the private ledger; the original Gemini recovery guide requests existing records only.
+- **Outcome:** Conditional345/60/60 preserved; 107 fresh tests pass and 7,245 protected files unchanged. No new search/capture. Original evidence and material historical scope remain required. [Recovery report](../evaluations/flood-ner-gemini-evidence-recovery-20261018/README.md).
+
+## October 18: Scoped original-receipt extraction and bounded saved-frontier review
+
+- **Status:** Extraction handling resolved; original receipt/history evidence remains unavailable. **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/root cause:** Saved search summaries and inherited counters cannot prove full original result exposure; copying whole mixed tool logs could leak unrelated context.
+- **Change/files:** Standard-library receipt_recovery.py admits only explicit hash/session/checkout/call scopes and pure search records; constructed tests reject wrong provenance, malformed/truncated pairs, mixed outputs, overwrites and competing writers.
+- **Outcome:** No authentic v5 pairs recovered in the bounded known scope and no collection dispatched. Saved source-only reassessment independently closes the four-passage coverage gap without clearing history/accounting.
+
+## October 18: Metadata-only proposal reuse separated from substantive exposure
+
+- **Status:** Resolved for scoped proposal handling; dataset still short four Taglish positives. **Severity:** Medium for progress/protocol clarity. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/root cause:** Source identity/role disclosures were handled as quarantine without separating metadata visibility from passage/reference exposure or actual fitted use, making saved candidates appear automatically unusable.
+- **Change:** Explicit v10 proposal-only amendment and new exposure_review.py distinguish metadata-only, substantive, unknown and fitting/tuning cases. Nine constructed regressions prohibit clearing other gates or unlocking release. Historical quarantine artifacts are unchanged.
+- **Outcome:** New isolated saved-evidence replay selects 56 jointly compatible passages while preserving 49; source-exact context repairs and eligible-source alternatives are separate records. Real development/event/component holds remain. See [evidence and verification](../evaluations/flood-ner-latest-candidate-reuse-20261018/README.md).
+
+
+**Historical v9 checkpoint:** all 27 mistaken reductions were reversed, restoring 49 and preserving 53. V10 below/above separately reconsiders metadata-only holds and latest saved windows; the old protocol comparison remains preserved.
+
+## October 18: Incorrect baseline reduction reversed
+
+- **Status:** Resolved for all 27 disputed baseline reductions; final dataset readiness remains open. **Severity:** High for research progress reporting. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** V8 reduced 49 conditional test members to 22 and current status implied 38 replacements were required.
+- **Root cause:** Older pending source/proposal fields were joined without carrying later source-only semantic review decisions and conservative reviewed grouping. Conditional candidate progress and final evidence clearance were conflated.
+- **Correction:** New private v9 evidence-bound overlays replay exact references through unchanged shared gates; all 49 are restored, with 0 baseline removals. Exact historical 53 remains compatible; four existing protocol restrictions remain separate. A public aggregate progress contract and ten constructed regressions prevent interpreting pending evidence as erased data or an automatic collection requirement.
+- **Files/evidence:** New review_progress.py/tests, isolated v9 recovery package and [public recovery report](../evaluations/flood-ner-baseline-recovery-20261018/README.md); synchronized current plan/roadmap/guides. Original captures, references, models, scores, v8 artifacts and all ten code repairs remain unchanged.
+
+
+**Superseded v8 progress reduction:** its 22-passage result omitted later source-bound review decisions. V9 reverses all 27 mistaken reductions; the v8 report remains preserved. The ten software repairs remain in force.
+
+Earlier checkpoints below retain their historical counts; v7 readiness claims are superseded.
+
+## October 17: Ten v7 research-workflow defects repaired
+
+- **Status:** Software repairs complete; dataset readiness blocked. **Severity:** High for research provenance. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem/root cause:** Private one-off scripts replaced evidence gates with inherited counters, concatenation, first-occurrence lookup and fixed readiness/guard totals; receipt writes could overwrite evidence, failures escaped accounting, missing references became negatives and candidate identities crossed the aggregate boundary.
+- **Repair:** Reusable capture/review modules enforce hash-bound preflight, immutable receipts and append-only accounting, guarded parsing, response/alias validation, complete occurrence references, joint eligibility selection, safe output schemas and unconditional review-only export rejection. Constructed regressions cover all ten findings.
+- **Outcome:** Historical artifacts retained; strict isolated selection22, baseline reductions27, all11 new windows held. Missing original receipts, unknown exposure and source-history/grouping evidence prevent acquisition/admission/sealing/training. See [verification and missing-evidence requirements](../evaluations/flood-ner-v7-workflow-repair-20261017/README.md).
+
+## October 17: V5 receipt-completeness and handoff-exposure audit
+
+- **Status:** Blocked for collection; exposure quarantined. **Severity:** High for evaluation provenance. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** V5 summary reports claimed complete collection accounting and 53 supported test members. V6 verified local wrappers, journal and registry but could not establish complete original search-tool request/result provenance. A coordinator-visible handoff also identified two selected article groups.
+- **Root cause:** Saved hash-bound query/content wrappers do not establish original unfiltered tool responses; some query fields differ from echoed content. Candidate-specific handoff details crossed the aggregate-only boundary. File hashes validate bytes, not completeness or isolation.
+- **Containment:** No network dispatched. Preserve old reports and the 53-member artifact; hold four affected Taglish members, leaving 49 conditional passages and an eleven-positive Taglish deficit. Additional possible v5 exposure is unquantified and distinct from the four inherited uncertain slots; remaining allowance is unavailable.
+- **Recovery/files:** New private v6 audit/quarantine/validation package, aggregate [evaluation](../evaluations/flood-ner-taglish-budget-continuation-20261017/README.md), synchronized task/roadmap/operator/training status. Recover original tool-call request/result evidence for isolated reconciliation; never reconstruct missing receipts or rerun searches as proof. No production source, dependency or schema changed.
+
+## October 17: Training-folder README current-status correction
+
+- **Status:** Resolved. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** The training-folder README still led with 345/57 development counts, 37 conditional test passages and a request to run the desktop inventory, although later reviews had already received and reconciled it.
+- **Root cause:** Current status was updated in project guides and reports without synchronizing the training-folder entry point.
+- **Resolution:** Add a dated current successor/collection status and explicit desktop-action guidance; retain earlier checkpoint paragraphs as historical. Historical fixed-400 export/launcher bindings remain intentionally unchanged and require a versioned successor preparation task.
+- **Files changed:** [training README](../../backend/training/flood_ner/README.md). No training code, private data, export or model was changed by this documentation correction.
+
+## October 17: Month-only source-history prescreen contained
+
+- **Status:** Resolved for this review by holding the affected source; history separation remains unresolved.
+- **Severity:** Medium. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- **Problem:** An initial source prescreen considered only the following month and missed a named weather episode crossing a month boundary.
+- **Root cause:** Month-only candidate screening was insufficient to establish reporting-component independence.
+- **Resolution:** Full-source isolated history review identified the relationship, retained the source hold and excluded it from all selection gains. All 42 prior witness members remain supported. Lexical nonmatches and calendar differences do not establish event independence.
+- **Files/evidence:** Separate private acquisition/review dispositions and [safe aggregate verification](../evaluations/flood-ner-taglish-targeted-collection-20261017/curator-verification-manifest.json); no production code or frozen helpers changed. The report records two new source-history holds and seven supported selection gains.
+
+## Resolved: malformed Location contained multiple redirect identities
+
+- **Status / severity / investigator:** Resolved offline; P2 acquisition-accounting defect. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem / root cause:** The first publisher wrapper interpreted a malformed Location field with multiple URL tokens as one redirect identity. Header cardinality alone did not establish one identity.
+- **Fix:** Preserve headers before parsing, retain and count all whitespace/comma-separated returned targets, then reject the contract violation and hold the entire new batch. Duplicate aliases remain recorded without duplicate identity debits. A failing mock was reproduced before the correction.
+- **Files / verification:** `backend/training/flood_ner/known_source_capture.py` and its focused test file. Final focused suite28 passes; combined129 pass/1 Windows symlink skip. Execution of the original wrapper had six skips and zero GETs; exact original bytes are preserved, with no post-correction live rerun or authorization reclaim. [Evidence](../evaluations/flood-ner-six-known-leads-20261017/README.md).
+
+## Investigated: additional source-history relationships reduce the test witness
+
+- **Status / severity / investigator:** History holds applied; readiness remains open; P2 evaluation-independence concern. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem / evidence:** Pre-screening the exact six already exposed leads found reporting-component history conflicts. Source-bound comparison holds three saved sources and eight prior selected passages: five under direct inquiry links and three under unresolved precursor separation.
+- **Cause / containment:** Earlier per-URL uncaptured-lead status did not establish source-component independence. Bind exact source hashes, dates, identities and supported relationships privately; retain conservative holds without asserting physical incident identity. No lead is substituted or fetched.
+- **Files / verification:** New private disposition/history package and public aggregate report; task plan, roadmap, progress, index and guides synchronized. Prior datasets and the historical50 witness remain unchanged; current compatible witness42, with five English/thirteen Taglish positives missing. No new individual-content disclosure. [Evidence](../evaluations/flood-ner-six-known-leads-20261017/README.md).
+
+## Contained: isolated-curator progress disclosed individual test context
+
+- **Status / severity / investigator:** Contained; P2 research-isolation protocol failure. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** One saved-review progress message included individual location identities and typing context instead of approved aggregates. The final aggregate files do not contain those details.
+- **Root cause:** A narrative progress update bypassed the aggregate-only reporting boundary. Final export validation alone does not prevent identity-bearing intermediate messages.
+- **Containment:** Stop such updates; preserve predecessor packages and record the incident without republishing identities. Quarantine five sources across four reporting components, covering seven baseline proposals and two new reference revisions. None of the original 50 selected witness members was affected. Do not use disclosed context to guide annotations or claim that no individual information ever reached the coordinator.
+- **Verification / scope:** The new private package records source-specific quarantine and recomputed selection; 28 constructed rejection guards pass, including unsafe output and premature sealing. These checks do not erase the actual progress-message failure. The test remains unsealed. The public report, readiness, task plan, roadmap and operator/desktop guides record the safe aggregate outcome. No production code or dependencies changed. [Evidence](../evaluations/flood-ner-saved-test-evidence-review-20261017/README.md).
+
+## Investigated: ordinary-search URL accounting missed scheme-less aliases
+
+- **Status / investigator:** Contained in the isolated research session; no further network activity. [@roicambe](https://github.com/roicambe) (Roi Cambe).
+- **Problem:** The initial HTTP-only extraction reported 288 actual URL identities, omitting eight scheme-less media/host aliases in full search responses.
+- **Root cause:** The private acquisition extractor recognized explicit HTTP(S) URLs but did not account for all scheme-less identities before filtering. Original reservations therefore used incomplete counts.
+- **Containment and evidence:** Preserve the original records and append eight corrections with batch attribution. Chronological full-response replay establishes 296 actual identities plus four inherited uncertain slots, exactly 300; no corrected actual batch exceeded the ceiling. Do not claim retroactive compliance of original reservation bookkeeping. No URL allowance remains.
+- **Scope / outcome:** No production/helper source-code repair or renewed discovery was performed. The private ledger and safe aggregate disclose the omission; the public report, task plan and operator guide record the corrected boundary. Any future search must account for scheme-less aliases before dispatching another query. [Evidence](../evaluations/flood-ner-non-gdelt-search-20261017/README.md).
 
 ## Investigated: targeted test discovery exceeded its URL exposure ceiling
 
@@ -8,6 +122,10 @@
 - **Problem:** The cumulative independent-test search exposure reached 202 URLs against the fixed 200 ceiling, adding 17 new URLs against an allowance of at most 15. No capture-attempt ceiling breach occurred.
 - **Root cause:** A final search fan-out returned 11 unseen URLs when nine slots remained. The result count was not bounded tightly enough before exposure; truncating the recorded ledger afterward would conceal the breach.
 - **Containment:** Stop all searches/fetches immediately; retain every exposure and hold the entire final batch. Review only the five successful captures obtained beforehand. Mark acquisition-budget compliance false, keep the test unsealed and admit/score zero records. No retroactive budget expansion or selective deletion. Future discovery needs a mechanism that bounds exposure before it happens, with explicit scope resolution before further collection.
+- **October 17 follow-up:** The user explicitly authorized a prospective cumulative 300-URL/100-attempt ceiling. Preserve the original 202/200 violation; do not retrospectively claim that run passed. The next isolated run reused saved discoveries and reached 202/300 URLs and 66/100 attempts. Unbounded-result search stays disabled; source/reference/history holds and test sealing remain separate gates. [Follow-up](../evaluations/flood-ner-desktop-history-gap-completion-20261017/README.md).
+- **Bounded adapter follow-up:** Forty constructed adapter tests pass. The first isolated GDELT MAXRECORDS=1 probe returns HTTP 429; preserve its response, count two diagnostic URLs and retain one uncertain reserved slot. Actual cumulative exposure is 204 plus one pending slot; 95 unreserved URL slots and 34 attempts remain. Stop with no retry/fallback; provider contract compliance is unverified. The historical overrun remains recorded. [Evidence](../evaluations/flood-ner-bounded-discovery-20261017/README.md).
+- **Controlled retry follow-up:** Add explicit predecessor-bound continuation with persistent exclusive claims, stale-baseline rejection, inherited reservation debits and retry deadlines. The sole authorized retry returns HTTP 429; no new identity/capture/proposal. Preserve 204 actual URLs plus four uncertain slots (92 unreserved / 34 attempts remain), the original overrun and all predecessor bytes. No further retry/fallback under this authorization. [Outcome](../evaluations/flood-ner-controlled-retry-20261017/README.md).
+- **Final diagnostic follow-up:** Research helper now owns headers/transport, shares a persistent completion-based 30-second pacing gate, preserves allowlisted response headers before body reads and enforces one-use diagnostic authorization. 0 diagnostic GET(s), outcome `not_contacted_pre_dispatch_guard_failure`; no article collection or guaranteed-cause/fix claim. Preserve 204 actual identities plus 4 uncertain slots. Stop GDELT troubleshooting; return to NER planning. [Evidence](../evaluations/flood-ner-final-gdelt-diagnostic-20261017/README.md).
 - **Files / verification:** Separate private targeted curator and desktop-history handoff packages; budget/alias/post-breach selection rejection checks and safe aggregate reports. Portable standard-library history helper, desktop instructions and laptop verification address the separate unknown-history gap. [Evidence](../evaluations/flood-ner-targeted-test-history-handoff-20261017/README.md).
 
 ## Investigated: recorded backup completeness differs from unknown external history

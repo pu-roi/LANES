@@ -1,0 +1,43 @@
+{
+  "task_complete": true,
+  "ready_for_admission": false,
+  "test_sealed": false,
+  "proposed_training": 345,
+  "proposed_validation": 60,
+  "conditional_test": 49,
+  "previous_conditional_test": 42,
+  "gained_english_positive": 5,
+  "gained_taglish_positive": 2,
+  "baseline_members_retained": 42,
+  "joint_counts": {
+    "english_positive": 27,
+    "english_genuine_negative": 3,
+    "taglish_positive": 16,
+    "taglish_genuine_negative": 3
+  },
+  "missing_positive_english": 0,
+  "missing_positive_taglish": 11,
+  "cumulative_raw_identities": 377,
+  "uncertain_slots": 4,
+  "url_ceiling": 400,
+  "remaining_url_slots": 19,
+  "publisher_attempts": 82,
+  "publisher_ceiling": 100,
+  "remaining_publisher_attempts": 18,
+  "collection_closed": true,
+  "new_history_held_sources": 2,
+  "remaining_unprovided_history_payloads": 12,
+  "references": "AI-assisted silver; same-agent source-only review",
+  "no_admission_freeze_seal_export_inference_training_upload_push": true,
+  "desktop_action": "None; desktop can remain off.",
+  "next_requirements": [
+    "One compatible conditional witness contains forty-nine passages; all forty-two baseline members remain. Eleven additional operational Taglish positives are still required.",
+    "Sixteen new complete references do not imply sixteen usable additions: six remain eligibility-held, three eligible references are unused under joint constraints, and seven enter the conditional witness.",
+    "Two new sources remain on history holds. One initial prescreen considered only the next month and missed a named weather episode across the month boundary; full-source review contained it before any witness gain.",
+    "Fifty-eight effective references remain unresolved and unscored. Bare place types, source extent, title/sense and language gaps are not converted into negative examples.",
+    "Collection is closed after nine fully accounted searches and eight publisher GETs. Nineteen raw-identity slots and eighteen publisher attempts are arithmetic remainder, not authorization to continue.",
+    "The prior individual-context disclosure failure and all exposure holds remain recorded. This task disclosed no additional individual test content to the coordinator.",
+    "Twelve older history payloads remain unavailable; scoped checks do not certify absent external, deleted or unrecorded exposure.",
+    "No independent gold adjudication, admission, freeze, seal, scoring, export, inference or training is established."
+  ]
+}

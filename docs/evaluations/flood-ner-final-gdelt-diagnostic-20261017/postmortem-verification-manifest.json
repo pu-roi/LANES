@@ -1,0 +1,24 @@
+{
+  "aggregate_status_sha256": "9c17e6cb4d4305e64892308a864de4fbf3afbcbc922375455c97e27e6e967fc2",
+  "completed": true,
+  "completed_diagnostic_and_persistent_gate_files_preserved": true,
+  "constructed_fault_cases_passed": 3,
+  "contains_source_text_urls_titles_entities_or_individual_labels": false,
+  "coordinator_read_allowlist": [
+    "aggregate-status.json",
+    "verification-manifest.json"
+  ],
+  "exact_original_failure_cause_claimed": false,
+  "new_live_network_requests": 0,
+  "original_adapter_snapshot_sha256": "fc1cf72c1aa45a7c0c669d20d5c7282ce13b02e1c8c7c6dfe0295c733254aafe",
+  "original_authorization_reopened": false,
+  "original_live_driver_ast_replacement_scan_passed": true,
+  "private_output_files_hashed": 15,
+  "private_output_hash_manifest_sha256": "fa7ce3e3d5c06776fb0ede1625ffa6443f883b51a19824589b725565a57c8abd",
+  "protected_files_hash_verified_unchanged": 13,
+  "publisher_requests": 0,
+  "ready": false,
+  "safe_for_parent": true,
+  "schema": "lanes-final-diagnostic-postmortem-safe-verification-v1",
+  "sealed": false
+}

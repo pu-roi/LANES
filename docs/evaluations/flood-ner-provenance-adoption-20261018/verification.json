@@ -1,0 +1,63 @@
+{
+  "accounting_verified": false,
+  "actual_admission_performed": false,
+  "chosen_option": "LIMITED_PROVENANCE_RESEARCH",
+  "commit_performed": false,
+  "development": {
+    "actual_admission_performed": false,
+    "considered": 568,
+    "exclusions": 64,
+    "holds": 99,
+    "input": {
+      "sha256": "83b2d3e368dec7a14353d9a7023058532697254a74e809028f3f8788087c7860"
+    },
+    "membership_or_annotations_changed": false,
+    "partition_language_counts": {
+      "dev": {
+        "english": 38,
+        "taglish": 22
+      },
+      "train": {
+        "english": 170,
+        "taglish": 175
+      }
+    },
+    "partitions": {
+      "dev": 60,
+      "train": 345
+    },
+    "schema": "lanes-successor-development-design-input-v1",
+    "selected": 405
+  },
+  "direct_human_approval_recorded": true,
+  "exports_created": false,
+  "fresh_record_summary_checks": true,
+  "global_history_verified": false,
+  "human_approval_sha256": "fcacd72187768b303eaf81489f96a006cbaf765ccf99229bfd66ac2da5246358",
+  "inference_performed": false,
+  "new_collection": false,
+  "new_software_suite_executed": false,
+  "new_source_or_tokenizer_review_performed": false,
+  "partitions_frozen": false,
+  "preparation_specification_sha256": "c8406278e767af7f4cbb586430239e0e827d82a05f200a1c7e221ac47b78071f",
+  "prior_assessment_sha256": "e4ac527dc0e4ec9bbdf77641b25dcbe11e7fcd7d4d9ee6b1775c478d6e25affe",
+  "prior_decision_proposal_hash_preserved": true,
+  "production_api_dependency_database_changes": false,
+  "protocol_adopted": true,
+  "protocol_sha256": "5878f5afd4bcf348c26f1fe8766eb5055b54e3f27ddf7d79d6a53b99b6169116",
+  "push_performed": false,
+  "research_holdout": {
+    "english_negative": 3,
+    "english_positive": 27,
+    "prior_checked_entity_spans": 96,
+    "prior_checked_source_groups": 37,
+    "selected": 60,
+    "taglish_negative": 3,
+    "taglish_positive": 27
+  },
+  "schema": "lanes-provenance-adoption-verification-v1",
+  "test_sealed": false,
+  "total_proposed": 465,
+  "training_performed": false,
+  "upload_performed": false
+}

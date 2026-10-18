@@ -103,3 +103,39 @@
 # Portable history-handoff evidence retains the bytes tested on the laptop.
 /backend/tests/test_flood_ner_history_inventory.py -text
 /docs/guides/ner-desktop-history-inventory.md -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Newly published, hash-bound research reports and test sources retain exact bytes.
+/docs/evaluations/flood-ner-baseline-recovery-20261018/** -text
+/docs/evaluations/flood-ner-bounded-discovery-20261017/** -text
+/docs/evaluations/flood-ner-clearance-assessment-20261018/** -text
+/docs/evaluations/flood-ner-controlled-retry-20261017/** -text
+/docs/evaluations/flood-ner-desktop-history-gap-completion-20261017/** -text
+/docs/evaluations/flood-ner-final-gdelt-diagnostic-20261017/** -text
+/docs/evaluations/flood-ner-four-passage-completion-20261018/** -text
+/docs/evaluations/flood-ner-gemini-evidence-recovery-20261018/** -text
+/docs/evaluations/flood-ner-gemini-recovery-response-20261018/** -text
+/docs/evaluations/flood-ner-latest-candidate-reuse-20261018/** -text
+/docs/evaluations/flood-ner-non-gdelt-search-20261017/** -text
+/docs/evaluations/flood-ner-provenance-adoption-20261018/** -text
+/docs/evaluations/flood-ner-saved-test-evidence-review-20261017/** -text
+/docs/evaluations/flood-ner-six-known-leads-20261017/** -text
+/docs/evaluations/flood-ner-source-evidence-gate-review-20261017/** -text
+/docs/evaluations/flood-ner-successor-delivery-20261018/** -text
+/docs/evaluations/flood-ner-successor-preparation-20261018/** -text
+/docs/evaluations/flood-ner-taglish-60-complete-20261017/** -text
+/docs/evaluations/flood-ner-taglish-budget-continuation-20261017/** -text
+/docs/evaluations/flood-ner-taglish-completion-followup-20261017/** -text
+/docs/evaluations/flood-ner-taglish-targeted-collection-20261017/** -text
+/docs/evaluations/flood-ner-taglish-test-completion-20261017/** -text
+/docs/evaluations/flood-ner-v7-workflow-repair-20261017/** -text
+/backend/tests/test_flood_ner_bounded_discovery.py -text
+/backend/tests/test_flood_ner_exposure_review.py -text
+/backend/tests/test_flood_ner_known_source_capture.py -text
+/backend/tests/test_flood_ner_receipt_evidence.py -text
+/backend/tests/test_flood_ner_receipt_recovery.py -text
+/backend/tests/test_flood_ner_research_capture.py -text
+/backend/tests/test_flood_ner_research_review.py -text
+/backend/tests/test_flood_ner_review_progress.py -text
+/backend/tests/test_flood_ner_successor_preparation.py -text
+# Frozen historical Markdown contains intentional hard breaks; preserve its digest.
+/docs/evaluations/flood-ner-taglish-test-completion-20261017/README.md whitespace=-blank-at-eol,cr-at-eol

@@ -1,0 +1,47 @@
+{
+  "task_complete": true,
+  "training_ready": false,
+  "development_proposal": {
+    "train": 345,
+    "validation": 60,
+    "total": 405
+  },
+  "test_joint_conditional": {
+    "total": 42,
+    "english_positive": 21,
+    "taglish_positive": 15,
+    "english_negative": 3,
+    "taglish_negative": 3
+  },
+  "remaining_test_positive_shortfall": {
+    "english": 6,
+    "taglish": 12
+  },
+  "test_target_feasible_under_known_filters": false,
+  "remaining_validation_shortfall": 0,
+  "history_scope_verified": true,
+  "external_history_certified_complete": false,
+  "history_limits": [
+    "Excluded paths remain outside payload comparison.",
+    "Deleted or unrecorded history cannot be proven absent by this snapshot.",
+    "Earlier source-use predecessor documentation remains a separate provenance limitation."
+  ],
+  "unprovided_backup_metadata_payloads": 15,
+  "source_specific_evidence_and_collection_limits": [
+    "Current finite source/reference/history/use-qualified pool does not support the joint 60-passage positive quotas.",
+    "No enforceably bounded new discovery mechanism was available; suitable saved candidate URLs were exhausted or specifically held/excluded.",
+    "Specific connected reporting/project/aftermath and third-party extent holds remain; incomplete references remain unscored.",
+    "Fifteen exact backup metadata/helper/receipt payloads remain unavailable; excluded paths and deleted/unrecorded history remain unverified.",
+    "References and language decisions are same-agent AI silver, without independent gold adjudication."
+  ],
+  "test_sealed": false,
+  "actual_admitted_test_records": 0,
+  "actual_corpus_admission": false,
+  "partition_freeze": false,
+  "training_export": false,
+  "inference": false,
+  "training": false,
+  "upload": false,
+  "push": false,
+  "references": "AI-assisted silver, not independently verified human gold; no measured model-improvement claim."
+}

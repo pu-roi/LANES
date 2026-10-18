@@ -1,6 +1,64 @@
 # **LANES (Lanes PH) Finalized Tech Stack Blueprint**
 
-> **Last Updated:** October 16, 2026, 10:34 PM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+**October18 successor preparation:** Successor offline preparation now uses three separate entry points for scoped admission, isolated DocBin export and read-only/default GPU launch verification. Existing Python3.11/spaCy3.7.5, pinned model vocabulary and frozen tokenizer are reused; no dependency installation, production API or database change. Training has not started. [Evidence](evaluations/flood-ner-successor-preparation-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+> **Last Updated:** October 18, 2026, 11:05 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoint status below is historical; current successor preparation and pending delivery are recorded in the linked report above.
+
+**Approved preparation standard: 345 training / 60 validation / 60 research-holdout passages.** The user chose an AI-assisted silver comparison with documented incomplete history/accounting and no certified-fresh claim. Those global gaps remain explicit limitations; supported source use, complete references and known fitted/development exclusion/group guards still apply. The provenance choice is settled. The proposal remains unadmitted and unexported pending the successor preparation implementation; no training ran. [Adoption record](evaluations/flood-ner-provenance-adoption-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Preparation specification complete; implementation is next.** Use the [successor specification](plans/ner-successor-preparation-20261018.md) for scoped admission/grouped freezing, separate train/dev and isolated-holdout qualification/exports, and the portable desktop GPU handoff. Preserve old fixed-400 helpers and all prior artifacts. No further approval of the same provenance limitations is needed. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Research-only receipt_evidence.py uses the Python standard library for exact byte-bound fragment checks. No production interface, dependency or database change.
+
+Research-only addition: `receipt_recovery.py` uses the Python standard library for explicit scoped receipt extraction. No production API, dependency, database or framework change.
+
+
+**Historical v9 checkpoint:** all 27 mistaken reductions were reversed, restoring 49 and preserving 53. V10 below/above separately reconsiders metadata-only holds and latest saved windows; the old protocol comparison remains preserved.
+
+
+**Superseded v8 progress reduction:** its 22-passage result omitted later source-bound review decisions. V9 reverses all 27 mistaken reductions; the v8 report remains preserved. The ten software repairs remain in force.
+
+Earlier checkpoints below retain their historical counts; v7 readiness claims are superseded.
+
+The replacement research helpers reuse existing HTTPX, Pydantic, spaCy and standard-library components. No dependencies, production API or database schema changed. Frozen historical helpers remain unchanged.
+
+**V6 audit completed; collection blocked:** preserve **345 training / 60 validation / 49 conditional test**. Four Taglish members are newly exposure-quarantined; the historical 53 artifact remains unchanged. English 30/30, Taglish 19/30; **eleven Taglish positives remain missing**. Local v5 ledger replay is consistent, but complete original search-tool receipts are unavailable. Claimed 649 identities + four uncertain slots / 84 attempts do not certify remaining 47/16 headroom; additional v5 exposure is unquantified. This task sent **zero network requests**, passed 27 offline guards and preserved 6,896 protected files. Next: recover original tool receipts for isolated reconciliation; no collection, admission, seal, export or training. Desktop action none. [Current outcome](evaluations/flood-ner-taglish-budget-continuation-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below retain their historical claims and counts.
+
+**Source-evidence gate review completed; shortage unchanged:** **345 training / 60 validation / 53 conditional test**. Audited 86 held identities and 19 exclusions under saved material with zero network operations; zero holds resolved. All 53 baseline members preserved. English 30/30 and Taglish 23/30; **seven Taglish positives still needed**. Collection remains closed at 585 raw identities + four uncertain slots / 84 publisher attempts under prospective 600/100. Next: concrete bounded follow-up proposal with exact accounting or external acquisition authorization before successor admission, grouped partition freeze, qualified exports or desktop GPU training. [Current outcome](evaluations/flood-ner-source-evidence-gate-review-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Taglish follow-up completed; coverage still short:** **345 training / 60 validation / 53 conditional test**. Four Taglish positives gained; all 49 earlier members retained. English 30/30 and Taglish 23/30; **seven Taglish positives still needed**. Two bounded rounds used 22 queries / two captures; current ledger 585 raw identities + four uncertain slots / 84 publisher attempts under prospective 600/100. Collection is closed, with no further ceiling increase in this task. Next: supported original-source/use and history evidence for reconsiderable held leads, then the remaining positive windows. Admission, freeze, seal, export and desktop GPU handoff remain pending. [Current outcome](evaluations/flood-ner-taglish-completion-followup-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Targeted collection and review completed:** **345 training / 60 validation / 49 conditional test passages**. Seven test passages gained (five English positives and two Taglish positives); all 42 earlier members retained. English meets its target; **eleven Taglish positives remain missing**. Nine searches and eight captures are complete; cumulative accounting is 377 raw URL identities + four uncertain slots / 82 publisher attempts, within the prospective 400/100 ceilings. Collection is closed; all exposed identities and proposed references are accounted for. Final checks: 19 acquisition mocks, 26 rejection guards, zero schema/tokenizer errors and 6,535 protected files unchanged. The test remains unsealed; no training or desktop action. [Current report](evaluations/flood-ner-taglish-targeted-collection-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below preserve their historical counts and permissions.
+
+**Six-known-lead task completed:** **345 training / 60 validation / 42 conditional test passages**. All six leads are history-held; **zero publisher GETs**. New source-only history evidence holds eight prior witness members; the earlier 50 remains an unchanged historical artifact. Remaining positives: **5 English / 13 Taglish**. URL accounting is 296 actual + four uncertain slots under the prospectively authorized 306 ceiling; attempts remain 74/100. Unused allowance is not replacement/discovery permission. Test stays unsealed; desktop can remain off. [Current evidence](evaluations/flood-ner-six-known-leads-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below retain their recorded outcomes and counts.
+
+**Saved-test evidence review completed:** preserve **345 training / 60 validation**, with **50/60 conditional test passages** after saved review and exposure quarantine. Positive shortage **1 English / 9 Taglish**. All 49 prior unresolved references and 68 saved sources are accounted for. Zero network requests; accounting stays 296 actual URLs + four uncertain slots / 74 publisher attempts. One progress disclosure is documented and affected components held; prior 50 remains historical. Test stays unsealed; desktop can remain off. [Latest evidence](evaluations/flood-ner-saved-test-evidence-review-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below retain their recorded outcomes and counts.
+
+**Non-GDELT search completed:** preserve **345 training / 60 validation**, with **50/60 conditional independent-test passages**. Positive shortage now **1 English / 9 Taglish**. Ordinary web search used one query at a time with all returned URLs audited under the unchanged 300/100 ceilings; no GDELT troubleshooting. Actual URLs 296 + uncertain slots 4, leaving 0 usable URL slots / 26 publisher attempts. Test remains unsealed; desktop can remain off. [Latest outcome](evaluations/flood-ner-non-gdelt-search-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Previous checkpoints below retain their recorded counts and outcomes.
+
+**Final GDELT diagnostic blocked locally; hardening complete:** **0 outbound GETs**, no provider response. The one diagnostic operation stopped at a pre-dispatch guard; exact original message was not retained. Corrected a platform-sensitive timer comparison and verified it with mock responses (101 tests pass / one skips), without reopening the authorization. Stop GDELT troubleshooting. Preserve **345 training / 60 validation / 42 conditional test**, still missing six English and twelve Taglish positives. Carry **204 actual exposed URLs + 4 uncertain slots** (92 unreserved URL slots / 34 article attempts remain). The test stays unsealed; desktop can remain off. [Latest outcome](evaluations/flood-ner-final-gdelt-diagnostic-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier diagnostic checkpoints below retain their original outcomes and allowances.
+
+**Controlled retry completed; provider remains blocked:** preserve **345 training / 60 validation / 42 conditional test passages**, still missing **six English and twelve Taglish positives**. The authorized single retry returned HTTP 429; no new articles or passages and no further retry/fallback. Carry **204 actual URL exposures + four unresolved reserved slots**, leaving **92 unreserved slots / 34 article attempts** under 300/100. Twelve exact history metadata/helper payloads remain unavailable; no new source identities were found. The test stays unsealed and desktop can remain off. [Latest outcome](evaluations/flood-ner-controlled-retry-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Previous checkpoints below retain their original outcomes and allowances.
+
+**Bounded discovery completed with a provider blocker:** preserve **345 training / 60 validation** and **42/60 conditional test passages**; **six English and twelve Taglish positives** remain missing. The first GDELT one-record probe returned **HTTP 429**; collection stopped without retry, fallback or new articles. Actual exposure is **204 URLs + one pending slot**, leaving **95 unreserved URL slots / 34 article attempts** under 300/100. Three exact historical payloads were recovered from Drive; twelve named metadata/helper payloads remain unavailable. The test stays unsealed and the desktop can remain off. [Outcome](evaluations/flood-ner-bounded-discovery-20261017/README.md) and [research guide](guides/ner-bounded-test-discovery.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below retain their original recorded outcomes.
 
 **Current Gate 3 status:** Improvement preparation is complete; additional-dataset readiness/admission remains open. Development has 244 drafts (179 candidates / 65 holds); isolated test curation has 56 prospective entries, zero admitted independent test records and no seal. Resolve coverage, reference/language, source-use, historical-overlap and the single development tokenizer-alignment failure before corpus admission/export or further training. Original 400-sample results and model roles remain frozen. [Readiness report](evaluations/flood-ner-additional-dataset-20261016/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

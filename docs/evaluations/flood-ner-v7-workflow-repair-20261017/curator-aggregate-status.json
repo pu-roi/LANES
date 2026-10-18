@@ -1,0 +1,31 @@
+{
+  "schema_version": "lanes-repaired-research-review-v1",
+  "english_positive": 12,
+  "english_genuine_negative": 2,
+  "taglish_positive": 7,
+  "taglish_genuine_negative": 1,
+  "conditional_test": 22,
+  "missing_english_positive": 15,
+  "missing_taglish_positive": 20,
+  "missing_english_negative": 1,
+  "missing_taglish_negative": 2,
+  "complete_references_checked": 139,
+  "entity_spans_checked": 182,
+  "guard_checks_passed": 18,
+  "guard_checks_failed": 0,
+  "baseline_members_removed": 27,
+  "coverage_complete": false,
+  "accounting_verified": false,
+  "history_verified": false,
+  "ready_for_admission": false,
+  "ready_for_training": false,
+  "test_sealed": false,
+  "admission_performed": false,
+  "export_performed": false,
+  "new_network_operations": 0,
+  "blocker_codes": [
+    "coverage",
+    "accounting",
+    "history"
+  ]
+}

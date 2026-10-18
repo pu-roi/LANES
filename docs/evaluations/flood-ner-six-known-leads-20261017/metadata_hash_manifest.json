@@ -1,0 +1,11 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "curator-aggregate-status.json": "91286cfbabff56d6a384ab9a51a8faec69d5f3ff41007f18e1610e602deb798d",
+    "curator-verification-manifest.json": "490f5e5245f725fafcf0cccfc7ec7aa6bac5f7716bc5be228d1f8dcd0abc42d1",
+    "next-collection-proposal.json": "7f9aefbbd8e2ef813e74223492e26fc747bd74705a2bba2a269d08e27a1778b1",
+    "readiness.json": "77d732e38a06af03265a6593cd200b79bc5a0124938e8fc544bd3e7410c459ff",
+    "README.md": "b46de9963f5d8c93dca532f69e91210ef0470981eed1d525965ce1bfdbf1e80e",
+    "verification.json": "978861799b99cf7c58147df2b140b589ab0d79b2d7234fc690d231f3a98ffbe0"
+  }
+}

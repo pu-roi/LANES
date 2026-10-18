@@ -1,0 +1,14 @@
+{
+  "not_executed_or_authorized": true,
+  "required_usable_taglish_positive_windows": 7,
+  "unsupported_source_or_alias_identity_holds": 67,
+  "required_for_unsupported_identities": "First identify an exact original publisher article and obtain source-specific reuse/extent evidence within a separately authorized bounded scope. Social/video/homepage/media tokens are not articles; never rewrite an alias into an unexposed identity without reservation.",
+  "history_or_component_identity_holds": 10,
+  "required_for_history_holds": "Provide saved source-only evidence separating an actual named weather episode, physical asset or reporting chain from already exposed components. Different dates, districts, wording or article identifiers alone do not clear a relationship. Otherwise retain the hold.",
+  "reference_or_capacity_identity_holds": 2,
+  "required_for_reference_holds": "Source-contained explicit type and sense for the place, a coherent location-bearing original mixed passage, and supported original extent. Unknown references stay unscored.",
+  "language_capacity_identity_holds": 1,
+  "required_for_language_holds": "An unchanged original passage with Filipino clauses and untranslated English common or technical material, plus a complete six-class positive location; English-only reports and names alone do not fill the remaining Taglish quota.",
+  "unqualified_metadata_identity_holds": 6,
+  "required_for_metadata_holds": "An exact complete supported original article identity and publication evidence before capture; snippet fragments or ambiguous tokens alone do not qualify."
+}

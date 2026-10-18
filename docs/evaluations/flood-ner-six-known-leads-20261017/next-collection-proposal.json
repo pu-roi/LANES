@@ -1,0 +1,21 @@
+{
+  "authorized": false,
+  "executed": false,
+  "original_six_newly_replaced": 0,
+  "needed_taglish_positive_windows": 13,
+  "needed_english_positive_windows": 5,
+  "minimum_taglish_sources_at_three_windows_each": 5,
+  "minimum_english_sources_at_three_windows_each": 2,
+  "minimum_separate_language_source_total": 7,
+  "arithmetic_minima_not_demonstrated_capacity": true,
+  "known_original_leads_currently_eligible": 0,
+  "remaining_raw_url_slots_arithmetic": 6,
+  "remaining_publisher_attempts_arithmetic": 26,
+  "first_future_discovery_batch_max_new_identities": 5,
+  "first_future_capture_batch_max_requests": 1,
+  "first_future_combined_new_identity_reservation_ceiling": 6,
+  "requires_new_specific_authorization_and_verifiable_full_pre_dispatch_exposure_bound": true,
+  "unexpected_alias_or_redirect_without_reservation_blocks_request": true,
+  "existing_six_history_holds_require_source_only_separation_evidence_before_any_reconsideration": true,
+  "no_new_discovery_replacement_or_capture_authorized_here": true
+}

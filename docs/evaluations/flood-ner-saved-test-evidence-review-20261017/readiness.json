@@ -1,0 +1,31 @@
+{
+  "task_complete": true,
+  "ready_for_admission": false,
+  "test_sealed": false,
+  "proposed_training": 345,
+  "proposed_validation": 60,
+  "conditional_test": 50,
+  "historical_baseline_test": 50,
+  "baseline_members_quarantined": 0,
+  "missing_positive_english": 1,
+  "missing_positive_taglish": 9,
+  "joint_counts": {
+    "english_positive": 26,
+    "english_genuine_negative": 3,
+    "taglish_positive": 18,
+    "taglish_genuine_negative": 3
+  },
+  "actual_url_identities": 296,
+  "uncertain_slots": 4,
+  "url_limit": 300,
+  "remaining_url_allowance": 0,
+  "publisher_attempts": 74,
+  "publisher_limit": 100,
+  "network_requests_this_task": 0,
+  "isolation_progress_disclosure_contained": true,
+  "history_limitations_remain": true,
+  "references": "AI-assisted silver",
+  "targeted_collection_proposal_authorized": false,
+  "no_admission_freeze_seal_export_inference_training_upload_push": true,
+  "desktop_action": "None; desktop can remain off."
+}

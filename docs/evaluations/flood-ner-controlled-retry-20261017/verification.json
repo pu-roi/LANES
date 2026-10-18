@@ -1,0 +1,31 @@
+{
+  "new_adapter_tests_passed": 58,
+  "focused_tests_run": 73,
+  "focused_tests_passed": 72,
+  "focused_tests_skipped": 1,
+  "skip_reason": "Windows symlink creation unavailable",
+  "test_command": "backend\\venv\\Scripts\\python.exe -B -m unittest backend.tests.test_flood_ner_bounded_discovery backend.tests.test_flood_ner_history_inventory backend.tests.test_flood_ner_repository_bytes",
+  "live_requests_in_tests": 0,
+  "code": {
+    "backend/training/flood_ner/bounded_discovery.py": "f98dab4685ba9a41bdf39a7d690ea030286b9177a2516d7ee0be20aca74d76a1",
+    "backend/tests/test_flood_ner_bounded_discovery.py": "6b994a685d242b52a5a109297aac7029d0c74d12f44af2b31c6a9659b1ac3ae2"
+  },
+  "previous_adapter_snapshot_sha256": "e3113eeef320e6c85841974b6ddb1e4769315f3bdbc686357ed290b2f388295c",
+  "public_api_dependencies_database_schema_unchanged": true,
+  "preservation": {
+    "files": 6166,
+    "unchanged": 6166,
+    "failures": [],
+    "original_datasets_models_scores_and_prior_review_packages_unchanged": true
+  },
+  "safe_curator_hashes": {
+    "aggregate-status.json": "42d658e60f341d92523882a411edebcc4e932782ceb62307bdc82b4f8bfea17c",
+    "verification-manifest.json": "fc2eb9a4ad3f375a4a20303d5a1c73be41cec8a4b4d4849faeb88565f26eaf1f"
+  },
+  "curator_guard_checks_passed": 35,
+  "curator_schema_tokenizer_records": 92,
+  "curator_spans": 116,
+  "curator_schema_tokenizer_errors": 0,
+  "curator_predecessor_files_unchanged": 385,
+  "no_admission_freeze_seal_export_inference_training_upload_push": true
+}

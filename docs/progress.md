@@ -1,6 +1,128 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 17, 2026, 3:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 11:18 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current desktop handoff: private trainer delivery to Drive is verified; successor code and public reports accompany this handoff on `roi-branch`.** Dataset membership stays **345 training / 60 validation / 60 research-holdout**. The twelve-file trainer ZIP, checksum and instructions match authenticated readback and remain owner-only. Research-holdout content stays on the laptop. No training ran. [Delivery report](evaluations/flood-ner-successor-delivery-20261018/README.md) · [Private Drive folder](https://drive.google.com/drive/folders/1WuhvnWfKybY8lbKKO55aToTUQ_PY6RqJ). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next: receive the package on the desktop and run read-only GPU verification.** Preserve local changes, pull `roi-branch` with `--ff-only`, verify the ZIP checksum, extract only to an absent destination, then use the successor launcher with `--verify-gpu`. A Git pull alone cannot transfer ignored data. Desktop receipt/GPU verification are unconfirmed; seeds0/1/2 training is a later explicit action. [Exact instructions](guides/ner-successor-desktop-training.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoint counts and pending tasks below are historical unless explicitly carried forward by the current status.
+
+## October18: Successor desktop delivery verified
+
+Exact twelve-file trainer ZIP and two companion files uploaded owner-only and fetched back byte-identically; current code/reports included on roi-branch. Fresh344 tests/190subtests pass, one symlink skip. Desktop receipt/GPU verification pending; no training. [Evidence](evaluations/flood-ner-successor-delivery-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Successor preparation completed locally
+
+465 locked silver records; separate strict/reload-qualified exports and portable configs; fresh215 tests/165subtests pass; 7,320 predecessor files unchanged. Private delivery and desktop GPU verification pending. No training/upload/push. [Evidence](evaluations/flood-ner-successor-preparation-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Limited-provenance standard adopted and successor preparation specified
+
+Direct user choice recorded; exact development selection405 and holdout60 retained. No further provenance decision needed. No admission/freeze/export or training executed in this design step. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Source-bound clearance assessment and explicit protocol options
+
+Fresh isolated review checks60 selected records and280 fitted anchors; known fitted/development overlap matches0/0. Preserve7,283 protected files. No amendment or training; decision remains with the user. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Gemini reports original evidence inaccessible
+
+Record user-relayed recovery limitation; preserve345/60/60 and all prior packages. No native receipts returned; no new tests, collection or training. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Gemini recovery handoff prepared; clearance awaits original evidence
+
+Preserve345/60/60; account for eleven missing search pairs, five saved query-field differences and twelve historical payloads. Fresh107 tests /116subtests pass; 7,245 protected files unchanged. No native Gemini evidence has been returned and no collection or training ran. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Four saved Taglish positives complete conditional test coverage
+
+Preserve345/60 development and all56 prior test candidates; reach one conditional60 proposal without collection. Fresh324 distinct tests pass / one existing symlink test skips; all7,193 protected files unchanged. History and original acquisition accounting remain unresolved. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Saved latest candidates reused in 56-member conditional proposal
+
+Preserve 49 baseline; reconsider four prior metadata-only cases and add three source-exact supported windows. Actual development/event/component overlap cases stay excluded. Fresh 311 tests pass / one skips; 7,159 protected inputs unchanged. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+**Historical v9 checkpoint:** all 27 mistaken reductions were reversed, restoring 49 and preserving 53. V10 below/above separately reconsiders metadata-only holds and latest saved windows; the old protocol comparison remains preserved.
+
+## October 18: Conditional baseline restored after source-review precedence correction
+
+Isolated saved-evidence replay restores 49 with 0 baseline removals; the preserved historical 53 and its four protocol holds are reported separately. All27 erroneous v8 reductions are reversed without undoing software safeguards. Fresh 302 regression tests pass / one skips. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+
+**Superseded v8 progress reduction:** its 22-passage result omitted later source-bound review decisions. V9 reverses all 27 mistaken reductions; the v8 report remains preserved. The ten software repairs remain in force.
+
+Earlier checkpoints below retain their historical counts; v7 readiness claims are superseded.
+
+## October 17: Historical v7 readiness claim — superseded
+
+**Superseded v7 claim:** the reported sealing, export qualification and training unlock are unsupported. The frozen v7 report/artifacts remain historical evidence; follow the current recovery outcome above.
+
+## October 17: V6 accounting gate blocked and exposure quarantine recorded
+
+**V6 audit completed; collection blocked:** preserve **345 training / 60 validation / 49 conditional test**. Four Taglish members are newly exposure-quarantined; the historical 53 artifact remains unchanged. English 30/30, Taglish 19/30; **eleven Taglish positives remain missing**. Local v5 ledger replay is consistent, but complete original search-tool receipts are unavailable. Claimed 649 identities + four uncertain slots / 84 attempts do not certify remaining 47/16 headroom; additional v5 exposure is unquantified. This task sent **zero network requests**, passed 27 offline guards and preserved 6,896 protected files. Next: recover original tool receipts for isolated reconciliation; no collection, admission, seal, export or training. Desktop action none. [Current outcome](evaluations/flood-ner-taglish-budget-continuation-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below are historical claims and do not override this audit.
+
+## October 17: Taglish test completion evaluation (Round v5)
+
+**Taglish completion evaluation (Round v5) completed; shortage unchanged:** **345 training / 60 validation / 53 conditional test**. Executed bounded targeted collection round v5 (11 queries reserved and accounted for; cumulative raw identities 649 / 700 ceiling; publisher attempts 84 / 100 ceiling; collection closed). All 53 baseline members preserved. English 30/30 (27 pos + 3 neg) and Taglish 23/30 (20 pos + 3 neg); **seven Taglish positives still needed**. Candidates from historical weather events evaluated showed either training/validation event overlap or English-dominant regional reporting without operational Taglish. Next: bounded acquisition proposal for unexposed localized floods (2017–2023) or authorized source-use evidence resolution before successor admission, grouped partition freeze, qualified exports or desktop GPU training. [Current outcome](evaluations/flood-ner-taglish-test-completion-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 17: Source-evidence gate review for held test leads
+
+**Source-evidence gate review completed; shortage unchanged:** **345 training / 60 validation / 53 conditional test**. Audited 86 held identities and 19 exclusions under saved material with zero network operations; zero holds resolved. All 53 baseline members preserved. English 30/30 and Taglish 23/30; **seven Taglish positives still needed**. Collection remains closed at 585 raw identities + four uncertain slots / 84 publisher attempts under prospective 600/100. Next: concrete bounded follow-up proposal with exact accounting or external acquisition authorization before successor admission, grouped partition freeze, qualified exports or desktop GPU training. [Current outcome](evaluations/flood-ner-source-evidence-gate-review-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints retain their historical counts and scope.
+
+## October 17: Taglish follow-up gained four; independent-test coverage remains open
+
+**Taglish follow-up completed; coverage still short:** **345 training / 60 validation / 53 conditional test**. Four Taglish positives gained; all 49 earlier members retained. English 30/30 and Taglish 23/30; **seven Taglish positives still needed**. Two bounded rounds used 22 queries / two captures; current ledger 585 raw identities + four uncertain slots / 84 publisher attempts under prospective 600/100. Collection is closed, with no further ceiling increase in this task. Next: supported original-source/use and history evidence for reconsiderable held leads, then the remaining positive windows. Admission, freeze, seal, export and desktop GPU handoff remain pending. [Current outcome](evaluations/flood-ner-taglish-completion-followup-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints retain their historical counts and scope.
+
+## October 17: Targeted collection and isolated review completed
+
+**Targeted collection and review completed:** **345 training / 60 validation / 49 conditional test passages**. Seven test passages gained (five English positives and two Taglish positives); all 42 earlier members retained. English meets its target; **eleven Taglish positives remain missing**. Nine searches and eight captures are complete; cumulative accounting is 377 raw URL identities + four uncertain slots / 82 publisher attempts, within the prospective 400/100 ceilings. Collection is closed; all exposed identities and proposed references are accounted for. Final checks: 19 acquisition mocks, 26 rejection guards, zero schema/tokenizer errors and 6,535 protected files unchanged. The test remains unsealed; no training or desktop action. [Current report](evaluations/flood-ner-taglish-targeted-collection-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below preserve their historical counts and permissions.
+
+## October 17: Six-lead preflight, wrapper and history reassessment
+
+**Six-known-lead task completed:** **345 training / 60 validation / 42 conditional test passages**. All six leads are history-held; **zero publisher GETs**. New source-only history evidence holds eight prior witness members; the earlier 50 remains an unchanged historical artifact. Remaining positives: **5 English / 13 Taglish**. URL accounting is 296 actual + four uncertain slots under the prospectively authorized 306 ceiling; attempts remain 74/100. Unused allowance is not replacement/discovery permission. Test stays unsealed; desktop can remain off. [Current evidence](evaluations/flood-ner-six-known-leads-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below retain their recorded outcomes and counts.
+
+## October 17: Saved-test evidence review and exposure containment
+
+**Saved-test evidence review completed:** preserve **345 training / 60 validation**, with **50/60 conditional test passages** after saved review and exposure quarantine. Positive shortage **1 English / 9 Taglish**. All 49 prior unresolved references and 68 saved sources are accounted for. Zero network requests; accounting stays 296 actual URLs + four uncertain slots / 74 publisher attempts. One progress disclosure is documented and affected components held; prior 50 remains historical. Test stays unsealed; desktop can remain off. [Latest evidence](evaluations/flood-ner-saved-test-evidence-review-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below retain their recorded outcomes and counts.
+
+## October 17: Isolated non-GDELT search and source review completed
+
+**Non-GDELT search completed:** preserve **345 training / 60 validation**, with **50/60 conditional independent-test passages**. Positive shortage now **1 English / 9 Taglish**. Ordinary web search used one query at a time with all returned URLs audited under the unchanged 300/100 ceilings; no GDELT troubleshooting. Actual URLs 296 + uncertain slots 4, leaving 0 usable URL slots / 26 publisher attempts. Test remains unsealed; desktop can remain off. [Latest outcome](evaluations/flood-ner-non-gdelt-search-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+All 6,277 protected predecessor files remain unchanged. No admission, freeze, inference, training, upload or push.
+
+## October 17: Final diagnostic blocked before dispatch; request hardening verified
+
+**Final GDELT diagnostic blocked locally; hardening complete:** **0 outbound GETs**, no provider response. The one diagnostic operation stopped at a pre-dispatch guard; exact original message was not retained. Corrected a platform-sensitive timer comparison and verified it with mock responses (101 tests pass / one skips), without reopening the authorization. Stop GDELT troubleshooting. Preserve **345 training / 60 validation / 42 conditional test**, still missing six English and twelve Taglish positives. Carry **204 actual exposed URLs + 4 uncertain slots** (92 unreserved URL slots / 34 article attempts remain). The test stays unsealed; desktop can remain off. [Latest outcome](evaluations/flood-ner-final-gdelt-diagnostic-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Verification: 101 focused unit tests pass, one Windows symlink test skips; all 6,219 protected predecessor files remain unchanged. Zero outbound diagnostic GETs; no collection, inference, training or push.
+
+## October 17: Controlled continuation verified; single retry halted
+
+**Controlled retry completed; provider remains blocked:** preserve **345 training / 60 validation / 42 conditional test passages**, still missing **six English and twelve Taglish positives**. The authorized single retry returned HTTP 429; no new articles or passages and no further retry/fallback. Carry **204 actual URL exposures + four unresolved reserved slots**, leaving **92 unreserved slots / 34 article attempts** under 300/100. Twelve exact history metadata/helper payloads remain unavailable; no new source identities were found. The test stays unsealed and desktop can remain off. [Latest outcome](evaluations/flood-ner-controlled-retry-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Verification: 72 unit tests pass / one skips; 35 isolated fault guards pass; 92 references / 116 spans validate without errors. All 6,166 protected coordinator inputs remain unchanged. No training or publication occurred.
+
+## October 17: Bounded discovery tested; provider route halted
+
+**Bounded discovery completed with a provider blocker:** preserve **345 training / 60 validation** and **42/60 conditional test passages**; **six English and twelve Taglish positives** remain missing. The first GDELT one-record probe returned **HTTP 429**; collection stopped without retry, fallback or new articles. Actual exposure is **204 URLs + one pending slot**, leaving **95 unreserved URL slots / 34 article attempts** under 300/100. Three exact historical payloads were recovered from Drive; twelve named metadata/helper payloads remain unavailable. The test stays unsealed and the desktop can remain off. [Outcome](evaluations/flood-ner-bounded-discovery-20261017/README.md) and [research guide](guides/ner-bounded-test-discovery.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Verification: 54 unit tests pass, one Windows symlink test skips; the isolated curator passes 29 fault guards and validates 92 complete references / 116 spans without errors. All 6,103 protected coordinator inputs remain unchanged. No admission, freeze, export, inference, training, upload or push occurred.
+
+## October 17: Desktop history reconciled; validation count gap closed
+
+The returned desktop inventory is verified: 6,369 files / zero errors; recorded readable backup scope reconciles without changed or unexplained missing payloads. Add three qualified saved-source validation proposals, preserving 345 training and reaching 60 validation. Isolated test review finishes with 42/60 conditional passages (6 English / 12 Taglish positive shortfall), cumulative 202/300 URLs and 66/100 attempts. Keep source/history/use holds and scan exclusions explicit; no unsealed test material enters development. 28 coordinator checks pass / one skip; 6,039 protected files remain unchanged. No admission, freeze, sealing, export, training or push. [Report](evaluations/flood-ner-desktop-history-gap-completion-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## October 17: Desktop inventory publication handoff prepared
 

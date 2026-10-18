@@ -1,0 +1,18 @@
+{
+  "authorized": false,
+  "executed": false,
+  "needed_taglish_positive_windows": 11,
+  "needed_english_positive_windows": 0,
+  "minimum_additional_taglish_sources_at_three_windows_each": 4,
+  "arithmetic_minimum_not_demonstrated_source_capacity": true,
+  "current_known_prescreen_eligible_uncaptured_leads": 0,
+  "remaining_raw_url_slots_arithmetic": 19,
+  "remaining_publisher_attempts_arithmetic": 18,
+  "ordinary_unbounded_search_blocked_below_current_twenty_slot_stop": true,
+  "prospective_documented_bounded_discovery_batch_max": 5,
+  "prospective_first_capture_batch_max": 1,
+  "minimum_capture_alias_slot_reservation": 1,
+  "one_slot_not_asserted_sufficient_without_verified_full_exposure_bound": true,
+  "requires_separate_authorization_and_full_pre_dispatch_reservations": true,
+  "no_current_query_capture_retry_or_replacement_permission": true
+}

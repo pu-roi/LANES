@@ -1,6 +1,34 @@
 # Offline flood NER preparation
 
-> **Last Updated:** October 17, 2026, 3:50 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 11:18 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current desktop handoff: private trainer delivery to Drive is verified; successor code and public reports accompany this handoff on `roi-branch`.** Dataset membership stays **345 training / 60 validation / 60 research-holdout**. The twelve-file trainer ZIP, checksum and instructions match authenticated readback and remain owner-only. Research-holdout content stays on the laptop. No training ran. [Delivery report](../../../docs/evaluations/flood-ner-successor-delivery-20261018/README.md) · [Private Drive folder](https://drive.google.com/drive/folders/1WuhvnWfKybY8lbKKO55aToTUQ_PY6RqJ). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next: receive the package on the desktop and run read-only GPU verification.** Preserve local changes, pull `roi-branch` with `--ff-only`, verify the ZIP checksum, extract only to an absent destination, then use the successor launcher with `--verify-gpu`. A Git pull alone cannot transfer ignored data. Desktop receipt/GPU verification are unconfirmed; seeds0/1/2 training is a later explicit action. [Exact instructions](../../../docs/guides/ner-successor-desktop-training.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Successor entry points: `successor_preparation.prepare` consumes a hash-bound single-use grant; `successor_export_worker` serializes only the assigned development or isolated-holdout capability using vocabulary/tokenizer only; `successor_training.py` verifies by default and requires `--start-training` for a later GPU run. `research_review.export_review` still rejects review-only export. Historical helpers are unchanged.
+
+Earlier checkpoint counts and pending tasks below are historical unless explicitly carried forward by the current status.
+
+
+**Historical v9 checkpoint:** all 27 mistaken reductions were reversed, restoring 49 and preserving 53. V10 below/above separately reconsiders metadata-only holds and latest saved windows; the old protocol comparison remains preserved.
+
+
+**Superseded v8 progress reduction:** its 22-passage result omitted later source-bound review decisions. V9 reverses all 27 mistaken reductions; the v8 report remains preserved. The ten software repairs remain in force.
+
+Earlier checkpoints below retain their historical counts; v7 readiness claims are superseded.
+
+Replacement offline APIs: `research_review.validate_reference`, `ReviewCandidate`, `select_joint`, `run_guards`, `build_status` and `validate_safe_pair`. They operate on source-exact reviewed silver proposals and allowlisted aggregates. `research_capture.ResearchCaptureSession` requires a separate acquisition grant and verified original evidence; this review-only task cannot instantiate a live acquisition session. `export_review` always rejects review-only export. Preserve and avoid executing the defective private v7 scripts. See the [operator API and constructed-test instructions](../../../docs/guides/ner-bounded-test-discovery.md#replacement-workflow-review-only).
+
+**V6 audit completed; collection blocked:** preserve **345 training / 60 validation / 49 conditional test**. Four Taglish members are newly exposure-quarantined; the historical 53 artifact remains unchanged. English 30/30, Taglish 19/30; **eleven Taglish positives remain missing**. Local v5 ledger replay is consistent, but complete original search-tool receipts are unavailable. Claimed 649 identities + four uncertain slots / 84 attempts do not certify remaining 47/16 headroom; additional v5 exposure is unquantified. This task sent **zero network requests**, passed 27 offline guards and preserved 6,896 protected files. Next: recover original tool receipts for isolated reconciliation; no collection, admission, seal, export or training. Desktop action none. [Current outcome](../../../docs/evaluations/flood-ner-taglish-budget-continuation-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+Earlier checkpoints below are historical claims and do not override this audit.
+
+**Current successor status:** **345 training / 60 validation / 53 conditional independent-test passages**. Taglish completion round v5 closed without new captures; cumulative ledger carries 649 raw identities / 84 publisher attempts under prospective 700/100 ceilings. All 53 baseline members preserved. English testing meets 30/30 (27 pos + 3 neg); Taglish is 20/27 positive + 3 genuine negative = 23/30 (**seven Taglish positives still needed**). Next: bounded acquisition proposal for unexposed localized floods (2017–2023) or authorized source-use evidence resolution before successor admission, grouped partition freeze, qualified exports or desktop GPU training. No admission, seal, export or training. [Latest evaluation](../../../docs/evaluations/flood-ner-taglish-test-completion-20261017/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Desktop action: none yet.** The desktop history inventory has already been received and reconciled within its recorded scope. Do not rerun old restoration or fixed-400 training launchers by default. After the independent-test requirements pass, the next task is explicit successor admission/grouped freezing, qualified export and a desktop GPU handoff; actual training follows that handoff. Private successor reviews are not supplied by Git. [Current desktop status](../../../docs/guides/ner-desktop-history-inventory.md).
+
+All following checkpoint counts and inventory requests are historical and do not override the status above.
 
 **Current successor targets clarified: retain 345 proposed training passages and target 60 validation + 60 independent test passages (465 total if all qualify).** The reviewed development proposal still contains **345 training / 57 validation**; **three additional eligible validation passages are needed**. The independent test still has only **37 conditionally supported passages / 23 positive passages missing (10 English, 13 Taglish)** for its current joint witness. These are targets and conditional counts, not admitted/frozen records. Keep all historical fitted-source groups training-only; never use isolated test material to fill validation or validation material to fill test. **Next: run and reconcile the original desktop history inventory before further collection; then qualify additional validation/test material under separate roles and resolve the recorded acquisition-budget failure.** No new search, capture, admission, export or training is authorized by this count clarification. Previous review/design/qualification packages and their completed counts remain historical. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

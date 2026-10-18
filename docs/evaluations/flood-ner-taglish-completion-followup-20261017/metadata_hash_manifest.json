@@ -1,0 +1,14 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "final-curator-aggregate-status.json": "aac33956b224ca6561c38c5dc0340b8eb7b21a3d2eb610b57f93e7eb517b4f52",
+    "final-curator-verification-manifest.json": "f68e9d2e8ccf97bd84ff9aa965fb5d26f28a529cbdd7629d48a8e992640b5140",
+    "next-source-evidence-gate.json": "9a0be97645607504520319fce464013a47e1f7d2e66230497e2589a0f72b2cae",
+    "readiness.json": "37a975e69af786ea40e74818a40b1bced9120b951c6b8c908a4693723d335b88",
+    "README.md": "dc3d119f8d745b854bb4006fba8051d74028f4c800f676e67a48e58b1a8846c4",
+    "round2-curator-aggregate-status.json": "bb6465a909f813cf5f4258295c94eb365040e3662ec814b8163f6fc3d0998ffb",
+    "round2-curator-verification-manifest.json": "733cabc74ce6178e9480716782ce96bba509321ee2480bb7b7476747d2e1bdec",
+    "training-handoff-next-task.json": "127060649afef2b69e61eceb8e75483b7bd77582a8a46938f550211932abac51",
+    "verification.json": "f29c52fe3c69575b705e9f81c8503a31ed11c1bcef60b89b266ebdc34f93d2d8"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "lanes-public-report-hashes-v1",
+  "files": {
+    "curator-aggregate-status.json": "c2d5445abd921c1bb93fd7a9e123378e3211aad0d54f082b703aa2c0f10fce86",
+    "curator-verification-manifest.json": "4167e5cc357c7c1337a44ca0ceebf243dc4321a30f8597bc1ffe5db24e6b41de",
+    "README.md": "11f26be13bbaf7a0cbb362b4e2b5207536aa35a0abd017bfa87f359f5eaf134f",
+    "verification.json": "da4defcb76601221c6ba53f9d1d1c11dd4425358ba2761a184f975b718a9e9e8"
+  }
+}

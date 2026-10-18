@@ -1,0 +1,11 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "curator-aggregate-status.json": "42d658e60f341d92523882a411edebcc4e932782ceb62307bdc82b4f8bfea17c",
+    "curator-verification-manifest.json": "fc2eb9a4ad3f375a4a20303d5a1c73be41cec8a4b4d4849faeb88565f26eaf1f",
+    "history-summary.json": "73f4cb388ba1125f0b791b0579394dc8ce951c520e292684bb4d2c8d0a10c72c",
+    "readiness.json": "b1bcd9a2f80a91cc64d9d18a69497e27a023737b509f111f7564cb0a70b36b98",
+    "README.md": "0b90589a94856cd19568ee9412fc61792e6bedd6adffe9dfcff090b9cc294616",
+    "verification.json": "7fb33f3045cca3d5c2c4eaa4add05167c87b2df480c352304f8b14aca0d80668"
+  }
+}
