@@ -1,0 +1,59 @@
+{
+  "commit_or_push": false,
+  "corrected_records": 9,
+  "corrected_spans": 12,
+  "counts": {
+    "dev": 60,
+    "train": 345
+  },
+  "desktop_gpu_verified": false,
+  "dev_entities": 85,
+  "fresh_tests": {
+    "existing_environment_passed": 209,
+    "new_preparation_tests": 83,
+    "passed": 367,
+    "qualified_runtime_passed": 158,
+    "subtests_passed": 35,
+    "suites": 9,
+    "warnings": "Existing Click deprecation"
+  },
+  "frozen_implementations_unchanged": true,
+  "hashes": {
+    "adoption_ledger": "07a4ec52e834b7d6d49f0783d3d826d6fbf7290f416687945dee815bb60182b7",
+    "cpu_qualification": "de794cfff827d64a3d31b24cab6eb1738c5ac48a27efc6418bbbf900b9abb862",
+    "dev.spacy": "6b98529d3d65e1f5b5664a843220e9f19d49028b9d5edb10d86d538e60bffb02",
+    "development_revision": "86be35848952172d3cabda4238a2e685b4fce16c9265ac49cb6b3fc83d4c18aa",
+    "grant": "87952198880b8ac7feca5da4095733c546e9e767d6f22c849cf9a7396dbff32d",
+    "preparation_result": "3af1fa4b583f9607dcc3c8d3527024d3cafb2490e49ecce46dd90e34cfd35339",
+    "protocol": "7e95772ec75dc7b1e3a7912f23e033555734e3b055bda01b295b1b0d4aff0024",
+    "tokenizer.bin": "3f666f61346b7196d931ab9781a3d83f41d688e24b298e8e494b3d92c384a588",
+    "train.spacy": "6fc6edcefef912d06d099650edd8d7589fb34b60f580ddce00fb21078aeb0415",
+    "trainer_manifests": {
+      "control": "2a291a630c5b83c3b6e53a597b9b953a71a7c4d8733a4780fd0d208de0531c67",
+      "higher_dropout": "c8fc15ead8a5e5e533c617542ad7ad1be275c464a64b1de107ac124e797b7898",
+      "lower_learning_rate": "bac3c0b07e19de5d8d59a86054a223ee483118aeb4d4493c3dfdcb6aa2523d11"
+    }
+  },
+  "history_accounting_limitations_retained": true,
+  "holdout_files_metadata_unchanged": 55,
+  "holdout_opened_or_hashed": false,
+  "inference_performed": false,
+  "labels_quality": "AI-assisted silver; not human verified",
+  "new_articles_or_passages": 0,
+  "package_file_counts": {
+    "control": 12,
+    "higher_dropout": 12,
+    "lower_learning_rate": 12
+  },
+  "private_delivery_complete": false,
+  "protected_files_verified": 154,
+  "python_version": "3.11.17",
+  "qualified_configurations": 9,
+  "read_only_verification_wrote_files": false,
+  "spacy_version": "3.7.5",
+  "state": "qualified_read_only",
+  "training_entities": 840,
+  "training_performed": false,
+  "upload": false,
+  "validation_records_byte_equal": 60
+}

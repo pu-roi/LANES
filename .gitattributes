@@ -138,6 +138,15 @@
 /backend/tests/test_flood_ner_review_progress.py -text
 /backend/tests/test_flood_ner_successor_preparation.py -text
 /backend/tests/test_flood_ner_successor_windows_runtime.py -text
+/backend/training/flood_ner/development_error_audit.py -text
+/backend/training/flood_ner/development_error_worker.py -text
+/backend/tests/test_flood_ner_development_error_audit.py -text
+/backend/training/flood_ner/successor_experiment_preparation.py -text
+/backend/training/flood_ner/successor_experiment_worker.py -text
+/backend/tests/test_flood_ner_successor_experiment.py -text
+/docs/evaluations/flood-ner-corrected-experiment-preparation-20261018/** -text
+/docs/evaluations/flood-ner-corrected-experiment-delivery-20261018/** -text
+/docs/evaluations/flood-ner-development-error-audit-20261018/** -text
 /docs/evaluations/flood-ner-successor-desktop-training-20261018/** -text
 # Frozen historical Markdown contains intentional hard breaks; preserve its digest.
 /docs/evaluations/flood-ner-taglish-test-completion-20261017/README.md whitespace=-blank-at-eol,cr-at-eol

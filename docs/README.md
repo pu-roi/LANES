@@ -1,8 +1,24 @@
 # LANES documentation
 
+> **Last Updated:** October 18, 2026, 6:15 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current handoff: corrected v19 packages are verified on Drive; matching public code and instructions accompany this roi-branch publication.** Dataset remains 345 training / 60 validation / 60 separate research holdout. Three twelve-file packages and the fixed future protocol are delivered; all uploaded bytes match authenticated readback and five owner-only permission checks pass. No training, inference or holdout access occurred. [Delivery report](evaluations/flood-ner-corrected-experiment-delivery-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next: desktop receipt and read-only GPU verification for all three packages, then STOP.** Preserve local work, pull roi-branch with --ff-only and receive the new private ZIP from [Drive](https://drive.google.com/drive/folders/1LDO770D82NXHZRiYNZrHe5oyLo7-vJU7). Actual desktop receipt/GPU checks remain pending. A Git pull does not deliver ignored data; do not rerun preparation or historical v16 training commands. Actual training is a separate explicit task. [Exact commands and copyable desktop prompt](guides/ner-corrected-experiment-desktop.md).
+
+**Historical completed task: corrected-data experiment preparation on the laptop.** A separate 345 training / 60 validation revision adopts only 12 supported training-boundary corrections across nine records. Validation, tokenizer and partition/group bytes remain unchanged; the 60-passage research holdout stays unopened. Three twelve-file trainer packages and all nine seed/config schemas qualify in Python 3.11.17/spaCy 3.7.5. Fresh 367 tests / 35 subtests pass, including 83 new tests. No new articles/passages, inference or training occurred. [Preparation report](evaluations/flood-ner-corrected-experiment-preparation-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Prior preparation next-step (delivery now completed; desktop verification still pending): publish/deliver the corrected packages and frozen experiment protocol.** At that earlier preparation checkpoint, delivery/GPU verification were pending and no upload, commit or push had occurred. The specified future study uses five runs if control wins screening, otherwise at most seven. No guaranteed score follows. The desktop can remain off. [Operator guide](guides/ner-corrected-experiment-preparation.md).
+
+**Historical completed task: existing-data development audit.** All three models reproduce desktop validation scores on CPU across 345 training / 60 validation records (1215 predictions); the separate 60 research-holdout passages remain unopened. Seed 0 training F1 is 99.40% versus validation 66.67%, consistent with overfitting/example differences. Source-bound review proposes 12 training-span boundary corrections across 9 existing records; one validation-boundary question remains unresolved, with its frozen scored reference retained. No data, partitions or models changed. Fresh 209 tests / 35 subtests pass, including 53 new audit tests. [Audit report](evaluations/flood-ner-development-error-audit-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Prior audit next-step (now completed as preparation above): choose supported corrections and define a bounded regularization experiment using existing data only.** No new articles/passages, corpus admission, replacement export, holdout access, training, upload, commit or push occurred in this task. The desktop can remain off. [Operator guide](guides/ner-development-error-audit.md).
+
+Earlier training/publication checkpoints below remain historical; the current user constraint is no new data collection.
+
+
 - [Successor publication and private Drive backup](evaluations/flood-ner-successor-publication-20261018/README.md): matching Windows launcher, trained selected checkpoints, complete SHA-256 readback and owner-only access.
 
-> **Last Updated:** October 18, 2026, 4:51 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Publication checkpoint:** Matching combined launcher and three-seed reports are included in this `roi-branch` publication. The new [private v17 Drive backup](https://drive.google.com/drive/folders/1ZFFNL9Vu-dg5xLyWsSR2wd99_qsGTE_J) preserves the combined trainer and all three selected checkpoints/logs; all eleven uploaded files pass full SHA-256 readback and all twelve folder/file permission checks are owner-only. Older folders remain unchanged. The local `.env` change stays outside the commit. [Publication evidence](evaluations/flood-ner-successor-publication-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

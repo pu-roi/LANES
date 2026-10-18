@@ -1,6 +1,26 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 18, 2026, 4:39 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 6:07 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Corrected-data revision and CPU qualification guard
+
+**Status:** Resolved in new revision; historical annotations preserved. **Severity:** Medium. **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem / RCA:** The completed audit identified twelve inconsistent training designator boundaries across nine records. During preparation, a new guard compared spaCy's per-parameter update mapping with numeric zero, rejecting an empty unused optimizer state.
+
+**Solution:** Apply only the approved finite training corrections in a new hash-bound development derivative. Preserve all validation references and original datasets. Check empty versus nonempty update mappings, add regression coverage, preserve the failed output/source/claim, and qualify a separate second package under a new grant. No optimizer update or training occurred.
+
+**Files / evidence:** New successor experiment preparation/CPU worker and 83 constructed tests; existing serializers/trainers unchanged. Fresh 367 tests / 35 subtests pass across nine suites. [Qualification report](../evaluations/flood-ner-corrected-experiment-preparation-20261018/README.md). New package delivery and desktop GPU verification remain pending; improvement is unmeasured.
+
+## October 18: Mixed designator boundaries found in existing training annotations
+
+**Status:** Investigating/proposal prepared, not applied. **Severity:** Medium (reference consistency). **Author:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+The older training pool contains12 bare CITY/PROVINCE spans across9 passages where the current annotation convention and later examples include explicit source designators. Full saved-source review supports proposed boundary extensions without changing text, labels, entity IDs or membership. All nine draft records pass shared schema/source/offset/non-overlap/tokenizer checks. The inconsistent references are demonstrated; their causal contribution to model errors and any improvement remain unmeasured. Original references stay unchanged. One validation landmark-boundary question remains for independent adjudication.
+
+New development-only audit helpers and constructed tests reproduce all three desktop scores on CPU, expose a large fitted-training/validation gap and keep strict scoring separate from diagnostic overlap links. A Windows audit-lock cleanup issue was caught and repaired before completed runs; no frozen trainer helper was changed. Fresh 209 tests / 35 subtests pass (53 new audit tests). [Audit evidence](../evaluations/flood-ner-development-error-audit-20261018/README.md). No new articles, training, holdout access or replacement exports.
+
+
 
 **Current successor v16 desktop result:** All three successor seeds complete and their selected checkpoints verify; seed 0 remains primary. 75 focused tests and combined GPU/schema verification pass. Development F1 for seeds 0/1/2: 66.67% / 65.41% / 67.46%. All 12,387 protected historical files and `.env` remain unchanged. Holdout evaluation is separate. [Execution evidence](../evaluations/flood-ner-successor-v16-desktop-training-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
