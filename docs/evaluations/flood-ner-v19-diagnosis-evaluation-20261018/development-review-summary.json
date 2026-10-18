@@ -1,0 +1,42 @@
+{
+  "annotation_changes": 0,
+  "error_passages_any_seed": 22,
+  "focused_full_source_reviews": 14,
+  "focused_training_reviews": 28,
+  "no_new_training_authorization": true,
+  "primary_seed0_errors": {
+    "FN": 27,
+    "FP": 19,
+    "overlap_link_categories": {
+      "wrong_boundary": 5,
+      "wrong_boundary_and_type": 2,
+      "wrong_type": 10
+    }
+  },
+  "proposals": [
+    {
+      "category": "boundary_and_context_errors",
+      "priority": 1,
+      "proposal": "Review compound road boundaries, direction exclusion and shared list context using existing training references in a future development plan; no automatic rule or annotation change."
+    },
+    {
+      "category": "coverage_limitation",
+      "priority": 2,
+      "proposal": "LOCAL_AREA has19 training spans in16 passages versus12 validation spans; seven primary validation misses include shared numeric/list context. Test span/context sensitivity on constructed development probes before any future experiment."
+    },
+    {
+      "category": "annotation_question",
+      "priority": 3,
+      "proposal": "Independent future adjudication of school/gymnasium boundary; preserve frozen validation reference now."
+    },
+    {
+      "category": "training_logic",
+      "priority": 4,
+      "proposal": "Do not increase steps or repeat tuning solely to perfect validation. Higher dropout already lost screening; raw learning curves were not delivered."
+    }
+  ],
+  "schema": "lanes-v19-development-review-v1",
+  "unresolved_reference_questions": 1,
+  "validation_connected_groups": 20,
+  "validation_reviews": 60
+}

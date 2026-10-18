@@ -1,0 +1,69 @@
+{
+  "accounting_complete": false,
+  "aggregate_reconciliations": {
+    "class_language_count_sums": true,
+    "means_sample_deviations": true,
+    "one_claim": true,
+    "qualification_reverified_after_evaluation": true,
+    "systems": 7
+  },
+  "backend_tests": {
+    "passed": 269,
+    "subtests_passed": 4,
+    "warnings": 1
+  },
+  "certified_fresh": false,
+  "connected_groups": {
+    "holdout": 30,
+    "validation": 20
+  },
+  "counts": {
+    "holdout": 60,
+    "train": 345,
+    "validation": 60
+  },
+  "development_predictions": 1215,
+  "focused_full_source_reviews": 14,
+  "focused_training_reviews": 28,
+  "hashes": {
+    "freeze": "43fbf1f9829ed6b14ed055489ce9f6873180a4a5bfeedb47012d60b1cc31b551",
+    "holdout_aggregate": "fbde622910440f60a335bbb3b7cb08eff2d26f0405ecfa7ff47914e96568f22f",
+    "original_archive": "a6675c403216146bbf42da8790df66112a2926ebd63dedbf641c7c1cf6649345",
+    "original_handoff": "b3dd00e73d59aa11fdcdbf4a1c97c7e58abd7b30540521f2215e9c7435887367",
+    "persistent_attempt_claim": "f8193b3d1b8c5e37ca618aa9c449f6777e482d33596450b5291413a5266730f5",
+    "protocol": "7b1a522373dc8b8859cc5b4866fb05feaa34e2311098ba0ee8dc932f145135c2",
+    "qualification": "02bc382d793ad69416a336d92fdfd3c5efb0deaa855a7197eba6f8be87a2f23e"
+  },
+  "history_complete": false,
+  "holdout_attempts": 1,
+  "human_gold": false,
+  "neural_runtime_tests": {
+    "additional_unique_tests": false,
+    "passed": 61
+  },
+  "new_collection": false,
+  "newline_equivalence": {
+    "cross_runtime_actual_proofs": 12,
+    "csv_rows": 2,
+    "python_ast": 10
+  },
+  "protected_checks": {
+    "current_snapshot_bindings": 143,
+    "earlier_preparation_bindings": 154,
+    "unique_count_claimed": false
+  },
+  "public_outputs": {
+    "README.md": "8194f87131d069ba22f87b81a16b53a1404d255289b70f09fc9d5faeb37c460d",
+    "development-gaps.json": "241210d0d7d9537c1e6540bd7bb3e4034d30a4274c9ba8b06efea9b921cf4fb3",
+    "development-metrics.json": "d40711b190c73947d1b79c3c66b4953134cc4eaa91d34bbe61842713212494e2",
+    "development-review-summary.json": "2bde54fc765cde3210d33d9dfb349940a7a8c4ac1519299e5cccb0bafbb7de75",
+    "holdout-aggregate.json": "fbde622910440f60a335bbb3b7cb08eff2d26f0405ecfa7ff47914e96568f22f"
+  },
+  "reference_changes": 0,
+  "schema": "lanes-v19-public-verification-v1",
+  "selection_changed": false,
+  "state": "completed",
+  "systems": 7,
+  "training_performed": false,
+  "validation_reviews": 60
+}

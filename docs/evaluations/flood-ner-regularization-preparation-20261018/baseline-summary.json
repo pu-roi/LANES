@@ -1,0 +1,131 @@
+{
+  "baseline_holdout_results_used": false,
+  "baseline_metrics_sha256": "785a67d0182554bd354112658803ec3e157013b2cf5c6ce5ffabc401f0894585",
+  "means": {
+    "LOCAL_AREA": 0.639938080495356,
+    "ROAD": 0.5029951690821256,
+    "validation_f1": 0.6979742637862296
+  },
+  "primary_seed": 0,
+  "schema": "lanes-regularization-baseline-summary-v1",
+  "seeds": {
+    "0": {
+      "protected_labels": {
+        "LOCAL_AREA": {
+          "FN": 7,
+          "FP": 0,
+          "TP": 5,
+          "f1": 0.5882352941176471,
+          "passages": 60,
+          "precision": 1.0,
+          "predicted_spans": 5,
+          "recall": 0.4166666666666667,
+          "reference_spans": 12,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 8,
+          "FP": 5,
+          "TP": 6,
+          "f1": 0.48,
+          "passages": 60,
+          "precision": 0.5454545454545454,
+          "predicted_spans": 11,
+          "recall": 0.42857142857142855,
+          "reference_spans": 14,
+          "supported": true
+        }
+      },
+      "validation": {
+        "FN": 27,
+        "FP": 19,
+        "TP": 58,
+        "f1": 0.7160493827160493,
+        "passages": 60,
+        "precision": 0.7532467532467533,
+        "predicted_spans": 77,
+        "recall": 0.6823529411764706,
+        "reference_spans": 85
+      }
+    },
+    "1": {
+      "protected_labels": {
+        "LOCAL_AREA": {
+          "FN": 5,
+          "FP": 1,
+          "TP": 7,
+          "f1": 0.7,
+          "passages": 60,
+          "precision": 0.875,
+          "predicted_spans": 8,
+          "recall": 0.5833333333333334,
+          "reference_spans": 12,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 6,
+          "FP": 1,
+          "TP": 8,
+          "f1": 0.6956521739130435,
+          "passages": 60,
+          "precision": 0.8888888888888888,
+          "predicted_spans": 9,
+          "recall": 0.5714285714285714,
+          "reference_spans": 14,
+          "supported": true
+        }
+      },
+      "validation": {
+        "FN": 26,
+        "FP": 21,
+        "TP": 59,
+        "f1": 0.7151515151515152,
+        "passages": 60,
+        "precision": 0.7375,
+        "predicted_spans": 80,
+        "recall": 0.6941176470588235,
+        "reference_spans": 85
+      }
+    },
+    "2": {
+      "protected_labels": {
+        "LOCAL_AREA": {
+          "FN": 6,
+          "FP": 1,
+          "TP": 6,
+          "f1": 0.631578947368421,
+          "passages": 60,
+          "precision": 0.8571428571428571,
+          "predicted_spans": 7,
+          "recall": 0.5,
+          "reference_spans": 12,
+          "supported": true
+        },
+        "ROAD": {
+          "FN": 10,
+          "FP": 6,
+          "TP": 4,
+          "f1": 0.3333333333333333,
+          "passages": 60,
+          "precision": 0.4,
+          "predicted_spans": 10,
+          "recall": 0.2857142857142857,
+          "reference_spans": 14,
+          "supported": true
+        }
+      },
+      "validation": {
+        "FN": 29,
+        "FP": 28,
+        "TP": 56,
+        "f1": 0.6627218934911243,
+        "passages": 60,
+        "precision": 0.6666666666666666,
+        "predicted_spans": 84,
+        "recall": 0.6588235294117647,
+        "reference_spans": 85
+      }
+    }
+  },
+  "source": "authenticated v19 development-only diagnosis"
+}

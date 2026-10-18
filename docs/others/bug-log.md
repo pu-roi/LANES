@@ -1,6 +1,36 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 18, 2026, 6:07 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 11:46 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## October 18: Preserve the qualified evaluation contract across Git transport
+
+**Status:** Resolved. **Severity:** Medium (offline package verification). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem/RCA:** The existing evaluation contract's working bytes are qualified CRLF, while its Git blob was LF under an eol=crlf translation rule. The raw committed-source check correctly rejected that difference before publication.
+
+**Solution:** Add an explicit byte-preservation attribute and restage the unchanged working file literally. Its Python logic, raw working bytes and frozen package bindings are unchanged. All fourteen package-bound source/test blobs now match their manifests; simulated checkouts with core.autocrlf true and false preserve every hash.
+
+**Files/evidence:** .gitattributes and evaluation/contract.py (Git newline representation only). Final 359 tests/four subtests pass, including eighteen constructed transfer guards and authentic archive extraction/readback. [Delivery report](../evaluations/flood-ner-regularization-delivery-20261018/README.md). No inference, training or holdout access occurred.
+
+## October 18: New DocBin round-trip checker retained IDs explicitly
+
+**Status:** Resolved before regularization qualification. **Severity:** Medium (new offline checker). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem/RCA:** Seven constructed serialization checks failed because DocBin.from_bytes restores user_data but does not switch on its subsequent serialization. The new verifier used the default false flag and compared bytes without record IDs.
+
+**Solution:** Construct the reloaded DocBin with store_user_data=True, matching the existing frozen exporter. Keep all seven failing fixtures and require exact byte round-trip plus text/token/entity/identity equality. No original exporter, reference or corpus byte changed.
+
+**Files/evidence:** New regularization_worker.py checker and regularization experiment tests; 72 new checks pass, 341 tests/four subtests across affected suites, with 72 pinned-runtime rechecks. [Preparation](../evaluations/flood-ner-regularization-preparation-20261018/README.md). No inference or training.
+
+## October 18: Two-runtime research evaluation qualification
+
+**Status:** Resolved in new offline helpers; received originals preserved. **Severity:** High (preflight/research isolation). **Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Problem/RCA:** Received evaluation mixed development scoring with isolated holdout work, attempted backend rules in the neural runtime and assumed byte-identical cross-machine application files. Twelve differences were newline-only. An initial new AST receipt also differed across Python 3.11/3.12 due to empty type-parameter metadata; preflight rejected it before holdout access and without consuming the single attempt.
+
+**Solution:** Separate development diagnosis, scoped model inputs and raw-only backend rules subprocess; bind transitive imports/assets and exclusive global attempt. Qualify exact newline differences with source AST/CSV row evidence and runtime-neutral empty metadata handling. Recheck all twelve proofs in both real runtimes; preserve failed receipt/source/trace. The sole claimed comparison then completed successfully. Two development setup failures (existing pure-Python dependency lookup and strict JSON datetime parsing) were preserved and corrected before the completed development diagnosis; no corpus change or training.
+
+**Files/evidence:** New v19 diagnosis/qualification, reviewed received execution/CPU helper, replacement evaluator/rules worker and constructed tests. Fresh 269 tests/four subtests; 61 neural-runtime tests. [Report](../evaluations/flood-ner-v19-diagnosis-evaluation-20261018/README.md). Application APIs, dependencies, schemas and frozen trainers are unchanged.
 
 ## October 18: Corrected-data revision and CPU qualification guard
 

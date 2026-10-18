@@ -155,3 +155,19 @@
 
 /docs/evaluations/flood-ner-successor-v16-desktop-training-20261018/** -text
 /docs/evaluations/flood-ner-successor-publication-20261018/** -text
+
+# v19 comparison qualification binds these exact test and aggregate bytes.
+/backend/tests/test_flood_ner_corrected_execution.py -text whitespace=cr-at-eol
+/backend/tests/test_flood_ner_corrected_holdout_evaluation.py -text
+/backend/tests/test_flood_ner_v19_diagnosis.py -text
+/docs/evaluations/flood-ner-v19-diagnosis-evaluation-20261018/** -text
+
+# Regularization package source/test bindings must survive desktop checkout.
+/backend/tests/test_flood_ner_regularization_experiment.py -text
+/docs/evaluations/flood-ner-regularization-preparation-20261018/** -text
+
+# Transfer verifier/test bytes and public delivery evidence survive checkout.
+/backend/tests/test_flood_ner_regularization_delivery.py -text
+/docs/evaluations/flood-ner-regularization-delivery-20261018/** -text
+# Store the already-bound contract bytes literally instead of translating on checkout.
+/backend/training/flood_ner/evaluation/contract.py -text whitespace=cr-at-eol

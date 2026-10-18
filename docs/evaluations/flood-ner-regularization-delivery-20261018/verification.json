@@ -1,0 +1,45 @@
+{
+  "L2": 0.05,
+  "archive": {
+    "byte_equal": true,
+    "bytes": 216866,
+    "sha256": "2336dbafdb93832323c702c61d142ad68b9bfce2371c84fbb27c50117183884f"
+  },
+  "authentic_extraction_byte_equal": true,
+  "checkout_autocrlf_modes_verified": [
+    "true",
+    "false"
+  ],
+  "contract_git_transport_change_only": true,
+  "counts": {
+    "configs": 3,
+    "files": 20,
+    "train": 345,
+    "trainer_files": 12,
+    "validation": 60
+  },
+  "desktop_gpu_verified": false,
+  "desktop_receipt_verified": false,
+  "drive_folder_url": "https://drive.google.com/drive/folders/1vKssoZurLa6WjuJPftXRbJ7GcoefimKq",
+  "experiment_manifest_sha256": "35050682217749d945a3c5fecbe5d3771212b1df1276f9f5f95bad4c7d6a0e78",
+  "final_regression_subtests_passed": 4,
+  "final_regression_tests_passed": 359,
+  "final_regression_warnings": 2,
+  "fresh_transfer_tests": 18,
+  "frozen_preparation_unchanged": true,
+  "historical_preparation_subtests": 4,
+  "historical_preparation_tests": 341,
+  "holdout_accessed": false,
+  "inference_performed": false,
+  "maximum_later_training_runs": 3,
+  "new_document_links_verified": 43,
+  "owner_only_permission_checks": 6,
+  "repeat_holdout_comparison_authorized": false,
+  "schema": "lanes-regularization-delivery-verification-v1",
+  "staged_bound_source_files": 14,
+  "training_started": false,
+  "transfer_manifest_sha256": "5f9c5c58b34356826ba6427ee0c60820f8cb92e59e0eb7ee9452e0ac10f7784e",
+  "upload_readback_byte_equal": true,
+  "uploaded_files_verified": 4,
+  "working_contract_bytes_unchanged": true
+}

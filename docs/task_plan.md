@@ -1,6 +1,40 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 18, 2026, 6:15 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 18, 2026, 11:41 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Current NER handoff: the regularization experiment is verified on private Drive; matching code and instructions accompany this roi-branch publication.** The 345 training / 60 validation exports are unchanged. One L2 = 0.05 candidate has seed 0/1/2 configs and a fixed maximum-three-run protocol. All four uploaded files match authenticated readback; parent, destination and files are owner-only. Desktop receipt and GPU verification remain pending. No training, inference or holdout access occurred during delivery. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next on the desktop:** preserve local changes, pull roi-branch with --ff-only, authenticate and extract the delivered archive into an absent destination, then run read-only GPU/schema verification and STOP. Actual training is a separate explicit task after verification; the completed research holdout stays outside tuning.
+
+[Delivery report](evaluations/flood-ner-regularization-delivery-20261018/README.md) · [Desktop instructions](guides/ner-regularization-experiment.md) · [Private Drive handoff](https://drive.google.com/drive/folders/1vKssoZurLa6WjuJPftXRbJ7GcoefimKq)
+
+- [x] Verify private regularization delivery and publish matching code/instructions. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [ ] Receive and verify the regularization package on the desktop; stop before training. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Earlier dated checkpoints below are historical.**
+
+**Current NER task completed: one stronger-weight-decay experiment is prepared and CPU-qualified.** The existing 345 training/60 validation records, annotations, tokenizer and grouping remain unchanged. One twelve-file package supplies seed 0/1/2 configs with only `L2: 0.01 -> 0.05` changed. Fresh 341 tests/four subtests pass; 72 new checks also pass in the pinned runtime. No inference, training or research-holdout content access occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Next:** separately publish matching code and privately deliver the experiment bundle; then perform actual desktop read-only GPU verification. Training follows as a separate explicit task: seed 0 screening, conditional 1/2, maximum three runs, with overall improvement and ROAD/LOCAL_AREA protection required. The completed holdout stays outside tuning. Delivery/GPU verification remain pending; the desktop can remain off.
+
+[Preparation report](evaluations/flood-ner-regularization-preparation-20261018/README.md) · [Operator guide](guides/ner-regularization-experiment.md)
+
+- [x] Prepare and qualify one unchanged-data regularization experiment; freeze screening and key-label protections. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Publish matching code with the verified private delivery; actual desktop GPU verification remains pending. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Prior checkpoints follow; their dated “current/next” wording is historical.**
+
+**Current NER status: v19 diagnosis and the one-time frozen research evaluation are complete on the laptop.** Dataset 345/60/60 and validation-selected control/seed 0 stay unchanged. V19 seed 0 training/validation/holdout F1: **98.09% / 71.60% / 73.63%**. Historical v16 seed 0 holdout 74.74%; rules 53.49%. Holdout three-seed means: control 70.34%, v16 75.13%. These results do not establish an overall v19 improvement or authorize choosing a model using the holdout.
+
+**Next:** a separate development plan from the existing training/validation error review; no new articles or automatic retraining. Gate 3 research measurement is complete, while operational qualification, integration and release remain open. The holdout has now been evaluated and must not be tuned against or evaluated again under this protocol. AI-assisted silver, incomplete history/accounting and no certified-fresh claim remain. No collection, new training, reference/partition change, integration, upload, commit or push occurred. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+[Diagnosis/evaluation report](evaluations/flood-ner-v19-diagnosis-evaluation-20261018/README.md) · [Laptop evaluation guide](guides/ner-corrected-holdout-laptop.md)
+
+- [x] Diagnose all 405 development records across three v19 control checkpoints; preserve annotations. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Qualify two-runtime isolated evaluation and complete one frozen seven-system comparison. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Define a separate development experiment from existing-data findings; keep the evaluated holdout outside tuning. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+**Historical checkpoints follow.** Their “current/next” wording describes earlier dated tasks and is superseded by the status above.
 
 **Current handoff: corrected v19 packages are verified on Drive; matching public code and instructions accompany this roi-branch publication.** Dataset remains 345 training / 60 validation / 60 separate research holdout. Three twelve-file packages and the fixed future protocol are delivered; all uploaded bytes match authenticated readback and five owner-only permission checks pass. No training, inference or holdout access occurred. [Delivery report](evaluations/flood-ner-corrected-experiment-delivery-20261018/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
@@ -31,7 +65,7 @@ Earlier training/publication checkpoints below remain historical; the current us
 
 - [x] Integrate v16 with Windows startup across all three subprocess paths and qualify the separately bound package. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 - [x] Complete the authorized seed-0 retry and conditional seeds 1/2, validating each selected checkpoint before proceeding. [@roicambe](https://github.com/roicambe) (Roi Cambe)
-- [ ] Perform separately authorized isolated comparative holdout evaluation; preserve seed 0 as primary. [@roicambe](https://github.com/roicambe) (Roi Cambe)
+- [x] Perform separately authorized isolated comparative holdout evaluation; preserve seed 0 as primary. Completed in the v19 comparison above; historical result preserved. [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 Earlier preparation, delivery, correction and failed-attempt checkpoints below are historical unless explicitly carried forward.
 
