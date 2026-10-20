@@ -6,7 +6,7 @@ import type { Map } from "maplibre-gl";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import { 
-  getZone, getZones, deactivateZone, deactivateZonesBulk, AvoidanceZone,
+  getZone, deactivateZone, deactivateZonesBulk, AvoidanceZone,
   getPendingReports, getReportForSpatialReview, approveReport, rejectReport,
   createOfficialZone,
   FloodReport
@@ -31,6 +31,7 @@ import { AnalyticsPanel } from "@/features/analytics/AnalyticsPanel";
 import { NeedsReviewPanel } from "./review/NeedsReviewPanel";
 import { useNewsPlacementLayer } from "./review/useNewsPlacementLayer";
 import type { PlacementEnvelope } from "./review/reviewApi";
+import { getZoneQueue } from "./zoneQueueApi";
 import { ActiveZonesPanel } from "./components/ActiveZonesPanel";
 import { AdminFloodMapInteraction } from "./components/AdminFloodMapInteraction";
 import { RejectFloodReportModal } from "./components/RejectFloodReportModal";
@@ -119,7 +120,6 @@ class AnalyticsControl {
   }
 }
 
-const LIMIT = 10;
 
 // Pasig City Geographical Bounding Box
 const PASIG_BOUNDS: [[number, number], [number, number]] = [
@@ -218,6 +218,7 @@ export default function LiveMapPage() {
 
   // Active Zones List State
   const [page, setPage] = useState(1);
+  const [inspectedZones, setInspectedZones] = useState<AvoidanceZone[]>([]);
   const [activeOnly, setActiveOnly] = useState(true);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<number | null>(null);
@@ -413,16 +414,19 @@ export default function LiveMapPage() {
     return () => clearTimeout(timer);
   }, [searchParams, focusedModerationReport, focusedReportFetching, focusedReportError, mapZones, mapZonesFetching, mapZonesError, mapInstance, isLoaded, showMapError]);
 
-  const { data: listData, isLoading: listLoading, refetch: refetchList, isPlaceholderData } = useQuery({
-    queryKey: ["adminZones", page, activeOnly],
-    queryFn: () => getZones(page, LIMIT, activeOnly),
+  const { data: listData } = useQuery({
+    queryKey: ["adminZones", "summary", activeOnly],
+    queryFn: ({ signal }) => getZoneQueue(activeOnly, 1, undefined, signal),
+    enabled: isAuthenticated && pathname === "/admin/map",
     placeholderData: (prev) => prev,
     refetchInterval: 15000,
   });
+  // Workspace save callbacks must refresh summaries, cards and open member pages.
+  const refetchList = useCallback(() => queryClient.invalidateQueries({ queryKey: ["adminZones"] }), [queryClient]);
 
   const selectedReport = pendingReports?.find((report) => report.id === selectedReportId)
     || (reviewReport?.id === selectedReportId ? reviewReport : null);
-  const selectedZone = (mapZones || []).find((zone: AvoidanceZone) => zone.id === selectedZoneId) || null;
+  const selectedZone = (mapZones || []).find((zone: AvoidanceZone) => zone.id === selectedZoneId) || inspectedZones.find(zone => zone.id === selectedZoneId) || null;
 
   const openMergeWorkspace = (report: FloodReport) => {
     // Keep Pane 2 at its current width when moving between workspaces. The
@@ -759,6 +763,7 @@ export default function LiveMapPage() {
       queryClient.invalidateQueries({ queryKey: ["adminDashboardStats"] });
       setConfirmId(null);
       setSelectedZoneId((current) => current === id ? null : current);
+      setSelectedIds((current) => current.filter(selected => selected !== id));
       toast.success("Zone Deactivated", `Avoidance zone #${id} has been deactivated and moved to the Archive Center.`);
     },
     onError: (err: any) => {
@@ -821,19 +826,18 @@ export default function LiveMapPage() {
     analyticsControl?.updateState(isAnalyticsOpen);
   }, [isAnalyticsOpen, analyticsControl]);
 
-  const zones = listData?.zones || [];
-  const total = listData?.total || 0;
-  const totalPages = Math.ceil(total / LIMIT);
+  const zones = inspectedZones;
+  const total = listData?.counts?.all || 0;
 
   const handleZoneFocusChange = useCallback((id: number | null) => {
     setSelectedZoneId(id);
     if (id === null || (!isMergeDrawerOpen && !isCreateZoneDrawerOpen && !isEditZoneDrawerOpen)) return;
 
-    const nextZone = zones.find((zone: AvoidanceZone) => zone.id === id);
+    const nextZone = zones.find((zone: AvoidanceZone) => zone.id === id) || mapZones?.find((zone: AvoidanceZone) => zone.id === id);
     if (!nextZone) return;
 
     openEditZoneWorkspace(nextZone);
-  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, openEditZoneWorkspace, zones]);
+  }, [isCreateZoneDrawerOpen, isEditZoneDrawerOpen, isMergeDrawerOpen, openEditZoneWorkspace, zones, mapZones]);
 
   const handleExportCSV = () => {
     if (!statsData) return;
@@ -1008,10 +1012,8 @@ export default function LiveMapPage() {
               setSelectedZoneId={handleZoneFocusChange}
               selectedContributorId={selectedContributorId}
               setSelectedContributorId={setSelectedContributorId}
-              zones={zones}
-              listLoading={listLoading}
-              isPlaceholderData={isPlaceholderData}
-              totalPages={totalPages}
+              onRecords={setInspectedZones}
+              onRequestBulkDeactivate={() => setConfirmBulk(true)}
               flyToZone={flyToZone}
               onViewZoneOnMap={showZoneOnMap}
               setConfirmId={setConfirmId}

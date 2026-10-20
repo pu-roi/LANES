@@ -1,6 +1,10 @@
 # LANES documentation
 
-> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Shared Spatial Operations queues — verified locally
+
+[Grouped Active Zones, shared controls and acceptance limits](evaluations/spatial-zone-queues-20261021/README.md). 73 backend and 34 distinct desktop/mobile browser checks pass. Needs Review rules, individual zone actions and ungrouped history are preserved. No schema/dependency change or hosted deployment. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 ## Chris frontend integration — verified locally
 

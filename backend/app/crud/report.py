@@ -366,15 +366,13 @@ def deactivate_flood_avoidance_zones_bulk(db: Session, zone_ids: List[int]) -> i
     return result
 
 
-def get_all_avoidance_zones_filtered(
+def avoidance_zones_query(
     db: Session,
-    skip: int = 0,
-    limit: int = 100,
     active_only: bool = False,
     archived: bool = False,
     search: Optional[str] = None,
     *, now: Optional[datetime] = None,
-) -> tuple[List[models.FloodAvoidanceZone], int]:
+) -> Query:
     if now is not None and (now.tzinfo is None or now.utcoffset() is None):
         raise ValueError("Active zone simulation clock requires a timezone offset")
     clock = now if now is not None else func.now()
@@ -404,6 +402,14 @@ def get_all_avoidance_zones_filtered(
             )
         )
     
+    return query
+
+
+def get_all_avoidance_zones_filtered(
+    db: Session, skip: int = 0, limit: int = 100, active_only: bool = False,
+    archived: bool = False, search: Optional[str] = None, *, now: Optional[datetime] = None,
+) -> tuple[List[models.FloodAvoidanceZone], int]:
+    query = avoidance_zones_query(db, active_only=active_only, archived=archived, search=search, now=now)
     total = query.count()
     zones = (
         query.options(

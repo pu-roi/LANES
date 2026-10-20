@@ -1,14 +1,9 @@
 """Read-only attention groups; individual evidence and moderation remain intact."""
-import json
-import math
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from typing import Any, Mapping
 
-from shapely.affinity import scale
-from shapely.geometry import shape
-from shapely.geometry.base import BaseGeometry
-from shapely.errors import ShapelyError
+from app.services.spatial_grouping import complete_link_groups, metric_geometry
 
 from app.services.merge_service import normalize_road_name
 
@@ -40,22 +35,8 @@ class ReviewGroup:
 
 def group_review_identities(identities: list[Mapping[str, Any]], reports: list[Mapping[str, Any]], *, projected: bool) -> list[ReviewGroup]:
     metadata = {row["id"]: row for row in reports}
-    geometry: dict[int, BaseGeometry] = {}
-    for row in reports:
-        try:
-            raw = row["geometry"]
-            if raw is None:
-                continue
-            geom = shape(json.loads(raw) if isinstance(raw, str) else raw)
-            if geom.is_empty or not geom.is_valid:
-                continue
-            # Production metadata is PostGIS UTM 51N in metres. The isolated
-            # SQLite test adapter stores WGS84 GeoJSON, with a local projection.
-            geometry[row["id"]] = geom if projected else scale(geom,
-                xfact=111320 * math.cos(math.radians(14.58)), yfact=110574, origin=(0, 0))
-        except (ValueError, TypeError, KeyError, ShapelyError):
-            # Missing/invalid geometry cannot establish a related group.
-            continue
+    geometry = {row["id"]: geom for row in reports
+                if (geom := metric_geometry(row["geometry"], projected=projected)) is not None}
 
     def related(first: int, second: int) -> bool:
         a, b = metadata.get(first), metadata.get(second)
@@ -74,20 +55,10 @@ def group_review_identities(identities: list[Mapping[str, Any]], reports: list[M
         limit = MAX_GROUP_DISTANCE_M if road == other_road and city == other_city else 50.0
         return geometry[first].distance(geometry[second]) <= limit
 
-    groups: list[ReviewGroup] = []
-    # Stable oldest-ID anchors; complete-link checks prevent distant reports
-    # joining through a chain of intermediary reports along a long avenue.
-    for row in sorted(identities, key=lambda row: (row["source"], row["record_id"], row["claim_index"])):
-        identity = (row["source"], row["record_id"], row["claim_index"])
-        when = utc(row["queued_at"])
-        report = metadata.get(row["record_id"]) if row["source"] == "user_report" else None
-        target = next((group for group in groups if report and group.identities[0][0] == "user_report"
-            if all(related(row["record_id"], other[1]) for other in group.identities)), None) if report else None
-        if target:
-            target.identities.append(identity)
-            target.queued_at = max(target.queued_at, when)
-            target.reason = GROUP_REASON
-        else:
-            group = ReviewGroup([identity], when)
-            groups.append(group)
+    ordered = sorted(identities, key=lambda row: (row["source"], row["record_id"], row["claim_index"]))
+    members = complete_link_groups(ordered, lambda a, b:
+        a["source"] == b["source"] == "user_report" and related(a["record_id"], b["record_id"]))
+    groups = [ReviewGroup([(row["source"], row["record_id"], row["claim_index"]) for row in group],
+                         max(utc(row["queued_at"]) for row in group), GROUP_REASON if len(group) > 1 else None)
+              for group in members]
     return sorted(groups, key=lambda group: (-group.queued_at.timestamp(), group.key))

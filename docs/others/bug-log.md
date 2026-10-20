@@ -1,6 +1,18 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Active Zones — mobile bulk controls and expired history entries
+
+**Status:** Resolved locally. **Severity:** Low. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Bulk deactivation controls lived only over the map, which is hidden while browsing the mobile zone list. Historical rows could still expose active/deactivate controls when the stored active flag remained true beyond expiry.
+
+**2. Root cause:** List selection depended on a map-only action container; the individual history renderer used the stored flag without the backend's active/expiry eligibility check. Extracting grouped/member browsing also required workspace saves to refresh all zone-query variants instead of only the old list query.
+
+**3. Solution:** Add explicit selection actions to the zone panel, retain existing confirmations, scope Select all on this page to displayed eligible records, and project history activity through the shared backend eligibility query. Workspace save callbacks invalidate the complete `adminZones` prefix (summary, queue and members). Browsing and grouping remain read-only.
+
+**4. Files/verification:** `frontend/src/features/admin/components/ActiveZonesPanel.tsx`, `ActiveZoneRecords.tsx`, `LiveMapPage.tsx`, backend `zone_queue_service.py`/CRUD helpers, and `tests/zone-queue.spec.ts` plus native queue tests. Desktop/mobile checks verify cancel/confirm and exactly selected IDs; PostGIS checks verify expiry behavior and unchanged persisted lifecycle/geometry. Existing TypeScript checks pass; LiveMap's baseline lint errors are unchanged.
 
 ## Chris integration — legal notice focus on touch devices
 

@@ -1,6 +1,19 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Shared Spatial Operations queues — October 21, 2026
+
+`/admin/map` shares `SpatialGroupCard` and `SpatialQueueFilters` between Needs Review and Active Zones. Active Only shows backend-grouped zone cards; opening one loads individual zone records and Back to queue restores its filters, page, scroll and opening focus. Search, source, city/barangay and severity filters match one zone's evidence and retain its entire group. Source/category counts refer to individual zones, while card counts/pagination refer to groups. All History retains individual detailed entries with the same filters.
+
+- Staff GET `/api/v1/admin/zones/queue`: `active_only`, `source=all|user_reports|news|official|other`, `q`, `city`, `barangay`, `severity`, `page`, `page_size` (default 20, maximum 100). Returns card summaries, full history entries when requested, source counts, location facets, member/card totals and pagination.
+- Staff GET `/api/v1/admin/zones/groups/{zone_id}/members`: resolves membership from any active zone ID. With no `page`, opens the page containing that member; explicit pages support normal browsing. Returns the existing zone-detail contract, current group anchor/reason and pagination.
+- Membership uses saved polygons projected to UTM 51N: every pair must be within 500 m with unambiguous matching normalized road/city evidence, otherwise 50 m, including missing place metadata. Sources may mix; no creation-time cutoff applies. Lowest member ID anchors the group; newest creation time orders cards. Active eligibility reuses `avoidance_zones_query`, including paused expiry policy and simulation clocks.
+- Shared `spatial_grouping` supplies geometry conversion and complete-link grouping; Needs Review keeps its existing two-hour rule, required road/city metadata and separate news cards. All grouping remains read-only and occurs before filtering/pagination; no merged geometry, lifecycle or routing state is written.
+- `ActiveZoneRecords` preserves Info, evidence/source/estimate provenance, contributors, updates, View on map, Edit and Deactivate. Checkboxes and Select all on this page apply to displayed eligible records only. Explicit bulk actions are also available in the panel on mobile; opening a group selects nothing. History response activity reflects backend eligibility so expired zones cannot be selected for deactivation.
+- Queue/member reads poll every 15 seconds while active; zone mutations invalidate the shared `adminZones` query prefix. Storage errors, retries and vanished membership are visible. Existing zone APIs remain available; no SQLAlchemy model, migration or package addition.
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Locally verified; git publication is limited to `roi-branch`, with no deployment. [Acceptance and limits](../evaluations/spatial-zone-queues-20261021/README.md).
 
 ## Chris frontend integration — October 21, 2026
 

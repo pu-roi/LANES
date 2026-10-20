@@ -137,6 +137,12 @@ async function setup(page: Page, options: { readOnly?: boolean; missing?: boolea
     if (path.endsWith("/feed")) return route.fulfill({ json: { posts: [], total: 0, has_more: false } });
     if (path.endsWith("/reports/latest-snapshot")) return route.fulfill({ json: { zones: [], alerts: [], version: "fixture" } });
     if (path.endsWith("/admin/review/items")) return route.fulfill({ json: { items: [], total: 0, next_before: null } });
+    if (path.endsWith("/admin/zones/queue")) return route.fulfill({ json: {
+      items: options.zone && !options.inactive ? [{ zone_id: 9, member_count: 1, location: zone.name, area_summary: "Pasig", sources: ["user_reports"], severity_levels: [zone.severity], depth_levels: [zone.depth], evidence: zone.original_report_text, queued_at: zone.created_at, group_reason: "Nearby active zones" }] : [],
+      zones: url.searchParams.get("active_only") === "false" && options.zone ? [zone] : [],
+      total: options.zone ? 1 : 0, item_total: options.zone ? 1 : 0, counts: { all: options.zone ? 1 : 0, user_reports: options.zone ? 1 : 0, news: 0, official: 0, other: 0 }, facets: { cities: ["Pasig"], barangays: ["Maybunga"] }, page: 1, pages: 1, page_size: 20, read_only: true,
+    } });
+    if (path.endsWith("/admin/zones/groups/9/members")) return route.fulfill({ json: { zone_id: 9, zones: [zone], total: 1, page: 1, pages: 1, page_size: 20, group_reason: "Nearby active zones", read_only: true } });
     if (path.endsWith("/admin/zones/all")) return route.fulfill({ json: { zones: options.zone ? [zone] : [], total: options.zone ? 1 : 0 } });
     if (path.endsWith("/admin/zones/9")) return route.fulfill({ json: zone });
     if (path.endsWith("/reports/active-zones")) return route.fulfill({ json: options.zone ? [zone] : [] });
@@ -150,6 +156,7 @@ async function setup(page: Page, options: { readOnly?: boolean; missing?: boolea
 
 async function openPrediction(page: Page) {
   await page.getByRole("button", { name: /Active Zones/ }).click();
+  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
   await page.getByRole("button", { name: "Info for Zone #9" }).click();
   return page.getByRole("dialog", { name: "Flood Zone Details" }).getByRole("region", { name: "Automatic subsidence prediction for zone 9" });
 }

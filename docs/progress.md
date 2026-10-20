@@ -1,6 +1,12 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Shared Spatial Operations queues — completed locally
+
+Active Only now groups nearby zone polygons across sources before filtering/pagination and shares cards and browsing controls with Needs Review. Confirmed matching road/city pairs use 500 m; all other pairs use 50 m, with complete-link membership and no zone creation-time cutoff. Group inspection retains individual evidence, map focus, contributors, public updates, editing and confirmed deactivation. All History remains individual records. Bulk selection is page-scoped and its action is available in the mobile panel.
+
+**73 backend checks pass** (48 queue/review unit/HTTP regressions and 25 native PostGIS/expiry-policy checks). **34 distinct desktop/mobile browser checks pass**, including 320 px layout, filters/back navigation, group/member pagination, errors, explicit bulk payloads, report-to-zone handoffs, forecast details and edit-draft/save regressions. TypeScript and focused changed/new-component lint pass. LiveMap retains its 12 existing lint errors with no introduced signatures. Native checks apply existing migrations to head in an owned disposable database, which is removed afterward. No SQLAlchemy model, dependency or deployment changes. [Acceptance and limits](evaluations/spatial-zone-queues-20261021/README.md). Git publication is limited to `roi-branch`. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
 ## Chris frontend changes integrated into roi-branch
 

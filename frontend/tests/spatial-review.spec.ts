@@ -135,6 +135,15 @@ async function setup(page: Page, mode: "ready" | "unresolved" | "unavailable" | 
       body = { original: line, opposite: null, coverage_geometry: line, validation_status: "validated", road_type: "LOCAL", message: "Selected road verified." };
     }
     else if (path.endsWith("/notifications")) body = { notifications: [], total: 0, unread_count: 0, has_more: false };
+    else if (path.endsWith("/admin/zones/queue")) {
+      const hasZone = ["panel_details", "news_zone"].includes(mode);
+      const history = url.searchParams.get("active_only") === "false";
+      body = { items: hasZone ? [{ zone_id: 9, member_count: 1, location: zone.name, area_summary: "Maybunga, Pasig", sources: [mode === "news_zone" ? "news" : "user_reports"], severity_levels: [zone.severity], depth_levels: [zone.depth], evidence: zone.report_text, queued_at: zone.created_at, group_reason: "Nearby active zones" }] : [],
+        zones: history && hasZone ? [zone] : [], total: hasZone ? 1 : 0, item_total: hasZone ? 1 : 0,
+        counts: { all: hasZone ? 1 : 0, user_reports: hasZone && mode !== "news_zone" ? 1 : 0, news: mode === "news_zone" ? 1 : 0, official: 0, other: 0 },
+        facets: { cities: ["Pasig"], barangays: ["Maybunga"] }, page: 1, pages: 1, page_size: 20, read_only: true };
+    }
+    else if (path.endsWith("/admin/zones/groups/9/members")) body = { zone_id: 9, zones: [zone], total: 1, page: 1, pages: 1, page_size: 20, group_reason: "Nearby active zones", read_only: true };
     else if (path.endsWith("/admin/zones/all") && ["panel_details", "news_zone"].includes(mode)) body = { zones: [zone], total: 1 };
     else if (path.endsWith("/reports/active-zones") && ["panel_details", "news_zone"].includes(mode)) body = [zone];
     else if (path.endsWith("/admin/zones")) body = { items: [], total: 0, page: 1, limit: 10, pages: 1 };
@@ -618,6 +627,7 @@ test("active news zones reuse the staff summary with source and estimate details
   if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
   const { writes } = await setup(page, "news_zone");
   await page.getByRole("button", { name: /Active Zones/ }).click();
+  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
   const zone = page.getByRole("article", { name: "Zone #9", exact: true });
   await expect(zone.getByRole("link", { name: /News flood zone evidence/ })).toHaveAttribute("href", "https://example.org/flood");
   await expect(zone.getByText("Estimated road corridor", { exact: true })).toBeVisible();
@@ -631,6 +641,7 @@ test("active zones share report styling and keep zone-specific actions and contr
   if (info.project.name === "desktop-chromium") await page.setViewportSize({ width: 1440, height: 900 });
   const { writes } = await setup(page, "panel_details");
   await page.getByRole("button", { name: /Active Zones/ }).click();
+  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
   const panel = page.getByRole("region", { name: "Active Zones", exact: true });
   const zone = panel.getByRole("article", { name: "Zone #9", exact: true });
   await expect(zone.getByText("Open drain", { exact: true })).toBeVisible();
@@ -681,6 +692,7 @@ test("active zone public updates stay pending until an explicit staff review", a
     reviewed = true; await route.fulfill({ json: { ...update, review_state: "reviewed" } });
   });
   await page.getByRole("button", { name: /Active Zones/ }).click();
+  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
   const zone = page.getByRole("article", { name: "Zone #9", exact: true });
   await expect(zone.getByRole("button", { name: "Info for Zone #9" })).toBeVisible();
   await zone.getByRole("button", { name: "1 new update", exact: true }).click();
@@ -980,6 +992,7 @@ async function communityFixture(page: Page) {
     return route.fulfill({ json: { patch: { depth_override: "waist", severity_override: "high" }, expected_updated_at: state.zone.updated_at, community_update: { update_id: 602, fields: ["depth"], reason: "Verified complete bridge coverage and evidence." } } });
   });
   await page.getByRole("button", { name: /Active Zones/ }).click();
+  await page.getByRole("button", { name: /^Inspect zone group:/ }).click();
   await page.getByRole("button", { name: "Info for Zone #9" }).click();
   return state;
 }

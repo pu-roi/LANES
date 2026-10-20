@@ -1,254 +1,113 @@
-import React, { useCallback, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import { Loader2, CheckCircle, Shield, Pencil, Info, MessageSquare } from "lucide-react";
-import { ActiveZoneDetails } from "./ActiveZoneDetails";
-import { getZoneUpdateCounts } from "@/features/hazards/zoneUpdatesApi";
-import type { ZoneEditorProposal } from "@/features/hazards/zoneUpdatesApi";
-import { ZoneContributors } from "./ZoneContributors";
-import { FloodRecordSummary, SpatialPanelButton as Button, floodRecordTime } from "./FloodRecordSummary";
+import { ArrowLeft, RefreshCw, Shield } from "lucide-react";
 import { Pagination } from "@/shared/ui";
-import type { AvoidanceZone } from "@/features/admin/adminApi";
-import { publisherLink } from "@/features/news/newsPresentation";
+import { SpatialPanelButton as Button, floodRecordTime } from "./FloodRecordSummary";
+import { SpatialGroupCard } from "./SpatialGroupCard";
+import { SpatialQueueFilters } from "./SpatialQueueFilters";
+import { ActiveZoneRecords, type ActiveZoneRecordsProps } from "./ActiveZoneRecords";
+import { getZoneMembers, getZoneQueue, type ZoneSource } from "../zoneQueueApi";
+import type { AvoidanceZone } from "../adminApi";
 
-interface ActiveZonesPanelProps {
-  activeOnly: boolean;
-  setActiveOnly: (active: boolean) => void;
-  page: number;
-  setPage: (page: number) => void;
-  selectedIds: number[];
-  setSelectedIds: (ids: number[]) => void;
-  selectedZoneId: number | null;
-  setSelectedZoneId: (id: number | null) => void;
-  selectedContributorId?: number | null;
-  setSelectedContributorId?: (id: number | null) => void;
-  zones: AvoidanceZone[];
-  listLoading: boolean;
-  isPlaceholderData: boolean;
-  totalPages: number;
-  flyToZone: (zone: AvoidanceZone) => void;
-  onViewZoneOnMap: (zone: AvoidanceZone) => void;
-  setConfirmId: (id: number | null) => void;
-  onCreateOfficialZone?: () => void;
-  onEditZone?: (zone: AvoidanceZone, proposal?: ZoneEditorProposal) => void;
-  zoneEditorOpen?: boolean;
-}
+const sourceLabels: Record<string, string> = { all: "All", user_reports: "User Reports", news: "News", official: "Official", other: "Other" };
 
-export function ActiveZonesPanel({
-  activeOnly,
-  setActiveOnly,
-  page,
-  setPage,
-  selectedIds,
-  setSelectedIds,
-  selectedZoneId,
-  setSelectedZoneId,
-  selectedContributorId,
-  setSelectedContributorId,
-  zones,
-  listLoading,
-  isPlaceholderData,
-  totalPages,
-  flyToZone,
-  onViewZoneOnMap,
-  setConfirmId,
-  onCreateOfficialZone,
-  onEditZone,
-  zoneEditorOpen,
-}: ActiveZonesPanelProps) {
-  const [expandedZoneIds, setExpandedZoneIds] = useState<number[]>([]);
-  const [details, setDetails] = useState<{ zone: AvoidanceZone; tab: "overview" | "updates" } | null>(null);
-  const closeDetails = useCallback(() => setDetails(null), []);
-  const zoneIds = zones.filter(zone => zone.is_active).map(zone => zone.id);
-  const showing = usePathname() === "/admin/map";
-  const counts = useQuery({ queryKey: ["zone-update-counts", zoneIds], queryFn: () => getZoneUpdateCounts(zoneIds), enabled: showing && zoneIds.length > 0, refetchInterval: 30000 });
-
-  const toggleExpand = (zoneId: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setExpandedZoneIds((prev) =>
-      prev.includes(zoneId) ? prev.filter((id) => id !== zoneId) : [...prev, zoneId]
-    );
-  };
-
-  const handleContributorClick = (reportId: number, zone: AvoidanceZone, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!setSelectedContributorId) return;
-
-    if (selectedContributorId === reportId) {
-      // Deselect contributor and restore parent zone view
-      setSelectedContributorId(null);
-      setSelectedZoneId(zone.id);
-    } else {
-      // Focus on this specific contributor's report geometry
-      setSelectedContributorId(reportId);
-      setSelectedZoneId(zone.id);
+export function ActiveZonesPanel({ activeOnly, setActiveOnly, page, setPage, onRecords, onRequestBulkDeactivate, ...records }: Omit<ActiveZoneRecordsProps,
+  "zones" | "listLoading" | "isPlaceholderData" | "totalPages" | "page" | "setPage"> & {
+  activeOnly: boolean; setActiveOnly: (value: boolean) => void; page: number; setPage: (value: number) => void;
+  onRecords: (zones: AvoidanceZone[]) => void;
+  onRequestBulkDeactivate: () => void;
+}) {
+  const active = usePathname() === "/admin/map";
+  const queryClient = useQueryClient();
+  const [source, setSource] = useState<ZoneSource>("all");
+  const [search, setSearch] = useState("");
+  const [q, setQ] = useState("");
+  const [city, setCity] = useState("");
+  const [barangay, setBarangay] = useState("");
+  const [severity, setSeverity] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [groupId, setGroupId] = useState<number | null>(() => activeOnly ? records.selectedZoneId : null);
+  const [memberPage, setMemberPage] = useState<number | null>(() => records.selectedZoneId === null ? 1 : null);
+  const opener = useRef<HTMLButtonElement | null>(null);
+  const queueScroll = useRef<HTMLDivElement | null>(null);
+  const queueScrollTop = useRef(0);
+  const handledMapId = useRef<number | null>(records.selectedZoneId);
+  const filters = { source, q, city, barangay, severity };
+  useEffect(() => {
+    if (search === q) return;
+    const timer = setTimeout(() => { setQ(search); setPage(1); }, 300);
+    return () => clearTimeout(timer);
+  }, [search, q, setPage]);
+  const queue = useQuery({ queryKey: ["adminZones", "queue", activeOnly, page, filters],
+    queryFn: ({ signal }) => getZoneQueue(activeOnly, page, filters, signal), enabled: active,
+    retry: false, refetchInterval: active ? 15_000 : false });
+  const members = useQuery({ queryKey: ["adminZones", "members", groupId, memberPage],
+    queryFn: ({ signal }) => getZoneMembers(groupId!, memberPage, signal), enabled: active && activeOnly && groupId !== null,
+    retry: false, refetchInterval: active && activeOnly && groupId !== null ? 15_000 : false });
+  const visibleZones = activeOnly ? (groupId !== null && !members.isError ? members.data?.zones : undefined) : !queue.isError ? queue.data?.zones : undefined;
+  useEffect(() => { onRecords(visibleZones ?? []); }, [visibleZones, onRecords]);
+  // Resolve map picks and report handoffs from any member ID, independent of pagination.
+  useEffect(() => {
+    if (records.selectedZoneId === null) { handledMapId.current = null; return; }
+    if (!activeOnly || records.selectedZoneId === null || records.selectedZoneId === handledMapId.current) return;
+    const zoneId = records.selectedZoneId;
+    if (groupId !== null && members.data?.zones.some(zone => zone.id === zoneId)) {
+      handledMapId.current = zoneId;
+      return;
     }
-  };
-
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedIds(zones.filter(z => z.is_active).map(z => z.id));
-    } else {
-      setSelectedIds([]);
-    }
-  };
-
-  const handleSelectRow = (id: number, checked: boolean) => {
-    if (checked) {
-      setSelectedIds([...selectedIds, id]);
-    } else {
-      setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
-    }
-  };
-
-  return (
-    <><section aria-label="Active Zones" className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      {/* Filter Toolbar */}
-      <div className="p-3 border-b border-gray-100 flex flex-wrap items-center justify-between bg-white gap-2">
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="selectAll"
-            checked={selectedIds.length > 0 && selectedIds.length === zones.filter((z: AvoidanceZone) => z.is_active).length}
-            onChange={handleSelectAll}
-            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-          />
-          <label htmlFor="selectAll" className="text-xs font-semibold text-gray-700 cursor-pointer">
-            Select All Active
-          </label>
-        </div>
-
-        {onCreateOfficialZone && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onCreateOfficialZone}
-            className="md:hidden px-2.5 gap-1 border-blue-200 text-blue-700 hover:bg-blue-50"
-          >
-            <Shield className="h-3.5 w-3.5" />
-            Create
-          </Button>
-        )}
-
-        <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg text-xs ml-auto">
-          <Button variant="ghost"
-            onClick={() => { setActiveOnly(true); setPage(1); }}
-            aria-pressed={activeOnly}
-            className={`px-2 ${activeOnly ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
-          >
-            Active Only
-          </Button>
-          <Button variant="ghost"
-            onClick={() => { setActiveOnly(false); setPage(1); }}
-            aria-pressed={!activeOnly}
-            className={`px-2 ${!activeOnly ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
-          >
-            All History
-          </Button>
-        </div>
+    const frame = requestAnimationFrame(() => {
+      handledMapId.current = zoneId;
+      setGroupId(zoneId);
+      setMemberPage(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeOnly, records.selectedZoneId, groupId, members.data]);
+  const refresh = useCallback(() => { void queryClient.invalidateQueries({ queryKey: ["adminZones"] }); }, [queryClient]);
+  const clearFilters = () => { setSearch(""); setQ(""); setCity(""); setBarangay(""); setSeverity(""); setPage(1); };
+  const changeMode = (value: boolean) => { setActiveOnly(value); setPage(1); setGroupId(null); };
+  const inspecting = activeOnly && groupId !== null;
+  return <section aria-label="Active Zones" className="flex min-h-0 flex-1 flex-col overflow-hidden">
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 p-3">
+      <div className="flex flex-wrap gap-1"><Button variant={activeOnly ? "primary" : "ghost"} aria-pressed={activeOnly} onClick={() => changeMode(true)}>Active Only</Button><Button variant={!activeOnly ? "primary" : "ghost"} aria-pressed={!activeOnly} onClick={() => changeMode(false)}>All History</Button></div>
+      <div className="flex gap-1">{records.onCreateOfficialZone && <Button variant="outline" className="gap-1 md:hidden" onClick={records.onCreateOfficialZone}><Shield className="size-3.5" />Create</Button>}<Button variant="ghost" aria-label="Refresh zone queue" disabled={queue.isFetching || (inspecting && members.isFetching)} onClick={refresh}><RefreshCw className="size-4" /></Button></div>
+    </div>
+    {records.selectedIds.length > 0 && <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 px-3 py-2 text-xs">
+      <span>{records.selectedIds.length} selected zones</span><Button variant="danger" onClick={onRequestBulkDeactivate}>Deactivate Selected</Button><Button variant="ghost" onClick={() => records.setSelectedIds([])}>Clear selection</Button>
+    </div>}
+    <div className={`${inspecting ? "hidden" : "flex"} min-h-0 flex-1 flex-col`}>
+      <div role="group" aria-label="Zone source" className="flex flex-wrap gap-1 border-b border-slate-100 p-3">{(Object.keys(sourceLabels) as ZoneSource[]).map(value => <Button key={value} variant={source === value ? "primary" : "ghost"} aria-pressed={source === value} className="px-2 text-xs" onClick={() => { setSource(value); setPage(1); }}>{sourceLabels[value]}{queue.data && !queue.isError && <span className="ml-1">{queue.data.counts[value]}</span>}</Button>)}</div>
+      <div ref={queueScroll} className={`${activeOnly ? "overflow-y-auto" : "overflow-hidden"} flex min-h-0 flex-1 flex-col pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-0`}>
+        <SpatialQueueFilters id="zone-filters" searchLabel="Search zone queue" search={search} onSearch={setSearch}
+          city={city} onCity={value => { setCity(value); setBarangay(""); setPage(1); }}
+          barangay={barangay} onBarangay={value => { setBarangay(value); setPage(1); }}
+          severity={severity} onSeverity={value => { setSeverity(value); setPage(1); }}
+          expanded={showFilters} onExpanded={setShowFilters} facets={queue.data?.facets} onClear={clearFilters} />
+        {queue.isPending && <p role="status" className="p-4 text-sm text-slate-500">Loading zone queue…</p>}
+        {queue.isError && <div role="alert" className="space-y-2 p-4 text-sm text-red-800"><p>Zone queue could not be loaded. {queue.error.message}</p><Button variant="outline" onClick={refresh}>Retry zone queue</Button></div>}
+        {queue.data && !queue.isError && <>
+          <p className="px-4 pt-3 text-xs text-slate-500">{queue.data.item_total} zones · {queue.data.total} {activeOnly ? (queue.data.total === 1 ? "zone card" : "zone cards") : "history entries"}</p>
+          {activeOnly ? <>
+            {!queue.data.items.length && <p className="p-6 text-center text-sm text-slate-500">No zones match this view.</p>}
+            <div className="space-y-3 p-3">{queue.data.items.map(item => <SpatialGroupCard key={item.zone_id}
+              label={`Active zones: ${item.location} · ${item.member_count} zones`} inspectLabel={`Inspect zone group: ${item.location}`}
+              sourceLabel={item.sources.map(value => sourceLabels[value] || value).join(" · ")} icon={Shield} tone="zone"
+              location={item.location} area={item.area_summary} count={item.member_count} countLabel="zones" timestamp={item.queued_at}
+              severities={item.severity_levels} depths={item.depth_levels} onInspect={button => { opener.current = button; queueScrollTop.current = queueScroll.current?.scrollTop ?? 0; setGroupId(item.zone_id); setMemberPage(1); }}>
+              <span className="line-clamp-2 break-words text-xs leading-5 text-slate-700">{item.evidence}</span>
+              <span className="text-[10px] text-slate-500">Latest zone: {floodRecordTime(item.queued_at)}</span>
+              <span className="break-words text-xs leading-5 text-slate-600">{item.member_count} {item.member_count === 1 ? "zone" : "related zones"} · Inspect each zone for evidence and actions.</span>
+            </SpatialGroupCard>)}</div>
+            <Pagination page={queue.data.page} totalPages={queue.data.pages} onPageChange={setPage} disabled={queue.isFetching} />
+          </> : <ActiveZoneRecords {...records} onCreateOfficialZone={undefined} zones={queue.data.zones} listLoading={false} isPlaceholderData={false} page={queue.data.page} setPage={setPage} totalPages={queue.data.pages} />}
+        </>}
       </div>
-
-      {/* Zones List Content */}
-      {counts.isError && <div role="alert" className="px-4 py-2 text-xs text-red-700">Could not check public updates. <Button variant="ghost" onClick={() => counts.refetch()}>Retry</Button></div>}
-      <div className="scrollbar-auto-hide flex-1 overflow-y-auto divide-y divide-gray-100 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-3">
-        {listLoading && !isPlaceholderData ? (
-          <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2">
-            <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-            <span className="text-xs font-medium">Loading zones...</span>
-          </div>
-        ) : zones.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 text-gray-400 gap-2 p-6 text-center">
-            <CheckCircle className="w-8 h-8 text-emerald-500/50" />
-            <span className="text-sm font-semibold text-gray-700">No Detour Zones Found</span>
-            <p className="text-xs text-gray-400">No zones match this view. Unreported flood hazards may still be present.</p>
-          </div>
-        ) : (
-          zones.map((zone: AvoidanceZone) => {
-            const isSelected = selectedZoneId === zone.id;
-            const isExpanded = expandedZoneIds.includes(zone.id);
-
-            return (
-              <div
-                key={zone.id}
-                role="article"
-                aria-label={`Zone #${zone.id}`}
-                onClick={() => {
-                  if (isSelected) {
-                    setSelectedZoneId(null);
-                    if (setSelectedContributorId) setSelectedContributorId(null);
-                  } else {
-                    setSelectedZoneId(zone.id);
-                    if (setSelectedContributorId) setSelectedContributorId(null);
-                    flyToZone(zone);
-                  }
-                }}
-                className={`p-4 transition-colors cursor-pointer hover:bg-blue-50/80 ${
-                  isSelected ? "bg-blue-50/80" : selectedIds.includes(zone.id) ? "bg-blue-50/40" : ""
-                }`}
-              >
-                <FloodRecordSummary title={`Zone #${zone.id}`} severity={zone.severity} depth={zone.depth}
-                  aside={<Button variant="outline" aria-label={`Info for Zone #${zone.id}`} className="gap-1 border-blue-200 text-blue-700" onClick={(event) => { event.stopPropagation(); setDetails({ zone, tab: "overview" }); }}><Info className="size-3.5" />Info</Button>}
-                  timestamp={zone.news?.[0]?.observed_at || zone.created_at} text={zone.report_text} location={zone.name}
-                  headingExtra={<>
-                    {zone.is_active && <input type="checkbox" aria-label={`Select Zone #${zone.id}`} checked={selectedIds.includes(zone.id)} onChange={(event) => handleSelectRow(zone.id, event.target.checked)} onClick={(event) => event.stopPropagation()} className="size-4 rounded border-gray-300 text-blue-600" />}
-                    <span className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${zone.is_active ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"}`}>{zone.is_active ? "Active" : "Inactive"}</span>
-                  </>}
-                  facts={[
-                    { label: "Source", value: zone.report_source === "direct_user" ? "User report" : zone.report_source?.replaceAll("_", " ") || "Official zone" },
-                    ...(zone.news || []).flatMap((alert) => {
-                      const link = publisherLink(alert.source_url);
-                      return [
-                        { label: "Article", value: link ? <a href={link} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()} className="text-blue-700 underline underline-offset-2">{alert.source_publisher}: {alert.source_title}<span className="sr-only"> (opens in a new tab)</span></a> : alert.source_title },
-                        { label: "Observed", value: floodRecordTime(alert.observed_at) },
-                        { label: "Placement", value: alert.geometry_basis === "estimated_road_corridor" ? "Estimated road corridor" : "Verified flood footprint" },
-                      ];
-                    }),
-                    ...(zone.report_id ? [{ label: "Primary report", value: `Report #${zone.report_id}` }] : []),
-                    { label: "Expires", value: zone.expires_at ? floodRecordTime(zone.expires_at) : "No expiry recorded" },
-                    { label: "Vehicles", value: zone.passable_vehicles || "Not recorded" },
-                    { label: "Hazards", value: zone.hidden_hazards || "Not recorded" },
-                    ...(zone.admin_notes ? [{ label: "Admin notes", value: zone.admin_notes }] : []),
-                  ]}
-                  actions={<>
-                    <Button variant="outline" onClick={() => onViewZoneOnMap(zone)}>View on map</Button>
-                  {onEditZone && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEditZone(zone)}
-                      className="text-xs px-2.5 border-slate-200 text-slate-700 hover:bg-slate-50 gap-1 rounded-lg"
-                      title="Edit zone attributes & overrides"
-                    >
-                      <Pencil className="w-3 h-3 text-slate-500" />
-                      Edit
-                    </Button>
-                  )}
-                  {zone.is_active && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setConfirmId(zone.id)}
-                      className="text-xs px-3 border-red-200 text-red-600 hover:bg-red-50 rounded-lg"
-                    >
-                      Deactivate
-                    </Button>
-                  )}
-                  </>}
-                >
-                  {zone.is_active && (counts.data?.[zone.id] ?? 0) > 0 && <Button variant="ghost" className="mb-2 gap-1.5 px-0 text-blue-700" onClick={(event) => { event.stopPropagation(); setDetails({ zone, tab: "updates" }); }}><MessageSquare className="size-3.5" />{counts.data?.[zone.id]} new {counts.data?.[zone.id] === 1 ? "update" : "updates"}</Button>}
-                  <ZoneContributors zone={zone} expanded={isExpanded} selectedId={selectedContributorId} onToggle={(event) => toggleExpand(zone.id, event)} onInspect={(id, event) => handleContributorClick(id, zone, event)} />
-                </FloodRecordSummary>
-              </div>
-            );
-          })
-        )}
-      </div>
-
-      {/* Pagination */}
-      <div className="p-3 border-t border-gray-200 bg-white">
-        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
-      </div>
-    </section>{showing && details && <ActiveZoneDetails key={details.zone.id} zone={details.zone} initialTab={details.tab} onClose={closeDetails} onEdit={onEditZone} editorOpen={zoneEditorOpen} onViewMap={onViewZoneOnMap} onDeactivate={() => { closeDetails(); setConfirmId(details.zone.id); }} />}</>
-  );
+    </div>
+    {inspecting && <div className="flex min-h-0 flex-1 flex-col">
+      <div className="border-b border-slate-100 px-3 py-2"><Button variant="ghost" onClick={() => { setGroupId(null); requestAnimationFrame(() => { if (queueScroll.current) queueScroll.current.scrollTop = queueScrollTop.current; opener.current?.focus({ preventScroll: true }); }); }}><ArrowLeft className="mr-2 size-4" />Back to queue</Button></div>
+      {members.isPending && <p role="status" className="p-4 text-sm text-slate-500">Loading grouped zones…</p>}
+      {members.isError && <div role="alert" className="space-y-2 p-4 text-sm text-red-800"><p>{members.error.message}</p><Button variant="outline" onClick={() => void members.refetch()}>Retry zone group</Button><p className="text-xs text-slate-600">Membership may have changed after expiry or deactivation. Return to the queue to see current zones.</p></div>}
+      {members.data && !members.isError && <><p className="px-4 py-3 text-xs leading-5 text-slate-600">{members.data.total} {members.data.total === 1 ? "zone" : "related zones"} · {members.data.group_reason}</p><ActiveZoneRecords {...records} onCreateOfficialZone={undefined} zones={members.data.zones} listLoading={false} isPlaceholderData={false} page={members.data.page} setPage={setMemberPage} totalPages={members.data.pages} /></>}
+    </div>}
+  </section>;
 }

@@ -1,6 +1,6 @@
 # LANES Feature Reference Document
 
-> **Last Updated:** October 20, 2026, 10:25 PM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Current integration — C3a local runtime/queue pass
 
@@ -220,6 +220,8 @@ This document serves as the central technical reference for all currently implem
 ---
 
 ### 7. Spatial Operations & Queue-Based Admin Moderation Workflow
+
+**October 21 shared zone queue (local):** Needs Review and Active Only share grouped cards and search/source/location/severity controls. The backend groups active zone polygons across sources before pagination, using pairwise 500 m for reliable matching roads/cities or 50 m otherwise, without a creation-time cutoff. Inspection retains individual zone provenance/actions; All History remains individual entries. Existing pending-review, expiry and routing policies remain intact. 73 backend and 34 desktop/mobile browser checks pass; no schema/dependency change or deployment. [Acceptance](evaluations/spatial-zone-queues-20261021/README.md). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 **Current hosted forecast UI:** Rollout 005 now serves the saved primary forecast and expanded calculation on desktop/mobile; six real Info and six expanded checks pass. Existing source, expiry-to-Unconfirmed and experimental accuracy contracts remain. Earlier local-only release statements are historical. [Acceptance](evaluations/pasig-subsidence-v3-acceptance-20261011.md#hosted-ui-continuation--october-11-425-pm-pht). [@roicambe](https://github.com/roicambe) (Roi Cambe)
 

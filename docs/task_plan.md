@@ -1,6 +1,17 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 21, 2026, 02:23 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 03:24 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Shared Spatial Operations queues — completed locally
+
+Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe). Independent of the pending News Intelligence Phase E work below.
+
+- [x] Share grouped card/filter presentation while preserving Needs Review grouping and moderation rules.
+- [x] Add staff-only zone queue/member reads with backend proximity grouping, expiry eligibility, source/location/severity filters, stable summaries and pagination.
+- [x] Retain individual zone details, map focus, updates, contributors, editing and confirmed single/bulk deactivation; retain ungrouped history.
+- [x] Verify 73 backend and 34 distinct desktop/mobile browser checks, TypeScript and focused lint; preserve the 12 existing LiveMap lint errors without new signatures.
+
+No schema/dependency change or deployment is included. Git publication is limited to `roi-branch`. [Acceptance and limits](evaluations/spatial-zone-queues-20261021/README.md).
 
 ## Chris frontend integration — completed locally
 

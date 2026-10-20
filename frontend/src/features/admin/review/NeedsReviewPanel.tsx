@@ -1,23 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, RefreshCw, Search, SlidersHorizontal } from "lucide-react";
-import { Input, Select, Pagination } from "@/shared/ui";
+import { ArrowLeft, RefreshCw } from "lucide-react";
+import { Pagination } from "@/shared/ui";
 import { SpatialPanelButton as Button } from "../components/FloodRecordSummary";
 import { PendingReportsPanel } from "../components/PendingReportsPanel";
 import type { ComponentProps } from "react";
 import { getReviewDetail, getReviewPage, type PlacementEnvelope, type ReviewSource } from "./reviewApi";
 import type { FloodReport } from "../adminApi";
 import { NewsReviewEvidence } from "./NewsReviewEvidence";
+import { SpatialQueueFilters } from "../components/SpatialQueueFilters";
 import { ReviewQueueCard } from "./ReviewQueueCard";
 import { RelatedReviewReports } from "./RelatedReviewReports";
 
 type ReportActions = Pick<ComponentProps<typeof PendingReportsPanel>, "onInfoClick" | "onOpenMergeWorkspace" | "onRequestReject" | "approveMutation">;
-
-// Keep a selected location visible even when another source has no matching facet.
-function locationOptions(label: string, values: string[] = [], selected = "") {
-  const displayed = selected && !values.includes(selected) ? [selected, ...values] : values;
-  return [{ value: "", label }, ...displayed.map((value) => ({ value, label: value }))];
-}
 
 export function NeedsReviewPanel({ active, selectedKey, onSelect, onReport, onPreview, selectedCandidate,
   onCandidate, onCount, layerError, ...actions }: ReportActions & {
@@ -41,7 +36,6 @@ export function NeedsReviewPanel({ active, selectedKey, onSelect, onReport, onPr
   }, [search]);
   const filters = { q, city, barangay, severity };
   const clearFilters = () => { setSearch(""); setQ(""); setCity(""); setBarangay(""); setSeverity(""); setPage(1); };
-  const hasFilters = !!(search || city || barangay || severity);
   const queryClient = useQueryClient();
   const opener = useRef<HTMLButtonElement | null>(null);
   const queue = useQuery({ queryKey: ["spatial-review", source, page, filters],
@@ -73,16 +67,11 @@ export function NeedsReviewPanel({ active, selectedKey, onSelect, onReport, onPr
           {label}{queue.data && !queue.isError && <span className="ml-1">{queue.data.counts[value]}</span>}
         </Button>)}</div></div><Button variant="ghost" className="px-2 max-md:min-w-11" aria-label="Refresh review queue" disabled={queue.isFetching} onClick={refresh}><RefreshCw className="size-4" /></Button></div>
       <div className="min-h-0 flex-1 overflow-y-auto pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-3">
-        <div className="space-y-2 border-b border-slate-100 p-3">
-          <div className="flex items-center gap-2"><Input type="search" aria-label="Search review queue" placeholder="Search location, report or evidence" maxLength={120} value={search} onChange={(event) => setSearch(event.target.value)} leftIcon={<Search className="size-4" />} className="text-xs shadow-none" />
-            <Button variant="outline" aria-expanded={showFilters} aria-controls="review-filters" onClick={() => setShowFilters(!showFilters)} className="gap-1.5 px-2"><SlidersHorizontal className="size-3.5" />Filters</Button></div>
-          {showFilters && <div id="review-filters" className="grid grid-cols-2 gap-2">
-            <Select className="[&_button>span]:truncate [&_button>span]:min-w-0 max-md:[&_button]:min-h-11" ariaLabel="Filter by city" label="City" value={city} options={locationOptions("All cities", queue.data?.facets?.cities, city)} onChange={(event) => { setCity(String(event.target.value)); setBarangay(""); setPage(1); }} />
-            <Select className="[&_button>span]:truncate [&_button>span]:min-w-0 max-md:[&_button]:min-h-11" ariaLabel="Filter by barangay" label="Barangay" disabled={!city} value={barangay} options={city ? locationOptions("All barangays", queue.data?.facets?.barangays, barangay) : [{ value: "", label: "Select a city first" }]} onChange={(event) => { setBarangay(String(event.target.value)); setPage(1); }} />
-            <Select className="[&_button>span]:truncate [&_button>span]:min-w-0 max-md:[&_button]:min-h-11" ariaLabel="Filter by severity" label="Severity" value={severity} options={[{ value: "", label: "All severities" }, { value: "low", label: "Low" }, { value: "medium", label: "Medium" }, { value: "high", label: "High" }, { value: "extreme", label: "Extreme" }, { value: "unknown", label: "Unassessed" }]} onChange={(event) => { setSeverity(String(event.target.value)); setPage(1); }} />
-          </div>}
-          {hasFilters && <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500"><span>{[city, barangay, severity].filter(Boolean).join(" · ") || "Search applied"}</span><Button variant="ghost" onClick={clearFilters}>Clear filters</Button></div>}
-        </div>
+        <SpatialQueueFilters id="review-filters" searchLabel="Search review queue" search={search} onSearch={setSearch}
+          city={city} onCity={(value) => { setCity(value); setBarangay(""); setPage(1); }}
+          barangay={barangay} onBarangay={(value) => { setBarangay(value); setPage(1); }}
+          severity={severity} onSeverity={(value) => { setSeverity(value); setPage(1); }}
+          expanded={showFilters} onExpanded={setShowFilters} facets={queue.data?.facets} onClear={clearFilters} />
         {queue.isPending && <p role="status" className="p-4 text-sm text-slate-500">Loading review queue…</p>}
         {queue.isError && <div role="alert" className="space-y-3 p-4 text-sm text-red-800"><p>Review queue could not be loaded. {queue.error.message}</p><Button variant="outline" onClick={refresh}>Retry review queue</Button></div>}
         {queue.data && !queue.isError && <><p className="px-4 pt-3 text-xs text-slate-500">{queue.data.item_total ?? queue.data.total} reports requiring review · {queue.data.total} review {queue.data.total === 1 ? "card" : "cards"}</p>
