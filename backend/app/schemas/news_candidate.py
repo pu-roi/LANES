@@ -8,6 +8,14 @@ from app.schemas.news_extraction import NewsExtractionResult
 from app.schemas.news_ner_result import NewsNerResult, ProcessingMode, parse_saved_result
 
 
+class NewsFeedHealth(BaseModel):
+    feed_url: str
+    status: Literal['not_recorded', 'ok', 'error']
+    last_checked_at: datetime | None = None
+    last_success_at: datetime | None = None
+    error_code: str | None = None
+
+
 class NewsSourceSummary(BaseModel):
     id: str
     publisher: str
@@ -15,6 +23,11 @@ class NewsSourceSummary(BaseModel):
     feed_urls: list[str]
     verified_at: date | None
     enabled: bool
+    registry_eligible: bool = False
+    selected_for_collection: bool = False
+    collection_active: bool = False
+    feed_health: list[NewsFeedHealth] = Field(default_factory=list)
+    body_counts: dict[str, int] = Field(default_factory=dict)
 
 
 class NewsFeedProbeResult(BaseModel):

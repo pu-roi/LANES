@@ -1,7 +1,18 @@
 # LANES - Full System Documentation
 
-> **Last Updated:** October 21, 2026, 12:36 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+## Phase D — saved health and bounded worker history
+
+Existing active-admin GET `/api/v1/admin/news/sources` now reads saved DB health and settings through a thin route/service/CRUD boundary. It retains `enabled` and adds `registry_eligible`, `selected_for_collection`, `collection_active`, per-feed `feed_health` and publisher `body_counts`. Feed health uses `not_recorded`/`ok`/`error`, timestamps and bounded codes, without probing sources.
+
+Collection GET adds optional `retrieval=available|missing|error` and independent overview `retrieval_counts`. Use `status=all` to locate excluded retrieval problems; status/search/publisher/retrieval filters intersect. Native intended-method selection and saved evidence remain intact. Feed-history responses add `articles_saved_or_seen` while preserving `candidates_saved`. Monitoring adds `collection_to_alert_delay_reason=not_computed`.
+
+Automation/configuration runtime retains `last_cycle` and adds `recent_cycles` (last ten). Summaries include bounded stage outcomes/errors and nullable Cloud Run execution/task/attempt identity. No table/migration is introduced. Status remains readable when auditor configuration is invalid, with explicit audit failure; storage errors stay 503. Scheduled-worker output preserves collection/retry details and normal exits/cadence.
+
+These are backend contracts only: existing frontend labels/badges, inspector/cards and polling remain Phase E. [Verification and cloud finding disposition](../evaluations/rss-ner-monitoring-20261021/README.md). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Earlier checkpoints below are historical.**
 
 ## C3b — controlled native pipeline and saved-result APIs
 

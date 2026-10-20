@@ -1,6 +1,6 @@
 # LANES — Task Plan
 
-> **Last Updated:** October 21, 2026, 12:46 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
 ## Documentation handoff — October 21, 2026
 
@@ -8,9 +8,9 @@
 
 ## Current milestone: RSS-to-NER integration and News Intelligence
 
-**Status: Phase A, local Phase B, schema prerequisites and controlled local Phase C acceptance are complete through C3b.** The objective remains automatic RSS-to-NER processing and saved results in the existing `/admin/news` interface. C3b connects RSS admission/corrections, original feed provenance, native readers and downstream gates in the guarded disposable-local pipeline. **754 distinct tests pass**, with one real ten-input run matching 4,483 spans/all 53 reviewed predictions; peak 2,492.09 MiB. [C3b report](evaluations/rss-ner-rss-integration-20261021/README.md). Eight inputs enter through mocked RSS; two short pre-existing capture controls correctly fail RSS admission and exercise processing separately. The frontend and scheduled production activation have not shipped.
+**Status: Phase A, local Phase B, schema prerequisites, controlled local Phase C acceptance and backend Phase D are complete.** The objective remains automatic RSS-to-NER processing and saved results in the existing `/admin/news` interface. C3b connects RSS admission/corrections, original feed provenance, native readers and downstream gates in the guarded disposable-local pipeline. **754 distinct tests pass**, with one real ten-input run matching 4,483 spans/all 53 reviewed predictions; peak 2,492.09 MiB. [C3b report](evaluations/rss-ner-rss-integration-20261021/README.md). Eight inputs enter through mocked RSS; two short pre-existing capture controls correctly fail RSS admission and exercise processing separately. The frontend and scheduled production activation have not shipped.
 
-**Next action: Phase D monitoring/error classification**, including the dated cloud partial-attempt finding. Phase E then integrates the shared-component interface; Phase F investigates 403s last. Shared migration, approved cloud resources, production selection/deployment and actual Cloud Run verification remain release gates. Local acceptance does not qualify the unchanged last-inspected one-GiB cloud job. The original one-/two-GiB failures and all historical receipts remain valid.
+**Backend Phase D passes locally:** 608 distinct checks (21 new), independent retrieval/source-health contracts, safe configuration errors and ten-attempt history. [Report and cloud retry disposition](evaluations/rss-ner-monitoring-20261021/README.md). Original collection diagnostics for the dated retry were not retained; no underlying publisher recovery is claimed. **Next action: Phase E**, integrating the existing shared-component interface and all deferred visible monitoring corrections. Phase F investigates 403s last. Shared migration, qualified cloud resources, production selection/deployment and actual Cloud Run verification remain release gates. Local acceptance does not qualify the unchanged last-inspected one-GiB cloud job; historical runtime failures remain valid.
 
 Completed prerequisite evidence: [C3a CLI startup fix](evaluations/rss-ner-cli-bootstrap-20261020/README.md), [C3a runtime/queue](evaluations/rss-ner-native-worker-20261020/README.md), [C2 projection/source checking](evaluations/rss-ner-native-projection-20261020/README.md), [C1 method/history](evaluations/rss-ner-method-boundary-20261020/README.md), [schema](evaluations/rss-ner-mode-schema-20261020/README.md), [local 3-GiB runtime](evaluations/rss-ner-runtime-phase-b-3g-20261020/README.md), [Phase A contract](plans/rss-ner-integration-contract.md). V46 remains a completed backend-preview milestone; its earlier preview-only next-step description is historical.
 
@@ -49,7 +49,7 @@ These findings were obtained through read-only Google Cloud inspection and backe
 | News worker | Existing job runs `scripts.run_news_discovery --discover --pipeline --scheduled --limit 50`; inspected limits are one CPU, 1 GiB RAM, a 600-second task timeout and one configured task retry |
 | Backend verification | **71 weather and cadence checks passed** using an isolated process-only valid auditor batch-size setting; no environment file or cloud setting changed |
 
-**Open operational finding:** execution `lanes-news-discovery-mnmjd` logged `requires_attention` at **2:00:49 AM PHT** and a later `completed` outcome at **2:01:17 AM PHT** on October 20. The final execution succeeded, but individual attempt/stage reconciliation remains open. Do not infer that every stage was clean from job success, HTTP 200, or the absence of ERROR-severity logs. Record the cause, affected stage and retry effect before closing this finding.
+**Operational finding disposition — October 21:** read-only logs confirm execution `lanes-news-discovery-mnmjd` attempt 0 reported `requires_attention` at **October 20, 2:00:49 AM PHT** and exited 1; attempt 1 reported `completed` at **2:01:17 AM PHT** and exited 0. Cloud Run records one retry and final success. The attempt summaries omit the original collection error; its publisher/status/cause remain unresolved because historical diagnostics are missing. [Evidence and inference boundaries](evaluations/rss-ner-monitoring-20261021/README.md). Phase D adds forward-looking stage/retry history and tests skipped collection after failure; it does not backfill production or claim that final success repaired retrieval.
 
 Preserve **60/15/30**. Do not change collection to a fixed 15-minute interval or alter cloud settings during read-only investigation. [Existing scheduling release](evaluations/news-adaptive-scheduler-release-20261013.md) · [Cadence policy and rollout](guides/news-weather-scheduling-rollout.md) · [Qualified V46 preview](evaluations/flood-ner-backend-location-v46-20261020/README.md).
 
@@ -106,17 +106,27 @@ This passes the approved **local** resource/runtime gate only. The previously in
 
 ### Phase D — Correct monitoring and error classification
 
-- [ ] Distinguish registry eligibility, selection for collection and retrieval health in source responses and presentation; an enabled registry entry must not imply it is selected in System Settings.
-- [ ] Replace outdated wording that publication records do not exist. State which lifecycle/collection-to-alert metrics are not calculated by the current reader; do not invent a metric or infer publication from extraction completion.
-- [ ] Replace the misleading saved-candidate label with wording matching articles saved/seen, including rediscoveries and commuter updates. Preserve distinct flood-candidate counts.
-- [ ] Separate retrieval health from flood eligibility so excluded articles still expose missing-body/retrieval problems without being promoted into flood results.
-- [ ] Distinguish configuration/runtime failures from invalid article input. Malformed auditor configuration must not be reported as a malformed article snapshot; automation status must surface service configuration problems explicitly.
-- [ ] Reconcile the inspected `requires_attention` → `completed` execution at attempt and stage level. Preserve the earlier issue when a later attempt succeeds and verify duplicate/partial-failure behavior.
-- [ ] Verify these corrections with targeted backend tests and retain the established weather/controller/cadence behavior.
+**Backend-only delivery, as selected; all visible corrections are carried into Phase E.** Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
 
-**Gate D:** readers accurately distinguish selected sources, saved/seen articles, flood candidates, extraction status, publication status, retrieval issues and configuration errors. The live operational finding has a documented disposition; final job success alone cannot close it. Detailed 403 diagnosis remains Phase F.
+- [x] Distinguish registry eligibility, selected collection sources/global activity, saved per-feed outcomes/timestamps and article-body counts in protected source responses. GETs perform no network work or writes.
+- [x] Expose publication-delay limitation as unavailable / `not_computed`; reuse actual linked lifecycle without inferring publication. Visible obsolete wording remains Phase E.
+- [x] Add `articles_saved_or_seen` to history responses while retaining legacy counter/storage compatibility and separate flood-candidate counts. Visible label replacement remains Phase E.
+- [x] Add independent retrieval counts/filtering to legacy/native collection readers; `status=all&retrieval=error` exposes excluded retrieval problems without promoting flood eligibility.
+- [x] Separate auditor configuration from rules-only initialization; stop required audit work before claims on configuration failure. Keep automation status available with explicit audit diagnostics and preserve input/result/runtime/storage distinctions.
+- [x] Retain ten bounded completed attempts and stage/retry metadata in existing runtime JSON. Preserve failed attempts after successful retries, truthful collection success times and interruption/failure outcomes.
+- [x] Reconcile the dated cloud execution at attempt level. **Original collection reason remains unavailable in retained logs**; document that disposition instead of claiming recovery or a bug-free workflow.
+- [x] Verify 608 distinct tests (21 new) and 788 cached inputs / 407 saved graphs without neural inference. Unchanged migrations reach head in owned PostGIS; prior receipt hashes match and owned resources are stopped. [Report](evaluations/rss-ner-monitoring-20261021/README.md).
+
+**Gate D backend: passed locally.** Presentation is not shipped; its accepted corrections remain explicit Phase E tasks. No cloud settings, production migration/activation, model/rule or resource qualification changes. Detailed 403 diagnosis remains Phase F.
 
 ### Phase E — Integrate the existing News Intelligence interface
+
+**Deferred Phase D presentation — use the completed backend contracts**
+
+- [ ] Display registry eligibility, selection and saved retrieval health separately; do not show registry Enabled as proof of active collection or a fresh successful fetch.
+- [ ] Surface excluded-article retrieval problems with the independent filter/counts; preserve eligibility and existing article details.
+- [ ] Replace “Candidates saved” with “Articles saved or seen” and obsolete publication-record wording with the `not_computed` monitoring limitation.
+- [ ] Display bounded recent-attempt/stage failures alongside successful retries without implying the earlier problem was repaired. Consume saved diagnostics only.
 
 **Structure and shared components**
 

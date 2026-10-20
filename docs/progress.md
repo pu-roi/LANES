@@ -1,6 +1,16 @@
 # LANES — Progress Tracker
 
-> **Last Updated:** October 21, 2026, 12:46 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Phase D — backend monitoring and error classification passed locally
+
+Sources now separate registry eligibility, worker selection, global activity and saved feed/body health. Collection exposes retrieval counts/filtering independently of flood eligibility; excluded articles remain excluded. Feed history adds the accurate saved/seen counter and monitoring identifies the uncomputed publication-delay metric. Rules-only extraction no longer loads audit settings; bounded audit configuration failures leave automation status readable and stop evaluation before claims. Snapshot versus result/storage failures remain distinct.
+
+The existing runtime JSON preserves the last ten completed attempts, known-stage errors/outcomes and Cloud Run retry identity. Successful retries retain earlier failures; skipped collection does not advance retrieval success. Cancellation and aggregate failures are not recorded as success. **608 distinct tests pass (21 new), without skips**, with owned PostGIS persistence/lease/publication checks and 788-input / 407-graph inference-free parity. [Report](evaluations/rss-ner-monitoring-20261021/README.md) · [Aggregate](evaluations/rss-ner-monitoring-20261021/summary.json). Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+Read-only cloud logs confirm `lanes-news-discovery-mnmjd` attempt 0 exited 1 and attempt 1 exited 0. The original collection reason is missing from retained logs; the disposition preserves that uncertainty and claims no publisher recovery. All 9,796 prior receipts remain unchanged. One owned PostGIS container is stopped with PID zero and private test evidence retained. No new schema/dependency/model/rule/frontend/neural-inference/cloud-write/deployment/activation change. **Next is Phase E**, carrying all visible monitoring corrections; Phase F 403 and production gates remain open.
+
+**Earlier checkpoints below are historical.**
 
 ## NER documentation handoff — October 21, 2026
 

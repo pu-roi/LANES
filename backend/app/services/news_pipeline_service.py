@@ -44,7 +44,10 @@ async def run_news_pipeline(session_factory: Callable[[], Session], *, limit: in
     from app.services.news_publication_service import process_news_publications
     if not 1 <= limit <= 200 or seed_cursor < 0 or footprint_cursor < 0:
         raise ValueError("Invalid pipeline batch")
+    from app.services.news_claim_auditor import AuditorConfigurationError
     auditor = auditor or NewsClaimAuditor()
+    if getattr(auditor, 'config', None) and auditor.config.error_code():
+        raise AuditorConfigurationError(auditor.config.error_code())
     maintenance_sources = sources
     config, sources = runtime_configuration(session_factory, sources)
     policy = evaluation_policy(auditor, config, publication_admission_at=publication_admission_at)

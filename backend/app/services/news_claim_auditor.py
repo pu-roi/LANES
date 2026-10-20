@@ -165,6 +165,13 @@ def _provider_evidence(content: str, options: list[dict[str, Any]]) -> ProviderC
     return ProviderClaimAudit.model_validate_json(content)
 
 
+class AuditorConfigurationError(ValueError):
+    """Bounded service configuration failure; never retains environment values."""
+    def __init__(self, code: str = 'auditor_configuration_invalid') -> None:
+        self.code = code
+        super().__init__(code)
+
+
 class _AuditorEnvironment(BaseSettings):
     """Match backend Settings' dotenv convention without changing os.environ.
 
@@ -204,7 +211,10 @@ class AuditorConfig:
 
     @classmethod
     def from_environment(cls) -> AuditorConfig:
-        environment = _AuditorEnvironment()
+        try:
+            environment = _AuditorEnvironment()
+        except (ValidationError, ValueError):
+            raise AuditorConfigurationError() from None
         return cls(provider=environment.provider or None,
                    model=environment.model or None,
                    config_revision=environment.config_revision,

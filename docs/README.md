@@ -1,6 +1,14 @@
 # LANES documentation
 
-> **Last Updated:** October 21, 2026, 12:46 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Phase D — backend monitoring passed locally
+
+[Implementation, API contracts and cloud disposition](evaluations/rss-ner-monitoring-20261021/README.md) · [Aggregate](evaluations/rss-ner-monitoring-20261021/summary.json) · [Roadmap](task_plan.md#phase-d--correct-monitoring-and-error-classification).
+
+**608 distinct tests pass, including 21 new checks**, plus inference-free parity on 788 cached inputs / 407 saved graphs. Source eligibility/selection/retrieval, independent article retrieval filters, truthful counters, safe configuration failures and the last ten worker attempts are available in backend contracts. The dated cloud retry is reconciled; its original collection error is not retained in logs and is not claimed repaired. All 9,796 predecessor receipt files remain unchanged. **Next: Phase E interface**, including visible monitoring corrections. No frontend, neural inference, migration, dependency, cloud write/deployment or production activation. Owner: [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**Earlier checkpoints below are historical.**
 
 ## NER documentation for groupmates
 

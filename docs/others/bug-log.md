@@ -1,6 +1,20 @@
 # LANES Bug Fix Log & Issue Tracker
 
-> **Last Updated:** October 21, 2026, 12:56 AM by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+
+## Phase D — misleading monitoring and configuration failure attribution
+
+**Status:** Resolved for backend contracts/local verification; frontend presentation remains Phase E. **Severity:** Medium for monitoring correctness. **Author/Resolver:** [@roicambe](https://github.com/roicambe) (Roi Cambe).
+
+**1. Problem:** Registry Enabled could be mistaken for worker selection. Excluded unreadable articles were hard to locate, saved/seen counts had a candidate label, and publication-delay wording was outdated. A broad article-validation handler could misattribute auditor settings failure, while status reads could fail entirely. Latest-cycle storage lost failed-attempt context after successful retry.
+
+**2. Root cause:** Sources were returned directly from the static registry; retrieval and eligibility shared presentation/filtering; auditor settings were loaded during rules-only construction; snapshot/result validation shared one catch; runtime retained only the latest cycle and omitted collection diagnostics from worker output.
+
+**3. Fix:** Additive saved source-health/selection contracts and retrieval counts/filter; accurate counter/metric metadata; lazy credential-compatible audit initialization, bounded configuration errors and pre-claim rejection; ten-entry runtime history with bounded stage errors and Cloud Run identity. Skipped retrieval cannot become successful, and cancellation/aggregate failures cannot be recorded as clean completion.
+
+**4. Files/evidence:** Admin read endpoint, source-health CRUD/service, collection schemas/readers, audit/hybrid/processing/evaluation/pipeline services, cycle/scheduler/runtime schemas, telemetry DTO and targeted tests. [608 passing checks, 21 new, cached parity and preservation](../evaluations/rss-ner-monitoring-20261021/README.md). The cloud retry is verified, but the original collection cause is absent from retained logs; no recovery is asserted. Initial retained-location fixture and lazy-credential compatibility failures were corrected and rerun. No frontend, schema migration, neural inference or cloud write.
+
+**Earlier checkpoints below are historical.**
 
 ## Feed browser pagination expectations — push preflight October 21, 2026
 

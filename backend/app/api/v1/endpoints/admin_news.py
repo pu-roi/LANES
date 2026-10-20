@@ -105,13 +105,14 @@ def browse_collection(
     search: str = Query(default="", max_length=200),
     publisher: str | None = Query(default=None, max_length=100),
     status: CollectionFilter = "attention",
+    retrieval: BodyStatus | None = None,
     db: Session = Depends(get_db),
     _staff: object = Depends(deps.get_current_active_admin),
     processing_context: object = Depends(get_news_read_context),
 ) -> NewsCollectionPage:
     """Read saved articles needing collection or extraction attention."""
     try:
-        return browse_news_collection(db, page=page, page_size=page_size, search=search, publisher=publisher, status=status,processing_context=processing_context)
+        return browse_news_collection(db, page=page, page_size=page_size, search=search, publisher=publisher, status=status,processing_context=processing_context,retrieval=retrieval)
     except SavedRunReadError as exc:
         raise HTTPException(status_code=409,detail=str(exc)) from exc
     except SQLAlchemyError as exc:
@@ -394,9 +395,14 @@ def run_news_discovery(
 
 
 @router.get("/sources", response_model=list[NewsSourceSummary])
-def list_news_sources(_staff: object = Depends(deps.get_current_active_admin)) -> list[NewsSourceSummary]:
+def list_news_sources(db: Session = Depends(get_db),
+                      _staff: object = Depends(deps.get_current_active_admin)) -> list[NewsSourceSummary]:
     """Show configured runtime sources without changing moderation state."""
-    return [NewsSourceSummary.model_validate(asdict(source)) for source in load_news_sources()]
+    from app.services.news_source_health_service import read_source_health
+    try:
+        return read_source_health(db)
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="News source health is unavailable") from exc
 
 
 @router.post("/sources/{source_id}/probe", response_model=NewsSourceProbeResponse)

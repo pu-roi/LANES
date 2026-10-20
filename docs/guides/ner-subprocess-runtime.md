@@ -1,7 +1,14 @@
 # Supervised news NER runtime — local qualification only
 
-> **Last Updated:** October 21, 2026, 12:36 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
+> **Last Updated:** October 21, 2026, 01:19 AM Asia/Manila by [@roicambe](https://github.com/roicambe) (Roi Cambe)
 
+## Phase D — monitoring source delta; no runtime requalification
+
+[608-check backend monitoring report](../evaluations/rss-ner-monitoring-20261021/README.md) records additive source/retrieval contracts, bounded audit-configuration errors and ten-attempt stage/retry history. All 9,796 earlier receipt files remain unchanged. Current source differences are separate from the C3b image/freeze; normalizer code binding continues to distinguish changed orchestration identities. Historical results/manifests are not relabeled or overwritten.
+
+788 cached inputs / 407 saved graphs match without inference. No model/tokenizer/inference-worker/location/grouping change or neural/runtime/resource requalification occurs. One owned disposable PostGIS server is stopped; only read-only cloud execution/log inspection ran. Last-inspected production resources and 60/15/30 scheduling are unchanged. Next is Phase E interface and visible monitoring corrections; deployment/activation remain release gates.
+
+**Earlier checkpoints below are historical.**
 
 ## C3b — controlled full-pipeline entrypoint qualified locally
 

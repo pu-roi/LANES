@@ -47,9 +47,27 @@ class HybridExtractionService:
     ) -> None:
         self.location_service = location_service or get_philippine_location_service()
         self.geometry_service = geometry_service or get_nationwide_geometry_service()
-        auditor_config = AuditorConfig.from_environment()
-        self.openrouter_api_key = auditor_config.openrouter_api_key
-        self.gemini_api_key = auditor_config.gemini_api_key
+        # None means no compatibility override; rules-only extraction needs no auditor.
+        self._openrouter_api_key_override: str | None = None
+        self._gemini_api_key_override: str | None = None
+
+    @property
+    def openrouter_api_key(self) -> str:
+        return (AuditorConfig.from_environment().openrouter_api_key if self._openrouter_api_key_override is None
+                else self._openrouter_api_key_override)
+
+    @openrouter_api_key.setter
+    def openrouter_api_key(self, value: str | None) -> None:
+        self._openrouter_api_key_override = value
+
+    @property
+    def gemini_api_key(self) -> str:
+        return (AuditorConfig.from_environment().gemini_api_key if self._gemini_api_key_override is None
+                else self._gemini_api_key_override)
+
+    @gemini_api_key.setter
+    def gemini_api_key(self, value: str | None) -> None:
+        self._gemini_api_key_override = value
 
     async def audit_claim_with_llm(
         self,
@@ -65,8 +83,10 @@ class HybridExtractionService:
         article = context_text if isinstance(context_text, NewsArticleExtractorInput) else NewsArticleExtractorInput(
             article_id=0, canonical_url="", publisher="", title="", article_text=context_text,
         )
-        config = replace(AuditorConfig.from_environment(), openrouter_api_key=self.openrouter_api_key,
-                         gemini_api_key=self.gemini_api_key)
+        config = AuditorConfig.from_environment()
+        config = replace(config,
+            openrouter_api_key=config.openrouter_api_key if self._openrouter_api_key_override is None else self._openrouter_api_key_override,
+            gemini_api_key=config.gemini_api_key if self._gemini_api_key_override is None else self._gemini_api_key_override)
         result = await NewsClaimAuditor(config).audit(claim, article, client=client)
         evidence = result.evidence
         verified = result.outcome == "verified"

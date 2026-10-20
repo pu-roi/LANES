@@ -53,10 +53,15 @@ def collection_rows(db: Session, *, pipeline_version: str | None = None) -> tupl
 
 
 def list_collection(db: Session, *, page: int, page_size: int, search: str, publisher: str | None,
-                    status: CollectionFilter, pipeline_version: str | None = None) -> tuple[list, int, int, dict[str, int], list[str]]:
+                    status: CollectionFilter, pipeline_version: str | None = None,
+                    retrieval: str | None = None) -> tuple[list, int, int, dict[str, int], list[str], dict[str, int]]:
     query, state = collection_rows(db,pipeline_version=pipeline_version)
     overview = query.subquery()
     counts = dict(db.execute(select(overview.c.collection_status, func.count()).group_by(overview.c.collection_status)).all())
+    body = article_body_status()
+    retrieval_counts = dict(db.execute(select(body, func.count()).group_by(body)).all())
+    if retrieval is not None:
+        query = query.where(body == retrieval)
     if status == "attention":
         query = query.where(state.not_in(["ready", "excluded", "no_locations"]))
     elif status != "all":
@@ -71,7 +76,7 @@ def list_collection(db: Session, *, page: int, page_size: int, search: str, publ
     rows = db.execute(query.options(defer(NewsArticle.article_text)).order_by(NewsArticle.last_seen_at.desc(),
         NewsArticle.id.desc()).offset((actual_page - 1) * page_size).limit(page_size)).all()
     publishers = list(db.scalars(select(NewsArticle.publisher_source_id).distinct().order_by(NewsArticle.publisher_source_id)))
-    return list(rows), total, actual_page, counts, publishers
+    return list(rows), total, actual_page, counts, publishers, retrieval_counts
 
 
 def native_collection_rows(db: Session, pipeline_version: str) -> tuple[Select, ColumnElement]:

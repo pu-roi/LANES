@@ -52,6 +52,7 @@ class NewsAutomationStatus(BaseModel):
     last_finished_at: datetime | None = None
     last_successful_at: datetime | None = None
     last_cycle: NewsCycleSummary | None = None
+    recent_cycles: list[NewsCycleSummary] = Field(default_factory=list, max_length=10)
     stages: dict[str, NewsStageHealth] = Field(default_factory=dict)
     latest_collection_at: datetime | None = None
     feed_counts: dict[str, int] = Field(default_factory=dict)
